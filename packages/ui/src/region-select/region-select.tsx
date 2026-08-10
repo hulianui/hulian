@@ -171,7 +171,7 @@ export function RegionSelect({
     return (
       <div
         className={cn(
-          "grid place-items-center rounded-[var(--radius)] border border-border bg-surface-hover p-8 text-sm text-muted",
+          "grid place-items-center rounded-[var(--radius)] border border-border bg-surface-hover p-8 text-sm text-muted-foreground",
           className,
         )}
         {...rest}
@@ -185,7 +185,7 @@ export function RegionSelect({
     return (
       <div
         className={cn(
-          "grid place-items-center rounded-[var(--radius)] border border-border bg-surface-hover p-8 text-sm text-muted",
+          "grid place-items-center rounded-[var(--radius)] border border-border bg-surface-hover p-8 text-sm text-muted-foreground",
           className,
         )}
         {...rest}
@@ -222,7 +222,7 @@ export function RegionSelect({
         <image href={src} x={0} y={0} width={natural.w} height={natural.h} onError={fail} />
 
         {boxes?.map((b, i) => {
-          const c = resolveTone(b.color) ?? "var(--color-muted)";
+          const c = resolveTone(b.color) ?? "var(--color-muted-foreground)";
           return (
             <g key={b.id ?? i}>
               <rect

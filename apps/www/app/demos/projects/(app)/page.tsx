@@ -164,7 +164,7 @@ export default function ProjectsDashboard() {
                       >
                         {p.name}
                       </Link>
-                      <span className="shrink-0 text-xs tabular-nums text-muted">{p.progress}%</span>
+                      <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{p.progress}%</span>
                     </div>
                     <Progress variant="linear" value={p.progress} className="w-full" />
                     <Text size="xs" tone="muted">
@@ -179,7 +179,7 @@ export default function ProjectsDashboard() {
 
         <Card variant="outline">
           <CardHeader className="flex items-center gap-2">
-            <Activity className="size-4 text-muted" />
+            <Activity className="size-4 text-muted-foreground" />
             <Heading level={3} size="base">{copy("recentNews")}</Heading>
           </CardHeader>
           <CardBody className="pt-0">

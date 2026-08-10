@@ -134,7 +134,7 @@ function HomeTab() {
               >
                 {cat.name[0]}
               </span>
-              <span className="text-[10px] text-muted">{cat.name}</span>
+              <span className="text-[10px] text-muted-foreground">{cat.name}</span>
             </button>
           ))}
         </div>
@@ -224,7 +224,7 @@ function CategoryTab() {
       {/* Picker：选规格 */}
       {showPicker && (
         <div className="border-b border-border bg-surface-hover px-3 py-2">
-          <p className="mb-1 text-[10px] text-muted">{copy("chooseSizeColor")}</p>
+          <p className="mb-1 text-[10px] text-muted-foreground">{copy("chooseSizeColor")}</p>
           <Picker
             columns={[sizeColumn, colorColumn]}
             value={pickerValue}
@@ -232,7 +232,7 @@ function CategoryTab() {
             visibleCount={3}
             itemHeight={36}
           />
-          <p className="mt-1 text-center text-[10px] text-muted">
+          <p className="mt-1 text-center text-[10px] text-muted-foreground">
 
             {copy("selected")}{pickerValue[0].toUpperCase()} · {colorColumn.options.find((o) => o.value === pickerValue[1])?.label}
           </p>
@@ -246,7 +246,7 @@ function CategoryTab() {
           {categories.map((cat, i) => (
             <button
               key={cat.key}
-              className={`flex-shrink-0 py-3 text-center text-[10px] ${i === 0 ? "border-l-2 border-primary font-semibold text-primary" : "text-muted"}`}
+              className={`flex-shrink-0 py-3 text-center text-[10px] ${i === 0 ? "border-l-2 border-primary font-semibold text-primary" : "text-muted-foreground"}`}
             >
               {cat.name}
             </button>
@@ -284,12 +284,12 @@ function CategoryTab() {
                 />
                 <div className="min-w-0 flex-1">
                   <p className="line-clamp-1 text-xs text-foreground">{p.name}</p>
-                  <p className="mt-0.5 text-[10px] text-muted">{p.brand}</p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground">{p.brand}</p>
                   <div className="mt-1 flex items-center gap-1">
                     <span className="text-xs font-bold text-primary">
                       {formatPrice(p.price)}
                     </span>
-                    <span className="text-[9px] text-muted line-through">
+                    <span className="text-[9px] text-muted-foreground line-through">
                       {formatPrice(p.originalPrice)}
                     </span>
                   </div>
@@ -310,7 +310,7 @@ function CartTab() {
 
   if (cart.length === 0) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-2 text-muted">
+      <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
         <ShoppingCart className="size-10 opacity-30" />
         <p className="text-sm">{copy("yourCartIsEmpty")}</p>
       </div>
@@ -343,7 +343,7 @@ function CartTab() {
                 <p className="line-clamp-1 text-xs font-medium text-foreground">
                   {item.productId}
                 </p>
-                <p className="mt-0.5 text-[10px] text-muted">
+                <p className="mt-0.5 text-[10px] text-muted-foreground">
                   {item.color} · {item.size}
                 </p>
                 <p className="mt-1 text-xs font-bold text-primary">
@@ -379,7 +379,7 @@ function CartTab() {
       <SafeArea edges={["bottom"]} mode="padding" min={4}>
         <div className="flex items-center justify-between border-t border-border bg-surface px-3 py-2">
           <div>
-            <span className="text-xs text-muted">{copy("total")}</span>
+            <span className="text-xs text-muted-foreground">{copy("total")}</span>
             <span className="text-sm font-bold text-danger">
               {formatPrice(cartTotal)}
             </span>
@@ -420,7 +420,7 @@ function MeTab() {
           </div>
           <div>
             <p className="text-sm font-semibold text-foreground">{copy("hanshopCustomer")}</p>
-            <p className="text-xs text-muted">{copy("vipMember3280Points")}</p>
+            <p className="text-xs text-muted-foreground">{copy("vipMember3280Points")}</p>
           </div>
         </div>
       </div>
@@ -430,7 +430,7 @@ function MeTab() {
         <div className="mb-2 flex items-center justify-between">
           <span className="text-xs font-semibold text-foreground">{copy("myOrders")}</span>
           <button
-            className="text-[10px] text-muted"
+            className="text-[10px] text-muted-foreground"
             onClick={() => toast({ title: copy("viewAllOrdersDemo"), tone: "info" })}
           >
 
@@ -444,8 +444,8 @@ function MeTab() {
               className="flex flex-col items-center gap-1"
               onClick={() => toast({ title: `${e.label}${copy("demo")}`, tone: "info" })}
             >
-              <span className="text-muted">{e.icon}</span>
-              <span className="text-[10px] text-muted">{e.label}</span>
+              <span className="text-muted-foreground">{e.icon}</span>
+              <span className="text-[10px] text-muted-foreground">{e.label}</span>
             </button>
           ))}
         </div>
@@ -457,12 +457,12 @@ function MeTab() {
           <span className="text-xs font-semibold text-foreground">
 
             {copy("myFavorites")}
-            <span className="ml-1 text-[10px] text-muted">({favorites.length})</span>
+            <span className="ml-1 text-[10px] text-muted-foreground">({favorites.length})</span>
           </span>
           <Heart className="size-4 text-rose-400" />
         </div>
         {favorites.length === 0 ? (
-          <p className="text-center text-[10px] text-muted">{copy("noFavoritesYet")}</p>
+          <p className="text-center text-[10px] text-muted-foreground">{copy("noFavoritesYet")}</p>
         ) : (
           <div className="flex gap-2 overflow-x-auto">
             {favorites.slice(0, 4).map((id) => {
@@ -475,7 +475,7 @@ function MeTab() {
                     alt={p.name}
                     className="h-16 w-16 rounded-lg object-cover"
                   />
-                  <p className="mt-1 line-clamp-1 text-[9px] text-muted">
+                  <p className="mt-1 line-clamp-1 text-[9px] text-muted-foreground">
                     {formatPrice(p.price)}
                   </p>
                 </div>
@@ -500,9 +500,9 @@ function MeTab() {
           >
             <div>
               <p className="text-xs text-foreground">{item.label}</p>
-              <p className="text-[10px] text-muted">{item.sub}</p>
+              <p className="text-[10px] text-muted-foreground">{item.sub}</p>
             </div>
-            <span className="text-muted text-xs">&gt;</span>
+            <span className="text-muted-foreground text-xs">&gt;</span>
           </button>
         ))}
       </div>
@@ -559,7 +559,7 @@ export function MobileStore() {
             onClick={() => toast({ title: copy("searchDemo"), tone: "info" })}
             aria-label={copy("search")}
           >
-            <Search className="size-4 text-muted" />
+            <Search className="size-4 text-muted-foreground" />
           </button>
         </div>
       </SafeArea>

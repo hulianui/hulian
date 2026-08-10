@@ -28,7 +28,7 @@ export function Field({
       )}
       {children}
       {description && (
-        <BaseField.Description className="text-xs text-muted">{description}</BaseField.Description>
+        <BaseField.Description className="text-xs text-muted-foreground">{description}</BaseField.Description>
       )}
       {/* match={true} 强制渲染(规避 validityData 恒 null 的静默失效) + 自动串 aria-describedby */}
       {error && (

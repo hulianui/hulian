@@ -169,7 +169,7 @@ function KanbanColumnView<T>({
           )}
         >
           {items.length === 0 ? (
-            <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-6 text-xs text-muted">
+            <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-6 text-xs text-muted-foreground">
               {emptyColumnLabel}
             </li>
           ) : (

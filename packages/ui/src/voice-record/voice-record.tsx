@@ -237,7 +237,7 @@ export function VoiceRecord({
           s.font,
           isRecording && "text-danger",
           isProcessing && "text-chart-3",
-          isDisabled && "text-muted",
+          isDisabled && "text-muted-foreground",
         )}
       >
         {isRecording

@@ -94,14 +94,14 @@ function ActivityItem({ act }: { act: Activity }) {
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm">
           <span className="font-medium text-foreground">{act.actor}</span>
-          <span className="text-muted">{act.action}</span>
+          <span className="text-muted-foreground">{act.action}</span>
           {act.tag && (
             <Tag tone={act.tag.tone} size="sm" variant="soft">
               {act.tag.label}
             </Tag>
           )}
         </div>
-        <div className="mt-0.5 truncate text-xs text-muted">{act.target}</div>
+        <div className="mt-0.5 truncate text-xs text-muted-foreground">{act.target}</div>
         <Text size="xs" tone="muted" className="mt-1 tabular-nums">
           {act.time}
         </Text>

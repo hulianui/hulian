@@ -68,7 +68,7 @@ function Column({
           key={o.value}
           className={cn(
             "flex snap-center items-center justify-center text-center transition-colors",
-            i === centerIndex ? "font-medium text-foreground" : "text-muted",
+            i === centerIndex ? "font-medium text-foreground" : "text-muted-foreground",
           )}
           style={{ height: itemHeight }}
         >

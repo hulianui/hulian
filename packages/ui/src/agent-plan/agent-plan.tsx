@@ -32,7 +32,7 @@ function AgentPlanImpl({
         className,
       )}
     >
-      {resolvedTitle && <p className="mb-2.5 text-xs font-medium text-muted">{resolvedTitle}</p>}
+      {resolvedTitle && <p className="mb-2.5 text-xs font-medium text-muted-foreground">{resolvedTitle}</p>}
       <ol className="space-y-2.5">
         {tasks.map((t, i) => {
           const status = t.status ?? "pending";
@@ -52,16 +52,16 @@ function AgentPlanImpl({
                 <span
                   className={cn(
                     "text-foreground",
-                    status === "done" && strikeDone && "text-muted line-through",
-                    status === "pending" && "text-muted",
+                    status === "done" && strikeDone && "text-muted-foreground line-through",
+                    status === "pending" && "text-muted-foreground",
                   )}
                 >
                   {t.title}
                 </span>
-                {t.detail && <span className="mt-0.5 block text-xs text-muted">{t.detail}</span>}
+                {t.detail && <span className="mt-0.5 block text-xs text-muted-foreground">{t.detail}</span>}
               </span>
               {t.meta != null && (
-                <span className="mt-0.5 shrink-0 text-xs tabular-nums text-muted">{t.meta}</span>
+                <span className="mt-0.5 shrink-0 text-xs tabular-nums text-muted-foreground">{t.meta}</span>
               )}
             </li>
           );

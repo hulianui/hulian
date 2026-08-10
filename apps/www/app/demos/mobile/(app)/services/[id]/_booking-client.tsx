@@ -93,7 +93,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
         <Avatar fallback={service.workerAvatar} size="md" />
         <div className="flex-1">
           <div className="text-sm font-medium">{service.workerName}</div>
-          <div className="text-xs text-muted mt-0.5">{SERVICE_CATEGORY_LABELS[service.category]} {copy("verifiedProfessional")}</div>
+          <div className="text-xs text-muted-foreground mt-0.5">{SERVICE_CATEGORY_LABELS[service.category]} {copy("verifiedProfessional")}</div>
         </div>
         <button
           type="button"
@@ -109,7 +109,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
       {/* 服务说明 */}
       <div className="px-4 py-3 border-b border-border">
         <div className="text-sm font-semibold mb-1.5">{copy("serviceDetails")}</div>
-        <p className="text-xs text-muted leading-relaxed">{service.description}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">{service.description}</p>
       </div>
 
       {/* 预约时间（Picker 触发） */}
@@ -121,7 +121,7 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
           className="flex w-full items-center justify-between rounded-xl border border-border bg-surface-hover px-3 py-2.5 hover:bg-surface"
         >
           <span className="text-sm">{selectedDate} {selectedTime}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width="14" height="14" className="text-muted" aria-hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width="14" height="14" className="text-muted-foreground" aria-hidden>
             <path d="M9 18l6-6-6-6" />
           </svg>
         </button>
@@ -175,10 +175,10 @@ export function BookingClient({ service }: { service: ServiceWithCover }) {
       {/* 底部下单栏 */}
       <div className="px-4 py-3">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs text-muted">{copy("total")}</span>
+          <span className="text-xs text-muted-foreground">{copy("total")}</span>
           <span className="text-xl font-bold text-primary">
             ¥{service.price * qty}
-            <span className="text-xs font-normal text-muted"> · {qty}{service.unit}</span>
+            <span className="text-xs font-normal text-muted-foreground"> · {qty}{service.unit}</span>
           </span>
         </div>
         <button

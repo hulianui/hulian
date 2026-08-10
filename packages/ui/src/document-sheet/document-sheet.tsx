@@ -129,7 +129,7 @@ export const DocumentSheetSection = forwardRef<HTMLDivElement, DocumentSheetSect
   ({ title, children, className, ...props }, ref) => (
     <section ref={ref} className={cn("py-4 text-sm", className)} {...props}>
       {title && (
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">{title}</h3>
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
       )}
       {children}
     </section>
@@ -144,7 +144,7 @@ export const DocumentSheetFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTM
   ({ className, ...props }, ref) => (
     <footer
       ref={ref}
-      className={cn("mt-6 border-t border-border pt-6 text-sm text-muted", className)}
+      className={cn("mt-6 border-t border-border pt-6 text-sm text-muted-foreground", className)}
       {...props}
     />
   ),
@@ -166,7 +166,7 @@ export const DocumentSheetSignature = forwardRef<HTMLDivElement, DocumentSheetSi
   ({ label, lineWidth = "11rem", className, ...props }, ref) => {
     const w = typeof lineWidth === "number" ? `${lineWidth}px` : lineWidth;
     return (
-      <div ref={ref} className={cn("text-xs text-muted", className)} {...props}>
+      <div ref={ref} className={cn("text-xs text-muted-foreground", className)} {...props}>
         {/* 物理签字 / 盖章留白 */}
         <div className="h-12" aria-hidden />
         <div className="border-t border-foreground/40 pt-1.5 text-center" style={{ width: w }}>

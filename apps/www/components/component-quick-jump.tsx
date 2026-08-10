@@ -160,7 +160,7 @@ export function ComponentQuickJump({ placement }: { placement: ComponentQuickJum
 
   const input = (
     <div className="flex h-11 items-center gap-2 border-b border-border px-3 focus-within:ring-2 focus-within:ring-inset focus-within:ring-ring">
-      <Search className="size-4 shrink-0 text-muted" aria-hidden />
+      <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
       <input
         ref={inputRef}
         id={`${baseId}-input`}
@@ -181,9 +181,9 @@ export function ComponentQuickJump({ placement }: { placement: ComponentQuickJum
           setOpen(true);
         }}
         onKeyDown={onKeyDown}
-        className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+        className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
       />
-      <kbd className="hidden text-[11px] text-muted sm:inline">Enter</kbd>
+      <kbd className="hidden text-[11px] text-muted-foreground sm:inline">Enter</kbd>
     </div>
   );
 
@@ -207,7 +207,7 @@ export function ComponentQuickJump({ placement }: { placement: ComponentQuickJum
             onRemember={rememberComponent}
           />
         ) : (
-          <p className="px-3 py-5 text-sm text-muted">{copy.noResults}</p>
+          <p className="px-3 py-5 text-sm text-muted-foreground">{copy.noResults}</p>
         )
       ) : (
         <>
@@ -252,7 +252,7 @@ export function ComponentQuickJump({ placement }: { placement: ComponentQuickJum
             setOpen((value) => !value);
             requestAnimationFrame(() => inputRef.current?.focus());
           }}
-          className="inline-flex h-11 items-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-3 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex h-11 items-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-3 text-sm text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Search className="size-4" aria-hidden />
           <span className="hidden 2xl:inline">{copy.trigger}</span>
@@ -302,7 +302,7 @@ function OptionGroup({
 }) {
   return (
     <div role="group" aria-label={heading} className="py-1">
-      <p className="px-2 pb-1 pt-1 text-[11px] font-medium uppercase tracking-wide text-muted">
+      <p className="px-2 pb-1 pt-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
         {heading}
       </p>
       {docs.map((doc, localIndex) => {
@@ -323,7 +323,7 @@ function OptionGroup({
             }`}
           >
             <span className="min-w-0 flex-1 truncate font-medium">{optionName(doc)}</span>
-            <span className="shrink-0 font-mono text-[11px] text-muted">{slugOf(doc)}</span>
+            <span className="shrink-0 font-mono text-[11px] text-muted-foreground">{slugOf(doc)}</span>
           </a>
         );
       })}

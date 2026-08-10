@@ -620,7 +620,7 @@ function ControlBtn({
       title={label}
       onClick={onClick}
       onPointerDown={(e) => e.stopPropagation()}
-      className="grid size-8 place-items-center text-muted transition-colors hover:bg-surface-hover hover:text-fg [&+button]:border-t [&+button]:border-border"
+      className="grid size-8 place-items-center text-muted-foreground transition-colors hover:bg-surface-hover hover:text-fg [&+button]:border-t [&+button]:border-border"
     >
       <svg
         viewBox="0 0 20 20"

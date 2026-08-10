@@ -31,7 +31,7 @@ function Demo({
         disabled={disabled}
         invalid={invalid}
       />
-      <div className="text-xs text-muted">
+      <div className="text-xs text-muted-foreground">
         {names.length ? `已选：${names.join(" / ")}（${codes.join(",")}）` : "未选择"}
       </div>
     </div>

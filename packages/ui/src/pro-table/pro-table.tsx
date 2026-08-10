@@ -23,7 +23,7 @@ const DENSITY_ORDER = ["default", "middle", "compact"] as const;
 type Density = (typeof DENSITY_ORDER)[number];
 
 const iconBtn =
-  "inline-grid size-8 place-items-center rounded-[var(--radius)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
+  "inline-grid size-8 place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
 
 function colId<TData>(c: ColumnDef<TData, any>): string {
   if (c.id) return c.id;
@@ -393,7 +393,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
           <button
             type="button"
             onClick={clearSelection}
-            className="text-muted underline-offset-2 transition-colors hover:text-foreground hover:underline"
+            className="text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
           >
             {t.clearSelection}
           </button>
@@ -427,7 +427,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
       {pagination && (
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-sm text-muted">{t.total(pagination.total)}</span>
+          <span className="text-sm text-muted-foreground">{t.total(pagination.total)}</span>
           <div className="flex flex-wrap items-center gap-3">
             {pageSizeOptions != null &&
               pageSizeOptions.length > 0 &&

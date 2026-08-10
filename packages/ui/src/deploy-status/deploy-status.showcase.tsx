@@ -62,7 +62,7 @@ export const deployStatusShowcase: ShowcaseSpec = {
       description: "size=\"sm\" 嵌入文本流。",
       code: `<p>上次部署 <DeployStatus status="ready" size="sm" /></p>`,
       render: () => (
-        <p className="flex flex-wrap items-center gap-2 text-sm text-muted">
+        <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           上次部署 <DeployStatus status="ready" size="sm" /> ，预览环境 <DeployStatus status="building" size="sm" />
         </p>
       ),
@@ -107,7 +107,7 @@ export const deployStatusShowcase: ShowcaseSpec = {
     {
       name: "小尺寸 · 行内",
       render: () => (
-        <p className="flex flex-wrap items-center gap-2 text-sm text-muted">
+        <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           上次部署 <DeployStatus status="ready" size="sm" /> ，预览环境 <DeployStatus status="building" size="sm" />
         </p>
       ),

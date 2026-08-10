@@ -83,7 +83,7 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
             className={`inline-flex h-full min-w-11 items-center justify-center rounded-[min(var(--radius),0.375rem)] px-1.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg ${
               current
                 ? "bg-surface-hover text-foreground"
-                : "text-muted hover:bg-surface-hover hover:text-foreground"
+                : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
             }`}
           >
             {label}

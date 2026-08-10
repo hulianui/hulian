@@ -35,7 +35,7 @@ function Stage({
         <p className="text-2xl font-semibold text-foreground drop-shadow">
           瑚琏组件库
         </p>
-        <p className="text-sm text-muted">企业级 · 高质量 · 渐进式模糊贴边</p>
+        <p className="text-sm text-muted-foreground">企业级 · 高质量 · 渐进式模糊贴边</p>
       </div>
       {children}
     </div>

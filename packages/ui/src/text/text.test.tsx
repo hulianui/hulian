@@ -34,7 +34,7 @@ describe("Text", () => {
       </>,
     );
     expect(getByText("默认").className).toContain("text-foreground");
-    expect(getByText("弱").className).toContain("text-muted");
+    expect(getByText("弱").className).toContain("text-muted-foreground");
     expect(getByText("主").className).toContain("text-primary");
     expect(getByText("成").className).toContain("text-success");
     expect(getByText("警").className).toContain("text-warning");

@@ -53,7 +53,7 @@ export function TabBar({
             onClick={() => !it.disabled && select(it.key)}
             className={cn(
               "relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-xs outline-none transition-colors focus-visible:bg-surface-hover disabled:pointer-events-none disabled:opacity-40",
-              on ? "text-primary" : "text-muted hover:text-foreground",
+              on ? "text-primary" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {(it.icon || it.activeIcon) && (

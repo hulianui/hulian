@@ -27,7 +27,7 @@ export function RegionMeters({
           : snapshot.regionLoad.map((r) => (
               <div key={r.region} className="flex flex-col gap-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted">{REGION_LABELS[r.region]}</span>
+                  <span className="text-muted-foreground">{REGION_LABELS[r.region]}</span>
                   <span className="font-medium tabular-nums" style={{ color: loadColor(r.load) }}>
                     {r.load}%
                   </span>

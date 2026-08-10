@@ -10,7 +10,7 @@ import { customerById } from "../../_data/customers";
 const STATUS_DOT: Record<Conversation["status"], string> = {
   waiting: "bg-warning",
   active: "bg-success",
-  closed: "bg-muted",
+  closed: "bg-muted-foreground",
 };
 const STATUS_LABEL: Record<Conversation["status"], string> = {
   waiting: copy("waitingForAccess"),
@@ -69,7 +69,7 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
         <List<Conversation>
           items={visible}
           inset
-          empty={<div className="p-6 text-center text-sm text-muted">{copy("thereAreCurrentlyNoConversationsInThis")}</div>}
+          empty={<div className="p-6 text-center text-sm text-muted-foreground">{copy("thereAreCurrentlyNoConversationsInThis")}</div>}
           renderItem={(conv) => {
             const cust = customerById(conv.customerId);
             const last = conv.messages[conv.messages.length - 1];
@@ -105,14 +105,14 @@ export function ConversationList({ conversations, activeId, typingId, onSelect }
                   title={
                     <span className="flex items-center justify-between gap-2">
                       <span className="truncate font-medium">{cust?.name ?? copy("visitor")}</span>
-                      <span className="shrink-0 text-[11px] font-normal text-muted">{conv.lastAt}</span>
+                      <span className="shrink-0 text-[11px] font-normal text-muted-foreground">{conv.lastAt}</span>
                     </span>
                   }
                   description={
                     <span className="flex flex-col gap-0.5">
-                      <span className={`truncate ${isTyping ? "text-primary" : "text-muted"}`}>{preview}</span>
+                      <span className={`truncate ${isTyping ? "text-primary" : "text-muted-foreground"}`}>{preview}</span>
                       <span className="flex items-center justify-between gap-2">
-                        <span className="truncate text-[11px] text-muted">
+                        <span className="truncate text-[11px] text-muted-foreground">
                           {channelLabel[conv.channel]} · {conv.subject}
                         </span>
                         <Badge count={conv.unread} size="sm" className="shrink-0" />

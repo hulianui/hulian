@@ -16,12 +16,12 @@ export const toggleVariants = cva(
       variant: {
         // soft 选中：surface-hover 底（明暗都可读），不抢主色
         default:
-          "text-muted hover:bg-surface-hover hover:text-foreground data-[pressed]:bg-surface-hover data-[pressed]:text-foreground",
+          "text-muted-foreground hover:bg-surface-hover hover:text-foreground data-[pressed]:bg-surface-hover data-[pressed]:text-foreground",
         // 实心选中：主色填充
         outline:
           "border border-border bg-surface text-foreground hover:bg-surface-hover data-[pressed]:border-primary data-[pressed]:bg-primary data-[pressed]:text-primary-foreground",
         // 圆角描边 chip，选中 = soft 主色（AI 工具栏「深度思考/智能搜索」式开关）
-        pill: "rounded-full border border-border font-normal text-muted hover:bg-surface-hover hover:text-foreground data-[pressed]:border-primary/40 data-[pressed]:bg-primary/10 data-[pressed]:text-primary",
+        pill: "rounded-full border border-border font-normal text-muted-foreground hover:bg-surface-hover hover:text-foreground data-[pressed]:border-primary/40 data-[pressed]:bg-primary/10 data-[pressed]:text-primary",
       },
       size: {
         sm: "h-8 min-w-8 px-2.5 text-sm",

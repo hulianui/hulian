@@ -29,7 +29,7 @@ export function BentoCard({ title, description, icon, cta, className, children, 
       <div className="flex flex-col gap-1">
         {icon && <div className="mb-2 text-primary [&>svg]:size-7">{icon}</div>}
         {title && <h3 className="text-base font-semibold text-foreground">{title}</h3>}
-        {description && <p className="text-sm text-muted">{description}</p>}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       {cta && (
         <div className="mt-3 translate-y-1 opacity-0 transition-[translate,opacity] ease-out group-hover:translate-y-0 group-hover:opacity-100">

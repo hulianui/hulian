@@ -21,12 +21,12 @@ export const animatedThemeTogglerShowcase: ShowcaseSpec = {
       description: "切换器是一个标准按钮，可与其它元素并排放在工具栏里。",
       code: `<div className="flex items-center gap-3">
   <AnimatedThemeToggler />
-  <span className="text-sm text-muted">点击：圆形揭示切换明暗</span>
+  <span className="text-sm text-muted-foreground">点击：圆形揭示切换明暗</span>
 </div>`,
       render: () => (
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />
-          <span className="text-sm text-muted">点击：圆形揭示切换明暗</span>
+          <span className="text-sm text-muted-foreground">点击：圆形揭示切换明暗</span>
         </div>
       ),
     },
@@ -38,7 +38,7 @@ export const animatedThemeTogglerShowcase: ShowcaseSpec = {
       render: () => (
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />
-          <span className="text-sm text-muted">点击：圆形揭示切换明暗</span>
+          <span className="text-sm text-muted-foreground">点击：圆形揭示切换明暗</span>
         </div>
       ),
     },

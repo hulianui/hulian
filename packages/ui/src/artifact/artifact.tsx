@@ -38,7 +38,7 @@ export function Artifact({
     >
       <div className="flex items-center gap-2 border-b border-border px-3 py-2">
         {icon && (
-          <span className="flex size-4 shrink-0 items-center justify-center text-muted">
+          <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground">
             {icon}
           </span>
         )}
@@ -69,7 +69,7 @@ export function Artifact({
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="block w-full border-t border-border py-1.5 text-center text-xs text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+          className="block w-full border-t border-border py-1.5 text-center text-xs text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
         >
           {expanded ? collapseLabel ?? copy.collapse : expandLabel ?? copy.expand}
         </button>

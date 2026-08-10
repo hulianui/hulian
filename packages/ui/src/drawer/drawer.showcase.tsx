@@ -20,7 +20,7 @@ function Demo({ side }: { side: DrawerSide }) {
         }
       >
         {/* 长内容演示：正文区独立滚动，footer 始终钉底可见 */}
-        <div className="flex flex-col gap-3 text-sm text-muted">
+        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
           {Array.from({ length: 12 }, (_, i) => (
             <p key={i}>配置项 {i + 1}：这里是一段较长的说明文案，用于演示正文超出时的滚动行为。</p>
           ))}

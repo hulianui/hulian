@@ -102,7 +102,7 @@ export default function OverviewPage() {
           <h1 className="text-xl font-semibold tracking-tight text-foreground">
             {copy("goodAfternoon", account.name)}
           </h1>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-muted-foreground">
             {copy("lastLogin")}
             <RelativeTime
               value={account.lastLogin}
@@ -193,7 +193,7 @@ export default function OverviewPage() {
                 brand={defaultCard.brand}
                 className="w-full max-w-[19rem]"
               />
-              <p className="text-xs text-muted">
+              <p className="text-xs text-muted-foreground">
                 {copy("willBeRenewedOnTheRenewalDate")}
                 <RelativeTime
                   value="2026-07-01T00:00:00+08:00"
@@ -215,10 +215,10 @@ export default function OverviewPage() {
             return (
               <div key={u.key}>
                 <div className="mb-1.5 flex items-baseline justify-between text-sm">
-                  <span className="text-muted">{u.label}</span>
+                  <span className="text-muted-foreground">{u.label}</span>
                   <span className="tabular-nums text-foreground">
                     {u.used.toLocaleString("zh-CN")}
-                    <span className="text-muted">
+                    <span className="text-muted-foreground">
                       {" "}
                       / {u.quota.toLocaleString("zh-CN")} {u.unit}
                     </span>
@@ -265,10 +265,10 @@ export default function OverviewPage() {
                   >
                     {inv.id}
                   </Glimpse>
-                  <p className="mt-0.5 truncate text-xs text-muted">{inv.plan}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted-foreground">{inv.plan}</p>
                 </div>
                 <div className="flex items-center gap-4 whitespace-nowrap">
-                  <span className="hidden text-xs text-muted sm:inline">
+                  <span className="hidden text-xs text-muted-foreground sm:inline">
                     <RelativeTime value={inv.date} locale={DEMO_RELATIVE_TIME_LOCALE} />
                   </span>
                   <span className="w-20 text-right text-sm font-medium tabular-nums text-foreground">

@@ -127,7 +127,7 @@ function CellValue({ value }: { value: Cell }) {
   if (value === true)
     return <Check className="mx-auto size-4 text-primary" aria-label="包含" />;
   if (value === false)
-    return <Minus className="mx-auto size-4 text-muted" aria-label="不包含" />;
+    return <Minus className="mx-auto size-4 text-muted-foreground" aria-label="不包含" />;
   return <span className="tabular-nums text-foreground">{value}</span>;
 }
 
@@ -146,7 +146,7 @@ export function PricingCompareBlock({ ctaHref = "#" }: { ctaHref?: string }) {
         const r = row.original;
         if (r.kind === "group")
           return (
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               {r.group}
             </span>
           );
@@ -174,7 +174,7 @@ export function PricingCompareBlock({ ctaHref = "#" }: { ctaHref?: string }) {
             <span className="text-2xl font-bold tracking-tight text-foreground">
               {plan.price}
             </span>
-            <span className="text-xs text-muted">{plan.unit}</span>
+            <span className="text-xs text-muted-foreground">{plan.unit}</span>
           </div>
           {plan.highlight ? (
             <ShimmerButton className="w-full" render={<Link href={ctaHref} />}>

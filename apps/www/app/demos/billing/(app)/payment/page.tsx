@@ -43,7 +43,7 @@ function AddCardForm({ onAdd }: { onAdd: (m: { number: string; holder: string; e
             placeholder="4111 1111 1111 1111"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
-            prefix={<CardIcon className="size-4 text-muted" />}
+            prefix={<CardIcon className="size-4 text-muted-foreground" />}
           />
         </Field>
         <Field label={copy("cardholder")}>
@@ -96,7 +96,7 @@ function AddCardForm({ onAdd }: { onAdd: (m: { number: string; holder: string; e
           flipped={flipped}
           className="w-full"
         />
-        <p className="text-xs text-muted">
+        <p className="text-xs text-muted-foreground">
           {clean ? copy("identifiedAs", detectBrand(clean).toUpperCase()) : copy("previewTheCardSurfaceWhileTyping")}
         </p>
       </div>
@@ -117,7 +117,7 @@ export default function PaymentPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-xl font-semibold tracking-tight text-foreground">{copy("paymentMethod")}</h1>
-        <p className="mt-1 flex items-center gap-1.5 text-sm text-muted">
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
           <ShieldCheck className="size-4 text-primary" />{copy("theCardNumberIsStoredEncryptedBy")}</p>
       </div>
 
@@ -160,7 +160,7 @@ export default function PaymentPage() {
                     removeMethod(m.id);
                     toast({ title: copy("paymentMethodRemoved"), tone: "neutral" });
                   }}
-                  className="absolute right-11 top-3 grid size-8 place-items-center rounded-[var(--radius)] text-muted transition-colors hover:bg-danger/10 hover:text-danger"
+                  className="absolute right-11 top-3 grid size-8 place-items-center rounded-[var(--radius)] text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
                 >
                   <Trash2 className="size-4" />
                 </button>
@@ -173,7 +173,7 @@ export default function PaymentPage() {
       {/* 绑定第三方钱包（SocialButton）*/}
       <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5">
         <h2 className="mb-1 text-sm font-semibold text-foreground">{copy("quickPayment")}</h2>
-        <p className="mb-4 text-xs text-muted">{copy("afterBindingYouCanUseTheCorresponding")}</p>
+        <p className="mb-4 text-xs text-muted-foreground">{copy("afterBindingYouCanUseTheCorresponding")}</p>
         <div className="flex flex-wrap gap-3">
           {(["wechat", "alipay"] as const).map((k) => {
             const bound = boundWallets.includes(k);

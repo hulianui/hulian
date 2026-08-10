@@ -87,7 +87,7 @@ export default function HanReviewOverviewPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("overview")}</h1>
-        <p className="text-sm text-muted">{copy("aiCodeReviewStatusAsOf")}</p>
+        <p className="text-sm text-muted-foreground">{copy("aiCodeReviewStatusAsOf")}</p>
       </div>
 
       {/* 预算提示 */}
@@ -149,7 +149,7 @@ export default function HanReviewOverviewPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
             <span className="font-medium text-foreground">{copy("qualityTrendNearlyDays")}</span>
-            <span className="text-xs text-muted">{copy("maximumScore")}</span>
+            <span className="text-xs text-muted-foreground">{copy("maximumScore")}</span>
           </CardHeader>
           <CardBody>
             <AreaChart
@@ -174,7 +174,7 @@ export default function HanReviewOverviewPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
             <span className="font-medium text-foreground">{copy("codeHotspotsModulesWeeks")}</span>
-            <span className="text-xs text-muted">{copy("theHigherTheValueTheMoreNumerous")}</span>
+            <span className="text-xs text-muted-foreground">{copy("theHigherTheValueTheMoreNumerous")}</span>
           </CardHeader>
           <CardBody className="overflow-x-auto">
             <Heatmap
@@ -197,7 +197,7 @@ export default function HanReviewOverviewPage() {
                       <span className="truncate font-medium text-foreground">
                         {modelName(m.modelId)}
                       </span>
-                      <span className="flex shrink-0 items-center gap-2 text-xs text-muted">
+                      <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
                         <span className="tabular-nums">{m.calls}{copy("times")}</span>
                         <span className="tabular-nums font-medium text-foreground">
                           ¥{m.cost.toFixed(2)}
@@ -235,7 +235,7 @@ export default function HanReviewOverviewPage() {
                     <StatusDot status={statusDot[r.status]} />
                     <div className="min-w-0">
                       <div className="truncate text-sm font-medium text-foreground">{r.title}</div>
-                      <div className="truncate text-xs text-muted">
+                      <div className="truncate text-xs text-muted-foreground">
                         {repoName(r.repoId)} · {r.branch} · {r.author.name} · {statusLabel[r.status]}
                       </div>
                     </div>

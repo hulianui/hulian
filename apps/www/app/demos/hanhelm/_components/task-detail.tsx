@@ -207,7 +207,7 @@ function TaskDetailBody({ task }: { task: Task }) {
       />
 
       {/* 元信息条 */}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
         <span className="inline-flex items-center gap-1.5">
           <RouteIcon className="size-4" />{copy("receivingActuator")}<span className="font-medium text-foreground">{executorName(task.assignedExecutorId)}</span>
         </span>
@@ -259,7 +259,7 @@ function TaskDetailBody({ task }: { task: Task }) {
                           <span className={cn("text-[13px]", st === "failed" && "text-danger")}>{sub.title}</span>
                         }
                         description={
-                          <span className="text-[11px] text-muted">
+                          <span className="text-[11px] text-muted-foreground">
                             {executorName(sub.executorId)} · {fmtDuration(sub.durationMs)} · ¥{sub.costYuan.toFixed(2)}
                           </span>
                         }
@@ -275,7 +275,7 @@ function TaskDetailBody({ task }: { task: Task }) {
             )}
           </CardBody>
           {hasDag && (
-            <div className="border-t border-border px-4 py-3 text-xs text-muted">
+            <div className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
               <div className="flex items-center justify-between">
                 <span>{copy("totalTimeSpentOnSubtasks")}</span>
                 <span className="font-medium text-foreground tabular-nums">{fmtDuration(sumDuration)}</span>
@@ -334,10 +334,10 @@ function TaskDetailBody({ task }: { task: Task }) {
             </div>
             <TaskDetailFrames frames={frames} />
             <div className="flex items-center justify-between rounded-[var(--radius)] bg-surface-hover px-3 py-2 text-xs">
-              <span className="text-muted">{copy("thisTimeExpensesBudget")}</span>
+              <span className="text-muted-foreground">{copy("thisTimeExpensesBudget")}</span>
               <span className="font-medium tabular-nums">
                 <span className={cn(liveSpent > task.budgetYuan && "text-danger")}>¥{liveSpent.toFixed(2)}</span>
-                <span className="text-muted"> / ¥{task.budgetYuan.toFixed(2)}</span>
+                <span className="text-muted-foreground"> / ¥{task.budgetYuan.toFixed(2)}</span>
               </span>
             </div>
           </CardBody>

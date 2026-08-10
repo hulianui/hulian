@@ -44,7 +44,7 @@ export function IntroTab({ course, progress }: { course: Course; progress: numbe
       <section>
         <div className="mb-2 flex items-center justify-between text-sm">
           <span className="font-medium text-foreground">{copy("learningCompletion")}</span>
-          <span className="text-muted">{progress}%</span>
+          <span className="text-muted-foreground">{progress}%</span>
         </div>
         <Meter value={progress} />
       </section>
@@ -62,7 +62,7 @@ export function IntroTab({ course, progress }: { course: Course; progress: numbe
           <Avatar fallback={course.instructor.name.slice(0, 1)} size="lg" />
           <div>
             <div className="font-medium text-foreground">{course.instructor.name}</div>
-            <div className="text-sm text-muted">{course.instructor.title}</div>
+            <div className="text-sm text-muted-foreground">{course.instructor.title}</div>
           </div>
         </div>
       </section>

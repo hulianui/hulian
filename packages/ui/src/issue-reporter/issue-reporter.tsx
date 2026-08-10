@@ -339,7 +339,7 @@ function IssueReporterImpl({
               <CodeBlock code={draft.body} lang="markdown" />
             )
           ) : (
-            <p className="rounded-[var(--radius)] border border-dashed border-border p-4 text-sm text-muted">
+            <p className="rounded-[var(--radius)] border border-dashed border-border p-4 text-sm text-muted-foreground">
               {t.previewEmpty}
             </p>
           )}

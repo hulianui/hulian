@@ -35,7 +35,7 @@ export const messageActionsShowcase: ShowcaseSpec = {
       code: `<MessageActions content={text} onRegenerate={regen}>
   <button
     type="button"
-    className="inline-flex h-7 items-center rounded-[var(--radius)] px-2 text-xs text-muted hover:bg-surface-hover hover:text-foreground"
+    className="inline-flex h-7 items-center rounded-[var(--radius)] px-2 text-xs text-muted-foreground hover:bg-surface-hover hover:text-foreground"
   >
     收藏
   </button>
@@ -44,7 +44,7 @@ export const messageActionsShowcase: ShowcaseSpec = {
         <MessageActions content="支持追加自定义操作。" onRegenerate={() => {}}>
           <button
             type="button"
-            className="inline-flex h-7 items-center rounded-[var(--radius)] px-2 text-xs text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+            className="inline-flex h-7 items-center rounded-[var(--radius)] px-2 text-xs text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
           >
             收藏
           </button>

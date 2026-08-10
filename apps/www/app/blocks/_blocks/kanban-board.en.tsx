@@ -27,7 +27,7 @@ const COLUMN_ACCENT: Record<Column, string> = {
     "Pending": "bg-neutral/30",
     "In progress": "bg-brand/20",
     "Completed": "bg-success/20",
-    "Archived": "bg-muted/20",
+    "Archived": "bg-muted-foreground/20",
 };
 const SEED_TASKS: Task[] = [
     { id: "T-01", title: "Fix production OOM crash", priority: "urgent", assignee: "Wang Lei", column: "In progress", dueAt: "06-06" },

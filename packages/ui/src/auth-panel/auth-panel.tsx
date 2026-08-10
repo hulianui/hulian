@@ -100,7 +100,7 @@ export function AuthPanel({
               </Heading>
             )}
             {description != null && (
-              <p className="max-w-sm text-sm leading-relaxed text-muted">{description}</p>
+              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">{description}</p>
             )}
           </div>
         )}
@@ -119,7 +119,7 @@ export function AuthPanel({
               ))}
             </ul>
           ) : null}
-          {footer != null && <div className="text-xs text-muted">{footer}</div>}
+          {footer != null && <div className="text-xs text-muted-foreground">{footer}</div>}
         </div>
       )}
     </div>

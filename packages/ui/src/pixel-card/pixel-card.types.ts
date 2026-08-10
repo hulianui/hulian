@@ -25,7 +25,7 @@ export interface PixelCardProps {
   speed?: number;
   /**
    * 像素配色数组，每个像素随机取其一。
-   * 默认取瑚琏 token（var(--color-foreground) / var(--color-muted) 等，自动明暗适配）。
+   * 默认取瑚琏 token（var(--color-foreground) / var(--color-muted-foreground) 等，自动明暗适配）。
    * 可传任意 CSS 颜色字符串（hex / oklch / var(--color-…) 均可）。
    */
   colors?: string[];

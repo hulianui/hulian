@@ -28,7 +28,7 @@ function NavDemo() {
   const [active, setActive] = useState("home");
   return (
     <div className="flex w-full flex-col items-center gap-3">
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         当前：<span className="text-foreground">{NAV.find((i) => i.key === active)?.label}</span>
       </p>
       <Dock aria-label="主导航" activeKey={active} onSelect={setActive}>

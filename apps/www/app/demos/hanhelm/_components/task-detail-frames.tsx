@@ -60,7 +60,7 @@ export function TaskDetailFrames({ frames }: { frames: RunFrame[] }) {
             key={key}
             className={cn(
               "flex items-start gap-2 rounded-[var(--radius)] px-3 py-2 text-sm",
-              warn ? "bg-warning/10 text-warning" : "bg-surface-hover text-muted",
+              warn ? "bg-warning/10 text-warning" : "bg-surface-hover text-muted-foreground",
             )}
           >
             <span className="mt-0.5 shrink-0 tabular-nums text-[11px] opacity-70">

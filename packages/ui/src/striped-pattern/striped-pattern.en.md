@@ -36,7 +36,7 @@ import { StripedPattern } from "@hulianui/ui"
   <StripedPattern />
 </div>
 
-<StripedPattern angle={90} size={20} className="text-muted" />
+<StripedPattern angle={90} size={20} className="text-muted-foreground" />
 ```
 
 ## Usage Guidelines

@@ -43,7 +43,7 @@ function BalancePill() {
   return (
     <span className="hidden items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-sm sm:inline-flex">
       <Wallet className="size-4 text-primary" />
-      <span className="text-muted">{copy("balance")}</span>
+      <span className="text-muted-foreground">{copy("balance")}</span>
       <span className="font-semibold tabular-nums text-foreground">{formatUsd(account.balanceUsd)}</span>
     </span>
   );
@@ -61,7 +61,7 @@ function UserMenu() {
       <MenuContent align="end" className="w-48">
         <div className="px-2 py-1.5">
           <div className="text-sm font-medium text-foreground">{copy("hanhubTeam")}</div>
-          <div className="text-xs text-muted">ops@hanhub.cn</div>
+          <div className="text-xs text-muted-foreground">ops@hanhub.cn</div>
         </div>
         <MenuSeparator />
         <MenuItem onClick={() => router.push(hrefFromKey("settings"))}>

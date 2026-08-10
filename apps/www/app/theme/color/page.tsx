@@ -4,6 +4,7 @@ import {
   SEMANTIC_GROUPS,
   CHART_COLORS,
   GRAY_SCALE,
+  SEMANTIC_RAMPS,
   type SemanticColor,
 } from "../../../lib/theme-manifest";
 import { DocHeader, Section, Code } from "../_components/doc-kit";
@@ -36,7 +37,7 @@ function SwatchRow({ c }: { c: SemanticColor }) {
           <span className="text-sm font-medium">{c.label}</span>
           <Code>--{c.token}</Code>
         </div>
-        <p className="mt-0.5 text-xs text-muted">
+        <p className="mt-0.5 text-xs text-muted-foreground">
           {content.light} <span className="font-mono">{c.light}</span> · {content.dark}{" "}
           <span className="font-mono">{c.dark}</span>
         </p>
@@ -85,7 +86,44 @@ export default function ColorPage() {
                 style={{ background: `var(--${t})` }}
                 aria-hidden
               />
-              <span className="mt-1.5 block font-mono text-xs text-muted">{i + 1}</span>
+              <span className="mt-1.5 block font-mono text-xs text-muted-foreground">{i + 1}</span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title={content.ramps} desc={content.rampsDescription}>
+        <div className="space-y-3">
+          {SEMANTIC_RAMPS.map((ramp) => (
+            <div
+              key={ramp.name}
+              className="overflow-hidden rounded-[var(--radius)] border border-border"
+            >
+              <div className="flex bg-surface px-3 py-1.5">
+                <span className="font-mono text-xs text-muted-foreground">--{ramp.name}-*</span>
+              </div>
+              <div className="flex">
+                {ramp.steps.map((step) => (
+                  <div
+                    key={step}
+                    className="flex-1"
+                    style={{ background: `var(--${ramp.name}-${step})` }}
+                    aria-hidden
+                  >
+                    <div className="h-12" />
+                  </div>
+                ))}
+              </div>
+              <div className="flex bg-surface">
+                {ramp.steps.map((step) => (
+                  <span
+                    key={step}
+                    className="flex-1 py-1 text-center font-mono text-[0.6rem] text-muted-foreground"
+                  >
+                    {step}
+                  </span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
@@ -107,7 +145,7 @@ export default function ColorPage() {
             {GRAY_SCALE.map((g) => (
               <span
                 key={g}
-                className="flex-1 py-1 text-center font-mono text-[0.6rem] text-muted"
+                className="flex-1 py-1 text-center font-mono text-[0.6rem] text-muted-foreground"
               >
                 {g.replace("gray-", "")}
               </span>

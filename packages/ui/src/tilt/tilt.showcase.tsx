@@ -31,7 +31,7 @@ function ManualDemo() {
       <Tilt manualAngleX={x} manualAngleY={y} glare glareBorderRadius="calc(var(--radius) + 0.25rem)">
         <DarkCard>滑杆驱动</DarkCard>
       </Tilt>
-      <div className="flex w-56 flex-col gap-3 text-xs text-muted">
+      <div className="flex w-56 flex-col gap-3 text-xs text-muted-foreground">
         <label className="flex flex-col gap-1">
           rotateX {x}°
           <input type="range" min={-30} max={30} value={x} onChange={(e) => setX(Number(e.target.value))} />
@@ -60,7 +60,7 @@ function ReadoutDemo() {
       >
         <DarkCard>在我上面移动</DarkCard>
       </Tilt>
-      <p className="font-mono text-xs text-muted">
+      <p className="font-mono text-xs text-muted-foreground">
         rotateX {state.rx}° · rotateY {state.ry}° · glare {state.op.toFixed(2)}
       </p>
     </div>
@@ -78,7 +78,7 @@ export const tiltShowcase: ShowcaseSpec = {
       render: () => (
         <Tilt>
           <Card>
-            <span className="text-sm text-muted">悬停试试</span>
+            <span className="text-sm text-muted-foreground">悬停试试</span>
           </Card>
         </Tilt>
       ),
@@ -113,17 +113,17 @@ export const tiltShowcase: ShowcaseSpec = {
         <div className="flex flex-wrap gap-6">
           <Tilt axis="x" maxAngleX={18}>
             <Card>
-              <span className="text-sm text-muted">只绕 X</span>
+              <span className="text-sm text-muted-foreground">只绕 X</span>
             </Card>
           </Tilt>
           <Tilt reverse>
             <Card>
-              <span className="text-sm text-muted">反向</span>
+              <span className="text-sm text-muted-foreground">反向</span>
             </Card>
           </Tilt>
           <Tilt initialAngleY={-12} scale={1.06}>
             <Card>
-              <span className="text-sm text-muted">静息 -12°</span>
+              <span className="text-sm text-muted-foreground">静息 -12°</span>
             </Card>
           </Tilt>
         </div>
@@ -162,7 +162,7 @@ export const tiltShowcase: ShowcaseSpec = {
       render: () => (
         <Tilt>
           <Card>
-            <span className="text-sm text-muted">悬停试试</span>
+            <span className="text-sm text-muted-foreground">悬停试试</span>
           </Card>
         </Tilt>
       ),

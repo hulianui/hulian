@@ -49,7 +49,7 @@ function PipelineStrip({ template }: { template: WorkflowTemplate }) {
               <Icon className="size-3" />
               {m.label}
             </span>
-            {i < chips.length - 1 && <ChevronRight className="size-3.5 text-muted" />}
+            {i < chips.length - 1 && <ChevronRight className="size-3.5 text-muted-foreground" />}
           </span>
         );
       })}

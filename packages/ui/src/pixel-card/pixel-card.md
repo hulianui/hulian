@@ -45,7 +45,7 @@ import { PixelCard } from "@hulianui/ui"
 <PixelCard variant="blue" className="h-48 w-64">
   <div className="flex flex-col items-center gap-1 px-6 text-center">
     <p className="text-base font-semibold text-foreground">Pixel Card</p>
-    <p className="text-xs text-muted">悬停 / 聚焦触发像素动画</p>
+    <p className="text-xs text-muted-foreground">悬停 / 聚焦触发像素动画</p>
   </div>
 </PixelCard>
 

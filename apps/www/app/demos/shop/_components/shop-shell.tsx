@@ -42,7 +42,7 @@ function Logo() {
       </span>
       <span className="text-lg font-semibold tracking-tight text-foreground">
         {brand.name}
-        <span className="text-muted"> {brand.nameEn}</span>
+        <span className="text-muted-foreground"> {brand.nameEn}</span>
       </span>
     </Link>
   );
@@ -84,7 +84,7 @@ function CategoryMenu() {
                   className="block rounded-[var(--radius)] px-3 py-2"
                 >
                   <div className="font-medium text-foreground">{c.name}</div>
-                  <div className="mt-0.5 text-xs text-muted">{c.children.map((x) => x.name).join(" · ")}</div>
+                  <div className="mt-0.5 text-xs text-muted-foreground">{c.children.map((x) => x.name).join(" · ")}</div>
                 </NavigationMenuLink>
               ))}
             </div>
@@ -106,7 +106,7 @@ function HeaderActions() {
               <Link
                 href={`${SHOP_BASE}/favorites`}
                 aria-label={copy("myFavorites")}
-                className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 <Badge count={favorites.length} tone="danger" size="sm">
                   <Heart className="size-5" aria-hidden />
@@ -124,7 +124,7 @@ function HeaderActions() {
               <Link
                 href={`${SHOP_BASE}/cart`}
                 aria-label={copy("cart")}
-                className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 <Badge count={cartCount} tone="danger" size="sm">
                   <ShoppingCart className="size-5" aria-hidden />
@@ -142,7 +142,7 @@ function HeaderActions() {
               <Link
                 href={`${SHOP_BASE}/account`}
                 aria-label={copy("account")}
-                className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 <User className="size-5" aria-hidden />
               </Link>
@@ -227,12 +227,12 @@ function ShopNavbar() {
             <button
               type="button"
               onClick={() => setCmdOpen(true)}
-              className="flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-2.5 text-sm text-muted transition-colors hover:text-foreground"
+              className="flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               aria-label={copy("searchProductsK")}
             >
               <Search className="size-3.5" aria-hidden />
               <span className="text-xs">{copy("searchProducts")}</span>
-              <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted">⌘K</span>
+              <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted-foreground">⌘K</span>
             </button>
           </li>
           <li className="flex items-center">
@@ -264,7 +264,7 @@ function ShopNavbar() {
                 setOpen(false);
                 setCmdOpen(true);
               }}
-              className="flex items-center gap-2 rounded-[var(--radius)] px-2 py-2 text-sm text-muted hover:bg-surface-hover hover:text-foreground"
+              className="flex items-center gap-2 rounded-[var(--radius)] px-2 py-2 text-sm text-muted-foreground hover:bg-surface-hover hover:text-foreground"
             >
               <Search className="size-4" aria-hidden />  {copy("searchProducts")}
             </button>
@@ -273,7 +273,7 @@ function ShopNavbar() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 {link.label}
               </Link>
@@ -282,7 +282,7 @@ function ShopNavbar() {
             <Link
               href={`${SHOP_BASE}/account`}
               onClick={() => setOpen(false)}
-              className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted hover:bg-surface-hover hover:text-foreground"
+              className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted-foreground hover:bg-surface-hover hover:text-foreground"
             >
 
               {copy("account")}
@@ -312,7 +312,7 @@ function ShopFooter() {
           </Stack>
         </Stack>
         <Divider className="my-6" />
-        <Stack direction="row" justify="between" wrap gap={3} className="text-sm text-muted">
+        <Stack direction="row" justify="between" wrap gap={3} className="text-sm text-muted-foreground">
           <Text size="sm" tone="muted">
             © 2026 {brand.name} {brand.nameEn}  {copy("demoSite")}
           </Text>
@@ -334,7 +334,7 @@ function FooterCol({ title, links }: { title: string; links: string[] }) {
       </Text>
       <Stack direction="column" gap={2}>
         {links.map((l) => (
-          <Link key={l} href={SHOP_BASE} className="text-sm text-muted transition-colors hover:text-foreground">
+          <Link key={l} href={SHOP_BASE} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             {l}
           </Link>
         ))}

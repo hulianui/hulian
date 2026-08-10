@@ -44,7 +44,7 @@ import { PixelCard } from "@hulianui/ui"
 <PixelCard variant="blue" className="h-48 w-64">
   <div className="flex flex-col items-center gap-1 px-6 text-center">
     <p className="text-base font-semibold text-foreground">Pixel Card</p>
-    <p className="text-xs text-muted">Hover or focus to animate</p>
+    <p className="text-xs text-muted-foreground">Hover or focus to animate</p>
   </div>
 </PixelCard>
 

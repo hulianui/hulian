@@ -7,7 +7,7 @@ function KbdImpl({ className, children, ...props }: KbdProps) {
   return (
     <kbd
       className={cn(
-        "inline-flex h-5 min-w-5 items-center justify-center rounded-[min(var(--radius),0.375rem)] border border-border bg-surface-hover px-1.5 font-mono text-xs font-medium text-muted shadow-sm",
+        "inline-flex h-5 min-w-5 items-center justify-center rounded-[min(var(--radius),0.375rem)] border border-border bg-surface-hover px-1.5 font-mono text-xs font-medium text-muted-foreground shadow-sm",
         className,
       )}
       {...props}

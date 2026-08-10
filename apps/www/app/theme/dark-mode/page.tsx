@@ -13,7 +13,7 @@ function MiniUI() {
     <div className="rounded-[var(--radius)] border border-border bg-bg p-5">
       <div className="rounded-[var(--radius)] border border-border bg-surface p-4">
         <p className="text-sm font-semibold text-foreground">{content.cardTitle}</p>
-        <p className="mt-1 text-xs text-muted">{content.cardDescription}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{content.cardDescription}</p>
         <div className="mt-3 flex gap-2">
           <span className="rounded-[var(--radius)] bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground">
             {content.primaryButton}
@@ -35,18 +35,18 @@ export default function DarkModePage() {
       <Section title={content.switchTitle} desc={content.switchDescription}>
         <div className="flex items-center gap-4 rounded-[var(--radius)] border border-border bg-surface px-5 py-4">
           <AnimatedThemeToggler aria-label={String(content.toggleLabel)} />
-          <span className="text-sm text-muted">{content.switchAction}</span>
+          <span className="text-sm text-muted-foreground">{content.switchAction}</span>
         </div>
       </Section>
 
       <Section title={content.scopeTitle} desc={content.scopeDescription}>
         <div className="grid gap-4 sm:grid-cols-2">
           <div data-theme="light">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">Light</p>
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Light</p>
             <MiniUI />
           </div>
           <div data-theme="dark">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">Dark</p>
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Dark</p>
             <MiniUI />
           </div>
         </div>
@@ -60,11 +60,11 @@ export default function DarkModePage() {
 
       <Section title={content.codeTitle} desc={content.codeDescription}>
         <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          <span className="text-muted">{`// ${content.readComment}`}</span>
+          <span className="text-muted-foreground">{`// ${content.readComment}`}</span>
           {"\n"}document.documentElement.dataset.theme;{" "}
-          <span className="text-muted">{'// "light" | "dark"'}</span>
+          <span className="text-muted-foreground">{'// "light" | "dark"'}</span>
           {"\n\n"}
-          <span className="text-muted">{`// ${content.writeComment}`}</span>
+          <span className="text-muted-foreground">{`// ${content.writeComment}`}</span>
           {"\n"}document.documentElement.dataset.theme = "dark";
         </pre>
       </Section>

@@ -33,7 +33,7 @@ import { DotPattern } from "@hulianui/ui"
 | x | `number` | `0` | pattern 整体 x 偏移 |
 | y | `number` | `0` | pattern 整体 y 偏移 |
 
-> 继承 `ComponentPropsWithoutRef<"svg">`（`className` 等）。颜色取 `currentColor`，用 `text-*` 工具类控制（如 `text-muted`）。
+> 继承 `ComponentPropsWithoutRef<"svg">`（`className` 等）。颜色取 `currentColor`，用 `text-*` 工具类控制（如 `text-muted-foreground`）。
 
 ## 示例
 ```tsx
@@ -41,7 +41,7 @@ import { DotPattern } from "@hulianui/ui"
   <DotPattern />
 </div>
 
-<DotPattern width={28} height={28} cr={1.4} className="text-muted" />
+<DotPattern width={28} height={28} cr={1.4} className="text-muted-foreground" />
 ```
 
 ## 禁忌 / 坑

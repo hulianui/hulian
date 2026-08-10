@@ -25,7 +25,7 @@ export default function RadiusPage() {
           />
           <div>
             <Code>--radius</Code>
-            <p className="mt-1 font-mono text-sm text-muted">
+            <p className="mt-1 font-mono text-sm text-muted-foreground">
               {RADIUS_TOKEN.rem} · {RADIUS_TOKEN.px}px
             </p>
           </div>
@@ -44,7 +44,7 @@ export default function RadiusPage() {
               <span className="mt-2 block truncate font-mono text-xs text-foreground">
                 {r.name.replace("rounded-", "")}
               </span>
-              <span className="block font-mono text-[0.65rem] text-muted">{r.rem}</span>
+              <span className="block font-mono text-[0.65rem] text-muted-foreground">{r.rem}</span>
             </div>
           ))}
         </div>

@@ -57,7 +57,7 @@ Use `render` on HoverCardTrigger to supply an inline link or button.
       <div className="flex size-10 items-center justify-center rounded-full bg-primary/12 text-primary">H</div>
       <div className="space-y-1">
         <p className="text-sm font-semibold text-foreground">Hulian design system</p>
-        <p className="text-xs text-muted">Opens on hover · closes after a delay</p>
+        <p className="text-xs text-muted-foreground">Opens on hover · closes after a delay</p>
       </div>
     </div>
   </HoverCardContent>

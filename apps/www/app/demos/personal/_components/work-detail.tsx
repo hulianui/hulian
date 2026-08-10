@@ -371,7 +371,7 @@ function WorkDetailContent({ work }: { work: Work }) {
         <section aria-labelledby="summary-heading">
           <h2
             id="summary-heading"
-            className="mb-4 font-mono text-xs uppercase tracking-widest text-muted"
+            className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground"
           >
 
             {copy("productStory")}
@@ -389,7 +389,7 @@ function WorkDetailContent({ work }: { work: Work }) {
         <section aria-labelledby="metrics-heading">
           <h2
             id="metrics-heading"
-            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
+            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted-foreground"
           >
 
             {copy("keyMetrics")}
@@ -398,7 +398,7 @@ function WorkDetailContent({ work }: { work: Work }) {
             {work.metrics.map((m) => (
               <div key={m.label} className="space-y-1">
                 <MetricValue value={m.value} />
-                <p className="text-sm text-muted">{m.label}</p>
+                <p className="text-sm text-muted-foreground">{m.label}</p>
               </div>
             ))}
           </div>
@@ -408,7 +408,7 @@ function WorkDetailContent({ work }: { work: Work }) {
         <section aria-labelledby="shots-heading">
           <h2
             id="shots-heading"
-            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
+            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted-foreground"
           >
 
             {copy("screenshot")}
@@ -441,7 +441,7 @@ function WorkDetailContent({ work }: { work: Work }) {
         <section aria-labelledby="video-heading">
           <h2
             id="video-heading"
-            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
+            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted-foreground"
           >
 
             {copy("demoVideo")}
@@ -458,7 +458,7 @@ function WorkDetailContent({ work }: { work: Work }) {
         <section aria-labelledby="highlights-heading">
           <h2
             id="highlights-heading"
-            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted"
+            className="mb-6 font-mono text-xs uppercase tracking-widest text-muted-foreground"
           >
 
             {copy("coreFeatures")}
@@ -485,7 +485,7 @@ function WorkDetailContent({ work }: { work: Work }) {
                   </span>
                   <h3 className="font-semibold text-foreground">{h.title}</h3>
                 </div>
-                <p className="text-sm leading-relaxed text-muted">{h.desc}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{h.desc}</p>
               </div>
             ))}
           </div>
@@ -496,7 +496,7 @@ function WorkDetailContent({ work }: { work: Work }) {
           <section aria-labelledby="install-heading">
             <h2
               id="install-heading"
-              className="mb-4 font-mono text-xs uppercase tracking-widest text-muted"
+              className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground"
             >
 
               {copy("quickInstall")}
@@ -510,7 +510,7 @@ function WorkDetailContent({ work }: { work: Work }) {
           <section aria-labelledby="code-heading">
             <h2
               id="code-heading"
-              className="mb-4 font-mono text-xs uppercase tracking-widest text-muted"
+              className="mb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground"
             >
               {work.codeSample.title}
             </h2>
@@ -538,7 +538,7 @@ function WorkDetailContent({ work }: { work: Work }) {
                   "transition-all duration-200 hover:border-border/80 hover:bg-surface hover:-translate-y-0.5",
                 )}
               >
-                <span className="flex items-center gap-1 text-xs text-muted">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <ArrowLeft className="size-3.5" aria-hidden />
 
                   {copy("previous")}
@@ -562,7 +562,7 @@ function WorkDetailContent({ work }: { work: Work }) {
                   "transition-all duration-200 hover:border-border/80 hover:bg-surface hover:-translate-y-0.5",
                 )}
               >
-                <span className="flex items-center gap-1 text-xs text-muted">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
 
                   {copy("next")}
                   <ArrowRight className="size-3.5" aria-hidden />

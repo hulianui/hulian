@@ -48,7 +48,7 @@ export function SettingsPanelBlock() {
               {NAV_ITEMS.map((n) => (<button key={n.value} type="button" onClick={() => setActiveTab(n.value)} className={[
                 "flex items-center gap-2 rounded-[var(--radius)] px-3 py-2 text-sm font-medium transition-colors",
                 activeTab === n.value
-                    ? "bg-surface-hover text-foreground" : "text-muted hover:bg-surface-hover/60 hover:text-foreground",
+                    ? "bg-surface-hover text-foreground" : "text-muted-foreground hover:bg-surface-hover/60 hover:text-foreground",
             ].join(" ")}>
                   <n.icon className="size-4 shrink-0"/>
                   {n.label}

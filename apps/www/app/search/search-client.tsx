@@ -149,7 +149,7 @@ export function SearchClient() {
             <section key={g.type}>
               <Heading level={2} size="lg" className="mb-3">
                 {TYPE_LABEL[g.type]}
-                <span className="ml-2 text-sm font-normal text-muted tabular-nums">
+                <span className="ml-2 text-sm font-normal text-muted-foreground tabular-nums">
                   {g.hits.length}
                 </span>
               </Heading>
@@ -163,7 +163,7 @@ export function SearchClient() {
                       <div className="flex items-start justify-between gap-2">
                         <span className="font-medium">{h.title}</span>
                         {h.en && (
-                          <span className="shrink-0 font-mono text-xs text-muted">{h.en}</span>
+                          <span className="shrink-0 font-mono text-xs text-muted-foreground">{h.en}</span>
                         )}
                       </div>
                       <Text tone="muted" size="sm" className="mt-1 line-clamp-2">
@@ -214,7 +214,7 @@ function FilterChip({
       className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
         active
           ? "border-primary bg-primary/10 text-primary"
-          : "border-border text-muted hover:bg-surface-hover hover:text-foreground"
+          : "border-border text-muted-foreground hover:bg-surface-hover hover:text-foreground"
       } disabled:cursor-not-allowed disabled:opacity-40`}
     >
       {children}
@@ -232,7 +232,7 @@ function LinkChip({
   children: React.ReactNode;
 }) {
   const cls =
-    "inline-flex items-center rounded-full border border-border px-3 py-1 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
+    "inline-flex items-center rounded-full border border-border px-3 py-1 text-sm text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
   return external ? (
     <a href={href} target="_blank" rel="noreferrer" className={cls}>
       {children}

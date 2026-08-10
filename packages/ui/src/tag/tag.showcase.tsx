@@ -16,7 +16,7 @@ function Closable() {
           {t}
         </Tag>
       ))}
-      {items.length === 0 && <span className="text-sm text-muted">全部移除</span>}
+      {items.length === 0 && <span className="text-sm text-muted-foreground">全部移除</span>}
     </div>
   );
 }

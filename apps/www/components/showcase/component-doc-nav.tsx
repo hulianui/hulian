@@ -56,7 +56,7 @@ export function ComponentDocNav({ slug }: { slug: string }) {
       <a
         href={withDocsBasePath(`/components#${current.category}`)}
         aria-label={`${copy.category} ${categoryLabel}`}
-        className="flex min-h-11 items-center justify-center gap-2 bg-surface px-4 py-3 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+        className="flex min-h-11 items-center justify-center gap-2 bg-surface px-4 py-3 text-sm text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
       >
         <LayoutGrid className="size-4" aria-hidden />
         <span>{categoryLabel}</span>
@@ -95,12 +95,12 @@ function DocLink({
         previous ? "justify-start" : "justify-end text-right"
       }`}
     >
-      {previous && <ArrowLeft className="size-4 shrink-0 text-muted" aria-hidden />}
+      {previous && <ArrowLeft className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
       <span className="min-w-0">
-        <span className="block text-xs text-muted">{label}</span>
+        <span className="block text-xs text-muted-foreground">{label}</span>
         <span className="block truncate font-medium text-foreground">{name}</span>
       </span>
-      {!previous && <ArrowRight className="size-4 shrink-0 text-muted" aria-hidden />}
+      {!previous && <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
     </a>
   );
 }

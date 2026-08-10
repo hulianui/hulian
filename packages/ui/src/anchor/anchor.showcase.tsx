@@ -138,7 +138,7 @@ function AnchorDemo({ offsetTop = 8 }: { offsetTop?: number }) {
               <h4 className="mb-1.5 font-medium text-foreground">{s.title}</h4>
             )}
             {s.paras.map((p, i) => (
-              <p key={i} className="mb-2 text-sm leading-relaxed text-muted">
+              <p key={i} className="mb-2 text-sm leading-relaxed text-muted-foreground">
                 {p}
               </p>
             ))}

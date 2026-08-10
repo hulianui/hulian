@@ -22,7 +22,7 @@ export default function StartPage() {
         <header className="flex items-start justify-between gap-4 pb-6">
           <div className="min-w-0">
             <h1 className="text-[1.7rem] font-semibold tracking-tight">{content.title}</h1>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{content.description}</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{content.description}</p>
           </div>
           <CopyMarkdownButton text={guide} label={String(content.copy)} className="shrink-0" />
         </header>

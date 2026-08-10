@@ -77,7 +77,7 @@ export function NotificationBell() {
       />
       <PopoverContent side="bottom" align="end" className="w-80 p-0">
         <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-          <span className="text-sm font-semibold">{copy("notification")}{unread > 0 && <span className="ml-1 text-xs font-normal text-muted">{unread}{copy("unreadItems")}</span>}
+          <span className="text-sm font-semibold">{copy("notification")}{unread > 0 && <span className="ml-1 text-xs font-normal text-muted-foreground">{unread}{copy("unreadItems")}</span>}
           </span>
           <Button
             variant="ghost"
@@ -107,8 +107,8 @@ export function NotificationBell() {
                       <span className="truncate text-sm font-medium">{n.title}</span>
                       {!n.read && <span className="size-1.5 shrink-0 rounded-full bg-danger" aria-label={copy("unread")} />}
                     </span>
-                    <span className="line-clamp-2 text-xs text-muted">{n.desc}</span>
-                    <span className="text-[11px] text-muted">{n.time}</span>
+                    <span className="line-clamp-2 text-xs text-muted-foreground">{n.desc}</span>
+                    <span className="text-[11px] text-muted-foreground">{n.time}</span>
                   </span>
                 </button>
               </li>
@@ -117,7 +117,7 @@ export function NotificationBell() {
         </ul>
 
         <div className="border-t border-border px-4 py-2 text-center">
-          <Button variant="ghost" size="sm" className="h-7 w-full text-xs text-muted">{copy("viewAllNotifications")}</Button>
+          <Button variant="ghost" size="sm" className="h-7 w-full text-xs text-muted-foreground">{copy("viewAllNotifications")}</Button>
         </div>
       </PopoverContent>
     </Popover>

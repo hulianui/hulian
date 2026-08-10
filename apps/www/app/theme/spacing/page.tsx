@@ -23,8 +23,8 @@ export default function SpacingPage() {
               <span className="w-8 shrink-0 font-mono text-sm tabular-nums text-foreground">
                 {s.step}
               </span>
-              <span className="w-16 shrink-0 font-mono text-xs text-muted">{s.rem}</span>
-              <span className="hidden w-12 shrink-0 font-mono text-xs text-muted sm:block">
+              <span className="w-16 shrink-0 font-mono text-xs text-muted-foreground">{s.rem}</span>
+              <span className="hidden w-12 shrink-0 font-mono text-xs text-muted-foreground sm:block">
                 {s.px}px
               </span>
               <span className="flex min-w-0 flex-1 items-center">
@@ -41,7 +41,7 @@ export default function SpacingPage() {
 
       <Section title={content.usage}>
         <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          <span className="text-muted">{`// ${content.comment}`}</span>
+          <span className="text-muted-foreground">{`// ${content.comment}`}</span>
           {"\n"}{'<div className="p-4 space-y-2">'}
           {"\n"}{"  …"}
           {"\n"}{"</div>"}

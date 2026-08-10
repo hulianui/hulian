@@ -59,7 +59,7 @@ function LegendImpl({
         );
         // hidden 只压视觉不删条目——图例得留着才能点回来。
         const rowClass = cn(
-          "inline-flex min-w-0 items-center gap-1.5 text-muted",
+          "inline-flex min-w-0 items-center gap-1.5 text-muted-foreground",
           item.hidden && "opacity-45",
           layout === "column" && "w-full",
         );

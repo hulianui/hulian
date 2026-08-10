@@ -235,7 +235,7 @@ export function SchedulerShell() {
         </Card>
 
         <Card className="flex flex-col gap-2 p-3">
-          <span className="text-xs font-medium text-muted">{copy("jumpToADayCrescentView")}</span>
+          <span className="text-xs font-medium text-muted-foreground">{copy("jumpToADayCrescentView")}</span>
           <DatePicker
             value={date}
             onValueChange={(iso) => {
@@ -249,7 +249,7 @@ export function SchedulerShell() {
         </Card>
 
         <Card className="flex flex-col gap-2 p-3">
-          <span className="text-xs font-medium text-muted">{copy("doctor")}</span>
+          <span className="text-xs font-medium text-muted-foreground">{copy("doctor")}</span>
           {DOCTORS.map((d) => (
             <label key={d.id} className="flex cursor-pointer items-center gap-2 text-sm">
               <Checkbox checked={visibleDocs.has(d.id)} onCheckedChange={() => toggleDoc(d.id)} />
@@ -263,7 +263,7 @@ export function SchedulerShell() {
         </Card>
 
         <Card className="flex flex-col gap-2 p-3">
-          <span className="text-xs font-medium text-muted">{copy("stopLeaveRegistration")}</span>
+          <span className="text-xs font-medium text-muted-foreground">{copy("stopLeaveRegistration")}</span>
           <Select
             items={DOCTORS.map((d) => ({ value: d.id, label: `${d.title} · ${d.dept}` }))}
             value={leaveDoctor}
@@ -314,7 +314,7 @@ export function SchedulerShell() {
             <h1 className="text-lg font-semibold tracking-tight">
               {copy("hanyuoClinicScheduleTable")}
             </h1>
-            <p className="text-xs text-muted">
+            <p className="text-xs text-muted-foreground">
               {copy("draggingBlankToBuildAnAppointmentDraggingEventReschedulingDragging")}
             </p>
           </div>
@@ -446,7 +446,7 @@ function DetailBody({
       <dl className="flex flex-col gap-2 text-sm">
         {rows.map(([k, v]) => (
           <div key={k} className="flex justify-between gap-3">
-            <dt className="shrink-0 text-muted">{k}</dt>
+            <dt className="shrink-0 text-muted-foreground">{k}</dt>
             <dd className="text-right">{v}</dd>
           </div>
         ))}

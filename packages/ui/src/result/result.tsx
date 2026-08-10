@@ -71,7 +71,7 @@ const STATUS: Record<ResultStatus, { color: string; icon: ReactNode }> = {
   info: { color: "text-primary", icon: InfoIcon },
   warning: { color: "text-warning", icon: WarningIcon },
   "403": { color: "text-warning", icon: LockIcon },
-  "404": { color: "text-muted", icon: SearchIcon },
+  "404": { color: "text-muted-foreground", icon: SearchIcon },
   "500": { color: "text-danger", icon: ServerIcon },
 };
 
@@ -93,9 +93,9 @@ export function Result({
     >
       {icon !== null && <span className={cn("[&_svg]:size-16", color)}>{icon ?? defaultIcon}</span>}
       {title != null && <div className="text-lg font-semibold text-foreground">{title}</div>}
-      {subTitle != null && <div className="max-w-md text-sm text-muted">{subTitle}</div>}
+      {subTitle != null && <div className="max-w-md text-sm text-muted-foreground">{subTitle}</div>}
       {content != null && (
-        <div className="mt-2 w-full max-w-lg rounded-[var(--radius)] border border-border bg-surface-hover/50 px-4 py-3 text-left text-sm text-muted">
+        <div className="mt-2 w-full max-w-lg rounded-[var(--radius)] border border-border bg-surface-hover/50 px-4 py-3 text-left text-sm text-muted-foreground">
           {content}
         </div>
       )}

@@ -55,11 +55,11 @@ export function ComponentDoc({
             <div className="min-w-0">
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h1 className="text-[1.7rem] font-semibold tracking-tight">{meta.name}</h1>
-                <span className="rounded-md bg-subtle px-2 py-0.5 font-mono text-xs text-muted">
+                <span className="rounded-md bg-subtle px-2 py-0.5 font-mono text-xs text-muted-foreground">
                   {slug}
                 </span>
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{localizedMeta.description}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{localizedMeta.description}</p>
             </div>
             {/* 复制本组件完整用法 MD，喂给 AI 编程助手 */}
             {localizedCopyMd && <CopyMarkdownButton text={localizedCopyMd} className="shrink-0" />}
@@ -71,7 +71,7 @@ export function ComponentDoc({
             id="sec-usage"
             className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7"
           >
-            <h2 className="mb-5 text-sm font-medium text-muted">{english ? "Usage" : "用法"}</h2>
+            <h2 className="mb-5 text-sm font-medium text-muted-foreground">{english ? "Usage" : "用法"}</h2>
             <ExamplesSection examples={examples} />
           </section>
         ) : (
@@ -96,7 +96,7 @@ export function ComponentDoc({
             id="sec-states"
             className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm"
           >
-            <h2 className="mb-4 text-sm font-medium text-muted">{english ? "States" : "全状态"}</h2>
+            <h2 className="mb-4 text-sm font-medium text-muted-foreground">{english ? "States" : "全状态"}</h2>
             <StatesGallery states={spec.states} />
           </section>
         )}
@@ -106,7 +106,7 @@ export function ComponentDoc({
             id="sec-playground"
             className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm"
           >
-            <h2 className="mb-4 text-sm font-medium text-muted">Playground</h2>
+            <h2 className="mb-4 text-sm font-medium text-muted-foreground">Playground</h2>
             <Playground spec={spec} />
           </section>
         )}
@@ -117,7 +117,7 @@ export function ComponentDoc({
       {/* 本页目录：真·瑚琏 Anchor（dogfood）。锚到 <main> 滚动容器，随滚动高亮、点击平滑跳转。 */}
       <aside className="hidden w-44 shrink-0 lg:block">
         <div className="sticky top-2">
-          <p className="mb-2 pl-3 text-xs font-medium uppercase tracking-wide text-muted">
+          <p className="mb-2 pl-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {english ? "On this page" : "本页"}
           </p>
           <Anchor

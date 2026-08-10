@@ -19,7 +19,7 @@ export function ScrollArea({ className, orientation = "vertical", children }: Sc
           keepMounted
           className="flex w-2 touch-none select-none p-0.5"
         >
-          <BaseScrollArea.Thumb className="flex-1 rounded-full bg-border transition-colors hover:bg-muted" />
+          <BaseScrollArea.Thumb className="flex-1 rounded-full bg-border transition-colors hover:bg-muted-foreground" />
         </BaseScrollArea.Scrollbar>
       )}
       {showH && (
@@ -28,7 +28,7 @@ export function ScrollArea({ className, orientation = "vertical", children }: Sc
           keepMounted
           className="flex h-2 flex-col touch-none select-none p-0.5"
         >
-          <BaseScrollArea.Thumb className="flex-1 rounded-full bg-border transition-colors hover:bg-muted" />
+          <BaseScrollArea.Thumb className="flex-1 rounded-full bg-border transition-colors hover:bg-muted-foreground" />
         </BaseScrollArea.Scrollbar>
       )}
       {orientation === "both" && <BaseScrollArea.Corner />}

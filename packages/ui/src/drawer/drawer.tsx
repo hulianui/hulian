@@ -92,7 +92,7 @@ export function DrawerContent({
         {showClose && (
           <BaseDialog.Close
             aria-label={closeLabel ?? loc.close}
-            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="size-4" aria-hidden />
           </BaseDialog.Close>
@@ -103,7 +103,7 @@ export function DrawerContent({
           </BaseDialog.Title>
         )}
         {description && (
-          <BaseDialog.Description className="text-sm text-muted">
+          <BaseDialog.Description className="text-sm text-muted-foreground">
             {description}
           </BaseDialog.Description>
         )}

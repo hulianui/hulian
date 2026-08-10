@@ -135,7 +135,7 @@ function TransferPanel({
           )}
           <span className="truncate font-medium text-foreground">{title}</span>
         </span>
-        <span className="shrink-0 text-xs text-muted">
+        <span className="shrink-0 text-xs text-muted-foreground">
           {selCount > 0 ? `${selCount}/${total}` : total}
         </span>
       </div>
@@ -149,7 +149,7 @@ function TransferPanel({
             disabled={disabled}
             aria-label={locale.search(titleStr)}
             className={cn(
-              "h-8 w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-bg px-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted",
+              "h-8 w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-bg px-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground",
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-surface",
               "disabled:cursor-not-allowed disabled:opacity-50",
             )}

@@ -126,13 +126,13 @@ function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
                 style={{ width: `${pct}%` }}
               />
             </span>
-            <span className="shrink-0 text-xs tabular-nums text-muted">{Math.round(pct)}%</span>
+            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{Math.round(pct)}%</span>
           </span>
         ) : f.status === "error" && f.error ? (
           <span className="mt-0.5 block text-xs text-danger">{f.error}</span>
         ) : (
           f.size != null && (
-            <span className="mt-0.5 block text-xs text-muted">{formatBytes(f.size)}</span>
+            <span className="mt-0.5 block text-xs text-muted-foreground">{formatBytes(f.size)}</span>
           )
         )}
       </span>
@@ -141,7 +141,7 @@ function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
           type="button"
           onClick={() => onRemove(f.id)}
           aria-label={locale.remove(f.name)}
-          className="shrink-0 rounded-[min(var(--radius),0.375rem)] p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          className="shrink-0 rounded-[min(var(--radius),0.375rem)] p-1 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         >
           <svg
             viewBox="0 0 16 16"
@@ -205,7 +205,7 @@ function SortableRow(props: RowProps) {
         {...attributes}
         {...listeners}
         aria-label={locale.reorder(props.file.name)}
-        className="-ml-1 shrink-0 cursor-grab touch-none rounded text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
+        className="-ml-1 shrink-0 cursor-grab touch-none rounded text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
       >
         <GripVertical className="size-4" aria-hidden />
       </button>
@@ -328,7 +328,7 @@ export function Upload({
     );
 
   const counter = limit != null && (
-    <div className="mt-2 text-xs text-muted">{locale.selected(count, limit)}</div>
+    <div className="mt-2 text-xs text-muted-foreground">{locale.selected(count, limit)}</div>
   );
 
   if (variant === "button") {
@@ -398,7 +398,7 @@ export function Upload({
           <>
             <svg
               viewBox="0 0 24 24"
-              className="size-7 text-muted"
+              className="size-7 text-muted-foreground"
               fill="none"
               stroke="currentColor"
               strokeWidth={1.6}
@@ -412,7 +412,7 @@ export function Upload({
             </svg>
             <div className="text-sm font-medium text-foreground">{resolvedLabel}</div>
             {hint && (
-              <div id={`${listId}-hint`} className="text-xs text-muted">
+              <div id={`${listId}-hint`} className="text-xs text-muted-foreground">
                 {hint}
               </div>
             )}

@@ -64,10 +64,10 @@ export function TabsList({ className, variant, children, ...props }: TabsListPro
   );
 }
 
-// Tab：皮肤无关。text-muted→data-[active]:text-foreground；relative z-10 让文字盖在 solid 药丸之上。
+// Tab：皮肤无关。text-muted-foreground→data-[active]:text-foreground；relative z-10 让文字盖在 solid 药丸之上。
 const tabsTabClasses = cn(
   "relative z-10 cursor-pointer select-none rounded-[var(--radius)] px-3 py-1.5 text-sm font-medium",
-  "text-muted transition-colors hover:text-foreground data-[active]:text-foreground",
+  "text-muted-foreground transition-colors hover:text-foreground data-[active]:text-foreground",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
   "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
 );

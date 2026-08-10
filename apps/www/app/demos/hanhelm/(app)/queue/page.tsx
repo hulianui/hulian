@@ -108,7 +108,7 @@ export default function QueuePage() {
             className="min-w-0 text-left"
           >
             <div className="truncate font-medium text-foreground hover:text-primary">{t.title}</div>
-            <div className="truncate text-xs text-muted">{t.type} · {t.submitter}</div>
+            <div className="truncate text-xs text-muted-foreground">{t.type} · {t.submitter}</div>
           </button>
         );
       },
@@ -140,7 +140,7 @@ export default function QueuePage() {
             <Tag tone={meta.tone} size="sm" dot>
               {meta.label}
             </Tag>
-            <span className="text-xs tabular-nums text-muted">{fmtSlaMargin(sla.marginMs)}</span>
+            <span className="text-xs tabular-nums text-muted-foreground">{fmtSlaMargin(sla.marginMs)}</span>
           </div>
         );
       },
@@ -247,7 +247,7 @@ export default function QueuePage() {
       {view === "board" ? (
         <div className="flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-sm text-muted">{copy("together")}<span className="tabular-nums text-foreground">{filtered.length}</span>{copy("tasksAreDistributedAcrossFourPriorityLanes")}</div>
+            <div className="text-sm text-muted-foreground">{copy("together")}<span className="tabular-nums text-foreground">{filtered.length}</span>{copy("tasksAreDistributedAcrossFourPriorityLanes")}</div>
             {filterBar}
           </div>
           <div className="overflow-x-auto pb-1">

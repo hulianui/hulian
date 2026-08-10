@@ -6,7 +6,7 @@ import type { AlertProps } from "./alert.types";
 import { useComponentLocale } from "../config/locale-context";
 
 // 纯皮肤（照 badge.tsx）：base 设布局；tone/variant 留空由 compound 填「底色/边框 + accent 文字色」。
-// accent 作用于 icon + title；description 显式 text-muted 覆盖（正文恒中性可读，不被 tone 染色）。
+// accent 作用于 icon + title；description 显式 text-muted-foreground 覆盖（正文恒中性可读，不被 tone 染色）。
 // 语气：neutral/brand/success/warning/danger，各自 soft(浅底) 与 outline(描边) 两变体。
 // `info` 是 `brand` 的历史别名（本组件早于全库 tone 取值统一，先有 info 后有 brand），
 // 两者同配方、可互换；新代码请用 brand，与 Tag / Button / Badge 保持同一套取值。
@@ -69,7 +69,7 @@ function AlertImpl({
       {icon != null && <span className="mt-0.5 shrink-0 [&>svg]:size-5">{icon}</span>}
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         {title != null && <div className="text-sm font-medium">{title}</div>}
-        {children != null && <div className="text-sm text-muted">{children}</div>}
+        {children != null && <div className="text-sm text-muted-foreground">{children}</div>}
       </div>
       {(action != null || onClose) && (
         <div className="flex shrink-0 items-center gap-2">
@@ -79,7 +79,7 @@ function AlertImpl({
               type="button"
               onClick={onClose}
               aria-label={resolvedCloseLabel}
-              className="grid size-7 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ring)] [&>svg]:size-4"
+              className="grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ring)] [&>svg]:size-4"
             >
               {CloseIcon}
             </button>

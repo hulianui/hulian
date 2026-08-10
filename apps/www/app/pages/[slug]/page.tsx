@@ -90,7 +90,7 @@ export default async function PageDetailPage({ params }: { params: Promise<{ slu
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-10 sm:px-6">
       <header>
         <h1 className="text-2xl font-semibold">{display.name}</h1>
-        <p className="mt-1 text-sm text-muted">{display.description}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{display.description}</p>
       </header>
       <PreviewViewer
         src={`/preview/pages/${slug}`}

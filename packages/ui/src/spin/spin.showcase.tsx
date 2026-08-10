@@ -9,7 +9,7 @@ function SampleBox() {
   return (
     <div className="w-56 rounded-[var(--radius)] border border-border bg-surface p-4 text-sm text-foreground">
       <div className="font-medium">月度报表</div>
-      <p className="mt-1 text-muted">数据正在计算中，请稍候。这里是被遮罩覆盖的内容区。</p>
+      <p className="mt-1 text-muted-foreground">数据正在计算中，请稍候。这里是被遮罩覆盖的内容区。</p>
     </div>
   );
 }

@@ -49,7 +49,7 @@ const triggerVariants = cva(
   },
 );
 
-const triggerIconVariants = cva("shrink-0 text-muted", {
+const triggerIconVariants = cva("shrink-0 text-muted-foreground", {
   variants: { size: { sm: "size-3.5", md: "size-4", lg: "size-5" } },
   defaultVariants: { size: "md" },
 });
@@ -148,7 +148,7 @@ function TimePickerImpl({
               className={cn(triggerVariants({ size }), showClear && "pr-8")}
             >
               <Clock className={triggerIconVariants({ size })} aria-hidden />
-              <span className={cn("truncate tabular-nums", !text && "text-muted")}>
+              <span className={cn("truncate tabular-nums", !text && "text-muted-foreground")}>
                 {text || resolvedPlaceholder}
               </span>
             </button>
@@ -159,7 +159,7 @@ function TimePickerImpl({
             type="button"
             aria-label={locale.clear}
             onClick={clearValue}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >
             <X className="size-4" />
           </button>

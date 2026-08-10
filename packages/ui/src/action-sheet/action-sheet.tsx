@@ -53,7 +53,7 @@ export function ActionSheetContent({
               <BaseDialog.Title className="text-sm font-medium text-foreground">{title}</BaseDialog.Title>
             )}
             {description && (
-              <BaseDialog.Description className="mt-0.5 text-xs text-muted">
+              <BaseDialog.Description className="mt-0.5 text-xs text-muted-foreground">
                 {description}
               </BaseDialog.Description>
             )}
@@ -77,7 +77,7 @@ export function ActionSheetContent({
               )}
             >
               <span className="text-sm font-medium">{a.label}</span>
-              {a.description && <span className="text-xs text-muted">{a.description}</span>}
+              {a.description && <span className="text-xs text-muted-foreground">{a.description}</span>}
             </BaseDialog.Close>
           ))}
         </div>

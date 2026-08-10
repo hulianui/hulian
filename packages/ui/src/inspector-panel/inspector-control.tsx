@@ -53,7 +53,7 @@ export interface ControlContext {
 }
 
 const iconButtonClass = cn(
-  "grid size-8 shrink-0 place-items-center rounded-[var(--radius)] border border-border text-muted outline-none transition-colors",
+  "grid size-8 shrink-0 place-items-center rounded-[var(--radius)] border border-border text-muted-foreground outline-none transition-colors",
   "hover:bg-surface-hover",
   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
   "aria-pressed:border-primary aria-pressed:text-primary",
@@ -287,7 +287,7 @@ function LengthControl({
     <div className="flex min-w-0 items-center gap-2">
       {/* 混合值下不画滑杆：滑块必须停在某个具体位置，那等于替用户挑了一个值。 */}
       {mixed ? (
-        <span className="min-w-0 flex-1 truncate text-xs text-muted">{labels.mixed}</span>
+        <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">{labels.mixed}</span>
       ) : (
         <Slider
           aria-labelledby={labelId}
@@ -365,7 +365,7 @@ function EnumControl({
           value={current}
           onValueChange={commit}
         />
-        {mixed && <span className="shrink-0 text-xs text-muted">{labels.mixed}</span>}
+        {mixed && <span className="shrink-0 text-xs text-muted-foreground">{labels.mixed}</span>}
       </div>
     );
   }
@@ -416,7 +416,7 @@ function ToggleControl({
         onCheckedChange={(next) => emit([{ path: field.key, value: next }])}
       />
       {/* Switch 没有第三态，混合值只能在旁边说明白，不能假装它是「关」。 */}
-      {mixed && <span className="text-xs text-muted">{labels.mixed}</span>}
+      {mixed && <span className="text-xs text-muted-foreground">{labels.mixed}</span>}
     </div>
   );
 }
@@ -542,7 +542,7 @@ function ColorControl({
       {/* 视觉用户的「当前是哪个 token」读数：色块只有一圈 ring，相近色分不出选中的是哪个。
           不是无障碍兜底——那条已由色块自己的 label 承担。 */}
       {matched && (
-        <span className="truncate text-xs text-muted">{matched.label ?? matched.token}</span>
+        <span className="truncate text-xs text-muted-foreground">{matched.label ?? matched.token}</span>
       )}
     </div>
   );

@@ -3,7 +3,7 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Container } from "./container";
 
 const Box = ({ children }: { children: React.ReactNode }) => (
-  <div className="rounded-lg border border-dashed border-border bg-surface py-4 text-center text-sm text-muted">
+  <div className="rounded-lg border border-dashed border-border bg-surface py-4 text-center text-sm text-muted-foreground">
     {children}
   </div>
 );

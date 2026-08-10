@@ -55,7 +55,7 @@ function BrandImpl({
         <span className="flex min-w-0 flex-col leading-tight">
           <span className={cn("truncate font-semibold text-foreground", NAME[size])}>{name}</span>
           {description != null && (
-            <span className="truncate text-xs text-muted">{description}</span>
+            <span className="truncate text-xs text-muted-foreground">{description}</span>
           )}
         </span>
       )}

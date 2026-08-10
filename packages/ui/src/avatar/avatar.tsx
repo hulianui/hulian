@@ -6,7 +6,7 @@ import { cn } from "../lib/cn";
 import type { AvatarProps } from "./avatar.types";
 
 export const avatarVariants = cva(
-  "inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-surface-hover align-middle text-muted",
+  "inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-surface-hover align-middle text-muted-foreground",
   {
     variants: {
       size: {

@@ -66,15 +66,15 @@ export function CheckoutCashier({ id }: { id: string }) {
               content={
                 <div className="mx-auto mt-2 w-full max-w-[360px] rounded-[var(--radius)] bg-subtle p-4 text-sm">
                   <div className="flex justify-between py-1">
-                    <span className="text-muted">{copy("paymentAmount")}</span>
+                    <span className="text-muted-foreground">{copy("paymentAmount")}</span>
                     <span className="font-semibold tabular-nums">{yuan(co.amount)}</span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span className="text-muted">{copy("paymentMethod")}</span>
+                    <span className="text-muted-foreground">{copy("paymentMethod")}</span>
                     <span>{co.method ? checkoutPayMethodLabel[co.method] : "—"}</span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span className="text-muted">{copy("serialNumber")}</span>
+                    <span className="text-muted-foreground">{copy("serialNumber")}</span>
                     <span className="tabular-nums text-xs">{serialNo}</span>
                   </div>
                 </div>
@@ -109,12 +109,12 @@ export function CheckoutCashier({ id }: { id: string }) {
         <CardBody className="flex flex-col gap-6 p-8">
           {/* 单据信息 */}
           <div className="flex flex-col items-center gap-2 text-center">
-            <div className="flex items-center gap-2 text-muted">
+            <div className="flex items-center gap-2 text-muted-foreground">
               <Wallet className="size-4" />
               <span className="text-sm">{VENDOR}{copy("collectMoneyOnline")}</span>
             </div>
             <div className="text-3xl font-semibold tabular-nums text-foreground">{yuan(co.amount)}</div>
-            <div className="text-xs text-muted">{rmbUpper(co.amount)}</div>
+            <div className="text-xs text-muted-foreground">{rmbUpper(co.amount)}</div>
             <Tag tone={checkoutStatusTone(co.status)} size="sm" dot>
               {co.code} · {co.client}
             </Tag>
@@ -144,14 +144,14 @@ export function CheckoutCashier({ id }: { id: string }) {
             {phase === "paying" ? (
               <div className="grid size-[204px] place-items-center gap-3 flex-col">
                 <Spin />
-                <span className="text-sm text-muted">{copy("waitingForPaymentConfirmation")}</span>
+                <span className="text-sm text-muted-foreground">{copy("waitingForPaymentConfirmation")}</span>
               </div>
             ) : (
               <div className="rounded-[var(--radius)] border border-border p-4">
                 <QRCode value={`${payUrl(co)}?m=${encodeURIComponent(method)}`} size={172} level="M" />
               </div>
             )}
-            <div className="text-sm text-muted">{METHOD_HINT[method]}</div>
+            <div className="text-sm text-muted-foreground">{METHOD_HINT[method]}</div>
           </div>
 
           {/* 模拟支付 */}

@@ -38,7 +38,7 @@ describe("Spinner", () => {
 
   it("tone 皮肤类", () => {
     const { getByRole } = render(<Spinner tone="muted" />);
-    expect(getByRole("status").className).toContain("text-muted");
+    expect(getByRole("status").className).toContain("text-muted-foreground");
   });
 
   it("透传 className", () => {

@@ -70,7 +70,7 @@ function WorkCard({ work, featured }: { work: Work; featured?: boolean }) {
               {WORK_STATUS_LABELS[work.status]}
             </Tag>
           </div>
-          <span className="font-mono text-xs text-muted">{work.year}</span>
+          <span className="font-mono text-xs text-muted-foreground">{work.year}</span>
         </div>
 
         {/* 中部：名称 + 一句话 */}
@@ -104,7 +104,7 @@ function WorkCard({ work, featured }: { work: Work; featured?: boolean }) {
               </Chip>
             ))}
           </div>
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border text-muted transition-all duration-300 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-all duration-300 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
             <ArrowUpRight className="size-4" aria-hidden />
           </span>
         </div>

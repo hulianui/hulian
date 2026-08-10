@@ -9,7 +9,7 @@ export function User({ name, description, avatarProps, className }: UserProps) {
       <Avatar {...avatarProps} />
       <div className="inline-flex flex-col leading-tight">
         <span className="text-sm font-medium text-foreground">{name}</span>
-        {description != null && <span className="text-xs text-muted">{description}</span>}
+        {description != null && <span className="text-xs text-muted-foreground">{description}</span>}
       </div>
     </div>
   );

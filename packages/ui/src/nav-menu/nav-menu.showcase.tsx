@@ -140,7 +140,7 @@ function DeleteAction({ label }: { label: string }) {
       type="button"
       aria-label={`删除：${label}`}
       onClick={(e) => e.stopPropagation()}
-      className="invisible rounded p-0.5 text-muted opacity-0 transition-opacity hover:text-danger group-hover/nav-row:visible group-hover/nav-row:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      className="invisible rounded p-0.5 text-muted-foreground opacity-0 transition-opacity hover:text-danger group-hover/nav-row:visible group-hover/nav-row:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
     >
       <Trash2 className="size-3.5" />
     </button>

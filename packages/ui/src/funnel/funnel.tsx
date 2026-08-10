@@ -5,7 +5,7 @@ import type { FunnelProps, FunnelStage, FunnelTone } from "./funnel.types";
 
 // 条的填充色吃 token，按 per-stage tone 切换；缺省 brand。
 const TONE_BAR: Record<FunnelTone, string> = {
-  neutral: "bg-muted",
+  neutral: "bg-muted-foreground",
   brand: "bg-primary",
   success: "bg-success",
   warning: "bg-warning",
@@ -62,7 +62,7 @@ function FunnelImpl<S extends FunnelStage>({
           return (
             <div key={stage.id} className="flex flex-1 flex-col items-center gap-1.5" role="listitem">
               {showConversion && conversion !== null ? (
-                <span className="rounded-full bg-surface-hover px-1.5 py-0.5 text-[11px] font-medium tabular-nums text-muted">
+                <span className="rounded-full bg-surface-hover px-1.5 py-0.5 text-[11px] font-medium tabular-nums text-muted-foreground">
                   {conversionText(conversion)}
                 </span>
               ) : (
@@ -140,7 +140,7 @@ function FunnelImpl<S extends FunnelStage>({
           <div key={stage.id} role="listitem">
             {showConversion && conversion !== null ? (
               <div className="mb-1 flex justify-center">
-                <span className="rounded-full bg-surface-hover px-2 py-0.5 text-[11px] font-medium tabular-nums text-muted">
+                <span className="rounded-full bg-surface-hover px-2 py-0.5 text-[11px] font-medium tabular-nums text-muted-foreground">
                   {conversionLabel} {conversionText(conversion)}
                 </span>
               </div>

@@ -42,7 +42,7 @@ export default function InvoicesPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">{copy("billsAndInvoices")}</h1>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-muted-foreground">
             {copy("totalPaid")} <span className="font-medium text-foreground">{formatMoney(totalPaid)}</span>
             {copy("invoiceCount", invoices.length)}
           </p>
@@ -78,7 +78,7 @@ export default function InvoicesPage() {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border text-left text-xs text-muted">
+              <tr className="border-b border-border text-left text-xs text-muted-foreground">
                 <th className="px-5 py-3 font-medium">{copy("invoiceNumber")}</th>
                 <th className="hidden px-5 py-3 font-medium sm:table-cell">{copy("project")}</th>
                 <th className="px-5 py-3 font-medium">{copy("settlement")}</th>
@@ -100,8 +100,8 @@ export default function InvoicesPage() {
                         <span className="font-medium text-foreground">{inv.id}</span>
                       </Glimpse>
                     </td>
-                    <td className="hidden px-5 py-3.5 text-muted sm:table-cell">{inv.plan}</td>
-                    <td className="px-5 py-3.5 text-muted">
+                    <td className="hidden px-5 py-3.5 text-muted-foreground sm:table-cell">{inv.plan}</td>
+                    <td className="px-5 py-3.5 text-muted-foreground">
                       <RelativeTime value={inv.date} locale={DEMO_RELATIVE_TIME_LOCALE} />
                     </td>
                     <td className="px-5 py-3.5 text-right font-medium tabular-nums text-foreground">{formatMoney(inv.amount)}</td>
@@ -153,7 +153,7 @@ export default function InvoicesPage() {
                 </span>
                 <div className="min-w-0">
                   <p className="font-medium text-foreground">{active.plan}</p>
-                  <p className="text-xs text-muted">{copy("settlement2")}<RelativeTime value={active.date} locale={DEMO_RELATIVE_TIME_LOCALE} /> · {active.period}
+                  <p className="text-xs text-muted-foreground">{copy("settlement2")}<RelativeTime value={active.date} locale={DEMO_RELATIVE_TIME_LOCALE} /> · {active.period}
                   </p>
                 </div>
                 <Tag tone={invoiceStatusMeta[active.status].tone} size="sm" className="ml-auto">
@@ -174,7 +174,7 @@ export default function InvoicesPage() {
                   <tbody className="divide-y divide-border">
                     {active.lines.map((l, i) => (
                       <tr key={i}>
-                        <td className="py-2.5 text-muted">{l.label}</td>
+                        <td className="py-2.5 text-muted-foreground">{l.label}</td>
                         <td className="py-2.5 text-right font-medium tabular-nums text-foreground">{formatMoney(l.amount)}</td>
                       </tr>
                     ))}

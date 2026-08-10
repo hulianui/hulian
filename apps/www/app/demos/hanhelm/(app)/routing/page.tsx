@@ -128,7 +128,7 @@ export default function RoutingPage() {
         <CardHeader className="flex items-center justify-between">
           <div>
             <div className="text-sm font-semibold text-foreground">{copy("distributionAndDistribution")}</div>
-            <div className="text-xs text-muted">{copy("taskTypeSixDimensionalSmartRouterActuator")}</div>
+            <div className="text-xs text-muted-foreground">{copy("taskTypeSixDimensionalSmartRouterActuator")}</div>
           </div>
           {focusNode ? (
             (() => {
@@ -169,7 +169,7 @@ export default function RoutingPage() {
         <Card>
           <CardHeader>
             <div className="text-sm font-semibold text-foreground">{copy("theSixPillarsHoldGreatWeight")}</div>
-            <div className="text-xs text-muted">{copy("adjustAnyDimensionTheDecisionPlaybackOn")}</div>
+            <div className="text-xs text-muted-foreground">{copy("adjustAnyDimensionTheDecisionPlaybackOn")}</div>
           </CardHeader>
           <CardBody>
             <RoutingWeightsPanel
@@ -184,7 +184,7 @@ export default function RoutingPage() {
         <Card>
           <CardHeader>
             <div className="text-sm font-semibold text-foreground">{copy("routingStrategyRules")}</div>
-            <div className="text-xs text-muted">{copy("matchSequentiallyByOrderTheFirstHit")}</div>
+            <div className="text-xs text-muted-foreground">{copy("matchSequentiallyByOrderTheFirstHit")}</div>
           </CardHeader>
           <CardBody className="space-y-2.5">
             {ROUTING_RULES.map((rule) => {
@@ -207,10 +207,10 @@ export default function RoutingPage() {
                           {on ? copy("activated") : copy("deactivated")}
                         </Tag>
                       </div>
-                      <div className="text-xs text-muted">
+                      <div className="text-xs text-muted-foreground">
                         <span className="text-foreground">{copy("conditions")}</span> {rule.when}
                       </div>
-                      <div className="text-xs text-muted">
+                      <div className="text-xs text-muted-foreground">
                         <span className="text-foreground">{copy("action")}</span> {rule.then}
                       </div>
                     </div>
@@ -232,7 +232,7 @@ export default function RoutingPage() {
         <CardHeader className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-sm font-semibold text-foreground">{copy("routingDecisionReview")}</div>
-            <div className="text-xs text-muted">{copy("scoreEachCandidateActuatorBySixDimensional")}</div>
+            <div className="text-xs text-muted-foreground">{copy("scoreEachCandidateActuatorBySixDimensional")}</div>
           </div>
           <div className="w-72 max-w-full">
             <Select
@@ -252,7 +252,7 @@ export default function RoutingPage() {
           </div>
         </CardHeader>
         <CardBody className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <Tag size="sm" variant="soft" tone="neutral">
               {selectedTask.priority}
             </Tag>
@@ -269,7 +269,7 @@ export default function RoutingPage() {
             </span>
           </div>
           <RoutingDecisionTable decision={decision} />
-          <div className="rounded-[var(--radius)] bg-surface-hover/60 p-3 text-xs text-muted">
+          <div className="rounded-[var(--radius)] bg-surface-hover/60 p-3 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">{copy("engineJudgment")}</span>
             {decision.reason}
           </div>
@@ -280,7 +280,7 @@ export default function RoutingPage() {
       <Card>
         <CardHeader>
           <div className="text-sm font-semibold text-foreground">{copy("costLatencyDistribution")}</div>
-          <div className="text-xs text-muted">{copy("mixedUnitPriceForEachActuatorAnd")}</div>
+          <div className="text-xs text-muted-foreground">{copy("mixedUnitPriceForEachActuatorAnd")}</div>
         </CardHeader>
         <CardBody>
           <RoutingCostLatencyChart executors={EXECUTORS} />

@@ -150,7 +150,7 @@ export function MagicBento({
             {item.children ?? (
               <>
                 {item.label != null && (
-                  <div className="text-xs font-medium uppercase tracking-wide text-muted">
+                  <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     {item.label}
                   </div>
                 )}
@@ -161,7 +161,7 @@ export function MagicBento({
                     </h3>
                   )}
                   {item.description != null && (
-                    <p className="mt-1 text-sm text-muted">{item.description}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
                   )}
                 </div>
               </>

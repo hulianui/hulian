@@ -50,7 +50,7 @@ export function SidebarNavBlock() {
 
         <nav className="flex-1 overflow-y-auto px-2 py-3">
           {GROUPS.map((group) => (<div key={group.title} className="mb-3 last:mb-0">
-              {!collapsed && (<div className="px-2 pb-1 pt-2 text-xs font-medium uppercase tracking-wide text-muted">
+              {!collapsed && (<div className="px-2 pb-1 pt-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {group.title}
                 </div>)}
               <ul className="flex flex-col gap-0.5">
@@ -62,7 +62,7 @@ export function SidebarNavBlock() {
                         "flex w-full items-center gap-2.5 rounded-[var(--radius)] px-2.5 py-2 text-sm font-medium transition-colors",
                         collapsed ? "justify-center" : "",
                         isActive
-                            ? "bg-primary/10 text-primary" : "text-muted hover:bg-surface-hover hover:text-foreground",
+                            ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                     ].join(" ")}>
 
                         {collapsed && count ? (<Badge dot tone="danger" offset={[2, -2]}>
@@ -87,7 +87,7 @@ export function SidebarNavBlock() {
             {!collapsed && (<>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium text-foreground">Lin Wanqing</div>
-                  <div className="truncate text-xs text-muted">Administrator</div>
+                  <div className="truncate text-xs text-muted-foreground">Administrator</div>
                 </div>
                 <Button variant="ghost" size="iconSm" aria-label="Account settings" className="shrink-0">
                   <Settings className="size-4"/>
@@ -98,7 +98,7 @@ export function SidebarNavBlock() {
       </aside>
 
 
-      <div className="hidden flex-1 items-center justify-center p-8 text-sm text-muted sm:flex">
+      <div className="hidden flex-1 items-center justify-center p-8 text-sm text-muted-foreground sm:flex">
         Main content area
       </div>
     </div>);

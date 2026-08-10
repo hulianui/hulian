@@ -35,8 +35,8 @@ function SettingRow({
       <div className="flex w-full items-center gap-3">
         <span className={`flex size-8 shrink-0 items-center justify-center rounded-full ${tint}`}>{icon}</span>
         <span className="flex-1 text-sm">{label}</span>
-        {value && <span className="text-xs text-muted">{value}</span>}
-        <ChevronRight className="size-4 shrink-0 text-muted" aria-hidden />
+        {value && <span className="text-xs text-muted-foreground">{value}</span>}
+        <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
       </div>
     </ListItem>
   );
@@ -51,7 +51,7 @@ export default function ProfilePage() {
           <Avatar fallback={copy("li")} size="lg" />
           <div>
             <div className="text-base font-semibold">{copy("liXiaomei")}</div>
-            <div className="mt-0.5 text-xs text-muted">{copy("member12CompletedServices")}</div>
+            <div className="mt-0.5 text-xs text-muted-foreground">{copy("member12CompletedServices")}</div>
             <div className="mt-1">
               <Tag tone="warning" size="sm" variant="soft">
 
@@ -79,7 +79,7 @@ export default function ProfilePage() {
               <span className="text-xs font-medium">{copy("msZhangDeepCleaning")}</span>
               <Rating value={5} readOnly size="sm" />
             </div>
-            <p className="mt-0.5 text-xs text-muted">{copy("professionalServiceAndANoticeablyCleanerHomeIWillBookAgain")}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{copy("professionalServiceAndANoticeablyCleanerHomeIWillBookAgain")}</p>
           </div>
         </div>
       </div>
@@ -100,12 +100,12 @@ export default function ProfilePage() {
           <SettingRow icon={<Bell className="size-4 text-violet-600" />} tint="bg-violet-500/12" label={copy("notifications")} />
           <SettingRow icon={<ShieldCheck className="size-4 text-teal-600" />} tint="bg-teal-500/12" label={copy("privacySettings")} />
           <SettingRow icon={<HelpCircle className="size-4 text-sky-600" />} tint="bg-sky-500/12" label={copy("helpAndFeedback")} />
-          <SettingRow icon={<Info className="size-4 text-muted" />} tint="bg-foreground/8" label={copy("aboutUs")} value="v2.6.1" />
+          <SettingRow icon={<Info className="size-4 text-muted-foreground" />} tint="bg-foreground/8" label={copy("aboutUs")} value="v2.6.1" />
         </List>
       </div>
 
       <Divider className="mx-4 my-4" />
-      <div className="pb-6 text-center text-xs text-muted">{copy("atHomeServices2026")}</div>
+      <div className="pb-6 text-center text-xs text-muted-foreground">{copy("atHomeServices2026")}</div>
     </div>
   );
 }

@@ -27,7 +27,7 @@ describe("statusMeta", () => {
     expect(fileStatusMeta("modified").letter).toBe("M");
     expect(fileStatusMeta("deleted").toneClass).toBe("text-danger");
     expect(fileStatusMeta("renamed").letter).toBe("R");
-    expect(fileStatusMeta("untracked").toneClass).toBe("text-muted");
+    expect(fileStatusMeta("untracked").toneClass).toBe("text-muted-foreground");
   });
 });
 

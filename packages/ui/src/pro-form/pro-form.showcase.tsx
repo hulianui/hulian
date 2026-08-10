@@ -33,7 +33,7 @@ function Demo() {
           <Input value={email.value as string} onChange={email.onChange} onBlur={email.onBlur} placeholder="必填 · 含 @" />
         </Field>
       </ProForm>
-      {result && <p className="mt-3 text-sm text-muted">已提交：{result}</p>}
+      {result && <p className="mt-3 text-sm text-muted-foreground">已提交：{result}</p>}
     </div>
   );
 }

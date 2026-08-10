@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 
 /** 描述项数据（items 数组 prop 形态，等价于 DescriptionsItem 子节点的 props） */
 export interface DescriptionsItemData {
-  /** 键名（label=text-muted） */
+  /** 键名（label=text-muted-foreground） */
   label?: ReactNode;
   /** 值内容（value=text-foreground） */
   children?: ReactNode;

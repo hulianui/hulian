@@ -158,7 +158,7 @@ export function ProjectOverview({ id }: { id: string }) {
           href={`https://${row.original.url}`}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1 font-mono text-xs text-muted transition-colors hover:text-primary"
+          className="inline-flex items-center gap-1 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
         >
           {row.original.url}
           <ExternalLink className="size-3 opacity-60" />
@@ -174,7 +174,7 @@ export function ProjectOverview({ id }: { id: string }) {
           <RelativeTime
             value={agoDate(row.original.agoMin)}
             locale={DEMO_RELATIVE_TIME_LOCALE}
-            className="text-xs text-muted"
+            className="text-xs text-muted-foreground"
           />
         </div>
       ),
@@ -241,7 +241,7 @@ export function ProjectOverview({ id }: { id: string }) {
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-[var(--radius)] bg-surface-hover text-muted">
+          <span className="grid size-10 shrink-0 place-items-center rounded-[var(--radius)] bg-surface-hover text-muted-foreground">
             <Rocket className="size-5" />
           </span>
           <div>
@@ -251,7 +251,7 @@ export function ProjectOverview({ id }: { id: string }) {
                 {frameworkLabel(project.framework)}
               </Tag>
             </div>
-            <div className="mt-0.5 inline-flex items-center gap-1.5 text-sm text-muted">
+            <div className="mt-0.5 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
               <GitBranch className="size-3.5" />
               <span className="font-medium text-foreground">{project.productionBranch}</span>
               <span>·</span>
@@ -280,7 +280,7 @@ export function ProjectOverview({ id }: { id: string }) {
       <Card>
         <CardHeader className="flex items-center justify-between">
           <span className="font-medium text-foreground">{copy("productionEnvironment")}</span>
-          <span className="inline-flex items-center gap-2 text-sm text-muted">
+          <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
             <RefreshCw className="size-3.5" />
             {autoDeploy
               ? copy("automaticDeploymentIsTurnedOn")
@@ -294,7 +294,7 @@ export function ProjectOverview({ id }: { id: string }) {
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-            <span className="inline-flex items-center gap-1.5 text-muted">
+            <span className="inline-flex items-center gap-1.5 text-muted-foreground">
               <Globe className="size-4" />
               {copy("domainName")}
             </span>
@@ -337,7 +337,7 @@ export function ProjectOverview({ id }: { id: string }) {
               <div className="flex items-center gap-4">
                 <div className="flex flex-col items-end gap-0.5">
                   <DeployStatus status={current.status} />
-                  <span className="text-xs text-muted">
+                  <span className="text-xs text-muted-foreground">
                     <RelativeTime
                       value={agoDate(current.agoMin)}
                       locale={DEMO_RELATIVE_TIME_LOCALE}

@@ -15,7 +15,7 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ i
 
   if (!review) {
     return (
-      <div className="p-12 text-center text-sm text-muted">{copy("noReviewRecordsFound")}{id}</div>
+      <div className="p-12 text-center text-sm text-muted-foreground">{copy("noReviewRecordsFound")}{id}</div>
     );
   }
 

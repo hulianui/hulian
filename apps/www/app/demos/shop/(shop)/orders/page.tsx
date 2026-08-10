@@ -85,7 +85,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm font-medium text-foreground">{copy("order")}{order.id}</span>
-          <span className="text-xs text-muted">{order.createdAt}</span>
+          <span className="text-xs text-muted-foreground">{order.createdAt}</span>
         </div>
         <Tag tone={STATUS_TONE[order.status]} size="sm">
           {STATUS_LABEL[order.status]}
@@ -108,7 +108,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
               )}
               <div className="flex flex-1 flex-col gap-0.5">
                 <span className="line-clamp-1 text-sm font-medium text-foreground">{item.name}</span>
-                <span className="text-xs text-muted">
+                <span className="text-xs text-muted-foreground">
                   {item.color} / {item.size} × {item.qty}
                 </span>
                 <span className="text-sm font-semibold text-danger">{formatPrice(item.price)}</span>
@@ -116,7 +116,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
               {/* 已完成订单可评价 */}
               {order.status === "completed" && (
                 <div className="flex shrink-0 flex-col items-end gap-1">
-                  <span className="text-xs text-muted">{copy("review")}</span>
+                  <span className="text-xs text-muted-foreground">{copy("review")}</span>
                   <Rating
                     value={ratings[`${order.id}-${idx}`] ?? 0}
                     onValueChange={(v) =>
@@ -138,7 +138,7 @@ function OrderCard({ order, onViewLogistics }: { order: Order; onViewLogistics: 
 
       {/* 合计 + 操作区 */}
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
-        <span className="text-sm text-muted">
+        <span className="text-sm text-muted-foreground">
 
           {copy("total")} {order.items.reduce((s, i) => s + i.qty, 0)}  {copy("itemsAndTotal")}
           <span className="font-semibold text-foreground">{formatPrice(order.total)}</span>
@@ -232,7 +232,7 @@ export default function OrdersPage() {
             <TabsTab key={t.value} value={t.value}>
               {t.label}
               {t.value !== "all" && data && (
-                <span className="ml-1 text-xs text-muted">
+                <span className="ml-1 text-xs text-muted-foreground">
                   ({data.filter((o) => o.status === t.value).length})
                 </span>
               )}
@@ -281,7 +281,7 @@ export default function OrdersPage() {
               {/* 收货地址 */}
               <div className="rounded-[var(--radius)] bg-surface-hover p-3 text-sm">
                 <div className="font-medium text-foreground">{logisticsOrder.receiver}</div>
-                <div className="mt-0.5 text-muted">{logisticsOrder.address}</div>
+                <div className="mt-0.5 text-muted-foreground">{logisticsOrder.address}</div>
               </div>
               {/* 物流轨迹 */}
               <Timeline

@@ -68,7 +68,7 @@ function Demo() {
           setLast(null);
         }}
       />
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         {last ? `回传点位：${last.map((p) => `(${p.x.toFixed(2)}, ${p.y.toFixed(2)})`).join(" ")}` : "点选图中三个提示字"}
       </p>
     </div>
@@ -80,7 +80,7 @@ function ControlledDemo() {
   return (
     <div className="flex w-full flex-col items-center gap-3">
       <ClickCaptcha backgroundSrc={demoImage(3)} points={points} onPointsChange={setPoints} maxPoints={4} />
-      <ul className="w-full max-w-sm space-y-1 text-xs text-muted">
+      <ul className="w-full max-w-sm space-y-1 text-xs text-muted-foreground">
         {points.length === 0 && <li>外部持有点位数组，可自行清空/回放</li>}
         {points.map((p, i) => (
           <li key={`${p.x}-${p.y}-${i}`}>

@@ -27,7 +27,7 @@ describe("Segmented", () => {
     const { getByRole } = render(<Segmented items={items} aria-label="周期" />);
     const root = getByRole("radiogroup");
     expect(root.className).toContain("text-foreground");
-    expect(root.className).not.toContain("text-muted");
+    expect(root.className).not.toContain("text-muted-foreground");
   });
 
   it("defaultValue 指定初始选中段", () => {

@@ -149,7 +149,7 @@ export default function PhotosPage() {
               </div>
               <div className="p-2.5">
                 <div className="truncate text-sm font-medium text-foreground">{p.caption}</div>
-                <div className="mt-0.5 truncate text-xs text-muted">
+                <div className="mt-0.5 truncate text-xs text-muted-foreground">
                   {p.projectName} · {projectStageLabel[p.stage]}
                 </div>
               </div>

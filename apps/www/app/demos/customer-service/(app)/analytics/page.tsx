@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
           <CardBody className="flex flex-col gap-4">
             {agentLeaderboard.map((a, i) => (
               <div key={a.agent} className="flex items-center gap-3">
-                <span className="w-4 shrink-0 text-center text-sm font-semibold text-muted tabular-nums">
+                <span className="w-4 shrink-0 text-center text-sm font-semibold text-muted-foreground tabular-nums">
                   {i + 1}
                 </span>
                 {/* 坐席头像 → HoverCard 资料卡预览 */}
@@ -125,7 +125,7 @@ export default function AnalyticsPage() {
                         <Avatar fallback={a.agent.slice(0, 1)} size="sm" />
                         <span className="text-sm font-semibold">{a.agent}</span>
                       </div>
-                      <div className="grid grid-cols-2 gap-1 text-xs text-muted">
+                      <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
                         <span>{copy("receptionCapacity")}{a.served}{copy("single")}</span>
                         <span>{copy("satisfaction2")}{a.csat}%</span>
                       </div>
@@ -135,7 +135,7 @@ export default function AnalyticsPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate text-sm font-medium">{a.agent}</span>
-                    <span className="shrink-0 text-xs text-muted tabular-nums">{a.served}{copy("single2")}{a.csat}%</span>
+                    <span className="shrink-0 text-xs text-muted-foreground tabular-nums">{a.served}{copy("single2")}{a.csat}%</span>
                   </div>
                   <Progress value={a.csat} className="mt-1" />
                 </div>

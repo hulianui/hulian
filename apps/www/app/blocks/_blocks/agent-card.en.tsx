@@ -105,7 +105,7 @@ function AgentCard({ agent }: {
         <div className="flex items-center gap-3">
           <ScoreRing value={agent.loadPct} grades={LOAD_GRADES} size={72} thickness={7} label="Current load"/>
           <div className="min-w-0 flex-1">
-            <div className="mb-1 flex items-center justify-between text-xs text-muted">
+            <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
               <span>Load trend</span>
               <span className="tabular-nums font-medium text-foreground">{agent.loadPct}%</span>
             </div>

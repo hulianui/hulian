@@ -92,7 +92,7 @@ function FilterSidebar({
         <p className="mb-2 text-sm font-semibold text-foreground">
 
           {copy("priceRange")}
-          <span className="ml-2 font-normal text-muted">
+          <span className="ml-2 font-normal text-muted-foreground">
             {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
           </span>
         </p>
@@ -257,7 +257,7 @@ function ProductsInner() {
         <h1 className="text-xl font-bold text-foreground">
           {isFlash ? copy("flashSale") : copy("allProducts")}
           {!loading && allProducts && (
-            <span className="ml-2 text-sm font-normal text-muted">{copy("total")} {filtered.length}  {copy("items")}</span>
+            <span className="ml-2 text-sm font-normal text-muted-foreground">{copy("total")} {filtered.length}  {copy("items")}</span>
           )}
         </h1>
         {/* 移动端筛选按钮 */}
@@ -354,14 +354,14 @@ function ProductsInner() {
                 size="sm"
                 aria-label={copy("viewMode")}
               />
-              <span className="text-xs text-muted">{viewMode === "page" ? copy("pages") : copy("infiniteScroll")}</span>
+              <span className="text-xs text-muted-foreground">{viewMode === "page" ? copy("pages") : copy("infiniteScroll")}</span>
             </div>
           </div>
 
           {/* 已选条件 */}
           {activeFilters.length > 0 && (
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-muted">{copy("selected")}</span>
+              <span className="text-xs text-muted-foreground">{copy("selected")}</span>
               {activeFilters.map((f) => (
                 <Chip
                   key={f.key}
@@ -376,7 +376,7 @@ function ProductsInner() {
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="flex items-center gap-0.5 text-xs text-muted hover:text-foreground"
+                className="flex items-center gap-0.5 text-xs text-muted-foreground hover:text-foreground"
               >
                 <X className="size-3" />
 
@@ -442,13 +442,13 @@ function ProductsInner() {
       {/* 快速品类导航（桌面端右侧浮动） */}
       <div className="fixed bottom-24 right-6 hidden xl:block">
         <nav className="rounded-[var(--radius)] border border-border bg-surface p-3 shadow-md">
-          <p className="mb-2 text-xs font-semibold text-muted">{copy("categoryNavigation")}</p>
+          <p className="mb-2 text-xs font-semibold text-muted-foreground">{copy("categoryNavigation")}</p>
           <div className="space-y-1">
             {categories.map((c) => (
               <a
                 key={c.key}
                 href={`${SHOP_LOCATION_BASE}/products?cat=${c.key}`}
-                className="block rounded px-2 py-1 text-xs text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                className="block rounded px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 {c.name}
               </a>

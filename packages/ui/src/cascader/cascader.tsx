@@ -131,10 +131,10 @@ function CascaderImpl({
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
         className={cn(triggerVariants({ size }), className)}
       >
-        <span className={cn("truncate text-left", !triggerLabel && "text-muted")}>
+        <span className={cn("truncate text-left", !triggerLabel && "text-muted-foreground")}>
           {triggerLabel ?? placeholder}
         </span>
-        <span className="flex shrink-0 text-muted transition-transform data-[popup-open]:rotate-180">
+        <span className="flex shrink-0 text-muted-foreground transition-transform data-[popup-open]:rotate-180">
           <ChevronDownIcon />
         </span>
       </BasePopover.Trigger>
@@ -150,7 +150,7 @@ function CascaderImpl({
             {showSearch && (
               <div className="shrink-0 border-b border-border p-1.5">
                 <span className="flex h-8 items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-surface px-2.5 focus-within:ring-2 focus-within:ring-ring">
-                  <span className="flex shrink-0 items-center text-muted">
+                  <span className="flex shrink-0 items-center text-muted-foreground">
                     <SearchIcon />
                   </span>
                   <input
@@ -159,7 +159,7 @@ function CascaderImpl({
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={searchPlaceholder}
                     aria-label={searchPlaceholder}
-                    className="w-full min-w-[12rem] bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+                    className="w-full min-w-[12rem] bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                   />
                 </span>
               </div>
@@ -169,7 +169,7 @@ function CascaderImpl({
               // 搜索结果：扁平叶子路径列表，命中即提交全路径。
               <ul role="listbox" aria-label="搜索结果" className="min-w-[16rem] overflow-y-auto p-1">
                 {results.length === 0 ? (
-                  <li className="px-2 py-6 text-center text-sm text-muted">无匹配项</li>
+                  <li className="px-2 py-6 text-center text-sm text-muted-foreground">无匹配项</li>
                 ) : (
                   results.map((p) => {
                     const selected = current[current.length - 1] === p.keys[p.keys.length - 1];
@@ -232,7 +232,7 @@ function CascaderImpl({
                             )}
                           >
                             <span className="truncate">{node.label}</span>
-                            {hasChildren ? <ChevronRight className="size-3.5 shrink-0 text-muted" aria-hidden /> : null}
+                            {hasChildren ? <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden /> : null}
                           </button>
                         </li>
                       );

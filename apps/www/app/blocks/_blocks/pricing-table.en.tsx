@@ -127,7 +127,7 @@ function PlanCard({ plan, period, ctaHref, }: {
                   {f}
                 </Text>
                 {FEATURE_TIPS[f] && (<Tooltip>
-                    <TooltipTrigger render={<button type="button" className="mt-0.5 shrink-0 text-muted transition-colors hover:text-foreground focus-visible:outline-none" aria-label={`Learn more: ${f}`}>
+                    <TooltipTrigger render={<button type="button" className="mt-0.5 shrink-0 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none" aria-label={`Learn more: ${f}`}>
                           <HelpCircle className="size-3.5" aria-hidden/>
                         </button>}/>
                     <TooltipContent side="top" className="max-w-[14rem]">

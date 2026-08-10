@@ -25,10 +25,10 @@ function Deck(props: Parameters<typeof ScrollStack>[0]) {
         {CARDS.map((c, i) => (
           <ScrollStackItem key={c.title}>
             <div className="flex h-full flex-col justify-between">
-              <span className="text-xs font-medium text-muted">0{i + 1}</span>
+              <span className="text-xs font-medium text-muted-foreground">0{i + 1}</span>
               <div>
                 <h3 className="text-lg font-semibold text-foreground">{c.title}</h3>
-                <p className="mt-1 text-sm text-muted">{c.desc}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{c.desc}</p>
               </div>
             </div>
           </ScrollStackItem>

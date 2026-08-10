@@ -39,7 +39,7 @@ export function About() {
           <div className="flex flex-col gap-1">
             <span className="flex items-baseline justify-center gap-2">
               <span className="text-lg font-semibold text-foreground">{profile.name}</span>
-              <span className="font-mono text-sm text-muted">{profile.nameEn}</span>
+              <span className="font-mono text-sm text-muted-foreground">{profile.nameEn}</span>
             </span>
             <span className="font-mono text-xs text-primary">{profile.handle}</span>
           </div>

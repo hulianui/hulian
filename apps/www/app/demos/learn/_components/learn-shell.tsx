@@ -30,7 +30,7 @@ function Logo() {
       </span>
       <span className="text-lg font-semibold tracking-tight text-foreground">
         {brand.name}
-        <span className="text-muted"> {brand.nameEn}</span>
+        <span className="text-muted-foreground"> {brand.nameEn}</span>
       </span>
     </Link>
   );
@@ -109,12 +109,12 @@ function LearnNavbar() {
             <button
               type="button"
               onClick={() => setCmdOpen(true)}
-              className="flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-2.5 text-sm text-muted transition-colors hover:text-foreground"
+              className="flex h-8 items-center gap-1.5 rounded-[var(--radius)] border border-border bg-surface px-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               aria-label={copy("searchCoursesK")}
             >
               <Search className="size-3.5" aria-hidden />
               <span className="text-xs">{copy("searchCourses")}</span>
-              <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted">
+              <span className="ml-1 rounded border border-border px-1 text-[10px] font-mono text-muted-foreground">
                 ⌘K
               </span>
             </button>
@@ -151,7 +151,7 @@ function LearnNavbar() {
                 setOpen(false);
                 setCmdOpen(true);
               }}
-              className="flex items-center gap-2 rounded-[var(--radius)] px-2 py-2 text-sm text-muted hover:bg-surface-hover hover:text-foreground"
+              className="flex items-center gap-2 rounded-[var(--radius)] px-2 py-2 text-sm text-muted-foreground hover:bg-surface-hover hover:text-foreground"
             >
               <Search className="size-4" aria-hidden /> {copy("searchCourses")}
             </button>
@@ -160,7 +160,7 @@ function LearnNavbar() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 {link.label}
               </Link>
@@ -214,7 +214,7 @@ function LearnFooter() {
           </Stack>
         </Stack>
         <Divider className="my-6" />
-        <Stack direction="row" justify="between" wrap gap={3} className="text-sm text-muted">
+        <Stack direction="row" justify="between" wrap gap={3} className="text-sm text-muted-foreground">
           <Text size="sm" tone="muted">
             © 2026 {brand.name} {brand.nameEn} {copy("demoSite")}
           </Text>
@@ -238,7 +238,7 @@ function FooterCol({ title, links }: { title: string; links: string[] }) {
           <Link
             key={l}
             href={LEARN_BASE}
-            className="text-sm text-muted transition-colors hover:text-foreground"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             {l}
           </Link>

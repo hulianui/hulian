@@ -31,7 +31,7 @@ const TONE_DOT: Record<EventStreamTone, string> = {
 };
 
 const TONE_TEXT: Record<EventStreamTone, string> = {
-  neutral: "text-muted",
+  neutral: "text-muted-foreground",
   info: "text-foreground",
   success: "text-foreground",
   warning: "text-foreground",
@@ -113,19 +113,19 @@ function Row({
               "cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg",
           )}
         >
-          <span className="shrink-0 font-mono text-xs tabular-nums text-muted">{item.ts}</span>
+          <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">{item.ts}</span>
           <span className={cn("min-w-0 flex-1 truncate text-sm", TONE_TEXT[tone])}>
             {item.title}
           </span>
           {item.meta != null && (
-            <span className="shrink-0 font-mono text-xs tabular-nums text-muted">{item.meta}</span>
+            <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">{item.meta}</span>
           )}
         </div>
 
         {item.overridden != null && (
           <div
             className={cn(
-              "mt-1 flex items-center gap-1.5 text-xs text-muted",
+              "mt-1 flex items-center gap-1.5 text-xs text-muted-foreground",
               side === "right" && "flex-row-reverse",
             )}
           >
@@ -138,7 +138,7 @@ function Row({
         )}
 
         {hasDetail && open && (
-          <div className="mt-1.5 rounded-[var(--radius)] bg-subtle px-2.5 py-2 text-xs leading-relaxed text-muted">
+          <div className="mt-1.5 rounded-[var(--radius)] bg-subtle px-2.5 py-2 text-xs leading-relaxed text-muted-foreground">
             {item.detail}
           </div>
         )}
@@ -183,7 +183,7 @@ function EventStreamImpl({
     return (
       <div
         className={cn(
-          "grid place-items-center rounded-[var(--radius)] border border-dashed border-border py-10 text-sm text-muted",
+          "grid place-items-center rounded-[var(--radius)] border border-dashed border-border py-10 text-sm text-muted-foreground",
           className,
         )}
       >

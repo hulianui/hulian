@@ -103,7 +103,7 @@ export function ComponentTree() {
           className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-colors ${
             animatedOnly
               ? "border-primary bg-primary/10 text-primary"
-              : "border-border text-muted hover:bg-surface-hover hover:text-foreground"
+              : "border-border text-muted-foreground hover:bg-surface-hover hover:text-foreground"
           }`}
         >
           <Sparkles className="size-3" aria-hidden />
@@ -114,7 +114,7 @@ export function ComponentTree() {
       {/* 这个框只筛**导航树**，筛不到正文的组件总览卡片 —— 旧文案「无匹配组件」会让人
           以为全站没有，而真正想找的整页/区块/模版就在别的货架上。空态直接给全站搜索出口。 */}
       {tree.length === 0 && (
-        <div className="px-2 py-6 text-sm text-muted">
+        <div className="px-2 py-6 text-sm text-muted-foreground">
           <p>{copy.noResults}</p>
           <Link
             href={`/search?q=${encodeURIComponent(query.trim())}`}
@@ -152,14 +152,14 @@ export function ComponentTree() {
               />
               <span>{categoryLabel}</span>
               {/* 计数是次级信息，随分类标题一起变重会喧宾夺主 —— 保持常规字重 + 弱色阶。 */}
-              <span className="ml-auto text-xs font-normal tabular-nums text-muted">{count}</span>
+              <span className="ml-auto text-xs font-normal tabular-nums text-muted-foreground">{count}</span>
             </button>
 
             {open && (
               <div className="mt-1 space-y-2">
                 {groups.map((g) => (
                   <div key={g.key}>
-                    <h4 className="px-2 pb-0.5 pl-7 text-xs font-medium text-muted">
+                    <h4 className="px-2 pb-0.5 pl-7 text-xs font-medium text-muted-foreground">
                       {componentMeta(g.items[0]).groupLabel}
                     </h4>
                     <ul className="space-y-0.5">
@@ -176,7 +176,7 @@ export function ComponentTree() {
                               className={`flex min-h-11 items-center gap-2 rounded-[var(--radius)] py-1.5 pl-7 pr-2 text-sm transition-colors ${
                                 active
                                   ? "bg-surface-hover font-medium text-foreground"
-                                  : "text-muted hover:bg-surface-hover hover:text-foreground"
+                                  : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                               }`}
                             >
                               {/* 中文名可截断（min-w-0 + truncate）：名字本身按 ≤6 汉字维护，
@@ -191,7 +191,7 @@ export function ComponentTree() {
                                 )}
                               </span>
                               {m.name !== localized.shortName && (
-                                <span className="ml-auto min-w-0 truncate text-xs text-muted">
+                                <span className="ml-auto min-w-0 truncate text-xs text-muted-foreground">
                                   {m.name}
                                 </span>
                               )}

@@ -70,7 +70,7 @@ export function MoveDialog({
       >
         <div className="space-y-4">
           <div className="rounded-[var(--radius)] border border-border bg-surface-hover/40 px-3 py-2 text-sm">
-            <p className="mb-1 text-xs text-muted">{copy("toBeMoved")}</p>
+            <p className="mb-1 text-xs text-muted-foreground">{copy("toBeMoved")}</p>
             <p className="line-clamp-3">{names.join(copy("itemNameSeparator"))}</p>
           </div>
           <div>

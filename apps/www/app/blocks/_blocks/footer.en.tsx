@@ -53,7 +53,7 @@ export function FooterBlock() {
               </Text>
               <ul className="mt-4 flex flex-col gap-3">
                 {col.links.map((label) => (<li key={label}>
-                    <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
+                    <Link href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
                       {label}
                     </Link>
                   </li>))}
@@ -83,14 +83,14 @@ export function FooterBlock() {
 
 
         <Divider className="my-10"/>
-        <div className="flex flex-col gap-4 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 HanCloud Technology · All rights reserved</p>
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="#" className="flex items-center gap-1.5 text-muted transition-colors hover:text-foreground">
+            <Link href="#" className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground">
               <Globe className="size-4" aria-hidden/>
               Simplified Chinese
             </Link>
-            <Link href="#" className="text-muted transition-colors hover:text-foreground">
+            <Link href="#" className="text-muted-foreground transition-colors hover:text-foreground">
               Guangdong ICP No. 2026000000
             </Link>
           </div>

@@ -16,12 +16,12 @@ export const borderBeamShowcase: ShowcaseSpec = {
       title: "基础用法",
       description: "BorderBeam 是 absolute inset-0 叠加层，放在 relative + rounded + overflow-hidden 容器内即沿边框绕行一束光。默认 primary→chart-2 渐变。",
       code: `<div className="relative h-40 w-72 overflow-hidden rounded-xl border border-border bg-surface">
-  <div className="grid h-full place-items-center text-sm text-muted">Border Beam</div>
+  <div className="grid h-full place-items-center text-sm text-muted-foreground">Border Beam</div>
   <BorderBeam />
 </div>`,
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Border Beam</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Border Beam</div>
           <BorderBeam />
         </Card>
       ),
@@ -32,7 +32,7 @@ export const borderBeamShowcase: ShowcaseSpec = {
       code: `<BorderBeam reverse duration={10} size={80} />`,
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Reverse</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Reverse</div>
           <BorderBeam reverse duration={10} size={80} />
         </Card>
       ),
@@ -43,7 +43,7 @@ export const borderBeamShowcase: ShowcaseSpec = {
       code: `<BorderBeam colorFrom="var(--color-chart-3)" colorTo="var(--color-chart-5)" borderWidth={2} />`,
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Custom Color</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Custom Color</div>
           <BorderBeam
             colorFrom="var(--color-chart-3)"
             colorTo="var(--color-chart-5)"
@@ -62,7 +62,7 @@ export const borderBeamShowcase: ShowcaseSpec = {
       name: "default（primary→chart 光束绕边）",
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Border Beam</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Border Beam</div>
           <BorderBeam />
         </Card>
       ),
@@ -71,7 +71,7 @@ export const borderBeamShowcase: ShowcaseSpec = {
       name: "反向 · 慢",
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Reverse</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Reverse</div>
           <BorderBeam reverse duration={10} size={80} />
         </Card>
       ),
@@ -79,7 +79,7 @@ export const borderBeamShowcase: ShowcaseSpec = {
   ],
   renderWithProps: (p) => (
     <Card>
-      <div className="grid h-full place-items-center text-sm text-muted">Border Beam</div>
+      <div className="grid h-full place-items-center text-sm text-muted-foreground">Border Beam</div>
       <BorderBeam duration={p.duration as number} size={p.size as number} />
     </Card>
   ),

@@ -4,7 +4,7 @@ import type { BreadcrumbProps } from "./breadcrumb.types";
 
 // 纯皮肤 + 正确 a11y 语义（零 Base UI、零浮层、零 Portal，纯静态可 RSC，照 badge/alert 范式）：
 // <nav aria-label> → <ol> → 每项 <li>；链接项 <a>，当前页 <span aria-current="page"> 且不可点；
-// 分隔符落独立 <li aria-hidden> 装饰位。只消费语义 token（text-muted/text-foreground/border）。
+// 分隔符落独立 <li aria-hidden> 装饰位。只消费语义 token（text-muted-foreground/text-foreground/border）。
 function BreadcrumbImpl({
   items,
   separator = "/",
@@ -26,16 +26,16 @@ function BreadcrumbImpl({
                     {item.label}
                   </span>
                 ) : item.href != null ? (
-                  <a href={item.href} className="text-muted hover:text-foreground">
+                  <a href={item.href} className="text-muted-foreground hover:text-foreground">
                     {item.label}
                   </a>
                 ) : (
                   // 无 href 的非当前项：不可导航的祖先，渲染为中性纯文本
-                  <span className="text-muted">{item.label}</span>
+                  <span className="text-muted-foreground">{item.label}</span>
                 )}
               </li>
               {!isLast && (
-                <li aria-hidden="true" className="select-none text-muted [&>svg]:size-3.5">
+                <li aria-hidden="true" className="select-none text-muted-foreground [&>svg]:size-3.5">
                   {separator}
                 </li>
               )}

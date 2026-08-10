@@ -72,7 +72,7 @@ export default function PersonalHomePage() {
                       <a
                         href={link.href}
                         aria-label={link.label}
-                        className="flex size-full items-center justify-center text-muted transition-colors hover:text-foreground"
+                        className="flex size-full items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
                       >
                         <Icon className="size-5" aria-hidden />
                       </a>

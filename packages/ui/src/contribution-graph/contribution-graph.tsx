@@ -93,7 +93,7 @@ function ContributionGraphImpl({
     : { role: "img", "aria-label": locale.summary(calendar.days.length, calendar.total) };
 
   const legend = showLegend && (
-    <div className="flex items-center gap-1 text-[10px] leading-none text-muted">
+    <div className="flex items-center gap-1 text-[10px] leading-none text-muted-foreground">
       <span>{locale.less}</span>
       {Array.from({ length: levels + 1 }, (_, i) => (
         <span
@@ -130,7 +130,7 @@ function ContributionGraphImpl({
       <div className="flex max-w-full" style={{ gap }}>
         {showWeekdayLabels && (
           <div
-            className="grid text-[10px] leading-none text-muted"
+            className="grid text-[10px] leading-none text-muted-foreground"
             style={{
               gridTemplateRows: `repeat(7, ${cellSize}px)`,
               gap,
@@ -148,7 +148,7 @@ function ContributionGraphImpl({
         <div className="min-w-0 overflow-x-auto">
           {showMonthLabels && (
             <div
-              className="grid text-[10px] leading-none text-muted"
+              className="grid text-[10px] leading-none text-muted-foreground"
               style={{
                 gridTemplateColumns: `repeat(${calendar.weeks.length}, ${cellSize}px)`,
                 gap,

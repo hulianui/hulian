@@ -43,7 +43,7 @@ import { MagicCard } from "@hulianui/ui"
 <MagicCard className="h-44 w-72">
   <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
     <span className="text-lg font-semibold text-foreground">Magic Card</span>
-    <span className="text-sm text-muted">把鼠标移上来看高光</span>
+    <span className="text-sm text-muted-foreground">把鼠标移上来看高光</span>
   </div>
 </MagicCard>
 ```

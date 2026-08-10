@@ -43,7 +43,7 @@ import { OrbitingCircles } from "@hulianui/ui"
 ```tsx
 // Two tracks rotating in opposite directions.
 <div className="relative flex size-[340px] items-center justify-center">
-  <span className="text-sm font-medium text-muted">Hulian</span>
+  <span className="text-sm font-medium text-muted-foreground">Hulian</span>
   <OrbitingCircles radius={140} duration={20}>
     <Icon /><Icon /><Icon /><Icon />
   </OrbitingCircles>

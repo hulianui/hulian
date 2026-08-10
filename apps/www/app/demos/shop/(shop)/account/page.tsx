@@ -170,7 +170,7 @@ function AddressBook() {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-foreground">{addr.name}</span>
-                <span className="text-sm text-muted">{addr.phone}</span>
+                <span className="text-sm text-muted-foreground">{addr.phone}</span>
                 {addr.isDefault && (
                   <span className="rounded-sm bg-primary/12 px-1.5 py-0.5 text-xs font-medium text-primary">
 
@@ -178,7 +178,7 @@ function AddressBook() {
                   </span>
                 )}
               </div>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 {addr.region} {addr.detail}
               </span>
             </div>

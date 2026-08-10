@@ -67,7 +67,7 @@ export function FooterBlock() {
                   <li key={label}>
                     <Link
                       href="#"
-                      className="text-sm text-muted transition-colors hover:text-foreground"
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {label}
                     </Link>
@@ -109,19 +109,19 @@ export function FooterBlock() {
 
         {/* 底部：版权 + 语言 + 备案 */}
         <Divider className="my-10" />
-        <div className="flex flex-col gap-4 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 瀚云科技 · 保留所有权利</p>
           <div className="flex flex-wrap items-center gap-4">
             <Link
               href="#"
-              className="flex items-center gap-1.5 text-muted transition-colors hover:text-foreground"
+              className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
             >
               <Globe className="size-4" aria-hidden />
               简体中文
             </Link>
             <Link
               href="#"
-              className="text-muted transition-colors hover:text-foreground"
+              className="text-muted-foreground transition-colors hover:text-foreground"
             >
               粤ICP备 2026000000 号
             </Link>

@@ -89,7 +89,7 @@ function FieldRow({
           {field.label}
         </span>
         {field.hint && (
-          <span className="block truncate text-[0.6875rem] text-muted">{field.hint}</span>
+          <span className="block truncate text-[0.6875rem] text-muted-foreground">{field.hint}</span>
         )}
       </div>
       <div className="min-w-0 flex-1">{children}</div>
@@ -231,14 +231,14 @@ function InspectorPanelImpl({
         <header className="flex min-w-0 items-center justify-between gap-2 border-b border-border px-3 py-2.5">
           <span className="truncate text-sm font-medium">{heading}</span>
           {selectedElement && (
-            <span className="truncate rounded-[min(var(--radius),0.375rem)] bg-surface-hover px-1.5 py-0.5 font-mono text-xs text-muted">
+            <span className="truncate rounded-[min(var(--radius),0.375rem)] bg-surface-hover px-1.5 py-0.5 font-mono text-xs text-muted-foreground">
               {selectedElement}
             </span>
           )}
         </header>
       )}
       {empty ? (
-        <p className="px-3 py-8 text-center text-sm text-muted">{emptyText ?? text.empty}</p>
+        <p className="px-3 py-8 text-center text-sm text-muted-foreground">{emptyText ?? text.empty}</p>
       ) : (
         resolved.map((section) => (
           <SectionBlock

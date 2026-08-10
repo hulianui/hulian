@@ -54,7 +54,7 @@ export function ContextMenuSeparator({ className }: { className?: string }) {
 
 export function ContextMenuGroupLabel({ children, className }: { children?: ReactNode; className?: string }) {
   return (
-    <BaseContextMenu.GroupLabel className={cn("px-2 py-1.5 text-xs font-medium text-muted", className)}>
+    <BaseContextMenu.GroupLabel className={cn("px-2 py-1.5 text-xs font-medium text-muted-foreground", className)}>
       {children}
     </BaseContextMenu.GroupLabel>
   );
@@ -85,7 +85,7 @@ export function ContextMenuSubTrigger({ variant, className, children, ...props }
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="ml-auto size-4 shrink-0 text-muted"
+        className="ml-auto size-4 shrink-0 text-muted-foreground"
       >
         <path d="m9 18 6-6-6-6" />
       </svg>

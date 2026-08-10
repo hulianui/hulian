@@ -44,7 +44,7 @@ const shellVariants = cva(
   },
 );
 
-const shellIconVariants = cva("shrink-0 text-muted", {
+const shellIconVariants = cva("shrink-0 text-muted-foreground", {
   variants: { size: { sm: "size-3.5", md: "size-4", lg: "size-5" } },
   defaultVariants: { size: "md" },
 });
@@ -191,7 +191,7 @@ function TimeFieldImpl({
       <span className="inline-flex items-center">
         {segments.map((seg, i) => (
           <span key={seg} className="inline-flex items-center">
-            {i > 0 && <span className="px-0.5 text-muted">:</span>}
+            {i > 0 && <span className="px-0.5 text-muted-foreground">:</span>}
             <span
               ref={(el) => {
                 segRefs.current[seg] = el;
@@ -206,7 +206,7 @@ function TimeFieldImpl({
               aria-readonly={readOnly || undefined}
               onKeyDown={(e) => handleKeyDown(e, seg)}
               onBlur={() => setBuffer("")}
-              className={cn(segClass, parts[seg] == null && "text-muted")}
+              className={cn(segClass, parts[seg] == null && "text-muted-foreground")}
             >
               {segmentText(parts, seg)}
             </span>
@@ -218,7 +218,7 @@ function TimeFieldImpl({
           type="button"
           aria-label={labels.clear}
           onClick={clearAll}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
         >
           <X className="size-4" />
         </button>

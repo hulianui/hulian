@@ -183,7 +183,7 @@ function PlanCard({
                       render={
                         <button
                           type="button"
-                          className="mt-0.5 shrink-0 text-muted transition-colors hover:text-foreground focus-visible:outline-none"
+                          className="mt-0.5 shrink-0 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none"
                           aria-label={`了解更多：${f}`}
                         >
                           <HelpCircle className="size-3.5" aria-hidden />

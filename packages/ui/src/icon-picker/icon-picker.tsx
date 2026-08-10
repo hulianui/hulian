@@ -91,7 +91,7 @@ function IconPickerImpl({
   const renderGrid = (items: Hit[], emptyHint?: ReactNode) =>
     items.length === 0 ? (
       emptyHint ? (
-        <div className="grid place-items-center py-10 text-sm text-muted">{emptyHint}</div>
+        <div className="grid place-items-center py-10 text-sm text-muted-foreground">{emptyHint}</div>
       ) : null
     ) : (
       <div
@@ -144,7 +144,7 @@ function IconPickerImpl({
             onChange={(e) => setQuery(e.target.value)}
             placeholder={resolvedSearchPlaceholder}
             aria-label={resolvedSearchPlaceholder}
-            prefix={<Search className="size-4 text-muted" />}
+            prefix={<Search className="size-4 text-muted-foreground" />}
           />
         </div>
       )}
@@ -163,7 +163,7 @@ function IconPickerImpl({
                 "shrink-0 rounded-[min(var(--radius),0.5rem)] px-2 py-1 text-xs transition-colors [&>svg]:size-4",
                 s.key === current?.key
                   ? "bg-primary/12 text-primary"
-                  : "text-muted hover:bg-surface-hover",
+                  : "text-muted-foreground hover:bg-surface-hover",
               )}
             >
               {s.tabIcon ?? s.label}
@@ -174,7 +174,7 @@ function IconPickerImpl({
 
       {clearable && value != null && (
         <div className="flex items-center justify-between gap-2 border-b border-border px-2 py-1.5 text-xs">
-          <span className="flex min-w-0 items-center gap-1.5 text-muted">
+          <span className="flex min-w-0 items-center gap-1.5 text-muted-foreground">
             <span className="shrink-0 text-foreground [&>svg]:size-4">
               {sourceOf(value)?.renderIcon(value)}
             </span>
@@ -184,7 +184,7 @@ function IconPickerImpl({
             type="button"
             aria-label={locale.clear}
             onClick={() => commit(null)}
-            className="grid size-5 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none"
+            className="grid size-5 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-none"
           >
             <X className="size-3.5" />
           </button>
@@ -198,14 +198,14 @@ function IconPickerImpl({
           <>
             {recentHits.length > 0 && (
               <div className="mb-2">
-                <div className="px-1 pb-1 text-xs font-medium text-muted">{locale.recent}</div>
+                <div className="px-1 pb-1 text-xs font-medium text-muted-foreground">{locale.recent}</div>
                 {renderGrid(recentHits)}
               </div>
             )}
             {current && (
               <>
                 {sources.length > 1 && (
-                  <div className="px-1 pb-1 text-xs font-medium text-muted">{current.label}</div>
+                  <div className="px-1 pb-1 text-xs font-medium text-muted-foreground">{current.label}</div>
                 )}
                 {renderGrid(current.icons.map((i) => ({ name: i.name, source: current })))}
               </>

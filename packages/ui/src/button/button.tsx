@@ -44,7 +44,7 @@ export const buttonVariants = cva(BUTTON_BASE_CLASS, {
       },
       // neutral solid 走「反色」而不是灰底：灰底实心与 outline 几乎不可分辨，而反色是
       // 明确的「次主操作」。hover 落到 muted，两个主题都朝对比更弱的方向走一步。
-      { variant: "solid", tone: "neutral", class: "bg-foreground text-bg hover:bg-muted" },
+      { variant: "solid", tone: "neutral", class: "bg-foreground text-bg hover:bg-muted-foreground" },
       { variant: "outline", tone: "danger", class: "border-danger text-danger" },
       { variant: "outline", tone: "success", class: "border-success text-success" },
       { variant: "outline", tone: "warning", class: "border-warning text-warning" },

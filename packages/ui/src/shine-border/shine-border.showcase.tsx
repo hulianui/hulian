@@ -15,12 +15,12 @@ export const shineBorderShowcase: ShowcaseSpec = {
       title: "基础用法",
       description: "ShineBorder 是 absolute inset-0 流光边框层，放进 relative + rounded 容器内即得整条边框的流动微光。默认 chart 三色渐变。",
       code: `<div className="relative h-40 w-72 overflow-hidden rounded-xl bg-surface">
-  <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+  <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
   <ShineBorder />
 </div>`,
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
           <ShineBorder />
         </Card>
       ),
@@ -31,7 +31,7 @@ export const shineBorderShowcase: ShowcaseSpec = {
       code: `<ShineBorder borderWidth={2} shineColor="var(--color-primary)" />`,
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Single</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Single</div>
           <ShineBorder borderWidth={2} shineColor="var(--color-primary)" />
         </Card>
       ),
@@ -45,7 +45,7 @@ export const shineBorderShowcase: ShowcaseSpec = {
 />`,
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Multi · Fast</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Multi · Fast</div>
           <ShineBorder
             shineColor={[
               "var(--color-chart-2)",
@@ -67,7 +67,7 @@ export const shineBorderShowcase: ShowcaseSpec = {
       name: "default（chart 流光边）",
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
           <ShineBorder />
         </Card>
       ),
@@ -76,7 +76,7 @@ export const shineBorderShowcase: ShowcaseSpec = {
       name: "粗边 · primary 单色",
       render: () => (
         <Card>
-          <div className="grid h-full place-items-center text-sm text-muted">Single</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Single</div>
           <ShineBorder borderWidth={2} shineColor="var(--color-primary)" />
         </Card>
       ),
@@ -84,7 +84,7 @@ export const shineBorderShowcase: ShowcaseSpec = {
   ],
   renderWithProps: (p) => (
     <Card>
-      <div className="grid h-full place-items-center text-sm text-muted">Shine Border</div>
+      <div className="grid h-full place-items-center text-sm text-muted-foreground">Shine Border</div>
       <ShineBorder borderWidth={p.borderWidth as number} duration={p.duration as number} />
     </Card>
   ),

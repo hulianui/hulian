@@ -27,7 +27,7 @@ function IdPhotoDemo({ aspect = 5 / 7, maxZoom = 3 }: { aspect?: number; maxZoom
         onCropped={(blob) => setResult(`已出图 ${blob.type} · ${(blob.size / 1024).toFixed(1)} KB`)}
         onCancel={() => setResult("已取消")}
       />
-      {result && <div className="text-sm text-muted">{result}</div>}
+      {result && <div className="text-sm text-muted-foreground">{result}</div>}
     </div>
   );
 }

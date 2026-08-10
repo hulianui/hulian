@@ -105,7 +105,7 @@ export function PromptInputBlock() {
                   "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                   deepThink
                     ? "bg-primary/10 text-primary"
-                    : "text-muted hover:bg-surface-hover hover:text-foreground",
+                    : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                 ].join(" ")}
               >
                 <Sparkles className="size-3.5" aria-hidden />
@@ -119,7 +119,7 @@ export function PromptInputBlock() {
                   "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                   webSearch
                     ? "bg-primary/10 text-primary"
-                    : "text-muted hover:bg-surface-hover hover:text-foreground",
+                    : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                 ].join(" ")}
               >
                 <Globe className="size-3.5" aria-hidden />
@@ -132,7 +132,7 @@ export function PromptInputBlock() {
               variant="ghost"
               size="iconSm"
               aria-label="添加附件"
-              className="shrink-0 text-muted hover:text-foreground"
+              className="shrink-0 text-muted-foreground hover:text-foreground"
             >
               <Paperclip className="size-4" />
             </Button>

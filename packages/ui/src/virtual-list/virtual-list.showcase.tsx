@@ -15,7 +15,7 @@ function Demo() {
         renderItem={(r) => (
           <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 text-sm text-foreground">
             <span>{r.name}</span>
-            <span className="text-xs text-muted">#{r.id}</span>
+            <span className="text-xs text-muted-foreground">#{r.id}</span>
           </div>
         )}
       />
@@ -60,7 +60,7 @@ export const virtualListShowcase: ShowcaseSpec = {
                 style={{ height: i % 3 === 0 ? 72 : 44 }}
               >
                 <span>{r.name}</span>
-                <span className="text-xs text-muted">#{r.id}</span>
+                <span className="text-xs text-muted-foreground">#{r.id}</span>
               </div>
             )}
           />

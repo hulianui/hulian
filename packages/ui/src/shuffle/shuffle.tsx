@@ -7,7 +7,7 @@ import type { ShuffleProps } from "./shuffle.types";
 // 吸取自 React Bits Shuffle：逐字「洗牌/解密」——每个字位先滚动随机乱码，再按方向顺序锁定为真字。
 // 瑚琏化：去掉 gsap / ScrollTrigger / SplitText 三件套，改纯 requestAnimationFrame + motion useInView；
 // "use client" + useReducedMotion 门控（reduced-motion 直接渲染终态文本，DOM 两态字符一致，避 reveal 不可见坑）；
-// 颜色走 token（text-foreground），乱码态 text-muted，无品牌硬编码色。
+// 颜色走 token（text-foreground），乱码态 text-muted-foreground，无品牌硬编码色。
 
 const DEFAULT_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@*";
 

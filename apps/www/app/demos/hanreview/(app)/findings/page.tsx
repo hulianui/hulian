@@ -154,7 +154,7 @@ export default function FindingsPage() {
       accessorKey: "file",
       header: copy("fileLine"),
       cell: ({ row }) => (
-        <span className="font-mono text-xs text-muted">
+        <span className="font-mono text-xs text-muted-foreground">
           {row.original.file}:{row.original.line}
         </span>
       ),
@@ -187,7 +187,7 @@ export default function FindingsPage() {
       accessorKey: "firstSeen",
       header: copy("firstAppearance"),
       cell: ({ row }) => (
-        <span className="tabular-nums text-xs text-muted">{row.original.firstSeen}</span>
+        <span className="tabular-nums text-xs text-muted-foreground">{row.original.firstSeen}</span>
       ),
     },
     {
@@ -352,8 +352,8 @@ export default function FindingsPage() {
                 <h4 className="text-sm font-medium text-foreground">
                   {copy("problemDescription")}
                 </h4>
-                <p className="text-sm text-muted">{active.ruleDesc}</p>
-                <p className="font-mono text-xs text-muted">
+                <p className="text-sm text-muted-foreground">{active.ruleDesc}</p>
+                <p className="font-mono text-xs text-muted-foreground">
                   {active.file}:{active.line} ·{" "}
                   <Link
                     href={`/demos/hanreview/reviews/${active.reviewId}`}

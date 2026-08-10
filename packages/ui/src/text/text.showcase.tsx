@@ -120,7 +120,7 @@ export const textShowcase: ShowcaseSpec = {
       render: () => (
         <div className="flex flex-col gap-1.5">
           <Text>默认正文 default · text-foreground</Text>
-          <Text tone="muted">辅助说明 muted · text-muted</Text>
+          <Text tone="muted">辅助说明 muted · text-muted-foreground</Text>
           <Text tone="primary">强调文本 primary · text-primary</Text>
           <Text tone="success">成功结果 success · text-success</Text>
           <Text tone="warning">留意警示 warning · text-warning</Text>

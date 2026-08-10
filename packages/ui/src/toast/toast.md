@@ -37,7 +37,7 @@ import { toast, ToastProvider } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | title | `ReactNode` | 标题（加粗主行） |
-| description | `ReactNode` | 描述（次行，恒 text-muted） |
+| description | `ReactNode` | 描述（次行，恒 text-muted-foreground） |
 
 `ToastProvider` 在根/段落 layout 单挂，承接命令式渲染。`children` 可选且透传渲染：包裹式 `<ToastProvider><App/></ToastProvider>` 与自闭合 `<ToastProvider />`（与页面内容并列兄弟）两种写法均可。
 

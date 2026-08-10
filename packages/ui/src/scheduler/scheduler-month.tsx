@@ -56,7 +56,7 @@ export function MonthView({
       {/* 星期表头 */}
       <div className="grid grid-cols-7 border-b border-border bg-surface">
         {weekdays.map((w) => (
-          <div key={w} className="px-2 py-2 text-center text-xs font-medium text-muted">
+          <div key={w} className="px-2 py-2 text-center text-xs font-medium text-muted-foreground">
             {w}
           </div>
         ))}
@@ -92,7 +92,7 @@ export function MonthView({
                       "mb-0.5 inline-flex size-6 shrink-0 items-center justify-center self-start rounded-full text-xs tabular-nums transition-colors",
                       isToday && "bg-primary font-medium text-primary-foreground",
                       !isToday && inMonth && "text-foreground hover:bg-surface-hover",
-                      !isToday && !inMonth && "text-muted",
+                      !isToday && !inMonth && "text-muted-foreground",
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -124,7 +124,7 @@ export function MonthView({
                       </button>
                     ))}
                     {more > 0 && (
-                      <span className="px-1 text-[11px] text-muted">{moreLabel(more)}</span>
+                      <span className="px-1 text-[11px] text-muted-foreground">{moreLabel(more)}</span>
                     )}
                   </div>
                 </div>

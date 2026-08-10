@@ -123,7 +123,7 @@ function ColorFieldImpl({
           onBlur?.(e);
         }}
         {...((invalid || draftInvalid) && { "data-invalid": "", "aria-invalid": true })}
-        className="w-full bg-transparent text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed"
+        className="w-full bg-transparent text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
       />
     </span>
   );

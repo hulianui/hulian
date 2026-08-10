@@ -38,11 +38,11 @@ export const mathShowcase: ShowcaseSpec = {
         return (
           <div className="w-full space-y-3">
             <div className="rounded-lg border border-border p-3">
-              <div className="mb-1.5 text-xs text-muted">直接当文本渲染</div>
+              <div className="mb-1.5 text-xs text-muted-foreground">直接当文本渲染</div>
               <p className="text-base leading-8">{src}</p>
             </div>
             <div className="rounded-lg border border-border p-3">
-              <div className="mb-1.5 text-xs text-muted">Formula</div>
+              <div className="mb-1.5 text-xs text-muted-foreground">Formula</div>
               <p className="text-base leading-8">
                 <Formula>{src}</Formula>
               </p>
@@ -87,8 +87,8 @@ export const mathShowcase: ShowcaseSpec = {
 <div className="grid gap-3 sm:grid-cols-2">
   {NOTATIONS.map(({ label, src }) => (
     <div key={src} className="rounded-lg border border-border p-3">
-      <div className="text-xs text-muted">{label}</div>
-      <code className="mt-1 block font-mono text-xs break-all text-muted">{src}</code>
+      <div className="text-xs text-muted-foreground">{label}</div>
+      <code className="mt-1 block font-mono text-xs break-all text-muted-foreground">{src}</code>
       <p className="mt-2 border-t border-border pt-2 text-base leading-8">
         <Formula>{src}</Formula>
       </p>
@@ -99,8 +99,8 @@ export const mathShowcase: ShowcaseSpec = {
         <div className="grid w-full gap-3 sm:grid-cols-2">
           {NOTATIONS.map(({ label, src }) => (
             <div key={src} className="rounded-lg border border-border p-3">
-              <div className="text-xs text-muted">{label}</div>
-              <code className="mt-1 block font-mono text-xs break-all text-muted">{src}</code>
+              <div className="text-xs text-muted-foreground">{label}</div>
+              <code className="mt-1 block font-mono text-xs break-all text-muted-foreground">{src}</code>
               <p className="mt-2 border-t border-border pt-2 text-base leading-8">
                 <Formula>{src}</Formula>
               </p>

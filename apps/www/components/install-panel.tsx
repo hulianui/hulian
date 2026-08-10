@@ -34,7 +34,7 @@ function Row({
       <dt className="text-sm font-medium">
         {label}
         {hint && (
-          <span className="ml-1 block text-xs font-normal text-muted sm:inline">{hint}</span>
+          <span className="ml-1 block text-xs font-normal text-muted-foreground sm:inline">{hint}</span>
         )}
       </dt>
       <dd className="min-w-0 text-sm">{children}</dd>
@@ -79,7 +79,7 @@ export function InstallPanel({ model, kind }: { model: InstallModel; kind: "bloc
                         className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         {dep.title}
-                        <span className="font-mono text-muted">{dep.name}</span>
+                        <span className="font-mono text-muted-foreground">{dep.name}</span>
                       </Link>
                     ) : (
                       <Mono>{dep.name}</Mono>

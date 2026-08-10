@@ -119,7 +119,7 @@ describe("Descriptions", () => {
     expect(cell.style.gridColumn).toContain("span 2");
   });
 
-  it("label 用 text-muted，value 用 text-foreground", () => {
+  it("label 用 text-muted-foreground，value 用 text-foreground", () => {
     const { getByText } = render(
       <Descriptions>
         <DescriptionsItem label="键">值内容</DescriptionsItem>
@@ -127,7 +127,7 @@ describe("Descriptions", () => {
     );
     const label = getByText("键");
     const value = getByText("值内容");
-    expect(label.className).toContain("text-muted");
+    expect(label.className).toContain("text-muted-foreground");
     expect(value.className).toContain("text-foreground");
   });
 

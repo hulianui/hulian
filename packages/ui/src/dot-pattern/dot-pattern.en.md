@@ -33,7 +33,7 @@ import { DotPattern } from "@hulianui/ui"
 | x | `number` | `0` | pattern overall x offset |
 | y | `number` | `0` | pattern overall y offset |
 
-> Inherits `ComponentPropsWithoutRef<"svg">` (`className`, etc.). The color is `currentColor`, which is controlled by the `text-*` tool class (such as `text-muted`).
+> Inherits `ComponentPropsWithoutRef<"svg">` (`className`, etc.). The color is `currentColor`, which is controlled by the `text-*` tool class (such as `text-muted-foreground`).
 
 ## Examples
 ```tsx
@@ -41,7 +41,7 @@ import { DotPattern } from "@hulianui/ui"
   <DotPattern />
 </div>
 
-<DotPattern width={28} height={28} cr={1.4} className="text-muted" />
+<DotPattern width={28} height={28} cr={1.4} className="text-muted-foreground" />
 ```
 
 ## Usage Guidelines

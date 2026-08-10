@@ -66,7 +66,7 @@ function Step({ title, detail }: { title: string; detail: string }) {
   return (
     <div className="text-sm">
       <span className="font-medium text-foreground">{title}</span>
-      <div className="text-xs text-muted">{detail}</div>
+      <div className="text-xs text-muted-foreground">{detail}</div>
     </div>
   );
 }
@@ -149,7 +149,7 @@ export function LogDetailDrawer({ log, onClose }: { log: RequestLog | null; onCl
                     </div>
                   </>
                 ) : (
-                  <span className="text-muted">{copy("thisRequestWasUnsuccessfulAndWillNot")}{formatUsd(0)}）。</span>
+                  <span className="text-muted-foreground">{copy("thisRequestWasUnsuccessfulAndWillNot")}{formatUsd(0)}）。</span>
                 )}
               </CardBody>
             </Card>
@@ -195,8 +195,8 @@ export function LogDetailDrawer({ log, onClose }: { log: RequestLog | null; onCl
 function Row({ k, v, muted }: { k: string; v: string; muted?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-muted">{k}</span>
-      <span className={muted ? "text-muted" : "tabular-nums text-foreground"}>{v}</span>
+      <span className="text-muted-foreground">{k}</span>
+      <span className={muted ? "text-muted-foreground" : "tabular-nums text-foreground"}>{v}</span>
     </div>
   );
 }

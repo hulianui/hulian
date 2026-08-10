@@ -127,7 +127,7 @@ export function Watermark({
       // canvas 的 fillStyle 不认识 CSS var()/语义 token（赋值非法会被忽略 → 退回默认黑色）。
       // 故先用一个隐藏探针元素承载该颜色，经 getComputedStyle 解析成具体 rgb() 再喂给 canvas。
       const probe = document.createElement("span");
-      probe.style.color = color || "var(--color-muted)";
+      probe.style.color = color || "var(--color-muted-foreground)";
       probe.style.display = "none";
       containerRef.current.appendChild(probe);
       const resolved = getComputedStyle(probe).color;

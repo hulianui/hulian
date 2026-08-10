@@ -115,7 +115,7 @@ function NodeCard({ node }: {
         </Tag>
       </header>
       <div className="px-3 pb-3">
-        <p className="text-xs leading-relaxed text-muted">{subtitle}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">{subtitle}</p>
       </div>
     </div>);
 }

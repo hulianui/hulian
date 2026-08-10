@@ -185,7 +185,7 @@ function GanttImpl({
     return (
       <div
         className={cn(
-          "rounded-[var(--radius)] border border-border bg-surface p-8 text-center text-sm text-muted",
+          "rounded-[var(--radius)] border border-border bg-surface p-8 text-center text-sm text-muted-foreground",
           className,
         )}
         {...props}
@@ -218,10 +218,10 @@ function GanttImpl({
       <div
         className={cn(
           "overflow-x-auto overscroll-x-contain",
-          "[scrollbar-width:thin] [scrollbar-color:var(--color-muted)_transparent]",
+          "[scrollbar-width:thin] [scrollbar-color:var(--color-muted-foreground)_transparent]",
           "[&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent",
-          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted/50",
-          "hover:[&::-webkit-scrollbar-thumb]:bg-muted/80",
+          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/50",
+          "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/80",
         )}
       >
         <div style={{ minWidth: `calc(180px + ${minWidth}px)` }}>
@@ -232,7 +232,7 @@ function GanttImpl({
             role="row"
           >
             <div
-              className="flex items-center border-r border-border px-3 py-2 text-xs font-medium text-muted"
+              className="flex items-center border-r border-border px-3 py-2 text-xs font-medium text-muted-foreground"
               role="columnheader"
             >
               {locale?.process ?? "工序"}
@@ -243,7 +243,7 @@ function GanttImpl({
                   <div
                     key={i}
                     className={cn(
-                      "flex items-center justify-center border-r border-border/60 py-2 text-[11px] tabular-nums text-muted",
+                      "flex items-center justify-center border-r border-border/60 py-2 text-[11px] tabular-nums text-muted-foreground",
                       i === ticks.length - 1 && "border-r-0",
                     )}
                     style={{ flex: `${tk.span} 1 0`, minWidth: 0 }}
@@ -282,7 +282,7 @@ function GanttImpl({
                     role="row"
                   >
                     <div
-                      className="col-span-2 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted"
+                      className="col-span-2 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
                       role="cell"
                     >
                       {row.label}

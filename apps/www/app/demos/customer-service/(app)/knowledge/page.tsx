@@ -124,7 +124,7 @@ export default function KnowledgePage() {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           placeholder={copy("searchArticleTitleContent")}
-          prefix={<Search className="size-4 text-muted" />}
+          prefix={<Search className="size-4 text-muted-foreground" />}
           className="sm:max-w-xs"
         />
         <Segmented
@@ -140,7 +140,7 @@ export default function KnowledgePage() {
       {loading ? (
         <CardSkeleton count={6} />
       ) : list.length === 0 ? (
-        <div className="grid place-items-center rounded-[var(--radius)] border border-dashed border-border py-16 text-sm text-muted">{copy("noMatch")}{keyword || category}{copy("articles")}</div>
+        <div className="grid place-items-center rounded-[var(--radius)] border border-dashed border-border py-16 text-sm text-muted-foreground">{copy("noMatch")}{keyword || category}{copy("articles")}</div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((a) => (
@@ -169,7 +169,7 @@ export default function KnowledgePage() {
                 <Text size="sm" tone="muted" className="line-clamp-2 flex-1">
                   {a.excerpt}
                 </Text>
-                <div className="mt-1 flex items-center justify-between gap-4 text-xs text-muted">
+                <div className="mt-1 flex items-center justify-between gap-4 text-xs text-muted-foreground">
                   <div className="flex items-center gap-4">
                     <span className="inline-flex items-center gap-1">
                       <Eye className="size-3.5" /> {a.views.toLocaleString("zh-CN")}
@@ -192,7 +192,7 @@ export default function KnowledgePage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="size-6 px-0 text-muted hover:text-danger"
+                            className="size-6 px-0 text-muted-foreground hover:text-danger"
                             aria-label={copy("deleteArticle")}
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -234,7 +234,7 @@ export default function KnowledgePage() {
         >
           {active && (
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3 text-xs text-muted">
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <Tag tone="brand" size="sm" variant="soft">
                   {active.category}
                 </Tag>

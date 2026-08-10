@@ -25,7 +25,7 @@ function SliderImpl({ className, showValue, ...props }: SliderProps) {
     >
       {showValue && (
         <div className="mb-2 flex items-center justify-end text-sm text-foreground">
-          <BaseSlider.Value className="tabular-nums text-muted" />
+          <BaseSlider.Value className="tabular-nums text-muted-foreground" />
         </div>
       )}
       <BaseSlider.Control className="relative flex w-full touch-none items-center py-2">

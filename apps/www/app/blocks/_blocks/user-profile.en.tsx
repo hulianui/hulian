@@ -66,7 +66,7 @@ function OrdersTab() {
 
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-foreground">{order.name}</p>
-              <p className="mt-0.5 text-xs text-muted">{order.date}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{order.date}</p>
               <div className="mt-1.5 flex items-center justify-between">
                 <span className="text-sm font-semibold text-foreground">{formatPrice(order.price)}</span>
                 <Tag tone={STATUS_TONE[order.status]} size="sm" variant="soft">
@@ -74,7 +74,7 @@ function OrdersTab() {
                 </Tag>
               </div>
             </div>
-            <ChevronRight className="size-4 shrink-0 text-muted" aria-hidden/>
+            <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden/>
           </div>
         </ListItem>))}
     </List>);
@@ -84,16 +84,16 @@ function AddressTab() {
       {ADDRESSES.map((addr) => (<div key={addr.id} className="rounded-xl border border-border bg-surface p-4">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-start gap-2">
-              <MapPin className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden/>
+              <MapPin className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden/>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-foreground">{addr.name}</span>
-                  <span className="text-sm text-muted">{addr.phone}</span>
+                  <span className="text-sm text-muted-foreground">{addr.phone}</span>
                   {addr.isDefault && (<span className="rounded-sm bg-primary/12 px-1.5 py-0.5 text-xs font-medium text-primary">
                       Default
                     </span>)}
                 </div>
-                <p className="mt-0.5 text-xs text-muted">{addr.addr}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{addr.addr}</p>
               </div>
             </div>
             <Button variant="ghost" size="sm" onClick={() => toast({ title: `Edit address: ${addr.name} (demo)`, tone: "info" })}>

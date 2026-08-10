@@ -191,7 +191,7 @@ function SortedWithParams() {
   return (
     <div className="flex w-full flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted">部门（固定查询参数）</span>
+        <span className="text-sm text-muted-foreground">部门（固定查询参数）</span>
         {DEPTS.map((d) => (
           <Button
             key={d}

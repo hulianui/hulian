@@ -50,12 +50,12 @@ function CommentRow({
               {sev.label}
             </Tag>
           )}
-          {c.time != null && <span className="text-xs text-muted">{c.time}</span>}
+          {c.time != null && <span className="text-xs text-muted-foreground">{c.time}</span>}
         </div>
         <div className="mt-1 text-sm text-foreground">{c.body}</div>
         {c.suggestion && (
           <div className="mt-2 space-y-1">
-            <div className="text-xs text-muted">{labels.suggestedChange}</div>
+            <div className="text-xs text-muted-foreground">{labels.suggestedChange}</div>
             <CodeDiff oldText={c.suggestion.oldText ?? ""} newText={c.suggestion.newText} />
             <Button
               variant="outline"
@@ -131,7 +131,7 @@ function CodeReviewThreadImpl({
         <button
           type="button"
           onClick={() => setCollapsed(!isCollapsed)}
-          className="flex min-w-0 items-center gap-1 text-xs text-muted hover:text-foreground"
+          className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
         >
           {isCollapsed ? (
             <ChevronRight className="size-3.5" />

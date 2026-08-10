@@ -7,14 +7,14 @@ function Horizontal() {
     <div className="w-48">
       <p className="text-sm text-foreground">瑚琏设计系统</p>
       <Separator className="my-3" />
-      <p className="text-sm text-muted">吸取式聚合组件库</p>
+      <p className="text-sm text-muted-foreground">吸取式聚合组件库</p>
     </div>
   );
 }
 
 function Vertical() {
   return (
-    <div className="flex h-6 items-center gap-3 text-sm text-muted">
+    <div className="flex h-6 items-center gap-3 text-sm text-muted-foreground">
       <span>文档</span>
       <Separator orientation="vertical" />
       <span>组件</span>

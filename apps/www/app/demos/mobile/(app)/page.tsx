@@ -48,7 +48,7 @@ export default function HomePage() {
       <PullToRefresh onRefresh={handleRefresh} className="h-full">
         {/* 顶部搜索栏 */}
         <div className="sticky top-0 z-10 bg-surface px-4 pb-3 pt-2">
-          <div className="flex items-center gap-2 rounded-xl bg-surface-hover px-3 py-2 text-sm text-muted">
+          <div className="flex items-center gap-2 rounded-xl bg-surface-hover px-3 py-2 text-sm text-muted-foreground">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width="16" height="16" aria-hidden>
               <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
             </svg>
@@ -93,16 +93,16 @@ export default function HomePage() {
                     </div>
                     <div className="mt-1 flex items-center gap-1">
                       <Rating value={s.rating} readOnly size="sm" />
-                      <span className="text-xs text-muted">{s.rating} ({s.reviewCount})</span>
+                      <span className="text-xs text-muted-foreground">{s.rating} ({s.reviewCount})</span>
                     </div>
                     <div className="mt-1 flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <Avatar fallback={s.workerAvatar} size="sm" />
-                        <span className="text-xs text-muted">{s.workerName}</span>
+                        <span className="text-xs text-muted-foreground">{s.workerName}</span>
                       </div>
                       <span className="text-sm font-semibold text-primary">
                         ¥{s.price}
-                        <span className="text-xs font-normal text-muted">/{s.unit}</span>
+                        <span className="text-xs font-normal text-muted-foreground">/{s.unit}</span>
                       </span>
                     </div>
                   </div>

@@ -8,12 +8,12 @@ function CitationImpl({ index, title, href, source, className, ...props }: Citat
   const inner = (
     <>
       {index != null && (
-        <span className="flex size-4 shrink-0 items-center justify-center rounded-[0.25rem] bg-surface-hover text-[10px] font-medium text-muted">
+        <span className="flex size-4 shrink-0 items-center justify-center rounded-[0.25rem] bg-surface-hover text-[10px] font-medium text-muted-foreground">
           {index}
         </span>
       )}
       <span className="truncate">{title}</span>
-      {source && <span className="shrink-0 text-muted">· {source}</span>}
+      {source && <span className="shrink-0 text-muted-foreground">· {source}</span>}
     </>
   );
   const cls = cn(

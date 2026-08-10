@@ -58,9 +58,9 @@ function GlimpseImpl({
         <div className="flex flex-col gap-1 p-3">
           {title != null && <div className="font-medium text-foreground">{title}</div>}
           {description != null && (
-            <p className="line-clamp-3 text-sm text-muted">{description}</p>
+            <p className="line-clamp-3 text-sm text-muted-foreground">{description}</p>
           )}
-          {href && <div className="mt-0.5 truncate text-xs text-muted/80">{hostOf(href)}</div>}
+          {href && <div className="mt-0.5 truncate text-xs text-muted-foreground/80">{hostOf(href)}</div>}
         </div>
       </HoverCardContent>
     </HoverCard>

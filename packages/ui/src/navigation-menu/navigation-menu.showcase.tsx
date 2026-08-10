@@ -27,7 +27,7 @@ function Demo({ delay = 100 }: { delay?: number }) {
               {products.map((p) => (
                 <NavigationMenuLink key={p.title} href="#" className="block px-3 py-2">
                   <div className="font-medium text-foreground">{p.title}</div>
-                  <div className="mt-0.5 text-xs text-muted">{p.desc}</div>
+                  <div className="mt-0.5 text-xs text-muted-foreground">{p.desc}</div>
                 </NavigationMenuLink>
               ))}
             </div>
@@ -112,7 +112,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
           {products.map((p) => (
             <NavigationMenuLink key={p.title} href="#" className="block px-3 py-2">
               <div className="font-medium text-foreground">{p.title}</div>
-              <div className="mt-0.5 text-xs text-muted">{p.desc}</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">{p.desc}</div>
             </NavigationMenuLink>
           ))}
         </div>
@@ -130,7 +130,7 @@ export const navigationMenuShowcase: ShowcaseSpec = {
                   {products.map((p) => (
                     <NavigationMenuLink key={p.title} href="#" className="block px-3 py-2">
                       <div className="font-medium text-foreground">{p.title}</div>
-                      <div className="mt-0.5 text-xs text-muted">{p.desc}</div>
+                      <div className="mt-0.5 text-xs text-muted-foreground">{p.desc}</div>
                     </NavigationMenuLink>
                   ))}
                 </div>

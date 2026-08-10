@@ -75,7 +75,7 @@ export default {
 ```
 
 Vite 一般无需额外配置；只用少数几个组件时改走子路径导入（`@hulianui/ui/<slug>`）。
-详见 [consuming.md 第 3 节](./consuming.md#3-只用少数几个组件时从子路径引入)。
+详见 [consuming.md 第 4 节](./consuming.md#4-只用少数几个组件时从子路径引入)。
 
 ### 4. Tailwind v4：让它扫描组件类名
 

@@ -36,7 +36,7 @@ export function DocsShell({
 
       {/* 移动端：导航折叠盘。只装导航，正文不在此分支。 */}
       <details className="border-b border-border md:hidden">
-        <summary className="cursor-pointer px-4 py-2 text-sm text-muted">{navLabel}</summary>
+        <summary className="cursor-pointer px-4 py-2 text-sm text-muted-foreground">{navLabel}</summary>
         <div className="space-y-4 p-3">
           <SectionTabs />
           {nav}

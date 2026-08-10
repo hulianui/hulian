@@ -4,7 +4,7 @@ import type { DotPatternProps } from "./dot-pattern.types";
 
 // 吸取自 magicui.design Dot Pattern：SVG <pattern> 平铺一个 <circle>，rect 全填 url(#id)。
 // 瑚琏化：纯 SVG（无 "use client"，可 RSC，同 Marquee/Breadcrumb）；circle fill=currentColor，
-// 根 svg 默认 text-border（用户可 className 覆盖为 text-muted / text-primary，自动吃主题明暗）；
+// 根 svg 默认 text-border（用户可 className 覆盖为 text-muted-foreground / text-primary，自动吃主题明暗）；
 // useId 保证多实例 pattern id 不撞车（SSR 稳定）。背景装饰层：absolute inset-0 + pointer-events-none。
 export function DotPattern({
   width = 16,

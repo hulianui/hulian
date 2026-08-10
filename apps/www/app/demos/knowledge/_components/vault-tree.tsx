@@ -235,7 +235,7 @@ export function VaultTree() {
           hint={copy("supportImagePDFMarkdownSingleFile10MB")}
         />
         {pending && (
-          <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
+          <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
             <Loader2 className="size-3.5 animate-spin" />{" "}
             {copy("uploadingTo", v.get(newItemTarget)?.name ?? copy("rootDirectory"))}
           </p>

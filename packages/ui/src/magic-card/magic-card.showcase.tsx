@@ -10,14 +10,14 @@ export const magicCardShowcase: ShowcaseSpec = {
       code: `<MagicCard className="h-44 w-72">
   <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
     <span className="text-lg font-semibold text-foreground">Magic Card</span>
-    <span className="text-sm text-muted">把鼠标移上来看高光</span>
+    <span className="text-sm text-muted-foreground">把鼠标移上来看高光</span>
   </div>
 </MagicCard>`,
       render: () => (
         <MagicCard className="h-44 w-72">
           <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
             <span className="text-lg font-semibold text-foreground">Magic Card</span>
-            <span className="text-sm text-muted">把鼠标移上来看高光</span>
+            <span className="text-sm text-muted-foreground">把鼠标移上来看高光</span>
           </div>
         </MagicCard>
       ),
@@ -27,13 +27,13 @@ export const magicCardShowcase: ShowcaseSpec = {
       description: "gradientSize 控制高光直径，gradientOpacity 控制 hover 时强度。",
       code: `<MagicCard className="h-44 w-72" gradientSize={320} gradientOpacity={0.3}>
   <div className="flex h-full items-center justify-center p-6">
-    <span className="text-sm text-muted">更大更亮的高光</span>
+    <span className="text-sm text-muted-foreground">更大更亮的高光</span>
   </div>
 </MagicCard>`,
       render: () => (
         <MagicCard className="h-44 w-72" gradientSize={320} gradientOpacity={0.3}>
           <div className="flex h-full items-center justify-center p-6">
-            <span className="text-sm text-muted">更大更亮的高光</span>
+            <span className="text-sm text-muted-foreground">更大更亮的高光</span>
           </div>
         </MagicCard>
       ),
@@ -43,13 +43,13 @@ export const magicCardShowcase: ShowcaseSpec = {
       description: "gradientColor 可换任意 CSS 颜色（默认吃 var(--color-primary) 随主题）。",
       code: `<MagicCard className="h-44 w-72" gradientColor="var(--color-chart-3)">
   <div className="flex h-full items-center justify-center p-6">
-    <span className="text-sm text-muted">换一种高光色</span>
+    <span className="text-sm text-muted-foreground">换一种高光色</span>
   </div>
 </MagicCard>`,
       render: () => (
         <MagicCard className="h-44 w-72" gradientColor="var(--color-chart-3)">
           <div className="flex h-full items-center justify-center p-6">
-            <span className="text-sm text-muted">换一种高光色</span>
+            <span className="text-sm text-muted-foreground">换一种高光色</span>
           </div>
         </MagicCard>
       ),
@@ -66,7 +66,7 @@ export const magicCardShowcase: ShowcaseSpec = {
         <MagicCard className="h-44 w-72">
           <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
             <span className="text-lg font-semibold text-foreground">Magic Card</span>
-            <span className="text-sm text-muted">把鼠标移上来看高光</span>
+            <span className="text-sm text-muted-foreground">把鼠标移上来看高光</span>
           </div>
         </MagicCard>
       ),
@@ -80,7 +80,7 @@ export const magicCardShowcase: ShowcaseSpec = {
     >
       <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
         <span className="text-lg font-semibold text-foreground">Magic Card</span>
-        <span className="text-sm text-muted">把鼠标移上来看高光</span>
+        <span className="text-sm text-muted-foreground">把鼠标移上来看高光</span>
       </div>
     </MagicCard>
   ),

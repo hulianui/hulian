@@ -89,7 +89,7 @@ export function ControlBoard() {
       <div className="flex h-[70vh] min-h-0 flex-col overflow-hidden rounded-[var(--radius)] border border-border bg-surface xl:h-full">
         <div className="flex shrink-0 items-center justify-between border-b border-border px-3.5 py-3">
           <span className="text-sm font-semibold text-foreground">{copy("liveChatMonitor")}</span>
-          <span className="text-[11px] text-muted">{copy("live")}</span>
+          <span className="text-[11px] text-muted-foreground">{copy("live")}</span>
         </div>
         <LiveChat
           items={state.chat}
@@ -126,7 +126,7 @@ function KpiCard({
     <Stat
       label={
         <span className="flex items-center gap-1.5">
-          <span className="text-muted">{icon}</span>
+          <span className="text-muted-foreground">{icon}</span>
           {label}
         </span>
       }

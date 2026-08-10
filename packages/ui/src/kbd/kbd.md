@@ -40,7 +40,7 @@ import { Kbd } from "@hulianui/ui"
 // 组合键：多个 Kbd 并排
 <span className="inline-flex items-center gap-1">
   <Kbd>⌘</Kbd>
-  <span className="text-muted">+</span>
+  <span className="text-muted-foreground">+</span>
   <Kbd>K</Kbd>
 </span>
 ```

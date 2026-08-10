@@ -44,7 +44,7 @@ export function PageHeader({
           )}
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-            {subTitle && <span className="text-sm text-muted">{subTitle}</span>}
+            {subTitle && <span className="text-sm text-muted-foreground">{subTitle}</span>}
             {tags && <div className="flex items-center gap-1.5">{tags}</div>}
           </div>
         </div>

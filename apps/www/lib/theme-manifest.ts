@@ -83,6 +83,8 @@ export interface SemanticColor {
   /** 用途约束 / 误用警示（有值则在色卡下渲染一行提示） */
   note?: string;
 }
+const NOTE_SUBTLE =
+  "提示条底、选中行、Tag/Badge 浅底、侧栏当前项高亮。暗色下方向翻转——不是抬亮度，而是把语义色掺进表面色，底仍比表面深沉、只是染上该语义的色相。别自己拿主色 mix() 到白色派生，暗色主题下必错。";
 const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
   {
     title: "界面 / 表面",
@@ -95,7 +97,14 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         label: "弱背景",
         light: "gray-100",
         dark: "gray-800",
-        note: "静态区域底：分组容器、看板列、泳道、说明条。与「表面悬停」当前同值但语义不同——常驻底色写 hover: 是语义错位。⚠️ 别拿「次要文字」muted 当背景用：亮色下是一块脏灰、暗色下是发白的浅灰，两个主题都错。",
+        note: "静态区域底：分组容器、看板列、泳道、说明条。与「表面悬停」当前同值但语义不同——常驻底色写 hover: 是语义错位。",
+      },
+      {
+        token: "color-muted",
+        label: "弱背景（shadcn 同名）",
+        light: "gray-100",
+        dark: "gray-800",
+        note: "与「弱背景」同值同义，存在只为与 shadcn/ui 生态对齐（那边 --muted 就是弱背景）。0.28.0 之前这个名字是次要文字色，与生态同名反义，已改名为下方的「次要文字」。",
       },
       { token: "color-border", label: "边框 / 分隔线", light: "gray-200", dark: "gray-800" },
       {
@@ -103,7 +112,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         label: "发丝边框",
         light: "transparent",
         dark: "gray-800（同 border）",
-        note: "只用于 border-*：给带阴影的表面（卡片/浮层/按钮）勾轮廓。浅色主题下它就是 transparent——用作 text- / bg- / fill- 会静默隐形（无报错、无回落），填充与文字请改用 border 或 muted。",
+        note: "只用于 border-*：给带阴影的表面（卡片/浮层/按钮）勾轮廓。浅色主题下它就是 transparent——用作 text- / bg- / fill- 会静默隐形（无报错、无回落），填充与文字请改用 border 或 muted-foreground。",
       },
     ],
   },
@@ -111,7 +120,13 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
     title: "文字",
     colors: [
       { token: "color-foreground", label: "主文字", light: "gray-900", dark: "gray-50" },
-      { token: "color-muted", label: "次要文字", light: "gray-500", dark: "gray-400" },
+      {
+        token: "color-muted-foreground",
+        label: "次要文字",
+        light: "gray-600",
+        dark: "gray-400",
+        note: "说明文案、时间戳、占位、禁用态标签。0.28.0 之前叫 --color-muted。",
+      },
     ],
   },
   {
@@ -131,6 +146,19 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         dark: "brand-500",
         note: "语义色的悬停档一律取「亮暗两端之间的那一档」：亮色下变亮、暗色下变暗，两个主题都朝对比更弱的方向走一步。",
       },
+      {
+        token: "color-primary-subtle",
+        label: "主色浅底",
+        light: "brand-50",
+        dark: "surface + 16% brand-400",
+        note: NOTE_SUBTLE,
+      },
+      {
+        token: "color-primary-border",
+        label: "主色浅边框",
+        light: "brand-200",
+        dark: "surface + 34% brand-400",
+      },
       { token: "color-ring", label: "焦点环", light: "brand-500", dark: "brand-400" },
     ],
   },
@@ -146,6 +174,19 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
       },
       { token: "color-danger-hover", label: "危险悬停", light: "danger-500", dark: "danger-500" },
       {
+        token: "color-danger-subtle",
+        label: "危险浅底",
+        light: "danger-50",
+        dark: "surface + 16% danger-400",
+        note: NOTE_SUBTLE,
+      },
+      {
+        token: "color-danger-border",
+        label: "危险浅边框",
+        light: "danger-200",
+        dark: "surface + 34% danger-400",
+      },
+      {
         token: "color-success",
         label: "成功",
         light: "success-700",
@@ -154,6 +195,19 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
       },
       { token: "color-success-hover", label: "成功悬停", light: "success-600", dark: "success-600" },
       {
+        token: "color-success-subtle",
+        label: "成功浅底",
+        light: "success-50",
+        dark: "surface + 16% success-500",
+        note: NOTE_SUBTLE,
+      },
+      {
+        token: "color-success-border",
+        label: "成功浅边框",
+        light: "success-200",
+        dark: "surface + 34% success-500",
+      },
+      {
         token: "color-warning",
         label: "警告",
         light: "warning-700",
@@ -161,37 +215,67 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         fg: "color-warning-foreground",
       },
       { token: "color-warning-hover", label: "警告悬停", light: "warning-600", dark: "warning-600" },
+      {
+        token: "color-warning-subtle",
+        label: "警告浅底",
+        light: "warning-50",
+        dark: "surface + 16% warning-500",
+        note: NOTE_SUBTLE,
+      },
+      {
+        token: "color-warning-border",
+        label: "警告浅边框",
+        light: "warning-200",
+        dark: "surface + 34% warning-500",
+      },
     ],
   },
 ];
 const SEMANTIC_GROUP_EN = ["Interface and surfaces", "Text", "Brand and emphasis", "Status"];
+const NOTE_SUBTLE_EN =
+  "Tinted backgrounds: notice bars, selected rows, Tag and Badge fills, the active sidebar item. The direction flips in dark mode — instead of getting lighter, the semantic colour is mixed into the surface, so the fill stays deeper than the surface and only picks up the hue. Do not derive these by mixing the accent towards white; that is wrong in dark mode.";
 const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
   "color-bg": { label: "Page background" },
   "color-surface": { label: "Card surface" },
   "color-surface-hover": { label: "Hovered surface" },
   "color-subtle": {
     label: "Subtle background",
-    note: "Static area backgrounds: grouping containers, board columns, swim lanes, note strips. It currently resolves to the same value as the hovered surface but means something different — writing hover: for a permanent background is a semantic mismatch. Never use the secondary text colour (muted) as a background: it reads as dirty grey in light mode and washed-out grey in dark mode.",
+    note: "Static area backgrounds: grouping containers, board columns, swim lanes, note strips. It currently resolves to the same value as the hovered surface but means something different — writing hover: for a permanent background is a semantic mismatch.",
+  },
+  "color-muted": {
+    label: "Subtle background (shadcn alias)",
+    note: "Same value and meaning as the subtle background; the name exists to match the shadcn/ui vocabulary, where --muted is a weak background. Before 0.28.0 this name held the secondary text colour — the exact opposite of the ecosystem — and it has since been renamed to the secondary text token below.",
   },
   "color-border": { label: "Borders and dividers" },
   "color-hairline": {
     label: "Hairline border",
-    note: "Use only with border-* on elevated surfaces. It is transparent in light mode; text-, bg-, or fill- would become invisible, so use border or muted for fill and text.",
+    note: "Use only with border-* on elevated surfaces. It is transparent in light mode; text-, bg-, or fill- would become invisible, so use border or muted-foreground for fill and text.",
   },
   "color-foreground": { label: "Primary text" },
-  "color-muted": { label: "Secondary text" },
+  "color-muted-foreground": {
+    label: "Secondary text",
+    note: "Descriptive copy, timestamps, placeholders, disabled labels. Named --color-muted before 0.28.0.",
+  },
   "color-primary": { label: "Primary" },
   "color-primary-hover": {
     label: "Primary hover",
     note: "Every semantic hover token picks the step between the light and dark values, so it moves one step towards lower contrast in both themes.",
   },
+  "color-primary-subtle": { label: "Primary tint", note: NOTE_SUBTLE_EN },
+  "color-primary-border": { label: "Primary tinted border" },
   "color-ring": { label: "Focus ring" },
   "color-danger": { label: "Danger" },
   "color-danger-hover": { label: "Danger hover" },
+  "color-danger-subtle": { label: "Danger tint", note: NOTE_SUBTLE_EN },
+  "color-danger-border": { label: "Danger tinted border" },
   "color-success": { label: "Success" },
   "color-success-hover": { label: "Success hover" },
+  "color-success-subtle": { label: "Success tint", note: NOTE_SUBTLE_EN },
+  "color-success-border": { label: "Success tinted border" },
   "color-warning": { label: "Warning" },
   "color-warning-hover": { label: "Warning hover" },
+  "color-warning-subtle": { label: "Warning tint", note: NOTE_SUBTLE_EN },
+  "color-warning-border": { label: "Warning tinted border" },
 };
 export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] =
   DOCS_LOCALE === "en"
@@ -212,6 +296,16 @@ export const CHART_COLORS = ["color-chart-1", "color-chart-2", "color-chart-3", 
 export const GRAY_SCALE = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map(
   (n) => `gray-${n}`,
 );
+
+// 语义色阶（真源：primitives.css）。50–300 是浅档，语义层的 -subtle / -border 从这里取值。
+// 各族档位不齐是刻意的：warning 在 400/500 之间几乎看不出差别，硬凑成同一把梯子只会
+// 造出一堆无人使用的死档；这里如实反映 primitives.css 里真正定义了的那些。
+export const SEMANTIC_RAMPS: { name: string; steps: number[] }[] = [
+  { name: "brand", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
+  { name: "danger", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
+  { name: "success", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
+  { name: "warning", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
+];
 
 // ===== 排版（Tailwind v4 默认 text-* 比例，瑚琏全站沿用）=====
 export interface TypeStep {

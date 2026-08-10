@@ -8,7 +8,7 @@ import type { AnnotationProps, AnnotationSide, AnnotationTone } from "./annotati
  * 所以外层不设 color —— 否则被标注的正文会跟着染色。
  */
 const toneClass: Record<AnnotationTone, string> = {
-  neutral: "[--hl-ann-color:var(--color-muted)]",
+  neutral: "[--hl-ann-color:var(--color-muted-foreground)]",
   primary: "[--hl-ann-color:var(--color-primary)]",
   success: "[--hl-ann-color:var(--color-success)]",
   warning: "[--hl-ann-color:var(--color-warning)]",

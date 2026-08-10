@@ -86,7 +86,7 @@ export default function BillingPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("billedRecharge")}</h1>
-        <p className="text-sm text-muted">{copy("balanceManagementQuotaRechargeUsageQuotaBill")}</p>
+        <p className="text-sm text-muted-foreground">{copy("balanceManagementQuotaRechargeUsageQuotaBill")}</p>
       </div>
 
       <div className="grid gap-3 lg:grid-cols-3">
@@ -94,15 +94,15 @@ export default function BillingPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
             <span className="flex items-center gap-2 font-medium text-foreground">
-              <Wallet className="size-4 text-muted" />{copy("accountBalance")}</span>
-            <span className="text-xs text-muted">{copy("expectedToBeAvailable")}{account.estimatedDays}{copy("day")}</span>
+              <Wallet className="size-4 text-muted-foreground" />{copy("accountBalance")}</span>
+            <span className="text-xs text-muted-foreground">{copy("expectedToBeAvailable")}{account.estimatedDays}{copy("day")}</span>
           </CardHeader>
           <CardBody className="flex flex-col gap-3">
             <div className="flex items-end gap-2">
               <span className="text-3xl font-semibold tabular-nums text-foreground">
                 {formatUsd(account.balanceUsd)}
               </span>
-              <span className="pb-1 text-xs text-muted">{copy("availableBalance")}</span>
+              <span className="pb-1 text-xs text-muted-foreground">{copy("availableBalance")}</span>
             </div>
             <AreaChart
               data={usageTrend}
@@ -124,7 +124,7 @@ export default function BillingPage() {
               showValue
             />
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted">{copy("usedTotal")}</span>
+              <span className="text-muted-foreground">{copy("usedTotal")}</span>
               <span className="tabular-nums text-foreground">
                 {formatUsd(account.monthlyUsedUsd)} / {formatUsd(account.monthlyQuotaUsd)}
               </span>
@@ -132,14 +132,14 @@ export default function BillingPage() {
             <Divider />
             <div className="flex flex-col gap-2 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-muted">{copy("currentGear")}</span>
+                <span className="text-muted-foreground">{copy("currentGear")}</span>
                 <Tag tone="brand" size="sm">{copy("payAsYouGo")}</Tag>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted">{copy("speedLimit")}</span>
+                <span className="text-muted-foreground">{copy("speedLimit")}</span>
                 <span className="tabular-nums text-foreground">5,000 req/min</span>
               </div>
-              <div className="text-xs text-muted">{copy("theFreePlanIsReqMinReq")}</div>
+              <div className="text-xs text-muted-foreground">{copy("theFreePlanIsReqMinReq")}</div>
             </div>
           </CardBody>
         </Card>
@@ -152,7 +152,7 @@ export default function BillingPage() {
       {/* 充值区 */}
       <Card>
         <CardHeader className="flex items-center gap-2 font-medium text-foreground">
-          <Coins className="size-4 text-muted" />{copy("accountRecharge")}</CardHeader>
+          <Coins className="size-4 text-muted-foreground" />{copy("accountRecharge")}</CardHeader>
         <CardBody className="flex flex-col gap-4">
           <ChoiceboxGroup
             value={preset}
@@ -181,7 +181,7 @@ export default function BillingPage() {
 
           <div className="flex flex-wrap items-end gap-4">
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm text-muted">{copy("customAmount")}</span>
+              <span className="text-sm text-muted-foreground">{copy("customAmount")}</span>
               <NumberField
                 value={custom}
                 onValueChange={setCustom}
@@ -194,11 +194,11 @@ export default function BillingPage() {
             </label>
             <div className="flex-1 rounded-[var(--radius)] border border-border bg-surface px-4 py-3 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-muted">{copy("creditLimit")}</span>
+                <span className="text-muted-foreground">{copy("creditLimit")}</span>
                 <span className="tabular-nums text-foreground">{formatUsd(credited)}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted">{copy("handlingFeeStartingAt")}</span>
+                <span className="text-muted-foreground">{copy("handlingFeeStartingAt")}</span>
                 <span className="tabular-nums text-foreground">{formatUsd(fee)}</span>
               </div>
               <Divider className="my-2" />
@@ -237,8 +237,8 @@ export default function BillingPage() {
       {/* BYOK */}
       <Card>
         <CardHeader className="flex items-center gap-2 font-medium text-foreground">
-          <KeyRound className="size-4 text-muted" />{copy("byokBringYourOwnUpstreamKey")}</CardHeader>
-        <CardBody className="flex flex-col gap-2 text-sm text-muted">
+          <KeyRound className="size-4 text-muted-foreground" />{copy("byokBringYourOwnUpstreamKey")}</CardHeader>
+        <CardBody className="flex flex-col gap-2 text-sm text-muted-foreground">
           <p>{copy("bindYourOwnUpstreamVendorApiKey")}<span className="font-medium text-foreground">{copy("noMarkUpRatio")}</span>{copy("directPassThroughOnlyReceive")}<span className="font-medium text-foreground">{copy("handlingFee")}</span>{copy("usedForRoutingAndAccounting")}</p>
           <div className="flex flex-wrap gap-2">
             <Tag tone="success" size="sm">{copy("freeOfMagnification")}</Tag>

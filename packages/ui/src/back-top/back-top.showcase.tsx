@@ -15,7 +15,7 @@ function BackTopBox({ children }: { children?: ReactNode }) {
       >
         <div className="space-y-3">
           {Array.from({ length: 24 }).map((_, i) => (
-            <p key={i} className="text-sm text-muted">
+            <p key={i} className="text-sm text-muted-foreground">
               滚动内容行 {i + 1} —— 向下滚动 80px 后右下角出现回顶按钮。
             </p>
           ))}

@@ -11,14 +11,14 @@ import { useComponentLocale } from "../config/locale-context";
 const indicatorByStatus: Record<StepStatus, string> = {
   finish: "bg-primary text-primary-foreground",
   process: "bg-primary text-primary-foreground ring-4 ring-primary/15",
-  wait: "border border-border bg-surface text-muted",
+  wait: "border border-border bg-surface text-muted-foreground",
   error: "bg-danger text-danger-foreground",
 };
 
 const titleByStatus: Record<StepStatus, string> = {
   finish: "text-foreground",
   process: "text-foreground font-medium",
-  wait: "text-muted",
+  wait: "text-muted-foreground",
   error: "text-danger font-medium",
 };
 
@@ -126,7 +126,7 @@ function StepsImpl({
                     {item.title}
                   </span>
                   {item.description != null && (
-                    <span className={cn("mt-0.5 block text-muted", sz.desc)}>
+                    <span className={cn("mt-0.5 block text-muted-foreground", sz.desc)}>
                       {item.description}
                     </span>
                   )}
@@ -151,7 +151,7 @@ function StepsImpl({
                     {item.title}
                   </span>
                   {item.description != null && (
-                    <span className={cn("mt-0.5 block text-muted", sz.desc)}>
+                    <span className={cn("mt-0.5 block text-muted-foreground", sz.desc)}>
                       {item.description}
                     </span>
                   )}

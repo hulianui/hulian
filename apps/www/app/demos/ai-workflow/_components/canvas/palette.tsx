@@ -30,7 +30,7 @@ export function Palette({ onAdd }: { onAdd: (kind: NodeKind) => void }) {
             if (items.length === 0) return null;
             return (
               <div key={group.key}>
-                <div className="px-1 pb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">
+                <div className="px-1 pb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                   {group.label}
                 </div>
                 <div className="space-y-1.5">
@@ -59,9 +59,9 @@ export function Palette({ onAdd }: { onAdd: (kind: NodeKind) => void }) {
                           <span className="block truncate text-[13px] font-medium text-foreground">
                             {meta.label}
                           </span>
-                          <span className="block truncate text-[11px] text-muted">{meta.desc}</span>
+                          <span className="block truncate text-[11px] text-muted-foreground">{meta.desc}</span>
                         </span>
-                        <Plus className="size-4 shrink-0 text-muted opacity-0 transition-opacity group-hover:opacity-100" />
+                        <Plus className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                       </button>
                     );
                   })}

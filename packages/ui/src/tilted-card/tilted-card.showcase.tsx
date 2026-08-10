@@ -28,7 +28,7 @@ export const tiltedCardShowcase: ShowcaseSpec = {
 >
   <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
     <p className="text-lg font-semibold text-foreground">瑚琏组件库</p>
-    <p className="text-xs text-muted">移动鼠标感受 3D 倾斜</p>
+    <p className="text-xs text-muted-foreground">移动鼠标感受 3D 倾斜</p>
   </div>
 </TiltedCard>`,
       render: () => (
@@ -42,7 +42,7 @@ export const tiltedCardShowcase: ShowcaseSpec = {
           >
             <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
               <p className="text-lg font-semibold text-foreground">瑚琏组件库</p>
-              <p className="text-xs text-muted">移动鼠标感受 3D 倾斜</p>
+              <p className="text-xs text-muted-foreground">移动鼠标感受 3D 倾斜</p>
             </div>
           </TiltedCard>
         </Stage>
@@ -151,7 +151,7 @@ export const tiltedCardShowcase: ShowcaseSpec = {
           >
             <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
               <p className="text-lg font-semibold text-foreground">瑚琏组件库</p>
-              <p className="text-xs text-muted">移动鼠标感受 3D 倾斜</p>
+              <p className="text-xs text-muted-foreground">移动鼠标感受 3D 倾斜</p>
             </div>
           </TiltedCard>
         </Stage>

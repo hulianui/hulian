@@ -146,7 +146,7 @@ function AgentCard({ agent }: { agent: AgentData }) {
             label="当前负载"
           />
           <div className="min-w-0 flex-1">
-            <div className="mb-1 flex items-center justify-between text-xs text-muted">
+            <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
               <span>负载趋势</span>
               <span className="tabular-nums font-medium text-foreground">{agent.loadPct}%</span>
             </div>

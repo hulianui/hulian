@@ -13,7 +13,7 @@ export default function MobilePage() {
       {/* 标题说明 */}
       <div className="text-center">
         <h1 className="text-2xl font-bold text-foreground">{copy("mobileStorefrontExperience")}</h1>
-        <p className="mt-2 max-w-md text-sm text-muted">
+        <p className="mt-2 max-w-md text-sm text-muted-foreground">
 
           {copy("aCompleteHanshopMobileDemoFeaturingBottomTabNavigationPullToRefreshSwipeActionsFilterSheetsVaria")}
         </p>
@@ -26,13 +26,13 @@ export default function MobilePage() {
           <IPhone model="16-pro">
             <MobileStore />
           </IPhone>
-          <p className="text-xs text-muted">{copy("iphone16ProHomeCategoriesCartAccount")}</p>
+          <p className="text-xs text-muted-foreground">{copy("iphone16ProHomeCategoriesCartAccount")}</p>
         </div>
 
         {/* 说明卡片（桌面端 md 以上才显示） */}
         <div className="hidden max-w-xs space-y-4 rounded-xl border border-border bg-surface p-5 shadow-sm md:block">
           <h2 className="text-base font-semibold text-foreground">{copy("mobileComponentCoverage")}</h2>
-          <ul className="space-y-2 text-sm text-muted">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             {[
               ["IPhone", copy("deviceFrameWithChildrenFillingTheScreen")],
               ["SafeArea", copy("topNotchAndHomeIndicatorAdaptation")],
@@ -51,7 +51,7 @@ export default function MobilePage() {
           </ul>
 
           <div className="border-t border-border pt-3">
-            <p className="text-xs text-muted">
+            <p className="text-xs text-muted-foreground">
 
               {copy("overlayLayoutTheScreenContainerUses")} <code className="rounded bg-surface-hover px-1 font-mono text-xs">relative</code>{copy("fabUses")} <code className="rounded bg-surface-hover px-1 font-mono text-xs">absolute</code>  {copy("overlayPositioningTabbarUses")} <code className="rounded bg-surface-hover px-1 font-mono text-xs">fixed=&#123;false&#125;</code>{copy("andActionsheetUsesABaseUiDialogPortalWithoutAffectingTheInFrameLayout")}
             </p>

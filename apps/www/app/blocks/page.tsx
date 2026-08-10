@@ -74,7 +74,7 @@ export default function BlocksGalleryPage() {
       </header>
 
       {/* useSearchParams 需要 Suspense 边界（output:export 下缺了构建会报错）。 */}
-      <Suspense fallback={<div className="py-10 text-sm text-muted">{content.loading}</div>}>
+      <Suspense fallback={<div className="py-10 text-sm text-muted-foreground">{content.loading}</div>}>
         <GalleryBrowser
           type="block"
           items={blocks.map((b) => ({ slug: b.slug, category: b.category }))}

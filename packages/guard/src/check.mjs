@@ -241,7 +241,7 @@ export function checkSource(source, options = {}) {
           const text = staticClassText(property.initializer);
           if (!text || !new RegExp(matcher.pattern).test(text)) continue;
           // coOccurs：只有同一段 className 里还出现了这个类才判违规。用于「前景背景同色」
-          // 这类零误报判据 —— 单看 bg-muted 无法断定对错，但它和 text-muted 同时出现
+          // 这类零误报判据 —— 单看 bg-muted-foreground 无法断定对错，但它和 text-muted-foreground 同时出现
           // 一定是错的（同一个变量既当底又当字，不可能是有意的）。
           if (matcher.coOccurs && !new RegExp(matcher.coOccurs).test(text)) continue;
           report(rule, property.initializer ?? property);

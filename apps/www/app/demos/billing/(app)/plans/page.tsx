@@ -41,7 +41,7 @@ export default function PlansPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">{copy("chooseTheRightPackage")}</h1>
-          <p className="mt-1 text-sm text-muted">{copy("youCanBeUpgradedOrDowngradedAt")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{copy("youCanBeUpgradedOrDowngradedAt")}</p>
         </div>
         {/* 计费周期切换（ButtonGroup 连排）*/}
         <div className="flex items-center gap-3">
@@ -77,7 +77,7 @@ export default function PlansPage() {
               >
                 <div className="mt-2 flex flex-col gap-1.5">
                   <span className="text-base font-semibold tabular-nums text-foreground">{priceLabel(p, cycle)}</span>
-                  <span className="text-xs text-muted">
+                  <span className="text-xs text-muted-foreground">
                     {p.seats === 1 ? copy("includesOneSeat") : p.seats > 1 ? copy("includesValueSeats", p.seats) : copy("seatCustomization")} · {copy("featureCount", p.features.length)}
                   </span>
                 </div>
@@ -91,7 +91,7 @@ export default function PlansPage() {
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h2 className="text-sm font-semibold text-foreground">{copy("teamSeats")}</h2>
-                  <p className="mt-1 text-xs text-muted">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {copy("seatPricingSummary", plan.name, plan.seats, Math.max(0, seats - plan.seats), formatMoney(unitPrice(plan, cycle)))}
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export default function PlansPage() {
           {/* 增值项（Choicebox 多选）*/}
           <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5">
             <h2 className="mb-1 text-sm font-semibold text-foreground">{copy("valueAddedItems")}</h2>
-            <p className="mb-4 text-xs text-muted">{copy("stackOnDemandAndCanBeCanceled")}</p>
+            <p className="mb-4 text-xs text-muted-foreground">{copy("stackOnDemandAndCanBeCanceled")}</p>
             <ChoiceboxGroup
               multiple
               value={chosenAddons}
@@ -131,7 +131,7 @@ export default function PlansPage() {
               {addons.map((a) => (
                 <Choicebox key={a.id} value={a.id} title={a.name} description={a.desc}>
                   <div className="mt-1.5 text-sm font-medium tabular-nums text-foreground">
-                    +{formatMoney(unitPrice(a, cycle))}<span className="text-xs font-normal text-muted">{copy("month")}</span>
+                    +{formatMoney(unitPrice(a, cycle))}<span className="text-xs font-normal text-muted-foreground">{copy("month")}</span>
                   </div>
                 </Choicebox>
               ))}
@@ -145,23 +145,23 @@ export default function PlansPage() {
             <h2 className="text-sm font-semibold text-foreground">{copy("billSummary")}</h2>
             <dl className="mt-4 flex flex-col gap-2.5 text-sm">
               <div className="flex justify-between">
-                <dt className="text-muted">{plan.name} × {paid ? copy("valueSeats", seats) : "—"}</dt>
+                <dt className="text-muted-foreground">{plan.name} × {paid ? copy("valueSeats", seats) : "—"}</dt>
                 <dd className="tabular-nums text-foreground">{paid ? formatMoney(unitPrice(plan, cycle) * seats) : (plan.monthly === 0 ? formatMoney(0) : copy("negotiable"))}</dd>
               </div>
               {chosenAddons.map((id) => (
                 <div key={id} className="flex justify-between">
-                  <dt className="text-muted">{addonById[id].name}</dt>
+                  <dt className="text-muted-foreground">{addonById[id].name}</dt>
                   <dd className="tabular-nums text-foreground">{formatMoney(unitPrice(addonById[id], cycle))}</dd>
                 </div>
               ))}
             </dl>
             <Divider className="my-4" />
             <div className="flex items-baseline justify-between">
-              <span className="text-sm text-muted">{copy("monthlyTotal")}</span>
+              <span className="text-sm text-muted-foreground">{copy("monthlyTotal")}</span>
               <span className="text-2xl font-semibold tabular-nums text-foreground">{formatMoney(monthlyTotal)}</span>
             </div>
             {cycle === "yearly" && (
-              <p className="mt-1 text-right text-xs text-muted">{copy("oneTimeAnnualPayment", formatMoney(annualTotal))}</p>
+              <p className="mt-1 text-right text-xs text-muted-foreground">{copy("oneTimeAnnualPayment", formatMoney(annualTotal))}</p>
             )}
             {cycle === "yearly" && saving > 0 && (
               <Banner tone="success" variant="soft" align="start" icon={<Info />} className="mt-4">{copy("saveMoneyComparedToMonthlyPaymentFor", formatMoney(saving))}
@@ -179,7 +179,7 @@ export default function PlansPage() {
             >
               {plan.monthly < 0 ? copy("contactSales2") : copy("confirmChanges")}
             </Button>
-            <p className="mt-2 text-center text-xs text-muted">{copy("demoEnvironmentNoRealDeductionsWillBe")}</p>
+            <p className="mt-2 text-center text-xs text-muted-foreground">{copy("demoEnvironmentNoRealDeductionsWillBe")}</p>
           </section>
         </aside>
       </div>

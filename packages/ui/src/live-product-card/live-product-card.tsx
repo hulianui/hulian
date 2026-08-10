@@ -38,7 +38,7 @@ function LiveProductCardImpl({
         <span className="text-lg font-bold tabular-nums">{fmt(price)}</span>
       </span>
       {originalPrice != null && originalPrice > price && (
-        <span className="text-xs text-muted line-through">
+        <span className="text-xs text-muted-foreground line-through">
           {currency}
           {fmt(originalPrice)}
         </span>
@@ -94,7 +94,7 @@ function LiveProductCardImpl({
           <div>
             {Price}
             {(stock != null || sold != null) && (
-              <div className="mt-0.5 text-[11px] text-muted">
+              <div className="mt-0.5 text-[11px] text-muted-foreground">
                 {sold != null && <span>{labels.sold(sold)}</span>}
                 {sold != null && stock != null && <span> · </span>}
                 {stock != null && <span>{labels.remaining(stock)}</span>}

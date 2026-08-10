@@ -16,7 +16,7 @@ function Demo() {
   return (
     <div className="flex w-full max-w-xs flex-col gap-2">
       <Picker columns={[hours, minutes]} value={val} onChange={setVal} />
-      <p className="text-center text-sm text-muted">
+      <p className="text-center text-sm text-muted-foreground">
         已选 {val[0].padStart(2, "0")}:{val[1].padStart(2, "0")}
       </p>
     </div>

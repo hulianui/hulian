@@ -337,7 +337,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
 
   const footer: ReactNode =
     options.length === 0 ? null : (
-      <div className="flex items-center justify-between gap-2 px-2 py-1 text-xs text-muted">
+      <div className="flex items-center justify-between gap-2 px-2 py-1 text-xs text-muted-foreground">
         <span className="tabular-nums">
           {total != null ? copy.total(total) : copy.loaded(options.length)}
         </span>

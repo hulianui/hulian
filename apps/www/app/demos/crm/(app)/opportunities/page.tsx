@@ -26,8 +26,8 @@ import { OPP_STAGES, OWNERS, type Opportunity, type OppStage } from "../../_data
 import { useMockData } from "../../../lib/async";
 
 const stageDotClass: Record<OppStage, string> = {
-  线索: "bg-muted",
-  初步接触: "bg-muted",
+  线索: "bg-muted-foreground",
+  初步接触: "bg-muted-foreground",
   方案报价: "bg-primary",
   商务谈判: "bg-warning",
   赢单: "bg-success",
@@ -65,7 +65,7 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
         <div className="flex flex-col gap-0.5">
           <span className="text-sm leading-snug font-medium">{o.title}</span>
           {/* Kanban 组件内部已放行交互子元素（链接/按钮）的拖拽劫持，这里无需 stopPropagation 补丁 */}
-          <Link href={`/demos/crm/customers/${o.customerId}`} className="w-fit text-xs text-muted hover:text-primary">
+          <Link href={`/demos/crm/customers/${o.customerId}`} className="w-fit text-xs text-muted-foreground hover:text-primary">
             {o.customerName}
           </Link>
         </div>
@@ -77,7 +77,7 @@ function OppCard({ o, dragging }: { o: Opportunity; dragging: boolean }) {
           </Tag>
         </div>
 
-        <div className="flex items-center justify-between text-xs text-muted">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <span className="grid size-5 place-items-center rounded-full bg-surface-hover text-[10px] font-medium text-foreground">
               {customerOwnerLabel[o.owner].slice(0, 1)}

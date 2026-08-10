@@ -15,7 +15,7 @@ import type { ServiceMessageField, ServiceMessageProps } from "./service-message
 function FieldRow({ label, value }: ServiceMessageField) {
   return (
     <div className="flex gap-3 text-sm leading-relaxed">
-      <span className="w-20 shrink-0 text-muted">{label}</span>
+      <span className="w-20 shrink-0 text-muted-foreground">{label}</span>
       <span className="min-w-0 flex-1 font-medium text-foreground">{value}</span>
     </div>
   );
@@ -46,7 +46,7 @@ export function ServiceMessage({
 
   // 底部右侧「小程序入口」：图标 + 文字 + chevron
   const cta = (
-    <span className="inline-flex shrink-0 items-center gap-1 text-sm text-muted">
+    <span className="inline-flex shrink-0 items-center gap-1 text-sm text-muted-foreground">
       {action?.icon != null && <span className="inline-flex">{action.icon}</span>}
       {actionLabel !== "" && <span>{actionLabel}</span>}
       <ChevronRight className="size-4" />
@@ -73,14 +73,14 @@ export function ServiceMessage({
               />
             )}
             {source != null && (
-              <span className="min-w-0 flex-1 truncate text-sm text-muted">{source}</span>
+              <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">{source}</span>
             )}
             {onMore != null && (
               <button
                 type="button"
                 aria-label={locale.more}
                 onClick={onMore}
-                className="-mr-1 shrink-0 rounded-sm p-1 text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                className="-mr-1 shrink-0 rounded-sm p-1 text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 <Ellipsis className="size-5" />
               </button>

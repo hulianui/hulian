@@ -53,7 +53,7 @@ export function computeDagLayout(
 
 /** 状态 → 节点左侧色条 + 徽标文案/色。 */
 const STATUS_META: Record<SubTaskStatus, { bar: string; label: string; tone: string }> = {
-  pending: { bar: "before:bg-muted", label: copy("pendingExecution"), tone: "text-muted bg-surface-hover" },
+  pending: { bar: "before:bg-muted-foreground", label: copy("pendingExecution"), tone: "text-muted-foreground bg-surface-hover" },
   running: { bar: "before:bg-primary", label: copy("inExecution"), tone: "text-primary bg-primary/10" },
   failover: { bar: "before:bg-warning", label: copy("downgrading"), tone: "text-warning bg-warning/10" },
   failed: { bar: "before:bg-danger", label: copy("failure"), tone: "text-danger bg-danger/10" },
@@ -147,11 +147,11 @@ export function TaskDetailDag({ task, statusById, activeId }: TaskDetailDagProps
                   {meta.label}
                 </span>
               </div>
-              <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted">
+              <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                 <span className="rounded bg-surface-hover px-1.5 py-0.5 text-[11px]">{CAP_LABEL[sub.capability] ?? sub.capability}</span>
                 <span className="truncate">{executorName(sub.executorId)}</span>
               </div>
-              <div className="mt-1 flex items-center gap-2 text-[11px] text-muted tabular-nums">
+              <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground tabular-nums">
                 <span>{(sub.durationMs / 1000).toFixed(1)}s</span>
                 <span>·</span>
                 <span>¥{sub.costYuan.toFixed(2)}</span>

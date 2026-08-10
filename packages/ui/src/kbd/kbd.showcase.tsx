@@ -15,13 +15,13 @@ export const kbdShowcase: ShowcaseSpec = {
       description: "组合键靠并排多个 Kbd 拼出，中间用分隔符连接。",
       code: `<span className="inline-flex items-center gap-1">
   <Kbd>⌘</Kbd>
-  <span className="text-muted">+</span>
+  <span className="text-muted-foreground">+</span>
   <Kbd>K</Kbd>
 </span>`,
       render: () => (
         <span className="inline-flex items-center gap-1">
           <Kbd>⌘</Kbd>
-          <span className="text-muted">+</span>
+          <span className="text-muted-foreground">+</span>
           <Kbd>K</Kbd>
         </span>
       ),
@@ -29,11 +29,11 @@ export const kbdShowcase: ShowcaseSpec = {
     {
       title: "嵌入正文",
       description: "随文展示快捷键，键帽与文字基线对齐。",
-      code: `<span className="text-sm text-muted">
+      code: `<span className="text-sm text-muted-foreground">
   按 <Kbd>⌘</Kbd> <Kbd>S</Kbd> 保存
 </span>`,
       render: () => (
-        <span className="text-sm text-muted">
+        <span className="text-sm text-muted-foreground">
           按 <Kbd>⌘</Kbd> <Kbd>S</Kbd> 保存
         </span>
       ),
@@ -47,7 +47,7 @@ export const kbdShowcase: ShowcaseSpec = {
       render: () => (
         <span className="inline-flex items-center gap-1">
           <Kbd>⌘</Kbd>
-          <span className="text-muted">+</span>
+          <span className="text-muted-foreground">+</span>
           <Kbd>K</Kbd>
         </span>
       ),
@@ -55,7 +55,7 @@ export const kbdShowcase: ShowcaseSpec = {
     {
       name: "in-text",
       render: () => (
-        <span className="text-sm text-muted">
+        <span className="text-sm text-muted-foreground">
           按 <Kbd>⌘</Kbd> <Kbd>S</Kbd> 保存
         </span>
       ),

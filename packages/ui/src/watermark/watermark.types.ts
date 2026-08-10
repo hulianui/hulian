@@ -22,8 +22,8 @@ export interface WatermarkProps extends Omit<HTMLAttributes<HTMLDivElement>, "co
   /** 字重，默认 normal。 */
   fontWeight?: number | string;
   /**
-   * 水印颜色。不传则读取语义 token `--color-muted`（随明暗主题自适应），
-   * 配合 opacity 形成「text-muted 半透明」默认观感。
+   * 水印颜色。不传则读取语义 token `--color-muted-foreground`（随明暗主题自适应），
+   * 配合 opacity 形成「text-muted-foreground 半透明」默认观感。
    */
   color?: string;
   /** 整体不透明度，默认 0.15。 */

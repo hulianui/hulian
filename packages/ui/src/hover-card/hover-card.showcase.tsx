@@ -25,8 +25,8 @@ function Demo({ side = "bottom", align = "center" }: { side?: Side; align?: Alig
           </div>
           <div className="space-y-1">
             <p className="text-sm font-semibold text-foreground">瑚琏设计系统</p>
-            <p className="text-xs text-muted">吸取各家最佳实现，统一成一套瑚琏 API + 明暗 token。</p>
-            <p className="text-xs text-muted">悬停展开 · 移出延迟关闭</p>
+            <p className="text-xs text-muted-foreground">吸取各家最佳实现，统一成一套瑚琏 API + 明暗 token。</p>
+            <p className="text-xs text-muted-foreground">悬停展开 · 移出延迟关闭</p>
           </div>
         </div>
       </HoverCardContent>

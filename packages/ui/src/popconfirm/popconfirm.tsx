@@ -107,7 +107,7 @@ export function Popconfirm({
                   {title}
                 </BasePopover.Title>
                 {description != null && (
-                  <BasePopover.Description className="mt-1 text-xs text-muted">
+                  <BasePopover.Description className="mt-1 text-xs text-muted-foreground">
                     {description}
                   </BasePopover.Description>
                 )}

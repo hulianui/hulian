@@ -136,7 +136,7 @@ export function LoginForm({
         {title !== null && (
           <h2 className="text-2xl font-semibold tracking-tight">{title ?? loc.title}</h2>
         )}
-        {subtitle != null && <p className="text-sm text-muted">{subtitle}</p>}
+        {subtitle != null && <p className="text-sm text-muted-foreground">{subtitle}</p>}
       </header>
 
       <div className="flex flex-col gap-4">
@@ -183,7 +183,7 @@ export function LoginForm({
             </div>
             {rememberDescription != null && (
               // 说明行紧贴勾选项（extra 槽在密码框与记住我之间，位置不对）。
-              <p className="pl-6 text-xs text-muted">{rememberDescription}</p>
+              <p className="pl-6 text-xs text-muted-foreground">{rememberDescription}</p>
             )}
           </div>
         )}

@@ -58,7 +58,7 @@ export default function QuotesPage() {
             <Link href={`${ROOT}/quotes/${q.id}`} className="font-medium tabular-nums hover:text-primary">
               {q.code}
             </Link>
-            <div className="truncate text-xs text-muted">{q.projectName}</div>
+            <div className="truncate text-xs text-muted-foreground">{q.projectName}</div>
           </div>
         );
       },

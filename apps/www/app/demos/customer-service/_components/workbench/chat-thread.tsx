@@ -73,7 +73,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
 
   if (!conversation) {
     return (
-      <div className="grid h-full place-items-center bg-bg text-sm text-muted">{copy("selectTheSessionOnTheLeftTo")}</div>
+      <div className="grid h-full place-items-center bg-bg text-sm text-muted-foreground">{copy("selectTheSessionOnTheLeftTo")}</div>
     );
   }
 
@@ -113,7 +113,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                           </Tag>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
                         <span>{copy("mobile")}{customer.phone}</span>
                         <span>{copy("region")}{customer.region}</span>
                         <span>{copy("register")}{customer.since}</span>
@@ -128,7 +128,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                       </div>
                     </div>
                   ) : (
-                    <span className="text-sm text-muted">{copy("visitorNoProfileYet")}</span>
+                    <span className="text-sm text-muted-foreground">{copy("visitorNoProfileYet")}</span>
                   )}
                 </HoverCardContent>
               </HoverCard>
@@ -136,7 +136,7 @@ export function ChatThread({ conversation, customer, typing, onSend, onTransfer,
                 {statusTag.label}
               </Tag>
             </div>
-            <div className="truncate text-xs text-muted">
+            <div className="truncate text-xs text-muted-foreground">
               {channelLabel[conversation.channel]} · {conversation.subject}
             </div>
           </div>

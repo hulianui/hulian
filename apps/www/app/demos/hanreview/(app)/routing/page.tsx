@@ -114,7 +114,7 @@ function FlowNodeCard({ node }: { node: FlowNode<NodeData> }) {
           <Tag size="sm" tone="brand" variant="soft">{copy("route")}</Tag>
         )}
       </div>
-      {subtitle && <span className="truncate text-xs text-muted">{subtitle}</span>}
+      {subtitle && <span className="truncate text-xs text-muted-foreground">{subtitle}</span>}
     </div>
   );
 }
@@ -168,14 +168,14 @@ export default function RoutingPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("intelligentRouting")}</h1>
-        <p className="text-sm text-muted">{copy("automaticallySelectsTheOptimalReviewModelBased")}</p>
+        <p className="text-sm text-muted-foreground">{copy("automaticallySelectsTheOptimalReviewModelBased")}</p>
       </div>
 
       {/* 1. 模型池 */}
       <Card>
         <CardHeader className="flex items-center justify-between">
           <span className="font-medium text-foreground">{copy("modelPool")}</span>
-          <span className="text-xs text-muted">{copy("priceUnitMTokenTheProportionIs")}</span>
+          <span className="text-xs text-muted-foreground">{copy("priceUnitMTokenTheProportionIs")}</span>
         </CardHeader>
         <CardBody>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -189,7 +189,7 @@ export default function RoutingPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <div className="truncate text-sm font-medium text-foreground">{m.name}</div>
-                      <div className="text-xs text-muted">{m.vendor}</div>
+                      <div className="text-xs text-muted-foreground">{m.vendor}</div>
                     </div>
                     <Tag size="sm" tone={tierTone[m.tier]} variant="soft">
                       {tierLabel[m.tier]}
@@ -204,7 +204,7 @@ export default function RoutingPage() {
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs text-muted">
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span>{copy("input")}<span className="tabular-nums font-medium text-foreground">${m.inPrice}</span>
                     </span>
                     <span>{copy("output")}<span className="tabular-nums font-medium text-foreground">${m.outPrice}</span>
@@ -212,7 +212,7 @@ export default function RoutingPage() {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center justify-between text-xs text-muted">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>{copy("thisMonthSCallProportion")}</span>
                       <span className="tabular-nums">{calls}{copy("times")}</span>
                     </div>
@@ -239,12 +239,12 @@ export default function RoutingPage() {
                       <span className="text-foreground">{rule.when}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted">→</span>
+                      <span className="text-xs text-muted-foreground">→</span>
                       <Tag size="sm" tone="brand" variant="soft">
                         {modelName(rule.modelId)}
                       </Tag>
                     </div>
-                    <p className="text-xs text-muted">{rule.note}</p>
+                    <p className="text-xs text-muted-foreground">{rule.note}</p>
                   </div>
                 </ListItem>
               )}
@@ -256,7 +256,7 @@ export default function RoutingPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
             <span className="font-medium text-foreground">{copy("distributionAndFlowDirection")}</span>
-            <span className="text-xs text-muted">{copy("fileTypeSmartRouterModel")}</span>
+            <span className="text-xs text-muted-foreground">{copy("fileTypeSmartRouterModel")}</span>
           </CardHeader>
           <CardBody>
             <Flow<NodeData>
@@ -285,7 +285,7 @@ export default function RoutingPage() {
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px] text-sm">
                   <thead>
-                    <tr className="border-b border-border text-left text-xs text-muted">
+                    <tr className="border-b border-border text-left text-xs text-muted-foreground">
                       <th className="py-2 pr-3 font-medium">{copy("documents")}</th>
                       <th className="py-2 pr-3 font-medium">{copy("scale")}</th>
                       <th className="py-2 pr-3 font-medium">{copy("hitTheRules")}</th>
@@ -299,8 +299,8 @@ export default function RoutingPage() {
                         <td className="py-2 pr-3">
                           <span className="truncate font-mono text-xs text-foreground">{f.path}</span>
                         </td>
-                        <td className="py-2 pr-3 tabular-nums text-muted">{lines}{copy("alright")}</td>
-                        <td className="py-2 pr-3 text-muted">{f.routeReason}</td>
+                        <td className="py-2 pr-3 tabular-nums text-muted-foreground">{lines}{copy("alright")}</td>
+                        <td className="py-2 pr-3 text-muted-foreground">{f.routeReason}</td>
                         <td className="py-2 pr-3">
                           <Tag size="sm" tone="brand" variant="soft">
                             {modelName(f.routedModelId)}
@@ -316,7 +316,7 @@ export default function RoutingPage() {
               </div>
 
               <div>
-                <div className="mb-2 text-xs text-muted">{copy("costPerFileVsScale")}</div>
+                <div className="mb-2 text-xs text-muted-foreground">{copy("costPerFileVsScale")}</div>
                 <BarChart
                   data={costChartData}
                   xKey="name"
@@ -329,7 +329,7 @@ export default function RoutingPage() {
               </div>
             </>
           ) : (
-            <p className="py-8 text-center text-sm text-muted">{copy("thereAreNoChangeDocumentsAvailableFor")}</p>
+            <p className="py-8 text-center text-sm text-muted-foreground">{copy("thereAreNoChangeDocumentsAvailableFor")}</p>
           )}
         </CardBody>
       </Card>

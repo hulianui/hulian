@@ -32,7 +32,7 @@ pnpm add @hulianui/tokens
 
 **组件只消费语义层。** 明暗切换发生在语义层：`[data-theme="dark"]` 只换值、不换结构，所以切主题零布局抖动，也不会出现「暗色下某个组件忘了适配」。
 
-`preset.css` 里的 `@theme inline` 把语义变量映射成 Tailwind 的 token，于是 `bg-surface` / `text-muted` / `shadow-lg` 这些工具类天生跟随主题。
+`preset.css` 里的 `@theme inline` 把语义变量映射成 Tailwind 的 token，于是 `bg-surface` / `text-muted-foreground` / `shadow-lg` 这些工具类天生跟随主题。
 
 ## 单独引用某一层
 
@@ -50,8 +50,27 @@ pnpm add @hulianui/tokens
 ## 几条命名约束
 
 - **Tailwind v4 的 `@theme` 真名带 `--color-` 前缀**：`var(--color-primary)` 才解析，裸 `var(--primary)` 在 SVG 的 `fill` / `stroke` 上会静默失效。
-- **`--color-muted` 是次要*文字*色，不是背景色**（这点与 shadcn/ui 相反）。区域底用 `--color-subtle`，悬停态用 `--color-surface-hover`。拿 muted 当背景，亮色下是一块脏灰、暗色下是发白的浅灰 —— 两个主题都错，且 Tailwind 不会报错。
+- **命名与 shadcn/ui 对齐**：`--color-muted` 是弱**背景**（等价 `--color-subtle`），`--color-muted-foreground` 才是次要**文字**色。`@hulianui/tokens` 0.7.0（= `@hulianui/ui` 0.28.0）之前这两个名字在瑚琏这边是反的，从 shadcn 迁过来会满屏变色；现在是零改动。原先的 `text-muted` 已无对应 token，**Tailwind 对未定义颜色既不报错也不生成规则**，写了会静默回退成继承色 —— 用 `npx hulian-check` 逐条列出来改，别靠肉眼。
 - **`--color-hairline` 只能用于 `border-*`**：它在浅色主题就是 `transparent`，用作 `text-` / `bg-` / `fill-` 会静默隐形。
+- **浅档走 `-subtle` / `-border`**：提示条底、选中行、Tag 浅底用 `bg-primary-subtle` + `border-primary-border`（`danger` / `success` / `warning` 同构）。别自己拿主色 `mix()` 到白色派生 —— 暗色主题下「浅底」的方向是变深不是变浅，对白 mix 必错。
+
+## 不用 Tailwind 也能只吃令牌
+
+`tailwindcss` 是**可选**对等依赖：四个入口里只有 `preset.css` 需要 Tailwind v4，
+`tokens.css` / `primitives.css` / `semantic.css` 都是纯 CSS 自定义属性。
+
+所以 Vue 2 + Element UI、纯 CSS 项目、还没升到 v4 的存量仓库可以直接：
+
+```bash
+npm i @hulianui/tokens          # 不会再 ERESOLVE
+```
+
+```css
+@import "@hulianui/tokens/tokens.css";   /* 只要变量，不引 Tailwind */
+```
+
+拿到的是 `var(--color-primary)` 这一层，`[data-theme="dark"]` 照常切换；
+`bg-primary` 这类**工具类**才需要 `preset.css`（那时才需要 Tailwind v4）。
 
 ## License
 

@@ -40,7 +40,7 @@ function ToolbarButton({
   // 用 aria-label + 原生 title：图标钮的短提示不值得为此把一个 overlay Provider
   // 拖进每个详情页（Tooltip 是复合件，需要 Provider + Trigger render prop 一整套）。
   const cls =
-    "inline-flex size-8 items-center justify-center rounded-[var(--radius)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
+    "inline-flex size-8 items-center justify-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
   return href ? (
     <a
       href={href}
@@ -162,7 +162,7 @@ export function PreviewViewer({
                   className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-2.5"
                 >
                   <code className="font-mono text-xs">{f.path}</code>
-                  {f.note && <span className="text-xs text-muted">{f.note}</span>}
+                  {f.note && <span className="text-xs text-muted-foreground">{f.note}</span>}
                 </li>
               ))}
             </ul>

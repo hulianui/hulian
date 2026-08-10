@@ -95,7 +95,7 @@ export function CartSummaryBlock() {
 
             <div className="flex items-center gap-3 border-b border-border px-4 py-3">
               <Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleAll} aria-label="Select all"/>
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 Select all ( {items.length} items)
               </span>
             </div>
@@ -110,7 +110,7 @@ export function CartSummaryBlock() {
 
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">{item.name}</p>
-                  <p className="mt-0.5 text-xs text-muted">{item.spec}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{item.spec}</p>
                   <p className="mt-1 text-sm font-semibold text-foreground">
                     {formatPrice(item.price)}
                   </p>
@@ -136,11 +136,11 @@ export function CartSummaryBlock() {
             <h3 className="mb-4 text-sm font-semibold text-foreground">Order summary</h3>
 
             <div className="space-y-2.5 text-sm">
-              <div className="flex justify-between text-muted">
+              <div className="flex justify-between text-muted-foreground">
                 <span>Subtotal ({selectedItems.reduce((s, i) => s + i.qty, 0)} items)</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
-              <div className="flex justify-between text-muted">
+              <div className="flex justify-between text-muted-foreground">
                 <span>Shipping</span>
                 <span className={shipping === 0 ? "text-success" : ""}>
                   {shipping === 0 ? "Free shipping" : formatPrice(shipping)}
@@ -159,7 +159,7 @@ export function CartSummaryBlock() {
               <span className="text-xl font-bold text-danger">{formatPrice(total)}</span>
             </div>
 
-            {subtotal > 0 && subtotal < 500 && (<p className="mt-2 text-xs text-muted">
+            {subtotal > 0 && subtotal < 500 && (<p className="mt-2 text-xs text-muted-foreground">
                 Spend another {formatPrice(500 - subtotal)} to get ¥50 off
               </p>)}
 

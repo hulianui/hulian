@@ -59,7 +59,7 @@ function ResultThumb({ result, ratio = 1 }: { result: NodeResult; ratio?: number
 
 function MetaRow({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">{children}</div>
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">{children}</div>
   );
 }
 

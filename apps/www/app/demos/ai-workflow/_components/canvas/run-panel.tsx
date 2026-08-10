@@ -36,7 +36,7 @@ export function RunPanel({ running, progress, log, onClose }: RunPanelProps) {
           type="button"
           aria-label={copy("closeRunPanel")}
           onClick={onClose}
-          className="grid size-6 shrink-0 place-items-center rounded-[var(--radius)] text-muted hover:bg-surface-hover hover:text-foreground"
+          className="grid size-6 shrink-0 place-items-center rounded-[var(--radius)] text-muted-foreground hover:bg-surface-hover hover:text-foreground"
         >
           <X className="size-4" />
         </button>
@@ -51,7 +51,7 @@ export function RunPanel({ running, progress, log, onClose }: RunPanelProps) {
                 <Dot tone="success" />
               )}
               <span className="font-medium text-foreground">{e.title}</span>
-              <span className={cn("text-muted", e.status === "done" && "text-success")}>
+              <span className={cn("text-muted-foreground", e.status === "done" && "text-success")}>
                 {e.text}
               </span>
             </li>

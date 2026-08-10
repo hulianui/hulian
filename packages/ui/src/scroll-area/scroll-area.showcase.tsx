@@ -8,7 +8,7 @@ function Vertical() {
   return (
     <ScrollArea className="h-48 w-72 border border-border bg-surface p-4">
       <h4 className="mb-2 font-medium text-foreground">更新日志</h4>
-      <div className="space-y-2 text-sm text-muted">
+      <div className="space-y-2 text-sm text-muted-foreground">
         {paragraphs.map((n) => (
           <p key={n}>第 {n} 条：瑚琏吸取式聚合组件库，从各家 React 库吸取最佳实现，统一成一套 API 与明暗 token。</p>
         ))}
@@ -22,7 +22,7 @@ function Horizontal() {
     <ScrollArea orientation="horizontal" className="w-72 border border-border bg-surface p-4">
       <div className="flex gap-3">
         {paragraphs.map((n) => (
-          <div key={n} className="flex h-20 w-28 shrink-0 items-center justify-center rounded-[var(--radius)] bg-surface-hover text-sm text-muted">
+          <div key={n} className="flex h-20 w-28 shrink-0 items-center justify-center rounded-[var(--radius)] bg-surface-hover text-sm text-muted-foreground">
             卡片 {n}
           </div>
         ))}
@@ -36,7 +36,7 @@ function Both() {
     <ScrollArea orientation="both" className="h-48 w-72 border border-border bg-surface p-4">
       <div className="space-y-3">
         {paragraphs.map((n) => (
-          <p key={n} className="whitespace-nowrap text-sm text-muted">
+          <p key={n} className="whitespace-nowrap text-sm text-muted-foreground">
             第 {n} 行：这是一段很长不会换行的文本，用来同时撑出横向与纵向滚动条与右下角 corner。
           </p>
         ))}

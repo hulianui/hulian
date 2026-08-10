@@ -13,7 +13,7 @@ function CardBody({
   return (
     <div className="flex flex-col items-center gap-1 px-6 text-center">
       <p className="text-base font-semibold text-foreground">{title}</p>
-      <p className="text-xs text-muted">{subtitle}</p>
+      <p className="text-xs text-muted-foreground">{subtitle}</p>
     </div>
   );
 }
@@ -28,7 +28,7 @@ export const pixelCardShowcase: ShowcaseSpec = {
       code: `<PixelCard variant="default" className="h-48 w-64">
   <div className="flex flex-col items-center gap-1 px-6 text-center">
     <p className="text-base font-semibold text-foreground">瑚琏组件库</p>
-    <p className="text-xs text-muted">悬停 / 聚焦触发像素动画</p>
+    <p className="text-xs text-muted-foreground">悬停 / 聚焦触发像素动画</p>
   </div>
 </PixelCard>`,
       render: () => (

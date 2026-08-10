@@ -79,7 +79,7 @@ const [active, setActive] = useState("dashboard");
   defaultSelectedKey="dashboard"
   defaultOpenKeys={["users"]}
   onTabChange={setActive}
-  breadcrumb={<span className="text-sm text-muted">Home / {active}</span>}
+  breadcrumb={<span className="text-sm text-muted-foreground">Home / {active}</span>}
   headerExtra={<Avatar fallback="H" />}
 >
   <Page k={active} />

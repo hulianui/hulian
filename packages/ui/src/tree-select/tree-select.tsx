@@ -105,7 +105,7 @@ function TreeSelectImpl({
       <span
         className={cn(
           "flex min-w-0 flex-1 flex-wrap items-center gap-1 text-left",
-          !hasValue && "text-muted",
+          !hasValue && "text-muted-foreground",
         )}
       >
         {!hasValue ? (
@@ -125,7 +125,7 @@ function TreeSelectImpl({
       </span>
       <span
         className={cn(
-          "flex shrink-0 text-muted transition-transform data-[popup-open]:rotate-180",
+          "flex shrink-0 text-muted-foreground transition-transform data-[popup-open]:rotate-180",
           // 清除按钮浮出时把箭头让位（二者共用右侧同一格，同 Select）。
           showClear && "group-hover:opacity-0 group-focus-within:opacity-0",
         )}
@@ -155,7 +155,7 @@ function TreeSelectImpl({
                 handleClear();
               }}
               className={cn(
-                "absolute top-1/2 hidden -translate-y-1/2 cursor-pointer items-center text-muted transition-colors",
+                "absolute top-1/2 hidden -translate-y-1/2 cursor-pointer items-center text-muted-foreground transition-colors",
                 "hover:text-foreground focus-visible:outline-none focus-visible:text-foreground",
                 "group-hover:flex group-focus-within:flex",
                 size === "lg" ? "right-3.5" : size === "sm" ? "right-2.5" : "right-3",

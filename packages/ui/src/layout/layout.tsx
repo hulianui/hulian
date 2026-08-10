@@ -70,7 +70,7 @@ function LayoutFooter({ className, children, ...props }: LayoutFooterProps) {
     <footer
       data-layout-footer=""
       className={cn(
-        "shrink-0 border-t border-border bg-surface px-4 py-4 text-center text-sm text-muted sm:px-6",
+        "shrink-0 border-t border-border bg-surface px-4 py-4 text-center text-sm text-muted-foreground sm:px-6",
         className,
       )}
       {...props}

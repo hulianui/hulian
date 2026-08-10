@@ -78,11 +78,11 @@ export function ProductDetailBlock() {
 
           <div>
             <h2 className="text-2xl font-bold text-foreground">{PRODUCT.name}</h2>
-            <p className="mt-1 text-sm text-muted">{PRODUCT.tagline}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{PRODUCT.tagline}</p>
           </div>
 
 
-          <div className="flex items-center gap-3 text-sm text-muted">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <Rating value={PRODUCT.rating} readOnly size="sm"/>
             <span className="font-medium text-foreground">{PRODUCT.rating.toFixed(1)}</span>
             <span>·</span>
@@ -95,14 +95,14 @@ export function ProductDetailBlock() {
           <div className="rounded-[var(--radius)] bg-surface-hover px-4 py-3">
             <div className="flex items-end gap-2">
               <span className="text-3xl font-bold text-danger">{formatPrice(PRODUCT.price)}</span>
-              <span className="text-sm text-muted line-through">
+              <span className="text-sm text-muted-foreground line-through">
                 {formatPrice(PRODUCT.originalPrice)}
               </span>
               <Chip size="sm" tone="danger" variant="soft">
                 {discount}% of list price
               </Chip>
             </div>
-            <p className="mt-1 text-xs text-muted">Tax included · Free shipping nationwide (except remote areas)</p>
+            <p className="mt-1 text-xs text-muted-foreground">Tax included · Free shipping nationwide (except remote areas)</p>
           </div>
 
 
@@ -116,7 +116,7 @@ export function ProductDetailBlock() {
           <div>
             <div className="mb-2 flex items-center gap-2">
               <span className="text-sm font-medium text-foreground">Color</span>
-              <span className="text-sm text-muted">{selectedColorObj?.name ?? "Please select"}</span>
+              <span className="text-sm text-muted-foreground">{selectedColorObj?.name ?? "Please select"}</span>
             </div>
             <ColorSwatchPicker colors={COLORS.map((c) => c.hex)} value={selectedColor} onValueChange={setSelectedColor} size="md" aria-label="Color palette"/>
           </div>
@@ -142,7 +142,7 @@ export function ProductDetailBlock() {
             <div className="flex-1">
               <p className="mb-1.5 text-sm font-medium text-foreground">
                 Inventory
-                <span className="ml-2 text-xs font-normal text-muted">Remaining {PRODUCT.stock} items</span>
+                <span className="ml-2 text-xs font-normal text-muted-foreground">Remaining {PRODUCT.stock} items</span>
               </p>
               <Meter value={PRODUCT.stock} max={100}/>
             </div>

@@ -134,7 +134,7 @@ export function LayoutSider({
           aria-expanded={!collapsed}
           aria-label={collapsed ? locale.expand : locale.collapse}
           className={cn(
-            "flex h-12 shrink-0 items-center justify-center border-t border-border text-muted outline-none transition-colors",
+            "flex h-12 shrink-0 items-center justify-center border-t border-border text-muted-foreground outline-none transition-colors",
             "hover:bg-surface-hover hover:text-foreground",
             "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
           )}

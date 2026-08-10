@@ -103,7 +103,7 @@ function Tile({ art, onOpen }: { art: Artifact; onOpen: (a: Artifact) => void })
 function DetailRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex gap-3 py-1.5 text-sm">
-      <span className="w-16 shrink-0 text-muted">{label}</span>
+      <span className="w-16 shrink-0 text-muted-foreground">{label}</span>
       <span className="min-w-0 flex-1 text-foreground">{value}</span>
     </div>
   );

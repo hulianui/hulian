@@ -98,7 +98,7 @@ export function OnboardingBlock() {
                     "rounded-[var(--radius)] border p-4 text-left text-sm font-medium transition-colors",
                     i === 0
                       ? "border-primary bg-primary/5 text-foreground"
-                      : "border-border text-muted hover:border-primary/40 hover:text-foreground",
+                      : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground",
                   ].join(" ")}
                 >
                   <GitBranch className="mb-2 size-5 text-primary" />
@@ -137,7 +137,7 @@ export function OnboardingBlock() {
 
         {/* 进度条 */}
         <div className="mt-6">
-          <div className="mb-1.5 flex items-center justify-between text-xs text-muted">
+          <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
             <span>引导进度</span>
             <span>{progress}%</span>
           </div>

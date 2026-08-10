@@ -24,7 +24,7 @@ export function Sparkline({
   min,
   max,
   baseline,
-  baselineTone = "var(--color-muted)",
+  baselineTone = "var(--color-muted-foreground)",
   baselineLabel,
   renderTooltip,
   className,

@@ -30,7 +30,7 @@ function SingleDemo({
         disabled={disabled}
         invalid={invalid}
       />
-      <div className="text-xs text-muted">value：{code || "（空）"}</div>
+      <div className="text-xs text-muted-foreground">value：{code || "（空）"}</div>
     </div>
   );
 }
@@ -40,7 +40,7 @@ function MultiDemo({ defaultValue = [] as string[] }: { defaultValue?: string[] 
   return (
     <div className="w-80 space-y-2">
       <CountrySelect multiple value={codes} onChange={(v) => setCodes(v as string[])} showDialCode />
-      <div className="text-xs text-muted">value：[{codes.join(", ") || "（空）"}]</div>
+      <div className="text-xs text-muted-foreground">value：[{codes.join(", ") || "（空）"}]</div>
     </div>
   );
 }

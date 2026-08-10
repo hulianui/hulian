@@ -12,7 +12,7 @@ function Demo() {
         suggestions={["帮我重写首页文案", "解释这段代码", "总结要点", "翻译成英文"]}
         onSelect={setPicked}
       />
-      {picked && <p className="text-xs text-muted">已选择：{picked}</p>}
+      {picked && <p className="text-xs text-muted-foreground">已选择：{picked}</p>}
     </div>
   );
 }

@@ -27,7 +27,7 @@ function Demo({
         showFormatSwitcher={showFormatSwitcher}
         disabled={disabled}
       />
-      <code className="font-mono text-xs text-muted">{v}</code>
+      <code className="font-mono text-xs text-muted-foreground">{v}</code>
     </div>
   );
 }
@@ -45,7 +45,7 @@ function CommitDemo() {
         onValueCommitted={setCommitted}
       />
       <div className="flex flex-col gap-0.5 font-mono text-xs">
-        <span className="text-muted">onValueChange · {changes}</span>
+        <span className="text-muted-foreground">onValueChange · {changes}</span>
         <span className="text-foreground">onValueCommitted · {committed}</span>
       </div>
     </div>

@@ -45,7 +45,7 @@ const triggerVariants = cva(
   },
 );
 
-const triggerIconVariants = cva("shrink-0 text-muted", {
+const triggerIconVariants = cva("shrink-0 text-muted-foreground", {
   variants: { size: { sm: "size-3.5", md: "size-4", lg: "size-5" } },
   defaultVariants: { size: "md" },
 });
@@ -221,7 +221,7 @@ export function DateRangePicker({
         </div>
         <div className="grid grid-cols-7">
           {calendarLocale.weekdays.map((w) => (
-            <div key={w} className="flex h-8 items-center justify-center text-xs text-muted">
+            <div key={w} className="flex h-8 items-center justify-center text-xs text-muted-foreground">
               {w}
             </div>
           ))}
@@ -264,7 +264,7 @@ export function DateRangePicker({
                       ? "bg-primary font-medium text-primary-foreground"
                       : "text-foreground hover:bg-surface-hover",
                     isToday && !isEndpoint && "font-semibold text-primary",
-                    dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
+                    dis && "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
                   )}
                 >
                   {d.date()}
@@ -288,11 +288,11 @@ export function DateRangePicker({
               className={cn(triggerVariants({ size }), showClear && "pr-8")}
             >
               <Calendar className={triggerIconVariants({ size })} aria-hidden />
-              <span className={cn(!startText && "text-muted")}>
+              <span className={cn(!startText && "text-muted-foreground")}>
                 {startText || resolvedPlaceholder[0]}
               </span>
-              <span className="text-muted">~</span>
-              <span className={cn(!endText && "text-muted")}>
+              <span className="text-muted-foreground">~</span>
+              <span className={cn(!endText && "text-muted-foreground")}>
                 {endText || resolvedPlaceholder[1]}
               </span>
             </button>
@@ -303,7 +303,7 @@ export function DateRangePicker({
             type="button"
             aria-label={locale.clear}
             onClick={clearValue}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
           >
             <X className="size-4" />
           </button>
@@ -348,7 +348,7 @@ export function DateRangePicker({
                   type="button"
                   aria-label={locale.previousMonth}
                   onClick={() => setViewMonth(viewMonth.subtract(1, "month"))}
-                  className="rounded-md p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
+                  className="rounded-md p-1 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
                   <ChevronLeft className="size-4" />
                 </button>
@@ -356,7 +356,7 @@ export function DateRangePicker({
                   type="button"
                   aria-label={locale.nextMonth}
                   onClick={() => setViewMonth(viewMonth.add(1, "month"))}
-                  className="rounded-md p-1 text-muted outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
+                  className="rounded-md p-1 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
                   <ChevronRight className="size-4" />
                 </button>

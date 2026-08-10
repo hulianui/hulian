@@ -53,7 +53,7 @@ export default function LogsPage() {
       accessorKey: "time",
       header: copy("time"),
       cell: ({ row }) => (
-        <span className="whitespace-nowrap font-mono text-xs tabular-nums text-muted">
+        <span className="whitespace-nowrap font-mono text-xs tabular-nums text-muted-foreground">
           {row.original.time.slice(5, 19).replace("T", " ")}
         </span>
       ),
@@ -82,7 +82,7 @@ export default function LogsPage() {
     {
       accessorKey: "channel",
       header: copy("channel"),
-      cell: ({ row }) => <span className="text-sm text-muted">{row.original.channel}</span>,
+      cell: ({ row }) => <span className="text-sm text-muted-foreground">{row.original.channel}</span>,
     },
     {
       accessorKey: "keyName",
@@ -118,7 +118,7 @@ export default function LogsPage() {
       header: "Tokens",
       enableSorting: false,
       cell: ({ row }) => (
-        <span className="whitespace-nowrap tabular-nums text-xs text-muted">
+        <span className="whitespace-nowrap tabular-nums text-xs text-muted-foreground">
           <span className="text-foreground">{row.original.promptTokens.toLocaleString()}</span> /{" "}
           <span className="text-foreground">{row.original.completionTokens.toLocaleString()}</span>
         </span>
@@ -145,7 +145,7 @@ export default function LogsPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("usageLog")}</h1>
-        <p className="text-sm text-muted">{copy("requestByRequestCallRecordClickDetails")}</p>
+        <p className="text-sm text-muted-foreground">{copy("requestByRequestCallRecordClickDetails")}</p>
       </div>
 
       <ProTable<RequestLog>

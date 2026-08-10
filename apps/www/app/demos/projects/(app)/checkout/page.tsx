@@ -148,7 +148,7 @@ export default function CheckoutPage() {
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="font-medium tabular-nums">{row.original.code}</div>
-          <div className="truncate text-xs text-muted">{row.original.projectName}</div>
+          <div className="truncate text-xs text-muted-foreground">{row.original.projectName}</div>
         </div>
       ),
     },
@@ -168,7 +168,7 @@ export default function CheckoutPage() {
             {checkoutPayMethodLabel[row.original.method]}
           </Tag>
         ) : (
-          <span className="text-muted">—</span>
+          <span className="text-muted-foreground">—</span>
         ),
     },
     {
@@ -183,7 +183,7 @@ export default function CheckoutPage() {
     {
       accessorKey: "expireAt",
       header: copy("validityPeriod"),
-      cell: ({ row }) => <span className="text-xs tabular-nums text-muted">{row.original.expireAt}</span>,
+      cell: ({ row }) => <span className="text-xs tabular-nums text-muted-foreground">{row.original.expireAt}</span>,
     },
     {
       id: "actions",
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
               </Tooltip>
             )}
             {closed && (
-              <span className="text-xs text-muted">
+              <span className="text-xs text-muted-foreground">
                 {checkoutStatusLabel[row.original.status]}
               </span>
             )}

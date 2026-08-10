@@ -46,7 +46,7 @@ function Demo({ collapsible = true }: { collapsible?: boolean }) {
         onReset={() => setSearched(null)}
         collapsible={collapsible}
       />
-      {searched && <p className="text-xs text-muted">查询参数：{searched}</p>}
+      {searched && <p className="text-xs text-muted-foreground">查询参数：{searched}</p>}
     </div>
   );
 }

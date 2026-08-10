@@ -9,7 +9,7 @@ import type { SpinnerProps } from "./spinner.types";
 export const spinnerVariants = cva("inline-block", {
   variants: {
     size: { sm: "size-4", md: "size-6", lg: "size-8" },
-    tone: { primary: "text-primary", current: "text-current", muted: "text-muted" },
+    tone: { primary: "text-primary", current: "text-current", muted: "text-muted-foreground" },
   },
   defaultVariants: { size: "md", tone: "primary" },
 });

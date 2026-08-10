@@ -57,7 +57,7 @@ export function EmojiPicker({
 
   const renderGrid = (items: { e: string }[], emptyHint: string) =>
     items.length === 0 ? (
-      <div className="grid h-full place-items-center py-10 text-sm text-muted">{emptyHint}</div>
+      <div className="grid h-full place-items-center py-10 text-sm text-muted-foreground">{emptyHint}</div>
     ) : (
       <div
         className="grid gap-0.5"
@@ -91,7 +91,7 @@ export function EmojiPicker({
             onChange={(e) => setQuery(e.target.value)}
             placeholder={searchLabel}
             aria-label={searchLabel}
-            prefix={<Search className="size-4 text-muted" />}
+            prefix={<Search className="size-4 text-muted-foreground" />}
           />
         </div>
       )}
@@ -128,14 +128,14 @@ export function EmojiPicker({
           <>
             {recent.length > 0 && (
               <div className="mb-2">
-                <div className="px-1 pb-1 text-xs font-medium text-muted">{copy.recentlyUsed}</div>
+                <div className="px-1 pb-1 text-xs font-medium text-muted-foreground">{copy.recentlyUsed}</div>
                 {renderGrid(
                   recent.map((e) => ({ e })),
                   "",
                 )}
               </div>
             )}
-            <div className="px-1 pb-1 text-xs font-medium text-muted">
+            <div className="px-1 pb-1 text-xs font-medium text-muted-foreground">
               {copy.categories[current.key as keyof typeof copy.categories] ?? current.label}
             </div>
             {renderGrid(current.items, "")}

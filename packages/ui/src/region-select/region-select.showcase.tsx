@@ -41,7 +41,7 @@ function Basic({ aspect }: { aspect?: number }) {
         maxHeight="22rem"
         alt="试卷扫描页"
       />
-      <p className="font-mono text-xs text-muted">
+      <p className="font-mono text-xs text-muted-foreground">
         box（原图像素）：<span className="text-foreground">{fmt(box)}</span>
       </p>
     </div>
@@ -63,7 +63,7 @@ function WithOthers() {
           { id: "q3", box: [520, 860, 840, 1060], label: "题 3 配图", color: "chart-4" },
         ]}
       />
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         虚线是同页已有的框（只读），实线是当前拖出来的：{fmt(box)}
       </p>
     </div>
@@ -182,7 +182,7 @@ function PlaygroundBox({
         readOnly={readOnly}
         maxHeight="18rem"
       />
-      <p className="font-mono text-xs text-muted">{fmt(box)}</p>
+      <p className="font-mono text-xs text-muted-foreground">{fmt(box)}</p>
     </div>
   );
 }

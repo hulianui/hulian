@@ -532,7 +532,7 @@ export function NavMenu({
                   }}
                   className={cn(
                     "relative grid size-11 place-items-center rounded-lg outline-none transition-colors",
-                    "text-muted hover:bg-surface-hover hover:text-foreground",
+                    "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                     "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                     "data-[selected]:bg-primary/10 data-[selected]:text-primary",
                     "aria-disabled:pointer-events-none aria-disabled:opacity-50",
@@ -578,7 +578,7 @@ export function NavMenu({
           <li key={node.key} role={asList ? undefined : "none"}>
             <div
               role="presentation"
-              className="px-3 pb-1 pt-4 text-xs font-medium uppercase tracking-wide text-muted first:pt-1"
+              className="px-3 pb-1 pt-4 text-xs font-medium uppercase tracking-wide text-muted-foreground first:pt-1"
             >
               {node.label}
             </div>
@@ -599,7 +599,7 @@ export function NavMenu({
 
       const rowClass = cn(
         "group/item relative flex w-full items-center gap-2.5 rounded-md py-2 pr-2.5 text-left text-sm outline-none transition-colors",
-        "text-muted hover:bg-surface-hover hover:text-foreground",
+        "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
         "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
         "data-[selected]:bg-primary/10 data-[selected]:font-medium data-[selected]:text-primary",
         "aria-disabled:pointer-events-none aria-disabled:opacity-50",
@@ -625,7 +625,7 @@ export function NavMenu({
               strokeLinecap="round"
               strokeLinejoin="round"
               className={cn(
-                "size-3.5 shrink-0 text-muted transition-transform",
+                "size-3.5 shrink-0 text-muted-foreground transition-transform",
                 expanded && "rotate-90",
               )}
             >
@@ -792,7 +792,7 @@ const FLYOUT_PANEL = "rounded-lg border border-border bg-surface p-1 shadow-lg";
 // 飞出层行（叶子与父项共用；父项多一枚右向 chevron 提示还有下一层）。
 const FLYOUT_ROW = cn(
   "flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm outline-none transition-colors",
-  "text-muted hover:bg-surface-hover hover:text-foreground",
+  "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
   "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
   "data-[selected]:bg-primary/10 data-[selected]:font-medium data-[selected]:text-primary",
   "aria-disabled:pointer-events-none aria-disabled:opacity-50",
@@ -810,7 +810,7 @@ function FlyoutChevron() {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="size-3.5 shrink-0 text-muted"
+      className="size-3.5 shrink-0 text-muted-foreground"
     >
       <path d="m9 18 6-6-6-6" />
     </svg>

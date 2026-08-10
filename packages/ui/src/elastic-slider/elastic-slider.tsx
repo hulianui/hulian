@@ -15,7 +15,7 @@ import type { ElasticSliderProps } from "./elastic-slider.types";
 
 // 吸取自 React Bits ElasticSlider：拖动越界时轨道像橡皮筋一样被拉伸（横向溢出 + 纵向压扁），
 // 配合两端图标的回弹位移与 hover 整体放大；松手 spring 弹回。
-// 瑚琏化：去 chakra/react-icons，图标换 lucide(Volume1/Volume2)；配色全走 token（bg-surface-hover/bg-primary/text-muted）；
+// 瑚琏化：去 chakra/react-icons，图标换 lucide(Volume1/Volume2)；配色全走 token（bg-surface-hover/bg-primary/text-muted-foreground）；
 // 减包用 m + LazyMotionProvider(domAnimation) 取代全量 motion；reduced-motion 下保留交互与数值更新、仅去 spring/缩放动效（DOM 两态一致）。
 const MAX_OVERFLOW = 50;
 
@@ -208,7 +208,7 @@ function SliderBody({
                 }
           }
           style={reduce ? undefined : { x: leftIconX }}
-          className="text-muted"
+          className="text-muted-foreground"
         >
           {leftIcon}
         </m.div>
@@ -256,13 +256,13 @@ function SliderBody({
                 }
           }
           style={reduce ? undefined : { x: rightIconX }}
-          className="text-muted"
+          className="text-muted-foreground"
         >
           {rightIcon}
         </m.div>
       </m.div>
       {showValue && (
-        <p className="-translate-y-4 text-xs font-medium tracking-wide text-muted tabular-nums">
+        <p className="-translate-y-4 text-xs font-medium tracking-wide text-muted-foreground tabular-nums">
           {Math.round(value)}
         </p>
       )}

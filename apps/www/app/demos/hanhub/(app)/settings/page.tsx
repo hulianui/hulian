@@ -71,7 +71,7 @@ export default function SettingsPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("accessSettings")}</h1>
-        <p className="text-sm text-muted">{copy("quickAccessTeamMembersWebhookAlertsDefault")}</p>
+        <p className="text-sm text-muted-foreground">{copy("quickAccessTeamMembersWebhookAlertsDefault")}</p>
       </div>
 
       {/* 快速接入 */}
@@ -79,13 +79,13 @@ export default function SettingsPage() {
         <CardHeader className="font-medium text-foreground">{copy("quickAccess")}</CardHeader>
         <CardBody className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm text-muted">Base URL</span>
+            <span className="text-sm text-muted-foreground">Base URL</span>
             <code className="rounded-[var(--radius-sm)] border border-border bg-surface px-2 py-1 text-sm text-foreground">
               {BASE_URL}
             </code>
             <Button variant="outline" size="sm" onClick={copyBaseUrl}>
               <Copy className="size-4" />{copy("copy")}</Button>
-            <span className="text-xs text-muted">{copy("openaiCompatibleProtocolChangeBaseUrlKey")}</span>
+            <span className="text-xs text-muted-foreground">{copy("openaiCompatibleProtocolChangeBaseUrlKey")}</span>
           </div>
 
           <Segmented
@@ -133,7 +133,7 @@ export default function SettingsPage() {
         {/* Webhook */}
         <Card>
           <CardHeader className="flex items-center gap-2 font-medium text-foreground">
-            <Webhook className="size-4 text-muted" />{copy("webhookAlert")}</CardHeader>
+            <Webhook className="size-4 text-muted-foreground" />{copy("webhookAlert")}</CardHeader>
           <CardBody className="flex flex-col gap-4">
             <Field label={copy("callbackUrl")} description={copy("postToThisAddressWhenTheUsage")}>
               <Input
@@ -199,7 +199,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-sm font-medium text-foreground">{copy("automaticallyRetryOnFailure")}</div>
-                <div className="text-xs text-muted">{copy("upstreamXxSwitchChannelAndTryAgain")}</div>
+                <div className="text-xs text-muted-foreground">{copy("upstreamXxSwitchChannelAndTryAgain")}</div>
               </div>
               <Switch checked={retry} onCheckedChange={setRetry} aria-label={copy("automaticallyRetryOnFailure2")} />
             </div>

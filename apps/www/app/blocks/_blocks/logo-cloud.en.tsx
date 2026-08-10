@@ -15,7 +15,7 @@ const brands = [
 export function LogoCloudBlock() {
     return (<section className="border-y border-border bg-surface/30 py-16">
       <div className="mx-auto w-full max-w-6xl px-6">
-        <Heading level={2} size="lg" weight="medium" className="text-center text-muted">
+        <Heading level={2} size="lg" weight="medium" className="text-center text-muted-foreground">
           Trusted by industry leaders
         </Heading>
         <Text tone="muted" size="sm" className="mt-2 text-center">
@@ -25,7 +25,7 @@ export function LogoCloudBlock() {
         <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius)] border border-border bg-border sm:grid-cols-3 lg:grid-cols-5">
           {brands.map((brand) => {
             const Icon = brand.icon;
-            return (<div key={brand.name} className="group flex items-center justify-center gap-2.5 bg-bg px-4 py-8 text-muted grayscale transition-all duration-200 hover:bg-surface/60 hover:text-foreground hover:grayscale-0">
+            return (<div key={brand.name} className="group flex items-center justify-center gap-2.5 bg-bg px-4 py-8 text-muted-foreground grayscale transition-all duration-200 hover:bg-surface/60 hover:text-foreground hover:grayscale-0">
                 <Icon className="size-5 shrink-0" aria-hidden/>
                 <span className="whitespace-nowrap text-sm font-semibold">
                   {brand.name}

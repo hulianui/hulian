@@ -11,7 +11,7 @@ export const linkVariants = cva(
     variants: {
       tone: {
         primary: "text-primary hover:text-primary-hover",
-        foreground: "text-foreground hover:text-muted",
+        foreground: "text-foreground hover:text-muted-foreground",
         danger: "text-danger hover:opacity-80",
       },
       underline: {

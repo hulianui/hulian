@@ -47,7 +47,7 @@ import { TextCursor } from "@hulianui/ui"
 // 默认：在区域内移动光标即留「瑚」字拖尾
 <div className="relative h-64 overflow-hidden rounded-xl">
   <TextCursor>
-    <p className="text-sm text-muted">在此区域内移动光标 →</p>
+    <p className="text-sm text-muted-foreground">在此区域内移动光标 →</p>
   </TextCursor>
 </div>
 

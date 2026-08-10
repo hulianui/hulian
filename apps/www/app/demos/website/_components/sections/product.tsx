@@ -69,7 +69,7 @@ function DeployDashboard() {
         {deploys.map((d, i) => (
           <Stack key={i} direction="row" align="center" justify="between" className="text-sm">
             <Stack direction="row" align="center" gap={2} className="min-w-0">
-              <GitBranch className="size-3.5 shrink-0 text-muted" aria-hidden />
+              <GitBranch className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
               <Text truncate className="font-mono">
                 {d.branch}
               </Text>

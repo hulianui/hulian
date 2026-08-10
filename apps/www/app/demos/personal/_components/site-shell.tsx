@@ -51,7 +51,7 @@ function Brand() {
       </span>
       <span className="flex items-baseline gap-1.5">
         <span className="text-base font-semibold tracking-tight text-foreground">{profile.name}</span>
-        <span className="font-mono text-xs text-muted">{profile.handle}</span>
+        <span className="font-mono text-xs text-muted-foreground">{profile.handle}</span>
       </span>
     </Link>
   );
@@ -87,7 +87,7 @@ function TopNav() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={s.label}
-                        className="flex size-8 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                        className="flex size-8 items-center justify-center rounded-[var(--radius)] text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
                       >
                         {SOCIAL_ICON[s.kind]}
                       </a>
@@ -120,7 +120,7 @@ function TopNav() {
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 {link.label}
               </Link>
@@ -158,7 +158,7 @@ function SiteFooter() {
                       target={s.href.startsWith("http") ? "_blank" : undefined}
                       rel="noreferrer"
                       aria-label={s.label}
-                      className="flex size-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:border-primary hover:text-foreground"
+                      className="flex size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
                     >
                       {SOCIAL_ICON[s.kind]}
                     </a>
@@ -178,7 +178,7 @@ function SiteFooter() {
           </Text>
           <Link
             href="/demos"
-            className="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
 
             {copy("backToDemos")} <ArrowUpRight className="size-3.5" aria-hidden />

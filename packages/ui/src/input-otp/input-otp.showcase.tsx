@@ -8,7 +8,7 @@ function OTPDemo(props: { length?: number; type?: "numeric" | "text"; groupGap?:
   return (
     <div className="flex flex-col items-center gap-2">
       <InputOTP value={v} onChange={setV} {...props} />
-      <span className="text-xs text-muted">{v || "（输入验证码）"}</span>
+      <span className="text-xs text-muted-foreground">{v || "（输入验证码）"}</span>
     </div>
   );
 }

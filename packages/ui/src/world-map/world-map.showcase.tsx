@@ -120,7 +120,7 @@ export const worldMapShowcase: ShowcaseSpec = {
     { name: "翠绿", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-2)" /></Frame> },
     { name: "琥珀", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-3)" /></Frame> },
     { name: "紫罗兰", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-chart-4)" /></Frame> },
-    { name: "主色强调", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-primary)" dotColor="var(--color-muted)" /></Frame> },
+    { name: "主色强调", render: () => <Frame><WorldMap dots={radial} lineColor="var(--color-primary)" dotColor="var(--color-muted-foreground)" /></Frame> },
     // 逐条 color 覆盖：同一组件内多色并存
     { name: "混色连线", render: () => <Frame><WorldMap dots={multiColor} /></Frame> },
     // 独立节点：value 驱动大小 + 逐节点配色（不依赖飞线）

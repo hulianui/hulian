@@ -47,7 +47,7 @@ Inherits `Omit<HTMLAttributes<HTMLDivElement>, "children">`, additionally:
 // Move the cursor inside the area to leave a glyph trail
 <div className="relative h-64 overflow-hidden rounded-xl">
   <TextCursor>
-    <p className="text-sm text-muted">Move the cursor within this area →</p>
+    <p className="text-sm text-muted-foreground">Move the cursor within this area →</p>
   </TextCursor>
 </div>
 

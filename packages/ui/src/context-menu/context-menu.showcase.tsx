@@ -16,7 +16,7 @@ import {
 function Demo({ withGroup = false, withSub = false }: { withGroup?: boolean; withSub?: boolean }) {
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="flex h-28 w-full max-w-sm select-none items-center justify-center rounded-[var(--radius)] border border-dashed border-border bg-surface text-sm text-muted">
+      <ContextMenuTrigger className="flex h-28 w-full max-w-sm select-none items-center justify-center rounded-[var(--radius)] border border-dashed border-border bg-surface text-sm text-muted-foreground">
         右键点击此区域
       </ContextMenuTrigger>
       <ContextMenuContent>

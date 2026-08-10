@@ -19,7 +19,7 @@ export function TypingDots({ label, className, ...props }: TypingDotsProps) {
         <span
           key={i}
           aria-hidden
-          className="size-1.5 animate-bounce rounded-full bg-muted motion-reduce:animate-none"
+          className="size-1.5 animate-bounce rounded-full bg-muted-foreground motion-reduce:animate-none"
           style={{ animationDelay: `${i * 0.16}s` }}
         />
       ))}

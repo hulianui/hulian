@@ -75,10 +75,10 @@ export const dotPatternShowcase: ShowcaseSpec = {
       ),
     },
     {
-      name: "疏点 · text-muted",
+      name: "疏点 · text-muted-foreground",
       render: () => (
         <Frame>
-          <DotPattern width={28} height={28} cr={1.4} className="text-muted" />
+          <DotPattern width={28} height={28} cr={1.4} className="text-muted-foreground" />
         </Frame>
       ),
     },

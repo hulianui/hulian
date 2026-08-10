@@ -1,0 +1,16 @@
+{
+  "version": "2",
+  "executableRules": [
+    {
+      "id": "local-legacy-grid",
+      "severity": "warning",
+      "matcher": {
+        "kind": "class-name-tokens",
+        "attributes": ["className"],
+        "pattern": "\\blegacy-grid\\b"
+      },
+      "message": "legacy-grid 是本仓自定义的过渡类。",
+      "instead": "迁到 Layout.Grid。"
+    }
+  ]
+}

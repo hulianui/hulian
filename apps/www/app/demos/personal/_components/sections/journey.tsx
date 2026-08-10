@@ -12,7 +12,7 @@ const items: TimelineItemProps[] = journey.map((j) => ({
     <div className="flex flex-col gap-1 pb-2">
       <span className="font-mono text-xs font-semibold tracking-wider text-primary">{j.year}</span>
       <span className="text-base font-semibold text-foreground">{j.title}</span>
-      <span className="text-sm leading-relaxed text-muted">{j.desc}</span>
+      <span className="text-sm leading-relaxed text-muted-foreground">{j.desc}</span>
     </div>
   ),
 }));

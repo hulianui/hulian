@@ -56,7 +56,7 @@ export function QueueBoard({ tasks }: { tasks: Task[] }) {
               <Tag tone="neutral" size="sm">{copy("depth")}{depth}
               </Tag>
             </div>
-            <div className="flex items-center gap-3 text-[11px] tabular-nums text-muted">
+            <div className="flex items-center gap-3 text-[11px] tabular-nums text-muted-foreground">
               <span>{copy("equal")}{depth === 0 ? "—" : fmtDuration(avgWait)}</span>
               <span>{copy("onTheRoad")}{running}</span>
             </div>

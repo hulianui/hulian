@@ -12,7 +12,7 @@ const roleLabels = {
 export function SampleTable() {
   return (
     <table className="w-full text-sm">
-      <thead className="text-muted">
+      <thead className="text-muted-foreground">
         <tr>
           <th className="p-2 text-left font-medium">{DOCS_LOCALE === "en" ? "Name" : "姓名"}</th>
           <th className="p-2 text-left font-medium">{DOCS_LOCALE === "en" ? "Email" : "邮箱"}</th>
@@ -27,7 +27,7 @@ export function SampleTable() {
               <img src={u.avatar} alt="" className="size-6 rounded-full bg-surface-hover" />
               {u.name}
             </td>
-            <td className="p-2 text-muted">{u.email}</td>
+            <td className="p-2 text-muted-foreground">{u.email}</td>
             <td className="p-2">
               {DOCS_LOCALE === "en" ? roleLabels[u.role as keyof typeof roleLabels] : u.role}
             </td>

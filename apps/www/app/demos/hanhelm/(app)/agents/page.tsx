@@ -18,7 +18,7 @@ export default function AgentsPage() {
     <div className="flex flex-col gap-4 p-6">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("actuatorPool")}</h1>
-        <p className="text-sm text-muted">{copy("modelAgentFleetCapabilityProfileRealTime")}</p>
+        <p className="text-sm text-muted-foreground">{copy("modelAgentFleetCapabilityProfileRealTime")}</p>
       </div>
 
       {/* 顶部统计条 */}

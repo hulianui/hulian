@@ -74,10 +74,10 @@ export const stripedPatternShowcase: ShowcaseSpec = {
       ),
     },
     {
-      name: "竖向疏纹 · text-muted",
+      name: "竖向疏纹 · text-muted-foreground",
       render: () => (
         <Frame>
-          <StripedPattern angle={90} size={20} className="text-muted" />
+          <StripedPattern angle={90} size={20} className="text-muted-foreground" />
         </Frame>
       ),
     },

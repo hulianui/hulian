@@ -26,9 +26,9 @@ const META: Record<DeployState, Meta> = {
   queued: {
     Icon: Clock,
     label: "排队中",
-    soft: "bg-surface-hover text-muted",
-    fg: "text-muted",
-    dot: "bg-muted",
+    soft: "bg-surface-hover text-muted-foreground",
+    fg: "text-muted-foreground",
+    dot: "bg-muted-foreground",
   },
   building: {
     Icon: Loader2,
@@ -55,16 +55,16 @@ const META: Record<DeployState, Meta> = {
   canceled: {
     Icon: Ban,
     label: "已取消",
-    soft: "bg-surface-hover text-muted",
-    fg: "text-muted",
-    dot: "bg-muted",
+    soft: "bg-surface-hover text-muted-foreground",
+    fg: "text-muted-foreground",
+    dot: "bg-muted-foreground",
   },
   skipped: {
     Icon: Minus,
     label: "已跳过",
-    soft: "bg-surface-hover text-muted",
-    fg: "text-muted",
-    dot: "bg-muted",
+    soft: "bg-surface-hover text-muted-foreground",
+    fg: "text-muted-foreground",
+    dot: "bg-muted-foreground",
   },
 };
 

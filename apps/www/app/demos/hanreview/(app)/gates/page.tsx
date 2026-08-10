@@ -81,10 +81,10 @@ function GateRuleCard({ rule }: { rule: (typeof GATE_RULES)[number] }) {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <GitBranch className="size-4 text-muted" />
+          <GitBranch className="size-4 text-muted-foreground" />
           <div>
             <div className="text-sm font-semibold text-foreground">{repo?.name ?? rule.repoId}</div>
-            <div className="mt-0.5 text-xs text-muted">{copy("theGateGuardsWereBranched")}{rule.branch}</div>
+            <div className="mt-0.5 text-xs text-muted-foreground">{copy("theGateGuardsWereBranched")}{rule.branch}</div>
           </div>
         </div>
       </CardHeader>
@@ -93,19 +93,19 @@ function GateRuleCard({ rule }: { rule: (typeof GATE_RULES)[number] }) {
           <ScoreRing value={rule.minScore} size={56} label={copy("theAccessLine")} />
           <div className="flex flex-col gap-1 text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-muted">{copy("minimumQualityScore")}</span>
+              <span className="text-muted-foreground">{copy("minimumQualityScore")}</span>
               <Tag tone="brand" size="sm">
                 {rule.minScore}
               </Tag>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-muted">{copy("seriousProblemsAtTheUpperLimit")}</span>
+              <span className="text-muted-foreground">{copy("seriousProblemsAtTheUpperLimit")}</span>
               <Tag tone={rule.maxCritical === 0 ? "danger" : "warning"} size="sm">
                 {rule.maxCritical}
               </Tag>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-muted">{copy("minimumCoverage")}</span>
+              <span className="text-muted-foreground">{copy("minimumCoverage")}</span>
               <Tag tone="success" size="sm">
                 {rule.minCoverage}%
               </Tag>
@@ -114,7 +114,7 @@ function GateRuleCard({ rule }: { rule: (typeof GATE_RULES)[number] }) {
         </div>
 
         <div className="border-t border-border pt-3">
-          <div className="mb-2 text-xs font-medium text-muted">{copy("mustPassTheRuleSet")}</div>
+          <div className="mb-2 text-xs font-medium text-muted-foreground">{copy("mustPassTheRuleSet")}</div>
           <div className="flex flex-col gap-2.5">
             {rulesets.map((rs) => {
               const meta = RULESET_META[rs.key];
@@ -122,7 +122,7 @@ function GateRuleCard({ rule }: { rule: (typeof GATE_RULES)[number] }) {
                 <div key={rs.key} className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-sm text-foreground">{meta.name}</div>
-                    <div className="text-xs text-muted">{meta.desc}</div>
+                    <div className="text-xs text-muted-foreground">{meta.desc}</div>
                   </div>
                   <Switch checked={rs.enabled} onCheckedChange={() => toggle(rs.key)} aria-label={meta.name} />
                 </div>
@@ -165,14 +165,14 @@ function GateSimulator() {
       <CardHeader>
         <div>
           <div className="text-sm font-semibold text-foreground">{copy("accessControlSimulator")}</div>
-          <div className="mt-0.5 text-xs text-muted">{copy("dragThresholdsToPreviewPassBlockResults")}</div>
+          <div className="mt-0.5 text-xs text-muted-foreground">{copy("dragThresholdsToPreviewPassBlockResults")}</div>
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-6">
         <div className="grid gap-5 md:grid-cols-3">
           <div>
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-muted">{copy("minimumQualityScore2")}</span>
+              <span className="text-muted-foreground">{copy("minimumQualityScore2")}</span>
               <span className="font-medium text-foreground">{minScore}</span>
             </div>
             <Slider
@@ -186,7 +186,7 @@ function GateSimulator() {
           </div>
           <div>
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-muted">{copy("seriousProblemsAtTheUpperLimit2")}</span>
+              <span className="text-muted-foreground">{copy("seriousProblemsAtTheUpperLimit2")}</span>
               <span className="font-medium text-foreground">{maxCritical}</span>
             </div>
             <Slider
@@ -200,7 +200,7 @@ function GateSimulator() {
           </div>
           <div>
             <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-muted">{copy("minimumCoverage2")}</span>
+              <span className="text-muted-foreground">{copy("minimumCoverage2")}</span>
               <span className="font-medium text-foreground">{minCoverage}%</span>
             </div>
             <Slider
@@ -226,7 +226,7 @@ function GateSimulator() {
 
         {blocked.length > 0 && (
           <div>
-            <div className="mb-2 text-xs font-medium text-muted">{copy("blockedCensorship")}</div>
+            <div className="mb-2 text-xs font-medium text-muted-foreground">{copy("blockedCensorship")}</div>
             <List
               items={blocked}
               renderItem={(item) => (
@@ -285,7 +285,7 @@ export default function GatesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold text-foreground">{copy("qualityAccessControl")}</h1>
-          <p className="mt-0.5 text-sm text-muted">{copy("setEntryThresholdsForEachWarehouseBranch")}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">{copy("setEntryThresholdsForEachWarehouseBranch")}</p>
         </div>
         <Button onClick={openCreate}>
           <Plus className="size-4" />{copy("aNewGateGateWasConstructed")}</Button>

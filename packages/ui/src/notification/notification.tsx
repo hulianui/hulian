@@ -161,7 +161,7 @@ function NotificationCard({ record }: { record: NotificationRecord }) {
         {iconNode && <span className={cn("mt-0.5 shrink-0", typeColor[type])}>{iconNode}</span>}
         <div className="min-w-0 flex-1">
           {title && <div className="text-sm font-medium text-foreground">{title}</div>}
-          {description && <div className="mt-1 text-sm text-muted">{description}</div>}
+          {description && <div className="mt-1 text-sm text-muted-foreground">{description}</div>}
           {/* 按钮跟着内容左边缘走，不右对齐。右对齐是**对话框**的惯例（那里用户必须做选择，
               按钮在右下角是操作流的终点）；通知是被动出现的信息卡，用户大概率不操作，按钮是
               「顺带提供的入口」，应与标题、描述形成一条视觉列（#137）。 */}
@@ -171,7 +171,7 @@ function NotificationCard({ record }: { record: NotificationRecord }) {
           type="button"
           aria-label={locale.close}
           onClick={() => hulianNotificationManager.close(id)}
-          className="shrink-0 rounded-[var(--radius)] p-0.5 text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="shrink-0 rounded-[var(--radius)] p-0.5 text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />

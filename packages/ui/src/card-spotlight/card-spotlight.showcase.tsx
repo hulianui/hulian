@@ -22,7 +22,7 @@ function FeatureCard({
     <CardSpotlight color={color} radius={radius} className="w-64">
       <div className="mb-3 text-3xl">{icon}</div>
       <h3 className="mb-1.5 text-base font-semibold">{title}</h3>
-      <p className="text-sm text-muted">{description}</p>
+      <p className="text-sm text-muted-foreground">{description}</p>
     </CardSpotlight>
   );
 }
@@ -35,7 +35,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
       code: `<CardSpotlight className="w-64">
   <div className="mb-3 text-3xl">✦</div>
   <h3 className="mb-1.5 text-base font-semibold">瑚琏组件</h3>
-  <p className="text-sm text-muted">鼠标悬停感受柔和聚光。</p>
+  <p className="text-sm text-muted-foreground">鼠标悬停感受柔和聚光。</p>
 </CardSpotlight>`,
       render: () => (
         <FeatureCard icon="✦" title="瑚琏组件" description="宗庙玉器，至美又大用——鼠标悬停感受柔和聚光。" />
@@ -47,7 +47,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
       code: `<CardSpotlight color="var(--color-primary)" className="w-64">
   <div className="mb-3 text-3xl">⚡</div>
   <h3 className="mb-1.5 text-base font-semibold">主题色高光</h3>
-  <p className="text-sm text-muted">高光随主题联动。</p>
+  <p className="text-sm text-muted-foreground">高光随主题联动。</p>
 </CardSpotlight>`,
       render: () => (
         <FeatureCard
@@ -64,7 +64,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
       code: `<CardSpotlight radius={180} color="var(--color-chart-3)" className="w-64">
   <div className="mb-3 text-3xl">🔍</div>
   <h3 className="mb-1.5 text-base font-semibold">聚焦光束</h3>
-  <p className="text-sm text-muted">radius=180 光晕更紧。</p>
+  <p className="text-sm text-muted-foreground">radius=180 光晕更紧。</p>
 </CardSpotlight>`,
       render: () => (
         <FeatureCard
@@ -156,7 +156,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
     >
       <div className="mb-3 text-3xl">✦</div>
       <h3 className="mb-1.5 text-base font-semibold">CardSpotlight</h3>
-      <p className="text-sm text-muted">悬停感受聚光效果，移动鼠标追踪光晕中心。</p>
+      <p className="text-sm text-muted-foreground">悬停感受聚光效果，移动鼠标追踪光晕中心。</p>
     </CardSpotlight>
   ),
 
@@ -167,7 +167,7 @@ export const cardSpotlightShowcase: ShowcaseSpec = {
     return `<CardSpotlight${radiusProp}${colorProp} className="w-64">
   <div className="mb-3 text-3xl">✦</div>
   <h3 className="mb-1.5 text-base font-semibold">标题</h3>
-  <p className="text-sm text-muted">卡片描述文字。</p>
+  <p className="text-sm text-muted-foreground">卡片描述文字。</p>
 </CardSpotlight>`;
   },
 };

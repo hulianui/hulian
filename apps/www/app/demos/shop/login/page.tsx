@@ -22,7 +22,7 @@ export default function ShopLoginPage() {
             <p className="text-lg font-bold tracking-tight text-foreground">
               {brand.name} {brand.nameEn}
             </p>
-            <p className="text-sm text-muted">{brand.slogan}</p>
+            <p className="text-sm text-muted-foreground">{brand.slogan}</p>
           </div>
         </div>
 

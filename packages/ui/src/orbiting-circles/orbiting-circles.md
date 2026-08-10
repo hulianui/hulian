@@ -43,7 +43,7 @@ import { OrbitingCircles } from "@hulianui/ui"
 ```tsx
 // 双层轨道：内外层反向旋转
 <div className="relative flex size-[340px] items-center justify-center">
-  <span className="text-sm font-medium text-muted">瑚琏</span>
+  <span className="text-sm font-medium text-muted-foreground">瑚琏</span>
   <OrbitingCircles radius={140} duration={20}>
     <Icon /><Icon /><Icon /><Icon />
   </OrbitingCircles>

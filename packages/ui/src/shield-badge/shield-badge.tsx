@@ -67,19 +67,19 @@ const shapeClass: Record<ShieldBadgeShape, string> = {
   pill: "rounded-full",
 };
 
-// 左段（标签）皮肤。solid 用 --color-muted 实底：亮色是 gray-600（正好是 shields 的深灰观感），
+// 左段（标签）皮肤。solid 用 --color-muted-foreground 实底：亮色是 gray-600（正好是 shields 的深灰观感），
 // 暗色是 gray-400，配 text-bg 两态都是高对比——不写死灰值，跟着主题走。
 const labelClass: Record<ShieldBadgeVariant, string> = {
-  solid: "bg-muted text-bg",
-  soft: "bg-surface-hover text-muted",
-  outline: "text-muted",
+  solid: "bg-muted-foreground text-bg",
+  soft: "bg-surface-hover text-muted-foreground",
+  outline: "text-muted-foreground",
 };
 
 // 右段（数值）皮肤 × 5 语气。
 const valueClass: Record<ShieldBadgeVariant, Record<ShieldBadgeTone, string>> = {
   solid: {
     // neutral 是「没有状态色」的档，要比五色都平静：对齐 Tag 的 solid neutral，
-    // 与左段 bg-muted 在明暗两态都拉得开（亮 gray-100 vs gray-600 / 暗 gray-800 vs gray-400）。
+    // 与左段 bg-muted-foreground 在明暗两态都拉得开（亮 gray-100 vs gray-600 / 暗 gray-800 vs gray-400）。
     // 别用 bg-foreground——暗色下会变成一块比彩色语气还刺眼的纯白。
     neutral: "bg-surface-hover text-foreground",
     brand: "bg-primary text-primary-foreground",

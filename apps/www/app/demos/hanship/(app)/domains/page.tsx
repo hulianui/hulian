@@ -130,7 +130,7 @@ export default function DomainsPage() {
       id: "project",
       header: copy("project"),
       cell: ({ row }) => (
-        <span className="text-sm text-muted">{projectById(row.original.projectId)?.name ?? "—"}</span>
+        <span className="text-sm text-muted-foreground">{projectById(row.original.projectId)?.name ?? "—"}</span>
       ),
     },
     {
@@ -161,7 +161,7 @@ export default function DomainsPage() {
       id: "added",
       header: copy("add"),
       cell: ({ row }) => (
-        <RelativeTime value={agoDateDays(row.original.addedAgoDays)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
+        <RelativeTime value={agoDateDays(row.original.addedAgoDays)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted-foreground" />
       ),
     },
     {
@@ -208,7 +208,7 @@ export default function DomainsPage() {
       <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-lg font-semibold">{copy("domainName2")}</h1>
-          <p className="text-sm text-muted">{copy("manageCustomDomainNamesSslCertificatesAnd")}</p>
+          <p className="text-sm text-muted-foreground">{copy("manageCustomDomainNamesSslCertificatesAnd")}</p>
         </div>
         <Button onClick={() => setOpen(true)}>
           <Plus className="size-4" />{copy("addDomainName")}</Button>

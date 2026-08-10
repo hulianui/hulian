@@ -71,7 +71,7 @@ export default function PagesGalleryPage() {
         </Text>
       </header>
 
-      <Suspense fallback={<div className="py-10 text-sm text-muted">{content.loading}</div>}>
+      <Suspense fallback={<div className="py-10 text-sm text-muted-foreground">{content.loading}</div>}>
         <GalleryBrowser
           type="page"
           items={pages.map((p) => ({ slug: p.slug, category: p.category }))}

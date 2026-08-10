@@ -122,13 +122,13 @@ function DefaultRow({ item, overlay }: { item: LiveChatItem; overlay?: boolean }
     sent: "送出",
   };
   // 浅色态（叠加在视频上）：主文字白、次要文字半透白，带文字阴影。
-  const nameMuted = overlay ? "text-white/65" : "text-muted";
+  const nameMuted = overlay ? "text-white/65" : "text-muted-foreground";
   const body = overlay ? "text-white" : "text-foreground";
   const shadow = overlay ? "[text-shadow:0_1px_3px_rgba(0,0,0,0.6)]" : "";
 
   if (item.type === "system") {
     return (
-      <div className={cn("text-center text-xs", overlay ? "text-white/70" : "text-muted", shadow)}>
+      <div className={cn("text-center text-xs", overlay ? "text-white/70" : "text-muted-foreground", shadow)}>
         {item.text}
       </div>
     );

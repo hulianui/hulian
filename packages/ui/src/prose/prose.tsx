@@ -24,14 +24,14 @@ const proseBase = cn(
   "[&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary-hover",
   // 列表
   "[&_ul]:my-4 [&_ul]:ml-6 [&_ul]:list-disc [&_ol]:my-4 [&_ol]:ml-6 [&_ol]:list-decimal",
-  "[&_li]:my-1 [&_li]:marker:text-muted",
+  "[&_li]:my-1 [&_li]:marker:text-muted-foreground",
   // 行内代码（排除 pre 内的 code）
   "[&_:not(pre)>code]:rounded-[min(var(--radius),0.375rem)] [&_:not(pre)>code]:bg-surface-hover [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:font-mono [&_:not(pre)>code]:text-[0.85em]",
   // 代码块
   "[&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-[var(--radius)] [&_pre]:border [&_pre]:border-border [&_pre]:bg-surface [&_pre]:p-4 [&_pre]:text-sm",
   "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-mono",
   // 引用
-  "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted",
+  "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground",
   // 分隔线 / 图片
   "[&_hr]:my-8 [&_hr]:border-border [&_img]:my-4 [&_img]:rounded-[var(--radius)]",
   // 表格

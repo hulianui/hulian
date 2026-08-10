@@ -79,7 +79,7 @@ function SpotlightFeatureCard({ card }: { card: SpotlightCard }) {
           {card.stats.map((s) => (
             <div key={s.label}>
               <dd className="text-xl font-bold tracking-tight text-foreground">{s.value}</dd>
-              <dt className="mt-0.5 text-xs text-muted">{s.label}</dt>
+              <dt className="mt-0.5 text-xs text-muted-foreground">{s.label}</dt>
             </div>
           ))}
         </dl>

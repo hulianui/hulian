@@ -52,13 +52,13 @@ export function ThinkingBlock({
     >
       <CollapsibleTrigger>
         <span className="flex min-w-0 items-center gap-2">
-          {thinking && <Loader2 className="size-4 shrink-0 animate-spin text-muted" aria-hidden />}
+          {thinking && <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" aria-hidden />}
           {thinking ? (
             <AnimatedShinyText className="text-sm font-medium">{resolvedTitle}</AnimatedShinyText>
           ) : (
             <span className="truncate">{resolvedTitle}</span>
           )}
-          {duration && <span className="text-xs font-normal text-muted">{duration}</span>}
+          {duration && <span className="text-xs font-normal text-muted-foreground">{duration}</span>}
         </span>
       </CollapsibleTrigger>
       <CollapsiblePanel>

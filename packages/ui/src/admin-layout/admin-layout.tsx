@@ -240,7 +240,7 @@ export function AdminLayout({
             aria-label={collapsed ? t.expand : t.collapse}
             aria-expanded={!collapsed}
             onClick={() => setCollapsed(!collapsed)}
-            className="inline-grid size-9 shrink-0 place-items-center rounded-[var(--radius)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-grid size-9 shrink-0 place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Menu className="size-5" />
           </button>

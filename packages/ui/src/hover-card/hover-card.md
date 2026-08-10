@@ -59,7 +59,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
       <div className="flex size-10 items-center justify-center rounded-full bg-primary/12 text-primary">瑚</div>
       <div className="space-y-1">
         <p className="text-sm font-semibold text-foreground">瑚琏设计系统</p>
-        <p className="text-xs text-muted">悬停展开 · 移出延迟关闭</p>
+        <p className="text-xs text-muted-foreground">悬停展开 · 移出延迟关闭</p>
       </div>
     </div>
   </HoverCardContent>

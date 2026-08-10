@@ -18,7 +18,7 @@ const labelTone: Record<ChannelStatus, string> = {
   online: "text-success",
   degraded: "text-warning",
   offline: "text-danger",
-  maintenance: "text-muted",
+  maintenance: "text-muted-foreground",
 };
 
 function StatusDotImpl({
@@ -41,7 +41,7 @@ function StatusDotImpl({
         label={typeof label === "string" ? label : undefined}
       />
       {label != null && <span className={cn("font-medium", labelTone[status])}>{label}</span>}
-      {extra != null && <span className="text-muted tabular-nums">{extra}</span>}
+      {extra != null && <span className="text-muted-foreground tabular-nums">{extra}</span>}
     </span>
   );
 }

@@ -165,7 +165,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
       <ComboboxItem key={item.value} value={item}>
         <span className="flex flex-col">
           <span>{item.label}</span>
-          <span className="text-xs text-muted">{item.value}</span>
+          <span className="text-xs text-muted-foreground">{item.value}</span>
         </span>
       </ComboboxItem>
     )}

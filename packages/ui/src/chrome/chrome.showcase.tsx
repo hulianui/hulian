@@ -3,7 +3,7 @@ import { Chrome } from "./chrome";
 
 function Demo() {
   return (
-    <div className="grid h-44 place-items-center bg-gradient-to-br from-chart-1/20 to-chart-3/20 text-sm text-muted">
+    <div className="grid h-44 place-items-center bg-gradient-to-br from-chart-1/20 to-chart-3/20 text-sm text-muted-foreground">
       你的网页截图放这里
     </div>
   );

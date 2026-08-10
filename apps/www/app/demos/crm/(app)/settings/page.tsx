@@ -235,7 +235,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => toast({ title: copy("uploadLogo"), description: copy("demoOccupancyNoRealUpload"), tone: "neutral" })}
-                        className="flex-1 rounded-[var(--radius)] border border-dashed border-border px-3 py-2.5 text-center text-xs text-muted transition-colors hover:border-primary hover:text-primary"
+                        className="flex-1 rounded-[var(--radius)] border border-dashed border-border px-3 py-2.5 text-center text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
                       >{copy("clickToUpload")}<br />
                         PNG / JPG ≤ 2MB
                       </button>
@@ -244,7 +244,7 @@ export default function SettingsPage() {
                   <div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">{copy("dataCompleteness")}</span>
-                      <span className="text-sm tabular-nums text-muted">{completeness}%</span>
+                      <span className="text-sm tabular-nums text-muted-foreground">{completeness}%</span>
                     </div>
                     <Progress value={completeness} size={6} tone="primary" className="mt-2.5" aria-label={copy("dataCompleteness2")} />
                     <Text size="xs" tone="muted" className="mt-2">{copy("perfectingYourBusinessProfileHelpsBuildTrust")}</Text>

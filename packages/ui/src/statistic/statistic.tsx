@@ -67,7 +67,7 @@ function StatisticImpl({
   const animated = animate && typeof value === "number";
   return (
     <div className={cn("flex flex-col gap-1", className)}>
-      {title && <div className={cn("text-sm text-muted", alignText[align])}>{title}</div>}
+      {title && <div className={cn("text-sm text-muted-foreground", alignText[align])}>{title}</div>}
       <div className={cn(valueRow, alignJustify[align])} style={valueStyle}>
         {prefix && <span className={affix}>{prefix}</span>}
         <span>
@@ -77,7 +77,7 @@ function StatisticImpl({
             formatStatistic(value, precision, groupSeparator)
           )}
         </span>
-        {suffix && <span className={cn(affix, "text-muted")}>{suffix}</span>}
+        {suffix && <span className={cn(affix, "text-muted-foreground")}>{suffix}</span>}
       </div>
     </div>
   );
@@ -119,11 +119,11 @@ function Countdown({
 
   return (
     <div className={cn("flex flex-col gap-1", className)}>
-      {title && <div className="text-sm text-muted">{title}</div>}
+      {title && <div className="text-sm text-muted-foreground">{title}</div>}
       <div className={valueRow} style={valueStyle}>
         {prefix && <span className={affix}>{prefix}</span>}
         <span>{formatCountdown(remaining ?? 0, format)}</span>
-        {suffix && <span className={cn(affix, "text-muted")}>{suffix}</span>}
+        {suffix && <span className={cn(affix, "text-muted-foreground")}>{suffix}</span>}
       </div>
     </div>
   );

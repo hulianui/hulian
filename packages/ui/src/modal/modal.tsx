@@ -158,7 +158,7 @@ function ModalDialog({ record }: { record: ModalRecord }) {
                 <BaseDialog.Title className="text-base font-semibold">{options.title}</BaseDialog.Title>
               )}
               {options.content && (
-                <BaseDialog.Description className="mt-1 text-sm text-muted">
+                <BaseDialog.Description className="mt-1 text-sm text-muted-foreground">
                   {options.content}
                 </BaseDialog.Description>
               )}

@@ -27,11 +27,11 @@ export default function ChangelogPage() {
           正文本身仍收在可读行宽内（由 ChangelogView 的 flex-1 承担）。 */}
       <main className="mx-auto max-w-5xl px-6 pb-20 pt-10">
         <header className="pb-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {content.eyebrow}
           </p>
           <h1 className="mt-2 text-[1.7rem] font-semibold tracking-tight">{content.title}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{content.description}</p>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{content.description}</p>
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <span className="flex items-center gap-2">
               <Text size="sm" tone="muted">

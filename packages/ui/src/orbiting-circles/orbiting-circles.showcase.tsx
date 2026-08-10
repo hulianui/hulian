@@ -11,7 +11,7 @@ const Chip = ({ c }: { c: string }) => (
 function Demo({ reverse = false }: { reverse?: boolean }) {
   return (
     <div className="relative flex h-[340px] w-[340px] items-center justify-center">
-      <span className="text-sm font-medium text-muted">瑚琏</span>
+      <span className="text-sm font-medium text-muted-foreground">瑚琏</span>
       <OrbitingCircles radius={140} duration={20} reverse={reverse}>
         <Chip c="A" />
         <Chip c="B" />
@@ -32,7 +32,7 @@ export const orbitingCirclesShowcase: ShowcaseSpec = {
       title: "基础用法",
       description: "子元素沿圆周匀速环绕，中心放置标识/Logo。",
       code: `<div className="relative flex size-[340px] items-center justify-center">
-  <span className="text-sm font-medium text-muted">瑚琏</span>
+  <span className="text-sm font-medium text-muted-foreground">瑚琏</span>
   <OrbitingCircles radius={140} duration={20}>
     <Chip c="A" />
     <Chip c="B" />

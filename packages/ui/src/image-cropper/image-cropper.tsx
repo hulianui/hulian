@@ -128,7 +128,7 @@ export function ImageCropper({
       <div className="flex items-center gap-3">
         <svg
           viewBox="0 0 20 20"
-          className="size-4 shrink-0 text-muted"
+          className="size-4 shrink-0 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           strokeWidth={1.6}
@@ -147,7 +147,7 @@ export function ImageCropper({
         />
         <svg
           viewBox="0 0 20 20"
-          className="size-4 shrink-0 text-muted"
+          className="size-4 shrink-0 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           strokeWidth={1.6}

@@ -111,7 +111,7 @@ export function ColorPicker({
                   "focus-visible:ring-2 focus-visible:ring-ring",
                   active
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted hover:text-foreground",
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {f}

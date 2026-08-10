@@ -28,7 +28,7 @@ function IconBtn({
         "inline-flex size-7 items-center justify-center rounded-[var(--radius)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&>svg]:size-3.5",
         active
           ? "bg-primary/10 text-primary"
-          : "text-muted hover:bg-surface-hover hover:text-foreground",
+          : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
       )}
     >
       {children}

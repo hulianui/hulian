@@ -27,7 +27,7 @@ export function DocsCodeBlock({
       className={`group relative overflow-hidden rounded-[var(--radius)] border border-border bg-surface ${className}`}
     >
       {lang && (
-        <span className="pointer-events-none absolute left-3 top-2 select-none font-mono text-xs text-muted">
+        <span className="pointer-events-none absolute left-3 top-2 select-none font-mono text-xs text-muted-foreground">
           {lang}
         </span>
       )}
@@ -35,7 +35,7 @@ export function DocsCodeBlock({
         type="button"
         onClick={onCopy}
         aria-label={copied ? content.copiedCode : content.copyCode}
-        className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
       >
         {copied ? <Check className="size-3.5 text-primary" /> : <Copy className="size-3.5" />}
         {copied ? content.copiedCode : content.copyCode}

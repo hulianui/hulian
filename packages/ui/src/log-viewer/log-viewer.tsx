@@ -8,7 +8,7 @@ const LEVEL_CLASS: Record<LogLevel, string> = {
   info: "text-foreground",
   warn: "text-warning",
   error: "text-danger",
-  debug: "text-muted",
+  debug: "text-muted-foreground",
   success: "text-success",
   command: "text-primary font-medium",
 };
@@ -67,9 +67,9 @@ export function LogViewer({
             className={cn("flex gap-2", wrap ? "whitespace-pre-wrap" : "whitespace-pre")}
           >
             {showTimestamp && line.timestamp != null && (
-              <span className="shrink-0 tabular-nums text-muted">{line.timestamp}</span>
+              <span className="shrink-0 tabular-nums text-muted-foreground">{line.timestamp}</span>
             )}
-            {line.source != null && <span className="shrink-0 text-muted">{line.source}</span>}
+            {line.source != null && <span className="shrink-0 text-muted-foreground">{line.source}</span>}
             <span className={cn("min-w-0", wrap ? "break-words" : "", levelClass(level))}>
               {line.message}
             </span>

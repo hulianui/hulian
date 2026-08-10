@@ -36,7 +36,7 @@ import { Watermark } from "@hulianui/ui"
 | fontSize | `number` | `16` | 文字字号（px） |
 | fontFamily | `string` | `sans-serif` | 字体族 |
 | fontWeight | `number \| string` | `normal` | 字重 |
-| color | `string` | `--color-muted` | 水印颜色，不传读语义 token 随明暗自适应 |
+| color | `string` | `--color-muted-foreground` | 水印颜色，不传读语义 token 随明暗自适应 |
 | opacity | `number` | `0.15` | 整体不透明度 |
 | zIndex | `number` | `9` | 水印层 z-index（pointer-events:none 不挡交互） |
 

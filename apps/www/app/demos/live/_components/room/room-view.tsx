@@ -216,11 +216,11 @@ export function RoomView() {
               >
                 <span className="text-3xl">{g.icon}</span>
                 <span className="text-xs text-foreground">{g.name}</span>
-                <span className="text-[11px] text-muted">{g.coins}  {copy("coins")}</span>
+                <span className="text-[11px] text-muted-foreground">{g.coins}  {copy("coins")}</span>
               </button>
             ))}
           </div>
-          <p className="px-2 pb-1 text-center text-xs text-muted">{copy("tapTheSameGiftRepeatedlyToBuildACombo")}</p>
+          <p className="px-2 pb-1 text-center text-xs text-muted-foreground">{copy("tapTheSameGiftRepeatedlyToBuildACombo")}</p>
         </DrawerContent>
       </Drawer>
 

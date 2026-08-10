@@ -92,7 +92,7 @@ export function MobileShell({ children }: { children: ReactNode }) {
         className="relative flex h-[780px] w-full max-w-[390px] flex-col overflow-hidden rounded-[2.5rem] border-[3px] border-border bg-surface shadow-2xl [transform:translateZ(0)]"
       >
         {/* 模拟刘海状态栏 */}
-        <div className="flex shrink-0 items-center justify-between bg-surface px-5 pt-3 pb-1 text-xs text-muted select-none">
+        <div className="flex shrink-0 items-center justify-between bg-surface px-5 pt-3 pb-1 text-xs text-muted-foreground select-none">
           <span className="font-medium">9:41</span>
           <div className="absolute left-1/2 top-2 -translate-x-1/2">
             <div className="h-1.5 w-20 rounded-full bg-foreground/20" />

@@ -101,7 +101,7 @@ export function InterceptCard({
 
         {violation != null && (
           // 违反点是整张卡最需要被看见的信息（组件就是为了交代它），此前却是全卡最难读的一块：
-          // bg-muted 是次要**文字**色，块标题又用 text-muted，前景背景同一个 token。
+          // bg-muted-foreground 是次要**文字**色，块标题又用 text-muted-foreground，前景背景同一个 token。
           // 改用 danger 的极淡底 + danger 标题，与左侧红锚点呼应，让它自己形成焦点（#136）。
           <div className="rounded-[var(--radius)] bg-danger/10 px-3 py-2">
             <div className="mb-1 text-xs font-medium text-danger">{locale.violation}</div>
@@ -113,13 +113,13 @@ export function InterceptCard({
 
         {suggestion != null && (
           <div className="rounded-[var(--radius)] border border-dashed border-border px-3 py-2">
-            <div className="mb-1 text-xs font-medium text-muted">{locale.suggestion}</div>
+            <div className="mb-1 text-xs font-medium text-muted-foreground">{locale.suggestion}</div>
             <div className="text-xs leading-relaxed text-foreground">{suggestion}</div>
           </div>
         )}
 
         {source != null && (
-          <div className="break-all text-xs text-muted">
+          <div className="break-all text-xs text-muted-foreground">
             {locale.source} {source}
           </div>
         )}
@@ -127,8 +127,8 @@ export function InterceptCard({
         {overridden != null ? (
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-[var(--radius)] bg-subtle px-3 py-2 text-xs">
             <span className="font-medium text-foreground">{locale.overridden}</span>
-            <span className="min-w-0 flex-1 text-muted">{overridden.reason}</span>
-            {overridden.at != null && <span className="text-muted">{overridden.at}</span>}
+            <span className="min-w-0 flex-1 text-muted-foreground">{overridden.reason}</span>
+            {overridden.at != null && <span className="text-muted-foreground">{overridden.at}</span>}
           </div>
         ) : onOverride != null ? (
           open ? (
@@ -138,7 +138,7 @@ export function InterceptCard({
                 onChange={(e) => setReason(e.target.value)}
                 placeholder={resolvedOverridePlaceholder}
                 rows={2}
-                className="w-full resize-y rounded-[var(--radius)] border border-border bg-bg px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full resize-y rounded-[var(--radius)] border border-border bg-bg px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               />
               <div className="flex items-center gap-2">
                 <button
@@ -155,7 +155,7 @@ export function InterceptCard({
                     setOpen(false);
                     setReason("");
                   }}
-                  className="rounded-[var(--radius)] px-3 py-1.5 text-xs text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded-[var(--radius)] px-3 py-1.5 text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {locale.cancel}
                 </button>

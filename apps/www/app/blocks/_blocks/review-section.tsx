@@ -119,11 +119,11 @@ export function ReviewSectionBlock() {
           <div className="flex-1 space-y-2">
             {STAR_DIST.map(({ star, count }) => (
               <div key={star} className="flex items-center gap-3">
-                <span className="w-8 shrink-0 text-right text-sm text-muted">{star} 星</span>
+                <span className="w-8 shrink-0 text-right text-sm text-muted-foreground">{star} 星</span>
                 <div className="flex-1">
                   <Meter value={count} max={Math.max(...STAR_DIST.map((d) => d.count))} />
                 </div>
-                <span className="w-6 shrink-0 text-xs text-muted">{count}</span>
+                <span className="w-6 shrink-0 text-xs text-muted-foreground">{count}</span>
               </div>
             ))}
           </div>
@@ -159,7 +159,7 @@ export function ReviewSectionBlock() {
                     type="button"
                     onClick={() => toggleLike(r.id)}
                     className={`flex items-center gap-1 text-xs transition-colors ${
-                      liked ? "text-primary" : "text-muted hover:text-foreground"
+                      liked ? "text-primary" : "text-muted-foreground hover:text-foreground"
                     }`}
                     aria-label={liked ? "取消点赞" : "点赞"}
                   >

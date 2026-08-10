@@ -80,7 +80,7 @@ function Clearable() {
   return (
     <div className="w-72 space-y-2">
       <TreeSelect nodes={NODES} clearable value={v} onChange={setV} placeholder="全部部门" searchable />
-      <p className="text-xs text-muted">当前值：{JSON.stringify(v)}</p>
+      <p className="text-xs text-muted-foreground">当前值：{JSON.stringify(v)}</p>
     </div>
   );
 }

@@ -113,7 +113,7 @@ export default function EnvPage() {
         return (
           <button
             type="button"
-            className="font-mono text-sm text-muted transition-colors hover:text-foreground"
+            className="font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
             onClick={() => {
               void navigator.clipboard?.writeText(v.value);
               toast({ tone: "info", title: copy("copied2") });
@@ -142,7 +142,7 @@ export default function EnvPage() {
       id: "updated",
       header: copy("update"),
       cell: ({ row }) => (
-        <RelativeTime value={agoDateDays(row.original.updatedAgoDays)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
+        <RelativeTime value={agoDateDays(row.original.updatedAgoDays)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted-foreground" />
       ),
     },
     {
@@ -174,7 +174,7 @@ export default function EnvPage() {
       <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-lg font-semibold">{copy("environmentVariables")}</h1>
-          <p className="text-sm text-muted">{copy("configureBuildRuntimeVariablesForProductionAnd")}</p>
+          <p className="text-sm text-muted-foreground">{copy("configureBuildRuntimeVariablesForProductionAnd")}</p>
         </div>
         <Button onClick={() => setOpen(true)}>
           <Plus className="size-4" />{copy("addNewVariable")}</Button>

@@ -9,7 +9,7 @@ function Demo() {
     <div className="w-full max-w-lg space-y-2">
       <PromptInput onSubmit={(v) => setLog((l) => [...l, v])} />
       {log.length > 0 && (
-        <p className="text-xs text-muted">已发送 {log.length} 条：{log.join(" · ")}</p>
+        <p className="text-xs text-muted-foreground">已发送 {log.length} 条：{log.join(" · ")}</p>
       )}
     </div>
   );

@@ -40,7 +40,7 @@ function SnippetImpl({
         className,
       )}
     >
-      {symbol != null && <span className="select-none text-muted">{symbol}</span>}
+      {symbol != null && <span className="select-none text-muted-foreground">{symbol}</span>}
       <code className="text-foreground">
         {colorable ? <HighlightedCode code={children as string} lang={effLang} /> : children}
       </code>
@@ -48,7 +48,7 @@ function SnippetImpl({
         type="button"
         onClick={onCopy}
         aria-label={copied ? resolvedCopiedLabel : resolvedCopyLabel}
-        className="ml-auto inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        className="ml-auto inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
       >
         {copied ? <Check className="size-4 text-primary" /> : <Copy className="size-4" />}
       </button>

@@ -130,7 +130,7 @@ export function PullToRefresh({
   return (
     <div className={cn("relative overflow-hidden", className)}>
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 flex items-end justify-center overflow-hidden text-xs text-muted"
+        className="pointer-events-none absolute inset-x-0 top-0 flex items-end justify-center overflow-hidden text-xs text-muted-foreground"
         style={{ height: dist }}
       >
         <div className="flex items-center gap-1.5 pb-2">

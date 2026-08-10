@@ -44,7 +44,7 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | title | `ReactNode` | 标题（加粗主行） |
-| description | `ReactNode` | 描述（次行，恒 text-muted） |
+| description | `ReactNode` | 描述（次行，恒 text-muted-foreground） |
 | icon | `ReactNode` | 自定义图标，覆盖默认（不传按类型派生） |
 | btn | `ReactNode` | 操作区（按钮等），渲染在描述下方 |
 

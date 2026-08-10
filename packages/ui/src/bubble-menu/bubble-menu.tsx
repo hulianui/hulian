@@ -213,6 +213,9 @@ export function BubbleMenu({
                       style={
                         {
                           rotate: `${rotation}deg`,
+                          // 这里的 --color-muted 是**弱背景**（0.28.0 语义反转后的新含义），
+                          // 不要跟着别处一起改成 -foreground：悬停文字兜底是 --color-foreground，
+                          // 配次要文字色当底就是深底深字，反转前它一直是这个低对比状态。
                           "--hover-bg": item.hoverStyles?.bgColor || "var(--color-muted)",
                           "--hover-color": item.hoverStyles?.textColor || "var(--color-foreground)",
                         } as CSSProperties

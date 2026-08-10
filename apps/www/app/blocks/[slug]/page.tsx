@@ -76,7 +76,7 @@ export default async function BlockDetailPage({ params }: { params: Promise<{ sl
     <div className="mx-auto max-w-5xl space-y-6">
       <header>
         <h1 className="text-2xl font-semibold">{display.name}</h1>
-        <p className="mt-1 text-sm text-muted">{display.description}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{display.description}</p>
       </header>
       <PreviewViewer
         src={`/preview/blocks/${slug}`}

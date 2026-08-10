@@ -45,7 +45,7 @@ const SEVERITY_META: Record<Severity, { label: string; dot: string; tone: TagTon
   critical: { label: copy("serious"), dot: "bg-danger", tone: "danger" },
   major: { label: copy("important"), dot: "bg-warning", tone: "warning" },
   minor: { label: copy("secondary"), dot: "bg-brand", tone: "brand" },
-  info: { label: copy("tip"), dot: "bg-muted", tone: "neutral" },
+  info: { label: copy("tip"), dot: "bg-muted-foreground", tone: "neutral" },
 };
 
 const SEVERITY_ORDER: Severity[] = ["critical", "major", "minor", "info"];
@@ -190,8 +190,8 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
         <Tag tone="neutral" size="sm">
           {repoName}
         </Tag>
-        <span className="font-mono text-[13px] text-muted">{review.branch}</span>
-        <span className="text-[13px] text-muted">
+        <span className="font-mono text-[13px] text-muted-foreground">{review.branch}</span>
+        <span className="text-[13px] text-muted-foreground">
           {review.author.name} · {review.createdAt}
         </span>
       </div>
@@ -203,7 +203,7 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
           <CardHeader>
             <span className="text-sm font-semibold">
               {copy("editFiles")}
-              <span className="text-muted">({review.files.length})</span>
+              <span className="text-muted-foreground">({review.files.length})</span>
             </span>
           </CardHeader>
           <CardBody className="p-0">
@@ -249,7 +249,7 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
           ) : (
             <Card>
               <CardBody>
-                <p className="text-sm text-muted">{copy("thereWereNoDocumentChangesDuringThis")}</p>
+                <p className="text-sm text-muted-foreground">{copy("thereWereNoDocumentChangesDuringThis")}</p>
               </CardBody>
             </Card>
           )}
@@ -289,15 +289,15 @@ export function ReviewDetail({ review, repos, models }: ReviewDetailProps) {
 
               <div className="w-full space-y-1.5 border-t border-border pt-3 text-[13px]">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted">{copy("leadReviewerModel")}</span>
+                  <span className="text-muted-foreground">{copy("leadReviewerModel")}</span>
                   <span className="font-medium">{modelName}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted">{copy("codeCoverage")}</span>
+                  <span className="text-muted-foreground">{copy("codeCoverage")}</span>
                   <span className="font-medium">{review.coverage}%</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted">{copy("thisTimeTheCost")}</span>
+                  <span className="text-muted-foreground">{copy("thisTimeTheCost")}</span>
                   <span className="font-mono font-medium">¥{review.cost.toFixed(3)}</span>
                 </div>
               </div>
@@ -362,7 +362,7 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
               thinking={step.status === "running"}
               defaultOpen={step.status === "running"}
             >
-              <p className="text-[13px] leading-relaxed text-muted">{step.detail}</p>
+              <p className="text-[13px] leading-relaxed text-muted-foreground">{step.detail}</p>
             </ThinkingBlock>
           );
         }
@@ -375,7 +375,7 @@ function ReviewSteps({ steps }: { steps: ReviewStep[] }) {
             <div className="mb-1 text-[13px] font-semibold">{step.title}</div>
             <StreamingText
               as="p"
-              className="text-[13px] leading-relaxed text-muted"
+              className="text-[13px] leading-relaxed text-muted-foreground"
               text={step.detail ?? ""}
               streaming={false}
             />

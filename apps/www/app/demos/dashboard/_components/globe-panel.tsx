@@ -23,12 +23,12 @@ export function GlobePanel({
   const extra = (
     <div className="flex items-center gap-3">
       {LEGEND.map((l) => (
-        <span key={l.label} className="flex items-center gap-1 text-xs text-muted">
+        <span key={l.label} className="flex items-center gap-1 text-xs text-muted-foreground">
           <span className="size-2 rounded-full" style={{ backgroundColor: l.color }} />
           {l.label}
         </span>
       ))}
-      <span className="hidden items-center gap-1 text-xs text-muted xl:flex">
+      <span className="hidden items-center gap-1 text-xs text-muted-foreground xl:flex">
         <MousePointerClick className="size-3.5" />
         {copy("clickTheNodeToDrillDown")}
       </span>

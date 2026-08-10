@@ -273,11 +273,11 @@ export function QuoteEditor({ id }: { id: string }) {
                   return (
                     <>
                       <tr>
-                        <td colSpan={6} className="px-3 py-2 text-right text-muted">{copy("totalExcludingTax")}</td>
+                        <td colSpan={6} className="px-3 py-2 text-right text-muted-foreground">{copy("totalExcludingTax")}</td>
                         <td className={cell}>{yuan(t.subtotal)}</td>
                       </tr>
                       <tr>
-                        <td colSpan={6} className="px-3 py-2 text-right text-muted">{copy("taxAmount")}{(rate * 100).toFixed(0)}%{copy("closingParenthesis")}
+                        <td colSpan={6} className="px-3 py-2 text-right text-muted-foreground">{copy("taxAmount")}{(rate * 100).toFixed(0)}%{copy("closingParenthesis")}
                         </td>
                         <td className={cell}>{yuan(t.tax)}</td>
                       </tr>
@@ -299,9 +299,9 @@ export function QuoteEditor({ id }: { id: string }) {
           <DocumentSheetHeader>
             <div>
               <div className="text-xl font-bold text-foreground">{VENDOR.name}</div>
-              <div className="mt-1 text-xs text-muted">{copy("projectQuotationQuotation")}</div>
+              <div className="mt-1 text-xs text-muted-foreground">{copy("projectQuotationQuotation")}</div>
             </div>
-            <div className="text-right text-xs text-muted">
+            <div className="text-right text-xs text-muted-foreground">
               <div className="text-base font-semibold tabular-nums text-foreground">{quote.code}</div>
               <div className="mt-1">{copy("orderMakingDate")}{quote.createdAt}</div>
               <div>{copy("validUntil2")}{validUntil}</div>
@@ -311,15 +311,15 @@ export function QuoteEditor({ id }: { id: string }) {
           <DocumentSheetSection title={copy("customerInformation")}>
             <div className="grid grid-cols-2 gap-y-1 text-sm">
               <div>
-                <span className="text-muted">{copy("partyA")}</span>
+                <span className="text-muted-foreground">{copy("partyA")}</span>
                 {quote.client}
               </div>
               <div>
-                <span className="text-muted">{copy("project")}</span>
+                <span className="text-muted-foreground">{copy("project")}</span>
                 {quote.projectName}
               </div>
               <div>
-                <span className="text-muted">{copy("orderMaker")}</span>
+                <span className="text-muted-foreground">{copy("orderMaker")}</span>
                 {quote.owner}
               </div>
             </div>
@@ -328,7 +328,7 @@ export function QuoteEditor({ id }: { id: string }) {
           <DocumentSheetSection title={copy("quotationDetails")}>
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="border-y border-border text-xs text-muted">
+                <tr className="border-y border-border text-xs text-muted-foreground">
                   <th className="py-2 pr-2 text-left font-medium">{copy("serialNumber")}</th>
                   <th className="py-2 pr-2 text-left font-medium">{copy("projectName2")}</th>
                   <th className="py-2 pr-2 text-left font-medium">{copy("specifications")}</th>
@@ -341,9 +341,9 @@ export function QuoteEditor({ id }: { id: string }) {
               <tbody>
                 {items.map((it, i) => (
                   <tr key={it.id} className="border-b border-border/70">
-                    <td className="py-2 pr-2 tabular-nums text-muted">{i + 1}</td>
+                    <td className="py-2 pr-2 tabular-nums text-muted-foreground">{i + 1}</td>
                     <td className="py-2 pr-2">{it.name}</td>
-                    <td className="py-2 pr-2 text-muted">{it.spec}</td>
+                    <td className="py-2 pr-2 text-muted-foreground">{it.spec}</td>
                     <td className="py-2 pr-2 text-center">{it.unit}</td>
                     <td className="py-2 pr-2 text-right tabular-nums">{it.qty}</td>
                     <td className="py-2 pr-2 text-right tabular-nums">{yuan(it.price)}</td>
@@ -353,11 +353,11 @@ export function QuoteEditor({ id }: { id: string }) {
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan={6} className="py-2 pr-2 text-right text-muted">{copy("totalExcludingTax2")}</td>
+                  <td colSpan={6} className="py-2 pr-2 text-right text-muted-foreground">{copy("totalExcludingTax2")}</td>
                   <td className="py-2 text-right tabular-nums">{yuan(totals.subtotal)}</td>
                 </tr>
                 <tr>
-                  <td colSpan={6} className="py-2 pr-2 text-right text-muted">{copy("taxAmount2")}{(rate * 100).toFixed(0)}%{copy("closingParenthesis")}
+                  <td colSpan={6} className="py-2 pr-2 text-right text-muted-foreground">{copy("taxAmount2")}{(rate * 100).toFixed(0)}%{copy("closingParenthesis")}
                   </td>
                   <td className="py-2 text-right tabular-nums">{yuan(totals.tax)}</td>
                 </tr>
@@ -368,7 +368,7 @@ export function QuoteEditor({ id }: { id: string }) {
               </tfoot>
             </table>
             <div className="mt-2 text-right text-sm">
-              <span className="text-muted">{copy("uppercase")}</span>
+              <span className="text-muted-foreground">{copy("uppercase")}</span>
               <span className="font-medium">{rmbUpper(totals.total)}</span>
             </div>
           </DocumentSheetSection>

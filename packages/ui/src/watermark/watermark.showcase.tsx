@@ -8,7 +8,7 @@ function Sheet({ children }: { children?: ReactNode }) {
   return (
     <div className="h-56 w-full overflow-hidden rounded-[var(--radius)] border border-border bg-surface p-6">
       <h4 className="text-base font-semibold text-foreground">2026 Q2 财务简报（受限）</h4>
-      <p className="mt-2 max-w-md text-sm text-muted">
+      <p className="mt-2 max-w-md text-sm text-muted-foreground">
         本页含商业机密，禁止截图外传。水印覆盖全区且随主题自适应，删除水印层会被自动还原。
       </p>
       <button

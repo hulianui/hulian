@@ -76,7 +76,7 @@ function toTreeNodes(nodes: ComponentPickerCategoryNode[]): TreeNode[] {
     label: (
       <span className="flex w-full items-center justify-between gap-2">
         <span className="truncate">{node.label}</span>
-        <span className="shrink-0 font-mono text-[11px] text-muted">{node.count}</span>
+        <span className="shrink-0 font-mono text-[11px] text-muted-foreground">{node.count}</span>
       </span>
     ),
     ...(node.children ? { children: toTreeNodes(node.children) } : {}),
@@ -106,20 +106,20 @@ function PropsTable({
         accessorKey: "type",
         header: labels.propType,
         cell: ({ row }) => (
-          <span className="font-mono text-xs text-muted">{row.original.type ?? "—"}</span>
+          <span className="font-mono text-xs text-muted-foreground">{row.original.type ?? "—"}</span>
         ),
       },
       {
         accessorKey: "default",
         header: labels.propDefault,
         cell: ({ row }) => (
-          <span className="font-mono text-xs text-muted">{row.original.default ?? "—"}</span>
+          <span className="font-mono text-xs text-muted-foreground">{row.original.default ?? "—"}</span>
         ),
       },
       {
         accessorKey: "description",
         header: labels.propDescription,
-        cell: ({ row }) => <span className="text-xs text-muted">{row.original.description ?? ""}</span>,
+        cell: ({ row }) => <span className="text-xs text-muted-foreground">{row.original.description ?? ""}</span>,
       },
     ],
     [labels],
@@ -296,7 +296,7 @@ function ComponentPickerImpl({
             onChange={(e) => commitFilter({ ...current, search: e.target.value })}
             onKeyDown={onSearchKeyDown}
           />
-          <span className="shrink-0 font-mono text-xs text-muted">
+          <span className="shrink-0 font-mono text-xs text-muted-foreground">
             {labels.resultCount(results.length, items.length)}
           </span>
         </div>
@@ -336,11 +336,11 @@ function ComponentPickerImpl({
                         <span className="min-w-0 flex-1 truncate font-medium text-foreground">
                           {item.name}
                         </span>
-                        <span className="shrink-0 font-mono text-[11px] text-muted">
+                        <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
                           {item.slug}
                         </span>
                       </div>
-                      <p className="line-clamp-2 text-xs text-muted">{item.description}</p>
+                      <p className="line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
                       <div className="flex flex-wrap items-center gap-1">
                         <Tag size="sm" tone="brand">
                           {item.category}
@@ -383,9 +383,9 @@ function ComponentPickerImpl({
                     <span className="truncate text-base font-medium text-foreground">
                       {activeItem.name}
                     </span>
-                    <span className="truncate font-mono text-xs text-muted">{activeItem.slug}</span>
+                    <span className="truncate font-mono text-xs text-muted-foreground">{activeItem.slug}</span>
                   </div>
-                  <p className="text-xs text-muted">{activeItem.description}</p>
+                  <p className="text-xs text-muted-foreground">{activeItem.description}</p>
                 </div>
 
                 {showPreview && (
@@ -412,7 +412,7 @@ function ComponentPickerImpl({
                   <section className="flex flex-col gap-2">
                     <h4 className="text-xs font-medium text-foreground">{labels.examplesTitle}</h4>
                     {(activeItem.examples ?? []).length === 0 ? (
-                      <p className="text-xs text-muted">{labels.noExamples}</p>
+                      <p className="text-xs text-muted-foreground">{labels.noExamples}</p>
                     ) : (
                       (activeItem.examples ?? []).map((example, i) => (
                         <CodeBlock

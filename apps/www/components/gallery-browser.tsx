@@ -86,7 +86,7 @@ export function GalleryBrowser({
             </Chip>
           ))}
           {(q || category) && (
-            <span className="ml-auto text-sm text-muted tabular-nums">
+            <span className="ml-auto text-sm text-muted-foreground tabular-nums">
               {visible.length} / {total}
             </span>
           )}
@@ -105,7 +105,7 @@ export function GalleryBrowser({
             </Chip>
             <Link
               href={`/search?q=${encodeURIComponent(q)}`}
-              className="inline-flex items-center rounded-full border border-border px-3 py-1 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center rounded-full border border-border px-3 py-1 text-sm text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             >
               {content.searchAll}
             </Link>
@@ -137,7 +137,7 @@ function Chip({
       className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
         active
           ? "border-primary bg-primary/10 text-primary"
-          : "border-border text-muted hover:bg-surface-hover hover:text-foreground"
+          : "border-border text-muted-foreground hover:bg-surface-hover hover:text-foreground"
       }`}
     >
       {children}

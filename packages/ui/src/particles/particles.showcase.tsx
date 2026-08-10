@@ -19,12 +19,12 @@ export const particlesShowcase: ShowcaseSpec = {
         "放进 relative 容器，Particles 自带 absolute inset-0 铺满；不传 color 时吃主题前景色，鼠标靠近会磁吸位移。",
       code: `<div className="relative h-48 w-80 overflow-hidden rounded-xl border border-border bg-surface">
   <Particles quantity={120} />
-  <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+  <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
 </div>`,
       render: () => (
         <Stage>
           <Particles quantity={120} />
-          <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
         </Stage>
       ),
     },
@@ -38,7 +38,7 @@ export const particlesShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <Particles quantity={80} staticity={80} ease={80} />
-          <div className="grid h-full place-items-center text-sm text-muted">staticity=80 ease=80</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">staticity=80 ease=80</div>
         </Stage>
       ),
     },
@@ -51,7 +51,7 @@ export const particlesShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <Particles quantity={100} color="#6366f1" />
-          <div className="grid h-full place-items-center text-sm text-muted">color=#6366f1</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">color=#6366f1</div>
         </Stage>
       ),
     },
@@ -64,7 +64,7 @@ export const particlesShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <Particles quantity={50} size={2} vx={0.3} vy={0.1} />
-          <div className="grid h-full place-items-center text-sm text-muted">size=2 vx=0.3</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">size=2 vx=0.3</div>
         </Stage>
       ),
     },
@@ -81,7 +81,7 @@ export const particlesShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <Particles quantity={120} />
-          <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
         </Stage>
       ),
     },
@@ -90,7 +90,7 @@ export const particlesShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <Particles quantity={80} staticity={80} ease={80} />
-          <div className="grid h-full place-items-center text-sm text-muted">staticity=80 ease=80</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">staticity=80 ease=80</div>
         </Stage>
       ),
     },
@@ -100,7 +100,7 @@ export const particlesShowcase: ShowcaseSpec = {
         <Stage>
           {/* color 直接传 CSS var 解析值，或用十六进制硬编码 demo 色 */}
           <Particles quantity={100} color="#6366f1" />
-          <div className="grid h-full place-items-center text-sm text-muted">color=#6366f1</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">color=#6366f1</div>
         </Stage>
       ),
     },
@@ -109,7 +109,7 @@ export const particlesShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <Particles quantity={50} size={2} vx={0.3} vy={0.1} />
-          <div className="grid h-full place-items-center text-sm text-muted">size=2 vx=0.3</div>
+          <div className="grid h-full place-items-center text-sm text-muted-foreground">size=2 vx=0.3</div>
         </Stage>
       ),
     },
@@ -122,7 +122,7 @@ export const particlesShowcase: ShowcaseSpec = {
         ease={p.ease as number}
         size={p.size as number}
       />
-      <div className="grid h-full place-items-center text-sm text-muted">Particles</div>
+      <div className="grid h-full place-items-center text-sm text-muted-foreground">Particles</div>
     </Stage>
   ),
   toCode: (p) =>

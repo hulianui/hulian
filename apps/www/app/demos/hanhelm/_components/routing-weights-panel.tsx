@@ -33,11 +33,11 @@ export function RoutingWeightsPanel({ weights, onChange, onReset }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div className="text-xs text-muted">{copy("andAuthorityWasWeightyAndHarmonious")}<span className="font-medium tabular-nums text-foreground">{sum.toFixed(2)}</span>{copy("scoringIsCalculatedByWeightingAndSumming")}</div>
+        <div className="text-xs text-muted-foreground">{copy("andAuthorityWasWeightyAndHarmonious")}<span className="font-medium tabular-nums text-foreground">{sum.toFixed(2)}</span>{copy("scoringIsCalculatedByWeightingAndSumming")}</div>
         <button
           type="button"
           onClick={onReset}
-          className="rounded-[var(--radius)] border border-border px-2.5 py-1 text-xs text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+          className="rounded-[var(--radius)] border border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
         >{copy("resetsToEqualWeight")}</button>
       </div>
 
@@ -70,7 +70,7 @@ export function RoutingWeightsPanel({ weights, onChange, onReset }: Props) {
                 }}
                 aria-label={copy("valueHeldGreatPower", d.label)}
               />
-              <div className="text-xs text-muted">{d.hint}</div>
+              <div className="text-xs text-muted-foreground">{d.hint}</div>
             </div>
           );
         })}

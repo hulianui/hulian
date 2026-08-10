@@ -73,7 +73,7 @@ function kpiDefs(s: Snapshot): KpiDef[] {
 function KpiTile({ def }: { def: KpiDef }) {
   return (
     <div className="flex flex-col gap-1 rounded-lg border border-border/50 bg-surface/40 px-3 py-2.5">
-      <div className="flex items-center gap-1.5 text-xs text-muted">
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <def.Icon className="size-3.5" style={{ color: def.color }} />
         {def.label}
       </div>
@@ -84,7 +84,7 @@ function KpiTile({ def }: { def: KpiDef }) {
           className="text-2xl font-semibold tabular-nums text-foreground"
           style={{ color: def.color }}
         />
-        {def.suffix && <span className="text-xs text-muted">{def.suffix}</span>}
+        {def.suffix && <span className="text-xs text-muted-foreground">{def.suffix}</span>}
       </div>
     </div>
   );
@@ -112,7 +112,7 @@ export function KpiRail({ snapshot, loading }: { snapshot: Snapshot | null; load
   return (
     <Panel
       title={copy("coreMetrics")}
-      extra={<span className="text-xs text-muted">{copy("refreshEvery3s")}</span>}
+      extra={<span className="text-xs text-muted-foreground">{copy("refreshEvery3s")}</span>}
     >
       <div className="flex h-full flex-col gap-2.5">
         <div className="grid grid-cols-2 gap-2.5">
@@ -122,7 +122,7 @@ export function KpiRail({ snapshot, loading }: { snapshot: Snapshot | null; load
         </div>
 
         <div className="mt-auto rounded-lg border border-border/50 bg-surface/40 px-3 py-3">
-          <div className="mb-2 flex items-center justify-between text-xs text-muted">
+          <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Gauge className="size-3.5" />
               {copy("globalLoad")}

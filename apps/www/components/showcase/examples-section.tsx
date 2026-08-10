@@ -9,7 +9,7 @@ export function ExamplesSection({ examples }: { examples: ExampleSpec[] }) {
         <section key={i} id={`ex-${i}`} className="scroll-mt-6">
           <h3 className="text-[0.95rem] font-semibold">{ex.title}</h3>
           {ex.description && (
-            <p className="mt-1 text-sm leading-relaxed text-muted">{ex.description}</p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{ex.description}</p>
           )}
           <div className="mt-3 overflow-hidden rounded-[var(--radius)] border border-border">
             <div className="flex flex-wrap items-center gap-4 bg-bg p-8">{ex.render()}</div>

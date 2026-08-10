@@ -65,7 +65,7 @@ function IconAction({
             size="iconSm"
             aria-label={label}
             onClick={onClick}
-            className="text-muted hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground"
           >
             {children}
           </Button>
@@ -102,7 +102,7 @@ export function HeaderBar({
           <div className="text-lg font-semibold tracking-tight text-foreground">
             {copy("hanyunGlobalDispatchCommandCenter")}
           </div>
-          <div className="text-xs text-muted">HanCloud Global CDN · Real-time Orchestration</div>
+          <div className="text-xs text-muted-foreground">HanCloud Global CDN · Real-time Orchestration</div>
         </div>
       </div>
 
@@ -148,7 +148,7 @@ export function HeaderBar({
                 size="iconSm"
                 aria-label={copy("stopLiveRefreshAlternate")}
                 title={copy("stopLiveRefreshAlternate")}
-                className="text-muted hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <Pause className="size-4" />
               </Button>
@@ -166,7 +166,7 @@ export function HeaderBar({
           <Tooltip>
             <TooltipTrigger
               render={
-                <AnimatedThemeToggler className="grid size-8 place-items-center rounded-md text-muted hover:text-foreground" />
+                <AnimatedThemeToggler className="grid size-8 place-items-center rounded-md text-muted-foreground hover:text-foreground" />
               }
             />
             <TooltipContent>{copy("toggleLightAndDark")}</TooltipContent>

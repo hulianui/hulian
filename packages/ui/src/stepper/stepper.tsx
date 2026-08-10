@@ -24,7 +24,7 @@ function StepIcon({ index, done, active }: { index: number; done: boolean; activ
         "inline-flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
         filled
           ? "bg-primary text-primary-foreground"
-          : "border border-border bg-transparent text-muted",
+          : "border border-border bg-transparent text-muted-foreground",
       )}
     >
       {done ? (
@@ -83,7 +83,7 @@ function StepperImpl({ steps, activeStep, className }: StepperProps) {
             <span
               className={cn(
                 "mt-2 px-1 text-center text-sm",
-                done || active ? "text-foreground" : "text-muted",
+                done || active ? "text-foreground" : "text-muted-foreground",
               )}
             >
               {s.label}

@@ -200,7 +200,7 @@ export function Pagination({
         </span>
       )}
       {totalNode != null && (
-        <span className="relative z-10 mr-1 select-none whitespace-nowrap text-sm text-muted">
+        <span className="relative z-10 mr-1 select-none whitespace-nowrap text-sm text-muted-foreground">
           {totalNode}
         </span>
       )}
@@ -227,7 +227,7 @@ export function Pagination({
         item === "ellipsis" ? (
           <span
             key={`e${i}`}
-            className="relative z-10 inline-flex h-9 min-w-9 select-none items-center justify-center text-muted"
+            className="relative z-10 inline-flex h-9 min-w-9 select-none items-center justify-center text-muted-foreground"
           >
             <span aria-hidden="true">…</span>
             <span className="sr-only">{labels.more}</span>
@@ -274,7 +274,7 @@ export function Pagination({
       )}
 
       {showQuickJumper && (
-        <span className="relative z-10 ml-1 inline-flex items-center gap-1.5 whitespace-nowrap text-sm text-muted">
+        <span className="relative z-10 ml-1 inline-flex items-center gap-1.5 whitespace-nowrap text-sm text-muted-foreground">
           {labels.jumpPrefix}
           <input
             type="text"

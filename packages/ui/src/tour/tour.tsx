@@ -218,7 +218,7 @@ export function Tour({
               </p>
             )}
             {step.description != null && (
-              <p id={descId} className="mt-1.5 text-sm leading-relaxed text-muted">
+              <p id={descId} className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 {step.description}
               </p>
             )}
@@ -227,7 +227,7 @@ export function Tour({
             type="button"
             aria-label={tourLocale.close}
             onClick={() => onClose?.()}
-            className="-mr-1 -mt-1 inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="-mr-1 -mt-1 inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="size-4" aria-hidden />
           </button>
@@ -236,7 +236,7 @@ export function Tour({
         <div className="mt-4 flex items-center justify-between gap-3">
           {/* 进度 1/N */}
           <span
-            className="text-xs tabular-nums text-muted"
+            className="text-xs tabular-nums text-muted-foreground"
             aria-label={tourLocale.progress(current + 1, total)}
           >
             {current + 1}/{total}
@@ -245,7 +245,7 @@ export function Tour({
             <button
               type="button"
               onClick={() => onClose?.()}
-              className="rounded-[min(var(--radius),0.375rem)] px-1.5 py-1 text-xs text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-[min(var(--radius),0.375rem)] px-1.5 py-1 text-xs text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             >
               {resolvedSkipText}
             </button>

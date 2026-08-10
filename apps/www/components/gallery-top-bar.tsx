@@ -14,10 +14,10 @@ export function GalleryTopBar({ label, href }: { label: string; href: string }) 
         <Link href="/" className="font-semibold">
           {content.brand}
         </Link>
-        <span className="text-muted/50" aria-hidden>
+        <span className="text-muted-foreground/50" aria-hidden>
           /
         </span>
-        <Link href={href} className="text-muted transition-colors hover:text-foreground">
+        <Link href={href} className="text-muted-foreground transition-colors hover:text-foreground">
           {label}
         </Link>
       </nav>

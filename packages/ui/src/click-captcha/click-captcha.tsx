@@ -224,7 +224,7 @@ export function ClickCaptcha({
           />
         )}
         {imageError && (
-          <div className="absolute inset-0 grid place-items-center px-4 text-center text-sm text-muted">
+          <div className="absolute inset-0 grid place-items-center px-4 text-center text-sm text-muted-foreground">
             {loc.imageError}
           </div>
         )}
@@ -257,7 +257,7 @@ export function ClickCaptcha({
         )}
       </div>
 
-      <p role="status" aria-live="polite" className="text-xs text-muted">
+      <p role="status" aria-live="polite" className="text-xs text-muted-foreground">
         {statusText || `${loc.selected} ${points.length}/${maxPoints}`}
       </p>
     </div>

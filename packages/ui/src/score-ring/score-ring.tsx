@@ -61,7 +61,7 @@ function ScoreRingImpl({
               {grade.label}
             </div>
           )}
-          {label && <div className="mt-0.5 text-[11px] text-muted">{label}</div>}
+          {label && <div className="mt-0.5 text-[11px] text-muted-foreground">{label}</div>}
         </div>
       </div>
     </div>

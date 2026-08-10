@@ -67,7 +67,7 @@ export default function PlaygroundPage() {
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-xl font-semibold text-foreground">Playground</h1>
-          <p className="text-sm text-muted">{copy("onlineDebuggingOfModelsAndParametersMock")}</p>
+          <p className="text-sm text-muted-foreground">{copy("onlineDebuggingOfModelsAndParametersMock")}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={reset} disabled={turns.length === 0}>
@@ -81,7 +81,7 @@ export default function PlaygroundPage() {
         {/* 左：模型 + 参数 */}
         <Card className="flex flex-col gap-4 self-start p-4">
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted">{copy("model")}</label>
+            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">{copy("model")}</label>
             <Select items={selectItems} value={modelId} onValueChange={(v) => setModelId(v as string)}>
               <SelectTrigger className="w-full" />
               <SelectContent>
@@ -93,7 +93,7 @@ export default function PlaygroundPage() {
               </SelectContent>
             </Select>
             {model && (
-              <div className="mt-1.5 flex flex-wrap items-center gap-1 text-xs text-muted">
+              <div className="mt-1.5 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
                 <Tag tone="neutral" size="sm" variant="soft">
                   {formatPrice(model.inPrice)} / {formatPrice(model.outPrice)}{copy("everyM")}</Tag>
               </div>
@@ -104,12 +104,12 @@ export default function PlaygroundPage() {
           <ParamSlider label="Top P" value={topP} min={0} max={1} step={0.05} onChange={setTopP} />
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted">Max Tokens</label>
+            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Max Tokens</label>
             <NumberField value={maxTokens} onValueChange={setMaxTokens} min={1} max={model?.maxOutput ?? 32000} step={256} aria-label={copy("maximumOutputTokens")} />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted">{copy("systemPrompt")}</label>
+            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">{copy("systemPrompt")}</label>
             <Textarea
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
@@ -182,12 +182,12 @@ export default function PlaygroundPage() {
             <Metric label="Completion tokens" value={completionTokens.toLocaleString()} />
             <Metric label={copy("totalTokens")} value={(promptTokens + completionTokens).toLocaleString()} />
             <div className="border-t border-border pt-3">
-              <div className="text-xs text-muted">{copy("costOfThisSession")}</div>
+              <div className="text-xs text-muted-foreground">{copy("costOfThisSession")}</div>
               <div className="mt-0.5 text-2xl font-semibold tabular-nums text-primary">
                 {formatUsd(sessionCost)}
               </div>
               {model && (
-                <div className="mt-1 text-xs text-muted">{copy("includingGatewayMagnification")}{model.markup}{copy("estimateTokenByCharacter")}</div>
+                <div className="mt-1 text-xs text-muted-foreground">{copy("includingGatewayMagnification")}{model.markup}{copy("estimateTokenByCharacter")}</div>
               )}
             </div>
           </CardBody>
@@ -226,7 +226,7 @@ function ParamSlider({
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <label className="text-xs font-medium text-muted">{label}</label>
+        <label className="text-xs font-medium text-muted-foreground">{label}</label>
         <span className="text-xs tabular-nums text-foreground">{value}</span>
       </div>
       <Slider
@@ -244,7 +244,7 @@ function ParamSlider({
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between text-sm">
-      <span className="text-muted">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <span className="tabular-nums font-medium text-foreground">{value}</span>
     </div>
   );

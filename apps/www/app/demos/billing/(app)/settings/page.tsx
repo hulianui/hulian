@@ -43,7 +43,7 @@ export default function SettingsPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-xl font-semibold tracking-tight text-foreground">{copy("accountSettings")}</h1>
-        <p className="mt-1 text-sm text-muted">{copy("manageYourProfileTeamsAndNotificationPreferences")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{copy("manageYourProfileTeamsAndNotificationPreferences")}</p>
       </div>
 
       {/* 个人资料 + 工作状态（EmojiPicker）*/}
@@ -83,19 +83,19 @@ export default function SettingsPage() {
               <span className="text-lg font-semibold text-foreground">{account.name}</span>
               <Tag tone="brand" size="sm">{copy("owner2")}</Tag>
             </div>
-            <p className="text-sm text-muted">{account.email} · {account.company}</p>
+            <p className="text-sm text-muted-foreground">{account.email} · {account.company}</p>
           </div>
         </div>
 
         <Divider className="my-5" />
 
         <div className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-center">
-          <span className="text-sm text-muted">{copy("currentStatus", status)}</span>
+          <span className="text-sm text-muted-foreground">{copy("currentStatus", status)}</span>
           <Field label="">
             <Input
               value={statusText}
               onChange={(e) => setStatusText(e.target.value)}
-              suffix={<Pencil className="size-3.5 text-muted" />}
+              suffix={<Pencil className="size-3.5 text-muted-foreground" />}
               placeholder={copy("saySomething")}
             />
           </Field>
@@ -106,7 +106,7 @@ export default function SettingsPage() {
       <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-foreground">{copy("teamMember")}</h2>
-          <span className="text-xs text-muted">{copy("seatsAlreadyUsed", team.length, seats)}</span>
+          <span className="text-xs text-muted-foreground">{copy("seatsAlreadyUsed", team.length, seats)}</span>
         </div>
         <ul className="divide-y divide-border">
           {team.map((m) => (
@@ -114,9 +114,9 @@ export default function SettingsPage() {
               <Avatar size="sm" fallback={m.avatar} />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-foreground">{m.name}</p>
-                <p className="truncate text-xs text-muted">{m.email}</p>
+                <p className="truncate text-xs text-muted-foreground">{m.email}</p>
               </div>
-              <span className="hidden text-xs text-muted sm:block">{copy("activeIn")}<RelativeTime value={m.active} locale={DEMO_RELATIVE_TIME_LOCALE} />
+              <span className="hidden text-xs text-muted-foreground sm:block">{copy("activeIn")}<RelativeTime value={m.active} locale={DEMO_RELATIVE_TIME_LOCALE} />
               </span>
               <Tag tone={m.role === "拥有者" ? "brand" : "neutral"} size="sm">{m.role}</Tag>
             </li>
@@ -136,7 +136,7 @@ export default function SettingsPage() {
             <label key={row.key} className="flex cursor-pointer items-center justify-between gap-4">
               <span>
                 <span className="block text-sm text-foreground">{row.label}</span>
-                <span className="block text-xs text-muted">{row.desc}</span>
+                <span className="block text-xs text-muted-foreground">{row.desc}</span>
               </span>
               <Switch
                 checked={notify[row.key as keyof typeof notify]}
@@ -150,7 +150,7 @@ export default function SettingsPage() {
       {/* 订阅状态 / 取消 */}
       <section className="rounded-[var(--radius-lg)] border border-border bg-surface p-5">
         <h2 className="mb-3 text-sm font-semibold text-foreground">{copy("subscriptionStatus")}</h2>
-        <p className="text-sm text-muted">
+        <p className="text-sm text-muted-foreground">
           {copy("subscriptionSummary", plan.name, cycle === "yearly" ? copy("annualPayment") : copy("monthlyPayment"), seats, formatMoney(monthlyTotal))}
         </p>
         <Banner

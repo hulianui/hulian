@@ -22,7 +22,7 @@ export const chipVariants = cva(
       { variant: "solid", tone: "neutral", class: "bg-surface-hover text-foreground" },
       { variant: "soft", tone: "brand", class: "bg-primary/12 text-primary" },
       { variant: "soft", tone: "danger", class: "bg-danger/12 text-danger" },
-      { variant: "soft", tone: "neutral", class: "bg-surface-hover text-muted" },
+      { variant: "soft", tone: "neutral", class: "bg-surface-hover text-muted-foreground" },
       { variant: "outline", tone: "brand", class: "border-primary text-primary" },
       { variant: "outline", tone: "danger", class: "border-danger text-danger" },
       { variant: "outline", tone: "neutral", class: "border-border text-foreground" },
@@ -31,7 +31,7 @@ export const chipVariants = cva(
   },
 );
 
-const dotByTone = { brand: "bg-primary", danger: "bg-danger", neutral: "bg-muted" } as const;
+const dotByTone = { brand: "bg-primary", danger: "bg-danger", neutral: "bg-muted-foreground" } as const;
 // avatar 存在时缩小左内边距让头像贴边，并按 size 把头像约束为正方形。
 const avatarPadBySize = { sm: "pl-0.5", md: "pl-1" } as const;
 const avatarSizeBySize = { sm: "[&>*]:size-5", md: "[&>*]:size-6" } as const;

@@ -146,7 +146,7 @@ function Rail({
               type="button"
               aria-label={copy("toDeleteAConversation", c.title)}
               onClick={(e) => e.stopPropagation()}
-              className="invisible rounded p-0.5 text-muted opacity-0 transition-opacity hover:text-danger group-hover/nav-row:visible group-hover/nav-row:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="invisible rounded p-0.5 text-muted-foreground opacity-0 transition-opacity hover:text-danger group-hover/nav-row:visible group-hover/nav-row:opacity-100 focus-visible:visible focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               <Trash2 className="size-3.5" />
             </button>
@@ -173,7 +173,7 @@ function Rail({
                   variant="ghost"
                   size="iconSm"
                   aria-label={copy("searchConversations")}
-                  className="text-muted hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <Search className="size-4" />
                 </Button>
@@ -189,7 +189,7 @@ function Rail({
                   size="iconSm"
                   onClick={onCollapse}
                   aria-label={copy("collapseSidebar")}
-                  className="text-muted hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <PanelLeft className="size-4" />
                 </Button>
@@ -246,7 +246,7 @@ function Rail({
                 variant="ghost"
                 size="iconSm"
                 aria-label={copy("accountMenu")}
-                className="text-muted hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <MoreHorizontal className="size-4" />
               </Button>
@@ -325,12 +325,12 @@ function AssistantBody({ m }: { m: AssistantMessage }) {
                     {c.title}
                   </Text>
                   {c.source && (
-                    <Text as="p" size="xs" className="text-muted">
+                    <Text as="p" size="xs" className="text-muted-foreground">
                       {copy("source")}
                       {c.source}
                     </Text>
                   )}
-                  <Text as="p" size="xs" className="line-clamp-4 text-muted leading-relaxed">
+                  <Text as="p" size="xs" className="line-clamp-4 text-muted-foreground leading-relaxed">
                     {/* demo 占位原文摘要——真实场景接引用正文 */}
                     {copy("thisIsASummaryOfTheOriginalTextOfThe")}
                   </Text>
@@ -463,7 +463,7 @@ export default function AiChatDemo() {
               size="iconSm"
               onClick={() => setRailCollapsed(false)}
               aria-label={copy("expandSidebar")}
-              className="text-muted hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground"
             >
               <PanelLeft className="size-4" />
             </Button>
@@ -652,7 +652,7 @@ export default function AiChatDemo() {
                           <Button
                             variant="ghost"
                             size="iconSm"
-                            className="shrink-0 text-muted hover:text-foreground"
+                            className="shrink-0 text-muted-foreground hover:text-foreground"
                             aria-label={copy("addAttachment")}
                           >
                             <Paperclip className="size-4" />
@@ -663,7 +663,7 @@ export default function AiChatDemo() {
                     </Tooltip>
                   }
                 />
-                <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-xs text-muted">
+                <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
                   <span>{copy("hualianAssistantMayMakeErrorsThisDemoIsAPure")}</span>
                   <span className="hidden items-center gap-1 sm:inline-flex">
                     ·<Kbd>⌘</Kbd>

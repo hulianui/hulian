@@ -42,7 +42,7 @@ function ThemeToggle() {
 const STATUS_DOT: Record<string, string> = {
   online: "bg-success",
   busy: "bg-warning",
-  away: "bg-muted",
+  away: "bg-muted-foreground",
 };
 
 function HeaderExtra() {

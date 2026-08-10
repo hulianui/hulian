@@ -23,7 +23,7 @@ function ColumnSettingDemo({ handle = true }: { handle?: boolean }) {
   const [fields, setFields] = useState(initialFields);
   return (
     <div className="w-80">
-      <p className="mb-2 text-xs text-muted">拖拽调整列顺序（手柄拖动 / 聚焦手柄后 Space 抓起 · 方向键移动 · Space 放下）</p>
+      <p className="mb-2 text-xs text-muted-foreground">拖拽调整列顺序（手柄拖动 / 聚焦手柄后 Space 抓起 · 方向键移动 · Space 放下）</p>
       <Sortable
         items={fields}
         onChange={setFields}
@@ -31,11 +31,11 @@ function ColumnSettingDemo({ handle = true }: { handle?: boolean }) {
         renderItem={(f) => (
           <div className="flex items-center justify-between gap-3">
             <span className="font-medium text-foreground">{f.label}</span>
-            <span className="shrink-0 text-xs text-muted">{f.hint}</span>
+            <span className="shrink-0 text-xs text-muted-foreground">{f.hint}</span>
           </div>
         )}
       />
-      <p className="mt-2 truncate text-xs text-muted">当前顺序：{fields.map((f) => f.label).join(" → ")}</p>
+      <p className="mt-2 truncate text-xs text-muted-foreground">当前顺序：{fields.map((f) => f.label).join(" → ")}</p>
     </div>
   );
 }
@@ -57,13 +57,13 @@ function QuestionSortDemo() {
   const [list, setList] = useState(initialQuestions);
   return (
     <div className="w-96">
-      <p className="mb-2 text-xs text-muted">行内有输入框与按钮：拖它们不会触发排序，拖空白处才排序</p>
+      <p className="mb-2 text-xs text-muted-foreground">行内有输入框与按钮：拖它们不会触发排序，拖空白处才排序</p>
       <Sortable
         items={list}
         onChange={setList}
         renderItem={(q, { index }) => (
           <div className="flex items-center gap-2">
-            <span className="w-14 shrink-0 text-xs text-muted">第 {index + 1} 题</span>
+            <span className="w-14 shrink-0 text-xs text-muted-foreground">第 {index + 1} 题</span>
             <span className="min-w-0 flex-1 truncate font-medium text-foreground">{q.title}</span>
             <input
               type="number"
@@ -81,7 +81,7 @@ function QuestionSortDemo() {
               type="button"
               aria-label={`删除第 ${index + 1} 题`}
               onClick={() => setList((prev) => prev.filter((it) => it.id !== q.id))}
-              className="shrink-0 rounded px-2 py-1 text-xs text-muted hover:text-danger"
+              className="shrink-0 rounded px-2 py-1 text-xs text-muted-foreground hover:text-danger"
             >
               删除
             </button>
@@ -107,7 +107,7 @@ function TagSortDemo() {
   const [tags, setTags] = useState(initialTags);
   return (
     <div className="max-w-md">
-      <p className="mb-2 text-xs text-muted">横向拖拽排序（看板列 / 筛选标签）</p>
+      <p className="mb-2 text-xs text-muted-foreground">横向拖拽排序（看板列 / 筛选标签）</p>
       <Sortable
         items={tags}
         orientation="horizontal"
@@ -132,7 +132,7 @@ export const sortableShowcase: ShowcaseSpec = {
   renderItem={(f) => (
     <div className="flex items-center justify-between gap-3">
       <span className="font-medium text-foreground">{f.label}</span>
-      <span className="shrink-0 text-xs text-muted">{f.hint}</span>
+      <span className="shrink-0 text-xs text-muted-foreground">{f.hint}</span>
     </div>
   )}
 />`,
@@ -159,7 +159,7 @@ export const sortableShowcase: ShowcaseSpec = {
   onChange={setList}
   renderItem={(q, { index }) => (
     <div className="flex items-center gap-2">
-      <span className="w-14 shrink-0 text-xs text-muted">第 {index + 1} 题</span>
+      <span className="w-14 shrink-0 text-xs text-muted-foreground">第 {index + 1} 题</span>
       <span className="min-w-0 flex-1 truncate">{q.title}</span>
       {/* 输入框可拖选文字、按钮可点，都不会触发排序 */}
       <input type="number" value={q.score} aria-label={\`第 \${index + 1} 题分值\`} onChange={...} />

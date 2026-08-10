@@ -144,7 +144,7 @@ function ProductCard({ product }: {
 
         <div className="flex items-end gap-2">
           <span className="text-lg font-bold text-danger">{formatPrice(product.price)}</span>
-          <span className="text-xs text-muted line-through">{formatPrice(product.originalPrice)}</span>
+          <span className="text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
           <Chip size="sm" tone="danger" variant="soft" className="ml-auto shrink-0">
             {discount}% of list price
           </Chip>

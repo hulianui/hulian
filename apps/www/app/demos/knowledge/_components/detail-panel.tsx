@@ -46,7 +46,7 @@ function Section({
   return (
     <section className="space-y-2">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">{title}</h3>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
         {action}
       </div>
       {children}
@@ -131,7 +131,7 @@ export function DetailPanel() {
           <h2 className="truncate text-base font-semibold tracking-tight">{node.name}</h2>
           <dl className="mt-2 space-y-1 text-sm">
             <div className="flex justify-between gap-2">
-              <dt className="text-muted">{copy("type")}</dt>
+              <dt className="text-muted-foreground">{copy("type")}</dt>
               <dd>
                 {
                   (
@@ -146,11 +146,11 @@ export function DetailPanel() {
               </dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-muted">{copy("creator")}</dt>
+              <dt className="text-muted-foreground">{copy("creator")}</dt>
               <dd>{node.author}</dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-muted">{copy("lastModified")}</dt>
+              <dt className="text-muted-foreground">{copy("lastModified")}</dt>
               <dd className="tabular-nums">{node.updatedAt}</dd>
             </div>
           </dl>
@@ -177,7 +177,7 @@ export function DetailPanel() {
               size="sm"
             />
           ) : (
-            <p className="text-sm text-muted">{copy("noCollaboratorsYet")}</p>
+            <p className="text-sm text-muted-foreground">{copy("noCollaboratorsYet")}</p>
           )}
         </Section>
 
@@ -202,7 +202,7 @@ export function DetailPanel() {
               </Tag>
             ))}
             {(node.tags ?? []).length === 0 && !adding && (
-              <span className="text-sm text-muted">{copy("noTags")}</span>
+              <span className="text-sm text-muted-foreground">{copy("noTags")}</span>
             )}
           </div>
           {adding && (
@@ -230,8 +230,8 @@ export function DetailPanel() {
               children: (
                 <div className="text-sm">
                   <span className="font-medium">{ver.rev}</span>
-                  <span className="text-muted"> · {ver.author}</span>
-                  <p className="text-muted">{ver.note}</p>
+                  <span className="text-muted-foreground"> · {ver.author}</span>
+                  <p className="text-muted-foreground">{ver.note}</p>
                 </div>
               ),
             }))}
@@ -240,7 +240,7 @@ export function DetailPanel() {
 
         {/* 访问权限 */}
         <Section title={copy("access")}>
-          <p className="mb-2 text-xs text-muted">
+          <p className="mb-2 text-xs text-muted-foreground">
             {copy("checkTheDepartmentsMembersParentChildCascadeThatHaveAccess")}
           </p>
           <div className="rounded-[var(--radius)] border border-border bg-surface p-2">

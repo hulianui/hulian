@@ -68,7 +68,7 @@ export default function HealthPage() {
               </span>
               <div className="min-w-0">
                 <div className="truncate text-sm font-medium text-foreground">{c.name}</div>
-                <div className="text-xs text-muted">{p.name}</div>
+                <div className="text-xs text-muted-foreground">{p.name}</div>
               </div>
             </div>
           );
@@ -132,7 +132,7 @@ export default function HealthPage() {
                 tone={pct >= 50 ? "success" : pct >= 20 ? "warning" : "danger"}
                 className="flex-1"
               />
-              <span className="tabular-nums text-xs text-muted">{pct}%</span>
+              <span className="tabular-nums text-xs text-muted-foreground">{pct}%</span>
             </div>
           );
         },
@@ -148,7 +148,7 @@ export default function HealthPage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-foreground">{copy("healthDetectionCenter")}</h1>
-          <p className="text-sm text-muted">{copy("upstreamChannelPingSpeedMeasurementWeightedRouting")}</p>
+          <p className="text-sm text-muted-foreground">{copy("upstreamChannelPingSpeedMeasurementWeightedRouting")}</p>
         </div>
         <Button onClick={runProbe} loading={probing} disabled={probing}>
           <Activity className="size-4" />
@@ -164,7 +164,7 @@ export default function HealthPage() {
       <Card>
         <CardHeader className="flex items-center justify-between">
           <span className="font-medium text-foreground">{copy("upstreamChannels")}</span>
-          <span className="text-xs text-muted">{copy("total")}{channels.length}{copy("articleWeightedRoutingByPriorityWeight")}</span>
+          <span className="text-xs text-muted-foreground">{copy("total")}{channels.length}{copy("articleWeightedRoutingByPriorityWeight")}</span>
         </CardHeader>
         <CardBody className="p-0">
           <Spin spinning={probing} tip={copy("detectingEachUpstreamDelayAndSuccessRate")}>
@@ -184,7 +184,7 @@ export default function HealthPage() {
                   <StatusDot status={c.health} size="sm" />
                   <span className="truncate text-sm font-medium text-foreground">{c.name}</span>
                 </span>
-                <span className="text-xs text-muted">{copy("weight2")}{c.weight} · P{c.priority}</span>
+                <span className="text-xs text-muted-foreground">{copy("weight2")}{c.weight} · P{c.priority}</span>
                 <span className="flex flex-wrap gap-1.5">
                   {c.models.map((m) => (
                     <Tag key={m} size="sm" tone="neutral" variant="outline">
@@ -200,12 +200,12 @@ export default function HealthPage() {
         {/* 熔断规则 */}
         <Card>
           <CardHeader className="flex items-center gap-2 font-medium text-foreground">
-            <RadioTower className="size-4 text-muted" />{copy("circuitBreakerRules")}</CardHeader>
+            <RadioTower className="size-4 text-muted-foreground" />{copy("circuitBreakerRules")}</CardHeader>
           <CardBody className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-sm font-medium text-foreground">{copy("continuousFailureThreshold")}</div>
-                <div className="text-xs text-muted">{copy("afterReachingTheNumberOfTimesThe")}</div>
+                <div className="text-xs text-muted-foreground">{copy("afterReachingTheNumberOfTimesThe")}</div>
               </div>
               <NumberField
                 value={failThreshold}
@@ -220,7 +220,7 @@ export default function HealthPage() {
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-sm font-medium text-foreground">{copy("automaticallyDisableChannels")}</div>
-                <div className="text-xs text-muted">{copy("automaticallyOfflineAfterTheFuseIsBroken")}</div>
+                <div className="text-xs text-muted-foreground">{copy("automaticallyOfflineAfterTheFuseIsBroken")}</div>
               </div>
               <Switch checked={autoDisable} onCheckedChange={setAutoDisable} aria-label={copy("automaticallyDisableChannels2")} />
             </div>

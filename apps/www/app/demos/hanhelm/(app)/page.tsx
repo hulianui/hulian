@@ -71,7 +71,7 @@ export default function OverviewPage() {
     <div className="flex flex-col gap-4 p-6">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("overallDispatchOverview")}</h1>
-        <p className="text-sm text-muted">{copy("fullLinkSchedulingStatusHeterogeneousTaskIntelligent")}</p>
+        <p className="text-sm text-muted-foreground">{copy("fullLinkSchedulingStatusHeterogeneousTaskIntelligent")}</p>
       </div>
 
       {(atRiskCount > 0 || failedCount > 0) && (
@@ -161,7 +161,7 @@ export default function OverviewPage() {
         <Card>
           <CardHeader className="flex items-center justify-between">
             <span className="font-medium text-foreground">{copy("taskProcessingFunnel")}</span>
-            <span className="text-xs text-muted">{copy("incomingRoutingExecutesComplete")}</span>
+            <span className="text-xs text-muted-foreground">{copy("incomingRoutingExecutesComplete")}</span>
           </CardHeader>
           <CardBody>
             <Funnel
@@ -179,7 +179,7 @@ export default function OverviewPage() {
           <CardHeader className="flex items-center justify-between">
             <span className="font-medium text-foreground">{copy("hQueueDepthCostTrends")}</span>
             <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1 text-xs text-muted">
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Gauge className="size-3.5" />{copy("p95Peak")}{Math.max(...seriesValues("p95"))}ms
               </span>
             </div>
@@ -206,7 +206,7 @@ export default function OverviewPage() {
                   key={m.key}
                   className="flex flex-col gap-1 rounded-[var(--radius)] border border-border bg-surface px-3 py-2"
                 >
-                  <span className="text-xs text-muted">{m.label}</span>
+                  <span className="text-xs text-muted-foreground">{m.label}</span>
                   <span className="text-sm font-semibold tabular-nums text-foreground">
                     {m.last}
                   </span>

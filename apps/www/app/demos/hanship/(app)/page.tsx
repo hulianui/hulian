@@ -63,7 +63,7 @@ function ProjectCard({ p }: { p: Project }) {
       <CardBody className="flex flex-col gap-3.5">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="grid size-9 shrink-0 place-items-center rounded-[var(--radius)] bg-surface-hover text-muted">
+            <span className="grid size-9 shrink-0 place-items-center rounded-[var(--radius)] bg-surface-hover text-muted-foreground">
               <Boxes className="size-[18px]" />
             </span>
             <div className="min-w-0">
@@ -81,7 +81,7 @@ function ProjectCard({ p }: { p: Project }) {
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="inline-flex w-fit max-w-full items-center gap-1.5 truncate text-sm text-muted transition-colors hover:text-primary"
+          className="inline-flex w-fit max-w-full items-center gap-1.5 truncate text-sm text-muted-foreground transition-colors hover:text-primary"
         >
           <Globe className="size-3.5 shrink-0" />
           <span className="truncate">{p.prodUrl}</span>
@@ -95,15 +95,15 @@ function ProjectCard({ p }: { p: Project }) {
               <GitCommit layout="stacked" sha={cur.sha} branch={cur.branch} message={cur.message} size="sm" />
               <div className="flex items-center justify-between">
                 <DeployStatus status={cur.status} size="sm" />
-                <RelativeTime value={agoDate(cur.agoMin)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
+                <RelativeTime value={agoDate(cur.agoMin)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted-foreground" />
               </div>
             </div>
           ) : (
-            <div className="text-sm text-muted">{copy("noDeploymentYet")}</div>
+            <div className="text-sm text-muted-foreground">{copy("noDeploymentYet")}</div>
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-hairline pt-2.5 text-xs text-muted">
+        <div className="flex items-center justify-between border-t border-hairline pt-2.5 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <GitBranch className="size-3.5" />
             {p.repo}
@@ -162,11 +162,11 @@ export default function ProjectsOverviewPage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-foreground">{copy("project")}</h1>
-          <p className="text-sm text-muted">{list.length}{copy("projectsGitConnectedAutomaticDeploymentToGlobal")}</p>
+          <p className="text-sm text-muted-foreground">{list.length}{copy("projectsGitConnectedAutomaticDeploymentToGlobal")}</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted" />
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}

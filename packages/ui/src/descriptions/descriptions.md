@@ -39,7 +39,7 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | title | `ReactNode` | 标题(左上) |
 | extra | `ReactNode` | 右上操作区 |
 
-`DescriptionsItem` / `DescriptionsItemData`：`label`(键名，text-muted) / `children`(值，text-foreground) / `span`(跨列数，默认 1，超过 `column` 时钳制到 `column`)
+`DescriptionsItem` / `DescriptionsItemData`：`label`(键名，text-muted-foreground) / `children`(值，text-foreground) / `span`(跨列数，默认 1，超过 `column` 时钳制到 `column`)
 
 ## 示例
 ```tsx

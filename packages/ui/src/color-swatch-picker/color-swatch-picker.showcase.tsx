@@ -28,7 +28,7 @@ function TokenDemo() {
   return (
     <div className="flex flex-col gap-2">
       <ColorSwatchPicker colors={TOKENS} value={v} onValueChange={setV} />
-      <code className="font-mono text-xs text-muted">{v}</code>
+      <code className="font-mono text-xs text-muted-foreground">{v}</code>
     </div>
   );
 }
@@ -38,7 +38,7 @@ function Demo({ size = "md", disabled = false }: { size?: SwatchSize; disabled?:
   return (
     <div className="flex flex-col gap-2">
       <ColorSwatchPicker colors={PALETTE} value={v} onValueChange={setV} size={size} disabled={disabled} />
-      <code className="font-mono text-xs text-muted">{v}</code>
+      <code className="font-mono text-xs text-muted-foreground">{v}</code>
     </div>
   );
 }

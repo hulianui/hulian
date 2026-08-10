@@ -114,14 +114,14 @@ export function Choicebox({
       />
 
       {icon != null && (
-        <span className={cn("mt-0.5 shrink-0 [&>svg]:size-5", selected ? "text-primary" : "text-muted")}>
+        <span className={cn("mt-0.5 shrink-0 [&>svg]:size-5", selected ? "text-primary" : "text-muted-foreground")}>
           {icon}
         </span>
       )}
 
       <div className="min-w-0 flex-1">
         {title != null && <div className="font-medium text-foreground">{title}</div>}
-        {description != null && <div className="mt-0.5 text-sm text-muted">{description}</div>}
+        {description != null && <div className="mt-0.5 text-sm text-muted-foreground">{description}</div>}
         {children}
       </div>
 

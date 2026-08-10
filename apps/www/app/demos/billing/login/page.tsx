@@ -42,9 +42,9 @@ export default function BillingLoginPage() {
           <div className="grid size-12 place-items-center rounded-[var(--radius-lg)] bg-primary text-xl font-bold text-primary-foreground shadow-md">{copy("han")}</div>
           <div className="text-center">
             <p className="text-lg font-bold tracking-tight text-foreground">
-              {brand.name} <span className="text-muted">{brand.nameEn}</span>
+              {brand.name} <span className="text-muted-foreground">{brand.nameEn}</span>
             </p>
-            <p className="text-sm text-muted">{brand.slogan}</p>
+            <p className="text-sm text-muted-foreground">{brand.slogan}</p>
           </div>
         </div>
 
@@ -57,16 +57,16 @@ export default function BillingLoginPage() {
           }}
         >
           <Field label={copy("email")}>
-            <Input type="email" placeholder="you@company.com" prefix={<Mail className="size-4 text-muted" />} defaultValue="shen.yz@hanyun.io" />
+            <Input type="email" placeholder="you@company.com" prefix={<Mail className="size-4 text-muted-foreground" />} defaultValue="shen.yz@hanyun.io" />
           </Field>
           <Field label={copy("password")}>
-            <Input type="password" placeholder="••••••••" prefix={<Lock className="size-4 text-muted" />} defaultValue="demo1234" />
+            <Input type="password" placeholder="••••••••" prefix={<Lock className="size-4 text-muted-foreground" />} defaultValue="demo1234" />
           </Field>
           <Button type="submit" loading={loading} className="w-full">{copy("login")}</Button>
 
           <div className="flex items-center gap-3">
             <Divider className="flex-1" />
-            <span className="text-xs text-muted">{copy("orUseTheFollowing")}</span>
+            <span className="text-xs text-muted-foreground">{copy("orUseTheFollowing")}</span>
             <Divider className="flex-1" />
           </div>
 

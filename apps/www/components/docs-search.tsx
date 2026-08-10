@@ -142,7 +142,7 @@ export function DocsSearch() {
         onClick={() => setOpen(true)}
         aria-label={content.trigger}
         aria-keyshortcuts="Meta+K Control+K"
-        className="flex h-10 items-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-2.5 text-sm text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:w-56 sm:justify-between sm:px-3"
+        className="flex h-10 items-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-2.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:w-56 sm:justify-between sm:px-3"
       >
         <span className="flex items-center gap-2">
           <Search className="size-4 shrink-0" aria-hidden />

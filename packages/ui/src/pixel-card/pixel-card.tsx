@@ -29,7 +29,7 @@ const VARIANTS: Record<PixelCardVariant, VariantConfig> = {
     gap: 5,
     speed: 35,
     colors:
-      "var(--color-foreground),var(--color-muted),var(--color-border)",
+      "var(--color-foreground),var(--color-muted-foreground),var(--color-border)",
     noFocus: false,
   },
   blue: {
@@ -43,14 +43,14 @@ const VARIANTS: Record<PixelCardVariant, VariantConfig> = {
     gap: 6,
     speed: 80,
     colors:
-      "var(--color-chart-5),var(--color-chart-4),var(--color-muted)",
+      "var(--color-chart-5),var(--color-chart-4),var(--color-muted-foreground)",
     noFocus: true,
   },
   amber: {
     gap: 3,
     speed: 20,
     colors:
-      "var(--color-chart-3),var(--color-chart-1),var(--color-muted)",
+      "var(--color-chart-3),var(--color-chart-1),var(--color-muted-foreground)",
     noFocus: false,
   },
 };

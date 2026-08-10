@@ -281,7 +281,7 @@ export function Mentions({
                 className={cn(
                   "flex cursor-pointer select-none items-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2 py-1.5 text-sm outline-none transition-colors",
                   opt.disabled
-                    ? "cursor-not-allowed text-muted opacity-50"
+                    ? "cursor-not-allowed text-muted-foreground opacity-50"
                     : isActive
                     ? "bg-surface-hover text-foreground"
                     : "text-foreground",
@@ -291,7 +291,7 @@ export function Mentions({
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate">{opt.label}</span>
                   {opt.description != null && (
-                    <span className="truncate text-xs text-muted">{opt.description}</span>
+                    <span className="truncate text-xs text-muted-foreground">{opt.description}</span>
                   )}
                 </span>
               </div>

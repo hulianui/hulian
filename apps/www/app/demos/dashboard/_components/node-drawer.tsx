@@ -45,7 +45,7 @@ function Metric({
 }) {
   return (
     <div className="rounded-lg border border-border/60 bg-surface/50 px-3 py-2">
-      <div className="mb-0.5 flex items-center gap-1.5 text-xs text-muted">
+      <div className="mb-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
         {icon}
         {label}
       </div>
@@ -75,7 +75,7 @@ export function NodeDrawer({
               <Tag tone={STATUS_TONE[node.status]} size="sm" variant="soft" dot>
                 {NODE_STATUS_LABELS[node.status]}
               </Tag>
-              <span className="text-xs font-normal text-muted">
+              <span className="text-xs font-normal text-muted-foreground">
                 {REGION_LABELS[node.region]} {copy("popNode")}
               </span>
             </span>

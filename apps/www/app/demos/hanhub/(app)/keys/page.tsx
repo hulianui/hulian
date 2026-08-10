@@ -131,7 +131,7 @@ export default function KeysPage() {
                   {k.group}
                 </Tag>
               </div>
-              <div className="mt-0.5 text-xs text-muted">{copy("create")}{k.createdAt}
+              <div className="mt-0.5 text-xs text-muted-foreground">{copy("create")}{k.createdAt}
                 {k.expiresAt ? copy("expirationValue", k.expiresAt) : copy("longTermEffective")}
                 {k.allowedModels.length > 0 ? copy("limitedToValueModels", k.allowedModels.length) : copy("allModels")}
               </div>
@@ -155,7 +155,7 @@ export default function KeysPage() {
             return (
               <div className="text-sm">
                 <span className="tabular-nums text-foreground">{formatUsd(k.usedUsd)}</span>
-                <span className="text-muted">{copy("noLimit")}</span>
+                <span className="text-muted-foreground">{copy("noLimit")}</span>
               </div>
             );
           }
@@ -163,7 +163,7 @@ export default function KeysPage() {
           return (
             <div className="w-40">
               <Meter value={pct} />
-              <div className="mt-1 text-xs text-muted">
+              <div className="mt-1 text-xs text-muted-foreground">
                 <span className="tabular-nums text-foreground">{formatUsd(k.usedUsd)}</span> / {formatUsd(k.limitUsd)}
               </div>
             </div>
@@ -214,7 +214,7 @@ export default function KeysPage() {
       <div className="flex items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-foreground">{copy("apiKey")}</h1>
-          <p className="text-sm text-muted">{copy("useOneKeyToAccessAllUpstream")}</p>
+          <p className="text-sm text-muted-foreground">{copy("useOneKeyToAccessAllUpstream")}</p>
         </div>
         <Button onClick={openCreate}>
           <Plus className="size-4" />{copy("createNewKey")}</Button>
@@ -245,7 +245,7 @@ export default function KeysPage() {
 
       <Card>
         <CardHeader className="flex items-center gap-2 font-medium text-foreground">
-          <KeyRound className="size-4" />{copy("keyList")}<span className="text-xs font-normal text-muted">
+          <KeyRound className="size-4" />{copy("keyList")}<span className="text-xs font-normal text-muted-foreground">
             {copy("keyCountOpen")}{keys.filter((k) => k.status === "active").length}{copy("enabledTotal")}{keys.length}{copy("localizedText")}</span>
         </CardHeader>
         <CardBody>

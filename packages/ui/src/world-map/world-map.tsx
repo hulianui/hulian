@@ -279,7 +279,7 @@ export function WorldMap({
                     y={y - r - 0.55}
                     fontSize={NODE_LABEL_SIZE}
                     textAnchor="middle"
-                    fill="var(--color-muted)"
+                    fill="var(--color-muted-foreground)"
                     style={{ pointerEvents: "none", userSelect: "none" }}
                   >
                     {node.label}

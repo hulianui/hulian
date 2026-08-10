@@ -13,7 +13,7 @@ export function EmptyStateBlock() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* 范式一：Empty —— 列表/表格空态占位 */}
         <div className="rounded-[var(--radius)] border border-border bg-surface p-6">
-          <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
+          <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             范式一 · Empty（暂无数据）
           </div>
           <Empty
@@ -34,7 +34,7 @@ export function EmptyStateBlock() {
         <div className="flex flex-col gap-4">
           {/* 2a：操作成功 */}
           <div className="rounded-[var(--radius)] border border-border bg-surface p-6">
-            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
+            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               范式二 a · Result success
             </div>
             <Result
@@ -51,7 +51,7 @@ export function EmptyStateBlock() {
 
           {/* 2b：无搜索结果 */}
           <div className="rounded-[var(--radius)] border border-border bg-surface p-6">
-            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
+            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               范式二 b · Result 404（无结果）
             </div>
             <Result

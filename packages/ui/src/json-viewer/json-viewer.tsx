@@ -31,7 +31,7 @@ const valueClass: Record<JsonValueType, string> = {
   string: "text-success",
   number: "text-primary",
   boolean: "text-warning",
-  null: "text-muted",
+  null: "text-muted-foreground",
   object: "text-foreground",
   array: "text-foreground",
 };
@@ -96,7 +96,7 @@ function JsonNode({
       type="button"
       onClick={copy}
       aria-label={copied ? locale.copied : locale.copy}
-      className="ml-2 hidden size-5 shrink-0 items-center justify-center rounded text-muted opacity-0 transition group-hover/row:opacity-100 hover:text-foreground group-hover/row:inline-flex"
+      className="ml-2 hidden size-5 shrink-0 items-center justify-center rounded text-muted-foreground opacity-0 transition group-hover/row:opacity-100 hover:text-foreground group-hover/row:inline-flex"
     >
       {copied ? <Check className="size-3 text-primary" /> : <Copy className="size-3" />}
     </button>
@@ -106,7 +106,7 @@ function JsonNode({
     return (
       <div className="group/row flex items-center py-0.5">
         {keyLabel}
-        {keyLabel && <span className="mr-1 text-muted">:</span>}
+        {keyLabel && <span className="mr-1 text-muted-foreground">:</span>}
         <span className={valueClass[t]}>{renderLeaf(value, t)}</span>
         {copyBtn}
       </div>
@@ -128,16 +128,16 @@ function JsonNode({
         >
           <ChevronRight
             className={cn(
-              "size-3 shrink-0 text-muted transition-transform",
+              "size-3 shrink-0 text-muted-foreground transition-transform",
               expanded && "rotate-90",
             )}
           />
           {keyLabel}
-          {keyLabel && <span className="mr-1 text-muted">:</span>}
+          {keyLabel && <span className="mr-1 text-muted-foreground">:</span>}
           {expanded ? (
-            <span className="text-muted">{openBrace}</span>
+            <span className="text-muted-foreground">{openBrace}</span>
           ) : (
-            <span className="text-muted">{summary}</span>
+            <span className="text-muted-foreground">{summary}</span>
           )}
         </button>
         {copyBtn}
@@ -159,7 +159,7 @@ function JsonNode({
               />
             ))}
           </div>
-          <div className="pl-1 text-muted">{closeBrace}</div>
+          <div className="pl-1 text-muted-foreground">{closeBrace}</div>
         </>
       )}
     </div>

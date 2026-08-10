@@ -41,7 +41,7 @@ import { CardSpotlight } from "@hulianui/ui"
 <CardSpotlight color="var(--color-primary)" radius={350} className="w-64">
   <div className="mb-3 text-3xl">⚡</div>
   <h3 className="mb-1.5 text-base font-semibold">主题色高光</h3>
-  <p className="text-sm text-muted">color 传 var(--color-primary)，高光随主题联动。</p>
+  <p className="text-sm text-muted-foreground">color 传 var(--color-primary)，高光随主题联动。</p>
 </CardSpotlight>
 ```
 

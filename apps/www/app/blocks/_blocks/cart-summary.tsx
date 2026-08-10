@@ -120,7 +120,7 @@ export function CartSummaryBlock() {
                 onCheckedChange={toggleAll}
                 aria-label="全选"
               />
-              <span className="text-sm text-muted">
+              <span className="text-sm text-muted-foreground">
                 全选（共 {items.length} 种商品）
               </span>
             </div>
@@ -146,7 +146,7 @@ export function CartSummaryBlock() {
                 {/* 信息 */}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">{item.name}</p>
-                  <p className="mt-0.5 text-xs text-muted">{item.spec}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{item.spec}</p>
                   <p className="mt-1 text-sm font-semibold text-foreground">
                     {formatPrice(item.price)}
                   </p>
@@ -185,11 +185,11 @@ export function CartSummaryBlock() {
             <h3 className="mb-4 text-sm font-semibold text-foreground">价格汇总</h3>
 
             <div className="space-y-2.5 text-sm">
-              <div className="flex justify-between text-muted">
+              <div className="flex justify-between text-muted-foreground">
                 <span>小计（{selectedItems.reduce((s, i) => s + i.qty, 0)} 件）</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
-              <div className="flex justify-between text-muted">
+              <div className="flex justify-between text-muted-foreground">
                 <span>运费</span>
                 <span className={shipping === 0 ? "text-success" : ""}>
                   {shipping === 0 ? "免运费" : formatPrice(shipping)}
@@ -211,7 +211,7 @@ export function CartSummaryBlock() {
             </div>
 
             {subtotal > 0 && subtotal < 500 && (
-              <p className="mt-2 text-xs text-muted">
+              <p className="mt-2 text-xs text-muted-foreground">
                 再买 {formatPrice(500 - subtotal)} 可享满减 ¥50
               </p>
             )}

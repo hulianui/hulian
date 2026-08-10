@@ -94,7 +94,7 @@ export default function AlertsPage() {
             {STATUS_LABEL[e.status]}
           </Tag>
         </div>
-        <div className="text-xs text-muted">{e.detail}</div>
+        <div className="text-xs text-muted-foreground">{e.detail}</div>
       </div>
     ),
   }));
@@ -116,10 +116,10 @@ export default function AlertsPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <div className="text-sm font-semibold text-foreground">{copy("slaAchievesMonitoring")}</div>
-            <div className="text-xs text-muted">{copy("p50P95LatencyVsSlaThresholdsFor")}</div>
+            <div className="text-xs text-muted-foreground">{copy("p50P95LatencyVsSlaThresholdsFor")}</div>
           </CardHeader>
           <CardBody className="space-y-2">
-            <div className="grid grid-cols-[1.6fr_repeat(3,0.8fr)_auto] items-center gap-2 border-b border-border pb-1.5 text-xs text-muted">
+            <div className="grid grid-cols-[1.6fr_repeat(3,0.8fr)_auto] items-center gap-2 border-b border-border pb-1.5 text-xs text-muted-foreground">
               <span>{copy("taskCategories")}</span><span className="text-right">P50</span><span className="text-right">P95</span><span className="text-right">SLA</span><span className="text-right">{copy("achieved")}</span>
             </div>
             {SLA_CATEGORIES.map((c) => {
@@ -132,9 +132,9 @@ export default function AlertsPage() {
                     <span className="truncate text-foreground">{c.label}</span>
                     <Sparkline data={seriesValues(c.trend)} variant="area" width={56} height={18} tone="var(--color-primary)" />
                   </div>
-                  <span className="text-right tabular-nums text-muted">{c.p50}ms</span>
+                  <span className="text-right tabular-nums text-muted-foreground">{c.p50}ms</span>
                   <span className="text-right tabular-nums text-foreground">{c.p95}ms</span>
-                  <span className="text-right tabular-nums text-muted">{c.slaMs}ms</span>
+                  <span className="text-right tabular-nums text-muted-foreground">{c.slaMs}ms</span>
                   <span className="text-right"><Tag size="sm" variant="soft" tone={tone}>{label}</Tag></span>
                 </div>
               );
@@ -146,12 +146,12 @@ export default function AlertsPage() {
         <Card>
           <CardHeader>
             <div className="text-sm font-semibold text-foreground">{copy("alarmSimulator")}</div>
-            <div className="text-xs text-muted">{copy("dragTheP95ThresholdToPreviewThe")}</div>
+            <div className="text-xs text-muted-foreground">{copy("dragTheP95ThresholdToPreviewThe")}</div>
           </CardHeader>
           <CardBody className="space-y-4">
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-xs text-muted">{copy("p95DelayThreshold")}</span>
+                <span className="text-xs text-muted-foreground">{copy("p95DelayThreshold")}</span>
                 <Tag size="sm" variant="soft" tone="neutral">{p95Threshold}ms</Tag>
               </div>
               <Slider
@@ -165,7 +165,7 @@ export default function AlertsPage() {
             </div>
             <Sparkline data={p95Series} variant="bar" width={232} height={40} tone="var(--color-chart-3)" />
             <div className="rounded-[var(--radius)] border border-border bg-surface p-3 text-sm">{copy("basedOnTheCurrentThreshold")}<span className="font-semibold tabular-nums text-foreground">{p95Threshold}ms</span>{copy("itWillBeTriggeredInTheNear")}<span className="font-semibold tabular-nums text-danger">{exceedCount}</span>{copy("nextTheAlarm")}</div>
-            <div className="text-xs text-muted">{copy("peakQueueDepth")}{Math.max(...queueSeries)}{copy("stripTheLowerTheThresholdTheMore")}</div>
+            <div className="text-xs text-muted-foreground">{copy("peakQueueDepth")}{Math.max(...queueSeries)}{copy("stripTheLowerTheThresholdTheMore")}</div>
           </CardBody>
         </Card>
       </div>
@@ -175,7 +175,7 @@ export default function AlertsPage() {
         <Card>
           <CardHeader>
             <div className="text-sm font-semibold text-foreground">{copy("alertRules")}</div>
-            <div className="text-xs text-muted">{copy("thresholdTriggersNotificationChannels")}</div>
+            <div className="text-xs text-muted-foreground">{copy("thresholdTriggersNotificationChannels")}</div>
           </CardHeader>
           <CardBody className="space-y-2.5">
             {ALERT_RULES.map((r) => (
@@ -185,7 +185,7 @@ export default function AlertsPage() {
                     <span className="text-sm font-medium text-foreground">{r.name}</span>
                     <Tag size="sm" variant="soft" tone={SEVERITY_TONE[r.severity]}>{SEVERITY_LABEL[r.severity]}</Tag>
                   </div>
-                  <div className="text-xs text-muted">{copy("right")}<span className="text-foreground">{r.metric}</span> {r.op} {r.threshold}
+                  <div className="text-xs text-muted-foreground">{copy("right")}<span className="text-foreground">{r.metric}</span> {r.op} {r.threshold}
                     {r.unit} · {r.channel}
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export default function AlertsPage() {
               </div>
             ))}
             <div className="pt-1">
-              <div className="mb-2 text-xs text-muted">{copy("defaultNotificationChannelsMultipleChoices")}</div>
+              <div className="mb-2 text-xs text-muted-foreground">{copy("defaultNotificationChannelsMultipleChoices")}</div>
               <ChoiceboxGroup value={channels} onValueChange={(v) => setChannels(v as string[])} multiple columns={2}>
                 <Choicebox value="wecom" title={copy("wechatWork")} description={copy("realTimePushNotificationsFromTheDuty")} />
                 <Choicebox value="sms" title={copy("sms")} description={copy("seriousDirectContactResponsiblePerson")} />
@@ -212,7 +212,7 @@ export default function AlertsPage() {
         <Card>
           <CardHeader>
             <div className="text-sm font-semibold text-foreground">{copy("alertIncidentStream")}</div>
-            <div className="text-xs text-muted">{copy("recentlyTriggeredAlertsAndActions")}</div>
+            <div className="text-xs text-muted-foreground">{copy("recentlyTriggeredAlertsAndActions")}</div>
           </CardHeader>
           <CardBody>
             <Timeline items={timelineItems} />

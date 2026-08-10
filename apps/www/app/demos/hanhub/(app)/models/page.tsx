@@ -128,7 +128,7 @@ export default function ModelsPage() {
         <ProviderLogo providerId={m.provider} size={28} />
         <div className="min-w-0 text-left">
           <div className="truncate text-sm font-semibold text-foreground">{m.name}</div>
-          <div className="text-xs text-muted">{providerOf(m.provider).name}</div>
+          <div className="text-xs text-muted-foreground">{providerOf(m.provider).name}</div>
         </div>
       </div>
     ),
@@ -156,7 +156,7 @@ export default function ModelsPage() {
         m.capabilities.includes(c) ? (
           <Check className="mx-auto size-4 text-success" aria-label={copy("support")} />
         ) : (
-          <X className="mx-auto size-4 text-muted/50" aria-label={copy("notSupported")} />
+          <X className="mx-auto size-4 text-muted-foreground/50" aria-label={copy("notSupported")} />
         ),
       ),
     })),
@@ -166,14 +166,14 @@ export default function ModelsPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("modelMarket")}</h1>
-        <p className="text-sm text-muted">{models.length}{copy("upstreamModelOneBaseUrlForAll")}</p>
+        <p className="text-sm text-muted-foreground">{models.length}{copy("upstreamModelOneBaseUrlForAll")}</p>
       </div>
 
       {/* 筛选条 */}
       <Card>
         <CardBody className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="w-16 shrink-0 text-sm text-muted">{copy("manufacturer")}</span>
+            <span className="w-16 shrink-0 text-sm text-muted-foreground">{copy("manufacturer")}</span>
             <Segmented
               size="sm"
               value={provider}
@@ -186,7 +186,7 @@ export default function ModelsPage() {
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="w-16 shrink-0 text-sm text-muted">{copy("price")}</span>
+            <span className="w-16 shrink-0 text-sm text-muted-foreground">{copy("price")}</span>
             <Segmented
               size="sm"
               value={band}
@@ -196,7 +196,7 @@ export default function ModelsPage() {
             />
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="w-16 shrink-0 text-sm text-muted">{copy("ability")}</span>
+            <span className="w-16 shrink-0 text-sm text-muted-foreground">{copy("ability")}</span>
             {CAP_KEYS.map((c) => {
               const on = caps.includes(c);
               return (
@@ -233,7 +233,7 @@ export default function ModelsPage() {
                   >
                     {m.name}
                   </button>
-                  <div className="text-xs text-muted">{providerOf(m.provider).name}</div>
+                  <div className="text-xs text-muted-foreground">{providerOf(m.provider).name}</div>
                 </div>
                 <Tag size="sm" tone="neutral">
                   {fmtContext(m.context)}
@@ -242,14 +242,14 @@ export default function ModelsPage() {
               <CardBody className="flex flex-col gap-2.5">
                 <div className="flex items-center gap-4 text-sm">
                   <div>
-                    <span className="text-muted">{copy("input")}</span>
+                    <span className="text-muted-foreground">{copy("input")}</span>
                     <span className="font-medium tabular-nums text-foreground">{formatPrice(m.inPrice)}</span>
                   </div>
                   <div>
-                    <span className="text-muted">{copy("output")}</span>
+                    <span className="text-muted-foreground">{copy("output")}</span>
                     <span className="font-medium tabular-nums text-foreground">{formatPrice(m.outPrice)}</span>
                   </div>
-                  <span className="text-xs text-muted">/ 1M tokens</span>
+                  <span className="text-xs text-muted-foreground">/ 1M tokens</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {m.capabilities.map((c) => (
@@ -258,7 +258,7 @@ export default function ModelsPage() {
                     </Tag>
                   ))}
                 </div>
-                <div className="text-xs text-muted">{copy("baseScore2")}<span className="font-medium tabular-nums text-foreground">{m.benchmark}</span>{copy("speedLimit")}{" "}
+                <div className="text-xs text-muted-foreground">{copy("baseScore2")}<span className="font-medium tabular-nums text-foreground">{m.benchmark}</span>{copy("speedLimit")}{" "}
                   <span className="tabular-nums">{m.rpm.toLocaleString()}</span> RPM
                 </div>
               </CardBody>
@@ -278,7 +278,7 @@ export default function ModelsPage() {
         })}
         {filtered.length === 0 && (
           <Card className="sm:col-span-2 lg:col-span-3">
-            <CardBody className="py-10 text-center text-sm text-muted">{copy("thereAreNoModelsThatMatchThe")}</CardBody>
+            <CardBody className="py-10 text-center text-sm text-muted-foreground">{copy("thereAreNoModelsThatMatchThe")}</CardBody>
           </Card>
         )}
       </div>
@@ -288,11 +288,11 @@ export default function ModelsPage() {
         <CardHeader className="flex items-center justify-between">
           <span className="flex items-center gap-2 font-medium text-foreground">
             <Layers className="size-4" />{copy("pricingComparisonMatrix")}</span>
-          <span className="text-xs text-muted">{copy("selected")}{compareModels.length}{copy("modelRecommendedTheBestValueForMoney")}</span>
+          <span className="text-xs text-muted-foreground">{copy("selected")}{compareModels.length}{copy("modelRecommendedTheBestValueForMoney")}</span>
         </CardHeader>
         <CardBody>
           {compareModels.length === 0 ? (
-            <div className="py-8 text-center text-sm text-muted">{copy("clickAddToCompareFromTheModel")}</div>
+            <div className="py-8 text-center text-sm text-muted-foreground">{copy("clickAddToCompareFromTheModel")}</div>
           ) : (
             <PricingTable columns={columns} rows={rows} />
           )}
@@ -326,26 +326,26 @@ export default function ModelsPage() {
                 <ProviderLogo providerId={detail.provider} size={44} />
                 <div>
                   <div className="text-base font-semibold text-foreground">{detail.name}</div>
-                  <div className="text-xs text-muted">{copy("context")}{fmtContext(detail.context)}{copy("maximumOutput2")}{fmtContext(detail.maxOutput)}
+                  <div className="text-xs text-muted-foreground">{copy("context")}{fmtContext(detail.context)}{copy("maximumOutput2")}{fmtContext(detail.maxOutput)}
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">{copy("inputPriceM2")}</div>
+                  <div className="text-xs text-muted-foreground">{copy("inputPriceM2")}</div>
                   <div className="font-medium tabular-nums text-foreground">{formatPrice(detail.inPrice)}</div>
                 </div>
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">{copy("outputPriceM2")}</div>
+                  <div className="text-xs text-muted-foreground">{copy("outputPriceM2")}</div>
                   <div className="font-medium tabular-nums text-foreground">{formatPrice(detail.outPrice)}</div>
                 </div>
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">{copy("speedLimit2")}</div>
+                  <div className="text-xs text-muted-foreground">{copy("speedLimit2")}</div>
                   <div className="font-medium tabular-nums text-foreground">{detail.rpm.toLocaleString()} RPM</div>
                 </div>
                 <div className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
-                  <div className="text-xs text-muted">{copy("gatewayMagnificationBaseScore")}</div>
+                  <div className="text-xs text-muted-foreground">{copy("gatewayMagnificationBaseScore")}</div>
                   <div className="font-medium tabular-nums text-foreground">
                     ×{detail.markup.toFixed(2)} · {detail.benchmark}
                   </div>
@@ -363,7 +363,7 @@ export default function ModelsPage() {
                 </div>
               </div>
 
-              <div className="text-sm text-muted">{copy("billingInstructionsPricingIsBasedOnToken")}{" "}
+              <div className="text-sm text-muted-foreground">{copy("billingInstructionsPricingIsBasedOnToken")}{" "}
                 <span className="tabular-nums text-foreground">{detail.markup.toFixed(2)}</span>{copy("gatewayMagnification2")}</div>
 
               <Divider />

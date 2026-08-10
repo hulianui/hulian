@@ -8,7 +8,7 @@ function Controlled() {
   return (
     <span className="inline-flex items-center gap-3">
       <ColorField value={hex} onValueChange={setHex} className="w-40" aria-label="主色" />
-      <span className="font-mono text-sm text-muted">{hex}</span>
+      <span className="font-mono text-sm text-muted-foreground">{hex}</span>
     </span>
   );
 }

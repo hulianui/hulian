@@ -60,7 +60,7 @@ function HeatmapImpl({
         {ys.map((y) => (
           <div key={`row-${y}`} className="contents">
             {showLabels && (
-              <span className="self-center pr-2 text-right text-[10px] leading-none text-muted">
+              <span className="self-center pr-2 text-right text-[10px] leading-none text-muted-foreground">
                 {y}
               </span>
             )}
@@ -111,7 +111,7 @@ function HeatmapImpl({
             {xs.map((x) => (
               <span
                 key={`xl-${x}`}
-                className="pt-1 text-center text-[10px] leading-none text-muted"
+                className="pt-1 text-center text-[10px] leading-none text-muted-foreground"
               >
                 {x}
               </span>
@@ -121,7 +121,7 @@ function HeatmapImpl({
       </div>
       {showLegend && (
         <div
-          className="mt-2 flex items-center gap-1 text-[10px] leading-none text-muted"
+          className="mt-2 flex items-center gap-1 text-[10px] leading-none text-muted-foreground"
           aria-label={locale.legend(formatValue(domainMin), formatValue(domainMax))}
         >
           <span className="pr-1">{formatValue(domainMin)}</span>

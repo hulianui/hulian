@@ -17,7 +17,7 @@ function FabBox({
     <div
       className={`relative ${withActions ? "h-72" : "h-56"} w-full max-w-md overflow-hidden rounded-[var(--radius)] border border-border bg-surface-hover`}
     >
-      <div className="p-4 text-sm text-muted">
+      <div className="p-4 text-sm text-muted-foreground">
         {draggable
           ? "按住悬浮按钮可拖着走（松手后停在原地）。"
           : `右下角悬浮按钮${withActions ? "（点击展开子动作）" : label ? "（extended 胶囊态）" : ""}。`}

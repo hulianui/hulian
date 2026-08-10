@@ -30,11 +30,11 @@ export function ThreadList({
       )}
     >
       <div className="mb-2.5 flex items-center justify-between gap-2">
-        {resolvedTitle && <p className="text-xs font-medium text-muted">{resolvedTitle}</p>}
+        {resolvedTitle && <p className="text-xs font-medium text-muted-foreground">{resolvedTitle}</p>}
         {action}
       </div>
       {items.length === 0 ? (
-        <p className="px-2 py-3 text-center text-xs text-muted">{resolvedEmpty}</p>
+        <p className="px-2 py-3 text-center text-xs text-muted-foreground">{resolvedEmpty}</p>
       ) : (
         <ol className="space-y-0.5">
           {items.map((it) => (
@@ -57,7 +57,7 @@ export function ThreadList({
                   {it.title}
                 </span>
                 {it.meta != null && (
-                  <span className="mt-0.5 block truncate text-xs text-muted">{it.meta}</span>
+                  <span className="mt-0.5 block truncate text-xs text-muted-foreground">{it.meta}</span>
                 )}
               </button>
               {onDelete && (
@@ -69,7 +69,7 @@ export function ThreadList({
                     onDelete(it.id);
                   }}
                   // 视觉保持 size-6，伪元素外扩 10px → 44px 触控命中区（移动端拇指友好）
-                  className="absolute right-1.5 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-muted/60 transition-colors before:absolute before:-inset-2.5 before:content-[''] hover:bg-surface-hover hover:text-danger"
+                  className="absolute right-1.5 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground/60 transition-colors before:absolute before:-inset-2.5 before:content-[''] hover:bg-surface-hover hover:text-danger"
                 >
                   <X className="size-3.5" aria-hidden />
                 </button>

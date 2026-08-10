@@ -17,7 +17,7 @@ const yuan = (n: number) => `¥${n.toLocaleString("zh-CN")}`;
 export function CustomerPanel({ customer }: { customer?: Customer }) {
   if (!customer) {
     return (
-      <div className="grid h-full place-items-center border-l border-border bg-surface text-sm text-muted">{copy("noCustomerProfile")}</div>
+      <div className="grid h-full place-items-center border-l border-border bg-surface text-sm text-muted-foreground">{copy("noCustomerProfile")}</div>
     );
   }
 

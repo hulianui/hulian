@@ -204,7 +204,7 @@ export function CodeEditor({
           data-slot="code-editor-gutter"
           className={cn(
             METRICS,
-            "shrink-0 select-none overflow-hidden border-r border-border bg-surface py-3 text-muted",
+            "shrink-0 select-none overflow-hidden border-r border-border bg-surface py-3 text-muted-foreground",
           )}
         >
           {lines.map((_, i) => (
@@ -292,7 +292,7 @@ export function CodeEditor({
             // 文字透明只留光标：真正可见的字来自下面的高亮层。
             // 选区底色必须半透明，否则会盖住高亮层的代码（textarea 在上层绘制）。
             "text-transparent caret-foreground outline-none selection:bg-primary/25",
-            "placeholder:text-muted",
+            "placeholder:text-muted-foreground",
           )}
         />
       </div>

@@ -42,7 +42,7 @@ export function PopoverContent({
             <BasePopover.Title className="text-sm font-semibold text-foreground">{title}</BasePopover.Title>
           )}
           {description != null && (
-            <BasePopover.Description className="mt-1 text-xs text-muted">{description}</BasePopover.Description>
+            <BasePopover.Description className="mt-1 text-xs text-muted-foreground">{description}</BasePopover.Description>
           )}
           {children != null && <div className="mt-2 text-sm text-foreground">{children}</div>}
           {/* 箭头：Base UI arrowStyles 只设交叉轴居中、不管垂直于边那轴 → 必须按 data-side 自己把

@@ -33,7 +33,7 @@ export default function CategoriesPage() {
             key={cat}
             type="button"
             onClick={() => setSelected(cat)}
-            className={`flex w-full flex-col items-center gap-1 px-2 py-3 text-center text-[11px] transition-colors ${selected === cat ? "bg-surface font-semibold text-primary" : "text-muted hover:text-foreground"}`}
+            className={`flex w-full flex-col items-center gap-1 px-2 py-3 text-center text-[11px] transition-colors ${selected === cat ? "bg-surface font-semibold text-primary" : "text-muted-foreground hover:text-foreground"}`}
           >
             <span className="text-2xl leading-none">{CATEGORY_ICON[cat]}</span>
             <span className="leading-tight">{SERVICE_CATEGORY_LABELS[cat]}</span>
@@ -69,12 +69,12 @@ export default function CategoriesPage() {
                   <div className="truncate text-sm font-medium">{s.title}</div>
                   <div className="mt-0.5 flex items-center gap-1">
                     <Rating value={s.rating} readOnly size="sm" />
-                    <span className="text-xs text-muted">{s.reviewCount}  {copy("reviews")}</span>
+                    <span className="text-xs text-muted-foreground">{s.reviewCount}  {copy("reviews")}</span>
                   </div>
                   <div className="mt-1 flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <Avatar fallback={s.workerAvatar} size="sm" />
-                      <span className="text-xs text-muted">{s.workerName}</span>
+                      <span className="text-xs text-muted-foreground">{s.workerName}</span>
                     </div>
                     <span className="text-sm font-semibold text-primary">¥{s.price}/{s.unit}</span>
                   </div>

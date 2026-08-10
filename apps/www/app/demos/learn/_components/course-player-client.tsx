@@ -113,7 +113,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
         key: l.id,
         label: (
           <span className="flex w-full items-center gap-2">
-            <span className="shrink-0 text-muted">
+            <span className="shrink-0 text-muted-foreground">
               {locked ? (
                 <Lock className="size-4" />
               ) : done ? (
@@ -130,7 +130,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                 {copy("tryItOut")}
               </Tag>
             )}
-            <span className="shrink-0 text-xs tabular-nums text-muted">
+            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
               {formatTime(l.duration)}
             </span>
           </span>
@@ -155,7 +155,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
       <div className="mb-4">
         <Link
           href={LEARN_BASE}
-          className="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronLeft className="size-4" aria-hidden />
           {copy("backToCourseCatalog")}
@@ -217,7 +217,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
           {/* 当前小节标题 + 操作 */}
           <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="text-xs text-muted">{loc.chapter.title}</div>
+              <div className="text-xs text-muted-foreground">{loc.chapter.title}</div>
               <h1 className="mt-0.5 text-lg font-semibold text-foreground">{current.title}</h1>
             </div>
             <div className="flex items-center gap-1.5">
@@ -252,7 +252,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                       type="button"
                       aria-label={copy("favoriteCourses")}
                       onClick={() => toast({ title: copy("addedToWishlist"), tone: "info" })}
-                      className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                      className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
                     >
                       <Bookmark className="size-5" aria-hidden />
                     </button>
@@ -267,7 +267,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                       type="button"
                       aria-label={copy("shareCourse")}
                       onClick={() => toast({ title: copy("shareLinkCopied"), tone: "info" })}
-                      className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+                      className="flex size-9 items-center justify-center rounded-[var(--radius)] text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
                     >
                       <Share2 className="size-5" aria-hidden />
                     </button>
@@ -319,7 +319,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
                 </Tag>
               </div>
               <h2 className="text-base font-semibold text-foreground">{course.title}</h2>
-              <p className="mt-1 text-xs text-muted">
+              <p className="mt-1 text-xs text-muted-foreground">
                 {course.instructor.name} · {lessonCount(course)} {copy("lessonDurationJoiner")}{" "}
                 {totalMinutes(course)} {copy("minutes")}
               </p>
@@ -333,7 +333,7 @@ export function CoursePlayerClient({ course }: { course: Course }) {
               {enrolled ? (
                 <div className="mt-3">
                   <div className="mb-1 flex items-center justify-between text-xs">
-                    <span className="text-muted">{copy("learningProgress")}</span>
+                    <span className="text-muted-foreground">{copy("learningProgress")}</span>
                     <span className="font-medium text-foreground">{progress}%</span>
                   </div>
                   <Meter value={progress} />
@@ -368,8 +368,8 @@ export function CoursePlayerClient({ course }: { course: Course }) {
 function LockedHint({ onEnroll, text }: { onEnroll: () => void; text: string }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-[var(--radius)] border border-dashed border-border bg-surface py-10 text-center">
-      <Lock className="size-6 text-muted" aria-hidden />
-      <p className="text-sm text-muted">{text}</p>
+      <Lock className="size-6 text-muted-foreground" aria-hidden />
+      <p className="text-sm text-muted-foreground">{text}</p>
       <Button size="sm" onClick={onEnroll}>
         {copy("signUpToLearn")}
       </Button>

@@ -15,7 +15,7 @@ describe("levelClass", () => {
     expect(levelClass("error")).toContain("text-danger");
     expect(levelClass("warn")).toContain("text-warning");
     expect(levelClass("success")).toContain("text-success");
-    expect(levelClass("debug")).toContain("text-muted");
+    expect(levelClass("debug")).toContain("text-muted-foreground");
     expect(levelClass("command")).toContain("text-primary"); // 命令行高亮
     expect(levelClass()).toContain("text-foreground"); // 默认 info
   });

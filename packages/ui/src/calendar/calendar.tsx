@@ -27,7 +27,7 @@ import type { CalendarPicker, CalendarProps } from "./calendar.types";
 // Popover。所以任何面板行为（禁用判定、下钻、今天）只在这里实现一次。
 
 const navBtn =
-  "rounded-md p-1 text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-40";
+  "rounded-md p-1 text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-40";
 
 const cellBase = "flex items-center justify-center rounded-md text-sm transition-colors";
 
@@ -196,7 +196,7 @@ function CalendarImpl({
       {view === "date" && (
         <div className="grid w-[15.75rem] grid-cols-7">
           {locale.weekdays.map((w) => (
-            <div key={w} className="flex h-8 items-center justify-center text-xs text-muted">
+            <div key={w} className="flex h-8 items-center justify-center text-xs text-muted-foreground">
               {w}
             </div>
           ))}
@@ -223,7 +223,7 @@ function CalendarImpl({
                       ? "bg-primary font-medium text-primary-foreground"
                       : "text-foreground hover:bg-surface-hover",
                     isToday && !isSelected && "font-semibold text-primary",
-                    dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
+                    dis && "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
                   )}
                 >
                   {d.date()}
@@ -257,7 +257,7 @@ function CalendarImpl({
                   isSelected
                     ? "bg-primary font-medium text-primary-foreground"
                     : "text-foreground hover:bg-surface-hover",
-                  dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
+                  dis && "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
                 )}
               >
                 {label}
@@ -288,8 +288,8 @@ function CalendarImpl({
                   isSelected
                     ? "bg-primary font-medium text-primary-foreground"
                     : "text-foreground hover:bg-surface-hover",
-                  outside && !isSelected && "text-muted",
-                  dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
+                  outside && !isSelected && "text-muted-foreground",
+                  dis && "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
                 )}
               >
                 {y}

@@ -57,10 +57,10 @@ describe("Tabs 结构与 a11y（Base UI 兜底）", () => {
 });
 
 describe("Tab 皮肤钩子（防 data-active 漂移）", () => {
-  it("tab className 含 data-[active]:text-foreground + text-muted + relative z-10 + 焦点环", () => {
+  it("tab className 含 data-[active]:text-foreground + text-muted-foreground + relative z-10 + 焦点环", () => {
     const { getAllByRole } = render(<Tree />);
     const cls = getAllByRole("tab")[0].className;
-    expect(cls).toContain("text-muted");
+    expect(cls).toContain("text-muted-foreground");
     expect(cls).toContain("data-[active]:text-foreground");
     expect(cls).toContain("relative");
     expect(cls).toContain("z-10");

@@ -38,7 +38,7 @@ export const blurTextShowcase: ShowcaseSpec = {
   splitType="char"
   delay={90}
   blur={12}
-  className="text-2xl font-semibold text-muted"
+  className="text-2xl font-semibold text-muted-foreground"
 />`,
       render: () => (
         <BlurText
@@ -46,7 +46,7 @@ export const blurTextShowcase: ShowcaseSpec = {
           splitType="char"
           delay={90}
           blur={12}
-          className="text-2xl font-semibold text-muted"
+          className="text-2xl font-semibold text-muted-foreground"
         />
       ),
     },
@@ -83,7 +83,7 @@ export const blurTextShowcase: ShowcaseSpec = {
           splitType="char"
           delay={90}
           blur={12}
-          className="text-2xl font-semibold text-muted"
+          className="text-2xl font-semibold text-muted-foreground"
         />
       ),
     },

@@ -15,7 +15,7 @@ export function TrustBarBlock() {
         18,000+ teams have built and delivered on HanCloud
       </Text>
       <Marquee fade pauseOnHover duration={32} gap="3rem">
-        {companies.map((name) => (<span key={name} className="select-none whitespace-nowrap text-lg font-semibold text-muted transition-colors hover:text-foreground">
+        {companies.map((name) => (<span key={name} className="select-none whitespace-nowrap text-lg font-semibold text-muted-foreground transition-colors hover:text-foreground">
             {name}
           </span>))}
       </Marquee>

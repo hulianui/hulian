@@ -64,16 +64,16 @@ describe("Timeline", () => {
         ]}
       />,
     );
-    expect(container.querySelector(".bg-muted")).toBeTruthy();
+    expect(container.querySelector(".bg-muted-foreground")).toBeTruthy();
     expect(container.querySelector(".bg-primary")).toBeTruthy();
     expect(container.querySelector(".bg-success")).toBeTruthy();
     expect(container.querySelector(".bg-danger")).toBeTruthy();
     expect(container.querySelector(".bg-warning")).toBeTruthy();
   });
 
-  it("color 缺省为 default（bg-muted）", () => {
+  it("color 缺省为 default（bg-muted-foreground）", () => {
     const { container } = render(<Timeline items={[{ children: "x" }]} />);
-    expect(container.querySelector(".bg-muted")).toBeTruthy();
+    expect(container.querySelector(".bg-muted-foreground")).toBeTruthy();
   });
 
   it("自定义 dot 替换默认圆点", () => {
@@ -82,7 +82,7 @@ describe("Timeline", () => {
     );
     expect(getByTestId("my-dot")).toBeTruthy();
     // 默认圆点不再出现
-    expect(container.querySelector(".bg-muted")).toBeNull();
+    expect(container.querySelector(".bg-muted-foreground")).toBeNull();
   });
 
   it("最后一项不画向下连线，非最后项画连线", () => {

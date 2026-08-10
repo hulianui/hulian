@@ -6,7 +6,7 @@ function Screen() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-b from-chart-1/30 to-chart-2/30">
       <span className="text-sm font-medium text-foreground">瑚琏 App</span>
-      <span className="text-xs text-muted">屏幕内容</span>
+      <span className="text-xs text-muted-foreground">屏幕内容</span>
     </div>
   );
 }

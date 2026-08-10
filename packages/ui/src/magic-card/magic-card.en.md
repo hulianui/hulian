@@ -43,7 +43,7 @@ Inherits `ComponentPropsWithoutRef<"div">`.
 <MagicCard className="h-44 w-72">
   <div className="flex h-full flex-col items-center justify-center gap-1 p-6">
     <span className="text-lg font-semibold text-foreground">Magic Card</span>
-    <span className="text-sm text-muted">Move the pointer to reveal the glow</span>
+    <span className="text-sm text-muted-foreground">Move the pointer to reveal the glow</span>
   </div>
 </MagicCard>
 ```

@@ -32,7 +32,7 @@ export default function OverviewPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("overview")}</h1>
-        <p className="text-sm text-muted">{copy("todaySGatewayOperationStatusAsOf")}</p>
+        <p className="text-sm text-muted-foreground">{copy("todaySGatewayOperationStatusAsOf")}</p>
       </div>
 
       {lowBalance && (
@@ -52,7 +52,7 @@ export default function OverviewPage() {
         <Card className="lg:col-span-2">
           <CardHeader className="flex items-center justify-between">
             <span className="font-medium text-foreground">{copy("requestVolumeInThePastDays")}</span>
-            <span className="text-xs text-muted">{copy("unitTimes")}</span>
+            <span className="text-xs text-muted-foreground">{copy("unitTimes")}</span>
           </CardHeader>
           <CardBody>
             <AreaChart data={usageTrend} xKey="date" series={[{ key: "requests", label: copy("numberOfRequests") }]} height={220} />
@@ -86,7 +86,7 @@ export default function OverviewPage() {
               <div key={c.id} className="flex items-center justify-between rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
                 <div className="min-w-0">
                   <div className="truncate text-sm font-medium text-foreground">{c.name}</div>
-                  <div className="text-xs text-muted">{c.models.length}{copy("modelsWeights")}{c.weight}</div>
+                  <div className="text-xs text-muted-foreground">{c.models.length}{copy("modelsWeights")}{c.weight}</div>
                 </div>
                 <StatusDot
                   status={c.health}
@@ -108,7 +108,7 @@ export default function OverviewPage() {
             {requestLogs.slice(0, 6).map((l) => (
               <div key={l.id} className="flex items-center justify-between gap-2 text-sm">
                 <span className="truncate text-foreground">{modelOf(l.model)?.name ?? l.model}</span>
-                <span className="flex shrink-0 items-center gap-2 text-xs text-muted">
+                <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
                   <span className="tabular-nums">{l.latencyMs}ms</span>
                   <StatusDot status={l.status === "success" ? "online" : "offline"} />
                 </span>

@@ -5,7 +5,7 @@ export function EmptyStateBlock() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
         <div className="rounded-[var(--radius)] border border-border bg-surface p-6">
-          <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
+          <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Paradigm 1 · Empty (no data yet)
           </div>
           <Empty title="No customer data yet" description="No customers have been added yet. Start by creating the first customer and manage your business opportunities and transaction records.">
@@ -23,7 +23,7 @@ export function EmptyStateBlock() {
         <div className="flex flex-col gap-4">
 
           <div className="rounded-[var(--radius)] border border-border bg-surface p-6">
-            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
+            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Pattern 2a · Success result
             </div>
             <Result status="success" title="Submission successful" subTitle="Your quote was emailed to the customer. Expect a response within one or two business days.">
@@ -36,7 +36,7 @@ export function EmptyStateBlock() {
 
 
           <div className="rounded-[var(--radius)] border border-border bg-surface p-6">
-            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
+            <div className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Pattern 2b · 404 result (no matches)
             </div>
             <Result status="404" title="No relevant results found" subTitle="Try modifying keywords or adjusting filter conditions, or clear all filters and search again.">

@@ -33,7 +33,7 @@ export interface SparklineProps
    */
   baseline?: number;
   /**
-   * 基准线颜色，默认 `var(--color-muted)`。取值同 `tone`（语义色名 / 任意 CSS 颜色 / 变量）。
+   * 基准线颜色，默认 `var(--color-muted-foreground)`。取值同 `tone`（语义色名 / 任意 CSS 颜色 / 变量）。
    */
   baselineTone?: string;
   /** 基准线的原生 tooltip 文案（渲染为 SVG `<title>`）。 */

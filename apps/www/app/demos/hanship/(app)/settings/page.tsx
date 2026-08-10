@@ -56,7 +56,7 @@ export default function SettingsPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-lg font-semibold">{copy("buildSettings")}</h1>
-        <p className="text-sm text-muted">{copy("project")}<span className="font-mono">{project.name}</span>{copy("frameworkPresetsBuildCommandsAndGitIntegration")}</p>
+        <p className="text-sm text-muted-foreground">{copy("project")}<span className="font-mono">{project.name}</span>{copy("frameworkPresetsBuildCommandsAndGitIntegration")}</p>
       </div>
 
       {/* 框架与构建 */}
@@ -171,7 +171,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="text-sm font-medium">{copy("pauseProject")}</div>
-              <p className="text-sm text-muted">{copy("afterTheSuspensionNewDeploymentsWillStop")}</p>
+              <p className="text-sm text-muted-foreground">{copy("afterTheSuspensionNewDeploymentsWillStop")}</p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger
@@ -206,7 +206,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between gap-4 border-t border-hairline pt-4">
             <div>
               <div className="text-sm font-medium">{copy("deleteProject")}</div>
-              <p className="text-sm text-muted">{copy("permanentlyDeleteTheProjectDeploymentRecordAnd")}</p>
+              <p className="text-sm text-muted-foreground">{copy("permanentlyDeleteTheProjectDeploymentRecordAnd")}</p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger

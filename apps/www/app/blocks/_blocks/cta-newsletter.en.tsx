@@ -30,7 +30,7 @@ export function CtaNewsletterBlock() {
                 You're subscribed. Welcome to HanCloud!
               </Text>
             </div>) : (<form onSubmit={handleSubmit} className="mt-4 flex w-full max-w-md flex-col gap-2.5 sm:flex-row">
-              <Input type="email" required size="lg" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" prefix={<Mail className="size-4 text-muted" aria-hidden/>} className="flex-1" disabled={status === "loading"} aria-label="Email address"/>
+              <Input type="email" required size="lg" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" prefix={<Mail className="size-4 text-muted-foreground" aria-hidden/>} className="flex-1" disabled={status === "loading"} aria-label="Email address"/>
               <Button type="submit" size="lg" loading={status === "loading"} className="sm:w-auto">
                 {status === "loading" ? "Submitting" : "Subscribe now"}
               </Button>

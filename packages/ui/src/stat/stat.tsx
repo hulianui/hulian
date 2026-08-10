@@ -23,8 +23,8 @@ function StatImpl({ label, value, delta, deltaLabel, hint, icon, chart, classNam
       {...props}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="text-sm text-muted">{label}</span>
-        {icon ? <span className="text-muted">{icon}</span> : null}
+        <span className="text-sm text-muted-foreground">{label}</span>
+        {icon ? <span className="text-muted-foreground">{icon}</span> : null}
       </div>
       <div className="mt-2 truncate text-2xl font-semibold text-foreground">{value}</div>
       {chart ? <div className="mt-3">{chart}</div> : null}
@@ -37,13 +37,13 @@ function StatImpl({ label, value, delta, deltaLabel, hint, icon, chart, classNam
             {up ? "+" : ""}
             {delta}%
           </span>
-          {deltaLabel ? <span className="whitespace-nowrap text-muted">{deltaLabel}</span> : null}
+          {deltaLabel ? <span className="whitespace-nowrap text-muted-foreground">{deltaLabel}</span> : null}
         </div>
       ) : null}
       {hint != null ? (
         // 排在趋势行之下：趋势是对数值本身的解读，hint 是整张卡的注脚，语义层级更外。
         // 用 text-xs（比趋势行的 text-sm 小一档）拉开视觉层次，避免两行 muted 文字糊成一片。
-        <div className="mt-1 text-xs text-muted">{hint}</div>
+        <div className="mt-1 text-xs text-muted-foreground">{hint}</div>
       ) : null}
     </div>
   );

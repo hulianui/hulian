@@ -38,13 +38,13 @@ describe("GridPattern", () => {
   it("多实例 id 不撞车 + className 透传", () => {
     const { container } = render(
       <>
-        <GridPattern className="text-muted" />
+        <GridPattern className="text-muted-foreground" />
         <GridPattern />
       </>,
     );
     const ids = Array.from(container.querySelectorAll("pattern")).map((p) => p.id);
     expect(ids[0]).not.toBe(ids[1]);
-    expect(container.querySelector("svg")!.getAttribute("class")).toContain("text-muted");
+    expect(container.querySelector("svg")!.getAttribute("class")).toContain("text-muted-foreground");
   });
 });
 

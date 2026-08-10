@@ -77,7 +77,50 @@ export default defineConfig(withHulian({
 
 ---
 
-## 2. 日期族：全部零依赖，直接从根 barrel 用
+## 2. 从 shadcn/ui 迁过来：token 命名基本一致，只有一个曾经反义
+
+瑚琏和 shadcn 都把语义色注册在 Tailwind v4 的 `@theme` 里，也就是说**两边共用
+`--color-*` 这个命名空间**，同名 token 会互相覆盖（谁的 `@theme` 后被处理谁赢），
+和 CSS 优先级、cascade layer 都无关。
+
+好消息是重叠的部分语义一致，不重叠的部分名字不同、互不干扰：
+
+| shadcn | 瑚琏 | 关系 |
+|---|---|---|
+| `--color-foreground` | `--color-foreground` | 同名同义（主文字） |
+| `--color-primary` / `-foreground` | 同名 | 同名同义 |
+| `--color-border` · `--color-ring` | 同名 | 同名同义 |
+| `--color-chart-1…5` | `--color-chart-1…6`（多一档） | 兼容 |
+| `--color-muted` | `--color-muted`（弱背景） | **0.28.0 起同名同义**，见下 |
+| `--color-muted-foreground` | 同名（次要文字） | **0.28.0 起同名同义** |
+| `--color-background` | `--color-bg` | 名字不同，各用各的 |
+| `--color-card` · `--color-popover` | `--color-surface` | 名字不同，各用各的 |
+| `--color-destructive` | `--color-danger` | 名字不同，各用各的 |
+| `--color-secondary` · `--color-accent` | 无对应 | 你自己的定义原样保留 |
+
+**0.28.0 之前有一处同名反义**：瑚琏的 `--color-muted` 是次要**文字**色，而 shadcn 的
+`--muted` 是弱**背景**。后果是从 shadcn 迁过来的项目一引入瑚琏 token，满屏 `bg-muted`
+（Skeleton、表格斑马纹、Avatar 占位底）立刻变成深灰色块，且消费方挡不住 —— 这不是覆盖
+顺序能调的，是同一个名字被两种语义抢用（[#142](https://github.com/hulianui/hulian/issues/142)）。
+
+0.28.0 起瑚琏朝生态对齐：`--color-muted` = 弱背景（与 `--color-subtle` 同值同义），
+次要文字色改名 `--color-muted-foreground`。**从 shadcn 迁过来现在是零改动**。
+
+代价落在既有瑚琏用户身上：`text-muted` 不再对应任何 token。Tailwind 对未定义颜色
+既不报错也不生成规则，写了会**静默回退成继承色**（次要说明文字渲染成正文同色），
+所以别靠肉眼查 —— `@hulianui/guard` 有一条 error 规则专挡这个：
+
+```bash
+npx hulian-check src            # 逐条列出位置
+npx hulian-check --format json src   # CI 做棘轮用
+```
+
+改法是机械的：`text-muted` → `text-muted-foreground`（`fill-` / `stroke-` / `border-`
+等前缀同理）。`bg-muted` **不用改**，它现在就是弱背景。
+
+---
+
+## 3. 日期族：全部零依赖，直接从根 barrel 用
 
 涉及组件：`Calendar`、`DatePicker`、`DateTimePicker`、`TimeField`、`TimePicker`、`DateRangePicker`。
 
@@ -115,7 +158,7 @@ import { Calendar, DatePicker, DateTimePicker, TimeField, TimePicker, DateRangeP
 
 ---
 
-## 3. 只用少数几个组件时，从子路径引入
+## 4. 只用少数几个组件时，从子路径引入
 
 瑚琏是**源码分发**（`exports` 指向 `.ts`，产物里没有 `dist/`），所以根 barrel 不是一个「打好的包」，
 而是一棵会被你的打包器逐文件 transform 的源码树。从根 barrel 取一个组件，整棵 `src/`（700+ 个 tsx）
@@ -241,7 +284,7 @@ optimizeDeps: { include: ["@hulianui/ui"] }
 
 ---
 
-## 4. 各入口到底多大（实测）
+## 5. 各入口到底多大（实测）
 
 上一节说的都是**编译时间与模块图**；这一节是**产物体积** —— 你的用户真正要下载的字节。
 
@@ -353,7 +396,7 @@ pnpm compile-cost
 
 ---
 
-## 5. 官方支持的 TypeScript 配置矩阵
+## 6. 官方支持的 TypeScript 配置矩阵
 
 瑚琏是**源码分发**：装出去的是 `.tsx`，你的 `tsc` 编译的是我们的源码。
 `skipLibCheck` 只跳 `.d.ts`，跳不过源码 —— 所以「你的严格档」直接作用在库内代码上，
@@ -393,7 +436,7 @@ pnpm compile-cost
 改这张表**必须同步改** `scripts/consumer-typecheck.sh` 里的 `write_tsconfig`：
 那份 tsconfig 就是这张表的可执行版本，两边漂了这张表就是空头支票。
 
-## 6. 几个不那么致命但值得先知道的
+## 7. 几个不那么致命但值得先知道的
 
 - **`Table` 不开 `rowDraggable` 就不会碰 dnd-kit**（0.11.0 起）。此前 `useSensors` 写在组件顶层，
   任何用了 `Table` 的下游都会拉起整条 dnd-kit 运行时；现在这些 hook 收在只有开了拖拽才挂载的

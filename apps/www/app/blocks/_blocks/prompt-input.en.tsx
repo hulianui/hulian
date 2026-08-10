@@ -63,7 +63,7 @@ export function PromptInputBlock() {
               <button type="button" onClick={() => setDeepThink((v) => !v)} aria-pressed={deepThink} className={[
                 "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                 deepThink
-                    ? "bg-primary/10 text-primary" : "text-muted hover:bg-surface-hover hover:text-foreground",
+                    ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
             ].join(" ")}>
                 <Sparkles className="size-3.5" aria-hidden/>
                 Deep reasoning
@@ -71,12 +71,12 @@ export function PromptInputBlock() {
               <button type="button" onClick={() => setWebSearch((v) => !v)} aria-pressed={webSearch} className={[
                 "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
                 webSearch
-                    ? "bg-primary/10 text-primary" : "text-muted hover:bg-surface-hover hover:text-foreground",
+                    ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
             ].join(" ")}>
                 <Globe className="size-3.5" aria-hidden/>
                 Internet search
               </button>
-            </div>} trailing={<Button variant="ghost" size="iconSm" aria-label="Add attachment" className="shrink-0 text-muted hover:text-foreground">
+            </div>} trailing={<Button variant="ghost" size="iconSm" aria-label="Add attachment" className="shrink-0 text-muted-foreground hover:text-foreground">
               <Paperclip className="size-4"/>
             </Button>}/>
 

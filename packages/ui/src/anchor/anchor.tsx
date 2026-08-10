@@ -126,7 +126,7 @@ export function Anchor({
             className={cn(
               "block truncate py-1 text-sm transition-colors",
               level === 0 ? "pl-3" : "pl-6",
-              isActive ? "font-medium text-foreground" : "text-muted hover:text-foreground",
+              isActive ? "font-medium text-foreground" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {item.title}

@@ -14,7 +14,7 @@ const LEVEL_STYLE: Record<DashEvent["level"], { color: string; Icon: typeof Info
 export function AlertTicker({ events }: { events: DashEvent[] }) {
   return (
     <div className="flex items-center gap-3 border-y border-border/70 bg-surface/40 px-6 py-1.5">
-      <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-muted">
+      <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-muted-foreground">
         <Megaphone className="size-3.5" />
         {copy("liveEventStream")}
       </span>

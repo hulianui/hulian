@@ -63,7 +63,7 @@ function Demo() {
           }
         />
         {user && (
-          <p className="text-center text-sm text-muted" role="status">
+          <p className="text-center text-sm text-muted-foreground" role="status">
             登录中：{user}
           </p>
         )}
@@ -87,7 +87,7 @@ function EscapeHatchDemo() {
         values={values}
         onValuesChange={(_changed, all) => setValues(all)}
         extra={
-          <label className="flex items-center gap-2 rounded-[var(--radius)] border border-dashed border-border p-3 text-sm text-muted">
+          <label className="flex items-center gap-2 rounded-[var(--radius)] border border-dashed border-border p-3 text-sm text-muted-foreground">
             <input type="checkbox" checked={passed} onChange={(e) => setPassed(e.target.checked)} />
             模拟人机验证（真实场景放 ClickCaptcha）
           </label>
@@ -101,11 +101,11 @@ function EscapeHatchDemo() {
         }}
         onFinish={({ username }) => setLog(`onFinish：${username} 登录中`)}
       />
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         外部实时值：{values.username || "—"} / {values.password ? "•".repeat(values.password.length) : "—"}
       </p>
       {log && (
-        <p className="text-xs text-muted" role="status">
+        <p className="text-xs text-muted-foreground" role="status">
           {log}
         </p>
       )}

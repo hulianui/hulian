@@ -221,7 +221,7 @@ export function SignupBlock() {
           </Button>
         </form>
 
-        <Divider plain className="my-6 text-muted">
+        <Divider plain className="my-6 text-muted-foreground">
           或使用第三方注册
         </Divider>
 

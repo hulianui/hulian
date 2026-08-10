@@ -127,7 +127,7 @@ function MixedDemo() {
           }
         />
       </div>
-      <ul className="space-y-1 font-mono text-xs text-muted">
+      <ul className="space-y-1 font-mono text-xs text-muted-foreground">
         {log.length === 0 ? (
           <li>松手 / 失焦后才会看到回吐</li>
         ) : (

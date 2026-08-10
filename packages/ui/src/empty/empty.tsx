@@ -20,7 +20,7 @@ function EmptyImpl({ icon, title, description, size = "md", className, children,
       {...props}
     >
       {icon !== null && (
-        <span className={cn("text-muted/70", sm ? "[&_svg]:size-10" : "[&_svg]:size-14")}>
+        <span className={cn("text-muted-foreground/70", sm ? "[&_svg]:size-10" : "[&_svg]:size-14")}>
           {icon ?? <DefaultIcon />}
         </span>
       )}
@@ -28,7 +28,7 @@ function EmptyImpl({ icon, title, description, size = "md", className, children,
         <div className={cn("font-medium text-foreground", sm ? "text-sm" : "text-base")}>{title}</div>
       )}
       {description != null && (
-        <div className={cn("max-w-xs text-muted", sm ? "text-xs" : "text-sm")}>{description}</div>
+        <div className={cn("max-w-xs text-muted-foreground", sm ? "text-xs" : "text-sm")}>{description}</div>
       )}
       {children != null && <div className={cn(sm ? "mt-1" : "mt-2")}>{children}</div>}
     </div>

@@ -30,9 +30,9 @@ function BrandMark() {
       <span className="flex flex-col leading-none">
         <span className="text-[15px] font-semibold tracking-tight text-foreground">
           {brand.name}
-          <span className="ml-1 text-xs font-normal text-muted">{brand.nameEn}</span>
+          <span className="ml-1 text-xs font-normal text-muted-foreground">{brand.nameEn}</span>
         </span>
-        <span className="mt-1 text-[11px] text-muted">{brand.slogan}</span>
+        <span className="mt-1 text-[11px] text-muted-foreground">{brand.slogan}</span>
       </span>
     </Link>
   );
@@ -48,14 +48,14 @@ function PlanBadge() {
       className="group block rounded-[var(--radius)] border border-border bg-surface p-3 transition-colors hover:border-primary/40"
     >
       <div className="flex items-center justify-between">
-        <span className="text-xs text-muted">{copy("currentSubscription")}</span>
+        <span className="text-xs text-muted-foreground">{copy("currentSubscription")}</span>
         <Tag tone="brand" size="sm">
           {plan?.nameEn}
         </Tag>
       </div>
       <div className="mt-1.5 flex items-baseline gap-1">
         <span className="text-lg font-semibold tabular-nums text-foreground">{formatMoney(monthlyTotal)}</span>
-        <span className="text-xs text-muted">{copy("month")}</span>
+        <span className="text-xs text-muted-foreground">{copy("month")}</span>
       </div>
       <span className="mt-1 inline-flex items-center gap-0.5 text-xs text-primary opacity-0 transition-opacity group-hover:opacity-100">{copy("managementPackage")}<ArrowUpRight className="size-3" />
       </span>
@@ -80,7 +80,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
               "flex items-center gap-3 rounded-[var(--radius)] px-3 py-2 text-sm transition-colors",
               active
                 ? "bg-primary/10 font-medium text-primary"
-                : "text-muted hover:bg-surface-hover hover:text-foreground",
+                : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
             ].join(" ")}
           >
             <Icon className="size-4 shrink-0" aria-hidden />
@@ -103,7 +103,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <PlanBadge />
         <Link
           href="/demos"
-          className="flex items-center gap-1.5 px-1 text-xs text-muted transition-colors hover:text-foreground"
+          className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronLeft className="size-3.5" />{copy("returnToDemoGallery")}</Link>
       </div>
@@ -121,7 +121,7 @@ function Topbar({ onMenu }: { onMenu: () => void }) {
           type="button"
           onClick={onMenu}
           aria-label={copy("openNavigation")}
-          className="grid size-9 place-items-center rounded-[var(--radius)] text-muted hover:bg-surface-hover hover:text-foreground md:hidden"
+          className="grid size-9 place-items-center rounded-[var(--radius)] text-muted-foreground hover:bg-surface-hover hover:text-foreground md:hidden"
         >
           <Menu className="size-5" />
         </button>
@@ -145,7 +145,7 @@ function Topbar({ onMenu }: { onMenu: () => void }) {
         </Badge>
         <span className="hidden flex-col leading-tight sm:flex">
           <span className="text-sm font-medium text-foreground">{account.name}</span>
-          <span className="text-[11px] text-muted">{account.email}</span>
+          <span className="text-[11px] text-muted-foreground">{account.email}</span>
         </span>
       </div>
     </header>
@@ -176,7 +176,7 @@ export function BillingShell({ children }: { children: ReactNode }) {
                 type="button"
                 onClick={() => setDrawer(false)}
                 aria-label={copy("closeNavigation")}
-                className="absolute right-3 top-3 grid size-8 place-items-center rounded-[var(--radius)] text-muted hover:bg-surface-hover"
+                className="absolute right-3 top-3 grid size-8 place-items-center rounded-[var(--radius)] text-muted-foreground hover:bg-surface-hover"
               >
                 <X className="size-4" />
               </button>

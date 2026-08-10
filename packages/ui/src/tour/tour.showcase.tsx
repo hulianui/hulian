@@ -52,7 +52,7 @@ function Demo({ maskClosable = false }: { maskClosable?: boolean }) {
       <div className="flex items-center gap-3">
         <div
           ref={searchRef}
-          className="flex h-9 flex-1 items-center rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-muted"
+          className="flex h-9 flex-1 items-center rounded-[var(--radius)] border border-border bg-bg px-3 text-sm text-muted-foreground"
         >
           搜索资源…
         </div>
@@ -73,7 +73,7 @@ function Demo({ maskClosable = false }: { maskClosable?: boolean }) {
       </div>
 
       <div className="mt-6 flex items-center justify-between">
-        <p className="text-sm text-muted">点下方按钮开始新手引导。</p>
+        <p className="text-sm text-muted-foreground">点下方按钮开始新手引导。</p>
         <Button size="sm" onClick={start}>
           开始引导
         </Button>

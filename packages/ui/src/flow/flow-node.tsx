@@ -82,7 +82,7 @@ export function FlowNodeView<T>({
       aria-label={labels.node}
       className={cn(
         "absolute select-none rounded-[calc(var(--radius)+0.25rem)] border bg-surface shadow-sm transition-shadow",
-        selected ? "border-primary ring-2 ring-primary/40" : "border-border hover:border-muted",
+        selected ? "border-primary ring-2 ring-primary/40" : "border-border hover:border-muted-foreground",
         dragging ? "cursor-grabbing shadow-lg" : "cursor-grab",
       )}
       style={{ left: node.position.x, top: node.position.y, width }}
@@ -104,7 +104,7 @@ export function FlowNodeView<T>({
             e.stopPropagation();
             onDelete(node.id);
           }}
-          className="absolute -right-2.5 -top-2.5 grid size-5 place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm transition-colors hover:border-danger hover:text-danger"
+          className="absolute -right-2.5 -top-2.5 grid size-5 place-items-center rounded-full border border-hairline bg-surface text-muted-foreground shadow-sm transition-colors hover:border-danger hover:text-danger"
         >
           <svg
             viewBox="0 0 16 16"
@@ -199,7 +199,7 @@ function Handle({
           ? "cursor-crosshair bg-primary hover:scale-125"
           : connected
           ? "bg-primary"
-          : "bg-muted",
+          : "bg-muted-foreground",
         "transition-transform",
       )}
       style={{

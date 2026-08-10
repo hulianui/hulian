@@ -62,7 +62,7 @@ describe("Flow 渲染", () => {
     const { container } = render(<Flow<D> {...base} edges={[]} />);
     const inHandle = container.querySelector('[data-flow-handle="in"]');
     expect(inHandle?.hasAttribute("data-connected")).toBe(false);
-    expect(inHandle?.className).toContain("bg-muted");
+    expect(inHandle?.className).toContain("bg-muted-foreground");
   });
 
   it("enUS localizes conditional delete and auto-layout actions", () => {

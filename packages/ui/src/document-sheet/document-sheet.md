@@ -72,7 +72,7 @@ DocumentSheetHeader / DocumentSheetFooter：仅排版容器，透传 div 属性�
 ## 禁忌 / 坑
 
 - 打印态靠 `print:hidden` + `data-document-sheet` 钩子隔离工具栏/阴影/外边距；自己往纸面里加的悬浮控件若不希望被打印，也要自行挂 `print:hidden`。
-- 暗色主题下纸面是「近黑纸」而非白纸——若放固定深色文字会看不清，正文颜色用 token（`text-foreground`/`text-muted`）跟随主题。
+- 暗色主题下纸面是「近黑纸」而非白纸——若放固定深色文字会看不清，正文颜色用 token（`text-foreground`/`text-muted-foreground`）跟随主题。
 
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

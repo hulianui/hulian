@@ -15,7 +15,7 @@ import type { InfiniteMenuItem, InfiniteMenuProps } from "./infinite-menu.types"
 //    瑚琏改用「CSS 3D 变换 + Fibonacci 球面分布 + requestAnimationFrame 自旋/惯性」纯 DOM 重构，
 //    零运行时依赖、SSR/jsdom 安全（不碰 getContext，不需要真实 WebGL）。
 // 2. 卡面圆形裁切吃 token：边框 border-border、底色 bg-surface、激活环 ring-primary；
-//    覆盖层文案 text-foreground / text-muted；动作按钮 bg-primary text-primary-foreground。
+//    覆盖层文案 text-foreground / text-muted-foreground；动作按钮 bg-primary text-primary-foreground。
 // 3. reduced-motion：useReducedMotion() 关闭自动旋转与惯性（停在当前姿态），DOM 结构完全一致。
 // 4. 拖拽用原生 PointerEvents（照库内 Flow/Kanban 范式），setPointerCapture 尽力而为。
 // 5. 激活项 = 当前朝向最正（投影后 z 最大）的项，松手后平滑贴靠到正前方。
@@ -288,7 +288,7 @@ export function InfiniteMenu({
                     draggable={false}
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-lg font-semibold text-muted">
+                  <div className="flex h-full w-full items-center justify-center text-lg font-semibold text-muted-foreground">
                     {(item.title ?? "·").slice(0, 1)}
                   </div>
                 )}
@@ -312,7 +312,7 @@ export function InfiniteMenu({
           {activeItem.description && (
             <p
               className={cn(
-                "max-w-xs text-xs text-muted transition-[translate,opacity] duration-300 ease-out",
+                "max-w-xs text-xs text-muted-foreground transition-[translate,opacity] duration-300 ease-out",
                 isMoving ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100",
               )}
             >

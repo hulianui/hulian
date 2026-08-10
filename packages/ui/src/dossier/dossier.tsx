@@ -40,8 +40,8 @@ function DossierImpl({
       )}
     >
       <div className="mb-2.5 flex items-baseline justify-between gap-2">
-        {title && <p className="text-xs font-medium text-muted">{title}</p>}
-        <span className="text-xs tabular-nums text-muted">
+        {title && <p className="text-xs font-medium text-muted-foreground">{title}</p>}
+        <span className="text-xs tabular-nums text-muted-foreground">
           {progress ?? <>{archivedLabel} {done}/{required.length}</>}
         </span>
       </div>
@@ -64,16 +64,16 @@ function DossierImpl({
                 <span
                   className={cn(
                     "flex items-center gap-1.5",
-                    status === "empty" ? "text-muted" : "text-foreground",
+                    status === "empty" ? "text-muted-foreground" : "text-foreground",
                   )}
                 >
                   {s.label}
                   {s.optional && status === "empty" && (
-                    <span className="text-[10px] text-muted/70">{optionalLabel}</span>
+                    <span className="text-[10px] text-muted-foreground/70">{optionalLabel}</span>
                   )}
                 </span>
                 {s.summary != null && (
-                  <span className="mt-0.5 block truncate text-xs text-muted">{s.summary}</span>
+                  <span className="mt-0.5 block truncate text-xs text-muted-foreground">{s.summary}</span>
                 )}
               </span>
             </li>

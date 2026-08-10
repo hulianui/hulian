@@ -219,17 +219,17 @@ export function ComboboxInput({
       <BaseCombobox.Input
         placeholder={placeholder}
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
-        className="w-full bg-transparent text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed"
+        className="w-full bg-transparent text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
       />
       {clearable && (
         <BaseCombobox.Clear
-          className="flex shrink-0 cursor-pointer items-center text-muted transition-colors hover:text-foreground"
+          className="flex shrink-0 cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground"
           aria-label={copy.clear}
         >
           <ClearIcon />
         </BaseCombobox.Clear>
       )}
-      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted">
+      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted-foreground">
         <ChevronDownIcon />
       </BaseCombobox.Icon>
     </span>
@@ -248,12 +248,12 @@ export function ComboboxTrigger({ size, placeholder, invalid, className }: Combo
     >
       <BaseCombobox.Value>
         {(value: ComboboxItemData | null) => (
-          <span className={cn("truncate", value == null && "text-muted")}>
+          <span className={cn("truncate", value == null && "text-muted-foreground")}>
             {value?.label ?? placeholder}
           </span>
         )}
       </BaseCombobox.Value>
-      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted transition-transform data-[popup-open]:rotate-180">
+      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted-foreground transition-transform data-[popup-open]:rotate-180">
         <ChevronDownIcon />
       </BaseCombobox.Icon>
     </BaseCombobox.Trigger>
@@ -293,18 +293,18 @@ export function ComboboxContent({
           {/* 弹层内搜索框(图4 范式)：图标 + Base UI Input；Base UI 自动在打开时聚焦并接管过滤。 */}
           {searchPlaceholder != null && (
             <span className="mb-1 flex h-9 shrink-0 items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-surface px-2.5 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-bg">
-              <span className="flex shrink-0 items-center text-muted">
+              <span className="flex shrink-0 items-center text-muted-foreground">
                 <SearchIcon />
               </span>
               <BaseCombobox.Input
                 placeholder={searchPlaceholder}
-                className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+                className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
             </span>
           )}
           {/* Base UI 的 Empty 始终渲染 <div role=status>(aria-live 播报用)，有匹配项时 children=null。
               empty:py-0 让它在为空时塌缩高度，避免弹层顶部留白；保留在 DOM 不破坏 a11y。 */}
-          <BaseCombobox.Empty className="shrink-0 px-2 py-6 text-center text-sm text-muted empty:py-0">
+          <BaseCombobox.Empty className="shrink-0 px-2 py-6 text-center text-sm text-muted-foreground empty:py-0">
             {emptyMessage}
           </BaseCombobox.Empty>
           {virtualized ? (
@@ -371,9 +371,9 @@ export function ComboboxChips({
       {children}
       <BaseCombobox.Input
         placeholder={placeholder}
-        className="min-w-16 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+        className="min-w-16 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
       />
-      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted">
+      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted-foreground">
         <ChevronDownIcon />
       </BaseCombobox.Icon>
     </BaseCombobox.Chips>
@@ -394,7 +394,7 @@ export function ComboboxChip({ children, className }: ComboboxChipProps) {
       {children}
       <BaseCombobox.ChipRemove
         aria-label={copy.remove}
-        className="flex size-4 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+        className="flex size-4 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
       >
         <ClearIcon />
       </BaseCombobox.ChipRemove>

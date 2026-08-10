@@ -11,7 +11,7 @@ import type { DotProps, DotTone } from "./dot.types";
 // tone 是五档语义快捷方式；color 走 resolveTone 接任意色（图例圆点要跟图表序列同色，
 // 而序列色的默认取值 chart-1..6 五档 tone 根本接不住）——与 Brand.color / ChartSeries.color 同路。
 const toneClass: Record<DotTone, string> = {
-  neutral: "bg-muted",
+  neutral: "bg-muted-foreground",
   brand: "bg-primary",
   success: "bg-success",
   warning: "bg-warning",

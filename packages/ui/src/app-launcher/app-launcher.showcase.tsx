@@ -222,7 +222,7 @@ function Controlled() {
   const [q, setQ] = useState("");
   return (
     <div className="flex w-full flex-col gap-2">
-      <p className="text-xs text-muted">外部搜索词：{q ? `「${q}」` : "（空）"}</p>
+      <p className="text-xs text-muted-foreground">外部搜索词：{q ? `「${q}」` : "（空）"}</p>
       <AppLauncher
         items={apps}
         categories={categories}
@@ -261,7 +261,7 @@ export const appLauncherShowcase: ShowcaseSpec = {
                 瑚
               </span>
             }
-            actions={<span className="px-2 text-lg leading-none text-muted">···</span>}
+            actions={<span className="px-2 text-lg leading-none text-muted-foreground">···</span>}
             className="h-[28rem]"
           />
         </Desk>

@@ -102,11 +102,11 @@ export function ReviewSectionBlock() {
 
           <div className="flex-1 space-y-2">
             {STAR_DIST.map(({ star, count }) => (<div key={star} className="flex items-center gap-3">
-                <span className="w-8 shrink-0 text-right text-sm text-muted">{star} star</span>
+                <span className="w-8 shrink-0 text-right text-sm text-muted-foreground">{star} star</span>
                 <div className="flex-1">
                   <Meter value={count} max={Math.max(...STAR_DIST.map((d) => d.count))}/>
                 </div>
-                <span className="w-6 shrink-0 text-xs text-muted">{count}</span>
+                <span className="w-6 shrink-0 text-xs text-muted-foreground">{count}</span>
               </div>))}
           </div>
         </CardBody>
@@ -132,7 +132,7 @@ export function ReviewSectionBlock() {
 
                 <div className="mt-2 flex items-center gap-4">
                   <Text size="xs" tone="muted">{r.date}</Text>
-                  <button type="button" onClick={() => toggleLike(r.id)} className={`flex items-center gap-1 text-xs transition-colors ${liked ? "text-primary" : "text-muted hover:text-foreground"}`} aria-label={liked ? "Cancel like" : "Like"}>
+                  <button type="button" onClick={() => toggleLike(r.id)} className={`flex items-center gap-1 text-xs transition-colors ${liked ? "text-primary" : "text-muted-foreground hover:text-foreground"}`} aria-label={liked ? "Cancel like" : "Like"}>
                     <ThumbsUp className="size-3" aria-hidden/>
                     {liked ? r.likes + 1 : r.likes}
                   </button>

@@ -50,7 +50,7 @@ const HISTORY: TimelineItemProps[] = [
         label: "09:12",
         children: (<div className="text-sm">
         <span className="font-medium text-foreground">Chen Xiaoyu</span>
-        <span className="text-muted"> Create a ticket with high priority</span>
+        <span className="text-muted-foreground"> Create a ticket with high priority</span>
       </div>),
     },
     {
@@ -58,7 +58,7 @@ const HISTORY: TimelineItemProps[] = [
         label: "09:35",
         children: (<div className="text-sm">
         <span className="font-medium text-foreground">system</span>
-        <span className="text-muted"> Automatically assigned to </span>
+        <span className="text-muted-foreground"> Automatically assigned to </span>
         <span className="font-medium text-foreground">Wang Lei</span>
       </div>),
     },
@@ -67,7 +67,7 @@ const HISTORY: TimelineItemProps[] = [
         label: "10:08",
         children: (<div className="text-sm">
         <span className="font-medium text-foreground">Wang Lei</span>
-        <span className="text-muted"> Processing starts and the status changes to "Processing"</span>
+        <span className="text-muted-foreground"> Processing starts and the status changes to "Processing"</span>
       </div>),
     },
     {
@@ -75,7 +75,7 @@ const HISTORY: TimelineItemProps[] = [
         label: "11:44",
         children: (<div className="text-sm">
         <span className="font-medium text-foreground">Wang Lei</span>
-        <span className="text-muted"> Note added: increased the connection-pool limit from 200 to 800; monitoring impact</span>
+        <span className="text-muted-foreground"> Note added: increased the connection-pool limit from 200 to 800; monitoring impact</span>
       </div>),
     },
     {
@@ -83,7 +83,7 @@ const HISTORY: TimelineItemProps[] = [
         label: "14:38",
         children: (<div className="text-sm">
         <span className="font-medium text-foreground">Wang Lei</span>
-        <span className="text-muted"> Awaiting load-test results; an assessment is expected by 16:00.</span>
+        <span className="text-muted-foreground"> Awaiting load-test results; an assessment is expected by 16:00.</span>
       </div>),
     },
 ];
@@ -95,10 +95,10 @@ export function DetailDrawerBlock() {
 
       <div className="flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
         <div className="flex items-center gap-3">
-          <FileText className="size-4 text-muted"/>
+          <FileText className="size-4 text-muted-foreground"/>
           <div>
             <div className="text-sm font-medium text-foreground">{ticket.id}</div>
-            <div className="text-xs text-muted">{ticket.title}</div>
+            <div className="text-xs text-muted-foreground">{ticket.title}</div>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export function DetailDrawerBlock() {
               <DescriptionsItem label="Created">{ticket.createdAt}</DescriptionsItem>
               <DescriptionsItem label="Latest updates">{ticket.updatedAt}</DescriptionsItem>
               <DescriptionsItem label="Problem description" span={2}>
-                <span className="text-sm text-muted">{ticket.desc}</span>
+                <span className="text-sm text-muted-foreground">{ticket.desc}</span>
               </DescriptionsItem>
             </Descriptions>
 

@@ -76,7 +76,7 @@ function RangeInputs({
         onChange={(e) => onChange([e.target.value, end])}
         className="flex-1"
       />
-      <span className="shrink-0 text-muted">~</span>
+      <span className="shrink-0 text-muted-foreground">~</span>
       <Input
         type={type}
         {...numberProps}

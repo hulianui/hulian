@@ -77,11 +77,11 @@ function Notifications() {
         <span className="absolute right-2 top-2 size-1.5 rounded-full bg-danger ring-2 ring-surface" />
       </MenuTrigger>
       <MenuContent align="end" className="w-72">
-        <div className="px-2 py-1.5 text-xs font-medium text-muted">{copy("notifications")}</div>
+        <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">{copy("notifications")}</div>
         {NOTIFICATIONS.map((n) => (
           <MenuItem key={n.title} className="flex-col items-start gap-0.5">
             <span className="text-[13px] text-foreground">{n.title}</span>
-            <span className="text-[11px] text-muted">{n.time}</span>
+            <span className="text-[11px] text-muted-foreground">{n.time}</span>
           </MenuItem>
         ))}
         <MenuSeparator />
@@ -107,16 +107,16 @@ function AccountMenu() {
         <Avatar fallback={copy("sue")} className="size-8" />
         <span className="hidden text-left leading-tight md:block">
           <span className="block text-[13px] font-medium text-foreground">{copy("suYan")}</span>
-          <span className="block text-[11px] text-muted">{copy("creativeDesigner")}</span>
+          <span className="block text-[11px] text-muted-foreground">{copy("creativeDesigner")}</span>
         </span>
-        <ChevronDown className="hidden size-4 text-muted md:block" />
+        <ChevronDown className="hidden size-4 text-muted-foreground md:block" />
       </MenuTrigger>
       <MenuContent align="end" className="w-56">
         <div className="flex items-center gap-2.5 px-2 py-1.5">
           <Avatar fallback={copy("sue")} className="size-9" />
           <div className="min-w-0">
             <div className="truncate text-sm font-medium">{copy("suYan")}</div>
-            <div className="truncate text-xs text-muted">suyan@hulian.design</div>
+            <div className="truncate text-xs text-muted-foreground">suyan@hulian.design</div>
           </div>
         </div>
         <MenuSeparator />
@@ -162,7 +162,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
                   "flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
                   on
                     ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted hover:text-foreground",
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <item.icon className="size-4" />

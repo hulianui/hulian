@@ -192,7 +192,7 @@ export default function Home() {
             <Stack direction="row" wrap align="center" gap={4} className="mt-3">
               <Link
                 href="/start"
-                className="group inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+                className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 {content.aiStart}
                 <ArrowRight
@@ -202,7 +202,7 @@ export default function Home() {
               </Link>
               <a
                 href="/llms.txt"
-                className="text-sm text-muted underline-offset-4 transition-colors hover:text-foreground hover:underline"
+                className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
               >
                 llms.txt
               </a>

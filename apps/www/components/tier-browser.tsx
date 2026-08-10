@@ -145,7 +145,7 @@ export function TierBrowser() {
           >
             {Icon && (
               <Icon
-                className="size-5 shrink-0 text-muted transition-colors group-hover:text-primary"
+                className="size-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
                 aria-hidden
               />
             )}
@@ -174,7 +174,7 @@ export function TierBrowser() {
                 </Tag>
               ))}
             <ArrowRight
-              className="size-4 shrink-0 text-muted/50 transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
+              className="size-4 shrink-0 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
               aria-hidden
             />
           </a>

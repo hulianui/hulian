@@ -188,7 +188,7 @@ export function Lanyard({
           <div className="w-40 rounded-xl border border-border bg-surface p-4 text-center shadow-lg">
             <div className="mx-auto mb-3 size-12 rounded-full bg-primary/15" />
             <p className="text-sm font-semibold text-foreground">{resolvedTitle}</p>
-            <p className="mt-0.5 text-xs text-muted">{resolvedSubtitle}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{resolvedSubtitle}</p>
           </div>
         )}
       </div>

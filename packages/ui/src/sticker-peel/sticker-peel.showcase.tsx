@@ -35,7 +35,7 @@ function Stage({
       style={{ background: dark ? "oklch(0.16 0.02 255)" : "oklch(0.97 0.005 255)" }}
     >
       {children}
-      <p className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-muted">
+      <p className="pointer-events-none absolute bottom-2 right-3 text-[11px] text-muted-foreground">
         hover 揭起 · 按住更大 · 拖动试试
       </p>
     </div>

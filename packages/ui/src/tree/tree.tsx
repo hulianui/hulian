@@ -384,7 +384,7 @@ export function Tree({
                 键盘走方向键；treeitem 内不放可聚焦子元素（ARIA tree pattern 不允许）。 */}
             <span
               className={cn(
-                "flex size-4 shrink-0 items-center justify-center text-muted",
+                "flex size-4 shrink-0 items-center justify-center text-muted-foreground",
                 hasChildren && !rowClickExpands && "cursor-pointer hover:text-foreground",
               )}
               onClick={
@@ -413,7 +413,7 @@ export function Tree({
             </span>
             {checkable ? checkboxFor(node, checkState) : null}
             {node.icon ? (
-              <span aria-hidden className="shrink-0 text-muted [&>svg]:size-4">
+              <span aria-hidden className="shrink-0 text-muted-foreground [&>svg]:size-4">
                 {node.icon}
               </span>
             ) : null}
@@ -506,7 +506,7 @@ export function Tree({
         >
           <span
             className={cn(
-              "flex size-4 shrink-0 items-center justify-center text-muted",
+              "flex size-4 shrink-0 items-center justify-center text-muted-foreground",
               showCaret &&
                 hasChildren &&
                 !rowClickExpands &&
@@ -538,7 +538,7 @@ export function Tree({
           </span>
           {checkable ? checkboxFor(node, checkState) : null}
           {node.icon ? (
-            <span aria-hidden className="shrink-0 text-muted [&>svg]:size-4">
+            <span aria-hidden className="shrink-0 text-muted-foreground [&>svg]:size-4">
               {node.icon}
             </span>
           ) : null}
@@ -552,12 +552,12 @@ export function Tree({
     <div className={cn("w-full select-none text-foreground", className)}>
       {searchable ? (
         <div className="mb-2 flex h-9 items-center gap-2 rounded-[var(--radius)] border border-border bg-surface px-2.5 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-bg">
-          <Search className="size-4 shrink-0 text-muted" aria-hidden />
+          <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={searchPlaceholder}
-            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+            className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
             aria-label={searchPlaceholder}
           />
         </div>
@@ -603,7 +603,7 @@ export function Tree({
         </ul>
       )}
       {searching && flat.length === 0 ? (
-        <div className="px-2 py-6 text-center text-sm text-muted">{labels.noMatches}</div>
+        <div className="px-2 py-6 text-center text-sm text-muted-foreground">{labels.noMatches}</div>
       ) : null}
     </div>
   );

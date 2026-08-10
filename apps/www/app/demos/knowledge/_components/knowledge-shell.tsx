@@ -50,7 +50,7 @@ function Brand() {
         {copy("library")}
       </span>
       <span className="truncate text-[15px] font-semibold tracking-tight">{copy("hanvault")}</span>
-      <span className="ml-1 hidden text-xs text-muted sm:inline">{copy("teamKnowledgeBase")}</span>
+      <span className="ml-1 hidden text-xs text-muted-foreground sm:inline">{copy("teamKnowledgeBase")}</span>
     </div>
   );
 }

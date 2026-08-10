@@ -355,7 +355,7 @@ export function ProfileCard({
           {/* 主标题 */}
           <div className="pointer-events-none relative z-[2] flex flex-col items-center justify-start gap-1 pt-8 text-center">
             <h3 className="text-lg font-semibold tracking-tight text-foreground">{name}</h3>
-            <p className="text-sm text-muted">{title}</p>
+            <p className="text-sm text-muted-foreground">{title}</p>
           </div>
 
           {/* 底部毛玻璃信息条 */}
@@ -380,7 +380,7 @@ export function ProfileCard({
                 </div>
                 <div className="flex flex-col text-left leading-tight">
                   <span className="text-sm font-medium text-foreground">@{handle}</span>
-                  <span className="text-xs text-muted">{status}</span>
+                  <span className="text-xs text-muted-foreground">{status}</span>
                 </div>
               </div>
               <button

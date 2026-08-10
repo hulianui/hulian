@@ -18,7 +18,7 @@ export function PromptSuggestions({
 }: PromptSuggestionsProps) {
   return (
     <div className={cn("flex flex-col gap-2", className)} {...props}>
-      {title && <p className="text-xs font-medium text-muted">{title}</p>}
+      {title && <p className="text-xs font-medium text-muted-foreground">{title}</p>}
       <div className="flex flex-wrap gap-2">
         {suggestions.map((s, i) => {
           const { label, value } = normalize(s);

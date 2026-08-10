@@ -83,8 +83,8 @@ export function EnrollDialog({
               content: (
                 <div className="space-y-3 rounded-[var(--radius)] border border-border bg-surface p-4">
                   <div className="text-base font-semibold text-foreground">{course.title}</div>
-                  <p className="text-sm text-muted">{course.subtitle}</p>
-                  <div className="flex flex-wrap gap-3 text-sm text-muted">
+                  <p className="text-sm text-muted-foreground">{course.subtitle}</p>
+                  <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                     <span>
                       {copy("instructor")} {course.instructor.name}
                     </span>
@@ -117,7 +117,7 @@ export function EnrollDialog({
                             value={p.key}
                             label={<span className="font-medium text-foreground">{p.name}</span>}
                           />
-                          <span className="flex-1 text-xs text-muted">{p.desc}</span>
+                          <span className="flex-1 text-xs text-muted-foreground">{p.desc}</span>
                           <span className="shrink-0 font-semibold text-primary">
                             {priceLabel(price)}
                           </span>
@@ -140,7 +140,7 @@ export function EnrollDialog({
                       <span className="font-semibold text-primary">{priceLabel(finalPrice)}</span>
                     }
                   />
-                  <p className="pt-1 text-xs text-muted">
+                  <p className="pt-1 text-xs text-muted-foreground">
                     {copy("clickSubmitToSimulateCompletingThePaymentAndJoiningMy")}
                   </p>
                 </div>
@@ -167,7 +167,7 @@ export function EnrollDialog({
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex justify-between gap-3">
-      <span className="text-muted">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <span className="text-foreground">{value}</span>
     </div>
   );

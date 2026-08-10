@@ -72,7 +72,7 @@ export function fileIconMeta(name: string): { Icon: LucideIcon; className: strin
     case "html":
       return { Icon: FileCode, className: "text-teal-600" };
     default:
-      return { Icon: FileIcon, className: "text-muted" };
+      return { Icon: FileIcon, className: "text-muted-foreground" };
   }
 }
 
@@ -161,7 +161,7 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
       {/* 多选操作条 */}
       {picked.length > 0 && (
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-surface px-5 py-2 text-sm">
-          <span className="text-muted">
+          <span className="text-muted-foreground">
             {copy("selected")} {picked.length} {copy("item")}
           </span>
           <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ export function FileGrid({ folderId }: { folderId: string | null }) {
                       </Tag>
                     )}
                   </span>
-                  <span className="truncate text-xs text-muted">
+                  <span className="truncate text-xs text-muted-foreground">
                     {node.kind === "folder"
                       ? copy("childItemCount", v.childrenOf(node.id).length)
                       : `${node.author} · ${node.updatedAt}`}

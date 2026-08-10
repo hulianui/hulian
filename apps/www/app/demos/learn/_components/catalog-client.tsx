@@ -52,7 +52,7 @@ export function CatalogClient() {
       {mine ? (
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">{copy("myLearning")}</h1>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-muted-foreground">
             {copy("continueWithYourEnrolled")} {enrolled.size} {copy("courses")}
           </p>
           {myCourses.length > 0 && (
@@ -63,7 +63,7 @@ export function CatalogClient() {
                 </div>
                 <div className="flex-1">
                   <div className="mb-1 flex items-center justify-between text-sm">
-                    <span className="text-muted">{copy("overallCompletion")}</span>
+                    <span className="text-muted-foreground">{copy("overallCompletion")}</span>
                     <span className="font-semibold text-foreground">{overall}%</span>
                   </div>
                   <Meter value={overall} />
@@ -75,7 +75,7 @@ export function CatalogClient() {
       ) : (
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">{copy("courseCatalog")}</h1>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-muted-foreground">
             {copy("and")} {courses.reduce((s, c) => s + c.students, 0).toLocaleString("zh-CN")}{" "}
             {copy("learnersTogetherToTurnLearningIntoVisibleProgress")}
           </p>

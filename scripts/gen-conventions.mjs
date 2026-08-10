@@ -94,12 +94,12 @@ const GLOBAL = [
   },
   {
     id: "muted-is-text-only",
-    rule: "--color-muted 只能用于文字。区域底用 bg-subtle，悬停态用 bg-surface-hover",
-    wrong: 'className="bg-muted/40 p-4"',
-    right: 'className="bg-subtle p-4"',
-    why: "muted 是次要文字色（亮 gray-600 / 暗 gray-400）。当背景用时亮色下是一块脏灰、暗色下是发白的浅灰 —— 两个主题都错且错法相反。shadcn 的 --muted 是背景、--muted-foreground 才是文字，从那边迁过来的 bg-muted 语义正好是反的，而 Tailwind 不会报错（类名合法、颜色也生成，只是意思变了）",
+    rule: "次要文字色叫 --color-muted-foreground（text-muted-foreground）；--color-muted 是弱背景，与 shadcn 一致",
+    wrong: 'className="text-muted"',
+    right: 'className="text-muted-foreground"',
+    why: "0.28.0 之前瑚琏的 --color-muted 是次要**文字**色，与 shadcn 生态同名反义（那边 --muted 是背景、--muted-foreground 才是文字）。同名反义的代价是双向的：shadcn 项目一引入瑚琏 token，全站 bg-muted 立刻变深灰底；而库自己的贡献者又反复按 shadcn 肌肉记忆写 text-muted-foreground。0.28.0 起统一朝生态靠，text-muted 不再有对应 token —— Tailwind 对未定义颜色不报错也不生成规则，写了会静默回退成继承色",
     instead:
-      "小面积指示性填充（状态点、滚动条拇指、徽章反色底）可以留；判据是「这块颜色是一片区域的底，还是一个小物件的填充」",
+      "text-muted → text-muted-foreground；bg-muted 现在就是弱背景（等价 bg-subtle），可以放心用",
   },
   {
     id: "select-none-for-non-copyable",
@@ -156,12 +156,12 @@ const GLOBAL_EN = [
   },
   {
     id: "muted-is-text-only",
-    rule: "--color-muted is for text only. Use bg-subtle for area backgrounds and bg-surface-hover for hover states.",
-    wrong: 'className="bg-muted/40 p-4"',
-    right: 'className="bg-subtle p-4"',
-    why: "muted is the secondary text colour (gray-600 in light, gray-400 in dark). As a background it reads as dirty grey in light mode and washed-out grey in dark mode, so both themes are wrong in opposite directions. In shadcn/ui --muted is a background and --muted-foreground is the text colour, so bg-muted carried over from that vocabulary means the opposite here, and Tailwind reports nothing because the class is valid.",
+    rule: "Secondary text is --color-muted-foreground (text-muted-foreground); --color-muted is a weak background, matching shadcn/ui.",
+    wrong: 'className="text-muted"',
+    right: 'className="text-muted-foreground"',
+    why: "Before 0.28.0 Hulian defined --color-muted as the secondary *text* colour, the exact opposite of the shadcn/ui vocabulary where --muted is a background and --muted-foreground is the text colour. The cost ran both ways: a shadcn project that imported Hulian tokens saw every bg-muted turn into a dark grey slab, while Hulian's own contributors kept reaching for text-muted-foreground out of habit. 0.28.0 aligns with the ecosystem, so text-muted no longer maps to a token — Tailwind neither errors nor emits a rule for an undefined colour, so it silently falls back to the inherited colour.",
     instead:
-      "Small indicator fills such as status dots, scrollbar thumbs, and inverted badge backgrounds may keep it. The test is whether the colour backs an area or fills a small object.",
+      "Rewrite text-muted as text-muted-foreground. bg-muted is now a genuine weak background (identical to bg-subtle) and is safe to use.",
   },
   {
     id: "select-none-for-non-copyable",
@@ -237,39 +237,45 @@ const EXECUTABLE_RULES = [
     instead: '使用 toast({ title: "已保存", tone: "success" })。',
   },
   {
-    // 同一段 className 里 bg-muted 与 text-muted 同时出现 = 前景背景同色：亮色下 gray-600 字
+    // 同一段 className 里 bg-muted-foreground 与 text-muted-foreground 同时出现 = 前景背景同色：亮色下 gray-600 字
     // 压 gray-600 底、暗色下 gray-400 字压 gray-400 底，两个主题都不可读，而 typecheck /
     // 单测 / 现有 guard 全都看不见（类名合法、颜色也生成）。见 #128。
     //
-    // 两侧都用 (?<![\w:-]) 排掉带变体前缀的写法（hover:bg-muted、
-    // [&::-webkit-scrollbar-thumb]:bg-muted）—— 变体意味着「另一个状态或另一个伪元素」，
-    // 与静息态的文字色不在同一个盒子上。不排的话 Chart 图例（文字 text-muted + 滚动条拇指
-    // bg-muted/50）会被误判，而它是对的。只判静息态才是真正零误报的那条线。
+    // 两侧都用 (?<![\w:-]) 排掉带变体前缀的写法（hover:bg-muted-foreground、
+    // [&::-webkit-scrollbar-thumb]:bg-muted-foreground）—— 变体意味着「另一个状态或另一个伪元素」，
+    // 与静息态的文字色不在同一个盒子上。不排的话 Chart 图例（文字 text-muted-foreground + 滚动条拇指
+    // bg-muted-foreground/50）会被误判，而它是对的。只判静息态才是真正零误报的那条线。
     id: "muted-as-background-with-muted-text",
     severity: "error",
     matcher: {
       kind: "class-name-tokens",
       attributes: ["className"],
-      pattern: "(?<![\\w:-])bg-muted(?:/[\\d.[\\]]+)?\\b",
-      coOccurs: "(?<![\\w:-])text-muted(?:/[\\d.[\\]]+)?\\b",
+      pattern: "(?<![\\w:-])bg-muted-foreground(?:/[\\d.[\\]]+)?\\b",
+      coOccurs: "(?<![\\w:-])text-muted-foreground(?:/[\\d.[\\]]+)?\\b",
     },
-    message: "bg-muted 与 text-muted 同时出现：--color-muted 是次要文字色，前景背景同色不可读。",
-    instead: "背景改用 bg-subtle（静态弱背景）或 bg-surface-hover（悬停态），文字保持 text-muted。",
+    message: "bg-muted-foreground 与 text-muted-foreground 同时出现：--color-muted-foreground 是次要文字色，前景背景同色不可读。",
+    instead: "背景改用 bg-subtle（静态弱背景）或 bg-surface-hover（悬停态），文字保持 text-muted-foreground。",
   },
   {
-    // 与上一条不同，这条单看无法断定对错，所以是 warning 不是 error：小面积指示性填充
-    // （状态点、滚动条拇指、徽章反色底）借用文字色是可接受的，大面积区域底则一定错。
-    id: "muted-is-a-text-color",
-    severity: "warning",
+    // 0.28.0 语义反转（#142）的迁移门禁：次要文字色从 --color-muted 改名成
+    // --color-muted-foreground，`text-muted` 之类**不再对应任何 token**。
+    // 这必须是 error 而不是 warning：Tailwind 遇到未定义颜色既不报错也不生成规则，
+    // 于是 text-muted 静默回退成继承色 —— 「次要说明文字」渲染成与正文同色，
+    // typecheck / 单测 / 视觉快照全都看不出来，只能靠这条拦。
+    //
+    // 刻意**不含** bg-muted：反转后它就是弱背景（等价 bg-subtle），是合法写法。
+    id: "muted-renamed-to-muted-foreground",
+    severity: "error",
     matcher: {
       kind: "class-name-tokens",
       attributes: ["className"],
-      pattern: "\\bbg-muted(?:/[\\d.[\\]]+)?\\b",
+      pattern:
+        "(?<![\\w-])(?:text|fill|stroke|border|decoration|placeholder|caret|divide|outline|accent|ring|from|to|via|shadow)-muted(?![\\w-])",
     },
     message:
-      "--color-muted 是次要文字色（亮 gray-600 / 暗 gray-400），当背景用时亮色发脏、暗色发白。",
+      "text-muted 等写法在 0.28.0 已改名：次要文字色现在叫 --color-muted-foreground，--color-muted 变成了弱背景（对齐 shadcn）。",
     instead:
-      "区域底用 bg-subtle，悬停态用 bg-surface-hover；只有小面积指示性填充（状态点、滚动条拇指）才可以留。",
+      "把 `-muted` 改成 `-muted-foreground`（text-muted → text-muted-foreground）。bg-muted 不用改，它现在就是弱背景。",
   },
   {
     id: "color-token-prefix",
@@ -300,15 +306,15 @@ const EXECUTABLE_COPY_EN = {
   },
   "muted-as-background-with-muted-text": {
     message:
-      "bg-muted and text-muted appear together: --color-muted is the secondary text colour, so foreground and background end up identical and unreadable.",
+      "bg-muted-foreground and text-muted-foreground appear together: --color-muted-foreground is the secondary text colour, so foreground and background end up identical and unreadable.",
     instead:
-      "Use bg-subtle for a static background or bg-surface-hover for a hover state, and keep text-muted for the text.",
+      "Use bg-subtle for a static background or bg-surface-hover for a hover state, and keep text-muted-foreground for the text.",
   },
-  "muted-is-a-text-color": {
+  "muted-renamed-to-muted-foreground": {
     message:
-      "--color-muted is the secondary text colour (gray-600 in light, gray-400 in dark); as a background it reads dirty in light mode and washed out in dark mode.",
+      "text-muted and friends were renamed in 0.28.0: the secondary text colour is now --color-muted-foreground, and --color-muted became a weak background, matching shadcn/ui.",
     instead:
-      "Use bg-subtle for area backgrounds and bg-surface-hover for hover states. Only small indicator fills such as status dots and scrollbar thumbs may keep it.",
+      "Rewrite `-muted` as `-muted-foreground` (text-muted becomes text-muted-foreground). Leave bg-muted alone — it is a genuine weak background now.",
   },
   "color-token-prefix": {
     message: "Color variables in SVG attributes and inline styles must use the --color- prefix.",

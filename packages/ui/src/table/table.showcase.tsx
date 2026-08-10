@@ -44,7 +44,7 @@ const columns: ColumnDef<DemoUser, any>[] = [
   {
     accessorKey: "email",
     header: "邮箱",
-    cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span>,
+    cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span>,
   },
   { accessorKey: "role", header: "角色" },
 ];
@@ -69,7 +69,7 @@ const stickyColumns: ColumnDef<DemoUser, any>[] = [
   { ...columns[0], size: 200, meta: { sticky: "left" } },
   { accessorKey: "email", header: "邮箱", size: 280, cell: columns[1].cell },
   { accessorKey: "role", header: "角色", size: 160 },
-  { accessorKey: "id", header: "ID", size: 320, cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span> },
+  { accessorKey: "id", header: "ID", size: 320, cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span> },
   {
     id: "actions",
     header: "操作",
@@ -90,7 +90,7 @@ const geometryColumns: ColumnDef<DemoUser, any>[] = [
     header: "邮箱",
     size: 180,
     meta: { ellipsis: true },
-    cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span>,
+    cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span>,
   },
   { accessorKey: "role", header: "角色", size: 100, meta: { align: "center" } },
   {
@@ -98,7 +98,7 @@ const geometryColumns: ColumnDef<DemoUser, any>[] = [
     header: "编号",
     size: 120,
     meta: { align: "right", headerAlign: "right" },
-    cell: ({ getValue }) => <span className="tabular-nums text-muted">{getValue() as string}</span>,
+    cell: ({ getValue }) => <span className="tabular-nums text-muted-foreground">{getValue() as string}</span>,
   },
 ];
 function GeometryDemo() {
@@ -135,7 +135,7 @@ function ExpandableDemo() {
       columns={columns}
       data={users}
       renderExpandedRow={(row) => (
-        <div className="text-sm text-muted">
+        <div className="text-sm text-muted-foreground">
           <div>用户 ID：{row.original.id}</div>
           <div>邮箱：{row.original.email}</div>
         </div>
@@ -162,7 +162,7 @@ const org: OrgNode[] = [
 ];
 const orgColumns: ColumnDef<OrgNode, any>[] = [
   { accessorKey: "name", header: "姓名" },
-  { accessorKey: "title", header: "职位", cell: ({ getValue }) => <span className="text-muted">{getValue() as string}</span> },
+  { accessorKey: "title", header: "职位", cell: ({ getValue }) => <span className="text-muted-foreground">{getValue() as string}</span> },
 ];
 function TreeDemo() {
   return <Table columns={orgColumns} data={org} getSubRows={(r) => r.reports} />;
@@ -194,7 +194,7 @@ function RowClickDemo() {
         data={users.slice(0, 4)}
         onRowClick={(row) => setLast(`行点击 → 进入 ${row.name} 的详情`)}
       />
-      <p className="text-sm text-muted">{last ?? "点整行任意空白处，或点行内「编辑」按钮试试"}</p>
+      <p className="text-sm text-muted-foreground">{last ?? "点整行任意空白处，或点行内「编辑」按钮试试"}</p>
     </div>
   );
 }
@@ -220,7 +220,7 @@ function DragSortDemo({ handle = "cell" }: { handle?: "row" | "cell" }) {
           );
         }}
       />
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         {last ?? (handle === "row" ? "整行任意位置按住拖动试试" : "拖动最左侧手柄改序试试")}
       </p>
     </div>
@@ -321,7 +321,7 @@ export const tableShowcase: ShowcaseSpec = {
   columns={columns}
   data={users}
   renderExpandedRow={(row) => (
-    <div className="text-sm text-muted">
+    <div className="text-sm text-muted-foreground">
       <div>用户 ID：{row.original.id}</div>
       <div>邮箱：{row.original.email}</div>
     </div>

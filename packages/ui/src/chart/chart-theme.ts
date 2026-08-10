@@ -19,7 +19,7 @@ export function chartColor(i: number): string {
 export const axisProps = {
   tickLine: false,
   axisLine: false,
-  tick: { fill: "var(--color-muted)", fontSize: 12 },
+  tick: { fill: "var(--color-muted-foreground)", fontSize: 12 },
 };
 
 export const gridProps = {
@@ -36,7 +36,7 @@ export const tooltipContentStyle: CSSProperties = {
   fontSize: 12,
 };
 
-export const tooltipLabelStyle: CSSProperties = { color: "var(--color-muted)" };
+export const tooltipLabelStyle: CSSProperties = { color: "var(--color-muted-foreground)" };
 
 /** 极坐标（雷达图）刻度 */
-export const polarAngleTick = { fill: "var(--color-muted)", fontSize: 12 };
+export const polarAngleTick = { fill: "var(--color-muted-foreground)", fontSize: 12 };

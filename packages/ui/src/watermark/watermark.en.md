@@ -36,7 +36,7 @@ Inherits all native `div` attributes except `content`, which is redefined as a s
 | fontSize | `number` | `16` | Text size in pixels. |
 | fontFamily | `string` | `sans-serif` | Font family. |
 | fontWeight | `number \| string` | `normal` | Font weight. |
-| color | `string` | `--color-muted` | Watermark color; omission follows the semantic theme token. |
+| color | `string` | `--color-muted-foreground` | Watermark color; omission follows the semantic theme token. |
 | opacity | `number` | `0.15` | Overall opacity. |
 | zIndex | `number` | `9` | Overlay z-index; pointer events remain disabled. |
 

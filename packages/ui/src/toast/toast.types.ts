@@ -11,7 +11,7 @@ export interface ToastProviderProps {
 export interface ToastOptions {
   /** 标题（加粗主行）。 */
   title?: ReactNode;
-  /** 描述（次行，恒 text-muted）。 */
+  /** 描述（次行，恒 text-muted-foreground）。 */
   description?: ReactNode;
   /** 语调，驱动左边条 + 标题着色。默认 "neutral"。 */
   tone?: ToastTone;

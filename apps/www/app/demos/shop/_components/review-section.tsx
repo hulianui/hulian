@@ -30,7 +30,7 @@ export function ReviewSection({ productId }: { productId: string }) {
     return (
       <section id="reviews" className="scroll-mt-20 py-8">
         <h2 className="mb-4 text-lg font-semibold text-foreground">{copy("customerReviews")}</h2>
-        <p className="text-sm text-muted">{copy("noReviewsYetBeTheFirstToReviewThisProduct")}</p>
+        <p className="text-sm text-muted-foreground">{copy("noReviewsYetBeTheFirstToReviewThisProduct")}</p>
       </section>
     );
   }
@@ -51,21 +51,21 @@ export function ReviewSection({ productId }: { productId: string }) {
               extraCount={Math.max(0, totalReviews - 4)}
               size="sm"
             />
-            <p className="text-xs text-muted">{totalReviews}  {copy("reviews")}</p>
+            <p className="text-xs text-muted-foreground">{totalReviews}  {copy("reviews")}</p>
           </div>
 
           {/* 评分分布 Meter */}
           <div className="flex-1 space-y-2">
             {dist.map(({ star, count }) => (
               <div key={star} className="flex items-center gap-3">
-                <span className="w-8 shrink-0 text-right text-sm text-muted">{star}  {copy("stars")}</span>
+                <span className="w-8 shrink-0 text-right text-sm text-muted-foreground">{star}  {copy("stars")}</span>
                 <div className="flex-1">
                   <Meter
                     value={count}
                     max={Math.max(totalReviews, 1)}
                   />
                 </div>
-                <span className="w-6 shrink-0 text-xs text-muted">{count}</span>
+                <span className="w-6 shrink-0 text-xs text-muted-foreground">{count}</span>
               </div>
             ))}
           </div>

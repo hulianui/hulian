@@ -67,7 +67,7 @@ export function DataTableBlock() {
         {
             accessorKey: "id",
             header: "Ticket ID",
-            cell: ({ row }) => (<span className="font-mono text-xs text-muted tabular-nums">{row.original.id}</span>),
+            cell: ({ row }) => (<span className="font-mono text-xs text-muted-foreground tabular-nums">{row.original.id}</span>),
         },
         {
             accessorKey: "title",
@@ -76,7 +76,7 @@ export function DataTableBlock() {
           <Avatar fallback={row.original.assignee.slice(0, 1)} size="sm"/>
           <div className="min-w-0">
             <div className="truncate font-medium text-foreground">{row.original.title}</div>
-            <div className="text-xs text-muted">{row.original.assignee} · {row.original.department}</div>
+            <div className="text-xs text-muted-foreground">{row.original.assignee} · {row.original.department}</div>
           </div>
         </div>),
         },

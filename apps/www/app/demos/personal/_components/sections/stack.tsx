@@ -43,7 +43,7 @@ export function Stack() {
                 level={3}
                 size="sm"
                 weight="semibold"
-                className="font-mono uppercase tracking-[0.18em] text-muted"
+                className="font-mono uppercase tracking-[0.18em] text-muted-foreground"
               >
                 {group.group}
               </Heading>
@@ -75,7 +75,7 @@ export function Stack() {
           {marqueeItems.map((name) => (
             <span
               key={name}
-              className="mx-3 font-mono text-lg font-medium text-muted/70 transition-colors hover:text-primary"
+              className="mx-3 font-mono text-lg font-medium text-muted-foreground/70 transition-colors hover:text-primary"
             >
               {name}
             </span>

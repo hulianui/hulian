@@ -133,7 +133,7 @@ export function Progress({
         )}
       </div>
       {showValue && !indeterminate && (
-        <span className="shrink-0 text-xs font-medium tabular-nums text-muted">
+        <span className="shrink-0 text-xs font-medium tabular-nums text-muted-foreground">
           {`${Math.round(pct as number)}%`}
         </span>
       )}

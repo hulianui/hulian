@@ -37,7 +37,7 @@ function cellValue(product: Product, dim: Dim["key"]): React.ReactNode {
         <div className="flex flex-col gap-0.5">
           <span className="text-lg font-bold text-danger">{formatPrice(product.price)}</span>
           {product.originalPrice > product.price && (
-            <span className="text-xs text-muted line-through">{formatPrice(product.originalPrice)}</span>
+            <span className="text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
           )}
         </div>
       );
@@ -48,7 +48,7 @@ function cellValue(product: Product, dim: Dim["key"]): React.ReactNode {
             <Rating value={product.rating} readOnly size="sm" />
             <span className="text-xs font-medium">{product.rating.toFixed(1)}</span>
           </div>
-          <span className="text-xs text-muted">
+          <span className="text-xs text-muted-foreground">
             {product.reviewCount.toLocaleString()}  {copy("reviews")} {formatCompactCount(product.sales)}{copy("sold")}
           </span>
         </div>
@@ -65,7 +65,7 @@ function cellValue(product: Product, dim: Dim["key"]): React.ReactNode {
       return (
         <ul className="flex flex-col gap-1">
           {product.highlights.map((h, i) => (
-            <li key={i} className="flex items-start gap-1 text-xs text-muted">
+            <li key={i} className="flex items-start gap-1 text-xs text-muted-foreground">
               <span className="mt-0.5 size-1.5 shrink-0 rounded-full bg-primary" />
               {h}
             </li>
@@ -149,7 +149,7 @@ export default function ComparePage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">{copy("productComparison")}</h1>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted">{copy("selected")} {compareProducts.length}  {copy("products")}</span>
+          <span className="text-sm text-muted-foreground">{copy("selected")} {compareProducts.length}  {copy("products")}</span>
           {compareIds.length < products.length && (
             <Link href={`${SHOP_BASE}/products`}>
               <Button variant="outline" size="sm">{copy("addProduct")}</Button>
@@ -169,7 +169,7 @@ export default function ComparePage() {
 
           <thead>
             <tr className="border-b border-border bg-surface-hover">
-              <th className="p-3 text-left text-xs font-medium text-muted">{copy("comparisonItem")}</th>
+              <th className="p-3 text-left text-xs font-medium text-muted-foreground">{copy("comparisonItem")}</th>
               {compareProducts.map((product) => (
                 <th key={product.id} className="p-3">
                   <div className="flex flex-col items-center gap-2">
@@ -192,7 +192,7 @@ export default function ComparePage() {
                     <button
                       type="button"
                       onClick={() => removeProduct(product.id)}
-                      className="text-xs text-muted hover:text-danger transition-colors"
+                      className="text-xs text-muted-foreground hover:text-danger transition-colors"
                       aria-label={copy("removeProduct", product.name)}
                     >
 
@@ -212,7 +212,7 @@ export default function ComparePage() {
                   key={dim.key}
                   className={`border-b border-border last:border-0 ${dimIdx % 2 === 0 ? "bg-surface" : "bg-surface-hover/40"}`}
                 >
-                  <td className="p-3 text-xs font-medium text-muted align-top">{dim.label}</td>
+                  <td className="p-3 text-xs font-medium text-muted-foreground align-top">{dim.label}</td>
                   {compareProducts.map((product, colIdx) => (
                     <td
                       key={product.id}
@@ -232,7 +232,7 @@ export default function ComparePage() {
 
             {/* 操作行 */}
             <tr className="border-t border-border bg-surface">
-              <td className="p-3 text-xs font-medium text-muted">{copy("actions")}</td>
+              <td className="p-3 text-xs font-medium text-muted-foreground">{copy("actions")}</td>
               {compareProducts.map((product) => (
                 <td key={product.id} className="p-3">
                   <div className="flex flex-col gap-2">
@@ -259,7 +259,7 @@ export default function ComparePage() {
         </table>
       </div>
 
-      <p className="mt-4 text-xs text-muted text-center">
+      <p className="mt-4 text-xs text-muted-foreground text-center">
 
         {copy("greenHighlightsMarkTheBestValueInEachRowLowestPriceHighestRatingOrMostStock")}
       </p>

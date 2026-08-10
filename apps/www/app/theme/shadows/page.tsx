@@ -27,7 +27,7 @@ export default function ShadowsPage() {
               <span className="mt-3 block font-mono text-xs text-foreground">
                 {s.name.replace("shadow-", "")}
               </span>
-              <span className="mt-0.5 block text-[0.7rem] leading-snug text-muted">{s.use}</span>
+              <span className="mt-0.5 block text-[0.7rem] leading-snug text-muted-foreground">{s.use}</span>
             </div>
           ))}
         </div>
@@ -35,7 +35,7 @@ export default function ShadowsPage() {
 
       <Section title={content.usage}>
         <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          <span className="text-muted">{`// ${content.comment}`}</span>
+          <span className="text-muted-foreground">{`// ${content.comment}`}</span>
           {"\n"}{'<div className="rounded-[var(--radius)] bg-surface shadow-sm">…</div>'}
         </pre>
       </Section>

@@ -41,7 +41,7 @@ export function ProductsBoard() {
       cell: ({ row }) => (
         <span>
           <span className="font-semibold text-danger">¥{row.original.price}</span>
-          <span className="ml-1 text-xs text-muted line-through">¥{row.original.originalPrice}</span>
+          <span className="ml-1 text-xs text-muted-foreground line-through">¥{row.original.originalPrice}</span>
         </span>
       ),
     },
@@ -147,7 +147,7 @@ export function ProductsBoard() {
             </Button>
           }
         />
-        <p className="text-xs leading-relaxed text-muted">
+        <p className="text-xs leading-relaxed text-muted-foreground">
 
           {copy("dragCardsToReorderTheRundownSelectPresentToFeatureAProductAndSyncItToTheAudienceShoppingPanel")}
         </p>

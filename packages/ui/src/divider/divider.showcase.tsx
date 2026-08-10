@@ -85,9 +85,9 @@ export const dividerShowcase: ShowcaseSpec = {
       name: "纯分隔线",
       render: () => (
         <div className="w-full">
-          <p className="text-sm text-muted">上段内容</p>
+          <p className="text-sm text-muted-foreground">上段内容</p>
           <Divider />
-          <p className="text-sm text-muted">下段内容</p>
+          <p className="text-sm text-muted-foreground">下段内容</p>
         </div>
       ),
     },

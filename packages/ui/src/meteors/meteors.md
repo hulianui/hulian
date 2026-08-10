@@ -38,7 +38,7 @@ import { Meteors } from "@hulianui/ui"
 // 父容器须 relative + overflow-hidden 裁剪溢出的流星
 <div className="relative overflow-hidden rounded-xl border">
   <Meteors number={20} />
-  <div className="grid h-48 place-items-center text-sm text-muted">Meteors</div>
+  <div className="grid h-48 place-items-center text-sm text-muted-foreground">Meteors</div>
 </div>
 ```
 

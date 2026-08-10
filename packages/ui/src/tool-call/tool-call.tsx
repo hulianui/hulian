@@ -45,11 +45,11 @@ export function ToolCall({
     >
       <CollapsibleTrigger>
         <span className="flex min-w-0 items-center gap-2">
-          <span className="shrink-0 text-muted [&>svg]:size-4">
+          <span className="shrink-0 text-muted-foreground [&>svg]:size-4">
             {icon ?? <Wrench aria-hidden />}
           </span>
           <span className="truncate font-mono text-xs text-foreground">{name}</span>
-          <span className="ml-1 flex items-center gap-1.5 text-xs font-normal text-muted">
+          <span className="ml-1 flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
             {status === "running" ? (
               <Spinner size="sm" tone="muted" />
             ) : (

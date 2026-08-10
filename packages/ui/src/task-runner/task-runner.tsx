@@ -83,7 +83,7 @@ export function TaskRunner({
 
       {/* Footer */}
       {hasFooter && (
-        <div className="mt-1 flex items-center justify-between border-t border-border px-4 py-2.5 text-xs text-muted">
+        <div className="mt-1 flex items-center justify-between border-t border-border px-4 py-2.5 text-xs text-muted-foreground">
           <span className="tabular-nums">{elapsed}</span>
           <span>{footerExtra ?? footerStatus}</span>
         </div>
@@ -104,6 +104,6 @@ function textToneClass(tone: DotTone): string {
     case "danger":
       return "text-danger";
     default:
-      return "text-muted";
+      return "text-muted-foreground";
   }
 }

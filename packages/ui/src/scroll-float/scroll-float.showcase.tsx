@@ -9,7 +9,7 @@ import { ScrollFloat } from "./scroll-float";
 function Stage({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative max-h-72 w-full max-w-xl overflow-auto rounded-xl border border-border bg-surface p-6">
-      <p className="flex h-40 items-end justify-center pb-6 text-sm text-muted">
+      <p className="flex h-40 items-end justify-center pb-6 text-sm text-muted-foreground">
         ↓ 滚动此区域，标题逐字符拔起
       </p>
       {children}

@@ -76,7 +76,7 @@ export default function TrackingPage() {
             <Link href={`${ROOT}/tracking/${p.id}`} className="font-medium hover:text-primary">
               {p.name}
             </Link>
-            <div className="text-xs text-muted tabular-nums">{p.code}</div>
+            <div className="text-xs text-muted-foreground tabular-nums">{p.code}</div>
           </div>
         );
       },
@@ -87,7 +87,7 @@ export default function TrackingPage() {
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="truncate text-sm">{row.original.client}</div>
-          <div className="truncate text-xs text-muted">{row.original.crew}</div>
+          <div className="truncate text-xs text-muted-foreground">{row.original.crew}</div>
         </div>
       ),
     },
@@ -107,7 +107,7 @@ export default function TrackingPage() {
       cell: ({ row }) => (
         <div className="flex w-28 items-center gap-2">
           <Progress variant="linear" value={row.original.progress} className="flex-1" />
-          <span className="w-9 shrink-0 text-right text-xs tabular-nums text-muted">{row.original.progress}%</span>
+          <span className="w-9 shrink-0 text-right text-xs tabular-nums text-muted-foreground">{row.original.progress}%</span>
         </div>
       ),
     },
@@ -193,10 +193,10 @@ export default function TrackingPage() {
                   className="block rounded-[var(--radius)] border border-border bg-surface p-3 shadow-sm transition-colors hover:border-primary/40"
                 >
                   <p className="text-sm font-medium text-foreground">{p.name}</p>
-                  <p className="mt-0.5 text-xs text-muted">{p.client}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{p.client}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <Progress variant="linear" value={p.progress} className="flex-1" />
-                    <span className="text-xs tabular-nums text-muted">{p.progress}%</span>
+                    <span className="text-xs tabular-nums text-muted-foreground">{p.progress}%</span>
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <Tag tone={projectStatusTone(p.status)} size="sm" dot>

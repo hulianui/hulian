@@ -58,7 +58,7 @@ function Demo() {
           },
         ]}
       />
-      {done && <p className="mt-3 text-sm text-muted">已提交：{done}</p>}
+      {done && <p className="mt-3 text-sm text-muted-foreground">已提交：{done}</p>}
     </div>
   );
 }
@@ -91,7 +91,7 @@ function NavControlDemo() {
           {
             title: "执行导入",
             nextText: "开始导入",
-            content: <p className="text-sm text-muted">点击「开始导入」触发异步校验，期间按钮 loading。</p>,
+            content: <p className="text-sm text-muted-foreground">点击「开始导入」触发异步校验，期间按钮 loading。</p>,
           },
           {
             title: "完成",

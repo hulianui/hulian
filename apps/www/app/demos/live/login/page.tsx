@@ -84,7 +84,7 @@ export default function LiveLoginPage() {
               </div>
             }
           />
-          <Text size="sm" className="text-center text-muted">
+          <Text size="sm" className="text-center text-muted-foreground">
             <Sparkles className="mr-1 inline size-3.5" />
 
             {copy("demoCredentialsArePrefilledSelectLogInToContinue")}

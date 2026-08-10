@@ -91,7 +91,7 @@ export default function TicketsPage() {
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="truncate">{row.original.subject}</div>
-          <div className="truncate text-xs text-muted">
+          <div className="truncate text-xs text-muted-foreground">
             {channelLabel[row.original.channel]} · {row.original.customerName}
           </div>
         </div>
@@ -119,7 +119,7 @@ export default function TicketsPage() {
     {
       accessorKey: "updatedAt",
       header: copy("updateTime"),
-      cell: ({ row }) => <span className="tabular-nums text-muted">{row.original.updatedAt}</span>,
+      cell: ({ row }) => <span className="tabular-nums text-muted-foreground">{row.original.updatedAt}</span>,
     },
     {
       id: "actions",

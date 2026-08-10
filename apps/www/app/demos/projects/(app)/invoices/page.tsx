@@ -138,7 +138,7 @@ export default function InvoicesPage() {
       cell: ({ row }) => (
         <div className="min-w-0">
           <div className="font-medium tabular-nums">{row.original.code}</div>
-          <div className="truncate text-xs text-muted">{row.original.projectName}</div>
+          <div className="truncate text-xs text-muted-foreground">{row.original.projectName}</div>
         </div>
       ),
     },
@@ -162,7 +162,7 @@ export default function InvoicesPage() {
       header: copy("balanceReceivable"),
       cell: ({ row }) => {
         const d = dueAmount(row.original);
-        return <span className={`tabular-nums ${d > 0 ? "text-danger" : "text-muted"}`}>{yuan(d)}</span>;
+        return <span className={`tabular-nums ${d > 0 ? "text-danger" : "text-muted-foreground"}`}>{yuan(d)}</span>;
       },
     },
     {
@@ -308,10 +308,10 @@ export default function InvoicesPage() {
                 <DocumentSheetHeader>
                   <div>
                     <div className="text-lg font-bold text-foreground">{invoiceTypeLabel[iv.type]}</div>
-                    <div className="mt-1 text-xs text-muted">{VENDOR.name}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{VENDOR.name}</div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <div className="text-right text-xs text-muted">
+                    <div className="text-right text-xs text-muted-foreground">
                       <div className="text-sm font-semibold tabular-nums text-foreground">{iv.code}</div>
                       <div className="mt-1">{iv.issuedAt ? copy("invoiceDateValue", iv.issuedAt) : copy("notYetIssued")}</div>
                     </div>
@@ -330,26 +330,26 @@ export default function InvoicesPage() {
                 <DocumentSheetSection title={copy("purchaseAndSaleInformation")}>
                   <div className="grid grid-cols-1 gap-1 text-sm">
                     <div>
-                      <span className="text-muted">{copy("purchaser")}</span>
+                      <span className="text-muted-foreground">{copy("purchaser")}</span>
                       {iv.client}{copy("taxNumber")}{iv.taxNo}）
                     </div>
                     <div>
-                      <span className="text-muted">{copy("seller")}</span>
+                      <span className="text-muted-foreground">{copy("seller")}</span>
                       {VENDOR.name}{copy("taxNumber2")}{VENDOR.taxNo}）
                     </div>
                     <div>
-                      <span className="text-muted">{copy("relatedProjects")}</span>
+                      <span className="text-muted-foreground">{copy("relatedProjects")}</span>
                       {iv.projectName}
                     </div>
                   </div>
                 </DocumentSheetSection>
                 <DocumentSheetSection title={copy("amount")}>
                   <div className="flex justify-between border-y border-border py-2 text-sm">
-                    <span className="text-muted">{copy("amountExcludingTax")}</span>
+                    <span className="text-muted-foreground">{copy("amountExcludingTax")}</span>
                     <span className="tabular-nums">{yuan(exTax)}</span>
                   </div>
                   <div className="flex justify-between py-2 text-sm">
-                    <span className="text-muted">{copy("taxAmount")}{(iv.taxRate * 100).toFixed(0)}%{copy("closingParenthesis")}</span>
+                    <span className="text-muted-foreground">{copy("taxAmount")}{(iv.taxRate * 100).toFixed(0)}%{copy("closingParenthesis")}</span>
                     <span className="tabular-nums">{yuan(tax)}</span>
                   </div>
                   <div className="flex justify-between border-t border-border py-2 text-sm font-semibold text-primary">
@@ -357,7 +357,7 @@ export default function InvoicesPage() {
                     <span className="tabular-nums">{yuan(iv.amount)}</span>
                   </div>
                   <div className="mt-1 text-right text-sm">
-                    <span className="text-muted">{copy("uppercase")}</span>
+                    <span className="text-muted-foreground">{copy("uppercase")}</span>
                     <span className="font-medium">{rmbUpper(iv.amount)}</span>
                   </div>
                 </DocumentSheetSection>

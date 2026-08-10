@@ -33,10 +33,10 @@ const codeLines = [
 function FileTree() {
   return (
     <div className="h-full bg-surface p-3">
-      <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">资源管理器</div>
+      <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">资源管理器</div>
       <ul className="space-y-0.5 font-mono text-xs text-foreground">
         {fileTree.map((f, i) => (
-          <li key={i} className={f.includes(".") ? "" : "text-muted"} style={{ whiteSpace: "pre" }}>
+          <li key={i} className={f.includes(".") ? "" : "text-muted-foreground"} style={{ whiteSpace: "pre" }}>
             {f}
           </li>
         ))}
@@ -48,11 +48,11 @@ function FileTree() {
 function Editor() {
   return (
     <div className="h-full bg-bg p-3">
-      <div className="mb-2 text-xs text-muted">components/card.tsx</div>
+      <div className="mb-2 text-xs text-muted-foreground">components/card.tsx</div>
       <pre className="overflow-x-auto font-mono text-xs leading-relaxed text-foreground">
         {codeLines.map((l, i) => (
           <div key={i}>
-            <span className="mr-3 select-none text-muted">{String(i + 1).padStart(2, " ")}</span>
+            <span className="mr-3 select-none text-muted-foreground">{String(i + 1).padStart(2, " ")}</span>
             {l}
           </div>
         ))}
@@ -64,10 +64,10 @@ function Editor() {
 function Preview() {
   return (
     <div className="h-full space-y-3 bg-surface p-3">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted">实时预览</div>
+      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">实时预览</div>
       <section className="rounded-[var(--radius)] border border-border p-3">
         <h3 className="text-sm font-semibold text-foreground">月度概览</h3>
-        <p className="mt-1 text-xs text-muted">本月新增订单 1,284 笔，环比增长 12%。</p>
+        <p className="mt-1 text-xs text-muted-foreground">本月新增订单 1,284 笔，环比增长 12%。</p>
       </section>
     </div>
   );
@@ -77,7 +77,7 @@ function Preview() {
 function ChatLog() {
   return (
     <div className="h-full overflow-auto bg-surface p-3">
-      <div className="mb-2 text-xs font-medium text-muted">会话</div>
+      <div className="mb-2 text-xs font-medium text-muted-foreground">会话</div>
       <ul className="space-y-1 text-sm text-foreground">
         <li>客户 · 王女士：发货了吗？</li>
         <li>客服 · 小琏：已安排今日发出 📦</li>
@@ -88,7 +88,7 @@ function ChatLog() {
 }
 function LogPanel() {
   return (
-    <div className="h-full overflow-auto bg-bg p-3 font-mono text-xs leading-relaxed text-muted">
+    <div className="h-full overflow-auto bg-bg p-3 font-mono text-xs leading-relaxed text-muted-foreground">
       <div>[12:01:08] INFO  会话已接入 agent#7</div>
       <div>[12:01:24] INFO  推送物流单号 SF1024…</div>
       <div className="text-foreground">[12:01:31] WARN  客户满意度问卷未填</div>

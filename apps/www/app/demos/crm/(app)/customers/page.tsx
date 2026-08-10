@@ -118,7 +118,7 @@ export default function CustomersPage() {
               <Link href={`/demos/crm/customers/${c.id}`} className="font-medium hover:text-primary">
                 {c.name}
               </Link>
-              <div className="truncate text-xs text-muted">{c.company}</div>
+              <div className="truncate text-xs text-muted-foreground">{c.company}</div>
             </div>
           </div>
         );
@@ -130,7 +130,7 @@ export default function CustomersPage() {
       cell: ({ row }) => (
         <div>
           <div className="text-sm">{row.original.contactName}</div>
-          <div className="text-xs text-muted tabular-nums">{row.original.phone}</div>
+          <div className="text-xs text-muted-foreground tabular-nums">{row.original.phone}</div>
         </div>
       ),
     },

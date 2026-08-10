@@ -55,7 +55,7 @@ function GuestItem({
           render={
             <button
               aria-label={copy("deleteMessage")}
-              className="flex size-7 items-center justify-center rounded text-muted transition-colors hover:bg-danger/10 hover:text-danger"
+              className="flex size-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
             >
               <Trash2 className="size-3.5" aria-hidden />
             </button>

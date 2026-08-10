@@ -43,13 +43,13 @@ function Page({ k }: { k: string }) {
   return (
     <div className="flex flex-col gap-3">
       <h2 className="text-lg font-semibold text-foreground">{LABEL[k] ?? k}</h2>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         这是「{LABEL[k] ?? k}」页面内容。点击左侧菜单打开新页签，上方页签可切换 / 关闭，体验中后台 keep-alive 导航。
       </p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {Array.from({ length: 6 }, (_, i) => (
           <div key={i} className="rounded-[var(--radius)] border border-border bg-surface p-4">
-            <div className="text-xs text-muted">指标 {i + 1}</div>
+            <div className="text-xs text-muted-foreground">指标 {i + 1}</div>
             <div className="mt-1 text-xl font-semibold text-foreground">{((i + 1) * 1234).toLocaleString()}</div>
           </div>
         ))}
@@ -71,11 +71,11 @@ function Demo() {
         defaultSelectedKey="dashboard"
         defaultOpenKeys={["users"]}
         onTabChange={setActive}
-        breadcrumb={<span className="text-sm text-muted">首页 / {LABEL[active] ?? active}</span>}
+        breadcrumb={<span className="text-sm text-muted-foreground">首页 / {LABEL[active] ?? active}</span>}
         headerExtra={
           <>
             <Badge count={3} size="sm">
-              <Bell className="size-5 text-muted" />
+              <Bell className="size-5 text-muted-foreground" />
             </Badge>
             <Avatar fallback="瑚" />
           </>
@@ -102,7 +102,7 @@ export const adminLayoutShowcase: ShowcaseSpec = {
   logo={<span className="font-bold text-primary">瑚琏 Admin</span>}
   defaultActiveKey="dashboard"
   defaultSelectedKey="dashboard"
-  breadcrumb={<span className="text-sm text-muted">首页 / 仪表盘</span>}
+  breadcrumb={<span className="text-sm text-muted-foreground">首页 / 仪表盘</span>}
   headerExtra={<Avatar fallback="瑚" />}
 >
   <Dashboard />
@@ -117,11 +117,11 @@ export const adminLayoutShowcase: ShowcaseSpec = {
             defaultActiveKey="dashboard"
             defaultSelectedKey="dashboard"
             defaultOpenKeys={["users"]}
-            breadcrumb={<span className="text-sm text-muted">首页 / 仪表盘</span>}
+            breadcrumb={<span className="text-sm text-muted-foreground">首页 / 仪表盘</span>}
             headerExtra={
               <>
                 <Badge count={3} size="sm">
-                  <Bell className="size-5 text-muted" />
+                  <Bell className="size-5 text-muted-foreground" />
                 </Badge>
                 <Avatar fallback="瑚" />
               </>
@@ -154,7 +154,7 @@ export const adminLayoutShowcase: ShowcaseSpec = {
             defaultCollapsed
             defaultActiveKey="dashboard"
             defaultSelectedKey="dashboard"
-            breadcrumb={<span className="text-sm text-muted">首页 / 仪表盘</span>}
+            breadcrumb={<span className="text-sm text-muted-foreground">首页 / 仪表盘</span>}
             headerExtra={<Avatar fallback="瑚" />}
           >
             <StaticPage k="dashboard" />
@@ -183,7 +183,7 @@ export const adminLayoutShowcase: ShowcaseSpec = {
             showTabs={false}
             defaultSelectedKey="dashboard"
             defaultOpenKeys={["users"]}
-            breadcrumb={<span className="text-sm text-muted">首页 / 仪表盘</span>}
+            breadcrumb={<span className="text-sm text-muted-foreground">首页 / 仪表盘</span>}
             headerExtra={<Avatar fallback="瑚" />}
           >
             <StaticPage k="dashboard" />

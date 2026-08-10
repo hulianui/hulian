@@ -57,16 +57,16 @@ function ChartLegend({ series, scroll }: { series: ChartSeries[]; scroll?: boole
   return (
     <div
       className={cn(
-        "flex items-center gap-x-4 gap-y-1 text-xs text-muted",
+        "flex items-center gap-x-4 gap-y-1 text-xs text-muted-foreground",
         scroll
           ? [
               // 恒单行：不换行、超出横向滚动。序列多到几十条时唯一不吃画布的形态。
               "shrink-0 flex-nowrap justify-start overflow-x-auto overscroll-x-contain whitespace-nowrap",
               // 常显细滚动条，给「可横滑」明确的视觉与抓手（同 Gantt）
-              "[scrollbar-width:thin] [scrollbar-color:var(--color-muted)_transparent]",
+              "[scrollbar-width:thin] [scrollbar-color:var(--color-muted-foreground)_transparent]",
               "[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent",
-              "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted/50",
-              "hover:[&::-webkit-scrollbar-thumb]:bg-muted/80",
+              "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/50",
+              "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/80",
             ]
           : "flex-wrap justify-center",
       )}
@@ -173,7 +173,7 @@ function PolarAngleWrapTick({
       ? [value.slice(0, half), value.slice(half)]
       : [value];
   return (
-    <text x={x} y={y} textAnchor={textAnchor} fill="var(--color-muted)" fontSize={POLAR_TICK_FONT}>
+    <text x={x} y={y} textAnchor={textAnchor} fill="var(--color-muted-foreground)" fontSize={POLAR_TICK_FONT}>
       {lines.map((line, i) => (
         <tspan key={line} x={x} dy={i === 0 ? firstLineDy(verticalAnchor, lines.length === 2) : 13}>
           {line}

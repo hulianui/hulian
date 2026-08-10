@@ -133,7 +133,7 @@ export default function ShopHomePage() {
           {BRAND_MARQUEE.map((b) => (
             <span
               key={b}
-              className="rounded-full bg-surface-hover px-4 py-1.5 text-sm font-medium text-muted"
+              className="rounded-full bg-surface-hover px-4 py-1.5 text-sm font-medium text-muted-foreground"
             >
               {b}
             </span>

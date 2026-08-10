@@ -431,7 +431,7 @@ export function Flow<T>({
                 <path
                   d={d}
                   className={cn(
-                    active ? "text-primary" : "text-muted",
+                    active ? "text-primary" : "text-muted-foreground",
                     animated &&
                       "[stroke-dasharray:6_6] motion-safe:animate-[hulian-flow-dash_0.6s_linear_infinite] motion-reduce:[stroke-dasharray:none]",
                   )}
@@ -587,7 +587,7 @@ export function FlowEdgeDeleteButton({ onDelete }: { onDelete: () => void }) {
       aria-label={labels.deleteEdge}
       onPointerDown={(event) => event.stopPropagation()}
       onClick={onDelete}
-      className="grid size-[18px] place-items-center rounded-full border border-hairline bg-surface text-muted shadow-sm hover:border-danger hover:text-danger"
+      className="grid size-[18px] place-items-center rounded-full border border-hairline bg-surface text-muted-foreground shadow-sm hover:border-danger hover:text-danger"
     >
       <svg
         viewBox="0 0 16 16"
@@ -619,7 +619,7 @@ function ControlBtn({
       title={label}
       onClick={onClick}
       onPointerDown={(e) => e.stopPropagation()}
-      className="grid size-8 place-items-center text-muted transition-colors hover:bg-surface-hover hover:text-foreground [&+button]:border-t [&+button]:border-border"
+      className="grid size-8 place-items-center text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground [&+button]:border-t [&+button]:border-border"
     >
       {children}
     </button>

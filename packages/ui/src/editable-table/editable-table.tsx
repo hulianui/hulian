@@ -68,7 +68,7 @@ export function EditableTable<T>({
     <div className={cn("flex flex-col gap-3", className)}>
       <div className="overflow-x-auto rounded-[var(--radius)] border border-border">
         <table className="w-full border-collapse text-sm">
-          <thead className="text-muted">
+          <thead className="text-muted-foreground">
             <tr className="border-b border-border">
               {columns.map((c) => (
                 <th
@@ -85,7 +85,7 @@ export function EditableTable<T>({
           <tbody>
             {data.length === 0 ? (
               <tr>
-                <td colSpan={colCount} className="py-10 text-center text-muted">
+                <td colSpan={colCount} className="py-10 text-center text-muted-foreground">
                   {loc.empty}
                 </td>
               </tr>

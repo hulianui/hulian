@@ -41,7 +41,7 @@ export function HomeCategoryGrid({ categories }: Props) {
                   {cat.name.slice(0, 1)}
                 </div>
                 <span className="text-center text-xs font-medium text-foreground">{cat.name}</span>
-                <span className="hidden text-[10px] text-muted sm:block">
+                <span className="hidden text-[10px] text-muted-foreground sm:block">
                   {cat.children.slice(0, 2).map((c) => c.name).join("·")}
                 </span>
               </CardBody>

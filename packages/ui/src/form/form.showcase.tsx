@@ -21,7 +21,7 @@ function Demo() {
       <Button type="submit" size="sm">
         提交
       </Button>
-      {submitted && <p className="text-xs text-muted">已提交：{submitted}</p>}
+      {submitted && <p className="text-xs text-muted-foreground">已提交：{submitted}</p>}
     </Form>
   );
 }
@@ -57,7 +57,7 @@ function ValidationDemo() {
       <Button type="submit" size="sm">
         提交
       </Button>
-      {done && <p className="text-xs text-muted">通过：{done}</p>}
+      {done && <p className="text-xs text-muted-foreground">通过：{done}</p>}
     </form>
   );
 }

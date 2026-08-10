@@ -43,7 +43,7 @@ export function CollapsibleTrigger({ className, children, ...props }: Collapsibl
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="size-4 shrink-0 text-muted transition-transform duration-200 group-data-[panel-open]:rotate-180"
+        className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[panel-open]:rotate-180"
       >
         <path d="m6 9 6 6 6-6" />
       </svg>
@@ -68,7 +68,7 @@ export function CollapsiblePanel({ className, children, ...props }: CollapsibleP
         className,
       )}
     >
-      <div className="px-3 pb-3 pt-1 text-sm text-muted">{children}</div>
+      <div className="px-3 pb-3 pt-1 text-sm text-muted-foreground">{children}</div>
     </BaseCollapsible.Panel>
   );
 }

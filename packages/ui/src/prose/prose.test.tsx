@@ -78,7 +78,7 @@ describe("Prose", () => {
     );
     const cls = container.firstElementChild!.className;
     expect(cls).toContain("text-foreground");
-    expect(cls).toContain("[&_blockquote]:text-muted");
+    expect(cls).toContain("[&_blockquote]:text-muted-foreground");
     expect(cls).toContain("[&_a]:text-primary");
     expect(cls).toContain("[&_pre]:border-border");
   });

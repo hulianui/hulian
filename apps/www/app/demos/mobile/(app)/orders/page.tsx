@@ -75,15 +75,15 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
                 {ORDER_STATUS_LABELS[order.status]}
               </Tag>
             </div>
-            <div className="mt-0.5 text-xs text-muted">
+            <div className="mt-0.5 text-xs text-muted-foreground">
 
               {copy("professional")}{order.workerName} · {order.appointedAt}
             </div>
-            <div className="mt-0.5 truncate text-xs text-muted">{order.address}</div>
+            <div className="mt-0.5 truncate text-xs text-muted-foreground">{order.address}</div>
             <div className="mt-1.5 flex items-center justify-between">
               <span className="text-sm font-semibold text-foreground">
                 ¥{order.price * order.quantity}
-                <span className="text-xs font-normal text-muted"> · {order.quantity}{order.unit}</span>
+                <span className="text-xs font-normal text-muted-foreground"> · {order.quantity}{order.unit}</span>
               </span>
               <div className="flex items-center gap-2">
                 {order.status === "待评价" && (
@@ -98,7 +98,7 @@ function OrderCard({ order, onDelete }: { order: Order; onDelete: (id: string) =
                 )}
                 {/* ActionSheet 更多操作 */}
                 <ActionSheet open={moreOpen} onOpenChange={setMoreOpen}>
-                  <ActionSheetTrigger className="flex items-center justify-center rounded-lg border border-border p-1.5 text-muted hover:bg-surface-hover">
+                  <ActionSheetTrigger className="flex items-center justify-center rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-surface-hover">
                     <MoreHorizontal className="size-[18px]" aria-hidden />
                   </ActionSheetTrigger>
                   <ActionSheetContent
@@ -179,7 +179,7 @@ export default function OrdersPage() {
       {/* 顶部标题 */}
       <div className="sticky top-0 z-10 bg-surface px-4 py-3 shadow-sm">
         <h1 className="text-base font-semibold">{copy("myOrders")}</h1>
-        <p className="text-xs text-muted mt-0.5">{copy("swipeLeftToContactTheProfessionalSwipeRightToDelete")}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{copy("swipeLeftToContactTheProfessionalSwipeRightToDelete")}</p>
       </div>
 
       {loading ? (

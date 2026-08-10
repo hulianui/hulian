@@ -29,11 +29,11 @@ describe("ServiceMessage", () => {
     expect(getByText("橙C冰茶")).toBeTruthy();
   });
 
-  it("label 用 text-muted，value 用 text-foreground + font-medium", () => {
+  it("label 用 text-muted-foreground，value 用 text-foreground + font-medium", () => {
     const { getByText } = render(
       <ServiceMessage title="t" fields={[{ label: "键", value: "值" }]} />,
     );
-    expect(getByText("键").className).toContain("text-muted");
+    expect(getByText("键").className).toContain("text-muted-foreground");
     const v = getByText("值");
     expect(v.className).toContain("text-foreground");
     expect(v.className).toContain("font-medium");

@@ -96,7 +96,7 @@ export function SidebarNavBlock() {
           {GROUPS.map((group) => (
             <div key={group.title} className="mb-3 last:mb-0">
               {!collapsed && (
-                <div className="px-2 pb-1 pt-2 text-xs font-medium uppercase tracking-wide text-muted">
+                <div className="px-2 pb-1 pt-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {group.title}
                 </div>
               )}
@@ -115,7 +115,7 @@ export function SidebarNavBlock() {
                           collapsed ? "justify-center" : "",
                           isActive
                             ? "bg-primary/10 text-primary"
-                            : "text-muted hover:bg-surface-hover hover:text-foreground",
+                            : "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                         ].join(" ")}
                       >
                         {/* 折叠态：用 Badge dot 包裹图标提示计数 */}
@@ -156,7 +156,7 @@ export function SidebarNavBlock() {
               <>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium text-foreground">林晚晴</div>
-                  <div className="truncate text-xs text-muted">管理员</div>
+                  <div className="truncate text-xs text-muted-foreground">管理员</div>
                 </div>
                 <Button variant="ghost" size="iconSm" aria-label="账号设置" className="shrink-0">
                   <Settings className="size-4" />
@@ -168,7 +168,7 @@ export function SidebarNavBlock() {
       </aside>
 
       {/* 右侧内容占位，仅作示意 */}
-      <div className="hidden flex-1 items-center justify-center p-8 text-sm text-muted sm:flex">
+      <div className="hidden flex-1 items-center justify-center p-8 text-sm text-muted-foreground sm:flex">
         主内容区
       </div>
     </div>

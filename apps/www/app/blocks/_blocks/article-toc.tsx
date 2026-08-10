@@ -100,7 +100,7 @@ export function ArticleTocBlock() {
                   <li key={t.id}>
                     <a
                       href={`#${t.id}`}
-                      className="-ml-px block border-l-2 border-transparent pl-3 text-sm text-muted transition-colors hover:border-primary hover:text-foreground"
+                      className="-ml-px block border-l-2 border-transparent pl-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
                     >
                       {t.label}
                     </a>

@@ -284,7 +284,7 @@ export function StaggeredMenu({
                   })
                 ) : (
                   <li aria-hidden className="relative overflow-hidden leading-none">
-                    <span className="inline-block text-5xl font-semibold uppercase leading-none tracking-tight text-muted">
+                    <span className="inline-block text-5xl font-semibold uppercase leading-none tracking-tight text-muted-foreground">
                       No items
                     </span>
                   </li>

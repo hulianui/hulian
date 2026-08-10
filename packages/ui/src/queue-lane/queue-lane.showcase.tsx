@@ -55,11 +55,11 @@ function JobCard({ job, index }: { job: Job; index: number }) {
       <div className="flex items-center justify-between gap-2">
         <span className="truncate text-[13px] font-medium text-foreground">{job.title}</span>
         {/* 队列位次徽标：0 = 队首（FIFO） */}
-        <span className="shrink-0 rounded-full bg-subtle px-1.5 text-[11px] tabular-nums text-muted">
+        <span className="shrink-0 rounded-full bg-subtle px-1.5 text-[11px] tabular-nums text-muted-foreground">
           #{index + 1}
         </span>
       </div>
-      <div className="mt-1 flex items-center justify-between gap-2 text-[11px] text-muted">
+      <div className="mt-1 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
         <span className="truncate">{job.executor}</span>
         <span className="shrink-0 tabular-nums">等 {job.wait}</span>
       </div>

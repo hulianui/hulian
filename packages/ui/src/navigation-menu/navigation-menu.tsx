@@ -87,7 +87,7 @@ export function NavigationMenuTrigger({ className, children, ...props }: Navigat
       {children}
       <ChevronDown
         aria-hidden
-        className="size-4 text-muted transition-transform duration-200 group-data-[popup-open]:rotate-180"
+        className="size-4 text-muted-foreground transition-transform duration-200 group-data-[popup-open]:rotate-180"
       />
     </BaseNav.Trigger>
   );

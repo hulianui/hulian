@@ -32,7 +32,7 @@ function Section({ title, desc, children }: { title: string; desc?: string; chil
       <CardHeader>
         <div>
           <div className="text-sm font-semibold text-foreground">{title}</div>
-          {desc && <div className="mt-0.5 text-xs text-muted">{desc}</div>}
+          {desc && <div className="mt-0.5 text-xs text-muted-foreground">{desc}</div>}
         </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-4">{children}</CardBody>
@@ -46,7 +46,7 @@ function NotifyRow({ label, desc, defaultOn }: { label: string; desc: string; de
     <div className="flex items-center justify-between gap-4">
       <div>
         <div className="text-sm text-foreground">{label}</div>
-        <div className="text-xs text-muted">{desc}</div>
+        <div className="text-xs text-muted-foreground">{desc}</div>
       </div>
       <Switch checked={on} onCheckedChange={setOn} aria-label={label} />
     </div>
@@ -72,7 +72,7 @@ export default function SettingsPage() {
           renderItem={(r) => (
             <ListItem key={r.id} actions={[<StatusDot key="s" status="online" label={copy("connected")} />]}>
               <ListItem.Meta
-                avatar={<GitBranch className="size-4 text-muted" />}
+                avatar={<GitBranch className="size-4 text-muted-foreground" />}
                 title={r.name}
                 description={copy("defaultBranchValue", r.defaultBranch)}
               />
@@ -99,7 +99,7 @@ export default function SettingsPage() {
         <NotifyRow label={copy("aSeriousProblem")} desc={copy("criticalIssuesAreDetectedImmediately")} defaultOn />
         <NotifyRow label={copy("dailyQualitySummary")} desc={copy("summarizeChangesInQualityScoresFromEach")} />
         <div>
-          <div className="mb-2 text-xs text-muted">{copy("notificationChannels")}</div>
+          <div className="mb-2 text-xs text-muted-foreground">{copy("notificationChannels")}</div>
           <ChoiceboxGroup multiple defaultValue={[copy("sendingAFlyingLetter")]} columns={3} aria-label={copy("notificationChannels2")}>
             <Choicebox value={copy("sendingAFlyingLetter2")} title={copy("sendingAFlyingLetter3")} description={copy("swarmOfRobots")} />
             <Choicebox value={copy("email")} title={copy("email2")} description={copy("pushNotificationsAccordingToThePerson")} />
@@ -111,7 +111,7 @@ export default function SettingsPage() {
       <Section title={copy("aiBudget")} desc={copy("controlTheSpendingOfMonthlyModelCalls")}>
         <div className="flex items-end gap-4">
           <div>
-            <div className="mb-1 text-xs text-muted">{copy("monthlyBudget")}</div>
+            <div className="mb-1 text-xs text-muted-foreground">{copy("monthlyBudget")}</div>
             <NumberField value={budget} onValueChange={setBudget} min={0} step={100} aria-label={copy("monthlyBudget2")} />
           </div>
           <div className="flex-1">
@@ -119,7 +119,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <div>
-          <div className="mb-2 text-xs text-muted">{copy("excessStrategy")}</div>
+          <div className="mb-2 text-xs text-muted-foreground">{copy("excessStrategy")}</div>
           <ChoiceboxGroup defaultValue="downgrade" columns={2} aria-label={copy("excessStrategy2")}>
             <Choicebox value="downgrade" title={copy("downgradedToAnEconomicModel")} description={copy("afterOverBudgetingSwitchToHaikuDeepseek")} />
             <Choicebox value="pause" title={copy("suspensionOfReview")} description={copy("afterExceedingTheBudgetTheQueueIs")} />

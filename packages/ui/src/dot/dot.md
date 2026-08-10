@@ -50,7 +50,7 @@ import { Dot } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- **`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted`），写的人以为生效了。自定义颜色只走 `color` prop。
+- **`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted-foreground`），写的人以为生效了。自定义颜色只走 `color` prop。
 - `label` 决定无障碍语义：表意圆点（真在传达状态）务必传 `label`，否则它被 `aria-hidden` 当装饰，屏读用户读不到。
 - `tone` 只有五档语义色，接不住图表序列色（默认取值就是 `chart-1..6`）——那是 `color` 存在的原因，别为一个色点去拆 Tag 或裸写 `<span>`。
 

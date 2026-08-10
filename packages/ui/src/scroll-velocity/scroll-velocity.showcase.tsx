@@ -52,18 +52,18 @@ export const scrollVelocityShowcase: ShowcaseSpec = {
     },
     {
       title: "弱化字色",
-      description: "用 text-muted 弱化字色、放慢速度，当作氛围背景文字。",
+      description: "用 text-muted-foreground 弱化字色、放慢速度，当作氛围背景文字。",
       code: `<ScrollVelocity
   texts={["持续滚动的氛围背景文字"]}
   velocity={50}
-  className="text-muted"
+  className="text-muted-foreground"
 />`,
       render: () => (
         <Stage>
           <ScrollVelocity
             texts={["持续滚动的氛围背景文字"]}
             velocity={50}
-            className="text-muted"
+            className="text-muted-foreground"
           />
         </Stage>
       ),
@@ -116,7 +116,7 @@ export const scrollVelocityShowcase: ShowcaseSpec = {
           <ScrollVelocity
             texts={["持续滚动的氛围背景文字"]}
             velocity={50}
-            className="text-muted"
+            className="text-muted-foreground"
           />
         </Stage>
       ),

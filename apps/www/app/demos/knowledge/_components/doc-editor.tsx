@@ -46,7 +46,7 @@ export function DocEditor({ nodeId }: { nodeId: string }) {
     <div className="mx-auto flex h-full max-w-3xl flex-col px-6 py-5">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <FileText className="size-5 shrink-0 text-muted" />
+          <FileText className="size-5 shrink-0 text-muted-foreground" />
           <h1 className="truncate text-lg font-semibold tracking-tight">
             {node.name.replace(/\.md$/, "")}
           </h1>
@@ -56,7 +56,7 @@ export function DocEditor({ nodeId }: { nodeId: string }) {
             </Tag>
           )}
         </div>
-        <div className="flex shrink-0 items-center gap-3 text-xs text-muted">
+        <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
           <span className="tabular-nums">
             {count} {copy("words")}
           </span>

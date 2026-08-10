@@ -9,7 +9,7 @@ import type { TextareaProps } from "./textarea.types";
 export const textareaVariants = cva(
   [
     "w-full rounded-[var(--radius)] border border-border bg-surface text-foreground transition-colors",
-    "outline-none placeholder:text-muted",
+    "outline-none placeholder:text-muted-foreground",
     "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
     "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
     "disabled:opacity-50 disabled:cursor-not-allowed",

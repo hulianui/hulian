@@ -30,7 +30,7 @@ const Hint = ({ light = false }: { light?: boolean }) => (
       className={
         light
           ? "text-sm font-medium text-white/70"
-          : "text-sm font-medium text-muted"
+          : "text-sm font-medium text-muted-foreground"
       }
     >
       点击此处放射火花

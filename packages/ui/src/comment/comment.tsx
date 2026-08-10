@@ -9,9 +9,9 @@ import type {
   CommentProps,
 } from "./comment.types";
 
-// 操作区小按钮皮肤：text-muted、hover 提亮、与 Link/Button 一致的 focus 环。
+// 操作区小按钮皮肤：text-muted-foreground、hover 提亮、与 Link/Button 一致的 focus 环。
 export const commentActionVariants = cva(
-  "inline-flex items-center gap-1 rounded-sm text-xs font-medium text-muted outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+  "inline-flex items-center gap-1 rounded-sm text-xs font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
 );
 
 /** 操作区容器：横向小按钮排列（点赞/回复/更多）。 */
@@ -71,7 +71,7 @@ export function Comment({
           aria-hidden
           className="flex size-8 shrink-0 items-center justify-center"
         >
-          <span className="size-2 rounded-full bg-muted" />
+          <span className="size-2 rounded-full bg-muted-foreground" />
         </span>
       ) : (
         <Avatar size="sm" {...avatar} />
@@ -83,8 +83,8 @@ export function Comment({
           <span className={cn("text-foreground", isLog ? "text-sm" : "text-sm font-medium")}>
             {author}
           </span>
-          {isLog && content != null && <span className="text-sm text-muted">{body}</span>}
-          {datetime != null && <span className="text-xs text-muted">{datetime}</span>}
+          {isLog && content != null && <span className="text-sm text-muted-foreground">{body}</span>}
+          {datetime != null && <span className="text-xs text-muted-foreground">{datetime}</span>}
         </div>
 
         {!isLog && content != null && (

@@ -44,7 +44,7 @@ export function DialogContent({ title, description, children, footer, className 
       >
         <BaseDialog.Title className="shrink-0 text-lg font-semibold">{title}</BaseDialog.Title>
         {description && (
-          <BaseDialog.Description className="mt-1 shrink-0 text-sm text-muted">
+          <BaseDialog.Description className="mt-1 shrink-0 text-sm text-muted-foreground">
             {description}
           </BaseDialog.Description>
         )}

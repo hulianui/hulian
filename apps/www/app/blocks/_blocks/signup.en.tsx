@@ -146,7 +146,7 @@ export function SignupBlock() {
           </Button>
         </form>
 
-        <Divider plain className="my-6 text-muted">
+        <Divider plain className="my-6 text-muted-foreground">
           Or sign up with
         </Divider>
 

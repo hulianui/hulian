@@ -55,7 +55,7 @@ export function OverviewTaskFlow({ tasks }: { tasks: Task[] }) {
                 >
                   {t.title}
                 </div>
-                <div className="truncate text-xs text-muted">
+                <div className="truncate text-xs text-muted-foreground">
                   {t.type}{copy("assignIt")}{executorName(t.assignedExecutorId)}
                 </div>
               </div>

@@ -24,7 +24,7 @@ const TONE: Record<SchedulerTone, { block: string; accent: string }> = {
   success: { block: "bg-success/15 text-success border-success/30", accent: "bg-success" },
   warning: { block: "bg-warning/15 text-warning border-warning/30", accent: "bg-warning" },
   danger: { block: "bg-danger/15 text-danger border-danger/30", accent: "bg-danger" },
-  neutral: { block: "bg-surface-hover text-foreground border-border", accent: "bg-muted" },
+  neutral: { block: "bg-surface-hover text-foreground border-border", accent: "bg-muted-foreground" },
 };
 
 const TIME_GUTTER = 56; // 左侧时间轴宽
@@ -314,7 +314,7 @@ export function TimeGrid({
               {c.label}
             </span>
             {c.sublabel && (
-              <span className={cn("truncate text-[11px] tabular-nums", c.isToday ? "text-primary" : "text-muted")}>
+              <span className={cn("truncate text-[11px] tabular-nums", c.isToday ? "text-primary" : "text-muted-foreground")}>
                 {c.sublabel}
               </span>
             )}
@@ -330,7 +330,7 @@ export function TimeGrid({
             {hours.map((h) => (
               <div
                 key={h}
-                className="absolute right-1 -translate-y-1/2 text-[11px] tabular-nums text-muted"
+                className="absolute right-1 -translate-y-1/2 text-[11px] tabular-nums text-muted-foreground"
                 style={{ top: (h * 60 - dayStartMin) * pxPerMin }}
               >
                 {h === dayStartHour ? "" : `${String(h).padStart(2, "0")}:00`}

@@ -180,7 +180,7 @@ export function Select({
 
   // 加载态占位：两种皮肤共用（标准皮肤放进 List，搜索皮肤复用 Combobox 的空态槽位）。
   const loadingNode = (
-    <div className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted">
+    <div className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted-foreground">
       <Spinner size="sm" tone="current" />
       {resolvedLoadingText}
     </div>
@@ -316,7 +316,7 @@ function renderMultipleValue(
           {label}
         </Fragment>
       ))}
-      {extra > 0 && <span className="text-muted"> +{extra}</span>}
+      {extra > 0 && <span className="text-muted-foreground"> +{extra}</span>}
     </>
   );
 }
@@ -356,12 +356,12 @@ export function SelectTrigger({
   const showClear = Boolean(clearable && hasValue && !loading);
 
   const tail = loading ? (
-    <span className="flex shrink-0 items-center text-muted">
+    <span className="flex shrink-0 items-center text-muted-foreground">
       <Spinner size="sm" tone="current" />
     </span>
   ) : null;
   const tailClassName = cn(
-    "flex shrink-0 items-center text-muted transition-transform data-[popup-open]:rotate-180",
+    "flex shrink-0 items-center text-muted-foreground transition-transform data-[popup-open]:rotate-180",
     // 清除按钮浮出时把箭头让位（二者共用右侧同一格，同 el-select 的 hover 互换）。
     showClear && "group-hover:opacity-0 group-focus-within:opacity-0",
   );
@@ -380,7 +380,7 @@ export function SelectTrigger({
               {renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)}
             </span>
           ) : (
-            <span className={cn("truncate", value == null && "text-muted")}>
+            <span className={cn("truncate", value == null && "text-muted-foreground")}>
               {(value as ComboboxItemData | null)?.label ?? placeholder}
             </span>
           )
@@ -401,7 +401,7 @@ export function SelectTrigger({
     >
       {/* 单选不写 children：有值显示选中 label，无值显示注入的 null 项 label（=placeholder）；
           多选走函数式 children 平铺已选 label + 超出 +N。data-placeholder 态置 muted。 */}
-      <BaseSelect.Value className="truncate data-[placeholder]:text-muted">
+      <BaseSelect.Value className="truncate data-[placeholder]:text-muted-foreground">
         {multiple
           ? (value: unknown) =>
               renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)
@@ -432,7 +432,7 @@ export function SelectTrigger({
             onClear?.();
           }}
           className={cn(
-            "absolute top-1/2 hidden -translate-y-1/2 cursor-pointer items-center text-muted transition-colors",
+            "absolute top-1/2 hidden -translate-y-1/2 cursor-pointer items-center text-muted-foreground transition-colors",
             "hover:text-foreground focus-visible:outline-none focus-visible:text-foreground",
             "group-hover:flex group-focus-within:flex",
             size === "lg" ? "right-3.5" : size === "sm" ? "right-2.5" : "right-3",
@@ -518,7 +518,7 @@ export function SelectContent({
           <BaseSelect.List>
             {loading ? (
               // 加载态只出占位，不渲染选项（避免展示上一轮的陈旧数据）。
-              <div className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted">
+              <div className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted-foreground">
                 <Spinner size="sm" tone="current" />
                 {loadingText}
               </div>
@@ -576,7 +576,7 @@ export function SelectGroup({ children, className }: SelectGroupProps) {
 /** 分组标题：Base UI 自动与父 SelectGroup 建立 aria-labelledby 关联。 */
 export function SelectGroupLabel({ children, className }: SelectGroupLabelProps) {
   return (
-    <BaseSelect.GroupLabel className={cn("px-2 py-1.5 text-xs font-medium text-muted", className)}>
+    <BaseSelect.GroupLabel className={cn("px-2 py-1.5 text-xs font-medium text-muted-foreground", className)}>
       {children}
     </BaseSelect.GroupLabel>
   );

@@ -30,21 +30,33 @@
   --color-subtle: var(--color-subtle);
   --color-foreground: var(--color-foreground);
   --color-muted: var(--color-muted);
+  --color-muted-foreground: var(--color-muted-foreground);
   --color-border: var(--color-border);
   --color-hairline: var(--color-hairline);
   --color-ring: var(--color-ring);
   --color-primary: var(--color-primary);
   --color-primary-foreground: var(--color-primary-foreground);
   --color-primary-hover: var(--color-primary-hover);
+  /* 浅档（#145）：bg-primary-subtle 做提示条/选中行底，border-primary-border 做配套边框。
+     名字里的 -border 会拼成 `border-primary-border`，读着别扭但含义唯一，比起再造一个
+     `-line` / `-outline` 之类的私有词，跟 issue 与 Ant/Element 的 Border 惯例对齐更重要。 */
+  --color-primary-subtle: var(--color-primary-subtle);
+  --color-primary-border: var(--color-primary-border);
   --color-danger: var(--color-danger);
   --color-danger-foreground: var(--color-danger-foreground);
   --color-danger-hover: var(--color-danger-hover);
+  --color-danger-subtle: var(--color-danger-subtle);
+  --color-danger-border: var(--color-danger-border);
   --color-success: var(--color-success);
   --color-success-foreground: var(--color-success-foreground);
   --color-success-hover: var(--color-success-hover);
+  --color-success-subtle: var(--color-success-subtle);
+  --color-success-border: var(--color-success-border);
   --color-warning: var(--color-warning);
   --color-warning-foreground: var(--color-warning-foreground);
   --color-warning-hover: var(--color-warning-hover);
+  --color-warning-subtle: var(--color-warning-subtle);
+  --color-warning-border: var(--color-warning-border);
   --color-chart-1: var(--color-chart-1);
   --color-chart-2: var(--color-chart-2);
   --color-chart-3: var(--color-chart-3);

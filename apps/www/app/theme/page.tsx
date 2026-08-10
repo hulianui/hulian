@@ -44,13 +44,13 @@ export default function ThemeOverviewPage() {
               key={l.n}
               className="flex gap-4 rounded-[var(--radius)] border border-border bg-surface p-5"
             >
-              <span className="font-mono text-sm tabular-nums text-muted">{l.n}</span>
+              <span className="font-mono text-sm tabular-nums text-muted-foreground">{l.n}</span>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <h3 className="font-medium">{l.name}</h3>
                   <Code>@hulianui/tokens/{l.file}</Code>
                 </div>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted">{l.desc}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{l.desc}</p>
               </div>
             </li>
           ))}
@@ -59,11 +59,11 @@ export default function ThemeOverviewPage() {
 
       <Section title={content.consume} desc={content.consumeDescription}>
         <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          <span className="text-muted">{"/* app/globals.css */"}</span>
+          <span className="text-muted-foreground">{"/* app/globals.css */"}</span>
           {"\n"}@import "@hulianui/tokens/tokens.css";{" "}
-          <span className="text-muted">{`/* ${content.primitiveComment} */`}</span>
+          <span className="text-muted-foreground">{`/* ${content.primitiveComment} */`}</span>
           {"\n"}@import "@hulianui/tokens/preset.css";{" "}
-          <span className="text-muted">{`/* ${content.presetComment} */`}</span>
+          <span className="text-muted-foreground">{`/* ${content.presetComment} */`}</span>
         </pre>
       </Section>
 
@@ -80,12 +80,12 @@ export default function ThemeOverviewPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline gap-2">
                     <span className="font-medium">{meta.label}</span>
-                    <span className="text-xs text-muted">{DOCS_LOCALE === "en" ? p.en : p.en}</span>
+                    <span className="text-xs text-muted-foreground">{DOCS_LOCALE === "en" ? p.en : p.en}</span>
                   </div>
-                  <p className="truncate text-sm text-muted">{meta.description}</p>
+                  <p className="truncate text-sm text-muted-foreground">{meta.description}</p>
                 </div>
                 <ArrowRight
-                  className="size-4 shrink-0 text-muted/50 transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
+                  className="size-4 shrink-0 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
                   aria-hidden
                 />
               </Link>

@@ -150,7 +150,7 @@ export function Listbox({
             className={cn(
               "flex cursor-pointer select-none items-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2 py-1.5 text-sm outline-none transition-colors",
               disabled
-                ? "cursor-not-allowed text-muted opacity-50"
+                ? "cursor-not-allowed text-muted-foreground opacity-50"
                 : sel
                 ? "bg-primary/12 text-primary"
                 : "text-foreground",
@@ -162,10 +162,10 @@ export function Listbox({
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="truncate">{it.label}</span>
               {it.description != null && (
-                <span className="truncate text-xs text-muted">{it.description}</span>
+                <span className="truncate text-xs text-muted-foreground">{it.description}</span>
               )}
             </span>
-            {it.endContent && <span className="shrink-0 text-muted">{it.endContent}</span>}
+            {it.endContent && <span className="shrink-0 text-muted-foreground">{it.endContent}</span>}
             {sel && <Check className="size-4 shrink-0 text-primary" aria-hidden />}
           </div>
         );

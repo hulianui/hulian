@@ -217,7 +217,7 @@ function RelLink({
       className="flex items-center justify-between rounded-[var(--radius)] border border-border px-3 py-2.5 transition-colors hover:border-primary/40 hover:bg-surface-hover"
     >
       <span className="flex items-center gap-2 text-sm text-foreground">
-        <span className="text-muted">{icon}</span>
+        <span className="text-muted-foreground">{icon}</span>
         {label}
       </span>
       <Tag tone="neutral" size="sm">

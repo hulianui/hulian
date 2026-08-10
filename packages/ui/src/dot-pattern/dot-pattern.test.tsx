@@ -44,9 +44,9 @@ describe("DotPattern", () => {
     expect(rects[0].getAttribute("fill")).toBe(`url(#${ids[0]})`);
   });
   it("className 与 props 透传", () => {
-    const { container } = render(<DotPattern className="text-muted" data-testid="dp" />);
+    const { container } = render(<DotPattern className="text-muted-foreground" data-testid="dp" />);
     const svg = container.querySelector("svg")!;
-    expect(svg.getAttribute("class")).toContain("text-muted");
+    expect(svg.getAttribute("class")).toContain("text-muted-foreground");
     expect(svg.getAttribute("data-testid")).toBe("dp");
   });
 });

@@ -299,7 +299,7 @@ export function Inspector({ node, nodes, edges, onUpdate, onDelete }: InspectorP
     return (
       <aside className="flex w-80 shrink-0 flex-col border-l border-border bg-surface">
         <header className="flex items-center gap-2 border-b border-border px-4 py-3">
-          <Sliders className="size-4 text-muted" />
+          <Sliders className="size-4 text-muted-foreground" />
           <Text weight="semibold" size="sm">
             {copy("workflowOverview")}
           </Text>
@@ -316,7 +316,7 @@ export function Inspector({ node, nodes, edges, onUpdate, onDelete }: InspectorP
                 className="rounded-[var(--radius)] border border-border bg-bg p-2.5 text-center"
               >
                 <div className="text-lg font-semibold tabular-nums">{s.value}</div>
-                <div className="text-[11px] text-muted">{s.label}</div>
+                <div className="text-[11px] text-muted-foreground">{s.label}</div>
               </div>
             ))}
           </div>
@@ -349,7 +349,7 @@ export function Inspector({ node, nodes, edges, onUpdate, onDelete }: InspectorP
   return (
     <aside className="flex w-80 shrink-0 flex-col border-l border-border bg-surface">
       <header className="flex items-center gap-2 border-b border-border px-4 py-3">
-        <Icon className="size-4 text-muted" />
+        <Icon className="size-4 text-muted-foreground" />
         <Text weight="semibold" size="sm" className="flex-1">
           {meta.label} {copy("parameters")}
         </Text>

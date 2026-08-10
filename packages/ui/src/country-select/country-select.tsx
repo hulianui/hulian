@@ -77,10 +77,10 @@ function CountrySelectImpl({
           <span aria-hidden>{flagEmoji(c.code)}</span>
           <span className="truncate text-foreground">{locale.name(c.cn, c.en)}</span>
           {showEnglish && secondaryName && (
-            <span className="truncate text-xs text-muted">{secondaryName}</span>
+            <span className="truncate text-xs text-muted-foreground">{secondaryName}</span>
           )}
           {showDialCode && c.dial && (
-            <span className="ml-auto shrink-0 text-xs tabular-nums text-muted">{c.dial}</span>
+            <span className="ml-auto shrink-0 text-xs tabular-nums text-muted-foreground">{c.dial}</span>
           )}
         </span>
       );

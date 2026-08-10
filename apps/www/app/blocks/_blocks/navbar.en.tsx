@@ -41,7 +41,7 @@ export function NavbarBlock() {
                 <div className="grid w-[30rem] grid-cols-2 gap-1">
                   {products.map((p) => (<NavigationMenuLink key={p.title} href="#" className="block px-3 py-2">
                       <div className="font-medium text-foreground">{p.title}</div>
-                      <div className="mt-0.5 text-xs text-muted">{p.desc}</div>
+                      <div className="mt-0.5 text-xs text-muted-foreground">{p.desc}</div>
                     </NavigationMenuLink>))}
                 </div>
               </NavigationMenuContent>

@@ -52,8 +52,8 @@ function Demo() {
           {fields}
         </DrawerForm>
       </div>
-      {submitted && <p className="text-sm text-muted">已提交：{submitted}</p>}
-      <p className="text-xs text-muted">未填姓名点提交会被校验拦住、弹窗不关闭；提交成功(模拟 600ms)自动关闭。</p>
+      {submitted && <p className="text-sm text-muted-foreground">已提交：{submitted}</p>}
+      <p className="text-xs text-muted-foreground">未填姓名点提交会被校验拦住、弹窗不关闭；提交成功(模拟 600ms)自动关闭。</p>
     </div>
   );
 }

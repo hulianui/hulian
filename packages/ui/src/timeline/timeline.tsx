@@ -14,7 +14,7 @@ import type {
 
 // 默认圆点的语气色 —— 字面查表（Tailwind @source 只扫字面量，禁动态拼 `bg-${color}`）。
 const dotColorClass: Record<TimelineDotColor, string> = {
-  default: "bg-muted",
+  default: "bg-muted-foreground",
   primary: "bg-primary",
   success: "bg-success",
   danger: "bg-danger",
@@ -24,7 +24,7 @@ const dotColorClass: Record<TimelineDotColor, string> = {
 // 节点容器文字色 —— 自定义 dot（多用 currentColor 的 SVG）靠它上色，与 color 语气对齐。
 // 默认圆点走 bg-* 自带色，不依赖此项（故 default 仍取 muted 不影响）。
 const dotTextClass: Record<TimelineDotColor, string> = {
-  default: "text-muted",
+  default: "text-muted-foreground",
   primary: "text-primary",
   success: "text-success",
   danger: "text-danger",
@@ -84,7 +84,7 @@ export function TimelineItem({
       )}
     >
       {children != null && <div className="text-sm text-foreground">{children}</div>}
-      {label != null && <div className="mt-1 text-xs text-muted">{label}</div>}
+      {label != null && <div className="mt-1 text-xs text-muted-foreground">{label}</div>}
     </div>
   );
 

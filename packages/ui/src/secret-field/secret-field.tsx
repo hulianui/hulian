@@ -19,7 +19,7 @@ export function maskSecret(value: string, strategy: MaskStrategy = "prefix-suffi
 }
 
 const iconBtn =
-  "inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
+  "inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
 
 function SecretFieldImpl({
   value,

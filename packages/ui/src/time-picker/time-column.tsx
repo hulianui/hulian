@@ -32,7 +32,7 @@ export function TimeColumn({ label, values, active, isDisabled, onPick, open }: 
 
   return (
     <div className="flex min-w-0 flex-col">
-      <div className="border-b border-border px-2 py-1 text-center text-xs text-muted">{label}</div>
+      <div className="border-b border-border px-2 py-1 text-center text-xs text-muted-foreground">{label}</div>
       <div ref={listRef} role="listbox" aria-label={label} className="relative h-48 w-14 overflow-y-auto scroll-smooth py-1">
         {values.map((v) => {
           const dis = isDisabled(v);
@@ -50,7 +50,7 @@ export function TimeColumn({ label, values, active, isDisabled, onPick, open }: 
               className={cn(
                 "flex h-8 w-full items-center justify-center rounded-md text-sm tabular-nums transition-colors",
                 isActive ? "bg-primary font-medium text-primary-foreground" : "text-foreground hover:bg-surface-hover",
-                dis && "cursor-not-allowed text-muted/40 hover:bg-transparent",
+                dis && "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
               )}
             >
               {pad2(v)}

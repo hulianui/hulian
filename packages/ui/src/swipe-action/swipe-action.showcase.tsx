@@ -14,7 +14,7 @@ function Row() {
       >
         <div className="flex items-center justify-between bg-surface px-4 py-3">
           <span className="text-sm text-foreground">会话项 · 左右滑动试试</span>
-          <span className="text-xs text-muted">14:32</span>
+          <span className="text-xs text-muted-foreground">14:32</span>
         </div>
       </SwipeAction>
     </div>

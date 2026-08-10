@@ -70,17 +70,17 @@ export function CourseCard({ course }: { course: Course }) {
         >
           {course.title}
         </Link>
-        <p className="line-clamp-1 text-xs text-muted">
+        <p className="line-clamp-1 text-xs text-muted-foreground">
           {course.instructor.name} · {course.instructor.title}
         </p>
 
         <div className="flex items-center gap-1.5 text-sm">
           <span className="font-semibold text-amber-500">{course.rating.toFixed(1)}</span>
           <Rating value={course.rating} readOnly size="sm" />
-          <span className="text-xs text-muted">({course.ratingCount})</span>
+          <span className="text-xs text-muted-foreground">({course.ratingCount})</span>
         </div>
 
-        <div className="flex items-center gap-3 text-xs text-muted">
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Users className="size-3.5" aria-hidden />
             {course.students.toLocaleString("zh-CN")}
@@ -95,7 +95,7 @@ export function CourseCard({ course }: { course: Course }) {
           {enrolled ? (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted">{copy("learningProgress")}</span>
+                <span className="text-muted-foreground">{copy("learningProgress")}</span>
                 <span className="font-medium text-foreground">{progress}%</span>
               </div>
               <Progress value={progress} />

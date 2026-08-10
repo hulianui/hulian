@@ -36,7 +36,7 @@ function PricingTableImpl({ columns, rows, stickyHeader = true, className }: Pri
             <tr key={row.key}>
               <th
                 scope="row"
-                className="sticky left-0 z-[5] whitespace-nowrap border-b border-border bg-bg px-4 py-3 text-left font-medium text-muted"
+                className="sticky left-0 z-[5] whitespace-nowrap border-b border-border bg-bg px-4 py-3 text-left font-medium text-muted-foreground"
               >
                 {row.label}
               </th>
@@ -49,7 +49,7 @@ function PricingTableImpl({ columns, rows, stickyHeader = true, className }: Pri
                     col.highlight && ri === rows.length - 1 && "border-b-primary",
                   )}
                 >
-                  {row.values[col.key] ?? <span className="text-muted">—</span>}
+                  {row.values[col.key] ?? <span className="text-muted-foreground">—</span>}
                 </td>
               ))}
             </tr>

@@ -38,7 +38,7 @@ export function AlertDialogContent({ title, description, children, className }: 
       >
         <BaseAlertDialog.Title className="text-lg font-semibold">{title}</BaseAlertDialog.Title>
         {description && (
-          <BaseAlertDialog.Description className="mt-1 text-sm text-muted">
+          <BaseAlertDialog.Description className="mt-1 text-sm text-muted-foreground">
             {description}
           </BaseAlertDialog.Description>
         )}

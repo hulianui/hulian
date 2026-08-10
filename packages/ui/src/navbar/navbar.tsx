@@ -80,7 +80,7 @@ export function NavbarItem({ isActive, className, children, ...props }: NavbarIt
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "cursor-pointer rounded-[min(var(--radius),0.375rem)] px-2 py-1 text-sm transition-colors",
-        isActive ? "font-medium text-primary" : "text-muted hover:text-foreground",
+        isActive ? "font-medium text-primary" : "text-muted-foreground hover:text-foreground",
         className,
       )}
       {...props}

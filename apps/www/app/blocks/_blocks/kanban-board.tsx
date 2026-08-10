@@ -46,7 +46,7 @@ const COLUMN_ACCENT: Record<Column, string> = {
   待处理: "bg-neutral/30",
   进行中: "bg-brand/20",
   已完成: "bg-success/20",
-  已归档: "bg-muted/20",
+  已归档: "bg-muted-foreground/20",
 };
 
 const SEED_TASKS: Task[] = [

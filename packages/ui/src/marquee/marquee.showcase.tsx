@@ -16,7 +16,7 @@ function Chip({ children }: { children: ReactNode }) {
 // logo 墙圆形图标位：中性容器 + 语义色图标，配合 fade 渐隐成「图标墙」观感。
 function LogoTile({ children }: { children: ReactNode }) {
   return (
-    <span className="flex size-12 items-center justify-center rounded-2xl border border-border bg-surface text-muted shadow-sm">
+    <span className="flex size-12 items-center justify-center rounded-2xl border border-border bg-surface text-muted-foreground shadow-sm">
       {children}
     </span>
   );

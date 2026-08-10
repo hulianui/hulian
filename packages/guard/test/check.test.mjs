@@ -88,9 +88,9 @@ test("校验 SVG 与颜色 style 的 CSS 变量前缀", () => {
   assert.deepEqual(good.diagnostics, []);
 });
 
-test("bg-muted 与 text-muted 同处一个 className 判 error（前景背景同色）", () => {
+test("bg-muted-foreground 与 text-muted-foreground 同处一个 className 判 error（前景背景同色）", () => {
   const bad = checkSource(
-    'export const X = () => <span className="rounded-full bg-muted px-1.5 text-muted">3</span>;',
+    'export const X = () => <span className="rounded-full bg-muted-foreground px-1.5 text-muted-foreground">3</span>;',
   );
   assert.deepEqual(ruleIds(bad).filter((id) => id.startsWith("muted-as")), [
     "muted-as-background-with-muted-text",
@@ -99,26 +99,41 @@ test("bg-muted 与 text-muted 同处一个 className 判 error（前景背景同
 
 test("className 拆在 cn() 多个实参里也能命中（按属性整体取静态文本）", () => {
   const bad = checkSource(
-    'export const X = () => <div className={cn("flex", ok && "bg-muted/60", "text-muted")} />;',
+    'export const X = () => <div className={cn("flex", ok && "bg-muted-foreground/60", "text-muted-foreground")} />;',
   );
   assert.ok(ruleIds(bad).includes("muted-as-background-with-muted-text"));
 });
 
-test("带变体前缀的 bg-muted 不判 error（另一个状态 / 另一个伪元素，不同盒子）", () => {
-  // Chart 图例的真实写法：文字是 text-muted，滚动条拇指才是 bg-muted/50 —— 这是对的。
+test("带变体前缀的 bg-muted-foreground 不判 error（另一个状态 / 另一个伪元素，不同盒子）", () => {
+  // Chart 图例的真实写法：文字是 text-muted-foreground，滚动条拇指才是 bg-muted-foreground/50 —— 这是对的。
   const ok = checkSource(
-    'export const X = () => <div className="text-xs text-muted [&::-webkit-scrollbar-thumb]:bg-muted/50 hover:[&::-webkit-scrollbar-thumb]:bg-muted/80" />;',
+    'export const X = () => <div className="text-xs text-muted-foreground [&::-webkit-scrollbar-thumb]:bg-muted-foreground/50 hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/80" />;',
   );
-  assert.deepEqual(
-    ruleIds(ok).filter((id) => id === "muted-as-background-with-muted-text"),
-    [],
-  );
-  // 但仍然给一条 warning 提醒 muted 是文字色
-  assert.ok(ruleIds(ok).includes("muted-is-a-text-color"));
+  assert.deepEqual(ruleIds(ok), []);
 });
 
 test("bg-subtle 是正解，不触发任何 muted 规则", () => {
-  const good = checkSource('export const X = () => <div className="bg-subtle p-4 text-muted" />;');
+  const good = checkSource('export const X = () => <div className="bg-subtle p-4 text-muted-foreground" />;');
+  assert.deepEqual(good.diagnostics, []);
+});
+
+// 0.28.0 语义反转（#142）：次要文字色改名 --color-muted-foreground，--color-muted 变成弱背景。
+// `text-muted` 不再对应任何 token，而 Tailwind 对未定义颜色既不报错也不生成规则 ——
+// 写了会静默回退成继承色，只有这条门禁看得见。
+test("text-muted 判 error：0.28.0 已改名，留着会静默回退成继承色", () => {
+  const bad = checkSource('export const X = () => <span className="text-sm text-muted">说明</span>;');
+  assert.deepEqual(ruleIds(bad), ["muted-renamed-to-muted-foreground"]);
+});
+
+test("其余前缀同样命中，且带变体前缀也算（改名是无条件的，与所处状态无关）", () => {
+  for (const cls of ["fill-muted", "stroke-muted", "border-muted", "dark:text-muted", "text-muted/60"]) {
+    const bad = checkSource(`export const X = () => <div className="${cls}" />;`);
+    assert.deepEqual(ruleIds(bad), ["muted-renamed-to-muted-foreground"], cls);
+  }
+});
+
+test("bg-muted 不再报：反转后它就是弱背景，等价 bg-subtle", () => {
+  const good = checkSource('export const X = () => <div className="bg-muted p-4" />;');
   assert.deepEqual(good.diagnostics, []);
 });
 

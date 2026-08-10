@@ -70,7 +70,7 @@ const HISTORY: TimelineItemProps[] = [
     children: (
       <div className="text-sm">
         <span className="font-medium text-foreground">陈晓雨</span>
-        <span className="text-muted"> 创建工单并标记优先级「高」</span>
+        <span className="text-muted-foreground"> 创建工单并标记优先级「高」</span>
       </div>
     ),
   },
@@ -80,7 +80,7 @@ const HISTORY: TimelineItemProps[] = [
     children: (
       <div className="text-sm">
         <span className="font-medium text-foreground">系统</span>
-        <span className="text-muted"> 自动分配给 </span>
+        <span className="text-muted-foreground"> 自动分配给 </span>
         <span className="font-medium text-foreground">王磊</span>
       </div>
     ),
@@ -91,7 +91,7 @@ const HISTORY: TimelineItemProps[] = [
     children: (
       <div className="text-sm">
         <span className="font-medium text-foreground">王磊</span>
-        <span className="text-muted"> 开始处理，状态变更为「处理中」</span>
+        <span className="text-muted-foreground"> 开始处理，状态变更为「处理中」</span>
       </div>
     ),
   },
@@ -101,7 +101,7 @@ const HISTORY: TimelineItemProps[] = [
     children: (
       <div className="text-sm">
         <span className="font-medium text-foreground">王磊</span>
-        <span className="text-muted"> 追加备注：连接池最大值从 200 调至 800，观察中</span>
+        <span className="text-muted-foreground"> 追加备注：连接池最大值从 200 调至 800，观察中</span>
       </div>
     ),
   },
@@ -111,7 +111,7 @@ const HISTORY: TimelineItemProps[] = [
     children: (
       <div className="text-sm">
         <span className="font-medium text-foreground">王磊</span>
-        <span className="text-muted"> 等待压测验证，预计 16:00 前给出结论</span>
+        <span className="text-muted-foreground"> 等待压测验证，预计 16:00 前给出结论</span>
       </div>
     ),
   },
@@ -128,10 +128,10 @@ export function DetailDrawerBlock() {
       {/* 触发区 —— 模拟列表行的操作入口 */}
       <div className="flex items-center justify-between rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
         <div className="flex items-center gap-3">
-          <FileText className="size-4 text-muted" />
+          <FileText className="size-4 text-muted-foreground" />
           <div>
             <div className="text-sm font-medium text-foreground">{ticket.id}</div>
-            <div className="text-xs text-muted">{ticket.title}</div>
+            <div className="text-xs text-muted-foreground">{ticket.title}</div>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -174,7 +174,7 @@ export function DetailDrawerBlock() {
               <DescriptionsItem label="创建时间">{ticket.createdAt}</DescriptionsItem>
               <DescriptionsItem label="最近更新">{ticket.updatedAt}</DescriptionsItem>
               <DescriptionsItem label="问题描述" span={2}>
-                <span className="text-sm text-muted">{ticket.desc}</span>
+                <span className="text-sm text-muted-foreground">{ticket.desc}</span>
               </DescriptionsItem>
             </Descriptions>
 

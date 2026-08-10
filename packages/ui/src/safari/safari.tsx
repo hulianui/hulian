@@ -17,7 +17,7 @@ export function Safari({ url = "hulian.design", imageSrc, children, className, .
           <span className="size-3 rounded-full bg-[#febc2e]" />
           <span className="size-3 rounded-full bg-[#28c840]" />
         </div>
-        <div className="mx-auto flex max-w-[60%] flex-1 items-center justify-center truncate rounded-md bg-surface px-3 py-1 text-xs text-muted">
+        <div className="mx-auto flex max-w-[60%] flex-1 items-center justify-center truncate rounded-md bg-surface px-3 py-1 text-xs text-muted-foreground">
           {url}
         </div>
         <div className="w-12 shrink-0" />

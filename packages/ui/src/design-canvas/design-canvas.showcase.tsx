@@ -101,7 +101,7 @@ function ViewportDemo() {
   const [items, setItems] = useState(initial);
   return (
     <div className="w-full space-y-2">
-      <div className="flex items-center gap-3 text-xs text-muted">
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
         <span>缩放 {Math.round(zoom * 100)}%</span>
         <span>
           平移 {Math.round(pan.x)} / {Math.round(pan.y)}
@@ -124,7 +124,7 @@ function ViewportDemo() {
           )}
         >
           {/* children：自绘图层，跟随平移缩放但几何自持 */}
-          <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted">
+          <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted-foreground">
             画板 A · 320×280
           </div>
         </DesignCanvas>
@@ -184,7 +184,7 @@ const [pan, setPan] = useState({ x: 0, y: 0 });
   pan={pan}
   onPanChange={setPan}
 >
-  <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted">
+  <div className="pointer-events-none absolute left-[40px] top-[8px] text-[10px] text-muted-foreground">
     画板 A · 320×280
   </div>
 </DesignCanvas>`,

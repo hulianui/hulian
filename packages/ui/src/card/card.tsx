@@ -29,5 +29,5 @@ export function CardBody({ className, ...props }: HTMLAttributes<HTMLDivElement>
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("border-t border-border px-5 py-3 text-sm text-muted", className)} {...props} />;
+  return <div className={cn("border-t border-border px-5 py-3 text-sm text-muted-foreground", className)} {...props} />;
 }

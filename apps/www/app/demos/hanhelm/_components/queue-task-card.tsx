@@ -24,7 +24,7 @@ export function QueueTaskCard({ task, index }: { task: Task; index: number }) {
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-[13px] font-medium text-foreground">{task.title}</div>
-          <div className="mt-0.5 text-[11px] text-muted">{task.type}</div>
+          <div className="mt-0.5 text-[11px] text-muted-foreground">{task.type}</div>
         </div>
         {/* 队列位次（0 = 队首 FIFO） */}
         <Tag tone="neutral" variant="soft" size="sm" className="shrink-0 tabular-nums">
@@ -45,11 +45,11 @@ export function QueueTaskCard({ task, index }: { task: Task; index: number }) {
         </Tag>
       </div>
 
-      <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-muted">
+      <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
         <span className="truncate">{executorName(task.assignedExecutorId)}</span>
         <span className="shrink-0 tabular-nums">{fmtSlaMargin(sla.marginMs)}</span>
       </div>
-      <div className="mt-0.5 text-[11px] tabular-nums text-muted">{copy("waited")}{fmtDuration(task.waitedMs)}
+      <div className="mt-0.5 text-[11px] tabular-nums text-muted-foreground">{copy("waited")}{fmtDuration(task.waitedMs)}
       </div>
     </div>
   );

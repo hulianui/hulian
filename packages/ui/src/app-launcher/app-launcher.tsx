@@ -162,7 +162,7 @@ export function AppLauncher({
           {logo}
           {searchable ? (
             <span className="flex min-w-0 flex-1 items-center gap-2">
-              <Search className="size-4 shrink-0 text-muted" aria-hidden />
+              <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
               <input
                 type="search"
                 value={query}
@@ -202,7 +202,7 @@ export function AppLauncher({
                   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
                   selected
                     ? "bg-foreground/10 text-foreground"
-                    : "bg-surface-hover/60 text-muted hover:text-foreground",
+                    : "bg-surface-hover/60 text-muted-foreground hover:text-foreground",
                   pressableClass,
                 )}
               >
@@ -215,7 +215,7 @@ export function AppLauncher({
 
       <div ref={gridRef} onKeyDown={onGridKeyDown} className="min-h-0 flex-1 overflow-y-auto">
         {total === 0 ? (
-          <p className="py-10 text-center text-sm text-muted">{resolvedEmptyText}</p>
+          <p className="py-10 text-center text-sm text-muted-foreground">{resolvedEmptyText}</p>
         ) : (
           sections.map((section, si) => (
             <div

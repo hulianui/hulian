@@ -133,7 +133,7 @@ export default function DeploymentsPage() {
             href={`https://${row.original.url}`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex max-w-[220px] items-center gap-1 truncate font-mono text-xs text-muted transition-colors hover:text-primary"
+            className="inline-flex max-w-[220px] items-center gap-1 truncate font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
           >
             <span className="truncate">{row.original.url}</span>
             <ExternalLink className="size-3 shrink-0 opacity-60" />
@@ -149,7 +149,7 @@ export default function DeploymentsPage() {
         id: "created",
         header: copy("create"),
         cell: ({ row }) => (
-          <RelativeTime value={agoDate(row.original.agoMin)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted" />
+          <RelativeTime value={agoDate(row.original.agoMin)} locale={DEMO_RELATIVE_TIME_LOCALE} className="text-xs text-muted-foreground" />
         ),
       },
       {
@@ -200,7 +200,7 @@ export default function DeploymentsPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-xl font-semibold text-foreground">{copy("deploymentHistory")}</h1>
-        <p className="text-sm text-muted">{copy("deploymentRecordsAcrossAllProjectsClickOn")}</p>
+        <p className="text-sm text-muted-foreground">{copy("deploymentRecordsAcrossAllProjectsClickOn")}</p>
       </div>
 
       {error ? (

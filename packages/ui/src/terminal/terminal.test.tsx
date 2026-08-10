@@ -26,7 +26,7 @@ describe("Terminal", () => {
 
   it("tone 决定文字色类", () => {
     const { getByText } = render(<Terminal lines={lines} />);
-    expect(getByText("ready").closest("div")!.className).toContain("text-muted");
+    expect(getByText("ready").closest("div")!.className).toContain("text-muted-foreground");
     expect(getByText("完成").closest("div")!.className).toContain("text-primary");
   });
 

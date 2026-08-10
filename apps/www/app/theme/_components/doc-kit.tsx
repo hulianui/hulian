@@ -7,9 +7,9 @@ export { Code } from "@hulianui/ui";
 export function DocHeader({ title, en, lede }: { title: string; en: string; lede: ReactNode }) {
   return (
     <header className="mb-10 max-w-2xl">
-      <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">{en}</p>
+      <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">{en}</p>
       <h1 className="mt-2 text-3xl font-semibold tracking-tight">{title}</h1>
-      <p className="mt-3 text-sm leading-relaxed text-muted">{lede}</p>
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{lede}</p>
     </header>
   );
 }
@@ -18,7 +18,7 @@ export function Section({ title, desc, children }: { title: string; desc?: React
   return (
     <section className="mb-12 max-w-3xl">
       <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-      {desc ? <p className="mt-1.5 text-sm leading-relaxed text-muted">{desc}</p> : null}
+      {desc ? <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{desc}</p> : null}
       <div className="mt-5">{children}</div>
     </section>
   );
@@ -26,7 +26,7 @@ export function Section({ title, desc, children }: { title: string; desc?: React
 
 export function Note({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-[var(--radius)] border border-border bg-surface px-4 py-3 text-sm leading-relaxed text-muted">
+    <div className="rounded-[var(--radius)] border border-border bg-surface px-4 py-3 text-sm leading-relaxed text-muted-foreground">
       {children}
     </div>
   );

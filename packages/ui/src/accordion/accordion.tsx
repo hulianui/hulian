@@ -50,7 +50,7 @@ export function AccordionTrigger({ className, children, ...props }: AccordionTri
           strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="size-4 shrink-0 text-muted transition-transform duration-200 group-data-[panel-open]:rotate-180"
+          className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[panel-open]:rotate-180"
         >
           <path d="m6 9 6 6 6-6" />
         </svg>
@@ -76,7 +76,7 @@ export function AccordionPanel({ className, children, ...props }: AccordionPanel
         className,
       )}
     >
-      <div className="px-4 pb-4 pt-1 text-sm text-muted">{children}</div>
+      <div className="px-4 pb-4 pt-1 text-sm text-muted-foreground">{children}</div>
     </BaseAccordion.Panel>
   );
 }

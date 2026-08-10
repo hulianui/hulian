@@ -29,9 +29,9 @@ describe("StripedPattern", () => {
     expect(root.getAttribute("aria-hidden")).toBe("true");
   });
   it("className 与 props 透传", () => {
-    const { container } = render(<StripedPattern className="text-muted" data-testid="sp" />);
+    const { container } = render(<StripedPattern className="text-muted-foreground" data-testid="sp" />);
     const root = container.firstElementChild!;
-    expect(root.getAttribute("class")).toContain("text-muted");
+    expect(root.getAttribute("class")).toContain("text-muted-foreground");
     expect(root.getAttribute("data-testid")).toBe("sp");
   });
 });

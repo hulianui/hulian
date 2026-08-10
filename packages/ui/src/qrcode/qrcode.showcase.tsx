@@ -22,7 +22,7 @@ function ExportDemo() {
         >
           转成 PNG
         </button>
-        <p className="max-w-xs break-all font-mono text-[10px] text-muted">
+        <p className="max-w-xs break-all font-mono text-[10px] text-muted-foreground">
           {png ? `${png.slice(0, 48)}…（${Math.round(png.length / 1024)} KB）` : `SVG 串 ${svg.length} 字符`}
         </p>
         {png && <img src={png} alt="导出的 PNG" className="size-24 rounded-[var(--radius)] border border-border" />}

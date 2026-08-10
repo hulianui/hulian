@@ -133,7 +133,7 @@ function SortableRow<T>({
           // 手柄自身是 <button>，会被交互元素守卫误伤；打标记让守卫无条件放行
           data-sortable-handle=""
           aria-label={handleLabel(index + 1)}
-          className="-ml-1 shrink-0 cursor-grab touch-none rounded text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
+          className="-ml-1 shrink-0 cursor-grab touch-none rounded text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
         >
           <GripVertical className="size-4" aria-hidden />
         </button>

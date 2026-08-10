@@ -69,7 +69,7 @@ function QueueLaneColumn<T extends QueueItem>({
         ) : (
           <div className="flex items-center justify-between gap-2 pl-2">
             <span className="text-sm font-semibold text-foreground">{lane.label}</span>
-            <span className="flex items-center gap-2 text-xs text-muted">
+            <span className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="tabular-nums">{locale.count(total)}</span>
               {lane.meta != null && <span>{lane.meta}</span>}
             </span>
@@ -79,7 +79,7 @@ function QueueLaneColumn<T extends QueueItem>({
 
       <ol className="flex min-h-16 flex-1 flex-col gap-2.5 p-3">
         {total === 0 ? (
-          <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-6 text-xs text-muted">
+          <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-6 text-xs text-muted-foreground">
             {locale.empty}
           </li>
         ) : (
@@ -112,7 +112,7 @@ function QueueLaneColumn<T extends QueueItem>({
               );
             })}
             {hidden > 0 && (
-              <li className="pt-0.5 text-center text-xs text-muted">{locale.more(hidden)}</li>
+              <li className="pt-0.5 text-center text-xs text-muted-foreground">{locale.more(hidden)}</li>
             )}
           </>
         )}

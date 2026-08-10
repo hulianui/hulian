@@ -24,7 +24,7 @@ export function Playground({ spec }: { spec: ShowcaseSpec }) {
         <div className="grid gap-3 rounded-[var(--radius)] border border-border/70 bg-subtle/50 p-4 sm:grid-cols-2 lg:grid-cols-3">
           {spec.controls.map((c) => (
           <label key={c.prop} className="block text-sm">
-            <span className="mb-1 block text-muted">{c.label ?? c.prop}</span>
+            <span className="mb-1 block text-muted-foreground">{c.label ?? c.prop}</span>
             {c.type === "select" && (
               <Select
                 items={c.options!.map((o) => ({ value: o, label: o }))}

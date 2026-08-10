@@ -3,7 +3,7 @@ import type { AvatarProps } from "../avatar/avatar.types";
 
 /** 正文键值对字段（标签左·值右），如「取餐号 → 361」 */
 export interface ServiceMessageField {
-  /** 字段名（左列·text-muted），如「取餐号」 */
+  /** 字段名（左列·text-muted-foreground），如「取餐号」 */
   label: ReactNode;
   /** 字段值（右列·foreground·medium），如「361」 */
   value: ReactNode;

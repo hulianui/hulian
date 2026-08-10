@@ -57,7 +57,7 @@ export default function FavoritesPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">{copy("myFavorites")}</h1>
           {!loading && favoriteProducts.length > 0 && (
-            <p className="mt-0.5 text-sm text-muted">{copy("total")} {favoriteProducts.length}  {copy("savedItems")}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">{copy("total")} {favoriteProducts.length}  {copy("savedItems")}</p>
           )}
         </div>
         {!loading && favoriteProducts.length > 0 && (

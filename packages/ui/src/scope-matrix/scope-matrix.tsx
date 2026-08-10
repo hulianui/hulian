@@ -103,14 +103,14 @@ function Bucket({
         />
         <div className="flex items-center justify-between gap-2 pl-2">
           <span className="text-sm font-semibold text-foreground">{label}</span>
-          <span className="tabular-nums text-xs text-muted">{locale.count(values.length)}</span>
+          <span className="tabular-nums text-xs text-muted-foreground">{locale.count(values.length)}</span>
         </div>
-        <p className="mt-0.5 pl-2 text-xs leading-relaxed text-muted">{hint}</p>
+        <p className="mt-0.5 pl-2 text-xs leading-relaxed text-muted-foreground">{hint}</p>
       </header>
 
       <ul className="flex flex-1 flex-col gap-1.5 p-3">
         {values.length === 0 ? (
-          <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-5 text-xs text-muted">
+          <li className="grid flex-1 place-items-center rounded-[var(--radius)] border border-dashed border-border py-5 text-xs text-muted-foreground">
             {kind === "allow" ? locale.emptyAllow : locale.empty}
           </li>
         ) : (
@@ -127,7 +127,7 @@ function Bucket({
                   type="button"
                   aria-label={locale.remove(v)}
                   onClick={() => onRemove(v)}
-                  className="shrink-0 rounded-[var(--radius)] px-1 text-xs text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  className="shrink-0 rounded-[var(--radius)] px-1 text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   ✕
                 </button>
@@ -153,7 +153,7 @@ function Bucket({
                 }
               }}
               placeholder={placeholder}
-              className="min-w-0 flex-1 rounded-[var(--radius)] border border-border bg-bg px-2.5 py-1.5 font-mono text-xs text-foreground outline-none placeholder:font-sans placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-w-0 flex-1 rounded-[var(--radius)] border border-border bg-bg px-2.5 py-1.5 font-mono text-xs text-foreground outline-none placeholder:font-sans placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <button
               type="button"
@@ -176,7 +176,7 @@ function Bucket({
                     key={s}
                     type="button"
                     onClick={() => setDraft(s)}
-                    className="rounded-full border border-dashed border-border px-2 py-0.5 font-mono text-[11px] text-muted outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    className="rounded-full border border-dashed border-border px-2 py-0.5 font-mono text-[11px] text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {s}
                   </button>
@@ -263,7 +263,7 @@ function ScopeMatrixImpl({
       </div>
 
       {/* 有效范围小结：这类配置最容易想错的就是空白名单与优先级，直接写出来。 */}
-      <p className="rounded-[var(--radius)] bg-subtle px-3 py-2 text-xs leading-relaxed text-muted">
+      <p className="rounded-[var(--radius)] bg-subtle px-3 py-2 text-xs leading-relaxed text-muted-foreground">
         {allow.length === 0 && deny.length === 0
           ? locale.unrestricted
           : allow.length === 0

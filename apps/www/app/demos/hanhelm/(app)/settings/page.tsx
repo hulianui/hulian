@@ -87,7 +87,7 @@ function Section({
           </span>
           <div className="min-w-0">
             <div className="text-[15px] font-semibold text-foreground">{title}</div>
-            {description && <div className="mt-0.5 text-xs text-muted">{description}</div>}
+            {description && <div className="mt-0.5 text-xs text-muted-foreground">{description}</div>}
           </div>
         </div>
       </CardHeader>
@@ -136,7 +136,7 @@ export default function SettingsPage() {
           <Field
             label={
               <span className="inline-flex items-center gap-1.5">
-                <KeyRound className="size-3.5 text-muted" />{copy("accessKeyToken")}</span>
+                <KeyRound className="size-3.5 text-muted-foreground" />{copy("accessKeyToken")}</span>
             }
             description={copy("carryThisKeyWhenExternalSystemsCall")}
           >
@@ -170,7 +170,7 @@ export default function SettingsPage() {
                 >
                   <ListItemMeta
                     title={<span className="text-[13px] font-medium">{s.name}</span>}
-                    description={<span className="text-[11px] text-muted">{s.desc}</span>}
+                    description={<span className="text-[11px] text-muted-foreground">{s.desc}</span>}
                   />
                 </ListItem>
               )}
@@ -207,7 +207,7 @@ export default function SettingsPage() {
                 <ListItemMeta
                   avatar={<Avatar fallback={m.avatar} />}
                   title={<span className="text-sm font-medium">{m.name}</span>}
-                  description={<span className="text-xs text-muted">{copy("memberId")}{m.id}</span>}
+                  description={<span className="text-xs text-muted-foreground">{copy("memberId")}{m.id}</span>}
                 />
               </ListItem>
             )}
@@ -305,19 +305,19 @@ export default function SettingsPage() {
                 <ListItem actions={[<Switch key="t" checked={notifyFiring} onCheckedChange={setNotifyFiring} aria-label={copy("notificationIsSentImmediatelyWhenAnAlarm")} />]}>
                   <ListItemMeta
                     title={<span className="text-[13px] font-medium">{copy("notificationIsSentImmediatelyWhenAnAlarm2")}</span>}
-                    description={<span className="text-[11px] text-muted">{copy("realTimePushNotificationsAtTheInstant")}</span>}
+                    description={<span className="text-[11px] text-muted-foreground">{copy("realTimePushNotificationsAtTheInstant")}</span>}
                   />
                 </ListItem>
                 <ListItem actions={[<Switch key="r" checked={notifyResolved} onCheckedChange={setNotifyResolved} aria-label={copy("alertAndRestorationNotification")} />]}>
                   <ListItemMeta
                     title={<span className="text-[13px] font-medium">{copy("alertAndRestorationNotification2")}</span>}
-                    description={<span className="text-[11px] text-muted">{copy("whenTheIndicatorFallsBackToThe")}</span>}
+                    description={<span className="text-[11px] text-muted-foreground">{copy("whenTheIndicatorFallsBackToThe")}</span>}
                   />
                 </ListItem>
                 <ListItem actions={[<Switch key="d" checked={notifyDigest} onCheckedChange={setNotifyDigest} aria-label={copy("dailySummarySummary")} />]}>
                   <ListItemMeta
                     title={<span className="text-[13px] font-medium">{copy("dailySummarySummary2")}</span>}
-                    description={<span className="text-[11px] text-muted">{copy("dailySummaryOfYesterdaySSlaCosts")}</span>}
+                    description={<span className="text-[11px] text-muted-foreground">{copy("dailySummaryOfYesterdaySSlaCosts")}</span>}
                   />
                 </ListItem>
               </List>

@@ -9,7 +9,7 @@ const miniProgram = <LayoutGrid className="size-3.5 text-primary" aria-hidden />
 
 // 微信服务通知消息流里卡片之间的时间分隔（居中灰字）
 function TimeDivider({ children }: { children: ReactNode }) {
-  return <div className="py-0.5 text-center text-xs text-muted">{children}</div>;
+  return <div className="py-0.5 text-center text-xs text-muted-foreground">{children}</div>;
 }
 
 export const serviceMessageShowcase: ShowcaseSpec = {
@@ -74,7 +74,7 @@ export const serviceMessageShowcase: ShowcaseSpec = {
           <p className="text-sm leading-relaxed text-foreground">
             您的快件已由 <span className="font-medium">本人</span> 签收，感谢使用顺丰速运。期待再次为您服务。
           </p>
-          <p className="mt-2 text-xs text-muted">运单号 SF1234567890123 · 今天 14:32</p>
+          <p className="mt-2 text-xs text-muted-foreground">运单号 SF1234567890123 · 今天 14:32</p>
         </ServiceMessage>
       ),
     },
@@ -185,7 +185,7 @@ export const serviceMessageShowcase: ShowcaseSpec = {
           <p className="text-sm leading-relaxed text-foreground">
             您的快件已由 <span className="font-medium">本人</span> 签收，感谢使用顺丰速运。期待再次为您服务。
           </p>
-          <p className="mt-2 text-xs text-muted">运单号 SF1234567890123 · 今天 14:32</p>
+          <p className="mt-2 text-xs text-muted-foreground">运单号 SF1234567890123 · 今天 14:32</p>
         </ServiceMessage>
       ),
     },

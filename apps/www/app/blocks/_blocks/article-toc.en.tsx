@@ -88,7 +88,7 @@ export function ArticleTocBlock() {
               </Text>
               <ul className="flex flex-col gap-2 border-l border-border">
                 {TOC.map((t) => (<li key={t.id}>
-                    <a href={`#${t.id}`} className="-ml-px block border-l-2 border-transparent pl-3 text-sm text-muted transition-colors hover:border-primary hover:text-foreground">
+                    <a href={`#${t.id}`} className="-ml-px block border-l-2 border-transparent pl-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-foreground">
                       {t.label}
                     </a>
                   </li>))}

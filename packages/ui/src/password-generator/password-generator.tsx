@@ -38,7 +38,7 @@ import type {
 //    也不让异常冒泡炸掉整棵树。
 
 const iconBtn =
-  "inline-flex size-8 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex size-8 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
 
 const rowCls = "flex items-center justify-between gap-3 text-sm";
 
@@ -254,7 +254,7 @@ export function PasswordGenerator({
             ))
           ) : (
             // 首帧占位：撑住高度，避免生成后整个面板向下跳
-            <span className="text-muted">{"•".repeat(14)}</span>
+            <span className="text-muted-foreground">{"•".repeat(14)}</span>
           )}
         </output>
         <div className="flex shrink-0 items-center gap-0.5">
@@ -277,7 +277,7 @@ export function PasswordGenerator({
 
       {showStrength && (
         <div className="flex items-center gap-2 text-xs">
-          <span className="text-muted">{t.strength}</span>
+          <span className="text-muted-foreground">{t.strength}</span>
           <div
             role="meter"
             aria-label={t.strength}
@@ -297,10 +297,10 @@ export function PasswordGenerator({
               />
             ))}
           </div>
-          <span className="tabular-nums text-muted">
+          <span className="tabular-nums text-muted-foreground">
             {secret ? Math.round(secret.entropy) : 0} {t.entropyUnit}
           </span>
-          <span className={cn("font-medium", secret ? view.text : "text-muted")}>{levelLabel}</span>
+          <span className={cn("font-medium", secret ? view.text : "text-muted-foreground")}>{levelLabel}</span>
         </div>
       )}
 
@@ -308,7 +308,7 @@ export function PasswordGenerator({
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <div className={rowCls}>
-              <label htmlFor={`${uid}-length`} className="text-muted">
+              <label htmlFor={`${uid}-length`} className="text-muted-foreground">
                 {t.length}
               </label>
               <span className="tabular-nums text-foreground">{pwOptions.length}</span>
@@ -350,7 +350,7 @@ export function PasswordGenerator({
             <div className="grid grid-cols-2 gap-3">
               {pwOptions.digits && (
                 <div className={rowCls}>
-                  <span className="text-muted">{t.minDigits}</span>
+                  <span className="text-muted-foreground">{t.minDigits}</span>
                   <NumberField
                     aria-label={t.minDigits}
                     className="w-24"
@@ -363,7 +363,7 @@ export function PasswordGenerator({
               )}
               {pwOptions.special && (
                 <div className={rowCls}>
-                  <span className="text-muted">{t.minSpecial}</span>
+                  <span className="text-muted-foreground">{t.minSpecial}</span>
                   <NumberField
                     aria-label={t.minSpecial}
                     className="w-24"
@@ -378,7 +378,7 @@ export function PasswordGenerator({
           )}
 
           <div className={rowCls}>
-            <label htmlFor={`${uid}-ambiguous`} className="text-muted">
+            <label htmlFor={`${uid}-ambiguous`} className="text-muted-foreground">
               {t.avoidAmbiguous}
             </label>
             <Switch
@@ -395,7 +395,7 @@ export function PasswordGenerator({
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <div className={rowCls}>
-              <label htmlFor={`${uid}-words`} className="text-muted">
+              <label htmlFor={`${uid}-words`} className="text-muted-foreground">
                 {t.words}
               </label>
               <span className="tabular-nums text-foreground">{ppOptions.words}</span>
@@ -411,7 +411,7 @@ export function PasswordGenerator({
           </div>
 
           <div className={rowCls}>
-            <label htmlFor={`${uid}-separator`} className="text-muted">
+            <label htmlFor={`${uid}-separator`} className="text-muted-foreground">
               {t.separator}
             </label>
             <Input
@@ -424,7 +424,7 @@ export function PasswordGenerator({
           </div>
 
           <div className={rowCls}>
-            <label htmlFor={`${uid}-capitalize`} className="text-muted">
+            <label htmlFor={`${uid}-capitalize`} className="text-muted-foreground">
               {t.capitalize}
             </label>
             <Switch
@@ -436,7 +436,7 @@ export function PasswordGenerator({
           </div>
 
           <div className={rowCls}>
-            <label htmlFor={`${uid}-number`} className="text-muted">
+            <label htmlFor={`${uid}-number`} className="text-muted-foreground">
               {t.includeNumber}
             </label>
             <Switch

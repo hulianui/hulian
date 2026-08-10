@@ -31,7 +31,7 @@ function DimBar({ value, tone }: { value: number; tone: string }) {
         width={36}
         height={16}
       />
-      <span className="w-7 text-right text-xs tabular-nums text-muted">
+      <span className="w-7 text-right text-xs tabular-nums text-muted-foreground">
         {value.toFixed(2)}
       </span>
     </div>
@@ -59,7 +59,7 @@ export function RoutingDecisionTable({ decision }: { decision: RoutingDecision }
       header: d.label,
       cell: ({ row }) => {
         const c = row.original.candidate;
-        if (c.eliminated) return <span className="text-xs text-muted">—</span>;
+        if (c.eliminated) return <span className="text-xs text-muted-foreground">—</span>;
         return <DimBar value={c.scores[d.key]} tone={d.tone} />;
       },
     }));
@@ -84,7 +84,7 @@ export function RoutingDecisionTable({ decision }: { decision: RoutingDecision }
               <span
                 className={
                   candidate.eliminated
-                    ? "text-sm text-muted"
+                    ? "text-sm text-muted-foreground"
                     : "text-sm font-medium text-foreground"
                 }
               >

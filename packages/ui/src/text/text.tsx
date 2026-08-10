@@ -16,7 +16,7 @@ const SIZE: Record<TextSize, string> = {
 
 const TONE: Record<TextTone, string> = {
   default: "text-foreground",
-  muted: "text-muted",
+  muted: "text-muted-foreground",
   primary: "text-primary",
   success: "text-success",
   warning: "text-warning",

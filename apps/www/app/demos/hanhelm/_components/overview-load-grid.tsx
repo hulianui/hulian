@@ -62,7 +62,7 @@ export function OverviewLoadGrid({ executors }: { executors: Executor[] }) {
               />
               <div className="min-w-0 w-full">
                 <div className="truncate text-sm font-medium text-foreground">{e.name}</div>
-                <div className="truncate text-xs text-muted">{copy("andIssuedThemSimultaneously")}{Math.round(e.load * e.maxConcurrency)}/{e.maxConcurrency}
+                <div className="truncate text-xs text-muted-foreground">{copy("andIssuedThemSimultaneously")}{Math.round(e.load * e.maxConcurrency)}/{e.maxConcurrency}
                 </div>
               </div>
               <Sparkline

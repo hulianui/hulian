@@ -156,7 +156,7 @@ export function List<T>({
           {footer != null && (
             <div
               className={cn(
-                "text-sm text-muted",
+                "text-sm text-muted-foreground",
                 slotPadX,
                 PAD_Y[size],
                 framed && "border-t border-border",
@@ -192,7 +192,7 @@ function ListItemBase({ actions, children, className, ...props }: ListItemProps)
       <div className="min-w-0 flex-1">{children}</div>
       {actions && actions.length > 0 && (
         <div
-          className={cn("flex items-center gap-3 text-sm text-muted", grid ? "mt-3" : "shrink-0")}
+          className={cn("flex items-center gap-3 text-sm text-muted-foreground", grid ? "mt-3" : "shrink-0")}
         >
           {actions.map((a, i) => (
             <Fragment key={i}>
@@ -220,7 +220,7 @@ export function ListItemMeta({
       {(title != null || description != null) && (
         <div className="flex min-w-0 flex-col leading-tight">
           {title != null && <div className="truncate font-medium text-foreground">{title}</div>}
-          {description != null && <div className="text-sm text-muted">{description}</div>}
+          {description != null && <div className="text-sm text-muted-foreground">{description}</div>}
         </div>
       )}
     </div>

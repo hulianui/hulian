@@ -68,7 +68,7 @@ function FillerContent() {
     <div className="space-y-3">
       <h2 className="text-lg font-semibold text-foreground">页面内容</h2>
       {Array.from({ length: 8 }, (_, i) => (
-        <p key={i} className="text-sm text-muted">
+        <p key={i} className="text-sm text-muted-foreground">
           第 {i + 1} 段占位内容 —— Content 区 flex-auto 占满并独立滚动，Header 可吸顶、Footer 沉底。
         </p>
       ))}
@@ -110,7 +110,7 @@ function ClassicShell({
       <Layout>
         <Layout.Header sticky>
           <span className="font-medium text-foreground">中后台外壳</span>
-          <span className="ml-auto text-sm text-muted">user@hulian</span>
+          <span className="ml-auto text-sm text-muted-foreground">user@hulian</span>
         </Layout.Header>
         <Layout.Content>
           <FillerContent />
@@ -145,7 +145,7 @@ export const layoutShowcase: ShowcaseSpec = {
   <Layout>
     <Layout.Header sticky>
       <span className="font-medium">中后台外壳</span>
-      <span className="ml-auto text-sm text-muted">user@hulian</span>
+      <span className="ml-auto text-sm text-muted-foreground">user@hulian</span>
     </Layout.Header>
     <Layout.Content>{/* 页面内容 */}</Layout.Content>
     <Layout.Footer>瑚琏 Layout · © 2026</Layout.Footer>
@@ -158,7 +158,7 @@ export const layoutShowcase: ShowcaseSpec = {
             <Layout>
               <Layout.Header sticky>
                 <span className="font-medium text-foreground">中后台外壳</span>
-                <span className="ml-auto text-sm text-muted">user@hulian</span>
+                <span className="ml-auto text-sm text-muted-foreground">user@hulian</span>
               </Layout.Header>
               <Layout.Content>
                 <FillerContent />

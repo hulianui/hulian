@@ -29,7 +29,7 @@ export default function MotionPage() {
       >
         <div className="overflow-hidden rounded-[var(--radius)] border border-border">
           <table className="w-full text-sm">
-            <thead className="bg-surface-hover text-left text-xs text-muted">
+            <thead className="bg-surface-hover text-left text-xs text-muted-foreground">
               <tr>
                 <th className="px-4 py-2.5 font-medium">{content.frequency}</th>
                 <th className="px-4 py-2.5 font-medium">{content.scenario}</th>
@@ -39,8 +39,8 @@ export default function MotionPage() {
             <tbody className="bg-surface">
               {MOTION_FREQUENCY.map((r) => (
                 <tr key={r.freq} className="border-t border-border">
-                  <td className="px-4 py-3 whitespace-nowrap text-muted">{r.freq}</td>
-                  <td className="px-4 py-3 text-muted">{r.example}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">{r.freq}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{r.example}</td>
                   <td className={`px-4 py-3 font-medium whitespace-nowrap ${TONE_CLASS[r.tone]}`}>
                     {r.verdict}
                   </td>
@@ -66,7 +66,7 @@ export default function MotionPage() {
               <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                 <h3 className="text-sm font-medium">{e.label}</h3>
                 <Code>{e.utility === "—" ? e.cssVar : e.utility}</Code>
-                <span className="font-mono text-[0.7rem] text-muted">{e.curve}</span>
+                <span className="font-mono text-[0.7rem] text-muted-foreground">{e.curve}</span>
               </div>
 
               {/* 手感演示：悬停轨道 → 填充条以该曲线本身铺满。
@@ -79,7 +79,7 @@ export default function MotionPage() {
                 />
               </div>
 
-              <p className="mt-2.5 text-sm leading-relaxed text-muted">{e.use}</p>
+              <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{e.use}</p>
             </Panel>
           ))}
         </div>
@@ -93,7 +93,7 @@ export default function MotionPage() {
       <Section title={content.durationTitle} desc={content.durationDescription}>
         <div className="overflow-hidden rounded-[var(--radius)] border border-border">
           <table className="w-full text-sm">
-            <thead className="bg-surface-hover text-left text-xs text-muted">
+            <thead className="bg-surface-hover text-left text-xs text-muted-foreground">
               <tr>
                 <th className="px-4 py-2.5 font-medium">Token</th>
                 <th className="px-4 py-2.5 font-medium">{content.duration}</th>
@@ -105,11 +105,11 @@ export default function MotionPage() {
               {DURATIONS.map((d) => (
                 <tr key={d.name} className="border-t border-border">
                   <td className="px-4 py-3 font-mono text-xs whitespace-nowrap">{d.name}</td>
-                  <td className="px-4 py-3 tabular-nums whitespace-nowrap text-muted">{d.ms}ms</td>
-                  <td className="px-4 py-3 font-mono text-xs whitespace-nowrap text-muted">
+                  <td className="px-4 py-3 tabular-nums whitespace-nowrap text-muted-foreground">{d.ms}ms</td>
+                  <td className="px-4 py-3 font-mono text-xs whitespace-nowrap text-muted-foreground">
                     {d.utility}
                   </td>
-                  <td className="px-4 py-3 text-muted">{d.use}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{d.use}</td>
                 </tr>
               ))}
             </tbody>
@@ -119,17 +119,17 @@ export default function MotionPage() {
 
       <Section title={content.pressTitle} desc={content.pressDescription}>
         <Panel>
-          <p className="text-sm leading-relaxed text-muted">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             {content.pressBody}
           </p>
           <pre className="mt-4 overflow-x-auto rounded-[var(--radius)] border border-border bg-bg p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-            <span className="text-muted">{`// ${content.motionComment}`}</span>
+            <span className="text-muted-foreground">{`// ${content.motionComment}`}</span>
             {"\n"}
             {"import { pressable } from \"@hulianui/ui\";"}
             {"\n"}
             {"<m.button whileTap={pressable.whileTap} transition={pressable.transition} />"}
             {"\n\n"}
-            <span className="text-muted">{`// ${content.cssComment}`}</span>
+            <span className="text-muted-foreground">{`// ${content.cssComment}`}</span>
             {"\n"}
             {"import { pressableClass } from \"@hulianui/ui\";"}
             {"\n"}
@@ -145,7 +145,7 @@ export default function MotionPage() {
 
       <Section title={content.originTitle} desc={content.originDescription}>
         <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          <span className="text-muted">{`/* ${content.originComment} */`}</span>
+          <span className="text-muted-foreground">{`/* ${content.originComment} */`}</span>
           {"\n"}
           {"<Popup className=\"origin-[var(--transform-origin)] data-[starting-style]:scale-95 …\" />"}
         </pre>

@@ -27,7 +27,7 @@ export default function TypographyPage() {
                 {content.sample}
               </span>
               <Code>{t.name}</Code>
-              <span className="hidden w-16 shrink-0 text-right font-mono text-xs text-muted sm:block">
+              <span className="hidden w-16 shrink-0 text-right font-mono text-xs text-muted-foreground sm:block">
                 {t.px}px
               </span>
             </div>
@@ -45,9 +45,9 @@ export default function TypographyPage() {
               >
                 {content.weightSample}
               </span>
-              <span className="text-sm text-muted">{w.label}</span>
+              <span className="text-sm text-muted-foreground">{w.label}</span>
               <Code>{w.name}</Code>
-              <span className="hidden w-10 shrink-0 text-right font-mono text-xs text-muted sm:block">
+              <span className="hidden w-10 shrink-0 text-right font-mono text-xs text-muted-foreground sm:block">
                 {w.value}
               </span>
             </div>

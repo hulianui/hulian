@@ -33,7 +33,7 @@ export function Spin({
   const indicator = (
     <div className="flex flex-col items-center justify-center gap-2">
       <Spinner size={size} />
-      {tip && <div className="text-sm text-muted">{tip}</div>}
+      {tip && <div className="text-sm text-muted-foreground">{tip}</div>}
     </div>
   );
 

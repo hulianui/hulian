@@ -41,7 +41,7 @@ Extends `HTMLAttributes<HTMLDivElement>`, forwarding `className`, `style`, `onCl
 <CardSpotlight color="var(--color-primary)" radius={350} className="w-64">
   <div className="mb-3 text-3xl">⚡</div>
   <h3 className="mb-1.5 text-base font-semibold">Theme-aware highlight</h3>
-  <p className="text-sm text-muted">The spotlight follows the active primary color.</p>
+  <p className="text-sm text-muted-foreground">The spotlight follows the active primary color.</p>
 </CardSpotlight>
 ```
 

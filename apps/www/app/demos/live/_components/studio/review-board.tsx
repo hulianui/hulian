@@ -95,11 +95,11 @@ export function ReviewBoard() {
           <CardBody>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <div className="mb-1 text-center text-xs text-muted">{copy("ageDistribution")}</div>
+                <div className="mb-1 text-center text-xs text-muted-foreground">{copy("ageDistribution")}</div>
                 <PieChart data={AGE} donut height={200} />
               </div>
               <div>
-                <div className="mb-1 text-center text-xs text-muted">{copy("regionDistribution")}</div>
+                <div className="mb-1 text-center text-xs text-muted-foreground">{copy("regionDistribution")}</div>
                 <PieChart data={REGION} donut height={200} />
               </div>
             </div>

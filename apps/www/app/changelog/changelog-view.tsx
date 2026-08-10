@@ -34,7 +34,7 @@ type Kind = "breaking" | "feature" | "fix";
 const KIND_STYLE = {
   breaking: { tone: "danger", dot: "danger", dotClass: "bg-danger" },
   feature: { tone: "brand", dot: "primary", dotClass: "bg-primary" },
-  fix: { tone: "neutral", dot: "default", dotClass: "bg-muted" },
+  fix: { tone: "neutral", dot: "default", dotClass: "bg-muted-foreground" },
 } as const;
 
 const RANK: Record<Kind, number> = { fix: 0, feature: 1, breaking: 2 };
@@ -111,7 +111,7 @@ export function ChangelogView({
               <span className="shrink-0 text-[0.65rem] text-primary">{content.current}</span>
             ) : (
               // 条目数给个预期：一眼知道点进去是一行还是十行，省得跳过去才发现要滚很久
-              <span className="shrink-0 text-[0.65rem] text-muted/70">{r.entries.length}</span>
+              <span className="shrink-0 text-[0.65rem] text-muted-foreground/70">{r.entries.length}</span>
             )}
           </span>
         ),
@@ -184,7 +184,7 @@ export function ChangelogView({
                         </Tag>
                       ))}
                       {r.date ? (
-                        <time className="ml-auto font-mono text-xs text-muted" dateTime={r.date}>
+                        <time className="ml-auto font-mono text-xs text-muted-foreground" dateTime={r.date}>
                           {r.date}
                         </time>
                       ) : null}
@@ -196,7 +196,7 @@ export function ChangelogView({
                           <Markdown size="sm">{linkifyIssues(e.body)}</Markdown>
                           {e.sha ? (
                             <a
-                              className="mt-2 inline-block font-mono text-xs text-muted hover:text-primary hover:underline"
+                              className="mt-2 inline-block font-mono text-xs text-muted-foreground hover:text-primary hover:underline"
                               href={`${REPO}/commit/${e.sha}`}
                               target="_blank"
                               rel="noreferrer"
@@ -215,7 +215,7 @@ export function ChangelogView({
         )}
 
         {view === "recent" && releases.length > RECENT_COUNT ? (
-          <p className="mt-8 text-sm text-muted">
+          <p className="mt-8 text-sm text-muted-foreground">
             {content.older.replace("{count}", String(releases.length - RECENT_COUNT))}
           </p>
         ) : null}

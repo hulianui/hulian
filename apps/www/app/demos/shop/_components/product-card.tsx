@@ -65,7 +65,7 @@ export function ProductCard({ product }: { product: Product }) {
             type="button"
             onClick={onFav}
             aria-label={fav ? copy("removeFromFavorites") : copy("addToFavorites")}
-            className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-surface/90 text-muted shadow-sm backdrop-blur transition-colors hover:text-danger"
+            className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-surface/90 text-muted-foreground shadow-sm backdrop-blur transition-colors hover:text-danger"
           >
             <Heart className={`size-4 ${fav ? "fill-danger text-danger" : ""}`} aria-hidden />
           </button>
@@ -73,7 +73,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         <CardBody className="flex flex-col gap-2 p-3">
           <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-medium text-foreground">{product.name}</h3>
-          <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted">
+          <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
             <span className="shrink-0">
               <Rating value={product.rating} readOnly size="sm" />
             </span>
@@ -93,7 +93,7 @@ export function ProductCard({ product }: { product: Product }) {
               <span className="text-lg font-bold text-danger">{formatPrice(product.price)}</span>
               {pct != null && (
                 <>
-                  <span className="text-xs text-muted line-through">{formatPrice(product.originalPrice)}</span>
+                  <span className="text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
                   <span className="whitespace-nowrap text-[11px] font-medium text-danger">{pct}{copy("ofListPrice")}</span>
                 </>
               )}

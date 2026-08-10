@@ -112,7 +112,7 @@ export default function ReviewsPage() {
         return (
           <div className="min-w-0">
             <div className="font-medium">{REPO_NAME.get(r.repoId) ?? r.repoId}</div>
-            <div className="truncate text-xs text-muted">{r.branch}</div>
+            <div className="truncate text-xs text-muted-foreground">{r.branch}</div>
           </div>
         );
       },
@@ -183,7 +183,7 @@ export default function ReviewsPage() {
       cell: ({ row }) => {
         const counts = severityCounts(row.original);
         const active = SEVERITY_ORDER.filter((s) => counts[s] > 0);
-        if (active.length === 0) return <span className="text-xs text-muted">{copy("none")}</span>;
+        if (active.length === 0) return <span className="text-xs text-muted-foreground">{copy("none")}</span>;
         return (
           <div className="flex flex-wrap items-center gap-1">
             {active.map((s) => (
@@ -213,7 +213,7 @@ export default function ReviewsPage() {
         return (
           <div className="min-w-0">
             <div className="text-sm">{MODEL_NAME.get(r.modelId) ?? r.modelId}</div>
-            <div className="text-xs text-muted tabular-nums">¥{r.cost.toFixed(3)}</div>
+            <div className="text-xs text-muted-foreground tabular-nums">¥{r.cost.toFixed(3)}</div>
           </div>
         );
       },

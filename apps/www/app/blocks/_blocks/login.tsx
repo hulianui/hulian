@@ -44,7 +44,7 @@ export function LoginBlock() {
                 <UILink href="#">忘记密码？</UILink>
               </div>
 
-              <Divider plain className="my-6 text-muted">
+              <Divider plain className="my-6 text-muted-foreground">
                 或
               </Divider>
 
@@ -57,7 +57,7 @@ export function LoginBlock() {
                 </SocialButton>
               </div>
 
-              <p className="mt-6 text-center text-sm text-muted">
+              <p className="mt-6 text-center text-sm text-muted-foreground">
                 还没有账号？{" "}
                 <Link
                   href="#"

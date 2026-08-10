@@ -63,7 +63,7 @@ const [items, setItems] = useState(fields);
   renderItem={(f) => (
     <div className="flex items-center justify-between gap-3">
       <span className="font-medium text-foreground">{f.label}</span>
-      <span className="shrink-0 text-xs text-muted">{f.hint}</span>
+      <span className="shrink-0 text-xs text-muted-foreground">{f.hint}</span>
     </div>
   )}
 />

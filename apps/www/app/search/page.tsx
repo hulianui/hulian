@@ -18,7 +18,7 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-5xl px-6 py-16 text-sm text-muted">{content.loading}</div>
+        <div className="mx-auto max-w-5xl px-6 py-16 text-sm text-muted-foreground">{content.loading}</div>
       }
     >
       <SearchClient />

@@ -39,7 +39,7 @@ import { GridPattern } from "@hulianui/ui"
   <GridPattern />
 </div>
 
-<GridPattern width={24} height={24} strokeDasharray="3 2" className="text-muted" />
+<GridPattern width={24} height={24} strokeDasharray="3 2" className="text-muted-foreground" />
 ```
 
 ## Usage Guidelines

@@ -71,8 +71,8 @@ export function AsyncUsers() {
       <ul className="min-h-[14rem] space-y-1 text-sm">
         {data?.items.map((u) => (
           <li key={u.id} className="rounded bg-surface px-3 py-1.5">
-            {u.name} · <span className="text-muted">{roleLabel(u.role)}</span> ·{" "}
-            <span className="text-muted">{u.email}</span>
+            {u.name} · <span className="text-muted-foreground">{roleLabel(u.role)}</span> ·{" "}
+            <span className="text-muted-foreground">{u.email}</span>
           </li>
         ))}
       </ul>
@@ -85,7 +85,7 @@ export function AsyncUsers() {
         >
           {DOCS_LOCALE === "en" ? "Previous" : "上一页"}
         </Button>
-        <span className="text-sm text-muted">
+        <span className="text-sm text-muted-foreground">
           {DOCS_LOCALE === "en"
             ? `Page ${page} of ${totalPages || "…"}`
             : `第 ${page} 页 / 共 ${totalPages || "…"} 页`}

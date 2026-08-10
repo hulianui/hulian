@@ -32,7 +32,7 @@ export function NotesTab({ course, currentLesson }: { course: Course; currentLes
   return (
     <div className="space-y-6">
       <div>
-        <div className="mb-2 flex items-center gap-2 text-sm text-muted">
+        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
           <NotebookPen className="size-4" aria-hidden />
           {copy("recording")}{" "}
           <span className="font-medium text-foreground">{currentLesson.title}</span>
@@ -73,7 +73,7 @@ export function NotesTab({ course, currentLesson }: { course: Course; currentLes
                     {n.lessonTitle}
                   </Tag>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted">{n.createdAt}</span>
+                    <span className="text-xs text-muted-foreground">{n.createdAt}</span>
                     <Popconfirm
                       title={copy("deleteThisNote")}
                       description={copy("deletionCannotBeUndone")}

@@ -21,7 +21,7 @@ describe("Meteors", () => {
     expect(span.style.left).toMatch(/%$/);
     expect(span.style.animationDuration).toMatch(/s$/);
   });
-  it("currentColor 头(bg-current text-muted) + className 透传", () => {
+  it("currentColor 头(bg-current text-muted-foreground) + className 透传", () => {
     const { container } = render(<Meteors number={1} className="text-primary" />);
     const span = container.querySelector("span")!;
     expect(span.getAttribute("class")).toContain("bg-current");

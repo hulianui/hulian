@@ -42,7 +42,7 @@ function SchedulerPill() {
   return (
     <span className="hidden items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-sm sm:inline-flex">
       <Activity className="size-4 text-primary" />
-      <span className="text-muted">{copy("schedulingEngines")}</span>
+      <span className="text-muted-foreground">{copy("schedulingEngines")}</span>
       <StatusDot status="online" label={copy("running")} />
     </span>
   );
@@ -58,7 +58,7 @@ function UserMenu() {
       <MenuContent align="end" className="w-48">
         <div className="px-2 py-1.5">
           <div className="text-sm font-medium text-foreground">{copy("hanhelmOperationsTeam")}</div>
-          <div className="text-xs text-muted">ops@hanhelm.cn</div>
+          <div className="text-xs text-muted-foreground">ops@hanhelm.cn</div>
         </div>
         <MenuSeparator />
         <MenuItem onClick={() => router.push(hrefFromKey("settings"))}>

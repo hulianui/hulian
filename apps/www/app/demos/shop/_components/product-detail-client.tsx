@@ -84,7 +84,7 @@ function SizeGuideContent({ sizes }: { sizes: string[] }) {
           </tbody>
         </table>
       )}
-      <p className="text-xs text-muted">{copy("measurementsAreAGuideOnlyReferToTheProductLabelForFinalSizing")}</p>
+      <p className="text-xs text-muted-foreground">{copy("measurementsAreAGuideOnlyReferToTheProductLabelForFinalSizing")}</p>
     </div>
   );
 }
@@ -100,7 +100,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
 
   if (!product) {
     return (
-      <div className="flex min-h-96 items-center justify-center text-muted">
+      <div className="flex min-h-96 items-center justify-center text-muted-foreground">
 
         {copy("productNotFound")}
       </div>
@@ -185,11 +185,11 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               {soldOut && <Tag tone="neutral" size="sm">{copy("soldOut")}</Tag>}
             </div>
             <h1 className="text-2xl font-bold text-foreground">{product.name}</h1>
-            <p className="mt-1 text-sm text-muted">{product.tagline}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{product.tagline}</p>
           </div>
 
           {/* 评分 + 销量 */}
-          <div className="flex items-center gap-3 text-sm text-muted">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <Rating value={product.rating} readOnly size="sm" />
             <span className="font-medium text-foreground">{product.rating.toFixed(1)}</span>
             <span>·</span>
@@ -204,12 +204,12 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               <span className="text-3xl font-bold text-danger">{formatPrice(product.price)}</span>
               {discount != null && (
                 <>
-                  <span className="text-sm text-muted line-through">{formatPrice(product.originalPrice)}</span>
+                  <span className="text-sm text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
                   <Chip size="sm" tone="danger" variant="soft">{discount}{copy("ofListPrice")}</Chip>
                 </>
               )}
             </div>
-            <p className="mt-1 text-xs text-muted">{copy("taxIncludedFreeNationwideShippingRemoteAreasExcluded")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{copy("taxIncludedFreeNationwideShippingRemoteAreasExcluded")}</p>
           </div>
 
           {/* 卖点 tags */}
@@ -223,7 +223,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
           <div>
             <div className="mb-2 flex items-center gap-2">
               <span className="text-sm font-medium text-foreground">{copy("color")}</span>
-              <span className="text-sm text-muted">{selectedColorObj?.name ?? copy("select")}</span>
+              <span className="text-sm text-muted-foreground">{selectedColorObj?.name ?? copy("select")}</span>
             </div>
             <ColorSwatchPicker
               colors={product.colors.map((c) => c.hex)}
@@ -290,7 +290,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
               <p className="mb-1.5 text-sm font-medium text-foreground">
 
                 {copy("stock")}
-                <span className={`ml-2 text-xs font-normal ${soldOut ? "text-danger" : "text-muted"}`}>
+                <span className={`ml-2 text-xs font-normal ${soldOut ? "text-danger" : "text-muted-foreground"}`}>
                   {soldOut ? copy("soldOut") : copy("stockRemaining", product.stock)}
                 </span>
               </p>
@@ -370,7 +370,7 @@ export function ProductDetailClient({ productId }: { productId: string }) {
             <Collapsible>
               <CollapsibleTrigger>{copy("showMoreProductInformation")}</CollapsibleTrigger>
               <CollapsiblePanel>
-                <div className="mt-3 space-y-3 text-sm leading-relaxed text-muted">
+                <div className="mt-3 space-y-3 text-sm leading-relaxed text-muted-foreground">
                   <p>
 
                     {copy("developedBy")}{product.brand}{copy("thisProductCombinesAdvancedManufacturingWithThoughtfulDesignToDeliverAnExceptionalExperienceInEv")}
@@ -432,10 +432,10 @@ export function ProductDetailClient({ productId }: { productId: string }) {
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-bold text-danger">{formatPrice(product.price)}</span>
               {discount != null && (
-                <span className="text-xs text-muted line-through">{formatPrice(product.originalPrice)}</span>
+                <span className="text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice)}</span>
               )}
               {selectedColorObj && (
-                <span className="text-sm text-muted">
+                <span className="text-sm text-muted-foreground">
                   · {selectedColorObj.name} · {selectedSize || copy("noOptionSelected")}
                 </span>
               )}

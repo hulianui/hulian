@@ -28,7 +28,7 @@ export function BeianFooter({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-hairline bg-surface px-6 py-5 text-center text-sm text-muted shadow-sm",
+        "rounded-2xl border border-hairline bg-surface px-6 py-5 text-center text-sm text-muted-foreground shadow-sm",
         className,
       )}
     >
@@ -61,7 +61,7 @@ export function BeianFooter({
           </a>
         </p>
       )}
-      {copyright && <p className="mt-2 text-muted">{copyright}</p>}
+      {copyright && <p className="mt-2 text-muted-foreground">{copyright}</p>}
     </div>
   );
 }

@@ -10,7 +10,7 @@ const after = (sec: number) => new Date(BASE.getTime() + sec * 1000);
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-6 border-b border-border py-1.5 text-sm last:border-0">
-      <span className="text-muted">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <span className="font-medium">{children}</span>
     </div>
   );
@@ -106,7 +106,7 @@ export const relativeTimeShowcase: ShowcaseSpec = {
     {
       name: "实时刷新（无 base · 每分钟自动更新）",
       render: () => (
-        <p className="text-sm text-muted">
+        <p className="text-sm text-muted-foreground">
           发布于 <RelativeTime value={new Date(Date.now() - 90 * 1000)} className="text-foreground" />，悬停看绝对时间
         </p>
       ),

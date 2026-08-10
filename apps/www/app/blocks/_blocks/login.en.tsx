@@ -17,7 +17,7 @@ export function LoginBlock() {
                 <UILink href="#">Forgot your password?</UILink>
               </div>
 
-              <Divider plain className="my-6 text-muted">
+              <Divider plain className="my-6 text-muted-foreground">
                 or
               </Divider>
 
@@ -30,7 +30,7 @@ export function LoginBlock() {
                 </SocialButton>
               </div>
 
-              <p className="mt-6 text-center text-sm text-muted">
+              <p className="mt-6 text-center text-sm text-muted-foreground">
                 Don't have an account yet?{" "}
                 <Link href="#" className="font-medium text-primary underline-offset-4 hover:underline">
                   Create an account

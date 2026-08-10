@@ -65,7 +65,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
     <Card className="flex flex-col">
       <CardHeader className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="grid size-8 shrink-0 place-items-center rounded-[var(--radius)] bg-surface-hover text-muted">
+          <span className="grid size-8 shrink-0 place-items-center rounded-[var(--radius)] bg-surface-hover text-muted-foreground">
             {e.kind === "agent" ? <Bot className="size-4" /> : <Cpu className="size-4" />}
           </span>
           <div className="min-w-0">
@@ -75,7 +75,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
                 {e.kind === "agent" ? "Agent" : copy("model")}
               </Tag>
             </div>
-            {e.vendor && <div className="truncate text-xs text-muted">{e.vendor}</div>}
+            {e.vendor && <div className="truncate text-xs text-muted-foreground">{e.vendor}</div>}
           </div>
         </div>
         <StatusDot status={HEALTH_STATUS[e.health]} label={HEALTH_LABEL[e.health]} size="sm" />
@@ -92,7 +92,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
             label={copy("currentLoad")}
           />
           <div className="min-w-0 flex-1">
-            <div className="mb-1 flex items-center justify-between text-xs text-muted">
+            <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
               <span>{copy("loadTrends")}</span>
               <span className="tabular-nums">{copy("andIssuedThemSimultaneously")}{Math.round(e.load * e.maxConcurrency)}/{e.maxConcurrency}
               </span>
@@ -126,17 +126,17 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
         {/* 价位 / 延迟 / 并发 */}
         <div className="grid grid-cols-3 gap-2 text-center">
           <div className="rounded-[var(--radius)] border border-border bg-surface px-2 py-1.5">
-            <div className="text-[11px] text-muted">{copy("bidBid")}</div>
+            <div className="text-[11px] text-muted-foreground">{copy("bidBid")}</div>
             <div className="text-xs font-medium tabular-nums text-foreground">
               ¥{e.pricePer1kIn}/{e.pricePer1kOut}
             </div>
           </div>
           <div className="rounded-[var(--radius)] border border-border bg-surface px-2 py-1.5">
-            <div className="text-[11px] text-muted">{copy("typicalDelay")}</div>
+            <div className="text-[11px] text-muted-foreground">{copy("typicalDelay")}</div>
             <div className="text-xs font-medium tabular-nums text-foreground">{e.latencyMs}ms</div>
           </div>
           <div className="rounded-[var(--radius)] border border-border bg-surface px-2 py-1.5">
-            <div className="text-[11px] text-muted">{copy("maximumConcurrency")}</div>
+            <div className="text-[11px] text-muted-foreground">{copy("maximumConcurrency")}</div>
             <div className="text-xs font-medium tabular-nums text-foreground">
               {e.maxConcurrency}
             </div>
@@ -145,9 +145,9 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
 
         {/* 降级链 */}
         <div className="rounded-[var(--radius)] border border-border bg-surface-hover px-3 py-2">
-          <div className="mb-1 text-[11px] text-muted">{copy("downgradeChain")}</div>
+          <div className="mb-1 text-[11px] text-muted-foreground">{copy("downgradeChain")}</div>
           {e.fallbackChain.length === 0 ? (
-            <span className="text-xs text-muted">{copy("noneSoleAbilityActuator")}</span>
+            <span className="text-xs text-muted-foreground">{copy("noneSoleAbilityActuator")}</span>
           ) : (
             <div className="flex flex-wrap items-center gap-1 text-xs text-foreground">
               <Tag size="sm" tone="brand" variant="soft">
@@ -155,7 +155,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
               </Tag>
               {e.fallbackChain.map((id) => (
                 <span key={id} className="inline-flex items-center gap-1">
-                  <ArrowRight className="size-3 text-muted" />
+                  <ArrowRight className="size-3 text-muted-foreground" />
                   <Tag size="sm" tone="neutral" variant="soft">
                     {executorName(id)}
                   </Tag>
@@ -176,7 +176,7 @@ export function AgentsExecutorCard({ executor, index }: { executor: Executor; in
           />
           {enabled ? copy("enabled") : copy("discontinued")}
         </label>
-        <label className="flex items-center gap-2 text-xs text-muted">{copy("concurrentCap")}<NumberField
+        <label className="flex items-center gap-2 text-xs text-muted-foreground">{copy("concurrentCap")}<NumberField
             value={concurrency}
             onValueChange={setConcurrency}
             min={1}

@@ -21,11 +21,19 @@
      与 --color-surface-hover 当前同值，但语义不同：surface-hover 表达的是「surface 的悬停态」，
      只该出现在 hover:/data-[state] 这类交互档上；一块常驻的底色写 hover 是语义错位，
      以后想单独调整「静态弱底」也没有抓手。
-     ⚠️ 别再拿 --color-muted 当背景用：它是次要**文字**色（亮 gray-600 / 暗 gray-400），
-     当底色时亮色下是一块脏灰、暗色下是一块发白的浅灰，两个主题都错且错法相反（#124）。 */
-  --color-subtle: var(--gray-100);
+     --color-muted 是它的同义名（见下），二者同值同义，任选其一。 */
+  --color-subtle: var(--color-muted);
   --color-foreground: var(--gray-900);
-  --color-muted: var(--gray-600);
+  /* 弱背景，= --color-subtle。这个名字存在只有一个理由：**与 shadcn/ui 生态对齐**。
+     shadcn 的 --muted 是弱背景、--muted-foreground 才是次要文字色，而它是 React 中后台
+     事实上的起点 —— 从那边迁过来的项目满屏 `bg-muted` / `text-muted-foreground`。
+     @hulianui/tokens 0.7.0（= @hulianui/ui 0.28.0）之前，瑚琏把 --color-muted 定义成次要**文字**色，与生态同名反义：消费方一引入
+     token，全站 bg-muted 立刻变成深灰底（#142）。同名反义没有任何收益，只有两侧长期互相
+     踩坑 —— 连库自己的贡献者都反复按 shadcn 的肌肉记忆写 text-muted-foreground（#109-#140
+     一轮就修了 55 处），所以 0.7.0 起统一朝生态靠。 */
+  --color-muted: var(--gray-100);
+  /* 次要文字：说明文案、时间戳、占位、禁用态标签。0.7.0 之前叫 --color-muted。 */
+  --color-muted-foreground: var(--gray-600);
   --color-border: var(--gray-200);
   /* 发丝边框：仅用于「有阴影的 elevation/浮层/按钮」表面。亮色 transparent(靠阴影自带的
      1px 发丝边分隔，避免与显式 border 形成「双线」显脏)；暗色回落到 --color-border(投影在
@@ -34,24 +42,37 @@
      ⚠️ 消费方注意：本令牌只能用于 border-*。它在浅色主题就是 transparent，用作
      text-hairline / bg-hairline / fill-hairline 会静默隐形——不报错、不回落到继承色，
      元素直接消失(实例：DotPattern 底纹上 text-hairline，浅色下整层不见)。填充/文字用
-     --color-border 或 --color-muted。 */
+     --color-border 或 --color-muted-foreground。 */
   --color-hairline: transparent;
   --color-ring: var(--brand-500);
   --color-primary: var(--brand-700);
   --color-primary-foreground: var(--white);
   --color-primary-hover: var(--brand-500);
+  /* 语义色的**浅档**：提示条底、选中行/选中树节点、Tag/Badge 浅底、侧栏当前项高亮、
+     focus ring 外圈。这些位置放实心强调色太重，放中性灰又丢掉「这块跟该语义相关」的信息。
+     -subtle = 浅底，-border = 配套的浅边框（工具类：bg-primary-subtle / border-primary-border）。
+     必须由库来定而不是消费方 mix：暗色下「浅底」不是变浅而是**变深**，这个方向翻转
+     消费方对着白色 mix 一定是错的（#145）。暗色档见 [data-theme="dark"]。 */
+  --color-primary-subtle: var(--brand-50);
+  --color-primary-border: var(--brand-200);
   /* 语义色的 hover 档一律取「亮暗两端之间的那一档」——亮色下变亮、暗色下变暗，
      同一个变量名在两个主题里都朝对比更弱的方向走一步，与 --color-primary-hover 同构。
      缺这一档时 solid 语义按钮的 hover 只能写回自身，等于**没有悬停反馈**（#122）。 */
   --color-danger: var(--danger-700);
   --color-danger-foreground: var(--white);
   --color-danger-hover: var(--danger-500);
+  --color-danger-subtle: var(--danger-50);
+  --color-danger-border: var(--danger-200);
   --color-success: var(--success-700);
   --color-success-foreground: var(--white);
   --color-success-hover: var(--success-600);
+  --color-success-subtle: var(--success-50);
+  --color-success-border: var(--success-200);
   --color-warning: var(--warning-700);
   --color-warning-foreground: var(--white);
   --color-warning-hover: var(--warning-600);
+  --color-warning-subtle: var(--warning-50);
+  --color-warning-border: var(--warning-200);
   /* 图表分类色板（数据序列用，SVG 经 var() 直接消费 → 明暗自适应） */
   --color-chart-1: oklch(0.62 0.19 255);
   --color-chart-2: oklch(0.7 0.16 155);
@@ -112,9 +133,10 @@
   --color-bg: var(--gray-950);
   --color-surface: var(--gray-900);
   --color-surface-hover: var(--gray-800);
-  --color-subtle: var(--gray-800);
+  --color-subtle: var(--color-muted);
   --color-foreground: var(--gray-50);
-  --color-muted: var(--gray-400);
+  --color-muted: var(--gray-800);
+  --color-muted-foreground: var(--gray-400);
   --color-border: var(--gray-800);
   /* 暗色：发丝边回落到可见细线(=现状 border)，因深底投影偏弱、需 border 分隔。 */
   --color-hairline: var(--color-border);
@@ -122,15 +144,27 @@
   --color-primary: var(--brand-400);
   --color-primary-foreground: var(--gray-950);
   --color-primary-hover: var(--brand-500);
+  /* 浅档在暗色下**方向翻转**：不是抬亮度，而是把语义色掺进表面色 —— 底仍然比 surface 深沉，
+     只是染上了该语义的色相。直接用 --brand-50 之类的浅档会在深底上炸出一块高亮，是错的。
+     掺的是 400 档（暗色下的强调档），比例 16%/34% 对应「底/边框」两级可辨识度。
+     在 oklab 里混而不是 srgb：srgb 插值经过灰轴会掉彩度，混出来发脏。 */
+  --color-primary-subtle: color-mix(in oklab, var(--brand-400) 16%, var(--color-surface));
+  --color-primary-border: color-mix(in oklab, var(--brand-400) 34%, var(--color-surface));
   --color-danger: var(--danger-400);
   --color-danger-foreground: var(--gray-950);
   --color-danger-hover: var(--danger-500);
+  --color-danger-subtle: color-mix(in oklab, var(--danger-400) 16%, var(--color-surface));
+  --color-danger-border: color-mix(in oklab, var(--danger-400) 34%, var(--color-surface));
   --color-success: var(--success-500);
   --color-success-foreground: var(--gray-950);
   --color-success-hover: var(--success-600);
+  --color-success-subtle: color-mix(in oklab, var(--success-500) 16%, var(--color-surface));
+  --color-success-border: color-mix(in oklab, var(--success-500) 34%, var(--color-surface));
   --color-warning: var(--warning-500);
   --color-warning-foreground: var(--gray-950);
   --color-warning-hover: var(--warning-600);
+  --color-warning-subtle: color-mix(in oklab, var(--warning-500) 16%, var(--color-surface));
+  --color-warning-border: color-mix(in oklab, var(--warning-500) 34%, var(--color-surface));
   /* 暗态图表色提亮以保对比 */
   --color-chart-1: oklch(0.7 0.17 255);
   --color-chart-2: oklch(0.76 0.16 155);
@@ -166,7 +200,13 @@
    ShimmerButton 显式色或 outline(透明玻璃态)，故强调 token 保持原值。 */
 [data-surface="inverse"] {
   --color-foreground: var(--color-primary-foreground);
-  --color-muted: color-mix(in oklab, var(--color-primary-foreground) 72%, transparent);
+  --color-muted-foreground: color-mix(in oklab, var(--color-primary-foreground) 72%, transparent);
+  /* 弱背景也要跟着反色，否则面板内的 bg-muted/bg-subtle 会在深色面板上糊出一块浅灰。
+     取比 --color-surface(12%) 更弱的一档，保持「subtle 弱于 surface」的层级关系。 */
+  --color-muted: color-mix(in oklab, var(--color-primary-foreground) 8%, transparent);
+  /* 必须显式重声明：自定义属性是**代入后**才继承的，:root 里那句 `--color-subtle: var(--color-muted)`
+     算出来的是 gray-100，子树拿到的就是这个死值，不会跟着本块新的 --color-muted 走。 */
+  --color-subtle: var(--color-muted);
   --color-surface: color-mix(in oklab, var(--color-primary-foreground) 12%, transparent);
   --color-surface-hover: color-mix(in oklab, var(--color-primary-foreground) 22%, transparent);
   --color-border: color-mix(in oklab, var(--color-primary-foreground) 38%, transparent);

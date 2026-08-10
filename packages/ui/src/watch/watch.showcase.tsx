@@ -6,7 +6,7 @@ function Face() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-0.5 bg-gradient-to-b from-chart-4/40 to-chart-2/40">
       <span className="text-base font-semibold leading-none text-foreground">10:09</span>
-      <span className="text-[10px] text-muted">瑚琏</span>
+      <span className="text-[10px] text-muted-foreground">瑚琏</span>
     </div>
   );
 }
@@ -19,7 +19,7 @@ export const watchShowcase: ShowcaseSpec = {
       code: `<Watch model="series-45">
   <div className="flex h-full w-full flex-col items-center justify-center">
     <span className="text-base font-semibold">10:09</span>
-    <span className="text-[10px] text-muted">瑚琏</span>
+    <span className="text-[10px] text-muted-foreground">瑚琏</span>
   </div>
 </Watch>`,
       render: () => (

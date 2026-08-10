@@ -184,8 +184,8 @@ export function Coupon({
           <div className={cn("truncate font-semibold", size === "sm" ? "text-sm" : "text-[15px]")}>
             {title}
           </div>
-          {scope && <div className="mt-0.5 truncate text-xs text-muted">{scope}</div>}
-          {validUntil && <div className="mt-0.5 truncate text-[11px] text-muted">{validUntil}</div>}
+          {scope && <div className="mt-0.5 truncate text-xs text-muted-foreground">{scope}</div>}
+          {validUntil && <div className="mt-0.5 truncate text-[11px] text-muted-foreground">{validUntil}</div>}
         </div>
 
         <div className="shrink-0">
@@ -206,7 +206,7 @@ export function Coupon({
               {label}
             </button>
           ) : (
-            <span className="text-xs font-medium text-muted">{label}</span>
+            <span className="text-xs font-medium text-muted-foreground">{label}</span>
           )}
         </div>
       </div>

@@ -22,7 +22,7 @@ function Quotation({ size = "a4" }: { size?: "a4" | "auto" }) {
       <DocumentSheetHeader>
         <div>
           <div className="text-lg font-bold text-foreground">瑚琏设计工作室</div>
-          <div className="mt-1 text-xs text-muted">
+          <div className="mt-1 text-xs text-muted-foreground">
             上海市某区某路 88 号
             <br />
             contact@hulian.design · 021-8888-8888
@@ -30,7 +30,7 @@ function Quotation({ size = "a4" }: { size?: "a4" | "auto" }) {
         </div>
         <div className="text-right">
           <div className="text-xl font-bold tracking-wide text-foreground">报 价 单</div>
-          <div className="mt-2 text-xs text-muted">
+          <div className="mt-2 text-xs text-muted-foreground">
             单号：QT-2026-0604
             <br />
             日期：2026-06-04
@@ -40,13 +40,13 @@ function Quotation({ size = "a4" }: { size?: "a4" | "auto" }) {
 
       <DocumentSheetSection title="致">
         <div className="font-medium text-foreground">某某科技有限公司</div>
-        <div className="text-xs text-muted">张经理 · 采购部</div>
+        <div className="text-xs text-muted-foreground">张经理 · 采购部</div>
       </DocumentSheetSection>
 
       <DocumentSheetSection title="服务明细">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="border-b border-border text-xs text-muted">
+            <tr className="border-b border-border text-xs text-muted-foreground">
               <th className="py-2 font-medium">项目</th>
               <th className="py-2 text-center font-medium">数量</th>
               <th className="py-2 text-right font-medium">单价</th>

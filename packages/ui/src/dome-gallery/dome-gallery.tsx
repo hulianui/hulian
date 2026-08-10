@@ -68,7 +68,7 @@ function buildTiles(images: DomeGalleryImage[], segments: number): Tile[] {
 /** 占位渐变（无 src 时显示），吃 chart token，明暗自适应 */
 function placeholderBg(i: number): string {
   const chart = (i % 5) + 1;
-  return `linear-gradient(135deg, var(--color-chart-${chart}) 0%, var(--color-muted) 140%)`;
+  return `linear-gradient(135deg, var(--color-chart-${chart}) 0%, var(--color-muted-foreground) 140%)`;
 }
 
 export function DomeGallery({

@@ -43,7 +43,7 @@ function MeterImpl({
     >
       {(label || showValue) && (
         <div className="flex items-center justify-between text-sm">
-          {label ? <BaseMeter.Label className="text-muted">{label}</BaseMeter.Label> : <span />}
+          {label ? <BaseMeter.Label className="text-muted-foreground">{label}</BaseMeter.Label> : <span />}
           {showValue && (
             <BaseMeter.Value className="tabular-nums text-foreground">{() => text}</BaseMeter.Value>
           )}

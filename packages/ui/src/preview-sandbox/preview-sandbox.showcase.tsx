@@ -85,7 +85,7 @@ const DeviceDemo = () => {
 const Boom = ({ armed }: { armed: boolean }) => {
   if (armed) throw new Error("Cannot read properties of undefined (reading 'map')");
   return (
-    <div className="grid h-full place-items-center p-6 text-sm text-muted">
+    <div className="grid h-full place-items-center p-6 text-sm text-muted-foreground">
       正常渲染的子树
     </div>
   );

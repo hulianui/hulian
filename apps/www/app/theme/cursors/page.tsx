@@ -26,7 +26,7 @@ export default function CursorsPage() {
               <span className="size-8 shrink-0 rounded-[0.4rem] bg-surface-hover" aria-hidden />
               <div className="min-w-0">
                 <Code>{c.name}</Code>
-                <p className="mt-0.5 text-sm text-muted">{c.use}</p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{c.use}</p>
               </div>
             </div>
           ))}

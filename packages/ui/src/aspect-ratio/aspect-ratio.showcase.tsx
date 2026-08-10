@@ -3,7 +3,7 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { AspectRatio } from "./aspect-ratio";
 
 const Fill = ({ label }: { label: string }) => (
-  <div className="flex h-full w-full items-center justify-center bg-surface-hover text-xs text-muted">
+  <div className="flex h-full w-full items-center justify-center bg-surface-hover text-xs text-muted-foreground">
     {label}
   </div>
 );

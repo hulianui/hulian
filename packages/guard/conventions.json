@@ -46,24 +46,24 @@
         "attributes": [
           "className"
         ],
-        "pattern": "(?<![\\w:-])bg-muted(?:/[\\d.[\\]]+)?\\b",
-        "coOccurs": "(?<![\\w:-])text-muted(?:/[\\d.[\\]]+)?\\b"
+        "pattern": "(?<![\\w:-])bg-muted-foreground(?:/[\\d.[\\]]+)?\\b",
+        "coOccurs": "(?<![\\w:-])text-muted-foreground(?:/[\\d.[\\]]+)?\\b"
       },
-      "message": "bg-muted 与 text-muted 同时出现：--color-muted 是次要文字色，前景背景同色不可读。",
-      "instead": "背景改用 bg-subtle（静态弱背景）或 bg-surface-hover（悬停态），文字保持 text-muted。"
+      "message": "bg-muted-foreground 与 text-muted-foreground 同时出现：--color-muted-foreground 是次要文字色，前景背景同色不可读。",
+      "instead": "背景改用 bg-subtle（静态弱背景）或 bg-surface-hover（悬停态），文字保持 text-muted-foreground。"
     },
     {
-      "id": "muted-is-a-text-color",
-      "severity": "warning",
+      "id": "muted-renamed-to-muted-foreground",
+      "severity": "error",
       "matcher": {
         "kind": "class-name-tokens",
         "attributes": [
           "className"
         ],
-        "pattern": "\\bbg-muted(?:/[\\d.[\\]]+)?\\b"
+        "pattern": "(?<![\\w-])(?:text|fill|stroke|border|decoration|placeholder|caret|divide|outline|accent|ring|from|to|via|shadow)-muted(?![\\w-])"
       },
-      "message": "--color-muted 是次要文字色（亮 gray-600 / 暗 gray-400），当背景用时亮色发脏、暗色发白。",
-      "instead": "区域底用 bg-subtle，悬停态用 bg-surface-hover；只有小面积指示性填充（状态点、滚动条拇指）才可以留。"
+      "message": "text-muted 等写法在 0.28.0 已改名：次要文字色现在叫 --color-muted-foreground，--color-muted 变成了弱背景（对齐 shadcn）。",
+      "instead": "把 `-muted` 改成 `-muted-foreground`（text-muted → text-muted-foreground）。bg-muted 不用改，它现在就是弱背景。"
     },
     {
       "id": "color-token-prefix",
@@ -87,26 +87,35 @@
           "--chart-5",
           "--chart-6",
           "--danger",
+          "--danger-border",
           "--danger-foreground",
           "--danger-hover",
+          "--danger-subtle",
           "--foreground",
           "--hairline",
           "--info",
           "--muted",
+          "--muted-foreground",
           "--primary",
+          "--primary-border",
           "--primary-foreground",
           "--primary-hover",
+          "--primary-subtle",
           "--ring",
           "--secondary",
           "--subtle",
           "--success",
+          "--success-border",
           "--success-foreground",
           "--success-hover",
+          "--success-subtle",
           "--surface",
           "--surface-hover",
           "--warning",
+          "--warning-border",
           "--warning-foreground",
-          "--warning-hover"
+          "--warning-hover",
+          "--warning-subtle"
         ]
       },
       "message": "SVG 或内联 style 中的颜色变量必须使用 --color- 前缀。",
@@ -171,11 +180,11 @@
     },
     {
       "id": "global/muted-is-text-only",
-      "rule": "--color-muted 只能用于文字。区域底用 bg-subtle，悬停态用 bg-surface-hover",
-      "wrong": "className=\"bg-muted/40 p-4\"",
-      "right": "className=\"bg-subtle p-4\"",
-      "why": "muted 是次要文字色（亮 gray-600 / 暗 gray-400）。当背景用时亮色下是一块脏灰、暗色下是发白的浅灰 —— 两个主题都错且错法相反。shadcn 的 --muted 是背景、--muted-foreground 才是文字，从那边迁过来的 bg-muted 语义正好是反的，而 Tailwind 不会报错（类名合法、颜色也生成，只是意思变了）",
-      "instead": "小面积指示性填充（状态点、滚动条拇指、徽章反色底）可以留；判据是「这块颜色是一片区域的底，还是一个小物件的填充」",
+      "rule": "次要文字色叫 --color-muted-foreground（text-muted-foreground）；--color-muted 是弱背景，与 shadcn 一致",
+      "wrong": "className=\"text-muted\"",
+      "right": "className=\"text-muted-foreground\"",
+      "why": "0.28.0 之前瑚琏的 --color-muted 是次要**文字**色，与 shadcn 生态同名反义（那边 --muted 是背景、--muted-foreground 才是文字）。同名反义的代价是双向的：shadcn 项目一引入瑚琏 token，全站 bg-muted 立刻变深灰底；而库自己的贡献者又反复按 shadcn 肌肉记忆写 text-muted-foreground。0.28.0 起统一朝生态靠，text-muted 不再有对应 token —— Tailwind 对未定义颜色不报错也不生成规则，写了会静默回退成继承色",
+      "instead": "text-muted → text-muted-foreground；bg-muted 现在就是弱背景（等价 bg-subtle），可以放心用",
       "scope": "global",
       "source": "scripts/gen-conventions.mjs"
     },
@@ -2592,7 +2601,7 @@
       "id": "component/document-sheet/pitfall/2",
       "scope": "document-sheet",
       "title": "DocumentSheet",
-      "rule": "暗色主题下纸面是「近黑纸」而非白纸——若放固定深色文字会看不清，正文颜色用 token（`text-foreground`/`text-muted`）跟随主题。",
+      "rule": "暗色主题下纸面是「近黑纸」而非白纸——若放固定深色文字会看不清，正文颜色用 token（`text-foreground`/`text-muted-foreground`）跟随主题。",
       "source": "packages/ui/src/document-sheet/document-sheet.md"
     },
     {
@@ -2641,7 +2650,7 @@
       "id": "component/dot/pitfall/1",
       "scope": "dot",
       "title": "Dot",
-      "rule": "**`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted`），写的人以为生效了。自定义颜色只走 `color` prop。",
+      "rule": "**`style={{ color }}` 改不动圆点颜色**，而且是**静默失效**：圆点是背景色，`color` 管的是文字色，于是写成 `<Dot style={{ color: series.color }} />` 会编译通过、guard 只报 `no-style-override`、页面上一律灰点（`bg-muted-foreground`），写的人以为生效了。自定义颜色只走 `color` prop。",
       "source": "packages/ui/src/dot/dot.md"
     },
     {

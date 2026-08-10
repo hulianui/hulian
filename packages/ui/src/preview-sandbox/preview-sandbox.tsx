@@ -351,9 +351,9 @@ export function PreviewSandbox({
                 </Button>
               }
             >
-              <p className="break-words text-sm text-muted">{error.message}</p>
+              <p className="break-words text-sm text-muted-foreground">{error.message}</p>
               {error.filename ? (
-                <p className="mt-1 break-all font-mono text-xs text-muted">
+                <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
                   {error.filename}
                   {error.lineno === null ? "" : `:${error.lineno}`}
                 </p>

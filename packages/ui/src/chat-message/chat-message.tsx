@@ -20,10 +20,10 @@ function Receipt({
   labels: { sending: string; sent: string; read: string };
 }) {
   if (status === "sending") {
-    return <Loader2 aria-label={labels.sending} className="size-3.5 animate-spin text-muted" />;
+    return <Loader2 aria-label={labels.sending} className="size-3.5 animate-spin text-muted-foreground" />;
   }
   if (status === "sent") {
-    return <Check aria-label={labels.sent} className="size-3.5 text-muted" />;
+    return <Check aria-label={labels.sent} className="size-3.5 text-muted-foreground" />;
   }
   return <CheckCheck aria-label={labels.read} className="size-3.5 text-primary" />;
 }
@@ -51,7 +51,7 @@ function ChatMessageImpl({
   if (role === "system") {
     return (
       <div
-        className={cn("mx-auto max-w-prose text-center text-xs text-muted", className)}
+        className={cn("mx-auto max-w-prose text-center text-xs text-muted-foreground", className)}
         {...props}
       >
         {children}
@@ -65,7 +65,7 @@ function ChatMessageImpl({
       <div className="shrink-0">{avatar ?? <Avatar fallback={fallbackByRole[role]} />}</div>
       <div className={cn("flex min-w-0 flex-col gap-1", isUser ? "items-end" : "items-start")}>
         {(name || timestamp) && (
-          <div className="flex items-center gap-2 text-xs text-muted">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             {name && <span className="font-medium text-foreground">{name}</span>}
             {timestamp && <span>{timestamp}</span>}
           </div>

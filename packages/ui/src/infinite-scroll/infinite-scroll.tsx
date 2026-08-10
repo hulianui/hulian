@@ -54,7 +54,7 @@ export function InfiniteScroll({
   return (
     <div className={cn(className)}>
       {children}
-      <div ref={sentinel} className="flex items-center justify-center gap-1.5 py-3 text-xs text-muted">
+      <div ref={sentinel} className="flex items-center justify-center gap-1.5 py-3 text-xs text-muted-foreground">
         {hasMore ? (
           loading ? (
             <>

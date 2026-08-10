@@ -32,6 +32,9 @@ export const themeContent = {
       chartDescription: "数据序列专用，SVG 直接通过 var() 消费；亮暗模式各自调整亮度以保持对比。",
       gray: "原始灰阶",
       grayDescription: "底层调色盘位于 primitives.css，明暗共用且不随主题变化；语义色由它派生。",
+      ramps: "语义色阶",
+      rampsDescription:
+        "50–300 是浅档（提示条底、选中行、Tag 浅底），400–700 是强调档。浅档在 OKLCH 里手工定，不由 mix() 派生——sRGB 插值会带色相偏移，而且各家挑的百分比不同，浅档恰恰是中后台面积最大的那部分颜色。",
     },
     typography: {
       title: "排版",
@@ -193,6 +196,9 @@ export const themeContent = {
       gray: "Primitive gray scale",
       grayDescription:
         "The shared palette in primitives.css does not change with the theme. Semantic colors are derived from it.",
+      ramps: "Semantic color ramps",
+      rampsDescription:
+        "Steps 50-300 are the tints used for notice bars, selected rows and Tag fills; 400-700 are the accent steps. The tints are hand-tuned in OKLCH rather than derived with mix(): sRGB interpolation shifts the hue, and every project picks a different percentage — yet tints cover the largest area of an admin UI.",
     },
     typography: {
       title: "Typography",

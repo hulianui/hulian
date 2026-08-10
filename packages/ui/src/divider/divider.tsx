@@ -4,7 +4,7 @@ import type { DividerOrientation, DividerProps } from "./divider.types";
 // 带文字分隔（纯皮肤·零依赖·可 RSC，照 badge/breadcrumb 范式不加 "use client"）。
 // 与既有纯几何 Separator 互补：Separator 是 role=separator 极简原语；Divider 加「文字嵌入 +
 // 虚线 + 行内垂直」。纯线变体仍报 role=separator；带文字变体作有标签的视觉分组（文字即可读内容，
-// 不套 role=separator——separator 角色的子内容会被无障碍树忽略）。线吃 border-border，文字 text-muted。
+// 不套 role=separator——separator 角色的子内容会被无障碍树忽略）。线吃 border-border，文字 text-muted-foreground。
 
 // 横线段：实/虚线共用 border-t（虚线只追加 border-dashed），方便 dashed/solid 同皮肤。
 function line(side: "left" | "right", orientation: DividerOrientation, dashed?: boolean) {
@@ -59,7 +59,7 @@ export function Divider({
   return (
     <div className={cn("my-4 flex items-center text-sm", className)}>
       <div className={line("left", orientation, dashed)} aria-hidden />
-      <span className={cn("whitespace-nowrap px-4 text-muted", plain ? "font-normal" : "font-medium")}>
+      <span className={cn("whitespace-nowrap px-4 text-muted-foreground", plain ? "font-normal" : "font-medium")}>
         {children}
       </span>
       <div className={line("right", orientation, dashed)} aria-hidden />

@@ -13,12 +13,12 @@ const SIGN: Record<DiffRow["type"], string> = { add: "+", del: "-", context: " "
 const SIGN_COLOR: Record<DiffRow["type"], string> = {
   add: "text-success",
   del: "text-danger",
-  context: "text-muted",
+  context: "text-muted-foreground",
 };
 
 function Gutter({ no }: { no: number | null }) {
   return (
-    <span className="inline-block w-8 shrink-0 select-none pr-2 text-right text-muted tabular-nums">
+    <span className="inline-block w-8 shrink-0 select-none pr-2 text-right text-muted-foreground tabular-nums">
       {no ?? ""}
     </span>
   );

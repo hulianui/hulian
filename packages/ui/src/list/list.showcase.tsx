@@ -180,7 +180,7 @@ export const listShowcase: ShowcaseSpec = {
             inset
             items={PEOPLE}
             renderItem={(p) => <PersonItem p={p} />}
-            header={<span className="text-sm text-muted">团队成员</span>}
+            header={<span className="text-sm text-muted-foreground">团队成员</span>}
           />
         </div>
       ),

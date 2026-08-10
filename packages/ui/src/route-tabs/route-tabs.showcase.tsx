@@ -41,7 +41,7 @@ function Demo({ sortable }: { sortable?: boolean }) {
             : undefined
         }
       />
-      <div className="p-4 text-sm text-muted">
+      <div className="p-4 text-sm text-muted-foreground">
         当前页：{items.find((t) => t.key === active)?.label ?? "（无）"} · 右键页签试试批量关闭
       </div>
     </div>

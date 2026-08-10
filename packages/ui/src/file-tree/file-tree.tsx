@@ -12,7 +12,7 @@ const STATUS_META: Record<FileStatus, { letter: string; toneClass: string }> = {
   added: { letter: "A", toneClass: "text-success" },
   modified: { letter: "M", toneClass: "text-warning" },
   deleted: { letter: "D", toneClass: "text-danger" },
-  untracked: { letter: "U", toneClass: "text-muted" },
+  untracked: { letter: "U", toneClass: "text-muted-foreground" },
   renamed: { letter: "R", toneClass: "text-primary" },
 };
 
@@ -86,7 +86,7 @@ function Row({
         )}
         style={{ paddingLeft: `${depth * 14 + 6}px` }}
       >
-        <span className="flex size-4 shrink-0 items-center justify-center text-muted">
+        <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground">
           {isFolder ? (
             <ChevronRight
               className={cn("size-3.5 transition-transform", open && "rotate-90")}
@@ -94,7 +94,7 @@ function Row({
             />
           ) : null}
         </span>
-        <span className="shrink-0 text-muted [&>svg]:size-4">
+        <span className="shrink-0 text-muted-foreground [&>svg]:size-4">
           {isFolder ? <Folder aria-hidden /> : <File aria-hidden />}
         </span>
         <span className="truncate">{node.name}</span>
@@ -190,7 +190,7 @@ function FileTreeImpl({
           onChange={(e) => setQuery(e.target.value)}
           placeholder={resolvedSearchPlaceholder}
           aria-label={resolvedSearchPlaceholder}
-          className="w-full rounded-[var(--radius)] border border-border bg-surface px-2.5 py-1.5 text-sm outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+          className="w-full rounded-[var(--radius)] border border-border bg-surface px-2.5 py-1.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         />
       )}
       <ul className="rounded-[var(--radius)] border border-border bg-surface p-1.5">
