@@ -5,7 +5,7 @@ import { Loader2 } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { pressableClass } from "../motion";
-import type { SocialButtonProps, SocialProvider } from "./social-button.types";
+import type { SocialBrand, SocialButtonProps, SocialProvider } from "./social-button.types";
 
 // 第三方/OAuth 登录按钮。品牌 logo 取自 simple-icons(单色 path·fill currentColor)，
 // 内联以零运行时依赖、并随 variant 自动着色：
@@ -66,6 +66,16 @@ const BRANDS: Record<SocialProvider, BrandMeta> = {
     mono: true,
     path: "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z",
   },
+  discord: {
+    label: "Discord",
+    hex: "#5865F2",
+    path: "M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z",
+  },
+  gitlab: {
+    label: "GitLab",
+    hex: "#FC6D26",
+    path: "m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z",
+  },
 };
 
 const SIZE: Record<
@@ -120,15 +130,21 @@ function SocialButtonImpl({
       google: "Google",
       apple: "Apple",
       x: "X",
+      discord: "Discord",
+      gitlab: "GitLab",
     },
     signInWith: (provider) => `${provider}登录`,
   };
-  const brand = BRANDS[provider];
-  const brandLabel = locale.providers[provider];
+  // 内置枚举 vs 自定义品牌，只在这三个值上分叉，之后的皮肤逻辑完全共用（#154）。
+  const custom: SocialBrand | undefined = typeof provider === "object" ? provider : undefined;
+  const brandLabel = custom ? custom.label : locale.providers[provider as SocialProvider];
+  // 自定义品牌不传 brandColor 即黑白档：与内置 GitHub/X/Apple 同处方，solid 走主题前景。
+  const brandColor = custom ? custom.brandColor : BRANDS[provider as SocialProvider].hex;
+  const mono = custom ? custom.brandColor === undefined : BRANDS[provider as SocialProvider].mono;
   const sz = SIZE[size];
   const isDisabled = disabled || loading;
-  const solidColored = variant === "solid" && !brand.mono;
-  const solidMono = variant === "solid" && brand.mono;
+  const solidColored = variant === "solid" && !mono;
+  const solidMono = variant === "solid" && mono;
 
   return (
     <button
@@ -147,17 +163,27 @@ function SocialButtonImpl({
         solidMono && "bg-foreground text-bg shadow-sm hover:opacity-90",
         className,
       )}
-      style={solidColored ? { backgroundColor: brand.hex } : undefined}
+      style={solidColored ? { backgroundColor: brandColor } : undefined}
       {...props}
     >
       {loading ? (
         <Loader2 className={cn(sz.glyph, "animate-spin")} aria-hidden />
+      ) : custom ? (
+        // 自定义 logo 只做尺寸与着色约束，不碰内部结构：外层框死当前 size 的图标尺寸，
+        // 子 svg 撑满（消费方给的 svg 常自带 24×24 或没有尺寸，不约束就会撑歪按钮）。
+        <span
+          aria-hidden
+          className={cn("inline-flex shrink-0 items-center justify-center [&>svg]:size-full", sz.glyph)}
+          style={variant === "outline" && !mono ? { color: brandColor } : undefined}
+        >
+          {custom.icon}
+        </span>
       ) : (
         <BrandGlyph
-          path={brand.path}
+          path={BRANDS[provider as SocialProvider].path}
           className={sz.glyph}
           // outline 时 logo 用品牌色（mono 品牌随前景）；solid 时 logo 继承白/反色文字
-          style={variant === "outline" && !brand.mono ? { color: brand.hex } : undefined}
+          style={variant === "outline" && !mono ? { color: brandColor } : undefined}
         />
       )}
       {shape === "button" && <span>{children ?? locale.signInWith(brandLabel)}</span>}

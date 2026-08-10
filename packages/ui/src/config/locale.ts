@@ -1,5 +1,7 @@
 "use client";
 import { useLocaleContext } from "./locale-context";
+// 仅类型引用（编译期擦除，无运行时依赖，故不构成 config ↔ social-button 的循环）。
+import type { SocialProvider } from "../social-button/social-button.types";
 
 /**
  * 组件内置文案的 i18n 字典。当前覆盖企业层 ProTable / AdminLayout 的可见文案；
@@ -453,10 +455,12 @@ export interface ComponentLocale {
     more: (count: number) => string;
   };
   socialButton?: {
-    providers: Record<
-      "wechat" | "alipay" | "qq" | "weibo" | "github" | "google" | "apple" | "x",
-      string
-    >;
+    /**
+     * 内置品牌名。直接派生自 SocialProvider，别在这里重抄一份联合类型 ——
+     * 抄一份就等于开了第二个 SSOT，加品牌时必漏其一（#154 加 discord/gitlab 时就是这么发现的）。
+     * 自定义品牌（SocialBrand）的名字由消费方自己给，不走这张表。
+     */
+    providers: Record<SocialProvider, string>;
     signInWith: (provider: string) => string;
   };
   typingDots?: { typing: string };
@@ -1157,6 +1161,8 @@ const zhComponents: ComponentLocale = {
       google: "Google",
       apple: "Apple",
       x: "X",
+      discord: "Discord",
+      gitlab: "GitLab",
     },
     signInWith: (provider) => `${provider}登录`,
   },
@@ -1925,6 +1931,8 @@ const enComponents: ComponentLocale = {
       google: "Google",
       apple: "Apple",
       x: "X",
+      discord: "Discord",
+      gitlab: "GitLab",
     },
     signInWith: (provider) => `Sign in with ${provider}`,
   },

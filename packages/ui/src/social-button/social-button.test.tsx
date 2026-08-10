@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { SocialButton } from "./social-button";
+import type { SocialBrand } from "./social-button.types";
 import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("SocialButton", () => {
@@ -73,5 +74,41 @@ describe("SocialButton", () => {
   it("透传 className", () => {
     const { getByRole } = render(<SocialButton provider="google" className="my-social" />);
     expect(getByRole("button").classList.contains("my-social")).toBe(true);
+  });
+
+  // —— 枚举外的平台（#154）——
+  it("新增 discord / gitlab：默认文案与品牌色都在", () => {
+    const { getByText } = render(<SocialButton provider="discord" />);
+    expect(getByText("Discord登录")).toBeTruthy();
+    const { getByText: g2 } = render(<SocialButton provider="gitlab" />);
+    expect(g2("GitLab登录")).toBeTruthy();
+  });
+
+  it("自定义品牌：渲染消费方给的 logo + 文案，皮肤沿用内置档", () => {
+    const brand: SocialBrand = {
+      label: "企业 SSO",
+      icon: <svg data-testid="custom-logo" viewBox="0 0 24 24" />,
+      brandColor: "#4D4D4D",
+    };
+    const { getByText, getByTestId, getByRole } = render(<SocialButton provider={brand} />);
+    expect(getByText("企业 SSO登录")).toBeTruthy();
+    expect(getByTestId("custom-logo")).toBeTruthy();
+    // outline 档：品牌色落在 logo 而非按钮底（与内置彩色品牌同处方）
+    expect(getByRole("button").style.backgroundColor).toBe("");
+    expect(getByTestId("custom-logo").parentElement!.style.color).toBeTruthy();
+  });
+
+  it("自定义品牌不传 brandColor = 黑白档：solid 走主题前景，不绑固定底色", () => {
+    const brand: SocialBrand = { label: "企业 SSO", icon: <svg viewBox="0 0 24 24" /> };
+    const { getByRole } = render(<SocialButton provider={brand} variant="solid" />);
+    const btn = getByRole("button");
+    expect(btn.className).toContain("bg-foreground");
+    expect(btn.style.backgroundColor).toBe("");
+  });
+
+  it("自定义品牌 shape=icon：aria-label 取 label（不然屏幕阅读器只念到一个空按钮）", () => {
+    const brand: SocialBrand = { label: "企业 SSO", icon: <svg viewBox="0 0 24 24" /> };
+    const { getByLabelText } = render(<SocialButton provider={brand} shape="icon" />);
+    expect(getByLabelText("企业 SSO")).toBeTruthy();
   });
 });
