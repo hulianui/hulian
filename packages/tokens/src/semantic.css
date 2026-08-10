@@ -17,6 +17,15 @@
   --color-bg: var(--gray-50);
   --color-surface: var(--white);
   --color-surface-hover: var(--gray-100);
+  /* 凹槽轨道底：承载「浮起件」的容器底 —— 分段控件（Tabs solid / Segmented）的轨道。
+     它的定义不是某个灰阶，而是一条**关系**：恒比 --color-surface 沉一档，且亮暗两态里
+     「浮起件更靠近观察者」这个方向必须一致（亮色=更亮，暗色=更亮）。
+     所以不能拿 --color-surface-hover 顶替（#152）：亮色下它与 white 只差 3.3% 亮度、
+     对比 1.06:1，选中药丸只剩一条 shadow-sm 可辨；暗色下更糟 —— gray-800 比药丸的
+     gray-900 还**亮**，等于把凹槽画在了浮起件上面，elevation 方向是反的。
+     取值让「卡片(surface) → 轨道(track) → 药丸(surface)」在两态都成立：药丸与卡片同色，
+     靠中间那圈更沉的轨道把它勾出来，正是实体分段控件的样子。 */
+  --color-track: var(--gray-200);
   /* 弱背景：**静态**区域底（分组容器、看板列、泳道、说明条、代码内联块）。
      与 --color-surface-hover 当前同值，但语义不同：surface-hover 表达的是「surface 的悬停态」，
      只该出现在 hover:/data-[state] 这类交互档上；一块常驻的底色写 hover 是语义错位，
@@ -133,6 +142,10 @@
   --color-bg: var(--gray-950);
   --color-surface: var(--gray-900);
   --color-surface-hover: var(--gray-800);
+  /* 暗色下「沉一档」= 更暗，于是与亮色**取反方向**：gray-950 比药丸的 gray-900 深 6.9%，
+     浮起件仍是更亮的那个。落到页面底(gray-950)上时轨道与页底同色、凹槽本身看不见，
+     但药丸高出 6.9% 依然是明确的选中信号 —— 这正是 macOS 深色分段控件的观感。 */
+  --color-track: var(--gray-950);
   --color-subtle: var(--color-muted);
   --color-foreground: var(--gray-50);
   --color-muted: var(--gray-800);
@@ -209,6 +222,10 @@
   --color-subtle: var(--color-muted);
   --color-surface: color-mix(in oklab, var(--color-primary-foreground) 12%, transparent);
   --color-surface-hover: color-mix(in oklab, var(--color-primary-foreground) 22%, transparent);
+  /* 反色面板本身偏深，故「沉一档」= 掺更少的白，与暗色档同向：药丸(12%) 高于轨道(4%)。
+     同样必须显式重声明，否则子树拿到的是 :root 算好的 gray-200 死值 —— 深色面板上
+     糊出一条浅灰轨道。 */
+  --color-track: color-mix(in oklab, var(--color-primary-foreground) 4%, transparent);
   --color-border: color-mix(in oklab, var(--color-primary-foreground) 38%, transparent);
 }
 

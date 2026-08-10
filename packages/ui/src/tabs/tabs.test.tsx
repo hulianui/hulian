@@ -11,7 +11,10 @@ describe("tabsListVariants", () => {
   it("solid：分段药丸轨道", () => {
     const c = tabsListVariants({ variant: "solid" });
     expect(c).toContain("relative");
-    expect(c).toContain("bg-surface-hover");
+    // 轨道必须是 bg-track（凹槽语义），不能退回 bg-surface-hover ——
+    // 那个 token 与药丸的 bg-surface 在亮色下只差 3.3% 亮度、暗色下凹凸方向还是反的（#152）。
+    expect(c).toContain("bg-track");
+    expect(c).not.toContain("bg-surface-hover");
     expect(c).toContain("p-1");
   });
 });

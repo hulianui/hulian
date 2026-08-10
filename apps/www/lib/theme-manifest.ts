@@ -93,6 +93,13 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
       { token: "color-surface", label: "卡片表面", light: "white", dark: "gray-900" },
       { token: "color-surface-hover", label: "表面悬停", light: "gray-100", dark: "gray-800" },
       {
+        token: "color-track",
+        label: "凹槽轨道底",
+        light: "gray-200",
+        dark: "gray-950",
+        note: "分段控件（Tabs solid / Segmented）的轨道底。定义是一条关系而非某个灰阶：恒比「卡片表面」沉一档，且亮暗两态都保证浮起的药丸更靠近观察者（亮色更亮、暗色也更亮）。别拿「表面悬停」顶替——亮色下它与白只差 3.3% 亮度，暗色下它比药丸还亮，凹凸是反的。",
+      },
+      {
         token: "color-subtle",
         label: "弱背景",
         light: "gray-100",
@@ -238,6 +245,10 @@ const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
   "color-bg": { label: "Page background" },
   "color-surface": { label: "Card surface" },
   "color-surface-hover": { label: "Hovered surface" },
+  "color-track": {
+    label: "Recessed track",
+    note: "The groove behind segmented controls (Tabs solid, Segmented). It is defined by a relationship rather than a fixed grey: always one step deeper than the card surface, and in both themes the raised pill must read as closer to the viewer. Do not substitute the hovered surface — in light mode it is only 3.3% lighter than white, and in dark mode it is lighter than the pill, which inverts the elevation.",
+  },
   "color-subtle": {
     label: "Subtle background",
     note: "Static area backgrounds: grouping containers, board columns, swim lanes, note strips. It currently resolves to the same value as the hovered surface but means something different — writing hover: for a permanent background is a semantic mismatch.",

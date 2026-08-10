@@ -34,6 +34,7 @@ export function Segmented({
   size = "md",
   className,
   "aria-label": ariaLabel,
+  ...rest
 }: SegmentedProps) {
   const firstEnabled = items.find((i) => !i.disabled)?.value;
   const [internal, setInternal] = useState<string | undefined>(defaultValue ?? firstEnabled);
@@ -125,12 +126,14 @@ export function Segmented({
 
   return (
     <div
+      {...rest}
       ref={rootRef}
       role="radiogroup"
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}
       className={cn(
-        "relative inline-flex items-center gap-1 rounded-[var(--radius)] bg-surface-hover p-1 text-foreground",
+        // bg-track：与 Tabs solid 同一个凹槽轨道语义，滑块用 bg-surface 浮在其上（#152）。
+        "relative inline-flex items-center gap-1 rounded-[var(--radius)] bg-track p-1 text-foreground",
         sizeClasses[size].root,
         disabled && "pointer-events-none opacity-50",
         className,

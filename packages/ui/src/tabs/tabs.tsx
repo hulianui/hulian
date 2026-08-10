@@ -16,7 +16,8 @@ export const tabsListVariants = cva("relative inline-flex items-center gap-1", {
   variants: {
     variant: {
       underline: "border-b border-border",
-      solid: "rounded-[var(--radius)] bg-surface-hover p-1",
+      // bg-track 而非 bg-surface-hover：后者与药丸的 bg-surface 亮色下只差 3.3%、暗色下方向还是反的（#152）。
+      solid: "rounded-[var(--radius)] bg-track p-1",
     },
   },
   defaultVariants: { variant: "underline" },
