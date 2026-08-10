@@ -953,3 +953,87 @@ describe("Table 虚拟滚动", () => {
     expect(container.querySelector('div[style*="overflow"]')).toBeNull();
   });
 });
+
+// jsdom 没有布局引擎：scrollWidth / clientWidth / getBoundingClientRect 恒为 0，
+// 所以「什么时候该出现」这条判据只能靠桩来驱动。这里桩的是**输入**（几何量），
+// 断言的是组件自己的判定与同步逻辑 —— 那才是会回归的部分。
+// 真实的滚动条外观与拖拽手感属于实机验证范畴，不在这里断言。
+describe("Table 底部悬浮横向滚动条", () => {
+  const stubGeometry = (
+    el: HTMLElement,
+    { scrollWidth, clientWidth, bottom }: { scrollWidth: number; clientWidth: number; bottom: number },
+  ) => {
+    Object.defineProperty(el, "scrollWidth", { value: scrollWidth, configurable: true });
+    Object.defineProperty(el, "clientWidth", { value: clientWidth, configurable: true });
+    el.getBoundingClientRect = () => ({ bottom }) as DOMRect;
+  };
+  const barOf = (container: HTMLElement) =>
+    container.querySelector<HTMLElement>('div[aria-hidden="true"].sticky');
+
+  it("不开启时不多出任何节点（DOM 与加这个 prop 之前一致）", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    expect(barOf(container)).toBeNull();
+    // 根节点仍是滚动容器本身，没有被多包一层
+    expect(container.firstElementChild!.className).toContain("overflow-x-auto");
+  });
+
+  it("开启后渲染代理条；内容不溢出时收起", () => {
+    const { container } = render(<Table columns={columns} data={data} stickyScrollbar />);
+    const bar = barOf(container);
+    expect(bar).not.toBeNull();
+    expect(bar!.classList.contains("hidden")).toBe(true);
+  });
+
+  it("溢出且表格底边在视口之下 → 显示，占位宽度等于 scrollWidth", () => {
+    const { container } = render(<Table columns={columns} data={data} stickyScrollbar />);
+    const scroller = container.querySelector<HTMLElement>(".overflow-x-auto")!;
+    stubGeometry(scroller, { scrollWidth: 1600, clientWidth: 800, bottom: 5000 });
+    fireEvent.scroll(window);
+    const bar = barOf(container)!;
+    expect(bar.classList.contains("hidden")).toBe(false);
+    expect((bar.firstElementChild as HTMLElement).style.width).toBe("1600px");
+  });
+
+  it("滚到表底（真滚动条自己看得见了）就收起，不并排出两条", () => {
+    const { container } = render(<Table columns={columns} data={data} stickyScrollbar />);
+    const scroller = container.querySelector<HTMLElement>(".overflow-x-auto")!;
+    stubGeometry(scroller, { scrollWidth: 1600, clientWidth: 800, bottom: 5000 });
+    fireEvent.scroll(window);
+    expect(barOf(container)!.classList.contains("hidden")).toBe(false);
+    stubGeometry(scroller, { scrollWidth: 1600, clientWidth: 800, bottom: 100 });
+    fireEvent.scroll(window);
+    expect(barOf(container)!.classList.contains("hidden")).toBe(true);
+  });
+
+  it("拖代理条 → 真容器跟着横向滚动", () => {
+    const { container } = render(<Table columns={columns} data={data} stickyScrollbar />);
+    const scroller = container.querySelector<HTMLElement>(".overflow-x-auto")!;
+    stubGeometry(scroller, { scrollWidth: 1600, clientWidth: 800, bottom: 5000 });
+    fireEvent.scroll(window);
+    const bar = barOf(container)!;
+    // jsdom 里元素不可滚动，scrollLeft 的赋值是 no-op、读回恒 0 —— 不接一个真属性
+    // 这条测的就只是「0 等于 0」，永远绿、什么都拦不住。
+    let barLeft = 0;
+    let scrollerLeft = 0;
+    Object.defineProperty(bar, "scrollLeft", {
+      get: () => barLeft,
+      set: (v: number) => (barLeft = v),
+      configurable: true,
+    });
+    Object.defineProperty(scroller, "scrollLeft", {
+      get: () => scrollerLeft,
+      set: (v: number) => (scrollerLeft = v),
+      configurable: true,
+    });
+    bar.scrollLeft = 320;
+    fireEvent.scroll(bar);
+    expect(scrollerLeft).toBe(320);
+  });
+
+  it("virtual 开启时不启用（容器定高，真滚动条一直看得见）", () => {
+    const { container } = render(
+      <Table columns={columns} data={data} stickyScrollbar virtual={{ enabled: true }} />,
+    );
+    expect(barOf(container)).toBeNull();
+  });
+});

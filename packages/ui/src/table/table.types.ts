@@ -216,6 +216,23 @@ export interface TableProps<TData> {
   // —— 虚拟滚动（不传=关·可选依赖）——
   virtual?: VirtualOptions;
 
+  /**
+   * 底部悬浮横向滚动条：宽表比视口高时，在视口底部常驻一条代理滚动条，
+   * 不必把整页滚到表底才够得着真正的横向滚动条。
+   *
+   * 只在**需要**时出现：内容确实横向溢出、且表格底边已在视口之下；
+   * 滚到表底（真滚动条自己看得见了）会自动收起，避免上下两条并排。
+   *
+   * 与 `meta.sticky` 冻结列共存（代理条在表格外，互不干涉）。
+   * **`virtual` 开启时本项无效**——虚拟滚动的容器是定高的，横向滚动条一直贴在容器底边。
+   *
+   * ⚠️ 开启后表格外会多包一层 `div`（`position: sticky` 的代理条必须是滚动容器的**兄弟**，
+   * 放进 `overflow-x-auto` 里面就只相对那个容器定位、永远贴不到视口底）。`className` 仍落在
+   * 内层滚动容器上，所以在 flex / grid 父容器里，成为 item 的是这层外壳而不是它。
+   * @default false
+   */
+  stickyScrollbar?: boolean;
+
   // —— 空态（data 为空时）——
   /** 空态文案（渲染进内置 <Empty> 标题）。默认取 locale.table.empty（zhCN「暂无数据」）。 */
   emptyText?: ReactNode;

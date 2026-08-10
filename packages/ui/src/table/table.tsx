@@ -1,5 +1,13 @@
 "use client";
-import { Fragment, createContext, useContext, useMemo, useRef, useState } from "react";
+import {
+  Fragment,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -443,6 +451,8 @@ export function Table<TData>({
   getRowCanDrag,
   // 虚拟滚动
   virtual,
+  // 底部悬浮横向滚动条
+  stickyScrollbar = false,
   // 空态
   emptyText,
   renderEmpty,
@@ -617,6 +627,63 @@ export function Table<TData>({
     estimateSize: () => rowHeight,
     overscan: virtual?.overscan ?? 8,
   });
+
+  // ── 底部悬浮横向滚动条（#149）────────────────────────────────────────────────
+  // 宽表比视口高时，真正的横向滚动条落在表格底边、被挤到折叠线以下 —— 想横向拖一下
+  // 得先把整页滚到表底。这里在表格外壳里再放一条 `position: sticky; bottom: 0` 的
+  // 代理滚动条：它只有一个撑到 scrollWidth 的空占位子元素，滚动位置与真容器双向同步。
+  //
+  // 三条实现要点，改动前先读懂：
+  //  1. 代理条必须是滚动容器的**兄弟**而不是子节点 —— 放进 `overflow-x-auto` 里面，
+  //     sticky 就只相对那个容器定位，永远贴不到视口底。所以开启时才多包一层外壳。
+  //  2. window 上的 scroll 监听走**捕获**（第三参 true）：scroll 事件不冒泡，
+  //     表格外面套着内层滚动容器（AdminLayout 的内容区就是）时，非捕获收不到。
+  //  3. 虚拟滚动下整个容器是定高的，横向滚动条本来就贴在容器底边、一直看得见，
+  //     这条代理条纯属多余，所以直接不启用。
+  const barRef = useRef<HTMLDivElement>(null);
+  const stickyBarEnabled = stickyScrollbar && !virtualEnabled;
+  const [bar, setBar] = useState({ width: 0, visible: false });
+
+  useEffect(() => {
+    if (!stickyBarEnabled) return;
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const sync = (event?: Event) => {
+      const barEl = barRef.current;
+      // 代理条自己滚动时**不能**回写它 —— window 上的捕获监听跑在目标自身的
+      // onScroll 之前，回写会把用户刚拖出来的位置抹回旧值，代理条当场拖不动。
+      // 镜像方向永远是「真容器 → 代理条」，反向由代理条的 onScroll 负责。
+      const fromBar = barEl !== null && event?.target === barEl;
+      // 滚动位置镜像走命令式，不进 state —— 每帧 setState 会让整张表重渲染。
+      if (barEl && !fromBar && barEl.scrollLeft !== el.scrollLeft) barEl.scrollLeft = el.scrollLeft;
+
+      const overflowing = el.scrollWidth - el.clientWidth > 1;
+      // 表格底边还在视口里时，真滚动条本来就够得着，再挂一条会变成上下两条并排。
+      const belowFold = el.getBoundingClientRect().bottom > window.innerHeight;
+      const next = { width: el.scrollWidth, visible: overflowing && belowFold };
+      // 返回同一个引用让 React bail out：不然滚动时每帧都是新对象。
+      setBar((prev) => (prev.width === next.width && prev.visible === next.visible ? prev : next));
+    };
+
+    sync();
+    // 容器尺寸与**表格本身**的宽度都要盯：拖列宽只改后者，只观察容器会漏掉。
+    // ResizeObserver 做存在性判断——jsdom 默认没有它，直接 new 会让整棵树挂掉。
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => sync());
+      ro.observe(el);
+      const tableEl = el.querySelector("table");
+      if (tableEl) ro.observe(tableEl);
+    }
+    window.addEventListener("scroll", sync, true);
+    window.addEventListener("resize", sync);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("scroll", sync, true);
+      window.removeEventListener("resize", sync);
+    };
+  }, [stickyBarEnabled]);
 
   const rowClass = (selected: boolean) =>
     cn(
@@ -990,9 +1057,44 @@ export function Table<TData>({
     </div>
   );
 
+  // 关掉时 DOM 与加这个 prop 之前逐字节一致：不多包外壳、不多出节点。
+  // 开启时这层外壳成了 flex/grid 父容器眼里的那个 item（`className` 仍落在内层滚动容器上），
+  // 所以补 min-w-0：flex item 默认 min-width:auto 不可压缩，宽表会把父容器撑破而不是内部横滚。
+  const framed = !stickyBarEnabled ? (
+    shell
+  ) : (
+    <div className="min-w-0">
+      {shell}
+      <div
+        ref={barRef}
+        aria-hidden
+        // 代理条本身不可聚焦、也不该被读屏念到：它只是真容器滚动位置的一面镜子。
+        onScroll={() => {
+          const el = scrollRef.current;
+          const barEl = barRef.current;
+          if (el && barEl && el.scrollLeft !== barEl.scrollLeft) el.scrollLeft = barEl.scrollLeft;
+        }}
+        className={cn(
+          "sticky bottom-0 z-[3] h-2.5 overflow-x-auto overflow-y-hidden",
+          // 显式画滚动条而不是听凭系统：macOS 默认是 overlay 滚动条（平时完全不可见，
+          // 且元素 offsetHeight-clientHeight 恒为 0），那样这条就成了一道空白，
+          // 与 issue 要的「常驻一条」正好相反。给 ::-webkit-scrollbar 定了尺寸即可
+          // 让 WebKit/Blink 退回经典常驻滚动条；Firefox 走 scrollbar-width/color。
+          "[scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]",
+          "[&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar-track]:bg-transparent",
+          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border",
+          "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground",
+          !bar.visible && "hidden",
+        )}
+      >
+        <div style={{ width: bar.width, height: 1 }} />
+      </div>
+    </div>
+  );
+
   // 未开拖拽就不挂 RowDndProvider：不执行 dnd-kit 的 hook、不注册 sensor、
   // 不挂 document 级监听、不产出 a11y live region
-  if (!dragEnabled) return shell;
+  if (!dragEnabled) return framed;
   return (
     <RowDndProvider
       onDragStart={handleDragStart}

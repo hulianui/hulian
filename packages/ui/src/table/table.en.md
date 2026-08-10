@@ -51,6 +51,7 @@ import { Table } from "@hulianui/ui"
 | dragHandle | `"row" \| "cell"` | `"cell"` | Uses the entire row or a prepended handle cell. |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | All rows | Disables dragging and drop targeting per row; nested rows are always disabled. |
 | virtual | `VirtualOptions` | Off | Optional virtualization: `{ enabled; rowHeight?=44; height?=480; overscan?=8 }`. |
+| stickyScrollbar | `boolean` | `false` | Floating horizontal scrollbar. When a wide table is taller than the viewport, a proxy scrollbar stays pinned to the bottom of the viewport so the table can be scrolled sideways without first scrolling to its last row. It appears only while the content actually overflows and the bottom edge of the table is below the fold, and it hides again once the real scrollbar comes into view. Works alongside pinned columns; **it has no effect when `virtual` is enabled**, because that container has a fixed height and always shows its own scrollbar. ⚠️ Enabling it wraps the table in one extra `div`, because a `position: sticky` proxy has to be a sibling of the scroll container. `className` still lands on the inner scroll container, so in a flex or grid parent the wrapper is the item, not the container. |
 | className | `string` | — | Root class name. |
 
 ## Events
