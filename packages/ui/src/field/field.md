@@ -30,6 +30,9 @@ import { Field } from "@hulianui/ui"
 | name | `string` | — | 提交标识，透传 Field.Root |
 | colSpan | `"full"` | — | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
 | className | `string` | — | 落在 Field.Root（纵向布局容器） |
+| labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
+| descriptionClassName | `string` | — | 追加到 description（默认 `text-xs text-muted-foreground`） |
+| errorClassName | `string` | — | 追加到 error（默认 `text-xs text-danger`） |
 
 ## Slots
 

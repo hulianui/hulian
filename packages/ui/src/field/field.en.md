@@ -30,6 +30,9 @@ import { Field } from "@hulianui/ui"
 | name | `string` | — | Field name forwarded to the underlying `Field.Root`. |
 | colSpan | `"full"` | — | Spans the full row in a ProForm column grid; has no effect outside that grid. |
 | className | `string` | — | Additional class name for the vertical `Field.Root` container. |
+| labelClassName | `string` | — | Appended to the label, whose default is `text-sm font-medium text-foreground`. Classes are merged with twMerge, so passing `text-xs` overrides the default size. |
+| descriptionClassName | `string` | — | Appended to the description, whose default is `text-xs text-muted-foreground`. |
+| errorClassName | `string` | — | Appended to the error message, whose default is `text-xs text-danger`. |
 
 ## Slots
 

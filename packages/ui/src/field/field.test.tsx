@@ -45,6 +45,33 @@ describe("Field", () => {
     expect(label.getAttribute("for")).toBe(input.id);
   });
 
+  it("三段 className 出口经 twMerge 顶掉默认字号，a11y 串联不受影响(#153)", () => {
+    const { getByText, container } = render(
+      <Field
+        label="参保状态"
+        description="按月同步"
+        error="不能为空"
+        labelClassName="text-xs text-muted-foreground"
+        descriptionClassName="text-[11px]"
+        errorClassName="text-[11px]"
+      >
+        <Input />
+      </Field>,
+    );
+    const label = getByText("参保状态");
+    // 同族类被顶掉而不是并存 —— 并存的话两条 font-size 规则谁赢取决于 CSS 顺序，等于没改。
+    expect(label.className).toContain("text-xs");
+    expect(label.className).not.toContain("text-sm");
+    expect(label.className).toContain("text-muted-foreground");
+    expect(label.className).not.toContain("text-foreground ");
+    expect(getByText("按月同步").className).toContain("text-[11px]");
+    expect(getByText("不能为空").className).toContain("text-[11px]");
+    // 出口只动样式：label↔控件、error↔aria-describedby 这些关系必须原样还在。
+    const input = container.querySelector("input")!;
+    expect(label.getAttribute("for")).toBe(input.id);
+    expect(input.getAttribute("aria-describedby") ?? "").toContain(getByText("不能为空").id);
+  });
+
   it("无 error 时不渲染错误节点", () => {
     const { queryByText } = render(
       <Field label="邮箱">
