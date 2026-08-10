@@ -902,6 +902,7 @@
     "GlitchText": "glitch-text",
     "Heading": "heading",
     "Kbd": "kbd",
+    "LineShadowText": "line-shadow-text",
     "Markdown": "markdown",
     "parseBlocks": "markdown",
     "Prose": "prose",
@@ -1005,6 +1006,7 @@
     "spacingSides": "inspector-panel",
     "tokenColor": "inspector-panel",
     "typographyFields": "inspector-panel",
+    "InteractiveHoverButton": "interactive-hover-button",
     "IssueReporter": "issue-reporter",
     "IssueReporterModal": "issue-reporter",
     "BUILTIN_ISSUE_TEMPLATES": "issue-reporter",
@@ -4211,6 +4213,73 @@
       ]
     },
     {
+      "slug": "line-shadow-text",
+      "name": "LineShadowText",
+      "category": "typography",
+      "group": "text",
+      "status": "enriched",
+      "import": "import { LineShadowText } from \"@hulianui/ui\"",
+      "exports": [
+        "LineShadowText"
+      ],
+      "types": [
+        "LineShadowTextProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/line-shadow-text/line-shadow-text.md",
+      "props": [
+        {
+          "name": "children",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "要加投影的文字。**只接受字符串**：投影层是同一段文字的副本，非文本节点没法复刻"
+        },
+        {
+          "name": "shadowColor",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "var(--color-foreground)",
+          "description": "投影色。喂 token 必须带 `--color-` 前缀，裸 `var(--primary)` 在 Tailwind v4 的 `@theme` 里不解析"
+        },
+        {
+          "name": "offset",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"0.04em\"",
+          "description": "投影相对本体的偏移量。用 `em` 所以随字号成比例"
+        },
+        {
+          "name": "lineWidth",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"0.06em\"",
+          "description": "斜线的粗细 / 间距。调大变粗条纹，调小接近实心影"
+        },
+        {
+          "name": "animated",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "让斜线沿对角缓慢流动。默认关闭见「禁忌 / 坑」"
+        },
+        {
+          "name": "duration",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"15s\"",
+          "description": "一轮流动的秒数；仅 `animated` 为真时生效"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    {
       "slug": "markdown",
       "name": "Markdown",
       "category": "typography",
@@ -4513,6 +4582,14 @@
           "type": "number",
           "default": "4",
           "description": "`enableBlur` 为真时词的起始模糊半径（px），随进度降到 0"
+        },
+        {
+          "name": "scrollContainerRef",
+          "required": false,
+          "kind": "other",
+          "type": "RefObject<HTMLElement | null>",
+          "default": "自动探测",
+          "description": "驱动动画的滚动容器。**默认自动探测最近的可滚动祖先**，落在内部滚动区（抽屉 / 弹层 / 画廊预览框）里也能正常走进度，通常不需要传。只有当滚动源不是 DOM 祖先（例如自定义滚动实现）时才需要显式指定"
         }
       ],
       "events": [],
@@ -7134,6 +7211,22 @@
           "type": "string",
           "default": null,
           "description": "无障碍标签"
+        },
+        {
+          "name": "color",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "任意 CSS 颜色串，同时是该色块的选中值（与 `value` 严格相等比较）"
+        },
+        {
+          "name": "label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "回退到 `color` 本身",
+          "description": "无障碍名与 hover 提示。喂 token 色（`var(--color-primary)`）时**务必**给，否则读屏会念出变量名"
         }
       ],
       "events": [
@@ -8701,7 +8794,20 @@
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸（CVA 变体，覆盖原生 size）"
+          "description": "尺寸（CVA 变体，覆盖原生 size）。`variant=\"cell\"` 下只影响字号，不再有高度与内距"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"cell\"",
+          "values": [
+            "default",
+            "cell"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距、不占固定行高，焦点态用浅底 + 内嵌下划线代替焦点环"
         },
         {
           "name": "invalid",
@@ -9104,6 +9210,93 @@
       "slots": []
     },
     {
+      "slug": "interactive-hover-button",
+      "name": "InteractiveHoverButton",
+      "category": "forms",
+      "group": "button",
+      "status": "enriched",
+      "import": "import { InteractiveHoverButton } from \"@hulianui/ui\"",
+      "exports": [
+        "InteractiveHoverButton"
+      ],
+      "types": [
+        "InteractiveHoverButtonProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/interactive-hover-button/interactive-hover-button.md",
+      "props": [
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档，与 [Button](../button/button.md) 一一对应（32 / 40 / 48px 高），可与普通按钮混排等高"
+        },
+        {
+          "name": "background",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "var(--color-primary)",
+          "description": "展开后的底色"
+        },
+        {
+          "name": "foreground",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "var(--color-primary-foreground)",
+          "description": "展开后的文字色"
+        },
+        {
+          "name": "dotColor",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "跟随 `background`",
+          "description": "静息态那颗小圆点的颜色"
+        },
+        {
+          "name": "duration",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"0.4s\"",
+          "description": "展开动画时长"
+        },
+        {
+          "name": "icon",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "右箭头",
+          "description": "悬停层右侧的尾随图标；传 `null` 去掉"
+        },
+        {
+          "name": "render",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「落地页主 CTA 是个链接」。样式与内部两层结构会合并进该元素，文案仍取 `children`"
+        }
+      ],
+      "events": [],
+      "slots": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "按钮文案。静息层与悬停层各渲染一份，悬停层整层 `aria-hidden`，所以可访问名只有一份"
+        }
+      ]
+    },
+    {
       "slug": "issue-reporter",
       "name": "IssueReporter",
       "category": "forms",
@@ -9285,6 +9478,14 @@
           "type": "boolean",
           "default": null,
           "description": "仅 Modal：受控 / 非受控开关"
+        },
+        {
+          "name": "onOpenChange",
+          "required": false,
+          "kind": "function",
+          "type": "(open: boolean) => void",
+          "default": null,
+          "description": "仅 Modal：开合回调（受控时必接）"
         },
         {
           "name": "trigger",
@@ -9523,6 +9724,22 @@
           "type": "boolean",
           "default": "true",
           "description": "是否显示「记住我」"
+        },
+        {
+          "name": "rememberLabel",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "取自 locale",
+          "description": "「记住我」的标签文案。这个勾选并不总是「下次免登录」的体验糖 —— 有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token），文案是刻意写的，锁死在 locale 就没法用了（#64）"
+        },
+        {
+          "name": "rememberDescription",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "「记住我」下方的一行说明（解释这个勾选到底意味着什么）"
         },
         {
           "name": "rules",
@@ -11864,6 +12081,15 @@
           "description": "选项数据；Base UI 据此让 Trigger 显示选中项 label"
         },
         {
+          "name": "defaultValue",
+          "owner": "Select",
+          "required": false,
+          "kind": "other",
+          "type": "string | string[] | null",
+          "default": "null",
+          "description": "非受控初值：单选 `string ｜ null`，`multiple` 时 `string[]`"
+        },
+        {
           "name": "placeholder",
           "owner": "Select",
           "required": false,
@@ -12628,7 +12854,20 @@
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸（CVA 变体，覆盖原生 size）"
+          "description": "尺寸（CVA 变体，覆盖原生 size）。`variant=\"cell\"` 下只影响字号，不再有内距"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"cell\"",
+          "values": [
+            "default",
+            "cell"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距，高度由 CSS `field-sizing: content` 跟随内容，焦点态用浅底 + 内嵌下划线代替焦点环"
         },
         {
           "name": "invalid",
@@ -12651,7 +12890,7 @@
           "required": false,
           "kind": "number",
           "type": "number",
-          "default": "3",
+          "default": "`3`（`variant=\"cell\"` 时 `1`）",
           "description": "初始/最小行高"
         },
         {
@@ -13233,6 +13472,38 @@
           "type": "string",
           "default": null,
           "description": "容器类名"
+        },
+        {
+          "name": "key",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键，也是 `targetKeys` 的取值"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "条目主文案"
+        },
+        {
+          "name": "description",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "次级描述（label 下方弱化小字）"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "该条不可选、不可移动"
         }
       ],
       "events": [
@@ -13648,6 +13919,30 @@
           "type": "string",
           "default": "\"处理中…\"",
           "description": "processing 态文案"
+        },
+        {
+          "name": "pressAndHold",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "按住说话模式（GPT-Live 风格）：按下开始、松开结束，走 `onPress` / `onRelease`；`false` 时是点击切换，走 `onToggle`"
+        },
+        {
+          "name": "onPress",
+          "required": false,
+          "kind": "function",
+          "type": "() => void",
+          "default": null,
+          "description": "idle 态按下回调（仅 `pressAndHold` 为真时）"
+        },
+        {
+          "name": "onRelease",
+          "required": false,
+          "kind": "function",
+          "type": "() => void",
+          "default": null,
+          "description": "recording 态松开回调（仅 `pressAndHold` 为真时）"
         }
       ],
       "events": [],
@@ -13955,7 +14250,7 @@
           "kind": "array",
           "type": "AvatarCirclesItem[]",
           "default": null,
-          "description": "头像列表（按序堆叠，后者压前者）。每项 `{ src: string; alt?: string }`。"
+          "description": "头像列表（按序堆叠，后者压前者），见下表。"
         },
         {
           "name": "extraCount",
@@ -13986,6 +14281,22 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "src",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "头像图片地址。这里没有 fallback 槽（与单个 Avatar 不同），缺图会留一个空圆"
+        },
+        {
+          "name": "alt",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "图片替代文本"
         }
       ],
       "events": [],
@@ -14121,6 +14432,14 @@
           "type": "string",
           "default": null,
           "description": "配合 href；`_blank` 时自动补 `rel=\"noreferrer noopener\"`"
+        },
+        {
+          "name": "rel",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "显式覆盖上面那条自动补的 `rel`（如只想要 `noopener`）"
         },
         {
           "name": "className",
@@ -15224,6 +15543,78 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传根容器内联样式"
+        },
+        {
+          "name": "image",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "卡片头图地址（人像 / 封面）。缺省时只渲染文字区"
+        },
+        {
+          "name": "title",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "主标题（姓名 / 名称）"
+        },
+        {
+          "name": "subtitle",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "副标题（角色 / 描述行）"
+        },
+        {
+          "name": "handle",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "句柄（如 `@name`），渲染在副标题同行左侧"
+        },
+        {
+          "name": "location",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "补充行（如地点），渲染在副标题同行右侧"
+        },
+        {
+          "name": "borderColor",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "卡片描边色，hover 时亮起为此色。建议喂 `var(--color-chart-1)`~`var(--color-chart-5)`"
+        },
+        {
+          "name": "gradient",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "卡片背景渐变，形如 `linear-gradient(145deg, var(--color-chart-1), transparent)`。⚠️ 卡面是**暗色上下文**：组件在这层渐变**下面**恒垫一层中性深色基底，所以 `transparent` 端露出的是深色而不是页面底色，亮色主题下也不会「白字压浅底」（#129）"
+        },
+        {
+          "name": "url",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "点击跳转地址。提供时卡片可点击（新标签打开），否则光标为默认态"
+        },
+        {
+          "name": "children",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "覆盖默认的「头图 + 文字」布局"
         }
       ],
       "events": [],
@@ -15307,6 +15698,22 @@
           "type": "string",
           "default": null,
           "description": "透传根容器类名"
+        },
+        {
+          "name": "image",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "程序化渐变占位图",
+          "description": "卡片图片地址（远程 URL / data URI / 本地静态资源均可）。留空则用 chart token 程序化生成渐变占位图，离线可用且随明暗主题"
+        },
+        {
+          "name": "text",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "卡片下方标题文字"
         }
       ],
       "events": [],
@@ -15691,6 +16098,150 @@
           "type": "string",
           "default": null,
           "description": "外层类名。**须给确定高度**（如 `h-[560px]`），组件内部按 flex 填满、各区独立滚动"
+        },
+        {
+          "name": "slug",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键，也是 `onSelect` 的第一个入参"
+        },
+        {
+          "name": "name",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "展示名（PascalCase 导出名）"
+        },
+        {
+          "name": "description",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "一句话说明"
+        },
+        {
+          "name": "category",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "一级分类（layout / forms / data-display…）"
+        },
+        {
+          "name": "group",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "二级分组（container / advanced / collection…）；无分组给空串"
+        },
+        {
+          "name": "tags",
+          "required": false,
+          "kind": "array",
+          "type": "string[]",
+          "default": null,
+          "description": "搜索用的补充关键词"
+        },
+        {
+          "name": "props",
+          "required": false,
+          "kind": "array",
+          "type": "ComponentPickerProp[]",
+          "default": null,
+          "description": "详情面板的 Props 表数据，每项 `{ name, type?, default?, description?, required? }`"
+        },
+        {
+          "name": "examples",
+          "required": false,
+          "kind": "array",
+          "type": "ComponentPickerExample[]",
+          "default": null,
+          "description": "详情面板的示例代码，每项 `{ title?, lang?, code }`"
+        },
+        {
+          "name": "items",
+          "required": true,
+          "kind": "array",
+          "type": "ComponentPickerItem[]",
+          "default": null,
+          "description": "同上"
+        },
+        {
+          "name": "open",
+          "required": true,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "受控开关"
+        },
+        {
+          "name": "onOpenChange",
+          "required": true,
+          "kind": "function",
+          "type": "(open: boolean) => void",
+          "default": null,
+          "description": "开合回调"
+        },
+        {
+          "name": "onSelect",
+          "required": false,
+          "kind": "function",
+          "type": "(slug: string) => void",
+          "default": null,
+          "description": "选中某项"
+        },
+        {
+          "name": "placeholder",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "取 locale",
+          "description": "搜索框占位"
+        },
+        {
+          "name": "emptyMessage",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "取 locale",
+          "description": "无匹配结果时的文案"
+        },
+        {
+          "name": "maxResults",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "30",
+          "description": "最多渲染多少条（注意与 `ComponentPickerProps` 的 60 不同）"
+        },
+        {
+          "name": "groupByCategory",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "按 category 分组，每组一个 heading"
+        },
+        {
+          "name": "shortcut",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "内置 ⌘K / Ctrl+K 开合"
+        },
+        {
+          "name": "aria-label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "取 locale",
+          "description": "面板的无障碍名"
         }
       ],
       "events": [
@@ -16256,6 +16807,66 @@
           "type": "string",
           "default": null,
           "description": "容器自定义类"
+        },
+        {
+          "name": "id",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "去重键：内部按它判断该条是否已上屏，只对未上屏的做入场"
+        },
+        {
+          "name": "text",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "弹幕内容"
+        },
+        {
+          "name": "mode",
+          "required": false,
+          "kind": "enum",
+          "type": "\"scroll\" | \"top\" | \"bottom\"",
+          "values": [
+            "scroll",
+            "top",
+            "bottom"
+          ],
+          "valueType": "string",
+          "default": "\"scroll\"",
+          "description": "滚动 / 顶部悬停 / 底部悬停"
+        },
+        {
+          "name": "color",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "继承前景 token",
+          "description": "文字色"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "字号档"
+        },
+        {
+          "name": "bold",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "加粗"
         }
       ],
       "events": [],
@@ -16515,6 +17126,22 @@
           "type": "DescriptionsItemData[]",
           "default": null,
           "description": "数据驱动备选；提供时优先于 `DescriptionsItem` 子节点"
+        },
+        {
+          "name": "label",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "键名"
+        },
+        {
+          "name": "span",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "1",
+          "description": "跨列数"
         }
       ],
       "events": [],
@@ -16710,6 +17337,46 @@
           "type": "MutableRefObject<DesignCanvasApi | null>",
           "default": null,
           "description": "命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas）"
+        },
+        {
+          "name": "id",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键，也是 `selectedElement` 的取值"
+        },
+        {
+          "name": "x * / y",
+          "required": true,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "左上角在世界坐标里的位置"
+        },
+        {
+          "name": "width * / height",
+          "required": true,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "宽高（世界单位）"
+        },
+        {
+          "name": "locked",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "锁定：不可拖动、不出 resize 手柄（仍可选中、仍可 Tab 到）"
+        },
+        {
+          "name": "label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "回退到 `id`",
+          "description": "无障碍名"
         }
       ],
       "events": [
@@ -18673,6 +19340,38 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传到根容器的内联样式"
+        },
+        {
+          "name": "image",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "卡面图片 URL（铺满圆形卡片，object-cover 居中裁切）。省略时仅显示标题首字"
+        },
+        {
+          "name": "title",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "标题，激活时显示在覆盖层"
+        },
+        {
+          "name": "description",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "描述，激活时显示在覆盖层副文案"
+        },
+        {
+          "name": "link",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "点击动作箭头时跳转的链接；以 `http` 开头则新标签打开，否则交给 `onItemActivate` 回调处理"
         }
       ],
       "events": [
@@ -19137,6 +19836,38 @@
           "type": "ListLoadMore",
           "default": null,
           "description": "「加载更多」配置(底部按钮 + loading)"
+        },
+        {
+          "name": "actions",
+          "required": false,
+          "kind": "array",
+          "type": "ReactNode[]",
+          "default": null,
+          "description": "行右侧操作区（按钮组），多个项之间自动加分隔线"
+        },
+        {
+          "name": "avatar",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "头像 / 图标（dogfood 复用 Avatar）"
+        },
+        {
+          "name": "title",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标题"
+        },
+        {
+          "name": "description",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "描述"
         }
       ],
       "events": [],
@@ -19238,6 +19969,61 @@
           "type": "string",
           "default": null,
           "description": "容器自定义类"
+        },
+        {
+          "name": "id",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "去重键"
+        },
+        {
+          "name": "type",
+          "required": true,
+          "kind": "enum",
+          "type": "\"message\" | \"gift\" | \"system\" | \"enter\"",
+          "values": [
+            "message",
+            "gift",
+            "system",
+            "enter"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "条目类型，决定渲染成哪一种行"
+        },
+        {
+          "name": "user",
+          "required": false,
+          "kind": "other",
+          "type": "LiveChatUser",
+          "default": null,
+          "description": "发送者 `{ name, avatar?, badge?, level? }`；`system` 类型可省"
+        },
+        {
+          "name": "text",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "`message` 类型的正文"
+        },
+        {
+          "name": "gift",
+          "required": false,
+          "kind": "other",
+          "type": "{ name: string; icon?: ReactNode; combo?: number }",
+          "default": null,
+          "description": "`gift` 类型的礼物信息"
+        },
+        {
+          "name": "at",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "时间戳文本（原样展示，不做格式化）"
         }
       ],
       "events": [],
@@ -19824,6 +20610,54 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传到根网格容器的内联样式"
+        },
+        {
+          "name": "label",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "卡片小标签（顶部弱化文案），如「Insights」"
+        },
+        {
+          "name": "title",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "卡片标题"
+        },
+        {
+          "name": "description",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "卡片描述（正文）"
+        },
+        {
+          "name": "children",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "传了即覆盖 label/title/description 默认布局，自定义卡内结构"
+        },
+        {
+          "name": "colSpan",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "1",
+          "description": "网格跨列数（CSS grid column span），用于拼出大小不一的 bento 布局"
+        },
+        {
+          "name": "rowSpan",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "1",
+          "description": "网格跨行数（CSS grid row span）"
         }
       ],
       "events": [],
@@ -20901,6 +21735,22 @@
           "type": "string",
           "default": null,
           "description": "外层类名"
+        },
+        {
+          "name": "id",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键"
+        },
+        {
+          "name": "laneId",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "所属泳道 id。须命中某个 `lanes[].id`，否则该项被丢弃"
         }
       ],
       "events": [
@@ -21579,6 +22429,14 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传到滚动容器根节点的内联样式"
+        },
+        {
+          "name": "itemClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到单张卡片外层的自定义类名"
         }
       ],
       "events": [
@@ -21735,6 +22593,15 @@
           "type": "string",
           "default": null,
           "description": "配合 href；`_blank` 时自动补 `rel=\"noreferrer noopener\"`（显式传 rel 优先）"
+        },
+        {
+          "name": "rel",
+          "owner": "ShieldBadge",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "显式覆盖上面那条自动补的 `rel`"
         },
         {
           "name": "className",
@@ -21985,6 +22852,30 @@
           "type": "number",
           "default": null,
           "description": "归一化上界，不传从数据推"
+        },
+        {
+          "name": "baseline",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "基准线：在该数值处画一条横向虚线，让序列有个「对比的参照」而不只是形状。典型用法是上期均值 / 目标值 / 及格线。不传 `min`/`max` 时会把基准值一并纳入归一化域，保证它落在视口内而不是被裁到外面"
+        },
+        {
+          "name": "baselineTone",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "var(--color-muted-foreground)",
+          "description": "基准线颜色。取值同 `tone`（语义色名 / 任意 CSS 颜色 / 变量）"
+        },
+        {
+          "name": "baselineLabel",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "基准线的原生 tooltip 文案（渲染为 SVG `<title>`）"
         },
         {
           "name": "className",
@@ -23985,6 +24876,30 @@
           "type": "() => HTMLElement | null",
           "default": "`undefined`(window)",
           "description": "自定义滚动容器；页面真正的滚动体不是 window 时**必须传**"
+        },
+        {
+          "name": "href",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "目标锚点，形如 `\"#section-id\"`，与页面元素 id 一一对应"
+        },
+        {
+          "name": "title",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "目录里显示的标题"
+        },
+        {
+          "name": "children",
+          "required": false,
+          "kind": "array",
+          "type": "AnchorItem[]",
+          "default": null,
+          "description": "二级子项（仅一层）"
         }
       ],
       "events": [
@@ -24324,6 +25239,14 @@
           "type": "string",
           "default": null,
           "description": "默认 `fixed` 贴视口右下；可覆盖为 `absolute` 收进局部容器。"
+        },
+        {
+          "name": "aria-label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "跟随 `ConfigProvider`",
+          "description": "回顶按钮的无障碍名；不传时取当前 locale 的默认文案。"
         }
       ],
       "events": [
@@ -24513,6 +25436,30 @@
           "type": "BreadcrumbItem[]",
           "default": null,
           "description": "路径项数组，从根到当前页自左向右"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "显示内容"
+        },
+        {
+          "name": "href",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "链接地址；省略则该项不可点（当前页或不可导航的祖先）"
+        },
+        {
+          "name": "current",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "显式标记为当前页；缺省时数组末项即当前页"
         }
       ],
       "events": [],
@@ -24594,6 +25541,46 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传根 nav 内联样式"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "链接文案"
+        },
+        {
+          "name": "href",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "跳转地址"
+        },
+        {
+          "name": "ariaLabel",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "回退到 `label`",
+          "description": "无障碍标签"
+        },
+        {
+          "name": "rotation",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "桌面端胶囊的旋转角度（度），营造手作错落感；移动端自动归零"
+        },
+        {
+          "name": "hoverStyles",
+          "required": false,
+          "kind": "other",
+          "type": "{ bgColor?: string; textColor?: string }",
+          "default": null,
+          "description": "悬停反色配置"
         }
       ],
       "events": [
@@ -24668,6 +25655,38 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传根容器内联样式"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "卡片大标题"
+        },
+        {
+          "name": "links",
+          "required": false,
+          "kind": "array",
+          "type": "CardNavLink[]",
+          "default": null,
+          "description": "卡片内的链接列表，每项 `{ label, href?, ariaLabel? }`"
+        },
+        {
+          "name": "bgColor",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "`bg-surface` 令牌",
+          "description": "卡片底色，任意 CSS 颜色串。建议用 `var(--color-chart-1)`~`var(--color-chart-5)` 做品牌色块"
+        },
+        {
+          "name": "textColor",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "`text-foreground` 令牌",
+          "description": "卡片文字色"
         }
       ],
       "events": [
@@ -25217,6 +26236,30 @@
           "type": "number",
           "default": "4",
           "description": "单个文字块里重复的份数（撑满并保证无缝循环）"
+        },
+        {
+          "name": "link",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "跳转链接"
+        },
+        {
+          "name": "text",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "文案，同时作主标题与揭幕跑马灯文字"
+        },
+        {
+          "name": "image",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "跑马灯里循环穿插的图片地址。留空则只跑文字，不渲染图片块"
         }
       ],
       "events": [],
@@ -25308,6 +26351,22 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传根容器内联样式"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "显示文案"
+        },
+        {
+          "name": "href",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"#\"",
+          "description": "链接地址"
         }
       ],
       "events": [
@@ -25927,6 +26986,70 @@
           "type": "string[]",
           "default": null,
           "description": "展开态（非受控初值）"
+        },
+        {
+          "name": "key",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键，也是选中 / 展开态的取值"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "行文案"
+        },
+        {
+          "name": "icon",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "行首图标；`collapsed` 模式下是收起态唯一可视内容"
+        },
+        {
+          "name": "href",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "叶子链接：提供则渲染 `<a>`（点击导航），否则渲染 `<button>`。父项忽略"
+        },
+        {
+          "name": "render",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "渲染成自定义元素（框架路由件：`<Link to=… />` / `<NextLink href=… />`）。皮肤 class、ref、键盘漫游属性与点击回调都会合并进去 —— 于是「真链接语义（中键新标签页 / 右键复制 / 读屏播报为链接）」与「客户端路由」可以同时拿到。与 Button / Link 的 `render` 约定一致。父项（有 `children`）忽略"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "不可点、不进键盘漫游"
+        },
+        {
+          "name": "actions",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "行尾操作区（如删除 / 更多按钮）。渲染在该行 treeitem 按钮/链接**之外**（绝对覆盖行右侧），避免把 `<button>` 嵌进 treeitem 按钮造成非法 HTML / hydration 报错。可用组件暴露的 `group-hover/nav-row` 钩子做「hover 才显」。仅 `inline` 态生效"
+        },
+        {
+          "name": "children",
+          "required": false,
+          "kind": "array",
+          "type": "NavMenuNode[]",
+          "default": null,
+          "description": "子项；有它即为可展开父项"
         }
       ],
       "events": [
@@ -26189,6 +27312,30 @@
           "type": "string",
           "default": null,
           "description": "合并到根 `<nav>` 的类名"
+        },
+        {
+          "name": "href",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "链接地址（http/https/mailto/tel/# 外链或站内路由皆可，组件只渲染 `<a>`）"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "显示文案"
+        },
+        {
+          "name": "ariaLabel",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "回退到 `label`",
+          "description": "无障碍标签"
         }
       ],
       "events": [],
@@ -26287,6 +27434,70 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "key",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键，也是 `activeKey` 的取值"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "页签文案"
+        },
+        {
+          "name": "icon",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标签前的小图标"
+        },
+        {
+          "name": "closable",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "见下",
+          "description": "是否可关闭。默认规则：`pinned` 的恒不可关；其余在「可关闭页签数 > 1」时可关（关到只剩一个就停手，免得内容区空白）"
+        },
+        {
+          "name": "pinned",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "固定页签：恒不可关、排在最前，且不受「关闭其他 / 全部」影响"
+        },
+        {
+          "name": "key",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "菜单项键，回调里据此分辨"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "菜单项文案"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "置灰不可点"
         }
       ],
       "events": [
@@ -26440,6 +27651,30 @@
           "type": "CSSProperties",
           "default": null,
           "description": "透传根容器内联样式"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "条目文案（大号标题）"
+        },
+        {
+          "name": "link",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "跳转链接；缺省渲染为不可跳转的 `<span>`"
+        },
+        {
+          "name": "ariaLabel",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "回退到 `label`",
+          "description": "无障碍标签"
         }
       ],
       "events": [
@@ -26507,6 +27742,14 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "步骤文案"
         }
       ],
       "events": [],
@@ -27335,6 +28578,24 @@
           "type": "Element | Ref",
           "default": null,
           "description": "就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器"
+        },
+        {
+          "name": "showClose",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "是否渲染右上角内置关闭按钮"
+        },
+        {
+          "name": "closeLabel",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "取自 locale",
+          "description": "内置关闭按钮的无障碍名（默认取 `locale.drawer.close`）"
         },
         {
           "name": "className",
@@ -29416,6 +30677,22 @@
           "type": "string",
           "default": null,
           "description": "容器附加类"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "字段名（渲染为 `<dt>`）"
+        },
+        {
+          "name": "value",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "字段值（渲染为 `<dd>`）"
         }
       ],
       "events": [
@@ -29529,6 +30806,22 @@
           "type": "string",
           "default": null,
           "description": "容器类名"
+        },
+        {
+          "name": "archivedLabel",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "取自 locale",
+          "description": "自动进度前缀。服务端渲染场景可显式传入本地化文案"
+        },
+        {
+          "name": "optionalLabel",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "取自 locale",
+          "description": "可选域标记。服务端渲染场景可显式传入本地化文案"
         }
       ],
       "events": [],
@@ -30056,6 +31349,38 @@
           "type": "string",
           "default": null,
           "description": "容器附加类"
+        },
+        {
+          "name": "id",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键，也是 `onSelect` 的入参"
+        },
+        {
+          "name": "title",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "会话标题"
+        },
+        {
+          "name": "meta",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "次行元信息（相对时间 / 摘要）"
+        },
+        {
+          "name": "active",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "当前打开的会话，高亮"
         }
       ],
       "events": [
@@ -40887,6 +42212,62 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "key",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "唯一键，也是 `value` 的取值"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "页签文案"
+        },
+        {
+          "name": "icon",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "默认态图标"
+        },
+        {
+          "name": "activeIcon",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "复用 `icon`",
+          "description": "激活态图标"
+        },
+        {
+          "name": "dot",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "红点提示"
+        },
+        {
+          "name": "badge",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "角标内容（数字 / 文本），优先于 `dot`"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用该页签"
         }
       ],
       "events": [

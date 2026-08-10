@@ -4,6 +4,26 @@
 
 ### Minor Changes
 
+- `Input` / `Textarea` 新增 `variant="cell"`：表格里的就地编辑器（#149） <!-- parity-id: input-textarea-cell-variant -->
+
+  中后台有一类页面是「长得像表格的表单」——表头是字段名，单元格本身就是输入框。此前往 `Table` 的 `cell` 里塞瑚琏 `Input`，拿到的是带边框外壳 + 固定行高的独立控件，密集表格当场变成一片框；要做成能看的样子得在调用处覆盖一长串 `border-0 bg-transparent p-0 focus-visible:ring-0 …`，而那正是约定里明令禁止的调用处补丁。
+
+  `variant="cell"` 卸掉整身外壳（无边框 / 透明底 / 零内距 / 不占固定行高），`Textarea` 还把高度交给 CSS `field-sizing: content`，`rows` 下限在该档默认为 `1`。焦点态换成**浅底 + 内嵌下划线**而不是焦点环：焦点环有 2px 环 + 2px offset，在无内距的单元格里会溢出去顶到相邻格；内嵌下划线画在盒内，零布局位移。
+
+  两处调用处补丁尤其难自查，所以别再手写：`focus-visible:ring-0` 清不掉 `ring-offset`（残留一圈底色描边），而默认外壳的固定行高是 `h-10` 不是 padding，`p-0` 覆盖不掉。
+
+- 新增 `LineShadowText` / `InteractiveHoverButton`（#151） <!-- parity-id: line-shadow-text-and-interactive-hover-button -->
+
+  两件都是落地页 / 营销面的缺口。`LineShadowText` 给品牌词加一层斜向的**硬边**投影（不是 `text-shadow` 那种模糊），是文字特效族里最克制的一档：默认不动、无 RAF、纯 CSS，打印页与 `prefers-reduced-motion` 环境都能用；投影层是真 DOM 节点 + `aria-hidden` 而不是 `::after` + `content: attr()`，避免读屏把同一个词念两遍。`InteractiveHoverButton` 是悬停展开的主 CTA：静息「小圆点 + 文案」，悬停或**聚焦**时圆点扩成整块底色并换出箭头。
+
+  展开实现与上游不同：上游把一颗 2px 圆点 `scale(100.8)`，那是按某个按钮宽度反推的魔数，按钮再宽就盖不满、边角露出静息底色，且是静默失败。这里用 `clip-path: circle(150% …)`——百分比按参照框对角线解析，任何宽度都必然铺满。
+
+- 44 个组件、125 个「类型里有、文档表格里查不到」的字段补进文档，并做成 CI 门禁（#150 第三条） <!-- parity-id: component-doc-props-coverage-gate -->
+
+  主要形态是 **item 形状的接口**：`BreadcrumbItem` / `NavMenuItem` / `TabBarItem` / `RouteTabItem` / `ChromaGridItem` 这类通过数组 prop 传进去的东西。根组件的 props 表大多写得全，但「数组里每一项长什么样」是系统性缺的——而这恰恰是消费方最需要查的：根组件的 prop 只告诉你 `items: XxxItem[]`，`XxxItem` 里有什么就没了下文。此前这些形状大多写在散文里（`AnchorItem`：`{ href; title; children? }`），读表的人与 `format="json"` 的工具链都拿不到。
+
+  新门禁 `pnpm docs:check:props` 从 TypeScript AST 取 `Props` / `Item` 结尾导出接口的**自有**成员，与 md 里**所有**表格的首列比对，已接进 CI。判据两侧都复用现成真源而不是正则：`extends` 来的属性不要求逐条列出，限定名（`DialogContent.title`）与「一格写两个同源字段」（`startXOffset / startYOffset`）都认。
+
 - `Tag` 继承 `HTMLAttributes<HTMLSpanElement>`；props 文档口径修正（#148 #150 #147） <!-- parity-id: tag-native-attrs-and-props-doc-visibility -->
 
   `TagProps` 此前是封闭接口，`title` / `id` / `data-*` / `aria-*` 一个都传不了，而同库的 `Button` / `Card` / `Empty` / `Progress` 都是继承原生属性的。状态标签恰恰最需要 `title` 做 hover 全文——表格里显示「Word」、`title` 是完整 MIME。

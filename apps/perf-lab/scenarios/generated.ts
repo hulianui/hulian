@@ -593,6 +593,12 @@ export const scenarioLoaders = {
         "@hulianui/ui-internal/inspector-panel/inspector-panel.showcase"
       )
     ).inspectorPanelShowcase,
+  "interactive-hover-button": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/interactive-hover-button/interactive-hover-button.showcase"
+      )
+    ).interactiveHoverButtonShowcase,
   "intercept-card": async () =>
     (
       await import(
@@ -648,6 +654,12 @@ export const scenarioLoaders = {
   lightning: async () =>
     (await import("@hulianui/ui-internal/lightning/lightning.showcase"))
       .lightningShowcase,
+  "line-shadow-text": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/line-shadow-text/line-shadow-text.showcase"
+      )
+    ).lineShadowTextShowcase,
   "line-waves": async () =>
     (await import("@hulianui/ui-internal/line-waves/line-waves.showcase"))
       .lineWavesShowcase,
@@ -3189,6 +3201,17 @@ export const scenarioMetadata = {
     webgl: false,
     source: "packages/ui/src/inspector-panel/index.ts",
   },
+  "interactive-hover-button": {
+    id: "interactive-hover-button",
+    scenarioId: "interactive-hover-button/frame-budget",
+    component: "InteractiveHoverButton",
+    entry: "@hulianui/ui/interactive-hover-button",
+    category: "animation",
+    categories: ["button", "forms"],
+    animated: true,
+    webgl: false,
+    source: "packages/ui/src/interactive-hover-button/index.ts",
+  },
   "intercept-card": {
     id: "intercept-card",
     scenarioId: "intercept-card/basic",
@@ -3375,6 +3398,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: true,
     source: "packages/ui/src/lightning/index.ts",
+  },
+  "line-shadow-text": {
+    id: "line-shadow-text",
+    scenarioId: "line-shadow-text/basic",
+    component: "LineShadowText",
+    entry: "@hulianui/ui/line-shadow-text",
+    category: "standard",
+    categories: ["text", "typography"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/line-shadow-text/index.ts",
   },
   "line-waves": {
     id: "line-waves",

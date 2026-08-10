@@ -4,6 +4,10 @@
 
 ### Minor Changes
 
+- 新增关键帧 `hulian-line-shadow`，供 `LineShadowText` 的斜线流动使用（#151） <!-- parity-id: line-shadow-keyframe -->
+
+  默认不挂（该组件的 `animated` 默认 `false`），只在显式开启时生效。
+
 - **破坏性**：`--color-muted` 与 shadcn/ui 对齐，语义反转（#142） <!-- parity-id: muted-semantics-align-shadcn -->
 
   - `--color-muted` 现在是**弱背景**（等价 `--color-subtle`），不再是次要文字色

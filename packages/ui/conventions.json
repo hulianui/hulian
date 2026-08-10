@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -3998,6 +3998,20 @@
       "source": "packages/ui/src/input/input.md"
     },
     {
+      "id": "component/input/pitfall/2",
+      "scope": "input",
+      "title": "Input",
+      "rule": "表格里就地编辑用 `variant=\"cell\"`，**不要**在调用处写 `className=\"border-0 bg-transparent p-0 focus-visible:ring-0 …\"` 覆盖默认外壳。除了这是明令禁止的调用处补丁，还有两处肉眼难发现：一是 `ring-0` 清不掉 `ring-offset`（残留一圈底色描边），二是默认外壳的固定行高（`h-10`）不是 padding，`p-0` 覆盖不掉，密集表格的行高仍会被撑起来。",
+      "source": "packages/ui/src/input/input.md"
+    },
+    {
+      "id": "component/input/pitfall/3",
+      "scope": "input",
+      "title": "Input",
+      "rule": "`variant=\"cell\"` 的焦点态是浅底 + 内嵌下划线，不是焦点环——单元格没有内距，2px 环 + 2px offset 会溢出去顶到相邻格。若你所在的场景需要更强的焦点提示，改整格背景（在 `<td>` 上做），不要把环加回来。",
+      "source": "packages/ui/src/input/input.md"
+    },
+    {
       "id": "component/input-otp/pitfall/1",
       "scope": "input-otp",
       "title": "InputOTP",
@@ -4101,6 +4115,41 @@
       "title": "InspectorPanel",
       "rule": "**内置预设的字段 `label` 仍是中文**，不在 locale 覆盖范围内——它们属于 `sections` 数据而不是面板本身。要整屏英文请自带 `sections`。",
       "source": "packages/ui/src/inspector-panel/inspector-panel.md"
+    },
+    {
+      "id": "component/interactive-hover-button/pitfall/1",
+      "scope": "interactive-hover-button",
+      "title": "InteractiveHoverButton",
+      "rule": "**别把它当普通按钮铺开用。** 中后台一屏几十个操作，这枚按钮的展开动画会变成噪音；它的语义是「整页最重要的那一个动作」。",
+      "source": "packages/ui/src/interactive-hover-button/interactive-hover-button.md"
+    },
+    {
+      "id": "component/interactive-hover-button/pitfall/2",
+      "scope": "interactive-hover-button",
+      "title": "InteractiveHoverButton",
+      "rule": "展开用的是 `clip-path: circle(150% …)` 而不是缩放一颗圆点。上游那个 `scale(100.8)` 是按某个按钮宽度反推出来的魔数——**按钮再宽一点就盖不满**（长文案、中文两行、`lg` 档），边角露出静息底色，而且是静默失败，只有实机看才发现。这里的百分比按参照框对角线解析，任何宽度都必然铺满。",
+      "source": "packages/ui/src/interactive-hover-button/interactive-hover-button.md"
+    },
+    {
+      "id": "component/interactive-hover-button/pitfall/3",
+      "scope": "interactive-hover-button",
+      "title": "InteractiveHoverButton",
+      "rule": "**焦点态与悬停态同步展开**。键盘用户看不到 hover；少了这条，Tab 过来就只剩一个焦点环，读不出「这是主 CTA」。改样式时别把 `group-focus-visible:` 那条一起删掉。",
+      "source": "packages/ui/src/interactive-hover-button/interactive-hover-button.md"
+    },
+    {
+      "id": "component/interactive-hover-button/pitfall/4",
+      "scope": "interactive-hover-button",
+      "title": "InteractiveHoverButton",
+      "rule": "悬停层里的文案是第二份副本，整层已 `aria-hidden`。往里塞可聚焦元素（链接、按钮）会造出读屏拿不到、键盘也 Tab 不进的死角。",
+      "source": "packages/ui/src/interactive-hover-button/interactive-hover-button.md"
+    },
+    {
+      "id": "component/interactive-hover-button/pitfall/5",
+      "scope": "interactive-hover-button",
+      "title": "InteractiveHoverButton",
+      "rule": "自定义 `background` 时核对与 `foreground` 的对比度：默认这对是 primary / primary-foreground，换了底色不换字色可能不达标。",
+      "source": "packages/ui/src/interactive-hover-button/interactive-hover-button.md"
     },
     {
       "id": "component/iphone/pitfall/1",
@@ -4493,6 +4542,41 @@
       "title": "Lightning",
       "rule": "全屏背景层在 opaque 背景的非层叠上下文父级里可能被父背景盖住，见 webgl-canvas-rendered-but-invisible-negative-zindex-covered。",
       "source": "packages/ui/src/lightning/lightning.md"
+    },
+    {
+      "id": "component/line-shadow-text/pitfall/1",
+      "scope": "line-shadow-text",
+      "title": "LineShadowText",
+      "rule": "**默认静态是刻意的**，不是没做完。这一档的价值恰恰在于「有设计感但没有动效」，把 `animated` 当默认会让它和族里其它件失去区分。开了动效也仍然尊重系统的 `prefers-reduced-motion`。",
+      "source": "packages/ui/src/line-shadow-text/line-shadow-text.md"
+    },
+    {
+      "id": "component/line-shadow-text/pitfall/2",
+      "scope": "line-shadow-text",
+      "title": "LineShadowText",
+      "rule": "**`children` 只收字符串**。投影层要把同一段文字再渲染一遍并用 `bg-clip-text` 裁进字形，塞进图标或嵌套元素得到的是一份视觉噪音。要给富节点加效果请换别的件。",
+      "source": "packages/ui/src/line-shadow-text/line-shadow-text.md"
+    },
+    {
+      "id": "component/line-shadow-text/pitfall/3",
+      "scope": "line-shadow-text",
+      "title": "LineShadowText",
+      "rule": "投影层是**真 DOM 节点 + `aria-hidden`**，不是 `::after` + `content: attr(data-text)`。伪元素的 `content` 会被部分读屏当文本念，同一个词念两遍；真节点能明确标记为装饰。",
+      "source": "packages/ui/src/line-shadow-text/line-shadow-text.md"
+    },
+    {
+      "id": "component/line-shadow-text/pitfall/4",
+      "scope": "line-shadow-text",
+      "title": "LineShadowText",
+      "rule": "不要用在大段正文上：斜线投影在小字号下会糊成一团灰边，且每个字都多一层绘制。",
+      "source": "packages/ui/src/line-shadow-text/line-shadow-text.md"
+    },
+    {
+      "id": "component/line-shadow-text/pitfall/5",
+      "scope": "line-shadow-text",
+      "title": "LineShadowText",
+      "rule": "别写死投影色为 `black`（上游默认值就是它）——暗色主题下那是一团看不见的黑。用 token。",
+      "source": "packages/ui/src/line-shadow-text/line-shadow-text.md"
     },
     {
       "id": "component/line-waves/pitfall/1",
@@ -8068,11 +8152,25 @@
       "id": "component/textarea/pitfall/1",
       "scope": "textarea",
       "title": "Textarea",
-      "rule": "实现/扩展 field-aware Textarea 时见 base-ui-field-control-render-textarea-type-safe：Base UI Field 无 Textarea 原语，textarea 专属 props（ref/rows/onInput）要放在 `render` 元素上而非 `Field.Control`，否则 TS 报 ref 类型错或静默丢 Field a11y 接线。",
+      "rule": "`variant=\"cell\"` 与 `autoResize` 是同一件事的两条路：前者交给 CSS `field-sizing: content`（浏览器原生，无 JS 往返），后者是 JS 读 `scrollHeight`。**默认只需要 `cell`**；`field-sizing` 是较新的 CSS 特性，不支持的浏览器会退回按 `rows` 的固定高度（不破版，只是不自增），需要覆盖到那些浏览器时把 `autoResize` 一起传上——`autoResize` 写的是内联 `style.height`，优先级高于 `field-sizing` 的固有尺寸，叠加不冲突。",
       "source": "packages/ui/src/textarea/textarea.md"
     },
     {
       "id": "component/textarea/pitfall/2",
+      "scope": "textarea",
+      "title": "Textarea",
+      "rule": "表格里就地编辑用 `variant=\"cell\"`，不要在调用处写 `className=\"border-0 bg-transparent p-0 resize-none field-sizing-content …\"` 覆盖默认外壳；同时 `rows` 的下限在 `cell` 下已默认为 `1`，不必每格再传 `rows={1}`。",
+      "source": "packages/ui/src/textarea/textarea.md"
+    },
+    {
+      "id": "component/textarea/pitfall/3",
+      "scope": "textarea",
+      "title": "Textarea",
+      "rule": "实现/扩展 field-aware Textarea 时见 base-ui-field-control-render-textarea-type-safe：Base UI Field 无 Textarea 原语，textarea 专属 props（ref/rows/onInput）要放在 `render` 元素上而非 `Field.Control`，否则 TS 报 ref 类型错或静默丢 Field a11y 接线。",
+      "source": "packages/ui/src/textarea/textarea.md"
+    },
+    {
+      "id": "component/textarea/pitfall/4",
       "scope": "textarea",
       "title": "Textarea",
       "rule": "在 hulian Field 内不要重复传 `invalid`，由 Field.Root 自动驱动。",
@@ -8887,8 +8985,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 383,
-    "componentAdvisories": 1236,
-    "totalAdvisories": 1245
+    "componentDocs": 385,
+    "componentAdvisories": 1250,
+    "totalAdvisories": 1259
   }
 }

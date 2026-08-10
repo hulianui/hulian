@@ -7,6 +7,13 @@
       {
         "sha": null,
         "bump": "minor",
+        "breaking": false,
+        "body": "新增关键帧 `hulian-line-shadow`，供 `LineShadowText` 的斜线流动使用（#151）\n\n默认不挂（该组件的 `animated` 默认 `false`），只在显式开启时生效。",
+        "parityId": "line-shadow-keyframe"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
         "breaking": true,
         "body": "**破坏性**：`--color-muted` 与 shadcn/ui 对齐，语义反转（#142）\n\n- `--color-muted` 现在是**弱背景**（等价 `--color-subtle`），不再是次要文字色\n- 次要文字色改名 `--color-muted-foreground`\n\n原先两个名字与 shadcn 生态**同名反义**，而 shadcn 是 React 中后台事实上的起点。代价是双向的：从 shadcn 迁过来的项目一引入瑚琏 token，满屏 `bg-muted`（Skeleton、表格斑马纹、Avatar 占位底）立刻变成深灰色块，且消费方挡不住——这不是覆盖顺序能调的，是同一个名字被两种语义抢用；反过来库自己的贡献者也反复按 shadcn 肌肉记忆写 `text-muted-foreground`。\n\n**迁移**：`text-muted` → `text-muted-foreground`（`fill-` / `stroke-` / `border-` 等前缀同理）；`bg-muted` 不用改。`text-muted` 已无对应 token，而 Tailwind 对未定义颜色既不报错也不生成规则，写了会**静默回退成继承色**——用 `npx hulian-check` 逐条列出来改，别靠肉眼。\n\n新增语义浅档 `-subtle` / `-border`（#145）：`--color-primary-subtle`、`--color-primary-border`，`danger` / `success` / `warning` 同构。用于提示条底、选中行、Tag/Badge 浅底、侧栏当前项高亮。配套补齐原始色阶 `--brand-50/100/200/300`（`danger` / `success` / `warning` 同补），全部在 OKLCH 里手工定——sRGB 的 `mix()` 会带色相偏移，且各消费方挑的百分比不一，而浅档恰恰是中后台面积最大的那部分颜色。暗色下浅档**方向翻转**：不是抬亮度，而是把语义色掺进表面色。\n\n`tailwindcss` 降为**可选**对等依赖（#144）：四个入口里只有 `preset.css` 需要 Tailwind v4，其余三个是纯 CSS 自定义属性。Vue 2 + Element UI、纯 CSS 项目、还没升 v4 的存量仓库现在可以直接 `npm i @hulianui/tokens` 只吃令牌，不再 ERESOLVE 失败。",
         "parityId": "muted-semantics-align-shadcn"
@@ -18,6 +25,27 @@
     "version": "0.28.0",
     "date": null,
     "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`Input` / `Textarea` 新增 `variant=\"cell\"`：表格里的就地编辑器（#149）\n\n中后台有一类页面是「长得像表格的表单」——表头是字段名，单元格本身就是输入框。此前往 `Table` 的 `cell` 里塞瑚琏 `Input`，拿到的是带边框外壳 + 固定行高的独立控件，密集表格当场变成一片框；要做成能看的样子得在调用处覆盖一长串 `border-0 bg-transparent p-0 focus-visible:ring-0 …`，而那正是约定里明令禁止的调用处补丁。\n\n`variant=\"cell\"` 卸掉整身外壳（无边框 / 透明底 / 零内距 / 不占固定行高），`Textarea` 还把高度交给 CSS `field-sizing: content`，`rows` 下限在该档默认为 `1`。焦点态换成**浅底 + 内嵌下划线**而不是焦点环：焦点环有 2px 环 + 2px offset，在无内距的单元格里会溢出去顶到相邻格；内嵌下划线画在盒内，零布局位移。\n\n两处调用处补丁尤其难自查，所以别再手写：`focus-visible:ring-0` 清不掉 `ring-offset`（残留一圈底色描边），而默认外壳的固定行高是 `h-10` 不是 padding，`p-0` 覆盖不掉。",
+        "parityId": "input-textarea-cell-variant"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 `LineShadowText` / `InteractiveHoverButton`（#151）\n\n两件都是落地页 / 营销面的缺口。`LineShadowText` 给品牌词加一层斜向的**硬边**投影（不是 `text-shadow` 那种模糊），是文字特效族里最克制的一档：默认不动、无 RAF、纯 CSS，打印页与 `prefers-reduced-motion` 环境都能用；投影层是真 DOM 节点 + `aria-hidden` 而不是 `::after` + `content: attr()`，避免读屏把同一个词念两遍。`InteractiveHoverButton` 是悬停展开的主 CTA：静息「小圆点 + 文案」，悬停或**聚焦**时圆点扩成整块底色并换出箭头。\n\n展开实现与上游不同：上游把一颗 2px 圆点 `scale(100.8)`，那是按某个按钮宽度反推的魔数，按钮再宽就盖不满、边角露出静息底色，且是静默失败。这里用 `clip-path: circle(150% …)`——百分比按参照框对角线解析，任何宽度都必然铺满。",
+        "parityId": "line-shadow-text-and-interactive-hover-button"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "44 个组件、125 个「类型里有、文档表格里查不到」的字段补进文档，并做成 CI 门禁（#150 第三条）\n\n主要形态是 **item 形状的接口**：`BreadcrumbItem` / `NavMenuItem` / `TabBarItem` / `RouteTabItem` / `ChromaGridItem` 这类通过数组 prop 传进去的东西。根组件的 props 表大多写得全，但「数组里每一项长什么样」是系统性缺的——而这恰恰是消费方最需要查的：根组件的 prop 只告诉你 `items: XxxItem[]`，`XxxItem` 里有什么就没了下文。此前这些形状大多写在散文里（`AnchorItem`：`{ href; title; children? }`），读表的人与 `format=\"json\"` 的工具链都拿不到。\n\n新门禁 `pnpm docs:check:props` 从 TypeScript AST 取 `Props` / `Item` 结尾导出接口的**自有**成员，与 md 里**所有**表格的首列比对，已接进 CI。判据两侧都复用现成真源而不是正则：`extends` 来的属性不要求逐条列出，限定名（`DialogContent.title`）与「一格写两个同源字段」（`startXOffset / startYOffset`）都认。",
+        "parityId": "component-doc-props-coverage-gate"
+      },
       {
         "sha": null,
         "bump": "minor",

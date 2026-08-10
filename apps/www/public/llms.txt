@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 383 个组件 · v0.28.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 385 个组件 · v0.28.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -24,7 +24,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Stack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stack/stack.md): 弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)
 - [Viewport](https://github.com/hulianui/hulian/blob/master/packages/ui/src/viewport/viewport.md): 响应式容器 · container-type 容器查询上下文 + web/平板/手机 预设宽度(可 width 覆盖) + 可选设备切换器(dogfood Segmented) · 内部组件用 @md/@5xl 等容器…
 
-## 排版 typography（34）
+## 排版 typography（35）
 - [AnimatedGradientText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-gradient-text/animated-gradient-text.md): 渐变文字 · 行内 chart 渐变流动 + RSC · typography/text · #animated
 - [AnimatedShinyText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-shiny-text/animated-shiny-text.md): 高光文字 · 横扫高光 + 徽标气质 + RSC · typography/text · #animated
 - [ASCIIText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ascii-text/ascii-text.md): ASCII 字符画 · 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced…
@@ -42,6 +42,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [GlitchText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/glitch-text/glitch-text.md): 故障撕裂 · 双伪元素 RGB 错位 + clip-path 切片抖动(纯 CSS 零依赖 RSC · 撕裂色吃 chart token · enableOnHover 门控 · motion-reduce 退普通文本…
 - [Heading](https://github.com/hulianui/hulian/blob/master/packages/ui/src/heading/heading.md): 标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC)
 - [Kbd](https://github.com/hulianui/hulian/blob/master/packages/ui/src/kbd/kbd.md): 按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC
+- [LineShadowText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/line-shadow-text/line-shadow-text.md): 斜线投影文字 · 硬边条纹偏移层 + 默认静态 + RSC
 - [Markdown](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown/markdown.md): Markdown 渲染 · 只读，零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC …
 - [Prose](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prose/prose.md): 排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC)
 - [ScrambledText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scrambled-text/scrambled-text.md): 乱码悬停文字 · 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
@@ -60,7 +61,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 …
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（62）
+## 表单 forms（63）
 - [AuthPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md): 认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind…
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 按钮 · CVA 变体 + press 动效
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体)
@@ -88,6 +89,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Input](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input/input.md): 输入框 · Base UI Field + 前后缀 + invalid
 - [InputOTP](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input-otp/input-otp.md): 验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)
 - [InspectorPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/inspector-panel/inspector-panel.md): 设计工具属性检查器 · **字段 schema 驱动**（给一份 `{ key, label, kind }` 就派生控件，不是写死五个分类）· 七种控件 kind 全部换皮自既有表单件 · spacing 四联 + …
+- [InteractiveHoverButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/interactive-hover-button/interactive-hover-button.md): 悬停展开按钮 · 圆点扩成整块底色 + 尾随箭头 CTA · forms/button · #animated
 - [IssueReporter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/issue-reporter/issue-reporter.md): GitHub issue 草稿器 · 表单收集（类型 Select / 相关组件 Combobox / 标题 Input / 模板字段 Textarea 或 MarkdownEditor）→ 按模板 `toMarkdo…
 - [Listbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/listbox/listbox.md): 可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)
 - [LoginForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/login-form/login-form.md): 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + field…

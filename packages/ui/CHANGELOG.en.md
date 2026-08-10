@@ -4,6 +4,26 @@
 
 ### Minor Changes
 
+- `Input` and `Textarea` gain `variant="cell"`, the in-place editor for tables (#149) <!-- parity-id: input-textarea-cell-variant -->
+
+  Admin apps have a class of page that is "a form shaped like a table": the header row holds field names and each cell *is* the input. Dropping a HulianUI `Input` into a `Table` cell used to yield a standalone control with a border and a fixed row height, turning a dense table into a wall of boxes. Making it presentable required a long call-site override — `border-0 bg-transparent p-0 focus-visible:ring-0 …` — which is exactly the call-site patching the conventions forbid.
+
+  `variant="cell"` strips the whole shell (no border, transparent background, zero padding, no fixed row height), and `Textarea` additionally hands height to CSS `field-sizing: content`, with the `rows` lower bound defaulting to `1` in this variant. Focus is shown as a **tinted background plus an inset underline** rather than a ring: a ring carries 2px of ring and 2px of offset, which spills into the neighbouring cell when the cell has no padding, while an inset underline is drawn inside the box with zero layout shift.
+
+  Two of the hand-written overrides are especially hard to self-check, which is why they should not be written at all: `focus-visible:ring-0` does not clear `ring-offset` (a ring of background colour survives), and the default shell's fixed row height is `h-10` rather than padding, so `p-0` cannot remove it.
+
+- New: `LineShadowText` and `InteractiveHoverButton` (#151) <!-- parity-id: line-shadow-text-and-interactive-hover-button -->
+
+  Both fill gaps on the landing-page and marketing side. `LineShadowText` gives a brand word a diagonal **hard-edged** shadow (not the blur of `text-shadow`) and is the most restrained member of the text-effect family: static by default, no animation frame loop, pure CSS, usable on print pages and under `prefers-reduced-motion`. Its shadow layer is a real DOM node marked `aria-hidden` rather than `::after` with `content: attr()`, so screen readers do not announce the same word twice. `InteractiveHoverButton` is an expanding primary CTA: a dot plus a label at rest, and on hover or **focus** the dot expands into a full background and an arrow appears.
+
+  The expansion differs from upstream: upstream scales a 2px dot by `100.8`, a magic number derived from one particular button width, so a wider button is no longer covered, the corners leak the resting background, and the failure is silent. This implementation uses `clip-path: circle(150% …)`, whose percentage resolves against the reference box's diagonal, so any width is covered.
+
+- 125 fields across 44 components that existed in the types but in no documentation table are now documented, and a CI gate keeps it that way (#150, third item) <!-- parity-id: component-doc-props-coverage-gate -->
+
+  The dominant shape is the **item interface**: `BreadcrumbItem`, `NavMenuItem`, `TabBarItem`, `RouteTabItem`, `ChromaGridItem`, and friends — the things passed in through an array prop. Root component tables were mostly complete, but "what each entry in the array looks like" was systematically missing, and that is precisely what consumers need: the root prop only says `items: XxxItem[]` and the trail ends there. Most of these shapes lived in prose (`AnchorItem` is `{ href; title; children? }`), which neither a reader of the tables nor a `format="json"` toolchain can consume.
+
+  The new `pnpm docs:check:props` gate reads the **own** members of exported interfaces ending in `Props` or `Item` from the TypeScript AST and compares them against the first column of **every** table in the markdown; it now runs in CI. Both sides reuse existing sources of truth instead of regular expressions: inherited attributes are not required to be listed one by one, and qualified names (`DialogContent.title`) as well as two related fields sharing one cell (`startXOffset / startYOffset`) are both understood.
+
 - `Tag` now extends `HTMLAttributes<HTMLSpanElement>`, and props queries surface slot fields (#148 #150 #147) <!-- parity-id: tag-native-attrs-and-props-doc-visibility -->
 
   `TagProps` used to be a closed interface, so `title`, `id`, `data-*`, and `aria-*` could not be passed at all — while the sibling `Button`, `Card`, `Empty`, and `Progress` all extend their native attributes. Status tags are exactly where `title` matters most: a table cell reads "Word" while its `title` carries the full MIME type.

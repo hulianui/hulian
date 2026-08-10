@@ -1708,6 +1708,53 @@
       ]
     },
     {
+      "name": "line-shadow-text",
+      "type": "registry:ui",
+      "title": "LineShadowText",
+      "description": "斜线投影文字 · 硬边条纹偏移层 + 默认静态 + RSC",
+      "categories": [
+        "typography"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { LineShadowText } from \"@hulianui/ui\"",
+        "exports": [
+          "LineShadowText"
+        ],
+        "types": [
+          "LineShadowTextProps"
+        ],
+        "group": "text",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/line-shadow-text/line-shadow-text.md",
+        "docLocal": "packages/ui/src/line-shadow-text/line-shadow-text.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/line-shadow-text/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/line-shadow-text/index.ts"
+        },
+        {
+          "path": "components/hulianui/line-shadow-text/line-shadow-text.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/line-shadow-text/line-shadow-text.tsx"
+        },
+        {
+          "path": "components/hulianui/line-shadow-text/line-shadow-text.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/line-shadow-text/line-shadow-text.types.ts"
+        }
+      ]
+    },
+    {
       "name": "markdown",
       "type": "registry:ui",
       "title": "Markdown",
@@ -4146,6 +4193,57 @@
           "path": "components/hulianui/inspector-panel/inspector-schema.ts",
           "type": "registry:ui",
           "target": "components/hulianui/inspector-panel/inspector-schema.ts"
+        }
+      ]
+    },
+    {
+      "name": "interactive-hover-button",
+      "type": "registry:ui",
+      "title": "InteractiveHoverButton",
+      "description": "悬停展开按钮 · 圆点扩成整块底色 + 尾随箭头 CTA · forms/button · #animated",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { InteractiveHoverButton } from \"@hulianui/ui\"",
+        "exports": [
+          "InteractiveHoverButton"
+        ],
+        "types": [
+          "InteractiveHoverButtonProps"
+        ],
+        "group": "button",
+        "tags": [
+          "animated"
+        ],
+        "animated": true,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/interactive-hover-button/interactive-hover-button.md",
+        "docLocal": "packages/ui/src/interactive-hover-button/interactive-hover-button.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/interactive-hover-button/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/interactive-hover-button/index.ts"
+        },
+        {
+          "path": "components/hulianui/interactive-hover-button/interactive-hover-button.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/interactive-hover-button/interactive-hover-button.tsx"
+        },
+        {
+          "path": "components/hulianui/interactive-hover-button/interactive-hover-button.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/interactive-hover-button/interactive-hover-button.types.ts"
         }
       ]
     },

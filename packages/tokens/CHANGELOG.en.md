@@ -4,6 +4,10 @@
 
 ### Minor Changes
 
+- New `hulian-line-shadow` keyframe, used by `LineShadowText` for its drifting stripes (#151) <!-- parity-id: line-shadow-keyframe -->
+
+  It is not attached by default (the component's `animated` prop defaults to `false`) and only applies when explicitly enabled.
+
 - **BREAKING**: `--color-muted` flips its meaning to match shadcn/ui (#142) <!-- parity-id: muted-semantics-align-shadcn -->
 
   - `--color-muted` is now a **weak background** (identical to `--color-subtle`), no longer the secondary text colour

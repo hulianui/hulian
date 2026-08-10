@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.28.0 · 383 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.28.0 · 385 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -2028,6 +2028,65 @@ import { Kbd } from "@hulianui/ui"
 [Code](https://hulianui.haloritual.com/zh/components/code) · [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block) · [Snippet](https://hulianui.haloritual.com/zh/components/snippet) · [CodeDiff](https://hulianui.haloritual.com/zh/components/code-diff) · [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# LineShadowText
+
+**导出**：`LineShadowText`
+
+> 斜线投影文字 · 硬边条纹偏移层 + 默认静态 + RSC · typography/text
+
+## 何时用
+
+给 2–4 字的品牌词 / 首屏大标题加一层斜向的硬边投影。它是文字特效族里**最克制的一档**：默认不动、无 RAF、纯 CSS，所以打印页、企业官网、`prefers-reduced-motion` 环境都能放心用。
+
+要流动渐变用 [AuroraText](https://hulianui.haloritual.com/zh/components/aurora-text)；要扫光徽标用 [AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text)；要逐字入场用 [SplitText](https://hulianui.haloritual.com/zh/components/split-text)。普通正文用 [Text](https://hulianui.haloritual.com/zh/components/text)。
+
+## 导入
+```ts
+import { LineShadowText } from "@hulianui/ui"
+```
+
+## Props
+
+继承原生 `<span>` 属性（`children` 被下方收窄）。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| children * | `string` | — | 要加投影的文字。**只接受字符串**：投影层是同一段文字的副本，非文本节点没法复刻 |
+| shadowColor | `string` | `var(--color-foreground)` | 投影色。喂 token 必须带 `--color-` 前缀，裸 `var(--primary)` 在 Tailwind v4 的 `@theme` 里不解析 |
+| offset | `string` | `"0.04em"` | 投影相对本体的偏移量。用 `em` 所以随字号成比例 |
+| lineWidth | `string` | `"0.06em"` | 斜线的粗细 / 间距。调大变粗条纹，调小接近实心影 |
+| animated | `boolean` | `false` | 让斜线沿对角缓慢流动。默认关闭见「禁忌 / 坑」 |
+| duration | `string` | `"15s"` | 一轮流动的秒数；仅 `animated` 为真时生效 |
+
+## 示例
+```tsx
+<LineShadowText className="text-5xl font-bold">瑚琏</LineShadowText>
+```
+```tsx
+{/* 投影换主色 */}
+<LineShadowText className="text-5xl font-bold" shadowColor="var(--color-primary)">
+  Hulian
+</LineShadowText>
+```
+```tsx
+{/* 首屏标题里只点缀品牌词 */}
+<h1 className="text-4xl font-bold text-foreground">
+  用 <LineShadowText shadowColor="var(--color-primary)">瑚琏</LineShadowText> 搭中后台
+</h1>
+```
+
+## 禁忌 / 坑
+
+- **默认静态是刻意的**，不是没做完。这一档的价值恰恰在于「有设计感但没有动效」，把 `animated` 当默认会让它和族里其它件失去区分。开了动效也仍然尊重系统的 `prefers-reduced-motion`。
+- **`children` 只收字符串**。投影层要把同一段文字再渲染一遍并用 `bg-clip-text` 裁进字形，塞进图标或嵌套元素得到的是一份视觉噪音。要给富节点加效果请换别的件。
+- 投影层是**真 DOM 节点 + `aria-hidden`**，不是 `::after` + `content: attr(data-text)`。伪元素的 `content` 会被部分读屏当文本念，同一个词念两遍；真节点能明确标记为装饰。
+- 不要用在大段正文上：斜线投影在小字号下会糊成一团灰边，且每个字都多一层绘制。
+- 别写死投影色为 `black`（上游默认值就是它）——暗色主题下那是一团看不见的黑。用 token。
+
+## 相关
+[AuroraText](https://hulianui.haloritual.com/zh/components/aurora-text) · [AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text) · [SparklesText](https://hulianui.haloritual.com/zh/components/sparkles-text) · [GlitchText](https://hulianui.haloritual.com/zh/components/glitch-text) · [SplitText](https://hulianui.haloritual.com/zh/components/split-text) · [Text](https://hulianui.haloritual.com/zh/components/text)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # Markdown
 
 **导出**：`Markdown` · `parseBlocks`
@@ -2267,6 +2326,7 @@ import { ScrollReveal } from "@hulianui/ui"
 | baseRotation | `number` | `3` | 整段进入时的初始旋转角（deg），随进度回正到 0；设 0 关闭 |
 | enableBlur | `boolean` | `true` | 是否伴随模糊解析：未揭示词带模糊随进度消散 |
 | blurStrength | `number` | `4` | `enableBlur` 为真时词的起始模糊半径（px），随进度降到 0 |
+| scrollContainerRef | `RefObject<HTMLElement \| null>` | 自动探测 | 驱动动画的滚动容器。**默认自动探测最近的可滚动祖先**，落在内部滚动区（抽屉 / 弹层 / 画廊预览框）里也能正常走进度，通常不需要传。只有当滚动源不是 DOM 祖先（例如自定义滚动实现）时才需要显式指定 |
 
 其余 `<p>` 原生属性透传；`onDrag/onDragStart/onDragEnd/onAnimationStart` 因与 motion 签名冲突被剔除。
 
@@ -3974,6 +4034,13 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 | className | `string` | — | 透传到容器 |
 | aria-label | `string` | — | 无障碍标签 |
 
+`ColorSwatchItem`（`colors` 的对象形态）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| color * | `string` | — | 任意 CSS 颜色串，同时是该色块的选中值（与 `value` 严格相等比较） |
+| label | `string` | 回退到 `color` 本身 | 无障碍名与 hover 提示。喂 token 色（`var(--color-primary)`）时**务必**给，否则读屏会念出变量名 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -4968,7 +5035,8 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`variant="cell"` 下只影响字号，不再有高度与内距 |
+| variant | `"default" \| "cell"` | `"default"` | 外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距、不占固定行高，焦点态用浅底 + 内嵌下划线代替焦点环 |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
 | disabled | `boolean` | `false` | 禁用 |
 | ref | `Ref<HTMLInputElement>` | — | 转发到**内层原生 `<input>`**（不是外壳 span）。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它 |
@@ -4994,10 +5062,30 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 {/* 前后缀 */}
 <Input prefix="¥" suffix=".00" placeholder="0" className="w-64" />
 ```
+```tsx
+{/* 表格内联编辑：单元格本身就是输入框，不需要任何 className */}
+const columns: ColumnDef<Row, any>[] = [
+  {
+    accessorKey: "name",
+    header: "字段名",
+    cell: ({ row }) => (
+      <Input
+        variant="cell"
+        value={row.original.name}
+        onChange={(e) => setField(row.original.id, "name", e.target.value)}
+        aria-label="字段名"
+      />
+    ),
+  },
+];
+<Table columns={columns} data={rows} density="compact" />
+```
 
 ## 禁忌 / 坑
 
-在 hulian Field 内时不要重复传 `invalid`——Field.Root 的 invalid 会自动驱动标红，手动再传会冲突。`invalid` 只在脱离 Field 独立使用时手动传。
+- 在 hulian Field 内时不要重复传 `invalid`——Field.Root 的 invalid 会自动驱动标红，手动再传会冲突。`invalid` 只在脱离 Field 独立使用时手动传。
+- 表格里就地编辑用 `variant="cell"`，**不要**在调用处写 `className="border-0 bg-transparent p-0 focus-visible:ring-0 …"` 覆盖默认外壳。除了这是明令禁止的调用处补丁，还有两处肉眼难发现：一是 `ring-0` 清不掉 `ring-offset`（残留一圈底色描边），二是默认外壳的固定行高（`h-10`）不是 padding，`p-0` 覆盖不掉，密集表格的行高仍会被撑起来。
+- `variant="cell"` 的焦点态是浅底 + 内嵌下划线，不是焦点环——单元格没有内距，2px 环 + 2px offset 会溢出去顶到相邻格。若你所在的场景需要更强的焦点提示，改整格背景（在 `<td>` 上做），不要把环加回来。
 
 ## 相关
 [Textarea](https://hulianui.haloritual.com/zh/components/textarea) · [Select](https://hulianui.haloritual.com/zh/components/select) · [Checkbox](https://hulianui.haloritual.com/zh/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/zh/components/checkbox-group) · [Radio](https://hulianui.haloritual.com/zh/components/radio) · [Switch](https://hulianui.haloritual.com/zh/components/switch)
@@ -5211,6 +5299,68 @@ readInspectorValue({ style: { color: "red" } }, "style.color"); // "red"
 [Form](https://hulianui.haloritual.com/zh/components/form) · [ProForm](https://hulianui.haloritual.com/zh/components/pro-form) · [ColorPicker](https://hulianui.haloritual.com/zh/components/colorpicker) · [ColorSwatchPicker](https://hulianui.haloritual.com/zh/components/color-swatch-picker) · [Slider](https://hulianui.haloritual.com/zh/components/slider) · [Segmented](https://hulianui.haloritual.com/zh/components/segmented) · [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) · [Flow](https://hulianui.haloritual.com/zh/components/flow)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# InteractiveHoverButton
+
+**导出**：`InteractiveHoverButton`
+
+> 悬停展开按钮 · 圆点扩成整块底色 + 尾随箭头 CTA · forms/button · #animated
+
+## 何时用
+
+落地页 / 官网首屏的**主 CTA**。静息是「小圆点 + 文案」的轻量胶囊，悬停或聚焦时圆点扩成整块底色、文案换成「文案 + 箭头」，把「这里是要点的那一个」说清楚。
+
+一页只放一枚：它靠的是与周围克制元素的反差。次级动作用 [Button](https://hulianui.haloritual.com/zh/components/button)（`variant="outline"` / `"ghost"`）。要边缘游走的火花用 [ShimmerButton](https://hulianui.haloritual.com/zh/components/shimmer-button)，要呼吸脉冲用 [PulsatingButton](https://hulianui.haloritual.com/zh/components/pulsating-button)，要点击水波用 [RippleButton](https://hulianui.haloritual.com/zh/components/ripple-button)。中后台**不要**用这一族。
+
+## 导入
+```ts
+import { InteractiveHoverButton } from "@hulianui/ui"
+```
+
+## Props
+
+继承原生 `<button>` 属性（如 `onClick` / `disabled` / `type`…）。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档，与 [Button](https://hulianui.haloritual.com/zh/components/button) 一一对应（32 / 40 / 48px 高），可与普通按钮混排等高 |
+| background | `string` | `var(--color-primary)` | 展开后的底色 |
+| foreground | `string` | `var(--color-primary-foreground)` | 展开后的文字色 |
+| dotColor | `string` | 跟随 `background` | 静息态那颗小圆点的颜色 |
+| duration | `string` | `"0.4s"` | 展开动画时长 |
+| icon | `ReactNode` | 右箭头 | 悬停层右侧的尾随图标；传 `null` 去掉 |
+| render | `ReactElement` | — | 渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「落地页主 CTA 是个链接」。样式与内部两层结构会合并进该元素，文案仍取 `children` |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 按钮文案。静息层与悬停层各渲染一份，悬停层整层 `aria-hidden`，所以可访问名只有一份 |
+
+## 示例
+```tsx
+<InteractiveHoverButton>开始使用</InteractiveHoverButton>
+```
+```tsx
+{/* 换配色（建议喂 chart token 以吃明暗主题） */}
+<InteractiveHoverButton background="var(--color-chart-2)">立即体验</InteractiveHoverButton>
+```
+```tsx
+{/* 落地页主 CTA 往往是链接 */}
+<InteractiveHoverButton render={<a href="/docs" />}>阅读文档</InteractiveHoverButton>
+```
+
+## 禁忌 / 坑
+
+- **别把它当普通按钮铺开用。** 中后台一屏几十个操作，这枚按钮的展开动画会变成噪音；它的语义是「整页最重要的那一个动作」。
+- 展开用的是 `clip-path: circle(150% …)` 而不是缩放一颗圆点。上游那个 `scale(100.8)` 是按某个按钮宽度反推出来的魔数——**按钮再宽一点就盖不满**（长文案、中文两行、`lg` 档），边角露出静息底色，而且是静默失败，只有实机看才发现。这里的百分比按参照框对角线解析，任何宽度都必然铺满。
+- **焦点态与悬停态同步展开**。键盘用户看不到 hover；少了这条，Tab 过来就只剩一个焦点环，读不出「这是主 CTA」。改样式时别把 `group-focus-visible:` 那条一起删掉。
+- 悬停层里的文案是第二份副本，整层已 `aria-hidden`。往里塞可聚焦元素（链接、按钮）会造出读屏拿不到、键盘也 Tab 不进的死角。
+- 自定义 `background` 时核对与 `foreground` 的对比度：默认这对是 primary / primary-foreground，换了底色不换字色可能不达标。
+
+## 相关
+[Button](https://hulianui.haloritual.com/zh/components/button) · [ShimmerButton](https://hulianui.haloritual.com/zh/components/shimmer-button) · [RainbowButton](https://hulianui.haloritual.com/zh/components/rainbow-button) · [PulsatingButton](https://hulianui.haloritual.com/zh/components/pulsating-button) · [RippleButton](https://hulianui.haloritual.com/zh/components/ripple-button)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # IssueReporter
 
 **导出**：`IssueReporter` · `IssueReporterModal` · `BUILTIN_ISSUE_TEMPLATES` · `GITHUB_URL_MAX_LENGTH` · `buildIssueUrl` · `createIssueDraft` · `isUrlTooLong` · `issueSection` · `normalizeRepo` · `renderIssueMarkdown`
@@ -5252,6 +5402,7 @@ import { BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, IssueReporter, IssueRep
 | apiRef | MutableRefObject<IssueReporterApi \| null> | — | 命令式句柄：`submit()` / `getDraft()` / `getUrl()` / `reset()` |
 | className | string | — | 表单本体外层类名 |
 | open / defaultOpen | boolean | — | 仅 Modal：受控 / 非受控开关 |
+| onOpenChange | (open: boolean) => void | — | 仅 Modal：开合回调（受控时必接） |
 | trigger | ReactElement | — | 仅 Modal：触发元素 |
 | modalTitle | string | 取自 locale | 仅 Modal：弹层标题；不传则跟随 ConfigProvider（内置中文兜底「反馈 issue」） |
 | submitText / cancelText | string | — | 仅 Modal：页脚按钮文案 |
@@ -5444,6 +5595,8 @@ import { LoginForm } from "@hulianui/ui"
 |------|------|------|------|
 | loading | `boolean` | — | 外部 loading 覆盖（父层托管提交态时用） |
 | showRemember | `boolean` | `true` | 是否显示「记住我」 |
+| rememberLabel | `ReactNode` | 取自 locale | 「记住我」的标签文案。这个勾选并不总是「下次免登录」的体验糖 —— 有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token），文案是刻意写的，锁死在 locale 就没法用了（#64） |
+| rememberDescription | `ReactNode` | — | 「记住我」下方的一行说明（解释这个勾选到底意味着什么） |
 | rules | `{ username?: FormRule[]; password?: FormRule[] }` | — | 字段级校验规则，追加在内置必填之后（`FormRule` 同 [Form](https://hulianui.haloritual.com/zh/components/form)：`pattern`/`min`/`max`/`validator`/`message`） |
 | values | `Partial<LoginValues>` | — | 受控值：传入即受控，需配合 `onValuesChange` 回写；不传维持内部自管 |
 | fields | `{ username?: LoginFieldSlot; password?: LoginFieldSlot }` | — | 两个主字段的**外观槽**：`label` / `placeholder` / `prefix` / `suffix` / `description` / `autoComplete`。取值与校验仍由模板托管 |
@@ -6936,6 +7089,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
+| defaultValue | `string \| string[] \| null` | `null` | 非受控初值：单选 `string \| null`，`multiple` 时 `string[]` |
 | placeholder | `ReactNode` | — | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
 | multiple | `boolean` | `false` | 多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开 |
 | clearable | `boolean` | `false` | 有值时 Trigger 右侧 hover/focus 浮出清除按钮，点击置空（单选回传 `null`，多选回传 `[]`） |
@@ -7401,10 +7555,11 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size） |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`variant="cell"` 下只影响字号，不再有内距 |
+| variant | `"default" \| "cell"` | `"default"` | 外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距，高度由 CSS `field-sizing: content` 跟随内容，焦点态用浅底 + 内嵌下划线代替焦点环 |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动 |
 | autoResize | `boolean` | `false` | 随内容自适应高度（JS scrollHeight，`rows` 为下限） |
-| rows | `number` | `3` | 初始/最小行高 |
+| rows | `number` | `3`（`variant="cell"` 时 `1`） | 初始/最小行高 |
 | disabled | `boolean` | `false` | 禁用 |
 
 ## Events
@@ -7421,9 +7576,15 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 {/* 自适应高度 */}
 <Textarea autoResize defaultValue={"随内容长高\n第二行\n第三行"} className="w-64" />
 ```
+```tsx
+{/* 表格内联编辑：单元格本身就是自增高的多行输入，不需要任何 className */}
+<Textarea variant="cell" value={value} onChange={(e) => setValue(e.target.value)} aria-label="备注" />
+```
 
 ## 禁忌 / 坑
 
+- `variant="cell"` 与 `autoResize` 是同一件事的两条路：前者交给 CSS `field-sizing: content`（浏览器原生，无 JS 往返），后者是 JS 读 `scrollHeight`。**默认只需要 `cell`**；`field-sizing` 是较新的 CSS 特性，不支持的浏览器会退回按 `rows` 的固定高度（不破版，只是不自增），需要覆盖到那些浏览器时把 `autoResize` 一起传上——`autoResize` 写的是内联 `style.height`，优先级高于 `field-sizing` 的固有尺寸，叠加不冲突。
+- 表格里就地编辑用 `variant="cell"`，不要在调用处写 `className="border-0 bg-transparent p-0 resize-none field-sizing-content …"` 覆盖默认外壳；同时 `rows` 的下限在 `cell` 下已默认为 `1`，不必每格再传 `rows={1}`。
 - 实现/扩展 field-aware Textarea 时见 [[base-ui-field-control-render-textarea-type-safe]]：Base UI Field 无 Textarea 原语，textarea 专属 props（ref/rows/onInput）要放在 `render` 元素上而非 `Field.Control`，否则 TS 报 ref 类型错或静默丢 Field a11y 接线。
 - 在 hulian Field 内不要重复传 `invalid`，由 Field.Root 自动驱动。
 
@@ -7747,6 +7908,15 @@ import { Transfer } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 整体禁用（两侧列表与移动按钮全失效） |
 | className | `string` | — | 容器类名 |
 
+`TransferItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是 `targetKeys` 的取值 |
+| label * | `ReactNode` | — | 条目主文案 |
+| description | `ReactNode` | — | 次级描述（label 下方弱化小字） |
+| disabled | `boolean` | `false` | 该条不可选、不可移动 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -8030,6 +8200,9 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
 | labelIdle | `string` | `"按住说话"` | idle 态文案 |
 | labelRecording | `string` | `"松开结束"` | recording 态文案 |
 | labelProcessing | `string` | `"处理中…"` | processing 态文案 |
+| pressAndHold | `boolean` | `false` | 按住说话模式（GPT-Live 风格）：按下开始、松开结束，走 `onPress` / `onRelease`；`false` 时是点击切换，走 `onToggle` |
+| onPress | `() => void` | — | idle 态按下回调（仅 `pressAndHold` 为真时） |
+| onRelease | `() => void` | — | recording 态松开回调（仅 `pressAndHold` 为真时） |
 
 ## 用法
 
@@ -8240,10 +8413,17 @@ import { AvatarCircles, avatarCirclesItemVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| avatars* | `AvatarCirclesItem[]` | — | 头像列表（按序堆叠，后者压前者）。每项 `{ src: string; alt?: string }`。 |
+| avatars* | `AvatarCirclesItem[]` | — | 头像列表（按序堆叠，后者压前者），见下表。 |
 | extraCount | `number` | — | 额外人数，渲染为末尾 "+N" 圆。 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 圆直径档位。 |
 | className | `string` | — | — |
+
+`AvatarCirclesItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| src * | `string` | — | 头像图片地址。这里没有 fallback 槽（与单个 Avatar 不同），缺图会留一个空圆 |
+| alt | `string` | — | 图片替代文本 |
 
 ## 示例
 ```tsx
@@ -8301,6 +8481,7 @@ import { AwardBadge, laurelLeaves, laurelStemPath } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
 | href | `string` | — | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
 | target | `string` | — | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"` |
+| rel | `string` | — | 显式覆盖上面那条自动补的 `rel`（如只想要 `noopener`） |
 | className | `string` | — | 透传类名；其余原生属性一并透传 |
 
 ### laurelLeaves(options?) / laurelStemPath(options?)
@@ -8957,7 +9138,19 @@ import { ChromaGrid } from "@hulianui/ui"
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
-`ChromaGridItem`：`{ image?; title?; subtitle?; handle?; location?; borderColor?; gradient?; url?; children? }`。`borderColor` / `gradient` 建议喂 `var(--color-chart-1)`~`var(--color-chart-5)`；`url` 提供时卡片可点击（新标签打开）；`children` 覆盖默认 image+文字布局。
+`ChromaGridItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| image | `string` | — | 卡片头图地址（人像 / 封面）。缺省时只渲染文字区 |
+| title | `string` | — | 主标题（姓名 / 名称） |
+| subtitle | `string` | — | 副标题（角色 / 描述行） |
+| handle | `string` | — | 句柄（如 `@name`），渲染在副标题同行左侧 |
+| location | `string` | — | 补充行（如地点），渲染在副标题同行右侧 |
+| borderColor | `string` | — | 卡片描边色，hover 时亮起为此色。建议喂 `var(--color-chart-1)`~`var(--color-chart-5)` |
+| gradient | `string` | — | 卡片背景渐变，形如 `linear-gradient(145deg, var(--color-chart-1), transparent)`。⚠️ 卡面是**暗色上下文**：组件在这层渐变**下面**恒垫一层中性深色基底，所以 `transparent` 端露出的是深色而不是页面底色，亮色主题下也不会「白字压浅底」（#129） |
+| url | `string` | — | 点击跳转地址。提供时卡片可点击（新标签打开），否则光标为默认态 |
+| children | `ReactNode` | — | 覆盖默认的「头图 + 文字」布局 |
 
 ## 示例
 ```tsx
@@ -9028,7 +9221,12 @@ import { CircularGallery } from "@hulianui/ui"
 | font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，离线/RSC 安全 |
 | className | `string` | — | 透传根容器类名 |
 
-`CircularGalleryItem`：`{ image?; text }`，`image` 留空则用 chart token 程序化渐变占位图。
+`CircularGalleryItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| image | `string` | 程序化渐变占位图 | 卡片图片地址（远程 URL / data URI / 本地静态资源均可）。留空则用 chart token 程序化生成渐变占位图，离线可用且随明暗主题 |
+| text * | `string` | — | 卡片下方标题文字 |
 
 ## Slots
 
@@ -9269,11 +9467,33 @@ import {
 | labels | Partial<ComponentPickerLabels> | — | 界面文案覆盖，可整体或逐条；不传则取 ConfigProvider 的 locale（内置兜底 zh-CN） |
 | className | string | — | 外层类名。**须给确定高度**（如 `h-[560px]`），组件内部按 flex 填满、各区独立滚动 |
 
-`ComponentPickerItem`：`{ slug, name, description, category, group, tags?, props?, examples? }`。
-`ComponentPickerProp`：`{ name, type?, default?, description?, required? }`。
-`ComponentPickerExample`：`{ title?, lang?, code }`。
+`ComponentPickerItem`
 
-`ComponentPickerCommandProps`（薄封装）：`items` / `open` / `onOpenChange` / `onSelect` / `placeholder` / `emptyMessage` / `maxResults`（默认 30）/ `groupByCategory`（默认 `true`）/ `shortcut`。
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| slug * | `string` | — | 唯一键，也是 `onSelect` 的第一个入参 |
+| name * | `string` | — | 展示名（PascalCase 导出名） |
+| description * | `string` | — | 一句话说明 |
+| category * | `string` | — | 一级分类（layout / forms / data-display…） |
+| group * | `string` | — | 二级分组（container / advanced / collection…）；无分组给空串 |
+| tags | `string[]` | — | 搜索用的补充关键词 |
+| props | `ComponentPickerProp[]` | — | 详情面板的 Props 表数据，每项 `{ name, type?, default?, description?, required? }` |
+| examples | `ComponentPickerExample[]` | — | 详情面板的示例代码，每项 `{ title?, lang?, code }` |
+
+`ComponentPickerCommandProps`（薄封装：把目录塞进 Command 面板）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| items * | `ComponentPickerItem[]` | — | 同上 |
+| open * | `boolean` | — | 受控开关 |
+| onOpenChange * | `(open: boolean) => void` | — | 开合回调 |
+| onSelect | `(slug: string) => void` | — | 选中某项 |
+| placeholder | `string` | 取 locale | 搜索框占位 |
+| emptyMessage | `ReactNode` | 取 locale | 无匹配结果时的文案 |
+| maxResults | `number` | `30` | 最多渲染多少条（注意与 `ComponentPickerProps` 的 60 不同） |
+| groupByCategory | `boolean` | `true` | 按 category 分组，每组一个 heading |
+| shortcut | `boolean` | `false` | 内置 ⌘K / Ctrl+K 开合 |
+| aria-label | `string` | 取 locale | 面板的无障碍名 |
 
 ## Events
 
@@ -9579,7 +9799,16 @@ import { Danmaku, allocateTrack, densityGap, estimateWidth, leastBusyTrack, scro
 | paused | `boolean` | `false` | 暂停所有动画 |
 | className | `string` | — | 容器自定义类 |
 
-`DanmakuItem`：`{ id: string; text: ReactNode; mode?: "scroll"｜"top"｜"bottom"; color?: string; size?: "sm"｜"md"｜"lg"; bold?: boolean }`。`mode` 默认 `scroll`，`size` 默认 `md`，`color` 默认继承前景 token。
+`DanmakuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 去重键：内部按它判断该条是否已上屏，只对未上屏的做入场 |
+| text * | `ReactNode` | — | 弹幕内容 |
+| mode | `"scroll" \| "top" \| "bottom"` | `"scroll"` | 滚动 / 顶部悬停 / 底部悬停 |
+| color | `string` | 继承前景 token | 文字色 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 字号档 |
+| bold | `boolean` | `false` | 加粗 |
 
 ## 示例
 ```tsx
@@ -9740,6 +9969,13 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | bordered | `boolean` | `false` | 带边框分隔的表格态 |
 | items | `DescriptionsItemData[]` | — | 数据驱动备选；提供时优先于 `DescriptionsItem` 子节点 |
 
+`DescriptionsItemProps`（复合用法里的 `<DescriptionsItem>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label | `ReactNode` | — | 键名 |
+| span | `number` | `1` | 跨列数 |
+
 ## Slots
 
 | 插槽 | 类型 | 说明 |
@@ -9822,6 +10058,16 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | className | string | — | 画布外层类名（须有确定高度，组件填满） |
 | labels | Partial<DesignCanvasLabels> | — | 覆盖取自 locale 的文案（canvas / item / zoomIn / zoomOut / fitView / resetView）；不传则跟随 ConfigProvider |
 | apiRef | MutableRefObject<DesignCanvasApi \| null> | — | 命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas） |
+
+`DesignCanvasItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 唯一键，也是 `selectedElement` 的取值 |
+| x * / y * | `number` | — | 左上角在世界坐标里的位置 |
+| width * / height * | `number` | — | 宽高（世界单位） |
+| locked | `boolean` | `false` | 锁定：不可拖动、不出 resize 手柄（仍可选中、仍可 Tab 到） |
+| label | `string` | 回退到 `id` | 无障碍名 |
 
 ## Events
 
@@ -11056,6 +11302,15 @@ import { InfiniteMenu } from "@hulianui/ui"
 | className | `string` | — | 透传到根容器的额外类名 |
 | style | `CSSProperties` | — | 透传到根容器的内联样式 |
 
+`InfiniteMenuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| image | `string` | — | 卡面图片 URL（铺满圆形卡片，object-cover 居中裁切）。省略时仅显示标题首字 |
+| title | `string` | — | 标题，激活时显示在覆盖层 |
+| description | `string` | — | 描述，激活时显示在覆盖层副文案 |
+| link | `string` | — | 点击动作箭头时跳转的链接；以 `http` 开头则新标签打开，否则交给 `onItemActivate` 回调处理 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -11371,6 +11626,20 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 | grid | `boolean \| ListGridConfig` | — | 栅格卡片态(复用 Grid)；传 `true` 用默认配置(3 列) |
 | loadMore | `ListLoadMore` | — | 「加载更多」配置(底部按钮 + loading) |
 
+`ListItemProps`（复合用法里的 `<ListItem>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| actions | `ReactNode[]` | — | 行右侧操作区（按钮组），多个项之间自动加分隔线 |
+
+`ListItemMetaProps`（`<ListItemMeta>`，行左侧的头像 + 标题 + 描述三段式）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| avatar | `ReactNode` | — | 头像 / 图标（dogfood 复用 Avatar） |
+| title | `ReactNode` | — | 标题 |
+| description | `ReactNode` | — | 描述 |
+
 ## Slots
 
 | 插槽 | 类型 | 说明 |
@@ -11447,6 +11716,17 @@ import { LiveChat } from "@hulianui/ui"
 | maxItems | `number` | `200` | 滚动窗保留上限（性能） |
 | overlay | `boolean` | `false` | 叠在深色视频上的浅色态（文字改白/半透白 + 文字阴影） |
 | className | `string` | — | 容器自定义类 |
+
+`LiveChatItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 去重键 |
+| type * | `"message" \| "gift" \| "system" \| "enter"` | — | 条目类型，决定渲染成哪一种行 |
+| user | `LiveChatUser` | — | 发送者 `{ name, avatar?, badge?, level? }`；`system` 类型可省 |
+| text | `ReactNode` | — | `message` 类型的正文 |
+| gift | `{ name: string; icon?: ReactNode; combo?: number }` | — | `gift` 类型的礼物信息 |
+| at | `string` | — | 时间戳文本（原样展示，不做格式化） |
 
 ## Slots
 
@@ -11792,7 +12072,16 @@ import { MagicBento } from "@hulianui/ui"
 | className | `string` | — | 透传到根网格容器的额外 className |
 | style | `CSSProperties` | — | 透传到根网格容器的内联样式 |
 
-`MagicBentoItem`：`{ label?, title?, description?: ReactNode; children?: ReactNode; colSpan?: number; rowSpan?: number }` —— 传 `children` 即覆盖 label/title/description 默认布局，自定义卡内结构。
+`MagicBentoItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label | `ReactNode` | — | 卡片小标签（顶部弱化文案），如「Insights」 |
+| title | `ReactNode` | — | 卡片标题 |
+| description | `ReactNode` | — | 卡片描述（正文） |
+| children | `ReactNode` | — | 传了即覆盖 label/title/description 默认布局，自定义卡内结构 |
+| colSpan | `number` | `1` | 网格跨列数（CSS grid column span），用于拼出大小不一的 bento 布局 |
+| rowSpan | `number` | `1` | 网格跨行数（CSS grid row span） |
 
 ## 示例
 ```tsx
@@ -12524,6 +12813,13 @@ import { QueueLane, groupByLane } from "@hulianui/ui"
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 泳道排布方向。horizontal：泳道横向并列，每道竖向排队 |
 | className | `string` | — | 外层类名 |
 
+`QueueItem`（`items` 的元素约束，你的行数据在此之上自由扩展）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 唯一键 |
+| laneId * | `string` | — | 所属泳道 id。须命中某个 `lanes[].id`，否则该项被丢弃 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -12931,6 +13227,12 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 | className | `string` | — | 追加到滚动容器根节点的类名 |
 | style | `CSSProperties` | — | 透传到滚动容器根节点的内联样式 |
 
+`ScrollStackItemProps`（`<ScrollStackItem>`，每张卡片）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| itemClassName | `string` | — | 追加到单张卡片外层的自定义类名 |
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -13005,6 +13307,7 @@ import { ShieldBadge, ShieldBadgeGroup, compactCount } from "@hulianui/ui"
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
 | href | `string` | — | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
 | target | `string` | — | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"`（显式传 rel 优先） |
+| rel | `string` | — | 显式覆盖上面那条自动补的 `rel` |
 | className | `string` | — | 透传类名；其余原生属性（title / data-* / onClick）一并透传 |
 
 ### ShieldBadgeGroup
@@ -13210,6 +13513,9 @@ import { Sparkline, normalize, linePath, areaPath, barRects } from "@hulianui/ui
 | highlightLast | `boolean` | `false` | 在末点画强调圆点 |
 | min | `number` | — | 归一化下界，不传从数据推 |
 | max | `number` | — | 归一化上界，不传从数据推 |
+| baseline | `number` | — | 基准线：在该数值处画一条横向虚线，让序列有个「对比的参照」而不只是形状。典型用法是上期均值 / 目标值 / 及格线。不传 `min`/`max` 时会把基准值一并纳入归一化域，保证它落在视口内而不是被裁到外面 |
+| baselineTone | `string` | `var(--color-muted-foreground)` | 基准线颜色。取值同 `tone`（语义色名 / 任意 CSS 颜色 / 变量） |
+| baselineLabel | `string` | — | 基准线的原生 tooltip 文案（渲染为 SVG `<title>`） |
 | className | `string` | — | 外层类名 |
 
 继承 `SVGProps<SVGSVGElement>`（除 `data`）。
@@ -14360,7 +14666,13 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 | offsetTop | `number` | `0` | 滚动定位时目标顶部预留的偏移(px)，避开固定页头；同时收缩 scrollspy 观测区上沿 |
 | getContainer | `() => HTMLElement \| null` | `undefined`(window) | 自定义滚动容器；页面真正的滚动体不是 window 时**必须传** |
 
-`AnchorItem`：`{ href: string; title: ReactNode; children?: AnchorItem[] }`，`href` 形如 `"#section-id"`，与页面元素 id 一一对应。
+`AnchorItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| href * | `string` | — | 目标锚点，形如 `"#section-id"`，与页面元素 id 一一对应 |
+| title * | `ReactNode` | — | 目录里显示的标题 |
+| children | `AnchorItem[]` | — | 二级子项（仅一层） |
 
 ## Events
 
@@ -14545,6 +14857,7 @@ import { BackTop } from "@hulianui/ui"
 | target | `() => HTMLElement \| Window \| null` | `window` | 滚动监听 & 回顶的目标容器（返回容器元素或 window）。 |
 | visibilityHeight | `number` | `400` | 滚动超过该高度(px)才淡入显示。 |
 | className | `string` | — | 默认 `fixed` 贴视口右下；可覆盖为 `absolute` 收进局部容器。 |
+| aria-label | `string` | 跟随 `ConfigProvider` | 回顶按钮的无障碍名；不传时取当前 locale 的默认文案。 |
 
 ## Events
 
@@ -14709,7 +15022,13 @@ import { Breadcrumb } from "@hulianui/ui"
 |------|------|------|------|
 | items* | `BreadcrumbItem[]` | — | 路径项数组，从根到当前页自左向右 |
 
-`BreadcrumbItem`：`{ label: ReactNode; href?: string; current?: boolean }`。`href` 省略则该项不可点（当前页或不可导航的祖先）；`current` 显式标记当前页，缺省时数组末项即当前页。
+`BreadcrumbItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `ReactNode` | — | 显示内容 |
+| href | `string` | — | 链接地址；省略则该项不可点（当前页或不可导航的祖先） |
+| current | `boolean` | — | 显式标记为当前页；缺省时数组末项即当前页 |
 
 ## Slots
 
@@ -14768,7 +15087,15 @@ import { BubbleMenu } from "@hulianui/ui"
 | className | `string` | — | 透传根 nav 额外类名 |
 | style | `CSSProperties` | — | 透传根 nav 内联样式 |
 
-> `BubbleMenuItem`: `{ label, href, ariaLabel?, rotation?, hoverStyles? }`；`rotation` 是桌面端胶囊旋转角（移动端归零），`hoverStyles` 为 `{ bgColor?, textColor? }` 悬停反色。
+`BubbleMenuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 链接文案 |
+| href * | `string` | — | 跳转地址 |
+| ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
+| rotation | `number` | — | 桌面端胶囊的旋转角度（度），营造手作错落感；移动端自动归零 |
+| hoverStyles | `{ bgColor?: string; textColor?: string }` | — | 悬停反色配置 |
 
 ## Events
 
@@ -14832,7 +15159,14 @@ import { CardNav } from "@hulianui/ui"
 | className | `string` | — | 透传根容器额外类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
-> `CardNavItem`: `{ label, links?, bgColor?, textColor? }`；`links` 为 `CardNavLink[]`（`{ label, href?, ariaLabel? }`），`bgColor` 缺省吃 bg-surface，建议用 `var(--color-chart-1..5)` 做品牌色块。
+`CardNavItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 卡片大标题 |
+| links | `CardNavLink[]` | — | 卡片内的链接列表，每项 `{ label, href?, ariaLabel? }` |
+| bgColor | `string` | `bg-surface` 令牌 | 卡片底色，任意 CSS 颜色串。建议用 `var(--color-chart-1)`~`var(--color-chart-5)` 做品牌色块 |
+| textColor | `string` | `text-foreground` 令牌 | 卡片文字色 |
 
 ## Events
 
@@ -15190,8 +15524,15 @@ import { FlowingMenu } from "@hulianui/ui"
 | speed | `number` | `18` | 跑马灯走完一整屏的秒数，越大越慢 |
 | repeat | `number` | `4` | 单个文字块里重复的份数（撑满并保证无缝循环） |
 
-> `FlowingMenuItem`: `{ link, text, image? }`；`text` 同时作主标题与揭幕跑马灯文字，`image` 留空则只跑文字不渲染图片块。
-> 还继承 `ComponentPropsWithoutRef<"nav">`（除 `children`），可透传 `className`/`style` 等。
+还继承 `ComponentPropsWithoutRef<"nav">`（除 `children`），可透传 `className`/`style` 等。
+
+`FlowingMenuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| link * | `string` | — | 跳转链接 |
+| text * | `string` | — | 文案，同时作主标题与揭幕跑马灯文字 |
+| image | `string` | — | 跑马灯里循环穿插的图片地址。留空则只跑文字，不渲染图片块 |
 
 ## 示例
 ```tsx
@@ -15247,6 +15588,13 @@ import { GooeyNav } from "@hulianui/ui"
 | colors | `number[]` | `[1, 2, 3, 1, 4]` | 粒子调色板，取 chart token 序号（1..5），随机取色，吃明暗主题 |
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
+
+`GooeyNavItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 显示文案 |
+| href | `string` | `"#"` | 链接地址 |
 
 ## Events
 
@@ -15665,7 +16013,7 @@ import { NavMenu } from "@hulianui/ui"
 
 ## Props
 
-`items` 元素为 `NavMenuNode = NavMenuItem | NavMenuGroup`。`NavMenuItem` = `{ key; label; icon?; href?; disabled?; actions?; children? }`（有 `children` 即可展开父项，有 `href` 渲染 `<a>` 否则 `<button>`）；`NavMenuGroup` = `{ type:"group"; key; label; children }`（不可折叠小标题，key 不进选中/展开态）。继承 `<nav>` 原生属性（`onSelect` 除外）。
+`items` 元素为 `NavMenuNode = NavMenuItem | NavMenuGroup`；`NavMenuGroup` = `{ type:"group"; key; label; children }`（不可折叠小标题，key 不进选中/展开态）。继承 `<nav>` 原生属性（`onSelect` 除外）。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
@@ -15676,6 +16024,19 @@ import { NavMenu } from "@hulianui/ui"
 | defaultSelectedKeys | `string[]` | — | 选中态（非受控初值） |
 | openKeys | `string[]` | — | 展开态（受控） |
 | defaultOpenKeys | `string[]` | — | 展开态（非受控初值） |
+
+`NavMenuItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是选中 / 展开态的取值 |
+| label * | `ReactNode` | — | 行文案 |
+| icon | `ReactNode` | — | 行首图标；`collapsed` 模式下是收起态唯一可视内容 |
+| href | `string` | — | 叶子链接：提供则渲染 `<a>`（点击导航），否则渲染 `<button>`。父项忽略 |
+| render | `ReactElement` | — | 渲染成自定义元素（框架路由件：`<Link to=… />` / `<NextLink href=… />`）。皮肤 class、ref、键盘漫游属性与点击回调都会合并进去 —— 于是「真链接语义（中键新标签页 / 右键复制 / 读屏播报为链接）」与「客户端路由」可以同时拿到。与 Button / Link 的 `render` 约定一致。父项（有 `children`）忽略 |
+| disabled | `boolean` | `false` | 不可点、不进键盘漫游 |
+| actions | `ReactNode` | — | 行尾操作区（如删除 / 更多按钮）。渲染在该行 treeitem 按钮/链接**之外**（绝对覆盖行右侧），避免把 `<button>` 嵌进 treeitem 按钮造成非法 HTML / hydration 报错。可用组件暴露的 `group-hover/nav-row` 钩子做「hover 才显」。仅 `inline` 态生效 |
+| children | `NavMenuNode[]` | — | 子项；有它即为可展开父项 |
 
 ## Events
 
@@ -15972,7 +16333,13 @@ import { PillNav } from "@hulianui/ui"
 | initialLoadAnimation | `boolean` | `true` | 首次加载入场动画（logo 弹入 + 胶囊展开），reduced-motion 下自动跳过 |
 | className | `string` | — | 合并到根 `<nav>` 的类名 |
 
-`PillNavItem`：`{ href: string; label: string; ariaLabel?: string }`，`ariaLabel` 缺省回退到 `label`。
+`PillNavItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| href * | `string` | — | 链接地址（http/https/mailto/tel/# 外链或站内路由皆可，组件只渲染 `<a>`） |
+| label * | `string` | — | 显示文案 |
+| ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
 
 ## Slots
 
@@ -16040,8 +16407,23 @@ import { RouteTabs } from "@hulianui/ui"
 | disableAutoScroll | `boolean` | `false` | 关掉「激活页签自动滚入视口」 |
 | className | `string` | — | — |
 
-`RouteTabItem`：`{ key, label, icon?, closable?, pinned? }`。
-`closable` 默认规则：`pinned` 恒不可关；其余在「可关闭页签数 > 1」时可关（关到只剩一个就停手，免得内容区空白）。
+`RouteTabItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是 `activeKey` 的取值 |
+| label * | `ReactNode` | — | 页签文案 |
+| icon | `ReactNode` | — | 标签前的小图标 |
+| closable | `boolean` | 见下 | 是否可关闭。默认规则：`pinned` 的恒不可关；其余在「可关闭页签数 > 1」时可关（关到只剩一个就停手，免得内容区空白） |
+| pinned | `boolean` | `false` | 固定页签：恒不可关、排在最前，且不受「关闭其他 / 全部」影响 |
+
+`RouteTabsMenuItem`（`extraMenuItems` 的元素）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 菜单项键，回调里据此分辨 |
+| label * | `ReactNode` | — | 菜单项文案 |
+| disabled | `boolean` | `false` | 置灰不可点 |
 
 `RouteTabsAction`：`"close" | "closeOthers" | "closeLeft" | "closeRight" | "closeAll" | "refresh"`。
 
@@ -16134,7 +16516,13 @@ import { StaggeredMenu } from "@hulianui/ui"
 | className | `string` | — | 透传根容器类名 |
 | style | `CSSProperties` | — | 透传根容器内联样式 |
 
-`StaggeredMenuItem`：`{ label; link?; ariaLabel? }`（`link` 缺省渲染为不可跳转 span）。`StaggeredMenuSocial`：`{ label; link }`。
+`StaggeredMenuItem`（`StaggeredMenuSocial` 为 `{ label; link }`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `string` | — | 条目文案（大号标题） |
+| link | `string` | — | 跳转链接；缺省渲染为不可跳转的 `<span>` |
+| ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
 
 ## Events
 
@@ -16204,6 +16592,12 @@ import { Stepper } from "@hulianui/ui"
 | steps* | `StepItem[]` | — | 步骤数组，每项 `{ label: ReactNode }`。 |
 | activeStep* | `number` | — | 受控当前步（0-based）。值 ≥ steps.length 表示全部完成。 |
 | className | `string` | — | — |
+
+`StepItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `ReactNode` | — | 步骤文案 |
 
 ## 示例
 ```tsx
@@ -16757,6 +17151,8 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | 贴边方向 + 对应滑入方向 |
 | `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
+| `DrawerContent.showClose` | `boolean` | `true` | 是否渲染右上角内置关闭按钮 |
+| `DrawerContent.closeLabel` | `string` | 取自 locale | 内置关闭按钮的无障碍名（默认取 `locale.drawer.close`） |
 | `DrawerContent.className` | `string` | — | 内容容器类名 |
 
 ## Events
@@ -18327,6 +18723,13 @@ import { ConfirmCard } from "@hulianui/ui"
 | acted | `"confirmed" \| "edited" \| null` | `null` | 已操作结果：锁定双钮并标记所选项 |
 | className | `string` | — | 容器附加类 |
 
+`ConfirmCardItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| label * | `ReactNode` | — | 字段名（渲染为 `<dt>`） |
+| value * | `ReactNode` | — | 字段值（渲染为 `<dd>`） |
+
 ## Events
 
 | 事件 | 类型 | 说明 |
@@ -18433,6 +18836,8 @@ import { Dossier } from "@hulianui/ui"
 | sections * | `DossierSection[]` | — | 分域清单（数据驱动） |
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
 | className | `string` | — | 容器类名 |
+| archivedLabel | `ReactNode` | 取自 locale | 自动进度前缀。服务端渲染场景可显式传入本地化文案 |
+| optionalLabel | `ReactNode` | 取自 locale | 可选域标记。服务端渲染场景可显式传入本地化文案 |
 
 ## Slots
 
@@ -18852,6 +19257,15 @@ import { ThreadList } from "@hulianui/ui"
 | items* | `ThreadListItem[]` | — | 会话条目数组 |
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
 | className | `string` | — | 容器附加类 |
+
+`ThreadListItem`
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | `string` | — | 唯一键，也是 `onSelect` 的入参 |
+| title * | `ReactNode` | — | 会话标题 |
+| meta | `ReactNode` | — | 次行元信息（相对时间 / 摘要） |
+| active | `boolean` | `false` | 当前打开的会话，高亮 |
 
 ## Events
 
@@ -25271,7 +25685,17 @@ import { TabBar } from "@hulianui/ui"
 | `aria-label` | `string` | 跟随 locale | 导航区无障碍标签；显式传值优先 |
 | `className` | `string` | — | — |
 
-**TabBarItem**：`key: string` · `label: ReactNode` · `icon?: ReactNode`（默认态图标）· `activeIcon?: ReactNode`（激活态，缺省复用 icon）· `dot?: boolean`（红点）· `badge?: ReactNode`（角标，优先于 dot）· `disabled?: boolean`。
+**TabBarItem**
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| key * | `string` | — | 唯一键，也是 `value` 的取值 |
+| label * | `ReactNode` | — | 页签文案 |
+| icon | `ReactNode` | — | 默认态图标 |
+| activeIcon | `ReactNode` | 复用 `icon` | 激活态图标 |
+| dot | `boolean` | `false` | 红点提示 |
+| badge | `ReactNode` | — | 角标内容（数字 / 文本），优先于 `dot` |
+| disabled | `boolean` | `false` | 禁用该页签 |
 
 ## Events
 

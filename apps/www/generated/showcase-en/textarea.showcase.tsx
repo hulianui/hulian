@@ -30,6 +30,14 @@ export const textareaShowcase: ShowcaseSpec = {
             render: () => (<Textarea autoResize defaultValue={"Grow taller with content\nSecond line\nThird line"} className="w-64"/>),
         },
         {
+            title: "Inline cell editing",
+            description: "variant=\"cell\" strips the shell and hands height to CSS field-sizing: content (the rows lower bound already defaults to 1, so no per-cell value is needed). Focus shows a tinted background plus an inset underline instead of a ring, so nothing spills into the neighbouring cell.",
+            code: `<Textarea variant="cell" defaultValue="Edit in place; a new line grows the box" aria-label="Note" />`,
+            render: () => (<div className="w-64 rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
+          <Textarea variant="cell" defaultValue={"Edit in place; a new line grows the box"} aria-label="Remarks"/>
+        </div>),
+        },
+        {
             title: "Invalid state",
             description: "invalid marked with red border and focus ring (manual transmission when used independently).",
             code: `<Textarea invalid defaultValue="Wrong content" className="w-64" />`,
@@ -55,6 +63,12 @@ export const textareaShowcase: ShowcaseSpec = {
         {
             name: "autoResize",
             render: () => (<Textarea autoResize defaultValue={"Grow taller with content\nSecond line\nThird line\nFourth line"} className="w-64"/>),
+        },
+        {
+            name: "cell",
+            render: () => (<div className="w-64 rounded-[var(--radius)] border border-border bg-surface px-3 py-2">
+          <Textarea variant="cell" defaultValue="Edit in place" aria-label="Remarks"/>
+        </div>),
         },
         { name: "invalid", render: () => <Textarea invalid defaultValue="Wrong content" className="w-64"/> },
         { name: "disabled", render: () => <Textarea disabled defaultValue="Disabled" className="w-64"/> },
