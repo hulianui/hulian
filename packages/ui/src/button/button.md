@@ -27,7 +27,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体 |
 | tone | `"brand" ｜ "success" ｜ "warning" ｜ "danger" ｜ "neutral"` | `"brand"` | 语义色调（见下表） |
-| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表） |
+| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用 |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
@@ -75,6 +75,17 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | `sm` | 32px | `iconSm` | 32px |
 | `md`（默认） | 40px | `icon` | 40px |
 | `lg` | 48px | `iconLg` | 48px |
+
+`iconXs`（20px）**不在这条刻度上**，它没有配套文字档，跟 `sm` 混排会矮 12px。
+它服务的是密集表格行内的微型操作——树形展开箭头、行内小动作：最小的 `iconSm`（32px）
+塞进 `density="compact"` 的行会把行高撑起来。Table 内建的展开器用的就是这一档。
+
+```tsx
+{/* 表格行内的展开箭头 */}
+<Button variant="ghost" tone="neutral" size="iconXs" aria-label="展开">
+  <ChevronRight className="size-4" />
+</Button>
+```
 
 ```tsx
 {/* ✅ 同名一对，等高 */}

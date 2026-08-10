@@ -27,7 +27,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | Semantic color tone (see the table below). |
-| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg"` | `"md"` | Control size; the three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). |
+| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | Control size; the three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). `iconXs` is a 20px micro size that matches **no** text size and is meant for dense table rows. |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled` and `type`. |
@@ -75,6 +75,18 @@ Three steps. Every icon size has the same side length as the text size of the sa
 | `sm` | 32px | `iconSm` | 32px |
 | `md` (default) | 40px | `icon` | 40px |
 | `lg` | 48px | `iconLg` | 48px |
+
+`iconXs` (20px) is **not** part of that scale: it has no matching text size and sits 12px shorter
+than `sm`. It exists for micro actions inside dense table rows — tree expanders and inline row
+actions — where the smallest `iconSm` (32px) would push `density="compact"` rows taller. The
+built-in Table expander uses this size.
+
+```tsx
+{/* Expander inside a table row */}
+<Button variant="ghost" tone="neutral" size="iconXs" aria-label="Expand">
+  <ChevronRight className="size-4" />
+</Button>
+```
 
 ```tsx
 {/* Correct: matching pair, equal height */}

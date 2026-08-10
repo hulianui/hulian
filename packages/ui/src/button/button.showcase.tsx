@@ -63,6 +63,27 @@ export const buttonShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "密集表格里的 20px 微型档",
+      description:
+        "iconXs 是 20px 方形，专给表格行内的展开箭头 / 小动作用——最小的 iconSm(32px) 会把 compact 行高撑起来。它刻意不与任何文字档等高，别拿它跟 sm 混排。",
+      code: `<Button variant="ghost" tone="neutral" size="iconXs" aria-label="展开">
+  <ChevronDown className="size-4" />
+</Button>`,
+      render: () => (
+        <>
+          <Button variant="ghost" tone="neutral" size="iconXs" aria-label="展开">
+            <ChevronDown className="size-4" />
+          </Button>
+          <Button variant="outline" size="iconXs" aria-label="展开">
+            <ChevronDown className="size-4" />
+          </Button>
+          <Button size="iconSm" aria-label="对照：iconSm 32px">
+            <ChevronDown className="size-4" />
+          </Button>
+        </>
+      ),
+    },
+    {
       title: "语义档",
       description:
         "tone 表达「这是什么性质的操作」，与 variant（形态）正交。neutral 的实心是反色，不是灰底。",
@@ -147,7 +168,7 @@ export const buttonShowcase: ShowcaseSpec = {
     {
       prop: "size",
       type: "select",
-      options: ["sm", "md", "lg", "icon", "iconSm", "iconLg"],
+      options: ["sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
       defaultValue: "md",
     },
     { prop: "block", type: "boolean", defaultValue: false, label: "块级铺满" },
@@ -170,7 +191,7 @@ export const buttonShowcase: ShowcaseSpec = {
     <Button
       variant={p.variant as "solid" | "outline" | "ghost" | "link"}
       tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"}
-      size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg"}
+      size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"}
       block={p.block as boolean}
       loading={p.loading as boolean}
     >

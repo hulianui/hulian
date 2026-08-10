@@ -16,7 +16,7 @@ describe("Tag", () => {
 
   it("默认 tone=neutral soft 皮肤", () => {
     const { container } = render(<Tag>x</Tag>);
-    expect(container.firstElementChild!.className).toContain("text-muted");
+    expect(container.firstElementChild!.className).toContain("text-muted-foreground");
   });
 
   it("tone=success outline 皮肤类", () => {
@@ -115,5 +115,32 @@ describe("Tag", () => {
   it("透传 className", () => {
     const { container } = render(<Tag className="my-tag">x</Tag>);
     expect(container.firstElementChild!.classList.contains("my-tag")).toBe(true);
+  });
+
+  // #148：TagProps 曾是封闭接口，title / data-* / aria-* / id 一个都传不了，
+  // 而状态标签恰恰最需要 title 做 hover 全文（表格里显示「Word」、title 是完整 MIME）。
+  it("透传 span 原生属性（title / data-* / aria-* / id）", () => {
+    const { container } = render(
+      <Tag title="application/pdf" id="mime" data-testid="mime-tag" aria-label="文件类型">
+        PDF
+      </Tag>,
+    );
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.getAttribute("title")).toBe("application/pdf");
+    expect(el.id).toBe("mime");
+    expect(el.dataset.testid).toBe("mime-tag");
+    expect(el.getAttribute("aria-label")).toBe("文件类型");
+  });
+
+  // 组件自己的 aria-disabled 仍然可被调用方覆盖（rest 在后），但默认态不受影响。
+  it("isDisabled 与透传属性并存", () => {
+    const { container } = render(
+      <Tag isDisabled title="t">
+        x
+      </Tag>,
+    );
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.getAttribute("aria-disabled")).toBe("true");
+    expect(el.getAttribute("title")).toBe("t");
   });
 });

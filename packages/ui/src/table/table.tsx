@@ -39,6 +39,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight, GripVertical } from "../_icons";
+import { Button } from "../button/button";
 import { Checkbox } from "../checkbox/checkbox";
 import { useLocaleValue } from "../config/locale-context";
 import { Empty } from "../empty";
@@ -219,6 +220,10 @@ function RowDragHandle() {
   const ctx = useContext(RowDragContext);
   // 无 context（理论不可达）→ 占位保持列宽，不渲染可交互元素
   if (!ctx) return <span className="inline-block size-5" />;
+  // 这里刻意**不**用 <Button size="iconXs">（同尺寸的展开器已经收编过去了，#146）：
+  // Button 基座带 `disabled:pointer-events-none`，而拖拽手柄禁用时要保留 cursor-not-allowed
+  // 作为「这行不能拖」的反馈 —— 没有指针事件就没有光标变化。改过去得写三条 disabled: 覆盖
+  // （pointer-events-auto / cursor / opacity）把基座顶回来，比这段手写还长，属于为了统一而统一。
   return (
     <button
       type="button"
@@ -229,7 +234,9 @@ function RowDragHandle() {
       aria-label={loc.dragSort ?? "拖拽排序"}
       // touch-none：触屏上不让页面滚动劫持拖拽手势
       className={cn(
-        "inline-grid size-5 place-items-center rounded text-muted outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+        // rounded-sm 而不是裸 rounded：本库 @theme 注册了 --radius，裸 rounded 就是 10px，
+        // 落在 20px 方块上是个圆片（与 Button 的 iconXs 档同源，见 button-base.ts）。
+        "inline-grid size-5 place-items-center rounded-sm text-muted-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
         ctx.disabled
           ? "cursor-not-allowed opacity-40"
           : "cursor-grab touch-none hover:text-foreground active:cursor-grabbing",
@@ -519,18 +526,20 @@ export function Table<TData>({
         header: () => null,
         cell: ({ row }) =>
           row.getCanExpand() ? (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              tone="neutral"
+              size="iconXs"
               aria-label={row.getIsExpanded() ? loc.collapse ?? "收起" : loc.expand ?? "展开"}
               aria-expanded={row.getIsExpanded()}
               onClick={row.getToggleExpandedHandler()}
               style={{ marginLeft: row.depth * indent }}
-              className="inline-grid size-5 place-items-center rounded text-muted transition-colors hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground"
             >
               <ChevronRight
                 className={cn("size-4 transition-transform", row.getIsExpanded() && "rotate-90")}
               />
-            </button>
+            </Button>
           ) : (
             // 树形叶子：占位保持缩进对齐（明细模式 depth 恒 0 → 无缩进）
             <span style={{ marginLeft: row.depth * indent }} className="inline-block size-5" />
@@ -937,7 +946,7 @@ export function Table<TData>({
                               aria-label={
                                 loc.filter?.(header.column.id) ?? `筛选 ${header.column.id}`
                               }
-                              className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs font-normal text-foreground outline-none transition-colors placeholder:text-muted focus:border-primary"
+                              className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs font-normal text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
                             />
                           )}
                         </div>

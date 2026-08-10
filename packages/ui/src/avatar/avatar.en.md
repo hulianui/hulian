@@ -25,7 +25,7 @@ import { Avatar } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | Preset circular diameter. |
+| size | `"sm" \| "md" \| "lg" \| "xl" \| "2xl"` | `"md"` | Preset circular diameter: 32 / 40 / 48 / 64 / 96px. |
 | src | `string` | — | Image URL; failures reveal `fallback`. |
 | alt | `string` | — | Alternative image text. |
 | className | `string` | — | Custom class name. |

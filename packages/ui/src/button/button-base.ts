@@ -49,6 +49,22 @@ export const BUTTON_SIZE_CLASS = {
   icon: "size-10 p-0",
   iconSm: "size-8 p-0",
   iconLg: "size-12 p-0",
+  // 20px 档：**不与文字档对齐**，故意不叫 iconXs 之外的名字。它服务的是「密集表格行内的
+  // 微型操作」——树形展开箭头、拖拽手柄、单元格里的小动作，常见就是 16–20px。最小的
+  // iconSm(32px) 塞进 density="compact" 的行会把行高撑起来，信息密度当场垮掉（#146）。
+  //
+  // 这个档一直真实存在，只是此前只有库内部享受得到：Table 的展开器与拖拽手柄都手写了
+  // 同一份 size-5，既没收编回 Button，也没导出给消费方 —— 于是「别写裸 button」的建议
+  // 和「库里没有能用的按钮」形成闭环。
+  //
+  // 圆角必须显式降档，否则 base 的 --radius(10px) 落在 20px 方块上就是个圆片。
+  //
+  // ⚠️ 这里**不能写裸 `rounded`**：本库在 @theme 里注册了 `--radius`，于是 Tailwind v4 的
+  // 裸 `rounded` 就是 `border-radius: var(--radius)` —— 与 base 那条完全同义，twMerge 去重
+  // 之后仍然是 10px。Table 内建展开器此前手写的正是裸 `rounded`，所以它一直渲染成圆片。
+  // 用 `rounded-sm`（Tailwind 默认 --radius-sm，本库未覆盖 = 4px）才真的降下来。
+  // 判据只能靠实机量 borderRadius：className 断言在这上面是绿的，因为两个类名确实不同。
+  iconXs: "size-5 rounded-sm p-0",
 } as const;
 
 /** 特效按钮只开放三档文字尺寸——它们没有纯图标形态。 */

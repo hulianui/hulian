@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render as rtlRender } from "@testing-library/react";
 import { Button, buttonVariants } from "./button";
+import { cn } from "../lib/cn";
 import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 describe("buttonVariants", () => {
@@ -78,6 +79,21 @@ describe("Button render（按钮样式的链接）", () => {
   ])("尺寸档 %s 与图标档 %s 等高（刻度 %s）", (text, icon, step) => {
     expect(buttonVariants({ size: text as "sm" })).toContain(`h-${step}`);
     expect(buttonVariants({ size: icon as "icon" })).toContain(`size-${step}`);
+  });
+
+  // #146：密集表格行内的 20px 微型操作档。它刻意**不**对应任何文字档，
+  // 所以不在上面那条等高不变量里。
+  it("iconXs 是 20px 方形，且圆角不吃 --radius", () => {
+    const cls = cn(buttonVariants({ size: "iconXs" }));
+    expect(cls).toContain("size-5");
+    // 10px 的 --radius 落在 20px 方块上就是个圆片，必须降到 rounded-sm(4px)。
+    // 特别不能是**裸** `rounded`：本库在 @theme 注册了 --radius，v4 的裸 rounded 就是
+    // border-radius: var(--radius)，与 base 那条同义，twMerge 去重后仍然是 10px。
+    // 这条断言拦不住那个坑（两个类名确实不同），真正的判据是实机量 borderRadius；
+    // 留它是为了锁住「不许改回裸 rounded / --radius」这个意图。
+    expect(cls).toContain("rounded-sm");
+    expect(cls).not.toContain("rounded-[var(--radius)]");
+    expect(cls.split(/\s+/)).not.toContain("rounded");
   });
 
   // #138：按钮文字是控件标签不是内容，连点会被浏览器识别成双击选词。

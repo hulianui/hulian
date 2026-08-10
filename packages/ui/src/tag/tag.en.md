@@ -32,6 +32,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | pulse | `boolean` | `false` | Dot breathing animation, effective only with dot. |
 | isDisabled | `boolean` | `false` | Lowers opacity and disables pointer actions. |
 | className | `string` | — | Root class. |
+| …HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | — | Native span attributes are forwarded. Status tags commonly need `title` to reveal the full value on hover (a cell showing "Word" whose title is the complete MIME type), plus `data-testid` and `aria-*`. |
 
 ## Events
 

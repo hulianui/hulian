@@ -1,9 +1,14 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 export type TagTone = "neutral" | "brand" | "success" | "warning" | "danger";
 export type TagVariant = "soft" | "solid" | "outline";
 
-export interface TagProps {
+/**
+ * 继承 span 的原生属性：状态标签经常要挂 `title` 做 hover 全文（短标签 + 完整值，
+ * 典型如表格里显示「Word」而 title 是完整 MIME）、挂 `data-testid` 给 e2e、挂 `aria-*` 给读屏。
+ * 封闭接口把这些全挡在外面，而同库的 Button / Card / Empty / Progress 都是继承的（#148）。
+ */
+export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
   /** 视觉变体：soft 浅底（默认，最常用于状态标签）/ solid 实底 / outline 描边。 */
   variant?: TagVariant;
   /** 语气色：neutral 默认 / brand 处理中 / success 成功 / warning 警告 / danger 错误。 */

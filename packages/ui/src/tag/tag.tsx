@@ -20,7 +20,7 @@ export const tagVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: "soft", tone: "neutral", class: "bg-surface-hover text-muted" },
+      { variant: "soft", tone: "neutral", class: "bg-surface-hover text-muted-foreground" },
       { variant: "soft", tone: "brand", class: "bg-primary/12 text-primary" },
       { variant: "soft", tone: "success", class: "bg-success/12 text-success" },
       { variant: "soft", tone: "warning", class: "bg-warning/12 text-warning" },
@@ -41,7 +41,7 @@ export const tagVariants = cva(
 );
 
 const dotByTone: Record<TagTone, string> = {
-  neutral: "bg-muted",
+  neutral: "bg-muted-foreground",
   brand: "bg-primary",
   success: "bg-success",
   warning: "bg-warning",
@@ -59,6 +59,7 @@ function TagImpl({
   isDisabled,
   className,
   children,
+  ...rest
 }: TagProps) {
   const labels = { remove: "移除", ...useComponentLocale().tag };
   return (
@@ -69,6 +70,7 @@ function TagImpl({
         className,
       )}
       aria-disabled={isDisabled || undefined}
+      {...rest}
     >
       {icon ? (
         <span className="flex shrink-0 items-center [&>svg]:size-3">{icon}</span>
