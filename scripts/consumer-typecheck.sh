@@ -116,6 +116,31 @@ install_and_typecheck() {
     fi
   done
 
+  # 断言 3：工具入口的 `require` 条件必须解析到**真 CJS 文件**。
+  # 上面那份 tsc 走 bundler 解析，覆盖不到这条路；而没有 "type": "module" 的消费方
+  # （create-next-app 的默认形态，也就是绝大多数 Next.js 项目）加载 vitest.config.ts /
+  # vite.config.ts 时，Vite 走的正是 require —— 入口只有 ESM 就在**配置加载阶段**炸
+  # "resolved to an ESM file. ESM file cannot be loaded by require"，一个用例都跑不到（#143）。
+  #
+  # 判据刻意不是「require() 能不能跑通」：Node 22 起 require() 可以直接加载 ESM，
+  # 拿它当判据在本机永远是绿的，而真正拒绝 ESM 的是 Vite 自己的 externalize-deps 插件。
+  # 所以这里核的是**解析结果的模块形态**，那才是 Vite 看的东西。
+  for entry in vitest-preset vite; do
+    if ! (cd "$app_dir" && node -e "
+      const { createRequire } = require('node:module');
+      const resolved = createRequire(process.cwd() + '/').resolve('@hulianui/ui/$entry');
+      if (!resolved.endsWith('.cjs')) {
+        console.error('require 条件解析到 ' + resolved + '，不是 CJS');
+        process.exit(1);
+      }
+      const m = require(resolved);
+      if (!m || (typeof m !== 'function' && typeof m !== 'object')) process.exit(1);
+    "); then
+      echo "✗ [$label] @hulianui/ui/$entry 的 require 入口不是 CJS（exports 缺 require 条件，或指向了 ESM 文件）" >&2
+      exit 1
+    fi
+  done
+
   echo "▶ [$label] 以消费方身份 tsc --noEmit"
   (cd "$app_dir" && ./node_modules/.bin/tsc --noEmit)
   # 变量名后紧跟全角括号必须写成 ${VAR}，否则 bash 会把全角字符并进变量名（set -u 下直接报 unbound）。

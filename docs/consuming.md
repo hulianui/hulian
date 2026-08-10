@@ -47,6 +47,12 @@ export default defineConfig(withHulian({
 `@hulianui/ui/vitest-preset` 也单独导出了 `hulianDedupe` / `hulianConditions` /
 `hulianMainFields` / `hulianInlineDeps` 四个常量。
 
+> **你的 `package.json` 没有 `"type": "module"` 也没关系**（`create-next-app` 生成的项目默认
+> 就没有）。Vite 按这个字段决定 `vitest.config.ts` 用 ESM 还是 CJS 加载，两条路本预设都走得通。
+> 0.27.0 及更早版本只有 ESM 入口，走 CJS 那条会在**配置加载阶段**就报
+> `"@hulianui/ui/vitest-preset" resolved to an ESM file. ESM file cannot be loaded by require`，
+> 一个用例都跑不到；0.28.0 起补上了 `require` 入口。`@hulianui/ui/vite` 同理。
+
 **别忘了装 peer**：`@base-ui/react` 是 peerDependency，你的 `package.json` 里必须有它，
 否则 dedupe 无从谈起（根本没有第二份可去重，是压根找不到）。当前 peer 清单：
 

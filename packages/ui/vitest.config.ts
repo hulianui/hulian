@@ -66,7 +66,10 @@ export default defineConfig({
           // 让它涨到 5.4s 就偶发翻红 —— 红的是机器负载，不是组件。
           // 放宽不会掩盖真 bug：死循环/未 resolve 的 promise 照样超时，只是反馈慢一点。
           testTimeout: 15_000,
-          include: ["src/**/*.test.{ts,tsx}"],
+          // 第二条是包根的对外集成入口（vite.js / vitest-preset.js 及其 .cjs 孪生）。
+          // 它们不在 tsconfig 的 include 里，typecheck 看不到；此前 include 只写了
+          // `src/**`，于是 vite.test.js 写了却从来没被执行过 —— 零覆盖伪装成有覆盖。
+          include: ["src/**/*.test.{ts,tsx}", "*.test.js"],
           // 显式列出默认 exclude —— 自定义 exclude 会整体替换默认值，漏写会把 node_modules 扫进来
           exclude: ["**/node_modules/**", "**/dist/**", BROWSER_TESTS],
         },

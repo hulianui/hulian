@@ -136,7 +136,7 @@ const nextFrame = () =>
 
 **真因**：`browser` project 走的是**浏览器侧解析**（不是 `unit` 那条 SSR 解析），`motion` 这类有多份入口的包会被解析出第二份 React 实例。Kanban 不受影响、Carousel 一碰就炸，区别只是后者 `import { useReducedMotion } from "motion/react"`。
 
-**根治**：`vitest.config.ts` 顶层已配 `resolve.dedupe`，直接复用发给消费方的 `hulianDedupe` 清单（`vitest-preset.js`），两处不会漂移。**新增依赖如果也有多入口，记得加进那个清单。**
+**根治**：`vitest.config.ts` 顶层已配 `resolve.dedupe`，直接复用发给消费方的 `hulianDedupe` 清单（`vitest-preset.cjs`，`vitest-preset.js` 是它的 ESM 包装），两处不会漂移。**新增依赖如果也有多入口，记得加进那个清单。**
 
 这其实是 dogfood：消费方早就被这个问题坑过（所以才有 `@hulianui/ui/vitest-preset`），而库自己的测试配置一直没用上。
 

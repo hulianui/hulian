@@ -1,6 +1,33 @@
 #!/usr/bin/env node
 
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { checkFiles } from "./check.mjs";
+
+const PACKAGE_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+// --help / --version 不是装饰：CI 里常用 `npx @hulianui/guard --help` 探测「工具装没装」，
+// 而此前任何未知 flag 一律退出码 2，于是**已安装**的 guard 被判成未安装，检查静默跳过 →
+// 门禁假绿（#143）。探测类命令必须是 0 退出码的成功路径。
+const USAGE = `hulian-check —— 检查代码是否符合 @hulianui/ui 的使用约定
+
+用法
+  hulian-check [选项] [路径...]        路径缺省为当前目录
+
+选项
+  --format <text|json>   输出格式，默认 text。json 给 CI 做棘轮用，
+                         结构为 { filesChecked, diagnostics[] }，
+                         每条含 file/line/column/severity/ruleId/message/instead
+  --config <文件>        追加自定义 conventions（只能新增规则，不能覆盖内置规则）
+  -h, --help             显示本帮助并退出（退出码 0）
+  -v, --version          显示版本并退出（退出码 0）
+
+退出码
+  0  没有 error（可能有 warning）
+  1  存在 error
+  2  参数错误，或被检查的文件有语法错误`;
 
 function parseArgs(argv) {
   const options = { format: "text", paths: [] };
@@ -8,6 +35,10 @@ function parseArgs(argv) {
     const arg = argv[index];
     if (arg === "--") {
       continue;
+    } else if (arg === "-h" || arg === "--help") {
+      options.help = true;
+    } else if (arg === "-v" || arg === "--version") {
+      options.version = true;
     } else if (arg === "--format" || arg === "--config") {
       const value = argv[++index];
       if (!value) throw new Error(`${arg} 缺少取值`);
@@ -27,6 +58,14 @@ function parseArgs(argv) {
 
 try {
   const options = parseArgs(process.argv.slice(2));
+  if (options.help) {
+    console.log(USAGE);
+    process.exit(0);
+  }
+  if (options.version) {
+    console.log(JSON.parse(readFileSync(join(PACKAGE_ROOT, "package.json"), "utf8")).version);
+    process.exit(0);
+  }
   const result = checkFiles(options.paths, options);
   if (options.format === "json") {
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
