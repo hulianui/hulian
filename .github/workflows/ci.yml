@@ -208,8 +208,17 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      # 有意不在仓库根跑 pnpm install：pack 不需要 node_modules，
-      # 且少装一次也少一分把 monorepo 依赖泄漏给消费方工程的机会。
+      # 0.28.0 起**必须**装依赖：`pnpm pack` 会触发 packages/ui 的 prepack 生成
+      # 预编译 .d.ts（#156），而那一步的 tsc 要解析 @types/react —— 没有 node_modules
+      # 就是一片 TS7026，pack 直接失败。此前这里刻意不装（"pack 不需要 node_modules，
+      # 少装一次也少一分把 monorepo 依赖泄漏给消费方工程的机会"），这个前提已经不成立。
+      #
+      # 泄漏那一层的防线并不依赖"这里不装"：consumer-typecheck.sh 把消费方工程建在
+      # **仓库之外**、走 tarball 而非 workspace 链接，并断言 @types/node 不在消费方的
+      # 类型可见范围内。那三条才是真防线，安装仓库依赖不会削弱它们。
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Pack, install as a consumer, typecheck (TypeScript 7)
         env:
           CONSUMER_SMOKE_DIR: ${{ runner.temp }}/hulian-consumer-smoke-ts7
@@ -249,7 +258,11 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
-      # 同 consumer-smoke：pack 不需要仓库根的 node_modules。
+      # 同 consumer-smoke：0.28.0 起 pack 会触发 prepack 生成 .d.ts（#156），
+      # 那一步的 tsc 要解析 @types/react，所以必须先装依赖。
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Pack, bundle as a consumer, check size
         env:
           BUNDLE_SIZE_DIR: ${{ runner.temp }}/hulian-bundle-size
