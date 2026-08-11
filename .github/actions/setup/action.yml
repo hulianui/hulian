@@ -1,0 +1,29 @@
+# 工具链准备的单一来源。
+#
+# CI 从「一个 27 步的巨型 verify job」拆成多个并行 job 之后，这四步会在每个 job 里
+# 重复出现 —— 抄八遍就意味着八份会各自漂移的 pnpm 版本。收敛到这里之后，pnpm 版本
+# 在全仓只剩两处：根 package.json 的 `packageManager` 与本文件，两者共同钉死。
+#
+# Node 版本仍读 .nvmrc（不写死 major）。为什么要钉到补丁号见 ci.yml 顶部的注释。
+#
+# 刻意不含 checkout：composite action 的文件本身要先被 checkout 出来才能用。
+name: Setup toolchain
+description: pnpm + Node（版本读 .nvmrc）+ 按 lockfile 安装依赖
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v5
+      with:
+        version: 8.15.5
+
+    - name: Setup Node
+      uses: actions/setup-node@v5
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      shell: bash
