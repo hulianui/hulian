@@ -1,5 +1,33 @@
 # @hulianui/ui
 
+## 0.32.0
+
+### Minor Changes
+
+- ba54677: `RichTextEditor` gains a legacy-HTML compatibility tier: the `legacyHtml` prop plus an exported pure function `normalizeLegacyHtml` (#208).
+
+  A consumer ran real body content out of their production database through "open, edit nothing, read the HTML back" and measured plain content surviving intact while anything pasted in from the WeChat editor lost a great deal: `<font>` 29 to 0, `color` 11 to 0, `face` 25 to 0, `style` 13 to 1. The same shapes reproduce locally, and all three are confirmed gone: `<font color="#e4393c" face="Microsoft YaHei" size="3">` collapses to a bare `<p>`, the whole `style` on `<img style="max-width:100%">` disappears, and `<section style="text-align:center">` takes its alignment down with the tag. What gets lost here is exactly the formatting the editorial team actually uses - red emphasis, font size, centering, and the `max-width` the WeChat editor attaches to every image (without it the image overflows its container on the front end) - not junk markup. Roughly 50 of their 80 pending pages were blocked on this.
+
+  Released as minor rather than patch: it adds a prop and an export, and it is **off by default** - with it off the component behaves byte for byte as it did before the prop existed, pinned by a test of its own.
+
+  **Why both entry points, rather than only the pure function.** The issue offered two candidates. The pure function looks like the smaller surface, but measurement shows it cannot cover everything:
+
+  - `<font>` to `<span style>`, and pushing block alignment down, are both **pre-parse** markup translation. A pure function handles them completely.
+  - But `style` on `<img>` and `font-family` **require the schema to participate**: an attribute the schema does not know about is gone the moment ProseMirror parses, whatever shape it was translated into. Feeding `<span style="font-family:...">` straight in was measured to come back out with only `color` and `font-size` (no `FontFamily` extension); `<img style>` behaves the same way (the `Image` node has no `style` attribute).
+
+  So: the `legacyHtml` prop covers all three tiers (including installing `FontFamily` and giving `Image` an allowlisted `style` attribute), while `normalizeLegacyHtml(html, { font, align })` covers the two that can be pure, for bulk-cleaning a table, writing a migration script, or sharing one mapping with another editor.
+
+  Several non-obvious decisions:
+
+  - **The compatibility tier does not obey `toolbar` trimming.** With `legacyHtml.font` on, `TextStyle` / `Color` / `FontSize` / `FontFamily` are installed unconditionally, even when the toolbar carries neither a color picker nor a font-size control. The schema decides whether legacy content survives; the buttons decide whether the user can change it - two different things, and nobody should have to enable a color picker they do not want just to stop losing red text. `FontFamily` in particular is deliberately schema-only and never a button: it is installed so existing fonts are not dropped, not so the editorial team can pick fonts.
+  - **Alignment is pushed down, not preserved.** `text-align` inherits in CSS but not in ProseMirror: `<section>` cannot enter the schema, and the moment it is flattened the centering hanging on it goes too. Normalization therefore pushes the alignment onto the child blocks, and a wrapper containing only inline content becomes a `<p style="text-align">` outright. The `align="center"` attribute and the `<center>` tag are recognized along the way - in this class of legacy content they show up alongside `<font>`.
+  - **A centering wrapper around a lone image is deliberately left alone.** An image is a block node, so wrapping it in a `<p>` only makes ProseMirror lift it back out and leave an empty paragraph behind - trading an old bug for a new one. This is written into the docs: center images through front-end styling instead.
+  - **Attribute values go through a shape allowlist, not string concatenation.** The value of `<font color>` comes from a user-writable field in the consumer's database, so splicing it into `style` directly hands over the whole attribute (`color="red;position:fixed;z-index:9999"`). Colors are accepted only as a named color, `#hex`, or `rgb()`; a `face` containing structural characters is dropped; `size` accepts only `1..7` and `+n`/`-n`, mapped to px through the browser's own table. `<img style>` is likewise an allowlist of three (`max-width` / `width` / `height`), and `position` / `z-index` do not get in.
+  - **None of the paste sanitizer's removal rules relax.** With `legacyHtml` on, the paste path becomes "normalize, then sanitize" (the other order would leave nothing to translate, since `color` / `face` / `size` are removed by the attribute allowlist first); sanitizing then merely allows two more properties, `font-family` and `max-width`, while `class`, `on*`, `<style>`, and `javascript:` are still stripped.
+  - **CJK family names are always quoted.** `font-family: SimSun` written unquoted is legal per the CSS spec but does not hold up in practice: jsdom's cssstyle judges the whole declaration invalid and drops it, and a fallback stack like `'Arial', SimSun` gets truncated from the invalid item onward. Single quotes, because a double quote serializes to `&quot;` and becomes part of the family-name literal.
+
+  Both the reproduction and the regression tests follow the trap the issue called out: strip `<br class="ProseMirror-trailingBreak">` before reading `innerHTML` off `.ProseMirror`, since that is a rendering placeholder that never reaches `getHTML` and leaving it in makes every `<br>` count look doubled.
+
 ## 0.31.0
 
 ### Minor Changes
