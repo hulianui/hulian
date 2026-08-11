@@ -7,7 +7,7 @@ export const textareaShowcase: ShowcaseSpec = {
             title: "Basic usage",
             description: "For multi-line input, rows controls the initial number of visible lines (default 3).",
             code: `<Textarea placeholder="Write something..." className="w-64" />`,
-            render: () => <Textarea placeholder="Write something..." className="w-64"/>,
+            render: () => <Textarea placeholder="Write something…" className="w-64"/>,
         },
         {
             title: "Size",
@@ -51,15 +51,15 @@ export const textareaShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },
-        { prop: "placeholder", type: "text", defaultValue: "Write something...", label: "Placeholder" },
+        { prop: "size", type: "select", options: ["xs", "sm", "md", "lg"], defaultValue: "md" },
+        { prop: "placeholder", type: "text", defaultValue: "Write something\u2026", label: "Placeholder" },
         { prop: "rows", type: "number", defaultValue: 3, label: "rows" },
         { prop: "autoResize", type: "boolean", defaultValue: false, label: "Adaptive height" },
         { prop: "invalid", type: "boolean", defaultValue: false, label: "invalid" },
         { prop: "disabled", type: "boolean", defaultValue: false, label: "disabled" },
     ],
     states: [
-        { name: "default", render: () => <Textarea placeholder="Write something..." className="w-64"/> },
+        { name: "default", render: () => <Textarea placeholder="Write something…" className="w-64"/> },
         {
             name: "autoResize",
             render: () => (<Textarea autoResize defaultValue={"Grow taller with content\nSecond line\nThird line\nFourth line"} className="w-64"/>),

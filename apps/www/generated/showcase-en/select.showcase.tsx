@@ -173,7 +173,7 @@ export const selectShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "placeholder", type: "text", defaultValue: "Please select a font", label: "Placeholder copywriting" },
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },
+        { prop: "size", type: "select", options: ["xs", "sm", "md", "lg"], defaultValue: "md" },
         { prop: "side", type: "select", options: ["bottom", "top"], defaultValue: "bottom" },
         { prop: "clearable", type: "boolean", defaultValue: false, label: "Clearable" },
         { prop: "searchable", type: "boolean", defaultValue: false, label: "Searchable" },

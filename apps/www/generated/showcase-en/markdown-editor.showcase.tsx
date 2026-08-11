@@ -25,15 +25,15 @@ export const markdownEditorShowcase: ShowcaseSpec = {
             title: "Placeholder + line height",
             description: "placeholder prompts empty state, minRows controls the minimum height of the content area.",
             code: `<MarkdownEditor placeholder="Write something..." minRows={3} className="w-[32rem]" />`,
-            render: () => (<MarkdownEditor placeholder="Write something..." minRows={3} className="w-[32rem]"/>),
+            render: () => (<MarkdownEditor placeholder="Write something…" minRows={3} className="w-[32rem]"/>),
         },
         {
-            title: "In the form (Field)",
+            title: "Inside a Field",
             description: "Works with Field, invalid triggers the danger shell, and name bridges the native form.",
             code: `<Field label="Order details (required)" error="Details cannot be empty" className="w-[32rem]">
   <MarkdownEditor name="detail" invalid placeholder="Required" />
 </Field>`,
-            render: () => (<Field label="Order details (required)" error="Details cannot be empty" className="w-[32rem]">
+            render: () => (<Field label="Order details (required)" error="Details are required" className="w-[32rem]">
           <MarkdownEditor name="detail" invalid placeholder="Required"/>
         </Field>),
         },
@@ -57,7 +57,7 @@ export const markdownEditorShowcase: ShowcaseSpec = {
         },
         {
             name: "inField",
-            render: () => (<Field label="Order details (required)" error="Details cannot be empty" className="w-[32rem]">
+            render: () => (<Field label="Order details (required)" error="Details are required" className="w-[32rem]">
           <MarkdownEditor name="detail" invalid placeholder="Required"/>
         </Field>),
         },

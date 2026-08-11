@@ -4,7 +4,7 @@ import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { dayjs } from "../../../../packages/ui/src/lib/date";
 import { Scheduler } from "../../../../packages/ui/src/scheduler/scheduler";
 import type { SchedulerEvent, SchedulerResource, SchedulerView } from "../../../../packages/ui/src/scheduler/scheduler.types";
-const monday = dayjs().day(1).format("YYYY-MM-DD");
+const monday = "2026-06-01";
 const at = (offsetDays: number, hhmm: string) => dayjs(monday).add(offsetDays, "day").format("YYYY-MM-DD") + `T${hhmm}:00`;
 const RESOURCES: SchedulerResource[] = [
     { id: "d1", title: "Dr. Li", subtitle: "Internal Medicine" },

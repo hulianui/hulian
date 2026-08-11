@@ -565,6 +565,24 @@
       "404",
       "500"
     ],
+    "RichTextToolbarItem": [
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "heading",
+      "fontSize",
+      "color",
+      "align",
+      "bulletList",
+      "orderedList",
+      "blockquote",
+      "link",
+      "image",
+      "table",
+      "clear",
+      "divider"
+    ],
     "RouteTabsAction": [
       "close",
       "closeOthers",
@@ -597,6 +615,7 @@
       "prefix-suffix"
     ],
     "SelectSize": [
+      "xs",
       "sm",
       "md",
       "lg"
@@ -729,6 +748,16 @@
       "left",
       "center",
       "right"
+    ],
+    "TableCellVerticalAlign": [
+      "top",
+      "middle",
+      "bottom"
+    ],
+    "TableCellWhitespace": [
+      "nowrap",
+      "normal",
+      "pre-wrap"
     ],
     "RowDropPosition": [
       "before",
@@ -932,6 +961,7 @@
     "Cascader": "cascader",
     "flattenLeafPaths": "cascader",
     "filterLeafPaths": "cascader",
+    "CellEditor": "cell-editor",
     "Checkbox": "checkbox",
     "CheckboxGroup": "checkbox-group",
     "ChoiceboxGroup": "choicebox",
@@ -1070,6 +1100,8 @@
     "roundBox": "region-select",
     "strokeWidthFor": "region-select",
     "RemoteSelect": "remote-select",
+    "RichTextEditor": "rich-text-editor",
+    "sanitizePastedHtml": "rich-text-editor",
     "RippleButton": "ripple-button",
     "ScopeMatrix": "scope-matrix",
     "SearchForm": "search-form",
@@ -6302,6 +6334,82 @@
       "slots": []
     },
     {
+      "slug": "cell-editor",
+      "name": "CellEditor",
+      "category": "forms",
+      "group": "basic",
+      "status": "enriched",
+      "import": "import { CellEditor } from \"@hulianui/ui\"",
+      "exports": [
+        "CellEditor"
+      ],
+      "types": [
+        "CellEditorProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/cell-editor/cell-editor.md",
+      "props": [
+        {
+          "name": "value",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "已提交值（受控数据源）。提交成功后把新值写回这里，组件据此重置内部草稿与判等基准"
+        },
+        {
+          "name": "missing",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "「这个字段还没填」：降成 muted + italic，让「空」和「填了空格」一眼可分"
+        },
+        {
+          "name": "multiline",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用。`onCommit` 返回 Promise 时组件在 pending 期间自己追加禁用，不必再传"
+        },
+        {
+          "name": "placeholder",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "占位文案（核对表里一般写「未填写」）"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "落在最外层节点上"
+        }
+      ],
+      "events": [
+        {
+          "name": "onCommit",
+          "required": false,
+          "kind": "function",
+          "type": "(next: string) => void | Promise<void>",
+          "default": null,
+          "description": "blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用"
+        }
+      ],
+      "slots": []
+    },
+    {
       "slug": "checkbox",
       "name": "Checkbox",
       "category": "forms",
@@ -6420,6 +6528,11 @@
           "name": "label",
           "type": "ReactNode",
           "description": "盒右 inline label（`<label>` 原生关联）"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "与 `label` 等价的写法：`<Checkbox>同意条款</Checkbox>`。两者同时给时 `label` 优先"
         }
       ]
     },
@@ -8415,6 +8528,22 @@
           "description": "显式覆盖 invalid；缺省时由 error 是否非空推导"
         },
         {
+          "name": "required",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "必填态：label 前画红星 + 给控件注入 `aria-required`。**不产生校验**（校验仍只由 rules 表达），解决的是「提交前看不出哪些字段必填」。`useForm` 的 `register()` 会按 rules 派生 `required`，直接透传即可"
+        },
+        {
+          "name": "requiredMark",
+          "required": false,
+          "kind": "other",
+          "type": "boolean | ReactNode",
+          "default": "true",
+          "description": "必填标记形态。`false` = 只留 `aria-required` 不画标记；传 ReactNode = 换成自家标记。`required` 为假时无效"
+        },
+        {
           "name": "disabled",
           "required": false,
           "kind": "boolean",
@@ -8904,15 +9033,16 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"sm\" | \"md\" | \"lg\"",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
           "values": [
+            "xs",
             "sm",
             "md",
             "lg"
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸（CVA 变体，覆盖原生 size）。`variant=\"cell\"` 下只影响字号，不再有高度与内距"
+          "description": "尺寸（CVA 变体，覆盖原生 size）。`xs` = 28px 高 / 12px 字，给存量密集数据表的行内编辑器（仍带边框，区别于无边框的 `variant=\"cell\"`）。`variant=\"cell\"` 下只影响字号，不再有高度与内距"
         },
         {
           "name": "variant",
@@ -11037,6 +11167,11 @@
           "name": "label",
           "type": "ReactNode",
           "description": "可选 inline label（点右，原生 `<label>` 关联）"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "与 `label` 等价的写法：`<Radio value=\"1\">审核通过</Radio>`。两者同时给时 `label` 优先"
         }
       ]
     },
@@ -11712,6 +11847,159 @@
       "slots": []
     },
     {
+      "slug": "rich-text-editor",
+      "name": "RichTextEditor",
+      "category": "forms",
+      "group": "advanced",
+      "status": "enriched",
+      "import": "import { RichTextEditor, sanitizePastedHtml } from \"@hulianui/ui\"",
+      "exports": [
+        "RichTextEditor",
+        "sanitizePastedHtml"
+      ],
+      "types": [
+        "RichTextEditorProps",
+        "RichTextToolbarItem"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/rich-text-editor/rich-text-editor.md",
+      "props": [
+        {
+          "name": "value",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "受控 **HTML 片段串**"
+        },
+        {
+          "name": "defaultValue",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "非受控初值（HTML 串）"
+        },
+        {
+          "name": "name",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "桥给原生表单 / Field 的隐藏 input name（值为 HTML 串）"
+        },
+        {
+          "name": "placeholder",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "空态占位"
+        },
+        {
+          "name": "invalid",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动）"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用（内容区不可编辑 + 工具栏收起）"
+        },
+        {
+          "name": "minRows",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "8",
+          "description": "内容区最小高度（行）"
+        },
+        {
+          "name": "toolbar",
+          "required": false,
+          "kind": "union",
+          "type": "RichTextToolbarItem[]",
+          "resolvedType": "\"bold\" | \"italic\" | \"underline\" | \"strike\" | \"heading\" | \"fontSize\" | \"color\" | \"align\" | \"bulletList\" | \"orderedList\" | \"blockquote\" | \"link\" | \"image\" | \"table\" | \"clear\" | \"divider\"[]",
+          "values": [
+            "bold",
+            "italic",
+            "underline",
+            "strike",
+            "heading",
+            "fontSize",
+            "color",
+            "align",
+            "bulletList",
+            "orderedList",
+            "blockquote",
+            "link",
+            "image",
+            "table",
+            "clear"
+          ],
+          "valueType": "string",
+          "default": "完整一档",
+          "description": "工具栏条目与顺序；`[]` 则整条工具栏不渲染。**裁掉一档同时会关掉对应扩展**（见「禁忌 / 坑」）"
+        },
+        {
+          "name": "sanitizePaste",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "粘贴净化：洗掉 `class` / `on*` / `<style>` / `javascript:`，内联 `style` 过属性白名单"
+        },
+        {
+          "name": "extensions",
+          "required": false,
+          "kind": "array",
+          "type": "AnyExtension[]",
+          "default": null,
+          "description": "追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频补一个节点类型）"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "落在外壳"
+        },
+        {
+          "name": "aria-label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "locale",
+          "description": "内容区无障碍名"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "function",
+          "type": "(html: string) => void",
+          "default": null,
+          "description": "内容变化回调，参数是 HTML 串"
+        },
+        {
+          "name": "onUploadImage",
+          "required": false,
+          "kind": "function",
+          "type": "(file: File) => Promise<{ url: string }>",
+          "default": null,
+          "description": "图片上传：拿 `File`、还 URL。不传则图片按钮退回「填 URL」"
+        }
+      ],
+      "slots": []
+    },
+    {
       "slug": "ripple-button",
       "name": "RippleButton",
       "category": "forms",
@@ -12371,15 +12659,16 @@
           "owner": "SelectTrigger",
           "required": false,
           "kind": "enum",
-          "type": "\"sm\" | \"md\" | \"lg\"",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
           "values": [
+            "xs",
             "sm",
             "md",
             "lg"
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸"
+          "description": "尺寸。`xs` 与 Input / Textarea 的 `xs` 等高（密集表格里同一行三种控件必须对齐）"
         },
         {
           "name": "invalid",
@@ -13032,7 +13321,18 @@
           "description": "开关变化回调"
         }
       ],
-      "slots": []
+      "slots": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "description": "轨道右侧 inline label（`<label>` 原生关联）。给了它就不必再给 `aria-label`"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "与 `label` 等价的写法：`<Switch checked={v}>启用</Switch>`。两者同时给时 `label` 优先"
+        }
+      ]
     },
     {
       "slug": "textarea",
@@ -13054,15 +13354,24 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"sm\" | \"md\" | \"lg\"",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
           "values": [
+            "xs",
             "sm",
             "md",
             "lg"
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸（CVA 变体，覆盖原生 size）。`variant=\"cell\"` 下只影响字号，不再有内距"
+          "description": "尺寸（CVA 变体，覆盖原生 size）。`xs` 与 Input / SelectTrigger 的 `xs` 等高，用于密集数据表。`variant=\"cell\"` 下只影响字号，不再有内距"
+        },
+        {
+          "name": "ref",
+          "required": false,
+          "kind": "other",
+          "type": "Ref<HTMLTextAreaElement>",
+          "default": null,
+          "description": "转发到**内层原生 `<textarea>`**。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它；与内部 `autoResize` 用的 ref 自动并存"
         },
         {
           "name": "variant",
@@ -22344,6 +22653,14 @@
           "description": "受控焦点日（ISO），决定哪周/哪天/哪月"
         },
         {
+          "name": "now",
+          "required": false,
+          "kind": "other",
+          "type": "string | Date",
+          "default": "挂载后取浏览器时钟",
+          "description": "「今天 / 此刻」的判定基准。**渲染期不读系统时钟**，所以首帧没有今天高亮与当前时刻线，挂载后补上（#181）。传了它就完全由你决定：截图回归要可复现、或「今天」该按服务端业务时钟而非用户本机时钟时用"
+        },
+        {
           "name": "resources",
           "required": false,
           "kind": "array",
@@ -23654,6 +23971,66 @@
           "description": "返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖"
         },
         {
+          "name": "cellSpan",
+          "required": false,
+          "kind": "function",
+          "type": "(ctx) => { rowSpan?, colSpan? } | void",
+          "default": null,
+          "description": "单元格合并（对标 el-table `:span-method`）。逐格回调，**被合掉的格子不再回调**；`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，`rowIndex` 是渲染顺序（排序/筛选之后）、`rows` 与之同序。与 `virtual` / `renderExpandedRow` 不能同开（会静默不合并 + dev 告警）"
+        },
+        {
+          "name": "stickyHeader",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "表头吸顶（与 `virtual` 正交）。**必须同时给 `maxHeight`**，否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先（组件在 dev 下告警）"
+        },
+        {
+          "name": "maxHeight",
+          "required": false,
+          "kind": "other",
+          "type": "number | string",
+          "default": null,
+          "description": "滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准"
+        },
+        {
+          "name": "minWidth",
+          "required": false,
+          "kind": "other",
+          "type": "number | string",
+          "default": null,
+          "description": "`<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来"
+        },
+        {
+          "name": "cellVerticalAlign",
+          "required": false,
+          "kind": "enum",
+          "type": "\"top\" | \"middle\" | \"bottom\"",
+          "values": [
+            "top",
+            "middle",
+            "bottom"
+          ],
+          "valueType": "string",
+          "default": "\"middle\"",
+          "description": "单元格垂直对齐的表级默认；列 `meta.verticalAlign` 覆盖"
+        },
+        {
+          "name": "cellWhitespace",
+          "required": false,
+          "kind": "enum",
+          "type": "\"nowrap\" | \"normal\" | \"pre-wrap\"",
+          "values": [
+            "nowrap",
+            "normal",
+            "pre-wrap"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "换行策略的表级默认；列 `meta.whitespace` 覆盖。典型形状是「表级 nowrap + 少数几列 normal」"
+        },
+        {
           "name": "virtual",
           "required": false,
           "kind": "other",
@@ -23667,7 +24044,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "false",
-          "description": "底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 开启时无效**（容器定高，真滚动条一直看得见）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳"
+          "description": "底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 或 `maxHeight` 开启时无效**（外壳自己就是定高滚动容器，真滚动条一直看得见，再挂一条会上下两条并排）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳"
         },
         {
           "name": "className",
@@ -23768,6 +24145,16 @@
           "name": "ellipsis",
           "type": "boolean",
           "description": "溢出截断 + 悬停 Tooltip 显示全文"
+        },
+        {
+          "name": "verticalAlign",
+          "type": "\"top\" | \"middle\" | \"bottom\"",
+          "description": "单元格垂直对齐（表头不跟随，恒 middle）。允许换行的列几乎必然要 `top`"
+        },
+        {
+          "name": "whitespace",
+          "type": "\"nowrap\" | \"normal\" | \"pre-wrap\"",
+          "description": "换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行）"
         }
       ]
     },
@@ -26127,12 +26514,34 @@
           "description": "内置 ⌘K / Ctrl+K 全局快捷键切换开合。"
         },
         {
+          "name": "surface",
+          "required": false,
+          "kind": "enum",
+          "type": "\"solid\" | \"glass\" | \"none\"",
+          "values": [
+            "solid",
+            "glass",
+            "none"
+          ],
+          "valueType": "string",
+          "default": "\"solid\"",
+          "description": "外壳表面皮肤（只管填充/描边/阴影，尺寸与定位始终由组件负责）。`glass` = 半透明 + 背景模糊（需身后有底图）；`none` = 一个皮肤类都不画，全交给 `className`"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "追加到面板外壳"
+        },
+        {
+          "name": "backdropClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到遮罩层（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊"
         },
         {
           "name": "aria-label",
@@ -29136,19 +29545,64 @@
           "name": "title",
           "owner": "DialogContent",
           "required": true,
-          "kind": "string",
-          "type": "string",
+          "kind": "node",
+          "type": "ReactNode",
           "default": null,
-          "description": "标题（a11y label）"
+          "description": "标题（a11y label）。收 ReactNode，「图标 + 文案」直接写"
         },
         {
           "name": "description",
           "owner": "DialogContent",
           "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "说明文案。渲染成 `<p>`，**只能放 phrasing content**（块级内容放 children）"
+        },
+        {
+          "name": "descriptionClassName",
+          "owner": "DialogContent",
+          "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "说明文案"
+          "description": "追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」——面包屑式标题的弹窗里可见区只留标题，读屏仍拿得到那句话"
+        },
+        {
+          "name": "backdrop",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击）"
+        },
+        {
+          "name": "backdropClassName",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊"
+        },
+        {
+          "name": "scrollable",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children（双栏各自滚动即写 `flex-1 min-h-0`，不必拍 `h-[58vh]`）"
+        },
+        {
+          "name": "bodyClassName",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到正文区容器"
         },
         {
           "name": "className",
@@ -29249,6 +29703,51 @@
           "type": "string",
           "default": "取自 locale",
           "description": "内置关闭按钮的无障碍名（默认取 `locale.drawer.close`）"
+        },
+        {
+          "name": "descriptionClassName",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」"
+        },
+        {
+          "name": "backdrop",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击）"
+        },
+        {
+          "name": "backdropClassName",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊"
+        },
+        {
+          "name": "scrollable",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children"
+        },
+        {
+          "name": "bodyClassName",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到正文区容器"
         },
         {
           "name": "className",

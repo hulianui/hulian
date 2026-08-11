@@ -2903,6 +2903,55 @@
       ]
     },
     {
+      "name": "cell-editor",
+      "type": "registry:ui",
+      "title": "CellEditor",
+      "description": "单元格内联编辑器 · 逐格常驻编辑原语(静止态与纯文本同形/失焦或 Enter 即提交/值没变不发/Esc 回滚/missing 灰斜体/field-sizing 自增高/onCommit 返 Promise 自带 p…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/textarea.json"
+      ],
+      "meta": {
+        "import": "import { CellEditor } from \"@hulianui/ui\"",
+        "exports": [
+          "CellEditor"
+        ],
+        "types": [
+          "CellEditorProps"
+        ],
+        "group": "basic",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/cell-editor/cell-editor.md",
+        "docLocal": "packages/ui/src/cell-editor/cell-editor.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/cell-editor/cell-editor.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/cell-editor/cell-editor.tsx"
+        },
+        {
+          "path": "components/hulianui/cell-editor/cell-editor.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/cell-editor/cell-editor.types.ts"
+        },
+        {
+          "path": "components/hulianui/cell-editor/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/cell-editor/index.ts"
+        }
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -5261,6 +5310,80 @@
       ]
     },
     {
+      "name": "rich-text-editor",
+      "type": "registry:ui",
+      "title": "RichTextEditor",
+      "description": "富文本编辑器 · 值进出 HTML 字符串 + 工具栏可裁 + 图片上传注入 + 粘贴净化",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [
+        "@tiptap/extension-image",
+        "@tiptap/extension-link",
+        "@tiptap/extension-placeholder",
+        "@tiptap/extension-table",
+        "@tiptap/extension-text-align",
+        "@tiptap/extension-text-style",
+        "@tiptap/react",
+        "@tiptap/starter-kit"
+      ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/color-swatch-picker.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/popover.json",
+        "https://hulianui.haloritual.com/zh/r/select.json"
+      ],
+      "meta": {
+        "import": "import { RichTextEditor, sanitizePastedHtml } from \"@hulianui/ui\"",
+        "exports": [
+          "RichTextEditor",
+          "sanitizePastedHtml"
+        ],
+        "types": [
+          "RichTextEditorProps",
+          "RichTextToolbarItem"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/rich-text-editor/rich-text-editor.md",
+        "docLocal": "packages/ui/src/rich-text-editor/rich-text-editor.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/rich-text-editor/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/rich-text-editor/index.ts"
+        },
+        {
+          "path": "components/hulianui/rich-text-editor/rich-text-editor-toolbar.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/rich-text-editor/rich-text-editor-toolbar.tsx"
+        },
+        {
+          "path": "components/hulianui/rich-text-editor/rich-text-editor.sanitize.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/rich-text-editor/rich-text-editor.sanitize.ts"
+        },
+        {
+          "path": "components/hulianui/rich-text-editor/rich-text-editor.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/rich-text-editor/rich-text-editor.tsx"
+        },
+        {
+          "path": "components/hulianui/rich-text-editor/rich-text-editor.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/rich-text-editor/rich-text-editor.types.ts"
+        }
+      ]
+    },
+    {
       "name": "ripple-button",
       "type": "registry:ui",
       "title": "RippleButton",
@@ -5370,12 +5493,14 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/cascader.json",
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/field.json",
         "https://hulianui.haloritual.com/zh/r/input.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/remote-select.json",
-        "https://hulianui.haloritual.com/zh/r/select.json"
+        "https://hulianui.haloritual.com/zh/r/select.json",
+        "https://hulianui.haloritual.com/zh/r/tree.json"
       ],
       "meta": {
         "import": "import { SearchForm, planLayout, canCollapse, totalSpan } from \"@hulianui/ui\"",
@@ -10736,6 +10861,11 @@
           "target": "components/hulianui/table/index.ts"
         },
         {
+          "path": "components/hulianui/table/table.span.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/table/table.span.ts"
+        },
+        {
           "path": "components/hulianui/table/table.tsx",
           "type": "registry:ui",
           "target": "components/hulianui/table/table.tsx"
@@ -11889,7 +12019,8 @@
         "navigation"
       ],
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
@@ -20666,6 +20797,11 @@
           "path": "components/hulianui/lib/is-dev.ts",
           "type": "registry:lib",
           "target": "components/hulianui/lib/is-dev.ts"
+        },
+        {
+          "path": "components/hulianui/lib/merge-refs.ts",
+          "type": "registry:lib",
+          "target": "components/hulianui/lib/merge-refs.ts"
         },
         {
           "path": "components/hulianui/lib/polymorphic.ts",

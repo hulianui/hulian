@@ -31,6 +31,25 @@ const fields: SearchField[] = [
     { name: "owner", label: "Person in charge", placeholder: "Name" },
     { name: "city", label: "City", placeholder: "City" },
 ];
+const orgTree = [
+    {
+        key: "south",
+        label: "South China region",
+        children: [
+            { key: "gz", label: "Guangzhou", children: [{ key: "gz-01", label: "Tianhe store" }, { key: "gz-02", label: "Yuexiu store" }] },
+            { key: "sz", label: "Shenzhen", children: [{ key: "sz-01", label: "Nanshan store" }] },
+        ],
+    },
+    {
+        key: "east",
+        label: "East China region",
+        children: [{ key: "sh", label: "Shanghai", children: [{ key: "sh-01", label: "Jing'an store" }] }],
+    },
+];
+const pathFields: SearchField[] = [
+    { name: "store", label: "Store", type: "cascader", options: orgTree, changeOnSelect: true },
+    { name: "area", label: "Region", type: "region" },
+];
 function Demo({ collapsible = true }: {
     collapsible?: boolean;
 }) {
@@ -84,6 +103,25 @@ export const searchFormShowcase: ShowcaseSpec = {
 />`,
             render: () => (<div className="w-[44rem] max-w-full">
           <SearchForm fields={fields.slice(0, 3)} columns={2} submitText="Search" resetText="Clear" onSearch={() => { }} onReset={() => { }}/>
+        </div>),
+        },
+        {
+            title: "Hierarchical fields: cascader and region",
+            description: "cascader takes an options tree such as an org chart or a category tree, while region ships with Chinese administrative divisions and loads them on demand. Both produce a path array as their value.",
+            code: `const fields: SearchField[] = [
+  {
+    name: "store",
+    label: "Store",
+    type: "cascader",
+    options: orgTree, // TreeNode[], same as the nodes of Cascader
+    changeOnSelect: true, // allow filtering down to only a region or a city
+  },
+  { name: "area", label: "Region", type: "region" },
+];
+
+<SearchForm fields={fields} columns={2} onSearch={(v) => console.log(v)} />`,
+            render: () => (<div className="w-[44rem] max-w-full">
+          <SearchForm fields={pathFields} columns={2} onSearch={() => { }} onReset={() => { }}/>
         </div>),
         },
     ],

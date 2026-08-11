@@ -80,7 +80,7 @@ export const inputShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },
+        { prop: "size", type: "select", options: ["xs", "sm", "md", "lg"], defaultValue: "md" },
         { prop: "placeholder", type: "text", defaultValue: "Please enter...", label: "Placeholder" },
         { prop: "invalid", type: "boolean", defaultValue: false, label: "invalid" },
         { prop: "disabled", type: "boolean", defaultValue: false, label: "disabled" },
@@ -90,6 +90,7 @@ export const inputShowcase: ShowcaseSpec = {
         { name: "Prefix and suffix", render: () => <Input prefix="¥" suffix=".00" placeholder="0" className="w-64"/> },
         { name: "invalid", render: () => <Input invalid defaultValue="Wrong value" className="w-64"/> },
         { name: "disabled", render: () => <Input disabled defaultValue="Disabled" className="w-64"/> },
+        { name: "xs", render: () => <Input size="xs" placeholder="xs" className="w-64"/> },
         { name: "sm", render: () => <Input size="sm" placeholder="sm" className="w-64"/> },
         { name: "lg", render: () => <Input size="lg" placeholder="lg" className="w-64"/> },
         {

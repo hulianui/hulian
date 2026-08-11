@@ -170,6 +170,9 @@ export const scenarioLoaders = {
   cascader: async () =>
     (await import("@hulianui/ui-internal/cascader/cascader.showcase"))
       .cascaderShowcase,
+  "cell-editor": async () =>
+    (await import("@hulianui/ui-internal/cell-editor/cell-editor.showcase"))
+      .cellEditorShowcase,
   chart: async () =>
     (await import("@hulianui/ui-internal/chart/chart.showcase")).chartShowcase,
   "chat-message": async () =>
@@ -963,6 +966,12 @@ export const scenarioLoaders = {
   ribbons: async () =>
     (await import("@hulianui/ui-internal/ribbons/ribbons.showcase"))
       .ribbonsShowcase,
+  "rich-text-editor": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/rich-text-editor/rich-text-editor.showcase"
+      )
+    ).richTextEditorShowcase,
   ripple: async () =>
     (await import("@hulianui/ui-internal/ripple/ripple.showcase"))
       .rippleShowcase,
@@ -1871,6 +1880,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/cascader/index.ts",
+  },
+  "cell-editor": {
+    id: "cell-editor",
+    scenarioId: "cell-editor/basic",
+    component: "CellEditor",
+    entry: "@hulianui/ui/cell-editor",
+    category: "standard",
+    categories: ["basic", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/cell-editor/index.ts",
   },
   chart: {
     id: "chart",
@@ -4379,6 +4399,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: false,
     source: "packages/ui/src/ribbons/index.ts",
+  },
+  "rich-text-editor": {
+    id: "rich-text-editor",
+    scenarioId: "rich-text-editor/basic",
+    component: "RichTextEditor",
+    entry: "@hulianui/ui/rich-text-editor",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/rich-text-editor/index.ts",
   },
   ripple: {
     id: "ripple",

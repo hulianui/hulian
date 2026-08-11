@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.29.0 · 386 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.29.0 · 388 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -3489,6 +3489,88 @@ const [value, setValue] = useState<string[]>([]);
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Rating](https://hulianui.haloritual.com/zh/components/rating)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# CellEditor
+
+**导出**：`CellEditor`
+
+> 单元格内联编辑器 · 逐格常驻编辑原语(静止态与纯文本同形/失焦或 Enter 即提交/值没变不发/Esc 回滚/missing 灰斜体/field-sizing 自增高/onCommit 返 Promise 自带 pending) · forms/basic
+
+## 何时用
+
+核对、补录已有数据的表格：用户扫一遍，看到不对的就地改一个字。这类表里每个单元格常驻一个「长得像文本、其实是输入框」的编辑器，没有编辑/保存按钮，失焦即提交该格。
+
+和 [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table) 不是同一个东西的两种皮肤，是两种交互契约：
+
+| | EditableTable（行级） | CellEditor（逐格） |
+|------|------|------|
+| 进入编辑 | 点「编辑」/ 新增行 | 不需要进入，永远可编辑 |
+| 提交粒度 | 整行一次 | 单格 |
+| 提交时机 | 点保存 | 失焦 / Enter |
+| 撤销 | 取消整行 | Esc 回滚该格 |
+| 视觉 | 明确的表单控件 | 无边框透明底，静止时和纯文本无异 |
+| 典型场景 | 报价单、账单明细录入 | 核对 / 补录已有数据 |
+
+本组件只做编辑器这一层，表格外壳交给 [Table](https://hulianui.haloritual.com/zh/components/table)（用 `align-top` + 不截断换行），这样排序 / 冻结列 / 虚拟滚动不必在编辑器里重造一遍。要「点编辑 → 改 → 保存整行」用 [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)；要一个普通的带边框输入框用 [Input](https://hulianui.haloritual.com/zh/components/input) / [Textarea](https://hulianui.haloritual.com/zh/components/textarea)。
+
+## 导入
+```ts
+import { CellEditor } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value* | `string` | — | 已提交值（受控数据源）。提交成功后把新值写回这里，组件据此重置内部草稿与判等基准 |
+| missing | `boolean` | `false` | 「这个字段还没填」：降成 muted + italic，让「空」和「填了空格」一眼可分 |
+| multiline | `boolean` | `false` | 多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input |
+| disabled | `boolean` | `false` | 禁用。`onCommit` 返回 Promise 时组件在 pending 期间自己追加禁用，不必再传 |
+| placeholder | `string` | — | 占位文案（核对表里一般写「未填写」） |
+| className | `string` | — | 落在最外层节点上 |
+
+其余原生属性（`aria-label` / `id` / `onFocus` / `data-*` …）透传到编辑控件本身：单行档是 `<input>`，多行档是 `<textarea>`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCommit | `(next: string) => void \| Promise<void>` | blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用 |
+
+## 示例
+```tsx
+const [row, setRow] = useState(initialRow);
+
+<CellEditor
+  aria-label="联系人"
+  value={row.contact}
+  missing={row.contact.trim() === ""}
+  placeholder="未填写"
+  onCommit={async (next) => {
+    await api.patch(row.id, { contact: next });
+    setRow((prev) => ({ ...prev, contact: next }));
+  }}
+/>
+```
+
+多行（开票地址、备注这类长文本）：
+```tsx
+<CellEditor multiline value={row.address} onCommit={(next) => save("address", next)} />
+```
+
+## 禁忌 / 坑
+
+- **别在 `onCommit` 里自己判等**：组件已经判过了，值没变根本不会调进来。核对场景下用户会大量「点进去看一眼再点走」，判等这一层就是为了不让一整屏空提交打到后端。
+- **Esc 之后的 blur 不会重发旧值**：Esc 把草稿写回上一次提交值，紧随其后的 blur 判等直接短路。消费方不需要再维护「刚按过 Esc」的标志位。Esc 只回滚，不移走焦点。
+- **Enter 提交，Shift+Enter 换行**：多行档里换行让给 Shift+Enter；单行档里 Enter 被 `preventDefault`，不会误提交所在的 form。
+- **自增高是 CSS 的 `field-sizing: content`，不是 JS 测高**：表格里几十个格同时读 `scrollHeight` 会在滚动时明显掉帧，而且和列宽变化互相触发。别再往外面套一层测高逻辑。
+- **`onCommit` 失败要自己 catch**：组件只负责结束 pending 态，回滚与报错文案要看业务语义，它不替你决定。
+- **父级必须把新值写回 `value`**：不写回时组件仍以自己的草稿显示，但下一次外部刷新会把界面拉回旧值。
+- **放进 [Table](https://hulianui.haloritual.com/zh/components/table) 时 `columns` 必须 memo**：cell 函数经 TanStack 的 `flexRender` 当组件类型渲染，identity 一变整格卸载重挂 —— 挂了 `onBlur` 提交的编辑器会被重挂时的 blur 误触发。
+
+## 相关
+[EditableTable](https://hulianui.haloritual.com/zh/components/editable-table) · [Table](https://hulianui.haloritual.com/zh/components/table) · [Input](https://hulianui.haloritual.com/zh/components/input) · [Textarea](https://hulianui.haloritual.com/zh/components/textarea) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # Checkbox
 
 **导出**：`Checkbox`
@@ -3531,6 +3613,7 @@ import { Checkbox } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | label | `ReactNode` | 盒右 inline label（`<label>` 原生关联） |
+| children | `ReactNode` | 与 `label` 等价的写法：`<Checkbox>同意条款</Checkbox>`。两者同时给时 `label` 优先 |
 
 ## 示例
 ```tsx
@@ -4818,6 +4901,8 @@ import { Field } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | invalid | `boolean` | `false` | 显式覆盖 invalid；缺省时由 error 是否非空推导 |
+| required | `boolean` | `false` | 必填态：label 前画红星 + 给控件注入 `aria-required`。**不产生校验**（校验仍只由 rules 表达），解决的是「提交前看不出哪些字段必填」。`useForm` 的 `register()` 会按 rules 派生 `required`，直接透传即可 |
+| requiredMark | `boolean \| ReactNode` | `true` | 必填标记形态。`false` = 只留 `aria-required` 不画标记；传 ReactNode = 换成自家标记。`required` 为假时无效 |
 | disabled | `boolean` | `false` | 禁用 |
 | name | `string` | — | 提交标识，透传 Field.Root |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | 排列方向。`horizontal` = 标签区在左、控件在右、错误另起一行占满整行（设置页「一行一个设置项」版式），a11y 串联与错误渲染完全一致 |
@@ -4848,6 +4933,12 @@ import { Field } from "@hulianui/ui"
   <Input defaultValue="not-an-email" />
 </Field>
 
+// 必填：红星 + aria-required（校验仍写在 rules 里）
+const email = form.register("email", { rules: [{ required: true, message: "请填邮箱" }] });
+<Field label="邮箱" required={email.required} error={email.error}>
+  <Input value={email.value} onChange={email.onChange} onBlur={email.onBlur} />
+</Field>
+
 // 横排设置行：标签在左、控件在右、错误另起一行
 <Field orientation="horizontal" label="主题" description="选择你偏好的配色方案">
   <Select items={themes} />
@@ -4861,6 +4952,8 @@ import { Field } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- `required` 的 `aria-required` **只在 `children` 是单个元素时能注入** —— 那是 Field 唯一够得着的节点。children 是多节点（控件 + 按钮）或纯文本时，请自己给控件加 `aria-required`，否则读屏拿不到必填信息（自建的 `aria-hidden` 星号读屏读不到）。
+- 不要为了画星号把 label 包成自定义的 `RequiredLabel` —— 那样只有视力用户知道必填，读屏用户拿不到，而且每个页面的星号位置/颜色会各写各的。
 - `error` 字符串非空时已隐含 `invalid`，无需再传 `invalid`；想强制无错状态下也标红才单独传 `invalid`。
 - 底层是 Base UI Field，错误文本通过 `match={true}` 强制渲染——别在 Field 外另起一个 `<p>` 写错误，会丢失自动的 `aria-describedby` 串联。详见 [[base-ui-field-error-match-true-for-external-controlled-error]]：外部受控 error 不走 Base UI 校验时，默认分支会让错误文本「框红字没」。
 - 若 children 是 Textarea，注意 render-as 的类型问题，见 [[base-ui-field-control-render-textarea-type-safe]]。
@@ -4909,6 +5002,8 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 | children | `ReactNode` | 字段内容 |
 
 `useForm` 控制器用法（详见示例）：`form.register(name, { rules, dependencies })`、`form.submit(onValid, onInvalid)`、`form.resetFields()`。
+
+`register()` 返回 `{ name, value, onChange, onBlur, error, required }`。其中 `required` 按 `rules` 里有无 `required: true` 派生，透传给 [`Field`](https://hulianui.haloritual.com/zh/components/field) 的 `required` 即可让必填在提交前就看得见（红星 + `aria-required`），规则仍是唯一的校验来源。
 
 ## 示例
 ```tsx
@@ -5140,7 +5235,7 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`variant="cell"` 下只影响字号，不再有高度与内距 |
+| size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`xs` = 28px 高 / 12px 字，给存量密集数据表的行内编辑器（仍带边框，区别于无边框的 `variant="cell"`）。`variant="cell"` 下只影响字号，不再有高度与内距 |
 | variant | `"default" \| "cell"` | `"default"` | 外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距、不占固定行高，焦点态用浅底 + 内嵌下划线代替焦点环 |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
 | disabled | `boolean` | `false` | 禁用 |
@@ -6474,6 +6569,7 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | label | `ReactNode` | 可选 inline label（点右，原生 `<label>` 关联） |
+| children | `ReactNode` | 与 `label` 等价的写法：`<Radio value="1">审核通过</Radio>`。两者同时给时 `label` 优先 |
 
 ## 示例
 ```tsx
@@ -6859,6 +6955,103 @@ import { RemoteSelect } from "@hulianui/ui"
 [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Select](https://hulianui.haloritual.com/zh/components/select) · [CountrySelect](https://hulianui.haloritual.com/zh/components/country-select) · [Cascader](https://hulianui.haloritual.com/zh/components/cascader) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# RichTextEditor
+
+**导出**：`RichTextEditor` · `sanitizePastedHtml`
+
+> 富文本编辑器 · 值进出 HTML 字符串 + 工具栏可裁 + 图片上传注入 + 粘贴净化 · forms/advanced
+
+## 何时用
+
+内容管理里「运营自己排版、前台原样渲染」的长文富文本：活动细则、品牌故事、商品详情、公众号图文。判据只有一条 —— **值的进出是 HTML 串**（数据库里存的是 HTML，前台用 `v-html` / 小程序 `rich-text` 直接吃）。
+
+值进出是 markdown 用 [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor)；只要纯文本多行用 [Textarea](https://hulianui.haloritual.com/zh/components/textarea)；只读展示已有 HTML 不要用编辑器（那会把内容按 schema 归一化一遍）。
+
+**别用互转绕过去**：`html → md` 是有损的。`<span style="color:#e4393c">`、`<p style="text-align:center">`、`<table>`、`<iframe>` 在 markdown 语法里没有对应表达，运营改一个错别字、一次往返就把整篇的居中与红字洗掉了。
+
+## 导入
+```ts
+import { RichTextEditor } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value | `string` | — | 受控 **HTML 片段串** |
+| defaultValue | `string` | — | 非受控初值（HTML 串） |
+| name | `string` | — | 桥给原生表单 / Field 的隐藏 input name（值为 HTML 串） |
+| placeholder | `string` | — | 空态占位 |
+| invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
+| disabled | `boolean` | `false` | 禁用（内容区不可编辑 + 工具栏收起） |
+| minRows | `number` | `8` | 内容区最小高度（行） |
+| toolbar | `RichTextToolbarItem[]` | 完整一档 | 工具栏条目与顺序；`[]` 则整条工具栏不渲染。**裁掉一档同时会关掉对应扩展**（见「禁忌 / 坑」） |
+| sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>` / `javascript:`，内联 `style` 过属性白名单 |
+| extensions | `AnyExtension[]` | — | 追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频补一个节点类型） |
+| className | `string` | — | 落在外壳 |
+| aria-label | `string` | locale | 内容区无障碍名 |
+
+`RichTextToolbarItem` = `"bold" | "italic" | "underline" | "strike" | "heading" | "fontSize" | "color" | "align" | "bulletList" | "orderedList" | "blockquote" | "link" | "image" | "table" | "clear" | "divider"`。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onChange | `(html: string) => void` | 内容变化回调，参数是 HTML 串 |
+| onUploadImage | `(file: File) => Promise<{ url: string }>` | 图片上传：拿 `File`、还 URL。不传则图片按钮退回「填 URL」 |
+
+## 示例
+```tsx
+// 基础：存量 HTML 直接灌进去
+<RichTextEditor
+  defaultValue='<p style="text-align: center"><strong>活动细则</strong></p>'
+/>
+```
+
+```tsx
+// 受控 + 落库
+const [html, setHtml] = useState(detail.content); // 库里取出来就是 HTML
+<RichTextEditor value={html} onChange={setHtml} />
+```
+
+```tsx
+// 图片走自家 OSS（带鉴权头），组件只负责插 <img src>
+<RichTextEditor
+  onUploadImage={async (file) => {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: form, headers: authHeaders });
+    return { url: (await res.json()).url };
+  }}
+/>
+```
+
+```tsx
+// 工具栏裁成常用一档
+<RichTextEditor toolbar={["bold", "italic", "underline", "divider", "bulletList", "link"]} />
+```
+
+```tsx
+// 表单内
+<Field label="活动详情" required error={detail.error}>
+  <RichTextEditor name="detail" value={detail.value} onChange={detail.onChange} />
+</Field>
+```
+
+## 禁忌 / 坑
+
+- **编辑器的 schema 决定哪些标签能活下来，而且是在载入时就决定的**：不在扩展集里的标签（默认一档之外的 `<iframe>`、`<video>`、自定义标签）打开这篇内容的瞬间就被丢掉，保存回去即数据丢失 —— 不是「不碰它就不会掉」。存量内容里有这类标签时，用 `extensions` 补上对应节点再上线。
+- 同理，**`toolbar` 裁剪不只是省按钮**：不给 `"table"` 就不装表格扩展，于是存量正文里的 `<table>` 会被丢掉；`"color"` / `"fontSize"` 对应的是 `<span style="color|font-size">`，`"align"` 对应的是 `style="text-align"`。裁之前先确认存量内容里没有那类排版。
+- **上线前务必拿一批真实存量内容跑一遍「打开 → 不做任何编辑 → 取 `getHTML`」的对比**，确认没有静默丢失。这条比任何单测都重要：丢的是运营五年攒的排版。
+- 图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。
+- 粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。
+- `value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。
+- 与 [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。
+
+## 相关
+[MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor) · [Textarea](https://hulianui.haloritual.com/zh/components/textarea) · [Field](https://hulianui.haloritual.com/zh/components/field) · [Upload](https://hulianui.haloritual.com/zh/components/upload) · [Prose](https://hulianui.haloritual.com/zh/components/prose)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # RippleButton
 
 **导出**：`RippleButton`
@@ -7026,6 +7219,8 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 - `type: "select"` + `options: { value: string; label: ReactNode }[]`
 - `type: "multi-select"` + `options`（值是 `string[]`）
 - `type: "remote-select"` + `fetcher`（签名同 RemoteSelect）+ `resolveValue?` + `multiple?`
+- `type: "cascader"` + `options: TreeNode[]`（即 Cascader 的 `nodes`）+ `changeOnSelect?` / `showSearch?`（值是路径数组）
+- `type: "region"` + `level?: 2 | 3` + `changeOnSelect?` / `showSearch?`（省市区数据内置，不用喂 options；值是 code 路径数组）
 - `type: "date"` / `type: "date-range"`
 - `type: "datetime"` / `type: "datetime-range"`（原生 `datetime-local`）
 
@@ -7066,6 +7261,9 @@ const fields: SearchField[] = [
 - `datetime` / `datetime-range` 用的是原生 `datetime-local`，**值是不带时区的本地时间串**
   （`"2026-07-29T14:30"`）。别对它调 `new Date(...).toISOString()` —— 东八区会直接少 8 小时，
   且不报错只写坏数据。要 ISO 请在 `onSearch` 里显式按本地时刻拼。
+- `cascader` / `region` 的值是**路径数组**（根 → 叶），未选时是 `[]` 而不是 `""`。后端只认末级 id 时在 `onSearch` 里取 `path.at(-1)`；要中间层级也能提交请开 `changeOnSelect`。
+- `region` 的内置区划表约 137KB，因此那一档是**按需加载**的：只有配了 `type: "region"` 的页面才会拉那个 chunk。它到达前控件位置是一块等高占位，不会让整片查询区跳一下。
+- `region` 只回传 **code 路径**（`["11","1101","110101"]`）。后端要的是名称路径时用 `render` 逃生舱自己接 [RegionCascader](https://hulianui.haloritual.com/zh/components/region-cascader)，它的 `onChange` 第二参就是名称路径。
 - `remote-select` 的受控回调在 RemoteSelect 那边叫 `onChange`（第二参给完整选项），
   本组件只取第一参喂回 values；需要拿到原始行请改用 `render` 逃生舱自己接。
 
@@ -7280,7 +7478,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectTrigger
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
+| size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | 尺寸。`xs` 与 Input / Textarea 的 `xs` 等高（密集表格里同一行三种控件必须对齐） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | maxDisplay | `number` | `2` | 多选模式下最多平铺几个已选 label，超出折叠为 +N 计数 |
 | className | `string` | — | 透传类名 |
@@ -7702,6 +7900,13 @@ import { Switch } from "@hulianui/ui"
 |------|------|------|
 | onCheckedChange | `(checked: boolean) => void` | 开关变化回调 |
 
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 轨道右侧 inline label（`<label>` 原生关联）。给了它就不必再给 `aria-label` |
+| children | `ReactNode` | 与 `label` 等价的写法：`<Switch checked={v}>启用</Switch>`。两者同时给时 `label` 优先 |
+
 ## 示例
 ```tsx
 <Switch defaultChecked aria-label="开启通知" />
@@ -7745,7 +7950,8 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`variant="cell"` 下只影响字号，不再有内距 |
+| size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`xs` 与 Input / SelectTrigger 的 `xs` 等高，用于密集数据表。`variant="cell"` 下只影响字号，不再有内距 |
+| ref | `Ref<HTMLTextAreaElement>` | — | 转发到**内层原生 `<textarea>`**。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它；与内部 `autoResize` 用的 ref 自动并存 |
 | variant | `"default" \| "cell"` | `"default"` | 外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距，高度由 CSS `field-sizing: content` 跟随内容，焦点态用浅底 + 内嵌下划线代替焦点环 |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动 |
 | autoResize | `boolean` | `false` | 随内容自适应高度（JS scrollHeight，`rows` 为下限） |
@@ -10666,6 +10872,8 @@ const columns: EditableColumn<Row>[] = [
 
 ## 禁忌 / 坑
 
+- **`columns` 必须 memo**（与 [Table](https://hulianui.haloritual.com/zh/components/table) 同源）：cell 函数经 TanStack 的 `flexRender` 被当作**组件类型**渲染，identity 一变整格卸载重挂。格子里有输入框时直接坏功能 —— 受控输入框每敲一个字失焦 + 光标跳末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发误提交。`useMemo` 的依赖里不要放逐键变化的输入值（那等于没 memo），行内编辑优先让输入框非受控。
+
 - 数据源**受控**：必须把 `onChange` 回传的 `next` 写回 state，否则保存/增删后界面不更新。
 - `validateRow` 只负责"阻断保存"，不渲染错误提示——行内报错文案要消费者自己在 `editor` 里处理。
 - `summary` 不自动管对齐：内容是 raw tfoot，跨列对齐(`colSpan`/列宽)由消费者自己掌控。
@@ -12817,6 +13025,8 @@ import { ProTable } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- **`columns` 必须 memo**（与 [Table](https://hulianui.haloritual.com/zh/components/table) 同源）：cell 函数经 TanStack 的 `flexRender` 被当作**组件类型**渲染，identity 一变整格卸载重挂。格子里有输入框时直接坏功能 —— 受控输入框每敲一个字失焦 + 光标跳末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发误提交。`useMemo` 的依赖里不要放逐键变化的输入值（那等于没 memo），行内编辑优先让输入框非受控。
+
 - 托管模式（传 `request`）下 `data`/`pagination`/`loading` 三个 prop 被忽略——别两种模式混用。cursor 分页无 total/不能随机跳页，且 filters/sort/pageSize 任一变化会自动重置回第 1 页。
 - 托管模式必须给 `getRowId`，否则行选择/批量在翻页后 key 不稳。
 - `request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。
@@ -13270,6 +13480,7 @@ import { Scheduler, dateOf, dayColumns, eventRect, hourLines, layoutColumns, min
 | events* | `SchedulerEvent[]` | — | 受控事件数组。`{id, title, start, end, resourceId?, tone?, subtitle?}`；start/end 为 ISO datetime（含时分，本地时区） |
 | view* | `"month" \| "week" \| "day" \| "resource"` | — | 受控视图 |
 | date* | `string` | — | 受控焦点日（ISO），决定哪周/哪天/哪月 |
+| now | `string \| Date` | 挂载后取浏览器时钟 | 「今天 / 此刻」的判定基准。**渲染期不读系统时钟**，所以首帧没有今天高亮与当前时刻线，挂载后补上（#181）。传了它就完全由你决定：截图回归要可复现、或「今天」该按服务端业务时钟而非用户本机时钟时用 |
 | resources | `SchedulerResource[]` | — | resource 视图必填。`{id, title, subtitle?}` |
 | dayStartHour | `number` | `8` | 时间轴起始小时 |
 | dayEndHour | `number` | `20` | 时间轴结束小时 |
@@ -13325,6 +13536,7 @@ const [date, setDate] = useState("2026-06-15");
 
 ## 禁忌 / 坑
 
+- **渲染期不读系统时钟**：SSR / 静态导出下服务端那次渲染发生在构建时刻、客户端首次渲染发生在访问时刻，两者跨天就算出不同的「今天」→ hydration 失败（React #418）。本组件因此把「此刻」推迟到挂载后，首帧没有今天高亮与当前时刻线。抄示例时别把 `dayjs()` 写回模块顶层或渲染体里 —— `useMemo(fn, [])` 也救不了，它只保证一次渲染树内稳定。要确定性就传 `now`。
 - 全受控：events/view/date 由消费者持有，拖拽不会自动改 state——必须接 `onEventsChange` 回吐整组并 setState，否则拖完弹回原位（照 Kanban 范式）。
 - 外层须给确定高度（如 `h-[520px]` + `className="h-full"`），时间轴靠容器高度填满后才内部滚动；不给高度会塌缩。
 - tone 只接受 5 个语义枚举，刻意避开未定义色的静默回退；要任意配色走 `renderEvent`。
@@ -13975,8 +14187,14 @@ import { Table } from "@hulianui/ui"
 | rowDraggable | `boolean` | `false` | 开行拖拽排序（@dnd-kit，useSortable 挂在 `<tr>`）；组件不改 data，顺序由 onRowDragEnd 交还消费方 |
 | dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
+| cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | — | 单元格合并（对标 el-table `:span-method`）。逐格回调，**被合掉的格子不再回调**；`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，`rowIndex` 是渲染顺序（排序/筛选之后）、`rows` 与之同序。与 `virtual` / `renderExpandedRow` 不能同开（会静默不合并 + dev 告警） |
+| stickyHeader | `boolean` | `false` | 表头吸顶（与 `virtual` 正交）。**必须同时给 `maxHeight`**，否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先（组件在 dev 下告警） |
+| maxHeight | `number \| string` | — | 滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准 |
+| minWidth | `number \| string` | — | `<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来 |
+| cellVerticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | 单元格垂直对齐的表级默认；列 `meta.verticalAlign` 覆盖 |
+| cellWhitespace | `"nowrap" \| "normal" \| "pre-wrap"` | — | 换行策略的表级默认；列 `meta.whitespace` 覆盖。典型形状是「表级 nowrap + 少数几列 normal」 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
-| stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 开启时无效**（容器定高，真滚动条一直看得见）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
+| stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 或 `maxHeight` 开启时无效**（外壳自己就是定高滚动容器，真滚动条一直看得见，再挂一条会上下两条并排）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
 | className | `string` | — | 根节点类名 |
 
 ## Events
@@ -14007,6 +14225,8 @@ import { Table } from "@hulianui/ui"
 | align | `"left" \| "center" \| "right"` | 单元格内容水平对齐 | `align` |
 | headerAlign | `"left" \| "center" \| "right"` | 表头对齐；不写则跟随 `align` | `header-align` |
 | ellipsis | `boolean` | 溢出截断 + 悬停 Tooltip 显示全文 | `show-overflow-tooltip` |
+| verticalAlign | `"top" \| "middle" \| "bottom"` | 单元格垂直对齐（表头不跟随，恒 middle）。允许换行的列几乎必然要 `top` | — |
+| whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | 换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行） | — |
 
 列宽走 TanStack 原生的 `ColumnDef.size / minSize / maxSize`（不另发明 `width` / `min-width`）：
 `size` → `width`、`minSize` → `min-width`、`maxSize` → `max-width`，`th` 与 `td` 用同一口径的内联 style（不使用 `<colgroup>`）。
@@ -14065,9 +14285,18 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 ## 禁忌 / 坑
 
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
+- **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
+- 表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。
+- 宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。
+- `meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: "normal"` + `maxSize` 限宽 + `verticalAlign: "top"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。
 - `meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout="fixed"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。
 - 固定列（`meta.sticky`）的 offset 由 `getStart/getAfter` 按 `getSize()` 累加得出，所以固定列的渲染宽会被**强制钉成 `getSize()`**（没写 size 就是默认 150）——想要多宽就显式写 `size`。同时内容要够宽触发横滚才看得到效果。
 - `resizable` 会强制 `layout="fixed"`（拖拽必须有确定列宽）。fixed 下表宽 = 各列 `getSize()` 之和，窄于容器时靠 `min-w-full` 撑满、列宽被浏览器按比例放大——那种情况下没有横滚，固定列 offset 也就无从体现。
+- `cellSpan` 的回调**只在没被合掉的格子上跑**，所以「与上一行同门店就合并」的写法是：在段首返回整段长度（`while (rows[i + n]?.store === rows[i].store) n++`），后面几行根本不会被问到。从 el-table 直译过来的 `[0, 0]` 写法也认（返回 `rowSpan: 0` 即该格不渲染）。
+- `cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。
+- `cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。
+- `cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。
+- 行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。
 - `virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。
 - 排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。
@@ -15536,7 +15765,9 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | closeOnSelect | `boolean` | `true` | 执行项后是否自动关闭面板。 |
 | autoHighlight | `boolean` | `true` | 打开面板与每次过滤后自动高亮首个可用项（跳过禁用项），于是「打字 → 回车」直接命中。关掉则必须先按方向键点亮某项，回车才有动作。 |
 | shortcut | `boolean` | `false` | 内置 ⌘K / Ctrl+K 全局快捷键切换开合。 |
-| className | `string` | — | — |
+| surface | `"solid" \| "glass" \| "none"` | `"solid"` | 外壳表面皮肤（只管填充/描边/阴影，尺寸与定位始终由组件负责）。`glass` = 半透明 + 背景模糊（需身后有底图）；`none` = 一个皮肤类都不画，全交给 `className` |
+| className | `string` | — | 追加到面板外壳 |
+| backdropClassName | `string` | — | 追加到遮罩层（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
 | aria-label | `string` | — | — |
 
 ## Events
@@ -15611,6 +15842,8 @@ const [open, setOpen] = useState(false);
 - `label` 不是字符串时默认过滤匹配不到它，需为该项补 `keywords`（否则只能靠 `value` 命中）。
 - 内置快捷键用 `shortcut` 一键开启；若想在面板外自绑触发逻辑，改用 `useCommandShortcut`，别同时开 `shortcut`。
 - 命令项是删除 / 重置 / 发布这类破坏性操作时，考虑 `autoHighlight={false}`：默认「打开即高亮首项」配上手滑回车就是误触。关掉后高亮要用户自己按方向键点亮，回车才有动作。
+- 换皮肤优先用 `surface="none"` + 自己的类，而不是靠 `className` 去「压掉」`solid` 的 `bg-surface / border-hairline / shadow-xl`：压的写法在库升级皮肤时会打架，而且为了换底色要连布局类一起承担 twMerge 的不确定性。
+- `surface="glass"` 需要**身后有底图**才是玻璃；纯色页面上它只是个半透明面板。遮罩浓度另有 `backdropClassName`，两者是两个旋钮。
 - 高亮跟着**项的 `value`** 走，不跟数组引用走：过滤后原高亮项还在就不动它，所以 `groups` 每次渲染新建也不会让高亮乱跳。反过来说 `value` 必须稳定（别用数组下标当 value），否则每批结果都会被当成新项。
 
 ## 相关
@@ -17511,8 +17744,13 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `DialogContent.title` * | `string` | — | 标题（a11y label） |
-| `DialogContent.description` | `string` | — | 说明文案 |
+| `DialogContent.title` * | `ReactNode` | — | 标题（a11y label）。收 ReactNode，「图标 + 文案」直接写 |
+| `DialogContent.description` | `ReactNode` | — | 说明文案。渲染成 `<p>`，**只能放 phrasing content**（块级内容放 children） |
+| `DialogContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」——面包屑式标题的弹窗里可见区只留标题，读屏仍拿得到那句话 |
+| `DialogContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
+| `DialogContent.backdropClassName` | `string` | — | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
+| `DialogContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children（双栏各自滚动即写 `flex-1 min-h-0`，不必拍 `h-[58vh]`） |
+| `DialogContent.bodyClassName` | `string` | — | 追加到正文区容器 |
 | `DialogContent.className` | `string` | — | 内容容器类名 |
 
 ## Events
@@ -17546,6 +17784,9 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- 非模态浮层要**两处一起改**：Root 传 `modal={false}`（让焦点与滚动锁失效）+ Content 传 `backdrop={false}`（不渲染遮罩）。只改前者时那层 `fixed inset-0` 仍在，透明也照样吃掉整屏点击，"非模态"等于没生效。
+- `scrollable={false}` 之后**纵向滚动归你自己**：正文区只负责把确定高度传下去（列向 flex），子级要自己写 `overflow-y-auto`。忘了写就是整块内容被 `max-h` 裁掉。
+
 - `DialogTrigger` / `DialogClose` 用 `render={<Button…/>}` 把自家行为合并到目标元素上，**不要**再额外包一层按钮，否则会出现嵌套交互元素 / 双重 onClick。
 - 操作按钮优先放 `footer` 槽（带分隔线、右对齐），正文 `children` 留给主内容。
 
@@ -17578,6 +17819,11 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
 | `DrawerContent.showClose` | `boolean` | `true` | 是否渲染右上角内置关闭按钮 |
 | `DrawerContent.closeLabel` | `string` | 取自 locale | 内置关闭按钮的无障碍名（默认取 `locale.drawer.close`） |
+| `DrawerContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」 |
+| `DrawerContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
+| `DrawerContent.backdropClassName` | `string` | — | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
+| `DrawerContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children |
+| `DrawerContent.bodyClassName` | `string` | — | 追加到正文区容器 |
 | `DrawerContent.className` | `string` | — | 内容容器类名 |
 
 ## Events
@@ -17616,6 +17862,9 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 ```
 
 ## 禁忌 / 坑
+
+- 非模态浮层要**两处一起改**：Root 传 `modal={false}`（让焦点与滚动锁失效）+ Content 传 `backdrop={false}`（不渲染遮罩）。只改前者时那层 `fixed inset-0` 仍在，透明也照样吃掉整屏点击，"非模态"等于没生效。
+- `scrollable={false}` 之后**纵向滚动归你自己**：正文区只负责把确定高度传下去（列向 flex），子级要自己写 `overflow-y-auto`。忘了写就是整块内容被 `max-h` 裁掉。
 
 - Base UI rc.0 没有独立 Drawer 原语，本组件是 Dialog（Portal+Backdrop+Popup）重皮、靠 `transform: translateX/Y` 按 `side` 侧滑；Dialog 没有 Positioner，定位别按 Tooltip/Popover 那套想。详见 [[base-ui-dialog-drawer-side-slide-via-transform]]。
 - 「取消 / 保存 / 关闭」放 `footer` 槽而非正文末尾，否则正文滚动后按钮会滚出可视区。

@@ -35,6 +35,16 @@ export const fieldShowcase: ShowcaseSpec = {
         </Field>),
         },
         {
+            title: "Required",
+            description: "required draws a red asterisk before the label and injects aria-required into the control. Validation still lives in the rules; this prop performs no validation.",
+            code: `<Field label="banner type" required>
+  <Input placeholder="Select an option" />
+</Field>`,
+            render: () => (<Field label="banner type" required className="w-72">
+          <Input placeholder="Select an option"/>
+        </Field>),
+        },
+        {
             title: "Horizontal settings row",
             description: "orientation=horizontal puts the label area on the left, the control on the right, and the error message on its own full-width row.",
             code: `<Field

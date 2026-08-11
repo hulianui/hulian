@@ -182,6 +182,35 @@ function Demo({ enableSorting = true, striped = true }: {
 }) {
     return <Table columns={columns} data={users} enableSorting={enableSorting} striped={striped}/>;
 }
+interface FunnelRow {
+    store: string;
+    guide: string;
+    visits: number;
+    orders: number;
+}
+const funnelRows: FunnelRow[] = [
+    { store: "Teemall store", guide: "Zhang Min", visits: 128, orders: 21 },
+    { store: "Teemall store", guide: "Li Wei", visits: 96, orders: 14 },
+    { store: "Teemall store", guide: "Wang Fang", visits: 74, orders: 9 },
+    { store: "Grandview store", guide: "Liu Yang", visits: 152, orders: 33 },
+    { store: "Grandview store", guide: "Chen Jing", visits: 88, orders: 12 },
+];
+const funnelColumns: ColumnDef<FunnelRow, any>[] = [
+    { accessorKey: "store", header: "Store", size: 140 },
+    { accessorKey: "guide", header: "Sales associate", size: 100 },
+    { accessorKey: "visits", header: "Visits", size: 90, meta: { align: "right" } },
+    { accessorKey: "orders", header: "Orders", size: 90, meta: { align: "right" } },
+];
+function CellSpanDemo() {
+    return (<Table columns={funnelColumns} data={funnelRows} enableSorting={false} cellSpan={({ rows, rowIndex, columnId }) => {
+            if (columnId !== "store")
+                return;
+            let span = 1;
+            while (rows[rowIndex + span]?.store === rows[rowIndex]?.store)
+                span += 1;
+            return { rowSpan: span };
+        }}/>);
+}
 export const tableShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -303,6 +332,22 @@ export const tableShowcase: ShowcaseSpec = {
 />`,
             render: () => <VirtualDemo />,
         },
+        {
+            title: "Cell merging",
+            description: "cellSpan returns a span per cell, and cells covered by an earlier span are never asked again. The callback sees render order, so merging stays aligned after sorting or filtering.",
+            code: `<Table
+  columns={columns}
+  data={rows}
+  cellSpan={({ rows, rowIndex, columnId }) => {
+    if (columnId !== "store") return;
+    // Return the whole run length at the start of the run; the rows below are merged away and never asked
+    let span = 1;
+    while (rows[rowIndex + span]?.store === rows[rowIndex]?.store) span += 1;
+    return { rowSpan: span };
+  }}
+/>`,
+            render: () => <CellSpanDemo />,
+        },
     ],
     controls: [
         { prop: "enableSorting", type: "boolean", defaultValue: true, label: "Sortable" },
@@ -323,6 +368,7 @@ export const tableShowcase: ShowcaseSpec = {
         { name: "Drag and drop rows to sort (the entire row can be dragged dragHandle=\"row\")", render: () => <DragSortDemo handle="row"/> },
         { name: "Drag and drop rows (rows locked by the administrator cannot be dragged)", render: () => <DragSortLockedDemo /> },
         { name: "Virtual scrolling (200 lines \u00B7 fixed height container)", render: () => <VirtualDemo /> },
+        { name: "Cell merging (the store column merges by store)", render: () => <CellSpanDemo /> },
         { name: "Not sortable", render: () => <Demo enableSorting={false}/> },
         { name: "Empty data", render: () => <Table columns={columns} data={[]}/> },
     ],

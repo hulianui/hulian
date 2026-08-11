@@ -37,17 +37,18 @@ const groups: CommandGroupData[] = [
         ],
     },
 ];
-function Demo({ placeholder, shortcut, closeOnSelect, }: {
+function Demo({ placeholder, shortcut, closeOnSelect, surface, }: {
     placeholder?: string;
     shortcut?: boolean;
     closeOnSelect?: boolean;
+    surface?: "solid" | "glass" | "none";
 }) {
     const [open, setOpen] = useState(false);
     return (<>
       <Button variant="outline" onClick={() => setOpen(true)}>
         Open the command panel{shortcut ? "(or \u2318K)" : ""}
       </Button>
-      <Command open={open} onOpenChange={setOpen} groups={groups} placeholder={placeholder} shortcut={shortcut} closeOnSelect={closeOnSelect}/>
+      <Command open={open} onOpenChange={setOpen} groups={groups} placeholder={placeholder} shortcut={shortcut} closeOnSelect={closeOnSelect} surface={surface}/>
     </>);
 }
 function FooterDemo() {
@@ -64,6 +65,15 @@ function FooterDemo() {
             ]}/>
             <span className="text-xs text-muted-foreground">Pick a task</span>
           </div>}/>
+    </>);
+}
+function GlassDemo() {
+    const [open, setOpen] = useState(false);
+    return (<>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Open the glass panel
+      </Button>
+      <Command open={open} onOpenChange={setOpen} groups={groups} surface="none" className="border border-white/20 bg-surface/60 shadow-2xl backdrop-blur-2xl" backdropClassName="bg-black/20 backdrop-blur-none"/>
     </>);
 }
 export const commandShowcase: ShowcaseSpec = {
@@ -147,6 +157,13 @@ const groups = [
     ],
     controls: [
         { prop: "placeholder", type: "text", defaultValue: "Enter command or search..." },
+        {
+            prop: "surface",
+            type: "select",
+            options: ["solid", "glass", "none"],
+            defaultValue: "solid",
+            label: "Shell surface",
+        },
         { prop: "shortcut", type: "boolean", defaultValue: false, label: "Built-in \u2318K" },
         { prop: "closeOnSelect", type: "boolean", defaultValue: true, label: "Close after selection" },
     ],
@@ -154,8 +171,9 @@ const groups = [
         { name: "default", render: () => <Demo /> },
         { name: "Built-in \u2318K shortcut keys", render: () => <Demo shortcut/> },
         { name: "Pinned footer", render: () => <FooterDemo /> },
+        { name: "Self-painted glass shell", render: () => <GlassDemo /> },
     ],
-    renderWithProps: (p) => (<Demo placeholder={(p.placeholder as string) || undefined} shortcut={p.shortcut as boolean} closeOnSelect={p.closeOnSelect as boolean}/>),
+    renderWithProps: (p) => (<Demo placeholder={(p.placeholder as string) || undefined} shortcut={p.shortcut as boolean} closeOnSelect={p.closeOnSelect as boolean} surface={(p.surface as "solid" | "glass" | "none") ?? "solid"}/>),
     toCode: (p) => `const [open, setOpen] = useState(false);
 
 <Button onClick={() => setOpen(true)}>Open the command panel</Button>
