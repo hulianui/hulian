@@ -68,6 +68,24 @@ jobs:
       - name: Check Tailwind scan candidates
         run: pnpm candidates:check
 
+      # tiptap 全家的 peer 钉的是**精确版本**，所以我们的 specifier 只在「整族在同一次解析里
+      # 一起被决定」时才成立。新增家族成员却不抬全族下界，就会让带旧 lockfile 升级的消费方
+      # 只把新成员解析到家族最新版，与锁里的老 core / pm 错配（#207）。判据是纯静态的，
+      # 毫秒级，因此放在这一档；它拦不到的那部分（真实旧锁）见脚本头部与 docs/consuming.md。
+      - name: Check dependency family version drift
+        run: pnpm deps:family
+
+      # ⚠️ 这里**刻意没有**加 `pnpm install --strict-peer-dependencies`，两条实测理由：
+      #   1. 它对 #207 无效。库仓库每次都是全新解析、tiptap 全家天然同版，「带旧锁升级」
+      #      那条裂法在这里根本照不出来 —— 复现它需要一把几周前建的 lockfile 当输入，
+      #      而仓库里没有这个输入。
+      #   2. 开了就是常红。当前依赖树里存在一条与本 issue 无关的既有冲突：
+      #      apps/www → intlayer → @intlayer/engine → zod-to-ts 要 typescript@"^5 || ^6"，
+      #      而仓库已升到 7.0.2。为开门禁去 allowedVersions 豁免它，等于声明一条我们并没
+      #      验证过的兼容性。
+      # 「我们自己的依赖树不自洽」这一层改由上面 deps:family 的 lockfile 判据静态覆盖
+      #（精确钉版会让锁里同时出现两个家族版本），无关噪声为零、且不占安装时间。
+
       # 加 prop 时改 .types.ts 是必须的（不改编译不过），补 md 表格是可选的（漏了没人知道）——
       # 这个不对称让文档必然滞后于类型，而且滞后是静默的：TS 不报、guard 不报、页面只是少个
       # label。人还会翻源码兜底，模型基本就信文档（#150）。

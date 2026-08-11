@@ -1,0 +1,18 @@
+{
+  "_why": "同族依赖的版本口径基线，由 scripts/check-dep-family.mjs 消费。记的是上一次发布时的形态：家族成员清单 + 全族共用的 specifier。新增成员时下界必须严格抬高，抬完跑 `pnpm deps:family --write` 更新这里。",
+  "_do_not_pin_exact": "若有人提议把 @tiptap/* 改成精确版本（issue #207 建议 1）—— 实测不成立，别做。@tiptap/starter-kit 自己的 dependencies 是 `^3.x`，会把 core/extensions 拉到家族最新版，钉死的扩展反过来与它冲突，全新解析当场就裂（pnpm peers check 报 unmet peer @tiptap/core: Installed 3.30.0 / Wanted 3.29.2）。那等于把「带旧锁升级偶发一次」换成「上游每发一版、所有新消费方必发」。正解是保持 caret + 整族同步抬版，理由与实验见 scripts/check-dep-family.mjs 头部与 .changeset/tiptap-family-version-drift.md。",
+  "@tiptap/": {
+    "specifier": "^3.30.0",
+    "members": [
+      "@tiptap/extension-image",
+      "@tiptap/extension-link",
+      "@tiptap/extension-placeholder",
+      "@tiptap/extension-table",
+      "@tiptap/extension-text-align",
+      "@tiptap/extension-text-style",
+      "@tiptap/pm",
+      "@tiptap/react",
+      "@tiptap/starter-kit"
+    ]
+  }
+}

@@ -679,3 +679,36 @@ export function HulianLocaleProvider({ children }: PropsWithChildren) {
 
 MCP 消费方可以直接取这一片：`get_setup_guide({ target: "locale" })`；
 `inspect_project` / `audit_hulian_adoption` 也会在扫不到 `ConfigProvider` 时报一条建议。
+
+---
+
+## 10. 升级时的 lockfile：tiptap 那一族要一起走
+
+`MarkdownEditor` / `RichTextEditor` 底下是 tiptap，而 **tiptap 全家的 `peerDependencies` 钉的
+是精确版本**，不是范围：
+
+```
+@tiptap/extension-table@3.30.0 → { "@tiptap/core": "3.30.0", "@tiptap/pm": "3.30.0" }
+@tiptap/core@3.30.0            → { "@tiptap/pm": "3.30.0" }
+```
+
+也就是说这一族只有「在同一次解析里被一起决定」才自洽。全新安装天然满足这个前提；
+**带着旧 lockfile 升级时不一定满足**——某个版本如果给这一族新添了成员（0.30.0 就为
+`RichTextEditor` 添了 4 个扩展），而你的锁里 `@tiptap/core` / `@tiptap/pm` 早已固定在老版本，
+那么只有新成员会被解析到当时的最新版，装出来是 `extension@3.30.0 + core@3.29.2` 这种错配组合，
+`pnpm install` 会刷一串 unmet peer 警告（hulianui/hulian#207）。
+
+**0.31.0 起库侧已经把这条约定机械化**：新增 tiptap 家族成员的同一次改动里，全族 specifier
+必须一起抬高（CI 有静态门禁 `pnpm deps:family` 守着）。老成员的 specifier 一变，你锁里对它们的
+固定就失效了，于是整族在同一次解析里一起前进——正常升级不需要你做任何额外动作。
+
+如果你手上是**已经装成错配状态**的旧环境（从 0.30.0 升上来的那批），刷一次锁即可：
+
+```bash
+pnpm update "@tiptap/*"
+```
+
+只动 lockfile。**不要**为了消警告把 `@tiptap/*` 写进自己的 `package.json` 或 `pnpm.overrides`——
+那是把库的内部实现细节抬进业务仓，下次库侧调整依赖时你还得跟着改。
+
+> 顺带一提：`tiptap-markdown` 不在这一族里（它的 peer 是 `^3.0.1`，是正常范围），不受影响。
