@@ -108,6 +108,13 @@ const GLOBAL = [
     instead:
       "Button / Kanban 卡片 / DesignCanvas / 弹幕 / 礼物飘条已内置；自搓触发器与飘动层记得补。真正需要复制的内容（聊天正文、代码块）保持可选",
   },
+  {
+    id: "no-clock-in-render",
+    rule: "组件与页面在**渲染期**不得读系统时钟（`new Date()` / `dayjs()` / `Date.now()`）",
+    why: "SSR / 静态导出下服务端那次渲染发生在**构建时刻**、客户端首次渲染发生在**访问时刻**，两者跨天就算出不同的「今天」→ hydration 失败（React #418，整棵树被丢弃重渲染，首屏闪一下）。这个缺陷对 CI 几乎隐形（构建与门禁在同一次 run 内、相隔几分钟），对用户却几乎必现（拿到的是上次发布的产物）",
+    instead:
+      "把「此刻」挪到挂载后：`useState(undefined)` + `useEffect(() => setNow(...), [])`，首帧不画与时间相关的部分；或由外部把基准时间当 prop 传进来（截图回归也因此可复现）。`useMemo(fn, [])` **救不了** —— 它只保证一次渲染树内稳定，服务端与客户端本就是两次独立求值。事件回调里读时钟不受此限（那只发生在客户端）",
+  },
 ];
 
 const GLOBAL_EN = [
@@ -169,6 +176,13 @@ const GLOBAL_EN = [
     why: "Browsers turn rapid clicks into word or line selection, and selections spread across elements while something is being dragged. Text in all three cases is a control label or decoration, not content to copy.",
     instead:
       "Button, Kanban cards, DesignCanvas, Danmaku, and GiftFeed already handle this. Add it to hand-rolled triggers and floating layers. Keep genuinely copyable content such as chat messages and code blocks selectable.",
+  },
+  {
+    id: "no-clock-in-render",
+    rule: "Never read the system clock during render (`new Date()`, `dayjs()`, `Date.now()`) in a component or page.",
+    why: "Under SSR or static export the server render happens at build time while the first client render happens at visit time. Once those cross a day boundary they compute a different \"today\", hydration fails (React #418), and React throws away the server HTML and re-renders the tree. CI almost never catches it, because the build and the browser gates run minutes apart in the same workflow run, while users open a build published days earlier.",
+    instead:
+      "Move \"now\" to after mount: `useState(undefined)` plus `useEffect(() => setNow(...), [])`, leaving time-dependent parts unpainted on the first frame; or accept the reference time as a prop, which also makes screenshot regressions reproducible. `useMemo(fn, [])` does **not** help, because it only stabilizes one render tree and the server and client are two independent evaluations. Reading the clock inside an event handler is fine, since that only happens on the client.",
   },
 ];
 

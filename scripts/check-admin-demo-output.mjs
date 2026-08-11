@@ -156,7 +156,9 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
       const path = `${EN}/demos/${route}`;
       const response = await page.goto(`${origin}${path}`, { waitUntil: "networkidle" });
       if (!response?.ok()) throw new Error(`${path} returned ${response?.status() ?? "no response"}`);
-      await page.locator("main").first().waitFor({ state: "visible" });
+      // 显式给一个宽超时（#182）：连续跑多道浏览器门禁时，Chromium 实例连续启停会让首屏
+      // 可见判定偶发擦线超时——页面本身没问题（重跑立刻可见）。默认 30s 在那种资源竞争下不够。
+      await page.locator("main").first().waitFor({ state: "visible", timeout: 60_000 });
       if ((await page.locator("html").getAttribute("lang")) !== "en") throw new Error(`${path} is not marked as English`);
       assertEnglishText(await page.locator("body").innerText(), path);
 
@@ -241,8 +243,46 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
   }
 }
 
+/**
+ * 是不是「等超时」这一类失败（#182）。
+ *
+ * 只有这一类才允许重试：页面断言失败、CJK 泄漏、控制台报错都是真问题，重试等于把真回归洗成绿的
+ * —— 而「红了就 rerun」正是真回归被漏掉的那条路径。
+ */
+export function isTimeoutFailure(error) {
+  const name = String(error?.name ?? "");
+  const message = String(error?.message ?? "");
+  return name === "TimeoutError" || /Timeout .*exceeded/i.test(message);
+}
+
+/**
+ * 跑一次；只在超时形态下重试一次，并把「重试过」如实回传。
+ *
+ * 关键是**不把 flaky 吞掉**：重试后通过要与一次通过区分开并打印出来，否则 flaky 率在 CI 历史里
+ *完全不可见，而不可见的 flaky 迟早会训练出「红了就 rerun」的习惯。
+ */
+export async function scanAdminDemoOutputWithRetry(outputRoot = "apps/www/out", options = {}) {
+  const attempts = options.attempts ?? 2;
+  const run = options.run ?? scanAdminDemoOutput;
+  const onRetry = options.onRetry ?? ((info) => console.warn(
+    `[admin-demos] 第 ${info.attempt} 次因超时失败，重试一次：${info.reason}`,
+  ));
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      const result = await run(outputRoot);
+      return { ...result, attempts: attempt };
+    } catch (error) {
+      if (attempt >= attempts || !isTimeoutFailure(error)) throw error;
+      onRetry({ attempt, reason: String(error?.message ?? error).split("\n")[0] });
+    }
+  }
+}
+
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   const outputRoot = process.argv[2] ?? "apps/www/out";
-  const result = await scanAdminDemoOutput(outputRoot);
-  console.log(`Admin demo browser scan passed: ${result.routes} routes, ${result.breadcrumbClicks} breadcrumb clicks, ${result.graphPaths} chart paths.`);
+  const result = await scanAdminDemoOutputWithRetry(outputRoot);
+  const flaky = result.attempts > 1 ? ` ⚠️ 重试 ${result.attempts - 1} 次后才通过（flaky，不是一次通过）` : "";
+  console.log(
+    `Admin demo browser scan passed: ${result.routes} routes, ${result.breadcrumbClicks} breadcrumb clicks, ${result.graphPaths} chart paths.${flaky}`,
+  );
 }

@@ -497,6 +497,47 @@ test("inspect_project 认出装好的 Next 项目", async () => {
   }
 });
 
+// #189：App Router 的 root layout 是 Server Component，而 ThemeProvider 是 "use client"，
+// 所以正确写法恰恰是抽一个客户端岛。只对入口文件做字面量匹配的话，写对的项目反而永远告警，
+// 而消掉告警的唯一办法是把 Provider 塞回 Server Component —— 那是错的。
+test("inspect_project 认出挂在客户端岛里的 ThemeProvider", async () => {
+  const root = makeProject("next");
+  try {
+    write(
+      root,
+      "app/theme-host.tsx",
+      `"use client"
+import { ThemeProvider, ConfigProvider, enUS } from "@hulianui/ui"
+export default function ThemeHost({ children }) {
+  return <ThemeProvider><ConfigProvider locale={enUS}>{children}</ConfigProvider></ThemeProvider>
+}\n`,
+    );
+    write(
+      root,
+      "app/layout.tsx",
+      `import ThemeHost from "./theme-host"
+export default function Layout({ children }) {
+  return <html><body><ThemeHost>{children}</ThemeHost></body></html>
+}\n`,
+    );
+    const [res] = await rpc([call(41, "inspect_project", { projectRoot: root })]);
+    const info = dataOf(res);
+    assert.equal(info.setup.themeProvider, "detected", "跟一层本地 import 就能看到岛里的 Provider");
+    assert.equal(info.setup.configProvider, "detected");
+    assert.deepEqual(
+      info.warnings.filter((w) => w.includes("ThemeProvider")),
+      [],
+      "写对的 App Router 项目不该被告警",
+    );
+    assert.ok(
+      info.setup.scannedEntryFiles.includes("app/theme-host.tsx"),
+      "扫过的文件清单要如实包含跟下去的那一层",
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("inspect_project 指出 Vite 软链项目的接入缺口", async () => {
   const root = makeProject("vite");
   try {

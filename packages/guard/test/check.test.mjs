@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import test from "node:test";
@@ -159,4 +159,44 @@ test("语法错误成为结构化诊断", () => {
   const result = checkSource("export const = ;", { filePath: "broken.tsx" });
   assert.ok(ruleIds(result).includes("syntax-error"));
   assert.equal(result.diagnostics[0].file, "broken.tsx");
+});
+
+// #190：清单是 conventions.json 生成那一刻的快照，「ui 发了新组件、guard 还没发版」这段时间里
+// 消费方一用新件就被判 error。真正的判据是消费方实装的那份 exports 能不能解析出来。
+test("实装包的 exports 能解析出来时放行（即使不在烤进包里的清单里）", (t) => {
+  const dir = mkdtempSync(join(tmpdir(), "hulian-guard-"));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+
+  const uiDir = join(dir, "node_modules", "@hulianui", "ui");
+  mkdirSync(join(uiDir, "src", "brand-new-thing"), { recursive: true });
+  writeFileSync(join(uiDir, "src", "brand-new-thing", "index.ts"), "export const x = 1;\n");
+  writeFileSync(
+    join(uiDir, "package.json"),
+    JSON.stringify({
+      name: "@hulianui/ui",
+      exports: { ".": "./src/index.ts", "./*": { default: "./src/*/index.ts" } },
+    }),
+  );
+
+  const filePath = join(dir, "app.tsx");
+  const source = 'import { X } from "@hulianui/ui/brand-new-thing";';
+
+  // 清单里没有这个 slug，但实装包里有 → 放行
+  assert.deepEqual(checkSource(source, { filePath }).diagnostics, []);
+
+  // 实装包里也没有的路径照旧报错
+  assert.deepEqual(
+    ruleIds(checkSource('import { L } from "@hulianui/ui/_icons";', { filePath })),
+    ["no-private-deep-import"],
+  );
+});
+
+test("读不到实装包时退回烤进包里的清单（纯文本检查仍然可用）", () => {
+  const dir = mkdtempSync(join(tmpdir(), "hulian-guard-none-"));
+  const filePath = join(dir, "app.tsx");
+  assert.deepEqual(
+    ruleIds(checkSource('import { X } from "@hulianui/ui/date-pickers";', { filePath })),
+    ["no-private-deep-import"],
+  );
+  rmSync(dir, { recursive: true, force: true });
 });

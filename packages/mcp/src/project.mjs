@@ -291,16 +291,73 @@ function cssFromEntries(root) {
   return [...new Set(found)];
 }
 
-/** 在候选文件里找一个标记；找不到只说「扫过的文件里没有」，不说「不存在」。 */
+const SOURCE_EXTS = [".tsx", ".ts", ".jsx", ".js"];
+
+/**
+ * 把入口文件里的一条**本地** import 解析成仓库内的真实文件。
+ *
+ * 只认相对路径与 `@/` 别名（Next / Vite 模板的默认约定）：裸 specifier 指向 node_modules，
+ * 不是本项目的组件。`@/` 先试 `src/`，再试仓库根 —— 两种模板各占一半，且都便宜。
+ */
+function resolveLocalModule(root, fromRel, spec) {
+  const bases = [];
+  if (spec.startsWith(".")) bases.push(resolve(dirname(join(root, fromRel)), spec));
+  else if (spec.startsWith("@/")) {
+    bases.push(join(root, "src", spec.slice(2)), join(root, spec.slice(2)));
+  } else return null;
+
+  for (const base of bases) {
+    if (!base.startsWith(root + sep)) continue; // 爬出仓库边界的丢掉
+    for (const candidate of [
+      ...SOURCE_EXTS.map((ext) => base + ext),
+      ...SOURCE_EXTS.map((ext) => join(base, `index${ext}`)),
+    ]) {
+      if (existsSync(candidate)) return relative(root, candidate).split(sep).join("/");
+    }
+  }
+  return null;
+}
+
+/**
+ * 在候选入口里找一个标记；找不到只说「扫过的文件里没有」，不说「不存在」。
+ *
+ * 会**顺着入口的本地 import 往下跟一层**（#189）：App Router 里 root layout 是 Server
+ * Component，而 ThemeProvider 是 "use client"，所以正确写法恰恰是抽一个客户端岛
+ * （`<ThemeHost>{children}</ThemeHost>`）—— 只对入口文件做字面量匹配的话，App Router 下
+ * **写对的项目反而永远告警**，而消掉告警的唯一办法是把 Provider 塞回 Server Component，
+ * 那是错的。一层足够覆盖「岛」这种模式，也不至于把整仓扫一遍。
+ */
 function probe(root, candidates, pattern) {
   const scanned = [];
-  for (const rel of candidates) {
-    const abs = join(root, rel);
-    const text = readTextIfExists(abs);
-    if (text === null) continue;
+  const seen = new Set();
+  const visit = (rel) => {
+    if (seen.has(rel)) return null;
+    seen.add(rel);
+    const text = readTextIfExists(join(root, rel));
+    if (text === null) return null;
     scanned.push(rel);
+    return text;
+  };
+
+  const entries = [];
+  for (const rel of candidates) {
+    const text = visit(rel);
+    if (text === null) continue;
     if (pattern.test(text)) return { status: "detected", file: rel, scanned };
+    entries.push({ rel, text });
   }
+
+  // 入口本身都没有命中，再跟一层本地 import。
+  for (const { rel, text } of entries) {
+    for (const [, spec] of text.matchAll(/(?:from|import)\s*["']([^"']+)["']/g)) {
+      const child = resolveLocalModule(root, rel, spec);
+      if (!child) continue;
+      const childText = visit(child);
+      if (childText === null) continue;
+      if (pattern.test(childText)) return { status: "detected", file: child, scanned, via: rel };
+    }
+  }
+
   return { status: scanned.length ? "not-found" : "unknown", file: null, scanned };
 }
 
@@ -507,7 +564,8 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
   }
   if (usesHulian && themeProvider.status === "not-found") {
     warnings.push(
-      `扫过的入口文件（${themeProvider.scanned.join(", ") || "无"}）里没有 ThemeProvider；` +
+      `扫过的文件（${themeProvider.scanned.join(", ") || "无"}，含入口往下跟的一层本地 import）` +
+        `里没有 ThemeProvider；` +
         "组件树必须被它包裹，暗色与运行时换肤都靠它",
     );
   }

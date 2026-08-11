@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { extname, join, resolve } from "node:path";
+import { dirname, extname, join, resolve } from "node:path";
 import ts from "typescript";
 
 import { loadConventions } from "./rules.mjs";
@@ -132,6 +132,59 @@ function jsxBinding(tagName, bindings, checker) {
   return null;
 }
 
+
+// ── no-private-deep-import：按消费方**实装的** @hulianui/ui 判定，而不是烤进本包的 slug 清单 ──
+//
+// 清单是 conventions.json 生成那一刻的库目录快照，于是「ui 发了新组件、guard 还没跟着发版」
+// 这段时间里，消费方一用新组件就被判 error，且建议方向是反的（劝人退回根入口，而根入口正是
+// 这条规则平时劝人别用的那个）。见 hulianui/hulian#190：0.29.0 的 Label 就撞上了。
+//
+// 真正的判据只有一个：这个子路径在消费方那份 package.json 的 exports 里能不能解析出来。
+// 能读到实装包就以它为准；读不到（没装依赖、纯文本检查）才退回清单。
+const UI_PKG = "@hulianui/ui";
+const installedUiCache = new Map();
+
+function findInstalledUi(fromDir) {
+  let dir = resolve(fromDir);
+  for (;;) {
+    const pkgDir = join(dir, "node_modules", ...UI_PKG.split("/"));
+    const pkgJson = join(pkgDir, "package.json");
+    if (existsSync(pkgJson)) {
+      try {
+        return { dir: pkgDir, pkg: JSON.parse(readFileSync(pkgJson, "utf8")) };
+      } catch {
+        return null; // 装坏了就当读不到，退回清单而不是崩在门禁里
+      }
+    }
+    const parent = dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+/** 该子路径在实装包的 exports 里能否解析出来；读不到实装包时返回 null（交回清单判定）。 */
+function resolvesInInstalledUi(subpath, fromDir) {
+  const key = resolve(fromDir);
+  if (!installedUiCache.has(key)) installedUiCache.set(key, findInstalledUi(key));
+  const installed = installedUiCache.get(key);
+  if (!installed) return null;
+
+  const exportsField = installed.pkg.exports;
+  if (!exportsField || typeof exportsField !== "object") return null;
+  if (Object.prototype.hasOwnProperty.call(exportsField, `./${subpath}`)) return true;
+
+  const wildcard = exportsField["./*"];
+  if (!wildcard) return false;
+  // 取通配条目里任意一个真实文件目标（"./src/*/index.ts" 之类），把 * 换成子路径看文件在不在。
+  const targets = typeof wildcard === "string" ? [wildcard] : Object.values(wildcard);
+  return targets.some(
+    (target) =>
+      typeof target === "string" &&
+      target.includes("*") &&
+      existsSync(join(installed.dir, target.replace("*", subpath))),
+  );
+}
+
 export function checkSource(source, options = {}) {
   const filePath = options.filePath ?? "input.tsx";
   const conventions = options.conventions ?? loadConventions(options.configPath);
@@ -183,12 +236,22 @@ export function checkSource(source, options = {}) {
   const { bindings, declarations } = importBindings(sourceFile, checker);
   const rules = conventions.executableRules;
 
+  const checkedDir = dirname(resolve(filePath));
   for (const rule of rules.filter((candidate) => candidate.matcher.kind === "forbidden-import")) {
     for (const declaration of declarations) {
       const matcher = rule.matcher;
-      const sourceMatches = matcher.source
+      let sourceMatches = matcher.source
         ? declaration.source === matcher.source
         : new RegExp(matcher.sourcePattern).test(declaration.source);
+      // 命中清单不等于真的解析不出来：能读到消费方实装的 ui 包时以它的 exports 为准（#190）。
+      if (
+        sourceMatches &&
+        rule.id === "no-private-deep-import" &&
+        declaration.source.startsWith(`${UI_PKG}/`)
+      ) {
+        const resolves = resolvesInInstalledUi(declaration.source.slice(UI_PKG.length + 1), checkedDir);
+        if (resolves === true) sourceMatches = false;
+      }
       const namesMatch =
         !matcher.importedNames ||
         declaration.names.some((name) => matcher.importedNames.includes(name));
