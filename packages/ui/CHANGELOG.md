@@ -1,5 +1,37 @@
 # @hulianui/ui
 
+## 0.31.0
+
+### Minor Changes
+
+- 405df53: `Button` 补上密集刻度的文字档，并把 `soft` 的文档口径说清楚（#204 · #205）。
+
+  - `Button` 加 `size="xs"`（24px 高 / 12px 字 / 4px 圆角 / 4px 图文间距，#204）。`iconXs` 在 #146 里补上了「密集表格行内的图标按钮」，同一条刻度上的**文字按钮**却一直没有档：消费仓实测「本该能迁」的 195 处裸 `<button>` 里有 134 处落在 20~28px 高、10~12px 字上，`sm`(32px/14px) 对它们是**大一档**而不是最小档，强行用 `sm` 迁要写 6 个覆盖类去撤销 `sm` 自己刚加的高度、内边距、字号和圆角——那种迁移只会被原样退回。尺寸取的是 `Tag` 的 md 档同一组数值（`h-6 px-2 text-xs`），密集区里两者并排上下沿对齐；圆角与 `iconXs` 同为 `rounded-sm`(4px)，这两档常在同一条工具栏里并排。`xs`(24px) 与 `iconXs`(20px) 刻意不等高：把 `iconXs` 抬到 24px 会把 `density="compact"` 的表格行撑高，而不撑高行是它存在的全部理由。特效按钮（`ShimmerButton` 等）**不开**这一档——微光/彩虹/脉冲需要面积才读得出来，且它们的底座刻意不带圆角，`xs` 的 `rounded-sm` 到那边不生效。
+  - `Button` 文档修掉一句会把人推向违规写法的话（#205）：「想要『浅色底的成功按钮』用 `tone="success" variant="outline"`」是错的——`outline` 给的是画布同色底 + 语义色描边，底色根本没变浅，照着做的人会发现没效果，然后转头去 `className` 里写 `bg-green-50`，正好掉进同一句话禁止的事。改成指向 0.30.0 已经发布的 `variant="soft"`，并把这一档的既定口径与代价写进文档：底色走库内既有的 `bg-{tone}/12`（hover 20%、`neutral` 用 `bg-foreground/8`），与 `Tag` / `Chip` / `Alert` 的 soft 一致，**刻意不用** `--color-*-subtle` ——换过去 brand 要新造 `--color-primary-subtle` 加四个 `*-subtle-hover`，库里会出现两套 soft 配色；已知代价是半透明底会透出所在容器的背景色。免得下一个消费方再提一次同样的 issue。
+
+- 405df53: 新增 `Sidebar` 复合件：可折叠应用侧栏的外壳 + 状态机（#206）。
+
+  kaneo 迁库时卡在这一层——**11 个文件只能继续依赖仓库内自维护的 761 行 `components/ui/sidebar.tsx`，整批迁移被挂起**。缺口不是"少一个组件"，而是库里这条轴上只有两个端点、没有中间态：`NavMenu` 是菜单**内容**（一棵 `items` 树，不含外壳、不含折叠态、不含移动端形态），`AdminLayout` 是**成品整页**（侧栏 + 顶栏 + 多页签 + 内容区，一个 `menuItems` 就出一套中后台）。中后台外壳最常见的形态恰好在两者之间：要外壳与状态机，但栏内是自己拼的——工作区切换器、搜索框、项目列表、每项右侧的次级菜单、底部用户卡。这些塞不进 `AdminLayout` 被钉死的形态，于是消费方只能整套自己写一遍。`Sidebar` 补的是这个中间态，它**不含**顶栏/面包屑/页签，因此不是第二个 `AdminLayout`；想要数据驱动的菜单就把 `<NavMenu>` 放进 `<SidebarContent>`，两者是嵌套不是竞争。
+
+  几个非显然的取舍：
+
+  - **布局走 in-flow flex 宽度过渡，不是同类实现（shadcn/ui）那套 `fixed` 面板 + 等宽占位 div。** 那套写法的前提是"侧栏永远铺在视口上"，而本库的侧栏必然会被放进非全屏容器——文档站的组件预览框、`Viewport` 设备框、`Resizable` 分栏工作区——`fixed` 在这三处都会逃逸出框贴住视口，且这种失败只在被嵌进去时才出现，作者本地全屏调试永远看不到。in-flow 方案与库内 `LayoutSider` / `AdminLayout` 同构，且不需要任何测量。代价写进了文档：`Sidebar` 与 `SidebarInset` 必须是 `SidebarProvider` 的直接子元素，中间夹一层普通 `div` 会打断 flex 关系。
+  - **移动端复用 `Drawer` 而不是另起一套浮层。** 侧栏在窄屏就是抽屉，焦点锁、Esc、遮罩、滑入曲线、`starting/ending-style` 过渡这些 `Drawer` 全都已经解决过一遍；再写一套的唯一产出是第二处会漂的浮层实现。接法是把抽屉的内边距连同 `--hl-overlay-pad` 一起归零（这两个必须同步，否则正文那层负边距补偿会把内容顶出抽屉外），标题与说明一律 `sr-only`——可见标题应该由消费方放进 `SidebarHeader`，但 a11y 要求的名字与说明不能因此缺席。
+  - **`Cmd/Ctrl + B` 在输入态让路，四种情形放行**：`event.defaultPrevented`（别人已处理这次按键）、`input`/`textarea`/`select` 内、`contenteditable` 元素本身、以及 **`contenteditable` 的后代**。最后一条是真正的坑：富文本里光标落在 `<strong>` 上时事件的 `target` 是那个 `<strong>` 而不是编辑区，只判自身会漏掉整个编辑器——症状是用户在任务标题里敲 `Cmd+B` 想加粗，侧栏在旁边乱跳。判定抽成导出的纯函数 `isEditableEventTarget` 并单测，而且用鸭子类型而非 `instanceof HTMLElement`：jsdom 至今不实现 `isContentEditable`，只靠它判会让后两条在测试里假绿。持久化**不进库**——只暴露 `open` / `onOpenChange`，库内硬写 cookie 会与 SSR 首屏、多租户、隐私策略同时打架。
+  - **`SidebarMenuAction` / `SidebarMenuBadge` 是 `SidebarMenuButton` 的兄弟节点，靠绝对定位覆盖行右侧，不嵌套。** 整行可点的按钮里再嵌一个按钮是无效 HTML，React 在 hydration 期报错，读屏也读不出第二个可操作元素——而这正是自己写侧栏最容易写错的一处，所以用测试钉死（`button button` / `a button` / `button a` 计数为 0，且两者同属一个 `<li>`）。同样被钉死的还有：激活项用 `aria-current="page"` 而不是在 button/link 上无效的 `aria-selected`；`SidebarMenuSkeleton` 的宽度是**确定值**而非 `Math.random()`（随机宽度在服务端与客户端各摇一次，必然 hydration mismatch）；`SidebarRail` 的无障碍名与 `SidebarTrigger` 刻意**不同字**，否则同一个侧栏里出现两个叫「切换侧栏」的按钮，读屏用户在元素列表里无从分辨。
+
+- ab9e396: 修掉 0.30.0 带旧 lockfile 升级时的 5 条 unmet peer：tiptap 全族 specifier 一起抬到 `^3.30.0`，并加一道静态门禁把这条约定机械化（#207）。
+
+  **根因不在版本号高低，在「我们写范围、被依赖方写精确值」这个错位。** tiptap 全家的 `peerDependencies` 钉的是精确版本（`@tiptap/extension-table@3.30.0` 要的是 `@tiptap/core: "3.30.0"`、`@tiptap/pm: "3.30.0"`，不是 `^3.30.0`），所以我们写的 `^3.29.2` 只在**整族在同一次解析里被一起决定**时才成立。全新安装天然满足这个前提，这也正是库自己的 CI 一路绿灯的原因；**带着旧 lockfile 升级的消费方恰恰不满足**：0.30.0 为 `RichTextEditor` 新添了 4 个扩展，而消费方锁里 `@tiptap/core` / `@tiptap/pm` 早已固定在 3.29.2 —— 老成员的 specifier 没变、锁被原样保留，只有 4 个新成员是第一次进锁、按范围取到当时最新的 3.30.0，两边当场对不上。装出来跑的是 `extension@3.30.0 + core@3.29.2`，而 tiptap 把 peer 钉成精确值本身就说明它不担保跨版本的内部 API 兼容。
+
+  **修法刻意不是「把 specifier 改成精确版本」—— 那条路实测更糟，不是理论顾虑。** `@tiptap/starter-kit` 自己的 `dependencies` 用的是 `^3.x`，会把 `core` / `extensions` 拉到家族最新版；一旦我们把扩展钉死在某个精确版本，**全新解析当场就裂**（实测 `pnpm peers check` 报 `unmet peer @tiptap/core: Installed 3.30.0 / Wanted 3.29.2` 一串）。那等于把「带旧锁升级的消费方偶发一次」换成「上游每发一版、所有新消费方立刻复发」，频率高一个量级，而且我们完全被动。改成保持 caret、**在新增家族成员的同一次改动里把全族一起抬高**：老成员的 specifier 一变，消费方锁里对它们的固定就失效，整族在同一次解析里一起前进，回到「同一次解析」这个前提上。已实测两个场景都归零警告（旧锁升级 / 全新解析）。
+
+  配套的门禁 `pnpm deps:family`（`scripts/check-dep-family.mjs`，挂在 CI 的秒级静态门禁那一档）判四条：全族逐字同一个 specifier、下界不许倒退、**新增成员时下界必须严格抬高**、**lockfile 里这一族只能解析出一个版本**。基线 `scripts/dep-family-baseline.json` 记的是**上一次发布时的家族形态**（成员清单 + 全族 specifier），抬版时随 changeset 一起更新；「它对 0.30.0 那份 `package.json` 判红」这件事由单测固化（`scripts/check-dep-family.test.mjs` 里以 0.29.0 形态为基线的那条），所以自证不会随基线前进而失效。全部判据只读 `package.json` / `pnpm-lock.yaml` / 基线，不装依赖、不联网，因此不占 CI 时间。
+
+  **它拦不到的那一半也写清楚了**：库仓库每次都是全新解析、家族天然同版，所以「带旧锁升级」那条裂法在库自己的 CI 里根本照不出来 —— 复现它需要一把几周前建的 lockfile 作为输入，而仓库里没有这个输入。第四条判据补的是另一类：我们自己的依赖树已经不自洽（精确钉版会让锁里同时躺着两族版本，而前三条静态判据全都看不见）。**刻意没有**用 `pnpm install --strict-peer-dependencies` 来覆盖这一层，两条实测理由记在 `ci.yml` 的注释里：锁是最新时 pnpm 整个跳过解析步骤、连 peer 都不判；而强制解析时它会因为一条与本 issue 无关的既有冲突（`apps/www → intlayer → zod-to-ts` 要 `typescript@"^5 || ^6"`，仓库已是 7.x）变成常红。
+
+  对消费方：正常升级不需要做任何事。**已经装成错配状态的旧环境**（从 0.30.0 升上来的那批）跑一次 `pnpm update "@tiptap/*"` 刷锁即可，只动 lockfile —— 不要为了消警告把 `@tiptap/*` 写进自己的 `package.json` 或 `pnpm.overrides`。定为 `minor` 而不是 `patch` 的理由：抬高下界会收窄消费方能接受的 tiptap 版本范围（有意把 tiptap 按在 3.29.x 的项目会被推着走），这不是纯粹的行为修复。
+
 ## 0.30.0
 
 ### Minor Changes
