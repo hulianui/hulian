@@ -6,7 +6,7 @@ import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
-import { Color, FontFamily, FontSize, TextStyle } from "@tiptap/extension-text-style";
+import { BackgroundColor, Color, FontFamily, FontSize, TextStyle } from "@tiptap/extension-text-style";
 import { TableKit } from "@tiptap/extension-table";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
@@ -168,6 +168,11 @@ export function RichTextEditor({
     if (enabled.has("fontSize") || legacyFont) list.push(FontSize);
     // font-family 没有对应的工具栏按钮（不打算让运营选字体），装它纯粹是为了**别把存量的字体丢了**。
     if (legacyFont) list.push(FontFamily);
+    // 文字底色（#210）。存量里它和 color 写在同一个 `style` 上（`<span style="color:…;background-color:…">`），
+    // 一个保住一个丢掉解释不通，所以跟着 font 档一起走，不另开一档。
+    // **刻意不用 Highlight**：那个扩展渲染的是 `<mark>`，会把存量的 `<span style>` 换成另一种标签 ——
+    // 消费方存回库里的正文形状就变了，属于用一次静默内容变更换掉另一次。
+    if (legacyFont) list.push(BackgroundColor);
     if (enabled.has("align") || legacyAlign)
       list.push(TextAlign.configure({ types: ["heading", "paragraph"] }));
     if (legacyImgStyle) list.push(LegacyImage.configure({ inline: false }));

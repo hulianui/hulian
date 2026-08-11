@@ -49,7 +49,7 @@ import { RichTextEditor } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| font | `boolean` | `false` | `<font color\|face\|size>` → `<span style="color\|font-family\|font-size">`，并把 color / font-size / font-family 三个 mark 装进 schema |
+| font | `boolean` | `false` | `<font color\|face\|size>` → `<span style="color\|font-family\|font-size">`，并把 color / font-size / font-family / background-color 四个 mark 装进 schema |
 | imgStyle | `boolean` | `false` | 保住 `<img>` 上的内联 `style`，白名单 `max-width` / `width` / `height` |
 | align | `boolean` | `false` | 块级对齐下推：`<section>` / `<div>` 上的 `text-align`、`align="center"` 属性、`<center>` 标签 |
 
@@ -117,6 +117,7 @@ const [html, setHtml] = useState(detail.content); // 库里取出来就是 HTML
 | `<img src>` / `<a href>` | 保留 | 保留 |
 | `<p style="text-align">` | 保留（需 `toolbar` 含 `align`） | 保留（不看 `toolbar`） |
 | `<span style="color\|font-size">` | 保留（需 `toolbar` 含 `color` / `fontSize`） | 保留（不看 `toolbar`） |
+| `<span style="background-color">`（文字底色） | **丢** | 保留，且仍是 `<span style>`（不换成 `<mark>`） |
 | `<font color\|face\|size>` | **丢** | 翻成 `<span style>`，输出保持 span |
 | `<img style="max-width:100%">` | **丢** | 保留 `max-width` / `width` / `height` 三条 |
 | `<section style="text-align">` | **丢**（挂在被拆掉的标签上） | 下推到子块，落成 `<p style="text-align">` |

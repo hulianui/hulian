@@ -23,6 +23,8 @@ async function readback(container: HTMLElement): Promise<string> {
 const FONT_HTML = '<p><font color="#e4393c" face="微软雅黑" size="3">红色强调</font></p>';
 const IMG_HTML = '<p><img src="https://cdn/a.png" style="max-width:100%;height:auto"></p>';
 const SECTION_HTML = '<section style="text-align:center"><p>居中段</p></section>';
+// #210：运营拿它做「暗红底白字」那种标记。存量里它和 color 写在同一个 style 上。
+const BG_HTML = '<p><span style="background-color: rgb(194, 79, 74);">重点内容</span></p>';
 
 describe("normalizeLegacyHtml（#208 纯函数）", () => {
   it("<font color|face|size> 三个属性全部翻成 <span style>", () => {
@@ -182,6 +184,35 @@ describe("RichTextEditor legacyHtml（#208 往返）", () => {
     expect(container.querySelector('[role="textbox"] span')?.getAttribute("style")).toContain(
       "rgb(228, 57, 60)",
     );
+  });
+
+  it("开着时文字底色 background-color 活下来，且仍是 <span style>（#210）", async () => {
+    const { container } = render(<RichTextEditor legacyHtml defaultValue={BG_HTML} />);
+    await readback(container);
+    const span = container.querySelector('[role="textbox"] span');
+    expect(span?.getAttribute("style")).toContain("background-color: rgb(194, 79, 74)");
+    // 刻意不用 Highlight 扩展：那个渲染成 <mark>，会把存量的标签形状换掉 ——
+    // 消费方存回库里的正文就变样了，等于拿一次静默内容变更换掉另一次。
+    expect(container.querySelector('[role="textbox"] mark')).toBeNull();
+  });
+
+  it("底色与文字色写在同一个 style 上时一起活（存量的真实形态）", async () => {
+    const { container } = render(
+      <RichTextEditor
+        legacyHtml
+        defaultValue='<p><span style="color:#fff;background-color:rgb(194,79,74)">白字暗红底</span></p>'
+      />,
+    );
+    await readback(container);
+    const style = container.querySelector('[role="textbox"] span')?.getAttribute("style") ?? "";
+    expect(style).toContain("background-color");
+    expect(style).toContain("color");
+  });
+
+  it("关着时底色照旧丢 —— #210 报的就是这个，默认行为不许被这次改动带偏", async () => {
+    const { container } = render(<RichTextEditor defaultValue={BG_HTML} />);
+    await readback(container);
+    expect(container.querySelector('[role="textbox"] span')?.getAttribute("style")).toBeFalsy();
   });
 
   it("受控 value 二次灌入同样走归一", async () => {

@@ -31,7 +31,8 @@ export type RichTextToolbarItem =
  *
  * 三档各自要的东西不一样，所以既有纯函数也有 schema：
  * - `font` —— `<font color|face|size>` 翻成 `<span style>`（纯函数），
- *   同时把 color / font-size / **font-family** 三个 mark 属性装进 schema（缺一个就在载入时被清掉）。
+ *   同时把 color / font-size / **font-family** / **background-color** 四个 mark 属性装进 schema
+ *   （缺一个就在载入时被清掉）。后两个没有对应的工具栏按钮，装它们纯粹是为了别把存量的排版丢了。
  * - `imgStyle` —— `<img>` 上的 `style` 进 schema 属性（`max-width` / `width` / `height` 白名单）。
  *   纯函数救不了这一档：schema 里没有的属性，解析那一刻就没了。
  * - `align` —— `<section>` / `<div>` / `align="center"` / `<center>` 上的对齐下推到子块（纯函数）。

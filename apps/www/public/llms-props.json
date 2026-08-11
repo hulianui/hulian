@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.33.0",
+  "version": "0.33.1",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -12081,7 +12081,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "false",
-          "description": "`<font color|face|size>` → `<span style=\"color|font-family|font-size\">`，并把 color / font-size / font-family 三个 mark 装进 schema"
+          "description": "`<font color|face|size>` → `<span style=\"color|font-family|font-size\">`，并把 color / font-size / font-family / background-color 四个 mark 装进 schema"
         },
         {
           "name": "imgStyle",

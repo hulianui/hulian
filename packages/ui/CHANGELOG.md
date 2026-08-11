@@ -1,11 +1,30 @@
 # @hulianui/ui
 
+## 0.33.1
+
+### Patch Changes
+
+- `RichTextEditor` 的 `legacyHtml.font` 档补上文字底色 `background-color`（#210）。 <!-- parity-id: legacy-html-background-color -->
+
+
+  接 #208。0.32.0 把 `color` / `font-family` / `font-size` / `max-width` / `text-align` 都保住了，剩 `background-color` 关和开都是 3 → 0 —— 运营拿它做「暗红底白字」那种标记，量比 `<font color>`（102 次）小得多，但性质一样：不是脏标记，丢了就是静默的内容变更。
+
+  **issue 里「`background-color` 属于 `@tiptap/extension-highlight` 的地盘」这个判断不成立** —— `@tiptap/extension-text-style` 自己就导出 `BackgroundColor`（3.x 起，实测 3.30.0 的导出面是 `BackgroundColor / Color / FontFamily / FontSize / LineHeight / TextStyle / TextStyleKit`）。所以这一条是零新依赖的。
+
+  采纳了 issue 的方向 1（跟着 `font` 档走）而不是方向 2（加 `highlight` 工具栏档），两个理由：
+
+  - **`Highlight` 渲染的是 `<mark>`**，会把存量的 `<span style="background-color">` 换成另一种标签。消费方存回库里的正文形状就变了 —— 那是拿一次静默内容变更换掉另一次，不是修复。
+  - 存量里 `color` 和 `background-color` 本来就写在同一个 `style` 上（`<span style="color:#fff;background-color:rgb(194,79,74)">`），一个保住一个丢掉解释不通，所以不另开一档。
+
+  行为与既有约定一致：**默认关**，关着时底色照旧丢（有专门一条测试钉死这点，免得这次改动把默认行为带偏）；开着时保住，且输出仍是 `<span style>`，不会出现 `<mark>`（也有测试）。粘贴净化那一侧不用动 —— `background-color` 本来就在内联 style 白名单里，丢失只发生在 schema 那一层。
+
+  **没做**：没有加 `highlight` 工具栏按钮。issue 提到方向 2 的附带好处是「运营在编辑器里也能继续用底色标记」，那是一项新能力、不是本次报告的缺陷（静默丢失）。要的话单独提。
+
 ## 0.33.0
 
 ### Minor Changes
 
 - `@base-ui/react` 的 peer 下界从 `>=1.0.0` 抬到 `>=1.6.0`，`tailwindcss` 从 `>=4` 抬到 `>=4.1`，并给 peer 下界加一道静态门禁（#209）。 <!-- parity-id: peer-floor-drift -->
-
 
   **失效形态与 #207 同类、方向相反。** 那次是我们写范围、被依赖方钉精确值；这次是**我们把 peer 下界写得比自己实际开发的版本低**：`@base-ui/react` 声明 `>=1.0.0`，devDep 却是 `^1.6.0` —— 库里绝大多数组件直接建在 Base UI 上，而我们只对着 1.6.x 开发和测试。锁在 1.4.1 的消费方装得上、不报警、CI 全绿，但 0.30.0 起 `Slider` 的 SSR 首屏会**偶发** hydration mismatch：#200 把无障碍名从 Root 挪到 Thumb（改动本身没问题），在 1.4.1 上让服务端与客户端的 `useId` 序列错开一位，报错落在 `SliderThumb` 根 div 的 `id` 上。消费方二分实测 1.4.1 中、1.7.0 不中。共同点仍是**全新解析碰不到，带着旧锁升级的消费方才会中**。
 

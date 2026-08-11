@@ -1,6 +1,20 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.33.1",
+    "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "The `legacyHtml.font` tier of `RichTextEditor` now also covers the `background-color` text highlight (#210).\n\nFollow-up to #208. 0.32.0 preserved `color`, `font-family`, `font-size`, `max-width`, and `text-align`, leaving `background-color` at 3 to 0 whether the tier was on or off. Operators use it for the \"white text on dark red\" marker; it appears far less often than `<font color>` (102 occurrences) but is the same kind of thing - not junk markup, and losing it is a silent content change.\n\n**The issue's assumption that `background-color` \"belongs to `@tiptap/extension-highlight`\" does not hold**: `@tiptap/extension-text-style` exports `BackgroundColor` itself (since 3.x - the export surface of 3.30.0 is `BackgroundColor / Color / FontFamily / FontSize / LineHeight / TextStyle / TextStyleKit`). This therefore adds no new dependency.\n\nDirection 1 from the issue (fold it into the `font` tier) was taken over direction 2 (add a `highlight` toolbar entry), for two reasons:\n\n- **`Highlight` renders a `<mark>`**, which would replace the legacy `<span style=\"background-color\">` with a different tag. The shape a consumer stores back into the database would change - trading one silent content change for another, which is not a fix.\n- In legacy content `color` and `background-color` are written on the same `style` to begin with (`<span style=\"color:#fff;background-color:rgb(194,79,74)\">`), so keeping one and dropping the other is impossible to explain. It does not get a tier of its own.\n\nBehavior follows the existing contract: **off by default**, with the highlight still dropped while off (pinned by a test of its own, so this change cannot drift the default); kept while on, and the output stays a `<span style>` with no `<mark>` anywhere (also tested). The paste sanitizer needed no change - `background-color` was already on the inline-style allowlist, and the loss happened purely at the schema layer.\n\n**Not done**: no `highlight` toolbar button. The side benefit direction 2 mentions - letting operators keep applying the highlight inside the editor - is a new capability rather than the defect reported here (silent loss). File it separately if wanted.",
+        "parityId": "legacy-html-background-color"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.33.0",
     "date": null,
     "entries": [

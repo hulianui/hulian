@@ -49,7 +49,7 @@ import { RichTextEditor } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| font | `boolean` | `false` | Translates `<font color\|face\|size>` into `<span style="color\|font-family\|font-size">` and puts the color, font-size, and font-family marks into the schema. |
+| font | `boolean` | `false` | Translates `<font color\|face\|size>` into `<span style="color\|font-family\|font-size">` and puts the color, font-size, font-family, and background-color marks into the schema. |
 | imgStyle | `boolean` | `false` | Keeps the inline `style` on `<img>`, allowing `max-width`, `width`, and `height`. |
 | align | `boolean` | `false` | Pushes block alignment down: `text-align` on `<section>` or `<div>`, the `align="center"` attribute, and the `<center>` tag. |
 
@@ -117,6 +117,7 @@ The editor schema decides which tags survive, and it decides **at load time**. T
 | `<img src>` / `<a href>` | Kept | Kept |
 | `<p style="text-align">` | Kept, if `toolbar` includes `align` | Kept, regardless of `toolbar` |
 | `<span style="color\|font-size">` | Kept, if `toolbar` includes `color` / `fontSize` | Kept, regardless of `toolbar` |
+| `<span style="background-color">` (text highlight) | **Lost** | Kept, and stays a `<span style>` (never becomes a `<mark>`) |
 | `<font color\|face\|size>` | **Lost** | Translated to `<span style>`; output stays a span |
 | `<img style="max-width:100%">` | **Lost** | Keeps `max-width`, `width`, and `height` |
 | `<section style="text-align">` | **Lost**, along with the tag it was attached to | Pushed down to `<p style="text-align">` |
