@@ -168,6 +168,7 @@ export * from "./comment";
 export * from "./image";
 export * from "./navbar";
 export * from "./nav-menu";
+export * from "./sidebar";
 export * from "./tree";
 export * from "./tree-select";
 export * from "./cascader";

@@ -14,7 +14,7 @@ status: enriched
 
 ## 何时用
 
-最常用的操作按钮，含 solid/outline/ghost/link 变体、brand/danger 色调、loading 态与 press 缩放动效。需要特效吸睛 CTA 用 [ShimmerButton](../shimmer-button/shimmer-button.md)/[RainbowButton](../rainbow-button/rainbow-button.md)/[PulsatingButton](../pulsating-button/pulsating-button.md)；多按钮成组用 [ButtonGroup](../button-group/button-group.md)；只要按钮样式不要 `<button>` 语义用 `buttonVariants(...)` 拿 className。
+最常用的操作按钮，含 solid/soft/outline/ghost/link 变体、brand/danger 色调、loading 态与 press 缩放动效。需要特效吸睛 CTA 用 [ShimmerButton](../shimmer-button/shimmer-button.md)/[RainbowButton](../rainbow-button/rainbow-button.md)/[PulsatingButton](../pulsating-button/pulsating-button.md)；多按钮成组用 [ButtonGroup](../button-group/button-group.md)；只要按钮样式不要 `<button>` 语义用 `buttonVariants(...)` 拿 className。
 
 ## 导入
 ```ts
@@ -25,9 +25,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"solid" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体 |
+| variant | `"solid" ｜ "soft" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体；`soft` 是浅语义底 + 同色文字，权重介于 `outline` 与 `solid` 之间（见下文） |
 | tone | `"brand" ｜ "success" ｜ "warning" ｜ "danger" ｜ "neutral"` | `"brand"` | 语义色调（见下表） |
-| size | `"sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs"` | `"md"` | 尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用 |
+| size | `"xs" ｜ "sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs"` | `"md"` | 尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用 |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
@@ -66,23 +66,62 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 从一维 `type` 模型（Vant / Element 那套）迁过来时的对照：`type="primary"` → 默认 `<Button>`；`type="success"` → `tone="success"`；`type="default"` / `plain` → `variant="outline"`；`hairline` 已是全库默认，不必显式写。
 
-## 尺寸档
+## 浅色语义底（soft）
 
-三条刻度，图标档的边长等于同名文字档的高度——**图标按钮与文字按钮混排一定要取同名的一对**，否则连排（[ButtonGroup](../button-group/button-group.md)）会露出台阶。
+`soft` = 浅语义底 + 同色文字（Radix 叫 soft，MUI 叫 tonal，Ant 叫 filled），视觉权重介于
+`outline` 与 `solid` 之间。**「浅色底」不等于「描边」**：`outline` 是画布同色底 + 语义色描边，
+底色并没有变。要浅底就用 `soft`，不要去 `className` 里写 `bg-*-50`。
 
-| 文字档 | 高度 | 配套图标档 | 边长 |
-|--------|------|-----------|------|
-| `sm` | 32px | `iconSm` | 32px |
-| `md`（默认） | 40px | `icon` | 40px |
-| `lg` | 48px | `iconLg` | 48px |
+三个典型位置：
 
-`iconXs`（20px）**不在这条刻度上**，它没有配套文字档，跟 `sm` 混排会矮 12px。
-它服务的是密集表格行内的微型操作——树形展开箭头、行内小动作：最小的 `iconSm`（32px）
-塞进 `density="compact"` 的行会把行高撑起来。Table 内建的展开器用的就是这一档。
+- **次主操作**：比 `solid` 弱（不抢页面主 CTA），比 `outline` 强（一眼看得出是品牌动作）。
+- **成对出现的取消 / 放弃**：`variant="soft" tone="danger"` —— 带危险语义但不是满屏红块。
+- **状态化触发器**：`variant={isActive ? "soft" : "outline"}` 表达「这个筛选开着」。
 
 ```tsx
-{/* 表格行内的展开箭头 */}
-<Button variant="ghost" tone="neutral" size="iconXs" aria-label="展开">
+<Button variant="soft">次主操作</Button>
+<Button variant="soft" tone="danger">取消</Button>
+<Button variant="soft" tone="success" size="xs">已启用</Button>
+```
+
+底色走的是库内既有的 `bg-{tone}/12` 透明度口径（hover 加深到 20%，`neutral` 用 `bg-foreground/8`
+亮暗自适应），与 [Tag](../tag/tag.md) / [Chip](../chip/chip.md) / [Alert](../alert/alert.md) 的 `soft` 完全一致——
+**刻意不用 `--color-*-subtle` 那族 token**：改用它，brand 得新造一个 `--color-primary-subtle`
+再加四个 `*-subtle-hover`，库里就会同时存在两套 soft 配色，一处调色另一处不跟。
+
+已知代价：底是半透明的，**会透出所在容器的背景色**。按钮坐在有色区块上时观感会偏，
+遇到了带截图提 issue，别在 `className` 里自己补一层不透明底。
+
+## 尺寸档
+
+常规刻度三档，图标档的边长等于同名文字档的高度——**图标按钮与文字按钮混排一定要取同名的一对**，否则连排（[ButtonGroup](../button-group/button-group.md)）会露出台阶。
+
+| 文字档 | 高度 | 字号 | 配套图标档 | 边长 |
+|--------|------|------|-----------|------|
+| `sm` | 32px | 14px | `iconSm` | 32px |
+| `md`（默认） | 40px | 14px | `icon` | 40px |
+| `lg` | 48px | 16px | `iconLg` | 48px |
+
+密集刻度另有两档，**它们互相不等高，也不与上面三档对齐**：
+
+| 密集档 | 尺寸 | 字号 | 用在哪 |
+|--------|------|------|--------|
+| `xs` | 高 24px | 12px | 中后台工具栏、表格行内、面板头部的文字按钮 |
+| `iconXs` | 20px 见方 | — | 表格行内的纯图标微操作：树形展开箭头、拖拽手柄 |
+
+`xs` 是密集界面的最小文字档：一屏十几个操作时 `sm`（32px/14px）是**大一档**而不是最小档，
+用它去接 24px 的工具栏，就得写一串覆盖类去撤销 `sm` 自己刚加的高度、内边距、字号和圆角。
+`xs` 已经把圆角降到 4px、图文间距收到 4px，直接用即可，不要再加 `className` 补丁。
+
+`iconXs`（20px）比 `xs` 还矮 4px，是刻意的：把它抬到 24px 会把 `density="compact"` 的表格行
+撑高，而它存在的全部理由就是不撑高行。两者可以同排（工具栏里文字按钮 + 图标按钮），
+差的 4px 在 `items-center` 下看不出来；**别拿 `iconXs` 去配 `sm` 及以上的文字档**，那会矮 12px 以上。
+
+```tsx
+{/* 密集工具栏：xs 文字按钮 + iconXs 图标按钮 */}
+<Button size="xs" variant="outline">录制</Button>
+<Button size="xs" variant="soft">已筛选</Button>
+<Button size="iconXs" variant="ghost" tone="neutral" aria-label="展开">
   <ChevronRight className="size-4" />
 </Button>
 ```
@@ -97,9 +136,11 @@ import { Button, buttonVariants } from "@hulianui/ui"
 ## 示例
 ```tsx
 <Button>默认</Button>
+<Button variant="soft">浅底次主操作</Button>
 <Button variant="outline">描边</Button>
 <Button tone="danger">危险</Button>
-<Button tone="success" variant="outline">通过</Button>
+<Button tone="success" variant="soft">通过</Button>
+<Button size="xs" variant="outline">密集工具栏</Button>
 <Button block>块级主操作</Button>
 <Button loading>加载中</Button>
 ```
@@ -109,7 +150,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 - `render` 模式为降低风险**不套 motion**，故无 press 缩放动效（颜色/hover 过渡仍在）；文案优先取 Button 的 children。
 - `loading` 会自动禁用按钮，无需再手动加 `disabled`。
 - 按钮文字**不可被选中**（base 带 `select-none`）。按钮文案是控件标签不是内容，连点场景下浏览器会把连续点击识别成双击选词把文字刷成蓝底。要让用户复制的文本请别做成按钮。
-- `tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone="success" variant="outline"`，别去 `className` 里覆盖背景色。
+- `tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone="success" variant="soft"`，别去 `className` 里覆盖背景色。**注意不是 `variant="outline"`**：`outline` 给的是画布同色底 + 语义色描边，底色不会变浅，照着做会发现没效果然后转头去写 `bg-green-50`——那正是这条禁的事。
 - `tone="neutral"` 的 `solid` 是**反色**（亮色下深底白字、暗色下浅底深字），不是灰底。灰底实心与 `variant="outline"` 几乎不可分辨，等于白开一档。
 - 自定义往按钮里塞图标+文字（尤其在特效按钮里）若图标掉到下一行，是 Tailwind Preflight 把 `svg{display:block}` 撑成块级所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——容器要 `inline-flex`，本 Button 已处理，自搓 wrapper 时注意。
 - 次级控件要表达「开/关」用 `variant="soft"`（浅语义底 + 语义文字），别在 `className` 里写 `bg-primary/10 text-primary` 顶色，也别退回 `solid` —— 一排 h-7 的工具栏控件里冒出一个实心主色块，视觉权重会盖过页面主操作。`soft` 与 `tone` 全族组合，典型写法是 `variant={isActive ? "soft" : "outline"}`。注意它不渲染 `aria-pressed`：真正的开关请用 [Toggle](../toggle/toggle.md)，`soft` 只适合「本身不 toggle、只是显示当前已生效」的触发器（如打开菜单的排序芯片）。

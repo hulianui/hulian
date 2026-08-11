@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -1172,7 +1172,7 @@
       "id": "component/button/pitfall/4",
       "scope": "button",
       "title": "Button",
-      "rule": "`tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone=\"success\" variant=\"outline\"`，别去 `className` 里覆盖背景色。",
+      "rule": "`tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone=\"success\" variant=\"soft\"`，别去 `className` 里覆盖背景色。**注意不是 `variant=\"outline\"`**：`outline` 给的是画布同色底 + 语义色描边，底色不会变浅，照着做会发现没效果然后转头去写 `bg-green-50`——那正是这条禁的事。",
       "source": "packages/ui/src/button/button.md"
     },
     {
@@ -7875,6 +7875,55 @@
       "source": "packages/ui/src/side-rays/side-rays.md"
     },
     {
+      "id": "component/sidebar/pitfall/1",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "**次级动作必须是兄弟节点**。`SidebarMenuAction` / `SidebarMenuBadge` 要放在 `SidebarMenuItem` 里、与 `SidebarMenuButton` 平级，靠绝对定位覆盖行右侧。塞进 `SidebarMenuButton` 内部就是 `button > button`，React 在 hydration 期报错，读屏也读不出第二个可操作元素。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/2",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "**icon 折叠档下文字要包 `<span>`**。折叠靠 `[&>span:last-child]:hidden` 收走标签；直接写裸文本（`<Folder /> 项目`）时没有可选中的节点，折叠后文字会被挤成一截乱码。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/3",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "**`collapsible=\"offcanvas\"` 收起后侧栏里的一切都不可达**，包括 `SidebarRail`。正文里必须另有一个 `SidebarTrigger`，否则用户收起后就再也开不回来了。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/4",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "**持久化库里不做**。`open` / `onOpenChange` 给出来了，cookie / localStorage / 服务端偏好由消费方自己接——库里硬写 cookie 会与 SSR 首屏、多租户、隐私策略全部打架。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/5",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "**`SidebarMenuSkeleton.width` 不要用随机值**。随机宽度在服务端与客户端各摇一次，必然 hydration mismatch。要参差观感就按下标传一组确定值（`[\"78%\", \"62%\", \"88%\"]`）。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/6",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "**`isMobile` 在 SSR 与首帧恒为 `false`**。它由 `matchMedia` 在 effect 里测出，第一帧永远是桌面形态——这是为了 SSR 与 hydration 给出同一棵树。想让窄屏首屏就是抽屉，只能在服务端按 UA 判断后自己控制。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/7",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "**右侧栏记得改 `tooltipSide`**。`side=\"right\"` 时 tooltip 默认仍向右弹，会飞出视口；传 `tooltipSide=\"left\"`。 ### 快捷键为什么要「让路」 内置 `Cmd/Ctrl + B`。四种情形一律不触发：`event.defaultPrevented`（别人已处理）、`input` / `textarea` / `select` 内、`contenteditable` 元素本身、以及 **`contenteditable` 的后代**。 最后一条最容易漏：富文本里光标落在 `<strong>` 上时事件的 `target` 是那个 `<strong>` 而不是编辑区，只判自身会漏掉整个编辑器——于是用户在任务标题里敲 `Cmd+B` 想加粗，侧栏在旁边乱跳。判定逻辑作为纯函数 `isEditableEventTarget` 导出，可以直接单测。 不需要这个快捷键就传 `shortcutKey={false}`；换一个键传 `shortcutKey=\"k\"`。 ### 为什么是 in-flow 而不是 `fixed` 同类实现（shadcn/ui）用「`fixed` 面板 + 一个等宽占位 div」做布局。本组件走 in-flow flex 宽度过渡，因为 `fixed` 面板一旦被放进任何非全屏容器——文档站预览框、[Viewport](../viewport/viewport.md) 设备框、分栏工作区——就会逃逸出框贴住视口。in-flow 方案与库内 [LayoutSider](../layout/layout.md) / [AdminLayout](../admin-layout/admin-layout.md) 同构，且不需要任何测量。 代价：`SidebarProvider` 必须是那个横向 flex 容器，`Sidebar` 与 `SidebarInset` 必须是它的直接子元素。中间夹一层普通 `div` 会把 flex 关系打断。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
       "id": "component/silk/pitfall/1",
       "scope": "silk",
       "title": "Silk",
@@ -9614,8 +9663,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 388,
-    "componentAdvisories": 1338,
-    "totalAdvisories": 1348
+    "componentDocs": 389,
+    "componentAdvisories": 1345,
+    "totalAdvisories": 1355
   }
 }

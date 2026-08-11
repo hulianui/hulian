@@ -81,6 +81,48 @@ describe("Button render（按钮样式的链接）", () => {
     expect(buttonVariants({ size: icon as "icon" })).toContain(`size-${step}`);
   });
 
+  // #204：24px 密集文字档。中后台工具栏 / 表格行内的主流形态是 20~28px 高、10~12px 字，
+  // sm(32px/14px) 对它们是大一档。这里锁住三件事：高度、字号、圆角降档。
+  it("xs 是 24px 高、12px 字的密集档", () => {
+    const { container } = rtlRender(<Button size="xs">导出</Button>);
+    const cls = container.querySelector("button")!.className;
+    expect(cls).toContain("h-6");
+    expect(cls).toContain("text-xs");
+    expect(cls).toContain("px-2");
+    // sm 的那套必须被替换掉而不是叠加——消费方迁移时写覆盖类正是因为撤不掉它们。
+    expect(cls).not.toContain("h-8");
+    expect(cls).not.toContain("text-sm");
+    expect(cls).not.toContain("px-3");
+  });
+
+  it("xs 的圆角降到 rounded-sm，且不是裸 rounded / --radius", () => {
+    const cls = cn(buttonVariants({ size: "xs" }));
+    expect(cls).toContain("rounded-sm");
+    // 与 iconXs 同源的坑：本库在 @theme 注册了 --radius，裸 `rounded` 就是 var(--radius)(10px)，
+    // twMerge 去重后半径没降下来。className 断言拦不住它（两个类名确实不同），
+    // 留这条是锁「不许改回裸 rounded / --radius」的意图，真判据是实机量 borderRadius。
+    expect(cls).not.toContain("rounded-[var(--radius)]");
+    expect(cls.split(/\s+/)).not.toContain("rounded");
+  });
+
+  it("xs 收紧图文间距（base 的 gap-2 在 24px 档上太松）", () => {
+    const { container } = rtlRender(
+      <Button size="xs">
+        <span aria-hidden>◆</span>导出
+      </Button>,
+    );
+    const cls = container.querySelector("button")!.className;
+    expect(cls).toContain("gap-1");
+    expect(cls.split(/\s+/)).not.toContain("gap-2");
+  });
+
+  // xs(24px) 与 iconXs(20px) **不等高**，这是刻意的：把 iconXs 抬到 24px 会把
+  // density="compact" 的表格行撑高，那正是 #146 当初要解决的问题。
+  it("xs 与 iconXs 不等高（密集刻度上的已知落差，不是漏配）", () => {
+    expect(buttonVariants({ size: "xs" })).toContain("h-6");
+    expect(buttonVariants({ size: "iconXs" })).toContain("size-5");
+  });
+
   // #146：密集表格行内的 20px 微型操作档。它刻意**不**对应任何文字档，
   // 所以不在上面那条等高不变量里。
   it("iconXs 是 20px 方形，且圆角不吃 --radius", () => {
@@ -167,5 +209,27 @@ describe("soft 变体（#197）", () => {
   it("渲染到 DOM 上", () => {
     const { getByRole } = rtlRender(<Button variant="soft">已激活的筛选</Button>);
     expect(getByRole("button").className).toContain("bg-primary/12");
+  });
+
+  // #205：底色走 bg-{tone}/12 的透明度口径，与 Tag / Chip / Alert 的 soft 同一套，
+  // **刻意不用** --color-*-subtle 那族 token —— 换过去 brand 要新造 --color-primary-subtle
+  // 加四个 *-subtle-hover，库里就会有两套 soft 配色（理由与已知代价写在 button.md 那一节）。
+  // 这条锁住那个决定：改成 bg-primary-subtle 会在这里红。
+  it("底色派生自语义色本身，不引 -subtle 族 token", () => {
+    for (const tone of ["brand", "success", "warning", "danger", "neutral"] as const) {
+      const cls = buttonVariants({ variant: "soft", tone });
+      expect(cls).not.toContain("-subtle");
+    }
+  });
+
+  it("与最小的密集档组合可用（工具栏里的激活态芯片就是这个形态）", () => {
+    const { container } = rtlRender(
+      <Button variant="soft" size="xs">
+        已筛选
+      </Button>,
+    );
+    const cls = container.querySelector("button")!.className;
+    expect(cls).toContain("bg-primary/12");
+    expect(cls).toContain("h-6");
   });
 });

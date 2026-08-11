@@ -125,6 +125,7 @@ export { modalShowcase } from "./modal/modal.showcase";
 export { navbarShowcase } from "./navbar/navbar.showcase";
 export { navigationMenuShowcase } from "./navigation-menu/navigation-menu.showcase";
 export { navMenuShowcase } from "./nav-menu/nav-menu.showcase";
+export { sidebarShowcase } from "./sidebar/sidebar.showcase";
 export { notificationShowcase } from "./notification/notification.showcase";
 export { serviceMessageShowcase } from "./service-message/service-message.showcase";
 export { numberFieldShowcase } from "./number-field/number-field.showcase";

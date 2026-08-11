@@ -74,6 +74,16 @@ describe("特效按钮共享 Button 底座", () => {
     );
   });
 
+  // #204：Button 补了 24px 的 xs 密集档，特效件**刻意不跟**——微光/彩虹/脉冲需要面积才读得出来，
+  // 且它们的底座不含圆角（各自用 var(--hulian-…) 半径），xs 里的 rounded-sm 到那边不生效。
+  // 这条是编译期锁：真给特效件开了 xs，@ts-expect-error 会因「没有错误」而报错。
+  it("特效件不吃 xs 密集档（编译期锁）", () => {
+    // @ts-expect-error EffectButtonSize 只有 sm | md | lg
+    const denied = <ShimmerButton size="xs">按钮</ShimmerButton>;
+    void denied;
+    expect(BUTTON_SIZE_CLASS.xs).toContain("h-6");
+  });
+
   it("ShimmerButton 的 render 走公共 helper，渲染成 <a> 且保留底座", () => {
     const { container } = render(
       <ShimmerButton render={<a href="#cta" className="custom" />}>去看看</ShimmerButton>,

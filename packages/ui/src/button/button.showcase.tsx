@@ -25,16 +25,45 @@ export const buttonShowcase: ShowcaseSpec = {
     },
     {
       title: "尺寸",
-      description: "sm / md / lg 三档高度。",
-      code: `<Button size="sm">小</Button>
+      description: "xs / sm / md / lg 四档高度：24 / 32 / 40 / 48px。",
+      code: `<Button size="xs">超小</Button>
+<Button size="sm">小</Button>
 <Button size="md">中</Button>
 <Button size="lg">大</Button>`,
       render: () => (
         <>
+          <Button size="xs">超小</Button>
           <Button size="sm">小</Button>
           <Button size="md">中</Button>
           <Button size="lg">大</Button>
         </>
+      ),
+    },
+    {
+      title: "密集工具栏（24px 的 xs 档）",
+      description:
+        "中后台工具栏与表格行内的主流形态是 24px 高、12px 字，sm(32px) 对它们是大一档。xs 的圆角与图文间距一并收紧，不必再写覆盖类。同排的纯图标微操作用 iconXs（20px），两者刻意不等高。",
+      code: `<Button size="xs" variant="outline">录制</Button>
+<Button size="xs" variant="outline">回放</Button>
+<Button size="xs" variant="soft">已筛选</Button>
+<Button size="iconXs" variant="ghost" tone="neutral" aria-label="更多">
+  <ChevronDown className="size-4" />
+</Button>`,
+      render: () => (
+        <div className="flex items-center gap-1 rounded-md border border-hairline bg-surface p-1">
+          <Button size="xs" variant="outline">
+            录制
+          </Button>
+          <Button size="xs" variant="outline">
+            回放
+          </Button>
+          <Button size="xs" variant="soft">
+            已筛选
+          </Button>
+          <Button size="iconXs" variant="ghost" tone="neutral" aria-label="更多">
+            <ChevronDown className="size-4" />
+          </Button>
+        </div>
       ),
     },
     {
@@ -106,7 +135,7 @@ export const buttonShowcase: ShowcaseSpec = {
     },
     {
       title: "语义档 × 形态",
-      description: "同一个 tone 换 variant 即得描边 / 幽灵形态，不必为此另开枚举值。",
+      description: "同一个 tone 换 variant 即得浅底 / 描边 / 幽灵形态，不必为此另开枚举值。",
       code: `<Button tone="success" variant="outline">通过</Button>
 <Button tone="warning" variant="outline">驳回</Button>
 <Button tone="danger" variant="outline">删除</Button>
@@ -128,6 +157,33 @@ export const buttonShowcase: ShowcaseSpec = {
           </Button>
           <Button tone="danger" variant="link">
             删除
+          </Button>
+        </>
+      ),
+    },
+    {
+      title: "浅色语义底（soft）",
+      description:
+        "浅语义底 + 同色文字，权重介于 outline 与 solid 之间：次主操作、成对出现的取消键、以及「这个筛选开着」这类状态化触发器。底色由语义色本身按透明度派生，改主色时跟着走。",
+      code: `<Button variant="soft">次主操作</Button>
+<Button variant="soft" tone="success">通过</Button>
+<Button variant="soft" tone="warning">驳回</Button>
+<Button variant="soft" tone="danger">取消</Button>
+<Button variant="soft" tone="neutral">跳过</Button>`,
+      render: () => (
+        <>
+          <Button variant="soft">次主操作</Button>
+          <Button variant="soft" tone="success">
+            通过
+          </Button>
+          <Button variant="soft" tone="warning">
+            驳回
+          </Button>
+          <Button variant="soft" tone="danger">
+            取消
+          </Button>
+          <Button variant="soft" tone="neutral">
+            跳过
           </Button>
         </>
       ),
@@ -175,7 +231,7 @@ export const buttonShowcase: ShowcaseSpec = {
     {
       prop: "size",
       type: "select",
-      options: ["sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
+      options: ["xs", "sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
       defaultValue: "md",
     },
     { prop: "block", type: "boolean", defaultValue: false, label: "块级铺满" },
@@ -184,6 +240,16 @@ export const buttonShowcase: ShowcaseSpec = {
   ],
   states: [
     { name: "default", render: () => <Button>默认</Button> },
+    { name: "xs", render: () => <Button size="xs">密集档</Button> },
+    { name: "soft", render: () => <Button variant="soft">浅底</Button> },
+    {
+      name: "soft-danger",
+      render: () => (
+        <Button variant="soft" tone="danger">
+          取消
+        </Button>
+      ),
+    },
     { name: "outline", render: () => <Button variant="outline">描边</Button> },
     { name: "ghost", render: () => <Button variant="ghost">幽灵</Button> },
     { name: "link", render: () => <Button variant="link">文字链接</Button> },
@@ -196,9 +262,9 @@ export const buttonShowcase: ShowcaseSpec = {
   ],
   renderWithProps: (p) => (
     <Button
-      variant={p.variant as "solid" | "outline" | "ghost" | "link"}
+      variant={p.variant as "solid" | "soft" | "outline" | "ghost" | "link"}
       tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"}
-      size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"}
+      size={p.size as "xs" | "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"}
       block={p.block as boolean}
       loading={p.loading as boolean}
     >

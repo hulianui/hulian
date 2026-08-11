@@ -39,8 +39,24 @@ export const EFFECT_BUTTON_BASE_CLASS = `${LAYOUT} ${INTERACTION}`;
 /**
  * 尺寸档。图标档边长严格等于同名文字档的高度（32/40/48），
  * 这样图标按钮与任意文字按钮、与特效按钮混排都等高。
+ * 例外是最密的一档（xs / iconXs），见下面各自的注释。
  */
 export const BUTTON_SIZE_CLASS = {
+  // 24px 密集文字档（#204）：与 iconXs 一起构成「密集刻度」。
+  // sm(32px/14px) 对中后台工具栏与表格行内是**大一档**而不是最小档——消费仓实测「本该能迁」
+  // 的 195 处裸 <button> 里有 134 处落在 20~28px 高、10~12px 字上，用 sm 强行迁要写 6 个覆盖类
+  // 去撤销 sm 与 base 刚加的东西（h-8 / px-3 / text-sm 加 base 那条 10px 圆角），那种迁移只会被原样退回。
+  //
+  // 尺寸取 h-6 px-2 text-xs：与 Tag 的 md 档同一组数值（tag.tsx），密集区里 Button 与 Tag
+  // 并排时上下沿对齐。gap 也随之从 base 的 gap-2 收到 gap-1 —— 24px 高、8px 内边距的按钮里
+  // 再留 8px 图文间距，图标会飘得离文字太远；Tag 在同一高度上用的也是 gap-1。
+  //
+  // 圆角与 iconXs 同为 rounded-sm(4px)：这两档常在同一条工具栏里并排，半径不一致会看出来。
+  // 同样**不能写裸 `rounded`**，理由见下面 iconXs 那段。
+  //
+  // 没有 24px 的配套图标档：最近的 iconXs 是 20px，并排差 4px。这是刻意的——iconXs 服务的是
+  // 表格行内的纯图标微操作，把它抬到 24px 就会把 density="compact" 的行撑高（#146 的原始诉求）。
+  xs: "h-6 gap-1 px-2 text-xs rounded-sm",
   sm: "h-8 px-3 text-sm",
   md: "h-10 px-4 text-sm",
   lg: "h-12 px-6 text-base",
@@ -49,9 +65,10 @@ export const BUTTON_SIZE_CLASS = {
   icon: "size-10 p-0",
   iconSm: "size-8 p-0",
   iconLg: "size-12 p-0",
-  // 20px 档：**不与文字档对齐**，故意不叫 iconXs 之外的名字。它服务的是「密集表格行内的
-  // 微型操作」——树形展开箭头、拖拽手柄、单元格里的小动作，常见就是 16–20px。最小的
-  // iconSm(32px) 塞进 density="compact" 的行会把行高撑起来，信息密度当场垮掉（#146）。
+  // 20px 档：**不与任何文字档等高**（离它最近的 xs 是 24px，差 4px），故意不叫 iconXs 之外的
+  // 名字。它服务的是「密集表格行内的微型操作」——树形展开箭头、拖拽手柄、单元格里的小动作，
+  // 常见就是 16–20px。最小的 iconSm(32px) 塞进 density="compact" 的行会把行高撑起来，
+  // 信息密度当场垮掉（#146）。
   //
   // 这个档一直真实存在，只是此前只有库内部享受得到：Table 的展开器与拖拽手柄都手写了
   // 同一份 size-5，既没收编回 Button，也没导出给消费方 —— 于是「别写裸 button」的建议
@@ -67,7 +84,14 @@ export const BUTTON_SIZE_CLASS = {
   iconXs: "size-5 rounded-sm p-0",
 } as const;
 
-/** 特效按钮只开放三档文字尺寸——它们没有纯图标形态。 */
+/**
+ * 特效按钮只开放三档文字尺寸——它们没有纯图标形态。
+ *
+ * 也**刻意不含 xs**（#204）：特效件是「吸睛 CTA」，微光扫过、彩虹描边、脉冲光晕都需要面积才读得出来，
+ * 24px 高的密集档上这些效果只剩噪点；而且它们的 base 刻意不带圆角（各自用 var(--hulian-…) 的自定义
+ * 半径），xs 里的 rounded-sm 到了那边不生效，等于给出一档「看着像 xs 但圆角不对」的假档。
+ * 密集工具栏本来也不该出现特效 CTA。
+ */
 export type EffectButtonSize = "sm" | "md" | "lg";
 
 /**

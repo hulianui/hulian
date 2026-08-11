@@ -382,6 +382,16 @@ export interface ComponentLocale {
     read: string;
   };
   navMenu?: { navigation: string };
+  sidebar?: {
+    /** Accessible name for SidebarTrigger. */
+    toggle: string;
+    /** Accessible name for SidebarRail; deliberately distinct from `toggle`. */
+    rail: string;
+    /** Visually hidden title of the mobile sidebar drawer. */
+    mobileTitle: string;
+    /** Visually hidden description of the mobile sidebar drawer. */
+    mobileDescription: string;
+  };
   /** Default formatter locale for RelativeTime when its locale prop is omitted. */
   relativeTime?: { locale: "zh" | "en" };
   regionSelect?: { error: string; loading: string; canvas: string };
@@ -1101,6 +1111,12 @@ const zhComponents: ComponentLocale = {
   },
   chatMessage: { me: "我", sending: "发送中", sent: "已送达", read: "已读" },
   navMenu: { navigation: "侧边导航" },
+  sidebar: {
+    toggle: "切换侧栏",
+    rail: "拖到边缘切换侧栏",
+    mobileTitle: "侧边导航",
+    mobileDescription: "应用主导航。按 Esc 或点击遮罩关闭。",
+  },
   relativeTime: { locale: "zh" },
   regionSelect: { error: "图片加载失败", loading: "载入图片…", canvas: "区域选择画布" },
   remoteSelect: {
@@ -1880,6 +1896,12 @@ const enComponents: ComponentLocale = {
   },
   chatMessage: { me: "Me", sending: "Sending", sent: "Delivered", read: "Read" },
   navMenu: { navigation: "Sidebar navigation" },
+  sidebar: {
+    toggle: "Toggle sidebar",
+    rail: "Drag the edge to toggle the sidebar",
+    mobileTitle: "Sidebar navigation",
+    mobileDescription: "Primary application navigation. Press Escape or tap the backdrop to close.",
+  },
   relativeTime: { locale: "en" },
   regionSelect: {
     error: "Failed to load image",

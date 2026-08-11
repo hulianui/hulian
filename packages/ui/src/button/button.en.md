@@ -14,7 +14,7 @@ status: enriched
 
 ## When to use
 
-Use Button for standard actions with solid, outline, ghost, or link styling; brand or danger tones; an optional loading state; and a press-scale animation. Use [ShimmerButton](../shimmer-button/shimmer-button.md), [RainbowButton](../rainbow-button/rainbow-button.md), or [PulsatingButton](../pulsating-button/pulsating-button.md) for a special-effect CTA, and [ButtonGroup](../button-group/button-group.md) for related actions. When you need the styling without `<button>` semantics, call `buttonVariants(...)` to obtain the class name.
+Use Button for standard actions with solid, soft, outline, ghost, or link styling; brand or danger tones; an optional loading state; and a press-scale animation. Use [ShimmerButton](../shimmer-button/shimmer-button.md), [RainbowButton](../rainbow-button/rainbow-button.md), or [PulsatingButton](../pulsating-button/pulsating-button.md) for a special-effect CTA, and [ButtonGroup](../button-group/button-group.md) for related actions. When you need the styling without `<button>` semantics, call `buttonVariants(...)` to obtain the class name.
 
 ## Import
 ```ts
@@ -25,9 +25,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variant | `"solid" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. |
+| variant | `"solid" \| "soft" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. `soft` is a tinted semantic background with matching text, sitting between `outline` and `solid` in weight (see below). |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | Semantic color tone (see the table below). |
-| size | `"sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | Control size; the three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). `iconXs` is a 20px micro size that matches **no** text size and is meant for dense table rows. |
+| size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | Control size. `xs` is the 24px dense size for admin toolbars and table rows. The three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). `iconXs` is a 20px micro size that matches **no** text size and is meant for dense table rows. |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled` and `type`. |
@@ -66,24 +66,69 @@ Buttons are a two-dimensional model of **`variant` (shape) × `tone` (meaning)**
 
 Coming from a one-dimensional `type` model: `type="primary"` becomes a plain `<Button>`, `type="success"` becomes `tone="success"`, and `type="default"` or `plain` becomes `variant="outline"`. Hairline borders are already the library default, so there is nothing to opt into.
 
-## Size scale
+## Tinted semantic fill (soft)
 
-Three steps. Every icon size has the same side length as the text size of the same name, so **pair icon buttons with the matching text size** — otherwise an attached group ([ButtonGroup](../button-group/button-group.md)) shows a visible step at the seam.
+`soft` is a tinted semantic background with matching text — Radix calls it soft, MUI calls it tonal,
+Ant calls it filled — and its visual weight sits between `outline` and `solid`. **A tinted fill is not
+an outline**: `outline` keeps the canvas background and only adds a semantic border, so the fill never
+gets lighter. When you want a tinted fill, use `soft` instead of writing `bg-*-50` in `className`.
 
-| Text size | Height | Matching icon size | Side |
-|-----------|--------|--------------------|------|
-| `sm` | 32px | `iconSm` | 32px |
-| `md` (default) | 40px | `icon` | 40px |
-| `lg` | 48px | `iconLg` | 48px |
+Three typical places:
 
-`iconXs` (20px) is **not** part of that scale: it has no matching text size and sits 12px shorter
-than `sm`. It exists for micro actions inside dense table rows — tree expanders and inline row
-actions — where the smallest `iconSm` (32px) would push `density="compact"` rows taller. The
-built-in Table expander uses this size.
+- **Secondary primary action**: weaker than `solid` so it does not compete with the page CTA, stronger than `outline` so it still reads as a brand action.
+- **The cancel or discard half of a pair**: `variant="soft" tone="danger"` carries the danger meaning without a full red block.
+- **A stateful trigger**: `variant={isActive ? "soft" : "outline"}` shows that a filter is on.
 
 ```tsx
-{/* Expander inside a table row */}
-<Button variant="ghost" tone="neutral" size="iconXs" aria-label="Expand">
+<Button variant="soft">Secondary action</Button>
+<Button variant="soft" tone="danger">Cancel</Button>
+<Button variant="soft" tone="success" size="xs">Enabled</Button>
+```
+
+The fill uses the opacity recipe the library already has — `bg-{tone}/12`, deepening to 20% on hover, with
+`neutral` on `bg-foreground/8` so it adapts to light and dark — exactly as `soft` works on
+[Tag](../tag/tag.md), [Chip](../chip/chip.md) and [Alert](../alert/alert.md). It **deliberately avoids the
+`--color-*-subtle` tokens**: switching to them would mean minting a `--color-primary-subtle` plus four
+`*-subtle-hover` tokens, leaving the library with two parallel soft palettes where retuning one leaves the
+other behind.
+
+Known trade-off: the fill is translucent, so it **picks up the background of whatever contains it**. On a
+coloured block the button will look off; report it with a screenshot rather than layering an opaque
+background through `className`.
+
+## Size scale
+
+The regular scale has three steps. Every icon size has the same side length as the text size of the same name, so **pair icon buttons with the matching text size** — otherwise an attached group ([ButtonGroup](../button-group/button-group.md)) shows a visible step at the seam.
+
+| Text size | Height | Font | Matching icon size | Side |
+|-----------|--------|------|--------------------|------|
+| `sm` | 32px | 14px | `iconSm` | 32px |
+| `md` (default) | 40px | 14px | `icon` | 40px |
+| `lg` | 48px | 16px | `iconLg` | 48px |
+
+Two more sizes form the dense scale. **They match neither each other nor the three sizes above:**
+
+| Dense size | Dimensions | Font | Where it belongs |
+|------------|------------|------|------------------|
+| `xs` | 24px tall | 12px | Text buttons in admin toolbars, table rows and panel headers |
+| `iconXs` | 20px square | — | Icon-only micro actions inside a table row: tree expanders, drag handles |
+
+`xs` is the smallest text size for dense interfaces. Once a screen carries a dozen actions, `sm`
+(32px / 14px) is one step too large rather than the smallest step, and forcing it into a 24px toolbar
+means a stack of override classes that undo the height, padding, font size and radius `sm` just added.
+`xs` already lowers the radius to 4px and tightens the icon gap to 4px, so use it as is instead of
+patching it through `className`.
+
+`iconXs` (20px) is another 4px shorter than `xs`, on purpose: raising it to 24px would push
+`density="compact"` table rows taller, and staying out of the row height is its entire reason to exist.
+The two can share a toolbar (a text button next to an icon button) because `items-center` hides the 4px
+difference; **do not pair `iconXs` with `sm` or larger**, where the gap grows past 12px.
+
+```tsx
+{/* Dense toolbar: an xs text button next to an iconXs icon button */}
+<Button size="xs" variant="outline">Record</Button>
+<Button size="xs" variant="soft">Filtered</Button>
+<Button size="iconXs" variant="ghost" tone="neutral" aria-label="Expand">
   <ChevronRight className="size-4" />
 </Button>
 ```
@@ -98,9 +143,11 @@ built-in Table expander uses this size.
 ## Examples
 ```tsx
 <Button>Default</Button>
+<Button variant="soft">Tinted secondary action</Button>
 <Button variant="outline">Outline</Button>
 <Button tone="danger">Danger</Button>
-<Button tone="success" variant="outline">Approve</Button>
+<Button tone="success" variant="soft">Approve</Button>
+<Button size="xs" variant="outline">Dense toolbar</Button>
 <Button block>Full-width primary action</Button>
 <Button loading>Loading</Button>
 ```
@@ -110,7 +157,7 @@ built-in Table expander uses this size.
 - To avoid unsafe element animation, `render` mode **does not apply Motion**, so it has no press-scale effect. Color and hover transitions remain, and Button's `children` take precedence as the visible content.
 - `loading` disables the button automatically; do not add `disabled` solely for the loading state.
 - Button text **cannot be selected** (the base class carries `select-none`). A button label is a control affordance, not content, and rapid clicking would otherwise make the browser select the word or the whole line. Do not turn text people need to copy into a button.
-- `tone` changes meaning, never shape. For a light-background success button use `tone="success" variant="outline"` instead of overriding the background through `className`.
+- `tone` changes meaning, never shape. For a light-background success button use `tone="success" variant="soft"` instead of overriding the background through `className`. **It is not `variant="outline"`**: `outline` keeps the canvas background and only adds a semantic border, so nothing appears to change and the next move is usually to write `bg-green-50` — exactly what this rule forbids.
 - `tone="neutral"` in `solid` is an **inverted** fill (dark background in light mode, light background in dark mode), not a grey one. A grey fill is nearly indistinguishable from `variant="outline"`, which would make the tone pointless.
 - If an icon wraps away from its label in a custom or effect button, Tailwind Preflight's `svg{display:block}` rule is usually the cause. See [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]; the wrapper needs `inline-flex`. Button already handles this internally.
 - Use `variant="soft"` (tinted semantic background with semantic text) for a secondary control that shows an on/off state. Do not override the palette with `bg-primary/10 text-primary` in `className`, and do not fall back to `solid`: a filled brand block among `h-7` toolbar controls outweighs the primary action of the page. `soft` combines with every `tone`; the typical form is `variant={isActive ? "soft" : "outline"}`. Note that it does not render `aria-pressed` — use [Toggle](../toggle/toggle.md) for a real toggle. `soft` fits triggers that merely show something is active, such as a sort chip that opens a menu.
