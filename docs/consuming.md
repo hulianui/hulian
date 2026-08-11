@@ -12,6 +12,10 @@
 打包器仍读源码。这条改动只影响类型检查那一半 —— 见第 5 节末尾的实测，以及第 6 节
 新承诺的 `noUncheckedIndexedAccess`。
 
+**界面语言不是中文的，先读 [第 9 节](#9-configprovider非中文应用的必需品)**：不挂
+`ConfigProvider` 时组件内置文案（大半在 `aria-label` 里）会**静默**回退成 zh-CN，
+页面看起来完全正常。
+
 ---
 
 ## 1. 测试环境会解析出第二份 React
@@ -121,6 +125,100 @@ npx hulian-check --format json src   # CI 做棘轮用
 
 改法是机械的：`text-muted` → `text-muted-foreground`（`fill-` / `stroke-` / `border-`
 等前缀同理）。`bg-muted` **不用改**，它现在就是弱背景。
+
+### 三行 `@import` 里有一行会接管你的 `dark:` / `shadow-*` / 过渡曲线
+
+接入三行里最容易出事的是 `preset.css`。它按对消费方的影响分成两类，拆成了两个可独立引入的入口
+（`@hulianui/tokens` 0.8.0 起）：
+
+| 入口 | 内容 | 性质 |
+|---|---|---|
+| `@hulianui/tokens/preset-core.css` | 语义 token → `--color-*` 映射、五档断点、42 个 `hulian-*` 关键帧 | **纯加法**。全是新增 token / 新增关键帧，`hulian-` 前缀不撞名，断点与 Tailwind 默认同值 |
+| `@hulianui/tokens/preset-opinionated.css` | `@custom-variant dark`、`--shadow-sm..2xl` 重绑、`--ease-*` 与默认过渡曲线重绑 | **接管**。改变项目里**已有**的 `dark:` / `shadow-*` / 裸 `transition` 的行为 |
+| `@hulianui/tokens/preset.css` | 上面两份的聚合入口 | 与拆分前**逐字节等价**，现存写法零改动 |
+
+新项目继续引 `preset.css` 一份即可，什么都不用改。下面这段只写给**存量项目**。
+
+#### 渐进接入：先只引核心层
+
+瑚琏组件要正常显示，只需要 `preset-core.css`：
+
+```css
+@import "tailwindcss";
+@import "@hulianui/tokens/tokens.css";
+@import "@hulianui/tokens/preset-core.css";   /* 先只要这一份 */
+/* @import "@hulianui/tokens/preset-opinionated.css";  ← 换完组件、准备统一视觉语言时再放开 */
+```
+
+代价是瑚琏组件的阴影走 Tailwind 默认那套（不随明暗切值）、动效走 Tailwind 内置缓动，
+暗色由你自己那套 `dark:` 机制驱动。三样都是「看起来不完全是瑚琏的样子」，**不是坏掉**。
+
+#### `dark:` 那一条是静默的，务必先读
+
+`preset-opinionated.css` 里的 `@custom-variant dark` 判的是继承来的 `--hl-theme`
+（[#101](https://github.com/hulianui/hulian/issues/101)，为的是主题岛嵌套时 `dark:` 跟着**最近**的岛走，
+选择器表达不了「最近」）。而 shadcn 的默认形态是 `<html class="dark">` +
+`@custom-variant dark (&:is(.dark *))`。两份定义撞在同一个 variant 上，**后声明的那份生效**：
+
+- 你的 `@custom-variant dark` 写在瑚琏 `@import` **之前** → 瑚琏的赢 → **全站 `dark:` 工具类不再匹配任何东西**
+- 写在瑚琏 `@import` **之后** → 你的赢 → `dark:` 照常，瑚琏组件的主题岛嵌套退化成跟随页面
+
+翻车形态是「半暗」：页面底色还是暗的（那来自 `.dark { --… }` 的 token 块，不走 variant），
+前景色 / 边框 / 次要文字留在亮色 —— 暗底压黑字。而且**构建成功、控制台无警告、DevTools 里规则确实存在**
+（`dark:text-gray-400` 生成的是合法 CSS，只是没有祖先能匹配新选择器），排查起来很绕。
+
+三条出路，任选其一：
+
+1. **只引 `preset-core.css`**（上一节）。你自己那份 `@custom-variant dark` 原样保留，最省心。
+2. **把 `@custom-variant dark (&:is(.dark *))` 挪到瑚琏 `@import` 之后**。零成本，代价是主题岛退化。
+3. **加一层 `--hl-theme` 桥**，保留瑚琏的定义，同时让 `.dark` 也能驱动它：
+
+```css
+/* 放在所有 @import 之后 */
+.dark {
+  --hl-theme: dark;
+}
+:root:not(.dark) {
+  --hl-theme: light;
+}
+```
+
+自定义属性靠继承传播，`.dark` 挂在 `<html>` 上时全部后代都读得到，
+`@container style(--hl-theme: dark)` 那条分支即命中。
+
+**这条桥是实测过的**，不是推理：Chrome 151 headless，`<html class="dark">` +
+`@import "tailwindcss"` → `@custom-variant dark (&:is(.dark *))` → 瑚琏三行（瑚琏定义胜出）：
+
+| 场景 | `dark:text-red-500` 计算色 | `shadow-lg` |
+|---|---|---|
+| 不引瑚琏（基线） | `oklch(0.637 0.237 25.331)` = red-500 ✅ | Tailwind 默认 |
+| 引 `preset.css`，无桥 | `oklch(0.208 0.042 265.755)` = slate-900 ❌（复现翻车） | 瑚琏阴影 |
+| 引 `preset.css` + 上面那段桥 | `oklch(0.637 0.237 25.331)` = red-500 ✅ | 瑚琏阴影 |
+| 只引 `preset-core.css` | `oklch(0.637 0.237 25.331)` = red-500 ✅ | Tailwind 默认 |
+
+同一次实测还确认：嵌在 `[data-theme="light"]` 岛内的元素在桥打开后**不会**被点亮
+（计算色仍是 slate-900）—— 桥与主题岛语义是相容的，不会把 #101 撤回。
+
+两个已知边界：
+
+- 需要 style container query（Chrome 111 / Safari 18 / Firefox 128），与本库基线一致。
+- `@container` 查的是**父容器**，所以元素**自己**带 `.dark` 又同时写 `dark:` 工具类时不命中
+  （`<html class="dark">` 这种放在根上的常规写法不受影响）。
+
+#### 顺带：`@import "tailwindcss"` 会引两遍
+
+`preset-core.css` 自己第一行就 `@import "tailwindcss"`（拆分前是 `preset.css` 干这事），
+而 shadcn 项目的 `globals.css` 首行通常已经有一份。**Tailwind v4 不去重**：实测同一份工程
+（v4.3.3）里两处引入会让 `@layer theme, base, components, utilities;` 与整段 preflight
+各出现两次，产物 28.1 KB → 32.1 KB（+4 KB）。
+
+行为上没有区别（重复规则等价覆盖，无视觉差异），所以两种写法都对：
+
+- 保留你自己那行 `@import "tailwindcss"` —— 多 4 KB，换来「Tailwind 的引入点在你自己文件里」这件事清清楚楚。
+- 删掉你自己那行，由 `preset-core.css` / `preset.css` 带进来 —— 省 4 KB。
+
+库这边刻意**不动**：把 `@import "tailwindcss"` 从 preset 里摘掉会让现在照 README 抄三行、
+且自己没引 Tailwind 的消费方（含本仓库的 `apps/www`）当场炸，属破坏性改动，不值得为 4 KB 做。
 
 ---
 
@@ -491,3 +589,93 @@ react-hook-form 的 `Controller`，缺一个 `title` 就没法挂 tooltip，于�
   写在瑚琏这层传不下去。
 - **Tailwind v4**：瑚琏的类名在你的项目里要能被扫到，`@source` 需覆盖 `@hulianui/ui` 的源码路径。
   详见 [README](../README.md) 的接入段。
+
+---
+
+## 9. ConfigProvider：非中文应用的必需品
+
+组件带着一批内置文案：`NumberField` 的 ± 按钮、`Table` 空态、`Spinner` 的 `role=status`、
+`Select` 的搜索占位与空态、`Tag` 的关闭按钮……没挂 `ConfigProvider` 时它们**回退成 zh-CN**。
+
+回退本身是设计使然（组件必须能脱离 Provider 渲染，所以不抛错）。真正的问题是它**完全静默**：
+
+- 不报错，`ConfigProvider` 在类型上也是可选的；
+- typecheck / lint / guard 全绿；
+- 视觉上看不出来 —— 这些文案大半在 `aria-label` 里，**只有读屏用户和 e2e 断言会撞到**。
+
+漏 `ThemeProvider` 页面立刻不对，漏 `ConfigProvider` 页面看起来完全正常，能带着一屏中文
+读屏标签活过一整轮迁移（hulianui/hulian#164 就是这么发现的）。为此库在**开发期**会就此
+`console.warn` 一次（`NODE_ENV=production` 与 `NODE_ENV=test` 下零成本、不打印），
+但那是兜底不是设计 —— 该挂还是要挂。
+
+```tsx
+import { ThemeProvider, ConfigProvider, enUS } from "@hulianui/ui";
+
+<ThemeProvider>
+  <ConfigProvider locale={enUS}>{children}</ConfigProvider>
+</ThemeProvider>;
+```
+
+中文应用可以省（内置文案本来就是 zh-CN）；**其它任何语言都不能省**。
+
+### 只有 `zhCN` / `enUS` 两本字典，其余语言 spread `enUS`
+
+```ts
+import { enUS, type Locale } from "@hulianui/ui";
+
+export const frFR: Locale = {
+  ...enUS,
+  table: { ...enUS.table, empty: "Aucune donnée" },
+  components: {
+    ...enUS.components,
+    numberField: { decrement: "Diminuer", increment: "Augmenter" },
+  },
+};
+```
+
+一定要 spread 而不是从零写一份：这样将来版本新增的键自动有英文兜底，不会因为漏键渲染出
+`undefined`。注意 `components` 是嵌套的一层，展开外层不会带上它的内容，要覆盖里面某个组件
+就得像上面那样再展开一次 `...enUS.components`。
+
+### `Locale` 的键长什么样
+
+顶层按组件分节，低层原语的文案统一收在 `components` 下：
+
+| 层 | 键 |
+|------|------|
+| `Locale` 顶层 | `table` · `proTable` · `adminLayout` · `modalForm` · `editableTable` · `proForm` · `stepsForm` · `drawer` · `loginForm` · `clickCaptcha` · `passwordGenerator` · `components` |
+| `Locale["components"]` | 低层原语，按组件名分节：`popconfirm` · `toast` · `alert` · `tag` · `select` · `spinner` · `numberField` · `upload` · `pagination` · `combobox` …（100+ 节，随版本增长） |
+
+**别把完整清单抄进自己的代码库**，它每个版本都在长。要当前实装版本的全量键就从字典自己打，
+这份输出永远与你装的那一版一致：
+
+```ts
+import { enUS } from "@hulianui/ui";
+
+const walk = (o: object, prefix = ""): string[] =>
+  Object.entries(o).flatMap(([k, v]) =>
+    v && typeof v === "object" ? walk(v, `${prefix}${k}.`) : [`${prefix}${k}`],
+  );
+console.log(walk(enUS).join("\n"));
+```
+
+参数化文案（如 `proTable.total(count)`、`table.filter(column)`）是函数，会被上面这段当成叶子
+打出来，签名去 `Locale` 类型里查。
+
+### 接到自己的 i18n 上
+
+多语言产品在应用根架一层桥，跟着当前语言切：
+
+```tsx
+export function HulianLocaleProvider({ children }: PropsWithChildren) {
+  const { i18n } = useTranslation();
+  const locale = useMemo(
+    () => (i18n.resolvedLanguage?.startsWith("zh") ? zhCN : enUS),
+    [i18n.resolvedLanguage],
+  );
+  return <ConfigProvider locale={locale}>{children}</ConfigProvider>;
+}
+```
+
+MCP 消费方可以直接取这一片：`get_setup_guide({ target: "locale" })`；
+`inspect_project` / `audit_hulian_adoption` 也会在扫不到 `ConfigProvider` 时报一条建议。

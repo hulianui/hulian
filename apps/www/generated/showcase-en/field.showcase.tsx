@@ -35,6 +35,35 @@ export const fieldShowcase: ShowcaseSpec = {
         </Field>),
         },
         {
+            title: "Horizontal settings row",
+            description: "orientation=horizontal puts the label area on the left, the control on the right, and the error message on its own full-width row.",
+            code: `<Field
+  orientation="horizontal"
+  label="Theme"
+  description="Pick your preferred color scheme"
+>
+  <Input defaultValue="Dark" />
+</Field>`,
+            render: () => (<Field orientation="horizontal" label="Theme" description="Pick your preferred color scheme" className="w-96">
+          <Input defaultValue="Dark"/>
+        </Field>),
+        },
+        {
+            title: "Horizontal with a fixed label column",
+            description: "Override the default column template to get a fixed label column and a control that fills the rest; no extra prop is needed.",
+            code: `<Field
+  orientation="horizontal"
+  label="Email"
+  error="The email format is incorrect"
+  className="grid-cols-[6rem_1fr]"
+>
+  <Input defaultValue="not-an-email" />
+</Field>`,
+            render: () => (<Field orientation="horizontal" label="Email" error="The email format is incorrect" className="w-96 grid-cols-[6rem_1fr]">
+          <Input defaultValue="not-an-email"/>
+        </Field>),
+        },
+        {
             title: "Disabled",
             description: "disabled is passed to Field.Root, which disables the control.",
             code: `<Field label="Email" disabled>
@@ -51,6 +80,13 @@ export const fieldShowcase: ShowcaseSpec = {
         { prop: "error", type: "text", defaultValue: "", label: "error (if it is not empty, it will be marked red + an error will appear)" },
         { prop: "invalid", type: "boolean", defaultValue: false, label: "invalid" },
         { prop: "disabled", type: "boolean", defaultValue: false, label: "disabled" },
+        {
+            prop: "orientation",
+            type: "select",
+            options: ["vertical", "horizontal"],
+            defaultValue: "vertical",
+            label: "orientation",
+        },
     ],
     states: [
         {
@@ -77,11 +113,17 @@ export const fieldShowcase: ShowcaseSpec = {
           <Input placeholder="you@work.com"/>
         </Field>),
         },
+        {
+            name: "horizontal",
+            render: () => (<Field orientation="horizontal" label="Theme" description="Pick your preferred color scheme" className="w-96">
+          <Input defaultValue="Dark"/>
+        </Field>),
+        },
     ],
-    renderWithProps: (p) => (<Field label={p.label as string} description={(p.description as string) || undefined} error={(p.error as string) || undefined} invalid={p.invalid as boolean} disabled={p.disabled as boolean} className="w-72">
+    renderWithProps: (p) => (<Field label={p.label as string} description={(p.description as string) || undefined} error={(p.error as string) || undefined} invalid={p.invalid as boolean} disabled={p.disabled as boolean} orientation={p.orientation as "vertical" | "horizontal"} className={p.orientation === "horizontal" ? "w-96" : "w-72"}>
       <Input placeholder="you@work.com"/>
     </Field>),
-    toCode: (p) => `<Field label="${p.label}"${p.description ? ` description="${p.description}"` : ""}${p.error ? ` error="${p.error}"` : ""}${p.invalid ? " invalid" : ""}${p.disabled ? " disabled" : ""}>
+    toCode: (p) => `<Field label="${p.label}"${p.description ? ` description="${p.description}"` : ""}${p.error ? ` error="${p.error}"` : ""}${p.invalid ? " invalid" : ""}${p.disabled ? " disabled" : ""}${p.orientation === "horizontal" ? ` orientation="horizontal"` : ""}>
   <Input placeholder="you@work.com" />
 </Field>`,
 };

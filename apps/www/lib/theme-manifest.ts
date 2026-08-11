@@ -235,6 +235,28 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         light: "warning-200",
         dark: "surface + 34% warning-500",
       },
+      {
+        token: "color-info",
+        label: "信息",
+        light: "info-700",
+        dark: "info-400",
+        fg: "color-info-foreground",
+        note: "提示 / 说明 / 中性通知，刻意与主色分开：主色说「这里可以点」，信息色说「这段是说明」。两者同为蓝族但差 30° 色相，借主色当提示色会让页面上最稀缺的注意力资源被说明文案占掉。",
+      },
+      { token: "color-info-hover", label: "信息悬停", light: "info-500", dark: "info-500" },
+      {
+        token: "color-info-subtle",
+        label: "信息浅底",
+        light: "info-50",
+        dark: "surface + 16% info-400",
+        note: NOTE_SUBTLE,
+      },
+      {
+        token: "color-info-border",
+        label: "信息浅边框",
+        light: "info-200",
+        dark: "surface + 34% info-400",
+      },
     ],
   },
 ];
@@ -287,6 +309,13 @@ const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
   "color-warning-hover": { label: "Warning hover" },
   "color-warning-subtle": { label: "Warning tint", note: NOTE_SUBTLE_EN },
   "color-warning-border": { label: "Warning tinted border" },
+  "color-info": {
+    label: "Info",
+    note: "Hints, explanations and neutral notices, deliberately separate from the primary colour: primary means “this is actionable”, info means “this is an explanation”. Both are blues but 30° apart in hue — borrowing the primary colour for notices spends the scarcest attention budget on the page on descriptive copy.",
+  },
+  "color-info-hover": { label: "Info hover" },
+  "color-info-subtle": { label: "Info tint", note: NOTE_SUBTLE_EN },
+  "color-info-border": { label: "Info tinted border" },
 };
 export const SEMANTIC_GROUPS: { title: string; colors: SemanticColor[] }[] =
   DOCS_LOCALE === "en"
@@ -316,6 +345,7 @@ export const SEMANTIC_RAMPS: { name: string; steps: number[] }[] = [
   { name: "danger", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
   { name: "success", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
   { name: "warning", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
+  { name: "info", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
 ];
 
 // ===== 排版（Tailwind v4 默认 text-* 比例，瑚琏全站沿用）=====
@@ -387,8 +417,9 @@ export const SHADOW_SCALE = SHADOW_SCALE_ZH.map((shadow, index) =>
   DOCS_LOCALE === "en" ? { ...shadow, use: SHADOW_USE_EN[index] } : shadow,
 );
 
-// ===== 动效（真源：@hulianui/tokens preset.css @theme --ease-* + @hulianui/ui motion/tokens.ts）=====
-// 三处必须同值：preset.css 的 @theme（工具类）、motion/tokens.ts 的 JS/CSS 双镜像、此处文档镜像。
+// ===== 动效（真源：@hulianui/tokens preset-opinionated.css @theme --ease-* + @hulianui/ui motion/tokens.ts）=====
+// 三处必须同值：preset-opinionated.css 的 @theme（工具类）、motion/tokens.ts 的 JS/CSS 双镜像、此处文档镜像。
+// （#166 前这份 @theme 在 preset.css 里；preset.css 现在只是 core + opinionated 的聚合入口。）
 export interface EasingToken {
   /** Tailwind 工具类（--ease-drawer 无对应类时留空） */
   utility: string;

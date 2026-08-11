@@ -256,7 +256,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "login-form", name: "LoginForm", description: "登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽(复用 Field/Input/Checkbox/Button·文案接 i18n)", category: "forms", group: "framework", status: "new" },
   { slug: "auth-panel", name: "AuthPanel", description: "认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind 工具类给不出带 color-mix 的 radial-gradient，guard 又禁消费方传 style，两条一撞只剩裸 div + inline style · color 走 resolveTone 与 Brand/Dot 同路 · 配 LoginForm surface={false} 免卡中卡", category: "forms", group: "framework", status: "new" },
   { slug: "click-captcha", name: "ClickCaptcha", description: "点选人机验证 · 采集点击序列回传相对坐标(0~1) + 序号标记/撤销/换一张 + 键盘准星可达 + 失败抖动清空(零协议·不碰网络)", category: "forms", group: "framework", status: "new" },
-  { slug: "field", name: "Field", description: "字段包装 · label/help/error a11y 串联", category: "forms", group: "framework", status: "new" },
+  { slug: "label", name: "Label", description: "表单标签 · 原生 label 元素 + 与 Field 同源皮肤(labelClass 单一真源·改一处两处同步) + htmlFor 关联控件 + 原生属性透传 · 已有排版、进不去 Field 的设置行专用", category: "forms", group: "framework", status: "new" },
+  { slug: "field", name: "Field", description: "字段包装 · label/help/error a11y 串联 + orientation 竖排/横排(横排=左标签右控件·错误独占整行)", category: "forms", group: "framework", status: "new" },
   { slug: "search-form", name: "SearchForm", description: "查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)", category: "forms", group: "framework", status: "new" },
 
   // ── 数据展示 data-display ────────────────────────────────────

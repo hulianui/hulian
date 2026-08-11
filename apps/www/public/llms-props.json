@@ -904,6 +904,7 @@
     "GlitchText": "glitch-text",
     "Heading": "heading",
     "Kbd": "kbd",
+    "KbdGroup": "kbd",
     "LineShadowText": "line-shadow-text",
     "Markdown": "markdown",
     "parseBlocks": "markdown",
@@ -1019,6 +1020,8 @@
     "issueSection": "issue-reporter",
     "normalizeRepo": "issue-reporter",
     "renderIssueMarkdown": "issue-reporter",
+    "Label": "label",
+    "labelClass": "label",
     "Listbox": "listbox",
     "LoginForm": "login-form",
     "MarkdownEditor": "markdown-editor",
@@ -1359,6 +1362,9 @@
     "ContextMenuTrigger": "context-menu",
     "ContextMenuContent": "context-menu",
     "ContextMenuItem": "context-menu",
+    "ContextMenuCheckboxItem": "context-menu",
+    "ContextMenuRadioGroup": "context-menu",
+    "ContextMenuRadioItem": "context-menu",
     "ContextMenuSeparator": "context-menu",
     "ContextMenuGroup": "context-menu",
     "ContextMenuGroupLabel": "context-menu",
@@ -1375,6 +1381,9 @@
     "MenuTrigger": "menu",
     "MenuContent": "menu",
     "MenuItem": "menu",
+    "MenuCheckboxItem": "menu",
+    "MenuRadioGroup": "menu",
+    "MenuRadioItem": "menu",
     "MenuSeparator": "menu",
     "MenuGroup": "menu",
     "MenuGroupLabel": "menu",
@@ -3500,7 +3509,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "右上角语言标签（如 `\"tsx\"`），同时决定着色规则走 JS 家族还是 Shell"
+          "description": "右上角语言标签（如 `\"tsx\"`），同时决定着色规则走 JS 家族、Shell 还是 Python"
         },
         {
           "name": "copyable",
@@ -3517,6 +3526,14 @@
           "type": "boolean",
           "default": "true",
           "description": "是否语法着色；关掉则纯文本"
+        },
+        {
+          "name": "lineNumbers",
+          "required": false,
+          "kind": "other",
+          "type": "boolean | { start?: number }",
+          "default": "false",
+          "description": "是否显示行号。`{ start: 120 }` 让片段从指定行号起算；列宽按最大行号的位数自适应"
         },
         {
           "name": "className",
@@ -4186,12 +4203,14 @@
       "category": "typography",
       "group": "code",
       "status": "enriched",
-      "import": "import { Kbd } from \"@hulianui/ui\"",
+      "import": "import { Kbd, KbdGroup } from \"@hulianui/ui\"",
       "exports": [
-        "Kbd"
+        "Kbd",
+        "KbdGroup"
       ],
       "types": [
-        "KbdProps"
+        "KbdProps",
+        "KbdGroupProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/kbd/kbd.md",
       "props": [
@@ -4203,6 +4222,42 @@
           "type": "HTMLAttributes<HTMLElement>",
           "default": null,
           "description": "透传 `<kbd>` 原生属性（className、style 等）"
+        },
+        {
+          "name": "keys",
+          "owner": "KbdGroup Props",
+          "required": false,
+          "kind": "array",
+          "type": "ReactNode[]",
+          "default": null,
+          "description": "键名数组，逐个包成 Kbd。组合键的常规写法"
+        },
+        {
+          "name": "separator",
+          "owner": "KbdGroup Props",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "\"+\"",
+          "description": "键之间的分隔符，装饰性（带 `aria-hidden`，不进无障碍树）。传 `null` 只留间距不画符号"
+        },
+        {
+          "name": "label",
+          "owner": "KbdGroup Props",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "整组的无障碍名，如「打开命令面板」。给了才会加 `role=\"group\"`"
+        },
+        {
+          "name": "HTMLAttributes",
+          "owner": "..",
+          "required": false,
+          "kind": "other",
+          "type": "HTMLAttributes<HTMLSpanElement>",
+          "default": null,
+          "description": "透传外层 `<span>` 原生属性。rest 展开在最前，组件自己算出的 `role` / `aria-label` 赢（见「禁忌 / 坑」）"
         }
       ],
       "events": [],
@@ -4210,7 +4265,7 @@
         {
           "name": "children",
           "type": "ReactNode",
-          "description": "键位内容"
+          "description": "Kbd 的键位内容；KbdGroup 上表示自己摆键帽（给了就忽略 `keys`）"
         }
       ]
     },
@@ -4365,6 +4420,14 @@
           "valueType": "string",
           "default": "\"base\"",
           "description": "整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文"
+        },
+        {
+          "name": "scrollableTables",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "宽表兜底：把 `table` 自身变成横向滚动容器，列多时不撑破版心（表头随之不换行）。代价是表格宽度改为按内容撑开、不再恒占满版心"
         }
       ],
       "events": [],
@@ -7340,7 +7403,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "未选中时占位文案"
+          "description": "未选中时占位文案（按钮没有原生 placeholder，这是瑚琏语义）"
         },
         {
           "name": "invalid",
@@ -7378,7 +7441,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "占位"
+          "description": "占位（原生属性，透传到内层 input）"
         },
         {
           "name": "invalid",
@@ -7397,12 +7460,28 @@
           "description": "有值时渲染清除按钮"
         },
         {
+          "name": "prefix",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "字段左侧图标槽（对齐 `Input.prefix`），搜索框放放大镜"
+        },
+        {
+          "name": "showChevron",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "右侧展开箭头；搜索框形态传 `false`"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "外壳类名（皮肤在外壳上，不随 rest 落到 input）"
         },
         {
           "name": "searchPlaceholder",
@@ -8352,6 +8431,19 @@
           "description": "提交标识，透传 Field.Root"
         },
         {
+          "name": "orientation",
+          "required": false,
+          "kind": "enum",
+          "type": "\"vertical\" | \"horizontal\"",
+          "values": [
+            "vertical",
+            "horizontal"
+          ],
+          "valueType": "string",
+          "default": "\"vertical\"",
+          "description": "排列方向。`horizontal` = 标签区在左、控件在右、错误另起一行占满整行（设置页「一行一个设置项」版式），a11y 串联与错误渲染完全一致"
+        },
+        {
           "name": "colSpan",
           "required": false,
           "kind": "enum",
@@ -8369,7 +8461,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "落在 Field.Root（纵向布局容器）"
+          "description": "落在 Field.Root（竖排为 flex 列容器，横排为两列网格）"
         },
         {
           "name": "labelClassName",
@@ -9624,6 +9716,50 @@
           "description": "仅 Modal：打开弹层的触发元素"
         }
       ]
+    },
+    {
+      "slug": "label",
+      "name": "Label",
+      "category": "forms",
+      "group": "framework",
+      "status": "enriched",
+      "import": "import { Label, labelClass } from \"@hulianui/ui\"",
+      "exports": [
+        "Label",
+        "labelClass"
+      ],
+      "types": [
+        "LabelProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/label/label.md",
+      "props": [
+        {
+          "name": "htmlFor",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "关联控件的 id，渲染为原生 `for`；点标签即聚焦控件，读屏也据此念标签"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到 `<label>`（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号"
+        },
+        {
+          "name": "children",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标签文字"
+        }
+      ],
+      "events": [],
+      "slots": []
     },
     {
       "slug": "listbox",
@@ -14981,15 +15117,16 @@
           "name": "variant",
           "required": false,
           "kind": "enum",
-          "type": "\"outline\" | \"elevated\" | \"featured\"",
+          "type": "\"outline\" | \"elevated\" | \"featured\" | \"plain\"",
           "values": [
             "outline",
             "elevated",
-            "featured"
+            "featured",
+            "plain"
           ],
           "valueType": "string",
           "default": "\"outline\"",
-          "description": "外观：描边 / 投影抬升 / 强调"
+          "description": "外观：描边 / 投影抬升 / 强调 / 不画皮"
         }
       ],
       "events": [],
@@ -24821,6 +24958,15 @@
           "type": "boolean",
           "default": "false",
           "description": "禁用该项（不可展开/收起）"
+        },
+        {
+          "name": "plain",
+          "owner": "AccordionPanel",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "不画皮：不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Panel"
         }
       ],
       "events": [
@@ -25863,6 +26009,15 @@
           "type": "boolean",
           "default": "false",
           "description": "单独禁用触发器"
+        },
+        {
+          "name": "plain",
+          "owner": "CollapsiblePanel",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "不画皮：不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Panel"
         }
       ],
       "events": [
@@ -25956,6 +26111,14 @@
           "description": "执行项后是否自动关闭面板。"
         },
         {
+          "name": "autoHighlight",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "打开面板与每次过滤后自动高亮首个可用项（跳过禁用项），于是「打字 → 回车」直接命中。关掉则必须先按方向键点亮某项，回车才有动作。"
+        },
+        {
           "name": "shortcut",
           "required": false,
           "kind": "boolean",
@@ -26013,42 +26176,55 @@
           "description": "无匹配项时的空态文案。"
         },
         {
+          "name": "footer",
+          "type": "ReactNode",
+          "description": "列表下方常驻页脚（模式切换 / 提示 / 计数）。在列表之外，不参与列表滚动，也不随过滤结果变化消失。"
+        },
+        {
           "name": "value",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "string",
           "description": "唯一值（回调入参 + key + 过滤兜底文本）。"
         },
         {
           "name": "label",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "ReactNode",
           "description": "显示标题。"
         },
         {
           "name": "keywords",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "string",
           "description": "参与过滤的关键词（label 非字符串时建议补）。"
         },
         {
           "name": "description",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "ReactNode",
           "description": "label 下方 muted 小字。"
         },
         {
           "name": "icon",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "ReactNode",
           "description": "行首图标插槽。"
         },
         {
           "name": "shortcut",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "ReactNode",
           "description": "行尾快捷键/标记插槽。"
         },
         {
           "name": "disabled",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "boolean",
           "description": "—"
         },
         {
           "name": "onSelect",
+          "owner": "footer：面板底部那条常驻控件",
           "type": "(value: string) => void",
           "description": "该项被执行（Enter / 点击）时回调。"
         }
@@ -26060,12 +26236,15 @@
       "category": "navigation",
       "group": "action",
       "status": "enriched",
-      "import": "import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from \"@hulianui/ui\"",
+      "import": "import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from \"@hulianui/ui\"",
       "exports": [
         "ContextMenu",
         "ContextMenuTrigger",
         "ContextMenuContent",
         "ContextMenuItem",
+        "ContextMenuCheckboxItem",
+        "ContextMenuRadioGroup",
+        "ContextMenuRadioItem",
         "ContextMenuSeparator",
         "ContextMenuGroup",
         "ContextMenuGroupLabel",
@@ -26076,6 +26255,9 @@
       "types": [
         "ContextMenuContentProps",
         "ContextMenuItemProps",
+        "ContextMenuCheckboxItemProps",
+        "ContextMenuRadioGroupProps",
+        "ContextMenuRadioItemProps",
         "ContextMenuSubTriggerProps",
         "ContextMenuSubContentProps"
       ],
@@ -26125,6 +26307,152 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "checked",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "是否勾选（受控）。要非受控请改用 `defaultChecked`"
+        },
+        {
+          "name": "defaultChecked",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "初始是否勾选（非受控）"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用"
+        },
+        {
+          "name": "closeOnClick",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "点击后是否关闭菜单。勾选项默认**不关**，便于连续勾选"
+        },
+        {
+          "name": "label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "键盘 type-ahead 用文案覆盖"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"danger\"",
+          "values": [
+            "default",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "danger 用危险色"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
+        },
+        {
+          "name": "value",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "当前选中项的值（受控）。要非受控请改用 `defaultValue`"
+        },
+        {
+          "name": "defaultValue",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "初始选中项的值（非受控）"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "整组禁用"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
+        },
+        {
+          "name": "value",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "本项的值；与所在 `ContextMenuRadioGroup` 的 value 相等即为选中态"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用"
+        },
+        {
+          "name": "closeOnClick",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "点击后是否关闭菜单。单选项默认**不关**，选完想收起菜单要显式传 `true`"
+        },
+        {
+          "name": "label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "键盘 type-ahead 用文案覆盖"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"danger\"",
+          "values": [
+            "default",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "danger 用危险色"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
         }
       ],
       "events": [
@@ -26134,14 +26462,30 @@
           "kind": "other",
           "type": "MouseEventHandler<HTMLElement>",
           "default": null,
-          "description": "`ContextMenuItem` 点击回调。"
+          "description": "`ContextMenuItem` / `ContextMenuCheckboxItem` / `ContextMenuRadioItem` 点击回调。"
+        },
+        {
+          "name": "onCheckedChange",
+          "required": false,
+          "kind": "function",
+          "type": "(checked: boolean) => void",
+          "default": null,
+          "description": "`ContextMenuCheckboxItem` 勾选态变化回调。"
+        },
+        {
+          "name": "onValueChange",
+          "required": false,
+          "kind": "function",
+          "type": "(value: string) => void",
+          "default": null,
+          "description": "`ContextMenuRadioGroup` 选中值变化回调。"
         }
       ],
       "slots": [
         {
           "name": "children",
           "type": "ReactNode",
-          "description": "`ContextMenuItem` 菜单项内容。"
+          "description": "`ContextMenuItem` 菜单项内容；`ContextMenuCheckboxItem` / `ContextMenuRadioItem` 渲染在选中标记右侧的第二列；`ContextMenuRadioGroup` 放一组 `ContextMenuRadioItem`。"
         }
       ]
     },
@@ -26554,12 +26898,15 @@
       "category": "navigation",
       "group": "global",
       "status": "enriched",
-      "import": "import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from \"@hulianui/ui\"",
+      "import": "import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from \"@hulianui/ui\"",
       "exports": [
         "Menu",
         "MenuTrigger",
         "MenuContent",
         "MenuItem",
+        "MenuCheckboxItem",
+        "MenuRadioGroup",
+        "MenuRadioItem",
         "MenuSeparator",
         "MenuGroup",
         "MenuGroupLabel",
@@ -26567,7 +26914,10 @@
       ],
       "types": [
         "MenuContentProps",
-        "MenuItemProps"
+        "MenuItemProps",
+        "MenuCheckboxItemProps",
+        "MenuRadioGroupProps",
+        "MenuRadioItemProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/menu/menu.md",
       "props": [
@@ -26669,12 +27019,211 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "checked",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "是否勾选（受控）。要非受控请改用 `defaultChecked`"
+        },
+        {
+          "name": "defaultChecked",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "初始是否勾选（非受控）"
+        },
+        {
+          "name": "disabled",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用"
+        },
+        {
+          "name": "closeOnClick",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "点击后是否关闭菜单。勾选项默认**不关**，便于连续勾选"
+        },
+        {
+          "name": "label",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "键盘 type-ahead 的文案覆盖"
+        },
+        {
+          "name": "variant",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"danger\"",
+          "values": [
+            "default",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "danger 为危险操作（红色）"
+        },
+        {
+          "name": "className",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
+        },
+        {
+          "name": "value",
+          "owner": "MenuRadioGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "当前选中项的值（受控）。要非受控请改用 `defaultValue`"
+        },
+        {
+          "name": "defaultValue",
+          "owner": "MenuRadioGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "初始选中项的值（非受控）"
+        },
+        {
+          "name": "disabled",
+          "owner": "MenuRadioGroup",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "整组禁用"
+        },
+        {
+          "name": "className",
+          "owner": "MenuRadioGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
+        },
+        {
+          "name": "value",
+          "owner": "MenuRadioItem",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "本项的值；与所在 `MenuRadioGroup` 的 value 相等即为选中态"
+        },
+        {
+          "name": "disabled",
+          "owner": "MenuRadioItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用"
+        },
+        {
+          "name": "closeOnClick",
+          "owner": "MenuRadioItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "点击后是否关闭菜单。单选项默认**不关**，选完想收起菜单要显式传 `true`"
+        },
+        {
+          "name": "label",
+          "owner": "MenuRadioItem",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "键盘 type-ahead 的文案覆盖"
+        },
+        {
+          "name": "variant",
+          "owner": "MenuRadioItem",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"danger\"",
+          "values": [
+            "default",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "danger 为危险操作（红色）"
+        },
+        {
+          "name": "className",
+          "owner": "MenuRadioItem",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
         }
       ],
       "events": [
         {
           "name": "onClick",
           "owner": "MenuItem",
+          "required": false,
+          "kind": "other",
+          "type": "MouseEventHandler<HTMLElement>",
+          "default": null,
+          "description": "点击回调"
+        },
+        {
+          "name": "onCheckedChange",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "function",
+          "type": "(checked: boolean) => void",
+          "default": null,
+          "description": "勾选态变化回调"
+        },
+        {
+          "name": "onClick",
+          "owner": "MenuCheckboxItem",
+          "required": false,
+          "kind": "other",
+          "type": "MouseEventHandler<HTMLElement>",
+          "default": null,
+          "description": "点击回调"
+        },
+        {
+          "name": "onValueChange",
+          "owner": "MenuRadioGroup",
+          "required": false,
+          "kind": "function",
+          "type": "(value: string) => void",
+          "default": null,
+          "description": "选中值变化回调"
+        },
+        {
+          "name": "onClick",
+          "owner": "MenuRadioItem",
           "required": false,
           "kind": "other",
           "type": "MouseEventHandler<HTMLElement>",
@@ -26694,6 +27243,18 @@
           "owner": "MenuItem",
           "type": "ReactNode",
           "description": "项内容"
+        },
+        {
+          "name": "children",
+          "owner": "MenuCheckboxItem / MenuRadioItem",
+          "type": "ReactNode",
+          "description": "项内容；渲染在选中标记右侧的第二列"
+        },
+        {
+          "name": "children",
+          "owner": "MenuRadioGroup",
+          "type": "ReactNode",
+          "description": "一组 `MenuRadioItem`"
         }
       ]
     },
@@ -28257,7 +28818,7 @@
           ],
           "valueType": "string",
           "default": "\"info\"",
-          "description": "语气色。`info` 是 `brand` 的历史别名，两者同配方、可互换"
+          "description": "语气色。`brand` 走主色，`info` 走独立的信息色（0.8.0 起两者不再同色）"
         },
         {
           "name": "variant",
@@ -28359,7 +28920,19 @@
           "name": "description",
           "owner": "AlertDialogContent",
           "type": "ReactNode",
-          "description": "说明文案"
+          "description": "说明文案。**只能放 phrasing content**（文本 / `span` / `strong` / `a`），它渲染成 `<p>`；块级内容放 `body`"
+        },
+        {
+          "name": "body",
+          "owner": "AlertDialogContent",
+          "type": "ReactNode",
+          "description": "正文区，渲染在 `description` 之下、动作区之上，不包 `<p>`，可放块级内容（删除对象摘要卡、受影响项列表）"
+        },
+        {
+          "name": "icon",
+          "owner": "AlertDialogContent",
+          "type": "ReactNode",
+          "description": "标题行左侧的状态图标；组件只做 flex 对齐，颜色自己给（危险 `text-danger` / 警告 `text-warning`）"
         },
         {
           "name": "children",
@@ -28400,7 +28973,7 @@
           ],
           "valueType": "string",
           "default": "\"info\"",
-          "description": "语气色"
+          "description": "语气色。`brand` 走主色，`info` 走独立的信息色（同 Alert，0.8.0 起两者不再同色）"
         },
         {
           "name": "variant",
@@ -28511,7 +29084,7 @@
           ],
           "valueType": "string",
           "default": "\"tip\"",
-          "description": "语气：tip/info 主色、warning 警告、success 正解、danger 坑/危险"
+          "description": "语气：tip 主色（建议）、info 信息色（背景说明）、warning 警告、success 正解、danger 坑/危险。tip 与 info 在 0.8.0 前同色，现已分开"
         },
         {
           "name": "className",
@@ -29436,7 +30009,7 @@
           ],
           "valueType": "string",
           "default": null,
-          "description": "经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 同 Alert（info→primary）"
+          "description": "经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 取值同 Alert（`info` 走 `--color-info`，0.8.0 前借主色）"
         },
         {
           "name": "duration",
@@ -29699,8 +30272,24 @@
           "required": false,
           "kind": "number",
           "type": "number",
-          "default": null,
+          "default": "8",
           "description": "与触发器的间距"
+        },
+        {
+          "name": "plain",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "不画皮：不渲染包住 children 的那层皮肤 div（间距 + `text-sm text-foreground`），children 直接进浮层"
+        },
+        {
+          "name": "arrow",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "是否渲染指向触发器的箭头"
         },
         {
           "name": "className",

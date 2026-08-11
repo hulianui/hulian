@@ -1664,7 +1664,7 @@
       "name": "kbd",
       "type": "registry:ui",
       "title": "Kbd",
-      "description": "按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC",
+      "description": "按键 · <kbd> 等宽皮肤 + KbdGroup 组合键容器 + RSC",
       "categories": [
         "typography"
       ],
@@ -1673,12 +1673,14 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { Kbd } from \"@hulianui/ui\"",
+        "import": "import { Kbd, KbdGroup } from \"@hulianui/ui\"",
         "exports": [
-          "Kbd"
+          "Kbd",
+          "KbdGroup"
         ],
         "types": [
-          "KbdProps"
+          "KbdProps",
+          "KbdGroupProps"
         ],
         "group": "code",
         "tags": [],
@@ -3775,6 +3777,7 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/label.json",
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
@@ -4333,6 +4336,54 @@
           "path": "components/hulianui/issue-reporter/issue-reporter.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/issue-reporter/issue-reporter.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "表单标签原语 · `<label>` + 与 Field 同源皮肤 + htmlFor",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { Label, labelClass } from \"@hulianui/ui\"",
+        "exports": [
+          "Label",
+          "labelClass"
+        ],
+        "types": [
+          "LabelProps"
+        ],
+        "group": "framework",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/label/label.md",
+        "docLocal": "packages/ui/src/label/label.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/label/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/label/index.ts"
+        },
+        {
+          "path": "components/hulianui/label/label.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/label/label.tsx"
+        },
+        {
+          "path": "components/hulianui/label/label.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/label/label.types.ts"
         }
       ]
     },
@@ -11901,12 +11952,15 @@
         "https://hulianui.haloritual.com/zh/r/motion.json"
       ],
       "meta": {
-        "import": "import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from \"@hulianui/ui\"",
+        "import": "import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from \"@hulianui/ui\"",
         "exports": [
           "ContextMenu",
           "ContextMenuTrigger",
           "ContextMenuContent",
           "ContextMenuItem",
+          "ContextMenuCheckboxItem",
+          "ContextMenuRadioGroup",
+          "ContextMenuRadioItem",
           "ContextMenuSeparator",
           "ContextMenuGroup",
           "ContextMenuGroupLabel",
@@ -11917,6 +11971,9 @@
         "types": [
           "ContextMenuContentProps",
           "ContextMenuItemProps",
+          "ContextMenuCheckboxItemProps",
+          "ContextMenuRadioGroupProps",
+          "ContextMenuRadioItemProps",
           "ContextMenuSubTriggerProps",
           "ContextMenuSubContentProps"
         ],
@@ -12166,16 +12223,20 @@
         "class-variance-authority"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/motion.json"
       ],
       "meta": {
-        "import": "import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from \"@hulianui/ui\"",
+        "import": "import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from \"@hulianui/ui\"",
         "exports": [
           "Menu",
           "MenuTrigger",
           "MenuContent",
           "MenuItem",
+          "MenuCheckboxItem",
+          "MenuRadioGroup",
+          "MenuRadioItem",
           "MenuSeparator",
           "MenuGroup",
           "MenuGroupLabel",
@@ -12183,7 +12244,10 @@
         ],
         "types": [
           "MenuContentProps",
-          "MenuItemProps"
+          "MenuItemProps",
+          "MenuCheckboxItemProps",
+          "MenuRadioGroupProps",
+          "MenuRadioItemProps"
         ],
         "group": "global",
         "tags": [],
@@ -20459,6 +20523,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/social-button.json"
       ],
       "meta": {

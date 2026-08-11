@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Calendar, FilePlus, LayoutDashboard, LogOut, Moon, Package, Plus, Search, Settings, ShoppingCart, Sun, Upload, User, Users, } from "lucide-react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button/button";
+import { Segmented } from "../../../../packages/ui/src/segmented/segmented";
 import { Command } from "../../../../packages/ui/src/command/command";
 import type { CommandGroupData } from "../../../../packages/ui/src/command/command.types";
 const groups: CommandGroupData[] = [
@@ -47,6 +48,22 @@ function Demo({ placeholder, shortcut, closeOnSelect, }: {
         Open the command panel{shortcut ? "(or \u2318K)" : ""}
       </Button>
       <Command open={open} onOpenChange={setOpen} groups={groups} placeholder={placeholder} shortcut={shortcut} closeOnSelect={closeOnSelect}/>
+    </>);
+}
+function FooterDemo() {
+    const [open, setOpen] = useState(false);
+    const [mode, setMode] = useState("related");
+    return (<>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Link a task
+      </Button>
+      <Command open={open} onOpenChange={setOpen} groups={groups} placeholder="Search tasks…" footer={<div className="flex items-center justify-between gap-2">
+            <Segmented size="sm" value={mode} onValueChange={setMode} aria-label="Link type" items={[
+                { value: "related", label: "Related" },
+                { value: "blocks", label: "Blocks" },
+            ]}/>
+            <span className="text-xs text-muted-foreground">Pick a task</span>
+          </div>}/>
     </>);
 }
 export const commandShowcase: ShowcaseSpec = {
@@ -100,6 +117,33 @@ const groups = [
 />`,
             render: () => <Demo closeOnSelect={false}/>,
         },
+        {
+            title: "Pinned footer",
+            description: "footer renders outside the list, so it neither scrolls with the list nor disappears when filtering empties the results. Use it for the switch that decides what this selection means, plus a hint in the bottom-right corner: the palette is modal, so these controls have nowhere else to go.",
+            code: `const [mode, setMode] = useState("related");
+
+<Command
+  open={open}
+  onOpenChange={setOpen}
+  groups={groups}
+  placeholder="Search tasks\u2026"
+  footer={
+    <div className="flex items-center justify-between gap-2">
+      <Segmented
+        size="sm"
+        value={mode}
+        onValueChange={setMode}
+        items={[
+          { value: "related", label: "Related" },
+          { value: "blocks", label: "Blocks" },
+        ]}
+      />
+      <span className="text-xs text-muted-foreground">Pick a task</span>
+    </div>
+  }
+/>`,
+            render: () => <FooterDemo />,
+        },
     ],
     controls: [
         { prop: "placeholder", type: "text", defaultValue: "Enter command or search..." },
@@ -109,6 +153,7 @@ const groups = [
     states: [
         { name: "default", render: () => <Demo /> },
         { name: "Built-in \u2318K shortcut keys", render: () => <Demo shortcut/> },
+        { name: "Pinned footer", render: () => <FooterDemo /> },
     ],
     renderWithProps: (p) => (<Demo placeholder={(p.placeholder as string) || undefined} shortcut={p.shortcut as boolean} closeOnSelect={p.closeOnSelect as boolean}/>),
     toCode: (p) => `const [open, setOpen] = useState(false);

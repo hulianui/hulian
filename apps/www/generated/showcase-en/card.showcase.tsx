@@ -1,7 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Card, CardHeader, CardBody, CardFooter } from "../../../../packages/ui/src/card/card";
-type CardVariant = "outline" | "elevated" | "featured";
+type CardVariant = "outline" | "elevated" | "featured" | "plain";
 function Demo(props: {
     variant?: CardVariant;
     withFooter?: boolean;
@@ -45,6 +45,20 @@ export const cardShowcase: ShowcaseSpec = {
             render: () => <Demo variant="featured" withFooter/>,
         },
         {
+            title: "No chrome",
+            description: "plain draws no border, background, or shadow, leaving only the corner radius and the slot roles. Use it when an outer container already provides the chrome, otherwise you get a doubled border.",
+            code: `{/* The outer container owns the chrome, Card owns the structure */}
+<div className="rounded-[var(--radius)] border border-primary/40 bg-primary/5 p-1">
+  <Card variant="plain" className="w-64">
+    <CardHeader>Hulian Card</CardHeader>
+    <CardBody> Ancestral temple jade, extremely beautiful and useful. Appearance + ease of use are the primary productivity. </CardBody>
+  </Card>
+</div>`,
+            render: () => (<div className="rounded-[var(--radius)] border border-primary/40 bg-primary/5 p-1">
+          <Demo variant="plain" withFooter={false}/>
+        </div>),
+        },
+        {
             title: "None footer",
             description: "All three sections are optional, only Header + Body is also established.",
             code: `<Card variant="outline" className="w-64">
@@ -55,13 +69,24 @@ export const cardShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "variant", type: "select", options: ["outline", "elevated", "featured"], defaultValue: "outline" },
+        {
+            prop: "variant",
+            type: "select",
+            options: ["outline", "elevated", "featured", "plain"],
+            defaultValue: "outline",
+        },
         { prop: "withFooter", type: "boolean", defaultValue: true, label: "Show footer" },
     ],
     states: [
         { name: "outline", render: () => <Demo variant="outline" withFooter/> },
         { name: "elevated", render: () => <Demo variant="elevated" withFooter/> },
         { name: "featured", render: () => <Demo variant="featured" withFooter/> },
+        {
+            name: "plain (no chrome)",
+            render: () => (<div className="rounded-[var(--radius)] border border-primary/40 bg-primary/5 p-1">
+          <Demo variant="plain" withFooter={false}/>
+        </div>),
+        },
         { name: "None footer", render: () => <Demo variant="outline" withFooter={false}/> },
     ],
     renderWithProps: (p) => (<Demo variant={p.variant as CardVariant} withFooter={p.withFooter as boolean}/>),

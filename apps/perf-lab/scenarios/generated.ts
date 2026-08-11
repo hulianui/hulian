@@ -625,6 +625,8 @@ export const scenarioLoaders = {
       .kanbanShowcase,
   kbd: async () =>
     (await import("@hulianui/ui-internal/kbd/kbd.showcase")).kbdShowcase,
+  label: async () =>
+    (await import("@hulianui/ui-internal/label/label.showcase")).labelShowcase,
   lanyard: async () =>
     (await import("@hulianui/ui-internal/lanyard/lanyard.showcase"))
       .lanyardShowcase,
@@ -3288,6 +3290,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/kbd/index.ts",
+  },
+  label: {
+    id: "label",
+    scenarioId: "label/basic",
+    component: "Label",
+    entry: "@hulianui/ui/label",
+    category: "standard",
+    categories: ["forms", "framework"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/label/index.ts",
   },
   lanyard: {
     id: "lanyard",

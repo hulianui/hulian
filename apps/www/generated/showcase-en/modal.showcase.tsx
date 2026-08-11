@@ -25,7 +25,7 @@ export const modalShowcase: ShowcaseSpec = {
         },
         {
             title: "Information prompt type",
-            description: "info / success / error / warning Derive different icons and main colors, and only render a single OK key.",
+            description: "info / success / error / warning Derive different icons and semantic colors, and only render a single OK key.",
             code: `<>
   <Button onClick={() => modal.info({ title: "System prompts", content: "A new version has been released." })}>info</Button>
   <Button onClick={() => modal.success({ title: "The operation was successful", content: "The data has been saved." })}>success</Button>

@@ -4,6 +4,9 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogClose }
 const triggerCls = "inline-flex h-9 items-center rounded-[var(--radius)] border border-danger px-4 text-sm font-medium text-danger outline-none transition-colors hover:bg-danger/10 focus-visible:ring-2 focus-visible:ring-ring";
 const cancelCls = "inline-flex h-8 items-center rounded-[var(--radius)] border border-border bg-surface px-3 text-sm text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring";
 const dangerCls = "inline-flex h-8 items-center rounded-[var(--radius)] bg-danger px-3 text-sm font-medium text-danger-foreground outline-none transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring";
+const WarnIcon = () => (<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="text-danger">
+    <path d="M10 2.5 1.8 16.5h16.4L10 2.5Zm0 5v4.2M10 14.2h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>);
 function Demo() {
     return (<AlertDialog>
       <AlertDialogTrigger className={triggerCls}>Delete item</AlertDialogTrigger>
@@ -48,6 +51,36 @@ export const alertDialogShowcase: ShowcaseSpec = {
           <AlertDialogContent title="Confirm to log out?">
             <AlertDialogClose className={cancelCls}>Cancel</AlertDialogClose>
             <AlertDialogClose className={dangerCls}>Exit</AlertDialogClose>
+          </AlertDialogContent>
+        </AlertDialog>),
+        },
+        {
+            title: "Body content and status icon",
+            description: "body takes block-level content, such as a summary card of the object being deleted, and renders below the description and above the action row. description accepts phrasing content only, because it renders as a <p>. icon sits to the left of the title row; the caller supplies its color token.",
+            code: `<AlertDialogContent
+  icon={<WarnIcon className="text-danger" />}
+  title="Delete this contract template?"
+  description="It will be removed from the contract library, the public library, and every company library at once. This cannot be undone."
+  body={
+    <div className="rounded-[var(--radius)] border border-border p-3">
+      <div className="font-medium">Guanya / Full-time employment contract</div>
+      <div className="text-xs text-muted-foreground">copy-guanya-full-time-employment-contract.docx</div>
+    </div>
+  }
+>
+  <AlertDialogClose>Cancel</AlertDialogClose>
+  <AlertDialogClose>Delete permanently</AlertDialogClose>
+</AlertDialogContent>`,
+            render: () => (<AlertDialog>
+          <AlertDialogTrigger className={triggerCls}>Delete contract template</AlertDialogTrigger>
+          <AlertDialogContent icon={<WarnIcon />} title="Delete contract template?" description="Removed from the shared, public, and per-company libraries at once; this cannot be undone." body={<div className="rounded-[var(--radius)] border border-border p-3">
+                <div className="font-medium">Full-time employment contract</div>
+                <div className="text-xs text-muted-foreground">
+                  copy-guanya-full-time-employment-contract.docx
+                </div>
+              </div>}>
+            <AlertDialogClose className={cancelCls}>Cancel</AlertDialogClose>
+            <AlertDialogClose className={dangerCls}>Delete permanently</AlertDialogClose>
           </AlertDialogContent>
         </AlertDialog>),
         },

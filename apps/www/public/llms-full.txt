@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.28.0 · 385 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.28.0 · 386 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -1444,10 +1444,20 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | code* | `string` | — | 代码文本，多行用 `\n` |
-| lang | `string` | — | 右上角语言标签（如 `"tsx"`），同时决定着色规则走 JS 家族还是 Shell |
+| lang | `string` | — | 右上角语言标签（如 `"tsx"`），同时决定着色规则走 JS 家族、Shell 还是 Python |
 | copyable | `boolean` | `true` | 是否显示复制按钮 |
 | highlight | `boolean` | `true` | 是否语法着色；关掉则纯文本 |
+| lineNumbers | `boolean \| { start?: number }` | `false` | 是否显示行号。`{ start: 120 }` 让片段从指定行号起算；列宽按最大行号的位数自适应 |
 | className | `string` | — | 容器类名 |
+
+## 着色支持的语言
+
+| lang | 走哪套规则 |
+|------|-----------|
+| `js` `jsx` `ts` `tsx` `json` | JS 家族 |
+| `bash` `sh` `shell` `zsh` `console` | Shell（命令名与 flag 分色） |
+| `py` `python` `python3` | Python（`#` 注释、三引号文档串、`f`/`r`/`b` 前缀串、装饰器、内置名、`0b`/`0o`/`0x`/下划线/虚数字面量） |
+| 其它 | 按 JS 家族**近似**处理 |
 
 ## 示例
 ```tsx
@@ -1455,11 +1465,23 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 // Shell 走 Shell 着色规则
 <CodeBlock code={`pnpm add @hulianui/ui`} lang="bash" />
+
+// Python
+<CodeBlock code={`def guess(n: int) -> str:\n    return f"你猜的是 {n}"`} lang="python" />
+
+// 教学 / 文档 / code review：正文要指「第 N 行」时开行号
+<CodeBlock code={source} lang="python" lineNumbers />
+
+// 片段从源文件第 120 行截来
+<CodeBlock code={snippet} lang="python" lineNumbers={{ start: 120 }} />
 ```
 
 ## 禁忌 / 坑
 
-暂无已知坑。
+- **`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里三类之外的语言一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。
+- **行号是装饰，不是内容**。它 `aria-hidden` 且不可选中：屏幕阅读器不念，用户框选整段代码复制时也不会混进 `1 2 3`；复制按钮复制的始终是原始 `code`。反过来说，别把「行号」当成可复制的数据来源。
+- **行号列会一直钉在左侧**（`sticky left-0` + 不透明底色）。长行横向滚动时行号不会滑走，代价是滚过去的代码会被行号列遮住一小条——这是刻意的取舍，长行看行号比看那一小条代码重要。
+- 复制按钮读的是 `navigator.clipboard`，只在安全上下文（HTTPS / localhost）可用；HTTP 局域网页面里点了不会有反应。
 
 ## 相关
 [Code](https://hulianui.haloritual.com/zh/components/code) · [Snippet](https://hulianui.haloritual.com/zh/components/snippet) · [CodeDiff](https://hulianui.haloritual.com/zh/components/code-diff) · [Kbd](https://hulianui.haloritual.com/zh/components/kbd) · [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading)
@@ -1983,17 +2005,17 @@ import { Heading } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Kbd
 
-**导出**：`Kbd`
+**导出**：`Kbd` · `KbdGroup`
 
-> 按键 · <kbd> 等宽皮肤 + 组合键并排 + RSC · typography/code
+> 按键 · <kbd> 等宽皮肤 + KbdGroup 组合键容器 + RSC · typography/code
 
 ## 何时用
 
-标注单个键位/快捷键（`Esc`、`⌘`、`K`），等宽键帽皮肤。组合键由多个 Kbd 并排手动组合（见示例）。它是 RSC，可在服务端组件直接用。展示代码片段用 [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block)/[Snippet](https://hulianui.haloritual.com/zh/components/snippet)。
+标注单个键位/快捷键（`Esc`、`⌘`、`K`），等宽键帽皮肤。组合键（`⌘ + K`）用同目录的 `KbdGroup` 包起来，它统一 gap、画分隔符、并给整组一个读屏名。两者都是 RSC，可在服务端组件直接用。展示代码片段用 [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block)/[Snippet](https://hulianui.haloritual.com/zh/components/snippet)。
 
 ## 导入
 ```ts
-import { Kbd } from "@hulianui/ui"
+import { Kbd, KbdGroup } from "@hulianui/ui"
 ```
 
 ## Props
@@ -2002,27 +2024,46 @@ import { Kbd } from "@hulianui/ui"
 |------|------|------|------|
 | ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | — | 透传 `<kbd>` 原生属性（className、style 等） |
 
+### KbdGroup Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| keys | `ReactNode[]` | — | 键名数组，逐个包成 Kbd。组合键的常规写法 |
+| separator | `ReactNode` | `"+"` | 键之间的分隔符，装饰性（带 `aria-hidden`，不进无障碍树）。传 `null` 只留间距不画符号 |
+| label | `string` | — | 整组的无障碍名，如「打开命令面板」。给了才会加 `role="group"` |
+| ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | — | 透传外层 `<span>` 原生属性。rest 展开在最前，组件自己算出的 `role` / `aria-label` 赢（见「禁忌 / 坑」） |
+
 ## Slots
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| children | `ReactNode` | 键位内容 |
+| children | `ReactNode` | Kbd 的键位内容；KbdGroup 上表示自己摆键帽（给了就忽略 `keys`） |
 
 ## 示例
 ```tsx
 <Kbd>Esc</Kbd>
 
-// 组合键：多个 Kbd 并排
-<span className="inline-flex items-center gap-1">
-  <Kbd>⌘</Kbd>
-  <span className="text-muted-foreground">+</span>
-  <Kbd>K</Kbd>
-</span>
+// 组合键：keys 数组是常规写法
+<KbdGroup keys={["⌘", "K"]} label="打开命令面板" />
+
+// 换分隔符 / 不要分隔符
+<KbdGroup keys={["⌘", "⇧", "P"]} separator="·" />
+<KbdGroup keys={["G", "T"]} separator={null} />
+
+// 需要给某个键单独加样式或换内容时，改用 children，分隔符照插
+<KbdGroup label="保存">
+  <Kbd className="min-w-8">⌘</Kbd>
+  <Kbd>S</Kbd>
+</KbdGroup>
 ```
 
 ## 禁忌 / 坑
 
-- 单个 Kbd 只渲染一个键帽，组合键需自行用多个 Kbd 并排拼装，组件不内置 `+` 分隔。
+- 单个 Kbd 只渲染一个键帽，不内置 `+` 分隔；组合键请用 `KbdGroup`，别在调用处手搓 `inline-flex + gap + 分隔符` —— 那样每处的间距和分隔符样式都会各写一套。
+- 如果不传 `label`，`KbdGroup` 不会加 `role="group"`，读屏把几个键帽念成互不相干的碎片。视觉上完全看不出差别，所以这一步最容易漏：只要这组键代表一个具体动作，就把动作名写进 `label`。
+- `children` 与 `keys` 同时给时只用 `children`，`keys` 被忽略（两者同时生效没有合理语义）。
+- **传 `role` 顶不掉组件自己的 `role="group"`**（`rest` 展开在根节点属性最前，见 [consuming.md §7](https://github.com/hulianui/hulian/blob/master/docs/consuming.md)）。没传 `label` 时组件不占 `role`，此时传什么就是什么。
+- 不做符号映射（`Meta → ⌘`、`Ctrl → ⌃` 之类）。键名显示成什么取决于消费方的平台探测与文案口径，库内置一张表在跨平台产品里必然猜错。
 
 ## 相关
 [Code](https://hulianui.haloritual.com/zh/components/code) · [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block) · [Snippet](https://hulianui.haloritual.com/zh/components/snippet) · [CodeDiff](https://hulianui.haloritual.com/zh/components/code-diff) · [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading)
@@ -2160,6 +2201,7 @@ import { Prose } from "@hulianui/ui"
 |------|------|------|------|
 | as | `ElementType` | `"article"` | 渲染的容器标签 |
 | size | `"sm" \| "base"` | `"base"` | 整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文 |
+| scrollableTables | `boolean` | `false` | 宽表兜底：把 `table` 自身变成横向滚动容器，列多时不撑破版心（表头随之不换行）。代价是表格宽度改为按内容撑开、不再恒占满版心 |
 
 继承 `HTMLAttributes<HTMLElement>`（`className` / `style` 等）。
 
@@ -2183,8 +2225,30 @@ import { Prose } from "@hulianui/ui"
 <Prose size="sm" className="max-w-2xl">{/* 侧栏说明、卡片内富文本 */}</Prose>
 ```
 
+折叠块（GFM 的 `<details>`/`<summary>`，markdown 产物直接吃排版，无需额外包装）：
+```tsx
+<Prose>
+  <details open>
+    <summary>展开看答案</summary>
+    <p>生成器表达式只在迭代时逐个产出，不会把整份数据读进内存。</p>
+    <details>
+      <summary>展开看报错怎么读</summary>
+      <p>嵌套折叠块落弱背景，与外层的 surface 拉开一档。</p>
+    </details>
+  </details>
+</Prose>
+```
+
+宽表（列多时在表格内部横向滚动，不撑破版心）：
+```tsx
+<Prose scrollableTables>{/* 六列以上的宽表 */}</Prose>
+```
+
 ## 禁忌 / 坑
 
+- `scrollableTables` 会把 `table` 改成 `display: block` 并给表头加 `whitespace-nowrap`。表头不换行不是修饰而是**滚动成立的前提**：只加 `overflow-x-auto` 的话浏览器会把每列压到 min-content（中文一列一字、行高翻几倍），内容永远不超出滚动容器，于是根本不滚——看上去像是字号或断点没调好。正文单元格保持换行：一条不换行的长描述会把表拖宽到别的列滚不到。
+- `scrollableTables` 开启后表格宽度按内容撑开、不再恒占满版心（窄表会缩到内容宽）。只有在真的会溢出的宽表上开。
+- `scrollableTables` 存在的理由只对 **HTML 字符串形态**成立：内容经 `dangerouslySetInnerHTML` 塞进来时，Prose 拿不到表格节点、包不了滚动容器，只能在 `table` 自身上开一档。如果内容是 **children（JSX 子节点）**，更推荐自己把那张宽表包进一层 `overflow-x-auto` 容器——可以只作用于确实会溢出的那一张表，也不必牺牲其余表格的满宽。
 - 见 [[chat-bubble-max-w-prose-overflows-narrow-column]]：`max-w-prose`（65ch≈398px）是绝对值、不感知父容器可用宽度，放进移动端窄 flex 列会横向溢出/裁切。约束宽度用 `max-w-[min(65ch,100%)]`，且父链 flex 项加 `min-w-0`；不要叠 `max-w-prose max-w-full`（同属性二选一由 CSS 顺序决定不可靠）。
 
 ## 相关
@@ -4113,24 +4177,26 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
 | disabled | `boolean` | `false` | 禁用 |
 
-`ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）
+`ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）。继承原生 `<button>` 属性，剩余属性落到按钮自身。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸 |
-| placeholder | `string` | — | 未选中时占位文案 |
+| placeholder | `string` | — | 未选中时占位文案（按钮没有原生 placeholder，这是瑚琏语义） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | className | `string` | — | — |
 
-`ComboboxInput`（内联自动补全：输入框本身即可见字段）
+`ComboboxInput`（内联自动补全：输入框本身即可见字段）。继承原生 `<input>` 属性，剩余属性落到**内层 `<input>`**（不是外壳 span），见「禁忌 / 坑」。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸 |
-| placeholder | `string` | — | 占位 |
+| placeholder | `string` | — | 占位（原生属性，透传到内层 input） |
 | invalid | `boolean` | `false` | 手动置无效态皮肤 |
 | clearable | `boolean` | `false` | 有值时渲染清除按钮 |
-| className | `string` | — | — |
+| prefix | `ReactNode` | — | 字段左侧图标槽（对齐 `Input.prefix`），搜索框放放大镜 |
+| showChevron | `boolean` | `true` | 右侧展开箭头；搜索框形态传 `false` |
+| className | `string` | — | 外壳类名（皮肤在外壳上，不随 rest 落到 input） |
 
 `ComboboxContent`
 
@@ -4152,7 +4218,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | disabled | `boolean` | `false` | 禁用该项 |
 | className | `string` | — | — |
 
-`ComboboxChips`（多选 chips 外壳）：`size`、`invalid`、`placeholder`、`className`（外加 `children` 插槽，见 Slots）。
+`ComboboxChips`（多选 chips 外壳）：`size`、`invalid`、`placeholder`、`className`（外加 `children` 插槽，见 Slots）。继承原生 `<input>` 属性，剩余属性落到**内层 `<input>`**（chips 容器只是皮肤壳）。
 `ComboboxChip`（单个已选 chip）：`className`（外加 `children` 插槽，见 Slots）。
 
 ## Events
@@ -4226,6 +4292,26 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 </Combobox>
 ```
 
+搜索框形态（字段本身即搜索框，不是弹层内搜索）：
+```tsx
+<Combobox items={TASKS}>
+  <ComboboxInput
+    size="sm"
+    prefix={<SearchIcon />}
+    showChevron={false}
+    placeholder="搜索任务、客户、文件"
+    aria-label="搜索任务、客户、文件"
+  />
+  <ComboboxContent>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
 大集合：≥100 项自动虚拟化，不必配置；但项高度不是默认 32px 时要显式关掉：
 ```tsx
 {/* 1000 个城市，单行项 → 自动虚拟化，写法与短列表完全一样 */}
@@ -4258,6 +4344,9 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 - 浮层内搜索框由 `ComboboxContent` 的 `searchPlaceholder` 触发：配 `ComboboxTrigger` 用就给它（图4 范式），配 `ComboboxInput` 内联补全则不设（输入框本身即搜索）。
 - `multiple` 一开 value/onValueChange 即变数组，受控时 state 类型要跟着变。
 - `invalid` 仅用于「非 Field 内」独立使用时手动置无效皮肤；在 Field 内由 Field 接管，不用手传。
+- **`ComboboxInput` / `ComboboxChips` 的剩余原生属性落在内层 `<input>`，不是外壳**：`role="combobox"`、可聚焦性、表单归属都在内层，`aria-label` / `id` / `name` / `onBlur` 挂在外壳 `<span>` / chips 容器上一律无效。所以独立使用（不放在 [Field](https://hulianui.haloritual.com/zh/components/field) 里）时，直接 `<ComboboxInput aria-label="搜索任务" />` 就够了，不用再包一层 `<label>` + `.sr-only`；接 react-hook-form 的 `Controller` 时 `field.onBlur` 也是直接传。要给外层容器加钩子请用 `className`。`ComboboxTrigger` 没有外壳，剩余属性就落在按钮自身。
+- 组件自身的 `data-invalid` / 皮肤类名顶不掉：`rest` 展开在最前（同 `docs/consuming.md` 第 7 节的全库口径），传 `aria-invalid={false}` 不会关掉 `invalid` 的无效态。
+- 搜索框形态要**同时**给 `prefix` 和 `showChevron={false}`：只加放大镜、右边还留着 chevron 的字段读起来仍是「下拉选择」。反过来，弹层内搜索（图4 范式）的搜索框由 `ComboboxContent` 的 `searchPlaceholder` 提供，自带放大镜，不需要动 `ComboboxInput`。
 - **`items` 给到 100 项及以上时列表会自动虚拟化**（无需传 `virtualized`）：只有视口内的项在 DOM 里，行高按 **32px 固定估算**，不做逐项测量。默认 `ComboboxItem` 恰好是 32px，所以通常无感。**如果**你的 render fn 返回的项高度不是 32px（两行文案、带头像/副标题、自定义 `className` 改了 padding 或字号），那么在 ≥100 项时滚动条长度与项的落位会逐渐偏移——**页面不会报任何错，短列表下也复现不出来**，只有滚到列表中后段才看得出跳动。这种项请显式传 `virtualized={false}` 关掉，或把项高度对齐到 32px。
 - 虚拟化同样影响**依赖「选项全在 DOM 里」的测试与脚本**：`getAllByRole("option")` 只会拿到视口内那几条，`document.querySelector` 找不到未滚动到的项。断言总数请改用列表容器上的 `data-hulian-virtual-count`，或对该用例传 `virtualized={false}`。
 - 走 Combobox 的上层组件同样吃这条：[Select](https://hulianui.haloritual.com/zh/components/select) 的 `searchable` 皮肤、[RemoteSelect](https://hulianui.haloritual.com/zh/components/remote-select) 的候选列表，选项攒到 100 条后都会自动虚拟化。
@@ -4731,8 +4820,9 @@ import { Field } from "@hulianui/ui"
 | invalid | `boolean` | `false` | 显式覆盖 invalid；缺省时由 error 是否非空推导 |
 | disabled | `boolean` | `false` | 禁用 |
 | name | `string` | — | 提交标识，透传 Field.Root |
+| orientation | `"vertical" \| "horizontal"` | `"vertical"` | 排列方向。`horizontal` = 标签区在左、控件在右、错误另起一行占满整行（设置页「一行一个设置项」版式），a11y 串联与错误渲染完全一致 |
 | colSpan | `"full"` | — | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
-| className | `string` | — | 落在 Field.Root（纵向布局容器） |
+| className | `string` | — | 落在 Field.Root（竖排为 flex 列容器，横排为两列网格） |
 | labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
 | descriptionClassName | `string` | — | 追加到 description（默认 `text-xs text-muted-foreground`） |
 | errorClassName | `string` | — | 追加到 error（默认 `text-xs text-danger`） |
@@ -4757,6 +4847,16 @@ import { Field } from "@hulianui/ui"
 <Field label="邮箱" error="邮箱格式不正确">
   <Input defaultValue="not-an-email" />
 </Field>
+
+// 横排设置行：标签在左、控件在右、错误另起一行
+<Field orientation="horizontal" label="主题" description="选择你偏好的配色方案">
+  <Select items={themes} />
+</Field>
+
+// 横排 + 定宽标签列：顶掉默认列模板即可，不需要额外的 prop
+<Field orientation="horizontal" label="邮箱" className="grid-cols-[8rem_1fr]">
+  <Input placeholder="you@work.com" />
+</Field>
 ```
 
 ## 禁忌 / 坑
@@ -4764,9 +4864,11 @@ import { Field } from "@hulianui/ui"
 - `error` 字符串非空时已隐含 `invalid`，无需再传 `invalid`；想强制无错状态下也标红才单独传 `invalid`。
 - 底层是 Base UI Field，错误文本通过 `match={true}` 强制渲染——别在 Field 外另起一个 `<p>` 写错误，会丢失自动的 `aria-describedby` 串联。详见 [[base-ui-field-error-match-true-for-external-controlled-error]]：外部受控 error 不走 Base UI 校验时，默认分支会让错误文本「框红字没」。
 - 若 children 是 Textarea，注意 render-as 的类型问题，见 [[base-ui-field-control-render-textarea-type-safe]]。
+- 横排的标签列宽度**没有**单独的 prop：`orientation="horizontal"` 下 Field.Root 是 `grid-cols-[1fr_auto]` 的网格，传 `className="grid-cols-[8rem_1fr]"` 顶掉默认列模板即可。默认的 `auto` 列让控件贴右边缘（设置行），换成 `1fr` 则让控件填满（表单行）。
+- 只要一个标签、不要 help/error 三段与 a11y 串联时，用 [Label](https://hulianui.haloritual.com/zh/components/label)，别为了拿标签皮肤而空套一层 Field。
 
 ## 相关
-[Form](https://hulianui.haloritual.com/zh/components/form) · [ModalForm / DrawerForm](https://hulianui.haloritual.com/zh/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/zh/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/zh/components/steps-form) · [LoginForm](https://hulianui.haloritual.com/zh/components/login-form) · [SearchForm](https://hulianui.haloritual.com/zh/components/search-form)
+[Label](https://hulianui.haloritual.com/zh/components/label) · [Form](https://hulianui.haloritual.com/zh/components/form) · [ModalForm / DrawerForm](https://hulianui.haloritual.com/zh/components/form-dialog) · [ProForm](https://hulianui.haloritual.com/zh/components/pro-form) · [StepsForm](https://hulianui.haloritual.com/zh/components/steps-form) · [LoginForm](https://hulianui.haloritual.com/zh/components/login-form) · [SearchForm](https://hulianui.haloritual.com/zh/components/search-form)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Form
@@ -5511,6 +5613,67 @@ if (isUrlTooLong(url)) {
 - **模板的 `labels` 与组件的 `text` 别搞混。** 前者是 GitHub 标签（进 `draft.labels` 与 URL 的 `labels` 参数），后者是界面文案覆盖。
 - **界面文案默认跟随 locale。** 不传 `text` 时全部文案取 ConfigProvider 的 locale（未包 Provider 回落内置中文），`IssueReporterModal` 的 `modalTitle` 同理。优先级是 `text` prop > locale > 内置兜底。注意**模板自带的字段 `label` / `placeholder` 不在 locale 覆盖范围内**——它们属于 `templates` 数据，要英文界面请连模板一起替换。
 - **切模板不会清空同名字段。** 值表跨模板共用，`bug` 与 `feature` 若都有 `summary`，切过去内容还在——这是有意的（避免误切模板丢内容），需要清空请调 `apiRef.reset()`。
+
+<!-- ════════════════════════════════════════════════════════ -->
+# Label
+
+**导出**：`Label` · `labelClass`
+
+> 表单标签原语 · `<label>` + 与 Field 同源皮肤 + htmlFor · forms/framework
+
+## 何时用
+
+页面已经有自己的排版、进不去 [Field](https://hulianui.haloritual.com/zh/components/field) 时，用 Label 出一个标签。典型是设置页「一行一个设置项」：左边标签 + 说明，右边控件。
+
+需要 label / help / error 三段并自动串好 `aria-describedby`、`aria-invalid` 时用 [Field](https://hulianui.haloritual.com/zh/components/field)——横排版式它也有（`orientation="horizontal"`），那是更完整的答案。Label 只负责「一个标签」。
+
+不要用多态 `Text as="label"` 顶替：那只是长得像标签，字号字重要自己对齐，库里一改就分叉，`htmlFor`/`id` 的关联也得自己维护。
+
+## 导入
+```ts
+import { Label } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| htmlFor | `string` | — | 关联控件的 id，渲染为原生 `for`；点标签即聚焦控件，读屏也据此念标签 |
+| className | `string` | — | 追加到 `<label>`（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
+| children | `ReactNode` | — | 标签文字 |
+
+其余 `<label>` 原生属性（`id` / `title` / `data-*` / `aria-*` / `onClick` …）原样透传到根节点。
+
+## 导出
+
+| 名称 | 类型 | 说明 |
+|------|------|------|
+| labelClass | `string` | 标签皮肤的唯一真源，Label 与 Field 的 label 段共用；要把同款皮肤贴到别的元素（如 `<legend>`）上时用它，别抄字面量 |
+
+## 示例
+```tsx
+// 基础：htmlFor 指向控件 id
+<Label htmlFor="email">邮箱</Label>
+<Input id="email" placeholder="you@work.com" />
+
+// 设置行：左标签右控件
+<div className="flex items-center justify-between">
+  <Label htmlFor="sidebar">保持侧边栏展开</Label>
+  <Switch id="sidebar" defaultChecked />
+</div>
+
+// 改字号：className 走 twMerge，顶掉默认的 text-sm
+<Label htmlFor="theme" className="text-xs">主题</Label>
+```
+
+## 禁忌 / 坑
+
+- `htmlFor` 不传就只是一段长得像标签的文字：点它不聚焦，读屏也不会把它念成控件的名字。传了就要保证与控件 `id` 一致。在 [Field](https://hulianui.haloritual.com/zh/components/field) 里这层关联是白送的（Base UI 自动生成 id 并串好），独立用 Label 时得自己维护。
+- 标签与控件同时要 help 文案、错误提示、`invalid` 联动时，别用 `Label` + 手写 `<p>` 拼——那样会丢掉自动的 `aria-describedby` 串联。改用 [Field](https://hulianui.haloritual.com/zh/components/field)。
+- 皮肤不要复制成字面量。要改标签外观就改 `labelClass`（或用 `className` 局部顶掉），复制一份的话 Field 出的标签与手写标签会在同一页面里分叉。
+
+## 相关
+[Field](https://hulianui.haloritual.com/zh/components/field) · [Form](https://hulianui.haloritual.com/zh/components/form) · [Input](https://hulianui.haloritual.com/zh/components/input) · [Switch](https://hulianui.haloritual.com/zh/components/switch) · [Text](https://hulianui.haloritual.com/zh/components/text)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Listbox
@@ -8829,9 +8992,11 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"outline" \| "elevated" \| "featured"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 |
+| variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
 
 `CardHeader` / `CardBody` / `CardFooter` 均为插槽容器，接收原生 div 属性 + `children`。
+
+`plain` 是「不画皮」的那一档：不画边框、不铺底色、不投阴影，只留圆角、文字色和三段插槽语义。用在**容器的外观已经由别处提供**的场景——迁移期页面自带的 hero 样式、外层已经有一层卡片、或者卡片坐在带渐变的区块里。其余三档都会画底色（`bg-surface`），套上去就是双重描边 + 双重底色。同名的 `plain` 在 [Accordion](https://hulianui.haloritual.com/zh/components/accordion) / [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) 的 Panel 上也有，语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
 
 ## 示例
 ```tsx
@@ -14569,6 +14734,23 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 | `Accordion.className` | `string` | — | 容器类名 |
 | `AccordionItem.value` * | `string` | — | 该项唯一标识，与 `value`/`defaultValue` 对应 |
 | `AccordionItem.disabled` | `boolean` | `false` | 禁用该项（不可展开/收起） |
+| `AccordionPanel.plain` | `boolean` | `false` | 不画皮：不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Panel |
+
+`Accordion` 是泛型组件，`value` / `defaultValue` / `onValueChange` 的元素类型默认为 `string`。展开项的标识不是字符串（枚举、字面量联合）时显式写 `<Accordion<"a" | "b"> …>`。
+
+### plain：面板装的是一整块功能区
+
+`AccordionPanel` 默认在 Base UI 的 Panel 里再套一层 `px-4 pb-4 pt-1 text-sm text-muted-foreground` 的皮肤 div——它是按「面板里放一段短说明」设计的。面板里装的是**整块功能区**（权限编辑器、配置表单、带 `border-t` 与逐行内边距的列表）时加 `plain`：
+
+```tsx
+<AccordionPanel plain>
+  <div className="divide-y divide-border border-t border-border">{/* 整块功能区 */}</div>
+</AccordionPanel>
+```
+
+不加会撞两件事：`text-muted-foreground` 沿继承链把面板里所有没显式指定颜色的文字染成次要色（整块内容看起来像被禁用），内层的 `px-4` 又与内容自带的内边距叠加成双份、分隔线缩不到面板边缘。`className` 落在**外层** Panel 上，够不着内层——所以别用 `[&>div]:p-0` 这类任意变体选择器压库内结构，那等于把「内层是一个 div」写成外部契约，库里一改就断。
+
+同名的 `plain` 在 [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) 的 Panel 与 [Card](https://hulianui.haloritual.com/zh/components/card) 的 `variant="plain"` 上语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
 
 ## Events
 
@@ -14603,10 +14785,19 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 <Accordion multiple defaultValue={["ship", "token"]}>{/* …items */}</Accordion>
 ```
 
+受控（展开项跟外部状态走）：
+
+```tsx
+const [open, setOpen] = useState<string[]>([]);
+
+<Accordion multiple value={open} onValueChange={(v) => setOpen(v)}>{/* …items */}</Accordion>
+```
+
 ## 禁忌 / 坑
 
 - 高度展开/收起过渡走 Base UI 暴露的 `--accordion-panel-height` CSS 变量做纯 CSS transition，**不要**自己 `useLayoutEffect` 测 `scrollHeight`、也别上 framer-motion；padding 要放 Panel 内层 div 否则收起塌不到 0。详见 [[base-ui-accordion-panel-height-css-var-pure-css-transition]]。
 - 受控与非受控二选一：传了 `value` 就别再传 `defaultValue`。
+- 面板内容自带内边距/边框/正文色时加 `plain`，别用 `[&>div]:p-0` 之类的任意变体选择器去压库内那层皮肤 div。
 
 ## 相关
 [Command](https://hulianui.haloritual.com/zh/components/command) · [ContextMenu](https://hulianui.haloritual.com/zh/components/context-menu) · [Toolbar](https://hulianui.haloritual.com/zh/components/toolbar) · [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) · [Link](https://hulianui.haloritual.com/zh/components/link) · [AnimatedThemeToggler](https://hulianui.haloritual.com/zh/components/animated-theme-toggler)
@@ -15262,6 +15453,21 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 | `Collapsible.disabled` | `boolean` | `false` | 禁用，不可展开 |
 | `Collapsible.className` | `string` | — | 容器类名 |
 | `CollapsibleTrigger.disabled` | `boolean` | `false` | 单独禁用触发器 |
+| `CollapsiblePanel.plain` | `boolean` | `false` | 不画皮：不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Panel |
+
+### plain：面板装的是一整块功能区
+
+`CollapsiblePanel` 默认在 Base UI 的 Panel 里再套一层 `px-3 pb-3 pt-1 text-sm text-muted-foreground` 的皮肤 div——它是按「折叠区里放一段短说明」设计的。折叠区里装的是**整块功能区**（集成配置表单、权限编辑器、带 `border-t` 与逐行内边距的列表）时加 `plain`：
+
+```tsx
+<CollapsiblePanel plain>
+  <div className="divide-y divide-border border-t border-border">{/* 整块功能区 */}</div>
+</CollapsiblePanel>
+```
+
+不加会撞两件事：`text-muted-foreground` 沿继承链把面板里所有没显式指定颜色的文字染成次要色（整块内容看起来像被禁用），内层的 `px-3` 又与内容自带的内边距叠加成双份。`className` 落在**外层** Panel 上，够不着内层——再包一层能把颜色抢回来，内边距抢不回来。
+
+同名的 `plain` 在 [Accordion](https://hulianui.haloritual.com/zh/components/accordion) 的 Panel 与 [Card](https://hulianui.haloritual.com/zh/components/card) 的 `variant="plain"` 上语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
 
 ## Events
 
@@ -15298,6 +15504,7 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 
 - 高度过渡复用 Base UI 暴露的 `--collapsible-panel-height` CSS 变量做纯 CSS transition，padding 放 Panel 内层 div 否则收起塌不到 0；别手测 `scrollHeight` 或上动画库。详见 [[base-ui-accordion-panel-height-css-var-pure-css-transition]]。
 - 受控用 `open` + `onOpenChange`，非受控用 `defaultOpen`，二者不要混用。
+- 面板内容自带内边距/边框/正文色时加 `plain`，别再包一层去抢颜色——内边距抢不回来。
 
 ## 相关
 [Command](https://hulianui.haloritual.com/zh/components/command) · [ContextMenu](https://hulianui.haloritual.com/zh/components/context-menu) · [Toolbar](https://hulianui.haloritual.com/zh/components/toolbar) · [Accordion](https://hulianui.haloritual.com/zh/components/accordion) · [Link](https://hulianui.haloritual.com/zh/components/link) · [AnimatedThemeToggler](https://hulianui.haloritual.com/zh/components/animated-theme-toggler)
@@ -15327,6 +15534,7 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | placeholder | `string` | — | 搜索框占位符。 |
 | filter | `(item: CommandItemData, query: string) => boolean` | 默认子串匹配 | 自定义过滤，返回 true 保留。默认大小写不敏感匹配 `keywords` + 字符串型 `label` + `value`。 |
 | closeOnSelect | `boolean` | `true` | 执行项后是否自动关闭面板。 |
+| autoHighlight | `boolean` | `true` | 打开面板与每次过滤后自动高亮首个可用项（跳过禁用项），于是「打字 → 回车」直接命中。关掉则必须先按方向键点亮某项，回车才有动作。 |
 | shortcut | `boolean` | `false` | 内置 ⌘K / Ctrl+K 全局快捷键切换开合。 |
 | className | `string` | — | — |
 | aria-label | `string` | — | — |
@@ -15344,6 +15552,27 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | emptyMessage | `ReactNode` | 无匹配项时的空态文案。 |
+| footer | `ReactNode` | 列表下方常驻页脚（模式切换 / 提示 / 计数）。在列表之外，不参与列表滚动，也不随过滤结果变化消失。 |
+
+### footer：面板底部那条常驻控件
+
+面板是模态的，页脚里的控件没有别处可放：把「建立关联 / 建立阻塞」这类**决定本次选取语义**的开关前置到触发器，用户就得先决定再开始搜；常驻到页面上，面板关着时它还杵在那儿。放进 `footer` 才能「搜完了再定」：
+
+```tsx
+<Command
+  open={open}
+  onOpenChange={setOpen}
+  groups={groups}
+  footer={
+    <div className="flex items-center justify-between gap-2">
+      <Segmented value={mode} onValueChange={setMode} items={[{ value: "related", label: "关联" }, { value: "blocks", label: "阻塞" }]} />
+      <span className="text-xs text-muted-foreground">选择任务</span>
+    </div>
+  }
+/>
+```
+
+组件内部只给版式（顶部分隔线 + 内边距 + 面板自身的 `text-sm` 字号），页脚内部的布局与配色由内容自己定 —— 与 `ComboboxContent` 的 `footer` 同口径。
 
 **CommandGroupData**：`heading?: ReactNode` / `items: CommandItemData[]`。
 
@@ -15381,6 +15610,8 @@ const [open, setOpen] = useState(false);
 - 始终受控：必须同时提供 `open` + `onOpenChange`。
 - `label` 不是字符串时默认过滤匹配不到它，需为该项补 `keywords`（否则只能靠 `value` 命中）。
 - 内置快捷键用 `shortcut` 一键开启；若想在面板外自绑触发逻辑，改用 `useCommandShortcut`，别同时开 `shortcut`。
+- 命令项是删除 / 重置 / 发布这类破坏性操作时，考虑 `autoHighlight={false}`：默认「打开即高亮首项」配上手滑回车就是误触。关掉后高亮要用户自己按方向键点亮，回车才有动作。
+- 高亮跟着**项的 `value`** 走，不跟数组引用走：过滤后原高亮项还在就不动它，所以 `groups` 每次渲染新建也不会让高亮乱跳。反过来说 `value` 必须稳定（别用数组下标当 value），否则每批结果都会被当成新项。
 
 ## 相关
 [ContextMenu](https://hulianui.haloritual.com/zh/components/context-menu) · [Toolbar](https://hulianui.haloritual.com/zh/components/toolbar) · [Accordion](https://hulianui.haloritual.com/zh/components/accordion) · [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) · [Link](https://hulianui.haloritual.com/zh/components/link) · [AnimatedThemeToggler](https://hulianui.haloritual.com/zh/components/animated-theme-toggler)
@@ -15388,7 +15619,7 @@ const [open, setOpen] = useState(false);
 <!-- ════════════════════════════════════════════════════════ -->
 # ContextMenu
 
-**导出**：`ContextMenu` · `ContextMenuTrigger` · `ContextMenuContent` · `ContextMenuItem` · `ContextMenuSeparator` · `ContextMenuGroup` · `ContextMenuGroupLabel` · `ContextMenuSub` · `ContextMenuSubTrigger` · `ContextMenuSubContent`
+**导出**：`ContextMenu` · `ContextMenuTrigger` · `ContextMenuContent` · `ContextMenuItem` · `ContextMenuCheckboxItem` · `ContextMenuRadioGroup` · `ContextMenuRadioItem` · `ContextMenuSeparator` · `ContextMenuGroup` · `ContextMenuGroupLabel` · `ContextMenuSub` · `ContextMenuSubTrigger` · `ContextMenuSubContent`
 
 > 右键菜单 · Base UI context-menu 原语薄包(锚到光标) + 复用 Menu 皮肤/data-highlighted + danger · navigation/action
 
@@ -15398,7 +15629,7 @@ const [open, setOpen] = useState(false);
 
 ## 导入
 ```ts
-import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from "@hulianui/ui"
+import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from "@hulianui/ui"
 ```
 
 ## Props
@@ -15413,6 +15644,38 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 | variant | `"default" \| "danger"` | `"default"` | danger 用危险色（删除等）。 |
 | className | `string` | — | — |
 
+**ContextMenuCheckboxItem** —— 可开关的设置项，渲染 `role="menuitemcheckbox"` + `aria-checked`。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| checked | `boolean` | — | 是否勾选（受控）。要非受控请改用 `defaultChecked` |
+| defaultChecked | `boolean` | `false` | 初始是否勾选（非受控） |
+| disabled | `boolean` | `false` | 禁用 |
+| closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。勾选项默认**不关**，便于连续勾选 |
+| label | `string` | — | 键盘 type-ahead 用文案覆盖 |
+| variant | `"default" \| "danger"` | `"default"` | danger 用危险色 |
+| className | `string` | — | — |
+
+**ContextMenuRadioGroup** —— 一组互斥选项的容器；`ContextMenuRadioItem` 必须放在它内部。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value | `string` | — | 当前选中项的值（受控）。要非受控请改用 `defaultValue` |
+| defaultValue | `string` | — | 初始选中项的值（非受控） |
+| disabled | `boolean` | `false` | 整组禁用 |
+| className | `string` | — | — |
+
+**ContextMenuRadioItem** —— 互斥选项中的一项，渲染 `role="menuitemradio"` + `aria-checked`。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value* | `string` | — | 本项的值；与所在 `ContextMenuRadioGroup` 的 value 相等即为选中态 |
+| disabled | `boolean` | `false` | 禁用 |
+| closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。单选项默认**不关**，选完想收起菜单要显式传 `true` |
+| label | `string` | — | 键盘 type-ahead 用文案覆盖 |
+| variant | `"default" \| "danger"` | `"default"` | danger 用危险色 |
+| className | `string` | — | — |
+
 **ContextMenuSubTrigger**：Props `disabled` / `label` / `variant?: "default" \| "danger"` / `className`；Slots `children`。
 **ContextMenuContent / ContextMenuSubContent**：Props `className`；Slots `children`。
 **ContextMenuTrigger / Group / GroupLabel / Separator / Sub**：结构性组件（薄包 Base UI 原语，透传 children / className）。
@@ -15421,13 +15684,15 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onClick | `MouseEventHandler<HTMLElement>` | `ContextMenuItem` 点击回调。 |
+| onClick | `MouseEventHandler<HTMLElement>` | `ContextMenuItem` / `ContextMenuCheckboxItem` / `ContextMenuRadioItem` 点击回调。 |
+| onCheckedChange | `(checked: boolean) => void` | `ContextMenuCheckboxItem` 勾选态变化回调。 |
+| onValueChange | `(value: string) => void` | `ContextMenuRadioGroup` 选中值变化回调。 |
 
 ## Slots
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| children | `ReactNode` | `ContextMenuItem` 菜单项内容。 |
+| children | `ReactNode` | `ContextMenuItem` 菜单项内容；`ContextMenuCheckboxItem` / `ContextMenuRadioItem` 渲染在选中标记右侧的第二列；`ContextMenuRadioGroup` 放一组 `ContextMenuRadioItem`。 |
 
 ## 示例
 ```tsx
@@ -15451,8 +15716,28 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 </ContextMenu>
 ```
 
+勾选项与单选项（任务卡右键菜单的典型形态）：
+```tsx
+<ContextMenuContent>
+  <ContextMenuCheckboxItem defaultChecked>置顶该任务</ContextMenuCheckboxItem>
+  <ContextMenuSeparator />
+  <ContextMenuGroup>
+    <ContextMenuGroupLabel>优先级</ContextMenuGroupLabel>
+    <ContextMenuRadioGroup value={priority} onValueChange={setPriority}>
+      <ContextMenuRadioItem value="low" closeOnClick>低</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="medium" closeOnClick>中</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="high" closeOnClick>高</ContextMenuRadioItem>
+    </ContextMenuRadioGroup>
+  </ContextMenuGroup>
+</ContextMenuContent>
+```
+（`closeOnClick` 是「选完即收起菜单」的写法；默认值 `false`，不传就停在菜单里继续改。）
+
 ## 禁忌 / 坑
 
+- **一组选项别用 `ContextMenuItem` + 自己画一个 √**。视觉上与 `ContextMenuCheckboxItem` / `ContextMenuRadioItem` 完全一样，所以这个错误看不出来：但元素 role 退化成 `menuitem`、没有 `aria-checked`，读屏用户听到的是几个平级动作，听不出这是一组互斥选项、也听不出当前选的是哪个。可开关的设置用 `ContextMenuCheckboxItem`，互斥选项用 `ContextMenuRadioGroup` + `ContextMenuRadioItem`。
+- `ContextMenuRadioItem` 必须放在 `ContextMenuRadioGroup` 内，否则不会有选中态。
+- 勾选标记占的是与 `ContextMenuItem` 首个 `size-4` 图标同宽的第一列，混排时文字左缘因此对齐；普通项配图标同样用 `size-4`。
 - 分组项必须包在 `ContextMenuGroup` 里、配 `ContextMenuGroupLabel` 才有正确分组语义；裸放 Item 则是无标题平铺列。
 - `ContextMenuItem` 的 children 非纯文本（如带图标）时，补 `label` 供键盘 type-ahead 搜索。
 
@@ -15720,7 +16005,7 @@ import NextLink from "next/link"
 <!-- ════════════════════════════════════════════════════════ -->
 # Menu
 
-**导出**：`Menu` · `MenuTrigger` · `MenuContent` · `MenuItem` · `MenuSeparator` · `MenuGroup` · `MenuGroupLabel` · `menuItemVariants`
+**导出**：`Menu` · `MenuTrigger` · `MenuContent` · `MenuItem` · `MenuCheckboxItem` · `MenuRadioGroup` · `MenuRadioItem` · `MenuSeparator` · `MenuGroup` · `MenuGroupLabel` · `menuItemVariants`
 
 > 下拉菜单 · Base UI 命令式 + Item/分隔/分组 + danger · navigation/global
 
@@ -15730,7 +16015,7 @@ import NextLink from "next/link"
 
 ## 导入
 ```ts
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from "@hulianui/ui"
+import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from "@hulianui/ui"
 ```
 
 ## Props
@@ -15752,11 +16037,62 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 | variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
 | className | `string` | — | — |
 
+### MenuCheckboxItem
+可开关的设置项，渲染 `role="menuitemcheckbox"` + `aria-checked`。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| checked | `boolean` | — | 是否勾选（受控）。要非受控请改用 `defaultChecked` |
+| defaultChecked | `boolean` | `false` | 初始是否勾选（非受控） |
+| disabled | `boolean` | `false` | 禁用 |
+| closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。勾选项默认**不关**，便于连续勾选 |
+| label | `string` | — | 键盘 type-ahead 的文案覆盖 |
+| variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
+| className | `string` | — | — |
+
+### MenuRadioGroup
+一组互斥选项的容器；互斥关系由它维护，`MenuRadioItem` 必须放在它内部。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value | `string` | — | 当前选中项的值（受控）。要非受控请改用 `defaultValue` |
+| defaultValue | `string` | — | 初始选中项的值（非受控） |
+| disabled | `boolean` | `false` | 整组禁用 |
+| className | `string` | — | — |
+
+### MenuRadioItem
+互斥选项中的一项，渲染 `role="menuitemradio"` + `aria-checked`。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value* | `string` | — | 本项的值；与所在 `MenuRadioGroup` 的 value 相等即为选中态 |
+| disabled | `boolean` | `false` | 禁用 |
+| closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。单选项默认**不关**，选完想收起菜单要显式传 `true` |
+| label | `string` | — | 键盘 type-ahead 的文案覆盖 |
+| variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
+| className | `string` | — | — |
+
 `MenuTrigger` 用 `render={<Button />}` 把任意元素作触发器。
 
 ## Events
 
 ### MenuItem
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onClick | `MouseEventHandler<HTMLElement>` | 点击回调 |
+
+### MenuCheckboxItem
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onCheckedChange | `(checked: boolean) => void` | 勾选态变化回调 |
+| onClick | `MouseEventHandler<HTMLElement>` | 点击回调 |
+
+### MenuRadioGroup
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onValueChange | `(value: string) => void` | 选中值变化回调 |
+
+### MenuRadioItem
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onClick | `MouseEventHandler<HTMLElement>` | 点击回调 |
@@ -15772,6 +16108,16 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 项内容 |
+
+### MenuCheckboxItem / MenuRadioItem
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 项内容；渲染在选中标记右侧的第二列 |
+
+### MenuRadioGroup
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 一组 `MenuRadioItem` |
 
 ## 示例
 ```tsx
@@ -15797,8 +16143,32 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, Men
 </MenuContent>
 ```
 
+勾选项与单选项（当前值打勾）：
+```tsx
+<MenuContent>
+  <MenuGroup>
+    <MenuGroupLabel>显示</MenuGroupLabel>
+    <MenuCheckboxItem defaultChecked>显示网格</MenuCheckboxItem>
+    <MenuCheckboxItem>显示标尺</MenuCheckboxItem>
+  </MenuGroup>
+  <MenuSeparator />
+  <MenuGroup>
+    <MenuGroupLabel>优先级</MenuGroupLabel>
+    <MenuRadioGroup value={priority} onValueChange={setPriority}>
+      <MenuRadioItem value="low" closeOnClick>低</MenuRadioItem>
+      <MenuRadioItem value="medium" closeOnClick>中</MenuRadioItem>
+      <MenuRadioItem value="high" closeOnClick>高</MenuRadioItem>
+    </MenuRadioGroup>
+  </MenuGroup>
+</MenuContent>
+```
+（这里的 `closeOnClick` 是「选完即收起菜单」的写法；默认值是 `false`，不传就停在菜单里继续改。）
+
 ## 禁忌 / 坑
 
+- **一组选项别用 `MenuItem` + 自己画一个 √**。视觉上与 `MenuCheckboxItem` / `MenuRadioItem` 完全一样，所以这个错误看不出来：但元素 role 退化成 `menuitem`、没有 `aria-checked`，读屏用户听到的是几个平级动作，听不出这是一组互斥选项、也听不出当前选的是哪个，键盘用户的选中态只剩视觉。可开关的设置用 `MenuCheckboxItem`，互斥选项用 `MenuRadioGroup` + `MenuRadioItem`。
+- `MenuRadioItem` 必须放在 `MenuRadioGroup` 内 —— 互斥关系与选中值由组维护，单独放在 `MenuContent` 里不会有选中态。
+- 勾选标记占的是与 `MenuItem` 首个 `size-4` 图标同宽的第一列，所以同一个菜单里混用普通项与勾选项时文字左缘是齐的；给普通项配图标时同样用 `size-4`，别改成别的尺寸。
 - [[base-ui-menu-group-label-requires-menu-group-wrapper]]：`MenuGroupLabel` 直接放进 `MenuContent`（不裹 `MenuGroup`）会在「点开菜单」那一刻抛 `MenuGroupRootContext is missing`，触发器渲染正常但点击崩页 —— 分组标签必须包在 `MenuGroup` 里。
 
 ## 相关
@@ -16881,7 +17251,7 @@ import { Alert, alertVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"\|"brand"\|"info"\|"success"\|"warning"\|"danger"` | `"info"` | 语气色。`info` 是 `brand` 的历史别名，两者同配方、可互换 |
+| tone | `"neutral"\|"brand"\|"info"\|"success"\|"warning"\|"danger"` | `"info"` | 语气色。`brand` 走主色，`info` 走独立的信息色（0.8.0 起两者不再同色） |
 | variant | `"soft"\|"outline"` | `"soft"` | soft=浅底 / outline=描边 |
 | closeLabel | `string` | `"关闭"` | 关闭按钮的无障碍标签 |
 
@@ -16915,7 +17285,7 @@ import { Alert, alertVariants } from "@hulianui/ui"
 - `onClose` 只触发回调、不自行消隐，是否移除/隐藏由调用方控制（受控）；不传 `onClose` 则不渲染关闭按钮。
 - 不绑图标库，`icon` 须调用方自带 SVG/emoji。
 - 接口已 `Omit<…, "title">` 避开 HTML 原生 title 属性与 ReactNode title 冲突，直接传 `title` 即为标题。
-- **新代码用 `tone="brand"`**，与 Tag / Button / Badge 同一套取值。`info` 是本组件早于全库 tone 统一时留下的别名，配方完全相同、不会移除，但混用两个名字会让「跨组件搜同一语气」搜不全。
+- **`info` 与 `brand` 在 0.8.0 起是两个颜色，不能再互换**。此前 `info` 只是 `brand` 的别名（当时库里没有 info 语义色，只能借主色顶替）；`@hulianui/tokens` 补齐 `--color-info` 后，`brand` 仍是主色、`info` 改走与主色差 30° 色相的信息色。**升级后默认 Alert（`tone="info"`）的颜色会变**——想保持原来的品牌蓝，显式写 `tone="brand"`。选哪个按语义：这条在讲产品/主操作用 `brand`，只是说明性文字用 `info`。
 
 ## 相关
 [Banner](https://hulianui.haloritual.com/zh/components/banner) · [Toast](https://hulianui.haloritual.com/zh/components/toast) · [Notification](https://hulianui.haloritual.com/zh/components/notification) · [ServiceMessage](https://hulianui.haloritual.com/zh/components/service-message) · [Result](https://hulianui.haloritual.com/zh/components/result) · [GiftFeed](https://hulianui.haloritual.com/zh/components/gift-feed)
@@ -16955,7 +17325,9 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogClose, AlertDialogContent }
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | `AlertDialogContent.title` * | `ReactNode` | 标题（a11y label，必填） |
-| `AlertDialogContent.description` | `ReactNode` | 说明文案 |
+| `AlertDialogContent.description` | `ReactNode` | 说明文案。**只能放 phrasing content**（文本 / `span` / `strong` / `a`），它渲染成 `<p>`；块级内容放 `body` |
+| `AlertDialogContent.body` | `ReactNode` | 正文区，渲染在 `description` 之下、动作区之上，不包 `<p>`，可放块级内容（删除对象摘要卡、受影响项列表） |
+| `AlertDialogContent.icon` | `ReactNode` | 标题行左侧的状态图标；组件只做 flex 对齐，颜色自己给（危险 `text-danger` / 警告 `text-warning`） |
 | `AlertDialogContent.children` | `ReactNode` | 底部操作区，放「取消 / 确认」按钮（取消用 `AlertDialogClose`） |
 
 ## 示例
@@ -16969,8 +17341,33 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogClose, AlertDialogContent }
 </AlertDialog>
 ```
 
+带正文块与状态图标：
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger className="…">删除合同模板</AlertDialogTrigger>
+  <AlertDialogContent
+    icon={<WarnIcon className="text-danger" />}
+    title="确认删除合同模板"
+    description="将从合同库 / 公开库 / 各公司库中一并移除，无法恢复。"
+    body={
+      <div className="rounded-[var(--radius)] border border-border p-3">
+        <div className="font-medium">冠亚/全日制劳动合同</div>
+        <div className="text-xs text-muted-foreground">副本冠亚-全日制劳动合同文本.docx</div>
+      </div>
+    }
+  >
+    <AlertDialogClose className="…">取消</AlertDialogClose>
+    <AlertDialogClose className="…">永久删除</AlertDialogClose>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
 ## 禁忌 / 坑
 
+- **`description` 只能放 phrasing content**（文本、`<span>`、`<strong>`、`<a>`）。它底层是 `AlertDialog.Description`，渲染成 `<p>`；塞 `<div>` / `<ul>` / 卡片是非法嵌套，浏览器会提前闭合 `<p>`，React 报 hydration mismatch。**块级正文一律放 `body`**，别用 `<span className="block">` 去绕。
+- `children` 是**底部动作区**（`justify-end` 的按钮行），不是正文——正文塞进去会和按钮挤在一行。这与 [Dialog](https://hulianui.haloritual.com/zh/components/dialog) 相反（Dialog 的 `children` 是正文、`footer` 才是动作区），两边不要照抄。
+- `icon` 只负责与标题/说明的 flex 对齐，**不带颜色**：危险操作自己给 `text-danger`，警告给 `text-warning`，否则它就是普通前景色。
+- AlertDialog 的弹窗没有内部滚动区（不同于 Dialog 的 `max-h` + 正文滚动），`body` 放长内容会把弹窗顶穿视口——需要长正文说明这已经不是"强制决策"场景，改用 Dialog。
 - 故意不响应点遮罩/Esc 关闭——这是 AlertDialog 的设计意图（强制决策）；想要可随手关闭就改用 Dialog，别在这里恢复轻关闭行为。
 - 取消按钮必须用 `AlertDialogClose` 才能关闭弹窗；确认按钮通常也用 `AlertDialogClose` 包裹并在其 onClick 执行操作。
 
@@ -16997,7 +17394,7 @@ import { Banner } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"\|"info"\|"brand"\|"success"\|"warning"\|"danger"` | `"info"` | 语气色 |
+| tone | `"neutral"\|"info"\|"brand"\|"success"\|"warning"\|"danger"` | `"info"` | 语气色。`brand` 走主色，`info` 走独立的信息色（同 Alert，0.8.0 起两者不再同色） |
 | variant | `"soft"\|"solid"` | `"soft"` | soft=浅底 / solid=实色填充（更醒目，适合促销/重大公告） |
 | align | `"start"\|"center"` | `"center"` | 内容对齐 |
 | scrollable | `boolean` | `false` | 文案过长时单行无缝滚动（纯 CSS marquee·hover 暂停） |
@@ -17062,7 +17459,7 @@ import { Callout } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"tip"\|"info"\|"warning"\|"success"\|"danger"` | `"tip"` | 语气：tip/info 主色、warning 警告、success 正解、danger 坑/危险 |
+| tone | `"tip"\|"info"\|"warning"\|"success"\|"danger"` | `"tip"` | 语气：tip 主色（建议）、info 信息色（背景说明）、warning 警告、success 正解、danger 坑/危险。tip 与 info 在 0.8.0 前同色，现已分开 |
 | className | `string` | — | 透传到根容器 |
 
 ## Slots
@@ -17789,7 +18186,7 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| type | `"open"\|"success"\|"error"\|"info"\|"warning"` | — | 经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 同 Alert（info→primary） |
+| type | `"open"\|"success"\|"error"\|"info"\|"warning"` | — | 经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 取值同 Alert（`info` 走 `--color-info`，0.8.0 前借主色） |
 | duration | `number` | `4500` | 自动关闭毫秒数；`0` = 不自动关（常驻） |
 | placement | `"topRight"\|"topLeft"\|"bottomRight"\|"bottomLeft"` | `"topRight"` | 弹出位置（四角） |
 
@@ -17932,8 +18329,30 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 |------|------|------|------|
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"\|"center"\|"end"` | `"center"` | 对齐 |
-| sideOffset | `number` | — | 与触发器的间距 |
+| sideOffset | `number` | `8` | 与触发器的间距 |
+| plain | `boolean` | `false` | 不画皮：不渲染包住 children 的那层皮肤 div（间距 + `text-sm text-foreground`），children 直接进浮层 |
+| arrow | `boolean` | `true` | 是否渲染指向触发器的箭头 |
 | className | `string` | — | 额外类名 |
+
+### plain / arrow：内容自带外观的贴边浮层
+
+`PopoverContent` 默认把 children 包进一层 `text-sm text-foreground` 的皮肤 div，并在**有 title 或 description 时**加 `mt-2` 与其拉开距离。浮层里装的是一整块自带外观、要贴边铺满的内容（顶部搜索行 + 标签列表、`Calendar` 面板、当贴边菜单用的浮层）时，配 `className="p-0"` 加 `plain`：
+
+```tsx
+<PopoverContent plain arrow={false} align="start" className="w-auto p-0">
+  <div className="flex items-center gap-2 border-b border-border p-2">
+    <Search className="size-3" />
+    <Input variant="cell" placeholder="搜索标签" />
+  </div>
+  <div className="py-1">{/* 标签列表 */}</div>
+</PopoverContent>
+```
+
+`p-0` 只清得掉浮层自己的内边距，清不掉内层皮肤 div —— `className` 落在浮层上、够不着内层，所以别用 `[&>div]:mt-0` 这类任意变体选择器去压它，那等于把库内结构写成外部契约。
+
+`arrow` 与 `plain` 是**两个独立开关**：箭头指的是浮层与触发器的关系，不是内容的皮肤。贴边菜单一般两个都关，但「无标题的纯文字提示」只需要 `plain`、「铺满型面板仍想指明来源」只需要留着箭头。
+
+同名的 `plain` 在 [Card](https://hulianui.haloritual.com/zh/components/card) 的 `variant="plain"` 与 [Accordion](https://hulianui.haloritual.com/zh/components/accordion) / [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) 的 Panel 上语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
 
 ## Slots
 
@@ -17963,6 +18382,7 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 ## 禁忌 / 坑
 
 - 触发/关闭走 `render` prop 注入元素，别再在 `PopoverTrigger` 里二次嵌套交互元素，避免 `<button>` 套 `<button>`。
+- 浮层内容自带内边距/边框/正文色时加 `plain`（通常再配 `className="p-0"`），别用 `[&>div]:mt-0` 之类的任意变体选择器去压库内那层皮肤 div。
 - 若手搓 hover 开 + focus 关叠加在这类 focus-managing popover 上会无限闪烁，见 [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]]：popover 打开时把焦点移入浮层会触发 trigger 的 onBlur 关闭，关闭又把焦点还给 trigger 触发 onFocus 打开 → ping-pong。本组件默认 click 语义不踩，但若改造成 hover 触发需把 `initialFocus`/`finalFocus` 设 false。
 
 ## 相关

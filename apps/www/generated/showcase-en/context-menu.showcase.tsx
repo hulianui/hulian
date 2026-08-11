@@ -1,6 +1,25 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent, } from "../../../../packages/ui/src/context-menu/context-menu";
+import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent, } from "../../../../packages/ui/src/context-menu/context-menu";
+function SelectionDemo() {
+    return (<ContextMenu>
+      <ContextMenuTrigger className="flex h-28 w-full max-w-sm select-none items-center justify-center rounded-[var(--radius)] border border-dashed border-border bg-surface text-sm text-muted-foreground">
+        Right click on this area
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuCheckboxItem defaultChecked>Pin this task</ContextMenuCheckboxItem>
+        <ContextMenuSeparator />
+        <ContextMenuGroup>
+          <ContextMenuGroupLabel>Priority</ContextMenuGroupLabel>
+          <ContextMenuRadioGroup defaultValue="medium">
+            <ContextMenuRadioItem value="low">Low</ContextMenuRadioItem>
+            <ContextMenuRadioItem value="medium">Medium</ContextMenuRadioItem>
+            <ContextMenuRadioItem value="high">High</ContextMenuRadioItem>
+          </ContextMenuRadioGroup>
+        </ContextMenuGroup>
+      </ContextMenuContent>
+    </ContextMenu>);
+}
 function Demo({ withGroup = false, withSub = false }: {
     withGroup?: boolean;
     withSub?: boolean;
@@ -74,6 +93,23 @@ export const contextMenuShowcase: ShowcaseSpec = {
             render: () => <Demo withGroup/>,
         },
         {
+            title: "Checkbox and radio items",
+            description: "ContextMenuCheckboxItem is a setting that toggles on and off (role=menuitemcheckbox); ContextMenuRadioGroup plus ContextMenuRadioItem forms a set of mutually exclusive options (role=menuitemradio). aria-checked lets a screen reader announce the current selection; a tick drawn by hand on a plain Item is indistinguishable on screen but loses that semantic.",
+            code: `<ContextMenuContent>
+  <ContextMenuCheckboxItem defaultChecked>Pin this task</ContextMenuCheckboxItem>
+  <ContextMenuSeparator />
+  <ContextMenuGroup>
+    <ContextMenuGroupLabel>Priority</ContextMenuGroupLabel>
+    <ContextMenuRadioGroup defaultValue="medium">
+      <ContextMenuRadioItem value="low">Low</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="medium">Medium</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="high">High</ContextMenuRadioItem>
+    </ContextMenuRadioGroup>
+  </ContextMenuGroup>
+</ContextMenuContent>`,
+            render: () => <SelectionDemo />,
+        },
+        {
             title: "Cascading submenu",
             description: "ContextMenuSub nests SubTrigger + SubContent, expanded from the right side of the parent item, supporting multi-level nesting.",
             code: `<ContextMenuSub>
@@ -102,6 +138,7 @@ export const contextMenuShowcase: ShowcaseSpec = {
         { name: "default", render: () => <Demo /> },
         { name: "Grouping", render: () => <Demo withGroup/> },
         { name: "Cascading submenu", render: () => <Demo withSub/> },
+        { name: "Checkbox and radio items", render: () => <SelectionDemo /> },
     ],
     renderWithProps: (p) => (<Demo withGroup={p.withGroup as boolean} withSub={p.withSub as boolean}/>),
     toCode: () => `<ContextMenu>

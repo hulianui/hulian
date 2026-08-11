@@ -44,6 +44,22 @@ function InlineDemo() {
       </Combobox>
     </div>);
 }
+const SearchGlyph = () => (<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
+    <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>);
+function SearchDemo() {
+    return (<div className="w-60">
+      <Combobox items={FRUITS}>
+        <ComboboxInput size="sm" prefix={<SearchGlyph />} showChevron={false} placeholder="Search fruits" aria-label="Search fruits"/>
+        <ComboboxContent>
+          {(item) => (<ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>)}
+        </ComboboxContent>
+      </Combobox>
+    </div>);
+}
 export const comboboxShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -75,6 +91,27 @@ export const comboboxShowcase: ShowcaseSpec = {
   </ComboboxContent>
 </Combobox>`,
             render: () => <InlineDemo />,
+        },
+        {
+            title: "Search-field form",
+            description: "prefix adds the magnifier and showChevron={false} drops the trailing chevron: the field itself is the search box (typing filters, selecting navigates), so it should not look like a dropdown. Used outside Field, aria-label goes straight on ComboboxInput and lands on the inner input.",
+            code: `<Combobox items={fruits}>
+  <ComboboxInput
+    size="sm"
+    prefix={<SearchIcon />}
+    showChevron={false}
+    placeholder="Search fruit"
+    aria-label="Search fruit"
+  />
+  <ComboboxContent>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+            render: () => <SearchDemo />,
         },
         {
             title: "Default selected value",
@@ -150,6 +187,7 @@ export const comboboxShowcase: ShowcaseSpec = {
         { name: "Invalid state", render: () => <Demo invalid/> },
         { name: "small", render: () => <Demo size="sm"/> },
         { name: "Inline auto-completion", render: () => <InlineDemo /> },
+        { name: "Search-field form", render: () => <SearchDemo /> },
     ],
     renderWithProps: (p) => (<Demo placeholder={p.placeholder as string} size={p.size as Size} disabled={p.disabled as boolean} invalid={p.invalid as boolean}/>),
     toCode: (p) => `<Combobox items={items} defaultValue={items[0]}>

@@ -610,10 +610,17 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Collects an ordered set of relative image coordinates with undo, refresh, and keyboard crosshair controls.",
     keywords: ["click", "captcha", "forms", "framework"],
   },
+  label: {
+    shortName: "Label",
+    description:
+      "Renders a native label element with the same styling Field uses, plus htmlFor and native attribute passthrough.",
+    keywords: ["label", "htmlFor", "forms", "framework"],
+  },
   field: {
     shortName: "Field",
-    description: "Composes labels, controls, help text, validation messages, and required state.",
-    keywords: ["field", "forms", "framework"],
+    description:
+      "Composes labels, controls, help text, validation messages, and required state, stacked vertically or side by side.",
+    keywords: ["field", "forms", "framework", "orientation"],
   },
   "search-form": {
     shortName: "SearchForm",

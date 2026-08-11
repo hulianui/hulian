@@ -9,6 +9,23 @@ function Demo(p: Record<string, unknown>) {
       </CollapsiblePanel>
     </Collapsible>);
 }
+function PlainDemo() {
+    return (<Collapsible defaultOpen className="w-80">
+      <CollapsibleTrigger>GitHub integration</CollapsibleTrigger>
+      <CollapsiblePanel plain>
+        <div className="divide-y divide-border border-t border-border">
+          <div className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm text-foreground">
+            Connection status
+            <span className="text-xs text-muted-foreground">Connected</span>
+          </div>
+          <div className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm text-foreground">
+            Linked repository
+            <span className="text-xs text-muted-foreground">hulianui/hulian</span>
+          </div>
+        </div>
+      </CollapsiblePanel>
+    </Collapsible>);
+}
 export const collapsibleShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -47,6 +64,20 @@ export const collapsibleShowcase: ShowcaseSpec = {
           <CollapsiblePanel>Cannot be expanded when disabled.</CollapsiblePanel>
         </Collapsible>),
         },
+        {
+            title: "Panel without chrome",
+            description: "Add plain to CollapsiblePanel to skip the inner skin div. Use it when the panel holds a whole settings form, otherwise the content is tinted with the secondary text color and the padding is doubled.",
+            code: `<CollapsiblePanel plain>
+  <div className="divide-y divide-border border-t border-border">
+    <div className="flex items-center justify-between px-3 py-2.5 text-sm text-foreground">
+      Connection status
+      <span className="text-xs text-muted-foreground">Connected</span>
+    </div>
+    {/* More settings rows */}
+  </div>
+</CollapsiblePanel>`,
+            render: () => <PlainDemo />,
+        },
     ],
     controls: [
         { prop: "defaultOpen", type: "boolean", defaultValue: false },
@@ -74,6 +105,7 @@ export const collapsibleShowcase: ShowcaseSpec = {
           <CollapsiblePanel>Cannot be expanded when disabled.</CollapsiblePanel>
         </Collapsible>),
         },
+        { name: "plain (panel without chrome)", render: () => <PlainDemo /> },
     ],
     renderWithProps: (p) => <Demo {...p}/>,
     toCode: (p) => `<Collapsible${p.defaultOpen ? " defaultOpen" : ""}${p.disabled ? " disabled" : ""}>

@@ -180,6 +180,7 @@ export * from "./issue-reporter.showcase";
 export * from "./json-viewer.showcase";
 export * from "./kanban.showcase";
 export * from "./kbd.showcase";
+export * from "./label.showcase";
 export * from "./lanyard.showcase";
 export * from "./laser-flow.showcase";
 export * from "./layout.showcase";

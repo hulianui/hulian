@@ -1,9 +1,32 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, MenuGroupLabel } from "../../../../packages/ui/src/menu/menu";
+import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, } from "../../../../packages/ui/src/menu/menu";
 import { Button } from "../../../../packages/ui/src/button/button";
 type Side = "top" | "right" | "bottom" | "left";
 type Align = "start" | "center" | "end";
+function SelectionDemo({ defaultOpen = false }: {
+    defaultOpen?: boolean;
+}) {
+    return (<Menu defaultOpen={defaultOpen} modal={false}>
+      <MenuTrigger render={<Button variant="outline">View</Button>}/>
+      <MenuContent>
+        <MenuGroup>
+          <MenuGroupLabel>Display</MenuGroupLabel>
+          <MenuCheckboxItem defaultChecked>Show grid</MenuCheckboxItem>
+          <MenuCheckboxItem>Show rulers</MenuCheckboxItem>
+        </MenuGroup>
+        <MenuSeparator />
+        <MenuGroup>
+          <MenuGroupLabel>Density</MenuGroupLabel>
+          <MenuRadioGroup defaultValue="comfortable">
+            <MenuRadioItem value="compact">Compact</MenuRadioItem>
+            <MenuRadioItem value="comfortable">Comfortable</MenuRadioItem>
+            <MenuRadioItem value="loose">Loose</MenuRadioItem>
+          </MenuRadioGroup>
+        </MenuGroup>
+      </MenuContent>
+    </Menu>);
+}
 function Demo({ side = "bottom", align = "start", withGroup = false }: {
     side?: Side;
     align?: Align;
@@ -97,6 +120,27 @@ export const menuShowcase: ShowcaseSpec = {
         </Menu>),
         },
         {
+            title: "Checkbox and radio items",
+            description: "MenuCheckboxItem is a setting that toggles on and off (role=menuitemcheckbox); MenuRadioGroup plus MenuRadioItem forms a set of mutually exclusive options (role=menuitemradio). Both carry aria-checked, so a screen reader can announce the current selection, whereas a tick drawn by hand on a plain MenuItem looks identical but loses that semantic. Clicking keeps the menu open by default; pass closeOnClick to dismiss it once a value is picked.",
+            code: `<MenuContent>
+  <MenuGroup>
+    <MenuGroupLabel>Display</MenuGroupLabel>
+    <MenuCheckboxItem defaultChecked>Show grid</MenuCheckboxItem>
+    <MenuCheckboxItem>Show rulers</MenuCheckboxItem>
+  </MenuGroup>
+  <MenuSeparator />
+  <MenuGroup>
+    <MenuGroupLabel>Density</MenuGroupLabel>
+    <MenuRadioGroup defaultValue="comfortable">
+      <MenuRadioItem value="compact">Compact</MenuRadioItem>
+      <MenuRadioItem value="comfortable">Comfortable</MenuRadioItem>
+      <MenuRadioItem value="loose">Loose</MenuRadioItem>
+    </MenuRadioGroup>
+  </MenuGroup>
+</MenuContent>`,
+            render: () => <SelectionDemo />,
+        },
+        {
             title: "Pop-up direction",
             description: "side / align of MenuContent controls the orientation of the floating layer relative to the trigger.",
             code: `<Menu>
@@ -123,6 +167,7 @@ export const menuShowcase: ShowcaseSpec = {
     states: [
         { name: "default", render: () => <Demo /> },
         { name: "Grouping", render: () => <Demo withGroup/> },
+        { name: "Checkbox and radio items (open)", render: () => <SelectionDemo defaultOpen/> },
         { name: "right", render: () => <Demo side="right"/> },
         { name: "top", render: () => <Demo side="top"/> },
     ],
