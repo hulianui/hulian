@@ -405,8 +405,9 @@ async function buildTools() {
       name: "get_setup_guide",
       title: "取消费方接入指南",
       description:
-        "取接入约束：安装与 peer、token CSS 与 Tailwind @source、根 barrel vs 子路径、" +
-        "Next 的 transpilePackages/optimizePackageImports、Vite 软链预构建插件、Vitest 预设。" +
+        "取接入约束：安装与 peer、ConfigProvider 与内置文案的语言、token CSS 与 Tailwind @source、" +
+        "根 barrel vs 子路径、Next 的 transpilePackages/optimizePackageImports、" +
+        "Vite 软链预构建插件、Vitest 预设。" +
         "配合 inspect_project 的 warnings 使用：缺哪项取哪片。",
       inputSchema: {
         type: "object",

@@ -8,7 +8,7 @@
 
 const DOC = "https://github.com/hulianui/hulian/blob/master/docs/consuming.md";
 
-export const SETUP_TARGETS = ["install", "next", "vite", "vitest", "imports", "tailwind"];
+export const SETUP_TARGETS = ["install", "locale", "next", "vite", "vitest", "imports", "tailwind"];
 
 const SECTIONS = {
   install: {
@@ -21,22 +21,81 @@ pnpm add @hulianui/ui @hulianui/tokens
 \`@base-ui/react\` 是 peerDependency，**必须出现在消费方 package.json 里** —— 否则不是「有两份」
 而是压根找不到，dedupe 也无从谈起。
 
-组件树只需要一个 Provider：
+应用根上挂两个 Provider：
 
 \`\`\`tsx
-import { ThemeProvider, Button } from "@hulianui/ui"
+import { ThemeProvider, ConfigProvider, enUS, Button } from "@hulianui/ui"
 
 export default function App() {
   return (
     <ThemeProvider>
-      <Button>开始</Button>
+      {/* 界面语言不是中文时，ConfigProvider 是必需品而不是可选项 —— 见 target=locale */}
+      <ConfigProvider locale={enUS}>
+        <Button>开始</Button>
+      </ConfigProvider>
     </ThemeProvider>
   )
 }
 \`\`\`
 
-没有必须挂的第三方 Provider（0.15.0 起 MUI 已彻底出库）。需要中文文案与 Access 权限时再叠
-\`ConfigProvider\`（\`zhCN\` / \`enUS\`）与 \`AccessProvider\`。`,
+没有必须挂的第三方 Provider（0.15.0 起 MUI 已彻底出库）。中文应用可以省掉 \`ConfigProvider\`
+（内置文案本来就是 zh-CN）；**其它任何语言都不能省**，理由见 \`target="locale"\`。
+需要权限门时再叠 \`AccessProvider\`。`,
+  },
+  locale: {
+    title: "ConfigProvider：非中文应用的必需品（漏了只有读屏用户会发现）",
+    body: `组件有一批内置文案：NumberField 的 ± 按钮、Table 空态、Spinner 的 \`role=status\`、
+Select 的搜索占位与空态、Tag 的关闭按钮……没有 \`ConfigProvider\` 时它们**静默**回退成 zh-CN。
+
+为什么它比 \`ThemeProvider\` 更容易漏：漏了 ThemeProvider 页面立刻不对；漏了 ConfigProvider
+页面**看起来完全正常** —— 回退掉的大半在 \`aria-label\` 里，只有读屏用户和 e2e 断言撞得到。
+typecheck / lint / guard 全绿，\`ConfigProvider\` 在类型上也是可选的（hulianui/hulian#164）。
+开发期库会就此 \`console.warn\` 一次（生产与测试环境零成本），但那是兜底不是设计。
+
+\`\`\`tsx
+import { ConfigProvider, ThemeProvider, enUS } from "@hulianui/ui"
+
+<ThemeProvider>
+  <ConfigProvider locale={enUS}>{children}</ConfigProvider>
+</ThemeProvider>
+\`\`\`
+
+**内置只有 \`zhCN\` / \`enUS\` 两本字典。**其余语言 spread \`enUS\` 再覆盖 —— 这样将来新增的键
+自动有英文兜底，不会因为漏键渲染出 \`undefined\`：
+
+\`\`\`ts
+import { enUS, type Locale } from "@hulianui/ui"
+
+export const frFR: Locale = {
+  ...enUS,
+  table: { ...enUS.table, empty: "Aucune donnée" },
+  components: {
+    ...enUS.components,
+    numberField: { decrement: "Diminuer", increment: "Augmenter" },
+  },
+}
+\`\`\`
+
+\`Locale\` 是嵌套两层的：顶层按组件分节（\`table\` / \`proTable\` / \`adminLayout\` / \`modalForm\` /
+\`editableTable\` / \`proForm\` / \`stepsForm\` / \`drawer\` / \`loginForm\` / \`clickCaptcha\` /
+\`passwordGenerator\`），低层原语的文案统一收在 \`components\` 下（\`popconfirm\` / \`toast\` /
+\`alert\` / \`tag\` / \`select\` / \`spinner\` / \`numberField\` / \`upload\` …）。
+**别照抄清单**，它会随版本增长；要当前实装版本的完整键清单就从字典自己打：
+
+\`\`\`ts
+const walk = (o, p = "") =>
+  Object.entries(o).flatMap(([k, v]) =>
+    v && typeof v === "object" ? walk(v, \`\${p}\${k}.\`) : [\`\${p}\${k}\`])
+console.log(walk(enUS).join("\\n"))   // 函数型文案（如 proTable.total）打出来是叶子，签名查类型
+\`\`\`
+
+多语言产品把它接到自己的 i18n 上，跟着当前语言切：
+
+\`\`\`tsx
+const { i18n } = useTranslation()
+const locale = useMemo(() => (i18n.resolvedLanguage?.startsWith("zh") ? zhCN : enUS), [i18n.resolvedLanguage])
+return <ConfigProvider locale={locale}>{children}</ConfigProvider>
+\`\`\``,
   },
   tailwind: {
     title: "token CSS 与 Tailwind 扫描（漏了就没有颜色）",

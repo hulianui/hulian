@@ -511,6 +511,18 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
         "组件树必须被它包裹，暗色与运行时换肤都靠它",
     );
   }
+  // ThemeProvider 漏了页面立刻不对，ConfigProvider 漏了页面**看起来完全正常** ——
+  // 回退掉的是组件内置文案，其中大半在 aria-label 里（NumberField 的「减少」「增加」、
+  // Spinner 的「加载中」、Tag 的「移除」）。英文产品能带着一屏中文读屏标签上线而无人察觉
+  //（hulianui/hulian#164）。所以这条按「建议」报，但必须报。
+  if (usesHulian && configProvider.status === "not-found") {
+    warnings.push(
+      `建议：扫过的入口文件（${configProvider.scanned.join(", ") || "无"}）里没有 ConfigProvider。` +
+        "缺它时组件内置文案（含 aria-label）静默回退成 zh-CN —— 中文应用可以不挂，" +
+        "其它语言它是必需品：<ConfigProvider locale={enUS}>，或 spread enUS 覆盖成自己的语言。" +
+        "这条不是 error，它探测的是入口文件里有没有这个标签，i18n 桥层挂在别处就自行确认",
+    );
+  }
   if (usesHulian && framework.name === "next" && setup.transpilePackages === "not-found") {
     warnings.push("Next 消费方缺 transpilePackages: ['@hulianui/ui'] —— 源码分发必须转译，否则起不来");
   }
@@ -605,7 +617,8 @@ export function renderProject(info) {
     if (info.suggestedProjectRoot) lines.push(`  → 建议：projectRoot="${info.suggestedProjectRoot}"`);
   }
   lines.push(
-    `- 接入状态：ThemeProvider ${info.setup.themeProvider} · tokens.css ${info.setup.tokensCss} · ` +
+    `- 接入状态：ThemeProvider ${info.setup.themeProvider} · ConfigProvider ${info.setup.configProvider} · ` +
+      `tokens.css ${info.setup.tokensCss} · ` +
       `@source ${info.setup.tailwindSource} · transpilePackages ${info.setup.transpilePackages} · ` +
       `optimizePackageImports ${info.setup.optimizePackageImports} · vite 插件 ${info.setup.vitePlugin} · ` +
       `vitest preset ${info.setup.vitestPreset}`,

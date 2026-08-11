@@ -673,6 +673,18 @@ export function renderAudit(a) {
       (a.scanned.truncated ? ` ⚠️ 达到 ${a.scanned.limit} 上限，**结果不完整**` : ""),
   );
 
+  // 接入缺口此前只落在 structuredContent 的 context.setupWarnings 里，渲染文本一个字都不提 ——
+  // 于是「装了瑚琏但少挂一层 Provider」这类问题在这份报告里完全不可见，而它恰恰是最该先修的
+  //（ConfigProvider 尤其：漏了页面看着完全正常，只有读屏用户撞得到，见 hulianui/hulian#164）。
+  if (a.context.setupWarnings?.length) {
+    lines.push(
+      "",
+      "## 接入缺口（来自 inspect_project）",
+      ...a.context.setupWarnings.map((w) => `- ⚠️ ${w}`),
+      "- 缺哪一项就调 get_setup_guide 取对应片段；`not-found` = 已知位置里没看到，不等于不存在。",
+    );
+  }
+
   const s = a.scene.surface;
   lines.push(
     "",

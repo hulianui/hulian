@@ -153,9 +153,10 @@ function makeProject(kind) {
     write(
       root,
       "app/layout.tsx",
-      `import { ThemeProvider } from "@hulianui/ui"
+      // ConfigProvider 是「接好了」的一部分：漏了组件内置文案静默回退 zh-CN（hulianui/hulian#164）
+      `import { ThemeProvider, ConfigProvider, enUS } from "@hulianui/ui"
 export default function Layout({ children }) {
-  return <html><body><ThemeProvider>{children}</ThemeProvider></body></html>
+  return <html><body><ThemeProvider><ConfigProvider locale={enUS}>{children}</ConfigProvider></ThemeProvider></body></html>
 }\n`,
     );
     write(
@@ -505,10 +506,15 @@ test("inspect_project 指出 Vite 软链项目的接入缺口", async () => {
     assert.equal(info.packageManager, "yarn");
     assert.equal(info.setup.tokensCss, "not-found");
     assert.equal(info.setup.themeProvider, "not-found");
+    assert.equal(info.setup.configProvider, "not-found");
     const warnings = info.warnings.join("\n");
     assert.match(warnings, /tokens/, "缺 token CSS 要报");
     assert.match(warnings, /ThemeProvider/, "缺 Provider 要报");
     assert.match(warnings, /@base-ui\/react/, "缺 peer 要报");
+    // #164：漏 ConfigProvider 页面看起来完全正常，只有读屏用户撞得到 —— 必须报，但措辞是建议
+    assert.match(warnings, /建议：.*ConfigProvider/, "缺 ConfigProvider 要报，且是建议不是 error");
+    assert.match(warnings, /zh-CN/, "要说清回退成什么");
+    assert.match(bodyOf(res), /ConfigProvider not-found/, "接入状态一行里也要能看到");
     assert.match(bodyOf(res), /not-found.*不等于不存在|不等于不存在/, "必须说明未检测≠不存在");
   } finally {
     rmSync(root, { recursive: true, force: true });
