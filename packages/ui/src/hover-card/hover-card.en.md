@@ -68,6 +68,7 @@ Use `render` on HoverCardTrigger to supply an inline link or button.
 
 - The component disables managed initial and final focus as described in [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]]. This prevents hover and focus from repeatedly opening and closing a focus-managing popover. Preserve that behavior in forks.
 - Tune accidental activation with `openDelay` and `closeDelay`. A zero close delay can flash closed while the pointer crosses the gap from trigger to card.
+- `HoverCardContent` extends the native div attributes, so `data-testid`, `role`, `aria-*`, and `onClick` all attach directly. The card is portaled out, but synthetic events still bubble along the **React tree** back to the parent that holds the trigger — inside a fully clickable row or card, add `onClick={(e) => e.stopPropagation()}` or clicking the card content also fires the row `onClick`. A forwarded `onMouseEnter` or `onMouseLeave` is **merged** with the internal timers rather than replacing them, so it cannot accidentally close the card.
 
 ## Related
 [Dialog](../dialog/dialog.md) · [Modal](../modal/modal.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Drawer](../drawer/drawer.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md)

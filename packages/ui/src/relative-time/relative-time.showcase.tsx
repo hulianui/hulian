@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { RelativeTime } from "./relative-time";
 
@@ -6,6 +7,26 @@ import { RelativeTime } from "./relative-time";
 const BASE = new Date("2026-06-05T12:00:00");
 const ago = (sec: number) => new Date(BASE.getTime() - sec * 1000);
 const after = (sec: number) => new Date(BASE.getTime() + sec * 1000);
+
+// 演示实时刷新就得用「真的现在」，但渲染期读时钟会把构建时刻烤进 dateTime / title 属性
+// （组件自己的首帧已经安全了，value 是消费方给的，这里的消费方就是本示例）。挂载后再取。
+function LiveExample() {
+  const [publishedAt, setPublishedAt] = useState<Date | null>(null);
+  useEffect(() => {
+    setPublishedAt(new Date(Date.now() - 90 * 1000));
+  }, []);
+  return (
+    <p className="text-sm text-muted-foreground">
+      发布于{" "}
+      {publishedAt == null ? (
+        <span className="tabular-nums text-foreground">—</span>
+      ) : (
+        <RelativeTime value={publishedAt} className="text-foreground" />
+      )}
+      ，悬停看绝对时间
+    </p>
+  );
+}
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -105,11 +126,7 @@ export const relativeTimeShowcase: ShowcaseSpec = {
     },
     {
       name: "实时刷新（无 base · 每分钟自动更新）",
-      render: () => (
-        <p className="text-sm text-muted-foreground">
-          发布于 <RelativeTime value={new Date(Date.now() - 90 * 1000)} className="text-foreground" />，悬停看绝对时间
-        </p>
-      ),
+      render: () => <LiveExample />,
     },
   ],
   renderWithProps: (p) => <RelativeTime value={ago(20 * 60)} base={BASE} locale={(p.locale === "auto" ? undefined : p.locale) as "zh" | "en" | undefined} />,

@@ -113,6 +113,15 @@ export const radioShowcase: ShowcaseSpec = {
       ),
     },
     {
+      name: "size=sm（密集界面）",
+      render: () => (
+        <RadioGroup orientation="horizontal" defaultValue="y" aria-label="sm">
+          <Radio value="y" size="sm" label="至今" />
+          <Radio value="n" size="sm" label="已结束" labelClassName="text-muted-foreground" />
+        </RadioGroup>
+      ),
+    },
+    {
       name: "in-field",
       render: () => (
         <Field label="套餐" error="请选择一个套餐" className="w-72">

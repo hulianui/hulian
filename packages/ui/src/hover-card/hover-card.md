@@ -70,6 +70,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 - 本组件已按 [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]] 把焦点交还语义关掉（不在打开时夺取焦点），避免 hover + focus 在 focus-managing popover 上 ping-pong 无限闪烁；若 fork 改造别重新打开焦点托管。
 - 用 `openDelay`/`closeDelay` 调防误触，别把 `closeDelay` 设 0，否则光标在 trigger 与卡片间移动的瞬间会闪关。
+- `HoverCardContent` 继承 div 原生属性，可直接挂 `data-testid` / `role` / `aria-*` / `onClick`。卡片虽被 portal 出去，合成事件仍沿 **React 树**冒泡回触发器所在的父元素，所以卡片挂在整块可点的行/卡里时要自己 `onClick={(e) => e.stopPropagation()}`，否则点卡片内容会顺手触发整行的 `onClick`。透传的 `onMouseEnter` / `onMouseLeave` 与内部计时器是**合并**而不是覆盖，不会因此把卡片弄关。
 
 ## 相关
 [Dialog](../dialog/dialog.md) · [Modal](../modal/modal.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Drawer](../drawer/drawer.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md)

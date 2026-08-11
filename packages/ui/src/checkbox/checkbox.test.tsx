@@ -63,3 +63,41 @@ describe("Checkbox", () => {
     expect(queryByText("同意条款")).toBeTruthy();
   });
 });
+
+describe("size 与 labelClassName（#199）", () => {
+  const box = (c: HTMLElement) => c.querySelector('[role="checkbox"]')!;
+
+  it("默认 md：方盒 20px + 勾号 14px", () => {
+    const { container } = render(<Checkbox defaultChecked aria-label="c" />);
+    expect(box(container).className).toContain("size-5");
+    expect(container.querySelector('[data-icon="check"]')!.getAttribute("class")).toContain("size-3.5");
+  });
+
+  it("sm：方盒与勾号一起缩（勾号不跟着缩就会顶满方盒，这才是压不下去的原因）", () => {
+    const { container } = render(<Checkbox defaultChecked size="sm" aria-label="c" />);
+    expect(box(container).className).toContain("size-4");
+    expect(box(container).className).not.toContain("size-5");
+    expect(container.querySelector('[data-icon="check"]')!.getAttribute("class")).toContain("size-3");
+  });
+
+  it("sm 的半选横线同样跟着缩", () => {
+    const { container } = render(<Checkbox indeterminate size="sm" aria-label="c" />);
+    expect(container.querySelector('[data-icon="dash"]')!.getAttribute("class")).toContain("size-3");
+  });
+
+  it("sm 的 label 走 text-xs，md 走 text-sm", () => {
+    const { getByText: sm } = render(<Checkbox size="sm" label="长期有效" />);
+    expect(sm("长期有效").className).toContain("text-xs");
+    const { getByText: md } = render(<Checkbox label="同意条款" />);
+    expect(md("同意条款").className).toContain("text-sm");
+  });
+
+  it("labelClassName 落到文字而非方盒（className 够不到文字）", () => {
+    const { container, getByText } = render(
+      <Checkbox label="必填" className="ring-2" labelClassName="text-muted-foreground" />,
+    );
+    expect(getByText("必填").className).toContain("text-muted-foreground");
+    expect(box(container).className).toContain("ring-2");
+    expect(box(container).className).not.toContain("text-muted-foreground");
+  });
+});

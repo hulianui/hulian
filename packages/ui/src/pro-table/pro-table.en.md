@@ -111,6 +111,7 @@ Inherited Table events include sorting, selection, expansion, and column-filter 
 
 - In managed mode, `data`, `pagination`, and `loading` are ignored. Cursor mode has no total or random page jump; changing filters, sorting, or page size resets to page one.
 - Supply `getRowId` in managed mode so selection remains stable across pages. `batchActions` also requires enabled selection and at least one selected row.
+- **Row selection is controlled by whether you pass `rowSelection`, not by whether the table is managed.** Passing it makes selection controlled, so pass `onRowSelectionChange` too — without it nothing can be selected and only a dev warning says why. Omit both and the component holds selection internally. Through 0.29.0 managed mode always held selection and silently discarded these two props: the table looked completely normal, checkboxes toggled and the header box went indeterminate, yet the consumer state stayed `{}` until submit produced an empty array (#202).
 - Request rejection falls back to `console.error`; use `onRequestError` for a production toast or report.
 - `request` is held in a ref. Inline functions do not loop, but replacing only the function does not reload; change `params` or call `actionRef.reload()`.
 - `defaultSorting` is an uncontrolled initial value. Later changes do not overwrite user sorting; remount with a key or use controlled `sorting`.

@@ -173,6 +173,7 @@ Checkbox and radio items (the current value carries a tick):
 - `MenuRadioItem` must be nested in a `MenuRadioGroup`. The group owns the selected value, so an item placed directly in `MenuContent` never renders a selected state.
 - The selection marker occupies a first column as wide as the `size-4` icon of a plain `MenuItem`, so text left edges line up when plain and selectable items share one menu. Keep icons on plain items at `size-4` for that alignment to hold.
 - [[base-ui-menu-group-label-requires-menu-group-wrapper]]: placing `MenuGroupLabel` directly in `MenuContent` throws `MenuGroupRootContext is missing` as soon as the menu opens. Always wrap a group label in `MenuGroup`.
+- The menu ships with `max-h-[min(24rem,var(--available-height))] overflow-y-auto`: no visual difference when everything fits, internal scrolling once it does not. This is a library-level guarantee rather than something every consumer must remember, because the popup is fixed-positioned — whatever overflows the viewport is neither clickable nor reachable by page scroll, and it only shows up once the data grows (three items in development, forty in production). Override `max-h-*` through `className` for a different ceiling. `ContextMenu` behaves the same.
 
 ## Related
 [Navbar](../navbar/navbar.md) · [BeianFooter](../beian-footer/beian-footer.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

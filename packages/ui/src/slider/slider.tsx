@@ -11,13 +11,33 @@ const thumbCls = cn(
   "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-bg",
 );
 
-function SliderImpl({ className, showValue, ...props }: SliderProps) {
+function SliderImpl({ className, showValue, thumbAriaLabel, ...props }: SliderProps) {
   const current = props.value ?? props.defaultValue;
   const isRange = Array.isArray(current);
+
+  // Root 渲染出来是 role="group"，而真正被 Tab 聚焦、被读屏当作滑块播报的是 thumb 里那个
+  // 视觉隐藏的 <input type="range">。名字只挂在 Root 上时，读屏进组念一次组名，焦点落到滑块
+  // 上却播报「滑块，100」——控件本身没有名字（#200）。Base UI 的 Thumb 会把 aria-label 转到
+  // 内部 input 上，所以名字要往下走一层。
+  //
+  // 单值滑块是**转移**而不是复制：group 里只有一个控件时组名没有信息增量，两处同名会让读屏
+  // 把同一句话念两遍，也让「按名字找控件」变成歧义（这正是原生 <input type="range"> + <label>
+  // 的形态——名字只在控件上）。range 才保留组名，因为那时组里确实有两个控件。
+  const rootLabel = props["aria-label"];
+  const rootLabelledBy = props["aria-labelledby"];
+  const nameMovesToThumb = !isRange;
+  const thumbA11y = (index: 0 | 1) => {
+    const label = Array.isArray(thumbAriaLabel) ? thumbAriaLabel[index] : thumbAriaLabel ?? rootLabel;
+    if (label != null) return { "aria-label": label };
+    // 名字由页面上的可见文本承担时，把同一份 labelledby 指过去。
+    return rootLabelledBy != null ? { "aria-labelledby": rootLabelledBy } : {};
+  };
 
   return (
     <BaseSlider.Root
       {...props}
+      aria-label={nameMovesToThumb ? undefined : rootLabel}
+      aria-labelledby={nameMovesToThumb ? undefined : rootLabelledBy}
       className={cn(
         "w-full select-none data-[disabled]:opacity-50 data-[disabled]:pointer-events-none",
         className,
@@ -33,11 +53,11 @@ function SliderImpl({ className, showValue, ...props }: SliderProps) {
           <BaseSlider.Indicator className="rounded-full bg-primary" />
           {isRange ? (
             <>
-              <BaseSlider.Thumb index={0} className={thumbCls} />
-              <BaseSlider.Thumb index={1} className={thumbCls} />
+              <BaseSlider.Thumb index={0} className={thumbCls} {...thumbA11y(0)} />
+              <BaseSlider.Thumb index={1} className={thumbCls} {...thumbA11y(1)} />
             </>
           ) : (
-            <BaseSlider.Thumb className={thumbCls} />
+            <BaseSlider.Thumb className={thumbCls} {...thumbA11y(0)} />
           )}
         </BaseSlider.Track>
       </BaseSlider.Control>

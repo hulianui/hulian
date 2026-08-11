@@ -28,6 +28,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | Border, raised shadow, emphasized, or no chrome at all. |
+| divided | `boolean` | `true` | Whether a rule separates `CardHeader` / `CardFooter` from the body. Setting `false` removes both rules and tightens the padding they used to hold open. |
 
 `CardHeader`, `CardBody`, and `CardFooter` accept native div properties and `children`.
 
@@ -46,6 +47,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 - Do not wrap loading skeletons in Card. [[loading-skeletons-are-chromeless-dont-wrap-in-card]] explains why shimmer placeholders conventionally avoid borders and shadows.
 - A fixed outer minimum height combined with flex stretching can push a final metadata row outside the card background; see [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]].
+- `divided={false}` applies only to the **direct children** `CardHeader` and `CardFooter`, so a nested card does not inherit the outer value and must opt out itself. It is not delivered through context either: Card still has no `"use client"` and works inside a server component.
 
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

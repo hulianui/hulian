@@ -6,6 +6,7 @@ import { Button } from "../button/button";
 import { Checkbox } from "../checkbox/checkbox";
 import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { Pagination } from "../pagination/pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
@@ -170,11 +171,25 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   }
   const paramsVersion = paramsState.version;
 
-  // 行选择：托管模式（或需要批量条）由本层持有，以便观测选中集合。
-  const selfControlSelection = managed || batchActions != null;
+  // 行选择：判据是「消费方有没有接管」，不是「是不是托管模式」（#202）。
+  //
+  // 旧口径下托管模式一律自持，传进来的 rowSelection / onRowSelectionChange 被直接丢弃且无任何
+  // 告警——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 {}，
+  // 直到提交时拿到空数组才暴露。tsc、guard、控制台全都发现不了。
+  //
+  // 现在与 sorting 同一套约定：传了就受控，没传才内部自持（托管拉数与批量条都只需要能**读到**
+  // 选中集合，读 rowSelection 这个统一出口即可，不必非得由本层持有）。
+  const controlledSelection = rowSelectionProp != null;
   const [internalSelection, setInternalSelection] = useState<RowSelectionState>({});
-  const rowSelection = selfControlSelection ? internalSelection : rowSelectionProp;
-  const setSelection = selfControlSelection ? setInternalSelection : onRowSelectionChange;
+  const rowSelection = controlledSelection ? rowSelectionProp : internalSelection;
+  const setSelection = controlledSelection ? onRowSelectionChange : setInternalSelection;
+  if (controlledSelection && onRowSelectionChange == null) {
+    // 受控但没给出口 = 勾不动，且和「组件坏了」长得一模一样。
+    warnOnce(
+      "pro-table/controlled-selection-without-handler",
+      "[hulian] ProTable：传了 rowSelection 却没传 onRowSelectionChange，选择态将无法变更。要内部自持选择就别传 rowSelection。",
+    );
+  }
 
   const sortParam = useMemo(() => toProSort(sorting), [sorting]);
   const filtersKey = JSON.stringify(filters);

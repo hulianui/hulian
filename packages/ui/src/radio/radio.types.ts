@@ -30,8 +30,17 @@ export interface RadioProps extends HTMLAttributes<HTMLElement> {
    */
   children?: ReactNode;
   id?: string;
+  /**
+   * 尺寸档，圈与内点一起缩放（#199）。@default "md"（圈 20px / 点 10px / label text-sm）
+   * `"sm"` 是 16px / 8px / text-xs，对齐 Input、SelectTrigger 的 size="sm"。
+   */
+  size?: "sm" | "md";
   /** 落在点 Radio.Root。 */
   className?: string;
+  /**
+   * 落在文字 `<span>`，用来改字号 / 颜色（`className` 够不到它——那个落在圈上）。
+   */
+  labelClassName?: string;
   /**
    * 无障碍名。**不给 label、或 label 是图标/纯视觉内容时必须给** ——
    * 否则读屏用户听到的只是「单选按钮」，拿不到这是哪个选项。

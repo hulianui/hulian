@@ -23,7 +23,8 @@ const overlayTransition = {
 
 // 面板皮肤（主菜单 / 子菜单共用），抽常量避免漂移。
 const popupClass =
-  "min-w-[8rem] rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0";
+  // 高度上限同 Menu（#198）：右键菜单同样可能被数据撑长，溢出视口的部分点不到也滚不出来。
+  "max-h-[min(24rem,var(--available-height))] min-w-[8rem] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0";
 
 export function ContextMenu(props: ComponentProps<typeof BaseContextMenu.Root>) {
   return <BaseContextMenu.Root {...props} />;

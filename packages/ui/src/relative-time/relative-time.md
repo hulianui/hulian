@@ -10,7 +10,7 @@ status: enriched
 
 # RelativeTime
 
-> 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> 语义 + title 绝对时间 + SSR 安全(suppressHydrationWarning) · data-display/info
+> 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> 语义 + title 绝对时间 + SSR 安全(首帧不读系统时钟) · data-display/info
 
 ## 何时用
 
@@ -45,7 +45,8 @@ import { RelativeTime, formatRelative, formatAbsolute } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 不传 `base` = 走实时 tick（client 刷新）；要 SSR 确定性 / 测试可复现 / 列表统一基准就传固定 `base`，否则各行各自取 `new Date()` 抖动。
-- 组件已用 `<time>` + `suppressHydrationWarning` 处理 SSR 水合差异，按需在 server 渲染无需额外包装。
+- 不传 `base` 时**首帧渲染的是绝对时间**（`YYYY-MM-DD HH:mm`），挂载后才换成相对串。这是刻意的：渲染期读系统时钟会把「构建时刻」烤进 SSR / 静态导出产物，页面几个月后被访问仍写着「1 分钟前」，而绝对时间只依赖 `value`，任何时刻都成立。另一个候选是首帧以 `value` 自身为基准渲成「刚刚」，没选它——那是一句会被爬虫和关掉 JS 的读者当真的假话。切换发生在浏览器绘制前（layout effect），肉眼看不到跳变；要首帧就是相对串，传 `base` 自己钉基准。
+- `<time>` 上的 `suppressHydrationWarning` 现在只兜**消费方传入的 `value` 两端不同**（如 `value={new Date()}`，此时 `dateTime` 属性本身就是两个值），组件自身不再制造差异。别把它当作「value 可以随便传」的许可。
 - 大量同页实例默认每个都开 60s tick，超长列表可设 `updateInterval={0}` 或统一传 `base` 降低重渲染。
 
 ## 相关

@@ -213,3 +213,21 @@ describe("Menu", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("MenuContent 高度上限（#198）", () => {
+  it("项数一多时改为滚动，而不是长出视口（浮层是 fixed 的，溢出那截点不到）", () => {
+    render(
+      <Menu defaultOpen>
+        <MenuTrigger>打开</MenuTrigger>
+        <MenuContent>
+          {Array.from({ length: 40 }, (_, i) => (
+            <MenuItem key={i}>选项 {i + 1}</MenuItem>
+          ))}
+        </MenuContent>
+      </Menu>,
+    );
+    const popup = screen.getByRole("menu");
+    expect(popup.className).toContain("max-h-[min(24rem,var(--available-height))]");
+    expect(popup.className).toContain("overflow-y-auto");
+  });
+});

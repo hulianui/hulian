@@ -32,14 +32,29 @@ export function RadioGroup({
 
 // 圈皮肤：复用 Switch 配方。disabled 用 data-[disabled]（Root 是 span）。
 const dotClass = cn(
-  "size-5 shrink-0 grid place-items-center rounded-full border border-border bg-surface transition-colors outline-none",
+  "shrink-0 grid place-items-center rounded-full border border-border bg-surface transition-colors outline-none",
   "data-[checked]:border-primary",
   "data-[invalid]:border-danger",
   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
   "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
 );
 
-export function Radio({ value, disabled, label, children, id, className, ...a11y }: RadioProps) {
+// 尺寸档与 Checkbox 同构（#199）：圈与内点一起缩放，否则圈压到 16px 时内点占比失衡。
+const ringSizeClass = { sm: "size-4", md: "size-5" } as const;
+const innerDotSizeClass = { sm: "size-2", md: "size-2.5" } as const;
+const labelSizeClass = { sm: "text-xs", md: "text-sm" } as const;
+
+export function Radio({
+  value,
+  disabled,
+  label,
+  children,
+  id,
+  className,
+  size = "md",
+  labelClassName,
+  ...a11y
+}: RadioProps) {
   // children 与 label 等价（#183）：`<Radio value="1">审核通过</Radio>` 是 el-radio / antd Radio
   // 迁过来的恒定写法，也是 React 生态直觉。此前 children 既没被解构、又被 Root 上显式的
   // Indicator 子节点盖掉，结果是「类型放行、运行时什么都不渲染」——三道门禁全绿，只能靠肉眼截图发现。
@@ -52,9 +67,12 @@ export function Radio({ value, disabled, label, children, id, className, ...a11y
       disabled={disabled}
       id={id}
       {...a11y}
-      className={cn(dotClass, className)}
+      className={cn(dotClass, ringSizeClass[size], className)}
     >
-      <BaseRadio.Indicator data-icon="dot" className="size-2.5 rounded-full bg-primary" />
+      <BaseRadio.Indicator
+        data-icon="dot"
+        className={cn(innerDotSizeClass[size], "rounded-full bg-primary")}
+      />
     </BaseRadio.Root>
   );
 
@@ -63,7 +81,16 @@ export function Radio({ value, disabled, label, children, id, className, ...a11y
   return (
     <label className="inline-flex items-center gap-2">
       {dot}
-      <span className={cn("text-sm text-foreground select-none", disabled && "opacity-50")}>{text}</span>
+      <span
+        className={cn(
+          labelSizeClass[size],
+          "text-foreground select-none",
+          disabled && "opacity-50",
+          labelClassName,
+        )}
+      >
+        {text}
+      </span>
     </label>
   );
 }

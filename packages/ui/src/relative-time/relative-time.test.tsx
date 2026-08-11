@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
@@ -69,5 +69,42 @@ describe("RelativeTime 组件", () => {
     );
     expect(getByText("5m ago")).toBeTruthy();
     expect(getByText("5分钟前")).toBeTruthy();
+  });
+});
+
+describe("时钟基准（#181 同类）", () => {
+  it("首帧不读系统时钟：相隔半年的两次 renderToString 产物逐字节相同", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const target = ago(5 * 60);
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+    const atBuildTime = renderToString(<RelativeTime value={target} />);
+    vi.setSystemTime(new Date("2027-01-01T00:00:00Z"));
+    const halfYearLater = renderToString(<RelativeTime value={target} />);
+    vi.useRealTimers();
+    // 服务端那一帧只由 value 决定；否则构建时刻就被烤进静态产物
+    expect(atBuildTime).toBe(halfYearLater);
+  });
+
+  it("无 base 时首帧落绝对时间（无 JS 时的正确降级），不含相对串", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const target = ago(5 * 60);
+    const html = renderToString(<RelativeTime value={target} />);
+    expect(html).toContain(formatAbsolute(target));
+    expect(html).not.toContain("5分钟前");
+  });
+
+  it("挂载后换成相对串", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+    const { getByText } = render(<RelativeTime value={ago(5 * 60)} />);
+    expect(getByText("5分钟前")).toBeTruthy();
+    vi.useRealTimers();
+  });
+
+  it("传 base 时首帧就是相对串（基准由消费方钉死，SSR 确定）", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const html = renderToString(<RelativeTime value={ago(5 * 60)} base={now} />);
+    expect(html).toContain("5分钟前");
   });
 });

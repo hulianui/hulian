@@ -128,3 +128,40 @@ describe("RadioGroup / Radio", () => {
     expect(container.querySelector('[role="radio"]')!.getAttribute("children")).toBeNull();
   });
 });
+
+describe("Radio size 与 labelClassName（#199）", () => {
+  const ring = (c: HTMLElement) => c.querySelector('[role="radio"]')!;
+
+  it("默认 md：圈 20px + 内点 10px", () => {
+    const { container } = render(
+      <RadioGroup defaultValue="a" aria-label="g">
+        <Radio value="a" />
+      </RadioGroup>,
+    );
+    expect(ring(container).className).toContain("size-5");
+    expect(container.querySelector('[data-icon="dot"]')!.getAttribute("class")).toContain("size-2.5");
+  });
+
+  it("sm：圈与内点一起缩", () => {
+    const { container } = render(
+      <RadioGroup defaultValue="a" aria-label="g">
+        <Radio value="a" size="sm" />
+      </RadioGroup>,
+    );
+    expect(ring(container).className).toContain("size-4");
+    expect(ring(container).className).not.toContain("size-5");
+    const dot = container.querySelector('[data-icon="dot"]')!.getAttribute("class")!;
+    expect(dot).toContain("size-2");
+    expect(dot).not.toContain("size-2.5");
+  });
+
+  it("labelClassName 落到文字，className 仍落在圈上", () => {
+    const { container, getByText } = render(
+      <RadioGroup defaultValue="a" aria-label="g">
+        <Radio value="a" label="至今" className="ring-2" labelClassName="text-xs text-muted-foreground" />
+      </RadioGroup>,
+    );
+    expect(getByText("至今").className).toContain("text-muted-foreground");
+    expect(ring(container).className).toContain("ring-2");
+  });
+});

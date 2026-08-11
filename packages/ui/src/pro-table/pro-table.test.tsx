@@ -717,3 +717,100 @@ describe("ProTable 虚拟滚动透传", () => {
     expect(container.querySelector('div[style*="overflow"]')).toBeNull();
   });
 });
+
+describe("托管模式下的受控行选择（#202）", () => {
+  const cols: ColumnDef<Row, any>[] = [
+    { accessorKey: "id", header: "工号" },
+    { accessorKey: "name", header: "姓名" },
+  ];
+  const makeRequest = () =>
+    vi.fn(async (_p: ProTableRequestParams) => ({ data: [{ id: 1, name: "甲" }], total: 1 }));
+
+  it("勾选会触发消费方的 onRowSelectionChange（旧口径下它从不触发，state 恒为 {}）", async () => {
+    const onChange = vi.fn();
+    const { getByLabelText, getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={makeRequest()}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        rowSelection={{}}
+        onRowSelectionChange={onChange}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByLabelText("选择行"));
+    expect(onChange).toHaveBeenCalled();
+  });
+
+  it("传进来的 rowSelection 会回灌到表格（选中态由消费方说了算）", async () => {
+    const { getByLabelText, getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={makeRequest()}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        rowSelection={{ "1": true }}
+        onRowSelectionChange={vi.fn()}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(getByLabelText("选择行").hasAttribute("data-checked")).toBe(true);
+  });
+
+  it("受控选择集合同样喂给 batchActions（批量条读的是统一出口，不必由本层持有）", async () => {
+    const onBatch = vi.fn();
+    const { getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={makeRequest()}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        rowSelection={{ "1": true }}
+        onRowSelectionChange={vi.fn()}
+        batchActions={({ selectedRowKeys }) => (
+          <button onClick={() => onBatch(selectedRowKeys)}>批量删除</button>
+        )}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByText("批量删除"));
+    expect(onBatch).toHaveBeenCalledWith(["1"]);
+  });
+
+  it("不传 rowSelection 时仍内部自持（托管 + 批量条的既有用法不变）", async () => {
+    const onBatch = vi.fn();
+    const { getByLabelText, getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={makeRequest()}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        batchActions={({ selectedRowKeys }) => (
+          <button onClick={() => onBatch(selectedRowKeys)}>批量删除</button>
+        )}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByLabelText("选择行"));
+    await waitFor(() => expect(getByText("已选 1 项")).toBeTruthy());
+    fireEvent.click(getByText("批量删除"));
+    expect(onBatch).toHaveBeenCalledWith(["1"]);
+  });
+
+  it("受控却没给 onRowSelectionChange 时 dev 告警（勾不动和「组件坏了」长得一样）", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={makeRequest()}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        rowSelection={{}}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(warn.mock.calls.some((c) => String(c[0]).includes("onRowSelectionChange"))).toBe(true);
+    warn.mockRestore();
+  });
+});

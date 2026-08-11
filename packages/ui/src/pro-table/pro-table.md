@@ -115,6 +115,7 @@ import { ProTable } from "@hulianui/ui"
 
 - 托管模式（传 `request`）下 `data`/`pagination`/`loading` 三个 prop 被忽略——别两种模式混用。cursor 分页无 total/不能随机跳页，且 filters/sort/pageSize 任一变化会自动重置回第 1 页。
 - 托管模式必须给 `getRowId`，否则行选择/批量在翻页后 key 不稳。
+- **行选择的判据是「你有没有接管」，不是「是不是托管模式」**：传了 `rowSelection` 就走受控（须同时给 `onRowSelectionChange`，否则勾不动且只有 dev 告警提示），不传才由组件内部自持。0.29.0 及之前托管模式一律自持、把这两个 prop 静默丢弃——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 `{}`，直到提交时拿到空数组才暴露（#202）。
 - `request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。
 - `batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。
 - **`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。

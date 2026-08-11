@@ -72,6 +72,26 @@ export const cardShowcase: ShowcaseSpec = {
 </Card>`,
       render: () => <Demo variant="outline" withFooter={false} />,
     },
+    {
+      title: "去掉分区分隔线",
+      description: "divided={false} 让标题区与正文成为同一块，并顺带收掉分隔线撑着的那段内边距。",
+      code: `<Card divided={false} className="w-64">
+  <CardHeader>待办审批</CardHeader>
+  <CardBody>三条待办等待处理。</CardBody>
+</Card>`,
+      render: () => (
+        <div className="flex gap-4">
+          <Card className="w-56">
+            <CardHeader>有分隔线</CardHeader>
+            <CardBody>默认形态，标题与正文被一条线切开。</CardBody>
+          </Card>
+          <Card divided={false} className="w-56">
+            <CardHeader>无分隔线</CardHeader>
+            <CardBody>标题与正文是同一块。</CardBody>
+          </Card>
+        </div>
+      ),
+    },
   ],
   controls: [
     {
@@ -95,6 +115,16 @@ export const cardShowcase: ShowcaseSpec = {
       ),
     },
     { name: "无 footer", render: () => <Demo variant="outline" withFooter={false} /> },
+    {
+      name: "divided={false}（分区无线）",
+      render: () => (
+        <Card divided={false} className="w-64">
+          <CardHeader>待办审批</CardHeader>
+          <CardBody>标题区与内容区在视觉上是同一块。</CardBody>
+          <CardFooter>共 3 条</CardFooter>
+        </Card>
+      ),
+    },
   ],
   renderWithProps: (p) => (
     <Demo variant={p.variant as CardVariant} withFooter={p.withFooter as boolean} />

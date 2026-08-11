@@ -112,6 +112,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 - `tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone="success" variant="outline"`，别去 `className` 里覆盖背景色。
 - `tone="neutral"` 的 `solid` 是**反色**（亮色下深底白字、暗色下浅底深字），不是灰底。灰底实心与 `variant="outline"` 几乎不可分辨，等于白开一档。
 - 自定义往按钮里塞图标+文字（尤其在特效按钮里）若图标掉到下一行，是 Tailwind Preflight 把 `svg{display:block}` 撑成块级所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——容器要 `inline-flex`，本 Button 已处理，自搓 wrapper 时注意。
+- 次级控件要表达「开/关」用 `variant="soft"`（浅语义底 + 语义文字），别在 `className` 里写 `bg-primary/10 text-primary` 顶色，也别退回 `solid` —— 一排 h-7 的工具栏控件里冒出一个实心主色块，视觉权重会盖过页面主操作。`soft` 与 `tone` 全族组合，典型写法是 `variant={isActive ? "soft" : "outline"}`。注意它不渲染 `aria-pressed`：真正的开关请用 [Toggle](../toggle/toggle.md)，`soft` 只适合「本身不 toggle、只是显示当前已生效」的触发器（如打开菜单的排序芯片）。
 
 ## 相关
 [ShimmerButton](../shimmer-button/shimmer-button.md) · [RainbowButton](../rainbow-button/rainbow-button.md) · [PulsatingButton](../pulsating-button/pulsating-button.md) · [RippleButton](../ripple-button/ripple-button.md) · [ButtonGroup](../button-group/button-group.md) · [SocialButton](../social-button/social-button.md)

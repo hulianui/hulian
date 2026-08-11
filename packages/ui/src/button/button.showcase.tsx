@@ -7,14 +7,16 @@ export const buttonShowcase: ShowcaseSpec = {
   examples: [
     {
       title: "基础用法",
-      description: "默认实心按钮，另有描边、幽灵、文字链接 4 种变体。",
+      description: "默认实心按钮，另有浅底、描边、幽灵、文字链接共 5 种变体。",
       code: `<Button>默认</Button>
+<Button variant="soft">浅底</Button>
 <Button variant="outline">描边</Button>
 <Button variant="ghost">幽灵</Button>
 <Button variant="link">文字链接</Button>`,
       render: () => (
         <>
           <Button>默认</Button>
+          <Button variant="soft">浅底</Button>
           <Button variant="outline">描边</Button>
           <Button variant="ghost">幽灵</Button>
           <Button variant="link">文字链接</Button>
@@ -158,7 +160,12 @@ export const buttonShowcase: ShowcaseSpec = {
     },
   ],
   controls: [
-    { prop: "variant", type: "select", options: ["solid", "outline", "ghost", "link"], defaultValue: "solid" },
+    {
+      prop: "variant",
+      type: "select",
+      options: ["solid", "soft", "outline", "ghost", "link"],
+      defaultValue: "solid",
+    },
     {
       prop: "tone",
       type: "select",

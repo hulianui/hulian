@@ -34,6 +34,7 @@ Accepts Base UI `Slider.Root` props except `render` and `children`. A numeric `v
 | step | `number` | `1` | step amount |
 | disabled | `boolean` | `false` | Disable |
 | showValue | `boolean` | `false` | Shows the current `Slider.Value` above the track. |
+| thumbAriaLabel | `string \| [string, string]` | — | Accessible name for the thumb. Falls back to the Root `aria-label`; pass a two-item tuple to name each thumb of a range separately. |
 | className | `string` | — | Root wrapper className |
 
 > The remaining props of Base UI `Slider.Root` (`name`, `orientation`, etc.) are transparently transmitted as they are.
@@ -62,6 +63,7 @@ Range:
 - Pass a `number` for one thumb and `number[]` for a range; there is no separate range prop.
 - Set `showValue` to display the numeric readout; it is hidden by default.
 - `className` applies to the Root wrapper. Supply a width such as `w-64`, or the slider may collapse to its content width.
+- **`aria-label` lands somewhere else than you wrote it**: on a single-value slider it moves to the thumb (the visually hidden `<input type="range">`) instead of staying on the Root. The Root is a `role="group"`, and a name there leaves screen readers announcing just “slider, 100” once focus reaches the control. Since the group holds exactly one control this is a move rather than a copy — duplicating the name would have it announced twice and would make name-based queries such as `getByLabelText` match two elements. A range keeps the group name; use `thumbAriaLabel` with a two-item tuple there, or both thumbs sound identical.
 
 ## Related
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md)

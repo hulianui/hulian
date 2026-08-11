@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import type { RelativeTimeLocale, RelativeTimeProps } from "./relative-time.types";
@@ -71,6 +71,9 @@ export function formatRelative(target: Date, now: Date, locale: RelativeTimeLoca
   return wrap(Math.floor(sec / YEAR), t.year);
 }
 
+// SSR/jsdom 安全：浏览器用 layout effect（绘制前切换，肉眼无闪），服务端降级为普通 effect（不执行）。
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /** 纯函数：本地绝对时间 `YYYY-MM-DD HH:mm`（title 用）。 */
@@ -91,10 +94,15 @@ export function RelativeTime({
   const componentLocale = useComponentLocale();
   const resolvedLocale = locale ?? componentLocale.relativeTime?.locale ?? "zh";
   const target = toDate(value);
-  // 受控 base → 固定基准、不 tick；否则实时 now 并定时刷新。
-  const [now, setNow] = useState<Date>(() => (base != null ? toDate(base) : new Date()));
+  // 受控 base → 固定基准、不 tick；否则「现在」在**挂载后**才取，渲染期一律不读系统时钟（#181 同类）。
+  //
+  // 渲染期读时钟在 SSR / 静态导出下是把「构建时刻」烤进产物：服务端那次渲染发生在构建时，
+  // 页面可能几个月后才被访问，产物里却写死着「1 分钟前」。JS 挂载前的首屏、爬虫、以及关掉
+  // JS 的读者拿到的就是这句陈旧且无法自证的假话。`useMemo(fn, [])` 救不了：它只保证一次
+  // 渲染树内稳定，服务端与客户端本就是两次独立求值。
+  const [now, setNow] = useState<Date | null>(() => (base != null ? toDate(base) : null));
 
-  useEffect(() => {
+  useIsoLayoutEffect(() => {
     if (base != null) {
       setNow(toDate(base));
       return;
@@ -110,11 +118,14 @@ export function RelativeTime({
     <time
       dateTime={target.toISOString()}
       title={withTitle ? formatAbsolute(target) : undefined}
-      // 服务端渲染的相对串与客户端 hydration 时刻必然有秒级差 → 抑制该 <time> 的 hydration 警告
+      // 组件自身已不制造两端差异（首帧不读时钟）；这里只兜消费方传入的 value 本身两端不同的
+      // 情况（如 value={new Date()}），避免单个时间戳把整棵树的 hydration 拖崩。
       suppressHydrationWarning
       className={cn("tabular-nums", className)}
     >
-      {formatRelative(target, now, resolvedLocale)}
+      {/* 首帧（= SSR 那一帧）落绝对时间：它只依赖 value，任何时刻都成立，是无 JS 时的正确降级。
+          挂载后经 layout effect 在浏览器绘制前换成相对串，用户看到的是「进来就是相对时间」。 */}
+      {now == null ? formatAbsolute(target) : formatRelative(target, now, resolvedLocale)}
     </time>
   );
 }

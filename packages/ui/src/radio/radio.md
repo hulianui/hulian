@@ -43,7 +43,9 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | value * | `string` | — | 必填，标识该选项 |
 | disabled | `boolean` | `false` | 单项禁用 |
 | id | `string` | — | — |
-| className | `string` | — | 落在 Radio.Root |
+| size | `"sm" \| "md"` | `"md"` | 尺寸档，圈与内点一起缩放。`md` = 20px/10px/`text-sm`，`sm` = 16px/8px/`text-xs` |
+| className | `string` | — | 落在 Radio.Root（圈），够不到文字 |
+| labelClassName | `string` | — | 落在文字 `<span>`，用来改字号 / 颜色 |
 | aria-label | `string` | — | 无障碍名。**不给 `label`、或 `label` 是图标/纯视觉内容时必须给** |
 | aria-labelledby | `string` | — | 用页面上已有元素充当名字（填其 id），与 `aria-label` 二选一 |
 | aria-describedby | `string` | — | 补充描述（填元素 id），如该选项的说明文字 |
@@ -95,6 +97,8 @@ const [value, setValue] = useState("standard");
 - 用 `value`/`onValueChange` 即受控，须自管 state；只给初值用 `defaultValue`，二者不要混用。
 - 无可见标题的单选组要给 `aria-label`，否则无障碍读屏无名。
 - **不给 `label` 的 `Radio`（图标卡片、自定义排版）必须自带 `aria-label` 或 `aria-labelledby`**，否则读屏只报「单选按钮」，用户不知道自己在选哪一项——这不只是测试不好写，是真实的可访问性缺陷。`label` 传的是图标之类的非文本 `ReactNode` 时同理。
+- 自己写 `<label>` 把 Radio 包起来是**成立的**，不用手写 `onClick` 转发：Root 渲染出来是 `<span role="radio">`（不是可被 label 关联的元素），看 DOM 容易以为隐式关联不生效，但 Base UI 在里面留了一个视觉隐藏的原生 input 承载激活。排版特殊到 `size` + `labelClassName` 也收不住时就这么用。
+- 但别在包裹的同时再给 `<label htmlFor>` 指向 Root 的 `id`：显式 `htmlFor` 会**压过**隐式关联，两者并存的结果是点文字彻底没反应。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Switch](../switch/switch.md)

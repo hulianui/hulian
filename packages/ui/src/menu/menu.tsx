@@ -39,7 +39,10 @@ export function MenuContent({
       <BaseMenu.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
         <BaseMenu.Popup
           className={cn(
-            "min-w-[8rem] rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none",
+            // 高度上限跟 Select / Combobox / TreeSelect 同一套：放得下时 min() 取 24rem 一档不产生
+            // 任何视觉差异；放不下时改为滚动，而不是让菜单项长到视口外——浮层是 fixed 的，溢出的
+            // 那截既点不到也滚不出来（#198）。
+            "max-h-[min(24rem,var(--available-height))] min-w-[8rem] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none",
             "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}

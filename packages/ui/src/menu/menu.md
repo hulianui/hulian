@@ -173,6 +173,7 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 - `MenuRadioItem` 必须放在 `MenuRadioGroup` 内 —— 互斥关系与选中值由组维护，单独放在 `MenuContent` 里不会有选中态。
 - 勾选标记占的是与 `MenuItem` 首个 `size-4` 图标同宽的第一列，所以同一个菜单里混用普通项与勾选项时文字左缘是齐的；给普通项配图标时同样用 `size-4`，别改成别的尺寸。
 - [[base-ui-menu-group-label-requires-menu-group-wrapper]]：`MenuGroupLabel` 直接放进 `MenuContent`（不裹 `MenuGroup`）会在「点开菜单」那一刻抛 `MenuGroupRootContext is missing`，触发器渲染正常但点击崩页 —— 分组标签必须包在 `MenuGroup` 里。
+- 菜单默认带 `max-h-[min(24rem,var(--available-height))] overflow-y-auto`：放得下时不产生任何视觉差异，项数一多就改为内部滚动。这是库内兜底而不是「每个消费方自己记得加」——浮层是 fixed 的，溢出视口那截既点不到、页面也滚不出来，而且只有等数据长起来才暴露（开发时 3 项、上线后 40 项）。要更矮/更高就在 `className` 上覆盖 `max-h-*`。`ContextMenu` 同款。
 
 ## 相关
 [Navbar](../navbar/navbar.md) · [BeianFooter](../beian-footer/beian-footer.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

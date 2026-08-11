@@ -20,18 +20,43 @@ export const cardVariants = cva("rounded-[var(--radius)] text-foreground transit
   defaultVariants: { variant: "outline" },
 });
 
-export function Card({ className, variant, ...props }: CardProps) {
-  return <div className={cn(cardVariants({ variant }), className)} {...props} />;
+// 分隔线同样是皮肤而不是结构，所以 divided=false 要能整卡关掉（#203 —— #159 那条原则延伸到分区）。
+// 走「Card 上的直接子选择器」而不是 context 下发：Card 至今没有 "use client"，为一个布尔值把整张卡
+// 拖进 client 边界不划算；限定直接子（>）则卡里套卡时外层的取值不会传染给内层。
+// 关线的同时收内边距：那段呼吸本来是分隔线撑着的，只去线会剩下一道无来由的留白。
+const undividedSlots =
+  "[&>[data-slot=card-header]]:border-b-0 [&>[data-slot=card-header]]:pb-2 " +
+  "[&>[data-slot=card-footer]]:border-t-0 [&>[data-slot=card-footer]]:pt-2";
+
+export function Card({ className, variant, divided, ...props }: CardProps) {
+  return (
+    <div
+      className={cn(cardVariants({ variant }), divided === false && undividedSlots, className)}
+      {...props}
+    />
+  );
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("border-b border-border px-5 py-3 font-medium", className)} {...props} />;
+  return (
+    <div
+      data-slot="card-header"
+      className={cn("border-b border-border px-5 py-3 font-medium", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardBody({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-5 py-4 text-sm", className)} {...props} />;
+  return <div data-slot="card-body" className={cn("px-5 py-4 text-sm", className)} {...props} />;
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("border-t border-border px-5 py-3 text-sm text-muted-foreground", className)} {...props} />;
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn("border-t border-border px-5 py-3 text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  );
 }

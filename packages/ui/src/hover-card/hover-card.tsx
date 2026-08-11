@@ -76,25 +76,38 @@ export function HoverCardContent({
   align = "center",
   sideOffset = 8,
   className,
+  onMouseEnter,
+  onMouseLeave,
+  style,
+  ...rest
 }: HoverCardContentProps) {
   const ctx = useContext(HoverCardContext);
   return (
     <BasePopover.Portal>
       <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
         <BasePopover.Popup
+          // 透传消费方的 div 属性（#201）。摆在最前是让内部关键 props 不被顶掉；指针进出与 style
+          // 这两项内部另有用途，单独取出与消费方的合并——直接覆盖会让指针移入卡片就把它关掉。
+          {...rest}
           // hover 卡片是非交互信息卡，绝不能抢焦点：否则「开→popup 抢焦点→触发器 onBlur 关
           // →Popover 关闭还原焦点回触发器→onFocus 又开」无限乒乓闪烁。initialFocus=false 开时不夺焦、
           // finalFocus=false 关时不还原 → 焦点始终留在触发器，与 Tooltip 同款焦点语义。
           initialFocus={false}
           finalFocus={false}
-          onMouseEnter={ctx?.open}
-          onMouseLeave={ctx?.close}
+          onMouseEnter={(e) => {
+            onMouseEnter?.(e);
+            ctx?.open();
+          }}
+          onMouseLeave={(e) => {
+            onMouseLeave?.(e);
+            ctx?.close();
+          }}
           className={cn(
             "w-[min(90vw,20rem)] rounded-[var(--radius)] border border-hairline bg-surface p-4 text-foreground shadow-xl outline-none",
             "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
-          style={overlayTransition}
+          style={{ ...overlayTransition, ...style }}
         >
           {children}
           {/* 箭头：同 Popover —— Base UI arrowStyles 只管交叉轴居中，垂直于边那轴要自己按 data-side

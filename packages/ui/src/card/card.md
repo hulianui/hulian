@@ -28,6 +28,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
+| divided | `boolean` | `true` | 是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档 |
 
 `CardHeader` / `CardBody` / `CardFooter` 均为插槽容器，接收原生 div 属性 + `children`。
 
@@ -46,6 +47,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 - 别用 Card 包 loading 骨架屏——参见 [[loading-skeletons-are-chromeless-dont-wrap-in-card]]：骨架按惯例是无边框无阴影的纯 shimmer 块，套 Card 会显得过重。
 - 列表/侧栏里 Card 末行(时间戳/meta 行)若设了外层 `min-height` 又用 flex 撑高，meta 行可能漏到卡片背景外——参见 [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]]。
+- `divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `"use client"`，能直接放进 server component 里用。
 
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

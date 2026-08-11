@@ -34,6 +34,7 @@ import { Slider } from "@hulianui/ui"
 | step | `number` | `1` | 步进量 |
 | disabled | `boolean` | `false` | 禁用 |
 | showValue | `boolean` | `false` | 在轨道上方显示当前数值读出（Slider.Value） |
+| thumbAriaLabel | `string ｜ [string, string]` | — | 手柄的无障碍名。省略时自动取 Root 的 `aria-label`；range 传二元组分别命名两个手柄 |
 | className | `string` | — | Root wrapper className |
 
 > 其余 Base UI `Slider.Root` 的 prop（`name`、`orientation` 等）原样透传。
@@ -62,6 +63,7 @@ import { Slider } from "@hulianui/ui"
 - 单值传 `number`、范围传 `number[]`——传数组即自动 range，别再找单独的 range prop。
 - 想看到数值读出需显式 `showValue`（默认不显示）。
 - `className` 落在 Root wrapper；宽度需自己给（如 `w-64`），否则可能塌成内容宽。
+- **`aria-label` 的落点会变**：单值滑块上它被移到手柄（那个视觉隐藏的 `<input type="range">`）而不是留在 Root——Root 是 `role="group"`，名字挂那儿时读屏在焦点落到滑块上只会念「滑块，100」。组里只有一个控件，所以是转移不是复制（两处同名会被念两遍，`getByLabelText` 之类按名字找控件也会撞到两个）。range 才保留组名，此时用 `thumbAriaLabel` 传二元组分别命名两个手柄，否则读屏听起来是两个一模一样的滑块。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md)

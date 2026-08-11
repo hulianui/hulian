@@ -135,3 +135,37 @@ describe("Button render（按钮样式的链接）", () => {
     expect(buttonVariants({})).not.toContain("w-full");
   });
 });
+
+describe("soft 变体（#197）", () => {
+  it("默认 tone=brand：浅主色底 + 主色文字 + 更深的 hover", () => {
+    const cls = buttonVariants({ variant: "soft" });
+    expect(cls).toContain("bg-primary/12");
+    expect(cls).toContain("text-primary");
+    expect(cls).toContain("hover:bg-primary/20");
+  });
+
+  it("与 outline+brand 渲染结果不同（旧口径下二者一致，激活与否分辨不出来）", () => {
+    expect(buttonVariants({ variant: "soft", tone: "brand" })).not.toBe(
+      buttonVariants({ variant: "outline", tone: "brand" }),
+    );
+  });
+
+  it("覆盖 tone 全族，且都不是实心语义底", () => {
+    for (const tone of ["brand", "success", "warning", "danger", "neutral"] as const) {
+      const cls = buttonVariants({ variant: "soft", tone });
+      expect(cls).toMatch(/bg-(primary|success|warning|danger|foreground)\/\d+/);
+      expect(cls).not.toContain("shadow-sm");
+    }
+  });
+
+  it("neutral 与其余四档同构（低透明度语义色底，亮暗自适应，不引新 token）", () => {
+    const cls = buttonVariants({ variant: "soft", tone: "neutral" });
+    expect(cls).toContain("bg-foreground/8");
+    expect(cls).toContain("hover:bg-foreground/14");
+  });
+
+  it("渲染到 DOM 上", () => {
+    const { getByRole } = rtlRender(<Button variant="soft">已激活的筛选</Button>);
+    expect(getByRole("button").className).toContain("bg-primary/12");
+  });
+});
