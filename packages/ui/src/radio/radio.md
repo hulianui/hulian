@@ -69,6 +69,7 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | label | `ReactNode` | 可选 inline label（点右，原生 `<label>` 关联） |
+| children | `ReactNode` | 与 `label` 等价的写法：`<Radio value="1">审核通过</Radio>`。两者同时给时 `label` 优先 |
 
 ## 示例
 ```tsx

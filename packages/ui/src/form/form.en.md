@@ -45,6 +45,8 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 
 `useForm` controller usage (see examples for details): `form.register(name, { rules, dependencies })`, `form.submit(onValid, onInvalid)`, `form.resetFields()`.
 
+`register()` returns `{ name, value, onChange, onBlur, error, required }`. The `required` flag is derived from whether the rules contain `required: true`; forward it to the `required` prop of [`Field`](../field/field.md) so the requirement is visible before submitting (asterisk plus `aria-required`), while the rules remain the only source of validation.
+
 ## Examples
 ```tsx
 <Form className="w-72" onFormSubmit={(v) => console.log(v)}>

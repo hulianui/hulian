@@ -23,7 +23,8 @@ import { getCaretCoordinates } from "./mentions.caret";
 import type { MentionsProps, MentionOption } from "./mentions.types";
 
 // 高亮背板与 textarea 必须逐像素对齐：字号/行高/内边距同源（与 textareaVariants 的 size 映射一致）。
-const BACKDROP_PAD: Record<"sm" | "md" | "lg", string> = {
+const BACKDROP_PAD: Record<"xs" | "sm" | "md" | "lg", string> = {
+  xs: "px-2 py-1 text-xs",
   sm: "px-2.5 py-1.5 text-sm",
   md: "px-3 py-2 text-sm",
   lg: "px-3.5 py-2.5 text-base",

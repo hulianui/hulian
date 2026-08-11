@@ -28,6 +28,7 @@ import { Scheduler, dateOf, dayColumns, eventRect, hourLines, layoutColumns, min
 | events* | `SchedulerEvent[]` | — | 受控事件数组。`{id, title, start, end, resourceId?, tone?, subtitle?}`；start/end 为 ISO datetime（含时分，本地时区） |
 | view* | `"month" \| "week" \| "day" \| "resource"` | — | 受控视图 |
 | date* | `string` | — | 受控焦点日（ISO），决定哪周/哪天/哪月 |
+| now | `string ｜ Date` | 挂载后取浏览器时钟 | 「今天 / 此刻」的判定基准。**渲染期不读系统时钟**，所以首帧没有今天高亮与当前时刻线，挂载后补上（#181）。传了它就完全由你决定：截图回归要可复现、或「今天」该按服务端业务时钟而非用户本机时钟时用 |
 | resources | `SchedulerResource[]` | — | resource 视图必填。`{id, title, subtitle?}` |
 | dayStartHour | `number` | `8` | 时间轴起始小时 |
 | dayEndHour | `number` | `20` | 时间轴结束小时 |
@@ -83,6 +84,7 @@ const [date, setDate] = useState("2026-06-15");
 
 ## 禁忌 / 坑
 
+- **渲染期不读系统时钟**：SSR / 静态导出下服务端那次渲染发生在构建时刻、客户端首次渲染发生在访问时刻，两者跨天就算出不同的「今天」→ hydration 失败（React #418）。本组件因此把「此刻」推迟到挂载后，首帧没有今天高亮与当前时刻线。抄示例时别把 `dayjs()` 写回模块顶层或渲染体里 —— `useMemo(fn, [])` 也救不了，它只保证一次渲染树内稳定。要确定性就传 `now`。
 - 全受控：events/view/date 由消费者持有，拖拽不会自动改 state——必须接 `onEventsChange` 回吐整组并 setState，否则拖完弹回原位（照 Kanban 范式）。
 - 外层须给确定高度（如 `h-[520px]` + `className="h-full"`），时间轴靠容器高度填满后才内部滚动；不给高度会塌缩。
 - tone 只接受 5 个语义枚举，刻意避开未定义色的静默回退；要任意配色走 `renderEvent`。

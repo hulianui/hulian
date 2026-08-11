@@ -45,6 +45,8 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 
 `useForm` 控制器用法（详见示例）：`form.register(name, { rules, dependencies })`、`form.submit(onValid, onInvalid)`、`form.resetFields()`。
 
+`register()` 返回 `{ name, value, onChange, onBlur, error, required }`。其中 `required` 按 `rules` 里有无 `required: true` 派生，透传给 [`Field`](../field/field.md) 的 `required` 即可让必填在提交前就看得见（红星 + `aria-required`），规则仍是唯一的校验来源。
+
 ## 示例
 ```tsx
 <Form className="w-72" onFormSubmit={(v) => console.log(v)}>

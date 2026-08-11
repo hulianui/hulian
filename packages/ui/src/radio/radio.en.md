@@ -69,6 +69,7 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | label | `ReactNode` | Optional clickable inline label with native `<label>` association. |
+| children | `ReactNode` | Equivalent to `label`: `<Radio value="1">Approved</Radio>`. When both are given, `label` wins. |
 
 ## Example
 ```tsx

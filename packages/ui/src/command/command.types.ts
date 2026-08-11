@@ -61,6 +61,21 @@ export interface CommandProps {
   footer?: ReactNode;
   /** 内置 ⌘K / Ctrl+K 全局快捷键切换开合。默认 false（消费者亦可用 useCommandShortcut 自绑）。 */
   shortcut?: boolean;
+  /**
+   * 面板外壳的表面皮肤（#178）。只管填充/描边/阴影，尺寸与定位始终由组件负责。
+   *
+   * - `solid`（默认）：实底 `bg-surface` + 发丝边 + `shadow-xl`，与其余 overlay 一致。
+   * - `glass`：半透明 + 背景模糊。**依赖身后有底图**才出效果（同 AppLauncher 的 glass）。
+   * - `none`：一个皮肤类都不画，填充/描边/阴影全交给 `className`。
+   *   自家设计系统有一套玻璃原语（`--glass-fill` / `--glass-border` / `--glass-shadow`）时用这档：
+   *   不必再写一串类去「压掉」库画好的底色，皮肤升级也不会和覆盖打架。
+   */
+  surface?: "solid" | "glass" | "none";
   className?: string;
+  /**
+   * 追加到遮罩层（默认 `bg-black/40 backdrop-blur-sm`）。走 twMerge，
+   * 传 `bg-black/10 backdrop-blur-none` 即可把遮罩浓度调成自家设计系统的口径。
+   */
+  backdropClassName?: string;
   "aria-label"?: string;
 }

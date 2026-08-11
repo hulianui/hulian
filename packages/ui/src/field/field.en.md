@@ -26,6 +26,8 @@ import { Field } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | invalid | `boolean` | `false` | Explicit invalid state; a nonempty `error` also marks the field invalid. |
+| required | `boolean` | `false` | Required state: renders a red asterisk before the label and injects `aria-required` into the control. It performs **no validation** — rules remain the only source of validation — and exists so users can see which fields are required before submitting. `register()` from `useForm` derives `required` from the rules, so it can be forwarded directly. |
+| requiredMark | `boolean \| ReactNode` | `true` | Shape of the required marker. `false` keeps `aria-required` without drawing a marker; a ReactNode replaces the default asterisk. Ignored when `required` is falsy. |
 | disabled | `boolean` | `false` | Disables the field. |
 | name | `string` | — | Field name forwarded to the underlying `Field.Root`. |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction. `horizontal` places the label area on the left, the control on the right, and the error message on its own full-width row, which is the one-setting-per-row layout of a settings page. ARIA wiring and error rendering are identical in both directions. |
@@ -56,6 +58,12 @@ import { Field } from "@hulianui/ui"
   <Input defaultValue="not-an-email" />
 </Field>
 
+// Required: asterisk plus aria-required, while validation still lives in the rules
+const email = form.register("email", { rules: [{ required: true, message: "Enter your email" }] });
+<Field label="Email" required={email.required} error={email.error}>
+  <Input value={email.value} onChange={email.onChange} onBlur={email.onBlur} />
+</Field>
+
 // Horizontal settings row: label on the left, control on the right, error below
 <Field orientation="horizontal" label="Theme" description="Pick your preferred color scheme">
   <Select items={themes} />
@@ -69,6 +77,8 @@ import { Field } from "@hulianui/ui"
 
 ## Usage guidelines
 
+- `required` can inject `aria-required` **only when `children` is a single element**, since that is the only node Field can reach. When children is a fragment (control plus a button) or plain text, set `aria-required` on the control yourself; otherwise assistive technology never learns the field is required, because a decorative asterisk is `aria-hidden`.
+- Do not wrap the label in a hand-rolled `RequiredLabel` just to draw an asterisk: that marks the field for sighted users only, and every page ends up with a different asterisk position and color.
 - A non-empty `error` already implies `invalid`; do not pass both. Pass `invalid` alone only when the control needs invalid styling without an error message.
 - Field uses Base UI Field and renders externally controlled errors with `match={true}`. Keep the error inside Field so it remains part of the generated `aria-describedby` relationship; a separate `<p>` will not be connected automatically. See [[base-ui-field-error-match-true-for-external-controlled-error]].
 - For a Textarea child, follow the render-as typing guidance in [[base-ui-field-control-render-textarea-type-safe]].

@@ -56,10 +56,12 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 - `type: "select"` + `options: { value: string; label: ReactNode }[]`
 - `type: "multi-select"` + `options` (value is `string[]`)
 - `type: "remote-select"` + `fetcher` (signature is the same as RemoteSelect) + `resolveValue?` + `multiple?`
+- `type: "cascader"` + `options: TreeNode[]` (the `nodes` of Cascader) + `changeOnSelect?` / `showSearch?` (the value is a path array)
+- `type: "region"` + `level?: 2 | 3` + `changeOnSelect?` / `showSearch?` (Chinese administrative divisions are built in, so no options are needed; the value is an array of division codes)
 - `type: "date"` / `type: "date-range"`
 - `type: "datetime"`/`type: "datetime-range"` (native `datetime-local`)
 
-**The field type determines the value shape**: every `*-range` value is a two-item tuple `[start, end]`, with `""` for an unfilled endpoint; `multi-select` and a multiple `remote-select` use `string[]`; all other built-in fields use `string`.
+**The field type determines the value shape**: every `*-range` value is a two-item tuple `[start, end]`, with `""` for an unfilled endpoint; `multi-select` and a multiple `remote-select` use `string[]`; `cascader` and `region` use a root-to-leaf path array, which is `[]` while nothing is selected; all other built-in fields use `string`.
 After reset, each field returns to its `defaultValue` or its type-specific empty shape—do not assume every field resets to an empty string.
 - `render: (ctx: { name; value; onChange }) => ReactNode` (escape hatch for a custom control)
 
@@ -91,6 +93,9 @@ const fields: SearchField[] = [
 - `onReset` receives values after every field returns to its `defaultValue` or type-specific empty shape, not `{}`. Re-query with that callback value to retain default filters.
 - **Query operators such as `LIKE`, `BETWEEN`, and `=` do not belong in SearchForm.** They are part of the backend contract. Translate values into the API request shape inside `onSearch`; encoding one backend's protocol in field configuration would couple the library to that service.
 - `datetime` and `datetime-range` use native `datetime-local`, so values are local-time strings without a timezone, such as `"2026-07-29T14:30"`. Do not call `new Date(...).toISOString()` blindly; in UTC+8 it shifts the value by eight hours without reporting an error. Convert explicitly in `onSearch` if the API requires ISO timestamps.
+- `cascader` and `region` produce a **path array** (root to leaf), and an unselected field is `[]`, not `""`. When the backend only accepts the leaf id, take `path.at(-1)` inside `onSearch`; enable `changeOnSelect` when an intermediate level should be submittable.
+- The built-in administrative-division table behind `region` is about 137 KB, so that field type is **loaded on demand**: only a page that actually declares `type: "region"` fetches that chunk. Until it arrives the control's slot is an equally tall placeholder, so the query area never jumps.
+- `region` reports **division codes** (`["11","1101","110101"]`) only. When the backend wants the name path, use the `render` escape hatch with [RegionCascader](../region-cascader/region-cascader.md), whose `onChange` provides the names as its second argument.
 - RemoteSelect's `onChange` also returns complete options, but SearchForm stores only its first value argument. Use the `render` escape hatch when the raw row is required.
 
 ## Related

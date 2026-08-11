@@ -1,7 +1,8 @@
 "use client";
-import { useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { lazy, Suspense, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Button } from "../button";
+import { Cascader } from "../cascader";
 import { Field } from "../field";
 import { Input } from "../input";
 import { RemoteSelect } from "../remote-select";
@@ -29,15 +30,24 @@ const ChevronDown = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// 省市区那档（#177）按需加载：内置区划表约 137KB，静态引入会让每个用到 SearchForm / ProTable
+// 的列表页都背上它，而真正筛省市区的只是其中一部分页面。只有配了 type: "region" 才会去拉这个 chunk。
+const RegionCascader = lazy(async () => ({
+  default: (await import("../region-cascader/region-cascader")).RegionCascader,
+}));
+
 /** 区间类字段：值恒为二元组 [start, end]。 */
 const RANGE_TYPES = new Set(["date-range", "datetime-range", "number-range"]);
 /** 多值字段：值恒为数组。 */
 const MULTI_TYPES = new Set(["multi-select"]);
+/** 层级字段：值恒为路径数组（根 → 叶）。 */
+const PATH_TYPES = new Set(["cascader", "region"]);
 
 /** 空值形状：区间 → ["",""]，多值 → []，其余 → ""（字段自带 defaultValue 时以它为准）。 */
 function emptyValue(f: SearchField): unknown {
   if (f.type && RANGE_TYPES.has(f.type)) return ["", ""];
   if (f.type && MULTI_TYPES.has(f.type)) return [];
+  if (f.type && PATH_TYPES.has(f.type)) return [];
   if (f.type === "remote-select" && f.multiple) return [];
   return "";
 }
@@ -163,6 +173,35 @@ function renderControl(
         value={value == null || value === "" ? null : String(value)}
         onChange={(v) => onChange(v ?? "")}
       />
+    );
+  }
+
+  if (field.type === "cascader") {
+    return (
+      <Cascader
+        nodes={field.options}
+        value={Array.isArray(value) ? (value as string[]) : []}
+        onChange={(path) => onChange(path)}
+        changeOnSelect={field.changeOnSelect}
+        showSearch={field.showSearch}
+        placeholder={field.placeholder ?? selectPlaceholder}
+      />
+    );
+  }
+
+  if (field.type === "region") {
+    return (
+      // fallback 占住控件高度：chunk 到达前不塌行，整片查询区不会跳一下。
+      <Suspense fallback={<div className="h-10 rounded-[var(--radius)] border border-border bg-surface" />}>
+        <RegionCascader
+          value={Array.isArray(value) ? (value as string[]) : []}
+          onChange={(codes) => onChange(codes)}
+          level={field.level}
+          changeOnSelect={field.changeOnSelect}
+          showSearch={field.showSearch}
+          placeholder={field.placeholder ?? selectPlaceholder}
+        />
+      </Suspense>
     );
   }
 

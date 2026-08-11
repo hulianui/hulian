@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { RemoteSelectFetcher, RemoteSelectResolver } from "../remote-select/remote-select.types";
+import type { TreeNode } from "../tree/tree-core";
 
 /** render 逃生舱回调上下文。 */
 export interface SearchFieldRenderCtx {
@@ -36,6 +37,7 @@ interface SearchFieldBase {
  *
  * **区间类字段（`*-range`）的值恒为二元组** `[start, end]`，未填的那端是 `""`。
  * 多值字段（`multi-select` / `remote-select multiple`）的值是 `string[]`。
+ * **层级字段（`cascader` / `region`）的值是路径数组** `string[]`（根 → 叶，未选为 `[]`）。
  * 其余是 `string`。重置后各自回到 `defaultValue` 或上述空形状。
  *
  * 注意：**operator（`LIKE` / `BETWEEN` 之类）不属于本组件**。那是后端查询契约，
@@ -93,6 +95,43 @@ export type SearchField =
       multiple?: boolean;
       inputType?: never;
       options?: never;
+      render?: never;
+    })
+  | (SearchFieldBase & {
+      /**
+       * 级联选择（组织架构 / 品类 / 门店三级这类）。值是**路径数组**（根 → 叶）。
+       * 底座是 [Cascader](../cascader/cascader.md)。
+       */
+      type: "cascader";
+      /** 级联候选树（即 Cascader 的 `nodes`）。 */
+      options: TreeNode[];
+      /** 允许选中间层级即提交（大区筛选很常见），默认必须选到末级。 */
+      changeOnSelect?: boolean;
+      /** 浮层顶部出搜索框（树深、节点多时开）。 */
+      showSearch?: boolean;
+      inputType?: never;
+      fetcher?: never;
+      render?: never;
+    })
+  | (SearchFieldBase & {
+      /**
+       * 省 / 市 / 区县筛选：数据内置（[RegionCascader](../region-cascader/region-cascader.md)），
+       * 消费方不用喂 options。值是**行政区划 code 的路径数组**，如 `["11","1101","110101"]`；
+       * 要名称路径请用 `render` 逃生舱自己接 RegionCascader 的第二个回调参数。
+       *
+       * 内置的区划表约 137KB，因此这一档是**按需加载**的：只有真的配了 `type: "region"` 的
+       * 页面才会去拉那个 chunk，其余 SearchForm / ProTable 页面不受影响。
+       */
+      type: "region";
+      /** 联动层级：3 = 省/市/区县（默认）；2 = 省/市。 */
+      level?: 2 | 3;
+      /** 允许选到中间级即提交（只筛到省 / 市）。 */
+      changeOnSelect?: boolean;
+      /** 浮层内搜索框，默认开。 */
+      showSearch?: boolean;
+      options?: never;
+      inputType?: never;
+      fetcher?: never;
       render?: never;
     })
   | (SearchFieldBase & {

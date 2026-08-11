@@ -143,4 +143,67 @@ describe("Field", () => {
     );
     expect(queryByText("邮箱格式不正确")).toBeNull();
   });
+
+  // #180：必填此前只活在 rules 里，界面上要提交一次才知道哪些字段必填。
+  describe("required（#180）", () => {
+    it("画红星 + 把 aria-required 落到控件上", () => {
+      const { container, getByText } = render(
+        <Field label="banner类型" required>
+          <Input />
+        </Field>,
+      );
+      const star = getByText("*");
+      expect(star.getAttribute("aria-hidden")).toBe("true"); // 装饰节点，读屏不读
+      expect(star.className).toContain("text-danger");
+      expect(container.querySelector("input")!.getAttribute("aria-required")).toBe("true");
+    });
+
+    it("不传 required 时既无星号也无 aria-required（DOM 与此前一致）", () => {
+      const { container, queryByText } = render(
+        <Field label="备注">
+          <Input />
+        </Field>,
+      );
+      expect(queryByText("*")).toBeNull();
+      expect(container.querySelector("input")!.getAttribute("aria-required")).toBeNull();
+    });
+
+    it("requiredMark=false 只留语义不画标记", () => {
+      const { container, queryByText } = render(
+        <Field label="邮箱" required requiredMark={false}>
+          <Input />
+        </Field>,
+      );
+      expect(queryByText("*")).toBeNull();
+      expect(container.querySelector("input")!.getAttribute("aria-required")).toBe("true");
+    });
+
+    it("requiredMark 收 ReactNode：换成自家标记", () => {
+      const { getByText, queryByText } = render(
+        <Field label="邮箱" required requiredMark={<span>必填</span>}>
+          <Input />
+        </Field>,
+      );
+      expect(getByText("必填")).toBeTruthy();
+      expect(queryByText("*")).toBeNull();
+    });
+
+    it("控件已显式写了 aria-required 时以消费方为准，不被覆盖", () => {
+      const { container } = render(
+        <Field label="邮箱" required>
+          <Input aria-required={false} />
+        </Field>,
+      );
+      expect(container.querySelector("input")!.getAttribute("aria-required")).toBe("false");
+    });
+
+    it("horizontal 下同样注入（控件包在第二列的 div 里）", () => {
+      const { container } = render(
+        <Field label="邮箱" required orientation="horizontal">
+          <Input />
+        </Field>,
+      );
+      expect(container.querySelector("input")!.getAttribute("aria-required")).toBe("true");
+    });
+  });
 });

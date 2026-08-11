@@ -291,4 +291,57 @@ describe("Command", () => {
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "不可能匹配的词" } });
     expect(screen.getByText("搜索文档")).toBeTruthy();
   });
+
+  // #178：外壳皮肤此前写死在 Popup 的类串里，⌘K 面板套不进消费方的玻璃设计系统。
+  describe("外壳皮肤（#178）", () => {
+    const popup = () => document.querySelector('[role="dialog"]')!;
+
+    it("默认 solid：实底 + 发丝边 + 阴影", () => {
+      render(<Command open onOpenChange={noop} groups={groups} />);
+      const cls = popup().className;
+      expect(cls).toContain("bg-surface");
+      expect(cls).toContain("shadow-xl");
+    });
+
+    it("surface=none：一个皮肤类都不画，布局与尺寸照旧", () => {
+      render(<Command open onOpenChange={noop} groups={groups} surface="none" />);
+      const cls = popup().className;
+      expect(cls).not.toContain("bg-surface");
+      expect(cls).not.toContain("shadow-xl");
+      expect(cls).not.toContain("border-hairline");
+      expect(cls).toContain("w-[min(92vw,40rem)]"); // 布局仍由组件负责
+      expect(cls).toContain("max-h-[70vh]");
+    });
+
+    it("surface=none + className：消费方自画玻璃，不需要「压掉」库的底色", () => {
+      render(
+        <Command
+          open
+          onOpenChange={noop}
+          groups={groups}
+          surface="none"
+          className="bg-[var(--glass-fill)] backdrop-blur-xl"
+        />,
+      );
+      const cls = popup().className;
+      expect(cls).toContain("bg-[var(--glass-fill)]");
+      expect(cls).not.toContain("bg-surface");
+    });
+
+    it("surface=glass：半透明 + 背景模糊", () => {
+      render(<Command open onOpenChange={noop} groups={groups} surface="glass" />);
+      const cls = popup().className;
+      expect(cls).toContain("bg-surface/70");
+      expect(cls).toContain("backdrop-blur-2xl");
+    });
+
+    it("backdropClassName 顶掉默认遮罩浓度（twMerge）", () => {
+      render(
+        <Command open onOpenChange={noop} groups={groups} backdropClassName="bg-black/10 backdrop-blur-none" />,
+      );
+      const backdrop = document.querySelector(".fixed.inset-0")!;
+      expect(backdrop.className).toContain("bg-black/10");
+      expect(backdrop.className).not.toContain("bg-black/40");
+    });
+  });
 });

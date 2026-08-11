@@ -26,6 +26,8 @@ import { Field } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | invalid | `boolean` | `false` | 显式覆盖 invalid；缺省时由 error 是否非空推导 |
+| required | `boolean` | `false` | 必填态：label 前画红星 + 给控件注入 `aria-required`。**不产生校验**（校验仍只由 rules 表达），解决的是「提交前看不出哪些字段必填」。`useForm` 的 `register()` 会按 rules 派生 `required`，直接透传即可 |
+| requiredMark | `boolean \| ReactNode` | `true` | 必填标记形态。`false` = 只留 `aria-required` 不画标记；传 ReactNode = 换成自家标记。`required` 为假时无效 |
 | disabled | `boolean` | `false` | 禁用 |
 | name | `string` | — | 提交标识，透传 Field.Root |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | 排列方向。`horizontal` = 标签区在左、控件在右、错误另起一行占满整行（设置页「一行一个设置项」版式），a11y 串联与错误渲染完全一致 |
@@ -56,6 +58,12 @@ import { Field } from "@hulianui/ui"
   <Input defaultValue="not-an-email" />
 </Field>
 
+// 必填：红星 + aria-required（校验仍写在 rules 里）
+const email = form.register("email", { rules: [{ required: true, message: "请填邮箱" }] });
+<Field label="邮箱" required={email.required} error={email.error}>
+  <Input value={email.value} onChange={email.onChange} onBlur={email.onBlur} />
+</Field>
+
 // 横排设置行：标签在左、控件在右、错误另起一行
 <Field orientation="horizontal" label="主题" description="选择你偏好的配色方案">
   <Select items={themes} />
@@ -69,6 +77,8 @@ import { Field } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- `required` 的 `aria-required` **只在 `children` 是单个元素时能注入** —— 那是 Field 唯一够得着的节点。children 是多节点（控件 + 按钮）或纯文本时，请自己给控件加 `aria-required`，否则读屏拿不到必填信息（自建的 `aria-hidden` 星号读屏读不到）。
+- 不要为了画星号把 label 包成自定义的 `RequiredLabel` —— 那样只有视力用户知道必填，读屏用户拿不到，而且每个页面的星号位置/颜色会各写各的。
 - `error` 字符串非空时已隐含 `invalid`，无需再传 `invalid`；想强制无错状态下也标红才单独传 `invalid`。
 - 底层是 Base UI Field，错误文本通过 `match={true}` 强制渲染——别在 Field 外另起一个 `<p>` 写错误，会丢失自动的 `aria-describedby` 串联。详见 [[base-ui-field-error-match-true-for-external-controlled-error]]：外部受控 error 不走 Base UI 校验时，默认分支会让错误文本「框红字没」。
 - 若 children 是 Textarea，注意 render-as 的类型问题，见 [[base-ui-field-control-render-textarea-type-safe]]。

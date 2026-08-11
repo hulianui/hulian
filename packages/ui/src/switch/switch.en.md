@@ -40,6 +40,13 @@ import { Switch } from "@hulianui/ui"
 |------|------|------|
 | onCheckedChange | `(checked: boolean) => void` | Called with the new checked state. |
 
+## Slots
+
+| Slot | Type | Description |
+|------|------|------|
+| label | `ReactNode` | Inline label rendered to the right of the track with a native `<label>` association. Supplying it makes `aria-label` unnecessary. |
+| children | `ReactNode` | Equivalent to `label`: `<Switch checked={v}>Enabled</Switch>`. When both are given, `label` wins. |
+
 ## Example
 ```tsx
 <Switch defaultChecked aria-label="Turn on notifications" />

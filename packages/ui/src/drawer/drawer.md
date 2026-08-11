@@ -31,6 +31,11 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
 | `DrawerContent.showClose` | `boolean` | `true` | 是否渲染右上角内置关闭按钮 |
 | `DrawerContent.closeLabel` | `string` | 取自 locale | 内置关闭按钮的无障碍名（默认取 `locale.drawer.close`） |
+| `DrawerContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」 |
+| `DrawerContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
+| `DrawerContent.backdropClassName` | `string` | — | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
+| `DrawerContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children |
+| `DrawerContent.bodyClassName` | `string` | — | 追加到正文区容器 |
 | `DrawerContent.className` | `string` | — | 内容容器类名 |
 
 ## Events
@@ -69,6 +74,9 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 ```
 
 ## 禁忌 / 坑
+
+- 非模态浮层要**两处一起改**：Root 传 `modal={false}`（让焦点与滚动锁失效）+ Content 传 `backdrop={false}`（不渲染遮罩）。只改前者时那层 `fixed inset-0` 仍在，透明也照样吃掉整屏点击，"非模态"等于没生效。
+- `scrollable={false}` 之后**纵向滚动归你自己**：正文区只负责把确定高度传下去（列向 flex），子级要自己写 `overflow-y-auto`。忘了写就是整块内容被 `max-h` 裁掉。
 
 - Base UI rc.0 没有独立 Drawer 原语，本组件是 Dialog（Portal+Backdrop+Popup）重皮、靠 `transform: translateX/Y` 按 `side` 侧滑；Dialog 没有 Positioner，定位别按 Tooltip/Popover 那套想。详见 [[base-ui-dialog-drawer-side-slide-via-transform]]。
 - 「取消 / 保存 / 关闭」放 `footer` 槽而非正文末尾，否则正文滚动后按钮会滚出可视区。

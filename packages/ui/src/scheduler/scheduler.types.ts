@@ -48,6 +48,16 @@ export interface SchedulerProps {
   view: SchedulerView;
   /** 受控焦点日（ISO，决定哪周/哪天/哪月）。 */
   date: string;
+  /**
+   * 「今天 / 此刻」的判定基准（ISO 串或 Date）。不传则**挂载后**取浏览器时钟。
+   *
+   * 组件在渲染期一律不读系统时钟：SSR / 静态导出下服务端那次渲染发生在构建时刻、客户端首次
+   * 渲染发生在访问时刻，两者跨天就算出不同的「今天」，hydration 当场失败（#181）。
+   * 于是首帧没有今天高亮与当前时刻线，挂载后补上。
+   *
+   * 传了它就完全由你决定 —— 截图回归要可复现、或「今天」该按服务端业务时钟而不是用户本机时钟时用。
+   */
+  now?: string | Date;
   /** resource 视图必填。 */
   resources?: SchedulerResource[];
   /** 视图切换（内置 toolbar Segmented）。 */

@@ -48,6 +48,7 @@ import { Checkbox } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | label | `ReactNode` | Inline label rendered to the right with a native `<label>` association. |
+| children | `ReactNode` | Equivalent to `label`: `<Checkbox>I agree</Checkbox>`. When both are given, `label` wins. |
 
 ## Examples
 ```tsx

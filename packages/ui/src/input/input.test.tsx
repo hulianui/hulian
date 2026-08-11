@@ -97,4 +97,13 @@ describe("Input", () => {
     ref.current!.focus();
     expect(document.activeElement).toBe(ref.current);
   });
+
+  // #187：存量密集数据表（12px 字 / 27px 行）此前最小只有 sm 的 32px，差 4px 没处接。
+  it("size=xs 是 28px 高 / 12px 字的密集档，且仍然有边框（区别于无边框的 cell）", () => {
+    const { container } = render(<Input size="xs" aria-label="i" />);
+    const shell = container.firstElementChild as HTMLElement;
+    expect(shell.className).toContain("h-7");
+    expect(shell.className).toContain("text-xs");
+    expect(shell.className).toContain("border");
+  });
 });

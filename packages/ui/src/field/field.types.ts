@@ -6,6 +6,26 @@ export interface FieldProps {
   error?: ReactNode; // 非空隐含 invalid，并强制渲染错误
   invalid?: boolean; // 显式覆盖；缺省时由 error 是否非空推导
   disabled?: boolean;
+  /**
+   * 必填态（#180）：label 前渲染红星，并把 `aria-required` 注入控件。
+   *
+   * 校验仍然只由规则表达（`useForm` 的 `rules`）—— 这个 prop 不产生校验，它解决的是
+   * 「界面上看不出哪些字段必填、要先提交一次看哪几行飘红」。规则与标记的重复可以消掉：
+   * `register()` 会按 `rules` 派生 `required`，直接 `<Field required={f.required}>` 即可。
+   *
+   * `aria-required` 只在 `children` 是**单个元素**时能注入（够得着的只有那一个节点）。
+   * children 是多节点 / 纯文本时请自己给控件加 `aria-required`。
+   */
+  required?: boolean;
+  /**
+   * 必填标记的形态。默认 `true`（红星 `*`，在 label 前）。
+   *
+   * - `false`：不画标记，只保留 `aria-required` —— 整表都必填、靠说明文案统一告知时用。
+   * - `ReactNode`：换成自家的标记（如 `<Tag size="sm">必填</Tag>`、后置星号自己排）。
+   *
+   * `required` 为假时本 prop 无效（不标记「选填」；那种反转口径请自己写进 label）。
+   */
+  requiredMark?: boolean | ReactNode;
   /** 提交标识，透传 Field.Root（YAGNI 逃生口；validate/validationMode 本批不暴露）。 */
   name?: string;
   /**

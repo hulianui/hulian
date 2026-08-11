@@ -1037,3 +1037,191 @@ describe("Table 底部悬浮横向滚动条", () => {
     expect(barOf(container)).toBeNull();
   });
 });
+
+// #176：单元格合并（el-table :span-method 的等价能力）
+describe("Table 单元格合并（#176）", () => {
+  interface StoreRow {
+    store: string;
+    guide: string;
+    amount: number;
+  }
+  const storeData: StoreRow[] = [
+    { store: "天河店", guide: "张三", amount: 12 },
+    { store: "天河店", guide: "李四", amount: 8 },
+    { store: "越秀店", guide: "王五", amount: 5 },
+  ];
+  const storeColumns: ColumnDef<StoreRow, any>[] = [
+    { accessorKey: "store", header: "门店" },
+    { accessorKey: "guide", header: "导购" },
+    { accessorKey: "amount", header: "单量" },
+  ];
+
+  // 「与上一行同门店就并成一格」——按数据判断，不依赖原始下标，故排序后依旧成立。
+  const mergeStore: NonNullable<React.ComponentProps<typeof Table<StoreRow>>["cellSpan"]> = ({
+    rows,
+    rowIndex,
+    columnId,
+  }) => {
+    if (columnId !== "store") return;
+    let span = 1;
+    while (rows[rowIndex + span]?.store === rows[rowIndex]?.store) span += 1;
+    return { rowSpan: span };
+  };
+
+  it("首行写 rowSpan，被合掉的行整格不渲染（不是留空格）", () => {
+    const { container } = render(
+      <Table columns={storeColumns} data={storeData} cellSpan={mergeStore} />,
+    );
+    const trs = container.querySelectorAll("tbody tr");
+    const firstRowCells = trs[0].querySelectorAll("td");
+    expect(firstRowCells[0].getAttribute("rowspan")).toBe("2");
+    expect(firstRowCells.length).toBe(3);
+    // 第二行少一格：门店那格被合掉了，剩下的两格不该被挤位
+    const secondRowCells = trs[1].querySelectorAll("td");
+    expect(secondRowCells.length).toBe(2);
+    expect(secondRowCells[0].textContent).toBe("李四");
+    // 第三行是新门店，自成一格（rowSpan=1 不写属性）
+    const thirdRowCells = trs[2].querySelectorAll("td");
+    expect(thirdRowCells.length).toBe(3);
+    expect(thirdRowCells[0].getAttribute("rowspan")).toBeNull();
+  });
+
+  it("回调按渲染顺序推进：同门店不相邻时一格都不合并（排序打乱后不会错位）", () => {
+    const interleaved: StoreRow[] = [
+      { store: "天河店", guide: "张三", amount: 12 },
+      { store: "越秀店", guide: "王五", amount: 5 },
+      { store: "天河店", guide: "李四", amount: 8 },
+    ];
+    const { container } = render(
+      <Table columns={storeColumns} data={interleaved} cellSpan={mergeStore} />,
+    );
+    const rowspans = Array.from(container.querySelectorAll("tbody td")).map((td) =>
+      td.getAttribute("rowspan"),
+    );
+    expect(rowspans.every((v) => v === null)).toBe(true);
+    expect(container.querySelectorAll("tbody tr td").length).toBe(9);
+  });
+
+  it("colSpan 横跨：右侧格子不渲染", () => {
+    const { container } = render(
+      <Table
+        columns={storeColumns}
+        data={storeData}
+        cellSpan={({ rowIndex, columnIndex }) =>
+          rowIndex === 0 && columnIndex === 1 ? { colSpan: 2 } : undefined
+        }
+      />,
+    );
+    const firstRowCells = container.querySelectorAll("tbody tr")[0].querySelectorAll("td");
+    expect(firstRowCells.length).toBe(2);
+    expect(firstRowCells[1].getAttribute("colspan")).toBe("2");
+  });
+
+  it("不传 cellSpan 时 DOM 与此前一致（无 rowspan/colspan 属性）", () => {
+    const { container } = render(<Table columns={storeColumns} data={storeData} />);
+    expect(container.querySelector("tbody td[rowspan]")).toBeNull();
+    expect(container.querySelector("tbody td[colspan]")).toBeNull();
+  });
+
+  it("与虚拟滚动同开时静默不合并并告警（跨窗口的合并无解）", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(
+      <Table
+        columns={storeColumns}
+        data={storeData}
+        cellSpan={mergeStore}
+        virtual={{ enabled: true, height: 200 }}
+      />,
+    );
+    expect(container.querySelector("tbody td[rowspan]")).toBeNull();
+    warn.mockRestore();
+  });
+
+  it("与明细展开同开时同样不合并（面板行会插在数据行之间）", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(
+      <Table
+        columns={storeColumns}
+        data={storeData}
+        cellSpan={mergeStore}
+        renderExpandedRow={() => <div>明细</div>}
+      />,
+    );
+    expect(container.querySelector("tbody td[rowspan]")).toBeNull();
+    warn.mockRestore();
+  });
+});
+
+
+// #191 / #192 / #193 / #194：宽表与长表的一批排版能力
+describe("Table 排版与滚动（#191–#194）", () => {
+  it("空态贴滚动视口而不是表宽居中（宽表下否则跑到视口外）", () => {
+    const { container } = render(<Table columns={columns} data={[]} />);
+    const cell = container.querySelector("tbody td")!;
+    // 空态包在 sticky left-0 的盒子里：横滚时它始终钉在视口左缘
+    const box = cell.firstElementChild as HTMLElement;
+    expect(box.className).toContain("sticky");
+    expect(box.className).toContain("left-0");
+    expect(box.textContent).toContain("暂无数据");
+  });
+
+  it("minWidth 落在 <table> 本体（写进 className 的 min-w-* 钉的是滚动外壳）", () => {
+    const { container } = render(<Table columns={columns} data={data} minWidth={940} />);
+    const shell = container.firstElementChild as HTMLElement;
+    const tableEl = container.querySelector("table") as HTMLElement;
+    expect(tableEl.style.minWidth).toBe("940px");
+    expect(shell.style.minWidth).toBe("");
+    expect(shell.className).toContain("overflow-x-auto");
+  });
+
+  it("stickyHeader + maxHeight：表头吸顶，外壳成为定高滚动容器", () => {
+    const { container } = render(
+      <Table columns={columns} data={data} stickyHeader maxHeight={320} />,
+    );
+    const shell = container.firstElementChild as HTMLElement;
+    expect(shell.style.maxHeight).toBe("320px");
+    expect(shell.style.overflow).toBe("auto");
+    expect(container.querySelector("thead")!.className).toContain("sticky");
+  });
+
+  it("只给 stickyHeader 不给 maxHeight：dev 告警且不假装生效", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    render(<Table columns={columns} data={data} stickyHeader />);
+    const shell = document.body.querySelector("div")!;
+    expect(shell.style.maxHeight).toBe("");
+    warn.mockRestore();
+  });
+
+  it("不传新 prop 时 DOM 与此前一致（表头不 sticky、表无 min-width）", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    expect(container.querySelector("thead")!.className).not.toContain("sticky");
+    expect((container.querySelector("table") as HTMLElement).style.minWidth).toBe("");
+  });
+
+  it("列 meta 控制垂直对齐与换行；表级默认可被列覆盖", () => {
+    const cols: ColumnDef<Row, any>[] = [
+      { accessorKey: "name", header: "姓名", meta: { whitespace: "normal" } },
+      { accessorKey: "age", header: "年龄" },
+    ];
+    const { container } = render(
+      <Table columns={cols} data={data} cellVerticalAlign="top" cellWhitespace="nowrap" />,
+    );
+    const [nameCell, ageCell] = Array.from(container.querySelectorAll("tbody tr:first-child td"));
+    expect(nameCell.className).toContain("align-top"); // 表级默认
+    expect(nameCell.className).toContain("whitespace-normal"); // 列覆盖表级
+    expect(nameCell.className).toContain("break-words"); // 长串不撑破列宽
+    expect(ageCell.className).toContain("whitespace-nowrap"); // 未覆盖的列跟随表级
+  });
+
+  it("pre-wrap 保留原文换行，且默认仍是 align-middle", () => {
+    const cols: ColumnDef<Row, any>[] = [
+      { accessorKey: "name", header: "姓名", meta: { whitespace: "pre-wrap", verticalAlign: "top" } },
+      { accessorKey: "age", header: "年龄" },
+    ];
+    const { container } = render(<Table columns={cols} data={data} />);
+    const [nameCell, ageCell] = Array.from(container.querySelectorAll("tbody tr:first-child td"));
+    expect(nameCell.className).toContain("whitespace-pre-wrap");
+    expect(nameCell.className).toContain("align-top");
+    expect(ageCell.className).toContain("align-middle");
+  });
+});

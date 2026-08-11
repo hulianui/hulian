@@ -539,6 +539,73 @@ const createBrandIcon = (name: string, viewBox: string, d: string): IconComponen
   return Comp;
 };
 
+export const Underline = /* @__PURE__ */ createIcon("underline", [
+  ["path", { d: "M6 4v6a6 6 0 0 0 12 0V4", key: "9kb039" }],
+  ["line", { x1: "4", x2: "20", y1: "20", y2: "20", key: "nun2al" }],
+]);
+
+export const AlignLeft = /* @__PURE__ */ createIcon("text-align-start", [
+  ["path", { d: "M21 5H3", key: "1fi0y6" }],
+  ["path", { d: "M15 12H3", key: "6jk70r" }],
+  ["path", { d: "M17 19H3", key: "z6ezky" }],
+]);
+
+export const AlignCenter = /* @__PURE__ */ createIcon("text-align-center", [
+  ["path", { d: "M21 5H3", key: "1fi0y6" }],
+  ["path", { d: "M17 12H7", key: "16if0g" }],
+  ["path", { d: "M19 19H5", key: "vjpgq2" }],
+]);
+
+export const AlignRight = /* @__PURE__ */ createIcon("text-align-end", [
+  ["path", { d: "M21 5H3", key: "1fi0y6" }],
+  ["path", { d: "M21 12H9", key: "dn1m92" }],
+  ["path", { d: "M21 19H7", key: "4cu937" }],
+]);
+
+export const Image = /* @__PURE__ */ createIcon("image", [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
+]);
+
+export const Table = /* @__PURE__ */ createIcon("table", [
+  ["path", { d: "M12 3v18", key: "108xh3" }],
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M3 9h18", key: "1pudct" }],
+  ["path", { d: "M3 15h18", key: "5xshup" }],
+]);
+
+export const Palette = /* @__PURE__ */ createIcon("palette", [
+  [
+    "path",
+    {
+      d: "M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z",
+      key: "e79jfc",
+    },
+  ],
+  ["circle", { cx: "13.5", cy: "6.5", r: ".5", fill: "currentColor", key: "1okk4w" }],
+  ["circle", { cx: "17.5", cy: "10.5", r: ".5", fill: "currentColor", key: "f64h9f" }],
+  ["circle", { cx: "6.5", cy: "12.5", r: ".5", fill: "currentColor", key: "qy21gx" }],
+  ["circle", { cx: "8.5", cy: "7.5", r: ".5", fill: "currentColor", key: "fotxhn" }],
+]);
+
+export const Eraser = /* @__PURE__ */ createIcon("eraser", [
+  [
+    "path",
+    {
+      d: "M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21",
+      key: "g5wo59",
+    },
+  ],
+  ["path", { d: "m5.082 11.09 8.828 8.828", key: "1wx5vj" }],
+]);
+
+export const Type = /* @__PURE__ */ createIcon("type", [
+  ["path", { d: "M12 4v16", key: "1654pz" }],
+  ["path", { d: "M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2", key: "e0r10z" }],
+  ["path", { d: "M9 20h6", key: "s66wpe" }],
+]);
+
 /** GitHub Octocat mark（官方单路径 mark，按 github.com/logos 使用条款内联，未改形）。 */
 export const GithubMark = /* @__PURE__ */ createBrandIcon(
   "github",

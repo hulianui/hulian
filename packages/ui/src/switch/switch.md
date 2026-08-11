@@ -40,6 +40,13 @@ import { Switch } from "@hulianui/ui"
 |------|------|------|
 | onCheckedChange | `(checked: boolean) => void` | 开关变化回调 |
 
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 轨道右侧 inline label（`<label>` 原生关联）。给了它就不必再给 `aria-label` |
+| children | `ReactNode` | 与 `label` 等价的写法：`<Switch checked={v}>启用</Switch>`。两者同时给时 `label` 优先 |
+
 ## 示例
 ```tsx
 <Switch defaultChecked aria-label="开启通知" />

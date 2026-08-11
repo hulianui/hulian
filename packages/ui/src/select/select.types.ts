@@ -1,7 +1,7 @@
 import type { ComponentProps, ComponentPropsWithoutRef, ReactNode, Ref } from "react";
 import type { Select as BaseSelect } from "@base-ui/react/select";
 
-export type SelectSize = "sm" | "md" | "lg";
+export type SelectSize = "xs" | "sm" | "md" | "lg";
 
 /** 选项元数据：`value` 为 `null` 的项被瑚琏内部用作占位（见 SelectProps.placeholder）。 */
 export interface SelectItemData {

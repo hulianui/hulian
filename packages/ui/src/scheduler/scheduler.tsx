@@ -1,5 +1,5 @@
 "use client";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { Button } from "../button";
 import { ChevronLeft, ChevronRight } from "../_icons";
 import { Segmented } from "../segmented";
@@ -66,6 +66,7 @@ function SchedulerImpl({
   slotMinutes = 30,
   hourHeight = 56,
   toolbar = true,
+  now: nowProp,
   renderEvent,
   className,
 }: SchedulerProps) {
@@ -75,8 +76,28 @@ function SchedulerImpl({
     value,
     label: labels.views[value],
   }));
-  const todayISO = dayjs().format("YYYY-MM-DD");
-  const nowISO = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+  // 「此刻」在**挂载后**才取，渲染期一律不读系统时钟（#181）。
+  //
+  // 渲染期读时钟在 SSR / 静态导出下必然出事：服务端那次渲染发生在**构建时刻**，客户端首次
+  // 渲染发生在**访问时刻**，两者跨天就算出不同的「今天」→ 文本对不上 → hydration 失败
+  // （React #418，整棵树被丢弃重渲染）。`useMemo(fn, [])` 救不了：它只保证一次渲染树内稳定，
+  // 服务端与客户端本就是两次独立求值。
+  //
+  // 首帧（= SSR 那一帧）没有「今天」高亮与当前时刻线：两个子视图的 `nowISO` 本就是可选的，
+  // 缺席即不画。挂载后 setState 一次补上，用户看到的是「进来就有」。
+  // 需要确定性的场景（截图回归、按业务时钟而非浏览器时钟）传 `now` 显式钉死。
+  const [clockISO, setClockISO] = useState<string | undefined>(() =>
+    nowProp == null ? undefined : dayjs(nowProp).format("YYYY-MM-DDTHH:mm:ss"),
+  );
+  useEffect(() => {
+    setClockISO(
+      nowProp == null
+        ? dayjs().format("YYYY-MM-DDTHH:mm:ss")
+        : dayjs(nowProp).format("YYYY-MM-DDTHH:mm:ss"),
+    );
+  }, [nowProp]);
+  const todayISO = clockISO?.slice(0, 10);
+  const nowISO = clockISO;
 
   // 单事件改动 → 回吐整组（照 Kanban 受控范式）
   const onEventCommit = useCallback(
@@ -114,7 +135,12 @@ function SchedulerImpl({
             >
               <ChevronLeft className="size-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={() => onDateChange?.(todayISO)}>
+            <Button
+              variant="outline"
+              size="sm"
+              // 点击发生在客户端，此处读时钟不涉及 hydration；首帧尚未取到时钟时也要能跳。
+              onClick={() => onDateChange?.(todayISO ?? dayjs().format("YYYY-MM-DD"))}
+            >
               {labels.today}
             </Button>
             <Button

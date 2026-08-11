@@ -66,9 +66,15 @@ function combineEnd(startISO: string, endISO: string): string {
   return end.format("YYYY-MM-DDTHH:mm:ss");
 }
 
+// 固定种子周，**不读系统时钟**（#181）。
+// 静态导出下 SSR 发生在构建时刻、客户端首次渲染发生在访问时刻，两者跨天就算出不同的周起始日
+// → hydration 当场失败（React #418）。`useMemo(fn, [])` 救不了：它只在一次渲染树内稳定，
+// 服务端与客户端本就是两次独立求值。demo 要展示的是「排班台长什么样」，不是「今天几号」。
+const SEED_MONDAY = "2026-06-01";
+
 export function SchedulerShell() {
-  const todayISO = useMemo(() => dayjs().format("YYYY-MM-DD"), []);
-  const monday = useMemo(() => startOfWeekISO(todayISO), [todayISO]);
+  const monday = SEED_MONDAY;
+  const todayISO = monday;
 
   // 首屏加载态：seed 延迟返回 + 故意失败一次演示重试
   const seed = useMemo(() => buildAppointments(monday), [monday]);

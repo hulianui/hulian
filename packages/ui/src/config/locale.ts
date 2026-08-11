@@ -239,6 +239,33 @@ export interface ComponentLocale {
     noMatches: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
+  richTextEditor?: {
+    editor: string;
+    toolbar: string;
+    bold: string;
+    italic: string;
+    underline: string;
+    strikethrough: string;
+    heading: string;
+    paragraph: string;
+    fontSize: string;
+    color: string;
+    alignLeft: string;
+    alignCenter: string;
+    alignRight: string;
+    unorderedList: string;
+    orderedList: string;
+    blockquote: string;
+    link: string;
+    linkUrl: string;
+    image: string;
+    imageUrl: string;
+    table: string;
+    clearFormat: string;
+    uploading: string;
+    uploadFailed: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
   markdownEditor?: {
     editor: string;
     toolbar: string;
@@ -951,6 +978,32 @@ const zhComponents: ComponentLocale = {
     label: "树",
     searchPlaceholder: "搜索",
     noMatches: "无匹配项",
+  },
+  richTextEditor: {
+    editor: "富文本编辑器",
+    toolbar: "格式工具栏",
+    bold: "加粗",
+    italic: "斜体",
+    underline: "下划线",
+    strikethrough: "删除线",
+    heading: "标题",
+    paragraph: "正文",
+    fontSize: "字号",
+    color: "文字颜色",
+    alignLeft: "左对齐",
+    alignCenter: "居中",
+    alignRight: "右对齐",
+    unorderedList: "无序列表",
+    orderedList: "有序列表",
+    blockquote: "引用",
+    link: "链接",
+    linkUrl: "链接地址",
+    image: "图片",
+    imageUrl: "图片地址",
+    table: "表格",
+    clearFormat: "清除格式",
+    uploading: "上传中…",
+    uploadFailed: "图片上传失败",
   },
   markdownEditor: {
     editor: "Markdown 编辑器",
@@ -1704,6 +1757,32 @@ const enComponents: ComponentLocale = {
     label: "Tree",
     searchPlaceholder: "Search",
     noMatches: "No matching items",
+  },
+  richTextEditor: {
+    editor: "Rich text editor",
+    toolbar: "Formatting toolbar",
+    bold: "Bold",
+    italic: "Italic",
+    underline: "Underline",
+    strikethrough: "Strikethrough",
+    heading: "Heading",
+    paragraph: "Body text",
+    fontSize: "Font size",
+    color: "Text color",
+    alignLeft: "Align left",
+    alignCenter: "Align center",
+    alignRight: "Align right",
+    unorderedList: "Unordered list",
+    orderedList: "Ordered list",
+    blockquote: "Blockquote",
+    link: "Link",
+    linkUrl: "Link URL",
+    image: "Image",
+    imageUrl: "Image URL",
+    table: "Table",
+    clearFormat: "Clear formatting",
+    uploading: "Uploading…",
+    uploadFailed: "Image upload failed",
   },
   markdownEditor: {
     editor: "Markdown editor",

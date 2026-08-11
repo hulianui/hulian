@@ -252,6 +252,45 @@ function Demo({ enableSorting = true, striped = true }: { enableSorting?: boolea
   return <Table columns={columns} data={users} enableSorting={enableSorting} striped={striped} />;
 }
 
+
+// 门店 × 导购的转化漏斗：一个门店多个导购，左侧门店列按门店合并成一格才读得懂。
+// 判断只比数据（与上一行同门店就合并），因此排序/筛选之后依然对得上。
+interface FunnelRow {
+  store: string;
+  guide: string;
+  visits: number;
+  orders: number;
+}
+const funnelRows: FunnelRow[] = [
+  { store: "天河城店", guide: "张敏", visits: 128, orders: 21 },
+  { store: "天河城店", guide: "李伟", visits: 96, orders: 14 },
+  { store: "天河城店", guide: "王芳", visits: 74, orders: 9 },
+  { store: "正佳店", guide: "刘洋", visits: 152, orders: 33 },
+  { store: "正佳店", guide: "陈静", visits: 88, orders: 12 },
+];
+const funnelColumns: ColumnDef<FunnelRow, any>[] = [
+  { accessorKey: "store", header: "门店", size: 140 },
+  { accessorKey: "guide", header: "导购", size: 100 },
+  { accessorKey: "visits", header: "进店", size: 90, meta: { align: "right" } },
+  { accessorKey: "orders", header: "成单", size: 90, meta: { align: "right" } },
+];
+
+function CellSpanDemo() {
+  return (
+    <Table
+      columns={funnelColumns}
+      data={funnelRows}
+      enableSorting={false}
+      cellSpan={({ rows, rowIndex, columnId }) => {
+        if (columnId !== "store") return;
+        let span = 1;
+        while (rows[rowIndex + span]?.store === rows[rowIndex]?.store) span += 1;
+        return { rowSpan: span };
+      }}
+    />
+  );
+}
+
 export const tableShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -377,6 +416,23 @@ export const tableShowcase: ShowcaseSpec = {
 />`,
       render: () => <VirtualDemo />,
     },
+    {
+      title: "单元格合并",
+      description:
+        "cellSpan 逐格返回跨度，被合掉的格子不再回调。回调拿到的是渲染顺序，所以排序/筛选后合并不会错位。",
+      code: `<Table
+  columns={columns}
+  data={rows}
+  cellSpan={({ rows, rowIndex, columnId }) => {
+    if (columnId !== "store") return;
+    // 段首返回整段长度，后面几行会被自动合掉、不再回调
+    let span = 1;
+    while (rows[rowIndex + span]?.store === rows[rowIndex]?.store) span += 1;
+    return { rowSpan: span };
+  }}
+/>`,
+      render: () => <CellSpanDemo />,
+    },
   ],
   controls: [
     { prop: "enableSorting", type: "boolean", defaultValue: true, label: "可排序" },
@@ -397,6 +453,7 @@ export const tableShowcase: ShowcaseSpec = {
     { name: "行拖拽排序（整行可拖 dragHandle=\"row\"）", render: () => <DragSortDemo handle="row" /> },
     { name: "行拖拽排序（管理员行锁定不可拖）", render: () => <DragSortLockedDemo /> },
     { name: "虚拟滚动（200 行·固定高容器）", render: () => <VirtualDemo /> },
+    { name: "单元格合并（门店列按门店并格）", render: () => <CellSpanDemo /> },
     { name: "不可排序", render: () => <Demo enableSorting={false} /> },
     { name: "空数据", render: () => <Table columns={columns} data={[]} /> },
   ],

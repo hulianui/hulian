@@ -69,4 +69,18 @@ describe("Switch", () => {
     const { getByRole } = render(<Switch aria-label="s" className="my-switch" />);
     expect(getByRole("switch").classList.contains("my-switch")).toBe(true);
   });
+
+  // #183：Switch 此前连 label 都没有，写 children 会被显式的 Thumb 盖掉——一个字都不渲染。
+  it("label / children 渲染成轨道右侧文案并与开关关联", () => {
+    const { getByRole } = render(<Switch label="启用推送" />);
+    expect(getByRole("switch", { name: "启用推送" })).toBeTruthy();
+
+    const { getByRole: r2 } = render(<Switch>启用短信</Switch>);
+    expect(r2("switch", { name: "启用短信" })).toBeTruthy();
+  });
+
+  it("不给 label / children 时 DOM 与此前逐字一致（只有轨道，无 <label> 外壳）", () => {
+    const { container } = render(<Switch aria-label="s" />);
+    expect(container.querySelector("label")).toBeNull();
+  });
 });

@@ -492,6 +492,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Edits Markdown through a WYSIWYG TipTap surface with Markdown input and output.",
     keywords: ["markdown", "editor", "forms", "advanced"],
   },
+  "rich-text-editor": {
+    shortName: "RichTextEditor",
+    description:
+      "Edits HTML through a WYSIWYG TipTap surface, with a trimmable toolbar, injected image uploads, and paste sanitizing.",
+    keywords: ["rich text", "html", "editor", "wysiwyg", "forms", "advanced"],
+  },
   colorpicker: {
     shortName: "ColorPicker",
     description: "Selects colors through saturation and hue controls with HEX, RGB, or HSL output.",
@@ -660,6 +666,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     shortName: "EditableTable",
     description: "Edits validated row and cell values directly within a data table.",
     keywords: ["editable", "table", "data-display", "collection"],
+  },
+  "cell-editor": {
+    shortName: "CellEditor",
+    description:
+      "Edits one table cell in place: plain-text appearance at rest, commit on blur or Enter, no write when unchanged, Esc rollback, muted missing values, CSS field-sizing growth, and self-managed pending state.",
+    keywords: ["cell", "inline", "editor", "commit", "blur", "forms", "basic"],
   },
   list: {
     shortName: "List",

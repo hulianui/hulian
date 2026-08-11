@@ -50,8 +50,14 @@ import { Table } from "@hulianui/ui"
 | rowDraggable | `boolean` | `false` | 开行拖拽排序（@dnd-kit，useSortable 挂在 `<tr>`）；组件不改 data，顺序由 onRowDragEnd 交还消费方 |
 | dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
+| cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | — | 单元格合并（对标 el-table `:span-method`）。逐格回调，**被合掉的格子不再回调**；`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，`rowIndex` 是渲染顺序（排序/筛选之后）、`rows` 与之同序。与 `virtual` / `renderExpandedRow` 不能同开（会静默不合并 + dev 告警） |
+| stickyHeader | `boolean` | `false` | 表头吸顶（与 `virtual` 正交）。**必须同时给 `maxHeight`**，否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先（组件在 dev 下告警） |
+| maxHeight | `number ｜ string` | — | 滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准 |
+| minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来 |
+| cellVerticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | 单元格垂直对齐的表级默认；列 `meta.verticalAlign` 覆盖 |
+| cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | 换行策略的表级默认；列 `meta.whitespace` 覆盖。典型形状是「表级 nowrap + 少数几列 normal」 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
-| stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 开启时无效**（容器定高，真滚动条一直看得见）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
+| stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 或 `maxHeight` 开启时无效**（外壳自己就是定高滚动容器，真滚动条一直看得见，再挂一条会上下两条并排）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
 | className | `string` | — | 根节点类名 |
 
 ## Events
@@ -82,6 +88,8 @@ import { Table } from "@hulianui/ui"
 | align | `"left" \| "center" \| "right"` | 单元格内容水平对齐 | `align` |
 | headerAlign | `"left" \| "center" \| "right"` | 表头对齐；不写则跟随 `align` | `header-align` |
 | ellipsis | `boolean` | 溢出截断 + 悬停 Tooltip 显示全文 | `show-overflow-tooltip` |
+| verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | 单元格垂直对齐（表头不跟随，恒 middle）。允许换行的列几乎必然要 `top` | — |
+| whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | 换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行） | — |
 
 列宽走 TanStack 原生的 `ColumnDef.size / minSize / maxSize`（不另发明 `width` / `min-width`）：
 `size` → `width`、`minSize` → `min-width`、`maxSize` → `max-width`，`th` 与 `td` 用同一口径的内联 style（不使用 `<colgroup>`）。
@@ -140,9 +148,18 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 ## 禁忌 / 坑
 
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
+- **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
+- 表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。
+- 宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。
+- `meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: "normal"` + `maxSize` 限宽 + `verticalAlign: "top"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。
 - `meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout="fixed"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。
 - 固定列（`meta.sticky`）的 offset 由 `getStart/getAfter` 按 `getSize()` 累加得出，所以固定列的渲染宽会被**强制钉成 `getSize()`**（没写 size 就是默认 150）——想要多宽就显式写 `size`。同时内容要够宽触发横滚才看得到效果。
 - `resizable` 会强制 `layout="fixed"`（拖拽必须有确定列宽）。fixed 下表宽 = 各列 `getSize()` 之和，窄于容器时靠 `min-w-full` 撑满、列宽被浏览器按比例放大——那种情况下没有横滚，固定列 offset 也就无从体现。
+- `cellSpan` 的回调**只在没被合掉的格子上跑**，所以「与上一行同门店就合并」的写法是：在段首返回整段长度（`while (rows[i + n]?.store === rows[i].store) n++`），后面几行根本不会被问到。从 el-table 直译过来的 `[0, 0]` 写法也认（返回 `rowSpan: 0` 即该格不渲染）。
+- `cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。
+- `cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。
+- `cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。
+- 行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。
 - `virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。
 - 排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。

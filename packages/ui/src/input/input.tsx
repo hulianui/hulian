@@ -40,12 +40,17 @@ export const inputShellVariants = cva(
       // 只管字号：高度与内距是 default 外壳的事，cell 没有外壳也就没有这两样，
       // 所以它们下沉到 compoundVariants，否则 cell 会继承一个 h-10 把行撑起来。
       size: {
+        // xs = 存量密集数据表的行内编辑器（一屏 20+ 行）：28px 高 / 12px 字。
+        // 与 cell 是两回事 —— cell 是「无边框、像单元格」，xs 仍然有边框，
+        // 因为在这类表里用户正是靠边框判断哪些格子可编辑（#187）。
+        xs: "text-xs",
         sm: "text-sm",
         md: "text-sm",
         lg: "text-base",
       },
     },
     compoundVariants: [
+      { variant: "default", size: "xs", class: "h-7 px-2" },
       { variant: "default", size: "sm", class: "h-8 px-2.5" },
       { variant: "default", size: "md", class: "h-10 px-3" },
       { variant: "default", size: "lg", class: "h-12 px-3.5" },

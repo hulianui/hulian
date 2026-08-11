@@ -5,8 +5,12 @@ import { dayjs } from "../lib/date";
 import { Scheduler } from "./scheduler";
 import type { SchedulerEvent, SchedulerResource, SchedulerView } from "./scheduler.types";
 
-// 锚定到「本周周一」生成稳定示例数据（不依赖测试机当天具体值，但跟随今天所在周）。
-const monday = dayjs().day(1).format("YYYY-MM-DD");
+// 固定种子周（周一），**不读系统时钟**（#181）。
+//
+// 展示用例要说明的是「周视图长什么样」，不是「今天几号」。而在静态导出下读时钟会出事：
+// 模块级的 `dayjs()` 在构建时求值一次并被烤进 SSR HTML，访问日一旦跨天，客户端算出另一个
+// 周起始日 → hydration 当场失败（React #418）。固定日期顺带让截图与视觉回归可复现。
+const monday = "2026-06-01";
 const at = (offsetDays: number, hhmm: string) =>
   dayjs(monday).add(offsetDays, "day").format("YYYY-MM-DD") + `T${hhmm}:00`;
 

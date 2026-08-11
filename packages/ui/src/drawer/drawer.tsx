@@ -64,6 +64,11 @@ export function DrawerContent({
   container,
   showClose = true,
   closeLabel,
+  descriptionClassName,
+  backdrop = true,
+  backdropClassName,
+  scrollable = true,
+  bodyClassName,
   className,
 }: DrawerContentProps) {
   const loc = useLocaleValue("drawer", {
@@ -75,13 +80,19 @@ export function DrawerContent({
   const place = contained ? "absolute" : "fixed";
   return (
     <BaseDialog.Portal container={container}>
-      <BaseDialog.Backdrop
-        className={cn(
-          place,
-          "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
-        )}
-        style={backdropTransition}
-      />
+      {/* 遮罩可关（#185）：进度/通知这类自动弹出的抽屉要「陪跑」而不是「打断」。
+          关掉它 + Root 传 modal={false} 才是真正的非模态 —— 只关一边都不成立：
+          Backdrop 那层 inset-0 即使透明也照样吃掉整屏点击。 */}
+      {backdrop && (
+        <BaseDialog.Backdrop
+          className={cn(
+            place,
+            "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            backdropClassName,
+          )}
+          style={backdropTransition}
+        />
+      )}
       <BaseDialog.Popup
         className={cn("relative", place, drawerVariants({ side }), className)}
         style={panelTransition}
@@ -103,7 +114,8 @@ export function DrawerContent({
           </BaseDialog.Title>
         )}
         {description && (
-          <BaseDialog.Description className="text-sm text-muted-foreground">
+          // 同 dialog.tsx：传 "sr-only" 即「只给读屏的说明」（#179 评论）。
+          <BaseDialog.Description className={cn("text-sm text-muted-foreground", descriptionClassName)}>
             {description}
           </BaseDialog.Description>
         )}
@@ -120,7 +132,14 @@ export function DrawerContent({
             表单最后一个控件的下边界与滚动容器完全贴合，它的环往下那 4px 一样会被切掉。
             但纵向**只留 4px 而不是跟横向一样借 24px**：上下方紧挨着标题和 footer，
             借多了滚动内容会从标题底下穿出来一大截；4px 恰好够环画，穿透幅度肉眼不可见。 */}
-        <div className="mx-[calc(var(--hl-overlay-pad,1.5rem)*-1)] -mb-1 mt-1 min-h-0 flex-1 overflow-y-auto px-[var(--hl-overlay-pad,1.5rem)] pb-1 pt-1">
+        <div
+          className={cn(
+            "mx-[calc(var(--hl-overlay-pad,1.5rem)*-1)] -mb-1 mt-1 min-h-0 flex-1 px-[var(--hl-overlay-pad,1.5rem)] pb-1 pt-1",
+            // 同 dialog.tsx：scrollable=false 时正文改成列向 flex 容器，把确定高度传给 children（#188）。
+            scrollable ? "overflow-y-auto" : "flex flex-col",
+            bodyClassName,
+          )}
+        >
           {children}
         </div>
         {footer != null && (

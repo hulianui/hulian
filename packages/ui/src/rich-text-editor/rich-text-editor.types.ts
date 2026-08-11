@@ -1,0 +1,78 @@
+import type { HTMLAttributes } from "react";
+import type { AnyExtension } from "@tiptap/react";
+
+/**
+ * 工具栏条目。`"divider"` 只是竖线，不带命令。
+ *
+ * 中后台常见的一档就是默认值：
+ * 加粗 / 斜体 / 下划线 / 删除线 / 标题 / 字号 / 颜色 / 对齐 / 列表 / 引用 / 链接 / 图片 / 表格 / 清格式。
+ */
+export type RichTextToolbarItem =
+  | "bold"
+  | "italic"
+  | "underline"
+  | "strike"
+  | "heading"
+  | "fontSize"
+  | "color"
+  | "align"
+  | "bulletList"
+  | "orderedList"
+  | "blockquote"
+  | "link"
+  | "image"
+  | "table"
+  | "clear"
+  | "divider";
+
+/**
+ * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
+ * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
+ * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（同 MarkdownEditor）。
+ */
+export interface RichTextEditorProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** 受控 **HTML 片段串**（存量数据库里躺的就是它，前台 `v-html` / 小程序 `rich-text` 直接吃）。 */
+  value?: string;
+  /** 非受控初值（HTML 串）。 */
+  defaultValue?: string;
+  /** 内容变化回调，参数是 HTML 串。 */
+  onChange?: (html: string) => void;
+  /** 桥给原生表单 / Field 的隐藏 input name（值为 HTML 串）。 */
+  name?: string;
+  placeholder?: string;
+  /** 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动）。 */
+  invalid?: boolean;
+  disabled?: boolean;
+  /** 内容区最小高度（行），默认 8。 */
+  minRows?: number;
+  /**
+   * 工具栏条目与顺序。不传即完整一档；传 `[]` 则整条工具栏不渲染（只读预览式编辑）。
+   * 裁掉某一档同时会**关掉对应扩展**（如不给 `"table"` 就不装表格扩展），
+   * 因此裁剪不只是省按钮，也决定了粘贴/回填时哪些标签能活下来 —— 见文档「禁忌 / 坑」。
+   */
+  toolbar?: RichTextToolbarItem[];
+  /**
+   * 图片上传：把 `File` 交给消费方，拿回可访问的 URL 后插入 `<img src>`。
+   *
+   * 不传则工具栏的图片按钮改为「填 URL」，**永远不会内联 base64** ——
+   * 那会让一篇正文膨胀几 MB 并塞爆数据库字段。传输层（鉴权头、OSS 直传、进度）
+   * 一律交还消费方，同 `Upload` 的 `useUpload` 口径。
+   */
+  onUploadImage?: (file: File) => Promise<{ url: string }>;
+  /**
+   * 粘贴净化：从 Word / 网页粘进来的内容洗掉 `class`、`on*`、`<style>`、`javascript:` 协议，
+   * 并把内联 `style` 过一遍属性白名单（保留 color / text-align / font-size 这类真排版）。
+   * @default true
+   */
+  sanitizePaste?: boolean;
+  /**
+   * 追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频加一个节点类型）。
+   *
+   * 编辑器的 schema 决定了哪些标签能活下来：schema 之外的标签在**载入时**就被丢掉，
+   * 保存回去即数据丢失。存量 HTML 里有超出内置一档的标签时，用这个口子补节点，
+   * 别指望「不碰它就不会掉」。
+   */
+  extensions?: AnyExtension[];
+  className?: string;
+  "aria-label"?: string;
+}

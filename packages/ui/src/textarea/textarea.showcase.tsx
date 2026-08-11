@@ -63,7 +63,7 @@ export const textareaShowcase: ShowcaseSpec = {
     },
   ],
   controls: [
-    { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },
+    { prop: "size", type: "select", options: ["xs", "sm", "md", "lg"], defaultValue: "md" },
     { prop: "placeholder", type: "text", defaultValue: "写点什么…", label: "占位符" },
     { prop: "rows", type: "number", defaultValue: 3, label: "rows" },
     { prop: "autoResize", type: "boolean", defaultValue: false, label: "自适应高度" },

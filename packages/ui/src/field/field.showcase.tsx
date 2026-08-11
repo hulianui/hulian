@@ -42,6 +42,19 @@ export const fieldShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "必填",
+      description:
+        "required 在 label 前画红星，并把 aria-required 注入控件；校验仍写在 rules 里，这个 prop 不产生校验。",
+      code: `<Field label="banner类型" required>
+  <Input placeholder="请选择" />
+</Field>`,
+      render: () => (
+        <Field label="banner类型" required className="w-72">
+          <Input placeholder="请选择" />
+        </Field>
+      ),
+    },
+    {
       title: "横排设置行",
       description: "orientation=horizontal：标签区在左、控件在右、错误另起一行占满整行。",
       code: `<Field

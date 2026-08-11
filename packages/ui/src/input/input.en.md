@@ -27,7 +27,7 @@ Inherit the native `<input>` properties (except `size`/`prefix` are overridden b
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size). Under `variant="cell"` it only affects font size; height and padding are gone |
+| size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size). `xs` is a 28px-tall, 12px-text density step for inline editors in dense legacy tables; it keeps its border, unlike the borderless `variant="cell"`. Under `variant="cell"` it only affects font size; height and padding are gone |
 | variant | `"default" \| "cell"` | `"default"` | Shell form. `cell` is the in-place editor for a table cell: no border, transparent background, zero padding, no fixed row height, and focus is shown as a tinted background plus an inset underline instead of a focus ring |
 | invalid | `boolean` | `false` | Marked red when used independently; automatically driven by Field.Root invalid in hulian Field, no need to repeat the transmission |
 | disabled | `boolean` | `false` | Disable |

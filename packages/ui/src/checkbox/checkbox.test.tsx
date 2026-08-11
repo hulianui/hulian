@@ -51,4 +51,15 @@ describe("Checkbox", () => {
     expect(container.querySelector("[data-invalid]")).toBeTruthy();
     expect(getByText("必须勾选")).toBeTruthy();
   });
+
+  // #183：与 Radio 同一处方。
+  it("children 当文案渲染（与 label 等价），label 同时给时 label 优先", () => {
+    const { getByRole, queryByText } = render(<Checkbox>同意条款</Checkbox>);
+    expect(getByRole("checkbox", { name: "同意条款" })).toBeTruthy();
+
+    const { queryByText: q2 } = render(<Checkbox label="标签">子节点</Checkbox>);
+    expect(q2("标签")).toBeTruthy();
+    expect(q2("子节点")).toBeNull();
+    expect(queryByText("同意条款")).toBeTruthy();
+  });
 });

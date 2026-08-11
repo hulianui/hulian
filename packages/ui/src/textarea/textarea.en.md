@@ -27,7 +27,8 @@ Inherit the native `<textarea>` properties (except `size` is overwritten, such a
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size). Under `variant="cell"` it only affects font size; there is no padding left to change |
+| size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size). `xs` matches the `xs` height of Input and SelectTrigger for dense tables. Under `variant="cell"` it only affects font size; there is no padding left to change |
+| ref | `Ref<HTMLTextAreaElement>` | — | Forwarded to the inner native `<textarea>`. `focus()`, `select()`, reading `.value`, and react-hook-form `register()` all rely on it, and it coexists with the internal ref used by `autoResize` |
 | variant | `"default" \| "cell"` | `"default"` | Shell form. `cell` is the in-place editor for a table cell: no border, transparent background, zero padding, height follows content through CSS `field-sizing: content`, and focus is shown as a tinted background plus an inset underline instead of a focus ring |
 | invalid | `boolean` | `false` | Marked red when used independently; automatically driven by Field.Root invalid in hulian Field |
 | autoResize | `boolean` | `false` | Adapt height according to content (JS scrollHeight, `rows` is the lower limit) |

@@ -33,6 +33,27 @@ const fields: SearchField[] = [
   { name: "city", label: "城市", placeholder: "城市" },
 ];
 
+const orgTree = [
+  {
+    key: "south",
+    label: "华南大区",
+    children: [
+      { key: "gz", label: "广州", children: [{ key: "gz-01", label: "天河店" }, { key: "gz-02", label: "越秀店" }] },
+      { key: "sz", label: "深圳", children: [{ key: "sz-01", label: "南山店" }] },
+    ],
+  },
+  {
+    key: "east",
+    label: "华东大区",
+    children: [{ key: "sh", label: "上海", children: [{ key: "sh-01", label: "静安店" }] }],
+  },
+];
+
+const pathFields: SearchField[] = [
+  { name: "store", label: "门店", type: "cascader", options: orgTree, changeOnSelect: true },
+  { name: "area", label: "地区", type: "region" },
+];
+
 function Demo({ collapsible = true }: { collapsible?: boolean }) {
   const [values, setValues] = useState<Record<string, unknown>>({});
   const [searched, setSearched] = useState<string | null>(null);
@@ -106,6 +127,28 @@ export const searchFormShowcase: ShowcaseSpec = {
             onSearch={() => {}}
             onReset={() => {}}
           />
+        </div>
+      ),
+    },
+    {
+      title: "层级字段：级联 + 省市区",
+      description:
+        "cascader 喂 options 树（组织架构 / 品类），region 的省市区数据内置且按需加载。两者的值都是路径数组。",
+      code: `const fields: SearchField[] = [
+  {
+    name: "store",
+    label: "门店",
+    type: "cascader",
+    options: orgTree,        // TreeNode[]，同 Cascader 的 nodes
+    changeOnSelect: true,    // 允许只筛到大区 / 城市
+  },
+  { name: "area", label: "地区", type: "region" },
+];
+
+<SearchForm fields={fields} columns={2} onSearch={(v) => console.log(v)} />`,
+      render: () => (
+        <div className="w-[44rem] max-w-full">
+          <SearchForm fields={pathFields} columns={2} onSearch={() => {}} onReset={() => {}} />
         </div>
       ),
     },

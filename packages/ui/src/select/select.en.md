@@ -51,7 +51,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectTrigger
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" \| "md" \| "lg"` | `"md"` | Visual size. |
+| size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | Visual size. `xs` matches the `xs` height of Input and Textarea, so the three controls line up in a dense table row. |
 | invalid | `boolean` | `false` | Whether to show invalid styling when the trigger is used outside a Field. |
 | maxDisplay | `number` | `2` | Maximum visible selected labels in multiple mode; remaining selections collapse into `+N`. |
 | className | `string` | — | Additional class name passed through to the element. |

@@ -31,7 +31,10 @@ function DashIcon() {
   );
 }
 
-function CheckboxImpl({ className, label, disabled, ...props }: CheckboxProps) {
+function CheckboxImpl({ className, label, children, disabled, ...props }: CheckboxProps) {
+  // children 与 label 等价（#183）：同 Radio，此前 children 会被 Root 上显式的 Indicator 盖掉，
+  // 类型放行但一个字都不渲染。
+  const text = label ?? children;
   const box = (
     <BaseCheckbox.Root disabled={disabled} {...props} className={cn(boxClass, className)}>
       <BaseCheckbox.Indicator
@@ -44,12 +47,12 @@ function CheckboxImpl({ className, label, disabled, ...props }: CheckboxProps) {
     </BaseCheckbox.Root>
   );
 
-  if (!label) return box;
+  if (text == null || text === false || text === "") return box;
 
   return (
     <label className="inline-flex items-center gap-2">
       {box}
-      <span className={cn("text-sm text-foreground select-none", disabled && "opacity-50")}>{label}</span>
+      <span className={cn("text-sm text-foreground select-none", disabled && "opacity-50")}>{text}</span>
     </label>
   );
 }

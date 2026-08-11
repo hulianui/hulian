@@ -27,8 +27,13 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `DialogContent.title` * | `string` | — | Visible title and accessible label. |
-| `DialogContent.description` | `string` | — | Supporting copy. |
+| `DialogContent.title` * | `ReactNode` | — | Visible title and accessible label. Accepts a node, so an icon plus text works. |
+| `DialogContent.description` | `ReactNode` | — | Supporting copy. Rendered inside a `<p>`, so **phrasing content only** — put block-level content in children. |
+| `DialogContent.descriptionClassName` | `string` | — | Appended to the description (merged with twMerge). Pass `sr-only` for a screen-reader-only description, which keeps the visible header to the title alone while assistive technology still reads the sentence. |
+| `DialogContent.backdrop` | `boolean` | `true` | Whether to render the backdrop. Setting it to `false` together with `modal={false}` on the root is what makes an overlay truly non-modal; turning off only one is not enough, because the `inset-0` backdrop swallows every click even when it is transparent. |
+| `DialogContent.backdropClassName` | `string` | — | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so dimming and blur can follow your design system. |
+| `DialogContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children, so a two-pane layout only needs `flex-1 min-h-0` instead of a hand-tuned `h-[58vh]`. |
+| `DialogContent.bodyClassName` | `string` | — | Appended to the body container. |
 | `DialogContent.className` | `string` | — | Content-container class name. |
 
 ## Events
@@ -58,6 +63,9 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 ```
 
 ## Usage guidelines
+
+- A non-modal overlay takes **two changes**: `modal={false}` on the root, which releases the focus and scroll locks, plus `backdrop={false}` on the content, which stops rendering the backdrop. Changing only the first leaves a `fixed inset-0` layer that swallows every click even while transparent, so nothing actually becomes non-modal.
+- With `scrollable={false}`, **vertical scrolling becomes your responsibility**: the body only passes a definite height down as a column flex container, and each child needs its own `overflow-y-auto`. Forgetting that clips the content at `max-h`.
 
 - Use `render={<Button … />}` on DialogTrigger and DialogClose to merge behavior into the target element. Do not wrap another button around them; that creates nested interactive elements and duplicate click handling.
 - Prefer the `footer` slot for actions so it receives the divider and alignment, leaving `children` for primary content.

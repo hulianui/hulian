@@ -216,7 +216,7 @@ export const selectShowcase: ShowcaseSpec = {
   ],
   controls: [
     { prop: "placeholder", type: "text", defaultValue: "请选择字体", label: "占位文案" },
-    { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md" },
+    { prop: "size", type: "select", options: ["xs", "sm", "md", "lg"], defaultValue: "md" },
     { prop: "side", type: "select", options: ["bottom", "top"], defaultValue: "bottom" },
     { prop: "clearable", type: "boolean", defaultValue: false, label: "可清除" },
     { prop: "searchable", type: "boolean", defaultValue: false, label: "可搜索" },

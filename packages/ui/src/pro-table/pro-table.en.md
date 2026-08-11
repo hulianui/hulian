@@ -107,6 +107,8 @@ Inherited Table events include sorting, selection, expansion, and column-filter 
 
 ## Usage notes
 
+- **Memoize `columns`** (same root cause as [Table](../table/table.md)): TanStack's `flexRender` renders a function `cell` as a component type, so a changed identity unmounts and remounts the cell. With an input inside, a controlled field loses focus on every keystroke and an `onBlur` submit fires on the remount blur, committing a half-typed value. Never put a per-keystroke value in the `useMemo` dependencies, and prefer uncontrolled inputs for inline editing.
+
 - In managed mode, `data`, `pagination`, and `loading` are ignored. Cursor mode has no total or random page jump; changing filters, sorting, or page size resets to page one.
 - Supply `getRowId` in managed mode so selection remains stable across pages. `batchActions` also requires enabled selection and at least one selected row.
 - Request rejection falls back to `console.error`; use `onRequestError` for a production toast or report.

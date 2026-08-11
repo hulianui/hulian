@@ -51,7 +51,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectTrigger
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸 |
+| size | `"xs" ｜ "sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸。`xs` 与 Input / Textarea 的 `xs` 等高（密集表格里同一行三种控件必须对齐） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | maxDisplay | `number` | `2` | 多选模式下最多平铺几个已选 label，超出折叠为 +N 计数 |
 | className | `string` | — | 透传类名 |

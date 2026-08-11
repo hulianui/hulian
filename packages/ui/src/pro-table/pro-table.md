@@ -111,6 +111,8 @@ import { ProTable } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- **`columns` 必须 memo**（与 [Table](../table/table.md) 同源）：cell 函数经 TanStack 的 `flexRender` 被当作**组件类型**渲染，identity 一变整格卸载重挂。格子里有输入框时直接坏功能 —— 受控输入框每敲一个字失焦 + 光标跳末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发误提交。`useMemo` 的依赖里不要放逐键变化的输入值（那等于没 memo），行内编辑优先让输入框非受控。
+
 - 托管模式（传 `request`）下 `data`/`pagination`/`loading` 三个 prop 被忽略——别两种模式混用。cursor 分页无 total/不能随机跳页，且 filters/sort/pageSize 任一变化会自动重置回第 1 页。
 - 托管模式必须给 `getRowId`，否则行选择/批量在翻页后 key 不稳。
 - `request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。

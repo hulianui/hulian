@@ -24,6 +24,12 @@ export type {
 /** 列内容水平对齐（对标 el-table-column 的 align / header-align）。 */
 export type TableColumnAlign = "left" | "center" | "right";
 
+/** 单元格垂直对齐（#194）。 */
+export type TableCellVerticalAlign = "top" | "middle" | "bottom";
+
+/** 单元格换行策略（#194）。 */
+export type TableCellWhitespace = "nowrap" | "normal" | "pre-wrap";
+
 // 列 meta 增量（模块增强）：固定列 / 筛选框 / 对齐 / 溢出省略。皆为可选，不写即关。
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -43,7 +49,48 @@ declare module "@tanstack/react-table" {
      * Tooltip 全文取该列的**原始值**（string/number），非文本值只截断不挂浮层。
      */
     ellipsis?: boolean;
+    /**
+     * 单元格垂直对齐（#194）。不写则跟随表级 `cellVerticalAlign`，仍不写为 `middle`。
+     * 表头不跟随，恒 `middle`。
+     *
+     * 允许换行的列几乎必然要 `top`：同一行里短单元格垂直居中、长单元格首行在上方，
+     * 两者对不齐，整行读起来是散的。
+     */
+    verticalAlign?: TableCellVerticalAlign;
+    /**
+     * 换行策略（#194）。不写则跟随表级 `cellWhitespace`，仍不写为浏览器默认（换行）。
+     *
+     * · `nowrap` —— 日期 / 月数 / 状态这类短列，保持一行；
+     * · `normal` —— 长文本换行（宽度上限用 `maxSize` 表达）；
+     * · `pre-wrap` —— 连用户输入里的换行与空格一起保留（自动带 `break-words`，
+     *   否则超长无空格串会撑破列宽）。
+     *
+     * 与 `ellipsis` 互斥：截断本身就要求单行，同传时以 `ellipsis` 为准。
+     */
+    whitespace?: TableCellWhitespace;
   }
+}
+
+/** 单元格跨度：缺省即 1；小于 1 表示该格不渲染（等价 el-table 的 `[0, 0]`）。 */
+export interface TableCellSpan {
+  rowSpan?: number;
+  colSpan?: number;
+}
+
+/** `cellSpan` 回调的上下文。 */
+export interface TableCellSpanContext<TData> {
+  /** 当前行的原始数据。 */
+  row: TData;
+  /** 渲染顺序下标（排序/筛选之后），与 `rows` 同序。 */
+  rowIndex: number;
+  /** 当前可见行的原始数据，按渲染顺序 —— 「与上一行同值就合并」直接比 `rows[rowIndex - 1]`。 */
+  rows: TData[];
+  /** 列 id（内置列为 `__select__` / `__expander__` / `__drag__`，它们通常不该参与合并）。 */
+  columnId: string;
+  /** 可见列的下标（含内置前插列）。 */
+  columnIndex: number;
+  /** 该格的取值（`column.accessorKey` 解出来的原始值）。 */
+  value: unknown;
 }
 
 /**
@@ -121,6 +168,12 @@ export interface TableProps<TData> {
    * 返回 undefined 则该行不加；与斑马纹/选中态类合并，不覆盖。
    */
   rowClassName?: (row: TData, index: number) => string | undefined;
+  /**
+   * 落在**滚动外壳**上，不是 `<table>` 本体（`stickyScrollbar` 开启时根节点还会再外移一层）。
+   *
+   * 所以 `min-w-*` 写在这里是错的：它钉住的是滚动容器，容器从此收不窄 → 横滚条永不出现 →
+   * 超出视口的列被祖先裁掉且滚不出来。表本体的宽度下限用 `minWidth`（#193）。
+   */
   className?: string;
 
   // —— 列几何（列宽 / 布局 / 拖拽调宽）——
@@ -232,6 +285,59 @@ export interface TableProps<TData> {
    * @default false
    */
   stickyScrollbar?: boolean;
+
+  // —— 单元格排版（表级默认，列 meta 可逐列覆盖）——
+  /**
+   * 单元格垂直对齐的**表级默认**（#194）。默认 `middle`（与此前逐像素一致）。
+   * 允许换行的表通常整表 `top`，个别列再用 `meta.verticalAlign` 调回来。
+   */
+  cellVerticalAlign?: TableCellVerticalAlign;
+  /**
+   * 换行策略的**表级默认**（#194）。不写即浏览器默认（换行）。
+   * 典型形状是「表级 `nowrap` + 少数几列 `meta.whitespace: "normal"`」——
+   * 宽表里日期/月数/状态保持一行，只有公司名/职务/描述几列换行。
+   */
+  cellWhitespace?: TableCellWhitespace;
+
+  // —— 表头吸顶 / 宽度下限 ——
+  /**
+   * 表头吸顶（#192）。与 `virtual` 正交：虚拟滚动恒吸顶，普通表由本项开关。
+   *
+   * **必须同时给 `maxHeight`**（或开 `virtual`）：sticky 要锚在一个真的会纵向滚动的祖先上，
+   * 而表格外壳默认没有高度约束、永远不滚。只开这一项时组件在 dev 下告警并保持原样。
+   */
+  stickyHeader?: boolean;
+  /**
+   * 表格滚动区的最大高度（数值按 px）。给了它外壳才会纵向滚动，
+   * 也是 `stickyHeader` 生效的前提。`virtual` 开启时以 `virtual.height` 为准。
+   */
+  maxHeight?: number | string;
+  /**
+   * `<table>` 本体的宽度下限（#193）。
+   *
+   * **不要把 `min-w-*` 写进 `className`** —— 那落在**滚动外壳**上，容器从此收不窄，
+   * `scrollWidth === clientWidth` 于是横滚条永不出现，超出视口的列被祖先直接裁掉且滚不出来
+   * （数据不可达，而且宽窗口下自查不到，只有收窄到阈值以下才暴露）。
+   */
+  minWidth?: number | string;
+
+  // —— 单元格合并（不传=关）——
+  /**
+   * 单元格合并（#176）：对标 el-table 的 `:span-method`、antd 的 `column.onCell`。
+   * 逐格回调，返回该格要横跨/纵跨几格；返回 `undefined` 或 `{}` 即不合并。
+   *
+   * **被合掉的格子不会再回调**——只需在「一段的第一行」返回 `rowSpan`，
+   * 后面那几行不必自己判断「我是不是被合掉的那格」（返回 `0` 也认，方便从 el-table 直译过来）。
+   *
+   * 回调拿到的 `rowIndex` 是**渲染顺序**（排序/筛选之后）的下标，`rows` 是同序的原始数据，
+   * 所以「与上一行同门店就合并」这类判断直接比 `rows[rowIndex - 1]` 即可 —— 不会像 el-table
+   * 那样一排序就整片错位。
+   *
+   * 不支持的组合（会静默不合并并在 dev 下告警）：
+   * · `virtual` 虚拟滚动 —— 只渲染可见窗口，跨窗口的纵向合并无解；
+   * · `renderExpandedRow` 明细展开 —— 展开面板是插在数据行之间的 `<tr>`，纵向合并会跨过它。
+   */
+  cellSpan?: (ctx: TableCellSpanContext<TData>) => TableCellSpan | void;
 
   // —— 空态（data 为空时）——
   /** 空态文案（渲染进内置 <Empty> 标题）。默认取 locale.table.empty（zhCN「暂无数据」）。 */

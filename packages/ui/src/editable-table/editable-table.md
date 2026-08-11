@@ -86,6 +86,8 @@ const columns: EditableColumn<Row>[] = [
 
 ## 禁忌 / 坑
 
+- **`columns` 必须 memo**（与 [Table](../table/table.md) 同源）：cell 函数经 TanStack 的 `flexRender` 被当作**组件类型**渲染，identity 一变整格卸载重挂。格子里有输入框时直接坏功能 —— 受控输入框每敲一个字失焦 + 光标跳末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发误提交。`useMemo` 的依赖里不要放逐键变化的输入值（那等于没 memo），行内编辑优先让输入框非受控。
+
 - 数据源**受控**：必须把 `onChange` 回传的 `next` 写回 state，否则保存/增删后界面不更新。
 - `validateRow` 只负责"阻断保存"，不渲染错误提示——行内报错文案要消费者自己在 `editor` 里处理。
 - `summary` 不自动管对齐：内容是 raw tfoot，跨列对齐(`colSpan`/列宽)由消费者自己掌控。

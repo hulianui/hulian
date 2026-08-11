@@ -25,6 +25,11 @@ export interface FieldBinding {
   onChange: (valueOrEvent: unknown) => void;
   onBlur: () => void;
   error?: string;
+  /**
+   * 该字段的 `rules` 里是否含 `required: true`（#180）。
+   * 传给 `<Field required>` 即可让「必填」在提交前就看得见，规则仍是唯一校验来源。
+   */
+  required: boolean;
 }
 
 export interface FormInstance<V extends FormValues = FormValues> {
@@ -123,6 +128,9 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
           void runValidate(name, valuesRef.current);
         },
         error: errors[name],
+        // 必填态由规则派生（#180）：`<Field required={f.required}>` 就能画红星 + 落 aria-required，
+        // 不必在规则之外再手写一遍必填 —— 两处各写一遍必然会漂移。
+        required: (config?.rules ?? []).some((rule) => rule.required === true),
       };
     },
     [applyChange, runValidate, errors],

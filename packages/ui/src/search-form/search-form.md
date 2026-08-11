@@ -56,6 +56,8 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 - `type: "select"` + `options: { value: string; label: ReactNode }[]`
 - `type: "multi-select"` + `options`（值是 `string[]`）
 - `type: "remote-select"` + `fetcher`（签名同 RemoteSelect）+ `resolveValue?` + `multiple?`
+- `type: "cascader"` + `options: TreeNode[]`（即 Cascader 的 `nodes`）+ `changeOnSelect?` / `showSearch?`（值是路径数组）
+- `type: "region"` + `level?: 2 | 3` + `changeOnSelect?` / `showSearch?`（省市区数据内置，不用喂 options；值是 code 路径数组）
 - `type: "date"` / `type: "date-range"`
 - `type: "datetime"` / `type: "datetime-range"`（原生 `datetime-local`）
 
@@ -96,6 +98,9 @@ const fields: SearchField[] = [
 - `datetime` / `datetime-range` 用的是原生 `datetime-local`，**值是不带时区的本地时间串**
   （`"2026-07-29T14:30"`）。别对它调 `new Date(...).toISOString()` —— 东八区会直接少 8 小时，
   且不报错只写坏数据。要 ISO 请在 `onSearch` 里显式按本地时刻拼。
+- `cascader` / `region` 的值是**路径数组**（根 → 叶），未选时是 `[]` 而不是 `""`。后端只认末级 id 时在 `onSearch` 里取 `path.at(-1)`；要中间层级也能提交请开 `changeOnSelect`。
+- `region` 的内置区划表约 137KB，因此那一档是**按需加载**的：只有配了 `type: "region"` 的页面才会拉那个 chunk。它到达前控件位置是一块等高占位，不会让整片查询区跳一下。
+- `region` 只回传 **code 路径**（`["11","1101","110101"]`）。后端要的是名称路径时用 `render` 逃生舱自己接 [RegionCascader](../region-cascader/region-cascader.md)，它的 `onChange` 第二参就是名称路径。
 - `remote-select` 的受控回调在 RemoteSelect 那边叫 `onChange`（第二参给完整选项），
   本组件只取第一参喂回 values；需要拿到原始行请改用 `render` 逃生舱自己接。
 

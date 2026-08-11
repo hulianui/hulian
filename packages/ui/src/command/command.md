@@ -32,7 +32,9 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | closeOnSelect | `boolean` | `true` | 执行项后是否自动关闭面板。 |
 | autoHighlight | `boolean` | `true` | 打开面板与每次过滤后自动高亮首个可用项（跳过禁用项），于是「打字 → 回车」直接命中。关掉则必须先按方向键点亮某项，回车才有动作。 |
 | shortcut | `boolean` | `false` | 内置 ⌘K / Ctrl+K 全局快捷键切换开合。 |
-| className | `string` | — | — |
+| surface | `"solid" \| "glass" \| "none"` | `"solid"` | 外壳表面皮肤（只管填充/描边/阴影，尺寸与定位始终由组件负责）。`glass` = 半透明 + 背景模糊（需身后有底图）；`none` = 一个皮肤类都不画，全交给 `className` |
+| className | `string` | — | 追加到面板外壳 |
+| backdropClassName | `string` | — | 追加到遮罩层（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
 | aria-label | `string` | — | — |
 
 ## Events
@@ -107,6 +109,8 @@ const [open, setOpen] = useState(false);
 - `label` 不是字符串时默认过滤匹配不到它，需为该项补 `keywords`（否则只能靠 `value` 命中）。
 - 内置快捷键用 `shortcut` 一键开启；若想在面板外自绑触发逻辑，改用 `useCommandShortcut`，别同时开 `shortcut`。
 - 命令项是删除 / 重置 / 发布这类破坏性操作时，考虑 `autoHighlight={false}`：默认「打开即高亮首项」配上手滑回车就是误触。关掉后高亮要用户自己按方向键点亮，回车才有动作。
+- 换皮肤优先用 `surface="none"` + 自己的类，而不是靠 `className` 去「压掉」`solid` 的 `bg-surface / border-hairline / shadow-xl`：压的写法在库升级皮肤时会打架，而且为了换底色要连布局类一起承担 twMerge 的不确定性。
+- `surface="glass"` 需要**身后有底图**才是玻璃；纯色页面上它只是个半透明面板。遮罩浓度另有 `backdropClassName`，两者是两个旋钮。
 - 高亮跟着**项的 `value`** 走，不跟数组引用走：过滤后原高亮项还在就不动它，所以 `groups` 每次渲染新建也不会让高亮乱跳。反过来说 `value` 必须稳定（别用数组下标当 value），否则每批结果都会被当成新项。
 
 ## 相关

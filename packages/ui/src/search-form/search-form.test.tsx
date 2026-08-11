@@ -185,4 +185,64 @@ describe("SearchForm 控件类型", () => {
     render(<SearchForm fields={fields} onSearch={onSearch} />);
     expect(submit(onSearch).price).toEqual(["1", "9"]);
   });
+
+  // #177：cascader / region 此前不在词表里，组织架构与省市区筛选只能退到 render 逃生舱。
+  describe("层级字段（#177）", () => {
+    const orgNodes = [
+      {
+        key: "south",
+        label: "华南大区",
+        children: [{ key: "gz", label: "广州", children: [{ key: "gz-01", label: "天河店" }] }],
+      },
+    ];
+
+    it("cascader：渲染级联触发器，选完把路径数组喂回 values", async () => {
+      const onChange = vi.fn();
+      render(
+        <SearchForm
+          fields={[{ name: "store", label: "门店", type: "cascader", options: orgNodes }]}
+          onChange={onChange}
+          onSearch={() => {}}
+        />,
+      );
+      fireEvent.click(screen.getByText("请选择"));
+      fireEvent.click(await screen.findByText("华南大区"));
+      fireEvent.click(await screen.findByText("广州"));
+      fireEvent.click(await screen.findByText("天河店"));
+      expect(onChange.mock.calls.at(-1)?.[0]).toMatchObject({ store: ["south", "gz", "gz-01"] });
+    });
+
+    it("cascader 的空值形状是 []（重置回到空路径而不是空串）", () => {
+      const onReset = vi.fn();
+      render(
+        <SearchForm
+          fields={[{ name: "store", label: "门店", type: "cascader", options: orgNodes }]}
+          onReset={onReset}
+          onSearch={() => {}}
+        />,
+      );
+      fireEvent.click(screen.getByText("重置"));
+      expect(onReset.mock.calls.at(-1)?.[0]).toEqual({ store: [] });
+    });
+
+    it("region：按需加载到达后渲染内置省市区选择器", async () => {
+      render(
+        <SearchForm
+          fields={[{ name: "area", label: "地区", type: "region" }]}
+          onSearch={() => {}}
+        />,
+      );
+      // lazy chunk 到达前先出占位，到达后才有触发器
+      expect(await screen.findByText("请选择")).toBeTruthy();
+    });
+
+    it("region 的空值形状同样是 []", () => {
+      const onReset = vi.fn();
+      render(
+        <SearchForm fields={[{ name: "area", label: "地区", type: "region" }]} onReset={onReset} onSearch={() => {}} />,
+      );
+      fireEvent.click(screen.getByText("重置"));
+      expect(onReset.mock.calls.at(-1)?.[0]).toEqual({ area: [] });
+    });
+  });
 });

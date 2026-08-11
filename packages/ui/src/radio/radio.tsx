@@ -39,7 +39,11 @@ const dotClass = cn(
   "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
 );
 
-export function Radio({ value, disabled, label, id, className, ...a11y }: RadioProps) {
+export function Radio({ value, disabled, label, children, id, className, ...a11y }: RadioProps) {
+  // children 与 label 等价（#183）：`<Radio value="1">审核通过</Radio>` 是 el-radio / antd Radio
+  // 迁过来的恒定写法，也是 React 生态直觉。此前 children 既没被解构、又被 Root 上显式的
+  // Indicator 子节点盖掉，结果是「类型放行、运行时什么都不渲染」——三道门禁全绿，只能靠肉眼截图发现。
+  const text = label ?? children;
   const dot = (
     // a11y（aria-label / aria-labelledby / aria-describedby）必须落到 Root：它才是 role=radio 的宿主。
     // 无 label 用法此前完全拿不到无障碍名 —— 读屏只报「单选按钮」，不知道选的是哪一项。
@@ -54,12 +58,12 @@ export function Radio({ value, disabled, label, id, className, ...a11y }: RadioP
     </BaseRadio.Root>
   );
 
-  if (!label) return dot;
+  if (text == null || text === false || text === "") return dot;
 
   return (
     <label className="inline-flex items-center gap-2">
       {dot}
-      <span className={cn("text-sm text-foreground select-none", disabled && "opacity-50")}>{label}</span>
+      <span className={cn("text-sm text-foreground select-none", disabled && "opacity-50")}>{text}</span>
     </label>
   );
 }

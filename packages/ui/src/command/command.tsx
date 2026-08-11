@@ -1,5 +1,6 @@
 "use client";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
+import { cva } from "class-variance-authority";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Search } from "../_icons";
 import { cn } from "../lib/cn";
@@ -17,6 +18,21 @@ import type { CommandItemData, CommandProps } from "./command.types";
 const overlayTransition = {
   transition: `opacity ${motionDurationCss.fast} ${motionEaseCss.out}`,
 } as const;
+
+// 外壳皮肤与布局分家（#178）：填充/描边/阴影收进这支 CVA，尺寸与定位留在 Popup 的类串里。
+// 混在同一串时，消费方为了换个底色必须连 w-[min(92vw,40rem)] 这类布局类一起承担 twMerge 的
+// 不确定性；分开后 `surface="none"` 就是「库不画、我来画」，皮肤升级不会和覆盖打架。
+const shellVariants = cva("", {
+  variants: {
+    surface: {
+      solid: "border border-hairline bg-surface shadow-xl",
+      // glass 依赖身后有底图才出效果；没有底图时退化成半透明面板，不会糊成一片（同 AppLauncher 配方）。
+      glass: "border border-hairline bg-surface/70 shadow-xl backdrop-blur-2xl",
+      none: "",
+    },
+  },
+  defaultVariants: { surface: "solid" },
+});
 
 // 默认过滤：大小写不敏感子串匹配 keywords + 字符串型 label + value。
 function defaultFilter(item: CommandItemData, query: string): boolean {
@@ -61,7 +77,9 @@ export function Command({
   emptyMessage = "无匹配结果",
   footer,
   shortcut = false,
+  surface = "solid",
   className,
+  backdropClassName,
   "aria-label": ariaLabel = "命令面板",
 }: CommandProps) {
   const baseId = useId();
@@ -208,14 +226,20 @@ export function Command({
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       <BaseDialog.Portal>
         <BaseDialog.Backdrop
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+          className={cn(
+            "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            backdropClassName,
+          )}
           style={overlayTransition}
         />
         <BaseDialog.Popup
           initialFocus={inputRef}
           className={cn(
-            "fixed left-1/2 top-[15vh] z-50 flex max-h-[70vh] w-[min(92vw,40rem)] -translate-x-1/2 flex-col overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
+            // 布局与尺寸（恒定）
+            "fixed left-1/2 top-[15vh] z-50 flex max-h-[70vh] w-[min(92vw,40rem)] -translate-x-1/2 flex-col overflow-hidden rounded-[var(--radius)] text-foreground outline-none",
             "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            // 皮肤（可换）
+            shellVariants({ surface }),
             className,
           )}
           style={overlayTransition}

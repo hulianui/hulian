@@ -95,4 +95,36 @@ describe("RadioGroup / Radio", () => {
     expect(radio.getAttribute("aria-labelledby")).toBe("n1");
     expect(radio.getAttribute("aria-describedby")).toBe("d1");
   });
+
+  // #183：children 与 label 等价。此前 children 既没被解构、又被 Root 上显式的 Indicator 盖掉，
+  // 结果是 tsc / guard / 控制台全绿而页面上只有一个光秃秃的圆点。
+  it("children 当文案渲染，且 <label> 关联到 role=radio", () => {
+    const { getByRole, getByText } = render(
+      <RadioGroup defaultValue="1" aria-label="g">
+        <Radio value="1">审核通过</Radio>
+        <Radio value="2">审核不通过</Radio>
+      </RadioGroup>,
+    );
+    expect(getByText("审核通过")).toBeTruthy();
+    expect(getByRole("radio", { name: "审核不通过" })).toBeTruthy();
+  });
+
+  it("label 与 children 同时给时 label 优先", () => {
+    const { queryByText } = render(
+      <RadioGroup aria-label="g">
+        <Radio value="1" label="标签">子节点</Radio>
+      </RadioGroup>,
+    );
+    expect(queryByText("标签")).toBeTruthy();
+    expect(queryByText("子节点")).toBeNull();
+  });
+
+  it("children 不泄漏成 Root 上的裸属性", () => {
+    const { container } = render(
+      <RadioGroup aria-label="g">
+        <Radio value="1">甲</Radio>
+      </RadioGroup>,
+    );
+    expect(container.querySelector('[role="radio"]')!.getAttribute("children")).toBeNull();
+  });
 });

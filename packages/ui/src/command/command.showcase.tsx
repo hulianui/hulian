@@ -60,10 +60,12 @@ function Demo({
   placeholder,
   shortcut,
   closeOnSelect,
+  surface,
 }: {
   placeholder?: string;
   shortcut?: boolean;
   closeOnSelect?: boolean;
+  surface?: "solid" | "glass" | "none";
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -78,6 +80,7 @@ function Demo({
         placeholder={placeholder}
         shortcut={shortcut}
         closeOnSelect={closeOnSelect}
+        surface={surface}
       />
     </>
   );
@@ -113,6 +116,27 @@ function FooterDemo() {
             <span className="text-xs text-muted-foreground">选择任务</span>
           </div>
         }
+      />
+    </>
+  );
+}
+
+// surface="none" 的用法：库不画皮肤，消费方按自家玻璃原语画。要点是不必再写一串类去
+// 「压掉」bg-surface / border-hairline / shadow-xl，皮肤升级也不会和覆盖打架。
+function GlassDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        打开玻璃面板
+      </Button>
+      <Command
+        open={open}
+        onOpenChange={setOpen}
+        groups={groups}
+        surface="none"
+        className="border border-white/20 bg-surface/60 shadow-2xl backdrop-blur-2xl"
+        backdropClassName="bg-black/20 backdrop-blur-none"
       />
     </>
   );
@@ -201,6 +225,13 @@ const groups = [
   ],
   controls: [
     { prop: "placeholder", type: "text", defaultValue: "输入命令或搜索…" },
+    {
+      prop: "surface",
+      type: "select",
+      options: ["solid", "glass", "none"],
+      defaultValue: "solid",
+      label: "外壳皮肤",
+    },
     { prop: "shortcut", type: "boolean", defaultValue: false, label: "内置 ⌘K" },
     { prop: "closeOnSelect", type: "boolean", defaultValue: true, label: "选后关闭" },
   ],
@@ -208,12 +239,14 @@ const groups = [
     { name: "default", render: () => <Demo /> },
     { name: "内置 ⌘K 快捷键", render: () => <Demo shortcut /> },
     { name: "底部常驻页脚", render: () => <FooterDemo /> },
+    { name: "自画玻璃外壳", render: () => <GlassDemo /> },
   ],
   renderWithProps: (p) => (
     <Demo
       placeholder={(p.placeholder as string) || undefined}
       shortcut={p.shortcut as boolean}
       closeOnSelect={p.closeOnSelect as boolean}
+      surface={(p.surface as "solid" | "glass" | "none") ?? "solid"}
     />
   ),
   toCode: (p) =>

@@ -48,6 +48,7 @@ import { Checkbox } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | label | `ReactNode` | 盒右 inline label（`<label>` 原生关联） |
+| children | `ReactNode` | 与 `label` 等价的写法：`<Checkbox>同意条款</Checkbox>`。两者同时给时 `label` 优先 |
 
 ## 示例
 ```tsx

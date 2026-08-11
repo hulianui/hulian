@@ -24,6 +24,11 @@ export interface RadioProps extends HTMLAttributes<HTMLElement> {
   disabled?: boolean;
   /** 可选 inline label（点右，<label> 原生关联）。 */
   label?: ReactNode;
+  /**
+   * 与 `label` 等价的写法：`<Radio value="1">审核通过</Radio>`。
+   * 两者同时给时 `label` 优先。
+   */
+  children?: ReactNode;
   id?: string;
   /** 落在点 Radio.Root。 */
   className?: string;

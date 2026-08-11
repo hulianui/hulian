@@ -369,6 +369,9 @@ export function TimeGrid({
                   {/* 当前时间红线 */}
                   {showNowFor(col) && nowMin != null && (
                     <div
+                      // 供测试与消费方 e2e 断言「此刻线在不在」：它由挂载后才取到的时钟驱动，
+                      // 首帧（= SSR 那帧）必然缺席，是 #181 那条约束的可观测出口。
+                      data-now-line=""
                       className="pointer-events-none absolute inset-x-0 z-20 h-px bg-danger"
                       style={{ top: (nowMin - dayStartMin) * pxPerMin }}
                       aria-hidden="true"

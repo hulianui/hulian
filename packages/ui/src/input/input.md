@@ -27,7 +27,7 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`variant="cell"` 下只影响字号，不再有高度与内距 |
+| size | `"xs" ｜ "sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`xs` = 28px 高 / 12px 字，给存量密集数据表的行内编辑器（仍带边框，区别于无边框的 `variant="cell"`）。`variant="cell"` 下只影响字号，不再有高度与内距 |
 | variant | `"default" ｜ "cell"` | `"default"` | 外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距、不占固定行高，焦点态用浅底 + 内嵌下划线代替焦点环 |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
 | disabled | `boolean` | `false` | 禁用 |

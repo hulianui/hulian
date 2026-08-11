@@ -21,13 +21,32 @@ export function Dialog(props: ComponentProps<typeof BaseDialog.Root>) {
 export const DialogTrigger = BaseDialog.Trigger;
 export const DialogClose = BaseDialog.Close;
 
-export function DialogContent({ title, description, children, footer, className }: DialogContentProps) {
+export function DialogContent({
+  title,
+  description,
+  children,
+  footer,
+  descriptionClassName,
+  backdrop = true,
+  backdropClassName,
+  scrollable = true,
+  bodyClassName,
+  className,
+}: DialogContentProps) {
   return (
     <BaseDialog.Portal>
-      <BaseDialog.Backdrop
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
-        style={overlayTransition}
-      />
+      {/* 遮罩可关（#185）：自动弹出的「陪跑型」浮层里，40% 黑 + 模糊是错的默认值。
+          关掉它 + Root 传 modal={false} 才是真正的非模态 —— 只关一边都不成立：
+          Backdrop 那层 fixed inset-0 即使透明也照样吃掉整屏点击。 */}
+      {backdrop && (
+        <BaseDialog.Backdrop
+          className={cn(
+            "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            backdropClassName,
+          )}
+          style={overlayTransition}
+        />
+      )}
       <BaseDialog.Popup
         className={cn(
           // 三段式：max-h 封顶 + flex column，标题/footer 不压缩，正文自己滚。
@@ -44,7 +63,11 @@ export function DialogContent({ title, description, children, footer, className 
       >
         <BaseDialog.Title className="shrink-0 text-lg font-semibold">{title}</BaseDialog.Title>
         {description && (
-          <BaseDialog.Description className="mt-1 shrink-0 text-sm text-muted-foreground">
+          // descriptionClassName 走 twMerge：传 "sr-only" 即得到「只给读屏的说明」——
+          // 面包屑式标题的弹窗里可见区域只有标题，但读屏仍需要那句说明（#179 评论）。
+          <BaseDialog.Description
+            className={cn("mt-1 shrink-0 text-sm text-muted-foreground", descriptionClassName)}
+          >
             {description}
           </BaseDialog.Description>
         )}
@@ -63,7 +86,16 @@ export function DialogContent({ title, description, children, footer, className 
             表单最后一个控件的下边界与滚动容器完全贴合，它的环往下那 4px 一样会被切掉。
             但纵向**只留 4px 而不是跟横向一样借 24px**：上下方紧挨着标题和 footer，
             借多了滚动内容会从标题底下穿出来一大截；4px 恰好够环画，穿透幅度肉眼不可见。 */}
-        <div className="mx-[calc(var(--hl-overlay-pad,1.5rem)*-1)] -mb-1 mt-3 min-h-0 flex-1 overflow-y-auto px-[var(--hl-overlay-pad,1.5rem)] pb-1 pt-1">
+        <div
+          className={cn(
+            "mx-[calc(var(--hl-overlay-pad,1.5rem)*-1)] -mb-1 mt-3 min-h-0 flex-1 px-[var(--hl-overlay-pad,1.5rem)] pb-1 pt-1",
+            // scrollable=false（#188）：正文不再是滚动盒，改成列向 flex 容器把确定高度传给
+            // children —— 「左清单 + 右预览各自滚动」要的就是这个，否则子级写 flex-1 没有参照高度，
+            // 只能拍一个 h-[58vh] 魔法数去凑「max-h 减标题减 footer」，标题多一行就漂。
+            scrollable ? "overflow-y-auto" : "flex flex-col",
+            bodyClassName,
+          )}
+        >
           {children}
         </div>
         {footer != null && (

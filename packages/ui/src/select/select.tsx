@@ -85,6 +85,8 @@ export const selectTriggerVariants = cva(
   {
     variants: {
       size: {
+        // 与 Input / Textarea 的 xs 等高：同一行里三种控件必须对齐，缺一档就整行错位（#187）。
+        xs: "h-7 px-2 text-xs",
         sm: "h-8 px-2.5 text-sm",
         md: "h-10 px-3 text-sm",
         lg: "h-12 px-3.5 text-base",

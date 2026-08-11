@@ -102,3 +102,57 @@ describe("Scheduler · null 回落", () => {
     expect(container.firstElementChild).not.toBeNull();
   });
 });
+
+
+// #181：渲染期读系统时钟，在 SSR / 静态导出下构建日与访问日跨天必然 hydration 失败。
+describe("时钟基准（#181）", () => {
+  it("首帧不读系统时钟：renderToString 的产物里没有当前时刻线", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const spy = vi.spyOn(Date.prototype, "getTime");
+    const html = renderToString(
+      <Scheduler view="week" date={DATE} events={events} resources={resources} />,
+    );
+    // 服务端渲染那一帧不含「此刻」线（它由 nowISO 驱动，首帧 nowISO 为空）
+    expect(html).not.toContain("data-now-line");
+    spy.mockRestore();
+  });
+
+  it("挂载后才补上当前时刻线（钉住系统时钟避免用例本身随跑测时间飘）", () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date(`${DATE}T10:00:00`));
+    try {
+      const { container } = render(
+        <Scheduler view="day" date={DATE} events={[]} resources={resources} />,
+      );
+      expect(container.querySelector("[data-now-line]")).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("传 now 就完全由消费方钉死（截图回归可复现）", () => {
+    const { container } = render(
+      <Scheduler
+        view="day"
+        date={DATE}
+        now={`${DATE}T10:00:00`}
+        events={events}
+        resources={resources}
+      />,
+    );
+    expect(container.querySelector("[data-now-line]")).toBeTruthy();
+  });
+
+  it("now 指向别的日期时，当天视图里不画时刻线", () => {
+    const { container } = render(
+      <Scheduler
+        view="day"
+        date={DATE}
+        now="2026-07-01T10:00:00"
+        events={events}
+        resources={resources}
+      />,
+    );
+    expect(container.querySelector("[data-now-line]")).toBeNull();
+  });
+});

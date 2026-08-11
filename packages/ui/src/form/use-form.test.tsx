@@ -112,4 +112,12 @@ describe("useForm 控制器", () => {
     expect(result.current.values.name).toBe("init");
     expect(result.current.errors).toEqual({});
   });
+
+  // #180：Field 的必填标记要能从规则派生，否则规则与标记两处各写一遍必然漂移。
+  it("register 按 rules 派生 required（供 Field 画红星 + aria-required）", () => {
+    const { result } = renderHook(() => useForm({ initialValues: { a: "", b: "", c: "" } }));
+    expect(result.current.register("a", { rules: [{ required: true }] }).required).toBe(true);
+    expect(result.current.register("b", { rules: [{ min: 6 }] }).required).toBe(false);
+    expect(result.current.register("c").required).toBe(false);
+  });
 });

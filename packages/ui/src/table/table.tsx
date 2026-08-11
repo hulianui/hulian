@@ -52,8 +52,10 @@ import { Checkbox } from "../checkbox/checkbox";
 import { useLocaleValue } from "../config/locale-context";
 import { Empty } from "../empty";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip/tooltip";
 import type { RowDragEndEvent, TableProps } from "./table.types";
+import { planCellSpans, spanKey } from "./table.span";
 
 const SELECT_COL = "__select__";
 const EXPANDER_COL = "__expander__";
@@ -67,6 +69,19 @@ const ROW_INTERACTIVE_SELECTOR =
 
 // ── 固定列：从 TanStack 原生 pinning 读 offset，皮肤补 sticky 几何 ──────────
 // （meta.sticky 只是初始 columnPinning 的派生源；offset 走 getStart/getAfter 不手算累加宽度）
+/** #194：单元格垂直对齐（表头恒 middle，不跟随）。 */
+const VALIGN_CLASS = { top: "align-top", middle: "align-middle", bottom: "align-bottom" } as const;
+/**
+ * #194：按列的换行策略。
+ * `pre-wrap` 连带 `break-words` —— 否则超长无空格串（URL / 身份证号）会撑破列宽，
+ * 而「保留原文换行」的那些字段恰恰最容易混进这种串。
+ */
+const WHITESPACE_CLASS = {
+  nowrap: "whitespace-nowrap",
+  normal: "whitespace-normal break-words",
+  "pre-wrap": "whitespace-pre-wrap break-words",
+} as const;
+
 function stickyStyle<TData>(column: Column<TData, unknown>): React.CSSProperties | undefined {
   const pinned = column.getIsPinned();
   if (!pinned) return undefined;
@@ -449,6 +464,15 @@ export function Table<TData>({
   dragHandle = "cell",
   onRowDragEnd,
   getRowCanDrag,
+  // 单元格合并
+  cellSpan,
+  // 单元格排版（表级默认，列 meta 可覆盖）
+  cellVerticalAlign,
+  cellWhitespace,
+  // 表头吸顶 / 表体宽度下限
+  stickyHeader = false,
+  maxHeight,
+  minWidth,
   // 虚拟滚动
   virtual,
   // 底部悬浮横向滚动条
@@ -628,6 +652,39 @@ export function Table<TData>({
     overscan: virtual?.overscan ?? 8,
   });
 
+  // ── 单元格合并（#176）────────────────────────────────────────────────────
+  // 两个组合天然无解，静默不合并 + dev 告警，而不是画出一张错位的表：
+  //  · 虚拟滚动只渲染可见窗口，跨窗口的 rowSpan 没有落点；
+  //  · 明细展开会在数据行之间插 <tr>，纵向合并会跨过那一行（HTML 的 rowSpan 按后续 <tr> 计数）。
+  const spanBlockedBy = virtualEnabled ? "virtual" : panelMode ? "renderExpandedRow" : null;
+  if (cellSpan && spanBlockedBy) {
+    warnOnce(
+      `table-cell-span-with-${spanBlockedBy}`,
+      `[hulian] Table: cellSpan 与 ${spanBlockedBy} 不能同开，本次不做合并。` +
+        `（虚拟滚动只渲染可见窗口 / 明细面板会插在数据行之间，跨行合并在这两种情况下无解）`,
+    );
+  }
+  const spanEnabled = Boolean(cellSpan) && !spanBlockedBy;
+  const spanPlan = useMemo(() => {
+    if (!cellSpan || !spanEnabled) return null;
+    const cellsByRow = rows.map((r) => r.getVisibleCells());
+    const originals = rows.map((r) => r.original);
+    const cols = cellsByRow[0]?.length ?? 0;
+    return planCellSpans(rows.length, cols, (r, c) => {
+      const cell = cellsByRow[r]?.[c];
+      if (!cell) return undefined;
+      return cellSpan({
+        row: originals[r] as TData,
+        rowIndex: r,
+        rows: originals,
+        columnId: cell.column.id,
+        columnIndex: c,
+        value: cell.getValue(),
+      });
+    });
+  }, [cellSpan, spanEnabled, rows]);
+
+
   // ── 底部悬浮横向滚动条（#149）────────────────────────────────────────────────
   // 宽表比视口高时，真正的横向滚动条落在表格底边、被挤到折叠线以下 —— 想横向拖一下
   // 得先把整页滚到表底。这里在表格外壳里再放一条 `position: sticky; bottom: 0` 的
@@ -641,7 +698,9 @@ export function Table<TData>({
   //  3. 虚拟滚动下整个容器是定高的，横向滚动条本来就贴在容器底边、一直看得见，
   //     这条代理条纯属多余，所以直接不启用。
   const barRef = useRef<HTMLDivElement>(null);
-  const stickyBarEnabled = stickyScrollbar && !virtualEnabled;
+  // 外壳自己就是定高滚动容器时（virtual / maxHeight），横向滚动条本来就贴在容器底边、
+  // 一直看得见，再挂一条代理条就是上下两条并排。
+  const stickyBarEnabled = stickyScrollbar && !virtualEnabled && maxHeight == null;
   const [bar, setBar] = useState({ width: 0, visible: false });
 
   useEffect(() => {
@@ -684,6 +743,28 @@ export function Table<TData>({
       window.removeEventListener("resize", sync);
     };
   }, [stickyBarEnabled]);
+
+  // 空态宽度：只在真的空的时候量，非空表零成本。
+  const [emptyViewportWidth, setEmptyViewportWidth] = useState<number | null>(null);
+  const isEmpty = rows.length === 0;
+  useEffect(() => {
+    if (!isEmpty) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    const sync = () => setEmptyViewportWidth(el.clientWidth || null);
+    sync();
+    let ro: ResizeObserver | undefined;
+    // jsdom 默认没有 ResizeObserver，直接 new 会把整棵树挂掉。
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => sync());
+      ro.observe(el);
+    }
+    window.addEventListener("resize", sync);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", sync);
+    };
+  }, [isEmpty]);
 
   const rowClass = (selected: boolean) =>
     cn(
@@ -805,12 +886,18 @@ export function Table<TData>({
             : undefined
         }
       >
-        {row.getVisibleCells().map((cell) => {
+        {row.getVisibleCells().map((cell, colIndex) => {
           const meta = cell.column.columnDef.meta;
           const content = flexRender(cell.column.columnDef.cell, cell.getContext());
+          // 被前面的格子合掉的位置整格不渲染 —— 留一个空 <td> 会把后面的列整体挤歪。
+          const key = spanKey(index, colIndex);
+          if (spanPlan?.hidden.has(key)) return null;
+          const span = spanPlan?.spans.get(key);
           return (
             <td
               key={cell.id}
+              rowSpan={span?.rowSpan}
+              colSpan={span?.colSpan}
               // 宽度与 sticky 合成同一个 style 对象：th/td 用同一口径，二者不可分家
               style={{
                 ...colWidthStyle(cell.column, fixedLayout, declaredWidths),
@@ -818,7 +905,13 @@ export function Table<TData>({
               }}
               className={cn(
                 cellPad,
-                "align-middle",
+                // 垂直对齐与换行按列可控（#194）：一旦某列允许换行，同一行的短单元格再垂直居中
+                // 就会与长单元格的首行对不齐，整行读起来是散的 —— 所以这两件事总是成对出现。
+                VALIGN_CLASS[(meta?.verticalAlign ?? cellVerticalAlign ?? "middle") as keyof typeof VALIGN_CLASS],
+                (meta?.whitespace ?? cellWhitespace) &&
+                  WHITESPACE_CLASS[
+                    (meta?.whitespace ?? cellWhitespace) as keyof typeof WHITESPACE_CLASS
+                  ],
                 meta?.align && ALIGN_TEXT[meta.align as Align],
                 meta?.ellipsis && "overflow-hidden",
                 stickyClass(cell.column),
@@ -872,7 +965,16 @@ export function Table<TData>({
     body = (
       <tr>
         <td colSpan={colCount} className="py-4">
-          {renderEmpty ? renderEmpty() : <Empty size="sm" title={emptyText ?? loc.empty} />}
+          {/* 空态贴**滚动视口**居中，不贴表宽居中（#191）：colSpan 的那格宽度就是表宽，
+              宽表（20+ 列 / layout=fixed）下居中点会落到视口外，用户看到的是「表头在、
+              中间一片空白」，第一反应是渲染挂了。sticky left-0 把它钉在视口左缘，
+              宽度取滚动容器的 clientWidth（量出来的，因为它不等于 100% 也不等于 100vw）。 */}
+          <div
+            className="sticky left-0"
+            style={emptyViewportWidth != null ? { width: emptyViewportWidth } : undefined}
+          >
+            {renderEmpty ? renderEmpty() : <Empty size="sm" title={emptyText ?? loc.empty} />}
+          </div>
         </td>
       </tr>
     );
@@ -899,14 +1001,32 @@ export function Table<TData>({
     body = rows.map((row, index) => renderRow(row, index));
   }
 
+  // stickyHeader 要有一个**真的会滚**的祖先才锚得住（#192）：外壳平时只有 overflow-x-auto、
+  // 没有高度约束，于是永远不纵向滚，sticky top-0 纹丝不动 —— 消费方在业务侧套 [&_thead]:sticky
+  // 也够不到（中间隔着这层 overflow 容器）。所以开了 stickyHeader 就必须给 maxHeight。
+  if (stickyHeader && !virtualEnabled && maxHeight == null) {
+    warnOnce(
+      "table-sticky-header-without-max-height",
+      "[hulian] Table: stickyHeader 需要配合 maxHeight（或 virtual）才生效 —— " +
+        "表头 sticky 要锚在一个会纵向滚动的祖先上，而外壳默认没有高度约束、永远不滚。",
+    );
+  }
+  const shellScrolls = virtualEnabled || maxHeight != null;
+
   const shell = (
     <div
       ref={scrollRef}
-      style={virtualEnabled ? { height: virtual?.height ?? 480, overflow: "auto" } : undefined}
+      style={
+        virtualEnabled
+          ? { height: virtual?.height ?? 480, overflow: "auto" }
+          : maxHeight != null
+          ? { maxHeight, overflow: "auto" }
+          : undefined
+      }
       className={cn(
         // bordered=false：去掉自身描边框（如被 ProTable 卡片包裹时，由卡片提供外框，避免双框）。
         bordered && "rounded-[var(--radius)] border border-border",
-        !virtualEnabled && "overflow-x-auto",
+        !shellScrolls && "overflow-x-auto",
         className,
       )}
     >
@@ -914,7 +1034,13 @@ export function Table<TData>({
         <table
           // fixed 布局：表宽 = 各列 getSize() 之和；窄于容器时 min-w-full 兜底撑满
           // （撑满时列宽被浏览器按比例放大，但那种情况下没有横滚，固定列 offset 也就无从体现）
-          style={fixedLayout ? { tableLayout: "fixed", width: table.getTotalSize() } : undefined}
+          // minWidth 落在 <table> 本体而不是外壳（#193）：写进 className 的 min-w-* 钉住的是
+          // **滚动容器**，于是容器再也收不窄 → scrollWidth === clientWidth → 横滚条永不出现，
+          // 超出视口的列被祖先直接裁掉且滚不出来（数据不可达，且宽窗口下自查不到）。
+          style={{
+            ...(fixedLayout ? { tableLayout: "fixed" as const, width: table.getTotalSize() } : null),
+            ...(minWidth != null ? { minWidth } : null),
+          }}
           className={cn("border-collapse text-sm", fixedLayout ? "min-w-full" : "w-full")}
         >
           <thead
@@ -922,8 +1048,9 @@ export function Table<TData>({
               // 表头：foreground 黑/白 + semibold 加粗文字 + 行底分隔线（见下 tr），透明背景。
               // 不加填充色——表格已是 surface 卡片（ProTable）或带框原语，灰底带反而割裂、压观感。
               "text-foreground",
-              // 虚拟滚动时表头 sticky，需 opaque 背景遮住滚到下方的行；用 bg-surface 匹配卡片表面。
-              virtualEnabled && "sticky top-0 z-[2] bg-surface",
+              // 表头吸顶：虚拟滚动恒开，其余表按 stickyHeader（#192）。两者都需要 opaque 背景
+              // 遮住滚到下方的行；用 bg-surface 匹配卡片表面。z-[2] 压过冻结列的 z-1。
+              (virtualEnabled || stickyHeader) && "sticky top-0 z-[2] bg-surface",
             )}
           >
             {table.getHeaderGroups().map((hg) => (
@@ -975,7 +1102,7 @@ export function Table<TData>({
                         canResize && "relative",
                         meta?.ellipsis && "overflow-hidden",
                         stickyClass(header.column),
-                        virtualEnabled && header.column.getIsPinned() && "bg-bg",
+                        (virtualEnabled || stickyHeader) && header.column.getIsPinned() && "bg-bg",
                       )}
                     >
                       {header.isPlaceholder ? null : (

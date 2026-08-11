@@ -1,4 +1,5 @@
 "use client";
+import { cloneElement, isValidElement, type ReactElement } from "react";
 import { Field as BaseField } from "@base-ui/react/field";
 import { cn } from "../lib/cn";
 import { labelClass } from "../label/label";
@@ -10,6 +11,8 @@ export function Field({
   error,
   invalid,
   disabled,
+  required,
+  requiredMark = true,
   name,
   orientation = "vertical",
   colSpan,
@@ -26,9 +29,34 @@ export function Field({
   // 因此存量页面的排版规矩可以照搬，不必为了对齐字号而整页退回手搓 label —— 那样会连
   // aria-describedby 串联、invalid 联动、错误渲染一起丢掉。
   // label 的皮肤取自 labelClass（与独立 Label 同一份），这里不写字面量，否则两种标签必然分叉。
+  // 必填标记（#180）：走 aria-hidden 的装饰节点，语义由下面落到控件的 aria-required 承担 ——
+  // 星号本身读屏读不到，只画星号等于「视力用户知道、读屏用户不知道」，两边必须同时给。
+  const requiredMarkNode =
+    required && requiredMark !== false ? (
+      <span aria-hidden="true" className="mr-0.5 text-danger">
+        {requiredMark === true ? "*" : requiredMark}
+      </span>
+    ) : null;
+
   const labelNode = label ? (
-    <BaseField.Label className={cn(labelClass, labelClassName)}>{label}</BaseField.Label>
+    <BaseField.Label className={cn(labelClass, labelClassName)}>
+      {requiredMarkNode}
+      {label}
+    </BaseField.Label>
   ) : null;
+
+  // aria-required 落到控件本身：消费方够不着 Field 内部的控件节点，自建 RequiredLabel 也补不了。
+  // 只在 children 是单个元素时能注入；多子节点 / 文本时不动它（文档里写明此时自己给）。
+  // 已显式写了 aria-required 的以消费方为准，不覆盖。
+  const control =
+    required && isValidElement(children)
+      ? (() => {
+          const el = children as ReactElement<Record<string, unknown>>;
+          return "aria-required" in el.props
+            ? children
+            : cloneElement(el, { "aria-required": true });
+        })()
+      : children;
 
   const descriptionNode = description ? (
     <BaseField.Description className={cn("text-xs text-muted-foreground", descriptionClassName)}>
@@ -71,13 +99,13 @@ export function Field({
             {labelNode}
             {descriptionNode}
           </div>
-          <div className="min-w-0">{children}</div>
+          <div className="min-w-0">{control}</div>
           {errorNode}
         </>
       ) : (
         <>
           {labelNode}
-          {children}
+          {control}
           {descriptionNode}
           {errorNode}
         </>

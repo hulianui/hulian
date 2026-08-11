@@ -43,14 +43,27 @@ const thumbVariants = cva(
   },
 );
 
-function SwitchImpl({ className, size, touchTarget, ...props }: SwitchProps) {
-  return (
+function SwitchImpl({ className, size, touchTarget, label, children, disabled, ...props }: SwitchProps) {
+  const text = label ?? children;
+  const track = (
     <BaseSwitch.Root
+      disabled={disabled}
       {...props}
       className={cn(trackVariants({ size, touchTarget: Boolean(touchTarget) }), className)}
     >
       <BaseSwitch.Thumb className={thumbVariants({ size })} />
     </BaseSwitch.Root>
+  );
+
+  // 与 Checkbox / Radio 同一口径（#183）：此前 Switch 连 label 都没有，写 children 会被
+  // 显式的 Thumb 子节点盖掉——一个字都不渲染且门禁全绿。
+  if (text == null || text === false || text === "") return track;
+
+  return (
+    <label className="inline-flex items-center gap-2">
+      {track}
+      <span className={cn("text-sm text-foreground select-none", disabled && "opacity-50")}>{text}</span>
+    </label>
   );
 }
 SwitchImpl.displayName = "Switch";

@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 /**
  * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
@@ -9,6 +9,13 @@ export interface SwitchProps extends HTMLAttributes<HTMLElement> {
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
   disabled?: boolean;
+  /**
+   * 可选 inline label（轨道右侧，`<label>` 原生关联）。同 Checkbox / Radio 的口径。
+   * 「开/关两态各一段文字」不是这个 prop 的语义，那种请自己在外层排版。
+   */
+  label?: ReactNode;
+  /** 与 `label` 等价的写法：`<Switch checked={v}>启用</Switch>`。两者同时给时 `label` 优先。 */
+  children?: ReactNode;
   id?: string;
   className?: string;
   "aria-label"?: string;

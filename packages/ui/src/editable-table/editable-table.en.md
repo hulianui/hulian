@@ -86,6 +86,8 @@ const columns: EditableColumn<Row>[] = [
 
 ## Usage notes
 
+- **Memoize `columns`** (same root cause as [Table](../table/table.md)): TanStack's `flexRender` renders a function `cell` as a component type, so a changed identity unmounts and remounts the cell. With an input inside, a controlled field loses focus on every keystroke and an `onBlur` submit fires on the remount blur, committing a half-typed value. Never put a per-keystroke value in the `useMemo` dependencies, and prefer uncontrolled inputs for inline editing.
+
 - Data is controlled. Write `next` from `onChange` back to state or saves and row changes will not appear.
 - `validateRow` only blocks saving; render any validation message inside a custom `editor`.
 - `summary` is raw table-footer content, so the consumer owns column spans and alignment.

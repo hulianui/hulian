@@ -31,6 +31,11 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.container` | `Element \| Ref` | — | Local portal target. The drawer uses absolute positioning inside it; the target needs `position:relative` and `overflow-hidden`. Useful for phone-frame previews. |
 | `DrawerContent.showClose` | `boolean` | `true` | Whether to render the built-in top-right close button. |
 | `DrawerContent.closeLabel` | `string` | Locale value | Accessible name for the built-in close button; defaults to `locale.drawer.close`. |
+| `DrawerContent.descriptionClassName` | `string` | — | Appended to the description (merged with twMerge). Pass `sr-only` for a screen-reader-only description. |
+| `DrawerContent.backdrop` | `boolean` | `true` | Whether to render the backdrop. Setting it to `false` together with `modal={false}` on the root is what makes an overlay truly non-modal; turning off only one is not enough, because the `inset-0` backdrop swallows every click even when it is transparent. |
+| `DrawerContent.backdropClassName` | `string` | — | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge. |
+| `DrawerContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children. |
+| `DrawerContent.bodyClassName` | `string` | — | Appended to the body container. |
 | `DrawerContent.className` | `string` | — | Content-container class name. |
 
 ## Events
@@ -64,6 +69,9 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 ```
 
 ## Usage guidelines
+
+- A non-modal overlay takes **two changes**: `modal={false}` on the root, which releases the focus and scroll locks, plus `backdrop={false}` on the content, which stops rendering the backdrop. Changing only the first leaves a `fixed inset-0` layer that swallows every click even while transparent, so nothing actually becomes non-modal.
+- With `scrollable={false}`, **vertical scrolling becomes your responsibility**: the body only passes a definite height down as a column flex container, and each child needs its own `overflow-y-auto`. Forgetting that clips the content at `max-h`.
 
 - Base UI rc.0 has no standalone Drawer primitive. This component restyles Dialog's Portal, Backdrop, and Popup and uses `translateX/Y` by side. Dialog has no Positioner, so Tooltip and Popover positioning assumptions do not apply. See [[base-ui-dialog-drawer-side-slide-via-transform]].
 - Put Cancel, Save, and Close controls in `footer`; actions at the end of the body scroll out of view.

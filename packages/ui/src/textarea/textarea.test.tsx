@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
+import { createRef } from "react";
 import { Field as BaseField } from "@base-ui/react/field";
 import { textareaVariants, Textarea } from "./textarea";
 
@@ -106,5 +107,28 @@ describe("Textarea", () => {
       </BaseField.Root>,
     );
     expect(container.querySelector("textarea")!.getAttribute("data-invalid")).toBe("");
+  });
+
+  // #186 / #187
+  it("转发 ref 到内层原生 textarea（focus / select / register 都靠它）", () => {
+    const ref = createRef<HTMLTextAreaElement>();
+    render(<Textarea ref={ref} aria-label="t" />);
+    expect(ref.current).toBeInstanceOf(HTMLTextAreaElement);
+    ref.current!.focus();
+    expect(document.activeElement).toBe(ref.current);
+  });
+
+  it("转发 ref 与 autoResize 并存（内部量 scrollHeight 不再占着唯一的 ref）", () => {
+    const ref = createRef<HTMLTextAreaElement>();
+    render(<Textarea ref={ref} autoResize aria-label="t" />);
+    expect(ref.current).toBeInstanceOf(HTMLTextAreaElement);
+    expect(ref.current!.style.height).not.toBe("");
+  });
+
+  it("size=xs 是与 Input 同档的密集尺寸", () => {
+    const { container } = render(<Textarea size="xs" aria-label="t" />);
+    const el = container.querySelector("textarea")!;
+    expect(el.className).toContain("text-xs");
+    expect(el.className).toContain("px-2");
   });
 });

@@ -107,4 +107,37 @@ describe("DrawerContent 关闭按钮（hulianui/hulian#63）", () => {
     );
     expect(queryByLabelText("关闭")).toBeNull();
   });
-})
+});
+
+describe("DrawerContent 遮罩与正文滚动（#185 / #188）", () => {
+  it("backdrop=false 不渲染遮罩，抽屉本体照常", () => {
+    render(
+      <Drawer open modal={false}>
+        <DrawerContent side="right" title="执行进度" backdrop={false}>
+          <p>2 个任务正在处理</p>
+        </DrawerContent>
+      </Drawer>,
+    );
+    expect(document.querySelector(".fixed.inset-0.z-40")).toBeNull();
+    expect(document.querySelector('[role="dialog"]')).toBeTruthy();
+  });
+
+  it("backdropClassName 调浓度 / scrollable=false 交出正文高度", () => {
+    render(
+      <Drawer open>
+        <DrawerContent
+          side="right"
+          title="执行进度"
+          backdropClassName="bg-black/10"
+          scrollable={false}
+        >
+          <div data-testid="drawer-body-child" />
+        </DrawerContent>
+      </Drawer>,
+    );
+    expect(document.querySelector(".fixed.inset-0.z-40")!.className).toContain("bg-black/10");
+    const body = screen.getByTestId("drawer-body-child").parentElement!;
+    expect(body.className).not.toContain("overflow-y-auto");
+    expect(body.className).toContain("flex flex-col");
+  });
+});
