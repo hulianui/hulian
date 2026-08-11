@@ -13,41 +13,52 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# 工具链版本的单一来源：Node 读 .nvmrc（全仓四处 setup-node 都用 node-version-file，
-# 不再各写各的 `node-version: 22`），pnpm 由根 package.json 的 packageManager 字段与
-# 这里的 version 共同钉死。
+# 工具链版本的单一来源：Node 读 .nvmrc，pnpm 由根 package.json 的 packageManager 字段与
+# .github/actions/setup 共同钉死（那四步 setup 在下面每个 job 里都要用，抄多份必然漂移）。
 #
 # 为什么要钉到补丁号而不是留 `22`：vite 8 要求 ^20.19.0 || >=22.12.0，jsdom 27.4 要求
 # ^20.19 || ^22.12 || >=24 —— 浮动的 major 会让一台 Node 20.0~20.18 的开发机安静装上，
 # 然后崩在 rolldown 的 native binding 上，报错栈毫无指向性。根 engines 已按这两条的
 # 交集收紧，`.nvmrc` 则保证「本地 == CI」跑的是同一个补丁版本。
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# 为什么是这个 job 图（2026-08-11 从单体 verify 拆开）
+#
+# 拆之前：一个 27 步的 `verify` job 串行跑 23.5 分钟，另外三个 job 全都 ≤ 4.5 分钟 ——
+# 也就是说整条流水线的时长完全等于「那一个 job 里所有步骤之和」。实测构成：
+#   浏览器门禁 ×8   664s   ← 彼此完全独立，只共享一份只读的 apps/www/out
+#   Test           301s   ← 根本不需要 build 产物，却排在 build 后面
+#   Build          132s
+#   registry smoke 128s   ← 同样不需要 build 产物
+#   i18n 产物校验   77s
+#   静态门禁 + 环境  55s
+# 这些步骤之间的真实依赖只有一条：**读 out/ 的门禁必须等 build**。其余全是排队。
+#
+# 本仓是 public repo —— GitHub-hosted runner 分钟数免费、并发 20 个 job，所以「拿计费
+# 分钟换墙钟时间」这个通常要权衡的取舍在这里是白送的。拆开后关键路径变成
+#   build(≈180s) → 最慢的那组产物门禁(≈315s) ≈ 8 分钟。
+#
+# 拆分时唯一的正确性风险是 deploy-zh：原来 `needs: [verify, …]` 里一个名字兜住了 20 多道
+# 门禁，拆开后每一道都得在 needs 里点名，漏一个就变成「门禁红了、镜像照发」。下面
+# deploy-zh 的 needs 必须与本文件的门禁 job 全集保持一致，加 job 就要同步加 needs。
+# ─────────────────────────────────────────────────────────────────────────────
 jobs:
-  verify:
-    name: Typecheck · Test · Build
+  # ══ 第一档：不依赖构建产物，与 build 完全并行 ════════════════════════════════
+
+  # 秒级门禁集中营 —— 全部是「不用起浏览器、不用 build」的静态判据。放在一起是因为
+  # 它们加起来才 30 秒，各自开一个 job 的话环境准备时间比检查本身还长。
+  static-checks:
+    name: Static Gates (typecheck · guard · docs)
     runs-on: ubuntu-latest
     steps:
-      # fetch-depth: 0 拉全量历史与 tag —— changelog 的发布日期只存在于 `@hulianui/ui@x.y.z`
-      # 这类 annotated tag 上，浅克隆拿不到，构建期生成的 changelog.json 会整片丢日期。
-      # 仓库 .git 不到 30 MB，全量克隆的代价可以忽略。
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: 8.15.5
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+      # ⚠️ 本 job 内绝不能先跑生成器：下面两条都是 --check 只读模式，先生成再 check
+      # 等于自己给自己批卷子，门禁会永远绿。生成动作只在 build / registry-smoke 里做。
       - name: Check generated conventions
         run: pnpm conventions:check
 
@@ -73,34 +84,34 @@ jobs:
         run: pnpm typecheck
 
       # 声明产物必须能干净地 emit（#156）。这一步在 consumer-smoke 里也会经 prepack 跑到，
-      # 但那是另一个 job、排在很后面；放这里是为了让「某个类型写法导致 declaration emit
-      # 失败」在几秒内就红，而不是等到打包阶段。跑完即删，免得 dist 残留下来让后续
-      # 步骤悄悄拿旧声明当类型源（types 条件命中就不会回落到源码了）。
+      # 但那是另一个 job；放这里是为了让「某个类型写法导致 declaration emit 失败」在几秒内
+      # 就红。跑完即删，免得 dist 残留让同 job 的后续步骤悄悄拿旧声明当类型源
+      # （types 条件一旦命中就不会回落到源码）。
       - name: Emit declarations
         run: pnpm --filter @hulianui/ui build:types && rm -rf packages/ui/dist
 
-      # vitest 分两个 project 跑（见 packages/ui/vitest.config.ts）：
-      #   unit    —— jsdom，props→DOM 契约与纯逻辑，占绝大多数
-      #   browser —— 真实 chromium，拖拽/指针捕获/动画/布局定位这些在 jsdom 下结论不可信的部分
-      # 后者需要真实浏览器二进制，装了才能跑；只装 chromium（不是全部三个内核）省 CI 时间。
+  # vitest 分两个 project 跑（见 packages/ui/vitest.config.ts）：
+  #   unit    —— jsdom，props→DOM 契约与纯逻辑，占绝大多数
+  #   browser —— 真实 chromium，拖拽/指针捕获/动画/布局定位这些在 jsdom 下结论不可信的部分
+  # 后者需要真实浏览器二进制，装了才能跑；只装 chromium（不是全部三个内核）省 CI 时间。
+  test:
+    name: Test (vitest + build scripts)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
       - name: Install Playwright chromium
         run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
 
-      # MCP 的 install_block 端到端测试读取 apps/www/public/r/*.json 中的完整源码。
-      # 这些拆分端点被 Git 忽略，因此干净 checkout 必须先生成再测试；否则本地残留产物
-      # 会掩盖 CI 中的真实缺失。后面的页面 smoke、构建和部署继续复用同一份生成结果。
+      # MCP 的 install_block 端到端测试读取 apps/www/public/r/*.json 中的完整源码，
+      # get_conventions 读 conventions.json —— 两者都被 Git 忽略，干净 checkout 必须先
+      # 生成再测试；否则本地残留产物会掩盖 CI 中的真实缺失。
       - name: Generate AI distribution endpoints
-        # /r、/d 与 conventions.json 都被 Git 忽略，必须在干净 checkout 中显式生成，
-        # 否则 MCP 的本地模式和部署后的远程模式都会拿不到逐件文档或约束数据。
         run: pnpm llms-registry && pnpm conventions
-
-      # changelog.json 与上面几个端点不同，它被提交进仓（/changelog 页面 import 它，
-      # 干净 clone 必须能 typecheck）。但仓库里那份只是**开发期占位**：只要不在构建期
-      # 按当前 CHANGELOG.md + tag 重新生成，站点就会停在最后一次人工回填的版本上——
-      # 0.14.0 发版后站点长期显示旧版就是这么来的。这里重生成，把「发版后记得跑一次
-      # pnpm changelog 再提交」这个纯人工步骤从发布流程里彻底去掉。
-      - name: Regenerate changelog data
-        run: pnpm changelog
 
       - name: Test
         run: pnpm test
@@ -110,10 +121,54 @@ jobs:
       - name: Test build scripts
         run: pnpm test:scripts
 
-      # 每个页面都在独立临时工程中经真实 shadcn CLI 递归安装并 typecheck，防止前一个页面
-      # 已安装的区块掩盖后一个页面漏写 registryDependencies。
+  # 每个页面都在独立临时工程中经真实 shadcn CLI 递归安装并 typecheck，防止前一个页面
+  # 已安装的区块掩盖后一个页面漏写 registryDependencies。
+  # 读的是 public/r 下的分发端点（自建静态 server），与 apps/www 的构建产物无关，因此不等 build。
+  registry-smoke:
+    name: Registry Pages Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      - name: Generate AI distribution endpoints
+        run: pnpm llms-registry && pnpm conventions
+
       - name: Smoke all registry pages
         run: pnpm registry:smoke:pages
+
+  # ══ 第二档：构建，下游三组产物门禁的唯一前置 ════════════════════════════════
+
+  build:
+    name: Build (static export)
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 拉全量历史与 tag —— changelog 的发布日期只存在于 `@hulianui/ui@x.y.z`
+      # 这类 annotated tag 上，浅克隆拿不到，构建期生成的 changelog.json 会整片丢日期。
+      # 仓库 .git 不到 30 MB，全量克隆的代价可以忽略。
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      # /r、/d 与 conventions.json 都被 Git 忽略，必须在干净 checkout 中显式生成，
+      # 否则 MCP 的本地模式和部署后的远程模式都会拿不到逐件文档或约束数据。
+      - name: Generate AI distribution endpoints
+        run: pnpm llms-registry && pnpm conventions
+
+      # changelog.json 与上面几个端点不同，它被提交进仓（/changelog 页面 import 它，
+      # 干净 clone 必须能 typecheck）。但仓库里那份只是**开发期占位**：只要不在构建期
+      # 按当前 CHANGELOG.md + tag 重新生成，站点就会停在最后一次人工回填的版本上——
+      # 0.14.0 发版后站点长期显示旧版就是这么来的。这里重生成，把「发版后记得跑一次
+      # pnpm changelog 再提交」这个纯人工步骤从发布流程里彻底去掉。
+      - name: Regenerate changelog data
+        run: pnpm changelog
 
       # build:locale 会运行生成器并覆盖 generated/showcase-en；必须先以只读模式检查，
       # 否则提交缺失或过期的 generated 文件会被构建过程自动修复，CI 仍然错误通过。
@@ -125,25 +180,65 @@ jobs:
       - name: Build
         run: pnpm --filter www build
 
-      # 全量 DOM/产物扫描：可见文本、meta、JSON-LD、a11y 属性、展示代码和人类可读
-      # JSON/text 均不得残留未批准的中文；同时逐文件校验中英路由、fragment 与同语言链接。
-      - name: Verify English documentation output
-        run: pnpm docs:i18n:output
+      # 静态导出产物传给下游三组门禁与 deploy-zh —— 全流水线只构建这一次。
+      - name: Upload static export
+        uses: actions/upload-artifact@v6
+        with:
+          name: www-out
+          path: apps/www/out
+          retention-days: 1
+          if-no-files-found: error
 
-      - name: Verify bilingual route parity and links
-        run: pnpm docs:i18n:links
+  # ══ 第三档：产物门禁，三组并行，各自 download 同一份 out ══════════════════════
+  #
+  # 分组只按耗时均衡（各约 4 分钟），不按主题 —— 它们之间没有任何依赖，唯一的约束是
+  # 「别让某一组显著长于其它组」，否则关键路径就被那一组顶住。改动导致某组变长时，
+  # 把步骤挪到别组即可，不需要改依赖关系。
 
+  gate-showcase:
+    name: Gate · English showcases (browser)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright chromium
+        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+
+      - name: Download static export
+        uses: actions/download-artifact@v7
+        with:
+          name: www-out
+          path: apps/www/out
+
+      # 全库最慢的单道门禁（≈4 分钟）：逐件在真实 chromium 里水合英文 showcase，
+      # 对 pageerror 零容忍。独占一组。
       - name: Verify hydrated English component showcases
         run: pnpm docs:check:showcase-browser
 
-      - name: Verify English admin demos in Chromium
-        run: pnpm docs:check:admin-demos
+  gate-a11y:
+    name: Gate · A11y · viewport · gallery
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - name: Verify English AI, knowledge, education, and visualization demos in Chromium
-        run: pnpm docs:check:task11-demos
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
-      - name: Verify English consumer and marketing demos in Chromium
-        run: pnpm docs:check:task12-demos
+      - name: Install Playwright chromium
+        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+
+      - name: Download static export
+        uses: actions/download-artifact@v7
+        with:
+          name: www-out
+          path: apps/www/out
 
       - name: Accessibility gate
         run: pnpm a11y
@@ -161,19 +256,49 @@ jobs:
       - name: Gallery mount budget gate
         run: pnpm gallery
 
-      # 把静态导出产物传给下游 deploy-zh job（避免二次构建）
-      - name: Upload static export
-        uses: actions/upload-artifact@v6
+  gate-demos:
+    name: Gate · i18n output · demos (browser)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright chromium
+        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+
+      - name: Download static export
+        uses: actions/download-artifact@v7
         with:
           name: www-out
           path: apps/www/out
-          retention-days: 1
-          if-no-files-found: error
+
+      # 全量 DOM/产物扫描：可见文本、meta、JSON-LD、a11y 属性、展示代码和人类可读
+      # JSON/text 均不得残留未批准的中文；同时逐文件校验中英路由、fragment 与同语言链接。
+      - name: Verify English documentation output
+        run: pnpm docs:i18n:output
+
+      - name: Verify bilingual route parity and links
+        run: pnpm docs:i18n:links
+
+      - name: Verify English admin demos in Chromium
+        run: pnpm docs:check:admin-demos
+
+      - name: Verify English AI, knowledge, education, and visualization demos in Chromium
+        run: pnpm docs:check:task11-demos
+
+      - name: Verify English consumer and marketing demos in Chromium
+        run: pnpm docs:check:task12-demos
+
+  # ══ 独立档：发布产物的可消费性，与文档站构建互不依赖 ══════════════════════════
 
   # 以消费方身份 typecheck —— 防「库内 tsc 绿、装出去就挂」这一整类问题。
   #
-  # 上面 verify 里的 `pnpm typecheck` 跑在库自己的环境里，而那个环境比真实消费方**宽松**：
-  # packages/ui/tsconfig.json 的 `types: ["vitest/globals"]` 会顺着 vitest 的类型链把
+  # 上面 static-checks 里的 `pnpm typecheck` 跑在库自己的环境里，而那个环境比真实消费方
+  # **宽松**：packages/ui/tsconfig.json 的 `types: ["vitest/globals"]` 会顺着 vitest 的类型链把
   # @types/node 混进来，于是库里任何一处裸 `process` / `Buffer` 在库内合法、在只跑浏览器的
   # 消费方那里却是 TS2580（hulianui/hulian#24）；同理 monorepo 根 node_modules 有求必应，
   # 掩盖了 barrel 拖出的依赖缺失（hulianui/hulian#19）。
@@ -188,25 +313,12 @@ jobs:
   # TS7，就等于静默放弃了 TS5 消费方 —— 而 TS5 目前仍是绝大多数下游的现状。反过来只留
   # TS5 也不行：TS≥6 独有的失败是真实存在的（Video 的 TS2882，见 f4328bb）。两版共用一次
   # checkout、顺序跑，增量约 30 秒，换的是两条真实消费路径的覆盖。
-  #
-  # 与 verify 并行、不设 needs：它测的是发布产物的可消费性，与文档站构建互不依赖。
   consumer-smoke:
     name: Consumer Typecheck (packed tarball)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: 8.15.5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
 
       # 0.28.0 起**必须**装依赖：`pnpm pack` 会触发 packages/ui 的 prepack 生成
       # 预编译 .d.ts（#156），而那一步的 tsc 要解析 @types/react —— 没有 node_modules
@@ -216,8 +328,8 @@ jobs:
       # 泄漏那一层的防线并不依赖"这里不装"：consumer-typecheck.sh 把消费方工程建在
       # **仓库之外**、走 tarball 而非 workspace 链接，并断言 @types/node 不在消费方的
       # 类型可见范围内。那三条才是真防线，安装仓库依赖不会削弱它们。
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
       - name: Pack, install as a consumer, typecheck (TypeScript 7)
         env:
@@ -238,8 +350,6 @@ jobs:
   # 没有换算关系。所以这道门禁和 consumer-smoke 一样走 pnpm pack 产物 + 仓库外空白工程，
   # 只是把 tsc 换成 esbuild，量各入口 minify+gzip 后的 initial chunk。
   # 基线在 scripts/size-limits.json，量法与判据见 scripts/bundle-size.mjs 顶部注释。
-  #
-  # 与其它 job 并行、不设 needs：它测的是发布产物的体积，与文档站构建互不依赖。
   bundle-size:
     name: Bundle Size (packed tarball)
     runs-on: ubuntu-latest
@@ -247,49 +357,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: 8.15.5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
       # 同 consumer-smoke：0.28.0 起 pack 会触发 prepack 生成 .d.ts（#156），
       # 那一步的 tsc 要解析 @types/react，所以必须先装依赖。
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
       - name: Pack, bundle as a consumer, check size
         env:
           BUNDLE_SIZE_DIR: ${{ runner.temp }}/hulian-bundle-size
         run: bash scripts/bundle-size.sh
 
+  # ══ 性能：两个环境各占一台 runner ═══════════════════════════════════════════
+  #
+  # 拆 matrix 的理由不只是快：这道门禁量的是**运行时指标**，两个环境串在同一台 runner 上
+  # 跑虽然不会互相争 CPU（是顺序执行），但改动面一大就是 11 分钟 + 11 分钟 = 22 分钟，
+  # 直接顶替 build 链成为全流水线最长的一条。拆开后最坏情况减半。
+  #
+  # affected 场景清单在每个 matrix 分片里各算一次（约 7 秒）——比拆一个前置 job 再传
+  # artifact 便宜得多，那样要多付一整套 checkout + install + playwright 的环境开销。
+  #
+  # ⚠️ 绝不能改成「同一 job 内用 & 并行两个环境」：性能读数会被彼此的 CPU 占用污染。
   runtime-performance:
-    name: Runtime Performance (Hulian Scan)
+    name: Runtime Performance (${{ matrix.environment }})
     runs-on: ubuntu-latest
+    strategy:
+      # 一个环境红了，另一个也要跑完 —— 两边的报告要一起看才知道是「库变慢了」还是
+      # 「只有打包消费路径变慢了」。
+      fail-fast: false
+      matrix:
+        environment: [workspace, packed-consumer]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: 8.15.5
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
       - name: Install Playwright chromium
         run: pnpm --filter @hulianui/hulian-scan exec playwright install --with-deps chromium
@@ -311,17 +415,17 @@ jobs:
           echo "scenarios=$scenarios" >> "$GITHUB_OUTPUT"
 
       - name: Scan affected workspace scenarios
-        if: github.event_name != 'schedule'
+        if: github.event_name != 'schedule' && matrix.environment == 'workspace'
         run: node scripts/hulian-scan.mjs --ci --scenario "${{ steps.affected.outputs.scenarios }}" --environment workspace --output .hulian-scan/reports/workspace-affected
 
       - name: Gate affected packed-consumer scenarios
-        if: github.event_name != 'schedule'
+        if: github.event_name != 'schedule' && matrix.environment == 'packed-consumer'
         env:
           PERFORMANCE_CONSUMER_DIR: ${{ runner.temp }}/hulian-scan-consumer
         run: pnpm scan:ci -- --scenario "${{ steps.affected.outputs.scenarios }}" --output .hulian-scan/reports/packed-affected
 
       - name: React 18 compatibility smoke
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' && matrix.environment == 'packed-consumer'
         env:
           PERFORMANCE_CONSUMER_DIR: ${{ runner.temp }}/hulian-scan-consumer-react18
           PERFORMANCE_REACT_VERSION: 18
@@ -337,14 +441,15 @@ jobs:
       # （全库 306/380 本来就没有 memo），且检测本身被挂载期异步工作污染、对已 memo 的组件
       # 也会误报。这一支现在的作用是**把候选列出来**，人工过目后决定要不要补 memo。
       - name: Weekly structural sweep (full inventory)
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' && matrix.environment == 'workspace'
         run: node scripts/hulian-scan.mjs --ci --full --environment workspace --output .hulian-scan/reports/weekly-full
 
       - name: Upload runtime performance evidence
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: hulian-scan-${{ github.run_id }}
+          # 必须带 matrix 维度：两个分片同名会互相覆盖/冲突。
+          name: hulian-scan-${{ matrix.environment }}-${{ github.run_id }}
           path: .hulian-scan/
           retention-days: 14
           if-no-files-found: warn
@@ -352,14 +457,30 @@ jobs:
           # 不开这个开关，这一步会一直「成功」但零文件上传，红了只能靠本地复现定位。
           include-hidden-files: true
 
+  # ══ 部署 ══════════════════════════════════════════════════════════════════
+  #
   # 中国镜像站点：push 到 master 时把静态产物 rsync 到阿里云服务器
   # （hulianui-zh.haloritual.com · 直连阿里云绕开 Cloudflare）。
   # 与 Cloudflare Pages 自动发布并行 —— 双发，同一份产物。
   deploy-zh:
     name: Deploy · hulianui-zh.haloritual.com
-    # 部署必须等文档、真实消费方与 bundle 预算三条独立门禁全部通过；只等静态构建
-    # 会在 consumer/size job 失败时仍把同一提交发布到中文镜像。
-    needs: [verify, consumer-smoke, bundle-size]
+    # ⚠️ 这份 needs 就是原来那句 `needs: [verify, consumer-smoke, bundle-size]` ——
+    # verify 拆成 7 个 job 之后，必须把 7 个全部点名，少写一个就等于「那道门禁红了、
+    # 镜像照样发」。**新增任何门禁 job 都要同步加进这里**，这是本文件唯一一处
+    # 「漏改不会报错、只会静默降低发布安全性」的地方。
+    #
+    # runtime-performance 刻意不在此列（拆分前也不在）：它是性能观测/回归提示，
+    # 不是发布阻塞门禁。
+    needs:
+      - static-checks
+      - test
+      - registry-smoke
+      - build
+      - gate-showcase
+      - gate-a11y
+      - gate-demos
+      - consumer-smoke
+      - bundle-size
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
