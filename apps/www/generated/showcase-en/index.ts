@@ -310,6 +310,7 @@ export * from "./shimmer-button.showcase";
 export * from "./shine-border.showcase";
 export * from "./shuffle.showcase";
 export * from "./side-rays.showcase";
+export * from "./sidebar.showcase";
 export * from "./silk.showcase";
 export * from "./skeleton.showcase";
 export * from "./slider.showcase";

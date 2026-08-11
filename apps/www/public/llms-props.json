@@ -679,6 +679,19 @@
       "bottom-left",
       "bottom-right"
     ],
+    "SidebarState": [
+      "expanded",
+      "collapsed"
+    ],
+    "SidebarCollapsible": [
+      "offcanvas",
+      "icon",
+      "none"
+    ],
+    "SidebarSide": [
+      "left",
+      "right"
+    ],
     "SocialProvider": [
       "wechat",
       "alipay",
@@ -1450,6 +1463,33 @@
     "nextActiveKey": "route-tabs",
     "orderTabs": "route-tabs",
     "reorderTabs": "route-tabs",
+    "Sidebar": "sidebar",
+    "SidebarContent": "sidebar",
+    "SidebarFooter": "sidebar",
+    "SidebarGroup": "sidebar",
+    "SidebarGroupAction": "sidebar",
+    "SidebarGroupContent": "sidebar",
+    "SidebarGroupLabel": "sidebar",
+    "SidebarHeader": "sidebar",
+    "SidebarInput": "sidebar",
+    "SidebarInset": "sidebar",
+    "SidebarMenu": "sidebar",
+    "SidebarMenuAction": "sidebar",
+    "SidebarMenuBadge": "sidebar",
+    "SidebarMenuButton": "sidebar",
+    "SidebarMenuItem": "sidebar",
+    "SidebarMenuSkeleton": "sidebar",
+    "SidebarMenuSub": "sidebar",
+    "SidebarMenuSubButton": "sidebar",
+    "SidebarMenuSubItem": "sidebar",
+    "SidebarProvider": "sidebar",
+    "SidebarRail": "sidebar",
+    "SidebarSeparator": "sidebar",
+    "SidebarTrigger": "sidebar",
+    "isEditableEventTarget": "sidebar",
+    "shouldEnableSidebarTooltip": "sidebar",
+    "sidebarMenuButtonVariants": "sidebar",
+    "useSidebar": "sidebar",
     "StaggeredMenu": "staggered-menu",
     "Stepper": "stepper",
     "Steps": "steps",
@@ -5895,16 +5935,17 @@
           "name": "variant",
           "required": false,
           "kind": "enum",
-          "type": "\"solid\" | \"outline\" | \"ghost\" | \"link\"",
+          "type": "\"solid\" | \"soft\" | \"outline\" | \"ghost\" | \"link\"",
           "values": [
             "solid",
+            "soft",
             "outline",
             "ghost",
             "link"
           ],
           "valueType": "string",
           "default": "\"solid\"",
-          "description": "视觉变体"
+          "description": "视觉变体；`soft` 是浅语义底 + 同色文字，权重介于 `outline` 与 `solid` 之间（见下文）"
         },
         {
           "name": "tone",
@@ -5926,8 +5967,9 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\" | \"iconXs\"",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\" | \"iconXs\"",
           "values": [
+            "xs",
             "sm",
             "md",
             "lg",
@@ -5938,7 +5980,7 @@
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸；icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用"
+          "description": "尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用"
         },
         {
           "name": "block",
@@ -28651,6 +28693,443 @@
         }
       ],
       "slots": []
+    },
+    {
+      "slug": "sidebar",
+      "name": "Sidebar",
+      "category": "navigation",
+      "group": "global",
+      "status": "enriched",
+      "import": "import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuAction, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, isEditableEventTarget, shouldEnableSidebarTooltip, sidebarMenuButtonVariants, useSidebar } from \"@hulianui/ui\"",
+      "exports": [
+        "Sidebar",
+        "SidebarContent",
+        "SidebarFooter",
+        "SidebarGroup",
+        "SidebarGroupAction",
+        "SidebarGroupContent",
+        "SidebarGroupLabel",
+        "SidebarHeader",
+        "SidebarInput",
+        "SidebarInset",
+        "SidebarMenu",
+        "SidebarMenuAction",
+        "SidebarMenuBadge",
+        "SidebarMenuButton",
+        "SidebarMenuItem",
+        "SidebarMenuSkeleton",
+        "SidebarMenuSub",
+        "SidebarMenuSubButton",
+        "SidebarMenuSubItem",
+        "SidebarProvider",
+        "SidebarRail",
+        "SidebarSeparator",
+        "SidebarTrigger",
+        "isEditableEventTarget",
+        "shouldEnableSidebarTooltip",
+        "sidebarMenuButtonVariants",
+        "useSidebar"
+      ],
+      "types": [
+        "SidebarCollapsible",
+        "SidebarContextValue",
+        "SidebarGroupActionProps",
+        "SidebarInputProps",
+        "SidebarMenuActionProps",
+        "SidebarMenuButtonProps",
+        "SidebarMenuSkeletonProps",
+        "SidebarMenuSubButtonProps",
+        "SidebarProps",
+        "SidebarProviderProps",
+        "SidebarRailProps",
+        "SidebarSide",
+        "SidebarState",
+        "SidebarTriggerProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/sidebar/sidebar.md",
+      "props": [
+        {
+          "name": "defaultOpen",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "非受控初值"
+        },
+        {
+          "name": "open",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "受控展开态。传了就必须配 `onOpenChange`"
+        },
+        {
+          "name": "onOpenChange",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "function",
+          "type": "(open: boolean) => void",
+          "default": null,
+          "description": "展开态变化回调。受控与非受控都会触发，持久化（cookie / localStorage）接在这里"
+        },
+        {
+          "name": "mobileBreakpoint",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "union",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | number",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "2xl"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "视口宽度**小于**它即视为移动端并切抽屉"
+        },
+        {
+          "name": "shortcutKey",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "other",
+          "type": "string | false",
+          "default": "\"b\"",
+          "description": "与 Cmd/Ctrl 组合的内置快捷键按键。`false` 关掉"
+        },
+        {
+          "name": "width",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"16rem\"",
+          "description": "展开宽度，写进 `--hl-sidebar-width`"
+        },
+        {
+          "name": "iconWidth",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"3rem\"",
+          "description": "`collapsible=\"icon\"` 的折叠宽度，写进 `--hl-sidebar-width-icon`"
+        },
+        {
+          "name": "fitViewport",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "自钉视口高度（`h-dvh` + `overflow-hidden`）。嵌进已有滚动容器预览时传 `false`"
+        },
+        {
+          "name": "md) 的 `breakpoint`",
+          "owner": "[LayoutSider](../layout/layout.md) / [AdminLayout](../admin-layout/admin-layout",
+          "required": false,
+          "kind": "other",
+          "type": "(max-width: 768px)",
+          "default": null,
+          "description": "768px **及以下**收起"
+        },
+        {
+          "name": "SidebarProvider` 的 `mobileBreakpoint",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "other",
+          "type": "(max-width: 767px)",
+          "default": null,
+          "description": "768px **以下**切抽屉"
+        },
+        {
+          "name": "side",
+          "owner": "Sidebar",
+          "required": false,
+          "kind": "enum",
+          "type": "\"left\" | \"right\"",
+          "values": [
+            "left",
+            "right"
+          ],
+          "valueType": "string",
+          "default": "\"left\"",
+          "description": "贴哪一边（移动端抽屉同侧滑入）"
+        },
+        {
+          "name": "collapsible",
+          "owner": "Sidebar",
+          "required": false,
+          "kind": "enum",
+          "type": "\"offcanvas\" | \"icon\" | \"none\"",
+          "values": [
+            "offcanvas",
+            "icon",
+            "none"
+          ],
+          "valueType": "string",
+          "default": "\"offcanvas\"",
+          "description": "桌面折叠形态，见下方「三种折叠形态」"
+        },
+        {
+          "name": "mobileTitle",
+          "owner": "Sidebar",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "取自 locale",
+          "description": "移动端抽屉的无障碍标题（视觉隐藏）"
+        },
+        {
+          "name": "mobileDescription",
+          "owner": "Sidebar",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "取自 locale",
+          "description": "移动端抽屉的无障碍说明（视觉隐藏）"
+        },
+        {
+          "name": "mobileShowClose",
+          "owner": "Sidebar",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "移动端是否渲染抽屉自带的右上角关闭按钮。默认关掉，避免压住导航首项"
+        },
+        {
+          "name": "mobileClassName",
+          "owner": "Sidebar",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到移动端抽屉面板（走 twMerge）"
+        },
+        {
+          "name": "isActive",
+          "owner": "SidebarMenuButton",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "当前项高亮，同时置 `aria-current=\"page\"`"
+        },
+        {
+          "name": "size",
+          "owner": "SidebarMenuButton",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "行高档位（`SidebarMenuSubButton` 只有 `\"sm\" | \"md\"`）"
+        },
+        {
+          "name": "tooltip",
+          "owner": "SidebarMenuButton",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "折叠到 icon 档时补的文字说明。只在 `state === \"collapsed\" && !isMobile` 时启用"
+        },
+        {
+          "name": "tooltipSide",
+          "owner": "SidebarMenuButton",
+          "required": false,
+          "kind": "enum",
+          "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+          "values": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ],
+          "valueType": "string",
+          "default": "\"right\"",
+          "description": "Tooltip 出现方向。右侧栏应传 `\"left\"`"
+        },
+        {
+          "name": "render",
+          "owner": "SidebarMenuButton",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "渲染成自定义元素（`<a>` / 路由 `<Link>`），拿到真链接语义 + 客户端路由。`SidebarTrigger` / `SidebarGroupAction` / `SidebarMenuAction` / `SidebarMenuSubButton` 同款"
+        },
+        {
+          "name": "SidebarInset",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<main>",
+          "default": null,
+          "description": "侧栏的兄弟内容区，占满剩余宽度并自己滚动"
+        },
+        {
+          "name": "SidebarTrigger",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<button>",
+          "default": null,
+          "description": "开合按钮。自带 `aria-label` / `aria-expanded` / `aria-controls`"
+        },
+        {
+          "name": "label",
+          "owner": "SidebarRail",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "取自 locale",
+          "description": "贴边热区的无障碍名。默认取 `locale.components.sidebar.rail`，**刻意与 `SidebarTrigger` 不同字**"
+        },
+        {
+          "name": "SidebarHeader` / `SidebarFooter",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<div>",
+          "default": null,
+          "description": "顶部 / 底部固定区（不随内容滚动）"
+        },
+        {
+          "name": "SidebarContent",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<div>",
+          "default": null,
+          "description": "中间可滚动区"
+        },
+        {
+          "name": "SidebarSeparator",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<div role=\"separator\">",
+          "default": null,
+          "description": "分隔线"
+        },
+        {
+          "name": "SidebarInput",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "Input",
+          "default": null,
+          "description": "侧栏内搜索框，透传 [Input](../input/input.md) 全部属性"
+        },
+        {
+          "name": "SidebarGroup` / `SidebarGroupLabel` / `SidebarGroupContent",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<div>",
+          "default": null,
+          "description": "一段分组：容器 / 小标题（icon 档自动隐藏）/ 内容"
+        },
+        {
+          "name": "SidebarGroupAction",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<button>",
+          "default": null,
+          "description": "贴在分组右上角的动作（「新建」之类）"
+        },
+        {
+          "name": "SidebarMenu` / `SidebarMenuItem",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<ul role=\"list\">` / `<li>",
+          "default": null,
+          "description": "菜单列表与行容器"
+        },
+        {
+          "name": "showOnHover",
+          "owner": "SidebarMenuAction",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "行尾次级动作是否悬停 / 聚焦才显形"
+        },
+        {
+          "name": "SidebarMenuBadge",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<div>",
+          "default": null,
+          "description": "行尾计数徽标，`pointer-events-none` 不吃点击"
+        },
+        {
+          "name": "showIcon",
+          "owner": "SidebarMenuSkeleton",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "加载态是否显示行首图标占位方块"
+        },
+        {
+          "name": "width",
+          "owner": "SidebarMenuSkeleton",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"70%\"",
+          "description": "加载态文字条宽度。**必须是确定值**"
+        },
+        {
+          "name": "SidebarMenuSub` / `SidebarMenuSubItem` / `SidebarMenuSubButton",
+          "owner": "其余结构件",
+          "required": false,
+          "kind": "other",
+          "type": "<ul>` / `<li>` / `<button>",
+          "default": null,
+          "description": "二级菜单三件套（icon 档自动隐藏）"
+        }
+      ],
+      "events": [
+        {
+          "name": "onOpenChange",
+          "owner": "SidebarProvider",
+          "required": false,
+          "kind": "function",
+          "type": "(open: boolean) => void",
+          "default": null,
+          "description": "桌面展开态变化。受控与非受控都会触发"
+        }
+      ],
+      "slots": [
+        {
+          "name": "children",
+          "owner": "SidebarTrigger",
+          "type": "ReactNode",
+          "description": "自定义图标，缺省是 `Menu` 图标"
+        },
+        {
+          "name": "children",
+          "owner": "SidebarMenuButton",
+          "type": "ReactNode",
+          "description": "图标 + 文字。**文字必须包在 `<span>` 里**，icon 折叠档靠 `[&>span:last-child]` 把它收走"
+        }
+      ]
     },
     {
       "slug": "staggered-menu",

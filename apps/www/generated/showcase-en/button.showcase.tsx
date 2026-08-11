@@ -22,15 +22,41 @@ export const buttonShowcase: ShowcaseSpec = {
         },
         {
             title: "Size",
-            description: "sm / md / lg Three levels of height.",
-            code: `<Button size="sm">small</Button>
+            description: "xs / sm / md / lg \u2014 four heights: 24 / 32 / 40 / 48px.",
+            code: `<Button size="xs">Extra small</Button>
+<Button size="sm">small</Button>
 <Button size="md">medium</Button>
 <Button size="lg">Large</Button>`,
             render: () => (<>
+          <Button size="xs">Extra small</Button>
           <Button size="sm">Small</Button>
           <Button size="md">Medium</Button>
           <Button size="lg">Large</Button>
         </>),
+        },
+        {
+            title: "Dense toolbar (the 24px xs size)",
+            description: "Toolbars and table rows in an admin console are mostly 24px tall with a 12px font, so sm (32px) is one step too large for them. xs also tightens the radius and the icon gap, so no override classes are needed. Icon-only micro actions on the same row use iconXs (20px); the two are deliberately not the same height.",
+            code: `<Button size="xs" variant="outline">Record</Button>
+<Button size="xs" variant="outline">Replay</Button>
+<Button size="xs" variant="soft">Filtered</Button>
+<Button size="iconXs" variant="ghost" tone="neutral" aria-label="More">
+  <ChevronDown className="size-4" />
+</Button>`,
+            render: () => (<div className="flex items-center gap-1 rounded-md border border-hairline bg-surface p-1">
+          <Button size="xs" variant="outline">
+            Record
+          </Button>
+          <Button size="xs" variant="outline">
+            Replay
+          </Button>
+          <Button size="xs" variant="soft">
+            Filtered
+          </Button>
+          <Button size="iconXs" variant="ghost" tone="neutral" aria-label="More">
+            <ChevronDown className="size-4"/>
+          </Button>
+        </div>),
         },
         {
             title: "Icon sizes match text sizes",
@@ -92,7 +118,7 @@ export const buttonShowcase: ShowcaseSpec = {
         },
         {
             title: "Tone by variant",
-            description: "The same tone in a different variant gives you the outlined or ghost form, so neither needs its own enum value.",
+            description: "The same tone in a different variant gives you the tinted, outlined, or ghost form, so none of them needs its own enum value.",
             code: `<Button tone="success" variant="outline">Approve</Button>
 <Button tone="warning" variant="outline">Reject</Button>
 <Button tone="danger" variant="outline">Delete</Button>
@@ -113,6 +139,30 @@ export const buttonShowcase: ShowcaseSpec = {
           </Button>
           <Button tone="danger" variant="link">
             Delete
+          </Button>
+        </>),
+        },
+        {
+            title: "Tinted semantic fill (soft)",
+            description: "A tinted semantic background with matching text, weighted between outline and solid: a secondary primary action, the cancel half of a pair, or a stateful trigger that shows a filter is on. The fill derives from the semantic colour itself through opacity, so it follows whenever the brand colour changes.",
+            code: `<Button variant="soft">Secondary action</Button>
+<Button variant="soft" tone="success">Approve</Button>
+<Button variant="soft" tone="warning">Reject</Button>
+<Button variant="soft" tone="danger">Cancel</Button>
+<Button variant="soft" tone="neutral">Skip</Button>`,
+            render: () => (<>
+          <Button variant="soft">Secondary action</Button>
+          <Button variant="soft" tone="success">
+            Passed
+          </Button>
+          <Button variant="soft" tone="warning">
+            Reject
+          </Button>
+          <Button variant="soft" tone="danger">
+            Cancel
+          </Button>
+          <Button variant="soft" tone="neutral">
+            Skip
           </Button>
         </>),
         },
@@ -155,7 +205,7 @@ export const buttonShowcase: ShowcaseSpec = {
         {
             prop: "size",
             type: "select",
-            options: ["sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
+            options: ["xs", "sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
             defaultValue: "md",
         },
         { prop: "block", type: "boolean", defaultValue: false, label: "Full width" },
@@ -164,6 +214,14 @@ export const buttonShowcase: ShowcaseSpec = {
     ],
     states: [
         { name: "default", render: () => <Button>Default</Button> },
+        { name: "xs", render: () => <Button size="xs">Dense size</Button> },
+        { name: "soft", render: () => <Button variant="soft">Soft</Button> },
+        {
+            name: "soft-danger",
+            render: () => (<Button variant="soft" tone="danger">
+          Cancel
+        </Button>),
+        },
         { name: "outline", render: () => <Button variant="outline">Stroke</Button> },
         { name: "ghost", render: () => <Button variant="ghost">Ghost</Button> },
         { name: "link", render: () => <Button variant="link">Text link</Button> },
@@ -174,7 +232,7 @@ export const buttonShowcase: ShowcaseSpec = {
         { name: "disabled", render: () => <Button disabled>Disabled</Button> },
         { name: "loading", render: () => <Button loading>Loading</Button> },
     ],
-    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"} block={p.block as boolean} loading={p.loading as boolean}>
+    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "soft" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "xs" | "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"} block={p.block as boolean} loading={p.loading as boolean}>
       {p.children as string}
     </Button>),
     toCode: (p) => `<Button variant="${p.variant}" tone="${p.tone}" size="${p.size}"${p.block ? " block" : ""}${p.loading ? " loading" : ""}>${p.children}</Button>`,

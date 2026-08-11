@@ -1072,6 +1072,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Combines a square brand mark, name, and optional description with collapsed and router-link modes.",
     keywords: ["brand", "logo", "identity", "navigation", "global"],
   },
+  sidebar: {
+    shortName: "Sidebar",
+    description:
+      "Provides a composable application sidebar shell with a collapse state machine, an automatic mobile drawer, and menu, group, and action slots.",
+    keywords: ["sidebar", "shell", "collapsible", "navigation", "global", "drawer"],
+  },
   "nav-menu": {
     shortName: "NavMenu",
     description:

@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 388 个组件 · v0.30.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 389 个组件 · v0.30.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -221,7 +221,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Watermark](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watermark/watermark.md): 水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)
 - [WorldMap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/world-map/world-map.md): 点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交…
 
-## 导航 navigation（32）
+## 导航 navigation（33）
 - [Accordion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/accordion/accordion.md): 手风琴 · Base UI 单/多开 + 高度过渡
 - [Affix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/affix/affix.md): 固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器
 - [Anchor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/anchor/anchor.md): 锚点导航 · 自研零依赖 scrollspy(IntersectionObserver) + 平滑滚动 + active CSS 变量滑动指示条 + offsetTop/二级项
@@ -249,6 +249,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Pagination](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pagination/pagination.md): 分页器 · 纯皮肤受控 + 页码区间算法(省略号)
 - [PillNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pill-nav/pill-nav.md): 胶囊导航条 · 悬停底部圆涨满 + 文案翻转反相 + 激活指示圆点(纯 CSS·零依赖·RSC 安全·reduced-motion) · navigation/global · #animated
 - [RouteTabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/route-tabs/route-tabs.md): 路由页签条 · 中后台多标签工作区(右键关闭其他/左侧/右侧/全部/刷新 + 固定页签 + 拖拽调序 + 激活项滚入视口 + 溢出滚动) · 完全受控
+- [Sidebar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sidebar/sidebar.md): 应用侧栏 · 组合式外壳 + 折叠状态机(offcanvas/icon/none) + 移动端自动切抽屉
 - [StaggeredMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/staggered-menu/staggered-menu.md): 侧滑分层菜单 · 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 g…
 - [Stepper](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stepper/stepper.md): 步骤条 · 零依赖 flex 布局 + 自绘完成对勾 + 连接线随进度点亮 + aria-current
 - [Steps](https://github.com/hulianui/hulian/blob/master/packages/ui/src/steps/steps.md): 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(分步表单/审批流)

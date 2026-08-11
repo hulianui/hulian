@@ -12861,6 +12861,103 @@
       ]
     },
     {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "应用侧栏 · 组合式外壳 + 折叠状态机(offcanvas/icon/none) + 移动端自动切抽屉",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/drawer.json",
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/layout.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/motion.json",
+        "https://hulianui.haloritual.com/zh/r/skeleton.json",
+        "https://hulianui.haloritual.com/zh/r/tooltip.json"
+      ],
+      "meta": {
+        "import": "import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuAction, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, isEditableEventTarget, shouldEnableSidebarTooltip, sidebarMenuButtonVariants, useSidebar } from \"@hulianui/ui\"",
+        "exports": [
+          "Sidebar",
+          "SidebarContent",
+          "SidebarFooter",
+          "SidebarGroup",
+          "SidebarGroupAction",
+          "SidebarGroupContent",
+          "SidebarGroupLabel",
+          "SidebarHeader",
+          "SidebarInput",
+          "SidebarInset",
+          "SidebarMenu",
+          "SidebarMenuAction",
+          "SidebarMenuBadge",
+          "SidebarMenuButton",
+          "SidebarMenuItem",
+          "SidebarMenuSkeleton",
+          "SidebarMenuSub",
+          "SidebarMenuSubButton",
+          "SidebarMenuSubItem",
+          "SidebarProvider",
+          "SidebarRail",
+          "SidebarSeparator",
+          "SidebarTrigger",
+          "isEditableEventTarget",
+          "shouldEnableSidebarTooltip",
+          "sidebarMenuButtonVariants",
+          "useSidebar"
+        ],
+        "types": [
+          "SidebarCollapsible",
+          "SidebarContextValue",
+          "SidebarGroupActionProps",
+          "SidebarInputProps",
+          "SidebarMenuActionProps",
+          "SidebarMenuButtonProps",
+          "SidebarMenuSkeletonProps",
+          "SidebarMenuSubButtonProps",
+          "SidebarProps",
+          "SidebarProviderProps",
+          "SidebarRailProps",
+          "SidebarSide",
+          "SidebarState",
+          "SidebarTriggerProps"
+        ],
+        "group": "global",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/sidebar/sidebar.md",
+        "docLocal": "packages/ui/src/sidebar/sidebar.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/sidebar/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/sidebar/index.ts"
+        },
+        {
+          "path": "components/hulianui/sidebar/sidebar.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/sidebar/sidebar.tsx"
+        },
+        {
+          "path": "components/hulianui/sidebar/sidebar.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/sidebar/sidebar.types.ts"
+        }
+      ]
+    },
+    {
       "name": "staggered-menu",
       "type": "registry:ui",
       "title": "StaggeredMenu",

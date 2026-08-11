@@ -1071,6 +1071,9 @@ export const scenarioLoaders = {
   "side-rays": async () =>
     (await import("@hulianui/ui-internal/side-rays/side-rays.showcase"))
       .sideRaysShowcase,
+  sidebar: async () =>
+    (await import("@hulianui/ui-internal/sidebar/sidebar.showcase"))
+      .sidebarShowcase,
   silk: async () =>
     (await import("@hulianui/ui-internal/silk/silk.showcase")).silkShowcase,
   skeleton: async () =>
@@ -4729,6 +4732,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: true,
     source: "packages/ui/src/side-rays/index.ts",
+  },
+  sidebar: {
+    id: "sidebar",
+    scenarioId: "sidebar/basic",
+    component: "Sidebar",
+    entry: "@hulianui/ui/sidebar",
+    category: "standard",
+    categories: ["global", "navigation"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/sidebar/index.ts",
   },
   silk: {
     id: "silk",
