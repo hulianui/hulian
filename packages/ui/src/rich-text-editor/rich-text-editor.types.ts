@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from "react";
 import type { AnyExtension } from "@tiptap/react";
+import type { NormalizeLegacyHtmlOptions } from "./rich-text-editor.legacy";
 
 /**
  * 工具栏条目。`"divider"` 只是竖线，不带命令。
@@ -24,6 +25,21 @@ export type RichTextToolbarItem =
   | "table"
   | "clear"
   | "divider";
+
+/**
+ * 存量 HTML 兼容的分档开关。
+ *
+ * 三档各自要的东西不一样，所以既有纯函数也有 schema：
+ * - `font` —— `<font color|face|size>` 翻成 `<span style>`（纯函数），
+ *   同时把 color / font-size / **font-family** 三个 mark 属性装进 schema（缺一个就在载入时被清掉）。
+ * - `imgStyle` —— `<img>` 上的 `style` 进 schema 属性（`max-width` / `width` / `height` 白名单）。
+ *   纯函数救不了这一档：schema 里没有的属性，解析那一刻就没了。
+ * - `align` —— `<section>` / `<div>` / `align="center"` / `<center>` 上的对齐下推到子块（纯函数）。
+ */
+export interface LegacyHtmlOptions extends NormalizeLegacyHtmlOptions {
+  /** `<img>` 上的内联 `style`（`max-width` / `width` / `height`）。 */
+  imgStyle?: boolean;
+}
 
 /**
  * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
@@ -65,6 +81,16 @@ export interface RichTextEditorProps extends Omit<HTMLAttributes<HTMLDivElement>
    * @default true
    */
   sanitizePaste?: boolean;
+  /**
+   * 存量 HTML 兼容（微信编辑器 / Word / 老 UEditor 迁过来的正文）：默认**关**，显式开。
+   *
+   * `true` = 三档全开；给对象则**只开写明的那几档**（`{ font: true }` 只翻译 `<font>`）。
+   * 关着时组件行为与不认识这个 prop 时**逐字节一致** —— 存量消费方不会被静默改掉。
+   *
+   * 开之前记得先看「禁忌 / 坑」：它保住的是排版，`<section>` 这类结构标签仍会被规范化。
+   * @default false
+   */
+  legacyHtml?: boolean | LegacyHtmlOptions;
   /**
    * 追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频加一个节点类型）。
    *

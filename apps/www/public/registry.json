@@ -5337,12 +5337,15 @@
         "https://hulianui.haloritual.com/zh/r/select.json"
       ],
       "meta": {
-        "import": "import { RichTextEditor, sanitizePastedHtml } from \"@hulianui/ui\"",
+        "import": "import { RichTextEditor, sanitizePastedHtml, normalizeLegacyHtml } from \"@hulianui/ui\"",
         "exports": [
           "RichTextEditor",
-          "sanitizePastedHtml"
+          "sanitizePastedHtml",
+          "normalizeLegacyHtml"
         ],
         "types": [
+          "NormalizeLegacyHtmlOptions",
+          "LegacyHtmlOptions",
           "RichTextEditorProps",
           "RichTextToolbarItem"
         ],
@@ -5365,6 +5368,11 @@
           "path": "components/hulianui/rich-text-editor/rich-text-editor-toolbar.tsx",
           "type": "registry:ui",
           "target": "components/hulianui/rich-text-editor/rich-text-editor-toolbar.tsx"
+        },
+        {
+          "path": "components/hulianui/rich-text-editor/rich-text-editor.legacy.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/rich-text-editor/rich-text-editor.legacy.ts"
         },
         {
           "path": "components/hulianui/rich-text-editor/rich-text-editor.sanitize.ts",

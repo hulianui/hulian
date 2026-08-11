@@ -1115,6 +1115,7 @@
     "RemoteSelect": "remote-select",
     "RichTextEditor": "rich-text-editor",
     "sanitizePastedHtml": "rich-text-editor",
+    "normalizeLegacyHtml": "rich-text-editor",
     "RippleButton": "ripple-button",
     "ScopeMatrix": "scope-matrix",
     "SearchForm": "search-form",
@@ -11936,12 +11937,15 @@
       "category": "forms",
       "group": "advanced",
       "status": "enriched",
-      "import": "import { RichTextEditor, sanitizePastedHtml } from \"@hulianui/ui\"",
+      "import": "import { RichTextEditor, sanitizePastedHtml, normalizeLegacyHtml } from \"@hulianui/ui\"",
       "exports": [
         "RichTextEditor",
-        "sanitizePastedHtml"
+        "sanitizePastedHtml",
+        "normalizeLegacyHtml"
       ],
       "types": [
+        "NormalizeLegacyHtmlOptions",
+        "LegacyHtmlOptions",
         "RichTextEditorProps",
         "RichTextToolbarItem"
       ],
@@ -12039,6 +12043,14 @@
           "description": "粘贴净化：洗掉 `class` / `on*` / `<style>` / `javascript:`，内联 `style` 过属性白名单"
         },
         {
+          "name": "legacyHtml",
+          "required": false,
+          "kind": "other",
+          "type": "boolean | LegacyHtmlOptions",
+          "default": "false",
+          "description": "存量 HTML 兼容（微信编辑器 / Word / 老 UEditor 的正文）。默认关；`true` 三档全开，给对象则只开写明的那几档。见「存量 HTML 兼容」"
+        },
+        {
           "name": "extensions",
           "required": false,
           "kind": "array",
@@ -12061,6 +12073,33 @@
           "type": "string",
           "default": "locale",
           "description": "内容区无障碍名"
+        },
+        {
+          "name": "font",
+          "owner": "LegacyHtmlOptions",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "`<font color|face|size>` → `<span style=\"color|font-family|font-size\">`，并把 color / font-size / font-family 三个 mark 装进 schema"
+        },
+        {
+          "name": "imgStyle",
+          "owner": "LegacyHtmlOptions",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "保住 `<img>` 上的内联 `style`，白名单 `max-width` / `width` / `height`"
+        },
+        {
+          "name": "align",
+          "owner": "LegacyHtmlOptions",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "块级对齐下推：`<section>` / `<div>` 上的 `text-align`、`align=\"center\"` 属性、`<center>` 标签"
         }
       ],
       "events": [

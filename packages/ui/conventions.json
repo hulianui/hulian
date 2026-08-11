@@ -7178,32 +7178,53 @@
       "id": "component/rich-text-editor/pitfall/3",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "**上线前务必拿一批真实存量内容跑一遍「打开 → 不做任何编辑 → 取 `getHTML`」的对比**，确认没有静默丢失。这条比任何单测都重要：丢的是运营五年攒的排版。",
+      "rule": "**上线前务必拿一批真实存量内容跑一遍「打开 → 不做任何编辑 → 取 `getHTML`」的对比**，确认没有静默丢失。这条比任何单测都重要：丢的是运营五年攒的排版。跑对比时注意：直接读 `.ProseMirror` 的 `innerHTML` 会多出 `<br class=\"ProseMirror-trailingBreak\">`，那是渲染占位、不进 `getHTML`，不剥掉会误判成 `<br>` 翻倍。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
       "id": "component/rich-text-editor/pitfall/4",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。",
+      "rule": "`legacyHtml` **只保排版，不保结构**：`<section>` 照样被拆成 `<p>`，只是挂在它身上的对齐被下推到了子块。存量正文靠 `<section>` 嵌套做的分栏 / 卡片布局救不回来，那类要走 `extensions` 自己补节点。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
       "id": "component/rich-text-editor/pitfall/5",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。",
+      "rule": "**只裹一张图的居中包裹层保不住**。`<section style=\"text-align:center\"><img></section>` 里图片是块级节点，套一层 `<p>` 只会让 ProseMirror 把它提出去、留下一个空段落，所以这种形态刻意不转 —— 图片的居中要在前台样式里给（`img { display:block; margin:0 auto }`），不要指望正文串。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
       "id": "component/rich-text-editor/pitfall/6",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "`value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。",
+      "rule": "`legacyHtml` 开着时粘贴净化的**删除类规则一条都不松**（`class` / `on*` / `<style>` / `javascript:` 照删），只是内联 `style` 白名单多放行 `font-family` 与 `max-width` 两条。`<font color>` 的值走形状白名单（命名色 / `#hex` / `rgb()`），拼不出第二条声明 —— 正文是用户可写字段。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
       "id": "component/rich-text-editor/pitfall/7",
+      "scope": "rich-text-editor",
+      "title": "RichTextEditor",
+      "rule": "图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。",
+      "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
+    },
+    {
+      "id": "component/rich-text-editor/pitfall/8",
+      "scope": "rich-text-editor",
+      "title": "RichTextEditor",
+      "rule": "粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。",
+      "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
+    },
+    {
+      "id": "component/rich-text-editor/pitfall/9",
+      "scope": "rich-text-editor",
+      "title": "RichTextEditor",
+      "rule": "`value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。",
+      "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
+    },
+    {
+      "id": "component/rich-text-editor/pitfall/10",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
       "rule": "与 [MarkdownEditor](../markdown-editor/markdown-editor.md) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。",
@@ -9664,7 +9685,7 @@
   ],
   "stats": {
     "componentDocs": 389,
-    "componentAdvisories": 1345,
-    "totalAdvisories": 1355
+    "componentAdvisories": 1348,
+    "totalAdvisories": 1358
   }
 }

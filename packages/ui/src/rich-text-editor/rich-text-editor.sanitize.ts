@@ -12,6 +12,10 @@
  *   `class` 与所有 `on*` 一律删（前者污染样式，后者是脚本注入面）。
  * - `style` 再过一层属性白名单：`mso-*`、`font-family` 这类只对 Word 有意义的整条丢掉。
  * - `href` / `src` 里的 `javascript:` / `vbscript:` 协议直接删属性。
+ *
+ * 这套口径是**默认值**，不受 `legacyHtml` 影响：存量兼容要多留 `font-family` / `max-width` 时，
+ * 走 `extraStyleProps` 显式加，加的仍是白名单条目，删除类规则（`class` / `on*` / `<style>` /
+ * `javascript:`）任何情况下都不放宽。
  */
 
 const DROP_TAGS = new Set(["SCRIPT", "STYLE", "META", "LINK", "TITLE", "BASE", "NOSCRIPT"]);
@@ -30,7 +34,13 @@ const KEEP_ATTRS = new Set([
   "height",
 ]);
 
-/** 允许留下的 CSS 属性：够表达「存量文案的排版」，又不至于把 Word 的私有属性带进来。 */
+/**
+ * 允许留下的 CSS 属性：够表达「存量文案的排版」，又不至于把 Word 的私有属性带进来。
+ *
+ * 这张表是白名单不是黑名单 —— 新增一条前先问「消费方前台被这条 CSS 打穿会怎样」。
+ * `position` / `z-index` / `float` / `transform` / `background-image` 这类能把正文
+ * 从文档流里拔出去、盖住宿主页面 UI 的属性一律不进来，正文是用户可写字段。
+ */
 const KEEP_STYLE_PROPS = new Set([
   "color",
   "background-color",
@@ -48,24 +58,42 @@ const KEEP_STYLE_PROPS = new Set([
 const URL_ATTRS = ["href", "src"];
 const UNSAFE_URL = /^\s*(javascript|vbscript|data:text\/html)/i;
 
-function cleanStyle(value: string): string {
+/**
+ * 按属性白名单过一遍内联 `style`，留下的按 `prop: value` 重新拼。
+ * 内部共用件（`<img style>` 的 schema 属性也走它），刻意不进 barrel。
+ */
+export function filterStyleDeclarations(value: string, allowed: ReadonlySet<string>): string {
   return value
     .split(";")
     .map((decl) => decl.trim())
     .filter(Boolean)
     .filter((decl) => {
       const prop = decl.slice(0, decl.indexOf(":")).trim().toLowerCase();
-      return KEEP_STYLE_PROPS.has(prop);
+      return allowed.has(prop);
     })
     .join("; ");
+}
+
+/** 粘贴净化的可选放宽档。只由组件的 `legacyHtml` 打开，默认口径一个字不变。 */
+export interface SanitizePastedHtmlOptions {
+  /**
+   * 额外放行的 CSS 属性（如存量兼容要的 `font-family` / `max-width`）。
+   * 仍然是白名单：这里加的每一条都要能说清「被打穿会怎样」。
+   */
+  extraStyleProps?: readonly string[];
 }
 
 /**
  * 洗一段粘贴进来的 HTML 片段。纯函数，只依赖 DOMParser（浏览器与 jsdom 都有）。
  * 拿不到 DOMParser 的环境（SSR）直接原样返回 —— 粘贴事件本来就只在浏览器里发生。
  */
-export function sanitizePastedHtml(html: string): string {
+export function sanitizePastedHtml(html: string, options?: SanitizePastedHtmlOptions): string {
   if (typeof DOMParser === "undefined") return html;
+
+  const styleProps = options?.extraStyleProps?.length
+    ? new Set([...KEEP_STYLE_PROPS, ...options.extraStyleProps])
+    : KEEP_STYLE_PROPS;
+  const cleanStyle = (value: string) => filterStyleDeclarations(value, styleProps);
 
   const doc = new DOMParser().parseFromString(`<body>${html}</body>`, "text/html");
   const body = doc.body;
