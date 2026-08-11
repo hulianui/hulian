@@ -40,19 +40,77 @@ pnpm add @hulianui/tokens
 {
   "exports": {
     "./tokens.css": "原语 + 语义，一次引全（推荐）",
-    "./preset.css": "Tailwind @theme 接线",
+    "./preset.css": "Tailwind @theme 接线（= core + opinionated 聚合入口）",
+    "./preset-core.css": "只要颜色映射 / 断点 / hulian-* 关键帧（纯加法）",
+    "./preset-opinionated.css": "dark variant / 阴影 / 缓动这三处全局接管",
     "./primitives.css": "只要原语色板",
     "./semantic.css": "只要语义层"
   }
 }
 ```
 
+## 渐进接入：`preset.css` 拆成了两层
+
+新项目照旧引 `preset.css` 一份，**行为与拆分前逐字节相同**，什么都不用改。
+
+下面这段是给**存量项目**的。`preset.css` 里的内容按风险分成两类，拆成了两个可独立引入的文件：
+
+| 入口 | 内容 | 性质 |
+|---|---|---|
+| `preset-core.css` | 语义 token → `--color-*` 映射、断点、42 个 `hulian-*` 关键帧 | **纯加法**：全是新增 token / 新增关键帧，`hulian-` 前缀不撞名，断点与 Tailwind 默认同值 |
+| `preset-opinionated.css` | `@custom-variant dark`、`--shadow-sm..2xl` 重绑、`--ease-*` 与默认过渡曲线重绑 | **接管**：改变项目里已有的 `dark:` / `shadow-*` / 裸 `transition` 的行为 |
+
+组件库要正常显示，只需要 `preset-core.css`。所以存量项目可以：
+
+```css
+@import "tailwindcss";
+@import "@hulianui/tokens/tokens.css";
+@import "@hulianui/tokens/preset-core.css";   /* 先只要这一份 */
+/* @import "@hulianui/tokens/preset-opinionated.css";  ← 换完组件、准备统一视觉语言时再放开 */
+```
+
+代价是：瑚琏组件的阴影会走 Tailwind 默认那套（不随明暗切值），动效走 Tailwind 内置缓动，
+暗色要靠你自己那套 `dark:` 机制驱动 —— 三样都是「看起来不完全是瑚琏的样子」，不是坏掉。
+
+### `dark:` 那条最容易静默翻车
+
+`preset-opinionated.css` 里的 `@custom-variant dark` 判的是继承来的 `--hl-theme`（[#101](https://github.com/hulianui/hulian/issues/101)，
+为的是主题岛嵌套时 `dark:` 跟着**最近**的岛走）。如果你的项目用 `<html class="dark">` 驱动暗色
+（shadcn 的默认形态，`globals.css` 里写着 `@custom-variant dark (&:is(.dark *))`），
+两份定义里**后声明的那份生效**，于是可能出现「全站 `dark:` 工具类不再匹配任何东西」——
+底色还是暗的（那来自 `.dark { … }` 的 token 块，不走 variant），前景色留在亮色，也就是暗底压黑字。
+构建成功、控制台无警告、DevTools 里规则确实存在，很难查。三条出路，任选其一：
+
+1. **只引 `preset-core.css`**（上面那段），你自己那份 `@custom-variant dark` 原样保留 —— 最省心。
+2. **把 `@custom-variant dark (&:is(.dark *))` 挪到瑚琏 `@import` 之后**。Tailwind v4 里后声明的赢，
+   你的定义盖回瑚琏的，`dark:` 照常工作；代价是瑚琏组件的主题岛嵌套退化成跟随页面。
+3. **加一层 `--hl-theme` 桥**（已实测，见下），保留瑚琏的定义，让 `.dark` 也能驱动它。
+
+```css
+/* 放在所有 @import 之后 */
+.dark {
+  --hl-theme: dark;
+}
+:root:not(.dark) {
+  --hl-theme: light;
+}
+```
+
+自定义属性靠继承传播，`.dark` 挂在 `<html>` 上时全部后代都读得到，
+`@container style(--hl-theme: dark)` 那条分支即命中。Chrome 151 headless 实测：
+`<html class="dark">` 下 `dark:text-red-500` 计算值确为 `red-500`，`dark:bg-black` 确为黑，
+并且嵌在 `[data-theme="light"]` 岛内的元素**不会**被点亮 —— 桥和主题岛语义是相容的。
+
+两个已知边界：① 需要 style container query（Chrome 111 / Safari 18 / Firefox 128），与本库基线一致；
+② `@container` 查的是**父容器**，所以元素**自己**带 `.dark` 又同时写 `dark:` 工具类时不会命中
+（`<html class="dark">` 这种放在根上的常规写法不受影响）。
+
 ## 几条命名约束
 
 - **Tailwind v4 的 `@theme` 真名带 `--color-` 前缀**：`var(--color-primary)` 才解析，裸 `var(--primary)` 在 SVG 的 `fill` / `stroke` 上会静默失效。
 - **命名与 shadcn/ui 对齐**：`--color-muted` 是弱**背景**（等价 `--color-subtle`），`--color-muted-foreground` 才是次要**文字**色。`@hulianui/tokens` 0.7.0（= `@hulianui/ui` 0.28.0）之前这两个名字在瑚琏这边是反的，从 shadcn 迁过来会满屏变色；现在是零改动。原先的 `text-muted` 已无对应 token，**Tailwind 对未定义颜色既不报错也不生成规则**，写了会静默回退成继承色 —— 用 `npx hulian-check` 逐条列出来改，别靠肉眼。
 - **`--color-hairline` 只能用于 `border-*`**：它在浅色主题就是 `transparent`，用作 `text-` / `bg-` / `fill-` 会静默隐形。
-- **浅档走 `-subtle` / `-border`**：提示条底、选中行、Tag 浅底用 `bg-primary-subtle` + `border-primary-border`（`danger` / `success` / `warning` 同构）。别自己拿主色 `mix()` 到白色派生 —— 暗色主题下「浅底」的方向是变深不是变浅，对白 mix 必错。
+- **浅档走 `-subtle` / `-border`**：提示条底、选中行、Tag 浅底用 `bg-primary-subtle` + `border-primary-border`（`danger` / `success` / `warning` / `info` 同构）。别自己拿主色 `mix()` 到白色派生 —— 暗色主题下「浅底」的方向是变深不是变浅，对白 mix 必错。
 
 ## 不用 Tailwind 也能只吃令牌
 

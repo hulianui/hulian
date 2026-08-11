@@ -1,0 +1,71 @@
+/* 瑚琏 Tailwind v4 preset · 主张层 —— 这三样都是「接管」既有行为，不是加法：
+     ① @custom-variant dark  重绑 dark variant（会覆盖消费方自己的定义）
+     ② @theme inline 阴影    重绑 --shadow-sm..2xl（所有 shadow-* 外观随之改变）
+     ③ @theme 缓动           重绑 ease-out / ease-in-out / 默认过渡曲线（所有裸 transition 重新计时）
+   这份不 @import "tailwindcss"，因为它总是跟在 preset-core.css（或消费方自己那份 Tailwind 引入）之后。
+
+   ⚠️ 最需要注意的是 ①：如果你的项目用 `<html class="dark">` 驱动暗色（shadcn 的默认形态，
+   globals.css 里写着 `@custom-variant dark (&:is(.dark *))`），引入本文件会让你自己那份定义被覆盖，
+   **全站 dark: 工具类不再匹配任何东西**，而且构建成功、控制台无警告。
+   两条出路见 packages/tokens/README.md「渐进接入」一节：要么只引 preset-core.css，
+   要么加一层 --hl-theme 桥（已实测可用）。 */
+
+/* dark variant 必须认「岛边界」：主题可以局部覆盖（暗页里嵌亮色岛、亮页里嵌暗色岛），
+   岛内的 dark: 工具类要跟着**岛**走而不是跟着页面走，否则岛内会出现
+   「变量是亮的、dark: 工具类是暗的」的撕裂（hulianui/hulian#101）。
+
+   判据是「离我最近的那个主题祖先」，而选择器表达不了「最近」：
+   `[data-theme="dark"] *` 会漏进亮色岛内部；补一个 `:not([data-theme="light"] *)` 又会反过来
+   杀掉「显式亮页 → 暗岛」这个每天都在跑的组合（ThemeProvider 会把 light 显式写在 <html> 上）。
+   所以改判 `--hl-theme` —— 自定义属性靠继承传播，读到的天然就是最近那个主题块的值，
+   任意嵌套深度都正确。两条规则分工：
+     ① 元素自己就是岛根（data-theme 写在它身上）——@container 查的是父容器，覆盖不到自己；
+     ② 其余元素看最近祖先的 --hl-theme。
+   基线：style container query（Chrome 111 / Safari 18 / Firefox 128）。本库已依赖 :has() 与
+   @container，属同代能力。 */
+@custom-variant dark {
+  &:where([data-theme="dark"]) {
+    @slot;
+  }
+  @container style(--hl-theme: dark) {
+    @slot;
+  }
+}
+
+@theme inline {
+  /* 阴影：映射到 semantic.css 的运行时 --hl-shadow-*（明暗在 [data-theme] 切值）。
+     inline 让 shadow-sm/md/lg/xl/2xl 工具类直接吐 var(--hl-shadow-*) →
+     现存所有 shadow-* 零改动随主题自动切。覆盖 Tailwind 默认同名 token。 */
+  --shadow-sm: var(--hl-shadow-sm);
+  --shadow-md: var(--hl-shadow-md);
+  --shadow-lg: var(--hl-shadow-lg);
+  --shadow-xl: var(--hl-shadow-xl);
+  --shadow-2xl: var(--hl-shadow-2xl);
+  /* 冻结列水平分隔影 → shadow-pin-left / shadow-pin-right 工具类 */
+  --shadow-pin-left: var(--hl-shadow-pin-left);
+  --shadow-pin-right: var(--hl-shadow-pin-right);
+}
+
+/* 缓动曲线 SSOT —— 覆盖 Tailwind 内置的弱曲线，让 ease-out / ease-in-out 工具类与
+   @hulianui/ui 的 motion/tokens.ts（JS 侧 motionEase / CSS 镜像 motionEaseCss）**同一条曲线**。
+   不统一的后果：同一个库里 motion 驱动的动效走 expo 曲线、Tailwind 工具类驱动的走内置弱曲线，
+   两套手感并存 —— 用户感知不到原因，只觉得"有的地方脆、有的地方糊"。
+   改这里必须同步改 packages/ui/src/motion/tokens.ts，反之亦然。
+
+   刻意不覆盖 --ease-in：UI 动效不该用 ease-in（开头慢，正好卡在用户注视最紧的一刻），
+   保留内置弱曲线反而降低误用时的伤害。 */
+@theme {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* ease-out-expo 风格：进出场、hover 的默认档 */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* 屏内位移/形变 */
+  /* iOS 抽屉曲线（源自 Ionic）：大面积滑入滑出。
+     Drawer/ActionSheet 自身走的是 motionEaseCss.drawer 内联字符串（Base UI overlay 必须内联 transition），
+     这里这份是给工具类用的 —— 故除非有人写 `ease-drawer` 类，v4 的 @theme tree-shaking 不会输出它。
+     查 :root 里找不到 --ease-drawer 是正常的，不是没生效。 */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* 覆盖面最大的一条：不带 ease-* 类的过渡（`transition`、`transition-colors`……）用的是这个默认值。
+     库内 90+ 个组件写的是裸 transition-colors —— 不改这里，它们全部走 Tailwind 自带的
+     cubic-bezier(0.4, 0, 0.2, 1)（ease-in-out 味，开头慢），与瑚琏曲线并存两套手感。
+     --default-transition-duration 保持 Tailwind 的 150ms，已与 motionDuration.fast 一致。 */
+  --default-transition-timing-function: var(--ease-out);
+}

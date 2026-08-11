@@ -82,6 +82,16 @@
   --color-warning-hover: var(--warning-600);
   --color-warning-subtle: var(--warning-50);
   --color-warning-border: var(--warning-200);
+  /* 信息（#173）：提示 / 说明 / 中性通知。它与 --color-primary **不是**一回事：
+     primary 表达「这里可以点、这是主操作」，info 表达「这段是说明，读一下就好」。
+     二者同为蓝族但差 30° 色相（见 primitives.css），并排时能分辨；共用 primary 的话，
+     提示条与主按钮、选中态、当前菜单项同色，页面上最稀缺的注意力资源被说明文案占掉。
+     档位选择与 brand/danger 同构（亮 700 / 暗 400 / hover 500），因为三者的亮度梯子相同。 */
+  --color-info: var(--info-700);
+  --color-info-foreground: var(--white);
+  --color-info-hover: var(--info-500);
+  --color-info-subtle: var(--info-50);
+  --color-info-border: var(--info-200);
   /* 图表分类色板（数据序列用，SVG 经 var() 直接消费 → 明暗自适应） */
   --color-chart-1: oklch(0.62 0.19 255);
   --color-chart-2: oklch(0.7 0.16 155);
@@ -178,6 +188,13 @@
   --color-warning-hover: var(--warning-600);
   --color-warning-subtle: color-mix(in oklab, var(--warning-500) 16%, var(--color-surface));
   --color-warning-border: color-mix(in oklab, var(--warning-500) 34%, var(--color-surface));
+  /* 信息 · 暗色：取 400 档做强调，与 primary/danger 同构（它们的亮度梯子相同）。
+     hover 仍是 500 —— 「亮暗两端之间的那一档」，在暗色下即朝更沉的方向走一步。 */
+  --color-info: var(--info-400);
+  --color-info-foreground: var(--gray-950);
+  --color-info-hover: var(--info-500);
+  --color-info-subtle: color-mix(in oklab, var(--info-400) 16%, var(--color-surface));
+  --color-info-border: color-mix(in oklab, var(--info-400) 34%, var(--color-surface));
   /* 暗态图表色提亮以保对比 */
   --color-chart-1: oklch(0.7 0.17 255);
   --color-chart-2: oklch(0.76 0.16 155);

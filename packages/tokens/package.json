@@ -32,6 +32,8 @@
   "exports": {
     "./tokens.css": "./src/tokens.css",
     "./preset.css": "./src/preset.css",
+    "./preset-core.css": "./src/preset-core.css",
+    "./preset-opinionated.css": "./src/preset-opinionated.css",
     "./primitives.css": "./src/primitives.css",
     "./semantic.css": "./src/semantic.css"
   },
