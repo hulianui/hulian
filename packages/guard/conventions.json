@@ -1190,6 +1190,13 @@
       "source": "packages/ui/src/button/button.md"
     },
     {
+      "id": "component/button/pitfall/7",
+      "scope": "button",
+      "title": "Button",
+      "rule": "次级控件要表达「开/关」用 `variant=\"soft\"`（浅语义底 + 语义文字），别在 `className` 里写 `bg-primary/10 text-primary` 顶色，也别退回 `solid` —— 一排 h-7 的工具栏控件里冒出一个实心主色块，视觉权重会盖过页面主操作。`soft` 与 `tone` 全族组合，典型写法是 `variant={isActive ? \"soft\" : \"outline\"}`。注意它不渲染 `aria-pressed`：真正的开关请用 [Toggle](../toggle/toggle.md)，`soft` 只适合「本身不 toggle、只是显示当前已生效」的触发器（如打开菜单的排序芯片）。",
+      "source": "packages/ui/src/button/button.md"
+    },
+    {
       "id": "component/button-group/pitfall/1",
       "scope": "button-group",
       "title": "ButtonGroup",
@@ -1285,6 +1292,13 @@
       "scope": "card",
       "title": "Card",
       "rule": "列表/侧栏里 Card 末行(时间戳/meta 行)若设了外层 `min-height` 又用 flex 撑高，meta 行可能漏到卡片背景外——参见 grid-card-button-tail-row-leaks-outside-when-outer-min-height。",
+      "source": "packages/ui/src/card/card.md"
+    },
+    {
+      "id": "component/card/pitfall/3",
+      "scope": "card",
+      "title": "Card",
+      "rule": "`divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `\"use client\"`，能直接放进 server component 里用。",
       "source": "packages/ui/src/card/card.md"
     },
     {
@@ -1530,6 +1544,20 @@
       "scope": "checkbox",
       "title": "Checkbox",
       "rule": "`indeterminate` 是独立第三态，点击后通常应手动消解为确定态（`setIndeterminate(false)`）。",
+      "source": "packages/ui/src/checkbox/checkbox.md"
+    },
+    {
+      "id": "component/checkbox/pitfall/3",
+      "scope": "checkbox",
+      "title": "Checkbox",
+      "rule": "自己写 `<label>` 把 Checkbox 包起来是**成立的**，不用手写 `onClick` 转发：Root 渲染出来是 `<span role=\"checkbox\">`（不是可被 label 关联的元素），看 DOM 容易以为隐式关联不生效，但 Base UI 在里面留了一个视觉隐藏的原生 input 承载激活，点文字照样切换。排版特殊到 `size` + `labelClassName` 也收不住时，就这么用。",
+      "source": "packages/ui/src/checkbox/checkbox.md"
+    },
+    {
+      "id": "component/checkbox/pitfall/4",
+      "scope": "checkbox",
+      "title": "Checkbox",
+      "rule": "但别在包裹的同时再给 `<label htmlFor>` 指向 Root 的 `id`：显式 `htmlFor` 会**压过**上面那条隐式关联，两者并存的结果是点文字彻底没反应。要么只包裹，要么只 `htmlFor`。",
       "source": "packages/ui/src/checkbox/checkbox.md"
     },
     {
@@ -4074,6 +4102,13 @@
       "source": "packages/ui/src/hover-card/hover-card.md"
     },
     {
+      "id": "component/hover-card/pitfall/3",
+      "scope": "hover-card",
+      "title": "HoverCard",
+      "rule": "`HoverCardContent` 继承 div 原生属性，可直接挂 `data-testid` / `role` / `aria-*` / `onClick`。卡片虽被 portal 出去，合成事件仍沿 **React 树**冒泡回触发器所在的父元素，所以卡片挂在整块可点的行/卡里时要自己 `onClick={(e) => e.stopPropagation()}`，否则点卡片内容会顺手触发整行的 `onClick`。透传的 `onMouseEnter` / `onMouseLeave` 与内部计时器是**合并**而不是覆盖，不会因此把卡片弄关。",
+      "source": "packages/ui/src/hover-card/hover-card.md"
+    },
+    {
       "id": "component/hyperspeed/pitfall/1",
       "scope": "hyperspeed",
       "title": "Hyperspeed",
@@ -5537,6 +5572,13 @@
       "source": "packages/ui/src/menu/menu.md"
     },
     {
+      "id": "component/menu/pitfall/5",
+      "scope": "menu",
+      "title": "Menu",
+      "rule": "菜单默认带 `max-h-[min(24rem,var(--available-height))] overflow-y-auto`：放得下时不产生任何视觉差异，项数一多就改为内部滚动。这是库内兜底而不是「每个消费方自己记得加」——浮层是 fixed 的，溢出视口那截既点不到、页面也滚不出来，而且只有等数据长起来才暴露（开发时 3 项、上线后 40 项）。要更矮/更高就在 `className` 上覆盖 `max-h-*`。`ContextMenu` 同款。",
+      "source": "packages/ui/src/menu/menu.md"
+    },
+    {
       "id": "component/menubar/pitfall/1",
       "scope": "menubar",
       "title": "Menubar",
@@ -6464,46 +6506,53 @@
       "id": "component/pro-table/pitfall/4",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "`request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。",
+      "rule": "**行选择的判据是「你有没有接管」，不是「是不是托管模式」**：传了 `rowSelection` 就走受控（须同时给 `onRowSelectionChange`，否则勾不动且只有 dev 告警提示），不传才由组件内部自持。0.29.0 及之前托管模式一律自持、把这两个 prop 静默丢弃——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 `{}`，直到提交时拿到空数组才暴露（#202）。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/5",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "`batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。",
+      "rule": "`request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/6",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "**`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。",
+      "rule": "`batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/7",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "**`defaultSorting` 是非受控默认值**：只在首次挂载读一次，之后由用户点表头接管，后续改这个 prop 不会回灌（同 `defaultValue` 家族）。想在运行中强制改排序请用 `key` 重挂或改用受控 `sorting`。展示模式下它不生效（展示模式的默认排序直接传 `sorting`）。首点方向由 TanStack 按列类型决定（数值列默认 desc 优先），要精确控制请写 `defaultSorting` 而非依赖点击。",
+      "rule": "**`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/8",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "**`params` 是浅比较（只比第一层）**：`params={{ scopeId }}` 这种内联对象字面量安全，不用 `useMemo`；但 `params={{ filter: { a: 1 } }}` 这种嵌套对象每次 render 都是新引用 → 每次都重查，嵌套值请自己保持引用稳定或拍平成一层。",
+      "rule": "**`defaultSorting` 是非受控默认值**：只在首次挂载读一次，之后由用户点表头接管，后续改这个 prop 不会回灌（同 `defaultValue` 家族）。想在运行中强制改排序请用 `key` 重挂或改用受控 `sorting`。展示模式下它不生效（展示模式的默认排序直接传 `sorting`）。首点方向由 TanStack 按列类型决定（数值列默认 desc 优先），要精确控制请写 `defaultSorting` 而非依赖点击。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/9",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "`params` **不会并入 `filters`**：`filters` 只装查询区提交的值，`params` 单独一个字段。这样固定条件不会被同名 filter 覆盖、也不受查询区「重置」影响；request 里自己合并 `{ ...p.filters, ...p.params }`。",
+      "rule": "**`params` 是浅比较（只比第一层）**：`params={{ scopeId }}` 这种内联对象字面量安全，不用 `useMemo`；但 `params={{ filter: { a: 1 } }}` 这种嵌套对象每次 render 都是新引用 → 每次都重查，嵌套值请自己保持引用稳定或拍平成一层。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/10",
+      "scope": "pro-table",
+      "title": "ProTable",
+      "rule": "`params` **不会并入 `filters`**：`filters` 只装查询区提交的值，`params` 单独一个字段。这样固定条件不会被同名 filter 覆盖、也不受查询区「重置」影响；request 里自己合并 `{ ...p.filters, ...p.params }`。",
+      "source": "packages/ui/src/pro-table/pro-table.md"
+    },
+    {
+      "id": "component/pro-table/pitfall/11",
       "scope": "pro-table",
       "title": "ProTable",
       "rule": "`params` 内容变化会强制回到第 1 页（cursor 模式同时重置游标栈）——旧页码/旧游标在新固定条件下已无意义。",
@@ -6790,6 +6839,20 @@
       "source": "packages/ui/src/radio/radio.md"
     },
     {
+      "id": "component/radio/pitfall/5",
+      "scope": "radio",
+      "title": "Radio",
+      "rule": "自己写 `<label>` 把 Radio 包起来是**成立的**，不用手写 `onClick` 转发：Root 渲染出来是 `<span role=\"radio\">`（不是可被 label 关联的元素），看 DOM 容易以为隐式关联不生效，但 Base UI 在里面留了一个视觉隐藏的原生 input 承载激活。排版特殊到 `size` + `labelClassName` 也收不住时就这么用。",
+      "source": "packages/ui/src/radio/radio.md"
+    },
+    {
+      "id": "component/radio/pitfall/6",
+      "scope": "radio",
+      "title": "Radio",
+      "rule": "但别在包裹的同时再给 `<label htmlFor>` 指向 Root 的 `id`：显式 `htmlFor` 会**压过**隐式关联，两者并存的结果是点文字彻底没反应。",
+      "source": "packages/ui/src/radio/radio.md"
+    },
+    {
       "id": "component/rainbow-button/pitfall/1",
       "scope": "rainbow-button",
       "title": "RainbowButton",
@@ -6940,11 +7003,18 @@
       "id": "component/relative-time/pitfall/2",
       "scope": "relative-time",
       "title": "RelativeTime",
-      "rule": "组件已用 `<time>` + `suppressHydrationWarning` 处理 SSR 水合差异，按需在 server 渲染无需额外包装。",
+      "rule": "不传 `base` 时**首帧渲染的是绝对时间**（`YYYY-MM-DD HH:mm`），挂载后才换成相对串。这是刻意的：渲染期读系统时钟会把「构建时刻」烤进 SSR / 静态导出产物，页面几个月后被访问仍写着「1 分钟前」，而绝对时间只依赖 `value`，任何时刻都成立。另一个候选是首帧以 `value` 自身为基准渲成「刚刚」，没选它——那是一句会被爬虫和关掉 JS 的读者当真的假话。切换发生在浏览器绘制前（layout effect），肉眼看不到跳变；要首帧就是相对串，传 `base` 自己钉基准。",
       "source": "packages/ui/src/relative-time/relative-time.md"
     },
     {
       "id": "component/relative-time/pitfall/3",
+      "scope": "relative-time",
+      "title": "RelativeTime",
+      "rule": "`<time>` 上的 `suppressHydrationWarning` 现在只兜**消费方传入的 `value` 两端不同**（如 `value={new Date()}`，此时 `dateTime` 属性本身就是两个值），组件自身不再制造差异。别把它当作「value 可以随便传」的许可。",
+      "source": "packages/ui/src/relative-time/relative-time.md"
+    },
+    {
+      "id": "component/relative-time/pitfall/4",
       "scope": "relative-time",
       "title": "RelativeTime",
       "rule": "大量同页实例默认每个都开 60s tick，超长列表可设 `updateInterval={0}` 或统一传 `base` 降低重渲染。",
@@ -7865,6 +7935,13 @@
       "scope": "slider",
       "title": "Slider",
       "rule": "`className` 落在 Root wrapper；宽度需自己给（如 `w-64`），否则可能塌成内容宽。",
+      "source": "packages/ui/src/slider/slider.md"
+    },
+    {
+      "id": "component/slider/pitfall/4",
+      "scope": "slider",
+      "title": "Slider",
+      "rule": "**`aria-label` 的落点会变**：单值滑块上它被移到手柄（那个视觉隐藏的 `<input type=\"range\">`）而不是留在 Root——Root 是 `role=\"group\"`，名字挂那儿时读屏在焦点落到滑块上只会念「滑块，100」。组里只有一个控件，所以是转移不是复制（两处同名会被念两遍，`getByLabelText` 之类按名字找控件也会撞到两个）。range 才保留组名，此时用 `thumbAriaLabel` 传二元组分别命名两个手柄，否则读屏听起来是两个一模一样的滑块。",
       "source": "packages/ui/src/slider/slider.md"
     },
     {
@@ -9538,7 +9615,7 @@
   ],
   "stats": {
     "componentDocs": 388,
-    "componentAdvisories": 1327,
-    "totalAdvisories": 1337
+    "componentAdvisories": 1338,
+    "totalAdvisories": 1348
   }
 }

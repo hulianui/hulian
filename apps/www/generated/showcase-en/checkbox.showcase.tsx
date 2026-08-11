@@ -81,6 +81,17 @@ export const checkboxShowcase: ShowcaseSpec = {
         { name: "checked", render: () => <Checkbox defaultChecked aria-label="checked"/> },
         { name: "indeterminate", render: () => <Checkbox indeterminate aria-label="indeterminate"/> },
         { name: "with-label", render: () => <Checkbox defaultChecked label="Remember me"/> },
+        {
+            name: "size=sm (dense interfaces)",
+            render: () => (<div className="flex items-center gap-4">
+          <Checkbox defaultChecked size="sm" label="Valid for a long time"/>
+          <Checkbox defaultChecked size="sm" label="Required" labelClassName="text-muted-foreground"/>
+        </div>),
+        },
+        { name: "size comparison (sm / md)", render: () => (<div className="flex items-center gap-4">
+        <Checkbox defaultChecked size="sm" label="sm"/>
+        <Checkbox defaultChecked label="md"/>
+      </div>) },
         { name: "disabled", render: () => <Checkbox disabled label="Disabled"/> },
         { name: "disabled-checked", render: () => <Checkbox disabled defaultChecked label="Disable selected"/> },
         {

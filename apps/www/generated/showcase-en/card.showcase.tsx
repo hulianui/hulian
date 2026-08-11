@@ -67,6 +67,24 @@ export const cardShowcase: ShowcaseSpec = {
 </Card>`,
             render: () => <Demo variant="outline" withFooter={false}/>,
         },
+        {
+            title: "Remove the section rules",
+            description: "divided={false} makes the header and the body read as one block, and tightens the padding the rule used to hold open.",
+            code: `<Card divided={false} className="w-64">
+  <CardHeader>Pending approvals</CardHeader>
+  <CardBody>Three items are waiting for review.</CardBody>
+</Card>`,
+            render: () => (<div className="flex gap-4">
+          <Card className="w-56">
+            <CardHeader>With a rule</CardHeader>
+            <CardBody>The default: a rule cuts the header away from the body.</CardBody>
+          </Card>
+          <Card divided={false} className="w-56">
+            <CardHeader>Without a rule</CardHeader>
+            <CardBody>The header and the body are one block.</CardBody>
+          </Card>
+        </div>),
+        },
     ],
     controls: [
         {
@@ -88,6 +106,14 @@ export const cardShowcase: ShowcaseSpec = {
         </div>),
         },
         { name: "None footer", render: () => <Demo variant="outline" withFooter={false}/> },
+        {
+            name: "divided={false} (sections without rules)",
+            render: () => (<Card divided={false} className="w-64">
+          <CardHeader>Pending approvals</CardHeader>
+          <CardBody>The header and the content read as a single block.</CardBody>
+          <CardFooter>3 items</CardFooter>
+        </Card>),
+        },
     ],
     renderWithProps: (p) => (<Demo variant={p.variant as CardVariant} withFooter={p.withFooter as boolean}/>),
     toCode: (p) => `<Card variant="${p.variant}">

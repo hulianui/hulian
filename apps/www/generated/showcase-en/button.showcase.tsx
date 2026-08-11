@@ -6,13 +6,15 @@ export const buttonShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The default solid button, and there are 4 variants: stroke, ghost, and text link.",
+            description: "The default is a solid button; soft, outline, ghost, and link make five variants in all.",
             code: `<Button>Default</Button>
+<Button variant="soft">Soft</Button>
 <Button variant="outline">Stroke</Button>
 <Button variant="ghost">Ghost</Button>
 <Button variant="link">Text link</Button>`,
             render: () => (<>
           <Button>Default</Button>
+          <Button variant="soft">Soft</Button>
           <Button variant="outline">Stroke</Button>
           <Button variant="ghost">Ghost</Button>
           <Button variant="link">Text link</Button>
@@ -138,7 +140,12 @@ export const buttonShowcase: ShowcaseSpec = {
         },
     ],
     controls: [
-        { prop: "variant", type: "select", options: ["solid", "outline", "ghost", "link"], defaultValue: "solid" },
+        {
+            prop: "variant",
+            type: "select",
+            options: ["solid", "soft", "outline", "ghost", "link"],
+            defaultValue: "solid",
+        },
         {
             prop: "tone",
             type: "select",

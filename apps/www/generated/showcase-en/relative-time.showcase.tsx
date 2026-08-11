@@ -1,9 +1,21 @@
 "use client";
+import { useEffect, useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { RelativeTime } from "../../../../packages/ui/src/relative-time/relative-time";
 const BASE = new Date("2026-06-05T12:00:00");
 const ago = (sec: number) => new Date(BASE.getTime() - sec * 1000);
 const after = (sec: number) => new Date(BASE.getTime() + sec * 1000);
+function LiveExample() {
+    const [publishedAt, setPublishedAt] = useState<Date | null>(null);
+    useEffect(() => {
+        setPublishedAt(new Date(Date.now() - 90 * 1000));
+    }, []);
+    return (<p className="text-sm text-muted-foreground">
+      Posted in{" "}
+      {publishedAt == null ? (<span className="tabular-nums text-foreground">—</span>) : (<RelativeTime value={publishedAt} className="text-foreground"/>)}
+      , hover to see the absolute time
+    </p>);
+}
 function Row({ label, children }: {
     label: string;
     children: React.ReactNode;
@@ -90,9 +102,7 @@ export const relativeTimeShowcase: ShowcaseSpec = {
         },
         {
             name: "Real-time refresh (without base \u00B7 Automatic update every minute)",
-            render: () => (<p className="text-sm text-muted-foreground">
-          Posted in <RelativeTime value={new Date(Date.now() - 90 * 1000)} className="text-foreground"/>, hover to see the absolute time
-        </p>),
+            render: () => <LiveExample />,
         },
     ],
     renderWithProps: (p) => <RelativeTime value={ago(20 * 60)} base={BASE} locale={(p.locale === "auto" ? undefined : p.locale) as "zh" | "en" | undefined}/>,

@@ -3269,6 +3269,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 - `tone` 只换语义色，不换形态。想要「浅色底的成功按钮」用 `tone="success" variant="outline"`，别去 `className` 里覆盖背景色。
 - `tone="neutral"` 的 `solid` 是**反色**（亮色下深底白字、暗色下浅底深字），不是灰底。灰底实心与 `variant="outline"` 几乎不可分辨，等于白开一档。
 - 自定义往按钮里塞图标+文字（尤其在特效按钮里）若图标掉到下一行，是 Tailwind Preflight 把 `svg{display:block}` 撑成块级所致，见 [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]——容器要 `inline-flex`，本 Button 已处理，自搓 wrapper 时注意。
+- 次级控件要表达「开/关」用 `variant="soft"`（浅语义底 + 语义文字），别在 `className` 里写 `bg-primary/10 text-primary` 顶色，也别退回 `solid` —— 一排 h-7 的工具栏控件里冒出一个实心主色块，视觉权重会盖过页面主操作。`soft` 与 `tone` 全族组合，典型写法是 `variant={isActive ? "soft" : "outline"}`。注意它不渲染 `aria-pressed`：真正的开关请用 [Toggle](https://hulianui.haloritual.com/zh/components/toggle)，`soft` 只适合「本身不 toggle、只是显示当前已生效」的触发器（如打开菜单的排序芯片）。
 
 ## 相关
 [ShimmerButton](https://hulianui.haloritual.com/zh/components/shimmer-button) · [RainbowButton](https://hulianui.haloritual.com/zh/components/rainbow-button) · [PulsatingButton](https://hulianui.haloritual.com/zh/components/pulsating-button) · [RippleButton](https://hulianui.haloritual.com/zh/components/ripple-button) · [ButtonGroup](https://hulianui.haloritual.com/zh/components/button-group) · [SocialButton](https://hulianui.haloritual.com/zh/components/social-button)
@@ -3598,7 +3599,9 @@ import { Checkbox } from "@hulianui/ui"
 | name | `string` | — | 表单字段名 |
 | value | `string` | — | 表单值；放进 CheckboxGroup 时按此 value 匹配成员 |
 | id | `string` | — | 关联 label 的 id |
-| className | `string` | — | 落在 Checkbox.Root |
+| size | `"sm" \| "md"` | `"md"` | 尺寸档，方盒与内置勾号一起缩放。`md` = 20px/14px/`text-sm`，`sm` = 16px/12px/`text-xs`（对齐 Input、SelectTrigger 的 `size="sm"`） |
+| className | `string` | — | 落在 Checkbox.Root（方盒），够不到文字 |
+| labelClassName | `string` | — | 落在文字 `<span>`，用来改字号 / 颜色 |
 | tabIndex | `number` | — | 透传到 Checkbox.Root（树场景置 -1 退出 Tab 序，焦点由容器 roving 接管） |
 | aria-label | `string` | — | 无 label 时的无障碍标签 |
 
@@ -3632,6 +3635,8 @@ import { Checkbox } from "@hulianui/ui"
 
 - 放进 [CheckboxGroup](https://hulianui.haloritual.com/zh/components/checkbox-group) 时必须给每个 Checkbox 传 `value`（不是 `name`）——见 [[base-ui-checkbox-group-matches-members-by-value-not-name]]：Base UI rc.0 按 `value` 匹配组成员，传 `name` 会让 defaultValue/value/onValueChange 全部静默失效（框照常渲染但勾选/回调全空）。
 - `indeterminate` 是独立第三态，点击后通常应手动消解为确定态（`setIndeterminate(false)`）。
+- 自己写 `<label>` 把 Checkbox 包起来是**成立的**，不用手写 `onClick` 转发：Root 渲染出来是 `<span role="checkbox">`（不是可被 label 关联的元素），看 DOM 容易以为隐式关联不生效，但 Base UI 在里面留了一个视觉隐藏的原生 input 承载激活，点文字照样切换。排版特殊到 `size` + `labelClassName` 也收不住时，就这么用。
+- 但别在包裹的同时再给 `<label htmlFor>` 指向 Root 的 `id`：显式 `htmlFor` 会**压过**上面那条隐式关联，两者并存的结果是点文字彻底没反应。要么只包裹，要么只 `htmlFor`。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/zh/components/input) · [Textarea](https://hulianui.haloritual.com/zh/components/textarea) · [Select](https://hulianui.haloritual.com/zh/components/select) · [CheckboxGroup](https://hulianui.haloritual.com/zh/components/checkbox-group) · [Radio](https://hulianui.haloritual.com/zh/components/radio) · [Switch](https://hulianui.haloritual.com/zh/components/switch)
@@ -6543,7 +6548,9 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 | value * | `string` | — | 必填，标识该选项 |
 | disabled | `boolean` | `false` | 单项禁用 |
 | id | `string` | — | — |
-| className | `string` | — | 落在 Radio.Root |
+| size | `"sm" \| "md"` | `"md"` | 尺寸档，圈与内点一起缩放。`md` = 20px/10px/`text-sm`，`sm` = 16px/8px/`text-xs` |
+| className | `string` | — | 落在 Radio.Root（圈），够不到文字 |
+| labelClassName | `string` | — | 落在文字 `<span>`，用来改字号 / 颜色 |
 | aria-label | `string` | — | 无障碍名。**不给 `label`、或 `label` 是图标/纯视觉内容时必须给** |
 | aria-labelledby | `string` | — | 用页面上已有元素充当名字（填其 id），与 `aria-label` 二选一 |
 | aria-describedby | `string` | — | 补充描述（填元素 id），如该选项的说明文字 |
@@ -6595,6 +6602,8 @@ const [value, setValue] = useState("standard");
 - 用 `value`/`onValueChange` 即受控，须自管 state；只给初值用 `defaultValue`，二者不要混用。
 - 无可见标题的单选组要给 `aria-label`，否则无障碍读屏无名。
 - **不给 `label` 的 `Radio`（图标卡片、自定义排版）必须自带 `aria-label` 或 `aria-labelledby`**，否则读屏只报「单选按钮」，用户不知道自己在选哪一项——这不只是测试不好写，是真实的可访问性缺陷。`label` 传的是图标之类的非文本 `ReactNode` 时同理。
+- 自己写 `<label>` 把 Radio 包起来是**成立的**，不用手写 `onClick` 转发：Root 渲染出来是 `<span role="radio">`（不是可被 label 关联的元素），看 DOM 容易以为隐式关联不生效，但 Base UI 在里面留了一个视觉隐藏的原生 input 承载激活。排版特殊到 `size` + `labelClassName` 也收不住时就这么用。
+- 但别在包裹的同时再给 `<label htmlFor>` 指向 Root 的 `id`：显式 `htmlFor` 会**压过**隐式关联，两者并存的结果是点文字彻底没反应。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/zh/components/input) · [Textarea](https://hulianui.haloritual.com/zh/components/textarea) · [Select](https://hulianui.haloritual.com/zh/components/select) · [Checkbox](https://hulianui.haloritual.com/zh/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/zh/components/checkbox-group) · [Switch](https://hulianui.haloritual.com/zh/components/switch)
@@ -7685,6 +7694,7 @@ import { Slider } from "@hulianui/ui"
 | step | `number` | `1` | 步进量 |
 | disabled | `boolean` | `false` | 禁用 |
 | showValue | `boolean` | `false` | 在轨道上方显示当前数值读出（Slider.Value） |
+| thumbAriaLabel | `string \| [string, string]` | — | 手柄的无障碍名。省略时自动取 Root 的 `aria-label`；range 传二元组分别命名两个手柄 |
 | className | `string` | — | Root wrapper className |
 
 > 其余 Base UI `Slider.Root` 的 prop（`name`、`orientation` 等）原样透传。
@@ -7713,6 +7723,7 @@ import { Slider } from "@hulianui/ui"
 - 单值传 `number`、范围传 `number[]`——传数组即自动 range，别再找单独的 range prop。
 - 想看到数值读出需显式 `showValue`（默认不显示）。
 - `className` 落在 Root wrapper；宽度需自己给（如 `w-64`），否则可能塌成内容宽。
+- **`aria-label` 的落点会变**：单值滑块上它被移到手柄（那个视觉隐藏的 `<input type="range">`）而不是留在 Root——Root 是 `role="group"`，名字挂那儿时读屏在焦点落到滑块上只会念「滑块，100」。组里只有一个控件，所以是转移不是复制（两处同名会被念两遍，`getByLabelText` 之类按名字找控件也会撞到两个）。range 才保留组名，此时用 `thumbAriaLabel` 传二元组分别命名两个手柄，否则读屏听起来是两个一模一样的滑块。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/zh/components/input) · [Textarea](https://hulianui.haloritual.com/zh/components/textarea) · [Select](https://hulianui.haloritual.com/zh/components/select) · [Checkbox](https://hulianui.haloritual.com/zh/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/zh/components/checkbox-group) · [Radio](https://hulianui.haloritual.com/zh/components/radio)
@@ -9199,6 +9210,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
+| divided | `boolean` | `true` | 是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档 |
 
 `CardHeader` / `CardBody` / `CardFooter` 均为插槽容器，接收原生 div 属性 + `children`。
 
@@ -9217,6 +9229,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 - 别用 Card 包 loading 骨架屏——参见 [[loading-skeletons-are-chromeless-dont-wrap-in-card]]：骨架按惯例是无边框无阴影的纯 shimmer 块，套 Card 会显得过重。
 - 列表/侧栏里 Card 末行(时间戳/meta 行)若设了外层 `min-height` 又用 flex 撑高，meta 行可能漏到卡片背景外——参见 [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]]。
+- `divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `"use client"`，能直接放进 server component 里用。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)
@@ -13029,6 +13042,7 @@ import { ProTable } from "@hulianui/ui"
 
 - 托管模式（传 `request`）下 `data`/`pagination`/`loading` 三个 prop 被忽略——别两种模式混用。cursor 分页无 total/不能随机跳页，且 filters/sort/pageSize 任一变化会自动重置回第 1 页。
 - 托管模式必须给 `getRowId`，否则行选择/批量在翻页后 key 不稳。
+- **行选择的判据是「你有没有接管」，不是「是不是托管模式」**：传了 `rowSelection` 就走受控（须同时给 `onRowSelectionChange`，否则勾不动且只有 dev 告警提示），不传才由组件内部自持。0.29.0 及之前托管模式一律自持、把这两个 prop 静默丢弃——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 `{}`，直到提交时拿到空数组才暴露（#202）。
 - `request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。
 - `batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。
 - **`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。
@@ -13338,7 +13352,7 @@ import { ReflectiveCard } from "@hulianui/ui"
 
 **导出**：`RelativeTime` · `formatRelative` · `formatAbsolute`
 
-> 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> 语义 + title 绝对时间 + SSR 安全(suppressHydrationWarning) · data-display/info
+> 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> 语义 + title 绝对时间 + SSR 安全(首帧不读系统时钟) · data-display/info
 
 ## 何时用
 
@@ -13373,7 +13387,8 @@ import { RelativeTime, formatRelative, formatAbsolute } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 不传 `base` = 走实时 tick（client 刷新）；要 SSR 确定性 / 测试可复现 / 列表统一基准就传固定 `base`，否则各行各自取 `new Date()` 抖动。
-- 组件已用 `<time>` + `suppressHydrationWarning` 处理 SSR 水合差异，按需在 server 渲染无需额外包装。
+- 不传 `base` 时**首帧渲染的是绝对时间**（`YYYY-MM-DD HH:mm`），挂载后才换成相对串。这是刻意的：渲染期读系统时钟会把「构建时刻」烤进 SSR / 静态导出产物，页面几个月后被访问仍写着「1 分钟前」，而绝对时间只依赖 `value`，任何时刻都成立。另一个候选是首帧以 `value` 自身为基准渲成「刚刚」，没选它——那是一句会被爬虫和关掉 JS 的读者当真的假话。切换发生在浏览器绘制前（layout effect），肉眼看不到跳变；要首帧就是相对串，传 `base` 自己钉基准。
+- `<time>` 上的 `suppressHydrationWarning` 现在只兜**消费方传入的 `value` 两端不同**（如 `value={new Date()}`，此时 `dateTime` 属性本身就是两个值），组件自身不再制造差异。别把它当作「value 可以随便传」的许可。
 - 大量同页实例默认每个都开 60s tick，超长列表可设 `updateInterval={0}` 或统一传 `base` 降低重渲染。
 
 ## 相关
@@ -16403,6 +16418,7 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 - `MenuRadioItem` 必须放在 `MenuRadioGroup` 内 —— 互斥关系与选中值由组维护，单独放在 `MenuContent` 里不会有选中态。
 - 勾选标记占的是与 `MenuItem` 首个 `size-4` 图标同宽的第一列，所以同一个菜单里混用普通项与勾选项时文字左缘是齐的；给普通项配图标时同样用 `size-4`，别改成别的尺寸。
 - [[base-ui-menu-group-label-requires-menu-group-wrapper]]：`MenuGroupLabel` 直接放进 `MenuContent`（不裹 `MenuGroup`）会在「点开菜单」那一刻抛 `MenuGroupRootContext is missing`，触发器渲染正常但点击崩页 —— 分组标签必须包在 `MenuGroup` 里。
+- 菜单默认带 `max-h-[min(24rem,var(--available-height))] overflow-y-auto`：放得下时不产生任何视觉差异，项数一多就改为内部滚动。这是库内兜底而不是「每个消费方自己记得加」——浮层是 fixed 的，溢出视口那截既点不到、页面也滚不出来，而且只有等数据长起来才暴露（开发时 3 项、上线后 40 项）。要更矮/更高就在 `className` 上覆盖 `max-h-*`。`ContextMenu` 同款。
 
 ## 相关
 [Navbar](https://hulianui.haloritual.com/zh/components/navbar) · [BeianFooter](https://hulianui.haloritual.com/zh/components/beian-footer) · [NavMenu](https://hulianui.haloritual.com/zh/components/nav-menu) · [NavigationMenu](https://hulianui.haloritual.com/zh/components/navigation-menu) · [Menubar](https://hulianui.haloritual.com/zh/components/menubar) · [Dock](https://hulianui.haloritual.com/zh/components/dock)
@@ -18275,6 +18291,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 
 - 本组件已按 [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]] 把焦点交还语义关掉（不在打开时夺取焦点），避免 hover + focus 在 focus-managing popover 上 ping-pong 无限闪烁；若 fork 改造别重新打开焦点托管。
 - 用 `openDelay`/`closeDelay` 调防误触，别把 `closeDelay` 设 0，否则光标在 trigger 与卡片间移动的瞬间会闪关。
+- `HoverCardContent` 继承 div 原生属性，可直接挂 `data-testid` / `role` / `aria-*` / `onClick`。卡片虽被 portal 出去，合成事件仍沿 **React 树**冒泡回触发器所在的父元素，所以卡片挂在整块可点的行/卡里时要自己 `onClick={(e) => e.stopPropagation()}`，否则点卡片内容会顺手触发整行的 `onClick`。透传的 `onMouseEnter` / `onMouseLeave` 与内部计时器是**合并**而不是覆盖，不会因此把卡片弄关。
 
 ## 相关
 [Dialog](https://hulianui.haloritual.com/zh/components/dialog) · [Modal](https://hulianui.haloritual.com/zh/components/modal) · [AlertDialog](https://hulianui.haloritual.com/zh/components/alert-dialog) · [Drawer](https://hulianui.haloritual.com/zh/components/drawer) · [Popover](https://hulianui.haloritual.com/zh/components/popover) · [Tooltip](https://hulianui.haloritual.com/zh/components/tooltip)

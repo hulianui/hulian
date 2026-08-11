@@ -91,6 +91,13 @@ export const radioShowcase: ShowcaseSpec = {
         </RadioGroup>),
         },
         {
+            name: "size=sm (dense interfaces)",
+            render: () => (<RadioGroup orientation="horizontal" defaultValue="y" aria-label="sm">
+          <Radio value="y" size="sm" label="To date"/>
+          <Radio value="n" size="sm" label="Ended" labelClassName="text-muted-foreground"/>
+        </RadioGroup>),
+        },
+        {
             name: "in-field",
             render: () => (<Field label="Package" error="Please select a package" className="w-72">
           <RadioGroup defaultValue="">

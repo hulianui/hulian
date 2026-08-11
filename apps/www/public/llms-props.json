@@ -6489,12 +6489,33 @@
           "description": "关联 label 的 id"
         },
         {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\"",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档，方盒与内置勾号一起缩放。`md` = 20px/14px/`text-sm`，`sm` = 16px/12px/`text-xs`（对齐 Input、SelectTrigger 的 `size=\"sm\"`）"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "落在 Checkbox.Root"
+          "description": "落在 Checkbox.Root（方盒），够不到文字"
+        },
+        {
+          "name": "labelClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "落在文字 `<span>`，用来改字号 / 颜色"
         },
         {
           "name": "tabIndex",
@@ -11115,12 +11136,33 @@
           "description": "—"
         },
         {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\"",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档，圈与内点一起缩放。`md` = 20px/10px/`text-sm`，`sm` = 16px/8px/`text-xs`"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "落在 Radio.Root"
+          "description": "落在 Radio.Root（圈），够不到文字"
+        },
+        {
+          "name": "labelClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "落在文字 `<span>`，用来改字号 / 颜色"
         },
         {
           "name": "aria-label",
@@ -12965,6 +13007,14 @@
           "type": "boolean",
           "default": "false",
           "description": "在轨道上方显示当前数值读出（Slider.Value）"
+        },
+        {
+          "name": "thumbAriaLabel",
+          "required": false,
+          "kind": "other",
+          "type": "string | [string, string]",
+          "default": null,
+          "description": "手柄的无障碍名。省略时自动取 Root 的 `aria-label`；range 传二元组分别命名两个手柄"
         },
         {
           "name": "className",
@@ -15436,6 +15486,14 @@
           "valueType": "string",
           "default": "\"outline\"",
           "description": "外观：描边 / 投影抬升 / 强调 / 不画皮"
+        },
+        {
+          "name": "divided",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档"
         }
       ],
       "events": [],
