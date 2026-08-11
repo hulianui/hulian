@@ -16,10 +16,10 @@ describe("Alert 渲染性能", () => {
 });
 
 describe("alertVariants", () => {
-  it("默认 soft + info（/12 alpha 底 + primary accent）", () => {
+  it("默认 soft + info（/12 alpha 底 + info accent）", () => {
     const c = alertVariants({});
-    expect(c).toContain("bg-primary/12");
-    expect(c).toContain("text-primary");
+    expect(c).toContain("bg-info/12");
+    expect(c).toContain("text-info");
   });
   it("variant outline 带 border", () => {
     expect(alertVariants({ variant: "outline" })).toContain("border");
@@ -152,19 +152,25 @@ describe("Alert", () => {
     expect(queryByRole("button")).toBeNull();
   });
 
-  // tone 取值与 Tag / Button / Badge 对齐：本组件早于全库统一，历史上只有 info 没有 brand
-  describe("tone=brand（与 info 同配方）", () => {
-    it("soft brand 与 soft info 产出同一套色", () => {
-      expect(alertVariants({ variant: "soft", tone: "brand" })).toBe(
-        alertVariants({ variant: "soft", tone: "info" }),
-      );
+  // tone 取值与 Tag / Button / Badge 对齐：本组件早于全库统一，历史上只有 info 没有 brand。
+  // 0.8.0 之前 info 是 brand 的别名（库里没有 info 语义色，只能借主色）；补齐 --color-info
+  // 后两者必须**分开**（#173）—— 这几条断言的作用就是防止有人再把 info 折回主色。
+  describe("tone=brand 与 tone=info 不再同色（#173）", () => {
+    it("soft：brand 走主色、info 走 info 色", () => {
+      const brand = alertVariants({ variant: "soft", tone: "brand" });
+      const info = alertVariants({ variant: "soft", tone: "info" });
+      expect(brand).not.toBe(info);
+      expect(brand).toContain("bg-primary/12");
+      expect(info).toContain("bg-info/12");
     });
-    it("outline brand 与 outline info 产出同一套色", () => {
-      expect(alertVariants({ variant: "outline", tone: "brand" })).toBe(
-        alertVariants({ variant: "outline", tone: "info" }),
-      );
+    it("outline：brand 走主色、info 走 info 色", () => {
+      const brand = alertVariants({ variant: "outline", tone: "brand" });
+      const info = alertVariants({ variant: "outline", tone: "info" });
+      expect(brand).not.toBe(info);
+      expect(brand).toContain("border-primary");
+      expect(info).toContain("border-info");
     });
-    it("组件上直接用 tone=brand 能渲染出主色皮肤", () => {
+    it("组件上直接用 tone=brand 仍渲染主色皮肤", () => {
       const { container } = render(
         <Alert tone="brand" title="品牌">
           x

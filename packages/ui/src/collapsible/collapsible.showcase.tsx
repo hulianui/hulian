@@ -17,6 +17,27 @@ function Demo(p: Record<string, unknown>) {
   );
 }
 
+// plain 演示：面板里装的是一整套集成配置（自带分隔线与逐行内边距），不是一段短说明。
+function PlainDemo() {
+  return (
+    <Collapsible defaultOpen className="w-80">
+      <CollapsibleTrigger>GitHub 集成</CollapsibleTrigger>
+      <CollapsiblePanel plain>
+        <div className="divide-y divide-border border-t border-border">
+          <div className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm text-foreground">
+            连接状态
+            <span className="text-xs text-muted-foreground">已连接</span>
+          </div>
+          <div className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm text-foreground">
+            关联仓库
+            <span className="text-xs text-muted-foreground">hulianui/hulian</span>
+          </div>
+        </div>
+      </CollapsiblePanel>
+    </Collapsible>
+  );
+}
+
 export const collapsibleShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -61,6 +82,21 @@ export const collapsibleShowcase: ShowcaseSpec = {
         </Collapsible>
       ),
     },
+    {
+      title: "不画皮的面板",
+      description:
+        "CollapsiblePanel 加 plain：不渲染内层皮肤 div。面板里装整套配置表单时用它，否则内容会被染成次要色、内边距也会双份。",
+      code: `<CollapsiblePanel plain>
+  <div className="divide-y divide-border border-t border-border">
+    <div className="flex items-center justify-between px-3 py-2.5 text-sm text-foreground">
+      连接状态
+      <span className="text-xs text-muted-foreground">已连接</span>
+    </div>
+    {/* …更多配置行 */}
+  </div>
+</CollapsiblePanel>`,
+      render: () => <PlainDemo />,
+    },
   ],
   controls: [
     { prop: "defaultOpen", type: "boolean", defaultValue: false },
@@ -94,6 +130,7 @@ export const collapsibleShowcase: ShowcaseSpec = {
         </Collapsible>
       ),
     },
+    { name: "plain（不画皮的面板）", render: () => <PlainDemo /> },
   ],
   renderWithProps: (p) => <Demo {...p} />,
   toCode: (p) =>

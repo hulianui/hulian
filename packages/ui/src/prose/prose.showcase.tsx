@@ -29,6 +29,66 @@ const Article = () => (
   </Prose>
 );
 
+// 折叠块：教程长文里的「展开看答案」，含嵌套一层（内层落弱背景与外层区分）。
+const Collapsibles = () => (
+  <Prose className="max-w-2xl">
+    <h2>折叠块 details / summary</h2>
+    <p>markdown 产物里的 GFM 折叠块直接吃 Prose 的排版，与代码块同一个视觉家族。</p>
+    <details open>
+      <summary>展开看答案</summary>
+      <p>
+        列表推导式会一次性把结果全部算出来放进内存；生成器表达式只在迭代时逐个产出，
+        处理大文件时后者不会把整份数据读进来。
+      </p>
+      <details>
+        <summary>展开看报错怎么读（嵌套一层）</summary>
+        <p>嵌套的折叠块落弱背景，与外层拉开一档，明暗主题下都能看出层级。</p>
+      </details>
+    </details>
+    <details>
+      <summary>展开看完整代码（默认收起）</summary>
+      <pre>
+        <code>{`with open("data.txt") as f:\n    total = sum(int(line) for line in f)`}</code>
+      </pre>
+    </details>
+  </Prose>
+);
+
+const WideTable = ({ scrollableTables }: { scrollableTables?: boolean }) => (
+  <Prose scrollableTables={scrollableTables} className="max-w-sm">
+    <table>
+      <thead>
+        <tr>
+          <th>时间戳</th>
+          <th>上游通道</th>
+          <th>模型名称</th>
+          <th>请求数</th>
+          <th>失败率</th>
+          <th>平均耗时</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2026-08-11</td>
+          <td>华东主通道</td>
+          <td>claude-opus-5</td>
+          <td>12,345</td>
+          <td>0.12%</td>
+          <td>820ms</td>
+        </tr>
+        <tr>
+          <td>2026-08-10</td>
+          <td>华北备用通道</td>
+          <td>claude-sonnet-5</td>
+          <td>8,901</td>
+          <td>0.31%</td>
+          <td>640ms</td>
+        </tr>
+      </tbody>
+    </table>
+  </Prose>
+);
+
 export const proseShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -70,6 +130,30 @@ export const proseShowcase: ShowcaseSpec = {
         </Prose>
       ),
     },
+    {
+      title: "折叠块（含嵌套）",
+      description: "GFM 的 details / summary 与代码块同一视觉家族；嵌套折叠块落弱背景与外层区分。",
+      code: `<Prose>
+  <details open>
+    <summary>展开看答案</summary>
+    <p>生成器表达式只在迭代时逐个产出，不会把整份数据读进内存。</p>
+    <details>
+      <summary>展开看报错怎么读（嵌套一层）</summary>
+      <p>嵌套的折叠块落弱背景，与外层拉开一档。</p>
+    </details>
+  </details>
+</Prose>`,
+      render: () => <Collapsibles />,
+    },
+    {
+      title: "宽表横向滚动",
+      description:
+        "scrollableTables 让列多的表格在自身内部横向滚动，不撑破版心；表头随之不换行（否则列会被压到一列一字，永远不滚）。代价是表格宽度改为按内容撑开。",
+      code: `<Prose scrollableTables>
+  <table>{/* 六列宽表：窄容器内自己横向滚动 */}</table>
+</Prose>`,
+      render: () => <WideTable scrollableTables />,
+    },
   ],
   controls: [
     {
@@ -78,6 +162,12 @@ export const proseShowcase: ShowcaseSpec = {
       options: ["sm", "base"],
       defaultValue: "base",
       label: "尺寸",
+    },
+    {
+      prop: "scrollableTables",
+      type: "boolean",
+      defaultValue: false,
+      label: "宽表横向滚动",
     },
   ],
   states: [
@@ -101,16 +191,32 @@ export const proseShowcase: ShowcaseSpec = {
         </Prose>
       ),
     },
+    {
+      name: "折叠块（details/summary，含嵌套一层）",
+      render: () => <Collapsibles />,
+    },
+    {
+      name: "宽表：默认（撑破容器）",
+      render: () => <WideTable />,
+    },
+    {
+      name: "宽表：scrollableTables（表内横向滚动）",
+      render: () => <WideTable scrollableTables />,
+    },
   ],
   renderWithProps: (p) => (
-    <Prose size={p.size as ProseSize} className="max-w-2xl">
+    <Prose size={p.size as ProseSize} scrollableTables={p.scrollableTables as boolean} className="max-w-2xl">
       <h2>瑚琏 Prose</h2>
       <p>
         统一接管富文本排版，吃语义 token，<a href="#">链接</a> 与 <code>code</code> 一致呈现。
       </p>
+      <details>
+        <summary>展开看答案</summary>
+        <p>折叠块与代码块同一视觉家族，summary 不可选中。</p>
+      </details>
       <blockquote>容器统一规则，内容只管语义。</blockquote>
     </Prose>
   ),
   toCode: (p) =>
-    `<Prose${p.size === "sm" ? ' size="sm"' : ""}>{/* 富文本 HTML/JSX */}</Prose>`,
+    `<Prose${p.size === "sm" ? ' size="sm"' : ""}${p.scrollableTables ? " scrollableTables" : ""}>{/* 富文本 HTML/JSX */}</Prose>`,
 };

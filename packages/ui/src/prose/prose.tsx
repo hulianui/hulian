@@ -32,6 +32,17 @@ const proseBase = cn(
   "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-mono",
   // 引用
   "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground",
+  // 折叠块（GFM <details>/<summary>，markdown→HTML 的标配）：与 pre 同一视觉家族——
+  // 同样的圆角 + border + surface 底，让它在正文里读起来是「一块可展开的容器」而不是裸文字。
+  "[&_details]:my-4 [&_details]:rounded-[var(--radius)] [&_details]:border [&_details]:border-border [&_details]:bg-surface [&_details]:px-4 [&_details]:py-3",
+  // summary 是连点目标（反复展开/收起），文本一律 select-none，否则双击会把标题刷成选区。
+  "[&_summary]:cursor-pointer [&_summary]:select-none [&_summary]:font-semibold [&_summary]:text-foreground [&_summary:hover]:text-primary",
+  // 展开后 summary 与首个内容块留一档（对齐容器 py-3），末元素外边距收敛进内距。
+  "[&_details>summary+*]:mt-3 [&_details>:last-child]:mb-0",
+  // 嵌套折叠块（教程长文里常见：外层「展开看答案」内套「展开看报错怎么读」）改用弱背景，
+  // 与外层的 surface 拉开一档；亮色 surface(白) > subtle(gray-100)、暗色 surface(gray-900)
+  // < subtle(gray-800)，两个方向相反但「内层与外层不同色」在明暗下都成立。
+  "[&_details_details]:bg-subtle",
   // 分隔线 / 图片
   "[&_hr]:my-8 [&_hr]:border-border [&_img]:my-4 [&_img]:rounded-[var(--radius)]",
   // 表格
@@ -45,7 +56,28 @@ const SIZE: Record<ProseSize, string> = {
   base: "text-base",
 };
 
-export function Prose<E extends ElementType = "div">({ as, size = "base", className, ...props }: ProseProps<E>) {
+// 宽表兜底。Prose 两种内容形态都支持：children（JSX 子节点）与 dangerouslySetInnerHTML
+// （markdown→HTML 字符串，经 ...props 透传）。children 形态下调用方完全可以自己把 table 包进
+// 一层 overflow-x-auto 容器，那样更可控；但 HTML 字符串形态下本组件拿不到表格节点、包不了容器，
+// 所以另外给一档只作用在 table 自身上的开关，让两种形态都有解。table 改 block 后由匿名表格盒接管内部
+// 布局（border-collapse 是继承属性，照常生效），w-max 按内容撑开、max-w-full 封顶到版心。
+// th 的 whitespace-nowrap 是**必需项**不是修饰：只写 overflow-x-auto 的话列会被压到 min-content
+// （中文一列一字），内容永远不超出滚动容器，于是根本不滚。360px 实测六列表：只给 overflow
+// → scrollWidth 360 = clientWidth、表头行高 112px；补上 th nowrap → scrollWidth 388 > 360 真滚、
+// 表头回到 40px 单行。表头恒为短标签故可整体 nowrap，正文单元格照常换行（长描述别 nowrap，
+// 一条长字符串会把表拖宽到别的列滚不到）。代价是窄表不再恒占满版心 —— 所以是可选档而非默认。
+const SCROLLABLE_TABLES = cn(
+  "[&_table]:block [&_table]:w-max [&_table]:max-w-full [&_table]:overflow-x-auto",
+  "[&_th]:whitespace-nowrap",
+);
+
+export function Prose<E extends ElementType = "div">({
+  as,
+  size = "base",
+  scrollableTables = false,
+  className,
+  ...props
+}: ProseProps<E>) {
   const Comp = (as ?? "article") as ElementType;
-  return <Comp className={cn(proseBase, SIZE[size], className)} {...props} />;
+  return <Comp className={cn(proseBase, SIZE[size], scrollableTables && SCROLLABLE_TABLES, className)} {...props} />;
 }

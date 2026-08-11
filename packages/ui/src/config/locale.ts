@@ -1,5 +1,5 @@
 "use client";
-import { useLocaleContext } from "./locale-context";
+import { useLocaleContext, warnMissingLocaleProvider } from "./locale-context";
 // 仅类型引用（编译期擦除，无运行时依赖，故不构成 config ↔ social-button 的循环）。
 import type { SocialProvider } from "../social-button/social-button.types";
 
@@ -2609,7 +2609,12 @@ export const enUS: Locale = {
   },
 };
 
-/** 取当前 Locale；缺 ConfigProvider 时回退默认 zhCN（组件须能脱离 Provider 渲染，故不抛）。 */
+/**
+ * 取当前 Locale；缺 ConfigProvider 时回退默认 zhCN（组件须能脱离 Provider 渲染，故不抛）。
+ * 回退**不再静默**：开发期会喊一次，见 locale-context 里 warnMissingLocaleProvider 的注释。
+ */
 export function useLocale(): Locale {
-  return useLocaleContext() ?? zhCN;
+  const locale = useLocaleContext();
+  if (!locale) warnMissingLocaleProvider();
+  return locale ?? zhCN;
 }

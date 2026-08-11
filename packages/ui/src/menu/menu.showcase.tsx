@@ -1,10 +1,46 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuGroup, MenuGroupLabel } from "./menu";
+import {
+  Menu,
+  MenuTrigger,
+  MenuContent,
+  MenuItem,
+  MenuCheckboxItem,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuSeparator,
+  MenuGroup,
+  MenuGroupLabel,
+} from "./menu";
 import { Button } from "../button/button";
 
 type Side = "top" | "right" | "bottom" | "left";
 type Align = "start" | "center" | "end";
+
+// 勾选 / 单选项：菜单展开后第一列即为选中标记（√ 与实心点），未选中的项留空但不塌列。
+function SelectionDemo({ defaultOpen = false }: { defaultOpen?: boolean }) {
+  return (
+    <Menu defaultOpen={defaultOpen} modal={false}>
+      <MenuTrigger render={<Button variant="outline">视图</Button>} />
+      <MenuContent>
+        <MenuGroup>
+          <MenuGroupLabel>显示</MenuGroupLabel>
+          <MenuCheckboxItem defaultChecked>显示网格</MenuCheckboxItem>
+          <MenuCheckboxItem>显示标尺</MenuCheckboxItem>
+        </MenuGroup>
+        <MenuSeparator />
+        <MenuGroup>
+          <MenuGroupLabel>密度</MenuGroupLabel>
+          <MenuRadioGroup defaultValue="comfortable">
+            <MenuRadioItem value="compact">紧凑</MenuRadioItem>
+            <MenuRadioItem value="comfortable">适中</MenuRadioItem>
+            <MenuRadioItem value="loose">宽松</MenuRadioItem>
+          </MenuRadioGroup>
+        </MenuGroup>
+      </MenuContent>
+    </Menu>
+  );
+}
 
 function Demo({ side = "bottom", align = "start", withGroup = false }: { side?: Side; align?: Align; withGroup?: boolean }) {
   return (
@@ -108,6 +144,28 @@ export const menuShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "勾选项与单选项",
+      description:
+        "MenuCheckboxItem 是可开关的设置（role=menuitemcheckbox），MenuRadioGroup + MenuRadioItem 是一组互斥选项（role=menuitemradio）；两者都带 aria-checked，读屏能报出当前选中项——用 MenuItem 自画一个勾看起来一样，但这层语义会丢。默认点击不关闭菜单，想选完即收传 closeOnClick。",
+      code: `<MenuContent>
+  <MenuGroup>
+    <MenuGroupLabel>显示</MenuGroupLabel>
+    <MenuCheckboxItem defaultChecked>显示网格</MenuCheckboxItem>
+    <MenuCheckboxItem>显示标尺</MenuCheckboxItem>
+  </MenuGroup>
+  <MenuSeparator />
+  <MenuGroup>
+    <MenuGroupLabel>密度</MenuGroupLabel>
+    <MenuRadioGroup defaultValue="comfortable">
+      <MenuRadioItem value="compact">紧凑</MenuRadioItem>
+      <MenuRadioItem value="comfortable">适中</MenuRadioItem>
+      <MenuRadioItem value="loose">宽松</MenuRadioItem>
+    </MenuRadioGroup>
+  </MenuGroup>
+</MenuContent>`,
+      render: () => <SelectionDemo />,
+    },
+    {
       title: "弹出方位",
       description: "MenuContent 的 side / align 控制浮层相对触发器的方位。",
       code: `<Menu>
@@ -136,6 +194,8 @@ export const menuShowcase: ShowcaseSpec = {
   states: [
     { name: "default", render: () => <Demo /> },
     { name: "分组", render: () => <Demo withGroup /> },
+    // 展开态：选中标记（√ / 实心点）与普通项的图标位共用同一列，文字左缘对齐。
+    { name: "勾选项与单选项（展开）", render: () => <SelectionDemo defaultOpen /> },
     { name: "right", render: () => <Demo side="right" /> },
     { name: "top", render: () => <Demo side="top" /> },
   ],

@@ -1,4 +1,9 @@
-import type { ReactNode, UIEventHandler } from "react";
+import type {
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+  ReactNode,
+  UIEventHandler,
+} from "react";
 import type { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 
 export type ComboboxSize = "sm" | "md" | "lg";
@@ -16,14 +21,22 @@ export type ComboboxProps<Multiple extends boolean = false> =
     children?: ReactNode;
   };
 
-/** 多选 chips 外壳（可见字段）：内含 chip 列 + 输入框 + chevron；注册为浮层锚点。 */
-export interface ComboboxChipsProps {
+/**
+ * 多选 chips 外壳（可见字段）：内含 chip 列 + 输入框 + chevron；注册为浮层锚点。
+ *
+ * 剩余原生属性落到**内层 `<input>`**（不是 chips 容器）：`id` 要能被 `<label for>` 命中、
+ * `name` 要能提交、`aria-label` 要落在 `role="combobox"` 那个节点上、`onBlur` 要能接
+ * `Controller` —— 这四样的正确落点都是输入框；容器自身的钩子用 `className`。见 #160。
+ */
+export interface ComboboxChipsProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "prefix" | "children"> {
   size?: ComboboxSize;
   /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
   invalid?: boolean;
   /** 输入框占位（一般仅在无选中时给）。 */
   placeholder?: string;
   className?: string;
+  /** chip 列（按 value 顺序渲染 ComboboxChip）。 */
   children?: ReactNode;
 }
 
@@ -33,20 +46,38 @@ export interface ComboboxChipProps {
   className?: string;
 }
 
-export interface ComboboxInputProps {
+/**
+ * 内联自动补全字段。
+ *
+ * 继承原生 `<input>` 属性，且剩余属性落到**内层 `<input>`** 而不是外壳 `<span>`：
+ * `aria-label` / `id` / `name` / `onBlur` 挂在外壳上都是无效的（外壳只是皮肤，
+ * `role="combobox"` 在内层）。外壳的类名仍走 `className`。见 #160。
+ */
+export interface ComboboxInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "prefix"> {
   size?: ComboboxSize;
-  placeholder?: string;
   /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
   invalid?: boolean;
   /** 渲染清除按钮（Combobox.Clear，有值时显示）。 */
   clearable?: boolean;
-  className?: string;
+  /** 字段左侧图标槽（对齐 Input.prefix）：搜索框放放大镜。 */
+  prefix?: ReactNode;
+  /**
+   * 右侧展开箭头。搜索框形态请传 `false`：留着 chevron 的框读起来是「下拉选择」，
+   * 而搜索框的语义是「打字得到建议」。@default true
+   */
+  showChevron?: boolean;
 }
 
-/** 图4 范式触发按钮：显示已选 label / placeholder，点击展开「弹层内搜索」式浮层。 */
-export interface ComboboxTriggerProps {
+/**
+ * 图4 范式触发按钮：显示已选 label / placeholder，点击展开「弹层内搜索」式浮层。
+ *
+ * 继承原生 `<button>` 属性，剩余属性落到触发按钮自身（它就是根节点）。
+ */
+export interface ComboboxTriggerProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "size" | "children"> {
   size?: ComboboxSize;
-  /** 未选中时占位文案。 */
+  /** 未选中时占位文案（按钮没有原生 placeholder，这里是瑚琏语义）。 */
   placeholder?: string;
   /** 独立使用（非 Field 内）时手动置无效态皮肤。 */
   invalid?: boolean;

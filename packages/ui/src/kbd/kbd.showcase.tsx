@@ -1,6 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
-import { Kbd } from "./kbd";
+import { Kbd, KbdGroup } from "./kbd";
 
 export const kbdShowcase: ShowcaseSpec = {
   examples: [
@@ -12,29 +12,51 @@ export const kbdShowcase: ShowcaseSpec = {
     },
     {
       title: "组合键",
-      description: "组合键靠并排多个 Kbd 拼出，中间用分隔符连接。",
-      code: `<span className="inline-flex items-center gap-1">
-  <Kbd>⌘</Kbd>
-  <span className="text-muted-foreground">+</span>
-  <Kbd>K</Kbd>
-</span>`,
+      description: "KbdGroup 收口 gap 与分隔符，默认用 + 连接。",
+      code: `<KbdGroup keys={["⌘", "K"]} />`,
+      render: () => <KbdGroup keys={["⌘", "K"]} />,
+    },
+    {
+      title: "换分隔符 / 不要分隔符",
+      description: "separator 可换成任意节点；传 null 只留间距。",
+      code: `<KbdGroup keys={["⌘", "⇧", "P"]} separator="·" />
+<KbdGroup keys={["G", "T"]} separator={null} />`,
       render: () => (
-        <span className="inline-flex items-center gap-1">
-          <Kbd>⌘</Kbd>
-          <span className="text-muted-foreground">+</span>
-          <Kbd>K</Kbd>
-        </span>
+        <div className="flex items-center gap-4">
+          <KbdGroup keys={["⌘", "⇧", "P"]} separator="·" />
+          <KbdGroup keys={["G", "T"]} separator={null} />
+        </div>
+      ),
+    },
+    {
+      title: "读屏名",
+      description: "label 给整组一个无障碍名，分隔符本身不进无障碍树。",
+      code: `<KbdGroup keys={["⌘", "K"]} label="打开命令面板" />`,
+      render: () => <KbdGroup keys={["⌘", "K"]} label="打开命令面板" />,
+    },
+    {
+      title: "自己摆键帽",
+      description: "需要给某个键单独加样式或换内容时改用 children，分隔符照插。",
+      code: `<KbdGroup label="保存">
+  <Kbd className="min-w-8">⌘</Kbd>
+  <Kbd>S</Kbd>
+</KbdGroup>`,
+      render: () => (
+        <KbdGroup label="保存">
+          <Kbd className="min-w-8">⌘</Kbd>
+          <Kbd>S</Kbd>
+        </KbdGroup>
       ),
     },
     {
       title: "嵌入正文",
       description: "随文展示快捷键，键帽与文字基线对齐。",
       code: `<span className="text-sm text-muted-foreground">
-  按 <Kbd>⌘</Kbd> <Kbd>S</Kbd> 保存
+  按 <KbdGroup keys={["⌘", "S"]} label="保存" /> 即可保存
 </span>`,
       render: () => (
         <span className="text-sm text-muted-foreground">
-          按 <Kbd>⌘</Kbd> <Kbd>S</Kbd> 保存
+          按 <KbdGroup keys={["⌘", "S"]} label="保存" /> 即可保存
         </span>
       ),
     },
@@ -42,30 +64,22 @@ export const kbdShowcase: ShowcaseSpec = {
   controls: [],
   states: [
     { name: "single", render: () => <Kbd>Esc</Kbd> },
+    { name: "group", render: () => <KbdGroup keys={["⌘", "K"]} /> },
+    { name: "group-dot", render: () => <KbdGroup keys={["⌘", "⇧", "P"]} separator="·" /> },
+    { name: "group-bare", render: () => <KbdGroup keys={["G", "T"]} separator={null} /> },
     {
-      name: "combo",
-      render: () => (
-        <span className="inline-flex items-center gap-1">
-          <Kbd>⌘</Kbd>
-          <span className="text-muted-foreground">+</span>
-          <Kbd>K</Kbd>
-        </span>
-      ),
+      name: "group-labeled",
+      render: () => <KbdGroup keys={["⌘", "K"]} label="打开命令面板" />,
     },
     {
       name: "in-text",
       render: () => (
         <span className="text-sm text-muted-foreground">
-          按 <Kbd>⌘</Kbd> <Kbd>S</Kbd> 保存
+          按 <KbdGroup keys={["⌘", "S"]} label="保存" /> 即可保存
         </span>
       ),
     },
   ],
-  renderWithProps: () => (
-    <span className="inline-flex items-center gap-1">
-      <Kbd>⌘</Kbd>
-      <Kbd>K</Kbd>
-    </span>
-  ),
-  toCode: () => `<Kbd>⌘</Kbd> <Kbd>K</Kbd>`,
+  renderWithProps: () => <KbdGroup keys={["⌘", "K"]} label="打开命令面板" />,
+  toCode: () => `<KbdGroup keys={["⌘", "K"]} label="打开命令面板" />`,
 };

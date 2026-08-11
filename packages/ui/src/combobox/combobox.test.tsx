@@ -1,6 +1,14 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup, fireEvent, waitFor } from "@testing-library/react";
-import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem } from "./combobox";
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxTrigger,
+} from "./combobox";
 
 afterEach(() => {
   cleanup();
@@ -173,5 +181,101 @@ describe("Combobox", () => {
     );
     expect(document.querySelector("[data-hulian-virtual-count]")).toBeNull();
     expect(screen.getByText("选项 149")).toBeTruthy();
+  });
+});
+
+// 口径见 docs/consuming.md 第 7 节。这里的落点断言比「有没有透传」更重要：
+// 三个可见字段件里有两个是「皮肤外壳 + 内层 input」，机械展开到外壳等于没透传（#160）。
+describe("Combobox 可见字段透传原生属性（#160）", () => {
+  it("ComboboxInput：aria-label / id / name 落到内层 input（不是外壳 span）", () => {
+    render(
+      <Combobox items={FRUITS}>
+        <ComboboxInput
+          aria-label="搜索任务、客户、文件"
+          id="task-search"
+          name="q"
+          data-testid="probe"
+        />
+      </Combobox>,
+    );
+    const input = screen.getByRole("combobox");
+    expect(input.tagName).toBe("INPUT");
+    expect(input.getAttribute("aria-label")).toBe("搜索任务、客户、文件");
+    expect(input.id).toBe("task-search");
+    expect(input.getAttribute("name")).toBe("q");
+    expect(input.getAttribute("data-testid")).toBe("probe");
+  });
+
+  it("ComboboxInput：onBlur 落到内层 input —— 能接 react-hook-form 的 Controller", () => {
+    const onBlur = vi.fn();
+    render(
+      <Combobox items={FRUITS}>
+        <ComboboxInput aria-label="水果" onBlur={onBlur} />
+      </Combobox>,
+    );
+    fireEvent.blur(screen.getByRole("combobox"));
+    expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it("ComboboxInput：外部属性顶不掉组件自己的无效态与皮肤类名", () => {
+    render(
+      <Combobox items={FRUITS}>
+        <ComboboxInput aria-label="水果" invalid aria-invalid={false} className="my-shell" />
+      </Combobox>,
+    );
+    const input = screen.getByRole("combobox");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    // className 仍归外壳（皮肤在外壳上），不会被 rest 抢走
+    expect((input.parentElement as HTMLElement).className).toContain("my-shell");
+  });
+
+  it("ComboboxInput：prefix 渲染在输入框之前，showChevron={false} 去掉右侧箭头", () => {
+    const { container } = render(
+      <Combobox items={FRUITS}>
+        <ComboboxInput aria-label="搜索" prefix={<span data-testid="magnifier" />} showChevron={false} />
+      </Combobox>,
+    );
+    const shell = screen.getByRole("combobox").parentElement as HTMLElement;
+    const prefix = screen.getByTestId("magnifier");
+    expect(shell.contains(prefix)).toBe(true);
+    expect(prefix.compareDocumentPosition(screen.getByRole("combobox")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(container.querySelector("svg")).toBeNull();
+  });
+
+  it("ComboboxInput：默认仍渲染 chevron（不传 showChevron 时行为不变）", () => {
+    const { container } = render(
+      <Combobox items={FRUITS}>
+        <ComboboxInput aria-label="搜索" />
+      </Combobox>,
+    );
+    expect(container.querySelector("svg")).toBeTruthy();
+  });
+
+  it("ComboboxTrigger：原生属性落到按钮自身", () => {
+    render(
+      <Combobox items={FRUITS}>
+        <ComboboxTrigger aria-label="选择水果" id="fruit-trigger" data-testid="probe" />
+      </Combobox>,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(trigger.tagName).toBe("BUTTON");
+    expect(trigger.getAttribute("aria-label")).toBe("选择水果");
+    expect(trigger.id).toBe("fruit-trigger");
+    expect(trigger.getAttribute("data-testid")).toBe("probe");
+  });
+
+  it("ComboboxChips：原生属性落到内层 input（chips 容器是 role=toolbar 的皮肤壳）", () => {
+    render(
+      <Combobox items={FRUITS} multiple>
+        <ComboboxChips aria-label="选择水果" name="fruits" className="my-chips">
+          <ComboboxChip>苹果 Apple</ComboboxChip>
+        </ComboboxChips>
+      </Combobox>,
+    );
+    const input = screen.getByRole("combobox");
+    expect(input.tagName).toBe("INPUT");
+    expect(input.getAttribute("aria-label")).toBe("选择水果");
+    expect(input.getAttribute("name")).toBe("fruits");
+    expect(document.querySelector(".my-chips")!.contains(input)).toBe(true);
   });
 });

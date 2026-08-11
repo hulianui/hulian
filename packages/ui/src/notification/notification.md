@@ -27,7 +27,7 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| type | `"open"｜"success"｜"error"｜"info"｜"warning"` | — | 经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 同 Alert（info→primary） |
+| type | `"open"｜"success"｜"error"｜"info"｜"warning"` | — | 经方法名隐含（`open` 为中性无图标）；派生左侧色条 + 默认图标，token 取值同 Alert（`info` 走 `--color-info`，0.8.0 前借主色） |
 | duration | `number` | `4500` | 自动关闭毫秒数；`0` = 不自动关（常驻） |
 | placement | `"topRight"｜"topLeft"｜"bottomRight"｜"bottomLeft"` | `"topRight"` | 弹出位置（四角） |
 

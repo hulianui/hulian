@@ -27,6 +27,7 @@ import { Prose } from "@hulianui/ui"
 |------|------|------|------|
 | as | `ElementType` | `"article"` | 渲染的容器标签 |
 | size | `"sm" \| "base"` | `"base"` | 整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文 |
+| scrollableTables | `boolean` | `false` | 宽表兜底：把 `table` 自身变成横向滚动容器，列多时不撑破版心（表头随之不换行）。代价是表格宽度改为按内容撑开、不再恒占满版心 |
 
 继承 `HTMLAttributes<HTMLElement>`（`className` / `style` 等）。
 
@@ -50,8 +51,30 @@ import { Prose } from "@hulianui/ui"
 <Prose size="sm" className="max-w-2xl">{/* 侧栏说明、卡片内富文本 */}</Prose>
 ```
 
+折叠块（GFM 的 `<details>`/`<summary>`，markdown 产物直接吃排版，无需额外包装）：
+```tsx
+<Prose>
+  <details open>
+    <summary>展开看答案</summary>
+    <p>生成器表达式只在迭代时逐个产出，不会把整份数据读进内存。</p>
+    <details>
+      <summary>展开看报错怎么读</summary>
+      <p>嵌套折叠块落弱背景，与外层的 surface 拉开一档。</p>
+    </details>
+  </details>
+</Prose>
+```
+
+宽表（列多时在表格内部横向滚动，不撑破版心）：
+```tsx
+<Prose scrollableTables>{/* 六列以上的宽表 */}</Prose>
+```
+
 ## 禁忌 / 坑
 
+- `scrollableTables` 会把 `table` 改成 `display: block` 并给表头加 `whitespace-nowrap`。表头不换行不是修饰而是**滚动成立的前提**：只加 `overflow-x-auto` 的话浏览器会把每列压到 min-content（中文一列一字、行高翻几倍），内容永远不超出滚动容器，于是根本不滚——看上去像是字号或断点没调好。正文单元格保持换行：一条不换行的长描述会把表拖宽到别的列滚不到。
+- `scrollableTables` 开启后表格宽度按内容撑开、不再恒占满版心（窄表会缩到内容宽）。只有在真的会溢出的宽表上开。
+- `scrollableTables` 存在的理由只对 **HTML 字符串形态**成立：内容经 `dangerouslySetInnerHTML` 塞进来时，Prose 拿不到表格节点、包不了滚动容器，只能在 `table` 自身上开一档。如果内容是 **children（JSX 子节点）**，更推荐自己把那张宽表包进一层 `overflow-x-auto` 容器——可以只作用于确实会溢出的那一张表，也不必牺牲其余表格的满宽。
 - 见 [[chat-bubble-max-w-prose-overflows-narrow-column]]：`max-w-prose`（65ch≈398px）是绝对值、不感知父容器可用宽度，放进移动端窄 flex 列会横向溢出/裁切。约束宽度用 `max-w-[min(65ch,100%)]`，且父链 flex 项加 `min-w-0`；不要叠 `max-w-prose max-w-full`（同属性二选一由 CSS 顺序决定不可靠）。
 
 ## 相关

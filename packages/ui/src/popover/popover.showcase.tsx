@@ -2,9 +2,40 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "./popover";
 import { Button } from "../button/button";
+import { Search } from "../_icons";
 
 type Side = "top" | "right" | "bottom" | "left";
 type Align = "start" | "center" | "end";
+
+// 贴边型浮层：内容自带外观（搜索行的 border-b + 列表自己的内边距），要的不是改皮肤而是没有皮肤。
+function PlainDemo() {
+  return (
+    <Popover>
+      <PopoverTrigger render={<Button variant="outline">选择标签</Button>} />
+      <PopoverContent plain arrow={false} align="start" className="w-auto p-0">
+        <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+          <Search className="size-3.5 text-muted-foreground" aria-hidden />
+          <input
+            placeholder="搜索标签"
+            aria-label="搜索标签"
+            className="w-40 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          />
+        </div>
+        <div className="py-1">
+          {["设计", "前端", "文档"].map((t) => (
+            <button
+              key={t}
+              type="button"
+              className="block w-full px-3 py-1.5 text-left text-sm text-foreground hover:bg-muted"
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 function Demo({
   side = "bottom",
@@ -70,6 +101,22 @@ export const popoverShowcase: ShowcaseSpec = {
 </Popover>`,
       render: () => <Demo side="bottom" align="start" title="左对齐" />,
     },
+    {
+      title: "贴边浮层：plain + arrow={false}",
+      description:
+        "内容自带外观（搜索行的下边线、列表自己的内边距）时用 plain：不渲染内层皮肤 div，children 直接铺到浮层边缘；className=\"p-0\" 只清得掉浮层自己的内边距。箭头是独立开关，贴边菜单一般一起关掉。",
+      code: `<Popover>
+  <PopoverTrigger render={<Button variant="outline">选择标签</Button>} />
+  <PopoverContent plain arrow={false} align="start" className="w-auto p-0">
+    <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+      <Search className="size-3.5 text-muted-foreground" />
+      <input placeholder="搜索标签" className="w-40 bg-transparent text-sm outline-none" />
+    </div>
+    <div className="py-1">{/* 标签列表 */}</div>
+  </PopoverContent>
+</Popover>`,
+      render: () => <PlainDemo />,
+    },
   ],
   controls: [
     { prop: "side", type: "select", options: ["top", "right", "bottom", "left"], defaultValue: "bottom" },
@@ -82,6 +129,7 @@ export const popoverShowcase: ShowcaseSpec = {
     { name: "含交互", render: () => <Demo withClose title="确认操作" /> },
     { name: "top", render: () => <Demo side="top" title="向上弹" /> },
     { name: "right", render: () => <Demo side="right" title="向右弹" /> },
+    { name: "贴边浮层", render: () => <PlainDemo /> },
   ],
   renderWithProps: (p) => (
     <Demo

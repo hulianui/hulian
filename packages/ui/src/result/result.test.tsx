@@ -53,9 +53,9 @@ describe("Result", () => {
     expect(getByText("返回首页")).toBeTruthy();
   });
 
-  it("默认 status=info 着主色", () => {
+  it("默认 status=info 着 info 语义色（0.8.0 前借主色，见 #173）", () => {
     const { container } = render(<Result title="x" />);
     const iconWrap = container.querySelector("span");
-    expect(iconWrap?.className.includes("text-primary")).toBe(true);
+    expect(iconWrap?.className.includes("text-info")).toBe(true);
   });
 });

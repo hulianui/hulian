@@ -21,4 +21,12 @@ export interface CollapsibleTriggerProps {
 export interface CollapsiblePanelProps {
   className?: string;
   children?: ReactNode;
+  /**
+   * 不画皮：为真时不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Base UI 的 Panel。
+   * 面板里装的是一整块功能区（集成配置表单、权限编辑器）而不是一段短说明时用它——
+   * 默认皮肤的 `text-muted-foreground` 会沿继承链把整块内容染成次要色，内边距也会跟内容自带的叠加。
+   * 与 `Card` 的 `variant="plain"` 同名同义（hulianui/hulian#162 / #159）。
+   * @default false
+   */
+  plain?: boolean;
 }

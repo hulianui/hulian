@@ -27,6 +27,7 @@ import { Prose } from "@hulianui/ui"
 |------|------|------|------|
 | as | `ElementType` | `"article"` | Container element to render. |
 | size | `"sm" \| "base"` | `"base"` | Typography scale. `sm` uses a `text-sm` base for long content in sidebars or cards. |
+| scrollableTables | `boolean` | `false` | Wide-table fallback: turns the `table` itself into a horizontal scroller so many-column tables no longer break out of the measure (headers stop wrapping as part of this). In exchange the table sizes to its content instead of always filling the measure. |
 
 Inherits `HTMLAttributes<HTMLElement>` (`className` / `style`, etc.).
 
@@ -50,8 +51,30 @@ Compact content:
 <Prose size="sm" className="max-w-2xl">{/* Sidebar or card description */}</Prose>
 ```
 
+Collapsible blocks (GFM `<details>`/`<summary>`; Markdown output is styled as-is, no extra wrapper):
+```tsx
+<Prose>
+  <details open>
+    <summary>Show the answer</summary>
+    <p>A generator expression yields items lazily and never loads the whole file.</p>
+    <details>
+      <summary>Show how to read the traceback</summary>
+      <p>A nested block uses the subtle background so it separates from the outer surface.</p>
+    </details>
+  </details>
+</Prose>
+```
+
+Wide tables (the table scrolls inside itself instead of breaking out of the measure):
+```tsx
+<Prose scrollableTables>{/* A table with six or more columns */}</Prose>
+```
+
 ## Usage guidelines
 
+- `scrollableTables` switches the `table` to `display: block` and adds `whitespace-nowrap` to headers. Non-wrapping headers are not decoration, they are what makes scrolling happen at all: with `overflow-x-auto` alone the browser squeezes every column down to its min-content width (CJK collapses to one glyph per line, rows grow several times taller), the content never exceeds the scroller, and nothing scrolls — it looks like a bad font size or breakpoint instead. Body cells keep wrapping: one long non-wrapping description would drag the table so wide that the other columns become unreachable.
+- With `scrollableTables` on, the table sizes to its content and no longer always fills the measure (a narrow table shrinks to its content width). Turn it on only for tables that genuinely overflow.
+- The reason `scrollableTables` exists applies only to the **HTML string form**: when content arrives through `dangerouslySetInnerHTML`, Prose never sees the table node and cannot wrap it in a scroll container, so the only place left to act is the `table` itself. With **children (JSX nodes)**, prefer wrapping the wide table in your own `overflow-x-auto` container: it targets just the table that overflows and leaves every other table at full width.
 - See [[chat-bubble-max-w-prose-overflows-narrow-column]]: `max-w-prose` (65ch, approximately 398 px) is an absolute maximum that does not account for parent width. In a narrow flex column it can overflow or clip. Use `max-w-[min(65ch,100%)]` and add `min-w-0` to flex ancestors. Do not combine `max-w-prose max-w-full`; both set the same property, so stylesheet order decides which wins.
 
 ## Related

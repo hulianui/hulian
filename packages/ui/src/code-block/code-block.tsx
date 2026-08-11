@@ -2,20 +2,25 @@
 import { memo, useState } from "react";
 import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
-import { HighlightedCode } from "./highlighted-code";
+import { HighlightedCode, NumberedCode } from "./highlighted-code";
 import type { CodeBlockProps } from "./code-block.types";
 import { useComponentLocale } from "../config/locale-context";
 
 // 多行代码块（区别于行内 Code、单行命令 Snippet）：<pre> 容器 + 右上角复制按钮 + 可选语言标签。
 // 含剪贴板交互故 "use client"；复制成功反馈 1.5s 切回。皮肤走语义 token。
 // 语法着色由零依赖 tokenizeCode 产出 token 列表，逐段套 <span>（见 code-highlight.ts）。
+// lineNumbers 开启后走逐行渲染（见 highlighted-code.tsx 的 NumberedCode），默认关闭时 DOM 不变。
 function CodeBlockImpl({
   code,
   lang,
   copyable = true,
   highlight = true,
+  lineNumbers = false,
   className,
 }: CodeBlockProps) {
+  // 行号列自带左内边距（sticky 时要一路遮到容器最左边），所以开行号后 <pre> 交出 pl。
+  const numbered = Boolean(lineNumbers);
+  const startLine = typeof lineNumbers === "object" && lineNumbers ? lineNumbers.start ?? 1 : 1;
   const labels = useComponentLocale().codeBlock ?? {
     copy: "复制",
     copied: "已复制",
@@ -55,10 +60,20 @@ function CodeBlockImpl({
       <pre
         tabIndex={0}
         aria-label={labels.region(lang)}
-        className={cn("overflow-auto p-4 text-sm leading-relaxed", lang != null && "pt-8")}
+        className={cn(
+          "overflow-auto p-4 text-sm leading-relaxed",
+          numbered && "pl-0",
+          lang != null && "pt-8",
+        )}
       >
-        <code className="font-mono text-foreground">
-          {highlight ? <HighlightedCode code={code} lang={lang} /> : code}
+        <code className={cn("font-mono text-foreground", numbered && "block")}>
+          {numbered ? (
+            <NumberedCode code={code} lang={lang} highlight={highlight} start={startLine} />
+          ) : highlight ? (
+            <HighlightedCode code={code} lang={lang} />
+          ) : (
+            code
+          )}
         </code>
       </pre>
     </div>

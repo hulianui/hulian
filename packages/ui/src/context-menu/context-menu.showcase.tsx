@@ -5,6 +5,9 @@ import {
   ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuCheckboxItem,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuGroup,
   ContextMenuGroupLabel,
@@ -12,6 +15,29 @@ import {
   ContextMenuSubTrigger,
   ContextMenuSubContent,
 } from "./context-menu";
+
+// 任务卡右键菜单的典型形态：一个可开关的设置 + 一组互斥的优先级，当前值在第一列打勾。
+function SelectionDemo() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-28 w-full max-w-sm select-none items-center justify-center rounded-[var(--radius)] border border-dashed border-border bg-surface text-sm text-muted-foreground">
+        右键点击此区域
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuCheckboxItem defaultChecked>置顶该任务</ContextMenuCheckboxItem>
+        <ContextMenuSeparator />
+        <ContextMenuGroup>
+          <ContextMenuGroupLabel>优先级</ContextMenuGroupLabel>
+          <ContextMenuRadioGroup defaultValue="medium">
+            <ContextMenuRadioItem value="low">低</ContextMenuRadioItem>
+            <ContextMenuRadioItem value="medium">中</ContextMenuRadioItem>
+            <ContextMenuRadioItem value="high">高</ContextMenuRadioItem>
+          </ContextMenuRadioGroup>
+        </ContextMenuGroup>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
 
 function Demo({ withGroup = false, withSub = false }: { withGroup?: boolean; withSub?: boolean }) {
   return (
@@ -92,6 +118,24 @@ export const contextMenuShowcase: ShowcaseSpec = {
       render: () => <Demo withGroup />,
     },
     {
+      title: "勾选项与单选项",
+      description:
+        "ContextMenuCheckboxItem 是可开关的设置（role=menuitemcheckbox），ContextMenuRadioGroup + ContextMenuRadioItem 是一组互斥选项（role=menuitemradio）；aria-checked 让读屏能报出当前选中项，用普通 Item 自画一个勾看不出差别，但这层语义会丢。",
+      code: `<ContextMenuContent>
+  <ContextMenuCheckboxItem defaultChecked>置顶该任务</ContextMenuCheckboxItem>
+  <ContextMenuSeparator />
+  <ContextMenuGroup>
+    <ContextMenuGroupLabel>优先级</ContextMenuGroupLabel>
+    <ContextMenuRadioGroup defaultValue="medium">
+      <ContextMenuRadioItem value="low">低</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="medium">中</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="high">高</ContextMenuRadioItem>
+    </ContextMenuRadioGroup>
+  </ContextMenuGroup>
+</ContextMenuContent>`,
+      render: () => <SelectionDemo />,
+    },
+    {
       title: "级联子菜单",
       description: "ContextMenuSub 嵌套 SubTrigger + SubContent，从父项右侧展开，支持多层嵌套。",
       code: `<ContextMenuSub>
@@ -120,6 +164,7 @@ export const contextMenuShowcase: ShowcaseSpec = {
     { name: "default", render: () => <Demo /> },
     { name: "分组", render: () => <Demo withGroup /> },
     { name: "级联子菜单", render: () => <Demo withSub /> },
+    { name: "勾选项与单选项", render: () => <SelectionDemo /> },
   ],
   renderWithProps: (p) => (
     <Demo withGroup={p.withGroup as boolean} withSub={p.withSub as boolean} />

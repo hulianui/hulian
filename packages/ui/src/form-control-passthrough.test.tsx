@@ -7,6 +7,7 @@ import { Checkbox } from "./checkbox";
 import { CheckboxGroup } from "./checkbox-group";
 import { Choicebox, ChoiceboxGroup } from "./choicebox";
 import { CodeEditor } from "./code-editor";
+import { Combobox, ComboboxChips, ComboboxInput, ComboboxTrigger } from "./combobox";
 import { ColorSwatchPicker } from "./color-swatch-picker";
 import { EmojiPicker } from "./emoji-picker";
 import { IconPicker } from "./icon-picker";
@@ -67,6 +68,26 @@ const CASES: [name: string, node: ReactElement][] = [
   ["Switch", <Switch data-testid="probe" />],
   ["Toggle", <Toggle data-testid="probe" />],
   ["NumberField", <NumberField data-testid="probe" />],
+  // Combobox 三件（#160）：这几个的「根」不是外壳 span 而是内层 input / 触发按钮，
+  // 探针照样只在 rest 真的展开到那个节点时才出现 —— 断言一句不用改。
+  [
+    "ComboboxInput",
+    <Combobox items={[{ value: "a", label: "A" }]}>
+      <ComboboxInput aria-label="A" data-testid="probe" />
+    </Combobox>,
+  ],
+  [
+    "ComboboxTrigger",
+    <Combobox items={[{ value: "a", label: "A" }]}>
+      <ComboboxTrigger aria-label="A" data-testid="probe" />
+    </Combobox>,
+  ],
+  [
+    "ComboboxChips",
+    <Combobox items={[{ value: "a", label: "A" }]} multiple>
+      <ComboboxChips aria-label="A" data-testid="probe" />
+    </Combobox>,
+  ],
 ];
 
 describe("表单件把根节点原生属性透传出去（#157）", () => {

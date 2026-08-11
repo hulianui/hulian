@@ -30,7 +30,29 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | sideOffset | `number` | `8` | Distance from the trigger in pixels. |
+| plain | `boolean` | `false` | No chrome: skip the wrapper around children (spacing plus `text-sm text-foreground`) so children land directly in the popup. |
+| arrow | `boolean` | `true` | Whether to render the arrow pointing at the trigger. |
 | className | `string` | — | Additional class name. |
+
+### plain and arrow: edge-to-edge popups whose content brings its own appearance
+
+`PopoverContent` wraps children in a `text-sm text-foreground` skin element, and adds `mt-2` to separate it from the header **only when a title or description is present**. When the popup holds one whole block that brings its own appearance and needs to reach the edges — a search row above a tag list, a `Calendar` panel, or a popup used as a flush menu — pair `className="p-0"` with `plain`:
+
+```tsx
+<PopoverContent plain arrow={false} align="start" className="w-auto p-0">
+  <div className="flex items-center gap-2 border-b border-border p-2">
+    <Search className="size-3" />
+    <Input variant="cell" placeholder="Search tags" />
+  </div>
+  <div className="py-1">{/* Tag list */}</div>
+</PopoverContent>
+```
+
+`p-0` clears only the popup's own padding, never the inner skin element: `className` lands on the popup and cannot reach inside, so do not reach in with arbitrary variants such as `[&>div]:mt-0`, which turns internal structure into an external contract.
+
+`arrow` and `plain` are **two independent switches**, because the arrow describes the relationship between popup and trigger rather than the appearance of the content. A flush menu usually turns both off, while a plain text hint without a title needs only `plain`, and a full-bleed panel that should still point at its source keeps the arrow.
+
+The same `plain` name means the same thing as [Card](../card/card.md)'s `variant="plain"` and the panel `plain` on [Accordion](../accordion/accordion.md) and [Collapsible](../collapsible/collapsible.md): **when the content brings its own appearance, the answer is no skin rather than a different skin**.
 
 ## Slots
 
@@ -60,6 +82,7 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 ## Usage guidelines
 
 - Inject trigger and close elements through `render`. Do not nest another interactive element inside PopoverTrigger, which can create `<button>` inside `<button>`.
+- Add `plain` (usually with `className="p-0"`) when the popup content brings its own padding, borders, or body color. Do not reach into the internal skin element with arbitrary variants such as `[&>div]:mt-0`.
 - Combining hover opening with focus closing on a focus-managing popover can flicker: opening moves focus inside, blur closes it, and restored focus reopens it. See [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]]. If adapting this component to hover behavior, set `initialFocus` and `finalFocus` to false.
 
 ## Related

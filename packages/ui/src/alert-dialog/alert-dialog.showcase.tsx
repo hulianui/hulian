@@ -9,6 +9,20 @@ const cancelCls =
 const dangerCls =
   "inline-flex h-8 items-center rounded-[var(--radius)] bg-danger px-3 text-sm font-medium text-danger-foreground outline-none transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring";
 
+// 警示图标：库内不导出图标资产，示例用内联 svg（消费方通常来自 lucide 等图标库）。
+// 颜色不写在组件里，由调用方给 token 类 —— 危险 text-danger / 警告 text-warning。
+const WarnIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="text-danger">
+    <path
+      d="M10 2.5 1.8 16.5h16.4L10 2.5Zm0 5v4.2M10 14.2h.01"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 function Demo() {
   return (
     <AlertDialog>
@@ -59,6 +73,46 @@ export const alertDialogShowcase: ShowcaseSpec = {
           <AlertDialogContent title="确认退出登录？">
             <AlertDialogClose className={cancelCls}>取消</AlertDialogClose>
             <AlertDialogClose className={dangerCls}>退出</AlertDialogClose>
+          </AlertDialogContent>
+        </AlertDialog>
+      ),
+    },
+    {
+      title: "正文块 + 状态图标",
+      description:
+        "body 放块级正文（删除对象摘要卡这类），渲染在说明之下、动作区之上；description 只能放 phrasing content（它是 <p>）。icon 落在标题行左侧，颜色由调用方给 token 类。",
+      code: `<AlertDialogContent
+  icon={<WarnIcon className="text-danger" />}
+  title="确认删除合同模板"
+  description="将从合同库 / 公开库 / 各公司库中一并移除，无法恢复。"
+  body={
+    <div className="rounded-[var(--radius)] border border-border p-3">
+      <div className="font-medium">冠亚/全日制劳动合同</div>
+      <div className="text-xs text-muted-foreground">副本冠亚-全日制劳动合同文本.docx</div>
+    </div>
+  }
+>
+  <AlertDialogClose>取消</AlertDialogClose>
+  <AlertDialogClose>永久删除</AlertDialogClose>
+</AlertDialogContent>`,
+      render: () => (
+        <AlertDialog>
+          <AlertDialogTrigger className={triggerCls}>删除合同模板</AlertDialogTrigger>
+          <AlertDialogContent
+            icon={<WarnIcon />}
+            title="确认删除合同模板"
+            description="将从合同库 / 公开库 / 各公司库中一并移除，无法恢复。"
+            body={
+              <div className="rounded-[var(--radius)] border border-border p-3">
+                <div className="font-medium">冠亚/全日制劳动合同</div>
+                <div className="text-xs text-muted-foreground">
+                  副本冠亚-全日制劳动合同文本.docx
+                </div>
+              </div>
+            }
+          >
+            <AlertDialogClose className={cancelCls}>取消</AlertDialogClose>
+            <AlertDialogClose className={dangerCls}>永久删除</AlertDialogClose>
           </AlertDialogContent>
         </AlertDialog>
       ),

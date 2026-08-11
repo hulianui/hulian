@@ -1,6 +1,8 @@
 // 零依赖语法着色器：单条多分支正则左→右扫描，按优先级吞 token，token 间补 plain。
 // 因 comment/string 分支在前并整段吞掉，故字符串里的关键字/数字不会被二次着色（标准 mini-highlighter 技法）。
-// 覆盖 JS 家族（js/jsx/ts/tsx/json）与 Shell；非这两类语言按 JS 家族处理（多数片段是 JS/JSX）。
+// 覆盖 JS 家族（js/jsx/ts/tsx/json）、Shell 与 Python；不在这三类里的语言按 JS 家族处理
+// （多数片段是 JS/JSX）——注意那是「近似」而不是「支持」：`#` 注释族（yaml/toml/ini/dockerfile）
+// 与 SQL 的 `--` 注释都不认，注释正文会被当代码再扫一遍。CSS 另有 code-editor/tokenizeCss。
 // 纯函数无 React 依赖 → 可单测；产出 token 列表交由组件套 <span>（避免 dangerouslySetInnerHTML 转义风险）。
 
 export type CodeTokenType =
@@ -58,7 +60,47 @@ const JS_RE = new RegExp(
   "g",
 );
 
+// Python 关键字（含 True/False/None 这三个字面量常量——高亮惯例里它们与关键字同档）。
+// 刻意不收 match / case：它们是软关键字，当变量名用是合法且常见的，收进来就是新的误着色。
+const PY_KEYWORDS = [
+  "False", "None", "True", "and", "as", "assert", "async", "await", "break",
+  "class", "continue", "def", "del", "elif", "else", "except", "finally",
+  "for", "from", "global", "if", "import", "in", "is", "lambda", "nonlocal",
+  "not", "or", "pass", "raise", "return", "try", "while", "with", "yield",
+];
+
+// 常用内置名：不是关键字，但读代码时和关键字一样是「语言给的」。借 tag 档与 keyword 区分开。
+const PY_BUILTINS = [
+  "print", "input", "int", "str", "float", "list", "dict", "set", "tuple",
+  "len", "range", "open", "enumerate", "zip", "sorted", "sum", "min", "max",
+  "abs", "type", "isinstance",
+];
+
+// 分支顺序即优先级：comment > string > decorator(attr) > keyword > builtin(tag) > number。
+// 字符串分支的要点：
+//   1. 三引号必须排在单引号前，否则 `"""x"""` 会被拆成 `""` + `x` + `""`（issue #167）；
+//   2. 前缀 f/r/b/u（及 rb/fr 组合、大小写任意）要吞进 string token 里，否则 f 掉在外面变 plain；
+//      前缀整组可选并自带 (?<![\w"'])，这样 `printf"x"` 的 f 不算前缀，而裸引号仍能从 `"` 起匹配
+//      （把 lookbehind 写在整条 string 分支最前面会连裸引号一起否掉）；
+//   3. 未闭合的三引号用 `$` 兜底整段吞掉，避免把后半个文件当代码扫。
+// f-string 内的 `{expr}` 不再拆开着色——保持整段 string 与「字符串里不二次着色」的既有取舍一致。
+const PY_RE = new RegExp(
+  [
+    /(?<comment>#[^\n]*)/.source,
+    /(?<string>(?:(?<![\w"'])[rRbBuUfF]{1,2})?(?:"""[\s\S]*?(?:"""|$)|'''[\s\S]*?(?:'''|$)|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'))/
+      .source,
+    /(?<attr>@[A-Za-z_]\w*(?:\.\w+)*)/.source,
+    `(?<keyword>\\b(?:${PY_KEYWORDS.join("|")})\\b)`,
+    `(?<tag>\\b(?:${PY_BUILTINS.join("|")})\\b)`,
+    // 0b/0o/0x、下划线分隔、指数、虚数后缀 j
+    /(?<number>\b(?:0[bB][01_]+|0[oO][0-7_]+|0[xX][0-9a-fA-F_]+|\d[\d_]*(?:\.\d[\d_]*)?(?:[eE][+-]?\d+)?[jJ]?)\b)/
+      .source,
+  ].join("|"),
+  "g",
+);
+
 const SHELL_LANGS = new Set(["bash", "sh", "shell", "zsh", "console"]);
+const PYTHON_LANGS = new Set(["py", "python", "python3"]);
 
 function pick(groups: Record<string, string | undefined> | undefined): CodeTokenType {
   if (!groups) return "plain";
@@ -155,6 +197,26 @@ function tokenizeShell(code: string): CodeToken[] {
 }
 
 export function tokenizeCode(code: string, lang?: string): CodeToken[] {
-  if (lang && SHELL_LANGS.has(lang.toLowerCase())) return tokenizeShell(code);
+  const key = lang?.toLowerCase();
+  if (key && SHELL_LANGS.has(key)) return tokenizeShell(code);
+  if (key && PYTHON_LANGS.has(key)) return tokenizeWithRegex(code, PY_RE);
   return tokenizeWithRegex(code, JS_RE);
+}
+
+/**
+ * 把 token 流按换行切成「每行一个 token 数组」。
+ * 行号、当前行底色这类逐行渲染都依赖「一行一个盒子」，而着色器产出的 token
+ * （块注释、模板串、三引号文档串）会横跨多行，所以要在这里再切一刀。
+ * 保证：返回的行数恒等于 code.split("\n").length（空行返回空数组），行内不含 "\n"。
+ */
+export function splitTokensByLine(tokens: CodeToken[]): CodeToken[][] {
+  const lines: CodeToken[][] = [[]];
+  for (const token of tokens) {
+    const parts = token.value.split("\n");
+    parts.forEach((part, i) => {
+      if (i > 0) lines.push([]);
+      if (part.length > 0) lines[lines.length - 1].push({ type: token.type, value: part });
+    });
+  }
+  return lines;
 }

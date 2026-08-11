@@ -11,7 +11,7 @@ describe("Banner", () => {
 
   it("默认 tone=info soft 皮肤", () => {
     const { getByRole } = render(<Banner>x</Banner>);
-    expect(getByRole("status").className).toContain("text-primary");
+    expect(getByRole("status").className).toContain("text-info");
   });
 
   it("solid danger：实色填充", () => {

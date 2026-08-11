@@ -73,12 +73,12 @@ describe("Toast", () => {
     expect(title!.closest("[class*='border-l-warning']")).not.toBeNull();
   });
 
-  it("info tone：标题 text-primary", () => {
+  it("info tone：标题 text-info", () => {
     render(<ToastProvider />);
     act(() => {
       toast({ title: "提示", tone: "info" });
     });
-    expect(titleEl("提示", "text-primary")).toBeTruthy();
+    expect(titleEl("提示", "text-info")).toBeTruthy();
   });
 
   it("默认 tone=neutral：标题 text-foreground", () => {

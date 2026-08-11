@@ -16,7 +16,7 @@ export const pressable = {
 // 让"按下去有反应"这件事能铺满全库，而不是只有 Button 一个组件享受。
 //
 // duration-150 / ease-out 分别对齐 motionDuration.fast 与 motionEase.out —— ease-out 工具类
-// 的曲线由 @hulianui/tokens preset.css 的 @theme 覆写为瑚琏曲线，故此处与 JS 侧同源。
+// 的曲线由 @hulianui/tokens preset-opinionated.css 的 @theme 覆写为瑚琏曲线，故此处与 JS 侧同源。
 //
 // ⚠️ 用法：**放在 cn() 末尾、替换掉组件原有的 transition-colors / transition-[...]**。
 // 它自带一份完整的 transition-property 列表（scale + 常见颜色/阴影/滤镜），因为 tailwind-merge

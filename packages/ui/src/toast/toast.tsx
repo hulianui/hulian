@@ -23,14 +23,14 @@ export function toast(options: ToastOptions): string {
 // tone → 左边条 + 标题着色（与 Alert 语义 token 一致；neutral 用中性 border/foreground）。
 const toneBorder: Record<ToastTone, string> = {
   neutral: "border-l-border",
-  info: "border-l-primary",
+  info: "border-l-info",
   success: "border-l-success",
   warning: "border-l-warning",
   danger: "border-l-danger",
 };
 const toneTitle: Record<ToastTone, string> = {
   neutral: "text-foreground",
-  info: "text-primary",
+  info: "text-info",
   success: "text-success",
   warning: "text-warning",
   danger: "text-danger",

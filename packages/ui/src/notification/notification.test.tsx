@@ -30,12 +30,12 @@ describe("Notification（命令式）", () => {
     expect(card.getAttribute("role")).toBe("alert");
   });
 
-  it("info 左边条用 primary token（名同 Alert）", () => {
+  it("info 左边条用 info token（取值同 Alert，#173）", () => {
     render(<NotificationProvider />);
     act(() => {
       notification.info({ title: "信息标题-唯一", duration: 0 });
     });
-    expect(cardOf("信息标题-唯一").className).toContain("border-l-primary");
+    expect(cardOf("信息标题-唯一").className).toContain("border-l-info");
   });
 
   it("placement=bottomLeft 落在对应 viewport（flex-col-reverse + 左下定位）", () => {

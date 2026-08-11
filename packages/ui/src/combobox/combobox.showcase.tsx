@@ -66,6 +66,38 @@ function InlineDemo() {
   );
 }
 
+// 搜索框形态：左侧放大镜 + 去掉右侧 chevron，字段读起来才是「搜索」而不是「下拉选择」。
+// aria-label 直接传给 ComboboxInput（落到内层 input）——不必再包一层 <label> + .sr-only。
+const SearchGlyph = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+function SearchDemo() {
+  return (
+    <div className="w-60">
+      <Combobox items={FRUITS}>
+        <ComboboxInput
+          size="sm"
+          prefix={<SearchGlyph />}
+          showChevron={false}
+          placeholder="搜索水果"
+          aria-label="搜索水果"
+        />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>
+    </div>
+  );
+}
+
 export const comboboxShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -97,6 +129,28 @@ export const comboboxShowcase: ShowcaseSpec = {
   </ComboboxContent>
 </Combobox>`,
       render: () => <InlineDemo />,
+    },
+    {
+      title: "搜索框形态",
+      description:
+        "prefix 放大镜 + showChevron={false}：字段本身就是搜索框（输入过滤 + 选中跳转），不该长得像下拉选择。独立使用时 aria-label 直接传给 ComboboxInput 即可，它落到内层 input。",
+      code: `<Combobox items={fruits}>
+  <ComboboxInput
+    size="sm"
+    prefix={<SearchIcon />}
+    showChevron={false}
+    placeholder="搜索水果"
+    aria-label="搜索水果"
+  />
+  <ComboboxContent>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+      render: () => <SearchDemo />,
     },
     {
       title: "默认已选值",
@@ -174,6 +228,7 @@ export const comboboxShowcase: ShowcaseSpec = {
     { name: "无效态", render: () => <Demo invalid /> },
     { name: "small", render: () => <Demo size="sm" /> },
     { name: "内联自动补全", render: () => <InlineDemo /> },
+    { name: "搜索框形态", render: () => <SearchDemo /> },
   ],
   renderWithProps: (p) => (
     <Demo

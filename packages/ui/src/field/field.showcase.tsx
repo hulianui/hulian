@@ -42,6 +42,49 @@ export const fieldShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "横排设置行",
+      description: "orientation=horizontal：标签区在左、控件在右、错误另起一行占满整行。",
+      code: `<Field
+  orientation="horizontal"
+  label="主题"
+  description="选择你偏好的配色方案"
+>
+  <Input defaultValue="深色" />
+</Field>`,
+      render: () => (
+        <Field
+          orientation="horizontal"
+          label="主题"
+          description="选择你偏好的配色方案"
+          className="w-96"
+        >
+          <Input defaultValue="深色" />
+        </Field>
+      ),
+    },
+    {
+      title: "横排定宽标签列",
+      description: "顶掉默认列模板即可换成定宽标签 + 控件填满，不需要额外的 prop。",
+      code: `<Field
+  orientation="horizontal"
+  label="邮箱"
+  error="邮箱格式不正确"
+  className="grid-cols-[6rem_1fr]"
+>
+  <Input defaultValue="not-an-email" />
+</Field>`,
+      render: () => (
+        <Field
+          orientation="horizontal"
+          label="邮箱"
+          error="邮箱格式不正确"
+          className="w-96 grid-cols-[6rem_1fr]"
+        >
+          <Input defaultValue="not-an-email" />
+        </Field>
+      ),
+    },
+    {
       title: "禁用态",
       description: "disabled 透传 Field.Root，控件随之禁用。",
       code: `<Field label="邮箱" disabled>
@@ -60,6 +103,13 @@ export const fieldShowcase: ShowcaseSpec = {
     { prop: "error", type: "text", defaultValue: "", label: "error（非空即标红+显错）" },
     { prop: "invalid", type: "boolean", defaultValue: false, label: "invalid" },
     { prop: "disabled", type: "boolean", defaultValue: false, label: "disabled" },
+    {
+      prop: "orientation",
+      type: "select",
+      options: ["vertical", "horizontal"],
+      defaultValue: "vertical",
+      label: "orientation",
+    },
   ],
   states: [
     {
@@ -94,6 +144,19 @@ export const fieldShowcase: ShowcaseSpec = {
         </Field>
       ),
     },
+    {
+      name: "horizontal",
+      render: () => (
+        <Field
+          orientation="horizontal"
+          label="主题"
+          description="选择你偏好的配色方案"
+          className="w-96"
+        >
+          <Input defaultValue="深色" />
+        </Field>
+      ),
+    },
   ],
   renderWithProps: (p) => (
     <Field
@@ -102,7 +165,8 @@ export const fieldShowcase: ShowcaseSpec = {
       error={(p.error as string) || undefined}
       invalid={p.invalid as boolean}
       disabled={p.disabled as boolean}
-      className="w-72"
+      orientation={p.orientation as "vertical" | "horizontal"}
+      className={p.orientation === "horizontal" ? "w-96" : "w-72"}
     >
       <Input placeholder="you@work.com" />
     </Field>
@@ -110,5 +174,7 @@ export const fieldShowcase: ShowcaseSpec = {
   toCode: (p) =>
     `<Field label="${p.label}"${p.description ? ` description="${p.description}"` : ""}${
       p.error ? ` error="${p.error}"` : ""
-    }${p.invalid ? " invalid" : ""}${p.disabled ? " disabled" : ""}>\n  <Input placeholder="you@work.com" />\n</Field>`,
+    }${p.invalid ? " invalid" : ""}${p.disabled ? " disabled" : ""}${
+      p.orientation === "horizontal" ? ` orientation="horizontal"` : ""
+    }>\n  <Input placeholder="you@work.com" />\n</Field>`,
 };

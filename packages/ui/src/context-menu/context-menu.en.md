@@ -4,7 +4,7 @@ name: ContextMenu
 category: navigation
 group: action
 tags: []
-exports: [ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent]
+exports: [ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ Use ContextMenu to open pointer-anchored actions from a right click or long pres
 
 ## Import
 ```ts
-import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from "@hulianui/ui"
+import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from "@hulianui/ui"
 ```
 
 ## Props
@@ -33,6 +33,38 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use danger for destructive actions. |
 | className | `string` | — | Additional class name. |
 
+**ContextMenuCheckboxItem** — a setting that can be toggled on or off. Renders `role="menuitemcheckbox"` plus `aria-checked`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| checked | `boolean` | — | Whether the item is ticked (controlled). For an uncontrolled item use `defaultChecked` instead. |
+| defaultChecked | `boolean` | `false` | Whether the item is initially ticked (uncontrolled). |
+| disabled | `boolean` | `false` | Whether the item is unavailable. |
+| closeOnClick | `boolean` | `false` | Whether selecting the item closes the menu. Checkbox items keep the menu open by default so several can be toggled in a row. |
+| label | `string` | — | Text override for keyboard type-ahead. |
+| variant | `"default" \| "danger"` | `"default"` | Visual treatment; use danger for destructive actions. |
+| className | `string` | — | Additional class name. |
+
+**ContextMenuRadioGroup** — container for a set of mutually exclusive options. Every `ContextMenuRadioItem` must be nested inside one.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| value | `string` | — | Value of the currently selected item (controlled). For an uncontrolled group use `defaultValue` instead. |
+| defaultValue | `string` | — | Value of the initially selected item (uncontrolled). |
+| disabled | `boolean` | `false` | Whether the whole group is unavailable. |
+| className | `string` | — | Additional class name. |
+
+**ContextMenuRadioItem** — one option in a mutually exclusive set. Renders `role="menuitemradio"` plus `aria-checked`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| value* | `string` | — | Value of this item; it is selected when it equals the value of its `ContextMenuRadioGroup`. |
+| disabled | `boolean` | `false` | Whether the item is unavailable. |
+| closeOnClick | `boolean` | `false` | Whether selecting the item closes the menu. Radio items keep the menu open by default, so pass `true` if picking a value should dismiss it. |
+| label | `string` | — | Text override for keyboard type-ahead. |
+| variant | `"default" \| "danger"` | `"default"` | Visual treatment; use danger for destructive actions. |
+| className | `string` | — | Additional class name. |
+
 **ContextMenuSubTrigger**: props `disabled` / `label` / `variant?: "default" \| "danger"` / `className`; slot `children`.
 **ContextMenuContent / ContextMenuSubContent**: prop `className`; slot `children`.
 **ContextMenuTrigger / Group / GroupLabel / Separator / Sub**: structural wrappers around the corresponding Base UI primitives, forwarding `children` and `className`.
@@ -41,13 +73,15 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 
 | Event | Type | Description |
 |------|------|------|
-| onClick | `MouseEventHandler<HTMLElement>` | `ContextMenuItem` click handler. |
+| onClick | `MouseEventHandler<HTMLElement>` | Click handler for `ContextMenuItem`, `ContextMenuCheckboxItem`, and `ContextMenuRadioItem`. |
+| onCheckedChange | `(checked: boolean) => void` | Called when a `ContextMenuCheckboxItem` is ticked or unticked. |
+| onValueChange | `(value: string) => void` | Called when the value of a `ContextMenuRadioGroup` changes. |
 
 ## Slots
 
 | Slot | Type | Description |
 |------|------|------|
-| children | `ReactNode` | Content of a `ContextMenuItem`. |
+| children | `ReactNode` | Content of a `ContextMenuItem`; for `ContextMenuCheckboxItem` and `ContextMenuRadioItem` it renders in the second column, to the right of the selection marker; a `ContextMenuRadioGroup` holds a set of `ContextMenuRadioItem` elements. |
 
 ## Example
 ```tsx
@@ -71,8 +105,28 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 </ContextMenu>
 ```
 
+Checkbox and radio items, the usual shape of a task-card context menu:
+```tsx
+<ContextMenuContent>
+  <ContextMenuCheckboxItem defaultChecked>Pin this task</ContextMenuCheckboxItem>
+  <ContextMenuSeparator />
+  <ContextMenuGroup>
+    <ContextMenuGroupLabel>Priority</ContextMenuGroupLabel>
+    <ContextMenuRadioGroup value={priority} onValueChange={setPriority}>
+      <ContextMenuRadioItem value="low" closeOnClick>Low</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="medium" closeOnClick>Medium</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="high" closeOnClick>High</ContextMenuRadioItem>
+    </ContextMenuRadioGroup>
+  </ContextMenuGroup>
+</ContextMenuContent>
+```
+(`closeOnClick` dismisses the menu once a value is picked; it defaults to `false`, which keeps the menu open for further edits.)
+
 ## Usage guidelines
 
+- **Do not build a set of options out of `ContextMenuItem` plus a hand-drawn tick.** It looks exactly like `ContextMenuCheckboxItem` / `ContextMenuRadioItem`, which is why the mistake is invisible: the element falls back to `role="menuitem"` with no `aria-checked`, so screen reader users hear a few peer actions instead of one group of mutually exclusive options, and cannot tell which one is selected. Use `ContextMenuCheckboxItem` for toggleable settings and `ContextMenuRadioGroup` plus `ContextMenuRadioItem` for exclusive choices.
+- `ContextMenuRadioItem` must be nested in a `ContextMenuRadioGroup`, otherwise it never renders a selected state.
+- The selection marker occupies a first column as wide as the `size-4` icon of a plain `ContextMenuItem`, so text left edges line up in a mixed menu. Keep icons on plain items at `size-4`.
 - Wrap grouped entries in `ContextMenuGroup` and label them with `ContextMenuGroupLabel` for correct group semantics. Bare items form one unlabelled list.
 - When `ContextMenuItem` children contain rich content such as an icon, add `label` for keyboard type-ahead.
 

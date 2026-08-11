@@ -77,7 +77,7 @@ export const modal = {
   warning: (options: ModalOptions) => open("warning", options),
 };
 
-// type → 图标组件 + 主色（吃 success/warning 语义 token，明暗自适配）。
+// type → 图标组件 + 语义色（吃 info/success/warning/danger 语义 token，明暗自适配）。
 const typeIcon: Record<ModalType, typeof Info> = {
   confirm: CircleHelp,
   info: Info,
@@ -86,8 +86,9 @@ const typeIcon: Record<ModalType, typeof Info> = {
   warning: TriangleAlert,
 };
 const typeColor: Record<ModalType, string> = {
+  // confirm 留主色：那是「请你做决定」的主操作语气；info 走独立 info 色（#173）。
   confirm: "text-primary",
-  info: "text-primary",
+  info: "text-info",
   success: "text-success",
   error: "text-danger",
   warning: "text-warning",

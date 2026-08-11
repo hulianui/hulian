@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|ripple|ripple-button|ripple-grid|route-tabs|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -94,6 +94,10 @@
           "--foreground",
           "--hairline",
           "--info",
+          "--info-border",
+          "--info-foreground",
+          "--info-hover",
+          "--info-subtle",
           "--muted",
           "--muted-foreground",
           "--primary",
@@ -233,6 +237,13 @@
       "source": "packages/ui/src/accordion/accordion.md"
     },
     {
+      "id": "component/accordion/pitfall/3",
+      "scope": "accordion",
+      "title": "Accordion",
+      "rule": "面板内容自带内边距/边框/正文色时加 `plain`，别用 `[&>div]:p-0` 之类的任意变体选择器去压库内那层皮肤 div。",
+      "source": "packages/ui/src/accordion/accordion.md"
+    },
+    {
       "id": "component/action-sheet/pitfall/1",
       "scope": "action-sheet",
       "title": "ActionSheet",
@@ -355,18 +366,46 @@
       "id": "component/alert/pitfall/4",
       "scope": "alert",
       "title": "Alert",
-      "rule": "**新代码用 `tone=\"brand\"`**，与 Tag / Button / Badge 同一套取值。`info` 是本组件早于全库 tone 统一时留下的别名，配方完全相同、不会移除，但混用两个名字会让「跨组件搜同一语气」搜不全。",
+      "rule": "**`info` 与 `brand` 在 0.8.0 起是两个颜色，不能再互换**。此前 `info` 只是 `brand` 的别名（当时库里没有 info 语义色，只能借主色顶替）；`@hulianui/tokens` 补齐 `--color-info` 后，`brand` 仍是主色、`info` 改走与主色差 30° 色相的信息色。**升级后默认 Alert（`tone=\"info\"`）的颜色会变**——想保持原来的品牌蓝，显式写 `tone=\"brand\"`。选哪个按语义：这条在讲产品/主操作用 `brand`，只是说明性文字用 `info`。",
       "source": "packages/ui/src/alert/alert.md"
     },
     {
       "id": "component/alert-dialog/pitfall/1",
       "scope": "alert-dialog",
       "title": "AlertDialog",
-      "rule": "故意不响应点遮罩/Esc 关闭——这是 AlertDialog 的设计意图（强制决策）；想要可随手关闭就改用 Dialog，别在这里恢复轻关闭行为。",
+      "rule": "**`description` 只能放 phrasing content**（文本、`<span>`、`<strong>`、`<a>`）。它底层是 `AlertDialog.Description`，渲染成 `<p>`；塞 `<div>` / `<ul>` / 卡片是非法嵌套，浏览器会提前闭合 `<p>`，React 报 hydration mismatch。**块级正文一律放 `body`**，别用 `<span className=\"block\">` 去绕。",
       "source": "packages/ui/src/alert-dialog/alert-dialog.md"
     },
     {
       "id": "component/alert-dialog/pitfall/2",
+      "scope": "alert-dialog",
+      "title": "AlertDialog",
+      "rule": "`children` 是**底部动作区**（`justify-end` 的按钮行），不是正文——正文塞进去会和按钮挤在一行。这与 [Dialog](../dialog/dialog.md) 相反（Dialog 的 `children` 是正文、`footer` 才是动作区），两边不要照抄。",
+      "source": "packages/ui/src/alert-dialog/alert-dialog.md"
+    },
+    {
+      "id": "component/alert-dialog/pitfall/3",
+      "scope": "alert-dialog",
+      "title": "AlertDialog",
+      "rule": "`icon` 只负责与标题/说明的 flex 对齐，**不带颜色**：危险操作自己给 `text-danger`，警告给 `text-warning`，否则它就是普通前景色。",
+      "source": "packages/ui/src/alert-dialog/alert-dialog.md"
+    },
+    {
+      "id": "component/alert-dialog/pitfall/4",
+      "scope": "alert-dialog",
+      "title": "AlertDialog",
+      "rule": "AlertDialog 的弹窗没有内部滚动区（不同于 Dialog 的 `max-h` + 正文滚动），`body` 放长内容会把弹窗顶穿视口——需要长正文说明这已经不是\"强制决策\"场景，改用 Dialog。",
+      "source": "packages/ui/src/alert-dialog/alert-dialog.md"
+    },
+    {
+      "id": "component/alert-dialog/pitfall/5",
+      "scope": "alert-dialog",
+      "title": "AlertDialog",
+      "rule": "故意不响应点遮罩/Esc 关闭——这是 AlertDialog 的设计意图（强制决策）；想要可随手关闭就改用 Dialog，别在这里恢复轻关闭行为。",
+      "source": "packages/ui/src/alert-dialog/alert-dialog.md"
+    },
+    {
+      "id": "component/alert-dialog/pitfall/6",
       "scope": "alert-dialog",
       "title": "AlertDialog",
       "rule": "取消按钮必须用 `AlertDialogClose` 才能关闭弹窗；确认按钮通常也用 `AlertDialogClose` 包裹并在其 onClick 执行操作。",
@@ -1647,6 +1686,34 @@
       "source": "packages/ui/src/click-spark/click-spark.md"
     },
     {
+      "id": "component/code-block/pitfall/1",
+      "scope": "code-block",
+      "title": "CodeBlock",
+      "rule": "**`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里三类之外的语言一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。",
+      "source": "packages/ui/src/code-block/code-block.md"
+    },
+    {
+      "id": "component/code-block/pitfall/2",
+      "scope": "code-block",
+      "title": "CodeBlock",
+      "rule": "**行号是装饰，不是内容**。它 `aria-hidden` 且不可选中：屏幕阅读器不念，用户框选整段代码复制时也不会混进 `1 2 3`；复制按钮复制的始终是原始 `code`。反过来说，别把「行号」当成可复制的数据来源。",
+      "source": "packages/ui/src/code-block/code-block.md"
+    },
+    {
+      "id": "component/code-block/pitfall/3",
+      "scope": "code-block",
+      "title": "CodeBlock",
+      "rule": "**行号列会一直钉在左侧**（`sticky left-0` + 不透明底色）。长行横向滚动时行号不会滑走，代价是滚过去的代码会被行号列遮住一小条——这是刻意的取舍，长行看行号比看那一小条代码重要。",
+      "source": "packages/ui/src/code-block/code-block.md"
+    },
+    {
+      "id": "component/code-block/pitfall/4",
+      "scope": "code-block",
+      "title": "CodeBlock",
+      "rule": "复制按钮读的是 `navigator.clipboard`，只在安全上下文（HTTPS / localhost）可用；HTTP 局域网页面里点了不会有反应。",
+      "source": "packages/ui/src/code-block/code-block.md"
+    },
+    {
       "id": "component/code-diff/pitfall/1",
       "scope": "code-diff",
       "title": "CodeDiff",
@@ -1749,6 +1816,13 @@
       "scope": "collapsible",
       "title": "Collapsible",
       "rule": "受控用 `open` + `onOpenChange`，非受控用 `defaultOpen`，二者不要混用。",
+      "source": "packages/ui/src/collapsible/collapsible.md"
+    },
+    {
+      "id": "component/collapsible/pitfall/3",
+      "scope": "collapsible",
+      "title": "Collapsible",
+      "rule": "面板内容自带内边距/边框/正文色时加 `plain`，别再包一层去抢颜色——内边距抢不回来。",
       "source": "packages/ui/src/collapsible/collapsible.md"
     },
     {
@@ -1923,18 +1997,39 @@
       "id": "component/combobox/pitfall/5",
       "scope": "combobox",
       "title": "Combobox",
-      "rule": "**`items` 给到 100 项及以上时列表会自动虚拟化**（无需传 `virtualized`）：只有视口内的项在 DOM 里，行高按 **32px 固定估算**，不做逐项测量。默认 `ComboboxItem` 恰好是 32px，所以通常无感。**如果**你的 render fn 返回的项高度不是 32px（两行文案、带头像/副标题、自定义 `className` 改了 padding 或字号），那么在 ≥100 项时滚动条长度与项的落位会逐渐偏移——**页面不会报任何错，短列表下也复现不出来**，只有滚到列表中后段才看得出跳动。这种项请显式传 `virtualized={false}` 关掉，或把项高度对齐到 32px。",
+      "rule": "**`ComboboxInput` / `ComboboxChips` 的剩余原生属性落在内层 `<input>`，不是外壳**：`role=\"combobox\"`、可聚焦性、表单归属都在内层，`aria-label` / `id` / `name` / `onBlur` 挂在外壳 `<span>` / chips 容器上一律无效。所以独立使用（不放在 [Field](../field/field.md) 里）时，直接 `<ComboboxInput aria-label=\"搜索任务\" />` 就够了，不用再包一层 `<label>` + `.sr-only`；接 react-hook-form 的 `Controller` 时 `field.onBlur` 也是直接传。要给外层容器加钩子请用 `className`。`ComboboxTrigger` 没有外壳，剩余属性就落在按钮自身。",
       "source": "packages/ui/src/combobox/combobox.md"
     },
     {
       "id": "component/combobox/pitfall/6",
       "scope": "combobox",
       "title": "Combobox",
-      "rule": "虚拟化同样影响**依赖「选项全在 DOM 里」的测试与脚本**：`getAllByRole(\"option\")` 只会拿到视口内那几条，`document.querySelector` 找不到未滚动到的项。断言总数请改用列表容器上的 `data-hulian-virtual-count`，或对该用例传 `virtualized={false}`。",
+      "rule": "组件自身的 `data-invalid` / 皮肤类名顶不掉：`rest` 展开在最前（同 `docs/consuming.md` 第 7 节的全库口径），传 `aria-invalid={false}` 不会关掉 `invalid` 的无效态。",
       "source": "packages/ui/src/combobox/combobox.md"
     },
     {
       "id": "component/combobox/pitfall/7",
+      "scope": "combobox",
+      "title": "Combobox",
+      "rule": "搜索框形态要**同时**给 `prefix` 和 `showChevron={false}`：只加放大镜、右边还留着 chevron 的字段读起来仍是「下拉选择」。反过来，弹层内搜索（图4 范式）的搜索框由 `ComboboxContent` 的 `searchPlaceholder` 提供，自带放大镜，不需要动 `ComboboxInput`。",
+      "source": "packages/ui/src/combobox/combobox.md"
+    },
+    {
+      "id": "component/combobox/pitfall/8",
+      "scope": "combobox",
+      "title": "Combobox",
+      "rule": "**`items` 给到 100 项及以上时列表会自动虚拟化**（无需传 `virtualized`）：只有视口内的项在 DOM 里，行高按 **32px 固定估算**，不做逐项测量。默认 `ComboboxItem` 恰好是 32px，所以通常无感。**如果**你的 render fn 返回的项高度不是 32px（两行文案、带头像/副标题、自定义 `className` 改了 padding 或字号），那么在 ≥100 项时滚动条长度与项的落位会逐渐偏移——**页面不会报任何错，短列表下也复现不出来**，只有滚到列表中后段才看得出跳动。这种项请显式传 `virtualized={false}` 关掉，或把项高度对齐到 32px。",
+      "source": "packages/ui/src/combobox/combobox.md"
+    },
+    {
+      "id": "component/combobox/pitfall/9",
+      "scope": "combobox",
+      "title": "Combobox",
+      "rule": "虚拟化同样影响**依赖「选项全在 DOM 里」的测试与脚本**：`getAllByRole(\"option\")` 只会拿到视口内那几条，`document.querySelector` 找不到未滚动到的项。断言总数请改用列表容器上的 `data-hulian-virtual-count`，或对该用例传 `virtualized={false}`。",
+      "source": "packages/ui/src/combobox/combobox.md"
+    },
+    {
+      "id": "component/combobox/pitfall/10",
       "scope": "combobox",
       "title": "Combobox",
       "rule": "走 Combobox 的上层组件同样吃这条：[Select](../select/select.md) 的 `searchable` 皮肤、[RemoteSelect](../remote-select/remote-select.md) 的候选列表，选项攒到 100 条后都会自动虚拟化。",
@@ -1959,6 +2054,20 @@
       "scope": "command",
       "title": "Command",
       "rule": "内置快捷键用 `shortcut` 一键开启；若想在面板外自绑触发逻辑，改用 `useCommandShortcut`，别同时开 `shortcut`。",
+      "source": "packages/ui/src/command/command.md"
+    },
+    {
+      "id": "component/command/pitfall/4",
+      "scope": "command",
+      "title": "Command",
+      "rule": "命令项是删除 / 重置 / 发布这类破坏性操作时，考虑 `autoHighlight={false}`：默认「打开即高亮首项」配上手滑回车就是误触。关掉后高亮要用户自己按方向键点亮，回车才有动作。",
+      "source": "packages/ui/src/command/command.md"
+    },
+    {
+      "id": "component/command/pitfall/5",
+      "scope": "command",
+      "title": "Command",
+      "rule": "高亮跟着**项的 `value`** 走，不跟数组引用走：过滤后原高亮项还在就不动它，所以 `groups` 每次渲染新建也不会让高亮乱跳。反过来说 `value` 必须稳定（别用数组下标当 value），否则每批结果都会被当成新项。",
       "source": "packages/ui/src/command/command.md"
     },
     {
@@ -2070,11 +2179,32 @@
       "id": "component/context-menu/pitfall/1",
       "scope": "context-menu",
       "title": "ContextMenu",
-      "rule": "分组项必须包在 `ContextMenuGroup` 里、配 `ContextMenuGroupLabel` 才有正确分组语义；裸放 Item 则是无标题平铺列。",
+      "rule": "**一组选项别用 `ContextMenuItem` + 自己画一个 √**。视觉上与 `ContextMenuCheckboxItem` / `ContextMenuRadioItem` 完全一样，所以这个错误看不出来：但元素 role 退化成 `menuitem`、没有 `aria-checked`，读屏用户听到的是几个平级动作，听不出这是一组互斥选项、也听不出当前选的是哪个。可开关的设置用 `ContextMenuCheckboxItem`，互斥选项用 `ContextMenuRadioGroup` + `ContextMenuRadioItem`。",
       "source": "packages/ui/src/context-menu/context-menu.md"
     },
     {
       "id": "component/context-menu/pitfall/2",
+      "scope": "context-menu",
+      "title": "ContextMenu",
+      "rule": "`ContextMenuRadioItem` 必须放在 `ContextMenuRadioGroup` 内，否则不会有选中态。",
+      "source": "packages/ui/src/context-menu/context-menu.md"
+    },
+    {
+      "id": "component/context-menu/pitfall/3",
+      "scope": "context-menu",
+      "title": "ContextMenu",
+      "rule": "勾选标记占的是与 `ContextMenuItem` 首个 `size-4` 图标同宽的第一列，混排时文字左缘因此对齐；普通项配图标同样用 `size-4`。",
+      "source": "packages/ui/src/context-menu/context-menu.md"
+    },
+    {
+      "id": "component/context-menu/pitfall/4",
+      "scope": "context-menu",
+      "title": "ContextMenu",
+      "rule": "分组项必须包在 `ContextMenuGroup` 里、配 `ContextMenuGroupLabel` 才有正确分组语义；裸放 Item 则是无标题平铺列。",
+      "source": "packages/ui/src/context-menu/context-menu.md"
+    },
+    {
+      "id": "component/context-menu/pitfall/5",
       "scope": "context-menu",
       "title": "ContextMenu",
       "rule": "`ContextMenuItem` 的 children 非纯文本（如带图标）时，补 `label` 供键盘 type-ahead 搜索。",
@@ -3037,6 +3167,20 @@
       "scope": "field",
       "title": "Field",
       "rule": "若 children 是 Textarea，注意 render-as 的类型问题，见 base-ui-field-control-render-textarea-type-safe。",
+      "source": "packages/ui/src/field/field.md"
+    },
+    {
+      "id": "component/field/pitfall/4",
+      "scope": "field",
+      "title": "Field",
+      "rule": "横排的标签列宽度**没有**单独的 prop：`orientation=\"horizontal\"` 下 Field.Root 是 `grid-cols-[1fr_auto]` 的网格，传 `className=\"grid-cols-[8rem_1fr]\"` 顶掉默认列模板即可。默认的 `auto` 列让控件贴右边缘（设置行），换成 `1fr` 则让控件填满（表单行）。",
+      "source": "packages/ui/src/field/field.md"
+    },
+    {
+      "id": "component/field/pitfall/5",
+      "scope": "field",
+      "title": "Field",
+      "rule": "只要一个标签、不要 help/error 三段与 a11y 串联时，用 [Label](../label/label.md)，别为了拿标签皮肤而空套一层 Field。",
       "source": "packages/ui/src/field/field.md"
     },
     {
@@ -4303,8 +4447,57 @@
       "id": "component/kbd/pitfall/1",
       "scope": "kbd",
       "title": "Kbd",
-      "rule": "单个 Kbd 只渲染一个键帽，组合键需自行用多个 Kbd 并排拼装，组件不内置 `+` 分隔。",
+      "rule": "单个 Kbd 只渲染一个键帽，不内置 `+` 分隔；组合键请用 `KbdGroup`，别在调用处手搓 `inline-flex + gap + 分隔符` —— 那样每处的间距和分隔符样式都会各写一套。",
       "source": "packages/ui/src/kbd/kbd.md"
+    },
+    {
+      "id": "component/kbd/pitfall/2",
+      "scope": "kbd",
+      "title": "Kbd",
+      "rule": "如果不传 `label`，`KbdGroup` 不会加 `role=\"group\"`，读屏把几个键帽念成互不相干的碎片。视觉上完全看不出差别，所以这一步最容易漏：只要这组键代表一个具体动作，就把动作名写进 `label`。",
+      "source": "packages/ui/src/kbd/kbd.md"
+    },
+    {
+      "id": "component/kbd/pitfall/3",
+      "scope": "kbd",
+      "title": "Kbd",
+      "rule": "`children` 与 `keys` 同时给时只用 `children`，`keys` 被忽略（两者同时生效没有合理语义）。",
+      "source": "packages/ui/src/kbd/kbd.md"
+    },
+    {
+      "id": "component/kbd/pitfall/4",
+      "scope": "kbd",
+      "title": "Kbd",
+      "rule": "**传 `role` 顶不掉组件自己的 `role=\"group\"`**（`rest` 展开在根节点属性最前，见 [consuming.md §7](https://github.com/hulianui/hulian/blob/master/docs/consuming.md)）。没传 `label` 时组件不占 `role`，此时传什么就是什么。",
+      "source": "packages/ui/src/kbd/kbd.md"
+    },
+    {
+      "id": "component/kbd/pitfall/5",
+      "scope": "kbd",
+      "title": "Kbd",
+      "rule": "不做符号映射（`Meta → ⌘`、`Ctrl → ⌃` 之类）。键名显示成什么取决于消费方的平台探测与文案口径，库内置一张表在跨平台产品里必然猜错。",
+      "source": "packages/ui/src/kbd/kbd.md"
+    },
+    {
+      "id": "component/label/pitfall/1",
+      "scope": "label",
+      "title": "Label",
+      "rule": "`htmlFor` 不传就只是一段长得像标签的文字：点它不聚焦，读屏也不会把它念成控件的名字。传了就要保证与控件 `id` 一致。在 [Field](../field/field.md) 里这层关联是白送的（Base UI 自动生成 id 并串好），独立用 Label 时得自己维护。",
+      "source": "packages/ui/src/label/label.md"
+    },
+    {
+      "id": "component/label/pitfall/2",
+      "scope": "label",
+      "title": "Label",
+      "rule": "标签与控件同时要 help 文案、错误提示、`invalid` 联动时，别用 `Label` + 手写 `<p>` 拼——那样会丢掉自动的 `aria-describedby` 串联。改用 [Field](../field/field.md)。",
+      "source": "packages/ui/src/label/label.md"
+    },
+    {
+      "id": "component/label/pitfall/3",
+      "scope": "label",
+      "title": "Label",
+      "rule": "皮肤不要复制成字面量。要改标签外观就改 `labelClass`（或用 `className` 局部顶掉），复制一份的话 Field 出的标签与手写标签会在同一页面里分叉。",
+      "source": "packages/ui/src/label/label.md"
     },
     {
       "id": "component/lanyard/pitfall/1",
@@ -5199,6 +5392,27 @@
       "id": "component/menu/pitfall/1",
       "scope": "menu",
       "title": "Menu",
+      "rule": "**一组选项别用 `MenuItem` + 自己画一个 √**。视觉上与 `MenuCheckboxItem` / `MenuRadioItem` 完全一样，所以这个错误看不出来：但元素 role 退化成 `menuitem`、没有 `aria-checked`，读屏用户听到的是几个平级动作，听不出这是一组互斥选项、也听不出当前选的是哪个，键盘用户的选中态只剩视觉。可开关的设置用 `MenuCheckboxItem`，互斥选项用 `MenuRadioGroup` + `MenuRadioItem`。",
+      "source": "packages/ui/src/menu/menu.md"
+    },
+    {
+      "id": "component/menu/pitfall/2",
+      "scope": "menu",
+      "title": "Menu",
+      "rule": "`MenuRadioItem` 必须放在 `MenuRadioGroup` 内 —— 互斥关系与选中值由组维护，单独放在 `MenuContent` 里不会有选中态。",
+      "source": "packages/ui/src/menu/menu.md"
+    },
+    {
+      "id": "component/menu/pitfall/3",
+      "scope": "menu",
+      "title": "Menu",
+      "rule": "勾选标记占的是与 `MenuItem` 首个 `size-4` 图标同宽的第一列，所以同一个菜单里混用普通项与勾选项时文字左缘是齐的；给普通项配图标时同样用 `size-4`，别改成别的尺寸。",
+      "source": "packages/ui/src/menu/menu.md"
+    },
+    {
+      "id": "component/menu/pitfall/4",
+      "scope": "menu",
+      "title": "Menu",
       "rule": "base-ui-menu-group-label-requires-menu-group-wrapper：`MenuGroupLabel` 直接放进 `MenuContent`（不裹 `MenuGroup`）会在「点开菜单」那一刻抛 `MenuGroupRootContext is missing`，触发器渲染正常但点击崩页 —— 分组标签必须包在 `MenuGroup` 里。",
       "source": "packages/ui/src/menu/menu.md"
     },
@@ -5899,6 +6113,13 @@
       "id": "component/popover/pitfall/2",
       "scope": "popover",
       "title": "Popover",
+      "rule": "浮层内容自带内边距/边框/正文色时加 `plain`（通常再配 `className=\"p-0\"`），别用 `[&>div]:mt-0` 之类的任意变体选择器去压库内那层皮肤 div。",
+      "source": "packages/ui/src/popover/popover.md"
+    },
+    {
+      "id": "component/popover/pitfall/3",
+      "scope": "popover",
+      "title": "Popover",
       "rule": "若手搓 hover 开 + focus 关叠加在这类 focus-managing popover 上会无限闪烁，见 hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false：popover 打开时把焦点移入浮层会触发 trigger 的 onBlur 关闭，关闭又把焦点还给 trigger 触发 onFocus 打开 → ping-pong。本组件默认 click 语义不踩，但若改造成 hover 触发需把 `initialFocus`/`finalFocus` 设 false。",
       "source": "packages/ui/src/popover/popover.md"
     },
@@ -6240,6 +6461,27 @@
     },
     {
       "id": "component/prose/pitfall/1",
+      "scope": "prose",
+      "title": "Prose",
+      "rule": "`scrollableTables` 会把 `table` 改成 `display: block` 并给表头加 `whitespace-nowrap`。表头不换行不是修饰而是**滚动成立的前提**：只加 `overflow-x-auto` 的话浏览器会把每列压到 min-content（中文一列一字、行高翻几倍），内容永远不超出滚动容器，于是根本不滚——看上去像是字号或断点没调好。正文单元格保持换行：一条不换行的长描述会把表拖宽到别的列滚不到。",
+      "source": "packages/ui/src/prose/prose.md"
+    },
+    {
+      "id": "component/prose/pitfall/2",
+      "scope": "prose",
+      "title": "Prose",
+      "rule": "`scrollableTables` 开启后表格宽度按内容撑开、不再恒占满版心（窄表会缩到内容宽）。只有在真的会溢出的宽表上开。",
+      "source": "packages/ui/src/prose/prose.md"
+    },
+    {
+      "id": "component/prose/pitfall/3",
+      "scope": "prose",
+      "title": "Prose",
+      "rule": "`scrollableTables` 存在的理由只对 **HTML 字符串形态**成立：内容经 `dangerouslySetInnerHTML` 塞进来时，Prose 拿不到表格节点、包不了滚动容器，只能在 `table` 自身上开一档。如果内容是 **children（JSX 子节点）**，更推荐自己把那张宽表包进一层 `overflow-x-auto` 容器——可以只作用于确实会溢出的那一张表，也不必牺牲其余表格的满宽。",
+      "source": "packages/ui/src/prose/prose.md"
+    },
+    {
+      "id": "component/prose/pitfall/4",
       "scope": "prose",
       "title": "Prose",
       "rule": "见 chat-bubble-max-w-prose-overflows-narrow-column：`max-w-prose`（65ch≈398px）是绝对值、不感知父容器可用宽度，放进移动端窄 flex 列会横向溢出/裁切。约束宽度用 `max-w-[min(65ch,100%)]`，且父链 flex 项加 `min-w-0`；不要叠 `max-w-prose max-w-full`（同属性二选一由 CSS 顺序决定不可靠）。",
@@ -9028,8 +9270,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 385,
-    "componentAdvisories": 1256,
-    "totalAdvisories": 1265
+    "componentDocs": 386,
+    "componentAdvisories": 1290,
+    "totalAdvisories": 1299
   }
 }

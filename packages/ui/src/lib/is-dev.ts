@@ -21,3 +21,16 @@ declare const process: { env: Record<string, string | undefined> } | undefined;
  */
 export const isDev =
   typeof process !== "undefined" && !!process.env && process.env.NODE_ENV !== "production";
+
+/**
+ * 测试环境标记（vitest / jest 都会把 NODE_ENV 置成 "test"）。
+ *
+ * 只给「正常渲染路径上会命中的告警」当消音开关用 —— 那类告警说的不是「你写错了」，而是
+ * 「你的**应用**少接了一层」，而单元测试里裸渲染一个组件恰恰是正当做法。不消音的话，本库
+ * 4000+ 条用例里凡是没挂 Provider 的都会各喊一次（vitest 每个测试文件一套模块注册表，
+ * warnOnce 的去重只在文件内生效），消费方的测试输出同样会被淹 —— 真告警反而被冲掉。
+ *
+ * **props 层面的误用告警不要用它消音**：那种问题在测试里出现就是测试写错了，该照喊。
+ */
+export const isTest =
+  typeof process !== "undefined" && !!process.env && process.env.NODE_ENV === "test";

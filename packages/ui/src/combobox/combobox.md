@@ -34,24 +34,26 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
 | disabled | `boolean` | `false` | 禁用 |
 
-`ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）
+`ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）。继承原生 `<button>` 属性，剩余属性落到按钮自身。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
-| placeholder | `string` | — | 未选中时占位文案 |
+| placeholder | `string` | — | 未选中时占位文案（按钮没有原生 placeholder，这是瑚琏语义） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | className | `string` | — | — |
 
-`ComboboxInput`（内联自动补全：输入框本身即可见字段）
+`ComboboxInput`（内联自动补全：输入框本身即可见字段）。继承原生 `<input>` 属性，剩余属性落到**内层 `<input>`**（不是外壳 span），见「禁忌 / 坑」。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
-| placeholder | `string` | — | 占位 |
+| placeholder | `string` | — | 占位（原生属性，透传到内层 input） |
 | invalid | `boolean` | `false` | 手动置无效态皮肤 |
 | clearable | `boolean` | `false` | 有值时渲染清除按钮 |
-| className | `string` | — | — |
+| prefix | `ReactNode` | — | 字段左侧图标槽（对齐 `Input.prefix`），搜索框放放大镜 |
+| showChevron | `boolean` | `true` | 右侧展开箭头；搜索框形态传 `false` |
+| className | `string` | — | 外壳类名（皮肤在外壳上，不随 rest 落到 input） |
 
 `ComboboxContent`
 
@@ -73,7 +75,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | disabled | `boolean` | `false` | 禁用该项 |
 | className | `string` | — | — |
 
-`ComboboxChips`（多选 chips 外壳）：`size`、`invalid`、`placeholder`、`className`（外加 `children` 插槽，见 Slots）。
+`ComboboxChips`（多选 chips 外壳）：`size`、`invalid`、`placeholder`、`className`（外加 `children` 插槽，见 Slots）。继承原生 `<input>` 属性，剩余属性落到**内层 `<input>`**（chips 容器只是皮肤壳）。
 `ComboboxChip`（单个已选 chip）：`className`（外加 `children` 插槽，见 Slots）。
 
 ## Events
@@ -147,6 +149,26 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 </Combobox>
 ```
 
+搜索框形态（字段本身即搜索框，不是弹层内搜索）：
+```tsx
+<Combobox items={TASKS}>
+  <ComboboxInput
+    size="sm"
+    prefix={<SearchIcon />}
+    showChevron={false}
+    placeholder="搜索任务、客户、文件"
+    aria-label="搜索任务、客户、文件"
+  />
+  <ComboboxContent>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
 大集合：≥100 项自动虚拟化，不必配置；但项高度不是默认 32px 时要显式关掉：
 ```tsx
 {/* 1000 个城市，单行项 → 自动虚拟化，写法与短列表完全一样 */}
@@ -179,6 +201,9 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 - 浮层内搜索框由 `ComboboxContent` 的 `searchPlaceholder` 触发：配 `ComboboxTrigger` 用就给它（图4 范式），配 `ComboboxInput` 内联补全则不设（输入框本身即搜索）。
 - `multiple` 一开 value/onValueChange 即变数组，受控时 state 类型要跟着变。
 - `invalid` 仅用于「非 Field 内」独立使用时手动置无效皮肤；在 Field 内由 Field 接管，不用手传。
+- **`ComboboxInput` / `ComboboxChips` 的剩余原生属性落在内层 `<input>`，不是外壳**：`role="combobox"`、可聚焦性、表单归属都在内层，`aria-label` / `id` / `name` / `onBlur` 挂在外壳 `<span>` / chips 容器上一律无效。所以独立使用（不放在 [Field](../field/field.md) 里）时，直接 `<ComboboxInput aria-label="搜索任务" />` 就够了，不用再包一层 `<label>` + `.sr-only`；接 react-hook-form 的 `Controller` 时 `field.onBlur` 也是直接传。要给外层容器加钩子请用 `className`。`ComboboxTrigger` 没有外壳，剩余属性就落在按钮自身。
+- 组件自身的 `data-invalid` / 皮肤类名顶不掉：`rest` 展开在最前（同 `docs/consuming.md` 第 7 节的全库口径），传 `aria-invalid={false}` 不会关掉 `invalid` 的无效态。
+- 搜索框形态要**同时**给 `prefix` 和 `showChevron={false}`：只加放大镜、右边还留着 chevron 的字段读起来仍是「下拉选择」。反过来，弹层内搜索（图4 范式）的搜索框由 `ComboboxContent` 的 `searchPlaceholder` 提供，自带放大镜，不需要动 `ComboboxInput`。
 - **`items` 给到 100 项及以上时列表会自动虚拟化**（无需传 `virtualized`）：只有视口内的项在 DOM 里，行高按 **32px 固定估算**，不做逐项测量。默认 `ComboboxItem` 恰好是 32px，所以通常无感。**如果**你的 render fn 返回的项高度不是 32px（两行文案、带头像/副标题、自定义 `className` 改了 padding 或字号），那么在 ≥100 项时滚动条长度与项的落位会逐渐偏移——**页面不会报任何错，短列表下也复现不出来**，只有滚到列表中后段才看得出跳动。这种项请显式传 `virtualized={false}` 关掉，或把项高度对齐到 32px。
 - 虚拟化同样影响**依赖「选项全在 DOM 里」的测试与脚本**：`getAllByRole("option")` 只会拿到视口内那几条，`document.querySelector` 找不到未滚动到的项。断言总数请改用列表容器上的 `data-hulian-virtual-count`，或对该用例传 `virtualized={false}`。
 - 走 Combobox 的上层组件同样吃这条：[Select](../select/select.md) 的 `searchable` 皮肤、[RemoteSelect](../remote-select/remote-select.md) 的候选列表，选项攒到 100 条后都会自动虚拟化。

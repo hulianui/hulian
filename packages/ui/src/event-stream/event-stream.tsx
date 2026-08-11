@@ -24,7 +24,7 @@ import type { EventStreamItem, EventStreamProps, EventStreamTone } from "./event
 // 语义色在明暗主题下自动切值（semantic.css 的 danger-700 / danger-400）。
 const TONE_DOT: Record<EventStreamTone, string> = {
   neutral: "bg-border",
-  info: "bg-primary",
+  info: "bg-info",
   success: "bg-success",
   warning: "bg-warning",
   danger: "bg-danger",

@@ -25,7 +25,7 @@ import { Callout } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"tip"｜"info"｜"warning"｜"success"｜"danger"` | `"tip"` | 语气：tip/info 主色、warning 警告、success 正解、danger 坑/危险 |
+| tone | `"tip"｜"info"｜"warning"｜"success"｜"danger"` | `"tip"` | 语气：tip 主色（建议）、info 信息色（背景说明）、warning 警告、success 正解、danger 坑/危险。tip 与 info 在 0.8.0 前同色，现已分开 |
 | className | `string` | — | 透传到根容器 |
 
 ## Slots

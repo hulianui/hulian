@@ -1,5 +1,12 @@
 "use client";
-import { createContext, useContext, useRef, type ReactNode, type RefObject } from "react";
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useRef,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { cva } from "class-variance-authority";
@@ -202,47 +209,61 @@ function VirtualizedComboboxList({
 }
 
 // 内联自动补全：输入框本身即可见字段，直接打字过滤。外壳 span 注册为浮层锚点。
-export function ComboboxInput({
-  size,
-  placeholder,
-  invalid,
-  clearable,
-  className,
-}: ComboboxInputProps) {
-  const anchorRef = useContext(AnchorContext);
-  const copy = useComponentLocale().combobox ?? { clear: "清除", remove: "移除" };
-  return (
-    <span
-      ref={anchorRef as RefObject<HTMLSpanElement> | null}
-      className={cn(comboboxInputShellVariants({ size }), className)}
-    >
-      <BaseCombobox.Input
-        placeholder={placeholder}
-        {...(invalid && { "data-invalid": "", "aria-invalid": true })}
-        className="w-full bg-transparent text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
-      />
-      {clearable && (
-        <BaseCombobox.Clear
-          className="flex shrink-0 cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground"
-          aria-label={copy.clear}
-        >
-          <ClearIcon />
-        </BaseCombobox.Clear>
-      )}
-      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted-foreground">
-        <ChevronDownIcon />
-      </BaseCombobox.Icon>
-    </span>
-  );
-}
+// 剩余原生属性给内层 <input> 而不是外壳：role="combobox"、可聚焦性、表单归属都在内层，
+// aria-label / id / name / onBlur 落到外壳 <span> 上等于没传（#160）。与 Input/ColorField 同一处方。
+// rest 展开在最前：组件自己的 data-invalid / 皮肤类名不可被外部顶掉（见 docs/consuming.md 第 7 节）。
+export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
+  function ComboboxInput(
+    { size, invalid, clearable, prefix, showChevron = true, className, ...props },
+    ref,
+  ) {
+    const anchorRef = useContext(AnchorContext);
+    const copy = useComponentLocale().combobox ?? { clear: "清除", remove: "移除" };
+    return (
+      <span
+        ref={anchorRef as RefObject<HTMLSpanElement> | null}
+        className={cn(comboboxInputShellVariants({ size }), className)}
+      >
+        {prefix != null && <span className="flex shrink-0 items-center text-muted-foreground">{prefix}</span>}
+        <BaseCombobox.Input
+          ref={ref}
+          {...props}
+          {...(invalid && { "data-invalid": "", "aria-invalid": true })}
+          className="w-full bg-transparent text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+        />
+        {clearable && (
+          <BaseCombobox.Clear
+            className="flex shrink-0 cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground"
+            aria-label={copy.clear}
+          >
+            <ClearIcon />
+          </BaseCombobox.Clear>
+        )}
+        {showChevron && (
+          <BaseCombobox.Icon className="flex shrink-0 items-center text-muted-foreground">
+            <ChevronDownIcon />
+          </BaseCombobox.Icon>
+        )}
+      </span>
+    );
+  },
+);
 
 // 图4 范式触发按钮：显示已选 label / placeholder + chevron；点击展开「弹层内搜索」式浮层。
 // 按钮自身注册为浮层锚点 → 浮层与按钮等宽对齐。搭配 ComboboxContent 的 searchPlaceholder 使用。
-export function ComboboxTrigger({ size, placeholder, invalid, className }: ComboboxTriggerProps) {
+// 剩余原生属性直接落到按钮自身（它就是根节点，无外壳）；rest 在最前，皮肤与 data-invalid 赢。
+export function ComboboxTrigger({
+  size,
+  placeholder,
+  invalid,
+  className,
+  ...props
+}: ComboboxTriggerProps) {
   const anchorRef = useContext(AnchorContext);
   return (
     <BaseCombobox.Trigger
       ref={anchorRef as RefObject<HTMLButtonElement> | null}
+      {...props}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(comboboxTriggerVariants({ size }), className)}
     >
@@ -350,12 +371,15 @@ export function ComboboxItem({ value, disabled, children, className }: ComboboxI
 
 // 多选可见字段：chips 容器（自身即外壳皮肤 + 浮层锚点），内放 ComboboxChip 列 + 输入框 + chevron。
 // 高度随 chips 换行自适应（h-auto + min-h 保持与单选 md 等高）。
+// 剩余原生属性落到内层 <input>（与 ComboboxInput 同口径）：chips 容器是 role="toolbar" 的皮肤壳，
+// aria-label / id / name / onBlur 挂上去命名不到 role="combobox" 那个节点。容器钩子走 className。
 export function ComboboxChips({
   size,
   invalid,
   placeholder,
   className,
   children,
+  ...props
 }: ComboboxChipsProps) {
   const anchorRef = useContext(AnchorContext);
   return (
@@ -370,6 +394,7 @@ export function ComboboxChips({
     >
       {children}
       <BaseCombobox.Input
+        {...props}
         placeholder={placeholder}
         className="min-w-16 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
       />

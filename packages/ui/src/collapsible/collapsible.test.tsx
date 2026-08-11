@@ -68,6 +68,31 @@ describe("Collapsible", () => {
     expect(chevron.getAttribute("class")).toContain("group-data-[panel-open]:rotate-180");
   });
 
+  // —— plain（hulianui/hulian#162）——
+  it("默认渲染内层皮肤 div（内边距 + 次要文字色）", () => {
+    const { getByText } = render(<Demo defaultOpen />);
+    const skin = getByText("正文内容");
+    expect(skin.tagName).toBe("DIV");
+    expect(skin.className).toContain("px-3");
+    expect(skin.className).toContain("text-muted-foreground");
+  });
+
+  it("plain：不渲染内层皮肤 div，children 直接进 Panel", () => {
+    const { getByText } = render(
+      <Collapsible defaultOpen>
+        <CollapsibleTrigger>标题</CollapsibleTrigger>
+        <CollapsiblePanel plain>
+          <p>整块功能区</p>
+        </CollapsiblePanel>
+      </Collapsible>,
+    );
+    const panel = getByText("整块功能区").parentElement!;
+    // 父节点直接是 Base UI 的 Panel（带高度过渡皮肤），中间没有那层内边距 div。
+    expect(panel.className).toContain("h-[var(--collapsible-panel-height)]");
+    expect(panel.className).not.toContain("px-3");
+    expect(panel.className).not.toContain("text-muted-foreground");
+  });
+
   it("disabled 透传到 trigger button", () => {
     const { getByText } = render(<Demo disabled />);
     // Base UI 1.x 用 aria-disabled + data-disabled 标记禁用（保持可聚焦），不再设原生 disabled

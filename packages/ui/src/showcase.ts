@@ -73,6 +73,7 @@ export { dockShowcase } from "./dock/dock.showcase";
 export { dotPatternShowcase } from "./dot-pattern/dot-pattern.showcase";
 export { drawerShowcase } from "./drawer/drawer.showcase";
 export { emptyShowcase } from "./empty/empty.showcase";
+export { labelShowcase } from "./label/label.showcase";
 export { fieldShowcase } from "./field/field.showcase";
 export { secretFieldShowcase } from "./secret-field/secret-field.showcase";
 export { passwordGeneratorShowcase } from "./password-generator/password-generator.showcase";

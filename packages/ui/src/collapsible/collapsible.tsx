@@ -53,8 +53,8 @@ export function CollapsibleTrigger({ className, children, ...props }: Collapsibl
 
 // Panel 本体零 padding（border-box 下 padding 会撑破塌零）；高度走 Base UI 内建
 // --collapsible-panel-height 纯 CSS 过渡。时长/曲线复用 motion token CSS 镜像（同 Accordion/
-// Dialog，零 motion 运行时）。内层 div 承载 padding 与正文皮肤。
-export function CollapsiblePanel({ className, children, ...props }: CollapsiblePanelProps) {
+// Dialog，零 motion 运行时）。内层 div 承载 padding 与正文皮肤；plain 时整层不渲染（#162）。
+export function CollapsiblePanel({ className, children, plain = false, ...props }: CollapsiblePanelProps) {
   return (
     <BaseCollapsible.Panel
       {...props}
@@ -68,7 +68,7 @@ export function CollapsiblePanel({ className, children, ...props }: CollapsibleP
         className,
       )}
     >
-      <div className="px-3 pb-3 pt-1 text-sm text-muted-foreground">{children}</div>
+      {plain ? children : <div className="px-3 pb-3 pt-1 text-sm text-muted-foreground">{children}</div>}
     </BaseCollapsible.Panel>
   );
 }

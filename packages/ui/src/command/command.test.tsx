@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterEach } from "vitest";
+import { useState } from "react";
 import { render, fireEvent, screen, cleanup } from "@testing-library/react";
 import { Command } from "./command";
 import type { CommandGroupData } from "./command.types";
@@ -80,16 +81,99 @@ describe("Command", () => {
     expect(screen.getByText("啥也没有")).toBeTruthy();
   });
 
-  it("初始无高亮（无默认高亮，无项 aria-selected）", () => {
-    render(<Command open onOpenChange={noop} groups={groups} />);
+  // ↓↓ #174：命令面板的核心路径是「打字 → 回车」，默认必须有高亮项。
+  it("默认高亮首个可用项：打开后直接 Enter 即执行（不必先按方向键）", () => {
+    const onSelect = vi.fn();
+    const onOpenChange = vi.fn();
+    const g: CommandGroupData[] = [
+      { heading: "项目中的任务", items: [{ value: "t1", label: "TSK-3 第三个任务", onSelect }] },
+    ];
+    render(<Command open onOpenChange={onOpenChange} groups={g} />);
+    const input = screen.getByRole("combobox");
+    expect(screen.getAllByRole("option")[0].getAttribute("aria-selected")).toBe("true");
+    expect(input.getAttribute("aria-activedescendant")).toBeTruthy();
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledWith("t1");
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("打字过滤到只剩一条 → Enter 即选中", () => {
+    const onSelectItem = vi.fn();
+    render(<Command open onOpenChange={noop} groups={groups} onSelectItem={onSelectItem} />);
+    const input = screen.getByRole("combobox");
+    fireEvent.change(input, { target: { value: "搜索" } });
+    expect(screen.getAllByRole("option")).toHaveLength(1);
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onSelectItem).toHaveBeenCalledWith("search");
+  });
+
+  it("首项禁用时默认高亮落到第二项", () => {
+    const onSelectItem = vi.fn();
+    const g: CommandGroupData[] = [
+      {
+        items: [
+          { value: "off", label: "禁用项", disabled: true },
+          { value: "on", label: "可用项" },
+        ],
+      },
+    ];
+    render(<Command open onOpenChange={noop} groups={g} onSelectItem={onSelectItem} />);
+    const opts = screen.getAllByRole("option");
+    expect(opts[0].getAttribute("aria-selected")).not.toBe("true");
+    expect(opts[1].getAttribute("aria-selected")).toBe("true");
+    fireEvent.keyDown(screen.getByRole("combobox"), { key: "Enter" });
+    expect(onSelectItem).toHaveBeenCalledWith("on");
+  });
+
+  it("groups 引用每次渲染都变时不丢高亮（按 value 找回，不按数组引用重置）", () => {
+    function Parent() {
+      const [tick, setTick] = useState(0);
+      // 消费方没把 groups 用 useMemo 包稳的常见形态：每次渲染都是新数组。
+      const g: CommandGroupData[] = [
+        {
+          items: [
+            { value: "a", label: "第一项" },
+            { value: "b", label: "第二项" },
+          ],
+        },
+      ];
+      return (
+        <>
+          <button onClick={() => setTick(tick + 1)}>重渲染 {tick}</button>
+          <Command open onOpenChange={noop} groups={g} />
+        </>
+      );
+    }
+    render(<Parent />);
+    fireEvent.keyDown(screen.getByRole("combobox"), { key: "ArrowDown" }); // 默认在首项 → 移到第二项
+    expect(screen.getAllByRole("option")[1].getAttribute("aria-selected")).toBe("true");
+    fireEvent.click(screen.getByText(/重渲染/));
+    // 高亮仍在第二项：既没被抹掉，也没被拉回首项。
+    expect(screen.getAllByRole("option")[1].getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("autoHighlight={false} 保持旧行为：初始无高亮，Enter 空操作", () => {
+    const onSelectItem = vi.fn();
+    render(
+      <Command
+        open
+        onOpenChange={noop}
+        groups={groups}
+        autoHighlight={false}
+        onSelectItem={onSelectItem}
+      />,
+    );
     const opts = screen.getAllByRole("option");
     expect(opts.every((o) => o.getAttribute("aria-selected") !== "true")).toBe(true);
+    const input = screen.getByRole("combobox");
     // 无 activedescendant
-    expect(screen.getByRole("combobox").getAttribute("aria-activedescendant")).toBeNull();
+    expect(input.getAttribute("aria-activedescendant")).toBeNull();
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onSelectItem).not.toHaveBeenCalled();
   });
 
   it("ArrowDown 从无高亮起步落首项、下移、跨组、跳过禁用项", () => {
-    render(<Command open onOpenChange={noop} groups={groups} />);
+    render(<Command open onOpenChange={noop} groups={groups} autoHighlight={false} />);
     const input = screen.getByRole("combobox");
     fireEvent.keyDown(input, { key: "ArrowDown" }); // -1→0(无高亮→首项)
     let opts = screen.getAllByRole("option");
@@ -106,7 +190,7 @@ describe("Command", () => {
   });
 
   it("ArrowUp 从无高亮起步落末个可用项", () => {
-    render(<Command open onOpenChange={noop} groups={groups} />);
+    render(<Command open onOpenChange={noop} groups={groups} autoHighlight={false} />);
     const input = screen.getByRole("combobox");
     fireEvent.keyDown(input, { key: "ArrowUp" }); // -1→末个可用(index2，index3 禁用)
     const opts = screen.getAllByRole("option");
@@ -174,6 +258,30 @@ describe("Command", () => {
     expect(onQueryChange).toHaveBeenCalledWith("");
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "搜索" } });
     expect(onQueryChange).toHaveBeenLastCalledWith("搜索");
+  });
+
+  // #171：页脚常驻在列表之外 —— 面板是模态的，模式切换这类控件没有别处可放。
+  it("footer 渲染在列表之外，不随过滤结果消失", () => {
+    render(
+      <Command
+        open
+        onOpenChange={noop}
+        groups={groups}
+        footer={<button>关联 / 阻塞</button>}
+      />,
+    );
+    const foot = screen.getByText("关联 / 阻塞");
+    expect(foot).toBeTruthy();
+    // 不在 listbox 内（故不参与列表滚动）
+    expect(screen.getByRole("listbox").contains(foot)).toBe(false);
+    // 过滤到空态时仍在
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "zzzzz" } });
+    expect(screen.getByText("关联 / 阻塞")).toBeTruthy();
+  });
+
+  it("不传 footer 时不渲染页脚容器", () => {
+    render(<Command open onOpenChange={noop} groups={groups} />);
+    expect(document.querySelector(".border-t")).toBeNull();
   });
 
   it("filter 恒真时由消费方全权决定 groups（自排序路径不被内部过滤二次裁剪）", () => {

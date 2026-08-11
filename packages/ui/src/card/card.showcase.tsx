@@ -2,7 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Card, CardHeader, CardBody, CardFooter } from "./card";
 
-type CardVariant = "outline" | "elevated" | "featured";
+type CardVariant = "outline" | "elevated" | "featured" | "plain";
 
 function Demo(props: { variant?: CardVariant; withFooter?: boolean }) {
   return (
@@ -47,6 +47,23 @@ export const cardShowcase: ShowcaseSpec = {
       render: () => <Demo variant="featured" withFooter />,
     },
     {
+      title: "不画皮",
+      description:
+        "plain 不画边框/底色/阴影，只留圆角与插槽语义。外皮由外层容器提供时用它，否则会双重描边。",
+      code: `{/* 外皮归外层容器，结构归 Card */}
+<div className="rounded-[var(--radius)] border border-primary/40 bg-primary/5 p-1">
+  <Card variant="plain" className="w-64">
+    <CardHeader>瑚琏卡片</CardHeader>
+    <CardBody>宗庙玉器，至美又大用。颜值 + 好用是第一生产力。</CardBody>
+  </Card>
+</div>`,
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-primary/40 bg-primary/5 p-1">
+          <Demo variant="plain" withFooter={false} />
+        </div>
+      ),
+    },
+    {
       title: "无 footer",
       description: "三段皆可选，仅 Header + Body 也成立。",
       code: `<Card variant="outline" className="w-64">
@@ -57,13 +74,26 @@ export const cardShowcase: ShowcaseSpec = {
     },
   ],
   controls: [
-    { prop: "variant", type: "select", options: ["outline", "elevated", "featured"], defaultValue: "outline" },
+    {
+      prop: "variant",
+      type: "select",
+      options: ["outline", "elevated", "featured", "plain"],
+      defaultValue: "outline",
+    },
     { prop: "withFooter", type: "boolean", defaultValue: true, label: "显示 footer" },
   ],
   states: [
     { name: "outline", render: () => <Demo variant="outline" withFooter /> },
     { name: "elevated", render: () => <Demo variant="elevated" withFooter /> },
     { name: "featured", render: () => <Demo variant="featured" withFooter /> },
+    {
+      name: "plain（不画皮）",
+      render: () => (
+        <div className="rounded-[var(--radius)] border border-primary/40 bg-primary/5 p-1">
+          <Demo variant="plain" withFooter={false} />
+        </div>
+      ),
+    },
     { name: "无 footer", render: () => <Demo variant="outline" withFooter={false} /> },
   ],
   renderWithProps: (p) => (

@@ -55,6 +55,86 @@ describe("Prose", () => {
     expect(cls).toContain("[&_:not(pre)>code]");
   });
 
+  it("折叠块 details/summary 有排版规则，且与 pre 同一视觉家族", () => {
+    const { container } = render(
+      <Prose>
+        <details>
+          <summary>展开看答案</summary>
+          <p>答案正文</p>
+        </details>
+      </Prose>,
+    );
+    const cls = container.firstElementChild!.className;
+    // 容器：圆角 + border + surface 底，与 [&_pre] 取值一致
+    expect(cls).toContain("[&_details]:rounded-[var(--radius)]");
+    expect(cls).toContain("[&_details]:border-border");
+    expect(cls).toContain("[&_details]:bg-surface");
+    expect(cls).toContain("[&_details]:my-4");
+    // summary 是连点目标：可点 + 不可选中
+    expect(cls).toContain("[&_summary]:cursor-pointer");
+    expect(cls).toContain("[&_summary]:select-none");
+    expect(cls).toContain("[&_summary]:font-semibold");
+    expect(cls).toContain("[&_summary:hover]:text-primary");
+    // 首个内容块与 summary 留一档、末元素外边距收敛
+    expect(cls).toContain("[&_details>summary+*]:mt-3");
+    expect(cls).toContain("[&_details>:last-child]:mb-0");
+    // 内容本身照常渲染
+    expect(container.querySelector("details > summary")!.textContent).toBe("展开看答案");
+  });
+
+  it("嵌套 details 落弱背景，与外层的 surface 区分开", () => {
+    const { container } = render(
+      <Prose>
+        <details>
+          <summary>外层</summary>
+          <details>
+            <summary>内层</summary>
+            <p>内层正文</p>
+          </details>
+        </details>
+      </Prose>,
+    );
+    const cls = container.firstElementChild!.className;
+    expect(cls).toContain("[&_details_details]:bg-subtle");
+    // 后代选择器比 [&_details] 多一层元素，特异性更高，内层才吃得到 bg-subtle
+    expect(cls.indexOf("[&_details_details]:bg-subtle")).toBeGreaterThan(cls.indexOf("[&_details]:bg-surface"));
+    expect(container.querySelector("details details")).toBeTruthy();
+  });
+
+  it("scrollableTables 把 table 变成横向滚动容器，默认不开", () => {
+    const table = (
+      <table>
+        <thead>
+          <tr>
+            <th>列</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>值</td>
+          </tr>
+        </tbody>
+      </table>
+    );
+    const { container, rerender } = render(<Prose>{table}</Prose>);
+    const off = container.firstElementChild!.className;
+    expect(off).toContain("[&_table]:w-full");
+    expect(off).not.toContain("[&_table]:overflow-x-auto");
+
+    rerender(<Prose scrollableTables>{table}</Prose>);
+    const on = container.firstElementChild!.className;
+    expect(on).toContain("[&_table]:overflow-x-auto");
+    expect(on).toContain("[&_table]:block");
+    expect(on).toContain("[&_table]:max-w-full");
+    // 表头不换行是滚动成立的前提：只给 overflow 时列会被压到 min-content，永远不溢出也就不滚
+    expect(on).toContain("[&_th]:whitespace-nowrap");
+    // w-max 顶掉基线的 w-full（同属性冲突交给 tailwind-merge，不能两条并存）
+    expect(on).toContain("[&_table]:w-max");
+    expect(on).not.toContain("[&_table]:w-full");
+    // scrollableTables 不落到 DOM 属性上
+    expect(container.querySelector("article")!.hasAttribute("scrollabletables")).toBe(false);
+  });
+
   it("size 映射基准字号，默认 base", () => {
     const { container, rerender } = render(
       <Prose>

@@ -27,9 +27,11 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variant | `"outline" \| "elevated" \| "featured"` | `"outline"` | Border, raised shadow, or emphasized appearance. |
+| variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | Border, raised shadow, emphasized, or no chrome at all. |
 
 `CardHeader`, `CardBody`, and `CardFooter` accept native div properties and `children`.
+
+`plain` is the no-chrome variant: no border, no background, no shadow — only the corner radius, the text color, and the three slot roles. Use it when **the container already gets its appearance from somewhere else**: a hero style the page brings along during a migration, an outer card that already draws a frame, or a card sitting inside a gradient section. The other three variants all paint a background (`bg-surface`), so they produce a doubled border and a doubled surface. The [Accordion](../accordion/accordion.md) and [Collapsible](../collapsible/collapsible.md) panels take a `plain` prop with the same meaning: **when the content brings its own appearance, the answer is no skin rather than a different skin**.
 
 ## Example
 ```tsx

@@ -33,6 +33,23 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 | `Accordion.className` | `string` | — | 容器类名 |
 | `AccordionItem.value` * | `string` | — | 该项唯一标识，与 `value`/`defaultValue` 对应 |
 | `AccordionItem.disabled` | `boolean` | `false` | 禁用该项（不可展开/收起） |
+| `AccordionPanel.plain` | `boolean` | `false` | 不画皮：不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Panel |
+
+`Accordion` 是泛型组件，`value` / `defaultValue` / `onValueChange` 的元素类型默认为 `string`。展开项的标识不是字符串（枚举、字面量联合）时显式写 `<Accordion<"a" | "b"> …>`。
+
+### plain：面板装的是一整块功能区
+
+`AccordionPanel` 默认在 Base UI 的 Panel 里再套一层 `px-4 pb-4 pt-1 text-sm text-muted-foreground` 的皮肤 div——它是按「面板里放一段短说明」设计的。面板里装的是**整块功能区**（权限编辑器、配置表单、带 `border-t` 与逐行内边距的列表）时加 `plain`：
+
+```tsx
+<AccordionPanel plain>
+  <div className="divide-y divide-border border-t border-border">{/* 整块功能区 */}</div>
+</AccordionPanel>
+```
+
+不加会撞两件事：`text-muted-foreground` 沿继承链把面板里所有没显式指定颜色的文字染成次要色（整块内容看起来像被禁用），内层的 `px-4` 又与内容自带的内边距叠加成双份、分隔线缩不到面板边缘。`className` 落在**外层** Panel 上，够不着内层——所以别用 `[&>div]:p-0` 这类任意变体选择器压库内结构，那等于把「内层是一个 div」写成外部契约，库里一改就断。
+
+同名的 `plain` 在 [Collapsible](../collapsible/collapsible.md) 的 Panel 与 [Card](../card/card.md) 的 `variant="plain"` 上语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
 
 ## Events
 
@@ -67,10 +84,19 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 <Accordion multiple defaultValue={["ship", "token"]}>{/* …items */}</Accordion>
 ```
 
+受控（展开项跟外部状态走）：
+
+```tsx
+const [open, setOpen] = useState<string[]>([]);
+
+<Accordion multiple value={open} onValueChange={(v) => setOpen(v)}>{/* …items */}</Accordion>
+```
+
 ## 禁忌 / 坑
 
 - 高度展开/收起过渡走 Base UI 暴露的 `--accordion-panel-height` CSS 变量做纯 CSS transition，**不要**自己 `useLayoutEffect` 测 `scrollHeight`、也别上 framer-motion；padding 要放 Panel 内层 div 否则收起塌不到 0。详见 [[base-ui-accordion-panel-height-css-var-pure-css-transition]]。
 - 受控与非受控二选一：传了 `value` 就别再传 `defaultValue`。
+- 面板内容自带内边距/边框/正文色时加 `plain`，别用 `[&>div]:p-0` 之类的任意变体选择器去压库内那层皮肤 div。
 
 ## 相关
 [Command](../command/command.md) · [ContextMenu](../context-menu/context-menu.md) · [Toolbar](../toolbar/toolbar.md) · [Collapsible](../collapsible/collapsible.md) · [Link](../link/link.md) · [AnimatedThemeToggler](../animated-theme-toggler/animated-theme-toggler.md)

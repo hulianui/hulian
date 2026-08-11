@@ -10,7 +10,8 @@ import type {
 } from "./accordion.types";
 
 // 容器：透明转发 Root（不偷改 Base UI 默认 multiple=true）+ 边框/圆角/item 分隔皮肤。
-export function Accordion({ className, ...props }: AccordionProps) {
+// 泛型参数原样透给 Base UI Root（默认 string），受控 value / onValueChange 才有真类型（#163）。
+export function Accordion<Value = string>({ className, ...props }: AccordionProps<Value>) {
   return (
     <BaseAccordion.Root
       {...props}
@@ -61,8 +62,8 @@ export function AccordionTrigger({ className, children, ...props }: AccordionTri
 
 // Panel 本体零 padding（border-box 下 padding 会撑破塌零）；高度走 Base UI 内建
 // --accordion-panel-height 纯 CSS 过渡。时长/曲线复用 motion token CSS 镜像（同 Dialog）——
-// 与 Button(motion) 同手感、零混库。内层 div 承载 padding 与正文皮肤。
-export function AccordionPanel({ className, children, ...props }: AccordionPanelProps) {
+// 与 Button(motion) 同手感、零混库。内层 div 承载 padding 与正文皮肤；plain 时整层不渲染（#162）。
+export function AccordionPanel({ className, children, plain = false, ...props }: AccordionPanelProps) {
   return (
     <BaseAccordion.Panel
       {...props}
@@ -76,7 +77,7 @@ export function AccordionPanel({ className, children, ...props }: AccordionPanel
         className,
       )}
     >
-      <div className="px-4 pb-4 pt-1 text-sm text-muted-foreground">{children}</div>
+      {plain ? children : <div className="px-4 pb-4 pt-1 text-sm text-muted-foreground">{children}</div>}
     </BaseAccordion.Panel>
   );
 }

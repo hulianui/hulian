@@ -15,6 +15,7 @@ export * from "./skeleton";
 export * from "./avatar";
 export * from "./input";
 export * from "./textarea";
+export * from "./label";
 export * from "./field";
 export * from "./secret-field";
 export * from "./password-generator";

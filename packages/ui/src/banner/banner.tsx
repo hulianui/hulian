@@ -10,6 +10,7 @@ import type { BannerProps } from "./banner.types";
 // 与 Alert 的区别：Alert 是页内局部块级提示（圆角卡片）；Banner 是通栏 bar，
 // 默认居中、单行、可承载滚动跑马灯。与 Notification 的区别：后者是命令式四角浮层。
 // 纯皮肤：照 alert.tsx 用 compoundVariants 填 tone×variant 底色/文字色。
+// info 与 brand 同 Alert：0.8.0 起不再同色，info 走独立的 `--color-info`（#173）。
 const bannerVariants = cva("flex w-full items-center gap-3 px-4 py-2.5 text-sm", {
   variants: {
     variant: { soft: "", solid: "" },
@@ -17,13 +18,13 @@ const bannerVariants = cva("flex w-full items-center gap-3 px-4 py-2.5 text-sm",
   },
   compoundVariants: [
     { variant: "soft", tone: "neutral", class: "bg-surface-hover text-foreground" },
-    { variant: "soft", tone: "info", class: "bg-primary/12 text-primary" },
+    { variant: "soft", tone: "info", class: "bg-info/12 text-info" },
     { variant: "soft", tone: "brand", class: "bg-primary/12 text-primary" },
     { variant: "soft", tone: "success", class: "bg-success/12 text-success" },
     { variant: "soft", tone: "warning", class: "bg-warning/12 text-warning" },
     { variant: "soft", tone: "danger", class: "bg-danger/12 text-danger" },
     { variant: "solid", tone: "neutral", class: "bg-foreground text-bg" },
-    { variant: "solid", tone: "info", class: "bg-primary text-primary-foreground" },
+    { variant: "solid", tone: "info", class: "bg-info text-info-foreground" },
     { variant: "solid", tone: "brand", class: "bg-primary text-primary-foreground" },
     { variant: "solid", tone: "success", class: "bg-success text-success-foreground" },
     { variant: "solid", tone: "warning", class: "bg-warning text-warning-foreground" },

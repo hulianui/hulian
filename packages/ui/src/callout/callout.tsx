@@ -3,8 +3,10 @@ import type { CalloutProps, CalloutTone } from "./callout.types";
 
 // 左 accent 竖边 + 极浅 tone 底；标题/图标着 tone 色，正文保持 foreground。
 const toneClass: Record<CalloutTone, { wrap: string; label: string }> = {
+  // tip 与 info 在 0.8.0 前是同一套主色皮肤（当时库里没有 info 语义色）。现在分开了（#173）：
+  // tip = 主色，「作者给的建议、值得一试」；info = 独立 info 色，「背景说明、事实交代」。
   tip: { wrap: "border-primary bg-primary/[0.07]", label: "text-primary" },
-  info: { wrap: "border-primary bg-primary/[0.07]", label: "text-primary" },
+  info: { wrap: "border-info bg-info/[0.07]", label: "text-info" },
   warning: { wrap: "border-warning bg-warning/[0.07]", label: "text-warning" },
   success: { wrap: "border-success bg-success/[0.07]", label: "text-success" },
   danger: { wrap: "border-danger bg-danger/[0.07]", label: "text-danger" },

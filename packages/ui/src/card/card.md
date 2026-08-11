@@ -27,9 +27,11 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"outline" \| "elevated" \| "featured"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 |
+| variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
 
 `CardHeader` / `CardBody` / `CardFooter` 均为插槽容器，接收原生 div 属性 + `children`。
+
+`plain` 是「不画皮」的那一档：不画边框、不铺底色、不投阴影，只留圆角、文字色和三段插槽语义。用在**容器的外观已经由别处提供**的场景——迁移期页面自带的 hero 样式、外层已经有一层卡片、或者卡片坐在带渐变的区块里。其余三档都会画底色（`bg-surface`），套上去就是双重描边 + 双重底色。同名的 `plain` 在 [Accordion](../accordion/accordion.md) / [Collapsible](../collapsible/collapsible.md) 的 Panel 上也有，语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
 
 ## 示例
 ```tsx

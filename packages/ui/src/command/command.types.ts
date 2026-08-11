@@ -46,8 +46,19 @@ export interface CommandProps {
   onQueryChange?: (query: string) => void;
   /** 执行项后是否自动关闭面板。默认 true。 */
   closeOnSelect?: boolean;
+  /**
+   * 打开面板与每次过滤后，是否自动高亮首个可用项（默认 true）。
+   * 关掉它则必须先按方向键点亮某项，回车才有动作 —— 命令项是删除/重置这类破坏性操作时，
+   * 「打开即高亮 + 手滑回车」等于误触，这种面板适合关掉。
+   */
+  autoHighlight?: boolean;
   /** 无匹配项时的空态文案。 */
   emptyMessage?: ReactNode;
+  /**
+   * 列表下方常驻页脚（模式切换 / 提示 / 计数）。不参与列表滚动，故不会被列表滚动或过滤结果顶走。
+   * 面板是模态的，页脚里的控件没有别处可放（同 `ComboboxContent.footer`）。
+   */
+  footer?: ReactNode;
   /** 内置 ⌘K / Ctrl+K 全局快捷键切换开合。默认 false（消费者亦可用 useCommandShortcut 自绑）。 */
   shortcut?: boolean;
   className?: string;

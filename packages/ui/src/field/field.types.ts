@@ -8,9 +8,19 @@ export interface FieldProps {
   disabled?: boolean;
   /** 提交标识，透传 Field.Root（YAGNI 逃生口；validate/validationMode 本批不暴露）。 */
   name?: string;
+  /**
+   * 排列方向。默认 `vertical`（label 在控件上方）。
+   *
+   * `horizontal` = 标签区在左、控件在右、错误另起一行占满整行 —— 设置页「一行一个设置项」
+   * 那种版式（#161）。a11y 串联、invalid 传导、错误渲染与竖排完全一致，只是布局不同。
+   *
+   * 标签列宽度不另开 prop：横排时 Field.Root 是 `grid-cols-[1fr_auto]` 的网格，
+   * 传 `className="grid-cols-[8rem_1fr]"` 即可换成定宽标签列 + 控件填满（走 twMerge 顶掉默认值）。
+   */
+  orientation?: "vertical" | "horizontal";
   /** 在 ProForm columns 栅格中跨整行（占满所有列）；栅格外无副作用。 */
   colSpan?: "full";
-  className?: string; // 落在 Field.Root（纵向布局容器）
+  className?: string; // 落在 Field.Root（竖排为 flex 列容器，横排为两列网格）
   /**
    * 追加到 label 上（与默认的 `text-sm font-medium text-foreground` 经 twMerge 合并，
    * 同族类会顶掉默认值，如传 `text-xs` 即 12px）。

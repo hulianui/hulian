@@ -72,6 +72,69 @@ describe("Field", () => {
     expect(input.getAttribute("aria-describedby") ?? "").toContain(getByText("不能为空").id);
   });
 
+  it("orientation=horizontal 保住全部 a11y 串联(#161)", () => {
+    const { getByText, container } = render(
+      <Field orientation="horizontal" label="主题" description="选择你偏好的配色方案" error="不能为空">
+        <Input />
+      </Field>,
+    );
+    const input = container.querySelector("input")!;
+    // 换布局不能换语义：label↔控件、error↔aria-describedby、invalid 传导必须与竖排一模一样。
+    expect(getByText("主题").getAttribute("for")).toBe(input.id);
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    const describedBy = input.getAttribute("aria-describedby") ?? "";
+    expect(describedBy).toContain(getByText("不能为空").id);
+    expect(describedBy).toContain(getByText("选择你偏好的配色方案").id);
+  });
+
+  it("orientation=horizontal 走两列网格，错误行独占整行", () => {
+    const { getByText, container } = render(
+      <Field orientation="horizontal" label="主题" error="不能为空">
+        <Input />
+      </Field>,
+    );
+    const root = container.firstElementChild!;
+    expect(root.className).toContain("grid-cols-[1fr_auto]");
+    expect(root.className).not.toContain("flex-col");
+    // col-span-full 而不是写死的 col-span-2：消费方换成三列列模板时错误行仍占满。
+    expect(getByText("不能为空").className).toContain("col-span-full");
+  });
+
+  it("横排的标签列宽度靠 className 顶掉默认列模板，不另开 prop", () => {
+    const { container } = render(
+      <Field orientation="horizontal" label="主题" className="grid-cols-[8rem_1fr]">
+        <Input />
+      </Field>,
+    );
+    const root = container.firstElementChild!;
+    expect(root.className).toContain("grid-cols-[8rem_1fr]");
+    expect(root.className).not.toContain("grid-cols-[1fr_auto]");
+  });
+
+  it("缺省 orientation 仍是竖排(既有版式零变化)", () => {
+    const { container } = render(
+      <Field label="邮箱">
+        <Input />
+      </Field>,
+    );
+    const root = container.firstElementChild!;
+    expect(root.className).toContain("flex-col");
+    expect(root.className).not.toContain("grid");
+  });
+
+  it("横排时 label 缺席也保留左列，控件不会跑到左边", () => {
+    const { container } = render(
+      <Field orientation="horizontal">
+        <Input />
+      </Field>,
+    );
+    // 第一个子节点是标签区（此时为空），控件在第二列。
+    const root = container.firstElementChild!;
+    expect(root.children.length).toBe(2);
+    expect(root.children[0]!.querySelector("input")).toBeNull();
+    expect(root.children[1]!.querySelector("input")).toBeTruthy();
+  });
+
   it("无 error 时不渲染错误节点", () => {
     const { queryByText } = render(
       <Field label="邮箱">

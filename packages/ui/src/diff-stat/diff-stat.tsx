@@ -9,7 +9,10 @@ import type { DiffStatProps, DiffStatStatus } from "./diff-stat.types";
 
 // 改动统计条：+N −M 数字 + 按增删比例填充的绿红格子条 + 可选 A/M/D/R 状态徽标。
 // 代码审查 / PR 列表刚需。纯函数 splitBlocks 抽出可测，零依赖只吃语义 token。
-// 注：库无 info 语义色，renamed 借用 primary（蓝）以区别 modified 的 warning。
+// 注：renamed 需要一个既非绿/黄/红、又不与三者混淆的第四色。0.8.0 前库里没有 info 语义色，
+// 只能借 primary；现在改吃 --color-info（#173）—— 不是因为「重命名 == 信息」，而是因为
+// A/M/D/R 是一组并列的分类标记，把品牌色花在分类标记上正是 #173 说的「稀释品牌色权重」。
+// info 的青蓝与 added 的绿、modified 的黄、deleted 的红两两可辨，正好补上第四色。
 const DEFAULT_STATUS_LABEL: Record<DiffStatStatus, string> = {
   added: "新增",
   modified: "修改",
@@ -20,7 +23,7 @@ const STATUS_TONE: Record<DiffStatStatus, string> = {
   added: "text-success bg-success/10",
   modified: "text-warning bg-warning/10",
   deleted: "text-danger bg-danger/10",
-  renamed: "text-primary bg-primary/10",
+  renamed: "text-info bg-info/10",
 };
 
 function DiffStatImpl({

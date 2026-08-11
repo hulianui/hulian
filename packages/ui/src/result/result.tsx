@@ -3,7 +3,8 @@ import { cn } from "../lib/cn";
 import type { ResultProps, ResultStatus } from "./result.types";
 
 // 结果页（可 RSC）。居中状态图标 + 标题 + 副标题 + 详情槽 + 操作槽，纯皮肤吃语义 token。
-// 状态色：success→success / error,500→danger / info→primary / warning,403→warning / 404→muted（无 info token，沿用 Alert 的 info≡primary 裁决）。
+// 状态色：success→success / error,500→danger / info→info / warning,403→warning / 404→muted。
+// info 在 0.8.0 前借 primary（当时库无 info token），tokens 补齐 --color-info 后已改回（#173）。
 
 function Svg({ children }: { children: ReactNode }) {
   return (
@@ -68,7 +69,7 @@ const ServerIcon = (
 const STATUS: Record<ResultStatus, { color: string; icon: ReactNode }> = {
   success: { color: "text-success", icon: SuccessIcon },
   error: { color: "text-danger", icon: ErrorIcon },
-  info: { color: "text-primary", icon: InfoIcon },
+  info: { color: "text-info", icon: InfoIcon },
   warning: { color: "text-warning", icon: WarningIcon },
   "403": { color: "text-warning", icon: LockIcon },
   "404": { color: "text-muted-foreground", icon: SearchIcon },

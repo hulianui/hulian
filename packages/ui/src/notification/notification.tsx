@@ -80,7 +80,7 @@ export const notification = {
   warning: (options: NotificationOptions) => open("warning", options),
 };
 
-// type → 默认图标（open 无图标）+ 主色 + 左边条（token 名同 Alert：info→primary）。
+// type → 默认图标（open 无图标）+ 语义色 + 左边条（token 取值同 Alert：info→--color-info，#173）。
 const typeIcon: Partial<Record<NotificationType, typeof Info>> = {
   success: CircleCheck,
   error: CircleX,
@@ -91,14 +91,14 @@ const typeColor: Record<NotificationType, string> = {
   open: "text-foreground",
   success: "text-success",
   error: "text-danger",
-  info: "text-primary",
+  info: "text-info",
   warning: "text-warning",
 };
 const typeBorder: Record<NotificationType, string> = {
   open: "border-l-border",
   success: "border-l-success",
   error: "border-l-danger",
-  info: "border-l-primary",
+  info: "border-l-info",
   warning: "border-l-warning",
 };
 

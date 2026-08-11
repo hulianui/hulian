@@ -8,6 +8,30 @@ const FAQ = [
   { v: "a11y", q: "无障碍谁兜底？", a: "焦点环/键盘/ARIA 全交给 Base UI primitive，瑚琏只换皮肤。" },
 ];
 
+// plain 演示：面板里装的是一整块功能区（自带分隔线与逐行内边距），而不是一段短说明。
+function PlainDemo() {
+  return (
+    <Accordion defaultValue={["role"]} className="w-80 max-w-full">
+      <AccordionItem value="role">
+        <AccordionTrigger>项目管理员权限</AccordionTrigger>
+        <AccordionPanel plain>
+          <div className="divide-y divide-border border-t border-border">
+            {["创建项目", "归档项目", "邀请成员"].map((label) => (
+              <div
+                key={label}
+                className="flex items-center justify-between gap-3 px-4 py-3 text-sm text-foreground"
+              >
+                {label}
+                <span className="text-xs text-muted-foreground">已授予</span>
+              </div>
+            ))}
+          </div>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
 function Demo(props: { multiple?: boolean; defaultValue?: string[]; disabledItem?: boolean }) {
   return (
     <Accordion
@@ -77,6 +101,22 @@ export const accordionShowcase: ShowcaseSpec = {
 </Accordion>`,
       render: () => <Demo disabledItem defaultValue={["ship"]} />,
     },
+    {
+      title: "不画皮的面板",
+      description:
+        "AccordionPanel 加 plain：不渲染内层皮肤 div。面板里装整块功能区时用它，否则内容会被染成次要色、内边距也会双份。",
+      code: `<AccordionPanel plain>
+  <div className="divide-y divide-border border-t border-border">
+    {rows.map((r) => (
+      <div key={r} className="flex items-center justify-between px-4 py-3 text-sm text-foreground">
+        {r}
+        <span className="text-xs text-muted-foreground">已授予</span>
+      </div>
+    ))}
+  </div>
+</AccordionPanel>`,
+      render: () => <PlainDemo />,
+    },
   ],
   controls: [
     { prop: "multiple", type: "boolean", defaultValue: false, label: "multiple（多开）" },
@@ -87,6 +127,7 @@ export const accordionShowcase: ShowcaseSpec = {
     { name: "单开·首项展开", render: () => <Demo multiple={false} defaultValue={["ship"]} /> },
     { name: "多开", render: () => <Demo multiple defaultValue={["ship", "token"]} /> },
     { name: "含禁用项", render: () => <Demo disabledItem defaultValue={["ship"]} /> },
+    { name: "plain（不画皮的面板）", render: () => <PlainDemo /> },
   ],
   renderWithProps: (p) => (
     <Demo

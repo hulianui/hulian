@@ -27,7 +27,7 @@ import { Alert, alertVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"｜"brand"｜"info"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色。`info` 是 `brand` 的历史别名，两者同配方、可互换 |
+| tone | `"neutral"｜"brand"｜"info"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色。`brand` 走主色，`info` 走独立的信息色（0.8.0 起两者不再同色） |
 | variant | `"soft"｜"outline"` | `"soft"` | soft=浅底 / outline=描边 |
 | closeLabel | `string` | `"关闭"` | 关闭按钮的无障碍标签 |
 
@@ -61,7 +61,7 @@ import { Alert, alertVariants } from "@hulianui/ui"
 - `onClose` 只触发回调、不自行消隐，是否移除/隐藏由调用方控制（受控）；不传 `onClose` 则不渲染关闭按钮。
 - 不绑图标库，`icon` 须调用方自带 SVG/emoji。
 - 接口已 `Omit<…, "title">` 避开 HTML 原生 title 属性与 ReactNode title 冲突，直接传 `title` 即为标题。
-- **新代码用 `tone="brand"`**，与 Tag / Button / Badge 同一套取值。`info` 是本组件早于全库 tone 统一时留下的别名，配方完全相同、不会移除，但混用两个名字会让「跨组件搜同一语气」搜不全。
+- **`info` 与 `brand` 在 0.8.0 起是两个颜色，不能再互换**。此前 `info` 只是 `brand` 的别名（当时库里没有 info 语义色，只能借主色顶替）；`@hulianui/tokens` 补齐 `--color-info` 后，`brand` 仍是主色、`info` 改走与主色差 30° 色相的信息色。**升级后默认 Alert（`tone="info"`）的颜色会变**——想保持原来的品牌蓝，显式写 `tone="brand"`。选哪个按语义：这条在讲产品/主操作用 `brand`，只是说明性文字用 `info`。
 
 ## 相关
 [Banner](../banner/banner.md) · [Toast](../toast/toast.md) · [Notification](../notification/notification.md) · [ServiceMessage](../service-message/service-message.md) · [Result](../result/result.md) · [GiftFeed](../gift-feed/gift-feed.md)

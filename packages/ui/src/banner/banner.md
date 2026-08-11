@@ -25,7 +25,7 @@ import { Banner } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tone | `"neutral"｜"info"｜"brand"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色 |
+| tone | `"neutral"｜"info"｜"brand"｜"success"｜"warning"｜"danger"` | `"info"` | 语气色。`brand` 走主色，`info` 走独立的信息色（同 Alert，0.8.0 起两者不再同色） |
 | variant | `"soft"｜"solid"` | `"soft"` | soft=浅底 / solid=实色填充（更醒目，适合促销/重大公告） |
 | align | `"start"｜"center"` | `"center"` | 内容对齐 |
 | scrollable | `boolean` | `false` | 文案过长时单行无缝滚动（纯 CSS marquee·hover 暂停） |

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button/button";
+import { Segmented } from "../segmented/segmented";
 import { Command } from "./command";
 import type { CommandGroupData } from "./command.types";
 
@@ -82,6 +83,41 @@ function Demo({
   );
 }
 
+// 页脚版：面板底部常驻一条「本次选取算什么」的切换条 —— 面板是模态的，这类控件没有别处可放，
+// 前置到触发器就得先决定再开始搜。
+function FooterDemo() {
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState("related");
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        关联任务
+      </Button>
+      <Command
+        open={open}
+        onOpenChange={setOpen}
+        groups={groups}
+        placeholder="搜索任务…"
+        footer={
+          <div className="flex items-center justify-between gap-2">
+            <Segmented
+              size="sm"
+              value={mode}
+              onValueChange={setMode}
+              aria-label="关联方式"
+              items={[
+                { value: "related", label: "关联" },
+                { value: "blocks", label: "阻塞" },
+              ]}
+            />
+            <span className="text-xs text-muted-foreground">选择任务</span>
+          </div>
+        }
+      />
+    </>
+  );
+}
+
 export const commandShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -134,6 +170,34 @@ const groups = [
 />`,
       render: () => <Demo closeOnSelect={false} />,
     },
+    {
+      title: "底部常驻页脚",
+      description:
+        "footer 渲染在列表之外：不随列表滚动，也不随过滤结果消失。适合放「本次选取算什么」的模式切换与右下角提示——面板是模态的，这些控件没有别处可放。",
+      code: `const [mode, setMode] = useState("related");
+
+<Command
+  open={open}
+  onOpenChange={setOpen}
+  groups={groups}
+  placeholder="搜索任务…"
+  footer={
+    <div className="flex items-center justify-between gap-2">
+      <Segmented
+        size="sm"
+        value={mode}
+        onValueChange={setMode}
+        items={[
+          { value: "related", label: "关联" },
+          { value: "blocks", label: "阻塞" },
+        ]}
+      />
+      <span className="text-xs text-muted-foreground">选择任务</span>
+    </div>
+  }
+/>`,
+      render: () => <FooterDemo />,
+    },
   ],
   controls: [
     { prop: "placeholder", type: "text", defaultValue: "输入命令或搜索…" },
@@ -143,6 +207,7 @@ const groups = [
   states: [
     { name: "default", render: () => <Demo /> },
     { name: "内置 ⌘K 快捷键", render: () => <Demo shortcut /> },
+    { name: "底部常驻页脚", render: () => <FooterDemo /> },
   ],
   renderWithProps: (p) => (
     <Demo

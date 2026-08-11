@@ -25,7 +25,7 @@ import { Banner } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| tone | `"neutral"\|"info"\|"brand"\|"success"\|"warning"\|"danger"` | `"info"` | Semantic tone. |
+| tone | `"neutral"\|"info"\|"brand"\|"success"\|"warning"\|"danger"` | `"info"` | Semantic tone. `brand` uses the primary colour, `info` uses the dedicated info colour (same as Alert; the two stopped being identical in 0.8.0). |
 | variant | `"soft"\|"solid"` | `"soft"` | Light background or prominent solid fill. |
 | align | `"start"\|"center"` | `"center"` | Content alignment. |
 | scrollable | `boolean` | `false` | Scrolls long copy on one continuous CSS marquee line and pauses on hover. |

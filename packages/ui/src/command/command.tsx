@@ -57,7 +57,9 @@ export function Command({
   onSelectItem,
   onQueryChange,
   closeOnSelect = true,
+  autoHighlight = true,
   emptyMessage = "无匹配结果",
+  footer,
   shortcut = false,
   className,
   "aria-label": ariaLabel = "命令面板",
@@ -65,8 +67,10 @@ export function Command({
   const baseId = useId();
   const listId = `${baseId}-list`;
   const [query, setQuery] = useState("");
-  // active = -1 表示无高亮（无默认高亮：仅方向键/鼠标移入才点亮某项）。
+  // active = -1 表示无高亮（autoHighlight={false}、或过滤后一项可用的都没有）。
   const [active, setActive] = useState(-1);
+  // 高亮项的 value 快照：索引会随过滤变、数组引用更不可靠，跨批次找回原项只能认 value。
+  const activeValueRef = useRef<string | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -99,6 +103,8 @@ export function Command({
     if (open) {
       setQuery("");
       onQueryChangeRef.current?.("");
+      // 上一次会话停在哪一项与这次要做什么无关 → 清掉记忆，让下面的默认高亮重新落位。
+      activeValueRef.current = undefined;
     }
   }, [open]);
 
@@ -112,15 +118,33 @@ export function Command({
     return { visibleGroups: vg, flatItems: flat };
   }, [groups, query, filter]);
 
-  // 过滤结果变化 → 清空高亮（无默认高亮，回到「未点亮」态）。
+  // 默认高亮首个可用项（#174）：命令面板的核心路径是「打字 → 回车」，没有默认高亮这条路是断的 ——
+  // execute(-1) 在 `!it` 处静默返回，用户看到的是「回车什么也没发生」，而没有高亮在视觉上很像
+  // 「还没选」，很容易被当成自己点错了。对齐 cmdk / Raycast / VS Code 的通行行为。
+  //
+  // 换一批结果时**按 value 找回原高亮项**，而不是按数组引用重置：flatItems 依赖 groups，消费方
+  // 只要没把 groups 用 useMemo 包稳（items 来自请求数据时非常常见），父级每次重渲染都会给出新数组，
+  // 按引用重置会把刚点亮的项抹掉 —— 表现成「刚点亮就没了、回车时灵时不灵」。
   useEffect(() => {
-    setActive(-1);
-  }, [flatItems]);
+    if (!open) return;
+    const prev = activeValueRef.current;
+    const kept =
+      prev === undefined ? -1 : flatItems.findIndex((it) => it.value === prev && !it.disabled);
+    const next = kept >= 0 ? kept : autoHighlight ? flatItems.findIndex((it) => !it.disabled) : -1;
+    setActive(next);
+    activeValueRef.current = next < 0 ? undefined : flatItems[next]?.value;
+  }, [flatItems, autoHighlight, open]);
 
   // 高亮项滚动进视口。
   useEffect(() => {
     itemRefs.current[active]?.scrollIntoView({ block: "nearest" });
   }, [active]);
+
+  // 点亮某项：state 与 value 快照必须同时更新，否则下一批结果会把高亮拉回旧项。
+  const highlight = (i: number) => {
+    setActive(i);
+    activeValueRef.current = i < 0 ? undefined : flatItems[i]?.value;
+  };
 
   const stepActive = (dir: 1 | -1) => {
     const n = flatItems.length;
@@ -130,7 +154,7 @@ export function Command({
     for (let s = 0; s < n; s++) {
       i = (i + dir + n) % n;
       if (!flatItems[i]?.disabled) {
-        setActive(i);
+        highlight(i);
         return;
       }
     }
@@ -140,7 +164,7 @@ export function Command({
     const order = flatItems.map((_, i) => i);
     if (dir === -1) order.reverse();
     const i = order.find((idx) => !flatItems[idx].disabled);
-    if (i !== undefined) setActive(i);
+    if (i !== undefined) highlight(i);
   };
 
   const execute = (i: number) => {
@@ -251,11 +275,11 @@ export function Command({
                         aria-disabled={it.disabled || undefined}
                         onClick={() => {
                           if (it.disabled) return;
-                          setActive(i);
+                          highlight(i);
                           execute(i);
                         }}
                         onMouseMove={() => {
-                          if (!it.disabled && !isActive) setActive(i);
+                          if (!it.disabled && !isActive) highlight(i);
                         }}
                         className={cn(
                           "flex cursor-pointer select-none items-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2 py-2 text-sm outline-none",
@@ -281,6 +305,13 @@ export function Command({
               ))
             )}
           </div>
+
+          {/* 页脚在列表之外：不参与列表滚动，故「模式切换 / 提示 / 计数」不会被列表滚动或换一批结果顶走
+              （与 ComboboxContent.footer 同口径）。分隔线与顶部搜索框的 border-b 对称；
+              内部只给版式（分隔线 + 内边距 + 面板自身的 text-sm 字号），布局与配色由页脚内容自己定。 */}
+          {footer != null && (
+            <div className="shrink-0 border-t border-border px-3 py-2 text-sm">{footer}</div>
+          )}
         </BaseDialog.Popup>
       </BaseDialog.Portal>
     </BaseDialog.Root>

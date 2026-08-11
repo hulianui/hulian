@@ -3,10 +3,13 @@ import type { ComponentProps, ReactNode } from "react";
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
-import { menuItemVariants } from "../menu/menu";
+import { menuItemVariants, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem } from "../menu/menu";
 import type {
   ContextMenuContentProps,
   ContextMenuItemProps,
+  ContextMenuCheckboxItemProps,
+  ContextMenuRadioGroupProps,
+  ContextMenuRadioItemProps,
   ContextMenuSubTriggerProps,
   ContextMenuSubContentProps,
 } from "./context-menu.types";
@@ -46,6 +49,22 @@ export function ContextMenuContent({ children, className }: ContextMenuContentPr
 // 复用 menu 皮肤：Item 渲 <div>，高亮态 data-highlighted、禁用 data-disabled。
 export function ContextMenuItem({ variant, className, ...props }: ContextMenuItemProps) {
   return <BaseContextMenu.Item className={cn(menuItemVariants({ variant }), className)} {...props} />;
+}
+
+// 勾选 / 单选三件：Base UI 的 context-menu 直接 re-export menu 的 CheckboxItem / RadioGroup /
+// RadioItem（见 @base-ui/react/context-menu/index.parts），所以这里直接委托给瑚琏的 Menu 版本 ——
+// role=menuitemcheckbox / menuitemradio + aria-checked、勾选槽位、皮肤三者与 Menu 侧同一份实现，
+// 不会漂。包一层函数而非直接别名，是为了 DevTools 与报错栈里显示 ContextMenu* 的名字。
+export function ContextMenuCheckboxItem(props: ContextMenuCheckboxItemProps) {
+  return <MenuCheckboxItem {...props} />;
+}
+
+export function ContextMenuRadioGroup(props: ContextMenuRadioGroupProps) {
+  return <MenuRadioGroup {...props} />;
+}
+
+export function ContextMenuRadioItem(props: ContextMenuRadioItemProps) {
+  return <MenuRadioItem {...props} />;
 }
 
 export function ContextMenuSeparator({ className }: { className?: string }) {

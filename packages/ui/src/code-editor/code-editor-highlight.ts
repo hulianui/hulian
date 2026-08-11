@@ -1,13 +1,18 @@
 // CodeEditor 的着色适配层：纯函数，无 React 依赖 → 可单独单测。
 //
-// JS 家族 / JSON / Shell 直接复用 code-block 的零依赖着色器 tokenizeCode（不重造轮子，
-// 也不修改那个共享文件）。CSS 是 tokenizeCode 不认的语言（非 Shell 一律按 JS 处理，
+// JS 家族 / JSON / Shell / Python 直接复用 code-block 的零依赖着色器 tokenizeCode（不重造轮子）。
+// CSS 是 tokenizeCode 不认的语言（不在它分支表里的一律按 JS 处理，
 // 结果是选择器和属性名全成 plain），所以在本目录内补一个 CSS 扫描器，
 // 沿用同一套 CodeTokenType 词汇表 → 复用 code-block 既有的 --code-* 配色，明暗自动跟随。
 
 import { tokenizeCode, type CodeToken, type CodeTokenType } from "../code-block/code-highlight";
 
 export type { CodeToken, CodeTokenType };
+
+// splitTokensByLine 原本住在这里，但它只跟 CodeToken 有关、与编辑器无关，
+// CodeBlock 的行号档（#169）也要用。搬到 CodeToken 的定义处作单一真源，这里保留同名再导出，
+// 本目录（含 code-editor-highlight.test.ts）的引用面不变。
+export { splitTokensByLine } from "../code-block/code-highlight";
 
 const CSS_LANGS = new Set(["css", "scss", "less", "postcss"]);
 
@@ -125,22 +130,4 @@ export function tokenizeCss(code: string): CodeToken[] {
 export function tokenizeEditorCode(code: string, lang?: string): CodeToken[] {
   if (lang && CSS_LANGS.has(lang.toLowerCase())) return tokenizeCss(code);
   return tokenizeCode(code, lang);
-}
-
-/**
- * 把 token 流按换行切成「每行一个 token 数组」。
- * 高亮层必须逐行渲染成块级元素——当前行底色、行号对齐都依赖「一行一个盒子」，
- * 而着色器产出的 token（尤其块注释、模板串）会横跨多行，所以要在这里再切一刀。
- * 保证：返回的行数恒等于 code.split("\n").length（空行返回空数组），行内不含 "\n"。
- */
-export function splitTokensByLine(tokens: CodeToken[]): CodeToken[][] {
-  const lines: CodeToken[][] = [[]];
-  for (const token of tokens) {
-    const parts = token.value.split("\n");
-    parts.forEach((part, i) => {
-      if (i > 0) lines.push([]);
-      if (part.length > 0) lines[lines.length - 1].push({ type: token.type, value: part });
-    });
-  }
-  return lines;
 }

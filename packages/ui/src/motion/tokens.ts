@@ -24,7 +24,8 @@ export const motionDurationCss = {
 // 缓动曲线（motion 口径：4 段 cubic-bezier 控制点）。
 // 自然减速，禁用 bounce/elastic（见 frontend-design motion 规范：真实物体平滑减速）。
 //
-// 第三份镜像在 @hulianui/tokens 的 preset.css @theme：那里把同样的曲线灌进 Tailwind 的
+// 第三份镜像在 @hulianui/tokens 的 preset-opinionated.css @theme（#166 前在 preset.css，
+// 现在 preset.css 只是它与 preset-core.css 的聚合入口）：那里把同样的曲线灌进 Tailwind 的
 // --ease-out / --ease-in-out / --ease-drawer，覆盖内置弱曲线 —— 于是 `ease-out` 工具类
 // 与这里的 motionEase.out 是同一条曲线。改任一处必须同步另一处，否则 JS 驱动的动效
 // 和工具类驱动的动效手感会分叉。

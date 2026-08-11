@@ -5,6 +5,9 @@ import {
   ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuCheckboxItem,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuGroup,
   ContextMenuGroupLabel,
@@ -55,6 +58,56 @@ describe("ContextMenu", () => {
       </ContextMenu>,
     );
     expect(screen.getByText("编辑").className).toContain("data-[highlighted]:bg-surface-hover");
+  });
+
+  // 右键菜单里的「优先级 / 状态」这类互斥选项：验收标准是 role 与 aria-checked，
+  // 不是「画出了勾」—— 后者用普通 Item 也能做到，但读屏里当前选中项会彻底消失。
+  it("ContextMenuCheckboxItem: role=menuitemcheckbox + aria-checked 随点击翻转", () => {
+    const onCheckedChange = vi.fn();
+    render(
+      <ContextMenu open>
+        <ContextMenuTrigger>右键此处</ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuCheckboxItem defaultChecked onCheckedChange={onCheckedChange}>
+            置顶
+          </ContextMenuCheckboxItem>
+        </ContextMenuContent>
+      </ContextMenu>,
+    );
+    const item = screen.getByRole("menuitemcheckbox");
+    expect(item.getAttribute("aria-checked")).toBe("true");
+    fireEvent.click(item);
+    expect(item.getAttribute("aria-checked")).toBe("false");
+    expect(onCheckedChange).toHaveBeenCalledWith(false, expect.anything());
+  });
+
+  it("ContextMenuRadioItem: role=menuitemradio，组内互斥且复用 menu 皮肤与勾选槽位", () => {
+    render(
+      <ContextMenu open>
+        <ContextMenuTrigger>右键此处</ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuRadioGroup defaultValue="medium">
+            <ContextMenuRadioItem value="low">低</ContextMenuRadioItem>
+            <ContextMenuRadioItem value="medium">中</ContextMenuRadioItem>
+            <ContextMenuRadioItem value="high">高</ContextMenuRadioItem>
+          </ContextMenuRadioGroup>
+        </ContextMenuContent>
+      </ContextMenu>,
+    );
+    const items = screen.getAllByRole("menuitemradio");
+    expect(items.map((item) => item.getAttribute("aria-checked"))).toEqual([
+      "false",
+      "true",
+      "false",
+    ]);
+    fireEvent.click(items[0]!);
+    expect(items.map((item) => item.getAttribute("aria-checked"))).toEqual([
+      "true",
+      "false",
+      "false",
+    ]);
+    expect(items[0]?.className).toContain("data-[highlighted]:bg-surface-hover");
+    expect(items[0]?.className).toContain("grid-cols-[1rem_1fr]");
   });
 
   it("ContextMenuItem onClick 触发动作", () => {

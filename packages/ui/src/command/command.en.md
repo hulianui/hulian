@@ -30,6 +30,7 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | placeholder | `string` | `"\u8f93\u5165\u547d\u4ee4\u6216\u641c\u7d22\u2026"` | Search-field placeholder. The built-in Chinese copy means “Type a command or search…”. |
 | filter | `(item: CommandItemData, query: string) => boolean` | Substring match | Custom predicate; return true to retain an item. The default case-insensitively searches `keywords`, string `label`, and `value`. |
 | closeOnSelect | `boolean` | `true` | Whether executing an item closes the palette. |
+| autoHighlight | `boolean` | `true` | Whether opening the palette and every filter pass highlight the first enabled item, so that typing and pressing Enter hits it directly. Turn it off and an arrow key must light an item up before Enter does anything. |
 | shortcut | `boolean` | `false` | Whether to install the global Command/Ctrl+K open-state shortcut. |
 | className | `string` | — | Additional class name. |
 | aria-label | `string` | `"\u547d\u4ee4\u9762\u677f"` | Accessible label. The built-in Chinese copy means “Command palette.” |
@@ -47,6 +48,27 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | emptyMessage | `ReactNode` | Empty-state content shown when no command matches. The built-in Chinese copy is `"\u65e0\u5339\u914d\u7ed3\u679c"`, meaning “No matching results.” |
+| footer | `ReactNode` | A footer pinned below the list (mode switch, hint, count). It sits outside the list, so it neither scrolls with the list nor disappears when filtering empties the results. |
+
+### footer: the pinned row at the bottom of the panel
+
+The palette is modal, so controls in the footer have nowhere else to go. A switch that decides **what this selection means** — link versus block, for example — turns into a step before the search once it moves to the trigger, and stays on the page even while the palette is closed once it moves to a section header. Put it in `footer` so the user can search first and decide after:
+
+```tsx
+<Command
+  open={open}
+  onOpenChange={setOpen}
+  groups={groups}
+  footer={
+    <div className="flex items-center justify-between gap-2">
+      <Segmented value={mode} onValueChange={setMode} items={[{ value: "related", label: "Related" }, { value: "blocks", label: "Blocks" }]} />
+      <span className="text-xs text-muted-foreground">Pick a task</span>
+    </div>
+  }
+/>
+```
+
+The component supplies only the frame: a top separator, padding, and the panel's own `text-sm` size. Layout and color inside the footer belong to its content, matching `ComboboxContent`'s `footer`.
 
 **CommandGroupData**: `heading?: ReactNode` / `items: CommandItemData[]`.
 
@@ -84,6 +106,8 @@ const [open, setOpen] = useState(false);
 - Command is always controlled; provide both `open` and `onOpenChange`.
 - A non-string `label` is not directly searchable by the default filter. Add `keywords`, or the item can match only through `value`.
 - Enable the built-in shortcut with `shortcut`. If the surrounding application installs its own trigger, use `useCommandShortcut` instead and do not enable both.
+- Consider `autoHighlight={false}` when the commands are destructive, such as delete, reset, or publish: the default "highlight the first item on open" plus a stray Enter is a misfire. With it off, the user has to light an item up with an arrow key before Enter does anything.
+- The highlight follows the item's **`value`**, not the array reference: an item that survives filtering keeps its highlight, so rebuilding `groups` on every render does not make the highlight jump. In return, `value` must be stable — never derive it from the array index, or every batch of results looks like a set of new items.
 
 ## Related
 [ContextMenu](../context-menu/context-menu.md) · [Toolbar](../toolbar/toolbar.md) · [Accordion](../accordion/accordion.md) · [Collapsible](../collapsible/collapsible.md) · [Link](../link/link.md) · [AnimatedThemeToggler](../animated-theme-toggler/animated-theme-toggler.md)

@@ -36,7 +36,7 @@ export const modalShowcase: ShowcaseSpec = {
     },
     {
       title: "信息提示类型",
-      description: "info / success / error / warning 派生不同图标与主色，仅渲染单个确定键。",
+      description: "info / success / error / warning 派生不同图标与语义色，仅渲染单个确定键。",
       code: `<>
   <Button onClick={() => modal.info({ title: "系统提示", content: "新版本已发布。" })}>info</Button>
   <Button onClick={() => modal.success({ title: "操作成功", content: "数据已保存。" })}>success</Button>
