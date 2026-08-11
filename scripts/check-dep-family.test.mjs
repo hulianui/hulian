@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { auditFamily, auditLockfile } from "./check-dep-family.mjs";
+import { auditFamily, auditLockfile, auditPeerFloors, floorOfLoose } from "./check-dep-family.mjs";
 
 const FAMILY = { prefix: "@tiptap/", why: "peer 钉的是精确版本" };
 
@@ -114,6 +114,120 @@ test("家族在 lockfile 里不存在时不报错（家族整体移除的过渡�
 test("前缀不会误伤 tiptap-markdown —— 它不在 @tiptap/ 这一族里", () => {
   const lock = ["  /@tiptap/core@3.30.0:", "  /tiptap-markdown@0.9.0(@tiptap/core@3.30.0):"].join("\n");
   assert.deepEqual(auditLockfile("@tiptap/", lock), []);
+});
+
+// ── 第二档：peer 下界必须是有人选过的数字（#209）──────────────────────────────
+//
+// 这一档判的不是「peer 下界 ≥ devDep 下界」（issue 建议 1 的原话）—— 那条太强，会把每次
+// 例行抬 devDep 都变成一次面向消费方的收窄，还会误伤 react 那种**有 CI 实证**的宽下界。
+// 判的是「(peer, dev) 这一对与基线记过的那一对是否逐字相同」：任一侧动了都要重新回答
+// 一次「这个下界现在还对吗」。
+
+const UI = "packages/ui/package.json";
+
+test("#209 本体：devDep 抬到 ^1.6.0 而 peer 仍是 >=1.0.0 —— 抬版当天就该红", () => {
+  // 基线记的是上一次复核时的形态：那时 dev 还是 1.4.x，peer 写 >=1.0.0 尚未脱节。
+  const records = { "@base-ui/react": { peer: ">=1.0.0", dev: "^1.4.1", why: "1.x 全段" } };
+  const pkg = {
+    peerDependencies: { "@base-ui/react": ">=1.0.0" },
+    devDependencies: { "@base-ui/react": "^1.6.0" },
+  };
+  const problems = auditPeerFloors(UI, pkg, records);
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /dev \^1\.4\.1 → \^1\.6\.0/);
+  // 报错要把旧理由贴出来，否则读的人不知道该复核什么
+  assert.match(problems[0], /1\.x 全段/);
+});
+
+test("#209 修法：peer 与 dev 一起动、基线同步重记 → 放行", () => {
+  const records = { "@base-ui/react": { peer: ">=1.6.0", dev: "^1.6.0", why: "跟住实际开发的版本线" } };
+  const pkg = {
+    peerDependencies: { "@base-ui/react": ">=1.6.0" },
+    devDependencies: { "@base-ui/react": "^1.6.0" },
+  };
+  assert.deepEqual(auditPeerFloors(UI, pkg, records), []);
+});
+
+test("宽下界只要 (peer, dev) 没变就放行 —— react >=18 是有 CI 实证的，不许被一刀切逼高", () => {
+  const records = {
+    react: { peer: ">=18", dev: "^19.2.8", why: "CI 有 react18-smoke" },
+    "react-dom": { peer: ">=18", dev: "^19.2.8", why: "同 react" },
+  };
+  const pkg = {
+    peerDependencies: { react: ">=18", "react-dom": ">=18" },
+    devDependencies: { react: "^19.2.8", "react-dom": "^19.2.8" },
+  };
+  assert.deepEqual(auditPeerFloors(UI, pkg, records), []);
+});
+
+test("why 留空 → 红（--write 只能生成骨架，理由必须人写）", () => {
+  const records = { motion: { peer: ">=11", dev: "^12.43.0", why: "  " } };
+  const pkg = { peerDependencies: { motion: ">=11" }, devDependencies: { motion: "^12.43.0" } };
+  const problems = auditPeerFloors(UI, pkg, records);
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /缺 why/);
+});
+
+test("新加的 peer 没有记录 → 红（新依赖不会静默混进来）", () => {
+  const pkg = { peerDependencies: { zod: ">=3" }, devDependencies: { zod: "^4.1.0" } };
+  const problems = auditPeerFloors(UI, pkg, {});
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /没有基线记录/);
+});
+
+test("没有 devDep 的 peer 跳过（optional 的 vite）—— 没有参照物就别编一个", () => {
+  const pkg = { peerDependencies: { vite: ">=5" }, devDependencies: {} };
+  assert.deepEqual(auditPeerFloors(UI, pkg, {}), []);
+});
+
+test("依赖已不是 peer 了，基线里的陈记录要报出来", () => {
+  const records = { "@mui/material": { peer: ">=5", dev: "^5.0.0", why: "日期族桥接" } };
+  const problems = auditPeerFloors(UI, { peerDependencies: {}, devDependencies: {} }, records);
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /已经不在 peerDependencies 里/);
+});
+
+test("peer 范围里省略 minor / patch 的写法都读得出下界", () => {
+  assert.deepEqual(floorOfLoose(">=18"), [18, 0, 0]);
+  assert.deepEqual(floorOfLoose(">=4.1"), [4, 1, 0]);
+  assert.deepEqual(floorOfLoose(">=1.6.0"), [1, 6, 0]);
+  assert.deepEqual(floorOfLoose("^12.43.0"), [12, 43, 0]);
+  assert.equal(floorOfLoose("latest"), null);
+});
+
+// 仓库现状：#209 修完之后不许被改回去。
+test("仓库现状：@base-ui/react 的 peer 下界不低于 1.6.0", async () => {
+  const { readFileSync } = await import("node:fs");
+  const pkg = JSON.parse(readFileSync(new URL("../packages/ui/package.json", import.meta.url), "utf8"));
+  const floor = floorOfLoose(pkg.peerDependencies["@base-ui/react"]);
+  assert.ok(
+    floor[0] > 1 || (floor[0] === 1 && floor[1] >= 6),
+    `@base-ui/react peer 下界退回到了 ${pkg.peerDependencies["@base-ui/react"]}（#209：1.4.1 上 Slider SSR 偶发 hydration mismatch）`,
+  );
+});
+
+// docs/consuming.md 里抄了一份 peer 清单给消费方照着写。#209 那次它跟着一起过期了
+// （package.json 早就该是 >=1.6.0，文档还写着 >=1.0.0），所以把这份镜像钉死。
+test("docs/consuming.md 里的 peer 清单镜像与 package.json 逐字一致", async () => {
+  const { readFileSync } = await import("node:fs");
+  const pkg = JSON.parse(readFileSync(new URL("../packages/ui/package.json", import.meta.url), "utf8"));
+  const doc = readFileSync(new URL("../docs/consuming.md", import.meta.url), "utf8");
+  const block = /```json\n(\{\s*"peerDependencies"[\s\S]*?\})\n```/.exec(doc);
+  assert.ok(block, "docs/consuming.md 里找不到 peerDependencies 清单代码块");
+  const documented = JSON.parse(block[1]).peerDependencies;
+  for (const [name, spec] of Object.entries(documented)) {
+    assert.equal(
+      pkg.peerDependencies[name],
+      spec,
+      `docs/consuming.md 写 ${name}: ${spec}，package.json 是 ${pkg.peerDependencies[name]}`,
+    );
+  }
+  // 反向：非 optional 的 peer 一个都不许漏抄（vite 是 optional，文档里明说没有 optional peer）
+  const optional = new Set(Object.keys(pkg.peerDependenciesMeta ?? {}));
+  for (const name of Object.keys(pkg.peerDependencies)) {
+    if (optional.has(name)) continue;
+    assert.ok(name in documented, `docs/consuming.md 的 peer 清单漏了 ${name}`);
+  }
 });
 
 // 真实清单同步：门禁配置里写的 manifest 与前缀，必须真的能在仓库里收到成员。

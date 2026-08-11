@@ -14,5 +14,42 @@
       "@tiptap/react",
       "@tiptap/starter-kit"
     ]
+  },
+  "_peers_why": "peer 下界的复核记录（#209），由 scripts/check-dep-family.mjs 消费。记的是「上一次有人看过这个数字时，(peer, dev) 是哪一对、凭什么」。任一侧变动都会红，包括例行抬 devDep —— 那正是复核时机。why 必填：写不出来就说明这个数字没人选过。改了 peer 下界要同步改 docs/consuming.md 里的 peer 清单（那份是给消费方抄的镜像）。",
+  "_peers": {
+    "packages/ui/package.json": {
+      "@base-ui/react": {
+        "peer": ">=1.6.0",
+        "dev": "^1.6.0",
+        "why": "跟住实际开发的版本线。原为 >=1.0.0，而库里绝大多数组件直接建在 Base UI 上、只对着 1.6.x 开发和测试：消费方锁在 1.4.1 时 0.30.0 起 Slider 的 SSR 首屏偶发 hydration mismatch（#200 把 aria-label 从 Root 挪到 Thumb，在 1.4.1 上让两侧 useId 序列错开一位；#209 二分实测 1.4.1 中、1.7.0 不中）。Base UI 1.x 仍在快速演进，major 粒度的下界在这里没有约束力。"
+      },
+      "motion": {
+        "peer": ">=11",
+        "dev": "^12.43.0",
+        "why": "宽下界有依据、不收窄。库只用 animate / AnimatePresence / LazyMotion / m / useAnimate / useInView / useMotionTemplate / useMotionValue / useMotionValueEvent / useReducedMotion / useSpring 与 HTMLMotionProps / MotionStyle 两个类型，均早于 11 就有，没有用到 12 专属 API（motion.create / useAnimateMini / visualDuration / AnimatePresence propagate 全库零命中）。另注：motion 的 11.x 线实际从 11.11.12 起（自 framer-motion 改名那一版），>=11 等价于「该线起点起」。"
+      },
+      "react": {
+        "peer": ">=18",
+        "dev": "^19.2.8",
+        "why": "宽下界有 CI 实证：runtime-performance job 里有一条 `pnpm scan:ci -- --react 18 --smoke`（.github/workflows/ci.yml，PERFORMANCE_REACT_VERSION=18），React 18 这条线是真跑的。抬到 19 等于用门禁删掉一条真实支持的版本线。"
+      },
+      "react-dom": {
+        "peer": ">=18",
+        "dev": "^19.2.8",
+        "why": "同 react —— 同一条 react18-smoke 跑的是 react + react-dom 一对，两者必须同步，不能只抬其中一个。"
+      },
+      "tailwindcss": {
+        "peer": ">=4.1",
+        "dev": "^4.3.3",
+        "why": "由用到的上游特性定：Textarea 的 cell 档用 `field-sizing-content`（packages/ui/src/textarea/textarea.tsx，另有测试断言），这个工具类 Tailwind 4.1 才有。原来的 >=4 是可证伪的过宽声明 —— 4.0 上该类根本不生成，装得上、不报警，textarea 的高度静默不跟随内容。取 4.1 而不是跟 devDep 齐平的 4.3.3：4.1 是**已证实**需要的最低版本，再往上没有任何已知依据，把下界喊高会让 unmet peer 警告失去可信度。复核方法：扫 packages/ui 里的工具类，看有没有比 4.1 更新才引入的。"
+      }
+    },
+    "packages/tokens/package.json": {
+      "tailwindcss": {
+        "peer": ">=4",
+        "dev": "^4.3.3",
+        "why": "刻意与 ui 的 >=4.1 不同、保持 >=4。tokens 的 CSS 只用 @import / @theme / @theme inline / @custom-variant 四种，全部是 Tailwind 4.0 就有的；4.1 那条要求来自 ui 里的 field-sizing-content，与本包无关。两个包的下界本就该各自按自己用到的特性定，齐平反而是假约束。"
+      }
+    }
   }
 }

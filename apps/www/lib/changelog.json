@@ -1,6 +1,20 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.33.0",
+    "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`@base-ui/react` 的 peer 下界从 `>=1.0.0` 抬到 `>=1.6.0`，`tailwindcss` 从 `>=4` 抬到 `>=4.1`，并给 peer 下界加一道静态门禁（#209）。\n\n\n**失效形态与 #207 同类、方向相反。** 那次是我们写范围、被依赖方钉精确值；这次是**我们把 peer 下界写得比自己实际开发的版本低**：`@base-ui/react` 声明 `>=1.0.0`，devDep 却是 `^1.6.0` —— 库里绝大多数组件直接建在 Base UI 上，而我们只对着 1.6.x 开发和测试。锁在 1.4.1 的消费方装得上、不报警、CI 全绿，但 0.30.0 起 `Slider` 的 SSR 首屏会**偶发** hydration mismatch：#200 把无障碍名从 Root 挪到 Thumb（改动本身没问题），在 1.4.1 上让服务端与客户端的 `useId` 序列错开一位，报错落在 `SliderThumb` 根 div 的 `id` 上。消费方二分实测 1.4.1 中、1.7.0 不中。共同点仍是**全新解析碰不到，带着旧锁升级的消费方才会中**。\n\n**没有照 issue 建议 1 直接实现「peer 下界不得低于 devDep 下界」—— 那条规则太强。** 它会把每一次例行的 devDep 抬版都变成一次面向消费方的收窄，还会误伤真实存在的宽下界：`react` 写 `>=18` 而 devDep 是 `^19.2.8`，但 CI 的 runtime-performance job 里有一条 `pnpm scan:ci -- --react 18 --smoke` 专跑 React 18 这条线。一刀切等于用门禁删掉一条真实支持的版本线。更要紧的是，宽下界一旦开始「喊狼来了」，消费方就会学会无视 unmet peer 警告 —— 那恰好摧毁了这个 issue 想保住的机制。\n\n真正的缺陷不是「peer 下界 < devDep 下界」，而是**这个数字没人选过**：`>=1.0.0` 写下之后库一路走到 1.6，没有任何人再看它一眼。所以门禁判的是「每一对 `(peer, dev)` 都必须与基线记过的那一对逐字相同」，任一侧变动 —— 包括例行抬 devDep —— 都会红，逼你重新回答一次「这个下界现在还对吗」。**base-ui 那次若有这道门禁，devDep 抬到 `^1.6.0` 的当天就会红**（这条形态冻结在单测里）。基线里每条记录的 `why` 必填、留空即红：机器只能生成 `(peer, dev)` 骨架，理由必须人写 —— 写不出来就说明这个数字确实没人选过。\n\n按这条口径把现有 6 条 peer 逐条复核过，结论不是一刀切：\n\n- **`@base-ui/react` → `>=1.6.0`**：跟住实际开发的版本线。Base UI 1.x 仍在快速演进，major 粒度的下界在这里没有约束力。\n- **`tailwindcss`（ui）→ `>=4.1`**：由用到的上游特性定。`Textarea` 的 `cell` 档用了 `field-sizing-content`，这个工具类 **4.1 才有** —— 原来的 `>=4` 是可证伪的过宽声明，4.0 上该类根本不生成，装得上、不报警，只是 textarea 高度静默不跟随内容。取 4.1 而不是跟 devDep 齐平的 4.3.3：4.1 是已证实需要的最低版本，再往上没有任何已知依据，把下界喊高就是喊狼来了。\n- **`tailwindcss`（tokens）保持 `>=4`**：刻意与 ui 不同。tokens 的 CSS 只用 `@import` / `@theme` / `@theme inline` / `@custom-variant`，全是 4.0 就有的语法；4.1 那条要求来自 ui，与本包无关。两个包的下界本就该各自按自己用到的特性定，齐平反而是假约束。\n- **`react` / `react-dom` 保持 `>=18`**：宽下界有 CI 实证（react18-smoke），不收窄。\n- **`motion` 保持 `>=11`**：库只用 `animate` / `AnimatePresence` / `LazyMotion` / `m` / `useAnimate` / `useInView` / `useMotionTemplate` / `useMotionValue` / `useMotionValueEvent` / `useReducedMotion` / `useSpring` 与两个类型，均早于 11 就有，12 专属 API（`motion.create` / `useAnimateMini` / `visualDuration` / `AnimatePresence propagate`）全库零命中。另注：`motion` 的 11.x 线实际从 11.11.12 起（自 framer-motion 改名那一版），`>=11` 等价于「该线起点起」。\n\n门禁并进已有的 `pnpm deps:family`（`scripts/check-dep-family.mjs`，秒级静态档，只读 `package.json` 与基线，不装依赖、不联网）。顺带钉住 `docs/consuming.md` 里那份抄给消费方的 peer 清单 —— #209 那次它跟着一起过期了（`package.json` 早该是 `>=1.6.0`，文档还写着 `>=1.0.0`），现在有单测逐字比对，漏抄一条非 optional 的 peer 也会红。\n\n**它管不到什么**：只判「我们声明了什么」，不判「消费方装出来是什么」。真正的 hydration mismatch 需要一把带旧锁的消费方工程才能复现，库仓库里没有这个输入 —— 与 #207 那一档的边界相同。\n\n定级 minor 而不是 patch：抬 peer 下界收窄了消费方可接受的版本范围，与 #207 同一口径。\n\n**消费方要做什么**：从 0.29.x 一路升上来的话，请一并刷 `@base-ui/react`（`npm update @base-ui/react` 或 `pnpm update @base-ui/react`，只动 lockfile）。你写的若是 `^1.4.1`，`npm install @hulianui/ui@latest` **不会**动它，锁原样保留 —— 与 #207 里「老成员 specifier 没变、锁被保留」是同一个机制。Tailwind 在 4.0 的同理刷到 4.1+。",
+        "parityId": "peer-floor-drift"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.32.0",
     "date": "2026-08-12",
     "entries": [

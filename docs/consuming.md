@@ -69,12 +69,24 @@ export default defineConfig(withHulian({
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18",
-    "@base-ui/react": ">=1.0.0",
+    "@base-ui/react": ">=1.6.0",
     "motion": ">=11",
-    "tailwindcss": ">=4"
+    "tailwindcss": ">=4.1"
   }
 }
 ```
+
+> **下界不是随手写的，每一条都有依据**（记在 `scripts/dep-family-baseline.json` 的 `_peers` 里，
+> 由 `pnpm deps:family` 钉住）。两条值得单独说：
+>
+> - `@base-ui/react` 从 `>=1.0.0` 抬到 `>=1.6.0`（0.33.0）。库里绝大多数组件直接建在 Base UI 上，
+>   而我们只对着 1.6.x 开发和测试；锁在 1.4.1 的消费方装得上、不报警，但 `Slider` 的 SSR 首屏会
+>   **偶发** hydration mismatch（hulianui/hulian#209）。**从 0.29.x 一路升上来的话请一并刷
+>   `@base-ui/react`** —— 你写的若是 `^1.4.1`，`npm install @hulianui/ui@latest` 不会动它，
+>   锁原样保留，与下面 tiptap 那条是同一个机制。
+> - `tailwindcss` 是 `>=4.1` 而不是 `>=4`：`Textarea` 的 `cell` 档用了 `field-sizing-content`，
+>   这个工具类 4.1 才有。4.0 上它不生成，装得上、不报警，只是高度不跟随内容。
+>   （`@hulianui/tokens` 单独用仍是 `>=4` —— 它的 CSS 只用 4.0 就有的语法。）
 
 > **上面就是全部 peer —— 没有 optional peer，也没有需要你按需安装的东西。**
 > 0.15.0 之前日期族是 MUI X 的桥接件，拖着 `@mui/material` / `@mui/x-date-pickers` / `@emotion/*`

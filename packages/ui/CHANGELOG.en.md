@@ -1,5 +1,33 @@
 # @hulianui/ui
 
+## 0.33.0
+
+### Minor Changes
+
+- The `@base-ui/react` peer floor moves from `>=1.0.0` to `>=1.6.0`, `tailwindcss` moves from `>=4` to `>=4.1`, and peer floors gain a static gate (#209). <!-- parity-id: peer-floor-drift -->
+
+  **The same class of failure as #207, in the opposite direction.** That one had us declaring a range while the dependency pinned exact values; this one has us declaring a peer floor **below the version we actually develop against**: `@base-ui/react` said `>=1.0.0` while the devDependency was `^1.6.0` - nearly every component in the library is built directly on Base UI, and 1.6.x is the only line we build and test against. A consumer locked at 1.4.1 installs cleanly, sees no warning, and has a green CI, yet since 0.30.0 the first SSR paint of `Slider` **intermittently** produces a hydration mismatch: #200 moved the accessible name from Root to Thumb (a fine change in itself), and on 1.4.1 that shifts the server and client `useId` sequences by one, surfacing as a mismatched `id` on the `SliderThumb` root div. The consumer bisected it: 1.4.1 reproduces, 1.7.0 does not. As before, **a fresh resolution never hits this; only a consumer upgrading with an existing lockfile does**.
+
+  **Suggestion 1 from the issue - "a peer floor may never sit below the devDependency floor" - was deliberately not implemented as written, because that rule is too strong.** It turns every routine devDependency bump into a narrowing aimed at consumers, and it punishes wide floors that are genuinely supported: `react` declares `>=18` against a `^19.2.8` devDependency, but the runtime-performance job in CI runs `pnpm scan:ci -- --react 18 --smoke` specifically to exercise the React 18 line. Applying the rule bluntly would use a gate to delete a version line we really do support. More importantly, once wide floors start crying wolf, consumers learn to ignore unmet-peer warnings - which destroys the very mechanism this issue set out to protect.
+
+  The actual defect is not "peer floor below devDependency floor" but **a number nobody ever chose**: `>=1.0.0` was written once and never looked at again while the library walked to 1.6. So the gate asserts that every `(peer, dev)` pair matches the pair recorded in the baseline byte for byte. A change on either side - including a routine devDependency bump - turns it red and forces the question "is this floor still right?" to be answered again. **Had this gate existed, the base-ui case would have failed on the day the devDependency moved to `^1.6.0`**; that shape is frozen in a unit test. Every baseline record carries a mandatory `why`, and an empty one fails: the tooling can only generate the `(peer, dev)` skeleton, the reasoning has to be written by a person - and being unable to write it is precisely the symptom.
+
+  All six existing peers were reviewed against that standard, and the outcome is deliberately not uniform:
+
+  - **`@base-ui/react` to `>=1.6.0`**: track the line we actually develop against. Base UI's 1.x is still moving fast, so a major-granularity floor carries no force here.
+  - **`tailwindcss` (ui) to `>=4.1`**: dictated by an upstream feature in use. The `cell` variant of `Textarea` uses `field-sizing-content`, a utility that **only exists from 4.1**, so the old `>=4` was a falsifiable overclaim - on 4.0 the class is simply never generated, it installs cleanly, warns about nothing, and the textarea silently stops growing with its content. Set to 4.1 rather than matching the devDependency at 4.3.3: 4.1 is the lowest version demonstrably required, nothing above it has any known basis, and inflating the floor is how you start crying wolf.
+  - **`tailwindcss` (tokens) stays `>=4`**, deliberately different from ui. The tokens CSS only uses `@import`, `@theme`, `@theme inline`, and `@custom-variant`, all present in 4.0; the 4.1 requirement comes from ui and has nothing to do with this package. Each package's floor should follow the features that package actually uses - making them match would be a fake constraint.
+  - **`react` / `react-dom` stay `>=18`**: the wide floor has CI evidence (the react18 smoke run), so it is not narrowed.
+  - **`motion` stays `>=11`**: the library only uses `animate`, `AnimatePresence`, `LazyMotion`, `m`, `useAnimate`, `useInView`, `useMotionTemplate`, `useMotionValue`, `useMotionValueEvent`, `useReducedMotion`, `useSpring`, and two types, all of which predate 11, with zero hits across the codebase for anything exclusive to 12 (`motion.create`, `useAnimateMini`, `visualDuration`, `AnimatePresence propagate`). Worth noting: the `motion` package's 11.x line actually starts at 11.11.12 - the release where it was renamed from framer-motion - so `>=11` effectively means "from the start of that line".
+
+  The gate joins the existing `pnpm deps:family` (`scripts/check-dep-family.mjs`, in the sub-second static tier, reading only `package.json` and the baseline - no install, no network). It also pins down the copy of the peer list that `docs/consuming.md` offers consumers to paste: in this incident that copy had gone stale alongside the manifest (`package.json` should long have read `>=1.6.0` while the doc still said `>=1.0.0`). A unit test now compares them entry by entry, and omitting any non-optional peer fails too.
+
+  **What it cannot catch**: it judges only what we declare, never what a consumer ends up installing. Reproducing the hydration mismatch itself requires a consumer project carrying an old lockfile, and the library repository has no such input - the same boundary as the #207 tier.
+
+  Released as minor rather than patch: raising a peer floor narrows the range of versions a consumer may accept, consistent with #207.
+
+  **What consumers need to do**: if you are coming up from 0.29.x, refresh `@base-ui/react` as well (`npm update @base-ui/react` or `pnpm update @base-ui/react` - lockfile only). If yours reads `^1.4.1`, `npm install @hulianui/ui@latest` will **not** touch it and the lock is preserved as is - the same mechanism as "the existing members' specifiers had not changed, so their lock entries were preserved" in #207. Consumers on Tailwind 4.0 should likewise move to 4.1 or later.
+
 ## 0.32.0
 
 ### Minor Changes
