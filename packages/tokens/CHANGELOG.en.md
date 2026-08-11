@@ -1,5 +1,31 @@
 # @hulianui/tokens
 
+## 0.8.0
+
+### Minor Changes
+
+- 90c8e02: `preset.css` splits into two layers, and the info semantic color is filled in (#166 #173).
+
+  **`preset.css` split three ways, with zero breakage**
+
+  Of the original 697 lines, only about 30 **take over** existing consumer behavior; everything else is a safe addition. Bundled behind one entry point, a project that wanted the latter had to swallow the former too — the entire adoption cost was front-loaded to step zero while the payoff only arrives once you start swapping components in. That curve talks people out of incremental migration.
+
+  | Entry | Contents | Nature |
+  |---|---|---|
+  | `@hulianui/tokens/preset-core.css` | semantic token → `--color-*` mapping, breakpoints, 42 `hulian-*` keyframes | **Pure addition.** The `hulian-` prefix cannot collide, and the breakpoints match Tailwind's defaults |
+  | `@hulianui/tokens/preset-opinionated.css` | `@custom-variant dark`, `--shadow-*` rebinding, easing rebinding | **Takeover.** Changes how your existing `dark:` / `shadow-*` / bare `transition` behave |
+  | `@hulianui/tokens/preset.css` | an aggregate of both | Equivalent to before the split; **existing usage needs no change** |
+
+  The `@custom-variant dark` line is the silent one. The shadcn default is `<html class="dark">` with `@custom-variant dark (&:is(.dark *))`; once HulianUI's definition overrides it, every `dark:` utility in the project stops matching anything. It shows up as "half dark": the page background is still dark — that comes from the `.dark { --… }` token block, which does not go through the variant — while foreground colors and borders stay light. The build succeeds, the console is silent, and the rules genuinely exist in DevTools, which makes it a long walk to diagnose.
+
+  `docs/consuming.md` gains a section with three ways out (import only core / reorder your own `@custom-variant` declaration / add a `--hl-theme` bridge). The bridge is **measured, not reasoned**: verified in Chrome 151 across four scenarios, and confirmed compatible with the theme-island semantics of #101 — elements inside a light island are not lit up when the bridge is on.
+
+  **Info semantic color**
+
+  Primitives gain `--info-50` … `--info-700`; the semantic layer gains `--color-info` / `-subtle` / `-border` / `-foreground` / `-hover` in both light and dark, fully aligned with success / warning / danger.
+
+  The hue sits at **225°**, 25–33° away from brand (250–258°), with noticeably lower chroma as well (0.112 for info-500 versus 0.19 for brand-500) — so it reads as "information" rather than "brand". Without it, consumers could only borrow primary (notice strips dilute the weight of the brand color) or borrow gray (explanatory text sinks into the background). Neither is good, and once the choice is made it spreads across hundreds of call sites.
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,37 @@
 # @hulianui/ui
 
+## 0.29.0
+
+### Minor Changes
+
+- d6092e6: Cleared the 14 issues raised by consumers this round (#158–#165 · #167–#172 · #174), and made the new info semantic color actually reach the components.
+
+  **New components**
+
+  - `Label`: a standalone form-label primitive — `<label>` + `htmlFor` + native attribute pass-through. Its skin comes from the newly exported `labelClass`, the **same single source** the `Label` segment of `Field` uses. Writing the literal twice would mean a font-size change only lands in one of them, while a consumer page has both "labels emitted by Field" and "hand-rolled labels" side by side, so the drift is immediately visible (#161).
+  - `KbdGroup`: a shortcut-combination container — consistent gap, configurable separator (defaults to `+`, decorative, kept out of the accessibility tree), and an outer `aria-label` outlet. Still no `Meta → ⌘` symbol mapping: what a key should display depends on the consumer's platform detection (#165).
+  - `MenuCheckboxItem` / `MenuRadioGroup` / `MenuRadioItem` and the three matching `ContextMenu*` parts: **this fills an a11y gap, not an API gap**. Using `Item` plus a hand-drawn check looked identical, but the role degraded to `menuitem` with no `aria-checked`, so screen reader users heard several peer actions — unable to tell that these are mutually exclusive options, or which one is currently selected (#170).
+
+  **New capabilities**
+
+  - `AlertDialogContent` gains `body` and `icon` slots. `description` renders as a `<p>` underneath, so block-level content inside it is invalid nesting and fails hydration on the spot; `body` renders below the description and above the action row, without a `<p>` wrapper (#158).
+  - `ComboboxInput` / `ComboboxTrigger` / `ComboboxChips` pass native attributes through, and `ComboboxInput` gains `prefix` and `showChevron`. The remaining attributes land on the **inner input** — where `role="combobox"` lives — because `aria-label` / `id` / `onBlur` on the outer `<span>` do nothing (#160).
+  - `Card` gains `variant="plain"`, and `AccordionPanel` / `CollapsiblePanel` / `PopoverContent` gain `plain`: when the content brings its own appearance, what you want is not a different skin but **no skin**. `bg-surface` also moved out of the `Card` base into each variant — otherwise no spelling of plain could remove the background (#159 #162 #172).
+  - `Field` gains `orientation="horizontal"` for the "label left, control right" row layout of settings pages, keeping the a11y wiring, invalid propagation, and error rendering intact. The error row uses `col-span-full` rather than a hard-coded `col-span-2`: when a consumer swaps in a three-column template, the hard-coded 2 would only cover the first two columns (#161).
+  - `Command` gains a `footer` slot, matching the existing contract of `ComboboxContent.footer`. A command palette is modal, so controls in its footer have nowhere else to go (#171).
+  - `Prose` gains `details` / `summary` typography with nesting distinction, plus a new `scrollableTables`. In that mode, `th` not wrapping is **required, not decorative**: with only `overflow-x-auto`, columns collapse to min-content (one CJK character per column), the content never exceeds the scroll container, and therefore nothing ever scrolls (#168).
+  - `CodeBlock` gains `lineNumbers`. Line numbers are `aria-hidden` + `select-none` (otherwise a drag-select copy carries them along), `sticky left-0` so horizontal scrolling cannot take them away, and the gutter width is computed from the digit count of the highest line number (#169).
+  - `tokenizeCode` supports Python (`py` / `python` / `python3`). Falling through to the JS branch was not "no highlighting" but **wrong highlighting**: `#` comments went unrecognized, `def` was not colored, while `var` / `function` appearing inside Python code got mislabeled as keywords — you can see colors, so nobody suspects they are wrong (#167).
+
+  **Fixes**
+
+  - `Accordion` forwards the Base UI Root generic (defaulting to `string`). Passing it through `ComponentProps` erased it to `unknown[]`, so controlled usage always raised TS2322, and the `value` case could not even be rescued with a cast (#163).
+  - `Command` highlights the first available item by default, with a new `autoHighlight` (default `true`). **This is a behavior change**: previously "type, then press Enter" did nothing at all until you pressed `↓` once, and that difference was completely invisible. The highlight is now recovered across batches by value, so consumers who did not wrap `groups` in `useMemo` — common when items come from request data — no longer see "it lights up then vanishes, and Enter works only sometimes" (#174).
+  - The `mt-2` in `PopoverContent` now follows the title/description: with neither present it was an 8px strip of dead space at the top of the popup that even `className="p-0"` could not remove. The arrow moved to its own `arrow` switch and is **not** tied to `plain` — an arrow indicates the relationship between popup and trigger, it is not content skin, and coupling the two would be wrong (#172).
+  - A one-time development warning when `ConfigProvider` is missing. The fallback policy is unchanged (components must render outside a Provider); this only adds discoverability, since what falls back is mostly `aria-label` text, and an English product can ship a screen full of Chinese screen-reader labels without anyone noticing (#164).
+
+  **Appearance change**: the `info` tone of `Alert` / `Banner` / `Callout` / `Toast` / `Notification` / `Modal` / `Result` / `EventStream`, along with `DiffStat`'s `renamed`, now consume the new `--color-info` (teal-blue) instead of borrowing the primary color. They borrowed primary because the library simply had no info semantic color — which is exactly the "notice strips dilute the brand color" complaint from consumers, committed by the library itself (#173).
+
 ## 0.28.0
 
 ### Minor Changes
