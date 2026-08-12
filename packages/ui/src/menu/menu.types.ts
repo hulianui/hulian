@@ -64,3 +64,21 @@ export interface MenuRadioItemProps {
   variant?: "default" | "danger";
   className?: string;
 }
+
+// 子菜单触发项**没有** closeOnClick：它的点击语义是「展开下一级」而不是「执行动作」，
+// 关掉整个菜单反而是 bug。这不是漏抄 MenuItemProps，是刻意的差集。
+export interface MenuSubTriggerProps {
+  children?: ReactNode;
+  disabled?: boolean;
+  /** 键盘 type-ahead 用文案覆盖。 */
+  label?: string;
+  variant?: "default" | "danger";
+  className?: string;
+}
+
+// 子面板不开放 side/align/sideOffset：级联菜单的方位是这个形态的定义之一（父项右侧展开、
+// 顶边对齐），越界的部分由 Base UI 自动翻边处理。要另一种方位说明要的不是子菜单，是另开一个 Menu。
+export interface MenuSubContentProps {
+  children: ReactNode;
+  className?: string;
+}

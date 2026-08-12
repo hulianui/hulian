@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -1254,6 +1254,8 @@
     "FileTree": "file-tree",
     "fileStatusMeta": "file-tree",
     "filterFileTree": "file-tree",
+    "FilterChip": "filter-chip",
+    "FilterChipGroup": "filter-chip",
     "Flow": "flow",
     "bezierPath": "flow",
     "clampZoom": "flow",
@@ -1434,6 +1436,9 @@
     "MenuSeparator": "menu",
     "MenuGroup": "menu",
     "MenuGroupLabel": "menu",
+    "MenuSub": "menu",
+    "MenuSubTrigger": "menu",
+    "MenuSubContent": "menu",
     "menuItemVariants": "menu",
     "Menubar": "menubar",
     "MenubarMenu": "menubar",
@@ -12050,7 +12055,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "true",
-          "description": "粘贴净化：洗掉 `class` / `on*` / `<style>` / `javascript:`，内联 `style` 过属性白名单"
+          "description": "粘贴净化：洗掉 `class` / `on*` / `<style>`，`href` / `src` 过协议白名单，内联 `style` 过属性白名单"
         },
         {
           "name": "legacyHtml",
@@ -12127,7 +12132,7 @@
           "kind": "function",
           "type": "(file: File) => Promise<{ url: string }>",
           "default": null,
-          "description": "图片上传：拿 `File`、还 URL。不传则图片按钮退回「填 URL」"
+          "description": "图片上传：拿 `File`、还 URL。**工具栏按钮、粘贴、拖拽三条路都走它**。不传则按钮退回「填 URL」，粘贴/拖拽的图片被丢弃（见「图片怎么进来」）"
         }
       ],
       "slots": []
@@ -18928,6 +18933,172 @@
         }
       ],
       "slots": []
+    },
+    {
+      "slug": "filter-chip",
+      "name": "FilterChip",
+      "category": "data-display",
+      "group": "info",
+      "status": "enriched",
+      "import": "import { FilterChip, FilterChipGroup } from \"@hulianui/ui\"",
+      "exports": [
+        "FilterChip",
+        "FilterChipGroup"
+      ],
+      "types": [
+        "FilterChipGroupProps",
+        "FilterChipProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/filter-chip/filter-chip.md",
+      "props": [
+        {
+          "name": "subject",
+          "owner": "FilterChip",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "主语：被筛选的字段名（「状态」「负责人」）。第一段，字重最重。"
+        },
+        {
+          "name": "operator",
+          "owner": "FilterChip",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "操作符（「属于以下任一项」「早于」）。**省略时胶囊自动少一栏**，不会留空栏。"
+        },
+        {
+          "name": "value",
+          "owner": "FilterChip",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "值。收节点而非字符串，见下方「值是富节点」。"
+        },
+        {
+          "name": "size",
+          "owner": "FilterChip",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\"",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "valueType": "string",
+          "default": "md",
+          "description": "只换高度、字号与段内边距，不改结构。"
+        },
+        {
+          "name": "subjectLabel",
+          "owner": "FilterChip",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "移除按钮无障碍名里用的主语纯文本。`subject` 是字符串时自动取用；是节点时必须给，否则退回不带主语的「移除筛选条件」。"
+        },
+        {
+          "name": "isDisabled",
+          "owner": "FilterChip",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "禁用：降透明度、屏蔽指针事件，本体与移除按钮均不可点。"
+        },
+        {
+          "name": "className",
+          "owner": "FilterChip",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
+        },
+        {
+          "name": "clearAllLabel",
+          "owner": "FilterChipGroup",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "locale 的「清除全部」",
+          "description": "覆盖行尾按钮文案。"
+        },
+        {
+          "name": "aria-label",
+          "owner": "FilterChipGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "locale 的「已应用的筛选条件」",
+          "description": "覆盖分组的无障碍名。"
+        },
+        {
+          "name": "className",
+          "owner": "FilterChipGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
+        },
+        {
+          "name": "children",
+          "owner": "FilterChipGroup",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "FilterChip 列表。**一个都没有时整行不渲染**（含「清除全部」）。"
+        }
+      ],
+      "events": [
+        {
+          "name": "onRemove",
+          "required": false,
+          "kind": "function",
+          "type": "() => void",
+          "default": null,
+          "description": "提供则在末尾渲染移除(×)按钮并触发回调。不提供就没有 × —— 组件不自管条件列表，删哪条由调用方决定。"
+        },
+        {
+          "name": "onClick",
+          "required": false,
+          "kind": "function",
+          "type": "() => void",
+          "default": null,
+          "description": "提供则本体（主语/操作符/值三段）变成按钮，用于重新打开对应的筛选菜单。不提供时本体是纯展示，不可聚焦。"
+        },
+        {
+          "name": "onClearAll",
+          "required": false,
+          "kind": "function",
+          "type": "() => void",
+          "default": null,
+          "description": "FilterChipGroup：提供则在行尾渲染「清除全部」文字按钮。"
+        }
+      ],
+      "slots": [
+        {
+          "name": "subject",
+          "type": "ReactNode",
+          "description": "主语段，可放图标 + 文字。"
+        },
+        {
+          "name": "operator",
+          "type": "ReactNode",
+          "description": "操作符段，省略即不渲染该段与其分隔线。"
+        },
+        {
+          "name": "value",
+          "type": "ReactNode",
+          "description": "值段，常放头像堆叠 / 状态图标 + 「已选 N 项」。"
+        }
+      ]
     },
     {
       "slug": "flow",
@@ -27456,7 +27627,7 @@
       "category": "navigation",
       "group": "global",
       "status": "enriched",
-      "import": "import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from \"@hulianui/ui\"",
+      "import": "import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, MenuSub, MenuSubTrigger, MenuSubContent, menuItemVariants } from \"@hulianui/ui\"",
       "exports": [
         "Menu",
         "MenuTrigger",
@@ -27468,6 +27639,9 @@
         "MenuSeparator",
         "MenuGroup",
         "MenuGroupLabel",
+        "MenuSub",
+        "MenuSubTrigger",
+        "MenuSubContent",
         "menuItemVariants"
       ],
       "types": [
@@ -27475,7 +27649,9 @@
         "MenuItemProps",
         "MenuCheckboxItemProps",
         "MenuRadioGroupProps",
-        "MenuRadioItemProps"
+        "MenuRadioItemProps",
+        "MenuSubTriggerProps",
+        "MenuSubContentProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/menu/menu.md",
       "props": [
@@ -27740,6 +27916,56 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "disabled",
+          "owner": "MenuSubTrigger",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用（不可展开子菜单）"
+        },
+        {
+          "name": "label",
+          "owner": "MenuSubTrigger",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "键盘 type-ahead 的文案覆盖"
+        },
+        {
+          "name": "variant",
+          "owner": "MenuSubTrigger",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"danger\"",
+          "values": [
+            "default",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "danger 为危险操作（红色）"
+        },
+        {
+          "name": "className",
+          "owner": "MenuSubTrigger",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
+        },
+        {
+          "name": "className",
+          "owner": "MenuSubContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "—"
         }
       ],
       "events": [
@@ -27813,6 +28039,18 @@
           "owner": "MenuRadioGroup",
           "type": "ReactNode",
           "description": "一组 `MenuRadioItem`"
+        },
+        {
+          "name": "children",
+          "owner": "MenuSubTrigger",
+          "type": "ReactNode",
+          "description": "项内容；chevron 由组件补在右侧，不用自己画"
+        },
+        {
+          "name": "children",
+          "owner": "MenuSub / MenuSubContent",
+          "type": "ReactNode",
+          "description": "`MenuSub` 放一个 `MenuSubTrigger` + 一个 `MenuSubContent`；`MenuSubContent` 放子菜单项"
         }
       ]
     },

@@ -1,6 +1,6 @@
 {
   "name": "@hulianui/ui",
-  "version": "0.35.0",
+  "version": "0.36.0",
   "description": "瑚琏 Hulian —— 基于 OKLCH 主题与 Tailwind v4 的 React 组件库:340+ 组件、暗色零闪烁、运行时换肤、源码分发。",
   "license": "MIT",
   "author": "hulianui",

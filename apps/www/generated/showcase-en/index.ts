@@ -126,6 +126,7 @@ export * from "./faulty-terminal.showcase";
 export * from "./ferrofluid.showcase";
 export * from "./field.showcase";
 export * from "./file-tree.showcase";
+export * from "./filter-chip.showcase";
 export * from "./fit-screen.showcase";
 export * from "./flickering-grid.showcase";
 export * from "./floating-lines.showcase";

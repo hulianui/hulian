@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.35.0 · 389 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.36.0 · 390 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -7055,7 +7055,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用（内容区不可编辑 + 工具栏收起） |
 | minRows | `number` | `8` | 内容区最小高度（行） |
 | toolbar | `RichTextToolbarItem[]` | 完整一档 | 工具栏条目与顺序；`[]` 则整条工具栏不渲染。**裁掉一档同时会关掉对应扩展**（见「禁忌 / 坑」） |
-| sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>` / `javascript:`，内联 `style` 过属性白名单 |
+| sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>`，`href` / `src` 过协议白名单，内联 `style` 过属性白名单 |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | 存量 HTML 兼容（微信编辑器 / Word / 老 UEditor 的正文）。默认关；`true` 三档全开，给对象则只开写明的那几档。见「存量 HTML 兼容」 |
 | extensions | `AnyExtension[]` | — | 追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频补一个节点类型） |
 | className | `string` | — | 落在外壳 |
@@ -7076,7 +7076,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onChange | `(html: string) => void` | 内容变化回调，参数是 HTML 串 |
-| onUploadImage | `(file: File) => Promise<{ url: string }>` | 图片上传：拿 `File`、还 URL。不传则图片按钮退回「填 URL」 |
+| onUploadImage | `(file: File) => Promise<{ url: string }>` | 图片上传：拿 `File`、还 URL。**工具栏按钮、粘贴、拖拽三条路都走它**。不传则按钮退回「填 URL」，粘贴/拖拽的图片被丢弃（见「图片怎么进来」） |
 
 ## 示例
 ```tsx
@@ -7124,6 +7124,33 @@ const [html, setHtml] = useState(detail.content); // 库里取出来就是 HTML
 <RichTextEditor legacyHtml={{ font: true, imgStyle: true }} value={html} onChange={setHtml} />
 ```
 
+## 图片怎么进来
+
+三条入口，**都走同一个 `onUploadImage`**（拿 `File`、还 URL）：
+
+| 入口 | 传了 `onUploadImage` | 没传 |
+|------|------|------|
+| 工具栏图片按钮 | 打开文件选择器（`accept="image/*"`）→ 上传 → 插入返回的 URL | 退回「填 URL」弹窗 |
+| **粘贴截图**（`Cmd+V`） | 上传 → 插入 | 忽略，开发期打一条告警 |
+| **拖入图片文件** | 上传 → 插到落点 | 忽略，开发期打一条告警 |
+| 粘贴 Word / 网页正文（图片是内联 base64） | 逐张转存成 URL 再整段插入 | base64 被丢弃（不写进正文），开发期打一条告警 |
+
+最后一行值得单说：从 Word、Excel、部分网页复制的正文，图片是**内联在 HTML 里的 base64**，剪贴板里没有对应的文件条目——所以它和「粘贴截图」是两条不同的路，组件分开处理。有 `onUploadImage` 时会把 `data:` 还原成 `File` 转存，没有则整个 `<img>` 被净化删掉：**宁可丢一张图，也不把几 MB base64 写进你的数据库字段**。
+
+```tsx
+// 传输层全在你手里：鉴权头、直传、进度、失败重试
+<RichTextEditor
+  onUploadImage={async (file) => {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: form, headers: authHeaders });
+    return { url: (await res.json()).url };
+  }}
+/>
+```
+
+上传抛错时该图不插入，组件不弹任何 UI——**提示归你**，只有你知道该说什么（配额满了？格式不支持？重试？）。多张一起传时单张失败不打断其余的。
+
 ## 存量 HTML 兼容
 
 编辑器的 schema 在**载入时**就决定了哪些标签能活下来。下面这张表是「打开 → 不做任何编辑 → 取回 HTML」的口径，上线前照它对一遍存量样本：
@@ -7166,7 +7193,8 @@ const html = normalizeLegacyHtml(row.content)
 - **只裹一张图的居中包裹层保不住**。`<section style="text-align:center"><img></section>` 里图片是块级节点，套一层 `<p>` 只会让 ProseMirror 把它提出去、留下一个空段落，所以这种形态刻意不转 —— 图片的居中要在前台样式里给（`img { display:block; margin:0 auto }`），不要指望正文串。
 - `legacyHtml` 开着时粘贴净化的**删除类规则一条都不松**（`class` / `on*` / `<style>` / `javascript:` 照删），只是内联 `style` 白名单多放行 `font-family` 与 `max-width` 两条。`<font color>` 的值走形状白名单（命名色 / `#hex` / `rgb()`），拼不出第二条声明 —— 正文是用户可写字段。
 - **取色器里不出现 `var(--…)` 色**，两个都不出现。正文要存进你的库、再由别处的前台（`v-html` / 小程序 `rich-text` / 邮件）渲染，那边没有瑚琏的 CSS 变量，`color: var(--color-foreground)` 到了那儿解析不出值、静默退回继承色 —— 等于把只在编辑器里成立的样式写成了永久内容。所以「默认色」/「无底色」走的是 `unsetColor()` / `unsetBackgroundColor()`，即**不写这条声明**，而不是写一个「默认颜色」。
-- 图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。
+- 图片**永远不内联 base64**，粘贴这条路也不例外（0.36.0 之前不成立，见 #213：从 Word 粘正文会把 base64 原样写进字段）。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。
+- **`blob:` 与 `file:` 的图片地址会被粘贴净化删掉。** 前者只在当前页面生命周期内有效、后者只在那台机器上有效，存进库下次打开就是碎图 —— 而且字段大小看不出异常，比 base64 更难查。
 - 粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。
 - `value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。
 - 与 [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。
@@ -11194,6 +11222,107 @@ const [sel, setSel] = useState("src/index.ts");
 
 ## 相关
 [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# FilterChip
+
+**导出**：`FilterChip` · `FilterChipGroup`
+
+> 已应用筛选条件胶囊 · 主语｜操作符｜值｜移除 四段(段间竖线) + 操作符可省 + 值收 ReactNode + 整段可点 · data-display/info
+
+## 何时用
+
+列表页顶部回显「当前生效了哪些筛选条件」，每条一个胶囊，点 × 撤掉这一条。它是筛选的**回显侧**；选参数那一半是 [SearchForm](https://hulianui.haloritual.com/zh/components/search-form)（`fields` 配置 → `onSearch`），两者通常一起用在 [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) 上方。
+
+要的是「一个可移除的单段标签」（技能标签、收件人令牌）用 [Chip](https://hulianui.haloritual.com/zh/components/chip)；只标一个状态用 [Tag](https://hulianui.haloritual.com/zh/components/tag)。FilterChip 与它们的分界在于**结构化**：主语、操作符、值是三个独立的段，各有字重色阶并以竖线分隔，塞进 Chip 的单段 `children` 会退化成一句长文字。
+
+## 导入
+```ts
+import { FilterChip, FilterChipGroup } from "@hulianui/ui"
+```
+
+## Props
+
+### FilterChip
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| subject * | `ReactNode` | — | 主语：被筛选的字段名（「状态」「负责人」）。第一段，字重最重。 |
+| operator | `ReactNode` | — | 操作符（「属于以下任一项」「早于」）。**省略时胶囊自动少一栏**，不会留空栏。 |
+| value * | `ReactNode` | — | 值。收节点而非字符串，见下方「值是富节点」。 |
+| size | `"sm"\|"md"` | `md` | 只换高度、字号与段内边距，不改结构。 |
+| subjectLabel | `string` | — | 移除按钮无障碍名里用的主语纯文本。`subject` 是字符串时自动取用；是节点时必须给，否则退回不带主语的「移除筛选条件」。 |
+| isDisabled | `boolean` | — | 禁用：降透明度、屏蔽指针事件，本体与移除按钮均不可点。 |
+| className | `string` | — | — |
+
+### FilterChipGroup
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| clearAllLabel | `ReactNode` | locale 的「清除全部」 | 覆盖行尾按钮文案。 |
+| aria-label | `string` | locale 的「已应用的筛选条件」 | 覆盖分组的无障碍名。 |
+| className | `string` | — | — |
+| children | `ReactNode` | — | FilterChip 列表。**一个都没有时整行不渲染**（含「清除全部」）。 |
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onRemove | `() => void` | 提供则在末尾渲染移除(×)按钮并触发回调。不提供就没有 × —— 组件不自管条件列表，删哪条由调用方决定。 |
+| onClick | `() => void` | 提供则本体（主语/操作符/值三段）变成按钮，用于重新打开对应的筛选菜单。不提供时本体是纯展示，不可聚焦。 |
+| onClearAll | `() => void` | FilterChipGroup：提供则在行尾渲染「清除全部」文字按钮。 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| subject | `ReactNode` | 主语段，可放图标 + 文字。 |
+| operator | `ReactNode` | 操作符段，省略即不渲染该段与其分隔线。 |
+| value | `ReactNode` | 值段，常放头像堆叠 / 状态图标 + 「已选 N 项」。 |
+
+## 点 × 不会触发 onClick
+
+移除按钮是本体按钮的**兄弟节点**而不是后代，所以点 × 天然冒泡不到本体上，消费方不需要自己写 `stopPropagation`；同时也避免了 `button` 套 `button` 的非法嵌套。同时传 `onClick` 和 `onRemove` 是预期用法。
+
+## 值是富节点
+
+`value` 收 `ReactNode` 而不是 `string`：真实的筛选回显里，值往往是「最多 3 个头像/状态图标负重叠 + 一句『已选 2 项』」，而不是一段纯文字。值段本身是 `flex items-center gap-1`，直接把多个节点并排塞进去即可。
+
+注意胶囊本体只有 24px（`sm`）/ 28px（`md`）高，[Avatar](https://hulianui.haloritual.com/zh/components/avatar) 最小档 `size="sm"` 是 32px，塞进来会顶破胶囊；值段里的头像请用自己的小尺寸节点。
+
+## 无障碍
+
+- 移除按钮的名字带上主语（「移除筛选条件：状态」/ enUS「Remove filter: Status」），否则一行五个胶囊对读屏就是五个同名的「移除」。`subject` 传节点时靠 `subjectLabel` 提供这段纯文本。
+- FilterChipGroup 是 `role="group"`，默认名「已应用的筛选条件」，可用 `aria-label` 覆盖。
+- 文案全部走 [ConfigProvider](https://hulianui.haloritual.com/zh/components/config) 的 `locale`，未配置 `filterChip` 词条的旧自定义 locale 会保留中文默认值。
+
+## 示例
+```tsx
+// 三段：主语 ｜ 操作符 ｜ 值 ｜ ×
+<FilterChip
+  subject="状态"
+  operator="属于以下任一项"
+  value="已选 2 项"
+  onRemove={() => remove("status")}
+/>
+
+// 两段：省略 operator
+<FilterChip subject="负责人" value="张三" onRemove={() => remove("owner")} />
+
+// 成行 + 清除全部；点本体重开筛选菜单，点 × 只删这一条
+<FilterChipGroup onClearAll={() => setConditions([])}>
+  {conditions.map((c) => (
+    <FilterChip
+      key={c.id}
+      subject={c.subject}
+      operator={c.operator}
+      value={c.value}
+      onClick={() => openFilterMenu(c.id)}
+      onRemove={() => setConditions((s) => s.filter((x) => x.id !== c.id))}
+    />
+  ))}
+</FilterChipGroup>
+```
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Flow
@@ -16367,17 +16496,17 @@ import NextLink from "next/link"
 <!-- ════════════════════════════════════════════════════════ -->
 # Menu
 
-**导出**：`Menu` · `MenuTrigger` · `MenuContent` · `MenuItem` · `MenuCheckboxItem` · `MenuRadioGroup` · `MenuRadioItem` · `MenuSeparator` · `MenuGroup` · `MenuGroupLabel` · `menuItemVariants`
+**导出**：`Menu` · `MenuTrigger` · `MenuContent` · `MenuItem` · `MenuCheckboxItem` · `MenuRadioGroup` · `MenuRadioItem` · `MenuSeparator` · `MenuGroup` · `MenuGroupLabel` · `MenuSub` · `MenuSubTrigger` · `MenuSubContent` · `menuItemVariants`
 
 > 下拉菜单 · Base UI 命令式 + Item/分隔/分组 + danger · navigation/global
 
 ## 何时用
 
-点击触发器弹出的一组操作项（编辑/复制/删除等），适合表格行操作、卡片更多按钮、头像账号菜单。需要 hover 展开的 mega 站点导航用 [NavigationMenu](https://hulianui.haloritual.com/zh/components/navigation-menu)；多个顶层菜单横排成 File/Edit/View 菜单条用 [Menubar](https://hulianui.haloritual.com/zh/components/menubar)。
+点击触发器弹出的一组操作项（编辑/复制/删除等），适合表格行操作、卡片更多按钮、头像账号菜单。选项多到一级面板放不下时用 `MenuSub` 分层收纳。需要 hover 展开的 mega 站点导航用 [NavigationMenu](https://hulianui.haloritual.com/zh/components/navigation-menu)；多个顶层菜单横排成 File/Edit/View 菜单条用 [Menubar](https://hulianui.haloritual.com/zh/components/menubar)。
 
 ## 导入
 ```ts
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from "@hulianui/ui"
+import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, MenuSub, MenuSubTrigger, MenuSubContent, menuItemVariants } from "@hulianui/ui"
 ```
 
 ## Props
@@ -16434,7 +16563,26 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 | variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
 | className | `string` | — | — |
 
-`MenuTrigger` 用 `render={<Button />}` 把任意元素作触发器。
+### MenuSubTrigger
+展开级联子菜单的菜单项，右侧带 chevron。必须与 `MenuSubContent` 一起放在 `MenuSub` 内。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| disabled | `boolean` | `false` | 禁用（不可展开子菜单） |
+| label | `string` | — | 键盘 type-ahead 的文案覆盖 |
+| variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
+| className | `string` | — | — |
+
+没有 `closeOnClick`：它的点击语义是「展开下一级」而不是「执行动作」。
+
+### MenuSubContent
+子菜单面板，从父项右侧展开。方位固定（`side="right"` / `align="start"`），不开放 `side` / `align` / `sideOffset` —— 越界时由 Base UI 自动翻边。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| className | `string` | — | — |
+
+`MenuTrigger` 用 `render={<Button />}` 把任意元素作触发器。`MenuSub` 是纯结构件，只负责把 `MenuSubTrigger` 与 `MenuSubContent` 绑成一级。
 
 ## Events
 
@@ -16481,6 +16629,16 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 |------|------|------|
 | children | `ReactNode` | 一组 `MenuRadioItem` |
 
+### MenuSubTrigger
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 项内容；chevron 由组件补在右侧，不用自己画 |
+
+### MenuSub / MenuSubContent
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children* | `ReactNode` | `MenuSub` 放一个 `MenuSubTrigger` + 一个 `MenuSubContent`；`MenuSubContent` 放子菜单项 |
+
 ## 示例
 ```tsx
 <Menu>
@@ -16526,12 +16684,31 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 ```
 （这里的 `closeOnClick` 是「选完即收起菜单」的写法；默认值是 `false`，不传就停在菜单里继续改。）
 
+级联子菜单（选项按维度分层，适合总数几十个的筛选菜单）：
+```tsx
+<MenuContent>
+  <MenuItem>全部任务</MenuItem>
+  <MenuSeparator />
+  <MenuSub>
+    <MenuSubTrigger>状态</MenuSubTrigger>
+    <MenuSubContent>
+      <MenuItem>待办</MenuItem>
+      <MenuItem>进行中</MenuItem>
+      <MenuItem>已完成</MenuItem>
+    </MenuSubContent>
+  </MenuSub>
+</MenuContent>
+```
+`MenuSub` 可以嵌套多层：把下一个 `MenuSub` 放进 `MenuSubContent` 即可。
+
 ## 禁忌 / 坑
 
 - **一组选项别用 `MenuItem` + 自己画一个 √**。视觉上与 `MenuCheckboxItem` / `MenuRadioItem` 完全一样，所以这个错误看不出来：但元素 role 退化成 `menuitem`、没有 `aria-checked`，读屏用户听到的是几个平级动作，听不出这是一组互斥选项、也听不出当前选的是哪个，键盘用户的选中态只剩视觉。可开关的设置用 `MenuCheckboxItem`，互斥选项用 `MenuRadioGroup` + `MenuRadioItem`。
 - `MenuRadioItem` 必须放在 `MenuRadioGroup` 内 —— 互斥关系与选中值由组维护，单独放在 `MenuContent` 里不会有选中态。
 - 勾选标记占的是与 `MenuItem` 首个 `size-4` 图标同宽的第一列，所以同一个菜单里混用普通项与勾选项时文字左缘是齐的；给普通项配图标时同样用 `size-4`，别改成别的尺寸。
 - [[base-ui-menu-group-label-requires-menu-group-wrapper]]：`MenuGroupLabel` 直接放进 `MenuContent`（不裹 `MenuGroup`）会在「点开菜单」那一刻抛 `MenuGroupRootContext is missing`，触发器渲染正常但点击崩页 —— 分组标签必须包在 `MenuGroup` 里。
+- `MenuSubTrigger` 与 `MenuSubContent` 必须同在一个 `MenuSub` 内，且 `MenuSub` 必须在 `MenuContent` 里。用 `MenuItem` 加一个自己画的箭头替代 `MenuSubTrigger` 是看不出问题的错误：视觉一样，但没有 `aria-haspopup` / `aria-expanded`，读屏用户听不出这一项还有下一级。
+- 别拿 `MenuContent side="right"` 当子面板用。它在 `MenuSub` 里确实能渲染成子菜单（内部是同一套 Portal/Positioner/Popup），但 chevron、`sideOffset`、展开时父项保持高亮这三样都要自己补，漏一样就与库内其它子菜单不一致 —— `MenuSubContent` 就是把这三样固化下来的那一层。
 - 菜单默认带 `max-h-[min(24rem,var(--available-height))] overflow-y-auto`：放得下时不产生任何视觉差异，项数一多就改为内部滚动。这是库内兜底而不是「每个消费方自己记得加」——浮层是 fixed 的，溢出视口那截既点不到、页面也滚不出来，而且只有等数据长起来才暴露（开发时 3 项、上线后 40 项）。要更矮/更高就在 `className` 上覆盖 `max-h-*`。`ContextMenu` 同款。
 
 ## 相关

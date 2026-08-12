@@ -11,7 +11,9 @@
  * - 属性白名单：只留 `style` / `href` / `src` / `alt` / `title` / `colspan` / `rowspan` / `width` / `height`；
  *   `class` 与所有 `on*` 一律删（前者污染样式，后者是脚本注入面）。
  * - `style` 再过一层属性白名单：`mso-*`、`font-family` 这类只对 Word 有意义的整条丢掉。
- * - `href` / `src` 里的 `javascript:` / `vbscript:` 协议直接删属性。
+ * - `href` / `src` 过**协议白名单**（`http` / `https` / `mailto` / `tel` / 相对路径 / 锚点）：
+ *   `javascript:` / `vbscript:` 之外，`data:` / `blob:` / `file:` 同样进不来 —— 前者是把
+ *   base64 写进数据库，后两者存下来就是永久碎图（#213）。
  *
  * 这套口径是**默认值**，不受 `legacyHtml` 影响：存量兼容要多留 `font-family` / `max-width` 时，
  * 走 `extraStyleProps` 显式加，加的仍是白名单条目，删除类规则（`class` / `on*` / `<style>` /
@@ -56,7 +58,38 @@ const KEEP_STYLE_PROPS = new Set([
 ]);
 
 const URL_ATTRS = ["href", "src"];
-const UNSAFE_URL = /^\s*(javascript|vbscript|data:text\/html)/i;
+
+/**
+ * URL 允许的协议。**白名单**，与本模块其余三张表（标签 / 属性 / CSS 属性）口径一致。
+ *
+ * 这里原本是黑名单（`javascript|vbscript|data:text/html`），漏掉了三类：
+ * - `data:image/*` —— 从 Word / Excel / 网页粘来的正文里全是它。留下就是把几 MB base64
+ *   写进数据库字段，而文档承诺的是「图片**永远不内联 base64**」（#213）。
+ * - `blob:` —— 只在**当前页面生命周期内**有效。存进库、下次打开就是碎图，
+ *   而且字段大小看不出异常，比 base64 更难查。
+ * - `file:` —— 只在那一台机器上有效，同上。
+ *
+ * 黑名单挡不住明天新增的协议，白名单可以。
+ */
+const ALLOWED_URL_SCHEMES = new Set(["http", "https", "mailto", "tel"]);
+
+/**
+ * 这个 URL 能不能留下。相对路径、站内绝对路径、协议相对（`//host/x`）、锚点一律放行。
+ *
+ * 判协议前先剥掉控制字符与空白：浏览器解析 URL 时本就会剥，`java\nscript:alert(1)`
+ * 与 `javascript:alert(1)` 对它是同一个东西 —— 不先剥就等于留了一条绕过通道。
+ */
+export function isAllowedUrl(raw: string): boolean {
+  const value = raw.replace(/[\u0000-\u0020\u007F]/g, "");
+  if (value === "") return false;
+  if (value.startsWith("#") || value.startsWith("/")) return true;
+  const scheme = /^([a-z][a-z0-9+.-]*):/i.exec(value);
+  if (!scheme) return true; // 没有协议 = 相对路径
+  return ALLOWED_URL_SCHEMES.has(scheme[1]!.toLowerCase());
+}
+
+/** src 被拒时整个元素都留不住的标签：没有 src 它们就是个空壳。 */
+const SRC_ONLY_TAGS = new Set(["IMG", "SOURCE", "VIDEO", "AUDIO", "IFRAME", "EMBED"]);
 
 /**
  * 按属性白名单过一遍内联 `style`，留下的按 `prop: value` 重新拼。
@@ -115,7 +148,13 @@ export function sanitizePastedHtml(html: string, options?: SanitizePastedHtmlOpt
         el.removeAttribute(attr.name);
         continue;
       }
-      if (URL_ATTRS.includes(name) && UNSAFE_URL.test(attr.value)) {
+      if (URL_ATTRS.includes(name) && !isAllowedUrl(attr.value)) {
+        // `<a href>` 被拒只删属性、留下文字（链接没了，字还在）；
+        // `<img src>` 被拒则整个元素都没意义了，留个空壳只会在正文里留一个看不见的洞。
+        if (name === "src" && SRC_ONLY_TAGS.has(el.tagName)) {
+          el.remove();
+          break;
+        }
         el.removeAttribute(attr.name);
         continue;
       }

@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
-import { Check } from "../_icons";
+import { Check, ChevronRight } from "../_icons";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type {
   MenuContentProps,
@@ -11,6 +11,8 @@ import type {
   MenuCheckboxItemProps,
   MenuRadioGroupProps,
   MenuRadioItemProps,
+  MenuSubTriggerProps,
+  MenuSubContentProps,
 } from "./menu.types";
 
 // overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（与 Dialog/Popover 同手感）。
@@ -19,6 +21,15 @@ import type {
 const overlayTransition = {
   transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
+
+// 面板皮肤（主菜单 / 子菜单共用），抽常量而非各写一遍：#212 的成因正是同一套东西在两处
+// 各自维护后漂开，子面板再抄一份字面量就是把同一个坑挪进本文件。
+//
+// 高度上限跟 Select / Combobox / TreeSelect 同一套：放得下时 min() 取 24rem 一档不产生
+// 任何视觉差异；放不下时改为滚动，而不是让菜单项长到视口外——浮层是 fixed 的，溢出的
+// 那截既点不到也滚不出来（#198）。
+const popupClass =
+  "max-h-[min(24rem,var(--available-height))] min-w-[8rem] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0";
 
 export function Menu(props: ComponentProps<typeof BaseMenu.Root>) {
   return <BaseMenu.Root {...props} />;
@@ -37,17 +48,7 @@ export function MenuContent({
   return (
     <BaseMenu.Portal>
       <BaseMenu.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
-        <BaseMenu.Popup
-          className={cn(
-            // 高度上限跟 Select / Combobox / TreeSelect 同一套：放得下时 min() 取 24rem 一档不产生
-            // 任何视觉差异；放不下时改为滚动，而不是让菜单项长到视口外——浮层是 fixed 的，溢出的
-            // 那截既点不到也滚不出来（#198）。
-            "max-h-[min(24rem,var(--available-height))] min-w-[8rem] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none",
-            "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
-            className,
-          )}
-          style={overlayTransition}
-        >
+        <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransition}>
           {children}
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
@@ -135,5 +136,47 @@ export function MenuGroupLabel({ children, className }: { children?: ReactNode; 
     <BaseMenu.GroupLabel className={cn("px-2 py-1.5 text-xs font-medium text-muted-foreground", className)}>
       {children}
     </BaseMenu.GroupLabel>
+  );
+}
+
+// ===== 级联子菜单（#212）=====
+//
+// 与 ContextMenu 的那三件是同一形态：Base UI 的 context-menu 与 menu 共用同一套 Submenu 原语
+// （Menu.SubmenuRoot / Menu.SubmenuTrigger），所以点击式下拉本来就能开二级，缺的只是瑚琏这层封装。
+// 消费方在库外拼这段是能跑的（issue 里的 shim 就是），但 chevron、右侧展开方位、data-popup-open
+// 的高亮保持这三样得各自记住 —— 记漏了菜单看不出「这项还有下一级」，而这正是子菜单唯一的可见线索。
+
+// 子菜单根：包住 SubTrigger + SubContent。
+export const MenuSub = BaseMenu.SubmenuRoot;
+
+// 子菜单触发项：菜单项皮肤 + 右向 chevron 提示有下级。
+// data-popup-open 时保持高亮：指针移进子面板后就不再 hover 父项了，不补这条，
+// 展开着的那一级会失去底色，看起来像「没选中任何东西却凭空冒出个面板」。
+export function MenuSubTrigger({ variant, className, children, ...props }: MenuSubTriggerProps) {
+  return (
+    <BaseMenu.SubmenuTrigger
+      className={cn(
+        menuItemVariants({ variant }),
+        "data-[popup-open]:bg-surface-hover data-[popup-open]:text-foreground",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronRight className="ml-auto size-4 shrink-0 text-muted-foreground" />
+    </BaseMenu.SubmenuTrigger>
+  );
+}
+
+// 子菜单面板：锚到父项右侧（side=right / align=start），复用主面板皮肤。
+export function MenuSubContent({ children, className }: MenuSubContentProps) {
+  return (
+    <BaseMenu.Portal>
+      <BaseMenu.Positioner className="z-50" side="right" align="start" sideOffset={4}>
+        <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransition}>
+          {children}
+        </BaseMenu.Popup>
+      </BaseMenu.Positioner>
+    </BaseMenu.Portal>
   );
 }

@@ -155,6 +155,7 @@ export * from "./watch";
 // B 档纯皮肤基础件批
 export * from "./spinner";
 export * from "./chip";
+export * from "./filter-chip";
 export * from "./coupon";
 export * from "./link";
 export * from "./kbd";

@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 389 个组件 · v0.35.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 390 个组件 · v0.36.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -129,7 +129,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（90）
+## 数据展示 data-display（91）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 头像 · Base UI 图片+fallback
@@ -165,6 +165,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Empty](https://github.com/hulianui/hulian/blob/master/packages/ui/src/empty/empty.md): 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)
 - [EventStream](https://github.com/hulianui/hulian/blob/master/packages/ui/src/event-stream/event-stream.md): 事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」
 - [FileTree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/file-tree/file-tree.md): 文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义)…
+- [FilterChip](https://github.com/hulianui/hulian/blob/master/packages/ui/src/filter-chip/filter-chip.md): 已应用筛选条件胶囊 · 主语｜操作符｜值｜移除 四段(段间竖线) + 操作符可省 + 值收 ReactNode + 整段可点
 - [Flow](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flow/flow.md): 节点画布编排器 · 零依赖原生 Pointer Events + SVG 贝塞尔连线 · 拖节点/拖桩连线/平移缩放/适配视图 + 受控 nodes/edges(onNodesChange/onConnect/删点删线…
 - [FlyingPosters](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flying-posters/flying-posters.md): WebGL 海报飞行长廊 · 一列海报随滚轮/拖拽无限循环上下飞过，顶点着色器按 distortion 翻折"飞起"·离屏循环复用 + 透视相机景深(ogl·懒加载·StrictMode 安全·reduced-moti…
 - [Folder](https://github.com/hulianui/hulian/blob/master/packages/ui/src/folder/folder.md): 3D 文件夹 · 点击展开的 3D 文件夹 · 三层纸张扇形铺开 + 展开后磁吸跟随鼠标(零依赖纯 CSS transform·token 派生·reduced-motion) · data-display/colle…

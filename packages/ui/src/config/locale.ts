@@ -229,6 +229,16 @@ export interface ComponentLocale {
   mentions?: { suggestions: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   chip?: { remove: string };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  filterChip?: {
+    /** Accessible name of the remove button; the filter subject is interpolated. */
+    remove: (subject: string) => string;
+    /** Accessible name used when the subject is a node with no plain-text label. */
+    removeFallback: string;
+    clearAll: string;
+    /** Accessible name of the FilterChipGroup row. */
+    group: string;
+  };
   combobox?: { clear: string; remove: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   tag?: { remove: string };
@@ -988,6 +998,12 @@ const zhComponents: ComponentLocale = {
   },
   mentions: { suggestions: "提及候选" },
   chip: { remove: "移除" },
+  filterChip: {
+    remove: (subject) => `移除筛选条件：${subject}`,
+    removeFallback: "移除筛选条件",
+    clearAll: "清除全部",
+    group: "已应用的筛选条件",
+  },
   combobox: { clear: "清除", remove: "移除" },
   tag: { remove: "移除" },
   tree: {
@@ -1776,6 +1792,12 @@ const enComponents: ComponentLocale = {
   },
   mentions: { suggestions: "Mention suggestions" },
   chip: { remove: "Remove" },
+  filterChip: {
+    remove: (subject) => `Remove filter: ${subject}`,
+    removeFallback: "Remove filter",
+    clearAll: "Clear all",
+    group: "Applied filters",
+  },
   combobox: { clear: "Clear", remove: "Remove" },
   tag: { remove: "Remove" },
   tree: {

@@ -898,6 +898,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Shows a compact token with semantic styling, an optional dot, and removal action.",
     keywords: ["chip", "data-display", "info"],
   },
+  "filter-chip": {
+    shortName: "FilterChip",
+    description:
+      "Echoes an applied filter as subject, operator, and value segments with a remove action.",
+    keywords: ["filter", "chip", "data-display", "info"],
+  },
   coupon: {
     shortName: "Coupon",
     description: "Displays discount value, conditions, validity, and claim or used state.",

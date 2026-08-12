@@ -1,6 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, } from "../../../../packages/ui/src/menu/menu";
+import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, MenuSub, MenuSubTrigger, MenuSubContent, } from "../../../../packages/ui/src/menu/menu";
 import { Button } from "../../../../packages/ui/src/button/button";
 type Side = "top" | "right" | "bottom" | "left";
 type Align = "start" | "center" | "end";
@@ -24,6 +24,33 @@ function SelectionDemo({ defaultOpen = false }: {
             <MenuRadioItem value="loose">Loose</MenuRadioItem>
           </MenuRadioGroup>
         </MenuGroup>
+      </MenuContent>
+    </Menu>);
+}
+function SubDemo({ defaultOpen = false }: {
+    defaultOpen?: boolean;
+}) {
+    return (<Menu defaultOpen={defaultOpen} modal={false}>
+      <MenuTrigger render={<Button variant="outline">Filter</Button>}/>
+      <MenuContent>
+        <MenuItem>All tasks</MenuItem>
+        <MenuSeparator />
+        <MenuSub>
+          <MenuSubTrigger>Status</MenuSubTrigger>
+          <MenuSubContent>
+            <MenuItem>To do</MenuItem>
+            <MenuItem>Ongoing</MenuItem>
+            <MenuItem>Completed</MenuItem>
+          </MenuSubContent>
+        </MenuSub>
+        <MenuSub>
+          <MenuSubTrigger>Priority</MenuSubTrigger>
+          <MenuSubContent>
+            <MenuItem>Low</MenuItem>
+            <MenuItem>Medium</MenuItem>
+            <MenuItem>High</MenuItem>
+          </MenuSubContent>
+        </MenuSub>
       </MenuContent>
     </Menu>);
 }
@@ -141,6 +168,23 @@ export const menuShowcase: ShowcaseSpec = {
             render: () => <SelectionDemo />,
         },
         {
+            title: "Cascading submenu",
+            description: "MenuSub wraps MenuSubTrigger + MenuSubContent; the sub panel expands from the right side of the parent item and supports multi-level nesting. Grouping options by dimension suits filters that hold dozens of choices, where a flat single-level panel becomes unusable.",
+            code: `<MenuContent>
+  <MenuItem>All tasks</MenuItem>
+  <MenuSeparator />
+  <MenuSub>
+    <MenuSubTrigger>Status</MenuSubTrigger>
+    <MenuSubContent>
+      <MenuItem>To do</MenuItem>
+      <MenuItem>Ongoing</MenuItem>
+      <MenuItem>Completed</MenuItem>
+    </MenuSubContent>
+  </MenuSub>
+</MenuContent>`,
+            render: () => <SubDemo />,
+        },
+        {
             title: "Pop-up direction",
             description: "side / align of MenuContent controls the orientation of the floating layer relative to the trigger.",
             code: `<Menu>
@@ -168,6 +212,7 @@ export const menuShowcase: ShowcaseSpec = {
         { name: "default", render: () => <Demo /> },
         { name: "Grouping", render: () => <Demo withGroup/> },
         { name: "Checkbox and radio items (open)", render: () => <SelectionDemo defaultOpen/> },
+        { name: "Cascading submenu (open)", render: () => <SubDemo defaultOpen/> },
         { name: "right", render: () => <Demo side="right"/> },
         { name: "top", render: () => <Demo side="top"/> },
     ],

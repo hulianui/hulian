@@ -310,6 +310,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "dot", name: "Dot", description: "状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "status-dot", name: "StatusDot", description: "健康状态点 · 在线/降级/离线/维护四语义态(→success/warning/danger/neutral 映射) + 默认仅在线脉冲 + 状态文字 + 尾部数值槽(延迟/成功率)(封装 Dot·网关渠道健康墙刚需·纯CSS·RSC)", category: "data-display", group: "info", status: "new" },
   { slug: "chip", name: "Chip", description: "标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)", category: "data-display", group: "info", status: "new" },
+  { slug: "filter-chip", name: "FilterChip", description: "已应用筛选条件胶囊 · 主语｜操作符｜值｜移除 四段(段间竖线) + 操作符可省自动退化两段 + 值收 ReactNode(头像堆叠/状态图标/已选N项) + 整段可点重开筛选菜单(×是本体兄弟节点·点它不触发 onClick) + 移除按钮无障碍名带主语 · FilterChipGroup 成行排布/清除全部/空则整行不渲染 · 筛选回显侧(输入侧见 SearchForm)", category: "data-display", group: "info", status: "new" },
   { slug: "coupon", name: "Coupon", description: "优惠券 · 撕票造型(中缝虚线+上下半圆穿孔·纯CSS) + 满减/折扣/包邮三类 + 可领/已领/已用/过期四态 + 选券高亮(电商标配·只消费 token)", category: "data-display", group: "info", status: "new" },
   { slug: "tag", name: "Tag", description: "状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)", category: "data-display", group: "info", status: "new" },
   { slug: "annotation", name: "Annotation", description: "手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容(文档/演示/组件解剖图) · 八方位(标签在哪，箭头自动指回) + 6 语气(含彩虹) + 只圈不注 · 标签是真节点故可放 ReactNode 且读屏可读(区别 Callout 块级提示框·零依赖)", category: "data-display", group: "info", status: "new" },

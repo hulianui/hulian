@@ -37,7 +37,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用（内容区不可编辑 + 工具栏收起） |
 | minRows | `number` | `8` | 内容区最小高度（行） |
 | toolbar | `RichTextToolbarItem[]` | 完整一档 | 工具栏条目与顺序；`[]` 则整条工具栏不渲染。**裁掉一档同时会关掉对应扩展**（见「禁忌 / 坑」） |
-| sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>` / `javascript:`，内联 `style` 过属性白名单 |
+| sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>`，`href` / `src` 过协议白名单，内联 `style` 过属性白名单 |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | 存量 HTML 兼容（微信编辑器 / Word / 老 UEditor 的正文）。默认关；`true` 三档全开，给对象则只开写明的那几档。见「存量 HTML 兼容」 |
 | extensions | `AnyExtension[]` | — | 追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频补一个节点类型） |
 | className | `string` | — | 落在外壳 |
@@ -58,7 +58,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onChange | `(html: string) => void` | 内容变化回调，参数是 HTML 串 |
-| onUploadImage | `(file: File) => Promise<{ url: string }>` | 图片上传：拿 `File`、还 URL。不传则图片按钮退回「填 URL」 |
+| onUploadImage | `(file: File) => Promise<{ url: string }>` | 图片上传：拿 `File`、还 URL。**工具栏按钮、粘贴、拖拽三条路都走它**。不传则按钮退回「填 URL」，粘贴/拖拽的图片被丢弃（见「图片怎么进来」） |
 
 ## 示例
 ```tsx
@@ -106,6 +106,33 @@ const [html, setHtml] = useState(detail.content); // 库里取出来就是 HTML
 <RichTextEditor legacyHtml={{ font: true, imgStyle: true }} value={html} onChange={setHtml} />
 ```
 
+## 图片怎么进来
+
+三条入口，**都走同一个 `onUploadImage`**（拿 `File`、还 URL）：
+
+| 入口 | 传了 `onUploadImage` | 没传 |
+|------|------|------|
+| 工具栏图片按钮 | 打开文件选择器（`accept="image/*"`）→ 上传 → 插入返回的 URL | 退回「填 URL」弹窗 |
+| **粘贴截图**（`Cmd+V`） | 上传 → 插入 | 忽略，开发期打一条告警 |
+| **拖入图片文件** | 上传 → 插到落点 | 忽略，开发期打一条告警 |
+| 粘贴 Word / 网页正文（图片是内联 base64） | 逐张转存成 URL 再整段插入 | base64 被丢弃（不写进正文），开发期打一条告警 |
+
+最后一行值得单说：从 Word、Excel、部分网页复制的正文，图片是**内联在 HTML 里的 base64**，剪贴板里没有对应的文件条目——所以它和「粘贴截图」是两条不同的路，组件分开处理。有 `onUploadImage` 时会把 `data:` 还原成 `File` 转存，没有则整个 `<img>` 被净化删掉：**宁可丢一张图，也不把几 MB base64 写进你的数据库字段**。
+
+```tsx
+// 传输层全在你手里：鉴权头、直传、进度、失败重试
+<RichTextEditor
+  onUploadImage={async (file) => {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: form, headers: authHeaders });
+    return { url: (await res.json()).url };
+  }}
+/>
+```
+
+上传抛错时该图不插入，组件不弹任何 UI——**提示归你**，只有你知道该说什么（配额满了？格式不支持？重试？）。多张一起传时单张失败不打断其余的。
+
 ## 存量 HTML 兼容
 
 编辑器的 schema 在**载入时**就决定了哪些标签能活下来。下面这张表是「打开 → 不做任何编辑 → 取回 HTML」的口径，上线前照它对一遍存量样本：
@@ -148,7 +175,8 @@ const html = normalizeLegacyHtml(row.content)
 - **只裹一张图的居中包裹层保不住**。`<section style="text-align:center"><img></section>` 里图片是块级节点，套一层 `<p>` 只会让 ProseMirror 把它提出去、留下一个空段落，所以这种形态刻意不转 —— 图片的居中要在前台样式里给（`img { display:block; margin:0 auto }`），不要指望正文串。
 - `legacyHtml` 开着时粘贴净化的**删除类规则一条都不松**（`class` / `on*` / `<style>` / `javascript:` 照删），只是内联 `style` 白名单多放行 `font-family` 与 `max-width` 两条。`<font color>` 的值走形状白名单（命名色 / `#hex` / `rgb()`），拼不出第二条声明 —— 正文是用户可写字段。
 - **取色器里不出现 `var(--…)` 色**，两个都不出现。正文要存进你的库、再由别处的前台（`v-html` / 小程序 `rich-text` / 邮件）渲染，那边没有瑚琏的 CSS 变量，`color: var(--color-foreground)` 到了那儿解析不出值、静默退回继承色 —— 等于把只在编辑器里成立的样式写成了永久内容。所以「默认色」/「无底色」走的是 `unsetColor()` / `unsetBackgroundColor()`，即**不写这条声明**，而不是写一个「默认颜色」。
-- 图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。
+- 图片**永远不内联 base64**，粘贴这条路也不例外（0.36.0 之前不成立，见 #213：从 Word 粘正文会把 base64 原样写进字段）。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。
+- **`blob:` 与 `file:` 的图片地址会被粘贴净化删掉。** 前者只在当前页面生命周期内有效、后者只在那台机器上有效，存进库下次打开就是碎图 —— 而且字段大小看不出异常，比 base64 更难查。
 - 粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。
 - `value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。
 - 与 [MarkdownEditor](../markdown-editor/markdown-editor.md) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。

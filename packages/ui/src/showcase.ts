@@ -47,6 +47,7 @@ export { chartShowcase } from "./chart/chart.showcase";
 export { checkboxGroupShowcase } from "./checkbox-group/checkbox-group.showcase";
 export { checkboxShowcase } from "./checkbox/checkbox.showcase";
 export { chipShowcase } from "./chip/chip.showcase";
+export { filterChipShowcase } from "./filter-chip/filter-chip.showcase";
 export { couponShowcase } from "./coupon/coupon.showcase";
 export { chromeShowcase } from "./chrome/chrome.showcase";
 export { codeBlockShowcase } from "./code-block/code-block.showcase";

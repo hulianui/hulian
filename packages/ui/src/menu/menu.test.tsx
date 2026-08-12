@@ -13,6 +13,9 @@ import {
   MenuSeparator,
   MenuGroup,
   MenuGroupLabel,
+  MenuSub,
+  MenuSubTrigger,
+  MenuSubContent,
 } from "./menu";
 
 describe("menuItemVariants", () => {
@@ -229,5 +232,160 @@ describe("MenuContent 高度上限（#198）", () => {
     const popup = screen.getByRole("menu");
     expect(popup.className).toContain("max-h-[min(24rem,var(--available-height))]");
     expect(popup.className).toContain("overflow-y-auto");
+  });
+
+  // 补子菜单（#212）时把 MenuContent 的皮肤抽成了共用常量。抽常量是重构，重构不该有可见后果：
+  // 这条把已有消费方拿到的那串 class 逐字钉死，改一个字符就红，避免「顺手优化一下」悄悄变了样。
+  it("面板 class 逐字不变（抽共用常量属重构，不得改变既有渲染结果）", () => {
+    render(
+      <Menu defaultOpen>
+        <MenuTrigger>打开</MenuTrigger>
+        <MenuContent>
+          <MenuItem>编辑</MenuItem>
+        </MenuContent>
+      </Menu>,
+    );
+    expect(screen.getByRole("menu").className).toBe(
+      "max-h-[min(24rem,var(--available-height))] min-w-[8rem] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+    );
+  });
+});
+
+// ===== 级联子菜单（#212）=====
+describe("MenuSub / MenuSubTrigger / MenuSubContent", () => {
+  function Nested({ disabled = false }: { disabled?: boolean }) {
+    return (
+      <Menu defaultOpen modal={false}>
+        <MenuTrigger render={<button>筛选</button>} />
+        <MenuContent>
+          <MenuItem>全部</MenuItem>
+          <MenuSub>
+            <MenuSubTrigger disabled={disabled}>状态</MenuSubTrigger>
+            <MenuSubContent>
+              <MenuItem>进行中</MenuItem>
+              <MenuItem>已完成</MenuItem>
+            </MenuSubContent>
+          </MenuSub>
+        </MenuContent>
+      </Menu>
+    );
+  }
+
+  it("闭合态: 触发项在，子面板的项不在 DOM", () => {
+    render(<Nested />);
+    expect(screen.getByText("状态")).toBeTruthy();
+    expect(screen.queryByText("进行中")).toBeNull();
+  });
+
+  // 「这项还有下一级」在读屏里唯一的载体是 aria-haspopup / aria-expanded —— 视觉上的 chevron
+  // 读屏读不到。所以这条盯语义，下一条才盯 chevron。
+  it("SubTrigger 带 aria-haspopup + aria-expanded，展开后 expanded 翻真", () => {
+    render(<Nested />);
+    const trigger = screen.getByText("状态");
+    expect(trigger.getAttribute("aria-haspopup")).toBe("menu");
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByText("进行中")).toBeTruthy();
+  });
+
+  // 子菜单只能靠指针展开的话，键盘用户就走不进去了。ArrowRight 是 menu 模式的约定键。
+  it("键盘 ArrowRight 展开子菜单", () => {
+    render(<Nested />);
+    const trigger = screen.getByText("状态");
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    fireEvent.keyDown(trigger, { key: "ArrowRight" });
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByText("进行中")).toBeTruthy();
+  });
+
+  it("SubTrigger 渲出右向 chevron（子菜单在视觉上唯一的线索）", () => {
+    render(<Nested />);
+    const svg = screen.getByText("状态").querySelector("svg");
+    expect(svg).not.toBeNull();
+    // 与 ContextMenuSubTrigger 同一条 lucide chevron-right 路径。
+    expect(svg?.querySelector("path")?.getAttribute("d")).toBe("m9 18 6-6-6-6");
+  });
+
+  it("SubTrigger 复用 menuItemVariants 皮肤 + 展开时保持高亮 + 支持 danger/disabled", () => {
+    const { unmount } = render(<Nested />);
+    const trigger = screen.getByText("状态");
+    expect(trigger.className).toContain("data-[highlighted]:bg-surface-hover");
+    expect(trigger.className).toContain("data-[disabled]:opacity-50");
+    // 指针移进子面板后父项不再 hover，靠这条撑住底色。
+    expect(trigger.className).toContain("data-[popup-open]:bg-surface-hover");
+    unmount();
+
+    // 每棵树各自捕获自己的 unmount：复用第一棵的会让第二棵留在 document 里，
+    // 后面的 getByText 就是在两棵树上查，将来加 getAllBy* 断言会串。
+    const second = render(<Nested disabled />);
+    expect(screen.getByText("状态").getAttribute("aria-disabled")).toBe("true");
+    second.unmount();
+
+    render(
+      <Menu defaultOpen modal={false}>
+        <MenuTrigger render={<button>更多</button>} />
+        <MenuContent>
+          <MenuSub>
+            <MenuSubTrigger variant="danger">危险操作</MenuSubTrigger>
+            <MenuSubContent>
+              <MenuItem>清空</MenuItem>
+            </MenuSubContent>
+          </MenuSub>
+        </MenuContent>
+      </Menu>,
+    );
+    expect(screen.getByText("危险操作").className).toContain("text-danger");
+  });
+
+  // #212 的成因就是「同一形态两处各自维护」。子面板与主面板共用同一串皮肤常量，
+  // 这条钉住它：任何一边单独改，两个 role=menu 的 class 就不再相等。
+  it("子面板与主面板共用同一份皮肤（含 #198 的高度上限）", () => {
+    render(<Nested />);
+    fireEvent.click(screen.getByText("状态"));
+    const [main, sub] = screen.getAllByRole("menu");
+    expect(sub).toBeTruthy();
+    expect(sub?.className).toBe(main?.className);
+    expect(sub?.className).toContain("max-h-[min(24rem,var(--available-height))]");
+  });
+
+  it("className 透传到子面板与触发项", () => {
+    render(
+      <Menu defaultOpen modal={false}>
+        <MenuTrigger render={<button>筛选</button>} />
+        <MenuContent>
+          <MenuSub>
+            <MenuSubTrigger className="my-trigger">状态</MenuSubTrigger>
+            <MenuSubContent className="w-64">
+              <MenuItem>进行中</MenuItem>
+            </MenuSubContent>
+          </MenuSub>
+        </MenuContent>
+      </Menu>,
+    );
+    const trigger = screen.getByText("状态");
+    expect(trigger.className).toContain("my-trigger");
+    fireEvent.click(trigger);
+    expect(screen.getAllByRole("menu")[1]?.className).toContain("w-64");
+  });
+
+  it("子菜单里的 MenuItem onClick 照常触发", () => {
+    const onClick = vi.fn();
+    render(
+      <Menu defaultOpen modal={false}>
+        <MenuTrigger render={<button>筛选</button>} />
+        <MenuContent>
+          <MenuSub>
+            <MenuSubTrigger>状态</MenuSubTrigger>
+            <MenuSubContent>
+              <MenuItem onClick={onClick}>进行中</MenuItem>
+            </MenuSubContent>
+          </MenuSub>
+        </MenuContent>
+      </Menu>,
+    );
+    fireEvent.click(screen.getByText("状态"));
+    fireEvent.click(screen.getByText("进行中"));
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

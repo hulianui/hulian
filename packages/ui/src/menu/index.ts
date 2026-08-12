@@ -9,6 +9,9 @@ export {
   MenuSeparator,
   MenuGroup,
   MenuGroupLabel,
+  MenuSub,
+  MenuSubTrigger,
+  MenuSubContent,
   menuItemVariants,
 } from "./menu";
 export type {
@@ -17,4 +20,6 @@ export type {
   MenuCheckboxItemProps,
   MenuRadioGroupProps,
   MenuRadioItemProps,
+  MenuSubTriggerProps,
+  MenuSubContentProps,
 } from "./menu.types";

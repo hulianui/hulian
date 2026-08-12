@@ -3,6 +3,8 @@ import type {
   MenuCheckboxItemProps,
   MenuRadioGroupProps,
   MenuRadioItemProps,
+  MenuSubTriggerProps,
+  MenuSubContentProps,
 } from "../menu/menu.types";
 
 export interface ContextMenuContentProps {
@@ -28,16 +30,7 @@ export type ContextMenuCheckboxItemProps = MenuCheckboxItemProps;
 export type ContextMenuRadioGroupProps = MenuRadioGroupProps;
 export type ContextMenuRadioItemProps = MenuRadioItemProps;
 
-export interface ContextMenuSubTriggerProps {
-  children?: ReactNode;
-  disabled?: boolean;
-  /** 键盘 type-ahead 用文案覆盖。 */
-  label?: string;
-  variant?: "default" | "danger";
-  className?: string;
-}
-
-export interface ContextMenuSubContentProps {
-  children: ReactNode;
-  className?: string;
-}
+// 子菜单两件同理别名到 Menu 侧：#212 之前这两个接口在本文件另抄了一份，Menu 补齐时若再抄第三份，
+// 「同一形态两处各自维护」这个成因就原样保留了。别名让两边只能一起改。
+export type ContextMenuSubTriggerProps = MenuSubTriggerProps;
+export type ContextMenuSubContentProps = MenuSubContentProps;

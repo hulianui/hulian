@@ -5,7 +5,7 @@
 <h1 align="center">Hulian (瑚琏)</h1>
 
 <p align="center">
-  A beautiful, practical React design system — <b>389 components</b>, OKLCH theming · Tailwind v4 · zero-flash dark mode · runtime theming.
+  A beautiful, practical React design system — <b>390 components</b>, OKLCH theming · Tailwind v4 · zero-flash dark mode · runtime theming.
 </p>
 
 <p align="center">
@@ -28,7 +28,7 @@
 
 ## ✨ Features
 
-- 🧩 **389 components** — controls / forms / data display / feedback / navigation / overlay / charts / effect backgrounds / AI agent / live streaming / node canvas …
+- 🧩 **390 components** — controls / forms / data display / feedback / navigation / overlay / charts / effect backgrounds / AI agent / live streaming / node canvas …
 - 🎨 **OKLCH two-layer tokens** — primitive + semantic layers; toggle `[data-theme]` with zero flash, re-theme at runtime
 - ♿ **Accessibility first** — behavior layer built on [Base UI](https://base-ui.com); keyboard / focus / ARIA out of the box
 - 🌗 **Zero-flash dark mode** — `ThemeProvider` + an entry inline script keep SSR first paint clean

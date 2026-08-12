@@ -434,6 +434,9 @@ export const scenarioLoaders = {
   "file-tree": async () =>
     (await import("@hulianui/ui-internal/file-tree/file-tree.showcase"))
       .fileTreeShowcase,
+  "filter-chip": async () =>
+    (await import("@hulianui/ui-internal/filter-chip/filter-chip.showcase"))
+      .filterChipShowcase,
   "fit-screen": async () =>
     (await import("@hulianui/ui-internal/fit-screen/fit-screen.showcase"))
       .fitScreenShowcase,
@@ -2708,6 +2711,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/file-tree/index.ts",
+  },
+  "filter-chip": {
+    id: "filter-chip",
+    scenarioId: "filter-chip/basic",
+    component: "FilterChip",
+    entry: "@hulianui/ui/filter-chip",
+    category: "standard",
+    categories: ["data-display", "info"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/filter-chip/index.ts",
   },
   "fit-screen": {
     id: "fit-screen",

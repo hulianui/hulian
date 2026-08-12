@@ -9,6 +9,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { BackgroundColor, Color, FontFamily, FontSize, TextStyle } from "@tiptap/extension-text-style";
 import { TableKit } from "@tiptap/extension-table";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { useComponentLocale } from "../config/locale-context";
 import { RichTextEditorToolbar } from "./rich-text-editor-toolbar";
 import { filterStyleDeclarations, sanitizePastedHtml } from "./rich-text-editor.sanitize";
@@ -81,6 +82,41 @@ function resolveLegacyHtml(value: boolean | LegacyHtmlOptions | undefined): Lega
   if (value === true) return { font: true, imgStyle: true, align: true };
   if (!value.font && !value.imgStyle && !value.align) return null;
   return value;
+}
+
+/** 从 DataTransfer 里挑出图片文件。拖 Finder 里的图、粘贴截图走的都是这里。 */
+function imageFilesOf(data: DataTransfer | null | undefined): File[] {
+  if (!data) return [];
+  return Array.from(data.files ?? []).filter((file) => file.type.startsWith("image/"));
+}
+
+/**
+ * 把 `data:` URL 还原成 `File`。
+ *
+ * 从 Word / Excel / 部分网页粘过来的正文，图片是内联在 HTML 里的 base64，**剪贴板里没有
+ * 对应的文件条目** —— 所以 `DataTransfer.files` 那条路取不到它们，只能从 HTML 里捞。
+ * `fetch` 认 `data:` URL，且这一步纯本地、不出网。
+ */
+async function dataUrlToFile(dataUrl: string, index: number): Promise<File | null> {
+  try {
+    const blob = await fetch(dataUrl).then((res) => res.blob());
+    const ext = blob.type.split("/")[1]?.split("+")[0] || "png";
+    return new File([blob], `pasted-image-${index + 1}.${ext}`, { type: blob.type });
+  } catch {
+    return null;
+  }
+}
+
+/** 一段 HTML 里所有 `data:image/*` 的 `<img src>`（去重后按出现顺序）。 */
+function dataImageSrcsOf(html: string): string[] {
+  if (typeof DOMParser === "undefined") return [];
+  const doc = new DOMParser().parseFromString(`<body>${html}</body>`, "text/html");
+  const seen = new Set<string>();
+  for (const img of Array.from(doc.body.querySelectorAll("img"))) {
+    const src = img.getAttribute("src") ?? "";
+    if (src.startsWith("data:image/")) seen.add(src);
+  }
+  return [...seen];
 }
 
 // 内容区排版：与 MarkdownEditor 同一套后代选择器，另加表格与图片
@@ -191,6 +227,91 @@ export function RichTextEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, extraExtensions, legacyFont, legacyImgStyle, legacyAlign]);
 
+  // 粘贴管线抽成一个函数：`transformPastedHTML` 与「上传完再插回去」两条路必须走同一套，
+  // 否则异步插入的那条会绕过归一与净化。
+  // 顺序是「先归一后净化」：归一把 `<font color>` 翻成 `style`，净化才有东西可白名单；
+  // 反过来 color/face/size 早被属性白名单删光了，翻译无从谈起。
+  const transformPasted = useCallback(
+    (html: string) => {
+      const normalized = toEditorHtml(html);
+      if (!sanitizePaste) return normalized;
+      return sanitizePastedHtml(normalized, {
+        extraStyleProps: [
+          ...(legacyFont ? LEGACY_FONT_STYLE_PROPS : []),
+          ...(legacyImgStyle ? LEGACY_IMG_PASTE_STYLE_PROPS : []),
+        ],
+      });
+    },
+    [toEditorHtml, sanitizePaste, legacyFont, legacyImgStyle],
+  );
+
+  // editorProps 里的 handler 在 useEditor 初始化时就被捕获，闭包不会跟着 props 更新。
+  // 用 ref 兜住最新的 onUploadImage，免得消费方换了上传实现之后粘贴还在调旧的那个。
+  const uploadRef = useRef(onUploadImage);
+  uploadRef.current = onUploadImage;
+  const transformRef = useRef(transformPasted);
+  transformRef.current = transformPasted;
+
+  // editorProps 的 handler 要用 editor 实例，而 editor 又由 useEditor 产出 —— 用 ref 解开这个环。
+  const editorRef = useRef<ReturnType<typeof useEditor> | null>(null);
+
+  // 图片节点在不在 schema 里。`toolbar` 裁掉 image 档就不装 Image 扩展（既有约定），
+  // 那时 `setImage` 命令根本不存在 —— 不先挡住的话会「文件传上去了、图却插不进来」：
+  // 白白占一次消费方的对象存储，用户还看不到任何反馈。
+  const imageEnabledRef = useRef(false);
+  imageEnabledRef.current = enabled.has("image") || legacyImgStyle;
+
+  /** 上传若干图片文件，成功一张插一张（`at` 给拖放的落点）。 */
+  const insertUploadedFiles = async (files: File[], at?: number) => {
+    const upload = uploadRef.current;
+    const instance = editorRef.current;
+    if (!upload || !instance) return;
+    let pos = at;
+    for (const file of files) {
+      try {
+        const { url } = await upload(file);
+        const chain = instance.chain().focus();
+        // 逐张往后挪一格，多张图才不会插成倒序。
+        if (pos !== undefined) chain.insertContentAt(pos, { type: "image", attrs: { src: url } });
+        else chain.setImage({ src: url });
+        chain.run();
+        if (pos !== undefined) pos += 1;
+      } catch {
+        // 单张失败不该把整批打断：上传是消费方实现的，超时/鉴权失败都可能发生。
+        // 这里不弹 UI —— 提示归消费方（它才知道该说什么），组件只保证不崩、不插半张。
+        warnOnce("rte-upload-failed", "[hulian] RichTextEditor：onUploadImage 抛错，该图未插入。");
+      }
+    }
+  };
+
+  /** Word / 网页粘来的正文：把内联 base64 转存成 URL 再整段插入。 */
+  const insertHtmlWithUploadedImages = async (html: string, dataUrls: string[]) => {
+    const upload = uploadRef.current;
+    const instance = editorRef.current;
+    if (!upload || !instance) return;
+    const replacements = new Map<string, string>();
+    await Promise.all(
+      dataUrls.map(async (dataUrl, index) => {
+        const file = await dataUrlToFile(dataUrl, index);
+        if (!file) return;
+        try {
+          const { url } = await upload(file);
+          replacements.set(dataUrl, url);
+        } catch {
+          warnOnce(
+            "rte-paste-upload-failed",
+            "[hulian] RichTextEditor：粘贴的内联图片转存失败，该图未插入。",
+          );
+        }
+      }),
+    );
+    // 先替 src 再走净化：替完就是普通的 https URL，能过协议白名单；
+    // 顺序反过来的话 data: 图早被净化删光了，替无可替。
+    let replaced = html;
+    for (const [dataUrl, url] of replacements) replaced = replaced.split(dataUrl).join(url);
+    instance.chain().focus().insertContent(transformRef.current(replaced)).run();
+  };
+
   const editor = useEditor({
     immediatelyRender: false, // Next SSR：防服务端立即渲染导致水合错
     editable: !disabled,
@@ -198,21 +319,91 @@ export function RichTextEditor({
     content: toEditorHtml(raw),
     editorProps: {
       // 粘贴净化在 ProseMirror 解析之前跑：等它解析完再洗就晚了（class 已经进了节点属性）。
-      // 顺序是「先归一后净化」：归一把 `<font color>` 翻成 `style`，净化才有东西可白名单；
-      // 反过来 color/face/size 早被属性白名单删光了，翻译无从谈起。
       transformPastedHTML:
-        legacy || sanitizePaste
-          ? (html: string) => {
-              const normalized = toEditorHtml(html);
-              if (!sanitizePaste) return normalized;
-              return sanitizePastedHtml(normalized, {
-                extraStyleProps: [
-                  ...(legacyFont ? LEGACY_FONT_STYLE_PROPS : []),
-                  ...(legacyImgStyle ? LEGACY_IMG_PASTE_STYLE_PROPS : []),
-                ],
-              });
-            }
-          : undefined,
+        legacy || sanitizePaste ? (html: string) => transformRef.current(html) : undefined,
+      /**
+       * 粘贴图片（#213）。组件本来就有完整的上传能力，此前只接在工具栏按钮上 ——
+       * 而截图 `Cmd+V` 才是运营真正会用的路径，点按钮反倒是少数。
+       *
+       * 两条来源要分开处理，它们在剪贴板里长得完全不一样：
+       * - **截图 / 从 Finder 复制的文件** 在 `clipboardData.files` 里，HTML 里没有对应的 `<img>`。
+       * - **从 Word / Excel / 网页复制的正文** 里图片是内联 base64，`files` 是空的，
+       *   只能从 `text/html` 里把 `data:image/*` 捞出来。
+       */
+      handlePaste: (_view, event) => {
+        const upload = uploadRef.current;
+        const files = imageFilesOf(event.clipboardData);
+        if (files.length > 0) {
+          if (!imageEnabledRef.current) {
+            warnOnce(
+              "rte-paste-image-without-node",
+              "[hulian] RichTextEditor：粘贴了图片，但 toolbar 裁掉了 image 档、图片节点不在 schema 里，" +
+                "插不进来。要支持图片就把 \"image\" 留在 toolbar 里。",
+            );
+            return false;
+          }
+          if (!upload) {
+            // 没有上传口就没法把它变成 URL。返回 false 而不是吞掉：剪贴板里可能同时有
+            // text/html（比如从网页复制图片），让 HTML 那条路继续跑，至少远程图还能进来。
+            warnOnce(
+              "rte-paste-image-without-upload",
+              "[hulian] RichTextEditor：粘贴了图片文件，但没有传 onUploadImage，只能忽略。" +
+                "需要支持粘贴上传就传 onUploadImage（拿 File、还 URL）。",
+            );
+            return false;
+          }
+          event.preventDefault();
+          void insertUploadedFiles(files);
+          return true;
+        }
+
+        const html = event.clipboardData?.getData("text/html") ?? "";
+        const dataUrls = dataImageSrcsOf(html);
+        if (dataUrls.length === 0 || !imageEnabledRef.current) return false;
+        if (!upload) {
+          // 净化那一层会把 data: 整个 <img> 删掉（不能把几 MB base64 写进数据库），
+          // 于是图片会静默消失。开发期点名，别让消费方到生产才发现。
+          warnOnce(
+            "rte-paste-base64-without-upload",
+            "[hulian] RichTextEditor：粘贴的正文里有内联 base64 图片，但没有传 onUploadImage，" +
+              "这些图片会被丢弃（base64 不会写进正文）。传 onUploadImage 即可自动转存。",
+          );
+          return false;
+        }
+        event.preventDefault();
+        void insertHtmlWithUploadedImages(html, dataUrls);
+        return true;
+      },
+      /** 拖图进来（#213）。`moved` 为真是编辑器内部拖动节点，别劫持。 */
+      handleDrop: (view, event, _slice, moved) => {
+        if (moved) return false;
+        const upload = uploadRef.current;
+        const files = imageFilesOf((event as DragEvent).dataTransfer);
+        if (files.length > 0 && !imageEnabledRef.current) {
+          warnOnce(
+            "rte-drop-image-without-node",
+            "[hulian] RichTextEditor：拖入了图片，但 toolbar 裁掉了 image 档、图片节点不在 schema 里。",
+          );
+          return false;
+        }
+        if (files.length === 0 || !upload) {
+          if (files.length > 0) {
+            warnOnce(
+              "rte-drop-image-without-upload",
+              "[hulian] RichTextEditor：拖入了图片文件，但没有传 onUploadImage，只能忽略。",
+            );
+          }
+          return false;
+        }
+        event.preventDefault();
+        // 插到落点而不是原光标处 —— 拖放的语义就是「放在我指的地方」。
+        const at = view.posAtCoords({
+          left: (event as DragEvent).clientX,
+          top: (event as DragEvent).clientY,
+        });
+        void insertUploadedFiles(files, at?.pos);
+        return true;
+      },
       attributes: {
         role: "textbox",
         "aria-multiline": "true",
@@ -231,6 +422,7 @@ export function RichTextEditor({
       onChange?.(html);
     },
   });
+  editorRef.current = editor;
 
   // 受控 value 外部变更同步进编辑器，防回环：相同内容不 setContent
   useEffect(() => {

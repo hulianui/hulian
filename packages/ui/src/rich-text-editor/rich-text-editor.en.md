@@ -37,7 +37,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | disabled | `boolean` | `false` | Disables editing and hides the toolbar. |
 | minRows | `number` | `8` | Minimum height of the content area, in rows. |
 | toolbar | `RichTextToolbarItem[]` | Full set | Toolbar entries and their order; `[]` renders no toolbar at all. **Trimming an entry also disables its extension** — see the usage guidelines. |
-| sanitizePaste | `boolean` | `true` | Sanitizes pasted content: removes `class`, `on*` handlers, `<style>`, and `javascript:` URLs, and filters inline `style` through a property allowlist. |
+| sanitizePaste | `boolean` | `true` | Sanitizes pasted content: removes `class`, `on*` handlers, and `<style>`, filters `href` / `src` through a URL-scheme allowlist, and filters inline `style` through a property allowlist. |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | Compatibility with legacy HTML from the WeChat editor, Word, or an old UEditor. Off by default; `true` enables all three tiers, and an object enables only the tiers you name. See "Legacy HTML compatibility". |
 | extensions | `AnyExtension[]` | — | Extra TipTap extensions, for example a node type for `<iframe>` videos that already exist in legacy content. |
 | className | `string` | — | Additional class name for the shell. |
@@ -58,7 +58,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | Event | Type | Description |
 |------|------|------|
 | onChange | `(html: string) => void` | Called with the current HTML string. |
-| onUploadImage | `(file: File) => Promise<{ url: string }>` | Image upload: receives the `File`, returns a URL. Without it the image button falls back to prompting for a URL. |
+| onUploadImage | `(file: File) => Promise<{ url: string }>` | Image upload: receives the `File`, returns a URL. **The toolbar button, pasting, and dropping all go through it.** Without it the button falls back to prompting for a URL and pasted or dropped images are discarded (see "How images get in"). |
 
 ## Examples
 ```tsx
@@ -106,6 +106,33 @@ const [html, setHtml] = useState(detail.content); // already HTML in storage
 <RichTextEditor legacyHtml={{ font: true, imgStyle: true }} value={html} onChange={setHtml} />
 ```
 
+## How images get in
+
+Three entry points, **all going through the same `onUploadImage`** (receives a `File`, returns a URL):
+
+| Entry point | With `onUploadImage` | Without |
+|------|------|------|
+| Toolbar image button | Opens a file picker (`accept="image/*"`), uploads, inserts the returned URL | Falls back to a URL prompt |
+| **Pasting a screenshot** (`Cmd+V`) | Uploads and inserts | Ignored, with one development warning |
+| **Dropping an image file** | Uploads and inserts at the drop point | Ignored, with one development warning |
+| Pasting body text from Word or the web (images inlined as base64) | Each image is uploaded, then the whole fragment is inserted | The base64 is discarded (never written into the content), with one development warning |
+
+The last row deserves a note: body text copied from Word, Excel, or some web pages carries its images **inlined as base64 in the HTML**, with no corresponding file entry on the clipboard - so it is a different path from "pasting a screenshot" and the component handles the two separately. With `onUploadImage` the `data:` URL is turned back into a `File` and uploaded; without it the whole `<img>` is removed by the sanitizer: **losing one image beats writing several megabytes of base64 into your database column.**
+
+```tsx
+// Transport is entirely yours: auth headers, direct upload, progress, retries
+<RichTextEditor
+  onUploadImage={async (file) => {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: form, headers: authHeaders });
+    return { url: (await res.json()).url };
+  }}
+/>
+```
+
+When an upload throws, that image is not inserted and the component shows no UI of its own - **the message is yours to write**, since only you know what to say (quota exceeded? unsupported format? retry?). When several images are uploaded at once, one failure does not interrupt the rest.
+
 ## Legacy HTML compatibility
 
 The editor schema decides which tags survive, and it decides **at load time**. The table below is the "open, edit nothing, read the HTML back" contract; check your legacy samples against it before going live.
@@ -148,7 +175,8 @@ const html = normalizeLegacyHtml(row.content)
 - **A centering wrapper around a lone image cannot be preserved.** In `<section style="text-align:center"><img></section>` the image is a block node, so wrapping it in a `<p>` only makes ProseMirror lift it out and leave an empty paragraph behind. That shape is deliberately left alone — center images with front-end styling (`img { display:block; margin:0 auto }`) rather than through the stored string.
 - While `legacyHtml` is on, **none of the removal rules relax** (`class`, `on*`, `<style>`, and `javascript:` are still stripped); the inline `style` allowlist merely gains `font-family` and `max-width`. Values from `<font color>` go through a shape allowlist (named color, `#hex`, `rgb()`) so they cannot smuggle in a second declaration — body content is a user-writable field.
 - **Neither swatch picker offers a `var(--…)` color.** The body text is stored in your database and rendered elsewhere (`v-html`, a mini-program `rich-text`, an email), where the library CSS variables do not exist: `color: var(--color-foreground)` resolves to nothing there and silently falls back to the inherited color, which means an editor-only style was written into permanent content. "Default color" and "No highlight" therefore run `unsetColor()` / `unsetBackgroundColor()` - they remove the declaration rather than writing some "default" color.
-- Images are **never inlined as base64**. Without `onUploadImage` the button falls back to a URL prompt precisely so a single article cannot balloon to several megabytes and overflow the database column. Transport concerns — auth headers, direct upload, progress, retries — stay with the consumer.
+- Images are **never inlined as base64**, and that now holds on the paste path too (it did not before 0.36.0 - see #213: pasting from Word wrote the base64 straight into the column). Transport concerns - auth headers, direct upload, progress, retries - stay with the consumer.
+- **`blob:` and `file:` image URLs are stripped by the paste sanitizer.** The first is valid only for the lifetime of the current page and the second only on that one machine, so storing either leaves a broken image the next time the content is opened - and unlike base64 the column size looks perfectly normal, which makes it harder to notice.
 - Paste sanitizing cleans **structure and attributes only**; it is not full XSS disinfection. Escaping and filtering still have to happen server-side when rendering to the front end, because rich text is a user-writable field and a client-side allowlist is not a security boundary.
 - While controlled, the component calls `setContent` only when the incoming string differs from the last emitted one. Passing HTML that is semantically identical but textually different on every render (for example after your own formatting pass) resets the caret repeatedly; feed back exactly the string `onChange` gave you.
 - Do not switch a field back and forth between this component and [MarkdownEditor](../markdown-editor/markdown-editor.md): their value contracts differ, and each switch is another lossy conversion.

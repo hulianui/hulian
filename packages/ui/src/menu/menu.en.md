@@ -4,7 +4,7 @@ name: Menu
 category: navigation
 group: global
 tags: []
-exports: [Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants]
+exports: [Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, MenuSub, MenuSubTrigger, MenuSubContent, menuItemVariants]
 status: enriched
 ---
 
@@ -14,11 +14,11 @@ status: enriched
 
 ## When to use
 
-Use Menu for a click-triggered set of actions such as Edit, Copy, or Delete. It suits table-row actions, card overflow buttons, and account menus. Use [NavigationMenu](../navigation-menu/navigation-menu.md) for hover-triggered site navigation with mega panels, or [Menubar](../menubar/menubar.md) for several top-level File/Edit/View menus in one row.
+Use Menu for a click-triggered set of actions such as Edit, Copy, or Delete. It suits table-row actions, card overflow buttons, and account menus. Use `MenuSub` to nest options once a single panel no longer holds them. Use [NavigationMenu](../navigation-menu/navigation-menu.md) for hover-triggered site navigation with mega panels, or [Menubar](../menubar/menubar.md) for several top-level File/Edit/View menus in one row.
 
 ## Import
 ```ts
-import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, menuItemVariants } from "@hulianui/ui"
+import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem, MenuSeparator, MenuGroup, MenuGroupLabel, MenuSub, MenuSubTrigger, MenuSubContent, menuItemVariants } from "@hulianui/ui"
 ```
 
 ## Props
@@ -75,7 +75,26 @@ One option in a mutually exclusive set. Renders `role="menuitemradio"` plus `ari
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use `danger` for destructive actions. |
 | className | `string` | — | Additional class name. |
 
-Use `render={<Button />}` on `MenuTrigger` to turn an arbitrary element into the trigger.
+### MenuSubTrigger
+A menu item that opens a cascading submenu, marked with a trailing chevron. It must sit inside a `MenuSub` alongside a `MenuSubContent`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| disabled | `boolean` | `false` | Whether the item is unavailable, so its submenu cannot be opened. |
+| label | `string` | — | Text override used by keyboard type-ahead. |
+| variant | `"default" \| "danger"` | `"default"` | Visual treatment; use `danger` for destructive actions. |
+| className | `string` | — | Additional class name. |
+
+There is no `closeOnClick`: clicking the item opens the next level rather than performing an action.
+
+### MenuSubContent
+The submenu panel, expanded from the right side of its parent item. Its placement is fixed (`side="right"` and `align="start"`) and `side` / `align` / `sideOffset` are not exposed; Base UI flips the panel automatically when it would overflow.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| className | `string` | — | Additional class name. |
+
+Use `render={<Button />}` on `MenuTrigger` to turn an arbitrary element into the trigger. `MenuSub` is a purely structural part that binds one `MenuSubTrigger` to one `MenuSubContent`.
 
 ## Events
 
@@ -122,6 +141,16 @@ Use `render={<Button />}` on `MenuTrigger` to turn an arbitrary element into the
 |------|------|------|
 | children | `ReactNode` | A set of `MenuRadioItem` elements. |
 
+### MenuSubTrigger
+| Slot | Type | Description |
+|------|------|------|
+| children | `ReactNode` | Item content. The component appends the chevron itself, so do not draw one. |
+
+### MenuSub / MenuSubContent
+| Slot | Type | Description |
+|------|------|------|
+| children* | `ReactNode` | `MenuSub` holds one `MenuSubTrigger` plus one `MenuSubContent`; `MenuSubContent` holds the submenu entries. |
+
 ## Example
 ```tsx
 <Menu>
@@ -167,12 +196,31 @@ Checkbox and radio items (the current value carries a tick):
 ```
 (`closeOnClick` here dismisses the menu once a value is picked; it defaults to `false`, which keeps the menu open for further edits.)
 
+A cascading submenu, which groups options by dimension and suits filter menus holding dozens of choices:
+```tsx
+<MenuContent>
+  <MenuItem>All tasks</MenuItem>
+  <MenuSeparator />
+  <MenuSub>
+    <MenuSubTrigger>Status</MenuSubTrigger>
+    <MenuSubContent>
+      <MenuItem>To do</MenuItem>
+      <MenuItem>Ongoing</MenuItem>
+      <MenuItem>Completed</MenuItem>
+    </MenuSubContent>
+  </MenuSub>
+</MenuContent>
+```
+`MenuSub` nests to any depth: put the next `MenuSub` inside a `MenuSubContent`.
+
 ## Usage guidelines
 
 - **Do not build a set of options out of `MenuItem` plus a hand-drawn tick.** It looks exactly like `MenuCheckboxItem` / `MenuRadioItem`, which is why the mistake is invisible: the element falls back to `role="menuitem"` with no `aria-checked`, so screen reader users hear a few peer actions instead of one group of mutually exclusive options, and cannot tell which one is selected. Keyboard users are left with a purely visual selected state. Use `MenuCheckboxItem` for toggleable settings and `MenuRadioGroup` plus `MenuRadioItem` for exclusive choices.
 - `MenuRadioItem` must be nested in a `MenuRadioGroup`. The group owns the selected value, so an item placed directly in `MenuContent` never renders a selected state.
 - The selection marker occupies a first column as wide as the `size-4` icon of a plain `MenuItem`, so text left edges line up when plain and selectable items share one menu. Keep icons on plain items at `size-4` for that alignment to hold.
 - [[base-ui-menu-group-label-requires-menu-group-wrapper]]: placing `MenuGroupLabel` directly in `MenuContent` throws `MenuGroupRootContext is missing` as soon as the menu opens. Always wrap a group label in `MenuGroup`.
+- `MenuSubTrigger` and `MenuSubContent` must share one `MenuSub`, and that `MenuSub` must sit inside a `MenuContent`. Replacing `MenuSubTrigger` with a `MenuItem` plus a hand-drawn arrow is an invisible mistake: it looks the same, but without `aria-haspopup` and `aria-expanded` screen reader users cannot tell the entry leads to another level.
+- Do not use `MenuContent side="right"` as a submenu panel. Inside a `MenuSub` it does render as one, because both are the same Portal/Positioner/Popup underneath, but the chevron, the `sideOffset`, and the parent item staying highlighted while expanded all become your job, and missing any one of them makes the submenu inconsistent with the rest of the library. `MenuSubContent` is the layer that pins those three down.
 - The menu ships with `max-h-[min(24rem,var(--available-height))] overflow-y-auto`: no visual difference when everything fits, internal scrolling once it does not. This is a library-level guarantee rather than something every consumer must remember, because the popup is fixed-positioned — whatever overflows the viewport is neither clickable nor reachable by page scroll, and it only shows up once the data grows (three items in development, forty in production). Override `max-h-*` through `className` for a different ceiling. `ContextMenu` behaves the same.
 
 ## Related

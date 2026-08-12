@@ -11,6 +11,9 @@ import {
   MenuSeparator,
   MenuGroup,
   MenuGroupLabel,
+  MenuSub,
+  MenuSubTrigger,
+  MenuSubContent,
 } from "./menu";
 import { Button } from "../button/button";
 
@@ -37,6 +40,35 @@ function SelectionDemo({ defaultOpen = false }: { defaultOpen?: boolean }) {
             <MenuRadioItem value="loose">宽松</MenuRadioItem>
           </MenuRadioGroup>
         </MenuGroup>
+      </MenuContent>
+    </Menu>
+  );
+}
+
+// 级联子菜单：选项总数几十个时全部拍平到一级面板不可用，按维度收进二级。
+function SubDemo({ defaultOpen = false }: { defaultOpen?: boolean }) {
+  return (
+    <Menu defaultOpen={defaultOpen} modal={false}>
+      <MenuTrigger render={<Button variant="outline">筛选</Button>} />
+      <MenuContent>
+        <MenuItem>全部任务</MenuItem>
+        <MenuSeparator />
+        <MenuSub>
+          <MenuSubTrigger>状态</MenuSubTrigger>
+          <MenuSubContent>
+            <MenuItem>待办</MenuItem>
+            <MenuItem>进行中</MenuItem>
+            <MenuItem>已完成</MenuItem>
+          </MenuSubContent>
+        </MenuSub>
+        <MenuSub>
+          <MenuSubTrigger>优先级</MenuSubTrigger>
+          <MenuSubContent>
+            <MenuItem>低</MenuItem>
+            <MenuItem>中</MenuItem>
+            <MenuItem>高</MenuItem>
+          </MenuSubContent>
+        </MenuSub>
       </MenuContent>
     </Menu>
   );
@@ -166,6 +198,24 @@ export const menuShowcase: ShowcaseSpec = {
       render: () => <SelectionDemo />,
     },
     {
+      title: "级联子菜单",
+      description:
+        "MenuSub 裹住 MenuSubTrigger + MenuSubContent，子面板从父项右侧展开，支持多层嵌套。选项按维度分层收纳，适合筛选这类总数几十个、拍平到一级就用不了的场景。",
+      code: `<MenuContent>
+  <MenuItem>全部任务</MenuItem>
+  <MenuSeparator />
+  <MenuSub>
+    <MenuSubTrigger>状态</MenuSubTrigger>
+    <MenuSubContent>
+      <MenuItem>待办</MenuItem>
+      <MenuItem>进行中</MenuItem>
+      <MenuItem>已完成</MenuItem>
+    </MenuSubContent>
+  </MenuSub>
+</MenuContent>`,
+      render: () => <SubDemo />,
+    },
+    {
       title: "弹出方位",
       description: "MenuContent 的 side / align 控制浮层相对触发器的方位。",
       code: `<Menu>
@@ -196,6 +246,8 @@ export const menuShowcase: ShowcaseSpec = {
     { name: "分组", render: () => <Demo withGroup /> },
     // 展开态：选中标记（√ / 实心点）与普通项的图标位共用同一列，文字左缘对齐。
     { name: "勾选项与单选项（展开）", render: () => <SelectionDemo defaultOpen /> },
+    // 展开态：子菜单触发项右侧的 chevron 是「还有下一级」在视觉上唯一的线索。
+    { name: "级联子菜单（展开）", render: () => <SubDemo defaultOpen /> },
     { name: "right", render: () => <Demo side="right" /> },
     { name: "top", render: () => <Demo side="top" /> },
   ],
