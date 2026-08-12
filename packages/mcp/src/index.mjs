@@ -33,6 +33,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 
 import {
+  docComesFromSource,
   itemUrlOf,
   loadConventions,
   loadDoc,
@@ -43,6 +44,8 @@ import {
   source,
   sourceInfo,
   sourceLine,
+  staleBanner,
+  versionSkew,
 } from "./data.mjs";
 import { auditAdoption, renderAudit } from "./audit.mjs";
 import {
@@ -62,10 +65,17 @@ const VERSION = createRequire(import.meta.url)("../package.json").version;
 
 // ------------------------------------------------------------------ utils --
 
-const text = (body, structured) => ({
-  content: [{ type: "text", text: `${body}\n\n---\n${sourceLine()}` }],
-  ...(structured ? { structuredContent: { ...structured, source: sourceInfo() } } : {}),
-});
+// 版本不一致的横幅走**响应最顶部**，不是脚注（#246）：脚注在长文档后面，模型读到那儿时
+// 前面的 props 早已被当成事实吸收；而这条说的正是「前面那些 props 未必属于你装的那一版」。
+const text = (body, structured) => {
+  const banner = staleBanner();
+  return {
+    content: [
+      { type: "text", text: `${banner ? `${banner}\n\n---\n\n` : ""}${body}\n\n---\n${sourceLine()}` },
+    ],
+    ...(structured ? { structuredContent: { ...structured, source: sourceInfo() } } : {}),
+  };
+};
 /** isError 只用于「工具没能完成工作」：参数错、读不到文件、数据源坏了。业务代码违规不算。 */
 const fail = (body) => ({ content: [{ type: "text", text: body }], isError: true });
 
@@ -951,7 +961,16 @@ async function getComponentProps(wanted, sections) {
         (cands.length ? `是不是想找：${cands.join(" / ")}？` : "用 list_components 看有哪些。"),
     );
   }
-  const payload = { version: catalog.version, components, ...(missing.length ? { missing } : {}) };
+  // version 写的是**产物**自报的版本（catalog.version），这条一直是对的；旁边补一个
+  // versionSkew，让做受约束生成的消费方能在代码里直接判「这份 props 属于我装的那一版吗」，
+  // 而不是只能去 parse 文本里的横幅（#246）。
+  const skew = versionSkew();
+  const payload = {
+    version: catalog.version,
+    ...(skew ? { versionSkew: skew } : {}),
+    components,
+    ...(missing.length ? { missing } : {}),
+  };
   // 同时给两条通道：structuredContent 是 MCP 里机器读的正路，text 里那份 JSON 是给
   // 只认文本内容的客户端兜底（尾部那行数据源脚注是全部 tool 的统一约定）。
   return text(JSON.stringify(payload, null, 2), payload);
@@ -970,6 +989,7 @@ async function getComponentDoc({ name, names, sections, format } = {}) {
   const all = reg.items.filter((item) => item.type === "registry:ui");
   const parts = [];
   const missing = [];
+  const skew = versionSkew();
 
   for (const query of wanted) {
     const slug = String(query)
@@ -994,7 +1014,19 @@ async function getComponentDoc({ name, names, sections, format } = {}) {
     ]
       .filter(Boolean)
       .join("\n");
-    parts.push(`${header}\n\n${sliceSections(doc, sections)}`);
+    // 顶上的横幅说的是「本次数据整体不同版」；这里补的是**这一件**该去哪儿核对。
+    // 两种来源的处方不同，笼统说一句「产物旧了」会让人去改错的东西（见 docComesFromSource）。
+    // 刻意用可见正文而不是 HTML 注释：注释在渲染后的对话里经常被读者与模型一起跳过。
+    const skewNote = skew
+      ? docComesFromSource(hit.name)
+        ? `> ⚠️ 本段正文取自源码 \`src/${hit.name}/${hit.name}.md\`（与 v${skew.source} 同版，可信），` +
+          `但组件清单来自 v${skew.artifact} 的产物 —— v${skew.source} 新增的组件在这里整个查不到。` +
+          `先在仓库根跑 \`pnpm llms-registry\`。\n`
+        : `> ❌ 本段正文来自 v${skew.artifact} 的产物，而实装的是 v${skew.source}。` +
+          `**以 \`node_modules/@hulianui/ui/src/${hit.name}/${hit.name}.md\` 与同目录的 ` +
+          `\`${hit.name}.types.ts\` 为准**，那两份随 npm 包一起发布，与实装版本同版。\n`
+      : "";
+    parts.push(`${header}\n\n${skewNote}${sliceSections(doc, sections)}`);
   }
 
   if (!parts.length) {

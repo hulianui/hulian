@@ -40,6 +40,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # 发布前置：提交进仓库的 AI 分发产物必须与 packages/ui 同版。
+      #
+      # 这一步和 CI 里的同名门禁不是重复：CI 与 Release 在同一次 push 上**并行**跑，CI 红了
+      # 并不会拦住这里的 `changeset publish` —— 于是「产物停在 0.37.0 的那一版包」照样能发
+      # 到 npm，而消费方的 MCP 据此答题（#246）。要拦住它，判据必须长在发布这条路上。
+      #
+      # 两条路径都安全：还有待消费 changeset 时，包与产物都还是旧版、天然同版，放行后由
+      # `version-packages` 一并重生成；Version PR 合并后要发布时，产物已在那个 PR 里跟着
+      # 抬过版。只有「手工改了版本号却没重跑生成器」才会红，而那正是要拦的那一种。
+      - name: Check AI distribution artifact versions
+        run: pnpm registry:version
+
       # changesets/action 的两种行为:
       #  - 若存在未消费的 .changeset/*.md → 开/更新 "Version Packages" PR(bump 版本 + 写 changelog)
       #  - 若没有待消费 changeset 且 package.json 版本高于已发布版本 → 跑 `pnpm release` 发布

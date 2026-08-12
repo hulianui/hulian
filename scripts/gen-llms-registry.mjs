@@ -942,6 +942,12 @@ function main() {
     $schema: "https://ui.shadcn.com/schema/registry.json",
     name: "hulianui",
     homepage: REPO,
+    // 这个字段的含义是「**生成这份产物时**的源码版本」，不是「当前包版本」—— 产物是提交进
+    // 仓库的，而发版只动 package.json，所以两者会分叉，这个数就是分叉的那一半。
+    // 消费方（MCP）据此判断「我拿到的 props 属于哪一版」，所以它必须停在生成那一刻，
+    // **绝不能**改成在读取时动态取包版本：那样一切看起来永远同版，漂移就再也报不出来了
+    // （#246 的成因正是把源码版本当成产物版本报出去）。
+    // 与包版本对不上就该重跑本脚本，这条已由 scripts/check-registry-version.mjs 机械化。
     version: PKG.version,
     description: TAGLINE,
     install: `npm i ${PKG.name}`,

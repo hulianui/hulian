@@ -4,6 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { createServer } from "node:http";
 import {
   mkdirSync,
   mkdtempSync,
@@ -953,7 +954,7 @@ test("本地源码不会配上线上安装命令（内容不同也不会误导�
   }
 });
 
-test("本地模式版本以源码为准，产物落后一版时显式告警（#47 #48）", async () => {
+test("产物落后一版时，版本戳不许只写源码那一版（#47 #48 #246）", async () => {
   const root = makeLocalRegistry();
   try {
     // 发版 commit 只动 package.json，不重跑生成脚本 —— 于是本地产物必然落后一版
@@ -962,11 +963,121 @@ test("本地模式版本以源码为准，产物落后一版时显式告警（#4
       env: { HULIAN_UI_ROOT: join(root, "packages", "ui") },
     });
     const body = bodyOf(res);
-    assert.match(body, /registry v9\.9\.10-source/, "版本戳取源码真源，不取生成物 —— 否则报出假 skew");
-    assert.match(body, /产物已陈旧/, "陈旧必须说出来，不能静默");
-    assert.match(body, /9\.9\.9-local/, "要把产物那一版也报出来，方便判断差多远");
+    // #246 本体：此前这一行写的是 `registry v9.9.10-source` —— 标签说的是产物，数字却是源码的。
+    assert.doesNotMatch(
+      body,
+      /registry v9\.9\.10-source/,
+      "「registry v…」描述的是产物，不能填源码那一版（#246）",
+    );
+    assert.match(body, /产物 registry v9\.9\.9-local ≠ 源码 v9\.9\.10-source/, "两个数都要写出来");
+    assert.match(body, /❌ 错误/, "版本不一致是 error 级，不是脚注里的一句提示");
     assert.match(body, /pnpm llms-registry/, "告警要直接给修复命令");
+    // 横幅必须在最顶上：脚注在长文档之后，模型读到那儿时前面的 props 早已被当成事实吸收
+    assert.ok(body.indexOf("❌ 错误") < body.indexOf("#"), "横幅要贴在正文之前");
   } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("版本不一致时 get_component_doc 把兜底路径写给调用方（#246）", async () => {
+  const root = makeLocalRegistry();
+  try {
+    write(root, "packages/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: "9.9.10-source" }));
+    write(
+      root,
+      "apps/www/public/registry.json",
+      JSON.stringify({
+        name: "hulianui",
+        version: "9.9.9-local",
+        items: [{ name: "empty", type: "registry:ui", title: "Empty", meta: { import: "x" } }],
+      }),
+    );
+    // 逐件文档只在产物里有（源码那份不存在）—— 这一路的正文整篇属于旧版本
+    write(root, "apps/www/public/d/empty.md", "# Empty\n\n## Props\n\n| size | 旧版 |\n");
+    const [res] = await rpc([call(68, "get_component_doc", { name: "empty" })], {
+      env: { HULIAN_UI_ROOT: join(root, "packages", "ui") },
+    });
+    const body = bodyOf(res);
+    assert.match(body, /node_modules\/@hulianui\/ui\/src\/empty\/empty\.md/, "要给出可直接打开的兜底路径");
+    assert.match(body, /empty\.types\.ts/, "props 真源也要点名");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("正文来自源码时，说的是「清单旧了」而不是「去看 node_modules」（#246）", async () => {
+  const root = makeLocalRegistry();
+  try {
+    write(root, "packages/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: "9.9.10-source" }));
+    write(
+      root,
+      "apps/www/public/registry.json",
+      JSON.stringify({
+        name: "hulianui",
+        version: "9.9.9-local",
+        items: [{ name: "empty", type: "registry:ui", title: "Empty", meta: { import: "x" } }],
+      }),
+    );
+    // 源码旁的 md 与 package.json 天然同版：正文可信，旧的只是「有哪些组件」这张清单
+    write(root, "packages/ui/src/empty/empty.md", "# Empty\n\n## Props\n\n| loading | 新版 |\n");
+    const [res] = await rpc([call(69, "get_component_doc", { name: "empty" })], {
+      env: { HULIAN_UI_ROOT: join(root, "packages", "ui") },
+    });
+    const body = bodyOf(res);
+    assert.match(body, /取自源码/, "正文来源不同，处方也不同，不能笼统说一句「产物旧了」");
+    assert.match(body, /新增的组件在这里整个查不到/);
+    assert.doesNotMatch(
+      body,
+      /本段正文来自 v9\.9\.9-local 的产物/,
+      "这一路的正文并不来自产物，不能这么说",
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("消费方模式：实装版本与线上产物不一致也要拦（#246）", async () => {
+  // 这条覆盖的是 #48 当年漏掉的一格：HULIAN_UI_ROOT 指向 node_modules/@hulianui/ui 时
+  // 根本没有 apps/www/public，旧的陈旧判定一进门就 `if (!localPublic) return null`，
+  // 于是「装的是 9.9.10、答的是线上 9.9.9」这条最常见的消费方路径从来没有被检查过。
+  const root = mkdtempSync(join(tmpdir(), "hulian-consumer-skew-"));
+  const registry = {
+    name: "hulianui",
+    version: "9.9.9-remote",
+    items: [{ name: "empty", type: "registry:ui", title: "Empty", meta: { import: "x" } }],
+  };
+  const server = createServer((req, res) => {
+    if (req.url === "/registry.json") {
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify(registry));
+      return;
+    }
+    if (req.url === "/d/empty.md") {
+      res.writeHead(200, { "content-type": "text/markdown" });
+      res.end("# Empty\n\n## Props\n\n| size | 线上旧版 |\n");
+      return;
+    }
+    res.writeHead(404).end();
+  });
+  await new Promise((done) => server.listen(0, "127.0.0.1", done));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    // 装好的包：只有 package.json 与源码，没有任何生成产物
+    write(root, "node_modules/@hulianui/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: "9.9.10-installed" }));
+    const [res] = await rpc([call(70, "get_component_doc", { name: "empty" })], {
+      env: {
+        HULIAN_UI_ROOT: join(root, "node_modules", "@hulianui", "ui"),
+        HULIAN_ALLOW_REMOTE_FALLBACK: "1",
+        HULIAN_REGISTRY_URL: base,
+      },
+    });
+    const body = bodyOf(res);
+    assert.match(body, /❌ 错误/, "实装 9.9.10 却拿 9.9.9 的 props 回答，必须是 error 级");
+    assert.match(body, /9\.9\.9-remote/);
+    assert.match(body, /9\.9\.10-installed/);
+    assert.match(body, /node_modules\/@hulianui\/ui\/src\/empty\/empty\.md/, "兜底路径要写给调用方");
+  } finally {
+    server.close();
     rmSync(root, { recursive: true, force: true });
   }
 });

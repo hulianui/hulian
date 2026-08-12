@@ -68,6 +68,16 @@ jobs:
       - name: Check Tailwind scan candidates
         run: pnpm candidates:check
 
+      # registry.json / llms-props.json / llms*.txt 是**提交进仓库**的生成物，版本号来自生成
+      # 那一刻的 packages/ui/package.json。而发版只动 package.json + CHANGELOG —— 两者靠
+      # `version-packages` 里那句 `pnpm llms-registry` 手工串着，这条链断过（0.37.0 的产物
+      # 配着 0.39.0 的包发了出去，MCP 于是拿旧 props 回答，消费方看不出它旧，#246）。
+      # 这类漂移不会让任何编译/测试变红，只会越走越远，所以判据必须是机械的。
+      # ⚠️ 与本 job 其余步骤同理：这里**只读不生成**。先跑 llms-registry 再 check 等于自己
+      # 给自己批卷子，那样它永远绿。
+      - name: Check AI distribution artifact versions
+        run: pnpm registry:version
+
       # tiptap 全家的 peer 钉的是**精确版本**，所以我们的 specifier 只在「整族在同一次解析里
       # 一起被决定」时才成立。新增家族成员却不抬全族下界，就会让带旧 lockfile 升级的消费方
       # 只把新成员解析到家族最新版，与锁里的老 core / pm 错配（#207）。判据是纯静态的，

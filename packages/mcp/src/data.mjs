@@ -173,6 +173,17 @@ export async function loadDoc(slug) {
 }
 
 /**
+ * 这一件的正文是不是直接来自源码旁的 md（而非生成产物 / 线上副本）。
+ *
+ * 版本漂移时两种来源的处方完全不同，不能笼统说一句「产物旧了」：源码那份与 LOCAL_ROOT
+ * 的 package.json 天然同版，正文是可信的，旧的只是「有哪些组件」这张清单；产物那份才是
+ * 整篇内容都属于另一个版本、必须回去看 node_modules 源码的那种（#246）。
+ */
+export function docComesFromSource(slug) {
+  return Boolean(LOCAL_ROOT && existsSync(join(LOCAL_ROOT, "src", slug, `${slug}.md`)));
+}
+
+/**
  * 机器可读的 props 目录（llms-props.json）。
  *
  * 与 loadDoc 的分工：loadDoc 给人和 LLM 读的 markdown，这份给**受约束生成**用 ——
@@ -183,10 +194,22 @@ export async function loadDoc(slug) {
 export async function loadPropsCatalog() {
   if (LOCAL_ROOT) {
     const local = readLocalJson("llms-props.json");
-    if (local) return local.value;
+    if (local) return noteArtifactVersion(local.value);
     missingLocal("llms-props.json", "先在仓库根跑 `pnpm llms-registry`（或 `pnpm docs:all`）生成");
   }
-  return (await fetchRemote(`${REMOTE_BASE}/llms-props.json`)).value;
+  return noteArtifactVersion((await fetchRemote(`${REMOTE_BASE}/llms-props.json`)).value);
+}
+
+/**
+ * 记下产物自报的版本。llms-props.json 与 registry.json 由同一次生成写出、带同一个版本号，
+ * 所以只走 props 目录的调用（get_component_doc 的 json 分支）也能据此做版本比对 ——
+ * 消费方项目里没有本地 registry 文件可读，这是那条路上唯一的来源（#246）。
+ */
+function noteArtifactVersion(payload) {
+  if (payload?.version && !registryMeta.artifactVersion) {
+    registryMeta = { ...registryMeta, artifactVersion: payload.version };
+  }
+  return payload;
 }
 
 /** 使用约束（固化的「主见」）。本地读 packages/ui/conventions.json，远程读文档站同名文件。 */
@@ -216,14 +239,75 @@ const STALE_MEMO_MS = 5000;
 let staleMemo = { at: 0, value: null };
 
 /**
- * 本地 registry 产物是否已经落后于源码。两条判据互补，缺一不可：
+ * 产物与源码的**版本**不一致 —— 与下面 localStaleness 的 mtime 判据是两件事，
+ * 严重度也不同，所以 #246 起分开表达：
  *
- *   · **版本号**：挡「发版后没重新生成」。registry 停在 0.15.1 而源码已是 0.16.0，
- *     意味着 0.16.0 新增的组件/prop 在 MCP 里整个查不到。
- *   · **mtime**：挡「版本号没变但文档改了」—— 版本号比对对此完全是瞎的，而日常开发中
- *     绝大多数改动都发生在同一个版本号内。
+ *   · 版本不一致 = 回答用的是**另一个版本**的 props 与组件清单。调用方据此写出的代码，
+ *     在实装版本上可能根本没有那个 prop，也可能漏掉当版新增的整个组件。
+ *     它走 error 级横幅、贴在响应最顶上（见 staleBanner）。
+ *   · 同版本内文档改过（mtime）= 日常开发的常态，脚注提醒就够。把它也提成 error，
+ *     只会让人很快学会忽略所有横幅，真正的版本漂移反而被淹掉。
  *
- * 只在本地模式下有意义：远程产物由站点构建时重新生成，天然跟着源码走。
+ * 两种数据源都要判，这是 #246 相对 #48 扩出来的一格：
+ *   · 本地产物：工作区 package.json vs apps/www/public/registry.json
+ *   · 远程兜底：**实装**的 node_modules/@hulianui/ui 版本 vs 线上产物的版本 ——
+ *     消费方项目正是这条路径（HULIAN_UI_ROOT 指到 node_modules + 允许远程兜底），
+ *     而此前 localStaleness 一上来就 `if (!localPublic) return null`，
+ *     消费方那侧的版本漂移从来没有被检查过。
+ */
+/**
+ * 本次回答所依据的产物是哪一版。
+ *
+ * 不能只看 registryMeta：有些 tool（`get_component_doc({format:"json"})` 走 llms-props.json、
+ * 逐件 md 直读源码）压根不加载 registry，那条路上 registryMeta 一直是空的，版本比对会
+ * 静默不做 —— 而那正是「查 props」最常走的一条路。所以本地模式下退回直接读产物文件。
+ */
+function artifactVersionNow() {
+  if (registryMeta.artifactVersion) return registryMeta.artifactVersion;
+  return localPublic ? readVersionOf(join(localPublic, "registry.json")) : null;
+}
+
+export function versionSkew() {
+  const artifact = artifactVersionNow();
+  if (!localSourceVersion || !artifact || artifact === localSourceVersion) return null;
+  return { artifact, source: localSourceVersion };
+}
+
+/**
+ * 版本不一致时贴在响应**最顶部**的 error 级横幅（#246）。一致时返回空串。
+ *
+ * 为什么不顺手把 MCP 的 `isError` 也置上：那会让客户端把整条响应当成工具故障丢掉，
+ * 调用方一个字都拿不到 —— 而它此刻最需要的恰恰是「拿到内容 + 知道该去哪儿核对」。
+ * 所以是「error 级的话术 + 完整正文 + 明确的兜底路径」，不是 isError。
+ */
+export function staleBanner() {
+  const skew = versionSkew();
+  if (!skew) return "";
+  const lines = [
+    `❌ 错误 · 数据源与实际源码不是同一个版本：本次内容来自 registry 产物 **v${skew.artifact}**，而这里的 @hulianui/ui 源码是 **v${skew.source}**。`,
+    `下面的 props / 组件清单属于 v${skew.artifact}，可能缺少 v${skew.source} 新增的组件与 prop，也可能还留着已改名或已删除的旧签名。**先按下面的办法核对，再写代码。**`,
+  ];
+  if (LOCAL_ROOT && localPublic && existsSync(join(localPublic, "registry.json"))) {
+    lines.push(
+      "· 在瑚琏仓库里开发：在仓库根跑 `pnpm llms-registry`（或 `pnpm docs:all`）重新生成产物后重试。",
+    );
+  }
+  lines.push(
+    `· 在消费方项目里：**以 node_modules/@hulianui/ui 里的源码为准** —— ` +
+      `组件文档 \`node_modules/@hulianui/ui/src/<slug>/<slug>.md\`，props 真源 ` +
+      `\`node_modules/@hulianui/ui/src/<slug>/<slug>.types.ts\`。这两份随 npm 包一起发布，` +
+      `永远与实装的 v${skew.source} 同版；本 server 的产物则不是。`,
+  );
+  return lines.join("\n");
+}
+
+/**
+ * 本地产物是否已经落后于源码 —— 只管 **mtime** 这一条判据：版本号没变但组件文档改了。
+ * 版本号比对对此完全是瞎的，而日常开发中绝大多数改动都发生在同一个版本号内。
+ * 版本号那条判据已经上移到 versionSkew（#246）。
+ *
+ * 只在「本地源码 + 本地产物」这一种组合下有意义：远程产物由站点构建时重新生成，
+ * 拿它的 mtime 跟本地源码比没有意义（比也只会一直报陈旧）。
  */
 function localStaleness() {
   if (!LOCAL_ROOT || !localPublic) return null;
@@ -234,10 +318,6 @@ function localStaleness() {
   let value = null;
   if (existsSync(registryPath)) {
     const reasons = [];
-    const artifactVersion = registryMeta.artifactVersion ?? readVersionOf(registryPath);
-    if (localSourceVersion && artifactVersion && artifactVersion !== localSourceVersion) {
-      reasons.push(`产物版本 ${artifactVersion}，源码已是 ${localSourceVersion}`);
-    }
     const builtAt = mtimeMs(registryPath);
     const newest = newestSourceEdit();
     if (builtAt && newest && newest.mtimeMs > builtAt) {
@@ -317,7 +397,16 @@ export function itemUrlOf(registry, name) {
 /** 每个 tool 响应尾部都带这一行：数据从哪来、什么版本、什么时候生成的。 */
 export function sourceLine() {
   const bits = [`数据源 ${source}`];
-  if (registryMeta.version) bits.push(`registry v${registryMeta.version}`);
+  // 「registry v…」这个说法描述的是**产物**，所以它只能填产物自报的版本号。
+  // #47 让 registryMeta.version 在本地模式下取源码版本（为了不报假 skew），而这一行照抄了
+  // 那个字段 —— 于是产物停在 0.37.0 时，顶上仍写着 registry v0.39.0，脚注却说产物是
+  // 0.37.0，同一行里自相矛盾，读的人（和读的模型）只会信前面那个数（#246）。
+  // 两者不同就把两个数都写出来，别再用一个标签盖住两种含义。
+  const skew = versionSkew();
+  const artifact = skew?.artifact ?? registryMeta.artifactVersion;
+  if (skew) bits.push(`产物 registry v${skew.artifact} ≠ 源码 v${skew.source}`);
+  else if (artifact) bits.push(`registry v${artifact}`);
+  else if (registryMeta.version) bits.push(`源码 v${registryMeta.version}`);
   if (registryMeta.generatedAt) bits.push(`产物生成于 ${registryMeta.generatedAt}`);
   if (fallbacks.size) bits.push(`⚠️ 已降级到远程：${[...fallbacks].join(", ")}`);
   if (mode === "remote" && TTL_MS > 0) bits.push(`缓存 ${Math.round(TTL_MS / 1000)}s`);
@@ -336,8 +425,13 @@ export function sourceInfo() {
   return {
     mode,
     origin: registryMeta.origin ?? (LOCAL_ROOT ?? REMOTE_BASE),
+    // version 的口径不动：它是「这份检出/这次安装**实际是什么版本**」，validate 拿它跟
+    // 消费方实装的 @hulianui/ui 比 skew（#47）。产物那一版单独放在 artifactVersion，
+    // 两者不一致时由 versionSkew 明说，不再让一个字段承担两种含义（#246）。
     version: registryMeta.version,
-    artifactVersion: registryMeta.artifactVersion,
+    artifactVersion: artifactVersionNow(),
+    sourceVersion: localSourceVersion,
+    versionSkew: versionSkew(),
     generatedAt: registryMeta.generatedAt,
     cacheTtlMs: TTL_MS,
     fallbacks: [...fallbacks],
