@@ -1,5 +1,65 @@
 # @hulianui/ui
 
+## 0.38.0
+
+### Minor Changes
+
+- c7aa13f: `Button` closes two gaps at the dense end: `outline` now accepts the `muted` emphasis step (#221), and two icon sizes are added, `icon24` and `icon28` (#222).
+
+  Both come from the same consumer (gyj-workflow) — the bare `<button>` elements that were left behind after migrating everything #211 and #204 could take.
+
+  **The muted step on `outline` (#221).** The 0.35.0 notes said "a muted step for `outline` makes structural sense, but nothing needs it yet; add it when someone asks". Someone asked. After migrating `ghost` and `link`, three call sites remained in the shape "keep the border, drop the text one step": a full-width "Abort" at the bottom of a running-job card (the border is the only thing marking it as clickable, yet it matters less than the card's main content), plus the inactive half of a two-state filter trigger and the clear button next to it. They are not `ghost` (they have a border) and not a plain `outline` either (their resting text should be the secondary gray, not body black). Under the old rules `muted` added no class there and earned a development warning that pointed at `ghost muted` — which drops the border along with the color.
+
+  The implementation mirrors the `ghost` rule word for word and only lowers the text: `bg-surface`, `border-hairline` and `hover:bg-surface-hover` all stay, as does the semantic border of a non-neutral `tone` (`border-danger` and friends); the text rests at `text-muted-foreground` and returns to the tone's own color on hover. `solid` and `soft` remain no-ops with a warning — their background and foreground are a pair, and lowering only the foreground produces combinations that fail contrast.
+
+  **`icon24` and `icon28` (#222).** The icon sizes were 20 / 32 / 40 / 48 while the text sizes are 24 / 32 / 40 / 48: `sm`, `md` and `lg` line up one to one, and only the densest step does not — `xs` is 24px, and the nearest icon size, `iconXs`, is 20px. So an icon button on a dense row that was not exactly 20 or 32 had to fall back to a bare `<button>` with a hand-written `size-6` / `size-7`, or write `className="size-7"` on `<Button size="iconSm">` to undo the `size-8` it had just added — and the docs explicitly argue against that second kind of override.
+
+  Neither size is an arbitrary number; each lines up with something already in the library (the same test #204 used when it set `xs` to 24px: "the same height as `Tag` md"). 24px matches `Button`'s `xs` text size, `Tag` `md` and `Chip` `sm`; 28px matches `Chip` `md` and `Sidebar` menu items at `sm`.
+
+  `iconXs` stays at 20px, not one pixel more: it serves icon-only micro actions inside a table row (tree expanders, drag handles), and raising it to 24px would grow the rows of a `density="compact"` table, which is the entire reason it exists (#146). Three sizes now coexist, one per density.
+
+  The names are numbers rather than t-shirt sizes because the t-shirt names between `xs` and `sm` were taken long ago by `iconXs` (20px), and that size cannot change its side length (doing so would silently flatten every expander that relies on it). Rather than inventing `icon2xs` and digging the hole deeper, the side length is written out — these two sizes exist precisely to pin one pixel scale.
+
+  The radius follows the side length, judged by whether a 10px `--radius` reads as a disc (the closer radius/side gets to 0.5, the rounder it looks): on 24px that ratio is 0.42, so `icon24` drops to 4px alongside `xs` and `iconXs`; on 28px it is 0.36, close to `iconSm`'s 0.31, so `icon28` keeps `--radius` — and `Sidebar`'s own 28px menu items use `rounded-[var(--radius)]` too.
+
+  Both are pure additions: an `outline` without `muted`, and the four existing icon sizes, render byte for byte as before.
+
+- c7aa13f: `register().value` from `useForm` no longer folds `null` into an empty string, `Input` and `Textarea` absorb `null` as an empty string, and `NumberField` treats out-of-signature values as empty (#220).
+
+  The report initially blamed `NumberField` (a controlled `value={null}` rendering as `0`). Probes written against two Base UI versions failed to reproduce it — `value={null}`, `5 → null`, adding `min`/`max`, and `defaultValue={null}` all produced an empty string. After the reporter isolated the variables, the root cause surfaced one layer **up**:
+
+  ```
+  form.values.viaForm:      null   (object)
+  register().value:         ""     (string)   <- here
+  value handed to NumberField: ""
+  ```
+
+  `register()` read `values[name] ?? ""`. Within a single render `form.values[name]` was `null` while the binding reported `""` — two answers to the same question; and patching it downstream with `?? null` does not help (`??` only fires on `null` and `undefined`, an empty string sails right through), so the control received an out-of-signature `""` and rendered it as `0`.
+
+  **Why this is a real defect rather than a usage mistake**: driving a controlled control from the binding is the documented pattern, and `null` is the **business value** "explicitly cleared / left blank" — a step the user picked, just like `0` or `""`, not the absence of a value. Three-state fields (`null` inherits, `0` is an explicit zero, a positive integer overrides) necessarily lose the `null` step along this path, and `null` and `0` are opposite business conclusions. It is not limited to number inputs either: any field that wants to distinguish "not filled in" from "filled in as empty" hits the same wall.
+
+  Three changes, each guarding a different stretch:
+
+  - **`useForm` (the root cause)**: `value` mirrors `form.values[name]` as-is; only `undefined` still folds to `""`, because that means "this field has no initial value", and handing `undefined` to a controlled control makes React treat it as uncontrolled, so the first keystroke triggers the "uncontrolled to controlled" warning. `null` passes through.
+  - **`Input` / `Textarea`**: the `value` type widens to accept `null` and folds it to an empty string at render time. A native `<input value={null}>` is treated as uncontrolled by React with a warning, and the documented binding pattern (`value={f.value as string}`) hands the binding straight to these two components, so they take care of it. Only `null` is mapped; `undefined` still means uncontrolled.
+  - **`NumberField` (the secondary cause)**: a `value` that is neither a `number` nor `null` is treated as empty, with one development `warnOnce` naming the source. The path is unreachable once the root cause is fixed, but controlled values often arrive through type-erased routes (`register().value` is `unknown`, an API payload is `any`), and landing on `0` is the worst outcome for a three-state field — `0` and "left blank" look identical on screen. `undefined` is excluded (that means uncontrolled).
+
+  **Upgrade note**: if your code relied on the binding turning `null` into `""` (for example by spreading `register().value` onto a **native** `<input>`), you will now receive `null` and see React's "value prop should not be null" warning — write `value={v ?? ""}` yourself, or switch to hulian's `Input` / `Textarea`, which already absorb it. `LoginForm`, the only place inside the library that calls `register()`, starts both of its fields as strings and is unaffected.
+
+### Patch Changes
+
+- c7aa13f: `ImageViewer` wheel zoom fixes three things: compounding offsets under StrictMode, wheel events escaping through the overlay's top bar and thumbnail strip (a pinch zoomed the host page), and the listener never being attached at all when the component mounts already open (#223).
+
+  **1. The offset was computed twice (correctness).** The old implementation dispatched `setOffset` from inside the `setScale` updater, and that inner update depended on the previous value. React requires updaters to be pure, and StrictMode's development check finds impurity precisely by **calling the updater twice** — so the second pass multiplied by `ratio` again on top of the first pass's result: the offset does not double, it **compounds**, and three or four notches send the image outside the viewport, leaving no option but to close and reopen. The consumer measured `translate(-40px, -20px)` as the expected result of a single notch and `translate(-96px, -47.5px)` as the actual one. Production builds do not double-invoke, so it never showed up live — but that is luck, not correctness.
+
+  The fix merges scale and offset into **one state** (they always change together: zooming around an anchor necessarily moves the offset) and computes both in a single pure updater, which is idempotent under double invocation. The nested `setOffset` calls in `zoomBy`, double-click and drag-to-pan are gone as well.
+
+  **2. Nothing handled wheel events over the top bar or the thumbnail strip.** The listener sat on the middle stage only, while the overlay is a `flex-col`: the top bar (about 60px) and, with multiple images, the thumbnail strip both live outside the stage. A trackpad pinch (`ctrlKey` + wheel) over either was not `preventDefault`ed, so the browser applied its native behaviour and zoomed **the entire host page** — sidebar, tables and header scaling and shifting along. What the user sees is "even the parts that are not the image got blown up", which reads like the component applied its transform to the wrong element. This one affected development and production alike.
+
+  The listener now sits on the whole overlay (`fixed inset-0` plus `aria-modal`; the page behind it is already locked by `body.overflow=hidden`). **The one exception is the thumbnail strip**: it is `overflow-x-auto` and needs to scroll horizontally, so a plain wheel passes through there and only the pinch is caught — an undiscriminating `preventDefault` across the overlay would eat its scrolling, which is fixing one bug by creating another. When the pointer is outside the stage the zoom anchor falls back to the stage center: using a point outside the stage as the fixed point flings the image straight out of view.
+
+  **3. The listener was never attached when the component mounted already open (found while writing the tests).** Both the wheel effect and the focus effect depended on `[open]` alone, yet on the first frame `mounted` is `false`, the component returns `null` and both refs are still `null`, so the effects ran exactly once with nothing to attach to; the re-render caused by `mounted` flipping to true does not re-run them. As a result `{show && <ImageViewer open … />}` silently lost both wheel zoom and "move focus into the overlay" — it only worked when the component was mounted first and `open` flipped from `false` to `true` afterwards, which is why nobody noticed. Both effects now depend on `mounted` as well.
+
 ## 0.37.0
 
 ### Minor Changes

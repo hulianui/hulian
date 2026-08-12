@@ -1,5 +1,65 @@
 # @hulianui/ui
 
+## 0.38.0
+
+### Minor Changes
+
+- c7aa13f: `Button` 补两处密集端缺口：`outline` 放开 `muted` 层级档（#221），新增 `icon24` / `icon28` 两个图标尺寸档（#222）。
+
+  两条都来自同一个消费仓（gyj-workflow）按 #211 / #204 迁完之后剩下的、迁不动的裸 `<button>`。
+
+  **`outline` 的 muted 档（#221）。** 0.35.0 的说明里写着「`outline` 的 muted 档在结构上说得通，但没有实际需求；等有人提再加」——有人提了。消费方迁完 `ghost` / `link` 后剩下 3 处是「描边保留、文字降级」的形状：一张运行中卡片底部的全宽「中止」（边框是它作为可点区的唯一标识，但它比卡片主信息次要）、以及两态筛选触发器的未激活态与紧挨着的清空键。它们不是 `ghost`（有边框），也不是普通 `outline`（静息文字该是次要灰不是正文黑），旧口径下 `muted` 落上去一个类都不加还要挨一条开发期告警，告警又指路 `ghost muted` —— 那会连边框一起丢掉。
+
+  实现与 `ghost` 那条逐字同构，只降文字：`bg-surface` / `border-hairline` / `hover:bg-surface-hover` 全留，非中性 `tone` 的语义色描边（`border-danger` 等）也留，静息 `text-muted-foreground`、hover 回本 tone 的色。`solid` / `soft` 仍然无效并告警——那两档的底色与前景是成对的，单降前景会做出对比度不合规的组合。
+
+  **`icon24` / `icon28`（#222）。** 图标档此前是 20 / 32 / 40 / 48，文字档是 24 / 32 / 40 / 48：`sm` / `md` / `lg` 三档一一对应，唯独最密的一档对不上——`xs` 是 24px，最近的 `iconXs` 是 20px。于是密集行里的图标钮只要不是恰好 20 或 32，就只能退回裸 `<button>` 手写 `size-6` / `size-7`，或者对 `<Button size="iconSm">` 写 `className="size-7"` 去撤销它刚加的 `size-8` —— 后者正是文档明确反对的那类覆盖。
+
+  两档都不是拍脑袋的刻度，各有库内的对齐对象（判据同 #204 定 `xs`=24 时的「与 `Tag` md 同高」）：24px 对应 `Button` 的 `xs` 文字档、`Tag` 的 `md`、`Chip` 的 `sm`；28px 对应 `Chip` 的 `md`、`Sidebar` 菜单项的 `sm`。
+
+  `iconXs` 保持 20px 一像素不动：它服务的是表格行内的纯图标微操作（树形展开器、拖拽手柄），抬到 24px 会把 `density="compact"` 的行撑高，而不撑高行是它存在的全部理由（#146）。三档并存，各服务各的密度。
+
+  名字用数字而不是 t-shirt 档，是因为 `xs` 与 `sm` 之间的 t-shirt 名早被 `iconXs`(20px) 占了，而那一档的边长不能改（改了会无声地压扁所有靠它的展开器）。与其造 `icon2xs` 这类越描越黑的名字，不如直接写边长——这两档本来就是「钉住某个像素刻度」的插档。
+
+  圆角随边长分组，判据是 10px 的 `--radius` 落上去是否读成圆片（半径/边长趋近 0.5 即圆）：`icon24` 上是 0.42，与 `xs` / `iconXs` 同组降到 4px；`icon28` 上是 0.36，与 `iconSm`(32px) 的 0.31 同组，保持 `--radius` 不覆盖——`Sidebar` 的 28px 菜单项用的也正是 `rounded-[var(--radius)]`。
+
+  两条都是纯新增：不传 `muted` 的 `outline` 与既有的四个图标档渲染结果一个字符都没变。
+
+- c7aa13f: `useForm` 的 `register().value` 不再把 `null` 归一成空串，`Input` / `Textarea` 把 `null` 当空串收住，`NumberField` 对签名外的值按空处理（#220）。
+
+  报告方最初把账记在 `NumberField` 头上（受控 `value={null}` 渲染成 `0`），我们在两个 Base UI 版本上各写探针跑了一遍都没复现——`value={null}`、`5 → null`、叠 `min`/`max`、`defaultValue={null}` 四种走法输出都是空串。追问后对方隔离了变量，根因浮出来在**上一层**：
+
+  ```
+  form.values.viaForm:   null   (object)
+  register().value:      ""     (string)   ← 这里
+  传给 NumberField 的值:  ""
+  ```
+
+  `register()` 里写的是 `values[name] ?? ""`。于是同一次渲染里 `form.values[name]` 是 `null`、binding 却给出 `""`，两处口径对不上；消费方在外面补 `?? null` 也兜不住（`??` 只对 `null` / `undefined` 生效，空串直接穿透），控件最终收到签名外的 `""`，被渲染成 `0`。
+
+  **为什么这是个真缺陷而不是用法问题**：拿 binding 驱动受控控件是文档推荐用法，而 `null` 是「显式清空 / 留空」这个**业务值**——与 `0`、`""` 一样是用户选出来的一档，不是「没值」。三态字段（`null` 沿用上级 / `0` 显式为零 / 正整数覆盖）在这条路上必然丢掉 `null` 这一档，而 `null` 与 `0` 恰是两个相反的业务结论。它也不限于数字输入：任何想区分「没填」与「填了空」的字段都会中招。
+
+  三处改动，各自守着不同的一段：
+
+  - **`useForm`（主因）**：`value` 原样反映 `form.values[name]`，只有 `undefined` 仍归一成 `""`——那是「这个字段没有初始值」，把 `undefined` 交给受控控件会被 React 当成非受控，第一次输入就是「非受控 → 受控」的告警。`null` 穿透。
+  - **`Input` / `Textarea`**：`value` 类型放开到收 `null`，渲染时折成空串。原生 `<input value={null}>` 会被 React 判成非受控并打告警，而文档推荐的绑法（`value={f.value as string}`）正是把 binding 直接交给这两个组件，所以由组件收口。只映射 `null`，`undefined` 仍是非受控。
+  - **`NumberField`（次因）**：`value` 不是 `number` 也不是 `null` 时按空处理，并在开发期 `warnOnce` 点名来源。主因修掉后这条路走不到，但受控值常常来自类型擦除的路径（`register().value` 是 `unknown`、接口回填是 `any`），而落成 `0` 在三态字段里是最坏的结果——`0` 与「留空」在界面上分不出来。`undefined` 不在其列（那是非受控）。
+
+  **升级注意**：如果你的代码依赖了「binding 把 `null` 变成 `""`」（例如直接把 `register().value` 展开到**原生** `<input>` 上），现在会拿到 `null` 并看到 React 的 "value prop should not be null" 告警——自己写 `value={v ?? ""}`，或改用瑚琏的 `Input` / `Textarea`（已收口）。库内唯一用到 `register()` 的 `LoginForm` 两个字段初始值都是字符串，不受影响。
+
+### Patch Changes
+
+- c7aa13f: `ImageViewer` 滚轮缩放修三条：StrictMode 下位移复利、浮层顶部条/缩略图条漏掉 wheel（捏合会缩放宿主页面）、以及「挂载时就是 open」这条路上监听根本没绑（#223）。
+
+  **1. 位移被算两次（正确性）。** 旧实现在 `setScale` 的 updater 内部派发 `setOffset`，而后者依赖前值。React 要求 updater 是纯函数，StrictMode 的 dev 检查正是靠**调用两次 updater** 来发现非纯性——于是第二遍在第一遍的结果上再乘一次 `ratio`：位移不是翻倍，是**复利**，滚三四格图就跑到视口外，只能关掉重开。消费方实测同一格滚轮期望 `translate(-40px, -20px)`、实际拿到 `translate(-96px, -47.5px)`。生产构建不双调用所以线上不显现，但那是运气不是正确性。
+
+  改法是把缩放与平移合成**一个 state**（它们本来就是一起变的：围绕锚点缩放必然同时改 offset），用一个纯 updater 一次算完，双调用等幂。`zoomBy` / 双击 / 拖拽平移里的嵌套 `setOffset` 一并收掉。
+
+  **2. 顶部条与缩略图条上的 wheel 没人管。** 监听只挂在中间的舞台上，而浮层是 `flex-col`：顶部条（约 60px）与多图时的缩略图条都在舞台之外。在这两条上触控板捏合（`ctrlKey` + wheel）不被 `preventDefault`，浏览器就按原生行为缩放**整个宿主页面**——侧栏、表格、顶栏一起变大位移，用户看到的是「连不是图片的地方也被放大飞了」，很容易误判成组件把 transform 加错了元素。这条 dev 和生产都有。
+
+  监听改挂整个浮层（`fixed inset-0` + `aria-modal`，背后页面本来已被 `body.overflow=hidden` 锁住）。**唯一的例外是缩略图条**：它自己是 `overflow-x-auto` 要横向滚，所以那里普通滚轮放行、只吃掉捏合——整层无差别 `preventDefault` 会把它的滚动一起吃掉，那是修一个 bug 造一个。指针落在舞台外时缩放锚点退回舞台中心：拿一个舞台外的点当不动点会把图直接甩出可视区。
+
+  **3. 「挂载时就是 open」时监听根本没绑（写测试时连带发现）。** 滚轮与焦点两个 effect 的依赖都只有 `[open]`，而首帧 `mounted=false` 时组件 `return null`、两个 ref 都还是 `null`，effect 只在 ref 为空时跑了一次；随后 `mounted` 翻真触发的重渲染不会让它重跑。于是 `{show && <ImageViewer open … />}` 这种写法下滚轮缩放与「焦点移入浮层」双双静默失效——只有先挂载再把 `open` 从 `false` 翻成 `true` 才碰巧正常，所以一直没人发现。两个 effect 的依赖补上 `mounted`。
+
 ## 0.37.0
 
 ### Minor Changes

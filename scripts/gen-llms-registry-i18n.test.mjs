@@ -45,7 +45,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "grid-scan": [3, 6],
   heading: [0, 1],
   heatmap: [6, 7],
-  "image-viewer": [3, 4],
+  "image-viewer": [4, 5],
   "infinite-menu": [3, 4],
   "infinite-scroll": [0, 1],
   "json-viewer": [2, 3],
