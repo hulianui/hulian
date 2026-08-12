@@ -74,6 +74,7 @@ Keep the one-pixel gap in mind when you use both components together. If you nee
 |------|------|------|------|
 | `side` | `"left" \| "right"` | `"left"` | Attached edge; the mobile drawer slides in from the same side. |
 | `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` | Desktop collapse mode; see "Three collapse modes" below. |
+| `variant` | `"sidebar" \| "inset"` | `"sidebar"` | How the sidebar relates to the content area. `inset` gives the sidebar an 8px gutter and turns the content area into a rounded island; see "Depth: sidebar surface and inset" below. |
 | `mobileTitle` | `ReactNode` | Locale value | Accessible title of the mobile drawer (visually hidden). |
 | `mobileDescription` | `ReactNode` | Locale value | Accessible description of the mobile drawer (visually hidden). |
 | `mobileShowClose` | `boolean` | `false` | Whether the mobile drawer renders its built-in top-right close button. Off by default so it cannot cover the first navigation row. |
@@ -203,6 +204,40 @@ const [open, setOpen] = useState(readCookie("sidebar") !== "0");
 - **Never randomize `SidebarMenuSkeleton.width`.** A random width is rolled once on the server and again on the client, which guarantees a hydration mismatch. Pass a deterministic list such as `["78%", "62%", "88%"]` if you want uneven bars.
 - **`isMobile` is `false` during SSR and on the first frame.** It comes from `matchMedia` inside an effect, so the first tree is always the desktop shape; that is what keeps SSR and hydration identical. If a narrow viewport must render the drawer on first paint, detect it from the user agent on the server and drive the state yourself.
 - **Change `tooltipSide` for a right-hand sidebar.** With `side="right"` the tooltip still points right by default and flies off screen; pass `tooltipSide="left"`.
+
+### Depth: sidebar surface and inset
+
+By default the sidebar shares `--color-surface` with [Card](../card/card.md) and [Popover](../popover/popover.md). **If your bridge layer maps `surface` and `bg` to the same color** (both pure white is the common light-mode case), the sidebar, the page background and the content area all end up the same color with only a 1px border between them — whereas a shadcn-lineage application sidebar usually carries one step of contrast there: **the navigation plane sits behind, the content sits in front** (#224).
+
+Two independent escape hatches; use either or both:
+
+```tsx
+{/* 1) Recolor the sidebar only: one variable, no global token change, no className override */}
+<SidebarProvider style={{ "--hl-sidebar-surface": "var(--color-muted)" } as CSSProperties}>
+
+{/* 2) The inset shape: an 8px gutter around the sidebar, the content area as a rounded island */}
+<Sidebar variant="inset" collapsible="icon">…</Sidebar>
+<SidebarInset>…</SidebarInset>
+```
+
+- `--hl-sidebar-surface` **falls back to `--color-surface`**, so leaving it unset changes nothing. It only covers the sidebar (including the copy inside the mobile drawer) and touches no other component — which is exactly why editing `--color-surface` is the wrong lever: that one is the shared surface color of the whole library.
+- `variant="inset"` requires `SidebarInset` to be the **next sibling** of `Sidebar` (same level, no `div` in between): the island styling reads the preceding sibling through `peer-data-*`. That is the same structural requirement as "Why in-flow rather than fixed" below, so correct markup already satisfies it.
+- On mobile the sidebar becomes a drawer and leaves the flow, so `inset` does not apply there (same as shadcn).
+- Under `inset` the sidebar draws **no divider** (the gutter already separates them), and with `collapsible="offcanvas"` that 8px gutter collapses to zero as well — otherwise a `width: 0` sidebar would still occupy 16px of padding and look like it never closed. That is also why this step cannot be reproduced with `className="p-2"` at the call site: collapsing would always leave a strip behind.
+
+### Reduced motion is the library's job
+
+Opening and closing the sidebar is a page-level container transform, so under `prefers-reduced-motion: reduce` **the component drops the width transition by itself** (#225). Consumers need to do nothing.
+
+The width transition lives in an inline `style` (duration and easing come from the motion tokens; utility classes are avoided so that projects importing only `preset-core.css` still get the same curve), and an inline style outranks every ordinary CSS rule — overriding it takes `!important` plus a selector that guesses the library's internal DOM structure, which fails silently the moment that structure changes, and what fails is an accessibility preference with no error to show for it. So the component owns it: **if any component still moves under reduced motion, file it as a bug** rather than stacking `!important` on the consumer side.
+
+When your own hand-rolled motion needs the same signal, use the exported hook instead of writing another `matchMedia`:
+
+```tsx
+import { usePrefersReducedMotion } from "@hulianui/ui";
+
+const reduce = usePrefersReducedMotion();   // false during SSR and first paint, corrected right after hydration
+```
 
 ### Why the shortcut yields
 

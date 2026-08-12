@@ -20,6 +20,7 @@ import { Drawer, DrawerContent } from "../drawer";
 import { Input } from "../input";
 import { resolveBreakpointPx } from "../layout/layout-sider";
 import { cn } from "../lib/cn";
+import { usePrefersReducedMotion } from "../lib/use-prefers-reduced-motion";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import { Skeleton } from "../skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
@@ -199,6 +200,10 @@ export function SidebarProvider({
               // 整页外壳自钉视口高度（同 AdminLayout），侧栏与内容区各自内部滚动；
               // 嵌进定高容器预览时传 fitViewport={false} 跟随父容器。
               fitViewport ? "h-dvh overflow-hidden" : "h-full",
+              // inset 形态下浮岛四周的留白露的是**外壳**的底，所以底色得挂在这一层。
+              // 用 :has() 而不是把 variant 提到 Provider 上：形态是 <Sidebar> 的属性，
+              // 提上来就等于要求两处各写一遍、还得保持一致（#224）。
+              "has-[aside[data-variant=inset]]:bg-[var(--hl-sidebar-surface,var(--color-surface))]",
               className,
             )}
             style={
@@ -218,9 +223,23 @@ export function SidebarProvider({
   );
 }
 
+// 栏底色：默认就是 --color-surface（不传等于零改动），但留一个专用变量做逃生口（#224）。
+//
+// 为什么不让消费方直接顶 className：那会把「侧栏用什么底色」这件事变成调用点的私事，
+// 升级时的视觉回归无从归因（消费方的迁移规约也普遍禁止顶库组件的颜色）。
+// 为什么不让他们改 --color-surface：那是全库共用的表面色，为侧栏改一处会牵动
+// Card / Popover / Menu 等所有件。
+//
+// shadcn 血统的应用侧栏几乎都有「导航面是后面一层、内容是前面一层」的明度差，而本库的
+// surface 与 bg 在亮色下可能同为白（取决于消费方的桥接层），三层同色只剩 1px 边框分界。
+// 给一个变量就够了：`[--hl-sidebar-surface:var(--color-muted)]` 或任意色值挂在
+// SidebarProvider 上即可，不必碰全局 token，也不必顶色。
+const SIDEBAR_SURFACE = "bg-[var(--hl-sidebar-surface,var(--color-surface))]";
+
 export function Sidebar({
   side = "left",
   collapsible = "offcanvas",
+  variant = "sidebar",
   mobileTitle,
   mobileDescription,
   mobileShowClose = false,
@@ -233,6 +252,7 @@ export function Sidebar({
   const { state, isMobile, openMobile, setOpenMobile } = useSidebar();
   const sidebarId = useContext(SidebarIdContext);
   const width = useContext(SidebarWidthContext);
+  const reduceMotion = usePrefersReducedMotion();
   const locale = useComponentLocale().sidebar;
   const title = mobileTitle ?? locale?.mobileTitle ?? "侧边导航";
   const description = mobileDescription ?? locale?.mobileDescription ?? "应用主导航。按 Esc 或点击遮罩关闭。";
@@ -272,7 +292,7 @@ export function Sidebar({
           )}
           bodyClassName="m-0 flex min-h-0 flex-1 flex-col p-0"
         >
-          <div className="flex h-full flex-col bg-surface" style={{ width }}>
+          <div className={cn("flex h-full flex-col", SIDEBAR_SURFACE)} style={{ width }}>
             {shell}
           </div>
         </DrawerContent>
@@ -288,15 +308,26 @@ export function Sidebar({
         ? "var(--hl-sidebar-width-icon)"
         : "0px";
 
+  const inset = variant === "inset";
+
   return (
     <aside
       id={sidebarId}
       data-state={state}
       data-collapsible={collapsed ? collapsible : ""}
       data-side={side}
+      data-variant={variant}
+      // peer/sidebar：SidebarInset 是它的**后继兄弟**，靠这个把 inset 形态传给内容区，
+      // 不必把 variant 塞进 context 再多一层订阅（也不必要求两者写在同一个组件里）。
       className={cn(
-        "relative flex h-full shrink-0 flex-col overflow-hidden bg-surface",
-        side === "left" ? "border-r border-border" : "border-l border-border",
+        "peer/sidebar relative flex h-full shrink-0 flex-col overflow-hidden",
+        SIDEBAR_SURFACE,
+        // inset 形态下侧栏与内容区之间靠留白分界，不要边框（有边框就成了「带线的浮岛」）
+        inset
+          ? "p-2 data-[collapsible=offcanvas]:p-0"
+          : side === "left"
+            ? "border-r border-border"
+            : "border-l border-border",
         // offcanvas 收到 0 宽时边框仍会占 1px，留下一条「关不干净」的竖线。
         "data-[collapsible=offcanvas]:border-none",
         className,
@@ -304,9 +335,17 @@ export function Sidebar({
       style={{
         width: resolvedWidth,
         minWidth: resolvedWidth,
-        transitionProperty: "width, min-width",
-        transitionDuration: motionDurationCss.base,
-        transitionTimingFunction: motionEaseCss.out,
+        // 减弱动效时**整条 transition 都不写**（#225）：这几条是内联 style，优先级高于任何
+        // 普通 CSS 规则，消费方只能用 !important + 猜库内部 DOM 结构才盖得掉——而那种写法
+        // 结构一变就静默失效，失效的表现还是「无障碍偏好不生效」，不会有任何报错。
+        // 侧栏开合是整页级的容器变形，正是 reduce 下最该关掉的那一类（前庭敏感人群对大面积位移最敏感）。
+        ...(reduceMotion
+          ? null
+          : {
+              transitionProperty: "width, min-width",
+              transitionDuration: motionDurationCss.base,
+              transitionTimingFunction: motionEaseCss.out,
+            }),
         ...style,
       }}
       {...props}
@@ -316,11 +355,27 @@ export function Sidebar({
   );
 }
 
-/** 侧栏的兄弟内容区：占满剩余宽度、自己滚动。 */
+/**
+ * 侧栏的兄弟内容区：占满剩余宽度、自己滚动。
+ *
+ * `Sidebar variant="inset"` 时自动变成浮岛（外留白 + 圆角 + 描边），靠 `peer-data-*` 读
+ * 前一个兄弟（aside）的形态 —— 所以两者必须是同一层的兄弟，中间不要再包一层 div。
+ * 移动端侧栏走抽屉（不在流内），选择器自然不命中，浮岛样式也就不生效，与 shadcn 一致。
+ */
 export function SidebarInset({ className, ...props }: ComponentProps<"main">) {
   return (
     <main
-      className={cn("relative flex min-h-0 min-w-0 flex-1 flex-col bg-bg", className)}
+      className={cn(
+        "relative flex min-h-0 min-w-0 flex-1 flex-col bg-bg",
+        "peer-data-[variant=inset]/sidebar:m-2 peer-data-[variant=inset]/sidebar:ml-0",
+        "peer-data-[variant=inset]/sidebar:overflow-hidden peer-data-[variant=inset]/sidebar:rounded-xl",
+        "peer-data-[variant=inset]/sidebar:border peer-data-[variant=inset]/sidebar:border-hairline",
+        "peer-data-[variant=inset]/sidebar:shadow-sm",
+        // 贴右时留白要换边，否则浮岛与侧栏之间没有缝、外侧反而空着
+        "peer-data-[side=right]/sidebar:peer-data-[variant=inset]/sidebar:ml-2",
+        "peer-data-[side=right]/sidebar:peer-data-[variant=inset]/sidebar:mr-0",
+        className,
+      )}
       {...props}
     />
   );

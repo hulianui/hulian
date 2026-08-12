@@ -464,6 +464,8 @@ export * from "./soft-aurora";
 
 // 工具 + showcase 约定
 export { cn } from "./lib/cn";
+// 减弱动效偏好（库内动效件已各自响应，这里导出给消费方的**自绘动效**用，见 sidebar.md）
+export { usePrefersReducedMotion } from "./lib/use-prefers-reduced-motion";
 // 日期 SSoT（消费者需 dayjs 做日期数学时从这里取，避免各自装一份/版本漂移）
 export { dayjs, DATE_FORMAT, TIME_FORMAT, DATE_TIME_FORMAT } from "./lib/date";
 export type { Dayjs } from "./lib/date";

@@ -439,3 +439,130 @@ describe("移动端", () => {
     expect(trigger().getAttribute("aria-controls")).toBeNull();
   });
 });
+
+// ===== 栏底色逃生口 + inset 形态（#224）=====
+//
+// 消费方的迁移规约普遍禁止用 className 顶库组件的颜色（顶了色，升级时的视觉回归无从归因），
+// 而侧栏底色写死 bg-surface 时，桥接层里 surface 与 bg 同为白的项目会得到「侧栏 / 页面底 /
+// 内容浮岛三者同色、只剩 1px 边框分界」。改 --color-surface 又会牵动 Card / Popover / Menu。
+describe("Sidebar 栏底色与 inset 形态（#224）", () => {
+  const aside = () => document.querySelector("aside")!;
+
+  it("默认底色走专用变量，且回落到 --color-surface（不传等于零改动）", () => {
+    render(<Shell />);
+    expect(aside().className).toContain("bg-[var(--hl-sidebar-surface,var(--color-surface))]");
+  });
+
+  it("className 仍然能顶掉底色（twMerge 后来者胜，逃生口不是牢笼）", () => {
+    render(
+      <SidebarProvider fitViewport={false}>
+        <Sidebar className="bg-primary" aria-label="主导航">
+          <SidebarContent />
+        </Sidebar>
+      </SidebarProvider>,
+    );
+    expect(aside().className).toContain("bg-primary");
+    expect(aside().className).not.toContain("--hl-sidebar-surface");
+  });
+
+  it("inset：侧栏留 8px 外白 + 不画分界线，收成 offcanvas 时外白归零", () => {
+    render(
+      <SidebarProvider fitViewport={false} defaultOpen={false}>
+        <Sidebar variant="inset" collapsible="offcanvas" aria-label="主导航">
+          <SidebarContent />
+        </Sidebar>
+      </SidebarProvider>,
+    );
+    const cls = aside().className;
+    expect(cls).toContain("p-2");
+    // 关键：offcanvas 收起时 aside 宽度是 0，border-box 下 padding 仍占位，
+    // 不归零就会残留 16px 宽的「关不干净」的侧栏。
+    expect(cls).toContain("data-[collapsible=offcanvas]:p-0");
+    expect(cls).not.toContain("border-r");
+  });
+
+  it("inset 的浮岛样式挂在 SidebarInset 上，靠 peer 读前一个兄弟的形态", () => {
+    render(
+      <SidebarProvider fitViewport={false}>
+        <Sidebar variant="inset" aria-label="主导航">
+          <SidebarContent />
+        </Sidebar>
+        <SidebarInset />
+      </SidebarProvider>,
+    );
+    expect(aside().className).toContain("peer/sidebar");
+    expect(aside().getAttribute("data-variant")).toBe("inset");
+    const main = document.querySelector("main")!.className;
+    expect(main).toContain("peer-data-[variant=inset]/sidebar:m-2");
+    expect(main).toContain("peer-data-[variant=inset]/sidebar:rounded-xl");
+  });
+
+  it("默认形态仍是 data-variant=sidebar，浮岛样式不命中", () => {
+    render(<Shell />);
+    expect(aside().getAttribute("data-variant")).toBe("sidebar");
+    expect(aside().className).toContain("border-r");
+  });
+
+  it("外壳只在装着 inset 侧栏时才铺栏底色（浮岛四周露的是它）", () => {
+    const { container } = render(<Shell />);
+    expect((container.firstElementChild as HTMLElement).className).toContain(
+      "has-[aside[data-variant=inset]]:bg-",
+    );
+  });
+});
+
+// ===== 减弱动效（#225）=====
+//
+// 侧栏开合是整页级的容器变形，是 prefers-reduced-motion: reduce 下最该关掉的那一类
+// （前庭敏感人群对大面积位移最敏感）。过渡写在内联 style 上，优先级高于任何普通 CSS 规则，
+// 消费方要关只能 !important + 猜库内部 DOM 结构 —— 结构一变就静默失效，且失效表现是
+// 「无障碍偏好不生效」，不会有任何报错。所以必须由组件自己响应。
+describe("Sidebar 的 prefers-reduced-motion（#225）", () => {
+  /** 只让指定媒体查询为真，其余为假（默认的 stubMatchMedia 对任何 query 都返回同一个值）。 */
+  function stubMatchMediaFor(trueQuery: string) {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      writable: true,
+      value: (query: string) => ({
+        matches: query.includes(trueQuery),
+        media: query,
+        onchange: null,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+  }
+
+  it("默认（未开减弱）写入宽度过渡", () => {
+    render(<Shell />);
+    const style = document.querySelector("aside")!.style;
+    expect(style.transitionProperty).toBe("width, min-width");
+    expect(style.transitionDuration).not.toBe("");
+  });
+
+  it("开启减弱动效时整条 transition 都不写（而不是留一条 0s）", () => {
+    stubMatchMediaFor("prefers-reduced-motion");
+    render(<Shell />);
+    const style = document.querySelector("aside")!.style;
+    expect(style.transitionProperty).toBe("");
+    expect(style.transitionDuration).toBe("");
+    expect(style.transitionTimingFunction).toBe("");
+    // 宽度本身照旧（关的是动效，不是功能）
+    expect(style.width).toBe("var(--hl-sidebar-width)");
+  });
+
+  it("减弱动效时消费方自己的 style 仍然照常合并（逃生口不受影响）", () => {
+    stubMatchMediaFor("prefers-reduced-motion");
+    render(
+      <SidebarProvider fitViewport={false}>
+        <Sidebar style={{ transitionProperty: "width" }} aria-label="主导航">
+          <SidebarContent />
+        </Sidebar>
+      </SidebarProvider>,
+    );
+    expect(document.querySelector("aside")!.style.transitionProperty).toBe("width");
+  });
+});

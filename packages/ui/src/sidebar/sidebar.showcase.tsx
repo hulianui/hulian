@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Calendar, ChevronRight, Ellipsis, File, Folder, Gauge, Search, Wrench } from "../_icons";
 import type { ShowcaseSpec } from "../showcase/types";
 import {
@@ -28,7 +28,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "./sidebar";
-import type { SidebarCollapsible } from "./sidebar.types";
+import type { SidebarCollapsible, SidebarVariant } from "./sidebar.types";
 
 const NAV = [
   { key: "overview", label: "工作台", icon: Gauge },
@@ -49,12 +49,25 @@ function StateReadout() {
   );
 }
 
-function Shell({ collapsible = "icon" }: { collapsible?: SidebarCollapsible }) {
+function Shell({
+  collapsible = "icon",
+  variant = "sidebar",
+  // 栏底色逃生口：不传就是 --color-surface（与不写这个属性完全一致）
+  sidebarSurface,
+}: {
+  collapsible?: SidebarCollapsible;
+  variant?: SidebarVariant;
+  sidebarSurface?: string;
+}) {
   const [active, setActive] = useState("projects");
   const [subOpen, setSubOpen] = useState(true);
   return (
-    <SidebarProvider fitViewport={false} className="h-[420px] overflow-hidden rounded-[var(--radius)] border border-border">
-      <Sidebar collapsible={collapsible}>
+    <SidebarProvider
+      fitViewport={false}
+      className="h-[420px] overflow-hidden rounded-[var(--radius)] border border-border"
+      style={sidebarSurface ? ({ "--hl-sidebar-surface": sidebarSurface } as CSSProperties) : undefined}
+    >
+      <Sidebar collapsible={collapsible} variant={variant}>
         <SidebarHeader>
           <div className="flex h-8 items-center gap-2 px-1">
             <span
@@ -299,6 +312,16 @@ export const sidebarShowcase: ShowcaseSpec = {
 </SidebarMenuItem>`,
       render: () => <Shell collapsible="none" />,
     },
+    {
+      title: "层次：inset 形态 + 栏底色",
+      description:
+        "亮色下 surface 与 bg 常常同色，侧栏、页面底、内容区就只剩 1px 边框分界。inset 让内容区收成浮岛、侧栏留 8px 外白，--hl-sidebar-surface 只换侧栏这一处的底色（不传等于 surface，也不必去改全局 token）。offcanvas 收起时那 8px 外白会一并归零。",
+      code: `<SidebarProvider style={{ "--hl-sidebar-surface": "var(--color-muted)" }}>
+  <Sidebar variant="inset" collapsible="icon">…</Sidebar>
+  <SidebarInset>…</SidebarInset>
+</SidebarProvider>`,
+      render: () => <Shell collapsible="icon" variant="inset" sidebarSurface="var(--color-muted)" />,
+    },
   ],
   controls: [
     {
@@ -307,6 +330,12 @@ export const sidebarShowcase: ShowcaseSpec = {
       options: ["offcanvas", "icon", "none"],
       defaultValue: "icon",
     },
+    {
+      prop: "variant",
+      type: "select",
+      options: ["sidebar", "inset"],
+      defaultValue: "sidebar",
+    },
   ],
   states: [
     { name: "icon 折叠档", render: () => <Shell collapsible="icon" /> },
@@ -314,8 +343,11 @@ export const sidebarShowcase: ShowcaseSpec = {
     { name: "加载态", render: () => <LoadingShell /> },
   ],
   renderWithProps: (props) => (
-    <Shell collapsible={(props.collapsible as SidebarCollapsible) ?? "icon"} />
+    <Shell
+      collapsible={(props.collapsible as SidebarCollapsible) ?? "icon"}
+      variant={(props.variant as SidebarVariant) ?? "sidebar"}
+    />
   ),
   toCode: (props) =>
-    `<SidebarProvider>\n  <Sidebar collapsible="${props.collapsible ?? "icon"}">…</Sidebar>\n  <SidebarInset>…</SidebarInset>\n</SidebarProvider>`,
+    `<SidebarProvider>\n  <Sidebar collapsible="${props.collapsible ?? "icon"}" variant="${props.variant ?? "sidebar"}">…</Sidebar>\n  <SidebarInset>…</SidebarInset>\n</SidebarProvider>`,
 };

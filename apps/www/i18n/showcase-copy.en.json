@@ -8247,7 +8247,9 @@
       "<span>项目</span>": "<span>Projects</span>",
       "<SidebarMenuAction showOnHover aria-label=\"更多操作\">": "<SidebarMenuAction showOnHover aria-label=\"More actions\">",
       "icon 折叠档": "Collapsible set to icon",
-      "offcanvas 受控": "Controlled offcanvas"
+      "offcanvas 受控": "Controlled offcanvas",
+      "层次：inset 形态 + 栏底色": "Depth: the inset shape and the sidebar surface",
+      "亮色下 surface 与 bg 常常同色，侧栏、页面底、内容区就只剩 1px 边框分界。inset 让内容区收成浮岛、侧栏留 8px 外白，--hl-sidebar-surface 只换侧栏这一处的底色（不传等于 surface，也不必去改全局 token）。offcanvas 收起时那 8px 外白会一并归零。": "In light mode surface and bg are often the same color, leaving the sidebar, the page background and the content area separated by nothing but a 1px border. inset turns the content area into a floating island and gives the sidebar an 8px gutter, while --hl-sidebar-surface recolors only the sidebar (omit it and you get surface, with no need to touch the global token). Collapsing an offcanvas sidebar drops that 8px gutter as well."
     }
   }
 }

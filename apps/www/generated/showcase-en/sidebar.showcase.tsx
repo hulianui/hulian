@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Calendar, ChevronRight, Ellipsis, File, Folder, Gauge, Search, Wrench } from "../../../../packages/ui/src/_icons";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuAction, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, useSidebar, } from "../../../../packages/ui/src/sidebar/sidebar";
-import type { SidebarCollapsible } from "../../../../packages/ui/src/sidebar/sidebar.types";
+import type { SidebarCollapsible, SidebarVariant } from "../../../../packages/ui/src/sidebar/sidebar.types";
 const NAV = [
     { key: "overview", label: "Workbench", icon: Gauge },
     { key: "projects", label: "Project", icon: Folder },
@@ -18,13 +18,15 @@ function StateReadout() {
       <code className="text-foreground">{String(isMobile)}</code>
     </p>);
 }
-function Shell({ collapsible = "icon" }: {
+function Shell({ collapsible = "icon", variant = "sidebar", sidebarSurface, }: {
     collapsible?: SidebarCollapsible;
+    variant?: SidebarVariant;
+    sidebarSurface?: string;
 }) {
     const [active, setActive] = useState("projects");
     const [subOpen, setSubOpen] = useState(true);
-    return (<SidebarProvider fitViewport={false} className="h-[420px] overflow-hidden rounded-[var(--radius)] border border-border">
-      <Sidebar collapsible={collapsible}>
+    return (<SidebarProvider fitViewport={false} className="h-[420px] overflow-hidden rounded-[var(--radius)] border border-border" style={sidebarSurface ? ({ "--hl-sidebar-surface": sidebarSurface } as CSSProperties) : undefined}>
+      <Sidebar collapsible={collapsible} variant={variant}>
         <SidebarHeader>
           <div className="flex h-8 items-center gap-2 px-1">
             <span aria-hidden className="grid size-6 shrink-0 place-items-center rounded-[var(--radius)] bg-primary text-xs font-bold text-primary-foreground">
@@ -233,6 +235,15 @@ export const sidebarShowcase: ShowcaseSpec = {
 </SidebarMenuItem>`,
             render: () => <Shell collapsible="none"/>,
         },
+        {
+            title: "Depth: the inset shape and the sidebar surface",
+            description: "In light mode surface and bg are often the same color, leaving the sidebar, the page background and the content area separated by nothing but a 1px border. inset turns the content area into a floating island and gives the sidebar an 8px gutter, while --hl-sidebar-surface recolors only the sidebar (omit it and you get surface, with no need to touch the global token). Collapsing an offcanvas sidebar drops that 8px gutter as well.",
+            code: `<SidebarProvider style={{ "--hl-sidebar-surface": "var(--color-muted)" }}>
+  <Sidebar variant="inset" collapsible="icon">\u2026</Sidebar>
+  <SidebarInset>\u2026</SidebarInset>
+</SidebarProvider>`,
+            render: () => <Shell collapsible="icon" variant="inset" sidebarSurface="var(--color-muted)"/>,
+        },
     ],
     controls: [
         {
@@ -241,15 +252,21 @@ export const sidebarShowcase: ShowcaseSpec = {
             options: ["offcanvas", "icon", "none"],
             defaultValue: "icon",
         },
+        {
+            prop: "variant",
+            type: "select",
+            options: ["sidebar", "inset"],
+            defaultValue: "sidebar",
+        },
     ],
     states: [
         { name: "Collapsible set to icon", render: () => <Shell collapsible="icon"/> },
         { name: "Controlled offcanvas", render: () => <ControlledShell /> },
         { name: "Loading state", render: () => <LoadingShell /> },
     ],
-    renderWithProps: (props) => (<Shell collapsible={(props.collapsible as SidebarCollapsible) ?? "icon"}/>),
+    renderWithProps: (props) => (<Shell collapsible={(props.collapsible as SidebarCollapsible) ?? "icon"} variant={(props.variant as SidebarVariant) ?? "sidebar"}/>),
     toCode: (props) => `<SidebarProvider>
-  <Sidebar collapsible="${props.collapsible ?? "icon"}">\u2026</Sidebar>
+  <Sidebar collapsible="${props.collapsible ?? "icon"}" variant="${props.variant ?? "sidebar"}">\u2026</Sidebar>
   <SidebarInset>\u2026</SidebarInset>
 </SidebarProvider>`,
 };

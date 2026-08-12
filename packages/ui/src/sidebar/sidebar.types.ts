@@ -21,6 +21,14 @@ export type SidebarCollapsible = "offcanvas" | "icon" | "none";
 /** 贴哪一边。 */
 export type SidebarSide = "left" | "right";
 
+/**
+ * 侧栏与内容区的关系形态。
+ *  · `sidebar`（默认）：侧栏与内容区并排铺满，中间一条 1px 分界线。
+ *  · `inset`：侧栏留 8px 外白、内容区收成带圆角描边的浮岛，外壳底色露在四周
+ *    —— 「导航面是后面一层、内容是前面一层」，需要明度差时配 `--hl-sidebar-surface` 一起用。
+ */
+export type SidebarVariant = "sidebar" | "inset";
+
 /** `useSidebar()` 的返回值。 */
 export interface SidebarContextValue {
   /** 桌面端展开态的语义别名，等价于 `open ? "expanded" : "collapsed"`。 */
@@ -63,6 +71,11 @@ export interface SidebarProps extends HTMLAttributes<HTMLElement> {
   side?: SidebarSide;
   /** 桌面端折叠形态。 */
   collapsible?: SidebarCollapsible;
+  /**
+   * 与内容区的关系形态（见 `SidebarVariant`）。`inset` 需要 `SidebarInset` 是本组件的
+   * **后继兄弟**（同一层，中间不夹别的元素）才会生效；移动端走抽屉，此形态不参与。
+   */
+  variant?: SidebarVariant;
   /** 移动端抽屉的无障碍标题（视觉隐藏）。 */
   mobileTitle?: ReactNode;
   /** 移动端抽屉的无障碍说明（视觉隐藏）。 */

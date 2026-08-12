@@ -42,4 +42,5 @@ export type {
   SidebarSide,
   SidebarState,
   SidebarTriggerProps,
+  SidebarVariant,
 } from "./sidebar.types";

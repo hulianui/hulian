@@ -12993,7 +12993,8 @@
           "SidebarRailProps",
           "SidebarSide",
           "SidebarState",
-          "SidebarTriggerProps"
+          "SidebarTriggerProps",
+          "SidebarVariant"
         ],
         "group": "global",
         "tags": [],
@@ -20979,6 +20980,11 @@
           "path": "components/hulianui/lib/use-gl-canvas.ts",
           "type": "registry:lib",
           "target": "components/hulianui/lib/use-gl-canvas.ts"
+        },
+        {
+          "path": "components/hulianui/lib/use-prefers-reduced-motion.ts",
+          "type": "registry:lib",
+          "target": "components/hulianui/lib/use-prefers-reduced-motion.ts"
         },
         {
           "path": "components/hulianui/lib/warn-once.ts",

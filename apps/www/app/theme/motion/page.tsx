@@ -160,6 +160,15 @@ export default function MotionPage() {
         <Note>
           {content.accessibilityNote}
         </Note>
+        <Panel className="mt-4 space-y-2.5">
+          <h3 className="text-sm font-medium">{content.accessibilityOwnershipTitle}</h3>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {content.accessibilityOwnershipNote}
+          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            <Code>usePrefersReducedMotion()</Code> {content.accessibilityHookNote}
+          </p>
+        </Panel>
       </Section>
     </div>
   );

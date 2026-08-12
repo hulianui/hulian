@@ -133,6 +133,11 @@ export const themeContent = {
       accessibilityDescription: "减少动效不等于移除所有反馈。",
       accessibilityNote:
         "在 prefers-reduced-motion 下保留帮助理解的透明度与颜色过渡，并去掉位移动画。",
+      accessibilityOwnershipTitle: "这条媒体查询由库负责",
+      accessibilityOwnershipNote:
+        "响应 prefers-reduced-motion 是组件自己的事，不是消费方的事。消费方不该为了关掉某个动效去写 !important、去猜库内部的 DOM 结构——那种选择器在结构变动时会静默失效，而失效的表现是「无障碍偏好不生效」，不会有任何报错。发现哪个组件在减弱动效下仍然位移，按 bug 提 issue。",
+      accessibilityHookNote:
+        "自绘动效（canvas / rAF / 自己写的内联 style 过渡）从 usePrefersReducedMotion() 取同一个判断，不必再写一份 matchMedia。SSR 与首屏 HTML 恒为 false，hydration 后立即纠正。",
     },
     breakpoints: {
       title: "断点",
@@ -305,6 +310,11 @@ export const themeContent = {
       accessibilityDescription: "Reduced motion does not mean removing all feedback.",
       accessibilityNote:
         "Under prefers-reduced-motion, preserve helpful opacity and color transitions while removing spatial movement.",
+      accessibilityOwnershipTitle: "This media query is the library's job",
+      accessibilityOwnershipNote:
+        "Responding to prefers-reduced-motion belongs to the component, not to the consumer. Nobody should have to write !important or guess at the library's internal DOM structure to switch an animation off - a selector like that fails silently when the structure changes, and what fails is an accessibility preference, with no error to show for it. If a component still moves under reduced motion, file it as a bug.",
+      accessibilityHookNote:
+        "For hand-rolled motion (canvas, rAF, your own inline style transitions), read the same signal from usePrefersReducedMotion() instead of writing another matchMedia. It is false during SSR and in the first HTML frame, then corrects itself right after hydration.",
     },
     breakpoints: {
       title: "Breakpoints",

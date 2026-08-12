@@ -693,6 +693,10 @@
       "left",
       "right"
     ],
+    "SidebarVariant": [
+      "sidebar",
+      "inset"
+    ],
     "SocialProvider": [
       "wechat",
       "alipay",
@@ -29064,7 +29068,8 @@
         "SidebarRailProps",
         "SidebarSide",
         "SidebarState",
-        "SidebarTriggerProps"
+        "SidebarTriggerProps",
+        "SidebarVariant"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/sidebar/sidebar.md",
       "props": [
@@ -29194,6 +29199,20 @@
           "valueType": "string",
           "default": "\"offcanvas\"",
           "description": "桌面折叠形态，见下方「三种折叠形态」"
+        },
+        {
+          "name": "variant",
+          "owner": "Sidebar",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sidebar\" | \"inset\"",
+          "values": [
+            "sidebar",
+            "inset"
+          ],
+          "valueType": "string",
+          "default": "\"sidebar\"",
+          "description": "与内容区的关系形态。`inset` = 侧栏留 8px 外白、内容区收成圆角浮岛，见下方「层次：栏底色与 inset」"
         },
         {
           "name": "mobileTitle",

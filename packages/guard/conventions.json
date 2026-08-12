@@ -7983,7 +7983,35 @@
       "id": "component/sidebar/pitfall/7",
       "scope": "sidebar",
       "title": "Sidebar",
-      "rule": "**右侧栏记得改 `tooltipSide`**。`side=\"right\"` 时 tooltip 默认仍向右弹，会飞出视口；传 `tooltipSide=\"left\"`。 ### 快捷键为什么要「让路」 内置 `Cmd/Ctrl + B`。四种情形一律不触发：`event.defaultPrevented`（别人已处理）、`input` / `textarea` / `select` 内、`contenteditable` 元素本身、以及 **`contenteditable` 的后代**。 最后一条最容易漏：富文本里光标落在 `<strong>` 上时事件的 `target` 是那个 `<strong>` 而不是编辑区，只判自身会漏掉整个编辑器——于是用户在任务标题里敲 `Cmd+B` 想加粗，侧栏在旁边乱跳。判定逻辑作为纯函数 `isEditableEventTarget` 导出，可以直接单测。 不需要这个快捷键就传 `shortcutKey={false}`；换一个键传 `shortcutKey=\"k\"`。 ### 为什么是 in-flow 而不是 `fixed` 同类实现（shadcn/ui）用「`fixed` 面板 + 一个等宽占位 div」做布局。本组件走 in-flow flex 宽度过渡，因为 `fixed` 面板一旦被放进任何非全屏容器——文档站预览框、[Viewport](../viewport/viewport.md) 设备框、分栏工作区——就会逃逸出框贴住视口。in-flow 方案与库内 [LayoutSider](../layout/layout.md) / [AdminLayout](../admin-layout/admin-layout.md) 同构，且不需要任何测量。 代价：`SidebarProvider` 必须是那个横向 flex 容器，`Sidebar` 与 `SidebarInset` 必须是它的直接子元素。中间夹一层普通 `div` 会把 flex 关系打断。",
+      "rule": "**右侧栏记得改 `tooltipSide`**。`side=\"right\"` 时 tooltip 默认仍向右弹，会飞出视口；传 `tooltipSide=\"left\"`。 ### 层次：栏底色与 inset 侧栏默认与 [Card](../card/card.md) / [Popover](../popover/popover.md) 共用 `--color-surface`。**如果你的桥接层里 `surface` 与 `bg` 同色**（亮色下常见的「都是纯白」），侧栏、页面底、内容区就会三者同色，只剩 1px 边框分界 —— shadcn 血统的应用侧栏通常在这里有一档明度差：**导航面是「后面一层」，内容是「前面一层」**（#224）。 两个独立的口子，可以只用一个，也可以一起用： ```tsx {/* 1) 只换栏底色：一个变量，不碰全局 token，也不必在 className 上顶色 */} <SidebarProvider style={{ \"--hl-sidebar-surface\": \"var(--color-muted)\" } as CSSProperties}> {/* 2) inset 形态：侧栏留 8px 外白，内容区收成圆角浮岛，外壳底色露在四周 */} <Sidebar variant=\"inset\" collapsible=\"icon\">…</Sidebar> <SidebarInset>…</SidebarInset> ```",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/8",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "`--hl-sidebar-surface` **不传就等于 `--color-surface`**，升级零改动。它只管侧栏（含移动端抽屉里的那份），不会牵动别的组件——这正是不建议去改 `--color-surface` 的原因：那是全库共用的表面色。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/9",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "`variant=\"inset\"` 要求 `SidebarInset` 是 `Sidebar` 的**后继兄弟**（同一层、中间不夹 `div`）：浮岛样式靠 `peer-data-*` 读前一个兄弟的形态。这与「为什么是 in-flow 而不是 fixed」那条的结构要求是同一条，本来就该这么写。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/10",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "移动端侧栏走抽屉、不在流内，`inset` 不参与（与 shadcn 一致）。",
+      "source": "packages/ui/src/sidebar/sidebar.md"
+    },
+    {
+      "id": "component/sidebar/pitfall/11",
+      "scope": "sidebar",
+      "title": "Sidebar",
+      "rule": "`inset` 下侧栏**不画分界线**（有留白就不需要线），`collapsible=\"offcanvas\"` 收起时那 8px 外白会一并归零 —— 否则 `width: 0` 的侧栏会因为 padding 残留 16px 宽，看上去「关不干净」。这也是为什么这一档不能靠调用点写 `className=\"p-2\"` 补：那样收起时必然留一条。 ### 减弱动效由库负责 侧栏开合是整页级的容器变形，`prefers-reduced-motion: reduce` 下**组件自己会关掉宽度过渡**（#225），不需要消费方做任何事。 宽度过渡写在内联 `style` 上（时长与曲线取自 motion token，不走工具类是为了让只引 `preset-core.css` 的项目也拿到同一条曲线），而内联 style 的优先级高于任何普通 CSS 规则 —— 消费方要盖只能写 `!important` 加一个猜库内部 DOM 结构的选择器，结构一变就静默失效，且失效的表现是「无障碍偏好不生效」，不会有任何报错。所以这类事一律由组件承担：**发现哪个组件在减弱动效下仍然位移，按 bug 提 issue**，不要在消费侧堆 `!important`。 自绘动效需要同一个判断时，用库导出的钩子，不必再写一份 `matchMedia`： ```tsx import { usePrefersReducedMotion } from \"@hulianui/ui\"; const reduce = usePrefersReducedMotion(); // SSR / 首屏恒 false，hydration 后立即纠正 ``` ### 快捷键为什么要「让路」 内置 `Cmd/Ctrl + B`。四种情形一律不触发：`event.defaultPrevented`（别人已处理）、`input` / `textarea` / `select` 内、`contenteditable` 元素本身、以及 **`contenteditable` 的后代**。 最后一条最容易漏：富文本里光标落在 `<strong>` 上时事件的 `target` 是那个 `<strong>` 而不是编辑区，只判自身会漏掉整个编辑器——于是用户在任务标题里敲 `Cmd+B` 想加粗，侧栏在旁边乱跳。判定逻辑作为纯函数 `isEditableEventTarget` 导出，可以直接单测。 不需要这个快捷键就传 `shortcutKey={false}`；换一个键传 `shortcutKey=\"k\"`。 ### 为什么是 in-flow 而不是 `fixed` 同类实现（shadcn/ui）用「`fixed` 面板 + 一个等宽占位 div」做布局。本组件走 in-flow flex 宽度过渡，因为 `fixed` 面板一旦被放进任何非全屏容器——文档站预览框、[Viewport](../viewport/viewport.md) 设备框、分栏工作区——就会逃逸出框贴住视口。in-flow 方案与库内 [LayoutSider](../layout/layout.md) / [AdminLayout](../admin-layout/admin-layout.md) 同构，且不需要任何测量。 代价：`SidebarProvider` 必须是那个横向 flex 容器，`Sidebar` 与 `SidebarInset` 必须是它的直接子元素。中间夹一层普通 `div` 会把 flex 关系打断。",
       "source": "packages/ui/src/sidebar/sidebar.md"
     },
     {
@@ -9727,7 +9755,7 @@
   ],
   "stats": {
     "componentDocs": 390,
-    "componentAdvisories": 1354,
-    "totalAdvisories": 1364
+    "componentAdvisories": 1358,
+    "totalAdvisories": 1368
   }
 }
