@@ -29,6 +29,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | Semantic color tone (see the table below). |
 | size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | Control size. `xs` is the 24px dense size for admin toolbars and table rows. The three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). `iconXs` is a 20px micro size that matches **no** text size and is meant for dense table rows. |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
+| muted | `boolean` | `false` | Emphasis step: the resting color drops one level to the secondary gray and returns to the tone's own color on hover. **Only effective on `ghost` and `link`** (see "The muted emphasis step"). |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled` and `type`. |
 
@@ -95,6 +96,24 @@ other behind.
 Known trade-off: the fill is translucent, so it **picks up the background of whatever contains it**. On a
 coloured block the button will look off; report it with a screenshot rather than layering an opaque
 background through `className`.
+
+## The muted emphasis step
+
+The weakest color `ghost` and `link` can reach is body black (`tone="neutral"` included), yet most **secondary** text links and icon buttons in everyday UI rest in the secondary gray and only return to body black on hover. `muted` adds that step (#211):
+
+```tsx
+<Button variant="ghost" size="xs" muted>Show log</Button>
+<Button variant="link" muted>Clear</Button>
+<Button variant="link" tone="danger" muted>Delete</Button>   {/* gray at rest, red on hover */}
+```
+
+The rule in one line: **the resting color drops to `--color-muted-foreground` and returns to the tone's own color on hover** (`ghost` also gains its tinted background). So `tone="danger" muted` is the "gray at rest, red on hover" delete link rather than a discarded semantic color - a common shape in dense admin rows.
+
+Three boundaries:
+
+- **Only effective on `ghost` and `link`.** On `solid`, `soft`, or `outline` it adds no class at all and logs one `warnOnce` in development - a prop that silently does nothing is harder to track down than an error.
+- **It is opt-in and changes no default.** A `ghost` without `muted` is still body black, so existing call sites do not move by a pixel. Row actions like "View" or "Reload" are **normal emphasis** and belong in body black; only genuinely secondary affordances take `muted`.
+- **It is not a sixth `tone`.** `tone` is the semantic-color SSOT shared by 29 components, while muted is an **emphasis level**, not a hue. Folding it into `tone` would force `solid` and `soft` to answer "what is a muted fill?" - and a `bg-muted` fill simply reads as disabled.
 
 ## Size scale
 

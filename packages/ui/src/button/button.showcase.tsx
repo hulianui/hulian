@@ -189,6 +189,31 @@ export const buttonShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "muted 层级档",
+      description:
+        "静息色降一档到次要灰，hover 回到本 tone 的色。次要文字链接与密集行里的图标按钮要的就是这一档 —— 不传 muted 的 ghost 仍是正文黑，既有调用不受影响。只对 ghost / link 有效。",
+      code: `<Button variant="ghost" size="xs" muted>显示日志</Button>
+<Button variant="link" muted>清空</Button>
+<Button variant="link" tone="danger" muted>删除</Button>
+<Button variant="ghost" size="xs">对照：正常强度</Button>`,
+      render: () => (
+        <>
+          <Button variant="ghost" size="xs" muted>
+            显示日志
+          </Button>
+          <Button variant="link" muted>
+            清空
+          </Button>
+          <Button variant="link" tone="danger" muted>
+            删除
+          </Button>
+          <Button variant="ghost" size="xs">
+            对照：正常强度
+          </Button>
+        </>
+      ),
+    },
+    {
       title: "块级铺满",
       description: "block 让按钮撑满容器宽度，用于移动端主操作与表单底部提交。",
       code: `<Button block>登录</Button>

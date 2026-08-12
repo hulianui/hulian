@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.34.0 · 389 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.35.0 · 389 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -3186,6 +3186,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | 语义色调（见下表） |
 | size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | 尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用 |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
+| muted | `boolean` | `false` | 层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` 有效**（见「muted 层级档」） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
 
@@ -3248,6 +3249,24 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 已知代价：底是半透明的，**会透出所在容器的背景色**。按钮坐在有色区块上时观感会偏，
 遇到了带截图提 issue，别在 `className` 里自己补一层不透明底。
+
+## muted 层级档
+
+`ghost` / `link` 的最弱色本来就是正文黑（`tone="neutral"` 也是），可日常界面里绝大多数**次要**文字链接与图标按钮，静息色是次要灰、hover 才回到正文黑。`muted` 补的就是这一档（#211）：
+
+```tsx
+<Button variant="ghost" size="xs" muted>显示日志</Button>
+<Button variant="link" muted>清空</Button>
+<Button variant="link" tone="danger" muted>删除</Button>   {/* 静息灰，hover 才变红 */}
+```
+
+规则一句话：**静息色降到 `--color-muted-foreground`，hover 回到该 `tone` 的本色**（`ghost` 另有浅底）。所以 `tone="danger" muted` 是「静息灰、悬停变红」的删除链接，不是把语义色丢了——中后台密集行里这是常见形态。
+
+三条边界：
+
+- **只对 `ghost` / `link` 有效。** 落在 `solid` / `soft` / `outline` 上一个类都不加，开发期会打一条 `warnOnce` 点名——静默无效的 prop 比报错更难查。
+- **是 opt-in，不改默认观感。** 不传 `muted` 的 `ghost` 仍是正文黑，既有调用一个像素都不动。表格行里的「查看」「重新加载」这类**正常强度**动作本来就该是正文黑，只有真正次要的那批才加 `muted`。
+- **不是 `tone` 的第六档。** `tone` 是语义色 SSOT、横跨 29 个组件，而 muted 是**层级**不是色相；塞进 `tone` 会逼 `solid` / `soft` 回答「muted 实心是什么」，而 `bg-muted` 实心看起来就是禁用态。
 
 ## 尺寸档
 

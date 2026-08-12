@@ -4,6 +4,7 @@ import { type HTMLMotionProps } from "motion/react";
 import { cva } from "class-variance-authority";
 import { Loader2 } from "../_icons";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { pressable, LazyMotionProvider, m } from "../motion";
 import { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS } from "./button-base";
 import type { ButtonProps } from "./button.types";
@@ -27,6 +28,11 @@ export const buttonVariants = cva(BUTTON_BASE_CLASS, {
       size: BUTTON_SIZE_CLASS,
       // 块级铺满：移动端主操作、表单底部提交几乎必用，此前只能写 className="w-full"。
       block: { true: "w-full" },
+      // 层级档（#211）：静息色降一档到次要灰，hover 回到该 tone 的本色。
+      // **刻意不做成 tone 的第六档**：tone 是语义色 SSOT、横跨 29 个组件，而 muted 是层级不是色相，
+      // 塞进去会逼 solid / soft 回答「muted 实心是什么」——而 bg-muted 实心看起来就是 disabled。
+      // 类由 compoundVariants 按 variant × tone 给：只有无底色的 ghost / link 有意义。
+      muted: { true: "" },
     },
     compoundVariants: [
       // solid：语义底 + 对应前景 + 独立的 hover 档。0.27.0 前 danger 的 hover 写回自身
@@ -70,6 +76,22 @@ export const buttonVariants = cva(BUTTON_BASE_CLASS, {
       { variant: "link", tone: "success", class: "text-success" },
       { variant: "link", tone: "warning", class: "text-warning" },
       { variant: "link", tone: "neutral", class: "text-foreground" },
+      // ── muted 层级档（#211）────────────────────────────────────────────────
+      // 顺序要紧：这几条排在上面的 tone 档之后，靠 tailwind-merge「后来者胜」把静息色顶掉，
+      // 再由更具体的那条把 hover 目标改回本 tone 的颜色。
+      // 消费方手写的那批（18 处）正是这个形状：静息 muted → hover 回正文黑 + ghost 的浅底。
+      { variant: "ghost", muted: true, class: "text-muted-foreground hover:text-foreground" },
+      // link 的默认 tone 是 brand，所以 hover 回主色；neutral 那条在下面改回正文黑。
+      { variant: "link", muted: true, class: "text-muted-foreground hover:text-primary" },
+      { variant: "link", tone: "neutral", muted: true, class: "hover:text-foreground" },
+      // 非中性 tone：静息一律降成次要灰，hover 才亮出语义色。
+      // 「静息灰、悬停变红」的删除链接是中后台密集行里的常见形态，不是把语义色丢了。
+      { variant: "ghost", tone: "danger", muted: true, class: "hover:text-danger" },
+      { variant: "ghost", tone: "success", muted: true, class: "hover:text-success" },
+      { variant: "ghost", tone: "warning", muted: true, class: "hover:text-warning" },
+      { variant: "link", tone: "danger", muted: true, class: "hover:text-danger" },
+      { variant: "link", tone: "success", muted: true, class: "hover:text-success" },
+      { variant: "link", tone: "warning", muted: true, class: "hover:text-warning" },
     ],
     defaultVariants: { variant: "solid", tone: "brand", size: "md" },
   },
@@ -78,8 +100,20 @@ export const buttonVariants = cva(BUTTON_BASE_CLASS, {
 export { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS };
 
 const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, tone, size, block, loading, disabled, children, render, ...props }, ref) => {
+  (
+    { className, variant, tone, size, block, muted, loading, disabled, children, render, ...props },
+    ref,
+  ) => {
     const isDisabled = disabled || loading;
+    // muted 只对无底色的两档有意义。落在 solid / soft / outline 上时它一个类都不加，
+    // 那就是个静默无效的 prop —— 静默无效比报错更难查，所以开发期点名。
+    if (muted && variant && variant !== "ghost" && variant !== "link") {
+      warnOnce(
+        `button-muted-on-${variant}`,
+        `[hulian] Button: muted 只在 variant="ghost" / "link" 上有效，variant="${variant}" 上不会有任何变化。` +
+          `想要更弱的实心/浅底按钮请改用 variant="ghost" muted 或 tone="neutral"。`,
+      );
+    }
     const content = (
       <>
         {loading && <Loader2 className="size-4 animate-spin" aria-hidden />}
@@ -97,7 +131,7 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
           ...props,
           ref,
           className: cn(
-            buttonVariants({ variant, tone, size, block }),
+            buttonVariants({ variant, tone, size, block, muted }),
             isDisabled && "pointer-events-none opacity-50",
             className,
             renderProps.className as string | undefined,
@@ -114,7 +148,7 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
       <LazyMotionProvider>
         <m.button
           ref={ref}
-          className={cn(buttonVariants({ variant, tone, size, block }), className)}
+          className={cn(buttonVariants({ variant, tone, size, block, muted }), className)}
           disabled={isDisabled}
           // press 反馈走 motion 的 transform scale，与 CSS 的颜色过渡互不干扰；禁用态不缩放
           whileTap={isDisabled ? undefined : pressable.whileTap}

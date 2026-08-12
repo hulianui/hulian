@@ -233,3 +233,80 @@ describe("soft 变体（#197）", () => {
     expect(cls).toContain("h-6");
   });
 });
+
+describe("muted 层级档（#211）", () => {
+  const classesOf = (el: React.ReactElement) =>
+    rtlRender(el).container.querySelector("button")!.className;
+
+  it("不传 muted 时一个类都不变 —— 207 处既有 ghost 调用不许被这档带偏", () => {
+    // 这条是本档最重要的一条：muted 是 opt-in，静息 ghost 仍是正文黑。
+    // 若把 ghost 的 neutral 直接重定义成 muted（issue 倾向的方案 B），
+    // 本仓 207 处 ghost 会全部变色，其中多数是表格行/工具栏里的正常强度动作。
+    expect(classesOf(<Button variant="ghost">x</Button>)).toContain("text-foreground");
+    expect(classesOf(<Button variant="ghost">x</Button>)).not.toContain("text-muted-foreground");
+    expect(classesOf(<Button variant="link">x</Button>)).toContain("text-primary");
+  });
+
+  it("ghost + muted 正是消费方手写的那串：静息次要灰 → hover 正文黑 + 浅底", () => {
+    const cls = classesOf(
+      <Button variant="ghost" muted>
+        x
+      </Button>,
+    );
+    expect(cls).toContain("text-muted-foreground");
+    expect(cls).toContain("hover:text-foreground");
+    expect(cls).toContain("hover:bg-surface-hover");
+    // 静息色必须被顶掉，不能两条同时留下（tailwind-merge 后来者胜）
+    expect(cls.split(/\s+/)).not.toContain("text-foreground");
+  });
+
+  it("link + muted：静息次要灰，hover 回本 tone 的色（默认 brand → 主色）", () => {
+    const brand = classesOf(
+      <Button variant="link" muted>
+        x
+      </Button>,
+    );
+    expect(brand).toContain("text-muted-foreground");
+    expect(brand).toContain("hover:text-primary");
+    expect(brand.split(/\s+/)).not.toContain("text-primary");
+
+    const neutral = classesOf(
+      <Button variant="link" tone="neutral" muted>
+        x
+      </Button>,
+    );
+    expect(neutral).toContain("hover:text-foreground");
+  });
+
+  it("非中性 tone 静息也降成灰，hover 才亮出语义色（密集行里的删除链接形态）", () => {
+    for (const [tone, hover] of [
+      ["danger", "hover:text-danger"],
+      ["success", "hover:text-success"],
+      ["warning", "hover:text-warning"],
+    ] as const) {
+      for (const variant of ["ghost", "link"] as const) {
+        const cls = classesOf(
+          <Button variant={variant} tone={tone} muted>
+            x
+          </Button>,
+        );
+        expect(cls, `${variant}/${tone}`).toContain("text-muted-foreground");
+        expect(cls, `${variant}/${tone}`).toContain(hover);
+        // 语义色不能还留在静息位上
+        expect(cls.split(/\s+/), `${variant}/${tone}`).not.toContain(`text-${tone}`);
+      }
+    }
+  });
+
+  it("落在 solid / soft / outline 上不加任何类（静默无效比报错更难查，故开发期另有 warnOnce）", () => {
+    for (const variant of ["solid", "soft", "outline"] as const) {
+      expect(classesOf(<Button variant={variant}>x</Button>)).toBe(
+        classesOf(
+          <Button variant={variant} muted>
+            x
+          </Button>,
+        ),
+      );
+    }
+  });
+});

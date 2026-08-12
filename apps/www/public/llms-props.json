@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -5991,6 +5991,14 @@
           "type": "boolean",
           "default": "false",
           "description": "块级铺满容器宽度（移动端主操作、表单底部提交）"
+        },
+        {
+          "name": "muted",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` 有效**（见「muted 层级档」）"
         },
         {
           "name": "loading",

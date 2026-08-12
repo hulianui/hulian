@@ -1,6 +1,20 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.35.0",
+    "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`Button` 新增 `muted` 层级档：`ghost` / `link` 的静息色降一档到次要灰，hover 回到本 `tone` 的色（#211）。\n\n```tsx\n<Button variant=\"ghost\" size=\"xs\" muted>显示日志</Button>\n<Button variant=\"link\" muted>清空</Button>\n<Button variant=\"link\" tone=\"danger\" muted>删除</Button>   {/* 静息灰，hover 才变红 */}\n```\n\n`ghost` / `link` 此前能到的最弱色就是正文黑（`tone=\"neutral\"` 也是），而日常界面里绝大多数**次要**文字链接与图标按钮的静息色恰恰是次要灰。消费方因此有 18 处只能继续裸 `<button>` 手写 `text-muted-foreground hover:text-foreground`，各写各的必然漂。\n\n**没有采纳 issue 倾向的方案（把 `ghost` / `link` 的 `neutral` 直接重定义成 muted 静息）—— 实测爆炸半径比预估的大。** 本仓 `variant=\"ghost\"` 有 207 处（`link` 20 处），其中图标档只有 48 处；其余多是表格行与工具栏里的**正常强度**动作（「查看」「重新加载」「运行」）。重定义会把这批一起削弱，然后它们得反向写 `className=\"text-foreground\"` —— 逃生口只是换了一侧，没有消失。所以做成 **opt-in 的布尔 prop**：不传 `muted` 的 `ghost` 仍是正文黑，既有调用一个像素都不动（有测试钉死这条）。\n\n**也没有做成 `tone` 的第六档。** `tone` 是语义色 SSOT、横跨 29 个组件，而 muted 是**层级**不是色相；塞进 `tone` 会逼 `solid` / `soft` / `outline` 都回答「muted 实心 / 浅底是什么」，而 `bg-muted` 实心看起来就是禁用态 —— 这与 `tone=\"neutral\"` 的 `solid` 特意做成反色（而不是灰底实心）是同一条推理。issue 里对这一点的判断是对的，照它做的。\n\n规则一句话：**静息色降到 `--color-muted-foreground`，hover 回到该 `tone` 的本色**（`ghost` 另有浅底）。所以 `tone=\"danger\" muted` 是「静息灰、悬停变红」的删除链接，不是把语义色丢了 —— 中后台密集行里这是常见形态。九种 `variant × tone × muted` 组合的实际类串都有测试钉住，包括 tailwind-merge 的覆盖顺序（静息色必须被顶掉、不能两条并存）。\n\n**只对 `ghost` / `link` 有效**：落在 `solid` / `soft` / `outline` 上一个类都不加，开发期打一条 `warnOnce` 点名 —— 静默无效的 prop 比报错更难查。\n\n未做：`outline` 的 muted 档（描边保留、文字降级）在结构上说得通，但没有实际需求；等有人提再加。",
+        "parityId": "button-muted-emphasis"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.34.0",
     "date": null,
     "entries": [

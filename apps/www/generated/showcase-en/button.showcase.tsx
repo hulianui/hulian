@@ -167,6 +167,28 @@ export const buttonShowcase: ShowcaseSpec = {
         </>),
         },
         {
+            title: "The muted emphasis step",
+            description: "The resting color drops one step to the secondary gray and returns to the tone's own color on hover. Secondary text links and icon buttons in dense rows want exactly this step - a ghost without muted is still body black, so existing call sites are unaffected. Only effective on ghost and link.",
+            code: `<Button variant="ghost" size="xs" muted>Show log</Button>
+<Button variant="link" muted>Clear</Button>
+<Button variant="link" tone="danger" muted>Delete</Button>
+<Button variant="ghost" size="xs">For contrast: normal emphasis</Button>`,
+            render: () => (<>
+          <Button variant="ghost" size="xs" muted>
+            Show log
+          </Button>
+          <Button variant="link" muted>
+            Clear
+          </Button>
+          <Button variant="link" tone="danger" muted>
+            Delete
+          </Button>
+          <Button variant="ghost" size="xs">
+            For contrast: normal emphasis
+          </Button>
+        </>),
+        },
+        {
             title: "Full width",
             description: "block stretches the button to the container width, for mobile primary actions and form footers.",
             code: `<Button block>Sign in</Button>

@@ -8091,7 +8091,15 @@
     "<Button variant=\"soft\" tone=\"danger\">取消</Button>": "<Button variant=\"soft\" tone=\"danger\">Cancel</Button>",
     "<Button variant=\"soft\" tone=\"neutral\">跳过</Button>": "<Button variant=\"soft\" tone=\"neutral\">Skip</Button>",
     "次主操作": "Secondary action",
-    "密集档": "Dense size"
+    "密集档": "Dense size",
+    "muted 层级档": "The muted emphasis step",
+    "静息色降一档到次要灰，hover 回到本 tone 的色。次要文字链接与密集行里的图标按钮要的就是这一档 —— 不传 muted 的 ghost 仍是正文黑，既有调用不受影响。只对 ghost / link 有效。": "The resting color drops one step to the secondary gray and returns to the tone's own color on hover. Secondary text links and icon buttons in dense rows want exactly this step - a ghost without muted is still body black, so existing call sites are unaffected. Only effective on ghost and link.",
+    "显示日志": "Show log",
+    "对照：正常强度": "For contrast: normal emphasis",
+    "<Button variant=\"ghost\" size=\"xs\" muted>显示日志</Button>": "<Button variant=\"ghost\" size=\"xs\" muted>Show log</Button>",
+    "<Button variant=\"link\" muted>清空</Button>": "<Button variant=\"link\" muted>Clear</Button>",
+    "<Button variant=\"link\" tone=\"danger\" muted>删除</Button>": "<Button variant=\"link\" tone=\"danger\" muted>Delete</Button>",
+    "<Button variant=\"ghost\" size=\"xs\">对照：正常强度</Button>": "<Button variant=\"ghost\" size=\"xs\">For contrast: normal emphasis</Button>"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

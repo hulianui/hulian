@@ -1,5 +1,29 @@
 # @hulianui/ui
 
+## 0.35.0
+
+### Minor Changes
+
+- `Button` gains a `muted` emphasis step: on `ghost` and `link` the resting color drops one level to the secondary gray and returns to the tone's own color on hover (#211). <!-- parity-id: button-muted-emphasis -->
+
+  ```tsx
+  <Button variant="ghost" size="xs" muted>Show log</Button>
+  <Button variant="link" muted>Clear</Button>
+  <Button variant="link" tone="danger" muted>Delete</Button>   {/* gray at rest, red on hover */}
+  ```
+
+  The weakest color `ghost` and `link` could previously reach was body black (`tone="neutral"` included), yet the resting color of most **secondary** text links and icon buttons in everyday UI is precisely the secondary gray. A consumer was left with 18 places that had to stay bare `<button>` elements hand-writing `text-muted-foreground hover:text-foreground` - and eighteen hand-written copies inevitably drift.
+
+  **The issue's preferred fix - redefining `neutral` on `ghost` / `link` to rest muted - was not adopted; the measured blast radius is larger than estimated.** This repository alone has 207 `variant="ghost"` call sites (plus 20 `link`), only 48 of which are icon sizes; the rest are **normal-emphasis** actions in table rows and toolbars ("View", "Reload", "Run"). Redefining would weaken all of them, and they would then need the reverse patch, `className="text-foreground"` - the escape hatch moves to the other side rather than disappearing. Hence an **opt-in boolean prop**: a `ghost` without `muted` is still body black and existing call sites do not move by a pixel (pinned by a test).
+
+  **It was also not made a sixth `tone`.** `tone` is the semantic-color SSOT shared by 29 components, while muted is an **emphasis level**, not a hue. Folding it in would force `solid`, `soft`, and `outline` to answer "what is a muted fill or tint?" - and a `bg-muted` fill simply reads as disabled. This is the same reasoning that makes `solid` with `tone="neutral"` an inverted fill rather than a gray one. The issue's judgment on this point was right and was followed.
+
+  The rule in one line: **the resting color drops to `--color-muted-foreground` and returns to the tone's own color on hover** (`ghost` also gains its tinted background). So `tone="danger" muted` is the "gray at rest, red on hover" delete link rather than a discarded semantic color - a common shape in dense admin rows. The emitted class strings for all nine `variant × tone × muted` combinations are pinned by tests, including the tailwind-merge override order (the resting color must be replaced, never left alongside its successor).
+
+  **Only effective on `ghost` and `link`**: on `solid`, `soft`, or `outline` it adds no class at all and logs one `warnOnce` in development - a prop that silently does nothing is harder to track down than an error.
+
+  Not done: a muted step for `outline` (border kept, text stepped down) is structurally coherent but has no reported need; it can follow when someone asks.
+
 ## 0.34.0
 
 ### Minor Changes
