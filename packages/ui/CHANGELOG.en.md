@@ -1,5 +1,26 @@
 # @hulianui/ui
 
+## 0.39.0
+
+### Minor Changes
+
+- 7d9a8cd: `Sidebar` gains two things: a dedicated `--hl-sidebar-surface` variable for its background plus a `variant="inset"` shape (#224), and a width transition that respects `prefers-reduced-motion` (#225, which also exports `usePrefersReducedMotion`).
+
+  **The sidebar surface (#224).** The sidebar hard-coded `bg-surface`. In the consumer's bridge layer (a kaneo sidebar cluster spanning 11 files) `surface` and `bg` are both white in light mode, so **the sidebar, the page background and the content island were all the same color**, separated by nothing but the 1px border the aside carries — whereas a shadcn-lineage application sidebar almost always has one step of contrast there: the navigation plane sits behind, the content sits in front.
+
+  They could not solve it on their side: their migration rules forbid overriding a library component's color through `className` (once you override a color, visual regressions after an upgrade cannot be traced), and editing `--color-surface` in the bridge layer would move Card, Popover, Menu and everything else. That left "break the rule" or "accept the flat look", and neither should be a choice the library forces.
+
+  The aside now reads `var(--hl-sidebar-surface, var(--color-surface))`: **leaving it unset changes nothing**, and switching it takes one variable on `SidebarProvider` — no global token edit, no className override. The copy inside the mobile drawer reads the same variable. `className` still wins over it (tailwind-merge, last one wins) — an escape hatch, not a cage.
+
+  **`variant="inset"` (#224).** The sidebar gets an 8px gutter, the content area becomes a rounded, outlined island, and the shell color shows around it (shadcn's inset shape). Two implementation notes:
+
+  - The island styling lives on `SidebarInset` and reads the **preceding sibling** through `peer-data-[variant=inset]/sidebar:*` rather than putting `variant` into context — the shape is a property of `<Sidebar>`, and lifting it to the provider would mean writing it twice and keeping the two in sync. The shell color is selected with `:has()` for the same reason.
+  - With `collapsible="offcanvas"` that 8px gutter **must** collapse to zero: the aside's width is `0px`, and under border-box the padding still occupies space, so keeping it would leave a 16px strip of sidebar that never closes. That is also exactly why the consumer could not add this step with `className="p-2"` themselves.
+
+  **Reduced motion (#225).** Opening and closing the sidebar is a page-level container transform, the very category that `prefers-reduced-motion: reduce` exists to switch off (people sensitive to vestibular triggers react most strongly to large-area movement). The width transition lives in an **inline style**, which outranks every ordinary CSS rule, so the only way for a consumer to disable it was `!important` plus a selector guessing the library's internal DOM (`wrapper > aside`): silently broken the moment that structure changes, and what breaks is an accessibility preference with no error to show for it. The component now responds itself, and under reduce it **omits the transition entirely** (rather than leaving a `0s` one). The width still changes — what is switched off is the motion, not the feature.
+
+  This also answers the question the report raised, whether reduced motion is the library's responsibility or the consumer's: **the library's**. Components across the library already respond to that media query in 300+ places; the sidebar was the hole. The policy now lives on the motion page of the docs site and in `sidebar.md`, alongside the newly exported `usePrefersReducedMotion()`: consumers should not be writing `!important` or guessing at internal DOM to disable an animation, and any component that still moves under reduce is a bug worth filing. The hook itself is for **hand-rolled motion** (canvas, rAF, your own inline transitions): dependency-free, built on `useSyncExternalStore`, `false` during SSR and first paint, corrected right after hydration.
+
 ## 0.38.0
 
 ### Minor Changes
