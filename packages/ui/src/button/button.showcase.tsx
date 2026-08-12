@@ -1,6 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
-import { ChevronDown } from "../_icons";
+import { ChevronDown, ChevronUp } from "../_icons";
 import { Button } from "./button";
 
 export const buttonShowcase: ShowcaseSpec = {
@@ -210,6 +210,32 @@ export const buttonShowcase: ShowcaseSpec = {
           <Button variant="ghost" size="xs">
             对照：正常强度
           </Button>
+        </>
+      ),
+    },
+    {
+      title: "跟随容器的 tone=current",
+      description:
+        "彩色卡片里的图标按钮要跟着容器变色，而不是被拉回正文黑。current 表示「别设色、交给继承」，与五个语义档给绝对色不同。只对 ghost / outline 有效，是 opt-in。",
+      code: `<div className="text-green-700">
+  <Button variant="ghost" size="iconXs" tone="current" aria-label="上移">
+    <ChevronUp className="size-3" />
+  </Button>
+</div>`,
+      render: () => (
+        <>
+          <div className="inline-flex items-center gap-1 rounded-md border border-green-400 bg-green-100 p-2 text-green-700">
+            <span className="text-xs font-medium">跟随容器</span>
+            <Button variant="ghost" size="iconXs" tone="current" aria-label="跟随容器的上移">
+              <ChevronUp className="size-3" />
+            </Button>
+          </div>
+          <div className="inline-flex items-center gap-1 rounded-md border border-green-400 bg-green-100 p-2 text-green-700">
+            <span className="text-xs font-medium">对照：默认</span>
+            <Button variant="ghost" size="iconXs" aria-label="默认色的上移">
+              <ChevronUp className="size-3" />
+            </Button>
+          </div>
         </>
       ),
     },

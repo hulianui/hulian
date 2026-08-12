@@ -26,12 +26,13 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | variant | `"solid" \| "soft" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. `soft` is a tinted semantic background with matching text, sitting between `outline` and `solid` in weight (see below). |
-| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | Semantic color tone (see the table below). |
+| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral" \| "current"` | `"brand"` | Semantic color tone (see the table below). `current` is not a semantic color but "set no color, inherit from the container", and is **only effective on `ghost` and `outline`** (see "Inheriting the container color"). |
 | size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | Control size. `xs` is the 24px dense size for admin toolbars and table rows. The three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). `iconXs` is a 20px micro size that matches **no** text size and is meant for dense table rows. |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
 | muted | `boolean` | `false` | Emphasis step: the resting color drops one level to the secondary gray and returns to the tone's own color on hover. **Only effective on `ghost` and `link`** (see "The muted emphasis step"). |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
-| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled` and `type`. |
+| type | `"button" \| "submit" \| "reset"` | `"button"` | **Defaults to `button` rather than the native `<button>` default of `submit`**, so a helper button inside a form does not submit it when `type` is omitted. Write `type="submit"` explicitly on submit buttons. |
+| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled`. |
 
 ## Events
 
@@ -114,6 +115,38 @@ Three boundaries:
 - **Only effective on `ghost` and `link`.** On `solid`, `soft`, or `outline` it adds no class at all and logs one `warnOnce` in development - a prop that silently does nothing is harder to track down than an error.
 - **It is opt-in and changes no default.** A `ghost` without `muted` is still body black, so existing call sites do not move by a pixel. Row actions like "View" or "Reload" are **normal emphasis** and belong in body black; only genuinely secondary affordances take `muted`.
 - **It is not a sixth `tone`.** `tone` is the semantic-color SSOT shared by 29 components, while muted is an **emphasis level**, not a hue. Folding it into `tone` would force `solid` and `soft` to answer "what is a muted fill?" - and a `bg-muted` fill simply reads as disabled.
+
+## Inheriting the container color with `tone="current"`
+
+Icon buttons inside a colored card or a colored row should **take the color of that container** instead of being pulled back to body black. `tone="current"` means "set no color, leave it to inheritance" (#215):
+
+```tsx
+{/* The arrow is green-700 along with the card, not body black */}
+<div className="rounded-md border border-green-400 bg-green-100 p-2 text-green-700">
+  <span className="text-xs font-medium">Start node</span>
+  <Button variant="ghost" size="iconXs" tone="current" aria-label="Move up">
+    <ChevronUp className="size-3" />
+  </Button>
+</div>
+```
+
+What separates it from the five semantic steps: those all hand out an **absolute** color, whereas this expresses "the container already decided the color, the button should keep out of it". A card may be green or blue, and neither deserves its own tone. `muted` is equally absolute and points the other way (pinned to the secondary gray). The word follows the `tone="current"` that `Spinner` already has.
+
+- **Only effective on `ghost` and `outline`.** On `solid`, `soft`, or `link` the rendered result is identical to omitting it, plus one `warnOnce`. `solid` and `soft` carry their own background and the foreground has to be paired with it, so inheriting the container color would produce combinations that fail contrast; the resting color of `link` is the brand color, which belongs to the link rather than to the container.
+- **It is opt-in**: a `ghost` or `outline` without `tone` is still `text-foreground`.
+- A call site that writes its own color class (`className="text-red-500"`) **already wins** (`cn` is tailwind-merge). `current` covers the other case: the call site wants to write **nothing** and just inherit.
+
+## Taking the className straight from `buttonVariants(...)`
+
+The exported function now runs its output through tailwind-merge, so the string can go onto any element as-is:
+
+```tsx
+<a href="/docs" className={buttonVariants({ variant: "ghost", tone: "danger" })}>Delete</a>
+```
+
+That was **not** true in 0.36.0 and earlier: `cva` only concatenates and never resolves conflicts, so the returned string carried several rules for the same CSS property (base `text-foreground` alongside `text-danger`). Dropped onto an `<a>`, the winner was decided by **stylesheet order** - 6 of 16 common combinations rendered the wrong color, three of them danger buttons losing their red (#217). The `<Button>` component never had this problem (it has `cn()` inside).
+
+Use `cn()` as usual when composing further classes; merging twice is idempotent.
 
 ## Size scale
 

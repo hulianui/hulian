@@ -1,6 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { ChevronDown } from "../../../../packages/ui/src/_icons";
+import { ChevronDown, ChevronUp } from "../../../../packages/ui/src/_icons";
 import { Button } from "../../../../packages/ui/src/button/button";
 export const buttonShowcase: ShowcaseSpec = {
     examples: [
@@ -186,6 +186,29 @@ export const buttonShowcase: ShowcaseSpec = {
           <Button variant="ghost" size="xs">
             For contrast: normal emphasis
           </Button>
+        </>),
+        },
+        {
+            title: "tone=current inherits the container color",
+            description: "Icon buttons inside a colored card should take the color of that container instead of being pulled back to body black. current means \"set no color, leave it to inheritance\", unlike the five semantic steps that all hand out an absolute color. Only effective on ghost and outline, and opt-in.",
+            code: `<div className="text-green-700">
+  <Button variant="ghost" size="iconXs" tone="current" aria-label="Move up">
+    <ChevronUp className="size-3" />
+  </Button>
+</div>`,
+            render: () => (<>
+          <div className="inline-flex items-center gap-1 rounded-md border border-green-400 bg-green-100 p-2 text-green-700">
+            <span className="text-xs font-medium">Inherits container</span>
+            <Button variant="ghost" size="iconXs" tone="current" aria-label="Move up, inheriting the container color">
+              <ChevronUp className="size-3"/>
+            </Button>
+          </div>
+          <div className="inline-flex items-center gap-1 rounded-md border border-green-400 bg-green-100 p-2 text-green-700">
+            <span className="text-xs font-medium">Control: default</span>
+            <Button variant="ghost" size="iconXs" aria-label="Move up with the default color">
+              <ChevronUp className="size-3"/>
+            </Button>
+          </div>
         </>),
         },
         {

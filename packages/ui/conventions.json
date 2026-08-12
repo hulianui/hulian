@@ -5869,7 +5869,7 @@
       "id": "component/number-field/pitfall/1",
       "scope": "number-field",
       "title": "NumberField",
-      "rule": "受控值类型是 `number | null`——清空时回调拿到 `null`，state 须用 `useState<number | null>`，别假设永远是 number。",
+      "rule": "受控值类型是 `number | null`——清空时回调拿到 `null`，state 须用 `useState<number | null>`，别假设永远是 number。**反方向同样成立**：把 `null` 传进 `value`（或 `defaultValue`）时输入框显示空串、占位符可见，不会渲染成 `0`，`min={0}` 也不会把它夹成 0。所以「留空 = 沿用默认 / 继承上级」与「0 = 显式为零」这样的三态字段（`null` / `0` / 正整数）可以直接用这个组件表达，两档在界面上分得开。",
       "source": "packages/ui/src/number-field/number-field.md"
     },
     {

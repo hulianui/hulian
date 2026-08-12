@@ -26,7 +26,7 @@ import { NumberField } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | value | `number｜null` | — | 受控值（null=空） |
-| defaultValue | `number` | — | 非受控初始值 |
+| defaultValue | `number｜null` | — | 非受控初始值（null=初始为空，与 `value` 同口径） |
 | min | `number` | — | 最小值 |
 | max | `number` | — | 最大值 |
 | step | `number` | `1` | 步进量 |
@@ -57,7 +57,7 @@ const [v, setV] = useState<number | null>(2);
 
 ## 禁忌 / 坑
 
-- 受控值类型是 `number | null`——清空时回调拿到 `null`，state 须用 `useState<number | null>`，别假设永远是 number。
+- 受控值类型是 `number | null`——清空时回调拿到 `null`，state 须用 `useState<number | null>`，别假设永远是 number。**反方向同样成立**：把 `null` 传进 `value`（或 `defaultValue`）时输入框显示空串、占位符可见，不会渲染成 `0`，`min={0}` 也不会把它夹成 0。所以「留空 = 沿用默认 / 继承上级」与「0 = 显式为零」这样的三态字段（`null` / `0` / 正整数）可以直接用这个组件表达，两档在界面上分得开。
 - 用 `value`/`onValueChange` 即受控，须自管 state；非受控只给 `defaultValue`。
 - 无可见标题时给 `aria-label`，否则读屏无名。
 

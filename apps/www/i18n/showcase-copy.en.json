@@ -8148,7 +8148,14 @@
     "<FilterChip size=\"sm\" subject=\"状态\" value=\"进行中\" onRemove={remove} />": "<FilterChip size=\"sm\" subject=\"Status\" value=\"Ongoing\" onRemove={remove} />",
     "<FilterChip subject=\"状态\" value=\"进行中\" onRemove={remove} />": "<FilterChip subject=\"Status\" value=\"Ongoing\" onRemove={remove} />",
     "<FilterChip isDisabled subject=\"状态\" value=\"进行中\" onRemove={remove} />": "<FilterChip isDisabled subject=\"Status\" value=\"Ongoing\" onRemove={remove} />",
-    "value=\"已选 2 项\" onRemove={remove} />": "value=\"2 selected\" onRemove={remove} />"
+    "value=\"已选 2 项\" onRemove={remove} />": "value=\"2 selected\" onRemove={remove} />",
+    "跟随容器的 tone=current": "tone=current inherits the container color",
+    "彩色卡片里的图标按钮要跟着容器变色，而不是被拉回正文黑。current 表示「别设色、交给继承」，与五个语义档给绝对色不同。只对 ghost / outline 有效，是 opt-in。": "Icon buttons inside a colored card should take the color of that container instead of being pulled back to body black. current means \"set no color, leave it to inheritance\", unlike the five semantic steps that all hand out an absolute color. Only effective on ghost and outline, and opt-in.",
+    "<Button variant=\"ghost\" size=\"iconXs\" tone=\"current\" aria-label=\"上移\">": "<Button variant=\"ghost\" size=\"iconXs\" tone=\"current\" aria-label=\"Move up\">",
+    "跟随容器": "Inherits container",
+    "对照：默认": "Control: default",
+    "跟随容器的上移": "Move up, inheriting the container color",
+    "默认色的上移": "Move up with the default color"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

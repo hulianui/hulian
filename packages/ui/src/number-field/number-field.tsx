@@ -17,12 +17,18 @@ function NumberFieldImpl({
   className,
   "aria-label": ariaLabel,
   onValueChange,
+  defaultValue,
   ...props
 }: NumberFieldProps) {
   const labels = useComponentLocale().numberField ?? { decrement: "减少", increment: "增加" };
   return (
     <BaseNumberField.Root
       {...props}
+      // 瑚琏这一侧 `value` 与 `defaultValue` 都收 null（null=空），Base UI 的 defaultValue 类型
+      // 只收 number。两者对「空」的表达法不同而不是语义不同，故在这里归一：`?? undefined`
+      // 而不是 `|| undefined`——`defaultValue={0}` 必须留住 0（「显式为零」是三态字段里的一档，
+      // 与「留空 = 沿用默认」是两个相反的业务结论，塌成同一个就把这个字段毁了）。
+      defaultValue={defaultValue ?? undefined}
       onValueChange={onValueChange ? (v) => onValueChange(v) : undefined}
       className={className}
     >

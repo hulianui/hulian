@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render as rtlRender } from "@testing-library/react";
 import { Button, buttonVariants } from "./button";
 import { cn } from "../lib/cn";
@@ -308,5 +308,173 @@ describe("muted 层级档（#211）", () => {
         ),
       );
     }
+  });
+});
+
+// ===== buttonVariants 出口过 tailwind-merge（#217）=====
+//
+// cva 只拼接不消解，base 的 text-foreground 与 compound 的 text-danger 会同时留在串里。
+// <Button> 内部的 cn() 一直兜着，但 buttonVariants 作为公共出口（文档明示「只要样式不要
+// <button> 语义就用它」）没有这层：两条规则都进 DOM，谁生效由样式表顺序裁决。
+describe("buttonVariants 出口收敛（#217）", () => {
+  const classes = (s: string) => s.split(/\s+/).filter(Boolean);
+
+  // 消费方实测的 6 个错色组合，其中 3 个是「危险按钮丢掉红色」。
+  it.each([
+    ["ghost", "danger", "text-danger", "text-foreground"],
+    ["outline", "danger", "text-danger", "text-foreground"],
+    ["link", "danger", "text-danger", "text-primary"],
+    ["link", "neutral", "text-foreground", "text-primary"],
+    ["solid", "neutral", "text-bg", "text-primary-foreground"],
+  ] as const)("%s + %s 只留 %s，撤掉 %s", (variant, tone, kept, dropped) => {
+    const out = classes(buttonVariants({ variant, tone }));
+    expect(out).toContain(kept);
+    expect(out).not.toContain(dropped);
+  });
+
+  // 0.35.0 新增的这一格一上线就在错色名单里 —— #211 的验收走的是 <Button>（经过 cn），
+  // 所以没暴露出来。
+  it("link + muted 静息是次要灰而不是主色", () => {
+    const out = classes(buttonVariants({ variant: "link", muted: true }));
+    expect(out).toContain("text-muted-foreground");
+    expect(out).not.toContain("text-primary");
+  });
+
+  // 同一个 CSS 属性在出口串里只能剩一条 —— 否则「谁生效」就不是本库能保证的。
+  it("任一组合的出口串里 text-* 至多一条", () => {
+    for (const variant of ["solid", "outline", "ghost", "soft", "link"] as const) {
+      for (const tone of ["brand", "success", "warning", "danger", "neutral"] as const) {
+        for (const muted of [false, true]) {
+          const hit = classes(buttonVariants({ variant, tone, muted })).filter((c) =>
+            /^text-(?!xs$|sm$|base$)/.test(c),
+          );
+          expect(hit.length, `${variant}/${tone}/muted=${muted} → ${hit.join(" ")}`).toBeLessThanOrEqual(1);
+        }
+      }
+    }
+  });
+
+  // 对 <Button> 侧必须是幂等的：那条路上 cn 会再跑一遍，结果不能因此变。
+  it("对 <Button> 幂等（twMerge 跑两遍结果相同）", () => {
+    const once = buttonVariants({ variant: "ghost", tone: "danger" });
+    expect(cn(once)).toBe(once);
+    expect(classesOfButton(<Button variant="ghost" tone="danger" />)).toBe(once);
+  });
+});
+
+function classesOfButton(el: React.ReactElement) {
+  return rtlRender(el).container.querySelector("button")!.className;
+}
+
+// ===== tone="current"：不设色、跟随容器（#215）=====
+describe('tone="current"（#215）', () => {
+  it("ghost / outline 上撤掉写死的静息色，交还给继承", () => {
+    for (const variant of ["ghost", "outline"] as const) {
+      const out = buttonVariants({ variant, tone: "current" }).split(/\s+/);
+      expect(out, variant).toContain("text-current");
+      // 关键：base/variant 的绝对色必须被顶掉，否则继承根本轮不到
+      expect(out, variant).not.toContain("text-foreground");
+    }
+  });
+
+  it("不传 tone 时一个类都不变 —— current 是 opt-in", () => {
+    for (const variant of ["ghost", "outline"] as const) {
+      expect(buttonVariants({ variant })).toContain("text-foreground");
+    }
+  });
+
+  it("solid / soft / link 上不加任何类（自带背景或自带主色，跟随容器会做出不合规组合）", () => {
+    for (const variant of ["solid", "soft", "link"] as const) {
+      expect(buttonVariants({ variant, tone: "current" })).toBe(buttonVariants({ variant }));
+    }
+  });
+
+  it("落在无效档上开发期点名", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    rtlRender(
+      <Button variant="solid" tone="current">
+        x
+      </Button>,
+    );
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('tone="current"'));
+    warn.mockRestore();
+  });
+});
+
+// ===== ghost 上的 tone="brand"（#218）=====
+//
+// 它与不写 tone 渲染结果逐字相同。补 compoundVariants 这条路是堵死的：cva 拿到的是
+// 应用默认值之后的 tone，分不出「显式写了 brand」和「没写」，补格子会把所有默认 ghost
+// 一起改掉。组件层能分（没传就是 undefined），所以在这里点名。
+describe('ghost + tone="brand"（#218）', () => {
+  it("与不写 tone 渲染结果相同（ghost 的中性外观就是它的默认形态）", () => {
+    expect(buttonVariants({ variant: "ghost", tone: "brand" })).toBe(
+      buttonVariants({ variant: "ghost" }),
+    );
+  });
+
+  // 这条钉的是「补格子会误伤默认档」：ghost muted 不写 tone 时 hover 必须回正文黑，
+  // 那是 #211 收编的、消费方 18 处手写的形状。
+  it("ghost + muted 不写 tone 时 hover 仍回正文黑，没有被 brand 带成主色", () => {
+    const out = buttonVariants({ variant: "ghost", muted: true });
+    expect(out).toContain("hover:text-foreground");
+    expect(out).not.toContain("hover:text-primary");
+  });
+
+  it("显式写 tone=\"brand\" 才点名，不写不点名", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    rtlRender(<Button variant="ghost">不写 tone</Button>);
+    expect(warn).not.toHaveBeenCalled();
+    rtlRender(
+      <Button variant="ghost" tone="brand">
+        显式 brand
+      </Button>,
+    );
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('tone="brand"'));
+    warn.mockRestore();
+  });
+});
+
+// ===== 默认 type="button"（#219）=====
+describe("默认 type（#219）", () => {
+  it("默认 type=button，而不是原生 <button> 的 submit", () => {
+    const { container } = rtlRender(<Button>查看</Button>);
+    expect(container.querySelector("button")!.getAttribute("type")).toBe("button");
+  });
+
+  it("显式 type=submit 照常覆盖（提交按钮不受影响）", () => {
+    const { container } = rtlRender(<Button type="submit">提交</Button>);
+    expect(container.querySelector("button")!.getAttribute("type")).toBe("submit");
+  });
+
+  // 表单里的辅助按钮点一下就走完整条提交链路，是本次修的原始现象。
+  it("表单内的辅助按钮不再触发 submit", () => {
+    const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+    const { getByText } = rtlRender(
+      <form onSubmit={onSubmit}>
+        <Button>查看模板配置</Button>
+      </form>,
+    );
+    getByText("查看模板配置").click();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("render 成 <a> 时不注入 type（那是 button 专有属性）", () => {
+    const { container } = rtlRender(<Button render={<a href="#x">去详情</a>} />);
+    expect(container.querySelector("a")!.hasAttribute("type")).toBe(false);
+  });
+});
+
+// ===== base 的 shrink-0（#216）=====
+describe("base 防压缩（#216）", () => {
+  it("base 带 shrink-0：flex 行里按钮不被压到声明尺寸以下", () => {
+    const { container } = rtlRender(<Button size="iconXs" aria-label="上移" />);
+    expect(container.querySelector("button")!.className).toContain("shrink-0");
+  });
+
+  it("与 block 不冲突（w-full + shrink-0 = 铺满但不被压）", () => {
+    const out = buttonVariants({ block: true }).split(/\s+/);
+    expect(out).toContain("w-full");
+    expect(out).toContain("shrink-0");
   });
 });

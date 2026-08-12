@@ -76,7 +76,7 @@ import { FilterChip, FilterChipGroup } from "@hulianui/ui"
 
 - 移除按钮的名字带上主语（「移除筛选条件：状态」/ enUS「Remove filter: Status」），否则一行五个胶囊对读屏就是五个同名的「移除」。`subject` 传节点时靠 `subjectLabel` 提供这段纯文本。
 - FilterChipGroup 是 `role="group"`，默认名「已应用的筛选条件」，可用 `aria-label` 覆盖。
-- 文案全部走 [ConfigProvider](../config/config.md) 的 `locale`，未配置 `filterChip` 词条的旧自定义 locale 会保留中文默认值。
+- 文案全部走 `ConfigProvider` 的 `locale`，未配置 `filterChip` 词条的旧自定义 locale 会保留中文默认值。
 
 ## 示例
 ```tsx

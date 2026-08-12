@@ -26,12 +26,13 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"solid" ｜ "soft" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体；`soft` 是浅语义底 + 同色文字，权重介于 `outline` 与 `solid` 之间（见下文） |
-| tone | `"brand" ｜ "success" ｜ "warning" ｜ "danger" ｜ "neutral"` | `"brand"` | 语义色调（见下表） |
+| tone | `"brand" ｜ "success" ｜ "warning" ｜ "danger" ｜ "neutral" ｜ "current"` | `"brand"` | 语义色调（见下表）。`current` 不是语义色，是「别设色、跟随容器继承」，**只对 `ghost` / `outline` 有效**（见「跟随容器的 tone="current"」） |
 | size | `"xs" ｜ "sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs"` | `"md"` | 尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用 |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | muted | `boolean` | `false` | 层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` 有效**（见「muted 层级档」） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
-| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled、type 等） |
+| type | `"button" ｜ "submit" ｜ "reset"` | `"button"` | **默认是 `button` 而不是原生 `<button>` 的 `submit`**——表单里的辅助按钮不写 `type` 时不会误提交。提交按钮请显式写 `type="submit"` |
+| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled 等） |
 
 ## Events
 
@@ -110,6 +111,38 @@ import { Button, buttonVariants } from "@hulianui/ui"
 - **只对 `ghost` / `link` 有效。** 落在 `solid` / `soft` / `outline` 上一个类都不加，开发期会打一条 `warnOnce` 点名——静默无效的 prop 比报错更难查。
 - **是 opt-in，不改默认观感。** 不传 `muted` 的 `ghost` 仍是正文黑，既有调用一个像素都不动。表格行里的「查看」「重新加载」这类**正常强度**动作本来就该是正文黑，只有真正次要的那批才加 `muted`。
 - **不是 `tone` 的第六档。** `tone` 是语义色 SSOT、横跨 29 个组件，而 muted 是**层级**不是色相；塞进 `tone` 会逼 `solid` / `soft` 回答「muted 实心是什么」，而 `bg-muted` 实心看起来就是禁用态。
+
+## 跟随容器的 `tone="current"`
+
+彩色卡片 / 彩色行里的图标按钮要**跟着容器变色**，而不是被拉回正文黑。`tone="current"` 表示「别设色，交给继承」（#215）：
+
+```tsx
+{/* 箭头跟着卡片一起是 green-700，而不是正文黑 */}
+<div className="rounded-md border border-green-400 bg-green-100 p-2 text-green-700">
+  <span className="text-xs font-medium">开始节点</span>
+  <Button variant="ghost" size="iconXs" tone="current" aria-label="上移">
+    <ChevronUp className="size-3" />
+  </Button>
+</div>
+```
+
+它和五个语义档的区别是：那五档给的都是**绝对色**，而这里要表达的是「容器已经决定了颜色，按钮别插手」。卡片可能是绿的也可能是蓝的，不该为每种卡片色新开一档。`muted` 同样是绝对色，方向还相反（钉到次要灰）。词沿用 `Spinner` 已有的 `tone="current"`。
+
+- **只对 `ghost` / `outline` 有效**，落在 `solid` / `soft` / `link` 上渲染结果与不传时完全一致，并打一条 `warnOnce`。`solid` / `soft` 自带背景，前景色必须与背景成对，跟随容器会直接做出对比度不合规的组合；`link` 的静息色是主色，那是链接的身份而不是容器的。
+- **是 opt-in**：不传 `tone` 的 `ghost` / `outline` 仍是 `text-foreground`。
+- 调用点自己写了颜色类（`className="text-red-500"`）时**本来就赢**（`cn` 是 tailwind-merge）。`current` 补的是另一种情况：调用点**什么都不想写**、只要继承。
+
+## 直接用 `buttonVariants(...)` 拿 className
+
+出口已经过了一遍 tailwind-merge，可以原样贴到任意元素上：
+
+```tsx
+<a href="/docs" className={buttonVariants({ variant: "ghost", tone: "danger" })}>删除</a>
+```
+
+0.36.0 及更早版本**不是这样**：`cva` 只拼接不消解冲突，`buttonVariants()` 返回的串里同一个 CSS 属性会有多条并存（base 的 `text-foreground` 与 `text-danger`），贴到 `<a>` 上时谁生效由**样式表顺序**决定——16 个常用组合里有 6 个渲染成错的颜色，其中 3 个是「危险按钮丢掉红色」（#217）。`<Button>` 组件一直没有这个问题（内部有 `cn()`）。
+
+需要再拼自己的类时照常用 `cn()`，两次 merge 是幂等的。
 
 ## 尺寸档
 

@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.36.0",
+  "version": "0.37.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -5958,17 +5958,18 @@
           "name": "tone",
           "required": false,
           "kind": "enum",
-          "type": "\"brand\" | \"success\" | \"warning\" | \"danger\" | \"neutral\"",
+          "type": "\"brand\" | \"success\" | \"warning\" | \"danger\" | \"neutral\" | \"current\"",
           "values": [
             "brand",
             "success",
             "warning",
             "danger",
-            "neutral"
+            "neutral",
+            "current"
           ],
           "valueType": "string",
           "default": "\"brand\"",
-          "description": "语义色调（见下表）"
+          "description": "语义色调（见下表）。`current` 不是语义色，是「别设色、跟随容器继承」，**只对 `ghost` / `outline` 有效**（见「跟随容器的 tone=\"current\"」）"
         },
         {
           "name": "size",
@@ -6014,13 +6015,27 @@
           "description": "加载态，显示 spinner 并自动禁用"
         },
         {
+          "name": "type",
+          "required": false,
+          "kind": "enum",
+          "type": "\"button\" | \"submit\" | \"reset\"",
+          "values": [
+            "button",
+            "submit",
+            "reset"
+          ],
+          "valueType": "string",
+          "default": "\"button\"",
+          "description": "**默认是 `button` 而不是原生 `<button>` 的 `submit`**——表单里的辅助按钮不写 `type` 时不会误提交。提交按钮请显式写 `type=\"submit\"`"
+        },
+        {
           "name": "ButtonHTMLAttributes",
           "owner": "..",
           "required": false,
           "kind": "other",
           "type": "ButtonHTMLAttributes<HTMLButtonElement>",
           "default": null,
-          "description": "透传原生属性（disabled、type 等）"
+          "description": "透传原生属性（disabled 等）"
         }
       ],
       "events": [
@@ -10624,10 +10639,10 @@
         {
           "name": "defaultValue",
           "required": false,
-          "kind": "number",
-          "type": "number",
+          "kind": "other",
+          "type": "number | null",
           "default": null,
-          "description": "非受控初始值"
+          "description": "非受控初始值（null=初始为空，与 `value` 同口径）"
         },
         {
           "name": "min",

@@ -26,7 +26,7 @@ import { NumberField } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | value | `number\|null` | — | Controlled value; `null` represents empty. |
-| defaultValue | `number` | — | Initial value when uncontrolled. |
+| defaultValue | `number\|null` | — | Initial value when uncontrolled; `null` starts empty, matching `value`. |
 | min | `number` | — | Minimum value. |
 | max | `number` | — | Maximum value. |
 | step | `number` | `1` | Increment or decrement amount. |
@@ -57,7 +57,7 @@ const [v, setV] = useState<number | null>(2);
 
 ## Usage guidelines
 
-- The controlled type is `number | null`: clearing emits `null`, so use state such as `useState<number | null>` instead of assuming a number is always present.
+- The controlled type is `number | null`: clearing emits `null`, so use state such as `useState<number | null>` instead of assuming a number is always present. **The reverse direction holds too**: passing `null` into `value` (or `defaultValue`) renders an empty string with the placeholder visible rather than `0`, and `min={0}` does not clamp it to 0. Tri-state fields (`null` / `0` / a positive number) such as "leave empty to inherit the default" versus "explicitly zero" can therefore be expressed with this component, and the two stay distinguishable on screen.
 - Controlled usage requires both `value` and `onValueChange`. For uncontrolled usage, provide only `defaultValue`.
 - Provide `aria-label` when there is no visible label so screen readers can identify the field.
 

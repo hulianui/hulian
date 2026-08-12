@@ -1,8 +1,29 @@
 [
   {
     "pkg": "@hulianui/ui",
-    "version": "0.36.0",
+    "version": "0.37.0",
     "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "Button 五条：默认 `type=\"button\"`、`buttonVariants` 出口收敛、`tone=\"current\"`、base 补 `shrink-0`、ghost 上的 `tone=\"brand\"` 开发期点名（#215 #216 #217 #218 #219）\n\n一位消费方按 #211 迁移时逐条实测报上来的一批，全部在 0.36.0 源码上复核成立。\n\n**1. 默认 `type` 从原生的 `submit` 改成 `button`（#219）—— 唯一有行为变化的一条。**\n\n`Form` / `FormDialog` 内部渲染的是真的 `<form>`，于是表单里任何一个**辅助**按钮（「查看模板配置」「设为封面」「+ 添加一项」）点下去都会走完整条提交链路：校验 → `onFinish` → 请求发出 → 抽屉关闭。失败得很安静——不抛错、不打 console，类型检查与构建全绿，现象只是「点了个查看按钮，抽屉怎么关了」，等发现时数据已经写回去了。消费方实测一张表单 33 个按钮里 7 个是 submit，全部来自消费方代码。\n\n库内自测覆盖不到这条：瑚琏自家组件内部（`SelectTrigger`、清除按钮、`RichTextEditor` 工具栏那 17 个）本来就都写了 `type=\"button\"`，只有消费方自己写的 `<Button>` 会中招。\n\nshadcn/ui、Ant Design、MUI 都在这一层抹平这个 HTML 历史包袱，理由相同：按钮出现在表单里是常态，而其中绝大多数不是提交按钮。**升级须知**：依赖「不写 type 即提交」的地方要补 `type=\"submit\"`。库内所有提交按钮（`ProForm` / `LoginForm` / `FormDialog` / `SearchForm`）本来就显式写了，故库内零影响。`render` 成 `<a>` 时不注入 `type`（那是 button 专有属性）。\n\n**2. `buttonVariants()` 出口过一遍 tailwind-merge（#217）。**\n\n`cva` 只做字符串拼接、不做冲突消解，所以返回的类串里同一个 CSS 属性会有多条并存（base 的 `text-foreground` 与 compound 的 `text-danger`）。`<Button>` 内部一直有 `cn()` 兜着，但 `buttonVariants` 作为公共出口没有——而文档明示的「只要按钮样式不要 `<button>` 语义就用它」正是这条路。两条规则都进 DOM 时，谁生效由**样式表顺序**决定，不由 cva 顺序决定：消费方实测 16 个常用组合里 6 个渲染成错的颜色，其中 3 个是 danger 按钮丢掉红色（`ghost` / `outline` / `link` + `danger`），用户看不出那是破坏性操作。0.35.0 新增的 `link` + `muted` 一上线就在这个名单里——#211 的验收走的是 `<Button>`，所以没暴露。\n\n对 `<Button>` 侧是幂等的（twMerge 跑两遍结果相同），消费方零改动。新测试钉住「任一 `variant × tone × muted` 组合的出口串里 `text-*` 至多一条」。\n\n库内早就知道这件事，只是当成了测试要绕开的怪癖：`button.test.tsx` 里留着一句「直接读 `buttonVariants()` 会假红」。\n\n**3. 新增 `tone=\"current\"`：不设色、跟随容器继承（#215）。**\n\n彩色卡片 / 彩色行里的图标按钮要跟着容器变色，而 `ghost` / `outline` 都在静息态写死了 `text-foreground`。五个语义档给的都是**绝对色**，接不住继承；`muted` 同样是绝对色，方向还相反。消费方实测 122 个渲染实例迁进来后从卡片色被统一拉回正文黑，绕法只有在 122 处各写一遍 `className=\"text-inherit\"`。词沿用 `Spinner` 已有的 `tone=\"current\"`，不另造概念。\n\n只对 `ghost` / `outline` 有效，落在别处开发期点名（同 `muted`）。**`soft` 上必须显式补回默认档的配色**：`soft` 的颜色全在 `compoundVariants` 里、base 是空串，不补的话 `current` 落上去不是「无效」而是「丢掉底色」，渲染出一个透明底的 soft 按钮——比静默无效更糟。\n\n**4. base 补 `shrink-0`（#216）。**\n\n按钮作为 flex 子项时 `flex-shrink` 默认是 1，空间不够的行里会被压到**比声明尺寸更窄**（消费方实测 24px → 18.2px）。`whitespace-nowrap` 只保证文字不折行、不保证盒子不被压缩，两者一起作用的结果是内容溢出按钮的可视边界。纯防御，不改变任何现有渲染尺寸，与 `block`（`w-full`）也不冲突——「铺满但不被压」正是想要的。特效按钮（`ShimmerButton` 等）共用这段 base，一并受益。\n\n**5. `ghost` 上显式写 `tone=\"brand\"` 时开发期点名（#218）—— 没有按 issue 建议补 compoundVariants。**\n\n`ghost` + `brand` 与不写 tone 渲染结果逐字相同，于是显式写 `tone=\"brand\"` 的人拿到的是中性色。但补 `{ variant: \"ghost\", tone: \"brand\" }` 这一格是**堵死的**：`tone` 的默认值就是 brand，cva 拿到的是应用默认值之后的值，分不出「显式写了」和「没写」。补静息色会把本仓 207 处默认 `ghost` 一起刷成主色；补 `hover` 会把 `ghost muted` 的悬停从正文黑换成主色——而那正是 #211 收编进来、消费方 18 处手写的形状（改的时候当场撞红了钉着它的测试）。\n\n区分只能在组件层做：props 里没传 `tone` 时它是 `undefined`，只有显式写了才等于 `\"brand\"`。所以改为开发期告警，指路 `variant=\"link\"`（默认就是主色）。207 处不写 `tone` 的 `ghost` 一条告警都不会看到。判据是 #211 自己立的那条：静默无效的 prop 比报错更难查。",
+        "parityId": "button-gaps-and-defaults"
+      },
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "`NumberField` 的 `defaultValue` 放开到 `number | null`，并把「null=空」两个方向都写进文档与测试（#220）\n\n**#220 报的现象（受控 `value={null}` 渲染成 `0`）没有复现。** 在 `@base-ui/react` 1.6.0 与 1.7.0 上各跑一遍探针，`value={null}`、`5 → null`、`min={0}`（issue 怀疑过 min 夹取）三种情形下输入框都是空串，`onValueChange` 也没有被误触发出 `0`。`number-field.tsx` 从 0.33.1 到现在逐字未变，所以消费方那一版与实测版本行为一致。issue 里已请对方补充完整可复现代码与 `@base-ui/react` 版本。\n\n顺着这条查出来一个**确实存在**的缺口：`value?: number | null` 而 `defaultValue?: number`。底层一直支持「初始就是空」，只是类型把口封死了——于是「留空 = 沿用默认 / 继承上级」这类三态字段（`null` / `0` / 正整数）在非受控写法下表达不出 `null` 这一档，而受控写法里它是合法的。两侧口径本就该一致。\n\n归一用 `?? undefined` 而不是 `|| undefined`：`defaultValue={0}` 必须留住 `0`。「显式为零」与「留空 = 沿用默认」是两个相反的业务结论，塌成同一个就把这个字段毁了——那正是 #220 担心的那一格。\n\n文档此前只承诺了回调方向（「清空时回调拿到 `null`」），现在把渲染方向一并写明，并补了四条测试钉住它：受控 `null`、数字切 `null`、`min={0}` 不夹取、非受控 `defaultValue={null}`。",
+        "parityId": "number-field-default-value-null"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.36.0",
+    "date": "2026-08-12",
     "entries": [
       {
         "sha": null,
@@ -30,7 +51,7 @@
   {
     "pkg": "@hulianui/ui",
     "version": "0.35.0",
-    "date": null,
+    "date": "2026-08-12",
     "entries": [
       {
         "sha": null,
@@ -44,7 +65,7 @@
   {
     "pkg": "@hulianui/ui",
     "version": "0.34.0",
-    "date": null,
+    "date": "2026-08-12",
     "entries": [
       {
         "sha": null,

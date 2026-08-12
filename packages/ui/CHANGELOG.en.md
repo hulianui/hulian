@@ -1,5 +1,57 @@
 # @hulianui/ui
 
+## 0.37.0
+
+### Minor Changes
+
+- Five Button changes: `type="button"` by default, a converged `buttonVariants` output, `tone="current"`, `shrink-0` on the base, and a development warning for `tone="brand"` on ghost (#215 #216 #217 #218 #219) <!-- parity-id: button-gaps-and-defaults -->
+
+  A batch a consumer measured and reported item by item while migrating for #211, all of it re-checked against the 0.36.0 source.
+
+  **1. The default `type` changes from the native `submit` to `button` (#219) - the only item with a behavior change.**
+
+  `Form` / `FormDialog` render a real `<form>`, so any **helper** button inside one ("View template config", "Set as cover", "+ Add item") ran the entire submit chain when clicked: validate, `onFinish`, request sent, drawer closed. It failed very quietly - nothing thrown, nothing logged, type checking and the build all green - and the only symptom was "I clicked a view button, why did the drawer close?", by which point the data had already been written back. The consumer measured one form with 33 buttons where 7 were submit buttons, every one of them from consumer code.
+
+  The library's own tests could not catch this: HulianUI's internal components (`SelectTrigger`, the clear button, the 17 `RichTextEditor` toolbar buttons) all write `type="button"` already, so only a `<Button>` written by a consumer was affected.
+
+  shadcn/ui, Ant Design, and MUI all flatten this HTML legacy at the same layer, for the same reason: buttons appear inside forms all the time, and most of them are not submit buttons. **Upgrade note**: anywhere relying on "no type means submit" needs `type="submit"` added. Every submit button in the library (`ProForm` / `LoginForm` / `FormDialog` / `SearchForm`) already wrote it, so there is no impact inside the library. Nothing is injected when rendering as an `<a>` through `render` (`type` belongs to buttons).
+
+  **2. `buttonVariants()` now runs its output through tailwind-merge (#217).**
+
+  `cva` only concatenates strings and never resolves conflicts, so the returned class string carried several rules for the same CSS property (base `text-foreground` next to compound `text-danger`). `<Button>` has always had `cn()` inside, but `buttonVariants` as a public export did not - and the documented path "take the className when you want the button look without `<button>` semantics" is exactly that export. With both rules in the DOM, the winner is decided by **stylesheet order** rather than by cva order: the consumer measured 6 of 16 common combinations rendering the wrong color, three of them danger buttons losing their red (`ghost` / `outline` / `link` + `danger`), where a user cannot tell the action is destructive. The `link` + `muted` step added in 0.35.0 was on that list from day one - #211 was verified through `<Button>`, which goes through `cn()`, so it never surfaced.
+
+  It is idempotent for the `<Button>` path (running twMerge twice gives the same result) and needs no consumer changes. A new test pins "at most one `text-*` in the output of any `variant × tone × muted` combination".
+
+  The library already knew about this and had treated it as a quirk for tests to work around: `button.test.tsx` carried the line "reading `buttonVariants()` directly gives a false red".
+
+  **3. New `tone="current"`: set no color, inherit from the container (#215).**
+
+  Icon buttons inside a colored card or row should take the color of that container, yet `ghost` and `outline` both hard-code `text-foreground` at rest. All five semantic steps hand out an **absolute** color and cannot carry inheritance; `muted` is equally absolute and points the other way. The consumer measured 122 rendered instances that went from the card color to body black after migrating, with the only workaround being `className="text-inherit"` written out 122 times. The word follows the `tone="current"` that `Spinner` already has, so no new concept is introduced.
+
+  Effective on `ghost` and `outline` only; elsewhere it is named in development (same as `muted`). **On `soft` the default palette has to be restored explicitly**: the colors of `soft` live entirely in `compoundVariants` and its base is an empty string, so without that entry `current` would not be "no-op" but "loses its fill", rendering a soft button with a transparent background - worse than doing nothing.
+
+  **4. `shrink-0` added to the base (#216).**
+
+  As a flex child a button has `flex-shrink: 1` by default and gets squeezed **below its declared size** in a crowded row (the consumer measured 24px rendering at 18.2px). `whitespace-nowrap` only keeps the text on one line and does not keep the box from shrinking; together they make the content overflow the button's visible bounds. Purely defensive, it changes no existing rendered size and does not conflict with `block` (`w-full`) - "fill the row but do not get squeezed" is exactly what is wanted. Effect buttons (`ShimmerButton` and friends) share this base and benefit too.
+
+  **5. Writing `tone="brand"` explicitly on `ghost` is now named in development (#218) - the compoundVariants entry the issue suggested was not added.**
+
+  `ghost` + `brand` renders identically to omitting the tone, so whoever writes `tone="brand"` gets the neutral color. But adding a `{ variant: "ghost", tone: "brand" }` entry is a **dead end**: the default value of `tone` is brand, and cva sees the value after defaults are applied, so it cannot tell "written explicitly" from "not written". Adding a resting color would repaint all 207 default `ghost` call sites in this repository with the brand color; adding a `hover` would swap the hover of `ghost muted` from body black to the brand color - and that is the shape #211 adopted from 18 hand-written consumer call sites (making the change turned the test pinning it red on the spot).
+
+  Telling the two apart is only possible in the component layer: `tone` is `undefined` in props when not passed, and equals `"brand"` only when written explicitly. Hence a development warning that points at `variant="link"` (brand by default). None of the 207 call sites without a `tone` will ever see it. The criterion is the one #211 set itself: a prop that silently does nothing is harder to track down than an error.
+
+### Patch Changes
+
+- `NumberField` widens `defaultValue` to `number | null`, and both directions of "null means empty" are now documented and tested (#220) <!-- parity-id: number-field-default-value-null -->
+
+  **The reported symptom (a controlled `value={null}` rendering as `0`) did not reproduce.** A probe was run against both `@base-ui/react` 1.6.0 and 1.7.0: with `value={null}`, with `5 → null`, and with `min={0}` (the issue suspected min clamping), the input was an empty string every time, and `onValueChange` was never fired with `0`. `number-field.tsx` has not changed by a single character since 0.33.1, so the consumer's version behaves the same as the one measured. The issue asks for a complete reproduction and the `@base-ui/react` version.
+
+  Following that thread did turn up a gap that **is** real: `value?: number | null` but `defaultValue?: number`. Starting out empty was always supported underneath and only the type sealed it off, so a tri-state field (`null` / `0` / a positive number) such as "leave empty to inherit the default" could not express `null` in uncontrolled form, while the controlled form allowed it. The two sides should have matched all along.
+
+  Normalization uses `?? undefined` rather than `|| undefined`: `defaultValue={0}` has to keep its `0`. "Explicitly zero" and "empty, inherit the default" are opposite business conclusions, and collapsing them into one ruins the field - which is precisely the case #220 was worried about.
+
+  The documentation previously promised only the callback direction ("clearing emits `null`"); the render direction is now stated as well, with four tests pinning it: controlled `null`, switching from a number to `null`, `min={0}` not clamping, and uncontrolled `defaultValue={null}`.
+
 ## 0.36.0
 
 ### Minor Changes

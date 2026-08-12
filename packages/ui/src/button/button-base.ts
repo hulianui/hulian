@@ -12,8 +12,17 @@ import { cn } from "../lib/cn";
 // 三个是 RSC 安全的纯 CSS 组件，从那边 import 会把 client 边界和 motion 一起拖进来。本模块无副作用、
 // 无 client 依赖，两边都能引。
 
-/** 排布：图标与文案同行居中、不换行。与状态、配色、圆角都无关。 */
-const LAYOUT = "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium";
+/**
+ * 排布：图标与文案同行居中、不换行。与状态、配色、圆角都无关。
+ *
+ * `shrink-0` 是防御性的（#216）：按钮作为 flex 子项时 `flex-shrink` 默认是 1，在空间不够的行里
+ * 会被压到**比它声明的尺寸更窄**。`whitespace-nowrap` 只保证文字不折行，不保证盒子不被压缩——
+ * 两者一起作用的结果是内容溢出按钮的可视边界，而不是按钮守住尺寸把兄弟挤走。
+ * 消费方实测：拥挤的工具栏行里 24px 的按钮渲染成 18.2px。
+ * 它不改变任何现有渲染尺寸，与 `block`（`w-full`）也不冲突——「铺满但不被压」正是想要的。
+ */
+const LAYOUT =
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap font-medium";
 
 /**
  * 交互态：焦点环、禁用态、文本不可选。

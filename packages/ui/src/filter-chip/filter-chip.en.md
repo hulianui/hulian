@@ -76,7 +76,7 @@ Note that the pill is only 24px (`sm`) or 28px (`md`) tall, while the smallest [
 
 - The remove button carries the subject in its name ("Remove filter: Status"), otherwise five pills in a row read as five identically named "Remove" buttons. When `subject` is a node, `subjectLabel` supplies that plain text.
 - FilterChipGroup is a `role="group"` named "Applied filters" by default, overridable with `aria-label`.
-- All copy goes through the `locale` of [ConfigProvider](../config/config.md); a custom locale predating the `filterChip` entry keeps the built-in defaults.
+- All copy goes through the `locale` of `ConfigProvider`; a custom locale predating the `filterChip` entry keeps the built-in defaults.
 
 ## Examples
 ```tsx
