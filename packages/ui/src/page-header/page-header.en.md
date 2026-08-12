@@ -27,6 +27,7 @@ import { PageHeader } from "@hulianui/ui"
 |------|------|------|------|
 | backLabel | `string` | `"\u8fd4\u56de"` | Accessible label for the back button. The built-in Chinese copy means “Back.” |
 | bordered | `boolean` | `false` | Whether to render a bottom divider using `<Separator/>`. |
+| metaSeparator | `ReactNode` | `"·"` | Separator placed between `meta` entries. It is decorative and gets `aria-hidden` automatically. |
 
 > Also inherits `HTMLAttributes<HTMLElement>` except `title`, whose type is replaced with `ReactNode`.
 
@@ -44,6 +45,7 @@ import { PageHeader } from "@hulianui/ui"
 | subTitle | `ReactNode` | Muted secondary title displayed inline after the primary title. |
 | breadcrumb | `ReactNode` | Breadcrumb region above the title row, typically a HulianUI `<Breadcrumb/>`. |
 | tags | `ReactNode` | Status indicators beside the title, such as `<Chip/>` or `<Badge/>`. |
+| meta | `ReactNode[]` | Metadata row: the string of factual values under the title, joined by `metaSeparator`. The component inserts the separator between entries and skips empty ones. |
 | extra | `ReactNode` | Actions on the right; wraps below the title on narrow screens. |
 | footer | `ReactNode` | Footer region, commonly `<Tabs/>`. |
 
@@ -65,8 +67,25 @@ import { PageHeader } from "@hulianui/ui"
 />
 ```
 
+Metadata row (ID number, gender, insured periods, and so on):
+```tsx
+<PageHeader
+  title="Zhang San"
+  meta={[
+    "330106…512",
+    "Male",
+    insuredPeriods && `${insuredPeriods} insured periods`, // an empty entry disappears, leaving no stray separator
+    companyCount ? `${companyCount} companies` : null,
+    latestEmployer && `Latest employer: ${latestEmployer}`,
+  ]}
+/>
+```
+
 ## Usage guidelines
 
+- `meta` holds **a series of parallel factual values**. Keep the other slots for what they are: one sentence of supporting copy goes in `subTitle`, status markers in `tags`, and block content such as tabs in `footer`.
+- Empty entries in `meta` (`null`, `undefined`, `false`, `""`) are skipped, and the separator is inserted only between the entries that survive, so callers do not need to `filter(Boolean)` first. The number `0` is a factual value ("0 companies") and is kept.
+- The metadata row renders as `<ul>`/`<li>` with the separator in its own `aria-hidden` decorative item, so a screen reader announces list items instead of one long string glued together by middle dots. Stop hand-rolling `span + span::before { content: "·" }`.
 - `title` is a `ReactNode`, which conflicts with `HTMLAttributes.title?: string`; the native attribute is omitted from the type. Do not expect a string `title` to pass through to the DOM.
 - The default back label follows `ConfigProvider`, while `backLabel` overrides it. PageHeader is therefore a client component; server components can still import and render it.
 

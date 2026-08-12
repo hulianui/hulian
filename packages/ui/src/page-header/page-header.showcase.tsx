@@ -134,6 +134,41 @@ export const pageHeaderShowcase: ShowcaseSpec = {
         </div>
       ),
     },
+    {
+      title: "元信息行",
+      description:
+        "meta 是标题下那串用分隔符串起来的事实值；空项自动跳过，因此某项缺值时不会留下孤零零一个分隔符。",
+      code: `<PageHeader
+  title="张三"
+  meta={[
+    "330106…512",
+    "男",
+    segments && \`\${segments} 段社保\`, // 无值时整项消失，不留孤点
+    companyCount ? \`\${companyCount} 家公司\` : null,
+    "最近参保单位：杭州美风科技有限公司",
+  ]}
+/>`,
+      render: () => (
+        <div className="w-full max-w-3xl">
+          <PageHeader
+            title="张三"
+            tags={
+              <Chip tone="brand" variant="soft" size="sm">
+                在保
+              </Chip>
+            }
+            meta={[
+              "330106…512",
+              "男",
+              "3 段社保",
+              null, // 无值的项：不产生分隔符
+              "2 家公司",
+              "最近参保单位：杭州美风科技有限公司",
+            ]}
+          />
+        </div>
+      ),
+    },
   ],
   controls: [
     { prop: "onBack", type: "boolean", defaultValue: true, label: "返回按钮" },
@@ -168,6 +203,17 @@ export const pageHeaderShowcase: ShowcaseSpec = {
                 新建用户
               </Button>
             }
+          />
+        </div>
+      ),
+    },
+    {
+      name: "元信息行（含一个空项，不留孤点）",
+      render: () => (
+        <div className="w-full max-w-3xl">
+          <PageHeader
+            title="张三"
+            meta={["330106…512", "男", "3 段社保", null, "2 家公司"]}
           />
         </div>
       ),

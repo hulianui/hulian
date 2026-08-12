@@ -29,7 +29,8 @@ import { modal, ModalProvider, hulianModalManager } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | 语调；命令式入口已隐含，一般无需显式传 |
+| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | 语调；命令式入口已隐含，一般无需显式传。**注意它管不到确定键**：只换左侧图标与图标色 |
+| `danger` | `boolean` | `false` | 危险操作：确定键走 `tone="danger"`，左侧图标同步转 `text-danger`。与 [Popconfirm](../popconfirm/popconfirm.md) 的 `danger` 同名同义 |
 
 `ModalOptions` Events：
 
@@ -67,12 +68,22 @@ modal.confirm({
   content: "点确定将发起请求。",
   onOk: () => fetch("/api/order", { method: "POST" }),
 });
+
+// 删除类确认：确定键转红，与「保存 / 继续」明确异色
+modal.confirm({
+  title: "确认删除该记录？",
+  content: "删除后不可恢复。",
+  danger: true,
+  onOk: () => remove(id),
+});
 ```
 
 ## 禁忌 / 坑
 
 - 必须在应用根挂一次 `ModalProvider`，否则命令式调用无处渲染；showcase 里也是 layout 单挂、触发按钮里只调 `modal.*`（同 Toast）。
 - `onOk` 返回 Promise 时：resolve 才自动关闭，reject 会保持打开（由调用方提示错误）——别在 reject 分支里又手动 `destroy`。
+- **破坏性确认要传 `danger`，`type="error"` 顶不了**：`type` 只驱动左侧图标与图标色，确定键那边是默认主色档。也就是说 `modal.error({ title: "确认删除？" })` 会给出一个红图标 + 主色确定键，和「保存」「继续」同色——「删除后不可恢复」配一个跟保存键同色的按钮是会被误点的。
+- `danger` 只换图标**颜色**，不换图标**字形**：`modal.confirm({ danger: true })` 仍是问号图标（字形说「这是一个提问」，颜色说「后果不可逆」）。要连字形一起换成叉号就再传 `type: "error"`。
 
 ## 相关
 [Dialog](../dialog/dialog.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Drawer](../drawer/drawer.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md) · [HoverCard](../hover-card/hover-card.md)

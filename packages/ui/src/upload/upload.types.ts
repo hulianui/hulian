@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 
 export type UploadStatus = "ready" | "uploading" | "success" | "error";
 
@@ -49,6 +49,28 @@ export interface UploadProps {
   limit?: number;
   /** 形态：拖拽落区 / 单按钮。@default "dropzone" */
   variant?: "dropzone" | "button";
+  /**
+   * 尺寸档（落区高度 / button 形态的按钮高度）。button 形态与 `<Button>` 的同名档等高。
+   * @default "md"
+   */
+  size?: "sm" | "md" | "lg";
+  /**
+   * 内层 `<input type="file">` 的 name。**给了它才是真表单控件**：原生 `<form>` +
+   * `new FormData(form)` 能读到文件，`required` 才会被浏览器校验，input 也不再 `aria-hidden`。
+   * 同时改变三处默认行为（都只在传了 name 时生效）：选完不再清空 `value`
+   * （见 `resetInputAfterSelect`）、拖入的文件会写回 `input.files`、达到 `limit` 时
+   * input 不跟着禁用（禁用的 input 会被 FormData 整个跳过，已选的文件会凭空消失）。
+   */
+  name?: string;
+  /** 原生必填校验，透传到内层 input。**需同时给 `name`**，否则表单读不到这个控件。 */
+  required?: boolean;
+  /** 拿到内层 `<input type="file">` 的引用（自定义校验、手动清空、第三方表单库注册）。 */
+  inputRef?: Ref<HTMLInputElement>;
+  /**
+   * 选完是否清空 `input.value`（清了才能重复选同一个文件，但清了 FormData 就读不到）。
+   * @default 未传 `name` 时 `true`；传了 `name` 时 `false`
+   */
+  resetInputAfterSelect?: boolean;
   /** 受控展示的文件列表（含状态/进度）；不传则不渲染列表。 */
   files?: UploadFile[];
   /**
@@ -66,6 +88,11 @@ export interface UploadProps {
   onReject?: (rejections: UploadRejection[]) => void;
   /** 列表项移除按钮点击。 */
   onRemove?: (id: string) => void;
+  /**
+   * 失败行的重试入口。**传了才渲染重试按钮**（与 onRemove 同口径：组件不偷偷替你决定有没有这个动作）。
+   * 直接接 `useUpload` 的 `retry` 即可；自己管上传就把该项改回 `status="ready"` 再重发。
+   */
+  onRetry?: (id: string) => void;
   /** 落区主文案。 */
   label?: ReactNode;
   /** 落区辅助说明（格式/大小限制提示）。 */

@@ -19,6 +19,23 @@ export interface ComboboxItemData {
 export type ComboboxProps<Multiple extends boolean = false> =
   BaseCombobox.Root.Props<ComboboxItemData, Multiple> & {
     children?: ReactNode;
+    /**
+     * 自由输入创建新值：当前输入串在候选里**没有完全相同的一项**时，在列表首位多出一条
+     * 「使用 “xxx”」，选它就把这串原样提交上去。
+     *
+     * 存在的理由是长尾字段（发证机构、单位名称这类）：几百个常见值做成选项能让绝大多数人少打字，
+     * 但运营手里就是有一张列表上没有的。做成纯选择会逼他们挑一个近似值，那比自由输入更糟。
+     *
+     * 选中创建项时 `onValueChange` 收到的是 `{ value: 输入串, label: 输入串 }`（两端空白已去除），
+     * 同时 `onCreate` 拿到那串 —— 后者是给「把它落库 / 追加进 `items`」用的。
+     * @default false
+     */
+    creatable?: boolean;
+    /**
+     * 创建项被选中时触发，参数是去掉两端空白的输入串。与 `onValueChange` 同时发生，
+     * 不是二选一：值的变化照常走 `onValueChange`，这里只负责「这是一个新值，去建它」。
+     */
+    onCreate?: (value: string) => void;
   };
 
 /**
@@ -95,6 +112,14 @@ export interface ComboboxContentProps {
   sideOffset?: number;
   /** 列表滚动回调；`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用）。 */
   onListScroll?: UIEventHandler<HTMLDivElement>;
+  /**
+   * 列表**上方**常驻表头（用法提示、分组说明、批量操作）。
+   *
+   * 与 `emptyMessage` 不是一回事：后者只在零结果时出现，所以「找不到就直接输入」这类**始终**
+   * 要看见的提示挂不上去 —— 有历史值时它永远不显示。也与 `footer` 对称：一个在列表上、一个在列表下，
+   * 两个都不参与列表滚动。
+   */
+  header?: ReactNode;
   /** 列表下方常驻页脚（加载中 / 计数 / 到底提示）。不参与列表滚动，故不会被新一页顶走。 */
   footer?: ReactNode;
   className?: string;

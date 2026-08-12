@@ -107,6 +107,34 @@ describe("HoverCardContent 透传 div 属性（#201）", () => {
     expect(screen.queryByText("简介卡片")).toBeTruthy();
   });
 
+  // #229：与 Popover 同一个 Base UI Positioner，anchor 一并开。jsdom 量不到真实坐标，
+  // 钉的是「anchor 确实透到了定位层」——虚拟元素的 getBoundingClientRect 被读过即成立。
+  it("anchor: 卡片按传入的虚拟锚点定位（触发器仍负责打开）", async () => {
+    const getBoundingClientRect = vi.fn(
+      () =>
+        ({
+          x: 40,
+          y: 20,
+          width: 8,
+          height: 8,
+          top: 20,
+          left: 40,
+          right: 48,
+          bottom: 28,
+        }) as DOMRect,
+    );
+    open(
+      <HoverCardContent anchor={{ getBoundingClientRect }} data-testid="c">
+        <p>简介卡片</p>
+      </HoverCardContent>,
+    );
+    expect(screen.getByText("简介卡片")).toBeTruthy();
+    // 定位是 Floating UI 的 promise 链，要放掉一轮微任务才落地（本用例在假定时器下，
+    // waitFor 的轮询用不了，故直接 await 一次 act）。
+    await act(async () => {});
+    expect(getBoundingClientRect).toHaveBeenCalled();
+  });
+
   it("消费方 style 与内部过渡样式合并", () => {
     open(
       <HoverCardContent style={{ width: "30rem" }} data-testid="c">

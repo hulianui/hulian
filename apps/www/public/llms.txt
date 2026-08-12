@@ -162,7 +162,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [DomeGallery](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dome-gallery/dome-gallery.md): 球面图库 · ：图片瓦片贴在 CSS 3D 半球内壁，拖拽旋转浏览、点击放大查看 · 原生 PointerEvents 自搓拖拽+RAF 惯性 + motion 灯箱(零依赖·token·reduced-motion)…
 - [Dot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot/dot.md): 状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)
 - [EditableTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/editable-table/editable-table.md): 行内编辑表格 · 行级编辑(草稿副本/保存校验/取消还原) + 自定义编辑器(editor 逃生舱) + 增删行 + 列对齐/宽度(企业录入场景·文案接 i18n)
-- [Empty](https://github.com/hulianui/hulian/blob/master/packages/ui/src/empty/empty.md): 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)
+- [Empty](https://github.com/hulianui/hulian/blob/master/packages/ui/src/empty/empty.md): 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + 加载中档 + sm/md(零依赖·RSC)
 - [EventStream](https://github.com/hulianui/hulian/blob/master/packages/ui/src/event-stream/event-stream.md): 事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」
 - [FileTree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/file-tree/file-tree.md): 文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义)…
 - [FilterChip](https://github.com/hulianui/hulian/blob/master/packages/ui/src/filter-chip/filter-chip.md): 已应用筛选条件胶囊 · 主语｜操作符｜值｜移除 四段(段间竖线) + 操作符可省 + 值收 ReactNode + 整段可点
@@ -212,7 +212,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Statistic](https://github.com/hulianui/hulian/blob/master/packages/ui/src/statistic/statistic.md): 统计数值 · 千分位/precision/前后缀/valueStyle + 可选 NumberTicker 入场滚动 + Statistic.Countdown 倒计时(SSR 安全·零依赖·与 Stat 互补)
 - [StatusDot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/status-dot/status-dot.md): 健康状态点 · 在线/降级/离线/维护四语义态(→success/warning/danger/neutral 映射) + 默认仅在线脉冲 + 状态文字 + 尾部数值槽(延迟/成功率)(封装 Dot·网关渠道健康墙刚需…
 - [Table](https://github.com/hulianui/hulian/blob/master/packages/ui/src/table/table.md): 表格 · TanStack headless + 列排序 + 列几何(size/align/ellipsis/resizable·固定列 offset 自动重算) + 行点击/整行导航(onRowClick/rowHr…
-- [Tag](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tag/tag.md): 状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)
+- [Tag](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tag/tag.md): 状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)
 - [TiltedCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilted-card/tilted-card.md): 倾斜卡片 · 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · dat…
 - [Timeline](https://github.com/hulianui/hulian/blob/master/packages/ui/src/timeline/timeline.md): 时间线 · 复合 Timeline/Item + items 数组 + 彩色节点/自定义 dot + left/right/alternate + pending 加载态(纯皮肤·零依赖·RSC)
 - [Tree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tree/tree.md): 递归树 · 自研零依赖引擎 + WAI-ARIA tree(roving/方向键/typeahead) + checkable 父子级联半选 + 连接线 + 树内搜索 + grid-rows 高度过渡

@@ -19,6 +19,11 @@ Use Table for structured two-dimensional records with sorting, selection, trees,
 ## Import
 ```ts
 import { Table } from "@hulianui/ui"
+
+// Composition primitives, for tables whose structure you write yourself
+import {
+  TableRoot, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell,
+} from "@hulianui/ui"
 ```
 
 ## Props
@@ -51,7 +56,8 @@ import { Table } from "@hulianui/ui"
 | dragHandle | `"row" \| "cell"` | `"cell"` | Uses the entire row or a prepended handle cell. |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | All rows | Disables dragging and drop targeting per row; nested rows are always disabled. |
 | cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | — | Cell merging, the equivalent of the el-table `:span-method`. The callback runs per cell and is **not called for cells covered by an earlier span**. `ctx` is `{ row, rowIndex, rows, columnId, columnIndex, value }`, where `rowIndex` follows render order (after sorting and filtering) and `rows` is ordered the same way. It cannot be combined with `virtual` or `renderExpandedRow`; those combinations skip merging and warn in development. |
-| stickyHeader | `boolean` | `false` | Pins the header row while the body scrolls, independently of `virtual`. It **requires `maxHeight`**: without a height constraint the shell never scrolls, so a sticky header has no scrolling ancestor to anchor to, and the component warns in development. |
+| stickyHeader | `boolean \| "self" \| "scrollParent"` | `false` | Pins the header row, independently of `virtual`. `true` / `"self"` pins it against **the table's own scroll area** and therefore **requires `maxHeight`**: without a height constraint the shell never scrolls, so a sticky header has no scrolling ancestor to anchor to, and the component warns in development. `"scrollParent"` pins it against **an outer scroll container** (the page or a layout content area); the table itself no longer scrolls, and the shell consequently **loses `overflow-x-auto`** (see Usage notes). |
+| stickyHeaderOffset | `number \| string` | `0` | Offset of the pinned header (numbers are pixels), emitted as the `top` of `<thead>`, so it can clear a fixed page header: `stickyHeaderOffset={56}`. Applies to both modes. |
 | maxHeight | `number \| string` | — | Maximum height of the scroll area (numbers are pixels). It is what makes the shell scroll vertically; when `virtual` is enabled, `virtual.height` wins. |
 | minWidth | `number \| string` | — | Minimum width of the `<table>` element itself. A `min-w-*` class in `className` pins the scroll shell instead, which stops the horizontal scrollbar from ever appearing and leaves off-screen columns clipped and unreachable. |
 | cellVerticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | Table-level default for cell vertical alignment; `meta.verticalAlign` overrides it per column. |
@@ -76,6 +82,8 @@ import { Table } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | renderExpandedRow | `(row: Row<TData>) => ReactNode` | Adds an expander and renders a full-width detail panel. |
+| renderRowExtra | `(row: Row<TData>, ctx: { colSpan, rowIndex }) => ReactNode` | Attaches 0..N persistent rows **after** each data row. It returns **bare `<tr>` elements** (an array, a fragment, or `null`); the component does not wrap them, so a full-width row is written as `<tr><td colSpan={ctx.colSpan}>`. No expander column is added and no expanded state is required. Cannot be combined with `cellSpan`. |
+| footer | `ReactNode \| ((ctx: { rows, colSpan }) => ReactNode)` | Content of the `<tfoot>` element, for totals or a persistent "add a row" affordance. It follows the `EditableTable.summary` contract: **you supply `<tr><td colSpan=...>` yourself**, and `ctx.rows` holds the visible rows after sorting and filtering. Unlike `summary`, it **also renders for an empty table**. |
 | emptyText | `ReactNode` | Empty-state copy, defaulting to `locale.table.empty`. |
 | renderEmpty | `() => ReactNode` | Fully custom empty state, taking precedence over `emptyText`. |
 
@@ -90,8 +98,47 @@ Additional `ColumnDef.meta` fields:
 | ellipsis | `boolean` | Truncates overflow and shows the full raw value in a tooltip. | `show-overflow-tooltip` |
 | verticalAlign | `"top" \| "middle" \| "bottom"` | Vertical alignment of the cell; header cells stay `middle`. A column that wraps almost always wants `top`. | — |
 | whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | Wrapping strategy. `pre-wrap` keeps the author's line breaks and spaces and adds `break-words`. Mutually exclusive with `ellipsis`, which requires a single line. | — |
+| lockVisible | `boolean` | Locks visibility: the column cannot be switched off from the [ProTable](../pro-table/pro-table.md) column-setting popover (its checkbox is checked and disabled), and a controlled `columnVisibility` entry of `false` does not apply to it either. Identity and action columns are the typical case. | — |
 
 Column geometry uses TanStack `ColumnDef.size`, `minSize`, and `maxSize` directly. Headers and cells receive matching inline width styles without a `<colgroup>`.
+
+## Composition primitives
+
+`TableRoot / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell` are seven thin
+wrappers for tables whose structure is written by product code and only need the library skin. The
+criterion is not that Table is too weak, it is that **configuration cannot express structure**: two
+nested levels inside one row, a row that is entirely an editor, one record split into three rows.
+Expressed as `ColumnDef[]` those become readable table structure translated into `cell` callbacks,
+which only reads worse. So both routes coexist: data-driven tables that need sorting, pagination, or
+pinned columns use the high-level `Table`, everything else uses the primitives. The skin (density
+steps, separators, hover, selected background) comes from the same source as the high-level `Table`,
+so this is not a second look-alike system.
+
+### TableRoot
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| density | `"default" \| "middle" \| "compact"` | `"default"` | Cell padding density, passed down to `TableHead` and `TableCell` through context. |
+| striped | `boolean` | `false` | Alternating backgrounds on `TableBody` rows only. The default is **the opposite** of the high-level `Table`: hand-written structures often contain full-width attached rows or merged cells, so "every other `<tr>`" no longer matches "every other record". |
+| bordered | `boolean` | `true` | Outer border and radius; disable it inside a card to avoid a double border. |
+| layout | `"auto" \| "fixed"` | `"auto"` | `table-layout`. |
+| minWidth | `number \| string` | — | Minimum width of the `<table>` element itself. `className` lands on the scroll shell, where `min-w-*` would stop the horizontal scrollbar from ever appearing. |
+| tableClassName | `string` | — | Class name for the `<table>` element. |
+
+`TableHeader`, `TableBody`, and `TableFooter` accept the native `<thead>`, `<tbody>`, and `<tfoot>` attributes only.
+
+### TableRow / TableHead / TableCell
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| selected | `boolean` | `false` | `TableRow`: selected state (accent background plus `data-selected`, the same skin as a selected row in the high-level `Table`). |
+| align | `"left" \| "center" \| "right"` | `"left"` | `TableHead` and `TableCell`: horizontal alignment, applied as a class rather than the deprecated HTML `align` attribute. |
+| verticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | `TableCell`: vertical alignment. |
+
+`TableRow` derives its separator, hover, and stripe treatment from the section it sits in. Header rows
+do not hover, do not stripe, and do not take `last:border-0` — a single header row is also the last
+row, and that rule would erase the bottom border of the header. Product code never has to remember
+this difference.
 
 ## Examples
 ```tsx
@@ -117,6 +164,49 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 
 <Table
   columns={columns}
+  data={periods}
+  renderRowExtra={(row, ctx) =>
+    row.original.titles.map((t) => (
+      <tr key={t.id} className="bg-surface-hover/30">
+        <td colSpan={ctx.colSpan} className="px-3 py-1.5">{t.name}</td>
+      </tr>
+    ))
+  }
+  footer={(ctx) => (
+    <tr>
+      <td colSpan={ctx.colSpan} className="px-3 py-2">
+        <Button variant="ghost" size="sm" onClick={addPeriod}>Add manually</Button>
+      </td>
+    </tr>
+  )}
+/>
+
+<Table columns={columns} data={rows} stickyHeader="scrollParent" stickyHeaderOffset={56} />
+
+<TableRoot density="compact">
+  <TableHeader>
+    <TableRow>
+      <TableHead>Field</TableHead>
+      <TableHead align="right">Value</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {fields.map((f) => (
+      <TableRow key={f.key} selected={f.key === active}>
+        <TableCell>{f.label}</TableCell>
+        <TableCell align="right">{f.editing ? <Input defaultValue={f.value} /> : f.value}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+  <TableFooter>
+    <TableRow>
+      <TableCell colSpan={2}>{fields.length} entries</TableCell>
+    </TableRow>
+  </TableFooter>
+</TableRoot>
+
+<Table
+  columns={columns}
   data={rows}
   getRowId={(r) => r.id}
   enableSorting={false}
@@ -137,6 +227,13 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 
 - **Memoize `columns`.** TanStack's `flexRender` renders a function `cell` **as a component type**, so a changed identity **unmounts and remounts** the whole cell rather than re-rendering it. On a display-only table that merely burns time; with an input inside the cell it breaks behavior: a controlled input loses focus on every keystroke and the caret jumps to the end, an `onBlur` submit fires on the remount blur and **commits a half-typed value**, and an uncontrolled input snaps back to its `defaultValue` and loses characters. None of those symptoms point at the columns array, so debugging usually starts by blaming the input component. For the same reason, never put a per-keystroke value in the `useMemo` dependencies — that is the same as no memo. Prefer uncontrolled inputs for inline editing.
 - A sticky header needs `stickyHeader` **and** `maxHeight`: sticky positioning requires an ancestor that actually scrolls vertically, and the shell only has `overflow-x-auto` with no height constraint by default. Applying `[&_thead]:sticky` from product code cannot reach it either, because that overflow container sits in between.
+- **"Horizontal scrolling inside the table plus a header pinned to the page" is not an available combination**, and that is a CSS constraint rather than an implementation trade-off: `overflow-x: auto` makes `visible` on the other axis compute to `auto`, so that shell becomes a scrollport itself and anchors the header to it. Measured in Chromium, the header slides straight off as the page scrolls, while the same table under an `overflow: visible` shell stops cleanly at `top: 0`. `stickyHeader="scrollParent"` therefore **drops `overflow-x-auto` from the shell** and leaves horizontal overflow to the outer scroll container; `stickyScrollbar` has nothing to mirror in that mode and is ignored with a warning. Keep `"self"` plus `maxHeight` when the horizontal scroll has to stay inside the table.
+- `renderRowExtra` and `renderExpandedRow` are two different things, and the latter does not substitute for the former: a detail panel allows **one row at a time, only while expanded, and always adds an expander column**. "This employment period permanently carries N certificate rows" is part of the row, not a collapsible detail.
+- `renderRowExtra` and `footer` return **bare `<tr>` elements**; the component does not wrap them in `<tr><td>`, because wrapping would make "one attached row split into three cells" inexpressible. Always take the `colSpan` of a full-width row from the callback context: `ctx.colSpan` includes the automatically prepended selection, expander, and drag-handle columns, so a value computed from `columns.length` is one to three columns short and leaves a gap on the right.
+- `renderRowExtra` cannot be combined with `cellSpan`, for the same reason as `renderExpandedRow`: attached rows sit between data rows and a vertical span would cross them. The combination skips merging and warns in development.
+- `renderRowExtra` with `virtual` throws off the virtualizer's height estimate, which assumes one `rowHeight` per record when sizing its spacer rows; the symptom is drifting scroll position and blank space at the bottom. The component only warns instead of disabling the slot, because silently dropping the attached rows would be harder to diagnose than the misalignment. When the number of attached rows is fixed, set `virtual.rowHeight` to the combined height of the data row and its attached rows.
+- The primitives have no sorting, pagination, pinned columns, or virtualization — they are only a skin. Go back to the high-level `Table` for those instead of rebuilding them by hand.
+- The primitives default `striped` to `false`, the opposite of the high-level `Table`. Stripes count `<tr>` elements, and hand-written structures with attached or merged rows make that count disagree with the visual grouping of a record. Enable it explicitly once rows really are one record each.
 - Set the minimum width of a wide table through `minWidth`, **never through `className`**: `className` lands on the scroll shell, so `min-w-*` stops the container from shrinking, `scrollWidth` equals `clientWidth`, the horizontal scrollbar never appears, and off-screen columns are clipped and unreachable. A wide browser window hides the problem entirely.
 - `meta.whitespace` and `meta.ellipsis` are two mutually exclusive routes, because truncation requires a single line. For a review-style table that must wrap rather than truncate, combine `whitespace: "normal"`, `maxSize` for the width cap, and `verticalAlign: "top"` — without top alignment the short cells in the row float on the middle line and no longer line up with the first line of the long ones.
 - Width styles are emitted only for explicit `size`, `minSize`, or `maxSize`; this avoids TanStack's default size turning every auto-layout column into equal 150 px widths.

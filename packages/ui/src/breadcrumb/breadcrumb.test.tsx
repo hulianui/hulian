@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import type { ReactNode } from "react";
 import { render } from "@testing-library/react";
 import { Breadcrumb } from "./breadcrumb";
 import { expectMemoSkipsSubtree } from "../../test/memo-guard";
@@ -76,6 +77,95 @@ describe("Breadcrumb", () => {
     const mid = getByText("中");
     expect(mid.tagName).not.toBe("A");
     expect(mid.getAttribute("aria-current")).toBeNull();
+  });
+
+  // #239：render 逃生口 —— 真渲染成消费方给的元素，而不是在 <nav> 上劫持点击。
+  describe("render 插槽", () => {
+    // 冒充框架的 Link：只认 to + children，自己渲染 <a>（原生行为因此照常成立）。
+    function FakeLink({
+      to,
+      children,
+      className,
+      ...rest
+    }: {
+      to: string;
+      children?: ReactNode;
+      className?: string;
+    }) {
+      return (
+        <a data-testid="fake-link" href={to} className={className} {...rest}>
+          {children}
+        </a>
+      );
+    }
+
+    it("渲染成消费方给的元素，label 作它的子节点", () => {
+      const { getByTestId } = render(
+        <Breadcrumb
+          items={[{ label: "客户", render: <FakeLink to="/customers" /> }, { label: "张三" }]}
+        />,
+      );
+      const link = getByTestId("fake-link");
+      expect(link.tagName).toBe("A");
+      expect(link.getAttribute("href")).toBe("/customers");
+      expect(link.textContent).toBe("客户");
+    });
+
+    it("皮肤类名合并进 render 元素，且元素自带的 className 保留（本组件在前、它在后）", () => {
+      const { getByTestId } = render(
+        <Breadcrumb
+          items={[
+            { label: "客户", render: <FakeLink to="/customers" className="my-link" /> },
+            { label: "张三" },
+          ]}
+        />,
+      );
+      const cls = getByTestId("fake-link").className;
+      expect(cls).toContain("text-muted-foreground");
+      expect(cls).toContain("my-link");
+      expect(cls.indexOf("text-muted-foreground")).toBeLessThan(cls.indexOf("my-link"));
+    });
+
+    it("当前页也传 render 时，aria-current=page 合并进该元素", () => {
+      const { getByTestId } = render(
+        <Breadcrumb
+          items={[{ label: "客户", href: "/customers" }, { label: "张三", render: <FakeLink to="/customers/1" /> }]}
+        />,
+      );
+      const cur = getByTestId("fake-link");
+      expect(cur.getAttribute("aria-current")).toBe("page");
+      expect(cur.className).toContain("text-foreground");
+    });
+
+    it("非当前项不带 aria-current", () => {
+      const { getByTestId } = render(
+        <Breadcrumb
+          items={[{ label: "客户", render: <FakeLink to="/customers" /> }, { label: "张三" }]}
+        />,
+      );
+      expect(getByTestId("fake-link").getAttribute("aria-current")).toBeNull();
+    });
+
+    it("本项写了 href 时以本项为准（否则 href 由 render 元素自带）", () => {
+      const { getAllByRole } = render(
+        <Breadcrumb
+          items={[
+            { label: "客户", href: "/from-item", render: <a data-testid="raw" href="/from-element" /> },
+            { label: "张三" },
+          ]}
+        />,
+      );
+      expect(getAllByRole("link")[0]!.getAttribute("href")).toBe("/from-item");
+    });
+
+    it("不传 render 时行为不变：仍是裸 <a>，不出现额外元素", () => {
+      const { getByText, container } = render(<Breadcrumb items={items} />);
+      const home = getByText("首页");
+      expect(home.tagName).toBe("A");
+      expect(home.getAttribute("href")).toBe("/");
+      expect(home.className).toContain("text-muted-foreground");
+      expect(container.querySelectorAll("a").length).toBe(2);
+    });
   });
 
   it("透传 className 到根 nav，aria-label 可覆盖", () => {

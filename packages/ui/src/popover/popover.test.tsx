@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Popover, PopoverTrigger, PopoverContent, PopoverClose } from "./popover";
 
 describe("Popover", () => {
@@ -98,6 +98,49 @@ describe("Popover", () => {
       </Popover>,
     );
     expect(document.querySelector(".h-2.w-2")).toBeNull();
+  });
+
+  // #229：触发点是算出来的坐标（DOCX 标注点 / canvas / 地图）时根本没有可当触发器的 DOM 节点。
+  // jsdom 量不到真实位置，所以这里钉的是「anchor 确实被交给了定位层」——虚拟元素的
+  // getBoundingClientRect 被读过，就说明浮层是按它定位的，而不是按触发器。
+  describe("anchor（虚拟锚点）", () => {
+    const virtualRect = {
+      x: 120,
+      y: 80,
+      width: 12,
+      height: 12,
+      top: 80,
+      left: 120,
+      right: 132,
+      bottom: 92,
+    };
+
+    it("传 anchor 时不需要 PopoverTrigger 也能渲染并按 anchor 定位", async () => {
+      const getBoundingClientRect = vi.fn(() => virtualRect as DOMRect);
+      render(
+        <Popover open>
+          <PopoverContent anchor={{ getBoundingClientRect }} title="标注">
+            正文
+          </PopoverContent>
+        </Popover>,
+      );
+      expect(screen.getByText("标注")).toBeTruthy();
+      expect(screen.getByText("正文")).toBeTruthy();
+      await waitFor(() => expect(getBoundingClientRect).toHaveBeenCalled());
+    });
+
+    it("不传 anchor 时不读虚拟元素，仍锚触发器（旧用法零变化）", async () => {
+      const getBoundingClientRect = vi.fn(() => virtualRect as DOMRect);
+      render(
+        <Popover open>
+          <PopoverTrigger render={<button>打开</button>} />
+          <PopoverContent title="标题">正文</PopoverContent>
+        </Popover>,
+      );
+      await waitFor(() => expect(screen.getByText("正文")).toBeTruthy());
+      expect(getBoundingClientRect).not.toHaveBeenCalled();
+      expect(screen.getByText("打开").getAttribute("aria-expanded")).toBe("true");
+    });
   });
 
   it("open 态触发器 aria-expanded=true + aria-haspopup", () => {

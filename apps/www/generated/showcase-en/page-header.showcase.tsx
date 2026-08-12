@@ -88,6 +88,32 @@ export const pageHeaderShowcase: ShowcaseSpec = {
           <PageHeader onBack={() => { }} breadcrumb={crumb} title="Order #20260603-8821" subTitle="6 items in total" tags={tags} extra={actions} footer={tabsFooter} bordered/>
         </div>),
         },
+        {
+            title: "Meta row",
+            description: "meta is the run of factual values under the title joined by a separator. Empty items are skipped, so a missing value never leaves an orphan separator behind.",
+            code: `<PageHeader
+  title="Zhang San"
+  meta={[
+    "330106\u2026512",
+    "Male",
+    segments && \`\${segments} insurance periods\`, // no value drops the whole item, leaving no orphan separator
+    companyCount ? \`\${companyCount} companies\` : null,
+    "Latest employer: Hangzhou Meifeng Technology Co., Ltd.",
+  ]}
+/>`,
+            render: () => (<div className="w-full max-w-3xl">
+          <PageHeader title="Zhang San" tags={<Chip tone="brand" variant="soft" size="sm">
+                Active
+              </Chip>} meta={[
+                    "330106\u2026512",
+                    "Male",
+                    "3 insurance periods",
+                    null,
+                    "2 companies",
+                    "Latest employer: Hangzhou Meifeng Technology Co., Ltd.",
+                ]}/>
+        </div>),
+        },
     ],
     controls: [
         { prop: "onBack", type: "boolean", defaultValue: true, label: "Back button" },
@@ -106,6 +132,12 @@ export const pageHeaderShowcase: ShowcaseSpec = {
           <PageHeader title="User Management" extra={<Button variant="solid" size="sm">
                 Create new user
               </Button>}/>
+        </div>),
+        },
+        {
+            name: "Meta row (one empty item, no orphan separator)",
+            render: () => (<div className="w-full max-w-3xl">
+          <PageHeader title="Zhang San" meta={["330106\u2026512", "Male", "3 insurance periods", null, "2 companies"]}/>
         </div>),
         },
         {

@@ -9,6 +9,8 @@ import {
   ComboboxItem,
   ComboboxTrigger,
 } from "./combobox";
+import { ConfigProvider } from "../config/config-provider";
+import { enUS } from "../config/locale";
 
 afterEach(() => {
   cleanup();
@@ -277,5 +279,278 @@ describe("Combobox 可见字段透传原生属性（#160）", () => {
     expect(input.getAttribute("aria-label")).toBe("选择水果");
     expect(input.getAttribute("name")).toBe("fruits");
     expect(document.querySelector(".my-chips")!.contains(input)).toBe(true);
+  });
+});
+
+// #235：长尾字段（发证机构这类）几百个常见值做成选项能让多数人少打字，但运营手里就是有
+// 一张列表上没有的 —— 没有这一档只能整块自绘 allowCustom。
+describe("Combobox creatable（自由输入创建新值）", () => {
+  const ISSUERS = [
+    { value: "bj-psb", label: "北京市公安局" },
+    { value: "sh-psb", label: "上海市公安局" },
+  ];
+
+  function CreatableDemo(props: { onCreate?: (value: string) => void; onValueChange?: (value: unknown) => void }) {
+    return (
+      <Combobox
+        items={ISSUERS}
+        creatable
+        defaultOpen
+        onCreate={props.onCreate}
+        onValueChange={props.onValueChange}
+      >
+        <ComboboxInput aria-label="发证机构" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>
+    );
+  }
+
+  function type(text: string) {
+    const input = screen.getByRole("combobox");
+    fireEvent.change(input, { target: { value: text } });
+    return input;
+  }
+
+  it("无精确匹配时列表首位出现创建项", async () => {
+    render(<CreatableDemo />);
+    type("杭州市公安局");
+    await waitFor(() => expect(screen.getByText("使用 “杭州市公安局”")).toBeTruthy());
+    const options = screen.getAllByRole("option");
+    expect(options[0]!.getAttribute("data-hulian-create")).not.toBeNull();
+  });
+
+  it("点击创建项：onCreate 拿到输入串，onValueChange 同时拿到同一串当值", async () => {
+    const onCreate = vi.fn();
+    const onValueChange = vi.fn();
+    render(<CreatableDemo onCreate={onCreate} onValueChange={onValueChange} />);
+    type("杭州市公安局");
+    await waitFor(() => expect(screen.getByText("使用 “杭州市公安局”")).toBeTruthy());
+    fireEvent.click(screen.getByText("使用 “杭州市公安局”"));
+    expect(onCreate).toHaveBeenCalledWith("杭州市公安局");
+    expect(onValueChange).toHaveBeenCalledWith(
+      expect.objectContaining({ value: "杭州市公安局", label: "杭州市公安局" }),
+      expect.anything(),
+    );
+  });
+
+  // 创建项是货真价实的 Combobox.Item 而不是自绘的一行 —— 键盘导航能不能走到它，是这句话的判据。
+  it("键盘能走到创建项（ArrowDown 首站就是它）", async () => {
+    render(<CreatableDemo />);
+    const input = type("杭州市公安局");
+    await waitFor(() => expect(screen.getByText("使用 “杭州市公安局”")).toBeTruthy());
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    await waitFor(() => {
+      const create = document.querySelector("[data-hulian-create]") as HTMLElement;
+      expect(create.getAttribute("data-highlighted")).not.toBeNull();
+    });
+  });
+
+  it("两端空白去掉后再判重与提交", async () => {
+    const onCreate = vi.fn();
+    render(<CreatableDemo onCreate={onCreate} />);
+    type("  杭州市公安局  ");
+    await waitFor(() => expect(screen.getByText("使用 “杭州市公安局”")).toBeTruthy());
+    fireEvent.click(screen.getByText("使用 “杭州市公安局”"));
+    expect(onCreate).toHaveBeenCalledWith("杭州市公安局");
+  });
+
+  it("输入串与既有项 label 完全相同时不出创建项（部分匹配时仍出）", async () => {
+    render(<CreatableDemo />);
+    type("北京市");
+    await waitFor(() => expect(screen.getByText("使用 “北京市”")).toBeTruthy());
+    type("北京市公安局");
+    await waitFor(() => expect(screen.queryByText("使用 “北京市公安局”")).toBeNull());
+    expect(screen.getByText("北京市公安局")).toBeTruthy();
+  });
+
+  it("与既有项 value 完全相同时也不出创建项", async () => {
+    render(<CreatableDemo />);
+    type("bj-psb");
+    await waitFor(() => expect(screen.queryByText("使用 “bj-psb”")).toBeNull());
+  });
+
+  it("输入为空（含只有空白）时不出创建项", async () => {
+    render(<CreatableDemo />);
+    await waitFor(() => expect(screen.getByText("北京市公安局")).toBeTruthy());
+    expect(document.querySelector("[data-hulian-create]")).toBeNull();
+    type("   ");
+    expect(document.querySelector("[data-hulian-create]")).toBeNull();
+  });
+
+  it("零结果时不再同时喊「无匹配项」——列表里明摆着有一条可选", async () => {
+    render(<CreatableDemo />);
+    type("完全不存在的机构");
+    await waitFor(() => expect(screen.getByText("使用 “完全不存在的机构”")).toBeTruthy());
+    expect(screen.queryByText("无匹配项")).toBeNull();
+  });
+
+  it("英文 locale 下创建项文案跟着走", async () => {
+    render(
+      <ConfigProvider locale={enUS}>
+        <CreatableDemo />
+      </ConfigProvider>,
+    );
+    type("Hangzhou PSB");
+    await waitFor(() => expect(screen.getByText("Use “Hangzhou PSB”")).toBeTruthy());
+  });
+
+  // 长尾字段（发证机构）几百个候选正好越过自动虚拟化阈值，所以这一档必须在虚拟化下也成立 ——
+  // 创建项是塞进 items 的真选项，虚拟化那条路照样认它。
+  it("超过自动虚拟化阈值时创建项仍然出现", async () => {
+    // 虚拟化在 jsdom 下要有尺寸才会渲染任何一项，故照抄本文件既有虚拟化用例的量尺桩。
+    const observer = class {
+      constructor(private readonly callback: ResizeObserverCallback) {}
+      observe(target: Element) {
+        const size = [{ inlineSize: 320, blockSize: 320 }] as ReadonlyArray<ResizeObserverSize>;
+        queueMicrotask(() =>
+          this.callback(
+            [
+              {
+                target,
+                contentRect: {
+                  width: 320,
+                  height: 320,
+                  top: 0,
+                  left: 0,
+                  right: 320,
+                  bottom: 320,
+                  x: 0,
+                  y: 0,
+                } as DOMRectReadOnly,
+                borderBoxSize: size,
+                contentBoxSize: size,
+                devicePixelContentBoxSize: size,
+              },
+            ],
+            this as unknown as ResizeObserver,
+          ),
+        );
+      }
+      unobserve() {}
+      disconnect() {}
+    };
+    vi.stubGlobal("ResizeObserver", observer);
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (
+      this: Element,
+    ) {
+      const height = this.hasAttribute("data-index") ? 32 : 320;
+      return {
+        width: 320,
+        height,
+        top: 0,
+        left: 0,
+        right: 320,
+        bottom: height,
+        x: 0,
+        y: 0,
+        toJSON() {},
+      } as DOMRect;
+    });
+
+    const many = Array.from({ length: 200 }, (_, i) => ({ value: `v${i}`, label: `选项 ${i}` }));
+    render(
+      <Combobox items={many} creatable defaultOpen>
+        <ComboboxInput aria-label="多" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    expect(document.querySelector("[data-hulian-virtual-count]")).not.toBeNull();
+    fireEvent.change(screen.getByLabelText("多"), { target: { value: "选项" } });
+    await waitFor(() => expect(screen.getByText("使用 “选项”")).toBeTruthy());
+  });
+
+  it("不传 creatable 时一条创建项都不会冒出来（旧用法零变化）", async () => {
+    render(<Demo defaultOpen />);
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "不存在的水果" } });
+    await waitFor(() => expect(screen.getByText("无匹配项")).toBeTruthy());
+    expect(document.querySelector("[data-hulian-create]")).toBeNull();
+  });
+
+  // 创建项一出现 items 的 identity 就变，而 Base UI 有一条「items 变了就把输入框拉回选中项 label」
+  // 的同步；不接管输入串的话第一个字符会被它抹掉。这条钉住「打进去的字还在」。
+  it("第一个字符不会被 items 变化引发的输入同步抹掉", async () => {
+    render(<CreatableDemo />);
+    const input = type("杭");
+    await waitFor(() => expect(screen.getByText("使用 “杭”")).toBeTruthy());
+    expect((input as HTMLInputElement).value).toBe("杭");
+  });
+
+  it("挂载时输入框仍显示已选项的 label（接管输入串不该把这条弄丢）", () => {
+    render(
+      <Combobox items={ISSUERS} creatable defaultValue={ISSUERS[0]}>
+        <ComboboxInput aria-label="发证机构" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    expect(screen.getByDisplayValue("北京市公安局")).toBeTruthy();
+  });
+
+  it("消费方自己的 onInputValueChange 不被吃掉", async () => {
+    const onInputValueChange = vi.fn();
+    render(
+      <Combobox items={ISSUERS} creatable onInputValueChange={onInputValueChange}>
+        <ComboboxInput aria-label="发证机构" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    type("杭州");
+    await waitFor(() => expect(onInputValueChange).toHaveBeenCalledWith("杭州", expect.anything()));
+  });
+});
+
+// #235 的另一半：emptyMessage 只在零结果时出现，「找不到就直接输入」这类常驻提示挂不上去。
+describe("ComboboxContent header 槽", () => {
+  it("header 渲染在列表上方，且零结果时仍在（那正是最需要它的时候）", async () => {
+    render(
+      <Combobox items={FRUITS} defaultOpen>
+        <ComboboxInput aria-label="搜索" />
+        <ComboboxContent header={<p>找不到就直接输入</p>}>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    const header = screen.getByText("找不到就直接输入");
+    const list = screen.getByRole("listbox");
+    expect(
+      header.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "不存在的水果" } });
+    await waitFor(() => expect(screen.getByText("无匹配项")).toBeTruthy());
+    expect(screen.getByText("找不到就直接输入")).toBeTruthy();
+  });
+
+  it("不传 header 时不多渲染任何节点", () => {
+    render(<Demo defaultOpen />);
+    expect(screen.queryByText("找不到就直接输入")).toBeNull();
+    expect(document.querySelector(".border-b.border-hairline")).toBeNull();
   });
 });

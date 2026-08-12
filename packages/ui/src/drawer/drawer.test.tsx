@@ -37,6 +37,45 @@ describe("drawerVariants", () => {
   });
 });
 
+describe("drawerVariants size 档（#230）", () => {
+  // 精确切词：`w-[min(90vw,24rem)]` 用 toContain 会被 `w-[min(90vw,240rem)]` 之类误判通过，
+  // 且要证明「不传 size 与今天逐字相同」必须逐个 class 比对，不能只看包含关系。
+  const classes = (c: string) => c.split(/\s+/).filter(Boolean);
+
+  it("不传 size：左右仍是 24rem、上下仍是 20rem（向后兼容）", () => {
+    expect(classes(drawerVariants({}))).toContain("w-[min(90vw,24rem)]");
+    expect(classes(drawerVariants({ side: "left" }))).toContain("w-[min(90vw,24rem)]");
+    expect(classes(drawerVariants({ side: "top" }))).toContain("h-[min(90vh,20rem)]");
+    expect(classes(drawerVariants({ side: "bottom" }))).toContain("h-[min(90vh,20rem)]");
+  });
+
+  it("显式 size=md 与不传等价（compoundVariants 在 defaultVariants 之后匹配）", () => {
+    expect(drawerVariants({ side: "bottom", size: "md" })).toBe(drawerVariants({ side: "bottom" }));
+  });
+
+  it("主轴随 side 换手：左右压宽、上下压高，同档两轴不同值", () => {
+    const right = classes(drawerVariants({ side: "right", size: "sm" }));
+    expect(right).toContain("w-[min(90vw,20rem)]");
+    expect(right.some((c) => c.startsWith("h-[min"))).toBe(false); // 交叉轴是 h-full，不吃档位
+
+    const top = classes(drawerVariants({ side: "top", size: "sm" }));
+    expect(top).toContain("h-[min(90vh,16rem)]");
+    expect(top.some((c) => c.startsWith("w-[min"))).toBe(false);
+  });
+
+  it("xl 覆盖 760px 级面板（issue #230 的实际诉求：底部抽屉要 760px 高）", () => {
+    expect(classes(drawerVariants({ side: "bottom", size: "xl" }))).toContain("h-[min(90vh,48rem)]");
+    expect(classes(drawerVariants({ side: "right", size: "xl" }))).toContain("w-[min(90vw,48rem)]");
+  });
+
+  it("lg 居中档 32rem；full 不设上限直接铺满", () => {
+    expect(classes(drawerVariants({ side: "right", size: "lg" }))).toContain("w-[min(90vw,32rem)]");
+    expect(classes(drawerVariants({ side: "top", size: "lg" }))).toContain("h-[min(90vh,32rem)]");
+    expect(classes(drawerVariants({ side: "right", size: "full" }))).toContain("w-full");
+    expect(classes(drawerVariants({ side: "bottom", size: "full" }))).toContain("h-full");
+  });
+});
+
 describe("Drawer (defaultOpen 渲染)", () => {
   it("Portal 挂载 popup：title + 内容 + role=dialog 出现", () => {
     render(
@@ -66,6 +105,28 @@ describe("Drawer (defaultOpen 渲染)", () => {
     );
     expect(screen.getByRole("dialog").className).toContain("left-0");
   });
+  it("size 落到 popup className（#230）", () => {
+    render(
+      <Drawer defaultOpen>
+        <DrawerContent side="bottom" size="xl" title="合同条款">
+          分栏编辑区
+        </DrawerContent>
+      </Drawer>,
+    );
+    const cls = screen.getByRole("dialog").className.split(/\s+/);
+    expect(cls).toContain("h-[min(90vh,48rem)]");
+    expect(cls).not.toContain("h-[min(90vh,20rem)]");
+  });
+
+  it("不传 size 的 popup 保持 24rem（既有调用点零影响）", () => {
+    render(
+      <Drawer defaultOpen>
+        <DrawerContent title="t">x</DrawerContent>
+      </Drawer>,
+    );
+    expect(screen.getByRole("dialog").className.split(/\s+/)).toContain("w-[min(90vw,24rem)]");
+  });
+
   it("无 title 也能挂载内容", () => {
     render(
       <Drawer defaultOpen>

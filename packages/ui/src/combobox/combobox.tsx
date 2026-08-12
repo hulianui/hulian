@@ -3,7 +3,9 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useMemo,
   useRef,
+  useState,
   type ReactNode,
   type RefObject,
 } from "react";
@@ -13,6 +15,7 @@ import { cva } from "class-variance-authority";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type {
   ComboboxChipProps,
@@ -45,6 +48,30 @@ const VirtualizedContext = createContext(false);
 const VirtualizedItemIndexContext = createContext<number | undefined>(undefined);
 const VIRTUALIZE_THRESHOLD = 100;
 
+/**
+ * 「使用 “xxx”」那条创建项的印记。
+ *
+ * 它是被**塞进 `items`** 的一条真选项，而不是浮层里额外画的一行 —— 后者试过，走不通：
+ * Base UI 在给了 `items` 时会把 `listRef.current.length` 截到过滤结果的条数
+ * （`AriaCombobox.js:668`），于是多出来的那行键盘永远走不到，还会把最后一条真选项挤出导航范围。
+ * 一条只能用鼠标点的选项比原来的缺口更糟，所以改成从 `items` 这一层进去：过滤、键盘导航、
+ * 下标、`Empty` 的判空全都自动一致。
+ *
+ * 用 symbol 作印记，好让它不出现在 `Object.keys` / `JSON.stringify` 里 —— 消费方从
+ * `onValueChange` 拿到的仍然只是个普通的 `{value,label}`。
+ */
+const CREATE_ENTRY = Symbol("hulian.combobox.create");
+
+/** 浮层那侧需要知道的两件事：哪一条是创建项（好换皮肤），以及选中它时该通知谁。 */
+interface ComboboxCreatable {
+  onCreate?: (value: string) => void;
+}
+const CreatableContext = createContext<ComboboxCreatable | null>(null);
+
+function isCreateEntry(item: unknown): item is ComboboxItemData {
+  return item != null && typeof item === "object" && CREATE_ENTRY in item;
+}
+
 const ChevronDownIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <path
@@ -72,6 +99,12 @@ const CheckIcon = () => (
 const ClearIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+const PlusIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M8 3.5v9M3.5 8h9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -125,6 +158,8 @@ export const comboboxTriggerVariants = cva(
 
 export function Combobox<Multiple extends boolean = false>({
   children,
+  creatable = false,
+  onCreate,
   ...props
 }: ComboboxProps<Multiple>) {
   const anchorRef = useRef<HTMLElement>(null);
@@ -137,16 +172,97 @@ export function Combobox<Multiple extends boolean = false>({
       ? candidateItems.length
       : 0;
   const virtualized = props.virtualized ?? flatItemCount >= VIRTUALIZE_THRESHOLD;
+
+  // 创建项要显示「刚打了什么」，而输入串只在 Base UI 的 store 里，对外只有 onInputValueChange 这一个出口。
+  // 于是在这里跟着记一份；受控（消费方自己传 inputValue）时以消费方那份为准，不与之争。
+  const [ownQuery, setOwnQuery] = useState(() =>
+    props.defaultInputValue == null ? "" : String(props.defaultInputValue),
+  );
+  const query = props.inputValue == null ? ownQuery : String(props.inputValue);
+
+  if (creatable && !Array.isArray(candidateItems)) {
+    warnOnce(
+      "combobox-creatable-without-items",
+      "[hulian] Combobox: creatable 需要 items —— 创建项是塞进 items 里的一条真选项（这样过滤、键盘导航、下标才一致）。选项写死在 children 里时这一档不生效。",
+    );
+  }
+
+  // 两端空白去掉再用：Base UI 自己过滤时用的也是 trim 过的串（`AriaCombobox.js:194`），
+  // 这里跟着一致，免得「打了个尾随空格，创建项就被自己的过滤器筛掉」。
+  const createEntry = useMemo(() => {
+    if (!creatable || !Array.isArray(candidateItems)) return null;
+    const trimmed = query.trim();
+    if (trimmed === "") return null;
+    const lowered = trimmed.toLowerCase();
+    // 比 value 也比 label：消费方看到的是 label（“北京市公安局”），value 常常是编号；
+    // 只比一边，另一边完全相同时仍会冒出一条「使用 “…”」，选下去就是给已有条目造了个重复。
+    const exists = flattenItems(candidateItems).some(
+      (item) =>
+        (typeof item.value === "string" && item.value.trim().toLowerCase() === lowered) ||
+        (typeof item.label === "string" && item.label.trim().toLowerCase() === lowered),
+    );
+    if (exists) return null;
+    return { value: trimmed, label: trimmed, [CREATE_ENTRY]: true } as ComboboxItemData;
+  }, [creatable, candidateItems, query]);
+
+  // 摆在最前：创建项是「候选里没有才出现」的那条，读起来该在最上面，而不是翻到底才看见。
+  const items = useMemo(
+    () =>
+      createEntry && Array.isArray(candidateItems)
+        ? [createEntry, ...candidateItems]
+        : candidateItems,
+    [createEntry, candidateItems],
+  );
+
+  const creatableValue = useMemo<ComboboxCreatable | null>(
+    () => (creatable ? { onCreate } : null),
+    [creatable, onCreate],
+  );
+
+  // creatable 档必须显式给一个 defaultInputValue，否则第一个字符会被吞掉：
+  // Base UI 有一条「`items` 变了就把输入框拉回选中项的 label」的同步（`AriaCombobox.js:776`），
+  // 它只在「输入串没被接管」时生效，而创建项一出现 `items` 的 identity 就变了 —— 第一次按键那一帧
+  // 「查询已变」的标志位还是旧值，于是刚打的那个字被抹掉。给了 defaultInputValue 即算接管，那条同步
+  // 整条跳过。默认值取 Base UI 原本会推出来的那个（单选时是选中项的 label），免得挂载时输入框空着。
+  const initialInputValue = useRef<string | undefined>(undefined);
+  if (initialInputValue.current === undefined) {
+    const selected = (props.value ?? props.defaultValue) as ComboboxItemData | undefined;
+    initialInputValue.current =
+      props.defaultInputValue != null
+        ? String(props.defaultInputValue)
+        : !props.multiple && selected != null && typeof selected.label === "string"
+          ? selected.label
+          : "";
+  }
+
+  // 不开 creatable 就一个字段都不改：Root 收到的仍然是原样的 props（含消费方自己的 onInputValueChange）。
+  const rootProps = creatable
+    ? {
+        ...props,
+        items,
+        defaultInputValue: initialInputValue.current,
+        onInputValueChange: (next: string, details: unknown) => {
+          setOwnQuery(next);
+          (props.onInputValueChange as ((v: string, d: unknown) => void) | undefined)?.(
+            next,
+            details,
+          );
+        },
+      }
+    : props;
+
   return (
     <AnchorContext.Provider value={anchorRef}>
       <VirtualizedContext.Provider value={virtualized}>
-        {/* Root 是泛型函数组件，spread 泛型 props 推断不稳 → 在边界 as any，对外类型仍由 ComboboxProps 保证。 */}
-        <BaseCombobox.Root
-          {...(props as Record<string, unknown>)}
-          virtualized={virtualized}
-        >
-          {children}
-        </BaseCombobox.Root>
+        <CreatableContext.Provider value={creatableValue}>
+          {/* Root 是泛型函数组件，spread 泛型 props 推断不稳 → 在边界 as any，对外类型仍由 ComboboxProps 保证。 */}
+          <BaseCombobox.Root
+            {...(rootProps as Record<string, unknown>)}
+            virtualized={virtualized}
+          >
+            {children}
+          </BaseCombobox.Root>
+        </CreatableContext.Provider>
       </VirtualizedContext.Provider>
     </AnchorContext.Provider>
   );
@@ -281,6 +397,51 @@ export function ComboboxTrigger({
   );
 }
 
+// 选项行的皮肤：创建项与 ComboboxItem 共用，好让「新建这一条」读起来和别的选项是同一类东西。
+const comboboxItemClass = [
+  "relative flex cursor-default select-none items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] py-1.5 pl-2 pr-8 text-sm outline-none",
+  "data-[highlighted]:bg-surface-hover data-[highlighted]:text-foreground",
+  "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+];
+
+/** 判重用：把分组结构（`{ value, items }`）摊平成一层选项，非选项形状的条目直接丢掉。 */
+function flattenItems(items: readonly unknown[]): ComboboxItemData[] {
+  const flat: ComboboxItemData[] = [];
+  for (const entry of items) {
+    if (entry == null || typeof entry !== "object") continue;
+    const nested = (entry as { items?: unknown }).items;
+    if (Array.isArray(nested)) flat.push(...flattenItems(nested));
+    else if ("value" in entry) flat.push(entry as ComboboxItemData);
+  }
+  return flat;
+}
+
+/**
+ * 「使用 “xxx”」那一行。它接的是 `items` 里那条带印记的选项，所以键盘上下键、highlight、
+ * Enter 选中、下标全走 Base UI 原本那套 —— 这里只换一身皮肤（加号 + 灰字），不改机制。
+ * 点选时除了照常提交值，再发一次 `onCreate`，那是给「去落库 / 追加进 items」用的。
+ */
+function ComboboxCreateItem({ item }: { item: ComboboxItemData }) {
+  const virtualizedIndex = useContext(VirtualizedItemIndexContext);
+  const ctx = useContext(CreatableContext);
+  const copy = useComponentLocale().combobox;
+  const createLabel = copy?.create ?? ((value: string) => `使用 “${value}”`);
+  return (
+    <BaseCombobox.Item
+      data-hulian-create=""
+      value={item}
+      index={virtualizedIndex}
+      onClick={() => ctx?.onCreate?.(item.value)}
+      className={cn(comboboxItemClass, "text-muted-foreground")}
+    >
+      <span className="flex shrink-0 items-center">
+        <PlusIcon />
+      </span>
+      <span className="truncate text-foreground">{createLabel(item.value)}</span>
+    </BaseCombobox.Item>
+  );
+}
+
 export function ComboboxContent({
   children,
   emptyMessage = "无匹配项",
@@ -289,11 +450,23 @@ export function ComboboxContent({
   align = "start",
   sideOffset = 6,
   onListScroll,
+  header,
   footer,
   className,
 }: ComboboxContentProps) {
   const anchorRef = useContext(AnchorContext);
   const virtualized = useContext(VirtualizedContext);
+  const creatable = useContext(CreatableContext) != null;
+  // 创建项混在 items 里一起过来，所以拦在渲染函数这一层换皮肤 —— 消费方的 render fn 不必知道
+  // 它的存在（知道了就等于把「怎么画创建项」又推回业务侧，那正是这条缺口要消灭的）。
+  const renderItem: ComboboxContentProps["children"] = creatable
+    ? (item, index) =>
+        isCreateEntry(item) ? (
+          <ComboboxCreateItem key="hulian-create" item={item} />
+        ) : (
+          children(item, index)
+        )
+    : children;
   return (
     <BaseCombobox.Portal>
       <BaseCombobox.Positioner
@@ -323,18 +496,23 @@ export function ComboboxContent({
               />
             </span>
           )}
+          {/* 表头在 List 之外、Empty 之上：它是「常驻说明」，零结果时也该看得见（那正是最需要它的时候）。 */}
+          {header != null && (
+            <div className="mb-1 shrink-0 border-b border-hairline pb-1">{header}</div>
+          )}
           {/* Base UI 的 Empty 始终渲染 <div role=status>(aria-live 播报用)，有匹配项时 children=null。
-              empty:py-0 让它在为空时塌缩高度，避免弹层顶部留白；保留在 DOM 不破坏 a11y。 */}
+              empty:py-0 让它在为空时塌缩高度，避免弹层顶部留白；保留在 DOM 不破坏 a11y。
+              creatable 档下「零结果」自然不会发生（创建项本身就是一条候选），故这里无需特判。 */}
           <BaseCombobox.Empty className="shrink-0 px-2 py-6 text-center text-sm text-muted-foreground empty:py-0">
             {emptyMessage}
           </BaseCombobox.Empty>
           {virtualized ? (
             <VirtualizedComboboxList onListScroll={onListScroll}>
-              {children}
+              {renderItem}
             </VirtualizedComboboxList>
           ) : (
             <BaseCombobox.List className="overflow-y-auto" onScroll={onListScroll}>
-              {children}
+              {renderItem}
             </BaseCombobox.List>
           )}
           {/* 页脚在 List 之外：不随列表滚动，故「加载中/共 N 条」始终可见（RemoteSelect 远程分页用）。 */}
@@ -354,12 +532,7 @@ export function ComboboxItem({ value, disabled, children, className }: ComboboxI
       value={value}
       index={virtualizedIndex}
       disabled={disabled}
-      className={cn(
-        "relative flex cursor-default select-none items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] py-1.5 pl-2 pr-8 text-sm outline-none",
-        "data-[highlighted]:bg-surface-hover data-[highlighted]:text-foreground",
-        "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-        className,
-      )}
+      className={cn(comboboxItemClass, className)}
     >
       {children}
       <BaseCombobox.ItemIndicator className="absolute right-2 flex items-center text-foreground">

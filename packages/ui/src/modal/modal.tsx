@@ -153,7 +153,15 @@ function ModalDialog({ record }: { record: ModalRecord }) {
           style={overlayTransition}
         >
           <div className="flex gap-3">
-            <Icon className={cn("mt-0.5 size-5 shrink-0", typeColor[type])} aria-hidden />
+            {/* danger 覆盖图标色但不换字形（#231）：字形由 type 决定（confirm 仍是问号 = 「这是一个提问」），
+                颜色由 danger 决定（= 「后果不可逆」）。同 Popconfirm 的处理。 */}
+            <Icon
+              className={cn(
+                "mt-0.5 size-5 shrink-0",
+                options.danger ? "text-danger" : typeColor[type],
+              )}
+              aria-hidden
+            />
             <div className="min-w-0 flex-1">
               {options.title && (
                 <BaseDialog.Title className="text-base font-semibold">{options.title}</BaseDialog.Title>
@@ -171,7 +179,9 @@ function ModalDialog({ record }: { record: ModalRecord }) {
                 {options.cancelText ?? "取消"}
               </Button>
             )}
-            <Button onClick={handleOk} loading={loading}>
+            {/* 破坏性确认的确定键必须与「保存 / 继续」异色（#231）：不传 danger 时 tone 仍是
+                Button 的默认档 brand，故既有调用点渲染不变。 */}
+            <Button onClick={handleOk} loading={loading} tone={options.danger ? "danger" : "brand"}>
               {options.okText ?? "确定"}
             </Button>
           </div>

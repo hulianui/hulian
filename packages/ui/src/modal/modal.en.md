@@ -29,7 +29,8 @@ Call `modal.confirm(opts)`, `modal.info`, `modal.success`, `modal.error`, or `mo
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | Tone, normally implied by the imperative method. |
+| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | Tone, normally implied by the imperative method. **It does not reach the confirm button**; it only changes the leading icon and the icon color. |
+| `danger` | `boolean` | `false` | Destructive action: the confirm button switches to `tone="danger"` and the leading icon turns `text-danger`. Same name and meaning as `danger` on [Popconfirm](../popconfirm/popconfirm.md). |
 
 `ModalOptions` Events:
 
@@ -66,12 +67,22 @@ modal.confirm({
   content: "Confirming starts the request.",
   onOk: () => fetch("/api/order", { method: "POST" }),
 });
+
+// Deletion: the confirm button turns red, clearly unlike Save or Continue
+modal.confirm({
+  title: "Delete this record?",
+  content: "This cannot be undone.",
+  danger: true,
+  onOk: () => remove(id),
+});
 ```
 
 ## Usage guidelines
 
 - Mount exactly one `ModalProvider` at the application root. Imperative calls have nowhere to render without it.
 - When `onOk` returns a Promise, only resolve closes automatically. Rejection keeps the dialog open for caller-owned error handling; do not also destroy it in the rejection path.
+- **Destructive confirmations need `danger`; `type="error"` is not a substitute.** `type` only drives the leading icon and its color, so `modal.error({ title: "Delete?" })` produces a red icon next to a brand-colored confirm button that looks exactly like Save or Continue. A button that matches Save under the words "this cannot be undone" is a button people misclick.
+- `danger` changes the icon **color** but not the icon **glyph**: `modal.confirm({ danger: true })` keeps the question mark, because the glyph says "this is a question" while the color says "the result is irreversible." Pass `type: "error"` as well when you also want the cross glyph.
 
 ## Related
 [Dialog](../dialog/dialog.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Drawer](../drawer/drawer.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md) · [HoverCard](../hover-card/hover-card.md)

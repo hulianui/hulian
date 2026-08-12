@@ -1,4 +1,4 @@
-import { Fragment, memo } from "react";
+import { cloneElement, Fragment, memo } from "react";
 import { cn } from "../lib/cn";
 import type { BreadcrumbProps } from "./breadcrumb.types";
 
@@ -21,7 +21,26 @@ function BreadcrumbImpl({
           return (
             <Fragment key={i}>
               <li className="inline-flex items-center">
-                {isCurrent ? (
+                {item.render ? (
+                  // render 逃生口（#239）：真渲染成消费方给的元素（next/link、react-router Link…），
+                  // 于是 Cmd+点击 / 中键 / Shift 开新窗这些原生行为自动成立 —— 事件委托劫持点击做不到，
+                  // 那条路得逐个 modifier 手工放行，漏一个用户就发现面包屑开不了新标签。
+                  // 类名口径同 Button/Link：本组件的皮肤在前、render 元素自带的在后（后者胜出）。
+                  cloneElement(
+                    item.render,
+                    {
+                      ...(item.href != null ? { href: item.href } : {}),
+                      "aria-current": isCurrent ? "page" : undefined,
+                      className: cn(
+                        isCurrent
+                          ? "font-medium text-foreground"
+                          : "text-muted-foreground hover:text-foreground",
+                        (item.render.props as { className?: string }).className,
+                      ),
+                    } as Record<string, unknown>,
+                    item.label,
+                  )
+                ) : isCurrent ? (
                   <span aria-current="page" className="font-medium text-foreground">
                     {item.label}
                   </span>

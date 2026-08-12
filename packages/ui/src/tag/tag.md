@@ -10,7 +10,7 @@ status: enriched
 
 # Tag
 
-> 状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌) · data-display/info
+> 状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌) · data-display/info
 
 ## 何时用
 
@@ -26,7 +26,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"soft" \| "solid" \| "outline"` | `"soft"` | 视觉变体：soft 浅底（最常用于状态标签）/ solid 实底 / outline 描边。 |
-| tone | `"neutral" \| "brand" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色。 |
+| tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色。取值集与 [Alert](../alert/alert.md) 一致。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
@@ -55,6 +55,11 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <Tag tone="danger">错误</Tag>
 ```
 ```tsx
+// info 是中性事实说明（当前处于什么模式），不是操作也不是成功/警告
+<Tag tone="info">外接浏览器模式</Tag>
+<Tag variant="outline" tone="info">只读</Tag>
+```
+```tsx
 // 呼吸圆点表达进行态 + 可关闭
 <Tag dot pulse tone="brand">部署中</Tag>
 <Tag onClose={() => remove(id)}>待审核</Tag>
@@ -62,6 +67,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- **`brand` 与 `info` 不是同一件事**（#232）。`brand` 是主色，意思是「这条和产品/主操作有关」；`info` 走独立的 info 色，意思是「这是中性事实说明，读一下就好」。表达「当前处于什么模式」这类既不成功也不警告的事实，用 `info`——用 `brand` 会让一个不可点的标签在页面里与主 CTA 抢注意力，用 `neutral` 则会和一堆灰标签糊在一起读不出来。两者在 tokens 0.8.0 补齐 `--color-info` 前确实是一个颜色（见 [Alert](../alert/alert.md) 的同一段历史），现在不是了。
 - `pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。
 - `icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。
 - `onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。

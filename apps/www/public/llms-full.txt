@@ -3184,7 +3184,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" \| "soft" \| "outline" \| "ghost" \| "link"` | `"solid"` | 视觉变体；`soft` 是浅语义底 + 同色文字，权重介于 `outline` 与 `solid` 之间（见下文） |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral" \| "current"` | `"brand"` | 语义色调（见下表）。`current` 不是语义色，是「别设色、跟随容器继承」，**只对 `ghost` / `outline` 有效**（见「跟随容器的 tone="current"」） |
-| size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | 尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表） |
+| size | `"xs" \| "28" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | 尺寸；`xs`(24) 与 `"28"` 是两个密集文字档（中后台工具栏 / 表格行内 / 筛选胶囊行）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表） |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | muted | `boolean` | `false` | 层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` / `outline` 有效**（见「muted 层级档」） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
@@ -3314,18 +3314,25 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | `md`（默认） | 40px | 14px | `icon` | 40px |
 | `lg` | 48px | 16px | `iconLg` | 48px |
 
-密集端另有四档，**它们互相不等高**，各钉一条行刻度：
+密集端另有五档，**除 `"28"` 与 `icon28` 是一对外互相不等高**，各钉一条行刻度：
 
 | 密集档 | 尺寸 | 字号 | 配它的是谁 | 用在哪 |
 |--------|------|------|-----------|--------|
 | `xs` | 高 24px | 12px | `icon24` | 中后台工具栏、表格行内、面板头部的文字按钮 |
+| `"28"` | 高 28px | 12px | `icon28`、[Chip](https://hulianui.haloritual.com/zh/components/chip) 的 `md`、[Sidebar](https://hulianui.haloritual.com/zh/components/sidebar) 菜单项的 `sm` | 28px 那条行刻度上的文字按钮：筛选胶囊行的触发器、信息卡片底部的次要操作 |
 | `iconXs` | 20px 见方 | — | 无（比任何文字档都矮） | 表格行内的纯图标微操作：树形展开箭头、拖拽手柄 |
 | `icon24` | 24px 见方 | — | `xs` 文字档、[Tag](https://hulianui.haloritual.com/zh/components/tag) 的 `md`、[Chip](https://hulianui.haloritual.com/zh/components/chip) 的 `sm` | 与 `xs` 文字按钮同排的图标按钮 |
-| `icon28` | 28px 见方 | — | [Chip](https://hulianui.haloritual.com/zh/components/chip) 的 `md`、[Sidebar](https://hulianui.haloritual.com/zh/components/sidebar) 菜单项的 `sm` | 28px 那条行刻度上的图标按钮（筛选胶囊行的清空键等） |
+| `icon28` | 28px 见方 | — | `"28"` 文字档、[Chip](https://hulianui.haloritual.com/zh/components/chip) 的 `md`、[Sidebar](https://hulianui.haloritual.com/zh/components/sidebar) 菜单项的 `sm` | 28px 那条行刻度上的图标按钮（筛选胶囊行的清空键等） |
 
 `xs` 是密集界面的最小文字档：一屏十几个操作时 `sm`（32px/14px）是**大一档**而不是最小档，
 用它去接 24px 的工具栏，就得写一串覆盖类去撤销 `sm` 自己刚加的高度、内边距、字号和圆角。
 `xs` 已经把圆角降到 4px、图文间距收到 4px，直接用即可，不要再加 `className` 补丁。
+
+`"28"` 是 `xs` 与 `sm` 之间的插档，**名字是裸数字**：`"28"` 与 `icon28` 只差一个 `icon` 前缀，
+文字档没有前缀，对称的名字就只剩边长本身（同 `icon24` / `icon28` 那条口径，见下）。
+它的字号跟 `xs` 走（12px）而不是跟 `sm` 走——密集端的字号带就是 10~12px，给 14px 会让这批
+调用点一律补写 `text-xs`；内边距 10px、图文间距 6px 按高度在 `xs` 与 `sm` 之间插值。
+圆角保持 `--radius`，与 `icon28` 一致，所以「28px 文字按钮 + 28px 图标按钮」同排时半径也齐（#228）。
 
 **`xs` 的配套图标档是 `icon24` 而不是 `iconXs`。** 名字带 `Xs` 的那个是 20px：它比 `xs` 还矮 4px，
 是刻意的——把它抬到 24px 会把 `density="compact"` 的表格行撑高，而它存在的全部理由就是不撑高行。
@@ -3348,11 +3355,14 @@ import { Button, buttonVariants } from "@hulianui/ui"
   <ChevronRight className="size-4" />
 </Button>
 
-{/* 28px 那条行刻度：筛选胶囊 + 清空键 */}
-<Chip>状态：进行中</Chip>
+{/* 28px 那条行刻度：文字触发器 + 清空键（两个控件等高、圆角也一致） */}
+<Button size="28" variant="outline" tone="neutral" muted>筛选</Button>
 <Button size="icon28" variant="outline" muted aria-label="清空筛选">
   <X className="size-3.5" />
 </Button>
+
+{/* 卡片底部的全宽逃生口 */}
+<Button size="28" variant="outline" muted block>中止</Button>
 ```
 
 ```tsx
@@ -3636,6 +3646,7 @@ import { CellEditor } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | value* | `string` | — | 已提交值（受控数据源）。提交成功后把新值写回这里，组件据此重置内部草稿与判等基准 |
+| validate | `(next: string) => string \| undefined` | — | 提交前校验：返回字符串＝错误消息，拦住 `onCommit` 并把该串显示在格子下方；返回 `undefined`（或空串）放行。见下 |
 | missing | `boolean` | `false` | 「这个字段还没填」：降成 muted + italic，让「空」和「填了空格」一眼可分 |
 | multiline | `boolean` | `false` | 多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input |
 | disabled | `boolean` | `false` | 禁用。`onCommit` 返回 Promise 时组件在 pending 期间自己追加禁用，不必再传 |
@@ -3648,7 +3659,9 @@ import { CellEditor } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onCommit | `(next: string) => void \| Promise<void>` | blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用 |
+| onCommit | `(next: string) => void \| Promise<void>` | blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用。传了 `validate` 且它返回错误串时**不会调用** |
+
+顺序是「判等 → `validate` → `onCommit`」：值没变根本不校验（那是上一次已经放行过的），校验没过则值不出去。
 
 ## 示例
 ```tsx
@@ -3671,12 +3684,36 @@ const [row, setRow] = useState(initialRow);
 <CellEditor multiline value={row.address} onCommit={(next) => save("address", next)} />
 ```
 
+### validate：非法值不许先写进去再回滚
+
+失焦即提交这条契约意味着，没有校验层时非法值会先交出去、由消费方回滚 —— 而那一刻光标已经在下一格，用户看到的是「我改的东西自己变回去了」。`validate` 把这一层前移：返回字符串就拦住 `onCommit`，值根本不出去，错误原地显示。
+
+```tsx
+<CellEditor
+  value={row.months}
+  validate={(next) => {
+    if (!/^\d+$/.test(next)) return "只能填数字";
+    if (Number(next) > 480) return "社保月数不能超过 480";
+    return undefined;
+  }}
+  onCommit={(next) => save("months", Number(next))}
+/>
+```
+
+被拦住时：草稿**不回滚**（让用户看着自己写错的那串继续改），判等基准也不推进 —— 所以同一个非法值再次失焦仍然会被拦，改对了才提交。红线复用 `Input` / `Textarea` 的 `cell` 档已有的内嵌下划线（`inset` 阴影，零布局位移），错误串用 `aria-describedby` 挂到控件上。
+
+一开始输入、按 Esc 回滚、或把值改回上一次提交的样子，错误都会自动撤掉 —— 三条路径说的都是「屏幕上那条错误已经不是眼下这格的内容了」。
+
+跨格约束（结束时间早于开始时间这类）照样写在这里：`validate` 是个闭包，直接读同一行的其它字段即可。
+
 ## 禁忌 / 坑
 
 - **别在 `onCommit` 里自己判等**：组件已经判过了，值没变根本不会调进来。核对场景下用户会大量「点进去看一眼再点走」，判等这一层就是为了不让一整屏空提交打到后端。
 - **Esc 之后的 blur 不会重发旧值**：Esc 把草稿写回上一次提交值，紧随其后的 blur 判等直接短路。消费方不需要再维护「刚按过 Esc」的标志位。Esc 只回滚，不移走焦点。
 - **Enter 提交，Shift+Enter 换行**：多行档里换行让给 Shift+Enter；单行档里 Enter 被 `preventDefault`，不会误提交所在的 form。
 - **自增高是 CSS 的 `field-sizing: content`，不是 JS 测高**：表格里几十个格同时读 `scrollHeight` 会在滚动时明显掉帧，而且和列宽变化互相触发。别再往外面套一层测高逻辑。
+- **能在客户端判的非法值走 `validate`，别放到 `onCommit` 里再回滚**：回滚发生时光标已经在下一格，用户只会看到自己改的东西自己变回去了。`onCommit` 里剩下的是只有服务端才知道的失败（重名、并发冲突），那类仍然要自己 catch。
+- **`validate` 返回空串等于放行**：一条看不见的错误却拦着提交，比不校验更糟 —— 用户只看到这格存不进去，屏幕上什么都没有。想拦就给一句能读的话。
 - **`onCommit` 失败要自己 catch**：组件只负责结束 pending 态，回滚与报错文案要看业务语义，它不替你决定。
 - **父级必须把新值写回 `value`**：不写回时组件仍以自己的草稿显示，但下一次外部刷新会把界面拉回旧值。
 - **放进 [Table](https://hulianui.haloritual.com/zh/components/table) 时 `columns` 必须 memo**：cell 函数经 TanStack 的 `flexRender` 当组件类型渲染，identity 一变整格卸载重挂 —— 挂了 `onBlur` 提交的编辑器会被重挂时的 blur 误触发。
@@ -4376,6 +4413,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | defaultValue | 同上 | — | 非受控初始选中 |
 | multiple | `boolean` | `false` | true 时 value/onValueChange 自动变数组 |
 | virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
+| creatable | `boolean` | `false` | 自由输入创建新值：当前输入串在候选里没有完全相同的一项时，列表首位多出一条「使用 “xxx”」。见下 |
+| onCreate | `(value: string) => void` | — | 创建项被选中时触发（与 `onValueChange` 同时发生，不是二选一）。见下 |
 | disabled | `boolean` | `false` | 禁用 |
 
 `ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）。继承原生 `<button>` 属性，剩余属性落到按钮自身。
@@ -4408,6 +4447,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | align | `"start"\|"center"\|"end"` | — | 浮层对齐 |
 | sideOffset | `number` | — | 偏移 |
 | onListScroll | `UIEventHandler<HTMLDivElement>` | — | 列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](https://hulianui.haloritual.com/zh/components/remote-select)） |
+| header | `ReactNode` | — | 列表**上方**常驻表头（用法提示、分组说明、批量操作），不随列表滚动。与 `emptyMessage` 不同：后者只在零结果时出现 |
 | footer | `ReactNode` | — | 列表下方常驻页脚（加载中 / 计数 / 到底提示），不随列表滚动 |
 | className | `string` | — | — |
 
@@ -4538,6 +4578,42 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
   </ComboboxContent>
 </Combobox>
 ```
+
+### creatable：长尾字段要能手填
+
+发证机构、单位名称这类字段有几百个常见值，做成选项能让绝大多数人少打字；但运营手里就是有一张列表上没有的证书。做成纯选择会逼他们挑一个近似值，那比自由输入更糟。`creatable` 就是这一档：
+
+```tsx
+const [issuers, setIssuers] = useState(ISSUERS);
+
+<Combobox
+  items={issuers}
+  creatable
+  onCreate={(value) => setIssuers((prev) => [...prev, { value, label: value }])}
+  onValueChange={(item) => form.setValue("issuer", item.value)}
+>
+  <ComboboxInput aria-label="发证机构" placeholder="选择或直接输入" />
+  <ComboboxContent header={<p className="px-2 py-1 text-xs text-muted-foreground">找不到就直接输入</p>}>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
+几条口径：
+
+- **判重按去空白 + 忽略大小写，`value` 和 `label` 两边都比**：消费方看到的是 label（“北京市公安局”），value 常常是编号；只比一边，另一边完全相同时仍会冒出创建项，选下去就是给已有条目造了个重复。
+- **`onCreate` 与 `onValueChange` 同时发生，不是二选一**：值的变化照常走 `onValueChange`（拿到的是 `{ value: 输入串, label: 输入串 }`，两端空白已去除），`onCreate` 只负责「这是一个新值，去建它」—— 落库、追加进 `items` 都在这里做。
+- **创建项是塞进 `items` 里的一条真选项**，不是浮层里多画的一行。所以键盘上下键、highlight、Enter 选中、`Empty` 的判空全都自动一致，超过 100 项自动虚拟化时也照常工作。
+- **`creatable` 需要 `items`**：选项写死在 `children` 里的用法没有可插入的地方，这一档不生效（开发期会有一条告警）。
+- **`creatable` 开着时输入串由组件接管一份**（内部补了 `defaultInputValue`）。带来的唯一差异：用 `value` 从外部改选中项时，输入框里的文字不会跟着变。需要联动请自己传 `inputValue`。
+
+### header：常驻在列表上方的一行
+
+`emptyMessage` 只在零结果时出现，所以「找不到就直接输入」这类**始终**该看见的提示挂不上去 —— 有历史值时它永远不显示。`header` 与 `footer` 对称：一个在列表上、一个在列表下，两个都不参与列表滚动。
 
 ## 禁忌 / 坑
 
@@ -7303,7 +7379,9 @@ import { RippleButton } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
-| rippleColor | `string` | `var(--color-primary-foreground)` | 波纹颜色 |
+| variant | `"solid" \| "outline" \| "ghost" \| "soft"` | `"solid"` | 外观档，与 [Button](https://hulianui.haloritual.com/zh/components/button) 的同名档同色。**没有 `link`**：波纹要有盒子，见「禁忌 / 坑」 |
+| tone | `"brand" \| "neutral" \| "success" \| "warning" \| "danger"` | `"brand"` | 语气色，与 Button 的同名档同色。**没有 `current`**：波纹默认色要从 tone 推导，继承色推不出来 |
+| rippleColor | `string` | 按 `variant` × `tone` 推导 | 波纹颜色。实心档默认取该 tone 的前景色（深底上的浅波纹），其余档取该 tone 的本色。传值即覆盖 |
 | duration | `string` | `"600ms"` | 单次波纹动画时长 |
 
 ## Events
@@ -7325,12 +7403,21 @@ import { RippleButton } from "@hulianui/ui"
 ```tsx
 <RippleButton duration="900ms">点我看波纹</RippleButton>
 ```
+```tsx
+// 外观跟 Button 一样按 variant × tone 选，不必从外面注入 buttonVariants()
+<RippleButton variant="outline">取消</RippleButton>
+<RippleButton variant="ghost">稍后再说</RippleButton>
+<RippleButton tone="danger">删除</RippleButton>
+<RippleButton variant="outline" tone="danger">删除</RippleButton>
+```
 
 ## 禁忌 / 坑
 
-- **与 [Button](https://hulianui.haloritual.com/zh/components/button) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。
-
-暂无已知坑。波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。
+- **与 [Button](https://hulianui.haloritual.com/zh/components/button) 共享底座与配色档**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`；`variant` × `tone` 的色号与 Button 逐格对齐（#233）。**不共享的是圆角、阴影与颜色 hover**——圆角是特效件自己的，`shadow-sm` 四个特效件一个都没有，而颜色 hover 与本件底座冲突（下一条）。0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差（#126）。
+- **没有颜色 hover，交互反馈由波纹负责。** 特效件的底座刻意不含 `transition-colors`（它们变的是背景动画不是颜色），挂 `hover:bg-*` 会是一次无过渡的跳变。所以 `variant="ghost"` 的静息态就是一段文字，鼠标悬停不变底——要「悬停就有反应」的次要操作请用 `Button variant="ghost"`，本件的反馈是点下去那一下。
+- **`variant` 没有 `link`，`tone` 没有 `current`。** 前者是因为波纹要有盒子：`link` 去掉了高度与横向内边距，波纹落在 `h-auto px-0` 的文字上会裁成一条缝或整片糊住文字。后者是因为波纹默认色要从 tone 推导，而 `current` 的意思正是「别设色、跟随容器继承」——真要跟随容器请显式传 `rippleColor="currentColor"`。
+- 波纹色默认按档推导：实心档用该 tone 的**前景色**（深底上的浅波纹），描边 / 幽灵 / 浅底档用该 tone 的**本色**。反过来（浅底上用前景色）会得到一圈几乎看不见的白，所以自定义 `rippleColor` 时注意底色。
+- 波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。
 
 ## 相关
 [Button](https://hulianui.haloritual.com/zh/components/button) · [ShimmerButton](https://hulianui.haloritual.com/zh/components/shimmer-button) · [RainbowButton](https://hulianui.haloritual.com/zh/components/rainbow-button) · [PulsatingButton](https://hulianui.haloritual.com/zh/components/pulsating-button) · [ButtonGroup](https://hulianui.haloritual.com/zh/components/button-group) · [SocialButton](https://hulianui.haloritual.com/zh/components/social-button)
@@ -8683,6 +8770,11 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | maxSize | `number` | — | 单文件字节上限；超限进 `onReject(reason="size")` |
 | limit | `number` | — | 文件数量上限（按 `files.length` 计）；达标后触发器自动禁用并显示「已选 n/limit」，超额进 `onReject(reason="limit")` |
 | variant | `"dropzone" \| "button"` | `"dropzone"` | 形态：拖拽落区 / 单按钮 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档：落区高度 / button 形态的按钮高度（button 形态与 `<Button>` 同名档等高） |
+| name | `string` | — | 内层 `<input type="file">` 的 name。**给了它才是真表单控件**：原生 `<form>` + `new FormData(form)` 读得到文件，`required` 才会被浏览器校验 |
+| required | `boolean` | — | 原生必填校验，透传到内层 input（**需同时给 `name`**） |
+| inputRef | `Ref<HTMLInputElement>` | — | 拿到内层 input 的引用（自定义校验、手动清空、第三方表单库注册） |
+| resetInputAfterSelect | `boolean` | 无 `name` 时 `true`；有 `name` 时 `false` | 选完是否清空 `input.value`。清了才能重复选同一个文件，清了 FormData 就读不到 |
 | files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度/url）；不传则不渲染列表 |
 | renderPreview | `(file: UploadFile) => ReactNode` | — | 缩略图渲染钩子；返回节点时列表项左侧变 40px 预览位（状态点降级为角标），返回 `null` 回落默认圆点 |
 | sortable | `boolean` | `false` | 列表可拖拽调序（**需同时传 `onSort` 才生效**） |
@@ -8695,6 +8787,7 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | onSelect | `(files: File[]) => void` | 通过校验的文件被选中（点击选择或拖入） |
 | onReject | `(rejections: UploadRejection[]) => void` | 被校验拒绝的文件（`reason`: `"type"` / `"size"` / `"limit"`） |
 | onRemove | `(id: string) => void` | 列表项移除按钮点击 |
+| onRetry | `(id: string) => void` | 失败行重试按钮点击。**传了才渲染这个按钮**（同 `onRemove` 的口径）；直接接 `useUpload` 的 `retry` |
 | onSort | `(files: UploadFile[]) => void` | 拖拽调序后的新顺序（组件不偷存顺序，由你写回 `files`） |
 
 ## Slots
@@ -8729,7 +8822,7 @@ const up = useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })
 | `files` | 直接喂 `<Upload files>` |
 | `add` | 接 `<Upload onSelect>`，入列并按并发自动开传 |
 | `remove` | 接 `<Upload onRemove>`，进行中的任务会被 abort |
-| `retry` | 重传单个失败项 |
+| `retry` | 接 `<Upload onRetry>`，重传单个失败项 |
 | `reorder` | 接 `<Upload onSort>`，只换顺序不影响在飞任务 |
 | `clear` | 全部取消并清空 |
 | `uploading` | 是否还有排队中或进行中的任务 |
@@ -8749,7 +8842,21 @@ const up = useUpload({
   concurrency: 3,
 });
 
-<Upload multiple limit={5} files={up.files} onSelect={up.add} onRemove={up.remove} />
+<Upload multiple limit={5} files={up.files} onSelect={up.add} onRemove={up.remove} onRetry={up.retry} />
+```
+
+原生 `<form>` + `FormData`（不进 React state，`required` 交给浏览器）：
+```tsx
+<form
+  onSubmit={(e) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget); // fd.get("file") 就是 File
+    void fetch("/api/upload", { method: "POST", body: fd });
+  }}
+>
+  <Upload name="file" required accept=".pdf" size="sm" hint="仅 PDF，≤ 10MB" />
+  <button type="submit">提交</button>
+</form>
 ```
 
 要真进度条就用 XHR（fetch 无上传进度事件）：
@@ -8789,6 +8896,10 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
 ## 禁忌 / 坑
 
 - `<Upload>` **不会自己上传**。要自动上传就配 `useUpload`；坚持自己管，就把 `status`/`progress`/`error`/`url` 回填到受控 `files`。
+- **不给 `name` 就没有原生表单这条路**：没有 name 的 input 压根不出现在 `FormData` 的 entries 里，`required` 也不会被浏览器校验。这两件事都不会报错，只是静默不生效。
+- 挂了 `name` 后有三处默认行为跟着变（都只在有 name 时发生）：① 选完不再清 `value`（否则 FormData 永远读到空），代价是**同一个文件连选两次不会再触发 `onSelect`**——要那个行为就显式写 `resetInputAfterSelect`，但那样 FormData 就读不到了，二者不可兼得；② 拖入的文件会被写回 `input.files`（原生拖放不会自己进去），同时被 accept/maxSize/limit 拒掉的文件会被剔出去，避免「界面说拒了、表单照样提交」；③ 达到 `limit` 时 input **不**跟着禁用——禁用控件会被 FormData 整个跳过，已选的文件会在提交时凭空消失（触发器那侧照旧禁用，点不开选择框）。
+- 写回 `input.files` 依赖 `DataTransfer` 构造器。测试环境（jsdom）没有它，回写会静默跳过，`onSelect` 那条路不受影响——**别在 jsdom 里断言拖入后的 `FormData` 内容**。
+- 失败行的重试按钮**要传 `onRetry` 才出现**。`useUpload` 早就有 `retry`，但组件不替你决定「这个失败该不该给重试入口」——直接 `onRetry={up.retry}` 接上即可。
 - **不要指望库帮你解后端信封**。`request` 拿到的 `{ url }` 是你自己 resolve 的，`code/data/msg` 之类的形状在你的闭包里剥完再返回。
 - `sortable` 单独给不生效，**必须同时给 `onSort`**（顺序是受控的，组件不偷存）；只给 `sortable` 会静默退回静态列表。
 - `renderPreview` 每次渲染都会被调用，**别在里面直接 `URL.createObjectURL`** —— 会漏对象 URL。缓存到 `Map<id, url>` 并在卸载时 `revokeObjectURL`（showcase 的 `useObjectUrls` 是可抄的写法）。
@@ -9433,7 +9544,19 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 | variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
 | divided | `boolean` | `true` | 是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档 |
 
-`CardHeader` / `CardBody` / `CardFooter` 均为插槽容器，接收原生 div 属性 + `children`。
+`CardBody` / `CardFooter` 为插槽容器，接收原生 div 属性 + `children`。
+
+`CardHeaderProps`（另继承 `HTMLAttributes<HTMLDivElement>`，除 `title`，因其类型被改为 ReactNode）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| title | `ReactNode` | — | 主标题。标题有自己的元素（`data-slot="card-title"`），因此有独立的字号 / 行高 / 字重 |
+| description | `ReactNode` | — | 副标题 / 说明，排在标题下方，次要文字色 |
+| extra | `ReactNode` | — | 右侧操作区（按钮、开关、计数），与标题群同行垂直居中，窄屏换行到下方 |
+
+「有值」的口径与 `PageHeader` 的 `meta` 一致：`null` / `undefined` / `false` / `""` 都算没传，所以 `title={isEditing && "编辑中"}` 在假值时不会切进结构态。
+
+三者**一个都不传**时 `CardHeader` 就是今天的裸插槽：`children` 直接作正文，容器带 `font-medium`。传了任意一个即切换为「标题群 / 右侧操作区」两列排布，此时 `font-medium` 从容器上撤掉、只落在标题元素上——同一行的图标、`Tag`、计数不再被染成标题字重。`children` 保留为逃生口，结构态下排在标题与副标题之后（仍在左列）。
 
 `plain` 是「不画皮」的那一档：不画边框、不铺底色、不投阴影，只留圆角、文字色和三段插槽语义。用在**容器的外观已经由别处提供**的场景——迁移期页面自带的 hero 样式、外层已经有一层卡片、或者卡片坐在带渐变的区块里。其余三档都会画底色（`bg-surface`），套上去就是双重描边 + 双重底色。同名的 `plain` 在 [Accordion](https://hulianui.haloritual.com/zh/components/accordion) / [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) 的 Panel 上也有，语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
 
@@ -9446,10 +9569,24 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 </Card>
 ```
 
+「图标 + 标题 + 状态标签 + 右侧操作」这一行——中后台卡片头最常见的形状：
+```tsx
+<Card>
+  <CardHeader
+    title={<><Users className="size-5 text-muted-foreground" />指派任务<Tag>按角色</Tag></>}
+    description="按角色批量指派，指派后立即生效"
+    extra={<Button variant="ghost" size="sm">展开</Button>}
+  />
+  <CardBody>…</CardBody>
+</Card>
+```
+
 ## 禁忌 / 坑
 
 - 别用 Card 包 loading 骨架屏——参见 [[loading-skeletons-are-chromeless-dont-wrap-in-card]]：骨架按惯例是无边框无阴影的纯 shimmer 块，套 Card 会显得过重。
 - 列表/侧栏里 Card 末行(时间戳/meta 行)若设了外层 `min-height` 又用 flex 撑高，meta 行可能漏到卡片背景外——参见 [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]]。
+- 标题里放图标 / `Tag` 时用 `title` 而不是把整行塞进 `children`：塞进 `children` 时 header 的 `font-medium` 会连图标、标签、计数一起染成标题字重，而标题自己反而没有字号与行高的表达。
+- `CardHeader` 的 `title` 是 `ReactNode`，与原生 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——需要原生 tooltip 请挂在内层元素上。
 - `divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `"use client"`，能直接放进 server component 里用。
 
 ## 相关
@@ -11120,11 +11257,22 @@ const columns: EditableColumn<Row>[] = [
 
 **导出**：`Empty`
 
-> 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC) · data-display/placeholder
+> 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + 加载中档 + sm/md(零依赖·RSC) · data-display/placeholder
 
 ## 何时用
 
-列表/表格/搜索结果无数据时用，给用户「为什么空 + 下一步做什么」（通过 `children` 放操作按钮）。它表达「已加载完但没内容」——加载中的占位用 [Skeleton](https://hulianui.haloritual.com/zh/components/skeleton)；防泄密遮罩用 [Watermark](https://hulianui.haloritual.com/zh/components/watermark)；表格自带空态可直接用 [Table](https://hulianui.haloritual.com/zh/components/table)/[ProTable](https://hulianui.haloritual.com/zh/components/pro-table)。
+列表/表格/搜索结果无数据时用，给用户「为什么空 + 下一步做什么」（通过 `children` 放操作按钮）。防泄密遮罩用 [Watermark](https://hulianui.haloritual.com/zh/components/watermark)；表格自带空态可直接用 [Table](https://hulianui.haloritual.com/zh/components/table)/[ProTable](https://hulianui.haloritual.com/zh/components/pro-table)。
+
+### 列表区四态各用什么
+
+同一块列表区通常要表达四种状态，它们**不是同一个组件的四种文案**，选错了读屏念出来的语义就是错的：
+
+| 状态 | 用什么 | 说明 |
+|------|--------|------|
+| 加载中 | `<Empty loading />`，或 [Skeleton](https://hulianui.haloritual.com/zh/components/skeleton) | 已知列表形状（几行几列）就用 Skeleton 占位，视觉更稳；形状未知或只是一小块区域用 `Empty loading`。**不要**用不带 `loading` 的 Empty 顶加载中：那会被读屏念成「暂无数据」 |
+| 空（确实没有数据） | `<Empty title="暂无数据">新建…</Empty>` | `children` 放「去创建」这类下一步动作 |
+| 筛选/搜索无结果 | `<Empty title="没有匹配的结果">清空筛选</Empty>` | 与「空」用同一个组件但文案与动作不同：这里该给的是「清空筛选/换关键词」，不是「新建」 |
+| 出错 | [Result](https://hulianui.haloritual.com/zh/components/result)（`status="error"`）+ 重试 | 出错不是空：它需要说明原因并给重试入口，用 Empty 会把一次失败伪装成「本来就没有数据」 |
 
 ## 导入
 ```ts
@@ -11138,6 +11286,7 @@ import { Empty } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
+| loading | `boolean` | `false` | 加载中。图标区换成 spinner（不再是「空」插画），容器打上 `aria-busy="true"`；「正在加载」由 spinner 自带的 `role="status"` + 本地化 aria-label 播报。`icon={null}` 时图标区仍然整个不渲染 |
 
 ## Slots
 
@@ -11157,14 +11306,33 @@ import { Empty } from "@hulianui/ui"
 <Empty title="还没有项目" description="创建第一个项目开始使用">
   <Button size="sm">新建项目</Button>
 </Empty>
+
+// 加载中：只传 loading，文案交给 spinner 的本地化 aria-label
+<Empty loading />
+
+// 加载中带文案：文案跟着状态走，别沿用空态那份
+<Empty loading title="正在加载项目" description="第一次打开会慢一点" />
+
+// 一块区域里的三态（出错交给 Result）
+{loading ? (
+  <Empty loading title="正在加载项目" />
+) : items.length === 0 ? (
+  <Empty title="还没有项目" description="创建第一个项目开始使用">
+    <Button size="sm">新建项目</Button>
+  </Empty>
+) : (
+  <ProjectList items={items} />
+)}
 ```
 
 ## 禁忌 / 坑
 
 - 别把「整个列表区是否渲染」和 Empty 绑死成 `if (!data.length) return <Empty/>`——若同区域有需保活的持久子组件（如已挂载的滚动容器、表单），条件 return 会把它们卸载重挂。参见 [[conditional-empty-return-unmounts-persistent-children]]。
+- 别在加载中沿用空态文案。`loading` 只接管图标区，`title` / `description` / `children` 照传照渲染 —— 写成 `<Empty loading={loading} title="暂无数据" />` 的话，加载中会一边转圈一边写着「暂无数据」。文案要跟着状态走。
+- 加载中不要留着「新建 / 重试」这类操作按钮：数据还没到，用户对着它做的决定都是盲的；「新建」属于空态，「重试」属于出错态（用 [Result](https://hulianui.haloritual.com/zh/components/result)）。
 
 ## 相关
-[Skeleton](https://hulianui.haloritual.com/zh/components/skeleton) · [Watermark](https://hulianui.haloritual.com/zh/components/watermark) · [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table)
+[Skeleton](https://hulianui.haloritual.com/zh/components/skeleton) · [Spinner](https://hulianui.haloritual.com/zh/components/spinner) · [Result](https://hulianui.haloritual.com/zh/components/result) · [Watermark](https://hulianui.haloritual.com/zh/components/watermark) · [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # EventStream 事件流
@@ -13298,6 +13466,7 @@ import { ProTable } from "@hulianui/ui"
 | toolbar | `boolean \| ProTableToolbarFeatures` | `true` | true=全开 / false=不渲染 / 对象逐项开关（reload/density/columnSetting/fullscreen） |
 | loading | `boolean` | — | 加载态：刷新图标旋转 |
 | actionRef | `Ref<ProTableActions>` | — | 命令式句柄：`reload()` 重新请求 / `clearSelection()` 清选 |
+| columnVisibility | `Record<string, boolean>` | — | 受控列显隐（`列 id → 是否可见`，**缺省的键视为可见**）。与 `rowSelection` / `sorting` 同口径：传了就受控、必须配 `onColumnVisibilityChange`，不传才内部自持。列 id 取 `ColumnDef.id`，没有则取 `accessorKey`。带 `meta.lockVisible` 的列恒可见，对它写 `false` 不生效 |
 | rootClassName | `string` | — | 外层容器类名（区别透传 Table 的 className） |
 
 ## Events
@@ -13308,6 +13477,7 @@ import { ProTable } from "@hulianui/ui"
 |------|------|------|
 | onReload | `() => void` | 点工具栏刷新图标触发 |
 | onRequestError | `(error: unknown) => void` | 托管 request 失败回调（默认 `console.error`）；失败时 loading 复位、保留上次数据 |
+| onColumnVisibilityChange | `(next: Record<string, boolean>) => void` | 列显隐变化。回传的是**完整的下一份**映射（不是 patch），直接落 localStorage / PATCH 回服务端即可 |
 
 ## Slots
 
@@ -13366,6 +13536,9 @@ import { ProTable } from "@hulianui/ui"
 - 托管模式（传 `request`）下 `data`/`pagination`/`loading` 三个 prop 被忽略——别两种模式混用。cursor 分页无 total/不能随机跳页，且 filters/sort/pageSize 任一变化会自动重置回第 1 页。
 - 托管模式必须给 `getRowId`，否则行选择/批量在翻页后 key 不稳。
 - **行选择的判据是「你有没有接管」，不是「是不是托管模式」**：传了 `rowSelection` 就走受控（须同时给 `onRowSelectionChange`，否则勾不动且只有 dev 告警提示），不传才由组件内部自持。0.29.0 及之前托管模式一律自持、把这两个 prop 静默丢弃——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 `{}`，直到提交时拿到空数组才暴露（#202）。
+- **列显隐同一套受控判据**（#236）：传 `columnVisibility` 就是你接管（须同时给 `onColumnVisibilityChange`，否则列设置点不动且只有 dev 告警）。不接管时列偏好只活在内部 useState 里 —— 工具栏点得动、刷新就没了，「同一个运营换台机器、列偏好跟人走」这件事在组件外一行都写不了。映射口径是**缺省即可见**，所以落库只需要记被关掉的那几列。
+- **身份列与操作列要挂 `meta.lockVisible`**：全量开关表达不了「这两列不给关」，而关掉了它们的那一行既没有身份也没有出口。锁定列在工具栏里置灰且恒选中，受控值对它写 `false` 也不生效 —— 否则一份旧的落库偏好就能把出口关掉，而界面上根本打不开。
+- 组件仍留着「不允许关掉最后一列可见列」的保底（避免空表头），受控模式下这一步表现为**回调不触发**。
 - `request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。
 - `batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。
 - **`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。
@@ -14483,7 +14656,7 @@ import { StatusDot } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Table
 
-**导出**：`Table`
+**导出**：`Table` · `TableRoot` · `TableHeader` · `TableBody` · `TableFooter` · `TableRow` · `TableHead` · `TableCell`
 
 > 表格 · TanStack headless + 列排序 + 列几何(size/align/ellipsis/resizable·固定列 offset 自动重算) + 行点击/整行导航(onRowClick/rowHref·冒泡隔离) + 行拖拽排序(rowDraggable·回传相对位置语义) + 空态 · data-display/collection
 
@@ -14494,6 +14667,11 @@ import { StatusDot } from "@hulianui/ui"
 ## 导入
 ```ts
 import { Table } from "@hulianui/ui"
+
+// 组合原语（结构自己写、只要库皮肤时用）
+import {
+  TableRoot, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell,
+} from "@hulianui/ui"
 ```
 
 ## Props
@@ -14526,7 +14704,8 @@ import { Table } from "@hulianui/ui"
 | dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
 | cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | — | 单元格合并（对标 el-table `:span-method`）。逐格回调，**被合掉的格子不再回调**；`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，`rowIndex` 是渲染顺序（排序/筛选之后）、`rows` 与之同序。与 `virtual` / `renderExpandedRow` 不能同开（会静默不合并 + dev 告警） |
-| stickyHeader | `boolean` | `false` | 表头吸顶（与 `virtual` 正交）。**必须同时给 `maxHeight`**，否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先（组件在 dev 下告警） |
+| stickyHeader | `boolean \| "self" \| "scrollParent"` | `false` | 表头吸顶（与 `virtual` 正交）。`true` / `"self"` 吸在**表格自己的滚动区**上，**必须同时给 `maxHeight`**（否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先，组件在 dev 下告警）；`"scrollParent"` 吸在**外部滚动容器**（页面 / 内容区）上，表格自身不滚，但外壳也就**不再有 `overflow-x-auto`**（见「禁忌 / 坑」） |
+| stickyHeaderOffset | `number \| string` | `0` | 吸顶表头的偏移（数值按 px），落成 `<thead>` 的 `top`，用来避开自家固定页头（`stickyHeaderOffset={56}`）。两档都生效 |
 | maxHeight | `number \| string` | — | 滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准 |
 | minWidth | `number \| string` | — | `<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来 |
 | cellVerticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | 单元格垂直对齐的表级默认；列 `meta.verticalAlign` 覆盖 |
@@ -14551,6 +14730,8 @@ import { Table } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | renderExpandedRow | `(row: Row<TData>) => ReactNode` | 渲染函数；提供则前插展开器列，展开行下渲染整宽明细面板 |
+| renderRowExtra | `(row: Row<TData>, ctx: { colSpan, rowIndex }) => ReactNode` | 每条数据行**之后**常驻挂 0..N 条附属行。**返回裸 `<tr>`**（数组 / Fragment / `null` 均可），组件不替你包壳；整宽写法 `<tr><td colSpan={ctx.colSpan}>`。不前插展开器列、不要求展开态。与 `cellSpan` 不能同开 |
+| footer | `ReactNode \| ((ctx: { rows, colSpan }) => ReactNode)` | 表尾 `<tfoot>` 内容（合计行 / 常驻「+ 添加一条」行）。口径同 `EditableTable.summary`：**消费方自备 `<tr><td colSpan=…>`**；`ctx.rows` 是排序/筛选后的可见行。与 `summary` 的区别是**空表也渲染** |
 | emptyText | `ReactNode` | 空态文案（默认 `locale.table.empty`） |
 | renderEmpty | `() => ReactNode` | 渲染函数；完全自定义空态（优先级高于 emptyText） |
 
@@ -14565,9 +14746,42 @@ import { Table } from "@hulianui/ui"
 | ellipsis | `boolean` | 溢出截断 + 悬停 Tooltip 显示全文 | `show-overflow-tooltip` |
 | verticalAlign | `"top" \| "middle" \| "bottom"` | 单元格垂直对齐（表头不跟随，恒 middle）。允许换行的列几乎必然要 `top` | — |
 | whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | 换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行） | — |
+| lockVisible | `boolean` | 锁定显隐：该列不允许在 [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) 的「列设置」里被关掉（置灰 + 恒选中），受控的 `columnVisibility` 对它写 `false` 也不生效。身份列与操作列典型 | — |
 
 列宽走 TanStack 原生的 `ColumnDef.size / minSize / maxSize`（不另发明 `width` / `min-width`）：
 `size` → `width`、`minSize` → `min-width`、`maxSize` → `max-width`，`th` 与 `td` 用同一口径的内联 style（不使用 `<colgroup>`）。
+
+## 组合原语
+
+`TableRoot / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell` 七件薄包，
+给「结构由业务自己写、只想要库的表格皮肤」的表。判据不是「Table 不够用」，而是**配置表达不了结构**：
+一行里嵌两层、整行是一个编辑器、按数据把一条拆成三行 —— 写成 `ColumnDef[]` 就是把可读的表格结构
+翻译进 `cell` 回调，代码只会更难读。所以两条路并存：数据驱动 + 要排序/分页/冻结列走高层 `Table`，
+其余走原语。皮肤（密度档位、分隔线、悬停、选中底色）与高层 `Table` 同源，不是「长得差不多的另一套」。
+
+### TableRoot
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| density | `"default" ｜ "middle" ｜ "compact"` | `"default"` | 行密度，经 context 下发给 `TableHead` / `TableCell` |
+| striped | `boolean` | `false` | 偶数行斑马纹（只作用于 `TableBody` 里的行）。默认与高层 `Table` **相反**：手写结构常有整宽附属行 / 跨行合并，「第几行」与视觉上的第几条记录对不上 |
+| bordered | `boolean` | `true` | 外层描边 + 圆角；嵌进卡片时置 `false` 避免双框 |
+| layout | `"auto" ｜ "fixed"` | `"auto"` | `table-layout` |
+| minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
+| tableClassName | `string` | — | `<table>` 本体的类名 |
+
+`TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性。
+
+### TableRow / TableHead / TableCell
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
+| align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性 |
+| verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
+
+`TableRow` 的分隔线 / 悬停 / 斑马纹按所在段自动区分（表头行不 hover、不斑马纹，也不吃 `last:border-0`
+—— 单行表头就是最后一行，那条规则会把表头底边线抹掉），消费方不用自己记这个差别。
 
 ## 示例
 ```tsx
@@ -14601,6 +14815,52 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 // 列宽拖拽（表头右缘拖动改宽，双击复位）；受控可持久化到用户偏好
 <Table columns={geoColumns} data={users} resizable columnSizing={sizing} onColumnSizingChange={setSizing} />
 
+// 常驻整宽附属行 + 表尾（不是明细展开：没有展开器列、不需要展开态、一行可挂多条）
+<Table
+  columns={columns}
+  data={periods}
+  renderRowExtra={(row, ctx) =>
+    row.original.titles.map((t) => (
+      <tr key={t.id} className="bg-surface-hover/30">
+        <td colSpan={ctx.colSpan} className="px-3 py-1.5">{t.name}</td>
+      </tr>
+    ))
+  }
+  footer={(ctx) => (
+    <tr>
+      <td colSpan={ctx.colSpan} className="px-3 py-2">
+        <Button variant="ghost" size="sm" onClick={addPeriod}>+ 手动添加单位</Button>
+      </td>
+    </tr>
+  )}
+/>
+
+// 表头吸在页面滚动容器上（表格自身不滚），避开 56px 的固定页头
+<Table columns={columns} data={rows} stickyHeader="scrollParent" stickyHeaderOffset={56} />
+
+// 组合原语：结构自己写，皮肤用库的
+<TableRoot density="compact">
+  <TableHeader>
+    <TableRow>
+      <TableHead>字段</TableHead>
+      <TableHead align="right">值</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {fields.map((f) => (
+      <TableRow key={f.key} selected={f.key === active}>
+        <TableCell>{f.label}</TableCell>
+        <TableCell align="right">{f.editing ? <Input defaultValue={f.value} /> : f.value}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+  <TableFooter>
+    <TableRow>
+      <TableCell colSpan={2}>共 {fields.length} 项</TableCell>
+    </TableRow>
+  </TableFooter>
+</TableRoot>
+
 // 行拖拽排序：回调给的是「相对位置」，不是重排后的数组
 <Table
   columns={columns}
@@ -14625,6 +14885,11 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
 - **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
 - 表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。
+- **「表内横滚 + 表头吸页面」是拿不到的组合**，这是 CSS 的硬约束不是实现取舍：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是那层外壳自己成了 scrollport，把表头锚死在它身上（实测 Chromium：页面下滚时表头直接划走，同一张表换成 `overflow: visible` 的外壳才稳稳停在 `top: 0`）。所以 `stickyHeader="scrollParent"` 下组件**主动去掉**外壳的 `overflow-x-auto`，横向溢出交给外部滚动容器；`stickyScrollbar` 在这一档下没有可镜像的容器，会被忽略并告警。要保住表内横滚就只能用 `"self"` + `maxHeight`。
+- `renderRowExtra` 与 `renderExpandedRow` 是两件事，别拿后者顶前者：明细面板**每行只能一条、必须展开态、且强制前插一列展开器**。「这条工作经历下面常驻挂 N 张证书」属于行的一部分，不是折叠明细。
+- `renderRowExtra` / `footer` 返回的是**裸 `<tr>`**，组件不替你包 `<tr><td>`：包了就再也表达不了「一条附属行拆成三格」。整宽行的 `colSpan` 一定要用回调给的 `ctx.colSpan` —— 它含自动前插的选择 / 展开器 / 拖拽手柄列，`columns.length` 算出来的数会短一到三列，表现是最右边空出一块。
+- `renderRowExtra` 与 `cellSpan` 不能同开（同 `renderExpandedRow`）：附属行插在数据行之间，纵向合并会跨过它们。同开时静默不合并 + dev 告警。
+- `renderRowExtra` 与 `virtual` 同开会让虚拟化的行高估算失准（它按「一条数据 = 一行 `rowHeight`」撑占位行），表现是滚动漂移 / 底部留白。组件只告警不关闭（关了附属行就没了，比错位更难查）；附属行条数固定时把 `virtual.rowHeight` 调成「数据行 + 附属行」的总高即可。
 - 宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。
 - `meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: "normal"` + `maxSize` 限宽 + `verticalAlign: "top"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。
 - `meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout="fixed"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。
@@ -14646,6 +14911,8 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - 拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。
 - `dragHandle="row"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `"cell"`。
 - 拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。
+- 组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。
+- 原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。
 - 树形（`getSubRows`）下只有顶层行可拖，子行手柄恒禁用——跨层级拖拽的落点语义未定义，需要拖子节点请用 [Tree](https://hulianui.haloritual.com/zh/components/tree) 或按层级拆表。
 
 ## 相关
@@ -14656,7 +14923,7 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 
 **导出**：`Tag` · `tagVariants`
 
-> 状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌) · data-display/info
+> 状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌) · data-display/info
 
 ## 何时用
 
@@ -14672,7 +14939,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"soft" \| "solid" \| "outline"` | `"soft"` | 视觉变体：soft 浅底（最常用于状态标签）/ solid 实底 / outline 描边。 |
-| tone | `"neutral" \| "brand" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色。 |
+| tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色。取值集与 [Alert](https://hulianui.haloritual.com/zh/components/alert) 一致。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
@@ -14701,6 +14968,11 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <Tag tone="danger">错误</Tag>
 ```
 ```tsx
+// info 是中性事实说明（当前处于什么模式），不是操作也不是成功/警告
+<Tag tone="info">外接浏览器模式</Tag>
+<Tag variant="outline" tone="info">只读</Tag>
+```
+```tsx
 // 呼吸圆点表达进行态 + 可关闭
 <Tag dot pulse tone="brand">部署中</Tag>
 <Tag onClose={() => remove(id)}>待审核</Tag>
@@ -14708,6 +14980,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- **`brand` 与 `info` 不是同一件事**（#232）。`brand` 是主色，意思是「这条和产品/主操作有关」；`info` 走独立的 info 色，意思是「这是中性事实说明，读一下就好」。表达「当前处于什么模式」这类既不成功也不警告的事实，用 `info`——用 `brand` 会让一个不可点的标签在页面里与主 CTA 抢注意力，用 `neutral` 则会和一堆灰标签糊在一起读不出来。两者在 tokens 0.8.0 补齐 `--color-info` 前确实是一个颜色（见 [Alert](https://hulianui.haloritual.com/zh/components/alert) 的同一段历史），现在不是了。
 - `pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。
 - `icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。
 - `onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。
@@ -15815,6 +16088,7 @@ import { Breadcrumb } from "@hulianui/ui"
 | label * | `ReactNode` | — | 显示内容 |
 | href | `string` | — | 链接地址；省略则该项不可点（当前页或不可导航的祖先） |
 | current | `boolean` | — | 显式标记为当前页；缺省时数组末项即当前页 |
+| render | `ReactElement` | — | 渲染为自定义元素（`next/link`、`react-router` 的 `Link`…），皮肤类名与 `aria-current` 合并进该元素，`label` 作它的子节点 |
 
 ## Slots
 
@@ -15838,9 +16112,22 @@ import { Breadcrumb } from "@hulianui/ui"
 <Breadcrumb items={items} separator={<ChevronIcon />} />
 ```
 
+接客户端路由（Next.js / react-router），与 `Button` / `Link` / `NavMenuItem` 同一个 `render` 口径：
+```tsx
+<Breadcrumb
+  items={[
+    { label: "客户", render: <Link href="/customers" /> },
+    { label: "张三" }, // 末项是当前页，不给 render 即保持不可点
+  ]}
+/>
+```
+
 ## 禁忌 / 坑
 
-暂无已知坑。注意中间项省略 `href` 即渲染为不可点的纯文本（如「归档」这类无独立页面的祖先）。
+- 中间项省略 `href` 即渲染为不可点的纯文本（如「归档」这类无独立页面的祖先）。
+- SPA 里别用裸 `href`：那是整页刷新。走 `render` 传框架的 `Link`，它真的被渲染出来（不是在 `<nav>` 上劫持点击），所以 Cmd+点击开新标签、中键、Shift 开新窗这些原生行为不用自己一条条放行。
+- 传了 `render` 的项以它为准：即使该项是当前页也仍渲染为该元素，只是带上 `aria-current="page"`——想保留「当前页不可点」就别给末项传 `render`。`href` 由该元素自带；若该项同时写了 `href`，以该项的为准。
+- 类名合并顺序同库内其它 `render`：本组件皮肤在前、`render` 元素自带的 `className` 在后（后者胜出）。
 
 ## 相关
 [Tabs](https://hulianui.haloritual.com/zh/components/tabs) · [Pagination](https://hulianui.haloritual.com/zh/components/pagination) · [Anchor](https://hulianui.haloritual.com/zh/components/anchor) · [Affix](https://hulianui.haloritual.com/zh/components/affix) · [BackTop](https://hulianui.haloritual.com/zh/components/back-top) · [Stepper](https://hulianui.haloritual.com/zh/components/stepper)
@@ -17201,6 +17488,7 @@ import { PageHeader } from "@hulianui/ui"
 |------|------|------|------|
 | backLabel | `string` | `"返回"` | 返回按钮的无障碍标签。 |
 | bordered | `boolean` | `false` | 是否在页头底部渲染分隔线（复用 `<Separator/>`）。 |
+| metaSeparator | `ReactNode` | `"·"` | `meta` 各项之间的分隔符，装饰位自动 `aria-hidden`。 |
 
 > 另继承 `HTMLAttributes<HTMLElement>`（除 `title`，因其类型被改为 ReactNode）。
 
@@ -17218,6 +17506,7 @@ import { PageHeader } from "@hulianui/ui"
 | subTitle | `ReactNode` | 副标题，内联于标题右侧，中性弱化色。 |
 | breadcrumb | `ReactNode` | 面包屑区（标题行上方），传入瑚琏 `<Breadcrumb/>`。 |
 | tags | `ReactNode` | 状态标签区（贴标题右侧），传入 `<Chip/>`/`<Badge/>` 等。 |
+| meta | `ReactNode[]` | 元信息行：标题下面那串用 `metaSeparator` 串起来的事实值。分隔符由组件插在项与项之间，空项自动跳过。 |
 | extra | `ReactNode` | 右侧操作区（按钮组等），窄屏自动换行到标题下方。 |
 | footer | `ReactNode` | 底部附加区，常放 `<Tabs/>`。 |
 
@@ -17239,8 +17528,25 @@ import { PageHeader } from "@hulianui/ui"
 />
 ```
 
+元信息行（证件号 · 性别 · 参保段数…）：
+```tsx
+<PageHeader
+  title="张三"
+  meta={[
+    "330106…512",
+    "男",
+    socialSecuritySegments && `${socialSecuritySegments} 段社保`, // 无值时整项消失，不留下孤点
+    companyCount ? `${companyCount} 家公司` : null,
+    latestEmployer && `最近参保单位：${latestEmployer}`,
+  ]}
+/>
+```
+
 ## 禁忌 / 坑
 
+- `meta` 是**一串并列的事实值**，别拿它当别的槽用：一句话说明用 `subTitle`，状态标记用 `tags`，Tabs 之类的整块内容用 `footer`。
+- `meta` 里的空项（`null` / `undefined` / `false` / `""`）自动跳过，分隔符只插在留下来的项之间，所以不必在调用点先 `filter(Boolean)`。数字 `0` 是事实值（「0 家公司」），不算空。
+- 元信息行渲染为 `<ul>`/`<li>`，分隔符是独立的 `aria-hidden` 装饰位——读屏读到的是列表项而不是被中点粘住的长串文本。别再用 `span + span::before { content: "·" }` 自己拼点。
 - `title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——别再往 DOM 透传字符串 title。
 - 默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。
 
@@ -18454,6 +18760,7 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | 贴边方向 + 对应滑入方向 |
+| `DrawerContent.size` | `"sm" \| "md" \| "lg" \| "xl" \| "full"` | `"md"` | 主轴尺寸档。**主轴随 `side` 换手**：左右抽屉吃宽度、上下抽屉吃高度，故同一档在两轴上不是同一个值（见下表）。交叉轴恒 100%，不随此档变 |
 | `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
 | `DrawerContent.showClose` | `boolean` | `true` | 是否渲染右上角内置关闭按钮 |
 | `DrawerContent.closeLabel` | `string` | 取自 locale | 内置关闭按钮的无障碍名（默认取 `locale.drawer.close`） |
@@ -18463,6 +18770,18 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children |
 | `DrawerContent.bodyClassName` | `string` | — | 追加到正文区容器 |
 | `DrawerContent.className` | `string` | — | 内容容器类名 |
+
+### 尺寸档对照
+
+| size | `left` / `right` 宽 | `top` / `bottom` 高 |
+|------|------|------|
+| `sm` | 20rem (320px) | 16rem (256px) |
+| `md`（默认） | 24rem (384px) | 20rem (320px) |
+| `lg` | 32rem (512px) | 32rem (512px) |
+| `xl` | 48rem (768px) | 48rem (768px) |
+| `full` | 100% | 100% |
+
+除 `full` 外都带 `min(90vw, …)` / `min(90vh, …)` 上限：抽屉是贴边的，宽过视口的那截会直接落到屏幕外够不着，不是"挤一点"而已。`md` 就是 0.39.0 及之前写死的那两个值，不传 `size` 的既有代码渲染不变。
 
 ## Events
 
@@ -18507,6 +18826,24 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 - Base UI rc.0 没有独立 Drawer 原语，本组件是 Dialog（Portal+Backdrop+Popup）重皮、靠 `transform: translateX/Y` 按 `side` 侧滑；Dialog 没有 Positioner，定位别按 Tooltip/Popover 那套想。详见 [[base-ui-dialog-drawer-side-slide-via-transform]]。
 - 「取消 / 保存 / 关闭」放 `footer` 槽而非正文末尾，否则正文滚动后按钮会滚出可视区。
 - 用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。
+
+### 尺寸该用 `size` 还是 `className`
+
+先用 `size`。`className` 里压 `w-` / `h-` 也能改出来，但那要连同 `inset-x-` / `w-full` 一起顶（组件刚给的东西又撤一遍），而且失去了 `min(90vw, …)` 上限保护——窄屏上抽屉会宽过视口，超出的那截落在屏幕外，里面的控件彻底够不着。`size` 五档不够用（比如要按容器百分比）时再用 `className`，此时**必须自己补一条上限**，例如 `className="w-[min(90vw,52rem)]"`。
+
+### 「浮起式」底部抽屉（左右留白 + 圆角）需要自己写
+
+组件目前只有贴边一种形态。移动端常见的"离边框还有一圈留白、四角带圆角"的浮起式 sheet 得靠 `className`，且**必须连出场位移一起改**——面板一旦离开屏幕边缘 16px，原来的 `translate-y-full` 就送不出屏幕了，收起时底部会留一道 16px 的残影：
+
+```tsx
+<DrawerContent
+  side="bottom"
+  size="lg"
+  className="inset-x-4 bottom-4 w-auto rounded-[var(--radius)] border
+             data-[starting-style]:translate-y-[calc(100%+1rem)]
+             data-[ending-style]:translate-y-[calc(100%+1rem)]"
+/>
+```
 
 ### 关闭按钮
 
@@ -18880,6 +19217,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"\|"center"\|"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | — | 与触发器的间距 |
+| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | — | 把卡片锚到别处而不是触发器，口径同 [Popover](https://hulianui.haloritual.com/zh/components/popover) 的 `anchor`。差别只有一条：**触发器不可省**，卡片是 hover 打开的，`anchor` 只改「贴在哪」不改「谁把它打开」 |
 | className | `string` | — | 额外类名 |
 
 ## Slots
@@ -19004,7 +19342,8 @@ import { modal, ModalProvider, hulianModalManager } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | 语调；命令式入口已隐含，一般无需显式传 |
+| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | 语调；命令式入口已隐含，一般无需显式传。**注意它管不到确定键**：只换左侧图标与图标色 |
+| `danger` | `boolean` | `false` | 危险操作：确定键走 `tone="danger"`，左侧图标同步转 `text-danger`。与 [Popconfirm](https://hulianui.haloritual.com/zh/components/popconfirm) 的 `danger` 同名同义 |
 
 `ModalOptions` Events：
 
@@ -19042,12 +19381,22 @@ modal.confirm({
   content: "点确定将发起请求。",
   onOk: () => fetch("/api/order", { method: "POST" }),
 });
+
+// 删除类确认：确定键转红，与「保存 / 继续」明确异色
+modal.confirm({
+  title: "确认删除该记录？",
+  content: "删除后不可恢复。",
+  danger: true,
+  onOk: () => remove(id),
+});
 ```
 
 ## 禁忌 / 坑
 
 - 必须在应用根挂一次 `ModalProvider`，否则命令式调用无处渲染；showcase 里也是 layout 单挂、触发按钮里只调 `modal.*`（同 Toast）。
 - `onOk` 返回 Promise 时：resolve 才自动关闭，reject 会保持打开（由调用方提示错误）——别在 reject 分支里又手动 `destroy`。
+- **破坏性确认要传 `danger`，`type="error"` 顶不了**：`type` 只驱动左侧图标与图标色，确定键那边是默认主色档。也就是说 `modal.error({ title: "确认删除？" })` 会给出一个红图标 + 主色确定键，和「保存」「继续」同色——「删除后不可恢复」配一个跟保存键同色的按钮是会被误点的。
+- `danger` 只换图标**颜色**，不换图标**字形**：`modal.confirm({ danger: true })` 仍是问号图标（字形说「这是一个提问」，颜色说「后果不可逆」）。要连字形一起换成叉号就再传 `type: "error"`。
 
 ## 相关
 [Dialog](https://hulianui.haloritual.com/zh/components/dialog) · [AlertDialog](https://hulianui.haloritual.com/zh/components/alert-dialog) · [Drawer](https://hulianui.haloritual.com/zh/components/drawer) · [Popover](https://hulianui.haloritual.com/zh/components/popover) · [Tooltip](https://hulianui.haloritual.com/zh/components/tooltip) · [HoverCard](https://hulianui.haloritual.com/zh/components/hover-card)
@@ -19218,6 +19567,7 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"\|"center"\|"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | `8` | 与触发器的间距 |
+| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | — | 锚到别处而不是锚到 `PopoverTrigger`；传了就可以整个省掉触发器，见下 |
 | plain | `boolean` | `false` | 不画皮：不渲染包住 children 的那层皮肤 div（间距 + `text-sm text-foreground`），children 直接进浮层 |
 | arrow | `boolean` | `true` | 是否渲染指向触发器的箭头 |
 | className | `string` | — | 额外类名 |
@@ -19241,6 +19591,28 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 `arrow` 与 `plain` 是**两个独立开关**：箭头指的是浮层与触发器的关系，不是内容的皮肤。贴边菜单一般两个都关，但「无标题的纯文字提示」只需要 `plain`、「铺满型面板仍想指明来源」只需要留着箭头。
 
 同名的 `plain` 在 [Card](https://hulianui.haloritual.com/zh/components/card) 的 `variant="plain"` 与 [Accordion](https://hulianui.haloritual.com/zh/components/accordion) / [Collapsible](https://hulianui.haloritual.com/zh/components/collapsible) 的 Panel 上语义一致：**内容自带外观时，要的不是改皮肤而是没有皮肤**。
+
+### anchor：触发点是一个坐标，不是一个元素
+
+DOCX / canvas 上算出来的标注点、右键位置、地图上的经纬度 —— 这类「触发点」只有一个矩形，没有可以当触发器的 DOM 节点，`PopoverTrigger` 接不住。给 `anchor` 一个只需实现 `getBoundingClientRect()` 的**虚拟元素**即可，触发器整个省掉、`open` 自己控：
+
+```tsx
+const [marker, setMarker] = useState<DOMRect | null>(null);
+
+<div onClick={(e) => setMarker(new DOMRect(e.clientX, e.clientY, 0, 0))}>{/* 预览画布 */}</div>
+
+<Popover open={marker != null} onOpenChange={(next) => !next && setMarker(null)}>
+  <PopoverContent anchor={marker && { getBoundingClientRect: () => marker }} align="start">
+    {/* 标注面板 */}
+  </PopoverContent>
+</Popover>
+```
+
+边界翻转、视口 clamp、焦点管理、Esc 与点外部关闭、`aria-expanded` 仍然全由组件负责 —— 这正是不该自绘的部分（自绘版通常先漏掉的就是焦点与 aria）。
+
+坐标变化时**换一个新对象**（或改用 `() => virtualEl` 的函数形态），别原地改同一个对象的字段：定位按 anchor 的 identity 变化重算，改字段不换对象浮层不会动。
+
+同名 `anchor` 在 [HoverCard](https://hulianui.haloritual.com/zh/components/hover-card) 上语义一致，只是那里触发器不可省（卡片是 hover 打开的）。
 
 ## Slots
 
@@ -19270,6 +19642,7 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 ## 禁忌 / 坑
 
 - 触发/关闭走 `render` prop 注入元素，别再在 `PopoverTrigger` 里二次嵌套交互元素，避免 `<button>` 套 `<button>`。
+- 锚到坐标用 `anchor`，别自己 `createPortal` 手写 `left/top`：手写那条路要连边界翻转、视口 clamp、点外部关闭、Esc、焦点管理一起重造，而焦点与 `aria-expanded` 正是自绘版最常漏掉的两样。
 - 浮层内容自带内边距/边框/正文色时加 `plain`（通常再配 `className="p-0"`），别用 `[&>div]:mt-0` 之类的任意变体选择器去压库内那层皮肤 div。
 - 若手搓 hover 开 + focus 关叠加在这类 focus-managing popover 上会无限闪烁，见 [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]]：popover 打开时把焦点移入浮层会触发 trigger 的 onBlur 关闭，关闭又把焦点还给 trigger 触发 onFocus 打开 → ping-pong。本组件默认 click 语义不踩，但若改造成 hover 触发需把 `initialFocus`/`finalFocus` 设 false。
 
@@ -19588,7 +19961,20 @@ import { toast, ToastProvider } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | tone | `"neutral"\|"info"\|"success"\|"warning"\|"danger"` | `"neutral"` | 语调，驱动左边条 + 标题着色（五档与 [Alert](https://hulianui.haloritual.com/zh/components/alert) / [Tag](https://hulianui.haloritual.com/zh/components/tag) 对齐，复用同一组语义 token） |
-| timeout | `number` | `5000` | 自动消失毫秒数；`0` = 不自动消失（手动关闭）；缺省取 Provider 默认 |
+| timeout | `number` | `5000` | 自动消失毫秒数；`0` = 不自动消失（手动关闭）；缺省取 Provider 默认。`loading` 时缺省为 `0` |
+| loading | `boolean` | `false` | 「进行中」态：标题前渲一个转圈图标，且 `timeout` 缺省值变成 `0`（不自动消失）。配 `toast.close(id)` 用 |
+
+`ToastProvider` 的 `ToastProviderProps`：
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| position | `"top-left"\|"top-center"\|"top-right"\|"bottom-left"\|"bottom-center"\|"bottom-right"` | `"top-right"` | 视口停靠位置。底部三档队列改成从下往上堆（最新一条永远贴着停靠边），入场滑动方向也跟着换手。全局值，单条 toast 不能各挑各的 |
+
+## 伴生函数
+
+| 名称 | 签名 | 说明 |
+|------|------|------|
+| `toast.close` | `(id?: string) => void` | 按 `toast()` 返回的 id 关掉某一条；不传 id 关掉全部。走正常出场过渡，不是硬拔 DOM |
 
 ## Slots
 
@@ -19617,11 +20003,30 @@ toast({ tone: "success", title: "已保存", description: "更改已同步到云
 toast({ tone: "warning", title: "部分失败", description: "3 条中 1 条未同步。" })
 toast({ tone: "danger", title: "保存失败", description: "网络异常，请重试。" })
 toast({ title: "需手动关闭", timeout: 0 }) // 0 = 常驻，点 × 才消失
+
+// 视口换到左下角（全局，挂 Provider 时决定）
+<ToastProvider position="bottom-left">{children}</ToastProvider>
+
+// 「进行中 → 完成后关掉它 → 弹结果」
+const id = toast({ title: "正在上传图片…", loading: true }); // 不自动消失
+try {
+  await upload();
+  toast.close(id);
+  toast({ tone: "success", title: "上传成功" });
+} catch {
+  toast.close(id);
+  toast({ tone: "danger", title: "上传失败" });
+}
 ```
 
 ## 禁忌 / 坑
 
 - `ToastProvider` 全应用只挂一次（在段落 layout），别在 showcase/页面里重复挂，否则命令式渲染会重复。
+- **`loading` 不是「第六档 tone」**：它与 `tone` 正交，进行中的提示照样可以是 `neutral` / `info`。它只做两件事——渲转圈图标、把 `timeout` 的缺省值从 5000 改成 0。
+- `loading` 与 `timeout: 0` **不是两套常驻语义**，是同一个 `timeout` 的默认值之差：显式传 `timeout` 依然优先，`{ loading: true, timeout: 3000 }` 就是 3 秒后自己走。
+- `loading` 恒走 `priority: "low"`（polite），即使同时传 `tone: "danger"` 也不升 assertive：「进行中」是陪跑不是结果，而且这条会长时间挂着，assertive 会反复插队打断读屏正在念的内容。
+- 开了 `loading` 就**必须自己 `toast.close(id)`**，否则它永远不走。别指望用户去点 ×——「进行中」本来就该由代码收尾。
+- 转圈图标在 `prefers-reduced-motion: reduce` 下是**减速到 2.4s 一圈，不是停转**（库内装饰性动效统一走 `[animation:none]`，这里有意不同）：这个圈是「进行中」在视觉上唯一的记号，定格成静止圆弧就跟普通装饰图标没区别，状态信息当场消失。
 - `@hulianui/ui` < 0.8 的 `ToastProvider` **不渲染 children**：包裹式写法会静默吞掉整个应用子树（白屏、零报错）。0.8 起已修复为透传渲染；旧版本务必用自闭合写法。
 - `@hulianui/ui` ≤ 0.8 的 `ToastTone` 只有 `info | danger | neutral`，成功/警告态只能降级成 `info` / `neutral`；0.8 之后已补齐 `success` / `warning`，升级后可直接换回语义正确的 tone。
 - 仅 `danger` 走 `priority: "high"`（aria-live assertive 打断播报），`warning` 与其余 tone 一样是 polite——警告不抢读屏焦点是有意为之。

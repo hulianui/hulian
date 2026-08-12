@@ -3,6 +3,15 @@ import { render, fireEvent } from "@testing-library/react";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
 import { Table, resolveRowDragEnd } from "./table";
+import {
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRoot,
+  TableRow,
+} from "./table-primitives";
 import type { ColumnDef } from "./table.types";
 
 interface Row {
@@ -1223,5 +1232,314 @@ describe("Table 排版与滚动（#191–#194）", () => {
     expect(nameCell.className).toContain("whitespace-pre-wrap");
     expect(nameCell.className).toContain("align-top");
     expect(ageCell.className).toContain("align-middle");
+  });
+});
+
+// —— 常驻整宽附属行 + 表尾（#237）——
+describe("Table renderRowExtra / footer", () => {
+  it("不传时不渲染任何附属行与 tfoot（与加这两个 prop 之前逐字一致）", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    expect(container.querySelectorAll("tbody tr").length).toBe(3);
+    expect(container.querySelector("tfoot")).toBeNull();
+  });
+
+  it("renderRowExtra 每行可挂 0..N 条整宽行，不前插展开器列、不需要展开态", () => {
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        renderRowExtra={(row, ctx) =>
+          row.original.name === "Alice"
+            ? [0, 1].map((i) => (
+                <tr key={i} data-extra="1">
+                  <td colSpan={ctx.colSpan}>证书 {i}</td>
+                </tr>
+              ))
+            : null
+        }
+      />,
+    );
+    // 展开器列没有被前插：仍是 2 列表头
+    expect(container.querySelectorAll("thead th").length).toBe(2);
+    const extras = container.querySelectorAll("tbody tr[data-extra]");
+    expect(extras.length).toBe(2);
+    // 紧跟在 Alice 那一行之后
+    const rows = Array.from(container.querySelectorAll("tbody tr"));
+    expect(rows[1].textContent).toContain("Alice");
+    expect(rows[2].getAttribute("data-extra")).toBe("1");
+    expect(rows[3].getAttribute("data-extra")).toBe("1");
+  });
+
+  it("ctx.colSpan = 当前可见列数，含自动前插的选择列", () => {
+    const seen: number[] = [];
+    render(
+      <Table
+        columns={columns}
+        data={data}
+        enableRowSelection
+        renderRowExtra={(_row, ctx) => {
+          seen.push(ctx.colSpan);
+          return null;
+        }}
+      />,
+    );
+    expect(seen).toEqual([3, 3, 3]); // 2 列用户列 + 1 列复选框
+  });
+
+  it("ctx.rowIndex 是渲染顺序下标（排序之后）", () => {
+    const seen: string[] = [];
+    render(
+      <Table
+        columns={columns}
+        data={data}
+        sorting={[{ id: "name", desc: false }]}
+        renderRowExtra={(row, ctx) => {
+          seen.push(`${ctx.rowIndex}:${row.original.name}`);
+          return null;
+        }}
+      />,
+    );
+    expect(seen).toEqual(["0:Alice", "1:Bob", "2:Charlie"]);
+  });
+
+  it("renderRowExtra 与 cellSpan 同开：静默不合并 + dev 告警", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        renderRowExtra={() => null}
+        cellSpan={({ columnIndex, rowIndex }) =>
+          columnIndex === 0 && rowIndex === 0 ? { rowSpan: 2 } : undefined
+        }
+      />,
+    );
+    expect(container.querySelector("tbody td[rowspan]")).toBeNull();
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("footer 渲染进 tfoot；函数形态拿到可见行与 colSpan", () => {
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        footer={(ctx) => (
+          <tr>
+            <td colSpan={ctx.colSpan}>合计 {ctx.rows.reduce((s, r) => s + r.age, 0)}</td>
+          </tr>
+        )}
+      />,
+    );
+    const cell = container.querySelector("tfoot td")!;
+    expect(cell.textContent).toBe("合计 90");
+    expect(cell.getAttribute("colspan")).toBe("2");
+  });
+
+  it("footer 的 rows 是筛选后的可见行，不是原始 data", () => {
+    const { container } = render(
+      <Table
+        columns={[{ accessorKey: "name", header: "姓名", meta: { filterable: true } }, columns[1]]}
+        data={data}
+        columnFilters={[{ id: "name", value: "li" }]}
+        footer={(ctx) => (
+          <tr>
+            <td>{ctx.rows.map((r) => r.name).join(",")}</td>
+          </tr>
+        )}
+      />,
+    );
+    expect(container.querySelector("tfoot td")!.textContent).toBe("Charlie,Alice");
+  });
+
+  it("footer 在空表下照常渲染（与 EditableTable.summary 的区别）", () => {
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={[]}
+        footer={
+          <tr>
+            <td>+ 手动添加</td>
+          </tr>
+        }
+      />,
+    );
+    expect(container.querySelector("tfoot")!.textContent).toContain("+ 手动添加");
+  });
+});
+
+// —— 表头吸顶两档（#238）——
+describe("Table stickyHeader 档位", () => {
+  it("不传 stickyHeader：thead 不 sticky，外壳仍有 overflow-x-auto", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    expect(container.querySelector("thead")!.className).not.toContain("sticky");
+    expect(container.firstElementChild!.className).toContain("overflow-x-auto");
+  });
+
+  it('stickyHeader="scrollParent"：thead sticky，且外壳去掉 overflow-x-auto（否则表头被锚死在外壳上）', () => {
+    const { container } = render(
+      <Table columns={columns} data={data} stickyHeader="scrollParent" />,
+    );
+    expect(container.querySelector("thead")!.className).toContain("sticky");
+    expect(container.firstElementChild!.className).not.toContain("overflow-x-auto");
+    // 不产生表内滚动区
+    expect((container.firstElementChild as HTMLElement).style.overflow).toBe("");
+  });
+
+  it('stickyHeader="scrollParent" 不要求 maxHeight（不告警）', () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    render(<Table columns={columns} data={data} stickyHeader="scrollParent" />);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it('stickyHeader="self" 与 true 逐字等价（缺 maxHeight 时都保持原样）', () => {
+    // 告警走 warnOnce，同一 key 在本文件更早的用例里已经烧掉，这里只比 DOM
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const self = render(<Table columns={columns} data={data} stickyHeader="self" />);
+    const bool = render(<Table columns={columns} data={data} stickyHeader />);
+    expect(self.container.innerHTML).toBe(bool.container.innerHTML);
+    expect(self.container.firstElementChild!.className).toContain("overflow-x-auto");
+    warn.mockRestore();
+  });
+
+  it("stickyHeaderOffset 落成 thead 的 top（不传则不写内联 style）", () => {
+    const { container } = render(
+      <Table columns={columns} data={data} stickyHeader="scrollParent" stickyHeaderOffset={56} />,
+    );
+    expect((container.querySelector("thead") as HTMLElement).style.top).toBe("56px");
+    const plain = render(<Table columns={columns} data={data} stickyHeader="scrollParent" />);
+    expect((plain.container.querySelector("thead") as HTMLElement).style.top).toBe("");
+  });
+
+  it('stickyHeader="scrollParent" + stickyScrollbar：忽略代理条并告警', () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(
+      <Table columns={columns} data={data} stickyHeader="scrollParent" stickyScrollbar />,
+    );
+    // 代理条那层外壳不出现：根节点直接就是滚动外壳（带 border）
+    expect(container.firstElementChild!.className).toContain("border-border");
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+});
+
+// —— 组合原语（#241）——
+describe("Table 组合原语", () => {
+  const primitive = (props?: Partial<React.ComponentProps<typeof TableRoot>>) =>
+    render(
+      <TableRoot {...props}>
+        <TableHeader>
+          <TableRow>
+            <TableHead>姓名</TableHead>
+            <TableHead align="right">年龄</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>Alice</TableCell>
+            <TableCell align="right">25</TableCell>
+          </TableRow>
+          <TableRow selected>
+            <TableCell colSpan={2}>Bob</TableCell>
+          </TableRow>
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={2}>合计 2 人</TableCell>
+          </TableRow>
+        </TableFooter>
+      </TableRoot>,
+    );
+
+  it("渲染出真实的 table 结构（thead/tbody/tfoot + th/td）", () => {
+    const { container, getByRole, getAllByRole } = primitive();
+    expect(getByRole("table")).toBeTruthy();
+    expect(getAllByRole("columnheader").length).toBe(2);
+    expect(container.querySelectorAll("tbody tr").length).toBe(2);
+    expect(container.querySelector("tfoot td")!.textContent).toBe("合计 2 人");
+    expect(container.querySelector("td[colspan='2']")).toBeTruthy();
+  });
+
+  it("皮肤与高层 Table 同源：外壳描边 + 表头半粗不换行 + 单元格默认内边距", () => {
+    const { container } = primitive();
+    expect(container.firstElementChild!.className).toContain("border-border");
+    expect(container.firstElementChild!.className).toContain("overflow-x-auto");
+    const th = container.querySelector("th")!;
+    expect(th.className).toContain("font-semibold");
+    expect(th.className).toContain("whitespace-nowrap");
+    expect(th.className).toContain("px-3 py-2");
+    expect(container.querySelector("tbody td")!.className).toContain("px-3 py-2");
+  });
+
+  it("density 经 TableRoot 下发到 th/td", () => {
+    const { container } = primitive({ density: "compact" });
+    expect(container.querySelector("th")!.className).toContain("px-2 py-1");
+    expect(container.querySelector("tbody td")!.className).toContain("px-2 py-1");
+  });
+
+  it("表头行不吃 last:border-0（单行表头的底边线不能被抹掉），表体行才有 hover", () => {
+    const { container } = primitive();
+    const headRow = container.querySelector("thead tr")!;
+    const bodyRow = container.querySelector("tbody tr")!;
+    expect(headRow.className).toContain("border-b");
+    expect(headRow.className).not.toContain("last:border-0");
+    expect(headRow.className).not.toContain("hover:bg-surface-hover");
+    expect(bodyRow.className).toContain("hover:bg-surface-hover");
+    expect(bodyRow.className).toContain("last:border-0");
+  });
+
+  it("striped 默认关；开了只作用于表体行", () => {
+    const off = primitive();
+    expect(off.container.querySelector("tbody tr")!.className).not.toContain("even:");
+    const on = primitive({ striped: true });
+    expect(on.container.querySelector("tbody tr")!.className).toContain("even:bg-surface-hover/40");
+    expect(on.container.querySelector("thead tr")!.className).not.toContain("even:");
+  });
+
+  it("selected 落 data-selected + 主色底", () => {
+    const { container } = primitive();
+    const rows = Array.from(container.querySelectorAll("tbody tr"));
+    expect(rows[0].getAttribute("data-selected")).toBeNull();
+    expect(rows[1].getAttribute("data-selected")).toBe("true");
+    expect(rows[1].className).toContain("bg-primary/10");
+  });
+
+  it("align 走 class 而不是 HTML 的废弃 align 属性", () => {
+    const { container } = primitive();
+    const th = container.querySelectorAll("th")[1];
+    expect(th.className).toContain("text-right");
+    expect(th.getAttribute("align")).toBeNull();
+    expect(container.querySelectorAll("tbody td")[1].className).toContain("text-right");
+  });
+
+  it("bordered=false 去外框；minWidth / layout 落在 <table> 本体", () => {
+    const { container } = primitive({ bordered: false, minWidth: 960, layout: "fixed" });
+    expect(container.firstElementChild!.className).not.toContain("border-border");
+    const table = container.querySelector("table") as HTMLElement;
+    expect(table.style.minWidth).toBe("960px");
+    expect(table.style.tableLayout).toBe("fixed");
+  });
+
+  it("className 落外壳、tableClassName 落 <table>；原生属性照常透传", () => {
+    const { container } = render(
+      <TableRoot className="shell-x" tableClassName="table-x" data-testid="root">
+        <TableBody>
+          <TableRow>
+            <TableCell title="t">x</TableCell>
+          </TableRow>
+        </TableBody>
+      </TableRoot>,
+    );
+    expect(container.firstElementChild!.className).toContain("shell-x");
+    expect(container.firstElementChild!.getAttribute("data-testid")).toBe("root");
+    expect(container.querySelector("table")!.className).toContain("table-x");
+    expect(container.querySelector("td")!.getAttribute("title")).toBe("t");
+  });
+
+  it("原语与高层 Table 互不影响：高层 Table 渲染结果不因原语存在而变", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    expect(container.querySelectorAll("tbody tr").length).toBe(3);
+    expect(container.querySelector("tbody td")!.className).toContain("px-3 py-2");
   });
 });

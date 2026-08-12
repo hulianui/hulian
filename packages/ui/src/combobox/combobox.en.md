@@ -32,6 +32,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | defaultValue | Same as above | — | Initial selection when uncontrolled. |
 | multiple | `boolean` | `false` | Changes `value` and `onValueChange` to arrays. |
 | virtualized | `boolean` | `true` once `items` reaches 100 | Virtualizes the list so only visible options are rendered. Decided from the option count when omitted — see Usage guidelines. |
+| creatable | `boolean` | `false` | Free-text creation: when the current input has no exact match among the options, a "Use “xxx”" row appears at the top of the list. See below. |
+| onCreate | `(value: string) => void` | — | Fires when the create row is selected, alongside `onValueChange` rather than instead of it. See below. |
 | disabled | `boolean` | `false` | Disables the control. |
 
 `ComboboxTrigger` displays the selected label or placeholder and opens the searchable popup. It extends the native `<button>` attributes, and remaining attributes land on the button itself.
@@ -64,6 +66,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | align | `"start"\|"center"\|"end"` | — | Popup alignment relative to the trigger. |
 | sideOffset | `number` | — | Distance from the trigger in pixels. |
 | onListScroll | `UIEventHandler<HTMLDivElement>` | — | Called when the option list scrolls. `e.currentTarget` is the scroll container, which can be inspected to implement load-on-scroll pagination; see [RemoteSelect](../remote-select/remote-select.md). |
+| header | `ReactNode` | — | Fixed content **above** the scrolling list, such as a usage hint, group note, or bulk action. Unlike `emptyMessage`, which only appears when there are no results. |
 | footer | `ReactNode` | — | Fixed content below the scrolling list, such as loading, count, or end-of-results feedback. |
 | className | `string` | — | Additional class name for the popup. |
 
@@ -168,6 +171,42 @@ A search field, where the field itself is the search box rather than the popup:
   </ComboboxContent>
 </Combobox>
 ```
+
+### creatable: long-tail fields have to accept typed-in values
+
+Fields such as issuing authority or organisation name have a few hundred common values, so turning them into options saves most people a lot of typing — but operations staff always hold a certificate that is not on the list. A pure select forces them to pick an approximate value, which is worse than free text. That is what `creatable` is for:
+
+```tsx
+const [issuers, setIssuers] = useState(ISSUERS);
+
+<Combobox
+  items={issuers}
+  creatable
+  onCreate={(value) => setIssuers((prev) => [...prev, { value, label: value }])}
+  onValueChange={(item) => form.setValue("issuer", item.value)}
+>
+  <ComboboxInput aria-label="Issuing authority" placeholder="Select or type" />
+  <ComboboxContent header={<p className="px-2 py-1 text-xs text-muted-foreground">Type it in if it is not listed</p>}>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
+The contract:
+
+- **Duplicate detection trims and ignores case, and compares against both `value` and `label`.** People read the label while `value` is often a code; comparing only one side still surfaces a create row when the other side matches exactly, and picking it duplicates an existing entry.
+- **`onCreate` fires alongside `onValueChange`, not instead of it.** The value change goes through `onValueChange` as usual (you receive `{ value: input, label: input }`, trimmed), while `onCreate` only says "this is a new value, go create it" — persist it and append it to `items` there.
+- **The create row is a real option injected into `items`**, not an extra row painted inside the popup. Keyboard navigation, highlighting, Enter selection, and the empty check therefore all stay consistent, including once the list virtualizes past 100 options.
+- **`creatable` requires `items`.** Options hard-coded in `children` leave nowhere to inject, so the feature does nothing there and warns in development.
+- **`creatable` makes the component own a copy of the input value** (it supplies a `defaultInputValue` internally). The one consequence: changing the selection externally through `value` no longer updates the text in the input. Pass `inputValue` yourself if you need that link.
+
+### header: a row that stays above the list
+
+`emptyMessage` only appears when there are no results, so an **always visible** hint such as "type it in if it is not listed" has nowhere to live — with any historical value present it never shows. `header` mirrors `footer`: one above the list, one below, neither scrolling with it.
 
 ## Usage guidelines
 

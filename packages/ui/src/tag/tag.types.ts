@@ -1,6 +1,11 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
-export type TagTone = "neutral" | "brand" | "success" | "warning" | "danger";
+// 取值顺序与 [Alert](../alert/alert.tsx) 一致（neutral/brand/info/success/warning/danger）。
+// `info` 是后补的（#232）：`brand` 是主色，表达「这条和产品/主操作有关」；`info` 走独立的
+// info 色（与主色差 30° 色相的青蓝），表达「这是中性事实说明」。这两个语义在 Alert 里自 #173
+// tokens 补齐 `--color-info` 起就已经分家，那次统一没有延伸到 Tag —— 于是「当前处于什么模式」
+// 这类行内标签只能在「灰得读不出来」和「紫得跟主 CTA 抢注意力」之间二选一。
+export type TagTone = "neutral" | "brand" | "info" | "success" | "warning" | "danger";
 export type TagVariant = "soft" | "solid" | "outline";
 
 /**
@@ -11,7 +16,7 @@ export type TagVariant = "soft" | "solid" | "outline";
 export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
   /** 视觉变体：soft 浅底（默认，最常用于状态标签）/ solid 实底 / outline 描边。 */
   variant?: TagVariant;
-  /** 语气色：neutral 默认 / brand 处理中 / success 成功 / warning 警告 / danger 错误。 */
+  /** 语气色：neutral 默认 / brand 与主操作有关 / info 中性说明 / success 成功 / warning 警告 / danger 错误。 */
   tone?: TagTone;
   size?: "sm" | "md";
   /** 前导状态圆点（颜色随 tone）。与 icon 互斥：icon > dot。 */

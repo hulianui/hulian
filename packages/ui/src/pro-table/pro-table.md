@@ -48,6 +48,7 @@ import { ProTable } from "@hulianui/ui"
 | toolbar | `boolean \| ProTableToolbarFeatures` | `true` | true=全开 / false=不渲染 / 对象逐项开关（reload/density/columnSetting/fullscreen） |
 | loading | `boolean` | — | 加载态：刷新图标旋转 |
 | actionRef | `Ref<ProTableActions>` | — | 命令式句柄：`reload()` 重新请求 / `clearSelection()` 清选 |
+| columnVisibility | `Record<string, boolean>` | — | 受控列显隐（`列 id → 是否可见`，**缺省的键视为可见**）。与 `rowSelection` / `sorting` 同口径：传了就受控、必须配 `onColumnVisibilityChange`，不传才内部自持。列 id 取 `ColumnDef.id`，没有则取 `accessorKey`。带 `meta.lockVisible` 的列恒可见，对它写 `false` 不生效 |
 | rootClassName | `string` | — | 外层容器类名（区别透传 Table 的 className） |
 
 ## Events
@@ -58,6 +59,7 @@ import { ProTable } from "@hulianui/ui"
 |------|------|------|
 | onReload | `() => void` | 点工具栏刷新图标触发 |
 | onRequestError | `(error: unknown) => void` | 托管 request 失败回调（默认 `console.error`）；失败时 loading 复位、保留上次数据 |
+| onColumnVisibilityChange | `(next: Record<string, boolean>) => void` | 列显隐变化。回传的是**完整的下一份**映射（不是 patch），直接落 localStorage / PATCH 回服务端即可 |
 
 ## Slots
 
@@ -116,6 +118,9 @@ import { ProTable } from "@hulianui/ui"
 - 托管模式（传 `request`）下 `data`/`pagination`/`loading` 三个 prop 被忽略——别两种模式混用。cursor 分页无 total/不能随机跳页，且 filters/sort/pageSize 任一变化会自动重置回第 1 页。
 - 托管模式必须给 `getRowId`，否则行选择/批量在翻页后 key 不稳。
 - **行选择的判据是「你有没有接管」，不是「是不是托管模式」**：传了 `rowSelection` 就走受控（须同时给 `onRowSelectionChange`，否则勾不动且只有 dev 告警提示），不传才由组件内部自持。0.29.0 及之前托管模式一律自持、把这两个 prop 静默丢弃——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 `{}`，直到提交时拿到空数组才暴露（#202）。
+- **列显隐同一套受控判据**（#236）：传 `columnVisibility` 就是你接管（须同时给 `onColumnVisibilityChange`，否则列设置点不动且只有 dev 告警）。不接管时列偏好只活在内部 useState 里 —— 工具栏点得动、刷新就没了，「同一个运营换台机器、列偏好跟人走」这件事在组件外一行都写不了。映射口径是**缺省即可见**，所以落库只需要记被关掉的那几列。
+- **身份列与操作列要挂 `meta.lockVisible`**：全量开关表达不了「这两列不给关」，而关掉了它们的那一行既没有身份也没有出口。锁定列在工具栏里置灰且恒选中，受控值对它写 `false` 也不生效 —— 否则一份旧的落库偏好就能把出口关掉，而界面上根本打不开。
+- 组件仍留着「不允许关掉最后一列可见列」的保底（避免空表头），受控模式下这一步表现为**回调不触发**。
 - `request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。
 - `batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。
 - **`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。

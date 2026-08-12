@@ -27,7 +27,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" \| "soft" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. `soft` is a tinted semantic background with matching text, sitting between `outline` and `solid` in weight (see below). |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral" \| "current"` | `"brand"` | Semantic color tone (see the table below). `current` is not a semantic color but "set no color, inherit from the container", and is **only effective on `ghost` and `outline`** (see "Inheriting the container color"). |
-| size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | Control size. `xs` is the 24px dense size for admin toolbars and table rows. `iconSm` / `icon` / `iconLg` are square icon buttons whose side length matches the text size of the same name. The dense end has three more icon sizes — `iconXs` (20), `icon24` (24) and `icon28` (28) — each pinned to one row scale (see the table below). |
+| size | `"xs" \| "28" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | Control size. `xs` (24) and `"28"` are the two dense text sizes, for admin toolbars, table rows and filter-pill rows. `iconSm` / `icon` / `iconLg` are square icon buttons whose side length matches the text size of the same name. The dense end has three more icon sizes — `iconXs` (20), `icon24` (24) and `icon28` (28) — each pinned to one row scale (see the table below). |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
 | muted | `boolean` | `false` | Emphasis step: the resting color drops one level to the secondary gray and returns to the tone's own color on hover. **Only effective on `ghost`, `link` and `outline`** (see "The muted emphasis step"). |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
@@ -161,20 +161,30 @@ The regular scale has three steps. Every icon size has the same side length as t
 | `md` (default) | 40px | 14px | `icon` | 40px |
 | `lg` | 48px | 16px | `iconLg` | 48px |
 
-Four more sizes form the dense end. **No two of them are the same height**; each is pinned to one row scale:
+Five more sizes form the dense end. **Only `"28"` and `icon28` share a height**; every other one is
+pinned to its own row scale:
 
 | Dense size | Dimensions | Font | What it pairs with | Where it belongs |
 |------------|------------|------|--------------------|------------------|
 | `xs` | 24px tall | 12px | `icon24` | Text buttons in admin toolbars, table rows and panel headers |
+| `"28"` | 28px tall | 12px | `icon28`, [Chip](../chip/chip.md) `md`, [Sidebar](../sidebar/sidebar.md) menu item `sm` | Text buttons on the 28px row scale: filter-pill triggers, secondary actions at the foot of an info card |
 | `iconXs` | 20px square | — | Nothing (shorter than every text size) | Icon-only micro actions inside a table row: tree expanders, drag handles |
 | `icon24` | 24px square | — | The `xs` text size, [Tag](../tag/tag.md) `md`, [Chip](../chip/chip.md) `sm` | Icon buttons sitting next to `xs` text buttons |
-| `icon28` | 28px square | — | [Chip](../chip/chip.md) `md`, [Sidebar](../sidebar/sidebar.md) menu item `sm` | Icon buttons on the 28px row scale, such as the clear button on a filter-pill row |
+| `icon28` | 28px square | — | The `"28"` text size, [Chip](../chip/chip.md) `md`, [Sidebar](../sidebar/sidebar.md) menu item `sm` | Icon buttons on the 28px row scale, such as the clear button on a filter-pill row |
 
 `xs` is the smallest text size for dense interfaces. Once a screen carries a dozen actions, `sm`
 (32px / 14px) is one step too large rather than the smallest step, and forcing it into a 24px toolbar
 means a stack of override classes that undo the height, padding, font size and radius `sm` just added.
 `xs` already lowers the radius to 4px and tightens the icon gap to 4px, so use it as is instead of
 patching it through `className`.
+
+`"28"` fills the gap between `xs` and `sm`, and its **name is a bare number**: it differs from
+`icon28` only by the `icon` prefix, and a text size has no prefix, so the side length is all that is
+left to name it after (the same rule as `icon24` / `icon28` below). Its font follows `xs` (12px)
+rather than `sm` — the dense band runs 10 to 12px, and 14px would make every one of these call sites
+add `text-xs` back. Padding (10px) and icon gap (6px) are interpolated by height between `xs` and
+`sm`. The radius stays at `--radius`, matching `icon28`, so a 28px text button and a 28px icon button
+on the same row also agree on their corners (#228).
 
 **The icon size that matches `xs` is `icon24`, not `iconXs`.** The one named `Xs` is 20px: it is another
 4px shorter than `xs` on purpose, because raising it to 24px would push `density="compact"` table rows
@@ -200,11 +210,14 @@ hides; pairing `iconXs` with `sm` or larger opens a gap past 12px, and so does `
   <ChevronRight className="size-4" />
 </Button>
 
-{/* The 28px row scale: filter pills plus a clear button */}
-<Chip>Status: running</Chip>
+{/* The 28px row scale: a text trigger plus a clear button (equal height, matching corners) */}
+<Button size="28" variant="outline" tone="neutral" muted>Filter</Button>
 <Button size="icon28" variant="outline" muted aria-label="Clear filters">
   <X className="size-3.5" />
 </Button>
+
+{/* Full-width escape hatch at the foot of a card */}
+<Button size="28" variant="outline" muted block>Abort</Button>
 ```
 
 ```tsx

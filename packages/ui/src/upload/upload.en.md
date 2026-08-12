@@ -40,6 +40,11 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | maxSize | `number` | — | Maximum size of each file in bytes; oversized files are reported through `onReject` with reason `"size"`. |
 | limit | `number` | — | Maximum file count, based on `files.length`. At the limit, the trigger is disabled and shows “selected n/limit”; excess files are reported with reason `"limit"`. |
 | variant | `"dropzone" \| "button"` | `"dropzone"` | Presentation as either a drag-and-drop area or a compact button. |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | Size step for the dropzone height, or the trigger height in button mode. Button mode matches the same step of `<Button>`. |
+| name | `string` | — | The `name` of the inner `<input type="file">`. **Only with a name is it a real form control**: a native `<form>` plus `new FormData(form)` can read the file, and `required` is validated by the browser. |
+| required | `boolean` | — | Native required validation, forwarded to the inner input. **Provide `name` as well**, otherwise the form never sees the control. |
+| inputRef | `Ref<HTMLInputElement>` | — | Access to the inner input for custom validation, manual clearing, or registration with a third-party form library. |
+| resetInputAfterSelect | `boolean` | `true` without `name`, `false` with `name` | Whether to clear `input.value` after a selection. Clearing allows picking the same file twice; keeping the value is what lets FormData read it. |
 | files | `UploadFile[]` | — | Controlled display list, including status, progress, and URL metadata. Omit it to hide the list. |
 | renderPreview | `(file: UploadFile) => ReactNode` | — | Thumbnail renderer. A returned node occupies a 40 px preview area with the status dot shown as a corner badge; returning `null` uses the default status dot. |
 | sortable | `boolean` | `false` | Enables drag reordering when `onSort` is also provided. |
@@ -52,6 +57,7 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | onSelect | `(files: File[]) => void` | Called with files that pass validation. |
 | onReject | `(rejections: UploadRejection[]) => void` | Called for rejected files with reason `"type"`, `"size"`, or `"limit"`. |
 | onRemove | `(id: string) => void` | Called with the file ID when its remove button is clicked. |
+| onRetry | `(id: string) => void` | Called with the file ID when the retry button on a failed row is clicked. **The button renders only when this handler is provided**, matching `onRemove`; connect it to `retry` from `useUpload`. |
 | onSort | `(files: UploadFile[]) => void` | Called with the reordered list after a drag; write it back to controlled `files`. |
 
 ## Slots
@@ -86,7 +92,7 @@ const up = useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })
 | `files` | Controlled file list to pass directly to `<Upload files>`. |
 | `add` | Handler for `<Upload onSelect>` that queues files and starts uploads within the concurrency limit. |
 | `remove` | Handler for `<Upload onRemove>` that also aborts an in-progress task. |
-| `retry` | Retries one failed item. |
+| `retry` | Handler for `<Upload onRetry>` that retries one failed item. |
 | `reorder` | Connect to `<Upload onSort>`; it changes list order without affecting upload tasks. |
 | `clear` | Cancels every task and clears the list. |
 | `uploading` | Whether any task is queued or in progress. |
@@ -106,7 +112,21 @@ const up = useUpload({
   concurrency: 3,
 });
 
-<Upload multiple limit={5} files={up.files} onSelect={up.add} onRemove={up.remove} />
+<Upload multiple limit={5} files={up.files} onSelect={up.add} onRemove={up.remove} onRetry={up.retry} />
+```
+
+Native `<form>` plus `FormData`, with no React state and `required` left to the browser:
+```tsx
+<form
+  onSubmit={(e) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget); // fd.get("file") is the File
+    void fetch("/api/upload", { method: "POST", body: fd });
+  }}
+>
+  <Upload name="file" required accept=".pdf" size="sm" hint="PDF only, 10 MB max" />
+  <button type="submit">Submit</button>
+</form>
 ```
 
 If you want a real progress bar, use XHR (fetch has no upload progress event):
@@ -146,6 +166,10 @@ Fully controlled transport without useUpload:
 ## Usage guidelines
 
 - `<Upload>` **never uploads by itself**. Pair it with `useUpload` for automatic transport, or write `status`, `progress`, `error`, and `url` back through controlled `files` when managing requests yourself.
+- **Without `name` there is no native form path.** An input without a name never appears in the entries of `FormData`, and `required` is never validated by the browser. Neither omission raises an error; both simply do nothing.
+- Providing `name` also changes three defaults, all of which apply only when a name is present. First, the value is no longer cleared after a selection, because clearing it means FormData always reads an empty control; the cost is that **picking the same file twice in a row no longer fires `onSelect`**. Set `resetInputAfterSelect` explicitly if you need that behavior instead, but then FormData cannot read the file — the two cannot both apply. Second, dropped files are written back into `input.files`, which native drag and drop does not do, and files rejected by `accept`, `maxSize`, or `limit` are removed from it so the form cannot submit what the interface just refused. Third, reaching `limit` no longer disables the input, because a disabled control is skipped entirely by FormData and the already selected file would vanish on submit; the trigger itself stays disabled, so the picker cannot be opened.
+- Writing back to `input.files` depends on the `DataTransfer` constructor. Test environments such as jsdom do not provide it, so the write-back is skipped silently while `onSelect` still works. **Do not assert on FormData contents after a drop in jsdom.**
+- The retry button on a failed row appears **only when `onRetry` is provided**. `useUpload` has had `retry` all along, but the component does not decide on your behalf whether a given failure deserves a retry entry; wire it up with `onRetry={up.retry}`.
 - **The library does not unwrap backend envelopes.** Your `request` closure must extract `{ url }` from shapes such as `code/data/msg` before returning.
 - `sortable` requires `onSort` because ordering is controlled. Supplying `sortable` alone intentionally falls back to a static list.
 - `renderPreview` runs on every render. **Do not call `URL.createObjectURL` directly inside it** or URLs will leak. Cache by file ID and call `revokeObjectURL` during cleanup; the showcase's `useObjectUrls` demonstrates the pattern.

@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import type { VariantProps } from "class-variance-authority";
 import type { cardVariants } from "./card";
 
@@ -13,4 +13,18 @@ export interface CardProps
    * 的半吊子状态。@default true
    */
   divided?: boolean;
+}
+
+// title 为 ReactNode → 与 HTMLAttributes 的 title?:string 冲突，必须 Omit "title"
+// （同 PageHeader/Alert/Empty 的复发坑）。
+export interface CardHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * 主标题。给标题一个自己的元素（`data-slot="card-title"`），于是它有独立的字号 / 行高 / 字重，
+   * 而同一行里的图标、状态标签、计数不再被 header 的 `font-medium` 一起染成标题样式。
+   */
+  title?: ReactNode;
+  /** 副标题 / 说明，排在标题下方，次要文字色。 */
+  description?: ReactNode;
+  /** 右侧操作区（按钮、开关、计数等），与标题群同一行、垂直居中，窄屏换行到下方。 */
+  extra?: ReactNode;
 }

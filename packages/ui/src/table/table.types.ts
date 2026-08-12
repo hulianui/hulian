@@ -1,4 +1,9 @@
-import type { ReactNode } from "react";
+import type {
+  HTMLAttributes,
+  ReactNode,
+  TdHTMLAttributes,
+  ThHTMLAttributes,
+} from "react";
 import type {
   ColumnDef,
   SortingState,
@@ -29,6 +34,9 @@ export type TableCellVerticalAlign = "top" | "middle" | "bottom";
 
 /** 单元格换行策略（#194）。 */
 export type TableCellWhitespace = "nowrap" | "normal" | "pre-wrap";
+
+/** 行密度（仅调单元格内边距）。高层 `Table` 与组合原语 `TableRoot` 共用同一档位。 */
+export type TableDensity = "default" | "middle" | "compact";
 
 // 列 meta 增量（模块增强）：固定列 / 筛选框 / 对齐 / 溢出省略。皆为可选，不写即关。
 declare module "@tanstack/react-table" {
@@ -68,6 +76,15 @@ declare module "@tanstack/react-table" {
      * 与 `ellipsis` 互斥：截断本身就要求单行，同传时以 `ellipsis` 为准。
      */
     whitespace?: TableCellWhitespace;
+    /**
+     * 锁定显隐（#236）：该列不允许在 `ProTable` 的「列设置」里被关掉，
+     * 工具栏里置灰、勾选框恒选中。身份列（公司名）与操作列典型：关掉了这行就
+     * 既没有身份也没有出口，那不是一个用户该被允许做出的选择。
+     *
+     * 锁的语义是「这列不给关」，所以受控的 `columnVisibility` 对它写 `false` 也不生效
+     * —— 否则一份旧的列偏好落库值就能把出口关掉，而界面上根本打不开。
+     */
+    lockVisible?: boolean;
   }
 }
 
@@ -146,6 +163,32 @@ export interface VirtualOptions {
   overscan?: number;
 }
 
+/** `renderRowExtra` 的上下文（#237）。 */
+export interface TableRowExtraContext {
+  /**
+   * 当前可见列数 —— 整宽行的 `colSpan` 直接用它。
+   * 含自动前插的选择 / 展开器 / 拖拽手柄列，所以不是消费方 `columns.length`。
+   */
+  colSpan: number;
+  /** 该行的渲染顺序下标（排序/筛选之后）。 */
+  rowIndex: number;
+}
+
+/** `footer` 为函数形态时的上下文（#237）。 */
+export interface TableFooterContext<TData> {
+  /** 当前可见行的原始数据，按渲染顺序（已排序/筛选）—— 合计行按它算才与眼前的表一致。 */
+  rows: TData[];
+  /** 当前可见列数（同 `TableRowExtraContext.colSpan`）。 */
+  colSpan: number;
+}
+
+/**
+ * 表头吸顶的锚点（#238）：
+ * · `"self"`（= `true`，默认口径）—— 吸在**表格自己的滚动区**上，必须配 `maxHeight`（或 `virtual`）；
+ * · `"scrollParent"` —— 吸在**外部滚动容器**（页面 / AdminLayout 内容区）上，表格自身不滚。
+ */
+export type TableStickyHeaderMode = "self" | "scrollParent";
+
 export interface TableProps<TData> {
   /** 列定义，直接用 TanStack ColumnDef（accessorKey/header/cell/meta.sticky/meta.filterable…） */
   columns: ColumnDef<TData, any>[];
@@ -160,7 +203,7 @@ export interface TableProps<TData> {
   /** 默认 true：表格外层描边框 + 圆角。被 ProTable 卡片包裹时置 false，由卡片提供外框，避免双框。 */
   bordered?: boolean;
   /** 行密度：default 宽松 / middle 中等 / compact 紧凑（仅调单元格内边距，默认 default）。 */
-  density?: "default" | "middle" | "compact";
+  density?: TableDensity;
   /** 行稳定 key；默认按行 index */
   getRowId?: (row: TData, index: number) => string;
   /**
@@ -230,6 +273,30 @@ export interface TableProps<TData> {
   renderExpandedRow?: (row: Row<TData>) => ReactNode;
   /** 限定哪些行可展开（明细模式默认全部可展开）。 */
   getRowCanExpand?: (row: Row<TData>) => boolean;
+
+  // —— 常驻整宽行 / 表尾（不传=关）——
+  /**
+   * 每条数据行**之后**常驻挂 0..N 条整宽附属行（#237）。与 `renderExpandedRow` 是两件事：
+   * 它不前插展开器列、不要求展开态、也不限一条 —— 「这条工作经历下面常驻挂 N 张职称证书」
+   * 属于行的一部分而不是折叠明细。
+   *
+   * **返回的是裸 `<tr>`**（可以是数组 / Fragment / `null`），组件不替你包壳：
+   * 附属行的分隔线、底色、`colSpan` 分几段全归你，包一层就再也表达不了「一条拆成三格」。
+   * 整宽写法：`<tr><td colSpan={ctx.colSpan}>…</td></tr>`，`ctx.colSpan` 已含自动前插的
+   * 选择/展开器/拖拽列，不要拿 `columns.length` 自己算。
+   *
+   * 与 `cellSpan` 不能同开（附属行插在数据行之间，纵向合并会跨过它们，同 `renderExpandedRow`）。
+   */
+  renderRowExtra?: (row: Row<TData>, ctx: TableRowExtraContext) => ReactNode;
+  /**
+   * 表尾 `<tfoot>` 内容（#237）：合计行、「+ 手动添加一条」这类常驻表尾行。
+   * 口径同 `EditableTable.summary` —— **消费方自备 `<tr><td colSpan=…>`**，跨列对齐自己掌控。
+   *
+   * 传函数则拿到 `{ rows, colSpan }`（`rows` 是排序/筛选后的可见行原始数据）。
+   * 与 `EditableTable.summary` 的一个区别：**空表也渲染**，因为「加一条」这类表尾行
+   * 恰恰在空表时最需要出现。
+   */
+  footer?: ReactNode | ((ctx: TableFooterContext<TData>) => ReactNode);
 
   // —— 树形（不传=关）——
   /** 提供则启用树形：从行取子行；展开器内联进展开器列、按 row.depth 缩进。 */
@@ -301,12 +368,27 @@ export interface TableProps<TData> {
 
   // —— 表头吸顶 / 宽度下限 ——
   /**
-   * 表头吸顶（#192）。与 `virtual` 正交：虚拟滚动恒吸顶，普通表由本项开关。
+   * 表头吸顶（#192 / #238）。与 `virtual` 正交：虚拟滚动恒吸顶，普通表由本项开关。
    *
-   * **必须同时给 `maxHeight`**（或开 `virtual`）：sticky 要锚在一个真的会纵向滚动的祖先上，
-   * 而表格外壳默认没有高度约束、永远不滚。只开这一项时组件在 dev 下告警并保持原样。
+   * · `true` / `"self"` —— 吸在**表格自己的滚动区**上，**必须同时给 `maxHeight`**（或开 `virtual`）：
+   *   sticky 要锚在一个真的会纵向滚动的祖先上，而表格外壳默认没有高度约束、永远不滚。
+   *   只给这一项时组件在 dev 下告警并保持原样。
+   * · `"scrollParent"` —— 吸在**外部滚动容器**（页面 / AdminLayout 内容区）上：表格自身不产生
+   *   纵向滚动区，整张表跟着页面滚、表头钉在页面顶部。用 `stickyHeaderOffset` 避开自家固定页头。
+   *
+   * ⚠️ `"scrollParent"` 下外壳**不再有 `overflow-x-auto`**，表格自身不横向滚动 —— 这不是取舍
+   * 而是 CSS 的硬约束：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是外壳
+   * 自己成了 scrollport，把表头锚死在它身上（实测滚动页面时表头直接划走）。横向溢出因此交给
+   * 外部滚动容器。要「表内横滚 + 表头吸顶」只有 `"self"` + `maxHeight` 这一条路。
+   * 同理 `stickyScrollbar`（代理横向滚动条）在这一档下无对象可镜像，会被忽略并在 dev 下告警。
    */
-  stickyHeader?: boolean;
+  stickyHeader?: boolean | TableStickyHeaderMode;
+  /**
+   * 吸顶表头的偏移量（#238，数值按 px），落成 `<thead>` 的 `top`。
+   * 典型用途是避开自家的固定页头：`stickyHeaderOffset={56}`。
+   * 不传即 `0`（与加这个 prop 之前逐字一致）。两档 `stickyHeader` 都生效。
+   */
+  stickyHeaderOffset?: number | string;
   /**
    * 表格滚动区的最大高度（数值按 px）。给了它外壳才会纵向滚动，
    * 也是 `stickyHeader` 生效的前提。`virtual` 开启时以 `virtual.height` 为准。
@@ -344,4 +426,57 @@ export interface TableProps<TData> {
   emptyText?: ReactNode;
   /** 完全自定义空态渲染（优先级高于 emptyText）。 */
   renderEmpty?: () => ReactNode;
+}
+
+// ── 组合原语（#241）────────────────────────────────────────────────────────
+// 高层 `Table` 是「数据 + 列定义 → 表」；原语是「结构你自己写，皮肤用库的」。
+// 两条路并存，不互相包含：结构差异大的表（一行里嵌两层、整行是编辑器、按数据动态拆行）
+// 翻译成 ColumnDef + cell 回调只会更难读，那不是配置该管的事。
+
+/** `TableRoot`：滚动外壳 + `<table>`。密度/斑马纹经 context 下发给下面的原语。 */
+export interface TableRootProps extends HTMLAttributes<HTMLDivElement> {
+  /** 行密度（仅调单元格内边距），下发给 `TableHead` / `TableCell`。@default "default" */
+  density?: TableDensity;
+  /**
+   * 偶数行斑马纹（只作用于 `TableBody` 里的行）。
+   * 默认 `false` —— 与高层 `Table` 相反：手写结构里常有整宽附属行 / 跨行合并，
+   * 「第几行」与视觉上的第几条记录对不上，斑马纹反而把结构读乱。
+   * @default false
+   */
+  striped?: boolean;
+  /** 外层描边 + 圆角。嵌进卡片时置 `false` 避免双框。@default true */
+  bordered?: boolean;
+  /** `table-layout`。@default "auto" */
+  layout?: "auto" | "fixed";
+  /** `<table>` **本体**的宽度下限（不要写进 `className`，那落在滚动外壳上）。 */
+  minWidth?: number | string;
+  /** `<table>` 本体的类名（`className` 落在外层滚动容器上）。 */
+  tableClassName?: string;
+}
+
+/** `TableHeader`：`<thead>`。 */
+export type TableHeaderProps = HTMLAttributes<HTMLTableSectionElement>;
+/** `TableBody`：`<tbody>`。 */
+export type TableBodyProps = HTMLAttributes<HTMLTableSectionElement>;
+/** `TableFooter`：`<tfoot>`（自带上边框 + 表尾底色 + 中等字重）。 */
+export type TableFooterProps = HTMLAttributes<HTMLTableSectionElement>;
+
+/** `TableRow`：`<tr>`。分隔线/悬停/斑马纹按所在段（thead/tbody/tfoot）自动区分。 */
+export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
+  /** 选中态：主色底 + `data-selected`（同高层 `Table` 的选中行皮肤）。 */
+  selected?: boolean;
+}
+
+/** `TableHead`：`<th>`（表头单元格，恒不换行 + 半粗）。 */
+export interface TableHeadProps extends Omit<ThHTMLAttributes<HTMLTableCellElement>, "align"> {
+  /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
+  align?: TableColumnAlign;
+}
+
+/** `TableCell`：`<td>`。 */
+export interface TableCellProps extends Omit<TdHTMLAttributes<HTMLTableCellElement>, "align"> {
+  /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
+  align?: TableColumnAlign;
+  /** 垂直对齐。@default "middle" */
+  verticalAlign?: TableCellVerticalAlign;
 }

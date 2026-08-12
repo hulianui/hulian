@@ -814,3 +814,102 @@ describe("托管模式下的受控行选择（#202）", () => {
     warn.mockRestore();
   });
 });
+
+// —— 列显隐受控出口 + 锁定列（#236）——
+describe("ProTable 列显隐（columnVisibility / meta.lockVisible）", () => {
+  const openColumnSetting = (getByLabelText: (t: string) => HTMLElement) => {
+    fireEvent.click(getByLabelText("列设置"));
+  };
+  const boxes = () =>
+    Array.from(document.querySelectorAll("[role='checkbox']")) as HTMLElement[];
+
+  it("不传 columnVisibility：内部自持，表头列数与此前一致", () => {
+    const { container } = render(<ProTable columns={columns} data={data} />);
+    expect(container.querySelectorAll("thead th").length).toBe(2);
+  });
+
+  it("不传时点列设置仍可切换（非受控路径不回归）", async () => {
+    const { getByLabelText, container } = render(<ProTable columns={columns} data={data} />);
+    openColumnSetting(getByLabelText);
+    await waitFor(() => expect(boxes().length).toBe(2));
+    fireEvent.click(boxes()[0]);
+    await waitFor(() => expect(container.querySelectorAll("thead th").length).toBe(1));
+  });
+
+  it("受控 columnVisibility：false 的列不渲染，缺省的键视为可见", () => {
+    const { container } = render(
+      <ProTable
+        columns={columns}
+        data={data}
+        columnVisibility={{ id: false }}
+        onColumnVisibilityChange={() => {}}
+      />,
+    );
+    const heads = Array.from(container.querySelectorAll("thead th")).map((th) => th.textContent);
+    expect(heads).toEqual(["姓名"]);
+  });
+
+  it("受控时点勾选框回调完整的下一份映射，组件自身不改状态", async () => {
+    const onChange = vi.fn();
+    const { getByLabelText, container } = render(
+      <ProTable
+        columns={columns}
+        data={data}
+        columnVisibility={{}}
+        onColumnVisibilityChange={onChange}
+      />,
+    );
+    openColumnSetting(getByLabelText);
+    await waitFor(() => expect(boxes().length).toBe(2));
+    fireEvent.click(boxes()[0]);
+    expect(onChange).toHaveBeenCalledWith({ id: false });
+    // 受控：没有回灌就不动
+    expect(container.querySelectorAll("thead th").length).toBe(2);
+  });
+
+  it("受控但没传 onColumnVisibilityChange：dev 告警（勾不动与组件坏了长得一样）", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    render(<ProTable columns={columns} data={data} columnVisibility={{}} />);
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("meta.lockVisible：勾选框置灰、点不动，且受控写 false 也关不掉", async () => {
+    const onChange = vi.fn();
+    const locked: ColumnDef<Row, any>[] = [
+      { accessorKey: "id", header: "工号", meta: { lockVisible: true } },
+      { accessorKey: "name", header: "姓名" },
+    ];
+    const { getByLabelText, container } = render(
+      <ProTable
+        columns={locked}
+        data={data}
+        columnVisibility={{ id: false }}
+        onColumnVisibilityChange={onChange}
+      />,
+    );
+    // 锁定列恒可见
+    expect(container.querySelectorAll("thead th").length).toBe(2);
+    openColumnSetting(getByLabelText);
+    await waitFor(() => expect(boxes().length).toBe(2));
+    expect(boxes()[0].getAttribute("data-disabled")).not.toBeNull();
+    fireEvent.click(boxes()[0]);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("保底：不允许把最后一列可见列也关掉", async () => {
+    const onChange = vi.fn();
+    const { getByLabelText } = render(
+      <ProTable
+        columns={columns}
+        data={data}
+        columnVisibility={{ id: false }}
+        onColumnVisibilityChange={onChange}
+      />,
+    );
+    openColumnSetting(getByLabelText);
+    await waitFor(() => expect(boxes().length).toBe(2));
+    fireEvent.click(boxes()[1]); // 关掉仅剩的「姓名」
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});

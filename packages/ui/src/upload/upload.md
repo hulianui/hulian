@@ -40,6 +40,11 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | maxSize | `number` | — | 单文件字节上限；超限进 `onReject(reason="size")` |
 | limit | `number` | — | 文件数量上限（按 `files.length` 计）；达标后触发器自动禁用并显示「已选 n/limit」，超额进 `onReject(reason="limit")` |
 | variant | `"dropzone" \| "button"` | `"dropzone"` | 形态：拖拽落区 / 单按钮 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档：落区高度 / button 形态的按钮高度（button 形态与 `<Button>` 同名档等高） |
+| name | `string` | — | 内层 `<input type="file">` 的 name。**给了它才是真表单控件**：原生 `<form>` + `new FormData(form)` 读得到文件，`required` 才会被浏览器校验 |
+| required | `boolean` | — | 原生必填校验，透传到内层 input（**需同时给 `name`**） |
+| inputRef | `Ref<HTMLInputElement>` | — | 拿到内层 input 的引用（自定义校验、手动清空、第三方表单库注册） |
+| resetInputAfterSelect | `boolean` | 无 `name` 时 `true`；有 `name` 时 `false` | 选完是否清空 `input.value`。清了才能重复选同一个文件，清了 FormData 就读不到 |
 | files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度/url）；不传则不渲染列表 |
 | renderPreview | `(file: UploadFile) => ReactNode` | — | 缩略图渲染钩子；返回节点时列表项左侧变 40px 预览位（状态点降级为角标），返回 `null` 回落默认圆点 |
 | sortable | `boolean` | `false` | 列表可拖拽调序（**需同时传 `onSort` 才生效**） |
@@ -52,6 +57,7 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | onSelect | `(files: File[]) => void` | 通过校验的文件被选中（点击选择或拖入） |
 | onReject | `(rejections: UploadRejection[]) => void` | 被校验拒绝的文件（`reason`: `"type"` / `"size"` / `"limit"`） |
 | onRemove | `(id: string) => void` | 列表项移除按钮点击 |
+| onRetry | `(id: string) => void` | 失败行重试按钮点击。**传了才渲染这个按钮**（同 `onRemove` 的口径）；直接接 `useUpload` 的 `retry` |
 | onSort | `(files: UploadFile[]) => void` | 拖拽调序后的新顺序（组件不偷存顺序，由你写回 `files`） |
 
 ## Slots
@@ -86,7 +92,7 @@ const up = useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })
 | `files` | 直接喂 `<Upload files>` |
 | `add` | 接 `<Upload onSelect>`，入列并按并发自动开传 |
 | `remove` | 接 `<Upload onRemove>`，进行中的任务会被 abort |
-| `retry` | 重传单个失败项 |
+| `retry` | 接 `<Upload onRetry>`，重传单个失败项 |
 | `reorder` | 接 `<Upload onSort>`，只换顺序不影响在飞任务 |
 | `clear` | 全部取消并清空 |
 | `uploading` | 是否还有排队中或进行中的任务 |
@@ -106,7 +112,21 @@ const up = useUpload({
   concurrency: 3,
 });
 
-<Upload multiple limit={5} files={up.files} onSelect={up.add} onRemove={up.remove} />
+<Upload multiple limit={5} files={up.files} onSelect={up.add} onRemove={up.remove} onRetry={up.retry} />
+```
+
+原生 `<form>` + `FormData`（不进 React state，`required` 交给浏览器）：
+```tsx
+<form
+  onSubmit={(e) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget); // fd.get("file") 就是 File
+    void fetch("/api/upload", { method: "POST", body: fd });
+  }}
+>
+  <Upload name="file" required accept=".pdf" size="sm" hint="仅 PDF，≤ 10MB" />
+  <button type="submit">提交</button>
+</form>
 ```
 
 要真进度条就用 XHR（fetch 无上传进度事件）：
@@ -146,6 +166,10 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
 ## 禁忌 / 坑
 
 - `<Upload>` **不会自己上传**。要自动上传就配 `useUpload`；坚持自己管，就把 `status`/`progress`/`error`/`url` 回填到受控 `files`。
+- **不给 `name` 就没有原生表单这条路**：没有 name 的 input 压根不出现在 `FormData` 的 entries 里，`required` 也不会被浏览器校验。这两件事都不会报错，只是静默不生效。
+- 挂了 `name` 后有三处默认行为跟着变（都只在有 name 时发生）：① 选完不再清 `value`（否则 FormData 永远读到空），代价是**同一个文件连选两次不会再触发 `onSelect`**——要那个行为就显式写 `resetInputAfterSelect`，但那样 FormData 就读不到了，二者不可兼得；② 拖入的文件会被写回 `input.files`（原生拖放不会自己进去），同时被 accept/maxSize/limit 拒掉的文件会被剔出去，避免「界面说拒了、表单照样提交」；③ 达到 `limit` 时 input **不**跟着禁用——禁用控件会被 FormData 整个跳过，已选的文件会在提交时凭空消失（触发器那侧照旧禁用，点不开选择框）。
+- 写回 `input.files` 依赖 `DataTransfer` 构造器。测试环境（jsdom）没有它，回写会静默跳过，`onSelect` 那条路不受影响——**别在 jsdom 里断言拖入后的 `FormData` 内容**。
+- 失败行的重试按钮**要传 `onRetry` 才出现**。`useUpload` 早就有 `retry`，但组件不替你决定「这个失败该不该给重试入口」——直接 `onRetry={up.retry}` 接上即可。
 - **不要指望库帮你解后端信封**。`request` 拿到的 `{ url }` 是你自己 resolve 的，`code/data/msg` 之类的形状在你的闭包里剥完再返回。
 - `sortable` 单独给不生效，**必须同时给 `onSort`**（顺序是受控的，组件不偷存）；只给 `sortable` 会静默退回静态列表。
 - `renderPreview` 每次渲染都会被调用，**别在里面直接 `URL.createObjectURL`** —— 会漏对象 URL。缓存到 `Map<id, url>` 并在卸载时 `revokeObjectURL`（showcase 的 `useObjectUrls` 是可抄的写法）。

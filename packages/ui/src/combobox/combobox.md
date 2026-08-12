@@ -32,6 +32,8 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | defaultValue | 同上 | — | 非受控初始选中 |
 | multiple | `boolean` | `false` | true 时 value/onValueChange 自动变数组 |
 | virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
+| creatable | `boolean` | `false` | 自由输入创建新值：当前输入串在候选里没有完全相同的一项时，列表首位多出一条「使用 “xxx”」。见下 |
+| onCreate | `(value: string) => void` | — | 创建项被选中时触发（与 `onValueChange` 同时发生，不是二选一）。见下 |
 | disabled | `boolean` | `false` | 禁用 |
 
 `ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）。继承原生 `<button>` 属性，剩余属性落到按钮自身。
@@ -64,6 +66,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | align | `"start"｜"center"｜"end"` | — | 浮层对齐 |
 | sideOffset | `number` | — | 偏移 |
 | onListScroll | `UIEventHandler<HTMLDivElement>` | — | 列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](../remote-select/remote-select.md)） |
+| header | `ReactNode` | — | 列表**上方**常驻表头（用法提示、分组说明、批量操作），不随列表滚动。与 `emptyMessage` 不同：后者只在零结果时出现 |
 | footer | `ReactNode` | — | 列表下方常驻页脚（加载中 / 计数 / 到底提示），不随列表滚动 |
 | className | `string` | — | — |
 
@@ -194,6 +197,42 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
   </ComboboxContent>
 </Combobox>
 ```
+
+### creatable：长尾字段要能手填
+
+发证机构、单位名称这类字段有几百个常见值，做成选项能让绝大多数人少打字；但运营手里就是有一张列表上没有的证书。做成纯选择会逼他们挑一个近似值，那比自由输入更糟。`creatable` 就是这一档：
+
+```tsx
+const [issuers, setIssuers] = useState(ISSUERS);
+
+<Combobox
+  items={issuers}
+  creatable
+  onCreate={(value) => setIssuers((prev) => [...prev, { value, label: value }])}
+  onValueChange={(item) => form.setValue("issuer", item.value)}
+>
+  <ComboboxInput aria-label="发证机构" placeholder="选择或直接输入" />
+  <ComboboxContent header={<p className="px-2 py-1 text-xs text-muted-foreground">找不到就直接输入</p>}>
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
+几条口径：
+
+- **判重按去空白 + 忽略大小写，`value` 和 `label` 两边都比**：消费方看到的是 label（“北京市公安局”），value 常常是编号；只比一边，另一边完全相同时仍会冒出创建项，选下去就是给已有条目造了个重复。
+- **`onCreate` 与 `onValueChange` 同时发生，不是二选一**：值的变化照常走 `onValueChange`（拿到的是 `{ value: 输入串, label: 输入串 }`，两端空白已去除），`onCreate` 只负责「这是一个新值，去建它」—— 落库、追加进 `items` 都在这里做。
+- **创建项是塞进 `items` 里的一条真选项**，不是浮层里多画的一行。所以键盘上下键、highlight、Enter 选中、`Empty` 的判空全都自动一致，超过 100 项自动虚拟化时也照常工作。
+- **`creatable` 需要 `items`**：选项写死在 `children` 里的用法没有可插入的地方，这一档不生效（开发期会有一条告警）。
+- **`creatable` 开着时输入串由组件接管一份**（内部补了 `defaultInputValue`）。带来的唯一差异：用 `value` 从外部改选中项时，输入框里的文字不会跟着变。需要联动请自己传 `inputValue`。
+
+### header：常驻在列表上方的一行
+
+`emptyMessage` 只在零结果时出现，所以「找不到就直接输入」这类**始终**该看见的提示挂不上去 —— 有历史值时它永远不显示。`header` 与 `footer` 对称：一个在列表上、一个在列表下，两个都不参与列表滚动。
 
 ## 禁忌 / 坑
 

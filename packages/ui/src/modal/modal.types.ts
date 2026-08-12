@@ -21,6 +21,17 @@ export interface ModalOptions {
   onCancel?: () => void;
   /** 语调；命令式入口已隐含，一般无需显式传。 */
   type?: ModalType;
+  /**
+   * 危险操作：确定键走 `tone="danger"`，左侧图标同步转 `text-danger`。
+   * 与 [Popconfirm](../popconfirm/popconfirm.md) 的 `danger` 同名同义。
+   *
+   * **`type` 管不了确定键**：`type="error"` 只换图标与图标色，确定键仍是默认的主色档，
+   * 于是「删除后不可恢复」的确定键和「保存」长得一模一样。要让按钮变红只有这一个开关。
+   *
+   * 图标**字形**仍由 `type` 决定（`modal.confirm` 依旧是问号），只有颜色跟着 `danger` 走：
+   * 字形说的是「这是一个提问」，颜色说的是「后果不可逆」，两件事不冲突。
+   */
+  danger?: boolean;
 }
 
 /** 命令式调用返回的实例句柄。 */

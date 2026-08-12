@@ -129,6 +129,121 @@ describe("CellEditor Esc 回滚", () => {
   });
 });
 
+// #244：失焦即提交的表格里，非法值不该「先写进去再回滚」——那时光标已经在下一格，
+// 用户看到的是自己改的东西自己变回去了。
+describe("CellEditor 提交前校验", () => {
+  const rejectShort = (next: string) => (next.length < 3 ? "至少 3 个字" : undefined);
+
+  it("validate 返回错误串时拦住 onCommit，并把该串渲染出来", () => {
+    const { el, onCommit, getByText } = renderCell({ validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    expect(onCommit).not.toHaveBeenCalled();
+    expect(getByText("至少 3 个字")).toBeTruthy();
+  });
+
+  it("被拦住时草稿不回滚，且红线走 cell 档已有的 data-invalid", () => {
+    const { el } = renderCell({ validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    expect(el.value).toBe("短");
+    expect(el.getAttribute("data-invalid")).not.toBeNull();
+    expect(el.getAttribute("aria-invalid")).toBe("true");
+  });
+
+  it("错误串通过 aria-describedby 挂到控件上", () => {
+    const { el, getByText } = renderCell({ validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    expect(el.getAttribute("aria-describedby")).toBe(getByText("至少 3 个字").id);
+  });
+
+  it("Enter 路径同样被拦", () => {
+    const { el, onCommit, getByText } = renderCell({ validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.keyDown(el, { key: "Enter" });
+    expect(onCommit).not.toHaveBeenCalled();
+    expect(getByText("至少 3 个字")).toBeTruthy();
+  });
+
+  it("拦住后判等基准不推进：同一个非法值再 blur 仍然拦，改对了才提交", () => {
+    const { el, onCommit, getByText, queryByText } = renderCell({ validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    fireEvent.blur(el);
+    expect(onCommit).not.toHaveBeenCalled();
+    expect(getByText("至少 3 个字")).toBeTruthy();
+
+    fireEvent.change(el, { target: { value: "改够长了" } });
+    fireEvent.blur(el);
+    expect(onCommit).toHaveBeenCalledWith("改够长了");
+    expect(queryByText("至少 3 个字")).toBeNull();
+  });
+
+  it("开始输入即撤掉红线（那条错误说的是刚才那一版）", () => {
+    const { el, queryByText } = renderCell({ validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    expect(queryByText("至少 3 个字")).toBeTruthy();
+    fireEvent.change(el, { target: { value: "短短" } });
+    expect(queryByText("至少 3 个字")).toBeNull();
+  });
+
+  it("Esc 回滚同时清掉错误", () => {
+    const { el, queryByText } = renderCell({ value: "原来的值", validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    expect(queryByText("至少 3 个字")).toBeTruthy();
+    fireEvent.keyDown(el, { key: "Escape" });
+    expect(el.value).toBe("原来的值");
+    expect(queryByText("至少 3 个字")).toBeNull();
+  });
+
+  it("改回上次提交值时撤掉错误（判等短路那条路也要收拾干净）", () => {
+    const { el, queryByText } = renderCell({ value: "原来的值", validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    expect(queryByText("至少 3 个字")).toBeTruthy();
+    fireEvent.change(el, { target: { value: "原来的值" } });
+    fireEvent.blur(el);
+    expect(queryByText("至少 3 个字")).toBeNull();
+  });
+
+  it("值没变时根本不校验（点进去看一眼再点走）", () => {
+    const validate = vi.fn(() => "不该被调用");
+    const { el } = renderCell({ validate });
+    fireEvent.focus(el);
+    fireEvent.blur(el);
+    expect(validate).not.toHaveBeenCalled();
+  });
+
+  it("多行档同样拦", () => {
+    const { el, onCommit, getByText } = renderCell({ multiline: true, validate: rejectShort });
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.blur(el);
+    expect(onCommit).not.toHaveBeenCalled();
+    expect(getByText("至少 3 个字")).toBeTruthy();
+    expect(el.getAttribute("data-invalid")).not.toBeNull();
+  });
+
+  it("返回空串按放行处理：看不见的错误却拦着提交，比不校验更糟", () => {
+    const { el, onCommit, container } = renderCell({ validate: () => "" });
+    fireEvent.change(el, { target: { value: "随便" } });
+    fireEvent.blur(el);
+    expect(onCommit).toHaveBeenCalledWith("随便");
+    expect(container.querySelector(".text-danger")).toBeNull();
+  });
+
+  it("不传 validate 时渲染与从前逐字相同（无错误节点、无 data-invalid）", () => {
+    const { el, container } = renderCell();
+    fireEvent.change(el, { target: { value: "随便" } });
+    fireEvent.blur(el);
+    expect(container.childElementCount).toBe(1);
+    expect(el.getAttribute("data-invalid")).toBeNull();
+    expect(el.getAttribute("aria-describedby")).toBeNull();
+  });
+});
+
 describe("CellEditor 异步提交", () => {
   it("onCommit 返回 Promise 时 pending 期间自禁用，resolve 后恢复", async () => {
     let resolveCommit: (() => void) | undefined;

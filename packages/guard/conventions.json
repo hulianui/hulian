@@ -1127,6 +1127,34 @@
       "source": "packages/ui/src/brand/brand.md"
     },
     {
+      "id": "component/breadcrumb/pitfall/1",
+      "scope": "breadcrumb",
+      "title": "Breadcrumb",
+      "rule": "中间项省略 `href` 即渲染为不可点的纯文本（如「归档」这类无独立页面的祖先）。",
+      "source": "packages/ui/src/breadcrumb/breadcrumb.md"
+    },
+    {
+      "id": "component/breadcrumb/pitfall/2",
+      "scope": "breadcrumb",
+      "title": "Breadcrumb",
+      "rule": "SPA 里别用裸 `href`：那是整页刷新。走 `render` 传框架的 `Link`，它真的被渲染出来（不是在 `<nav>` 上劫持点击），所以 Cmd+点击开新标签、中键、Shift 开新窗这些原生行为不用自己一条条放行。",
+      "source": "packages/ui/src/breadcrumb/breadcrumb.md"
+    },
+    {
+      "id": "component/breadcrumb/pitfall/3",
+      "scope": "breadcrumb",
+      "title": "Breadcrumb",
+      "rule": "传了 `render` 的项以它为准：即使该项是当前页也仍渲染为该元素，只是带上 `aria-current=\"page\"`——想保留「当前页不可点」就别给末项传 `render`。`href` 由该元素自带；若该项同时写了 `href`，以该项的为准。",
+      "source": "packages/ui/src/breadcrumb/breadcrumb.md"
+    },
+    {
+      "id": "component/breadcrumb/pitfall/4",
+      "scope": "breadcrumb",
+      "title": "Breadcrumb",
+      "rule": "类名合并顺序同库内其它 `render`：本组件皮肤在前、`render` 元素自带的 `className` 在后（后者胜出）。",
+      "source": "packages/ui/src/breadcrumb/breadcrumb.md"
+    },
+    {
       "id": "component/bubble-menu/pitfall/1",
       "scope": "bubble-menu",
       "title": "BubbleMenu",
@@ -1298,6 +1326,20 @@
       "id": "component/card/pitfall/3",
       "scope": "card",
       "title": "Card",
+      "rule": "标题里放图标 / `Tag` 时用 `title` 而不是把整行塞进 `children`：塞进 `children` 时 header 的 `font-medium` 会连图标、标签、计数一起染成标题字重，而标题自己反而没有字号与行高的表达。",
+      "source": "packages/ui/src/card/card.md"
+    },
+    {
+      "id": "component/card/pitfall/4",
+      "scope": "card",
+      "title": "Card",
+      "rule": "`CardHeader` 的 `title` 是 `ReactNode`，与原生 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<\"title\">`——需要原生 tooltip 请挂在内层元素上。",
+      "source": "packages/ui/src/card/card.md"
+    },
+    {
+      "id": "component/card/pitfall/5",
+      "scope": "card",
+      "title": "Card",
       "rule": "`divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `\"use client\"`，能直接放进 server component 里用。",
       "source": "packages/ui/src/card/card.md"
     },
@@ -1445,18 +1487,32 @@
       "id": "component/cell-editor/pitfall/5",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**`onCommit` 失败要自己 catch**：组件只负责结束 pending 态，回滚与报错文案要看业务语义，它不替你决定。",
+      "rule": "**能在客户端判的非法值走 `validate`，别放到 `onCommit` 里再回滚**：回滚发生时光标已经在下一格，用户只会看到自己改的东西自己变回去了。`onCommit` 里剩下的是只有服务端才知道的失败（重名、并发冲突），那类仍然要自己 catch。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/6",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**父级必须把新值写回 `value`**：不写回时组件仍以自己的草稿显示，但下一次外部刷新会把界面拉回旧值。",
+      "rule": "**`validate` 返回空串等于放行**：一条看不见的错误却拦着提交，比不校验更糟 —— 用户只看到这格存不进去，屏幕上什么都没有。想拦就给一句能读的话。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/7",
+      "scope": "cell-editor",
+      "title": "CellEditor",
+      "rule": "**`onCommit` 失败要自己 catch**：组件只负责结束 pending 态，回滚与报错文案要看业务语义，它不替你决定。",
+      "source": "packages/ui/src/cell-editor/cell-editor.md"
+    },
+    {
+      "id": "component/cell-editor/pitfall/8",
+      "scope": "cell-editor",
+      "title": "CellEditor",
+      "rule": "**父级必须把新值写回 `value`**：不写回时组件仍以自己的草稿显示，但下一次外部刷新会把界面拉回旧值。",
+      "source": "packages/ui/src/cell-editor/cell-editor.md"
+    },
+    {
+      "id": "component/cell-editor/pitfall/9",
       "scope": "cell-editor",
       "title": "CellEditor",
       "rule": "**放进 [Table](../table/table.md) 时 `columns` 必须 memo**：cell 函数经 TanStack 的 `flexRender` 当组件类型渲染，identity 一变整格卸载重挂 —— 挂了 `onBlur` 提交的编辑器会被重挂时的 blur 误触发。",
@@ -2978,7 +3034,7 @@
       "id": "component/drawer/pitfall/5",
       "scope": "drawer",
       "title": "Drawer",
-      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。 ### 关闭按钮 `DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。 纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc， 读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。",
+      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。 ### 尺寸该用 `size` 还是 `className` 先用 `size`。`className` 里压 `w-` / `h-` 也能改出来，但那要连同 `inset-x-` / `w-full` 一起顶（组件刚给的东西又撤一遍），而且失去了 `min(90vw, …)` 上限保护——窄屏上抽屉会宽过视口，超出的那截落在屏幕外，里面的控件彻底够不着。`size` 五档不够用（比如要按容器百分比）时再用 `className`，此时**必须自己补一条上限**，例如 `className=\"w-[min(90vw,52rem)]\"`。 ### 「浮起式」底部抽屉（左右留白 + 圆角）需要自己写 组件目前只有贴边一种形态。移动端常见的\"离边框还有一圈留白、四角带圆角\"的浮起式 sheet 得靠 `className`，且**必须连出场位移一起改**——面板一旦离开屏幕边缘 16px，原来的 `translate-y-full` 就送不出屏幕了，收起时底部会留一道 16px 的残影： ```tsx <DrawerContent side=\"bottom\" size=\"lg\" className=\"inset-x-4 bottom-4 w-auto rounded-[var(--radius)] border data-[starting-style]:translate-y-[calc(100%+1rem)] data-[ending-style]:translate-y-[calc(100%+1rem)]\" /> ``` ### 关闭按钮 `DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。 纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc， 读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。",
       "source": "packages/ui/src/drawer/drawer.md"
     },
     {
@@ -3119,6 +3175,20 @@
       "scope": "empty",
       "title": "Empty",
       "rule": "别把「整个列表区是否渲染」和 Empty 绑死成 `if (!data.length) return <Empty/>`——若同区域有需保活的持久子组件（如已挂载的滚动容器、表单），条件 return 会把它们卸载重挂。参见 conditional-empty-return-unmounts-persistent-children。",
+      "source": "packages/ui/src/empty/empty.md"
+    },
+    {
+      "id": "component/empty/pitfall/2",
+      "scope": "empty",
+      "title": "Empty",
+      "rule": "别在加载中沿用空态文案。`loading` 只接管图标区，`title` / `description` / `children` 照传照渲染 —— 写成 `<Empty loading={loading} title=\"暂无数据\" />` 的话，加载中会一边转圈一边写着「暂无数据」。文案要跟着状态走。",
+      "source": "packages/ui/src/empty/empty.md"
+    },
+    {
+      "id": "component/empty/pitfall/3",
+      "scope": "empty",
+      "title": "Empty",
+      "rule": "加载中不要留着「新建 / 重试」这类操作按钮：数据还没到，用户对着它做的决定都是盲的；「新建」属于空态，「重试」属于出错态（用 [Result](../result/result.md)）。",
       "source": "packages/ui/src/empty/empty.md"
     },
     {
@@ -5726,6 +5796,20 @@
       "source": "packages/ui/src/modal/modal.md"
     },
     {
+      "id": "component/modal/pitfall/3",
+      "scope": "modal",
+      "title": "Modal",
+      "rule": "**破坏性确认要传 `danger`，`type=\"error\"` 顶不了**：`type` 只驱动左侧图标与图标色，确定键那边是默认主色档。也就是说 `modal.error({ title: \"确认删除？\" })` 会给出一个红图标 + 主色确定键，和「保存」「继续」同色——「删除后不可恢复」配一个跟保存键同色的按钮是会被误点的。",
+      "source": "packages/ui/src/modal/modal.md"
+    },
+    {
+      "id": "component/modal/pitfall/4",
+      "scope": "modal",
+      "title": "Modal",
+      "rule": "`danger` 只换图标**颜色**，不换图标**字形**：`modal.confirm({ danger: true })` 仍是问号图标（字形说「这是一个提问」，颜色说「后果不可逆」）。要连字形一起换成叉号就再传 `type: \"error\"`。",
+      "source": "packages/ui/src/modal/modal.md"
+    },
+    {
       "id": "component/model-viewer/pitfall/1",
       "scope": "model-viewer",
       "title": "ModelViewer",
@@ -5981,11 +6065,32 @@
       "id": "component/page-header/pitfall/1",
       "scope": "page-header",
       "title": "PageHeader",
-      "rule": "`title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<\"title\">`——别再往 DOM 透传字符串 title。",
+      "rule": "`meta` 是**一串并列的事实值**，别拿它当别的槽用：一句话说明用 `subTitle`，状态标记用 `tags`，Tabs 之类的整块内容用 `footer`。",
       "source": "packages/ui/src/page-header/page-header.md"
     },
     {
       "id": "component/page-header/pitfall/2",
+      "scope": "page-header",
+      "title": "PageHeader",
+      "rule": "`meta` 里的空项（`null` / `undefined` / `false` / `\"\"`）自动跳过，分隔符只插在留下来的项之间，所以不必在调用点先 `filter(Boolean)`。数字 `0` 是事实值（「0 家公司」），不算空。",
+      "source": "packages/ui/src/page-header/page-header.md"
+    },
+    {
+      "id": "component/page-header/pitfall/3",
+      "scope": "page-header",
+      "title": "PageHeader",
+      "rule": "元信息行渲染为 `<ul>`/`<li>`，分隔符是独立的 `aria-hidden` 装饰位——读屏读到的是列表项而不是被中点粘住的长串文本。别再用 `span + span::before { content: \"·\" }` 自己拼点。",
+      "source": "packages/ui/src/page-header/page-header.md"
+    },
+    {
+      "id": "component/page-header/pitfall/4",
+      "scope": "page-header",
+      "title": "PageHeader",
+      "rule": "`title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<\"title\">`——别再往 DOM 透传字符串 title。",
+      "source": "packages/ui/src/page-header/page-header.md"
+    },
+    {
+      "id": "component/page-header/pitfall/5",
       "scope": "page-header",
       "title": "PageHeader",
       "rule": "默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。",
@@ -6303,11 +6408,18 @@
       "id": "component/popover/pitfall/2",
       "scope": "popover",
       "title": "Popover",
-      "rule": "浮层内容自带内边距/边框/正文色时加 `plain`（通常再配 `className=\"p-0\"`），别用 `[&>div]:mt-0` 之类的任意变体选择器去压库内那层皮肤 div。",
+      "rule": "锚到坐标用 `anchor`，别自己 `createPortal` 手写 `left/top`：手写那条路要连边界翻转、视口 clamp、点外部关闭、Esc、焦点管理一起重造，而焦点与 `aria-expanded` 正是自绘版最常漏掉的两样。",
       "source": "packages/ui/src/popover/popover.md"
     },
     {
       "id": "component/popover/pitfall/3",
+      "scope": "popover",
+      "title": "Popover",
+      "rule": "浮层内容自带内边距/边框/正文色时加 `plain`（通常再配 `className=\"p-0\"`），别用 `[&>div]:mt-0` 之类的任意变体选择器去压库内那层皮肤 div。",
+      "source": "packages/ui/src/popover/popover.md"
+    },
+    {
+      "id": "component/popover/pitfall/4",
       "scope": "popover",
       "title": "Popover",
       "rule": "若手搓 hover 开 + focus 关叠加在这类 focus-managing popover 上会无限闪烁，见 hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false：popover 打开时把焦点移入浮层会触发 trigger 的 onBlur 关闭，关闭又把焦点还给 trigger 触发 onFocus 打开 → ping-pong。本组件默认 click 语义不踩，但若改造成 hover 触发需把 `initialFocus`/`finalFocus` 设 false。",
@@ -6541,46 +6653,67 @@
       "id": "component/pro-table/pitfall/5",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "`request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。",
+      "rule": "**列显隐同一套受控判据**（#236）：传 `columnVisibility` 就是你接管（须同时给 `onColumnVisibilityChange`，否则列设置点不动且只有 dev 告警）。不接管时列偏好只活在内部 useState 里 —— 工具栏点得动、刷新就没了，「同一个运营换台机器、列偏好跟人走」这件事在组件外一行都写不了。映射口径是**缺省即可见**，所以落库只需要记被关掉的那几列。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/6",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "`batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。",
+      "rule": "**身份列与操作列要挂 `meta.lockVisible`**：全量开关表达不了「这两列不给关」，而关掉了它们的那一行既没有身份也没有出口。锁定列在工具栏里置灰且恒选中，受控值对它写 `false` 也不生效 —— 否则一份旧的落库偏好就能把出口关掉，而界面上根本打不开。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/7",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "**`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。",
+      "rule": "组件仍留着「不允许关掉最后一列可见列」的保底（避免空表头），受控模式下这一步表现为**回调不触发**。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/8",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "**`defaultSorting` 是非受控默认值**：只在首次挂载读一次，之后由用户点表头接管，后续改这个 prop 不会回灌（同 `defaultValue` 家族）。想在运行中强制改排序请用 `key` 重挂或改用受控 `sorting`。展示模式下它不生效（展示模式的默认排序直接传 `sorting`）。首点方向由 TanStack 按列类型决定（数值列默认 desc 优先），要精确控制请写 `defaultSorting` 而非依赖点击。",
+      "rule": "`request` reject 默认走 `console.error` 兜底（保证不 unhandled），生产里接 `onRequestError` 弹 toast / 上报。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/9",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "**`params` 是浅比较（只比第一层）**：`params={{ scopeId }}` 这种内联对象字面量安全，不用 `useMemo`；但 `params={{ filter: { a: 1 } }}` 这种嵌套对象每次 render 都是新引用 → 每次都重查，嵌套值请自己保持引用稳定或拍平成一层。",
+      "rule": "`batchActions` 需配合 `enableRowSelection` 且有选中行才显示警示条。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/10",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "`params` **不会并入 `filters`**：`filters` 只装查询区提交的值，`params` 单独一个字段。这样固定条件不会被同名 filter 覆盖、也不受查询区「重置」影响；request 里自己合并 `{ ...p.filters, ...p.params }`。",
+      "rule": "**`request` 走 ref 持有，不进请求依赖**：内联写 `request={async (p) => …}` 不会因函数身份每次 render 变化而无限请求（组件层防呆，不需要消费者 `useCallback`）。代价是**换一个 request 函数本身不会触发重查**——要换数据源请改 `params`，或调 `actionRef.reload()`。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {
       "id": "component/pro-table/pitfall/11",
+      "scope": "pro-table",
+      "title": "ProTable",
+      "rule": "**`defaultSorting` 是非受控默认值**：只在首次挂载读一次，之后由用户点表头接管，后续改这个 prop 不会回灌（同 `defaultValue` 家族）。想在运行中强制改排序请用 `key` 重挂或改用受控 `sorting`。展示模式下它不生效（展示模式的默认排序直接传 `sorting`）。首点方向由 TanStack 按列类型决定（数值列默认 desc 优先），要精确控制请写 `defaultSorting` 而非依赖点击。",
+      "source": "packages/ui/src/pro-table/pro-table.md"
+    },
+    {
+      "id": "component/pro-table/pitfall/12",
+      "scope": "pro-table",
+      "title": "ProTable",
+      "rule": "**`params` 是浅比较（只比第一层）**：`params={{ scopeId }}` 这种内联对象字面量安全，不用 `useMemo`；但 `params={{ filter: { a: 1 } }}` 这种嵌套对象每次 render 都是新引用 → 每次都重查，嵌套值请自己保持引用稳定或拍平成一层。",
+      "source": "packages/ui/src/pro-table/pro-table.md"
+    },
+    {
+      "id": "component/pro-table/pitfall/13",
+      "scope": "pro-table",
+      "title": "ProTable",
+      "rule": "`params` **不会并入 `filters`**：`filters` 只装查询区提交的值，`params` 单独一个字段。这样固定条件不会被同名 filter 覆盖、也不受查询区「重置」影响；request 里自己合并 `{ ...p.filters, ...p.params }`。",
+      "source": "packages/ui/src/pro-table/pro-table.md"
+    },
+    {
+      "id": "component/pro-table/pitfall/14",
       "scope": "pro-table",
       "title": "ProTable",
       "rule": "`params` 内容变化会强制回到第 1 页（cursor 模式同时重置游标栈）——旧页码/旧游标在新固定条件下已无意义。",
@@ -7290,7 +7423,35 @@
       "id": "component/ripple-button/pitfall/1",
       "scope": "ripple-button",
       "title": "RippleButton",
-      "rule": "**与 [Button](../button/button.md) 共享底座**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 都来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`。**不共享的是配色与圆角**——底色是本件自己的特效层。所以它与普通 Button 混排等高，焦点样式也和全库一致（0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差，见 #126）。 暂无已知坑。波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。",
+      "rule": "**与 [Button](../button/button.md) 共享底座与配色档**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`；`variant` × `tone` 的色号与 Button 逐格对齐（#233）。**不共享的是圆角、阴影与颜色 hover**——圆角是特效件自己的，`shadow-sm` 四个特效件一个都没有，而颜色 hover 与本件底座冲突（下一条）。0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差（#126）。",
+      "source": "packages/ui/src/ripple-button/ripple-button.md"
+    },
+    {
+      "id": "component/ripple-button/pitfall/2",
+      "scope": "ripple-button",
+      "title": "RippleButton",
+      "rule": "**没有颜色 hover，交互反馈由波纹负责。** 特效件的底座刻意不含 `transition-colors`（它们变的是背景动画不是颜色），挂 `hover:bg-*` 会是一次无过渡的跳变。所以 `variant=\"ghost\"` 的静息态就是一段文字，鼠标悬停不变底——要「悬停就有反应」的次要操作请用 `Button variant=\"ghost\"`，本件的反馈是点下去那一下。",
+      "source": "packages/ui/src/ripple-button/ripple-button.md"
+    },
+    {
+      "id": "component/ripple-button/pitfall/3",
+      "scope": "ripple-button",
+      "title": "RippleButton",
+      "rule": "**`variant` 没有 `link`，`tone` 没有 `current`。** 前者是因为波纹要有盒子：`link` 去掉了高度与横向内边距，波纹落在 `h-auto px-0` 的文字上会裁成一条缝或整片糊住文字。后者是因为波纹默认色要从 tone 推导，而 `current` 的意思正是「别设色、跟随容器继承」——真要跟随容器请显式传 `rippleColor=\"currentColor\"`。",
+      "source": "packages/ui/src/ripple-button/ripple-button.md"
+    },
+    {
+      "id": "component/ripple-button/pitfall/4",
+      "scope": "ripple-button",
+      "title": "RippleButton",
+      "rule": "波纹色默认按档推导：实心档用该 tone 的**前景色**（深底上的浅波纹），描边 / 幽灵 / 浅底档用该 tone 的**本色**。反过来（浅底上用前景色）会得到一圈几乎看不见的白，所以自定义 `rippleColor` 时注意底色。",
+      "source": "packages/ui/src/ripple-button/ripple-button.md"
+    },
+    {
+      "id": "component/ripple-button/pitfall/5",
+      "scope": "ripple-button",
+      "title": "RippleButton",
+      "rule": "波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。",
       "source": "packages/ui/src/ripple-button/ripple-button.md"
     },
     {
@@ -8599,151 +8760,200 @@
       "id": "component/table/pitfall/4",
       "scope": "table",
       "title": "Table",
-      "rule": "宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。",
+      "rule": "**「表内横滚 + 表头吸页面」是拿不到的组合**，这是 CSS 的硬约束不是实现取舍：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是那层外壳自己成了 scrollport，把表头锚死在它身上（实测 Chromium：页面下滚时表头直接划走，同一张表换成 `overflow: visible` 的外壳才稳稳停在 `top: 0`）。所以 `stickyHeader=\"scrollParent\"` 下组件**主动去掉**外壳的 `overflow-x-auto`，横向溢出交给外部滚动容器；`stickyScrollbar` 在这一档下没有可镜像的容器，会被忽略并告警。要保住表内横滚就只能用 `\"self\"` + `maxHeight`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/5",
       "scope": "table",
       "title": "Table",
-      "rule": "`meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: \"normal\"` + `maxSize` 限宽 + `verticalAlign: \"top\"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。",
+      "rule": "`renderRowExtra` 与 `renderExpandedRow` 是两件事，别拿后者顶前者：明细面板**每行只能一条、必须展开态、且强制前插一列展开器**。「这条工作经历下面常驻挂 N 张证书」属于行的一部分，不是折叠明细。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/6",
       "scope": "table",
       "title": "Table",
-      "rule": "`meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout=\"fixed\"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。",
+      "rule": "`renderRowExtra` / `footer` 返回的是**裸 `<tr>`**，组件不替你包 `<tr><td>`：包了就再也表达不了「一条附属行拆成三格」。整宽行的 `colSpan` 一定要用回调给的 `ctx.colSpan` —— 它含自动前插的选择 / 展开器 / 拖拽手柄列，`columns.length` 算出来的数会短一到三列，表现是最右边空出一块。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/7",
       "scope": "table",
       "title": "Table",
-      "rule": "固定列（`meta.sticky`）的 offset 由 `getStart/getAfter` 按 `getSize()` 累加得出，所以固定列的渲染宽会被**强制钉成 `getSize()`**（没写 size 就是默认 150）——想要多宽就显式写 `size`。同时内容要够宽触发横滚才看得到效果。",
+      "rule": "`renderRowExtra` 与 `cellSpan` 不能同开（同 `renderExpandedRow`）：附属行插在数据行之间，纵向合并会跨过它们。同开时静默不合并 + dev 告警。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/8",
       "scope": "table",
       "title": "Table",
-      "rule": "`resizable` 会强制 `layout=\"fixed\"`（拖拽必须有确定列宽）。fixed 下表宽 = 各列 `getSize()` 之和，窄于容器时靠 `min-w-full` 撑满、列宽被浏览器按比例放大——那种情况下没有横滚，固定列 offset 也就无从体现。",
+      "rule": "`renderRowExtra` 与 `virtual` 同开会让虚拟化的行高估算失准（它按「一条数据 = 一行 `rowHeight`」撑占位行），表现是滚动漂移 / 底部留白。组件只告警不关闭（关了附属行就没了，比错位更难查）；附属行条数固定时把 `virtual.rowHeight` 调成「数据行 + 附属行」的总高即可。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/9",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 的回调**只在没被合掉的格子上跑**，所以「与上一行同门店就合并」的写法是：在段首返回整段长度（`while (rows[i + n]?.store === rows[i].store) n++`），后面几行根本不会被问到。从 el-table 直译过来的 `[0, 0]` 写法也认（返回 `rowSpan: 0` 即该格不渲染）。",
+      "rule": "宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/10",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。",
+      "rule": "`meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: \"normal\"` + `maxSize` 限宽 + `verticalAlign: \"top\"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/11",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。",
+      "rule": "`meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout=\"fixed\"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/12",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。",
+      "rule": "固定列（`meta.sticky`）的 offset 由 `getStart/getAfter` 按 `getSize()` 累加得出，所以固定列的渲染宽会被**强制钉成 `getSize()`**（没写 size 就是默认 150）——想要多宽就显式写 `size`。同时内容要够宽触发横滚才看得到效果。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/13",
       "scope": "table",
       "title": "Table",
-      "rule": "行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。",
+      "rule": "`resizable` 会强制 `layout=\"fixed\"`（拖拽必须有确定列宽）。fixed 下表宽 = 各列 `getSize()` 之和，窄于容器时靠 `min-w-full` 撑满、列宽被浏览器按比例放大——那种情况下没有横滚，固定列 offset 也就无从体现。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/14",
       "scope": "table",
       "title": "Table",
-      "rule": "`virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。",
+      "rule": "`cellSpan` 的回调**只在没被合掉的格子上跑**，所以「与上一行同门店就合并」的写法是：在段首返回整段长度（`while (rows[i + n]?.store === rows[i].store) n++`），后面几行根本不会被问到。从 el-table 直译过来的 `[0, 0]` 写法也认（返回 `rowSpan: 0` 即该格不渲染）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/15",
       "scope": "table",
       "title": "Table",
-      "rule": "`bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。",
+      "rule": "`cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/16",
       "scope": "table",
       "title": "Table",
-      "rule": "排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。",
+      "rule": "`cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/17",
       "scope": "table",
       "title": "Table",
-      "rule": "`rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。",
+      "rule": "`cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/18",
       "scope": "table",
       "title": "Table",
-      "rule": "`onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。",
+      "rule": "行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/19",
       "scope": "table",
       "title": "Table",
-      "rule": "行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。",
+      "rule": "`virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/20",
       "scope": "table",
       "title": "Table",
-      "rule": "行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。",
+      "rule": "`bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/21",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。",
+      "rule": "排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/22",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。",
+      "rule": "`rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/23",
       "scope": "table",
       "title": "Table",
-      "rule": "`dragHandle=\"row\"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `\"cell\"`。",
+      "rule": "`onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/24",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。",
+      "rule": "行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/25",
+      "scope": "table",
+      "title": "Table",
+      "rule": "行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/26",
+      "scope": "table",
+      "title": "Table",
+      "rule": "拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/27",
+      "scope": "table",
+      "title": "Table",
+      "rule": "拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/28",
+      "scope": "table",
+      "title": "Table",
+      "rule": "`dragHandle=\"row\"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `\"cell\"`。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/29",
+      "scope": "table",
+      "title": "Table",
+      "rule": "拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/30",
+      "scope": "table",
+      "title": "Table",
+      "rule": "组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/31",
+      "scope": "table",
+      "title": "Table",
+      "rule": "原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/32",
       "scope": "table",
       "title": "Table",
       "rule": "树形（`getSubRows`）下只有顶层行可拖，子行手柄恒禁用——跨层级拖拽的落点语义未定义，需要拖子节点请用 [Tree](../tree/tree.md) 或按层级拆表。",
@@ -8781,25 +8991,32 @@
       "id": "component/tag/pitfall/1",
       "scope": "tag",
       "title": "Tag",
-      "rule": "`pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。",
+      "rule": "**`brand` 与 `info` 不是同一件事**（#232）。`brand` 是主色，意思是「这条和产品/主操作有关」；`info` 走独立的 info 色，意思是「这是中性事实说明，读一下就好」。表达「当前处于什么模式」这类既不成功也不警告的事实，用 `info`——用 `brand` 会让一个不可点的标签在页面里与主 CTA 抢注意力，用 `neutral` 则会和一堆灰标签糊在一起读不出来。两者在 tokens 0.8.0 补齐 `--color-info` 前确实是一个颜色（见 [Alert](../alert/alert.md) 的同一段历史），现在不是了。",
       "source": "packages/ui/src/tag/tag.md"
     },
     {
       "id": "component/tag/pitfall/2",
       "scope": "tag",
       "title": "Tag",
-      "rule": "`icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。",
+      "rule": "`pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。",
       "source": "packages/ui/src/tag/tag.md"
     },
     {
       "id": "component/tag/pitfall/3",
       "scope": "tag",
       "title": "Tag",
-      "rule": "`onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。",
+      "rule": "`icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。",
       "source": "packages/ui/src/tag/tag.md"
     },
     {
       "id": "component/tag/pitfall/4",
+      "scope": "tag",
+      "title": "Tag",
+      "rule": "`onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。",
+      "source": "packages/ui/src/tag/tag.md"
+    },
+    {
+      "id": "component/tag/pitfall/5",
       "scope": "tag",
       "title": "Tag",
       "rule": "关闭按钮的无障碍标签跟随 `ConfigProvider`：`zhCN` 为“移除”，`enUS` 为 “Remove”。旧自定义 locale 缺少 `components.tag` 时回退中文。",
@@ -9201,25 +9418,60 @@
       "id": "component/toast/pitfall/2",
       "scope": "toast",
       "title": "Toast",
-      "rule": "`@hulianui/ui` < 0.8 的 `ToastProvider` **不渲染 children**：包裹式写法会静默吞掉整个应用子树（白屏、零报错）。0.8 起已修复为透传渲染；旧版本务必用自闭合写法。",
+      "rule": "**`loading` 不是「第六档 tone」**：它与 `tone` 正交，进行中的提示照样可以是 `neutral` / `info`。它只做两件事——渲转圈图标、把 `timeout` 的缺省值从 5000 改成 0。",
       "source": "packages/ui/src/toast/toast.md"
     },
     {
       "id": "component/toast/pitfall/3",
       "scope": "toast",
       "title": "Toast",
-      "rule": "`@hulianui/ui` ≤ 0.8 的 `ToastTone` 只有 `info | danger | neutral`，成功/警告态只能降级成 `info` / `neutral`；0.8 之后已补齐 `success` / `warning`，升级后可直接换回语义正确的 tone。",
+      "rule": "`loading` 与 `timeout: 0` **不是两套常驻语义**，是同一个 `timeout` 的默认值之差：显式传 `timeout` 依然优先，`{ loading: true, timeout: 3000 }` 就是 3 秒后自己走。",
       "source": "packages/ui/src/toast/toast.md"
     },
     {
       "id": "component/toast/pitfall/4",
       "scope": "toast",
       "title": "Toast",
-      "rule": "仅 `danger` 走 `priority: \"high\"`（aria-live assertive 打断播报），`warning` 与其余 tone 一样是 polite——警告不抢读屏焦点是有意为之。",
+      "rule": "`loading` 恒走 `priority: \"low\"`（polite），即使同时传 `tone: \"danger\"` 也不升 assertive：「进行中」是陪跑不是结果，而且这条会长时间挂着，assertive 会反复插队打断读屏正在念的内容。",
       "source": "packages/ui/src/toast/toast.md"
     },
     {
       "id": "component/toast/pitfall/5",
+      "scope": "toast",
+      "title": "Toast",
+      "rule": "开了 `loading` 就**必须自己 `toast.close(id)`**，否则它永远不走。别指望用户去点 ×——「进行中」本来就该由代码收尾。",
+      "source": "packages/ui/src/toast/toast.md"
+    },
+    {
+      "id": "component/toast/pitfall/6",
+      "scope": "toast",
+      "title": "Toast",
+      "rule": "转圈图标在 `prefers-reduced-motion: reduce` 下是**减速到 2.4s 一圈，不是停转**（库内装饰性动效统一走 `[animation:none]`，这里有意不同）：这个圈是「进行中」在视觉上唯一的记号，定格成静止圆弧就跟普通装饰图标没区别，状态信息当场消失。",
+      "source": "packages/ui/src/toast/toast.md"
+    },
+    {
+      "id": "component/toast/pitfall/7",
+      "scope": "toast",
+      "title": "Toast",
+      "rule": "`@hulianui/ui` < 0.8 的 `ToastProvider` **不渲染 children**：包裹式写法会静默吞掉整个应用子树（白屏、零报错）。0.8 起已修复为透传渲染；旧版本务必用自闭合写法。",
+      "source": "packages/ui/src/toast/toast.md"
+    },
+    {
+      "id": "component/toast/pitfall/8",
+      "scope": "toast",
+      "title": "Toast",
+      "rule": "`@hulianui/ui` ≤ 0.8 的 `ToastTone` 只有 `info | danger | neutral`，成功/警告态只能降级成 `info` / `neutral`；0.8 之后已补齐 `success` / `warning`，升级后可直接换回语义正确的 tone。",
+      "source": "packages/ui/src/toast/toast.md"
+    },
+    {
+      "id": "component/toast/pitfall/9",
+      "scope": "toast",
+      "title": "Toast",
+      "rule": "仅 `danger` 走 `priority: \"high\"`（aria-live assertive 打断播报），`warning` 与其余 tone 一样是 polite——警告不抢读屏焦点是有意为之。",
+      "source": "packages/ui/src/toast/toast.md"
+    },
+    {
+      "id": "component/toast/pitfall/10",
       "scope": "toast",
       "title": "Toast",
       "rule": "测试该组件时注意 Base UI Toast 的几个坑见 base-ui-toast-close-aria-hidden-query-dom-not-role：未聚焦的 Close 按钮带 `aria-hidden` 致 `getByRole(\"button\")` 找不到（改查 DOM）、aria-live 公告会让标题文本重复匹配、全局 manager 持久化致 toast 跨测试泄漏需清理。",
@@ -9509,39 +9761,67 @@
       "id": "component/upload/pitfall/2",
       "scope": "upload",
       "title": "Upload",
-      "rule": "**不要指望库帮你解后端信封**。`request` 拿到的 `{ url }` 是你自己 resolve 的，`code/data/msg` 之类的形状在你的闭包里剥完再返回。",
+      "rule": "**不给 `name` 就没有原生表单这条路**：没有 name 的 input 压根不出现在 `FormData` 的 entries 里，`required` 也不会被浏览器校验。这两件事都不会报错，只是静默不生效。",
       "source": "packages/ui/src/upload/upload.md"
     },
     {
       "id": "component/upload/pitfall/3",
       "scope": "upload",
       "title": "Upload",
-      "rule": "`sortable` 单独给不生效，**必须同时给 `onSort`**（顺序是受控的，组件不偷存）；只给 `sortable` 会静默退回静态列表。",
+      "rule": "挂了 `name` 后有三处默认行为跟着变（都只在有 name 时发生）：① 选完不再清 `value`（否则 FormData 永远读到空），代价是**同一个文件连选两次不会再触发 `onSelect`**——要那个行为就显式写 `resetInputAfterSelect`，但那样 FormData 就读不到了，二者不可兼得；② 拖入的文件会被写回 `input.files`（原生拖放不会自己进去），同时被 accept/maxSize/limit 拒掉的文件会被剔出去，避免「界面说拒了、表单照样提交」；③ 达到 `limit` 时 input **不**跟着禁用——禁用控件会被 FormData 整个跳过，已选的文件会在提交时凭空消失（触发器那侧照旧禁用，点不开选择框）。",
       "source": "packages/ui/src/upload/upload.md"
     },
     {
       "id": "component/upload/pitfall/4",
       "scope": "upload",
       "title": "Upload",
-      "rule": "`renderPreview` 每次渲染都会被调用，**别在里面直接 `URL.createObjectURL`** —— 会漏对象 URL。缓存到 `Map<id, url>` 并在卸载时 `revokeObjectURL`（showcase 的 `useObjectUrls` 是可抄的写法）。",
+      "rule": "写回 `input.files` 依赖 `DataTransfer` 构造器。测试环境（jsdom）没有它，回写会静默跳过，`onSelect` 那条路不受影响——**别在 jsdom 里断言拖入后的 `FormData` 内容**。",
       "source": "packages/ui/src/upload/upload.md"
     },
     {
       "id": "component/upload/pitfall/5",
       "scope": "upload",
       "title": "Upload",
-      "rule": "`limit` 按受控 `files.length` 算；`files` 没传时视为 0，此时 `limit` 只能拦住\"单次选太多\"，拦不住累计。",
+      "rule": "失败行的重试按钮**要传 `onRetry` 才出现**。`useUpload` 早就有 `retry`，但组件不替你决定「这个失败该不该给重试入口」——直接 `onRetry={up.retry}` 接上即可。",
       "source": "packages/ui/src/upload/upload.md"
     },
     {
       "id": "component/upload/pitfall/6",
       "scope": "upload",
       "title": "Upload",
-      "rule": "`useUpload` 的 `remove` 会 `abort()`，但**只有你把 `signal` 透传下去**才真取消；迟到的 resolve 会被丢弃，不会复活已移除的行。",
+      "rule": "**不要指望库帮你解后端信封**。`request` 拿到的 `{ url }` 是你自己 resolve 的，`code/data/msg` 之类的形状在你的闭包里剥完再返回。",
       "source": "packages/ui/src/upload/upload.md"
     },
     {
       "id": "component/upload/pitfall/7",
+      "scope": "upload",
+      "title": "Upload",
+      "rule": "`sortable` 单独给不生效，**必须同时给 `onSort`**（顺序是受控的，组件不偷存）；只给 `sortable` 会静默退回静态列表。",
+      "source": "packages/ui/src/upload/upload.md"
+    },
+    {
+      "id": "component/upload/pitfall/8",
+      "scope": "upload",
+      "title": "Upload",
+      "rule": "`renderPreview` 每次渲染都会被调用，**别在里面直接 `URL.createObjectURL`** —— 会漏对象 URL。缓存到 `Map<id, url>` 并在卸载时 `revokeObjectURL`（showcase 的 `useObjectUrls` 是可抄的写法）。",
+      "source": "packages/ui/src/upload/upload.md"
+    },
+    {
+      "id": "component/upload/pitfall/9",
+      "scope": "upload",
+      "title": "Upload",
+      "rule": "`limit` 按受控 `files.length` 算；`files` 没传时视为 0，此时 `limit` 只能拦住\"单次选太多\"，拦不住累计。",
+      "source": "packages/ui/src/upload/upload.md"
+    },
+    {
+      "id": "component/upload/pitfall/10",
+      "scope": "upload",
+      "title": "Upload",
+      "rule": "`useUpload` 的 `remove` 会 `abort()`，但**只有你把 `signal` 透传下去**才真取消；迟到的 resolve 会被丢弃，不会复活已移除的行。",
+      "source": "packages/ui/src/upload/upload.md"
+    },
+    {
+      "id": "component/upload/pitfall/11",
       "scope": "upload",
       "title": "Upload",
       "rule": "引入 `sortable` 让 upload 静态依赖了 `@dnd-kit/*`（与 Sortable/Kanban 同源），source 分发下不用 sortable 也会打进包里。",
@@ -9755,7 +10035,7 @@
   ],
   "stats": {
     "componentDocs": 390,
-    "componentAdvisories": 1358,
-    "totalAdvisories": 1368
+    "componentAdvisories": 1398,
+    "totalAdvisories": 1408
   }
 }

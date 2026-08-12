@@ -27,12 +27,22 @@ export function PopoverContent({
   sideOffset = 8,
   plain = false,
   arrow = true,
+  anchor,
   className,
 }: PopoverContentProps) {
   const hasHeader = title != null || description != null;
   return (
     <BasePopover.Portal>
-      <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
+      {/* anchor 原样透给 Positioner：不传时 Base UI 仍锚到 Trigger（行为与从前逐字相同），
+          传了就锚到给的元素 / ref / 虚拟元素 —— 「触发点是算出来的坐标而非 DOM 节点」那一类
+          浮层因此不必整块自绘（#229）。 */}
+      <BasePopover.Positioner
+        anchor={anchor}
+        side={side}
+        align={align}
+        sideOffset={sideOffset}
+        className="z-50"
+      >
         <BasePopover.Popup
           className={cn(
             "w-[min(90vw,18rem)] rounded-[var(--radius)] border border-hairline bg-surface p-4 text-foreground shadow-xl outline-none",

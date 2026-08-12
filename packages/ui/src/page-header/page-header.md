@@ -27,6 +27,7 @@ import { PageHeader } from "@hulianui/ui"
 |------|------|------|------|
 | backLabel | `string` | `"返回"` | 返回按钮的无障碍标签。 |
 | bordered | `boolean` | `false` | 是否在页头底部渲染分隔线（复用 `<Separator/>`）。 |
+| metaSeparator | `ReactNode` | `"·"` | `meta` 各项之间的分隔符，装饰位自动 `aria-hidden`。 |
 
 > 另继承 `HTMLAttributes<HTMLElement>`（除 `title`，因其类型被改为 ReactNode）。
 
@@ -44,6 +45,7 @@ import { PageHeader } from "@hulianui/ui"
 | subTitle | `ReactNode` | 副标题，内联于标题右侧，中性弱化色。 |
 | breadcrumb | `ReactNode` | 面包屑区（标题行上方），传入瑚琏 `<Breadcrumb/>`。 |
 | tags | `ReactNode` | 状态标签区（贴标题右侧），传入 `<Chip/>`/`<Badge/>` 等。 |
+| meta | `ReactNode[]` | 元信息行：标题下面那串用 `metaSeparator` 串起来的事实值。分隔符由组件插在项与项之间，空项自动跳过。 |
 | extra | `ReactNode` | 右侧操作区（按钮组等），窄屏自动换行到标题下方。 |
 | footer | `ReactNode` | 底部附加区，常放 `<Tabs/>`。 |
 
@@ -65,8 +67,25 @@ import { PageHeader } from "@hulianui/ui"
 />
 ```
 
+元信息行（证件号 · 性别 · 参保段数…）：
+```tsx
+<PageHeader
+  title="张三"
+  meta={[
+    "330106…512",
+    "男",
+    socialSecuritySegments && `${socialSecuritySegments} 段社保`, // 无值时整项消失，不留下孤点
+    companyCount ? `${companyCount} 家公司` : null,
+    latestEmployer && `最近参保单位：${latestEmployer}`,
+  ]}
+/>
+```
+
 ## 禁忌 / 坑
 
+- `meta` 是**一串并列的事实值**，别拿它当别的槽用：一句话说明用 `subTitle`，状态标记用 `tags`，Tabs 之类的整块内容用 `footer`。
+- `meta` 里的空项（`null` / `undefined` / `false` / `""`）自动跳过，分隔符只插在留下来的项之间，所以不必在调用点先 `filter(Boolean)`。数字 `0` 是事实值（「0 家公司」），不算空。
+- 元信息行渲染为 `<ul>`/`<li>`，分隔符是独立的 `aria-hidden` 装饰位——读屏读到的是列表项而不是被中点粘住的长串文本。别再用 `span + span::before { content: "·" }` 自己拼点。
 - `title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——别再往 DOM 透传字符串 title。
 - 默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。
 

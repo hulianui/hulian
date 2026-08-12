@@ -27,7 +27,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" ｜ "soft" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体；`soft` 是浅语义底 + 同色文字，权重介于 `outline` 与 `solid` 之间（见下文） |
 | tone | `"brand" ｜ "success" ｜ "warning" ｜ "danger" ｜ "neutral" ｜ "current"` | `"brand"` | 语义色调（见下表）。`current` 不是语义色，是「别设色、跟随容器继承」，**只对 `ghost` / `outline` 有效**（见「跟随容器的 tone="current"」） |
-| size | `"xs" ｜ "sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs" ｜ "icon24" ｜ "icon28"` | `"md"` | 尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表） |
+| size | `"xs" ｜ "28" ｜ "sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs" ｜ "icon24" ｜ "icon28"` | `"md"` | 尺寸；`xs`(24) 与 `"28"` 是两个密集文字档（中后台工具栏 / 表格行内 / 筛选胶囊行）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表） |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | muted | `boolean` | `false` | 层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` / `outline` 有效**（见「muted 层级档」） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
@@ -157,18 +157,25 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | `md`（默认） | 40px | 14px | `icon` | 40px |
 | `lg` | 48px | 16px | `iconLg` | 48px |
 
-密集端另有四档，**它们互相不等高**，各钉一条行刻度：
+密集端另有五档，**除 `"28"` 与 `icon28` 是一对外互相不等高**，各钉一条行刻度：
 
 | 密集档 | 尺寸 | 字号 | 配它的是谁 | 用在哪 |
 |--------|------|------|-----------|--------|
 | `xs` | 高 24px | 12px | `icon24` | 中后台工具栏、表格行内、面板头部的文字按钮 |
+| `"28"` | 高 28px | 12px | `icon28`、[Chip](../chip/chip.md) 的 `md`、[Sidebar](../sidebar/sidebar.md) 菜单项的 `sm` | 28px 那条行刻度上的文字按钮：筛选胶囊行的触发器、信息卡片底部的次要操作 |
 | `iconXs` | 20px 见方 | — | 无（比任何文字档都矮） | 表格行内的纯图标微操作：树形展开箭头、拖拽手柄 |
 | `icon24` | 24px 见方 | — | `xs` 文字档、[Tag](../tag/tag.md) 的 `md`、[Chip](../chip/chip.md) 的 `sm` | 与 `xs` 文字按钮同排的图标按钮 |
-| `icon28` | 28px 见方 | — | [Chip](../chip/chip.md) 的 `md`、[Sidebar](../sidebar/sidebar.md) 菜单项的 `sm` | 28px 那条行刻度上的图标按钮（筛选胶囊行的清空键等） |
+| `icon28` | 28px 见方 | — | `"28"` 文字档、[Chip](../chip/chip.md) 的 `md`、[Sidebar](../sidebar/sidebar.md) 菜单项的 `sm` | 28px 那条行刻度上的图标按钮（筛选胶囊行的清空键等） |
 
 `xs` 是密集界面的最小文字档：一屏十几个操作时 `sm`（32px/14px）是**大一档**而不是最小档，
 用它去接 24px 的工具栏，就得写一串覆盖类去撤销 `sm` 自己刚加的高度、内边距、字号和圆角。
 `xs` 已经把圆角降到 4px、图文间距收到 4px，直接用即可，不要再加 `className` 补丁。
+
+`"28"` 是 `xs` 与 `sm` 之间的插档，**名字是裸数字**：`"28"` 与 `icon28` 只差一个 `icon` 前缀，
+文字档没有前缀，对称的名字就只剩边长本身（同 `icon24` / `icon28` 那条口径，见下）。
+它的字号跟 `xs` 走（12px）而不是跟 `sm` 走——密集端的字号带就是 10~12px，给 14px 会让这批
+调用点一律补写 `text-xs`；内边距 10px、图文间距 6px 按高度在 `xs` 与 `sm` 之间插值。
+圆角保持 `--radius`，与 `icon28` 一致，所以「28px 文字按钮 + 28px 图标按钮」同排时半径也齐（#228）。
 
 **`xs` 的配套图标档是 `icon24` 而不是 `iconXs`。** 名字带 `Xs` 的那个是 20px：它比 `xs` 还矮 4px，
 是刻意的——把它抬到 24px 会把 `density="compact"` 的表格行撑高，而它存在的全部理由就是不撑高行。
@@ -191,11 +198,14 @@ import { Button, buttonVariants } from "@hulianui/ui"
   <ChevronRight className="size-4" />
 </Button>
 
-{/* 28px 那条行刻度：筛选胶囊 + 清空键 */}
-<Chip>状态：进行中</Chip>
+{/* 28px 那条行刻度：文字触发器 + 清空键（两个控件等高、圆角也一致） */}
+<Button size="28" variant="outline" tone="neutral" muted>筛选</Button>
 <Button size="icon28" variant="outline" muted aria-label="清空筛选">
   <X className="size-3.5" />
 </Button>
+
+{/* 卡片底部的全宽逃生口 */}
+<Button size="28" variant="outline" muted block>中止</Button>
 ```
 
 ```tsx

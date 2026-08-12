@@ -10,7 +10,7 @@ status: enriched
 
 # Tag
 
-> Status tag · five semantic tones with dot, pulse, icon, and optional close action · data-display/info
+> Status tag · six semantic tones with dot, pulse, icon, and optional close action · data-display/info
 
 ## When to use
 
@@ -26,7 +26,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | variant | `"soft" \| "solid" \| "outline"` | `"soft"` | Visual style. |
-| tone | `"neutral" \| "brand" \| "success" \| "warning" \| "danger"` | `"neutral"` | Semantic tone. |
+| tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | Semantic tone. Same value set as [Alert](../alert/alert.md). |
 | size | `"sm" \| "md"` | `"md"` | Size. |
 | dot | `boolean` | `false` | Leading tone-colored dot. |
 | pulse | `boolean` | `false` | Dot breathing animation, effective only with dot. |
@@ -57,9 +57,14 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <Tag dot pulse tone="brand">Deploying</Tag>
 <Tag onClose={() => remove(id)}>Pending review</Tag>
 ```
+```tsx
+<Tag tone="info">External browser mode</Tag>
+<Tag variant="outline" tone="info">Read only</Tag>
+```
 
 ## Usage notes
 
+- **`brand` and `info` are not the same thing** (#232). `brand` is the primary color and means "this relates to the product or the primary action"; `info` uses its own info color and means "this is a neutral statement of fact, just read it". Reach for `info` when a tag states which mode something is in — neither a success nor a warning. `brand` makes an unclickable tag compete with the primary call to action, while `neutral` blends into every other grey tag on the screen. The two were literally the same color before tokens 0.8.0 added `--color-info`; see the same history in [Alert](../alert/alert.md).
 - Pulse requires dot. Icon and dot are mutually exclusive, with icon winning.
 - Closing is controlled by the parent; filter the item from state.
 - The close control's accessible label follows `ConfigProvider`: `zhCN` uses `"\u79fb\u9664"` and `enUS` uses “Remove”. Legacy custom locales without `components.tag` keep the Chinese fallback.

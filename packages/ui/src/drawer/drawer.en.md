@@ -28,6 +28,7 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | Name | Type | Default | Description |
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | Attached edge and corresponding slide direction. |
+| `DrawerContent.size` | `"sm" \| "md" \| "lg" \| "xl" \| "full"` | `"md"` | Main-axis size step. **The main axis follows `side`**: left and right drawers take a width, top and bottom drawers take a height, so one step is not the same value on both axes (see the table below). The cross axis is always 100% and does not follow this step. |
 | `DrawerContent.container` | `Element \| Ref` | — | Local portal target. The drawer uses absolute positioning inside it; the target needs `position:relative` and `overflow-hidden`. Useful for phone-frame previews. |
 | `DrawerContent.showClose` | `boolean` | `true` | Whether to render the built-in top-right close button. |
 | `DrawerContent.closeLabel` | `string` | Locale value | Accessible name for the built-in close button; defaults to `locale.drawer.close`. |
@@ -37,6 +38,18 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children. |
 | `DrawerContent.bodyClassName` | `string` | — | Appended to the body container. |
 | `DrawerContent.className` | `string` | — | Content-container class name. |
+
+### Size steps
+
+| size | `left` / `right` width | `top` / `bottom` height |
+|------|------|------|
+| `sm` | 20rem (320px) | 16rem (256px) |
+| `md` (default) | 24rem (384px) | 20rem (320px) |
+| `lg` | 32rem (512px) | 32rem (512px) |
+| `xl` | 48rem (768px) | 48rem (768px) |
+| `full` | 100% | 100% |
+
+Every step except `full` carries a `min(90vw, …)` or `min(90vh, …)` cap. A drawer is edge-anchored, so any width beyond the viewport falls off-screen entirely rather than merely feeling cramped. `md` reproduces the values that were hard-coded through 0.39.0, so code that does not pass `size` renders exactly as before.
 
 ## Events
 
@@ -76,6 +89,24 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 - Base UI rc.0 has no standalone Drawer primitive. This component restyles Dialog's Portal, Backdrop, and Popup and uses `translateX/Y` by side. Dialog has no Positioner, so Tooltip and Popover positioning assumptions do not apply. See [[base-ui-dialog-drawer-side-slide-via-transform]].
 - Put Cancel, Save, and Close controls in `footer`; actions at the end of the body scroll out of view.
 - With `container`, the target must use `position:relative` and `overflow-hidden` or the drawer and overlay escape the local frame.
+
+### Choosing `size` over `className`
+
+Reach for `size` first. Overriding `w-` or `h-` through `className` also works, but it forces you to override `inset-x-` and `w-full` alongside them, undoing what the component just set, and it drops the `min(90vw, …)` cap. On a narrow viewport the drawer then grows wider than the screen, and because a drawer is edge-anchored, the overflowing part is off-screen and its controls are unreachable. When the five steps genuinely do not fit, for example when you need a percentage of a container, use `className` and **restore a cap yourself**, such as `className="w-[min(90vw,52rem)]"`.
+
+### Floating bottom sheets need manual work
+
+The component ships only the edge-anchored form. The floating mobile sheet, inset from the screen edges with rounded corners, has to come from `className`, and you **must change the exit transform as well**: once the panel sits 16px above the bottom edge, the original `translate-y-full` no longer carries it off-screen, so a 16px sliver stays visible while it closes.
+
+```tsx
+<DrawerContent
+  side="bottom"
+  size="lg"
+  className="inset-x-4 bottom-4 w-auto rounded-[var(--radius)] border
+             data-[starting-style]:translate-y-[calc(100%+1rem)]
+             data-[ending-style]:translate-y-[calc(100%+1rem)]"
+/>
+```
 
 ### Close button
 

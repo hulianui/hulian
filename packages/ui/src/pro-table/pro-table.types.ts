@@ -169,4 +169,21 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
   actionRef?: Ref<ProTableActions>;
   /** 选中行时渲染的批量操作区（需 enableRowSelection + 有选中才显示警示条）。 */
   batchActions?: (ctx: ProTableBatchCtx) => ReactNode;
+  /**
+   * 受控列显隐（#236）：`列 id → 是否可见`，**缺省的键视为可见**。
+   * 与 `rowSelection` / `sorting` 同一口径 —— 传了就受控（必须配 `onColumnVisibilityChange`），
+   * 不传才内部自持。
+   *
+   * 存在的理由是列偏好要能落库：内部 useState 下工具栏点得动、刷新就没了，
+   * 「同一个运营换台机器，列偏好跟人走」这件事在组件外一行都写不了。
+   *
+   * 列 id 的口径同 `ColumnDef`：`id` 优先，没有则取 `accessorKey`。
+   * 带 `meta.lockVisible` 的列恒可见，对它写 `false` 不生效。
+   */
+  columnVisibility?: Record<string, boolean>;
+  /**
+   * 列显隐变化（#236）。回传的是**完整的下一份**可见性映射（不是 patch），
+   * 直接落 localStorage / PATCH 回服务端即可。
+   */
+  onColumnVisibilityChange?: (next: Record<string, boolean>) => void;
 }

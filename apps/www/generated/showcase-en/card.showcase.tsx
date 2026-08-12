@@ -1,5 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { Button } from "../../../../packages/ui/src/button";
+import { Tag } from "../../../../packages/ui/src/tag";
 import { Card, CardHeader, CardBody, CardFooter } from "../../../../packages/ui/src/card/card";
 type CardVariant = "outline" | "elevated" | "featured" | "plain";
 function Demo(props: {
@@ -85,6 +87,29 @@ export const cardShowcase: ShowcaseSpec = {
           </Card>
         </div>),
         },
+        {
+            title: "Title / description / extra",
+            description: "Pass title to CardHeader and the heading gets an element of its own: icons and tags on the same row are no longer painted with the header font-medium, and extra aligns itself to the right.",
+            code: `<Card className="w-80">
+  <CardHeader
+    title={<>Assign tasks<Tag>By role</Tag></>}
+    description="Assign in bulk by role, effective immediately"
+    extra={<Button variant="ghost" size="sm">Expand</Button>}
+  />
+  <CardBody>Three items are waiting for review.</CardBody>
+</Card>`,
+            render: () => (<Card className="w-80">
+          <CardHeader title={<>
+                Assign tasks
+                <Tag tone="brand" size="sm">
+                  By role
+                </Tag>
+              </>} description="Assign in bulk by role, effective immediately" extra={<Button variant="ghost" size="sm">
+                Expand
+              </Button>}/>
+          <CardBody>Three items awaiting action.</CardBody>
+        </Card>),
+        },
     ],
     controls: [
         {
@@ -106,6 +131,20 @@ export const cardShowcase: ShowcaseSpec = {
         </div>),
         },
         { name: "None footer", render: () => <Demo variant="outline" withFooter={false}/> },
+        {
+            name: "Title / description / extra",
+            render: () => (<Card className="w-80">
+          <CardHeader title={<>
+                Assign tasks
+                <Tag tone="brand" size="sm">
+                  By role
+                </Tag>
+              </>} description="Assign in bulk by role, effective immediately" extra={<Button variant="ghost" size="sm">
+                Expand
+              </Button>}/>
+          <CardBody>Three items awaiting action.</CardBody>
+        </Card>),
+        },
         {
             name: "divided={false} (sections without rules)",
             render: () => (<Card divided={false} className="w-64">

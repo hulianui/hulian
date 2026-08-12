@@ -75,6 +75,7 @@ export function HoverCardContent({
   side = "bottom",
   align = "center",
   sideOffset = 8,
+  anchor,
   className,
   onMouseEnter,
   onMouseLeave,
@@ -84,7 +85,16 @@ export function HoverCardContent({
   const ctx = useContext(HoverCardContext);
   return (
     <BasePopover.Portal>
-      <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
+      {/* anchor 与 Popover 同一口径（#229）：这里包的就是同一个 Base UI Positioner，
+          开一半会让「同样长相的两个浮层，一个能挪锚点一个不能」。区别只在触发器仍不可省 ——
+          卡片是 hover 打开的，触发器就是那个被 hover 的东西。 */}
+      <BasePopover.Positioner
+        anchor={anchor}
+        side={side}
+        align={align}
+        sideOffset={sideOffset}
+        className="z-50"
+      >
         <BasePopover.Popup
           // 透传消费方的 div 属性（#201）。摆在最前是让内部关键 props 不被顶掉；指针进出与 style
           // 这两项内部另有用途，单独取出与消费方的合并——直接覆盖会让指针移入卡片就把它关掉。

@@ -180,6 +180,60 @@ describe("Button render（按钮样式的链接）", () => {
     ]);
   });
 
+  // #228：28px 那条行刻度上此前**只有图标形态**（icon28 是 #222 补的），文字档缺这一格，
+  // 于是同一行里图标钮迁得了、紧挨着的文字按钮只能继续裸 <button>。
+  it('size="28" 是 28px 高、12px 字的密集文字档', () => {
+    const { container } = rtlRender(<Button size="28">筛选</Button>);
+    const cls = container.querySelector("button")!.className;
+    expect(cls).toContain("h-7");
+    // 字号跟 xs 走（密集端的带就是 10~12px），不跟同高度的 Chip md / Sidebar sm 走
+    expect(cls).toContain("text-xs");
+    expect(cls).toContain("px-2.5");
+    // 相邻两档的那套必须被替换掉而不是叠加
+    expect(cls).not.toContain("h-6");
+    expect(cls).not.toContain("h-8");
+    expect(cls).not.toContain("text-sm");
+    expect(cls.split(/\s+/)).not.toContain("px-2");
+    expect(cls.split(/\s+/)).not.toContain("px-3");
+  });
+
+  // 与 icon28 是密集端唯一的等高一对：这一行的全部意义就是「文字钮与图标钮并排不参差」。
+  it('size="28" 与 icon28 等高，且圆角同为 --radius（并排不露台阶）', () => {
+    const text28 = cn(buttonVariants({ size: "28" }));
+    const icon28 = cn(buttonVariants({ size: "icon28" }));
+    expect(text28).toContain("h-7");
+    expect(icon28).toContain("size-7");
+    // 28px 上 --radius(10px) 是 0.36，与 iconSm(32px) 同组，读不成圆片 → 不降档
+    expect(text28).toContain("rounded-[var(--radius)]");
+    expect(icon28).toContain("rounded-[var(--radius)]");
+    expect(text28).not.toContain("rounded-sm");
+  });
+
+  it('size="28" 的图文间距插在 xs 与 base 之间（gap-1 / 6px / gap-2）', () => {
+    const { container } = rtlRender(
+      <Button size="28">
+        <span aria-hidden>◆</span>筛选
+      </Button>,
+    );
+    const cls = container.querySelector("button")!.className;
+    expect(cls).toContain("gap-1.5");
+    expect(cls.split(/\s+/)).not.toContain("gap-2");
+    expect(cls.split(/\s+/)).not.toContain("gap-1");
+  });
+
+  // 加一档不许动别的档：这三档在 0.39.0 的渲染结果一个字符都不该变。
+  it('新增 "28" 不影响相邻的 xs / sm / md', () => {
+    expect(cn(buttonVariants({ size: "xs" }))).toContain("h-6 gap-1 px-2 text-xs rounded-sm");
+    expect(cn(buttonVariants({ size: "sm" }))).toContain("h-8 px-3 text-sm");
+    expect(cn(buttonVariants({ size: "md" }))).toContain("h-10 px-4 text-sm");
+  });
+
+  // 五个密集档的高度谱：只有 "28" 与 icon28 重合，其余各钉一条行刻度。
+  it("密集端文字档 24 / 28 与图标档 20 / 24 / 28 各就各位", () => {
+    const h = (size: "xs" | "28") => buttonVariants({ size }).match(/\bh-(\d+)\b/)![1];
+    expect([h("xs"), h("28")]).toEqual(["6", "7"]);
+  });
+
   // #138：按钮文字是控件标签不是内容，连点会被浏览器识别成双击选词。
   it("base 带 select-none（全库按钮一起受益）", () => {
     const { container } = rtlRender(<Button>点我</Button>);

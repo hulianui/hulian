@@ -83,3 +83,73 @@ describe("PageHeader", () => {
     expect(container.querySelector("header")!.classList.contains("my-ph")).toBe(true);
   });
 });
+
+describe("PageHeader 元信息行（#240）", () => {
+  const metaOf = (c: HTMLElement) =>
+    c.querySelector('[data-slot="page-header-meta"]') as HTMLElement | null;
+  const separatorsIn = (row: HTMLElement) => row.querySelectorAll('li[aria-hidden="true"]');
+
+  it("不传 meta 时不渲染元信息行（行为与今天逐字相同）", () => {
+    const { container } = render(<PageHeader title="张三" />);
+    expect(metaOf(container)).toBeNull();
+  });
+
+  it("meta 各项渲染为 li，分隔符数 = 项数 - 1", () => {
+    const { container } = render(<PageHeader title="张三" meta={["330106…512", "男", "3 段社保"]} />);
+    const row = metaOf(container)!;
+    expect(row.tagName).toBe("UL");
+    const seps = separatorsIn(row);
+    expect(seps.length).toBe(2);
+    expect([...seps].every((s) => s.textContent === "·")).toBe(true);
+    expect(row.querySelectorAll("li").length).toBe(5); // 3 项 + 2 分隔符
+  });
+
+  it("中间某项为空时不产生多余分隔符（消费方拼 ::before 中点要绕的正是这件事）", () => {
+    const { container } = render(
+      <PageHeader title="张三" meta={["330106…512", null, "男", undefined, false, "", "2 家公司"]} />,
+    );
+    const row = metaOf(container)!;
+    // 留下 3 项 → 2 个分隔符，且首尾没有孤零零的点
+    expect(separatorsIn(row).length).toBe(2);
+    expect(row.textContent).toBe("330106…512·男·2 家公司");
+    expect(row.firstElementChild!.getAttribute("aria-hidden")).toBeNull();
+    expect(row.lastElementChild!.getAttribute("aria-hidden")).toBeNull();
+  });
+
+  it("全部为空时整行不渲染（不留一个空壳 ul）", () => {
+    const { container } = render(<PageHeader title="张三" meta={[null, undefined, false, ""]} />);
+    expect(metaOf(container)).toBeNull();
+  });
+
+  it("数字 0 是事实值，不算空", () => {
+    const { container } = render(<PageHeader title="张三" meta={[0, "男"]} />);
+    const row = metaOf(container)!;
+    expect(separatorsIn(row).length).toBe(1);
+    expect(row.textContent).toBe("0·男");
+  });
+
+  it("metaSeparator 可换，且分隔符是 aria-hidden 装饰位", () => {
+    const { container } = render(<PageHeader title="张三" meta={["A", "B"]} metaSeparator="/" />);
+    const seps = separatorsIn(metaOf(container)!);
+    expect(seps.length).toBe(1);
+    expect(seps[0]!.textContent).toBe("/");
+  });
+
+  it("元信息行排在标题行之后、footer 之前", () => {
+    const { container } = render(
+      <PageHeader title="张三" meta={["男"]} footer={<div data-testid="footer" />} />,
+    );
+    const row = metaOf(container)!;
+    const h1 = container.querySelector("h1")!;
+    const footer = container.querySelector('[data-testid="footer"]')!;
+    expect(h1.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(row.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("meta 项可以是 ReactNode 而不只是字符串", () => {
+    const { getByTestId } = render(
+      <PageHeader title="张三" meta={[<span key="a" data-testid="node" />, "男"]} />,
+    );
+    expect(getByTestId("node")).toBeTruthy();
+  });
+});

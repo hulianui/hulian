@@ -1,6 +1,6 @@
 "use client";
-import { useId, useRef, useState } from "react";
-import { GripVertical } from "lucide-react";
+import { useCallback, useId, useRef, useState } from "react";
+import { GripVertical, RotateCw } from "lucide-react";
 import {
   DndContext,
   KeyboardSensor,
@@ -72,22 +72,37 @@ const STATUS_DOT: Record<NonNullable<UploadFile["status"]>, string> = {
 const ROW_CLASS =
   "flex items-center gap-3 rounded-[min(var(--radius),0.5rem)] border border-border bg-surface px-3 py-2 text-sm";
 
+/** ConfigProvider 没配 upload 节时的兜底文案（RowBody / SortableRow / Upload 三处共用一份）。 */
+const LOCALE_FALLBACK = {
+  dropLabel: "点击或拖拽文件到此处",
+  buttonLabel: "选择文件",
+  progress: (name: string) => `${name} 上传进度`,
+  remove: (name: string) => `移除 ${name}`,
+  reorder: (name: string) => `拖拽排序 ${name}`,
+  retry: (name: string) => `重新上传 ${name}`,
+  selected: (count: number, limit: number) => `已选 ${count}/${limit}`,
+};
+
+// 尺寸档（#243）：落区高度此前写死，同一个应用里「页面主入口的大落区」与「弹窗里的小落区」
+// 只能在每个调用处贴 className="h-44" 去撤销组件刚给的内边距——那正是文档反对的覆盖。
+// md 一档的数值与 0.39.0 逐字相同，不传 size 的调用点渲染不变。
+const DROPZONE_SIZE_CLASS = { sm: "gap-1.5 px-4 py-4", md: "gap-2 px-6 py-8", lg: "gap-3 px-8 py-12" };
+// button 形态与 Button 的同名档逐字等高（button-base.ts 的 BUTTON_SIZE_CLASS）。刻意不 import：
+// 那份表还带 icon/xs 等本组件用不到的档，而这三行的全部意义就是「和旁边那颗按钮对齐」。
+const BUTTON_SIZE_CLASS = { sm: "h-8 px-3 text-sm", md: "h-10 px-4 text-sm", lg: "h-12 px-6 text-base" };
+const DROPZONE_ICON_CLASS = { sm: "size-6", md: "size-7", lg: "size-9" };
+const DROPZONE_LABEL_CLASS = { sm: "text-sm", md: "text-sm", lg: "text-base" };
+
 interface RowProps {
   file: UploadFile;
   renderPreview?: UploadProps["renderPreview"];
   onRemove?: (id: string) => void;
+  onRetry?: (id: string) => void;
 }
 
 /** 行内容（无 hook，静态行与可拖行共用）。 */
-function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
-  const locale = useComponentLocale().upload ?? {
-    dropLabel: "点击或拖拽文件到此处",
-    buttonLabel: "选择文件",
-    progress: (name) => `${name} 上传进度`,
-    remove: (name) => `移除 ${name}`,
-    reorder: (name) => `拖拽排序 ${name}`,
-    selected: (count, limit) => `已选 ${count}/${limit}`,
-  };
+function RowBody({ file: f, renderPreview, onRemove, onRetry }: RowProps) {
+  const locale = useComponentLocale().upload ?? LOCALE_FALLBACK;
   const dot = STATUS_DOT[f.status ?? "ready"];
   const preview = renderPreview?.(f);
   const pct = f.progress == null ? 0 : Math.min(100, Math.max(0, f.progress));
@@ -136,6 +151,18 @@ function RowBody({ file: f, renderPreview, onRemove }: RowProps) {
           )
         )}
       </span>
+      {onRetry && f.status === "error" && (
+        // 只挂在失败行上：#242 —— useUpload 早就有 retry，但组件这侧一个入口都没有，
+        // 用户遇到网络抖动只能「移除 → 重新选一遍整个文件」。
+        <button
+          type="button"
+          onClick={() => onRetry(f.id)}
+          aria-label={locale.retry(f.name)}
+          className="shrink-0 rounded-[min(var(--radius),0.375rem)] p-1 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <RotateCw className="size-4" aria-hidden />
+        </button>
+      )}
       {onRemove && (
         <button
           type="button"
@@ -169,14 +196,7 @@ function StaticRow(props: RowProps) {
 
 /** 可拖调序的行：手柄式 activator（行内有移除按钮，整行可拖会吞掉点击）。 */
 function SortableRow(props: RowProps) {
-  const locale = useComponentLocale().upload ?? {
-    dropLabel: "点击或拖拽文件到此处",
-    buttonLabel: "选择文件",
-    progress: (name) => `${name} 上传进度`,
-    remove: (name) => `移除 ${name}`,
-    reorder: (name) => `拖拽排序 ${name}`,
-    selected: (count, limit) => `已选 ${count}/${limit}`,
-  };
+  const locale = useComponentLocale().upload ?? LOCALE_FALLBACK;
   const {
     attributes,
     listeners,
@@ -221,6 +241,11 @@ export function Upload({
   maxSize,
   limit,
   variant = "dropzone",
+  size = "md",
+  name,
+  required,
+  inputRef: inputRefProp,
+  resetInputAfterSelect,
   files,
   renderPreview,
   sortable = false,
@@ -228,23 +253,38 @@ export function Upload({
   onSelect,
   onReject,
   onRemove,
+  onRetry,
   label,
   hint,
   buttonLabel,
   children,
   className,
 }: UploadProps) {
-  const locale = useComponentLocale().upload ?? {
-    dropLabel: "点击或拖拽文件到此处",
-    buttonLabel: "选择文件",
-    progress: (name) => `${name} 上传进度`,
-    remove: (name) => `移除 ${name}`,
-    reorder: (name) => `拖拽排序 ${name}`,
-    selected: (count, limit) => `已选 ${count}/${limit}`,
-  };
+  const locale = useComponentLocale().upload ?? LOCALE_FALLBACK;
   const resolvedLabel = label ?? locale.dropLabel;
   const resolvedButtonLabel = buttonLabel ?? locale.buttonLabel;
+  // 取消 aria-hidden 之后 input 就成了「暴露给辅助技术但没有名字」的表单控件。
+  // label/buttonLabel 是 ReactNode，只有它本来就是字符串时才能直接当无障碍名，否则回落到 locale。
+  const inputAriaLabel =
+    variant === "button"
+      ? typeof buttonLabel === "string"
+        ? buttonLabel
+        : locale.buttonLabel
+      : typeof label === "string"
+        ? label
+        : locale.dropLabel;
   const inputRef = useRef<HTMLInputElement>(null);
+  // 内部仍要自己持有 input（openDialog 要点它），所以 inputRef 走「两边都写」的回调 ref。
+  // useCallback 是必要的：回调 ref 的函数标识每次变都会被 React 先以 null 再以节点回调一次，
+  // 消费方的 ref 会在每次渲染中途瞬间变空。
+  const setInputEl = useCallback(
+    (node: HTMLInputElement | null) => {
+      inputRef.current = node;
+      if (typeof inputRefProp === "function") inputRefProp(node);
+      else if (inputRefProp) (inputRefProp as { current: HTMLInputElement | null }).current = node;
+    },
+    [inputRefProp],
+  );
   const [dragging, setDragging] = useState(false);
   const listId = useId();
   const sensors = useSensors(
@@ -257,7 +297,7 @@ export function Upload({
   const atLimit = limit != null && count >= limit;
   const blocked = disabled || atLimit;
 
-  function process(fileList: FileList | File[]) {
+  function process(fileList: FileList | File[]): File[] {
     const accepted: File[] = [];
     const rejected: UploadRejection[] = [];
     for (const f of Array.from(fileList)) {
@@ -272,34 +312,80 @@ export function Upload({
     for (const f of capped.slice(room)) rejected.push({ file: f, reason: "limit" });
     if (picked.length) onSelect?.(picked);
     if (rejected.length) onReject?.(rejected);
+    return picked;
   }
 
   function openDialog() {
     if (!blocked) inputRef.current?.click();
   }
 
+  /**
+   * 把「本次通过校验的文件」写回 `input.files`，让原生 `new FormData(form)` 读得到（#234）。
+   *
+   * 只在挂了 `name` 时做——没有 name 的 input 压根不进 FormData，回写纯属多余副作用。
+   * 两条路都要写：拖入的文件本来就不会进 `input.files`；点选的文件会进，但被 accept/maxSize/limit
+   * 拒掉的那些也在里面，不重写就等于「界面说拒了、表单照样提交」。
+   * 环境不支持 DataTransfer 构造器（老浏览器 / jsdom）就静默跳过：onSelect 那条路不受影响。
+   */
+  function syncInputFiles(picked: File[]) {
+    const el = inputRef.current;
+    if (!el || name == null) return;
+    try {
+      const dt = new DataTransfer();
+      for (const f of picked) dt.items.add(f);
+      el.files = dt.files;
+    } catch {
+      /* 不支持就维持浏览器给的原样 */
+    }
+  }
+
+  // 清 value 是为了「同一个文件能重复选」，但清了之后 FormData 就永远读不到文件。
+  // 挂了 name = 明确走原生表单提交，默认翻转成不清；两种默认都可被 resetInputAfterSelect 显式覆盖。
+  const resetInput = resetInputAfterSelect ?? name == null;
+
   const input = (
     <input
-      ref={inputRef}
+      ref={setInputEl}
       type="file"
+      name={name}
+      required={required}
       accept={accept}
       multiple={multiple}
-      disabled={blocked}
+      // 达上限时**不**连带禁用带 name 的 input：禁用控件会被 FormData 整个跳过，
+      // 已选中的文件会在提交时凭空消失。触发器那侧照旧 blocked，点不开选择框。
+      disabled={name == null ? blocked : disabled}
       className="sr-only"
-      aria-hidden
+      // 有 name 就不是纯装饰了：它是这个表单里真实存在、会被提交、会被浏览器校验的控件，
+      // 对辅助技术藏起来会让 required 拦下提交时无从解释。可聚焦性仍留给落区（tabIndex=-1
+      // 是为了不产生「落区 + input」两个指向同一动作的 Tab 停靠点）。
+      aria-hidden={name == null || undefined}
+      aria-label={name == null ? undefined : inputAriaLabel}
       tabIndex={-1}
       onChange={(e) => {
-        if (e.target.files) process(e.target.files);
-        e.target.value = ""; // 允许重复选同一文件
+        const picked = e.target.files ? process(e.target.files) : [];
+        if (resetInput) e.target.value = ""; // 允许重复选同一文件
+        else syncInputFiles(picked);
       }}
     />
   );
 
   const rows = files?.map((f) =>
     sortable && onSort ? (
-      <SortableRow key={f.id} file={f} renderPreview={renderPreview} onRemove={onRemove} />
+      <SortableRow
+        key={f.id}
+        file={f}
+        renderPreview={renderPreview}
+        onRemove={onRemove}
+        onRetry={onRetry}
+      />
     ) : (
-      <StaticRow key={f.id} file={f} renderPreview={renderPreview} onRemove={onRemove} />
+      <StaticRow
+        key={f.id}
+        file={f}
+        renderPreview={renderPreview}
+        onRemove={onRemove}
+        onRetry={onRetry}
+      />
     ),
   );
 
@@ -339,7 +425,10 @@ export function Upload({
           type="button"
           disabled={blocked}
           onClick={openDialog}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface px-4 text-sm font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50"
+          className={cn(
+            "inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50",
+            BUTTON_SIZE_CLASS[size],
+          )}
         >
           <svg
             viewBox="0 0 20 20"
@@ -383,10 +472,11 @@ export function Upload({
         onDrop={(e) => {
           e.preventDefault();
           setDragging(false);
-          if (!blocked && e.dataTransfer.files) process(e.dataTransfer.files);
+          if (!blocked && e.dataTransfer.files) syncInputFiles(process(e.dataTransfer.files));
         }}
         className={cn(
-          "flex flex-col items-center justify-center gap-2 rounded-[var(--radius)] border border-dashed px-6 py-8 text-center outline-none transition-colors",
+          "flex flex-col items-center justify-center rounded-[var(--radius)] border border-dashed text-center outline-none transition-colors",
+          DROPZONE_SIZE_CLASS[size],
           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
           dragging
             ? "border-primary bg-primary/5"
@@ -398,7 +488,7 @@ export function Upload({
           <>
             <svg
               viewBox="0 0 24 24"
-              className="size-7 text-muted-foreground"
+              className={cn(DROPZONE_ICON_CLASS[size], "text-muted-foreground")}
               fill="none"
               stroke="currentColor"
               strokeWidth={1.6}
@@ -410,7 +500,9 @@ export function Upload({
                 strokeLinejoin="round"
               />
             </svg>
-            <div className="text-sm font-medium text-foreground">{resolvedLabel}</div>
+            <div className={cn(DROPZONE_LABEL_CLASS[size], "font-medium text-foreground")}>
+              {resolvedLabel}
+            </div>
             {hint && (
               <div id={`${listId}-hint`} className="text-xs text-muted-foreground">
                 {hint}

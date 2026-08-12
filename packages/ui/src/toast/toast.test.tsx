@@ -134,3 +134,163 @@ describe("Toast", () => {
     }
   });
 });
+
+describe("toast.close（关闭句柄 · #227）", () => {
+  it("toast.close(id) 把那一条从 DOM 里摘掉", async () => {
+    render(<ToastProvider />);
+    let id = "";
+    act(() => {
+      id = toast({ title: "按 id 关掉这条", timeout: 0 });
+    });
+    expect(titleEl("按 id 关掉这条", "text-foreground")).toBeTruthy();
+    act(() => {
+      toast.close(id);
+    });
+    await waitFor(() => expect(titleEl("按 id 关掉这条", "text-foreground")).toBeFalsy());
+  });
+
+  it("只关目标那一条，其余不受影响", async () => {
+    render(<ToastProvider />);
+    let target = "";
+    act(() => {
+      target = toast({ title: "被点名的那条", timeout: 0 });
+      toast({ title: "旁观的那条", timeout: 0 });
+    });
+    act(() => {
+      toast.close(target);
+    });
+    await waitFor(() => expect(titleEl("被点名的那条", "text-foreground")).toBeFalsy());
+    expect(titleEl("旁观的那条", "text-foreground")).toBeTruthy();
+  });
+
+  it("不传 id 关掉全部", async () => {
+    render(<ToastProvider />);
+    act(() => {
+      toast({ title: "全清甲", timeout: 0 });
+      toast({ title: "全清乙", timeout: 0 });
+    });
+    act(() => {
+      toast.close();
+    });
+    await waitFor(() => expect(titleEl("全清甲", "text-foreground")).toBeFalsy());
+    expect(titleEl("全清乙", "text-foreground")).toBeFalsy();
+  });
+
+  it("「进行中 → 关掉它 → 弹结果」不会同屏并存（issue 里断掉的那条链路）", async () => {
+    render(<ToastProvider />);
+    let id = "";
+    act(() => {
+      id = toast({ title: "正在上传图片…", loading: true });
+    });
+    act(() => {
+      toast.close(id);
+      toast({ title: "上传成功", tone: "success" });
+    });
+    await waitFor(() => expect(titleEl("正在上传图片…", "text-foreground")).toBeFalsy());
+    expect(titleEl("上传成功", "text-success")).toBeTruthy();
+  });
+});
+
+describe("toast loading 档（#227）", () => {
+  it("loading 不自动消失：fake timers 推进 30s 仍在", () => {
+    vi.useFakeTimers();
+    try {
+      render(<ToastProvider />);
+      act(() => {
+        toast({ title: "进行中不该自己走", loading: true });
+      });
+      act(() => {
+        vi.advanceTimersByTime(30000);
+      });
+      expect(titleEl("进行中不该自己走", "text-foreground")).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("显式 timeout 覆盖 loading 的缺省 0（不是两套互相打架的常驻语义）", () => {
+    vi.useFakeTimers();
+    try {
+      render(<ToastProvider />);
+      act(() => {
+        toast({ title: "进行中但限时", loading: true, timeout: 3000 });
+      });
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+      expect(titleEl("进行中但限时", "text-foreground")).toBeFalsy();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("渲出转圈图标：aria-hidden（不嵌套活动区）+ reduced-motion 减速而非停转", () => {
+    render(<ToastProvider />);
+    act(() => {
+      toast({ title: "带转圈的那条", loading: true, timeout: 0 });
+    });
+    const root = titleEl("带转圈的那条", "text-foreground")!.closest(
+      "[class*='bg-surface']",
+    ) as HTMLElement;
+    const spinner = root.querySelector("svg[aria-hidden]") as SVGElement;
+    expect(spinner).toBeTruthy();
+    const cls = spinner.getAttribute("class")!.split(/\s+/);
+    expect(cls).toContain("animate-spin");
+    // 定格成静止圆弧 = 状态信息当场消失，故这里刻意不是库内装饰件那套 [animation:none]
+    expect(cls).toContain("motion-reduce:[animation-duration:2.4s]");
+    expect(cls).not.toContain("motion-reduce:[animation:none]");
+    // 未开 loading 的那条不该冒出图标
+    act(() => {
+      toast({ title: "没有转圈的那条", timeout: 0 });
+    });
+    const plain = titleEl("没有转圈的那条", "text-foreground")!.closest(
+      "[class*='bg-surface']",
+    ) as HTMLElement;
+    expect(plain.querySelector("svg[aria-hidden]")).toBeNull();
+  });
+});
+
+describe("ToastProvider position（#227）", () => {
+  const viewport = () => document.querySelector(".fixed.z-\\[60\\]") as HTMLElement;
+
+  it("不传 position：仍是右上角，类串与历史逐字一致", () => {
+    render(<ToastProvider />);
+    expect(viewport().getAttribute("class")).toBe(
+      "fixed right-4 top-4 z-[60] flex w-[min(90vw,22rem)] flex-col gap-2 outline-none",
+    );
+  });
+
+  it("bottom-left：停靠左下 + 队列反向堆叠（最新一条贴停靠边）", () => {
+    render(<ToastProvider position="bottom-left" />);
+    const cls = viewport().getAttribute("class")!.split(/\s+/);
+    expect(cls).toContain("bottom-4");
+    expect(cls).toContain("left-4");
+    expect(cls).toContain("flex-col-reverse");
+    // twMerge 同组取后者：flex-col 必须已被顶掉，否则堆叠方向是反的
+    expect(cls).not.toContain("flex-col");
+    expect(cls).not.toContain("top-4");
+    expect(cls).not.toContain("right-4");
+  });
+
+  it("top-center：横向居中，不反向堆叠", () => {
+    render(<ToastProvider position="top-center" />);
+    const cls = viewport().getAttribute("class")!.split(/\s+/);
+    expect(cls).toContain("left-1/2");
+    expect(cls).toContain("-translate-x-1/2");
+    expect(cls).toContain("flex-col");
+    expect(cls).not.toContain("flex-col-reverse");
+  });
+
+  it("入场位移方向跟着停靠边换手：左侧档从左边滑入", () => {
+    render(<ToastProvider position="bottom-left" />);
+    act(() => {
+      toast({ title: "左下入场", timeout: 0 });
+    });
+    const root = titleEl("左下入场", "text-foreground")!.closest(
+      "[class*='bg-surface']",
+    ) as HTMLElement;
+    const cls = root.className.split(/\s+/);
+    expect(cls).toContain("data-[starting-style]:-translate-x-4");
+    expect(cls).not.toContain("data-[starting-style]:translate-x-4");
+  });
+});

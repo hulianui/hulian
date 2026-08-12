@@ -239,7 +239,15 @@ export interface ComponentLocale {
     /** Accessible name of the FilterChipGroup row. */
     group: string;
   };
-  combobox?: { clear: string; remove: string };
+  combobox?: {
+    clear: string;
+    remove: string;
+    /**
+     * `creatable` 那条「用我刚打的这串新建一个」的文案。
+     * Optional so existing custom component dictionaries remain source-compatible.
+     */
+    create?: (value: string) => string;
+  };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   tag?: { remove: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
@@ -478,6 +486,7 @@ export interface ComponentLocale {
     progress: (name: string) => string;
     remove: (name: string) => string;
     reorder: (name: string) => string;
+    retry: (name: string) => string;
     selected: (count: number, limit: number) => string;
   };
   jsonViewer?: { copy: string; copied: string };
@@ -1004,7 +1013,7 @@ const zhComponents: ComponentLocale = {
     clearAll: "清除全部",
     group: "已应用的筛选条件",
   },
-  combobox: { clear: "清除", remove: "移除" },
+  combobox: { clear: "清除", remove: "移除", create: (value) => `使用 “${value}”` },
   tag: { remove: "移除" },
   tree: {
     label: "树",
@@ -1216,6 +1225,7 @@ const zhComponents: ComponentLocale = {
     progress: (name) => `${name} 上传进度`,
     remove: (name) => `移除 ${name}`,
     reorder: (name) => `拖拽排序 ${name}`,
+    retry: (name) => `重新上传 ${name}`,
     selected: (count, limit) => `已选 ${count}/${limit}`,
   },
   jsonViewer: { copy: "复制", copied: "已复制" },
@@ -1798,7 +1808,7 @@ const enComponents: ComponentLocale = {
     clearAll: "Clear all",
     group: "Applied filters",
   },
-  combobox: { clear: "Clear", remove: "Remove" },
+  combobox: { clear: "Clear", remove: "Remove", create: (value) => `Use “${value}”` },
   tag: { remove: "Remove" },
   tree: {
     label: "Tree",
@@ -2027,6 +2037,7 @@ const enComponents: ComponentLocale = {
     progress: (name) => `${name} upload progress`,
     remove: (name) => `Remove ${name}`,
     reorder: (name) => `Reorder ${name}`,
+    retry: (name) => `Retry ${name}`,
     selected: (count, limit) => `${count}/${limit} selected`,
   },
   jsonViewer: { copy: "Copy", copied: "Copied" },

@@ -37,6 +37,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | sideOffset | `number` | `8` | Distance from the trigger in pixels. |
+| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | — | Position the card against something other than the trigger, with the same contract as [Popover](../popover/popover.md)'s `anchor`. One difference: **the trigger stays mandatory**, because the card opens on hover, so `anchor` only changes where it sits, not what opens it. |
 | className | `string` | — | Additional class name. |
 
 ## Slots

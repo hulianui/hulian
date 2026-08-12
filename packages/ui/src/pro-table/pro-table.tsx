@@ -91,6 +91,9 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     sorting: sortingProp,
     onSortingChange,
     getRowId,
+    // 列显隐（受控出口 · #236）
+    columnVisibility: columnVisibilityProp,
+    onColumnVisibilityChange,
     ...tableProps
   } = props;
 
@@ -124,8 +127,30 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
         };
 
   const [density, setDensity] = useState<Density>(densityProp ?? "default");
-  const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [fullscreen, setFullscreen] = useState(false);
+
+  // —— 列显隐（#236）——
+  // 受控/非受控与 rowSelection 同一判据：传了 columnVisibility 就是消费方接管。
+  // 映射口径是「缺省即可见」，所以落库的偏好只需要记被关掉的那几列也能还原。
+  const controlledVisibility = columnVisibilityProp != null;
+  const [internalVisibility, setInternalVisibility] = useState<Record<string, boolean>>({});
+  const columnVisibility = controlledVisibility ? columnVisibilityProp : internalVisibility;
+  if (controlledVisibility && onColumnVisibilityChange == null) {
+    // 受控但没给出口 = 列设置点不动，且和「组件坏了」长得一模一样（同 rowSelection 那条）。
+    warnOnce(
+      "pro-table/controlled-column-visibility-without-handler",
+      "[hulian] ProTable：传了 columnVisibility 却没传 onColumnVisibilityChange，列显隐将无法变更。要内部自持就别传 columnVisibility。",
+    );
+  }
+  const applyVisibility = (next: Record<string, boolean>) => {
+    if (controlledVisibility) onColumnVisibilityChange?.(next);
+    else setInternalVisibility(next);
+  };
+  // 锁定列（meta.lockVisible）恒可见：锁的语义是「这列不给关」，所以一份旧的落库偏好
+  // 也不能把身份列/操作列关掉 —— 否则界面上根本没有打开它的入口。
+  const isLocked = (c: ColumnDef<TData, any>) => c.meta?.lockVisible === true;
+  const isColVisible = (c: ColumnDef<TData, any>) =>
+    isLocked(c) || columnVisibility[colId(c)] !== false;
 
   // —— 托管模式状态 ——
   const [page, setPage] = useState(1);
@@ -255,25 +280,22 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   useImperativeHandle(actionRef, () => ({ reload: doReload, clearSelection }), [managed]);
 
   const visibleColumns = useMemo(
-    () => columns.filter((c) => !hidden.has(colId(c))),
-    [columns, hidden],
+    // 判据与 isColVisible 同源，这里内联是为了让 memo 的依赖只有 columns / columnVisibility
+    () => columns.filter((c) => c.meta?.lockVisible === true || columnVisibility[colId(c)] !== false),
+    [columns, columnVisibility],
   );
 
   const cycleDensity = () =>
     setDensity((d) => DENSITY_ORDER[(DENSITY_ORDER.indexOf(d) + 1) % DENSITY_ORDER.length]);
 
-  const toggleCol = (id: string) =>
-    setHidden((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        // 保底：不允许隐藏最后一列可见列，避免空表头
-        if (columns.length - next.size <= 1) return prev;
-        next.add(id);
-      }
-      return next;
-    });
+  const toggleCol = (c: ColumnDef<TData, any>) => {
+    if (isLocked(c)) return; // 锁定列的勾选框已置灰，这里是第二道闸（键盘/程序化点击）
+    const id = colId(c);
+    const nextVisible = !isColVisible(c);
+    // 保底：不允许隐藏最后一列可见列，避免空表头
+    if (!nextVisible && visibleColumns.length <= 1) return;
+    applyVisibility({ ...columnVisibility, [id]: nextVisible });
+  };
 
   const showToolbar = features !== null || title != null || toolbarActions != null;
 
@@ -374,11 +396,21 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
                   <div className="flex max-h-72 flex-col gap-2 overflow-auto">
                     {columns.map((c) => {
                       const id = colId(c);
+                      // 锁定列（#236）：置灰 + 恒选中。「这两列不给关」在全量开关里表达不了，
+                      // 而关掉身份列/操作列的那一行就既没有身份也没有出口。
+                      const locked = isLocked(c);
                       return (
-                        <label key={id} className="flex cursor-pointer items-center gap-2 text-sm">
+                        <label
+                          key={id}
+                          className={cn(
+                            "flex items-center gap-2 text-sm",
+                            locked ? "cursor-not-allowed opacity-60" : "cursor-pointer",
+                          )}
+                        >
                           <Checkbox
-                            checked={!hidden.has(id)}
-                            onCheckedChange={() => toggleCol(id)}
+                            checked={isColVisible(c)}
+                            disabled={locked}
+                            onCheckedChange={() => toggleCol(c)}
                           />
                           <span className="truncate">{colLabel(c)}</span>
                         </label>

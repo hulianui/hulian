@@ -88,6 +88,41 @@ describe("Modal（命令式）", () => {
     await waitFor(() => expect(screen.queryByText("主动销毁-唯一")).toBeNull());
   });
 
+  it("danger：确定键落在 danger tone（#231）", () => {
+    render(<ModalProvider />);
+    act(() => {
+      modal.confirm({ title: "删除这条记录？危险档", content: "删除后不可恢复。", danger: true });
+    });
+    // 精确切词：substring 查 "bg-danger" 会被 "bg-danger-hover"（同串里就有）撞上，
+    // 那样即使按钮只保留了 hover 态也算通过，等于没测到静息色。
+    const ok = screen.getByRole("button", { name: "确定" });
+    const cls = ok.className.split(/\s+/);
+    expect(cls).toContain("bg-danger");
+    expect(cls).toContain("text-danger-foreground");
+    expect(cls).not.toContain("bg-primary"); // 主色档必须让位，否则和「保存」同色
+  });
+
+  it("不传 danger：确定键仍是主色档（既有调用点零影响）", () => {
+    render(<ModalProvider />);
+    act(() => {
+      modal.confirm({ title: "普通确认-唯一" });
+    });
+    const cls = screen.getByRole("button", { name: "确定" }).className.split(/\s+/);
+    expect(cls).not.toContain("bg-danger");
+  });
+
+  it("danger 覆盖图标色但不换字形：confirm 的问号图标转 text-danger", () => {
+    render(<ModalProvider />);
+    act(() => {
+      modal.confirm({ title: "危险图标色-唯一", danger: true });
+    });
+    const popup = screen.getByText("危险图标色-唯一").closest("[class*='bg-surface']") as HTMLElement;
+    const icon = popup.querySelector("svg")!;
+    expect(icon.getAttribute("class")!.split(/\s+/)).toContain("text-danger");
+    // type=confirm 的默认主色不再出现在图标上
+    expect(icon.getAttribute("class")!.split(/\s+/)).not.toContain("text-primary");
+  });
+
   it("update() 改写已打开对话框的标题", () => {
     render(<ModalProvider />);
     let inst: { update: (n: { title: string }) => void } | undefined;

@@ -1,8 +1,29 @@
 export { Table } from "./table";
+// 组合原语（#241）：结构自定义、只要库皮肤的表走这组；数据驱动 + 排序/冻结列走高层 Table。
+export {
+  TableRoot,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "./table-primitives";
 export type {
   TableProps,
   VirtualOptions,
   TableColumnAlign,
+  TableDensity,
+  TableStickyHeaderMode,
+  TableRowExtraContext,
+  TableFooterContext,
+  TableRootProps,
+  TableHeaderProps,
+  TableBodyProps,
+  TableFooterProps,
+  TableRowProps,
+  TableHeadProps,
+  TableCellProps,
   RowDragEndEvent,
   RowDropPosition,
   ColumnDef,

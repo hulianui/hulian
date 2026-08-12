@@ -5399,7 +5399,9 @@
       "categories": [
         "forms"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "class-variance-authority"
+      ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/button.json",
         "https://hulianui.haloritual.com/zh/r/lib.json"
@@ -5410,7 +5412,9 @@
           "RippleButton"
         ],
         "types": [
-          "RippleButtonProps"
+          "RippleButtonProps",
+          "RippleButtonTone",
+          "RippleButtonVariant"
         ],
         "group": "button",
         "tags": [
@@ -6929,7 +6933,8 @@
           "CardFooter"
         ],
         "types": [
-          "CardProps"
+          "CardProps",
+          "CardHeaderProps"
         ],
         "group": "collection",
         "tags": [],
@@ -8211,13 +8216,14 @@
       "name": "empty",
       "type": "registry:ui",
       "title": "Empty",
-      "description": "空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + sm/md(零依赖·RSC)",
+      "description": "空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + 加载中档 + sm/md(零依赖·RSC)",
       "categories": [
         "data-display"
       ],
       "dependencies": [],
       "registryDependencies": [
-        "https://hulianui.haloritual.com/zh/r/lib.json"
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/spinner.json"
       ],
       "meta": {
         "import": "import { Empty } from \"@hulianui/ui\"",
@@ -10888,14 +10894,32 @@
         "https://hulianui.haloritual.com/zh/r/tooltip.json"
       ],
       "meta": {
-        "import": "import { Table } from \"@hulianui/ui\"",
+        "import": "import { Table, TableRoot, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell } from \"@hulianui/ui\"",
         "exports": [
-          "Table"
+          "Table",
+          "TableRoot",
+          "TableHeader",
+          "TableBody",
+          "TableFooter",
+          "TableRow",
+          "TableHead",
+          "TableCell"
         ],
         "types": [
           "TableProps",
           "VirtualOptions",
           "TableColumnAlign",
+          "TableDensity",
+          "TableStickyHeaderMode",
+          "TableRowExtraContext",
+          "TableFooterContext",
+          "TableRootProps",
+          "TableHeaderProps",
+          "TableBodyProps",
+          "TableFooterProps",
+          "TableRowProps",
+          "TableHeadProps",
+          "TableCellProps",
           "RowDragEndEvent",
           "RowDropPosition",
           "ColumnDef",
@@ -10921,6 +10945,11 @@
           "target": "components/hulianui/table/index.ts"
         },
         {
+          "path": "components/hulianui/table/table-primitives.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/table/table-primitives.tsx"
+        },
+        {
           "path": "components/hulianui/table/table.span.ts",
           "type": "registry:ui",
           "target": "components/hulianui/table/table.span.ts"
@@ -10941,7 +10970,7 @@
       "name": "tag",
       "type": "registry:ui",
       "title": "Tag",
-      "description": "状态标签 · 5 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)",
+      "description": "状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)",
       "categories": [
         "data-display"
       ],
@@ -13578,7 +13607,8 @@
         "types": [
           "DrawerProps",
           "DrawerContentProps",
-          "DrawerSide"
+          "DrawerSide",
+          "DrawerSize"
         ],
         "group": "overlay",
         "tags": [],
@@ -13905,7 +13935,8 @@
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/lib.json",
-        "https://hulianui.haloritual.com/zh/r/motion.json"
+        "https://hulianui.haloritual.com/zh/r/motion.json",
+        "https://hulianui.haloritual.com/zh/r/popover.json"
       ],
       "meta": {
         "import": "import { HoverCard, HoverCardTrigger, HoverCardContent } from \"@hulianui/ui\"",
@@ -14184,6 +14215,7 @@
           "PopoverContent"
         ],
         "types": [
+          "PopoverAnchor",
           "PopoverContentProps"
         ],
         "group": "overlay",
@@ -14488,6 +14520,7 @@
         ],
         "types": [
           "ToastTone",
+          "ToastPosition",
           "ToastOptions",
           "ToastProviderProps"
         ],

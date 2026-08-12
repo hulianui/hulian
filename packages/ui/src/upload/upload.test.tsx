@@ -197,6 +197,151 @@ describe("Upload · renderPreview 缩略图", () => {
   });
 });
 
+describe("Upload · name/原生表单提交（#234）", () => {
+  it("不传 name：input 无 name、aria-hidden、选完清空 value（0.39.0 行为逐字不变）", () => {
+    const { container } = render(<Upload />);
+    const input = fileInput(container);
+    expect(input.hasAttribute("name")).toBe(false);
+    expect(input.getAttribute("aria-hidden")).toBe("true");
+    fireEvent.change(input, { target: { files: [file("a.png", "image/png")] } });
+    expect(input.value).toBe("");
+  });
+
+  it("给了 name：input 带 name 且不再 aria-hidden，表单里能被 FormData 认领", () => {
+    const { container } = render(
+      <form>
+        <Upload name="file" required />
+      </form>,
+    );
+    const input = fileInput(container);
+    expect(input.getAttribute("name")).toBe("file");
+    expect(input.hasAttribute("aria-hidden")).toBe(false);
+    expect(input.required).toBe(true);
+    // jsdom 的 FormData 读不到 fireEvent 塞进去的 files（内部槽没被写），
+    // 但「这个控件有没有进表单」是能证的：没有 name 时它整个不出现在 entries 里。
+    const form = container.querySelector("form") as HTMLFormElement;
+    expect([...new FormData(form).keys()]).toEqual(["file"]);
+  });
+
+  it("不传 name 时 input 完全不参与表单", () => {
+    const { container } = render(
+      <form>
+        <Upload />
+      </form>,
+    );
+    const form = container.querySelector("form") as HTMLFormElement;
+    expect([...new FormData(form).keys()]).toEqual([]);
+  });
+
+  it("给了 name：选完不清 value（清了 FormData 就永远读不到文件）", () => {
+    const { container } = render(<Upload name="file" />);
+    const input = fileInput(container);
+    fireEvent.change(input, { target: { files: [file("a.png", "image/png")] } });
+    expect(input.files).toHaveLength(1);
+  });
+
+  it("resetInputAfterSelect 可显式覆盖两侧默认", () => {
+    const { container } = render(<Upload name="file" resetInputAfterSelect />);
+    const input = fileInput(container);
+    fireEvent.change(input, { target: { files: [file("a.png", "image/png")] } });
+    expect(input.value).toBe("");
+  });
+
+  it("给了 name：达 limit 时 input 不跟着禁用（禁用控件会被 FormData 整个跳过）", () => {
+    const files: UploadFile[] = [{ id: "a", name: "a.png", status: "success" }];
+    const { container } = render(<Upload name="file" limit={1} files={files} />);
+    expect(fileInput(container).disabled).toBe(false);
+    // 触发器那侧照旧拦住
+    expect((container.querySelector('[role="button"]') as HTMLElement).getAttribute("aria-disabled")).toBe("true");
+  });
+
+  it("disabled 仍然禁用 input（与 limit 不同，那是消费者显式关掉）", () => {
+    const { container } = render(<Upload name="file" disabled />);
+    expect(fileInput(container).disabled).toBe(true);
+  });
+
+  it("inputRef 拿得到内层 input，且组件自己仍能用它开选择框", () => {
+    const ref = { current: null as HTMLInputElement | null };
+    const { container } = render(<Upload inputRef={ref} />);
+    expect(ref.current).toBe(fileInput(container));
+    const click = vi.spyOn(ref.current as HTMLInputElement, "click");
+    fireEvent.click(container.querySelector('[role="button"]') as HTMLElement);
+    expect(click).toHaveBeenCalled();
+  });
+});
+
+describe("Upload · onRetry 失败行重试（#242）", () => {
+  const failed: UploadFile[] = [
+    { id: "x", name: "a.png", status: "error", error: "网络异常" },
+    { id: "y", name: "b.png", status: "success" },
+  ];
+
+  it("传了 onRetry：只有失败行渲染重试入口，点击回调该行 id", () => {
+    const onRetry = vi.fn();
+    const { getByLabelText, queryByLabelText } = render(<Upload files={failed} onRetry={onRetry} />);
+    expect(queryByLabelText("重新上传 b.png")).toBeNull();
+    fireEvent.click(getByLabelText("重新上传 a.png"));
+    expect(onRetry).toHaveBeenCalledWith("x");
+  });
+
+  it("不传 onRetry：失败行不渲染重试入口（与 onRemove 同口径）", () => {
+    const { queryByLabelText } = render(<Upload files={failed} />);
+    expect(queryByLabelText(/^重新上传 /)).toBeNull();
+  });
+
+  it("重试与移除共存，各自回调各自的 id", () => {
+    const onRetry = vi.fn();
+    const onRemove = vi.fn();
+    const { getByLabelText } = render(<Upload files={failed} onRetry={onRetry} onRemove={onRemove} />);
+    fireEvent.click(getByLabelText("重新上传 a.png"));
+    fireEvent.click(getByLabelText("移除 a.png"));
+    expect(onRetry).toHaveBeenCalledWith("x");
+    expect(onRemove).toHaveBeenCalledWith("x");
+  });
+
+  it("sortable 行同样有重试入口", () => {
+    const onRetry = vi.fn();
+    const { getByLabelText } = render(
+      <Upload files={failed} sortable onSort={() => {}} onRetry={onRetry} />,
+    );
+    fireEvent.click(getByLabelText("重新上传 a.png"));
+    expect(onRetry).toHaveBeenCalledWith("x");
+  });
+});
+
+describe("Upload · size 尺寸档（#243）", () => {
+  function zone(container: HTMLElement) {
+    return container.querySelector('[role="button"]') as HTMLElement;
+  }
+
+  it("不传 size = md，落区内边距与 0.39.0 逐字相同", () => {
+    const { container } = render(<Upload />);
+    expect(zone(container).className).toContain("px-6");
+    expect(zone(container).className).toContain("py-8");
+  });
+
+  it("sm / lg 换掉落区内边距（不是叠加）", () => {
+    const { container: sm } = render(<Upload size="sm" />);
+    expect(zone(sm).className).toContain("py-4");
+    expect(zone(sm).className).not.toContain("py-8");
+    const { container: lg } = render(<Upload size="lg" />);
+    expect(zone(lg).className).toContain("py-12");
+    expect(zone(lg).className).not.toContain("py-8");
+  });
+
+  it("button 形态按档换高度，与 Button 同名档等高", () => {
+    // 多次 render 共用 document.body，getByText 会跨实例撞车，这里按各自 container 取
+    const trigger = (c: HTMLElement) => c.querySelector("button") as HTMLElement;
+    const md = trigger(render(<Upload variant="button" />).container);
+    expect(md.className).toContain("h-10");
+    const sm = trigger(render(<Upload variant="button" size="sm" />).container);
+    expect(sm.className).toContain("h-8");
+    expect(sm.className).not.toContain("h-10");
+    const lg = trigger(render(<Upload variant="button" size="lg" />).container);
+    expect(lg.className).toContain("h-12");
+  });
+});
+
 describe("Upload · sortable 调序", () => {
   const files: UploadFile[] = [
     { id: "a", name: "1.png", status: "success" },

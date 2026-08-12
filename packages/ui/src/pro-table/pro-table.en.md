@@ -47,6 +47,7 @@ Inherits `Omit<TableProps<TData>, "data">`, including columns, sorting, selectio
 | toolbar | `boolean \| ProTableToolbarFeatures` | `true` | True enables all tools, false hides the toolbar, or configure reload, density, column settings, and fullscreen individually. |
 | loading | `boolean` | — | Display-mode loading state, including the rotating refresh icon. |
 | actionRef | `Ref<ProTableActions>` | — | Exposes `reload()` and `clearSelection()`. |
+| columnVisibility | `Record<string, boolean>` | — | Controlled column visibility, mapping column id to visibility, where **a missing key means visible**. It follows the `rowSelection` and `sorting` contract: supplying it takes control and requires `onColumnVisibilityChange`, omitting it keeps internal state. Column ids come from `ColumnDef.id`, falling back to `accessorKey`. Columns carrying `meta.lockVisible` stay visible, so writing `false` for them has no effect. |
 | rootClassName | `string` | — | Outer container class, distinct from the Table `className`. |
 
 ## Events
@@ -57,6 +58,7 @@ Inherited Table events include sorting, selection, expansion, and column-filter 
 |------|------|------|
 | onReload | `() => void` | Called from the toolbar reload control. |
 | onRequestError | `(error: unknown) => void` | Managed request failure handler; defaults to `console.error`, resets loading, and preserves previous data. |
+| onColumnVisibilityChange | `(next: Record<string, boolean>) => void` | Column-visibility change. It reports **the complete next map**, not a patch, so it can be written straight to local storage or PATCHed back to the server. |
 
 ## Slots
 
@@ -112,6 +114,9 @@ Inherited Table events include sorting, selection, expansion, and column-filter 
 - In managed mode, `data`, `pagination`, and `loading` are ignored. Cursor mode has no total or random page jump; changing filters, sorting, or page size resets to page one.
 - Supply `getRowId` in managed mode so selection remains stable across pages. `batchActions` also requires enabled selection and at least one selected row.
 - **Row selection is controlled by whether you pass `rowSelection`, not by whether the table is managed.** Passing it makes selection controlled, so pass `onRowSelectionChange` too — without it nothing can be selected and only a dev warning says why. Omit both and the component holds selection internally. Through 0.29.0 managed mode always held selection and silently discarded these two props: the table looked completely normal, checkboxes toggled and the header box went indeterminate, yet the consumer state stayed `{}` until submit produced an empty array (#202).
+- **Column visibility follows the same controlled contract** as selection: supplying `columnVisibility` means you own it and must also supply `onColumnVisibilityChange`, otherwise the column-setting popover does nothing and only warns in development. Without it the preference lives in internal state only, so the toolbar works but a refresh throws it away, and "the same operator switches machines and keeps their columns" cannot be written at all from outside the component. The map means **missing equals visible**, so persistence only has to record the columns that were switched off.
+- **Mark identity and action columns with `meta.lockVisible`.** A blanket on/off list cannot express "these two may not be switched off", and a row without its identity column or its action column has neither a name nor an exit. Locked columns are checked and disabled in the toolbar, and a controlled `false` does not apply to them either, otherwise one stale persisted preference could close the exit with no way to reopen it from the UI.
+- The guard against hiding the last visible column (which would leave an empty header) is still in place; in controlled mode it shows up as **the change handler simply not firing**.
 - Request rejection falls back to `console.error`; use `onRequestError` for a production toast or report.
 - `request` is held in a ref. Inline functions do not loop, but replacing only the function does not reload; change `params` or call `actionRef.reload()`.
 - `defaultSorting` is an uncontrolled initial value. Later changes do not overwrite user sorting; remount with a key or use controlled `sorting`.

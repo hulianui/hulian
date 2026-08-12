@@ -17,6 +17,17 @@ export interface PageHeaderProps extends Omit<HTMLAttributes<HTMLElement>, "titl
   tags?: ReactNode;
   /** 右侧操作区（按钮组等）。窄屏自动换行到标题下方。 */
   extra?: ReactNode;
+  /**
+   * 元信息行：标题下面那串用分隔符串起来的事实值（证件号 · 性别 · 3 段社保 · 2 家公司…）。
+   *
+   * 与 `subTitle`（一句话）、`tags`（状态标记）、`footer`（页头最下方）都不是一回事。
+   * 分隔符由组件插在项与项之间，**空项自动跳过**（`null` / `undefined` / `false` / `""`），
+   * 因此某一项缺值时不会留下孤零零一个分隔符 —— 这正是消费方用 `span + span::before`
+   * 拼中点要绕开的那件事（hulianui/hulian#240）。数字 `0` 是事实值，不算空。
+   */
+  meta?: ReactNode[];
+  /** `meta` 各项之间的分隔符，默认 `"·"`。装饰位，自动 `aria-hidden`。 */
+  metaSeparator?: ReactNode;
   /** 底部附加区，常放 <Tabs/>。 */
   footer?: ReactNode;
   /** 是否在页头底部渲染分隔线（复用瑚琏 <Separator/>），默认 false。 */

@@ -56,6 +56,7 @@ import { warnOnce } from "../lib/warn-once";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip/tooltip";
 import type { RowDragEndEvent, TableProps } from "./table.types";
 import { planCellSpans, spanKey } from "./table.span";
+import { TABLE_DENSITY_PAD } from "./table-primitives";
 
 const SELECT_COL = "__select__";
 const EXPANDER_COL = "__expander__";
@@ -450,6 +451,9 @@ export function Table<TData>({
   // 可展开明细
   renderExpandedRow,
   getRowCanExpand,
+  // 常驻整宽附属行 / 表尾
+  renderRowExtra,
+  footer,
   // 树形
   getSubRows,
   indent = 16,
@@ -471,6 +475,7 @@ export function Table<TData>({
   cellWhitespace,
   // 表头吸顶 / 表体宽度下限
   stickyHeader = false,
+  stickyHeaderOffset,
   maxHeight,
   minWidth,
   // 虚拟滚动
@@ -497,6 +502,9 @@ export function Table<TData>({
   const panelMode = Boolean(renderExpandedRow);
   const hasExpander = treeMode || panelMode;
   const dragEnabled = Boolean(rowDraggable);
+  // 表头吸顶两档（#238）：true 沿用旧口径 = "self"。
+  const stickyMode = stickyHeader === true ? "self" : stickyHeader || null;
+  const stickyToScrollParent = stickyMode === "scrollParent";
   const dragHandleCol = dragEnabled && dragHandle === "cell";
   // 拖拽调宽必须有确定列宽，否则手柄拖了没处落 → 强制切 fixed 布局。
   const fixedLayout = layout === "fixed" || resizable;
@@ -639,7 +647,8 @@ export function Table<TData>({
   const rows = table.getRowModel().rows;
 
   // 密度：仅作用于单元格内边距（表头/表体共用），default 维持原 px-3 py-2。
-  const cellPad = { default: "px-3 py-2", middle: "px-3 py-1.5", compact: "px-2 py-1" }[density];
+  // 与组合原语（#241）共用同一份档位表，两套皮肤不分家。
+  const cellPad = TABLE_DENSITY_PAD[density];
 
   // 虚拟滚动（可选）：hook 恒调用（无虚拟时 getScrollElement 返回 null → 闲置）。
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -655,8 +664,25 @@ export function Table<TData>({
   // ── 单元格合并（#176）────────────────────────────────────────────────────
   // 两个组合天然无解，静默不合并 + dev 告警，而不是画出一张错位的表：
   //  · 虚拟滚动只渲染可见窗口，跨窗口的 rowSpan 没有落点；
-  //  · 明细展开会在数据行之间插 <tr>，纵向合并会跨过那一行（HTML 的 rowSpan 按后续 <tr> 计数）。
-  const spanBlockedBy = virtualEnabled ? "virtual" : panelMode ? "renderExpandedRow" : null;
+  //  · 明细展开会在数据行之间插 <tr>，纵向合并会跨过那一行（HTML 的 rowSpan 按后续 <tr> 计数）；
+  //  · 常驻附属行（renderRowExtra）同理，而且它连「没展开就没有」这个逃生口都没有。
+  const spanBlockedBy = virtualEnabled
+    ? "virtual"
+    : panelMode
+    ? "renderExpandedRow"
+    : renderRowExtra
+    ? "renderRowExtra"
+    : null;
+  // 附属行与虚拟滚动：虚拟化按「一条数据 = 一行 rowHeight」估高并据此撑占位行，
+  // 每行再挂 N 条附属行后估高必然偏小 —— 表现是滚动位置漂移 / 底部留白。
+  // 不静默关掉（关了消费方的证书行就没了，比错位更难查），只告警。
+  if (renderRowExtra && virtualEnabled) {
+    warnOnce(
+      "table-row-extra-with-virtual",
+      "[hulian] Table: renderRowExtra 与 virtual 同开会让虚拟化的行高估算失准（它按每条数据一行 rowHeight 撑占位），" +
+        "表现是滚动漂移 / 底部留白。附属行数量固定时可把 virtual.rowHeight 调成「数据行 + 附属行」的总高。",
+    );
+  }
   if (cellSpan && spanBlockedBy) {
     warnOnce(
       `table-cell-span-with-${spanBlockedBy}`,
@@ -700,7 +726,9 @@ export function Table<TData>({
   const barRef = useRef<HTMLDivElement>(null);
   // 外壳自己就是定高滚动容器时（virtual / maxHeight），横向滚动条本来就贴在容器底边、
   // 一直看得见，再挂一条代理条就是上下两条并排。
-  const stickyBarEnabled = stickyScrollbar && !virtualEnabled && maxHeight == null;
+  // scrollParent 吸顶档下外壳根本不横向滚动（见下方 #238 注释），代理条没有可镜像的容器。
+  const stickyBarEnabled =
+    stickyScrollbar && !virtualEnabled && maxHeight == null && !stickyToScrollParent;
   const [bar, setBar] = useState({ width: 0, visible: false });
 
   useEffect(() => {
@@ -942,6 +970,9 @@ export function Table<TData>({
         </td>
       </tr>
     );
+    // 常驻附属行（#237）：不包壳，消费方返回的裸 <tr> 原样落进 <tbody>。
+    // 与明细面板一样留在 sortable <tr> 之外 —— 它们不是数据行，不参与拖拽。
+    const extra = renderRowExtra?.(row, { colSpan: colCount, rowIndex: index });
     return (
       <Fragment key={row.id}>
         {dragEnabled ? (
@@ -955,6 +986,7 @@ export function Table<TData>({
           renderTr(row, index, null)
         )}
         {panel}
+        {extra}
       </Fragment>
     );
   };
@@ -1004,14 +1036,37 @@ export function Table<TData>({
   // stickyHeader 要有一个**真的会滚**的祖先才锚得住（#192）：外壳平时只有 overflow-x-auto、
   // 没有高度约束，于是永远不纵向滚，sticky top-0 纹丝不动 —— 消费方在业务侧套 [&_thead]:sticky
   // 也够不到（中间隔着这层 overflow 容器）。所以开了 stickyHeader 就必须给 maxHeight。
-  if (stickyHeader && !virtualEnabled && maxHeight == null) {
+  if (stickyMode === "self" && !virtualEnabled && maxHeight == null) {
     warnOnce(
       "table-sticky-header-without-max-height",
       "[hulian] Table: stickyHeader 需要配合 maxHeight（或 virtual）才生效 —— " +
-        "表头 sticky 要锚在一个会纵向滚动的祖先上，而外壳默认没有高度约束、永远不滚。",
+        "表头 sticky 要锚在一个会纵向滚动的祖先上，而外壳默认没有高度约束、永远不滚。" +
+        "想吸在页面/内容区滚动容器上请用 stickyHeader=\"scrollParent\"。",
+    );
+  }
+  // scrollParent 档（#238）：外壳不能成为 scrollport，否则表头就锚死在它自己身上。
+  // `overflow-x: auto` 会把另一轴的 visible 一并算成 auto —— 实测（Chromium）页面下滚时
+  // 表头直接划走，而同一张表在 overflow:visible 的外壳下稳稳停在 top:0。
+  // 所以这一档下横向溢出交给外部滚动容器，代理横向滚动条也就无对象可镜像。
+  if (stickyToScrollParent && (virtualEnabled || maxHeight != null)) {
+    warnOnce(
+      "table-sticky-header-scroll-parent-with-own-scroller",
+      "[hulian] Table: stickyHeader=\"scrollParent\" 与 maxHeight / virtual 同开无意义 —— " +
+        "表格自己就是滚动容器时，表头只会吸在它自己身上（那正是 stickyHeader 默认档的行为）。",
+    );
+  }
+  if (stickyToScrollParent && stickyScrollbar) {
+    warnOnce(
+      "table-sticky-header-scroll-parent-with-sticky-scrollbar",
+      "[hulian] Table: stickyHeader=\"scrollParent\" 下外壳不再横向滚动（overflow-x 会把表头锚死在外壳上），" +
+        "stickyScrollbar 没有可镜像的滚动容器，本次忽略。",
     );
   }
   const shellScrolls = virtualEnabled || maxHeight != null;
+  // 表头吸顶的公共皮肤：opaque 背景遮住滚到下方的行，z-[2] 压过冻结列的 z-1。
+  const headerSticks = virtualEnabled || stickyMode != null;
+  const headerStickyStyle =
+    headerSticks && stickyHeaderOffset != null ? { top: stickyHeaderOffset } : undefined;
 
   const shell = (
     <div
@@ -1026,7 +1081,7 @@ export function Table<TData>({
       className={cn(
         // bordered=false：去掉自身描边框（如被 ProTable 卡片包裹时，由卡片提供外框，避免双框）。
         bordered && "rounded-[var(--radius)] border border-border",
-        !shellScrolls && "overflow-x-auto",
+        !shellScrolls && !stickyToScrollParent && "overflow-x-auto",
         className,
       )}
     >
@@ -1044,13 +1099,15 @@ export function Table<TData>({
           className={cn("border-collapse text-sm", fixedLayout ? "min-w-full" : "w-full")}
         >
           <thead
+            style={headerStickyStyle}
             className={cn(
               // 表头：foreground 黑/白 + semibold 加粗文字 + 行底分隔线（见下 tr），透明背景。
               // 不加填充色——表格已是 surface 卡片（ProTable）或带框原语，灰底带反而割裂、压观感。
               "text-foreground",
-              // 表头吸顶：虚拟滚动恒开，其余表按 stickyHeader（#192）。两者都需要 opaque 背景
-              // 遮住滚到下方的行；用 bg-surface 匹配卡片表面。z-[2] 压过冻结列的 z-1。
-              (virtualEnabled || stickyHeader) && "sticky top-0 z-[2] bg-surface",
+              // 表头吸顶：虚拟滚动恒开，其余表按 stickyHeader（#192 / #238）。两者都需要 opaque
+              // 背景遮住滚到下方的行；用 bg-surface 匹配卡片表面。z-[2] 压过冻结列的 z-1。
+              // top-0 是默认锚点；给了 stickyHeaderOffset 时由内联 style 覆盖（避开固定页头）。
+              headerSticks && "sticky top-0 z-[2] bg-surface",
             )}
           >
             {table.getHeaderGroups().map((hg) => (
@@ -1102,7 +1159,7 @@ export function Table<TData>({
                         canResize && "relative",
                         meta?.ellipsis && "overflow-hidden",
                         stickyClass(header.column),
-                        (virtualEnabled || stickyHeader) && header.column.getIsPinned() && "bg-bg",
+                        headerSticks && header.column.getIsPinned() && "bg-bg",
                       )}
                     >
                       {header.isPlaceholder ? null : (
@@ -1179,6 +1236,15 @@ export function Table<TData>({
               body
             )}
           </tbody>
+          {/* 表尾（#237）：口径同 EditableTable.summary —— 消费方自备 <tr><td colSpan=…>。
+              与它的区别是**空表也渲染**：「+ 手动添加一条」这类常驻表尾行恰恰在空表时最需要在。 */}
+          {footer != null && (
+            <tfoot className="border-t border-border bg-surface-hover/50 font-medium text-foreground">
+              {typeof footer === "function"
+                ? footer({ rows: rows.map((r) => r.original), colSpan: colCount })
+                : footer}
+            </tfoot>
+          )}
         </table>
       </MaybeTooltipProvider>
     </div>

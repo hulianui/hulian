@@ -70,6 +70,20 @@ export const breadcrumbShowcase: ShowcaseSpec = {
           <Breadcrumb items={longPath} separator={Chevron}/>
         </div>),
         },
+        {
+            title: "Client-side routing (render slot)",
+            description: "render turns the item into the element you pass (next/link, react-router Link), merging the skin and aria-current into it. It is not click hijacking, so Cmd+click to open a new tab, middle-click and the rest keep working.",
+            code: `<Breadcrumb
+  items={[
+    { label: "Customers", render: <Link href="/customers" /> },
+    { label: "Zhang San" }, // the current page omits render, so it stays non-clickable
+  ]}
+/>`,
+            render: () => (<Breadcrumb items={[
+                    { label: "Customers", render: <a href="#"/> },
+                    { label: "Zhang San" },
+                ]}/>),
+        },
     ],
     controls: [
         {
@@ -95,6 +109,13 @@ export const breadcrumbShowcase: ShowcaseSpec = {
                     { label: "Home", href: "#" },
                     { label: "Archive" },
                     { label: "2026 Annual Report" },
+                ]}/>),
+        },
+        {
+            name: "render slot (rendered as a router Link)",
+            render: () => (<Breadcrumb items={[
+                    { label: "Customers", render: <a href="#"/> },
+                    { label: "Zhang San" },
                 ]}/>),
         },
         {

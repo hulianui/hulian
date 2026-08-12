@@ -85,6 +85,25 @@ export const breadcrumbShowcase: ShowcaseSpec = {
         </div>
       ),
     },
+    {
+      title: "接客户端路由（render 插槽）",
+      description:
+        "render 把该项真渲染成你给的元素（next/link、react-router 的 Link），皮肤与 aria-current 合并进去——不是劫持点击，所以 Cmd+点击开新标签、中键这些原生行为照常。",
+      code: `<Breadcrumb
+  items={[
+    { label: "客户", render: <Link href="/customers" /> },
+    { label: "张三" }, // 当前页不传 render 即保持不可点
+  ]}
+/>`,
+      render: () => (
+        <Breadcrumb
+          items={[
+            { label: "客户", render: <a href="#" /> },
+            { label: "张三" },
+          ]}
+        />
+      ),
+    },
   ],
   controls: [
     {
@@ -112,6 +131,17 @@ export const breadcrumbShowcase: ShowcaseSpec = {
             { label: "首页", href: "#" },
             { label: "归档" },
             { label: "2026 年报" },
+          ]}
+        />
+      ),
+    },
+    {
+      name: "render 插槽（渲染为路由 Link）",
+      render: () => (
+        <Breadcrumb
+          items={[
+            { label: "客户", render: <a href="#" /> },
+            { label: "张三" },
           ]}
         />
       ),

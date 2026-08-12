@@ -28,6 +28,43 @@ describe("Tag", () => {
     expect(container.firstElementChild!.className).toContain("border-success");
   });
 
+  // #232：info 曾经只有 Alert / toast 有，Tag 缺这一档，于是「当前处于什么模式」这类中性事实
+  // 只能退到 neutral（灰得读不出来）或借 brand（紫色，与主 CTA 抢注意力）。
+  // 判据是「与其余五档同构」而不是「有个 info 就行」——半档（只有 soft 有）等于把选型负担推回消费方。
+  it("tone=info 的三个 variant 与其余五档同构", () => {
+    for (const [variant, expected] of [
+      ["soft", ["bg-info/12", "text-info"]],
+      ["solid", ["bg-info", "text-info-foreground"]],
+      ["outline", ["border-info", "text-info"]],
+    ] as const) {
+      const { container, unmount } = render(
+        <Tag variant={variant} tone="info">
+          外接浏览器模式
+        </Tag>,
+      );
+      const cls = container.firstElementChild!.className;
+      for (const token of expected) expect(cls).toContain(token);
+      unmount();
+    }
+  });
+
+  // info 与 brand 是两个语义色不是两种叫法（#173 起 tokens 有独立的 --color-info）。
+  // 这条钉住「没有偷偷把 info 做成 brand 的别名」——那正是 Alert 在 #173 之前的形态。
+  it("tone=info 不落在主色上", () => {
+    const { container } = render(<Tag tone="info">x</Tag>);
+    const cls = container.firstElementChild!.className;
+    expect(cls).not.toContain("primary");
+  });
+
+  it("dot 颜色也覆盖 info（圆点色随 tone，缺一档就是无声退回灰点）", () => {
+    const { container } = render(
+      <Tag dot tone="info">
+        x
+      </Tag>,
+    );
+    expect(container.querySelector(".rounded-full.bg-info")).toBeTruthy();
+  });
+
   it("dot 渲染状态圆点（颜色随 tone）", () => {
     const { container } = render(
       <Tag dot tone="success">

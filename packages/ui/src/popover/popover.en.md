@@ -30,6 +30,7 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | sideOffset | `number` | `8` | Distance from the trigger in pixels. |
+| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | — | Position against something other than PopoverTrigger; with it the trigger can be omitted entirely. See below. |
 | plain | `boolean` | `false` | No chrome: skip the wrapper around children (spacing plus `text-sm text-foreground`) so children land directly in the popup. |
 | arrow | `boolean` | `true` | Whether to render the arrow pointing at the trigger. |
 | className | `string` | — | Additional class name. |
@@ -53,6 +54,28 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 `arrow` and `plain` are **two independent switches**, because the arrow describes the relationship between popup and trigger rather than the appearance of the content. A flush menu usually turns both off, while a plain text hint without a title needs only `plain`, and a full-bleed panel that should still point at its source keeps the arrow.
 
 The same `plain` name means the same thing as [Card](../card/card.md)'s `variant="plain"` and the panel `plain` on [Accordion](../accordion/accordion.md) and [Collapsible](../collapsible/collapsible.md): **when the content brings its own appearance, the answer is no skin rather than a different skin**.
+
+### anchor: when the trigger point is a coordinate rather than an element
+
+A marker computed on a DOCX preview or a canvas, a right-click position, a point on a map — such trigger points are only a rectangle, with no DOM node that could serve as a trigger, so `PopoverTrigger` cannot hold them. Pass `anchor` a **virtual element** that only has to implement `getBoundingClientRect()`, drop the trigger entirely, and drive `open` yourself:
+
+```tsx
+const [marker, setMarker] = useState<DOMRect | null>(null);
+
+<div onClick={(e) => setMarker(new DOMRect(e.clientX, e.clientY, 0, 0))}>{/* Preview canvas */}</div>
+
+<Popover open={marker != null} onOpenChange={(next) => !next && setMarker(null)}>
+  <PopoverContent anchor={marker && { getBoundingClientRect: () => marker }} align="start">
+    {/* Marker panel */}
+  </PopoverContent>
+</Popover>
+```
+
+Collision flipping, viewport clamping, focus management, Escape and outside-click dismissal, and `aria-expanded` all stay with the component — exactly the parts that should not be hand-rolled, since focus and ARIA are what a hand-rolled version drops first.
+
+When the coordinate changes, pass **a new object** (or switch to the `() => virtualEl` function form) instead of mutating fields on the same object: positioning recomputes on anchor identity change, so mutating fields leaves the popup where it was.
+
+The same `anchor` name means the same thing on [HoverCard](../hover-card/hover-card.md), except that the trigger stays mandatory there because the card opens on hover.
 
 ## Slots
 
@@ -82,6 +105,7 @@ The same `plain` name means the same thing as [Card](../card/card.md)'s `variant
 ## Usage guidelines
 
 - Inject trigger and close elements through `render`. Do not nest another interactive element inside PopoverTrigger, which can create `<button>` inside `<button>`.
+- Use `anchor` to position against a coordinate instead of hand-rolling `createPortal` with your own `left`/`top`: that path forces you to rebuild collision flipping, viewport clamping, outside-click dismissal, Escape, and focus management, and focus plus `aria-expanded` are precisely what hand-rolled versions miss.
 - Add `plain` (usually with `className="p-0"`) when the popup content brings its own padding, borders, or body color. Do not reach into the internal skin element with arbitrary variants such as `[&>div]:mt-0`.
 - Combining hover opening with focus closing on a focus-managing popover can flicker: opening moves focus inside, blur closes it, and restored focus reopens it. See [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]]. If adapting this component to hover behavior, set `initialFocus` and `finalFocus` to false.
 

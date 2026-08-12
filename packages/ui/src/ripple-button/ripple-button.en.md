@@ -28,7 +28,9 @@ Accepts all native `<button>` props, including `disabled` and `type`.
 | Name | Type | Default | Description |
 |------|------|------|------|
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Size step, on the same 32/40/48px scale as Button. |
-| rippleColor | `string` | `var(--color-primary-foreground)` | Ripple color. |
+| variant | `"solid" \| "outline" \| "ghost" \| "soft"` | `"solid"` | Appearance step, colored exactly like the [Button](../button/button.md) step of the same name. There is **no `link`** — the ripple needs a box, see the usage notes. |
+| tone | `"brand" \| "neutral" \| "success" \| "warning" \| "danger"` | `"brand"` | Semantic tone, colored exactly like the Button step of the same name. There is **no `current`** — the default ripple color is derived from the tone, and an inherited color derives nothing. |
+| rippleColor | `string` | Derived from `variant` × `tone` | Ripple color. Solid steps default to the foreground color of the tone (a light ripple on a dark surface); every other step defaults to the tone itself. Passing a value overrides the derivation. |
 | duration | `string` | `"600ms"` | Duration of one ripple animation. |
 
 ## Events
@@ -50,12 +52,21 @@ Accepts all native `<button>` props, including `disabled` and `type`.
 ```tsx
 <RippleButton duration="900ms">Show slow ripple</RippleButton>
 ```
+```tsx
+{/* Appearance is picked with variant x tone, exactly like Button - no buttonVariants() injection */}
+<RippleButton variant="outline">Cancel</RippleButton>
+<RippleButton variant="ghost">Later</RippleButton>
+<RippleButton tone="danger">Delete</RippleButton>
+<RippleButton variant="outline" tone="danger">Delete</RippleButton>
+```
 
 ## Usage guidelines
 
-- **Shares its base with [Button](../button/button.md).** Layout, the three `size` steps (32/40/48px tall), the focus ring, the disabled treatment, and `forwardRef` all come from the same `EFFECT_BUTTON_BASE_CLASS` and `BUTTON_SIZE_CLASS`. **Colour and corner radius are deliberately not shared**, since the background is this component's own effect layer. As a result it lines up with regular Buttons and matches the library-wide focus style; before 0.27.0 each effect button rolled its own markup, lacked all of the above, and sized itself with `px-6 py-3`, so a toolbar row came out uneven (#126).
-
-The ripple animation is automatically suppressed under `prefers-reduced-motion: reduce`; consumers do not need to add a separate motion check.
+- **Shares its base and its color steps with [Button](../button/button.md).** Layout, the three `size` steps (32/40/48px tall), the focus ring, the disabled treatment, and `forwardRef` all come from the same `EFFECT_BUTTON_BASE_CLASS` and `BUTTON_SIZE_CLASS`, and every `variant` x `tone` cell carries the same color as the Button cell of the same name (#233). **Corner radius, shadow and color hover are deliberately not shared**: the radius belongs to the effect layer, none of the four effect buttons carry `shadow-sm`, and color hover conflicts with this base (next note). Before 0.27.0 each effect button rolled its own markup, lacked all of the above, and sized itself with `px-6 py-3`, so a toolbar row came out uneven (#126).
+- **There is no color hover; the ripple is the feedback.** The effect base deliberately omits `transition-colors` (these components animate a background, not a color), so a `hover:bg-*` would land as an untransitioned jump. A `variant="ghost"` ripple button therefore rests as plain text and does not tint under the pointer — when a secondary action has to react on hover, use `Button variant="ghost"`; this component answers on press.
+- **`variant` has no `link` and `tone` has no `current`.** The ripple needs a box: `link` removes the height and the horizontal padding, so the ripple on an `h-auto px-0` label is clipped to a sliver or smears across the text. And the default ripple color is derived from the tone, which is exactly what `current` refuses to provide — pass `rippleColor="currentColor"` explicitly if the ripple should follow the container.
+- The derived ripple color depends on the step: solid steps use the **foreground** color of the tone (a light ripple on a dark surface), while outline, ghost and soft use the **tone itself**. The reverse (a foreground color on a light surface) is an almost invisible ring, so keep the surface in mind when overriding `rippleColor`.
+- The ripple animation is automatically suppressed under `prefers-reduced-motion: reduce`; consumers do not need to add a separate motion check.
 
 ## Related
 [Button](../button/button.md) · [ShimmerButton](../shimmer-button/shimmer-button.md) · [RainbowButton](../rainbow-button/rainbow-button.md) · [PulsatingButton](../pulsating-button/pulsating-button.md) · [ButtonGroup](../button-group/button-group.md) · [SocialButton](../social-button/social-button.md)

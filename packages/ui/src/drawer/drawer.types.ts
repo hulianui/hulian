@@ -3,11 +3,31 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 
 export type DrawerSide = "left" | "right" | "top" | "bottom";
 
+/** 抽屉主轴尺寸档：left/right 映射宽度，top/bottom 映射高度。 */
+export type DrawerSize = "sm" | "md" | "lg" | "xl" | "full";
+
 export type DrawerProps = ComponentProps<typeof BaseDialog.Root>;
 
 export interface DrawerContentProps {
   /** 贴边方向 + 对应的滑入方向，默认 right。 */
   side?: DrawerSide;
+  /**
+   * 主轴尺寸档，默认 `"md"`（即历史上写死的那两个值）。**同一档在横竖两轴上不是同一个值**
+   * ——抽屉的主轴随 `side` 换：`left`/`right` 吃宽度，`top`/`bottom` 吃高度，
+   * 而「一屏够看」的宽和高本来就不等长（视口通常宽 > 高）。
+   *
+   * | size | left / right 宽 | top / bottom 高 |
+   * |------|------|------|
+   * | `sm` | 20rem (320px) | 16rem (256px) |
+   * | `md` | 24rem (384px) | 20rem (320px) |
+   * | `lg` | 32rem (512px) | 32rem (512px) |
+   * | `xl` | 48rem (768px) | 48rem (768px) |
+   * | `full` | 100% | 100% |
+   *
+   * 除 `full` 外都带 `min(90vw, …)` / `min(90vh, …)` 上限，窄屏不会顶满整屏。
+   * 交叉轴恒为 100%（右侧抽屉永远通高、底部抽屉永远通宽），不随此档变化。
+   */
+  size?: DrawerSize;
   /** 提供则渲 Dialog.Title 作 a11y label。 */
   title?: ReactNode;
   description?: ReactNode;

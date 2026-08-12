@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { ChangeEvent, FocusEvent, KeyboardEvent } from "react";
 import { cn } from "../lib/cn";
 import { Input } from "../input";
@@ -21,6 +21,7 @@ type CellElement = HTMLInputElement | HTMLTextAreaElement;
 export function CellEditor({
   value,
   onCommit,
+  validate,
   missing = false,
   multiline = false,
   disabled = false,
@@ -32,6 +33,8 @@ export function CellEditor({
 }: CellEditorProps) {
   const [draft, setDraft] = useState(value);
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const errorId = useId();
 
   /**
    * 上次提交出去的值。判等（值没变不发）与 Esc 回滚共用同一个基准，于是「Esc 之后紧跟的 blur
@@ -47,13 +50,30 @@ export function CellEditor({
     setSyncedValue(value);
     setDraft(value);
     committedRef.current = value;
+    // 外部换了值，界面上那条错误说的已经不是眼下这格的内容了。
+    setError(undefined);
   }
 
   // 并发提交时只让最后一次决定 pending 何时结束：先发的慢请求后回来，不该把后发的 pending 抹掉。
   const pendingToken = useRef(0);
 
   const commit = (next: string) => {
-    if (next === committedRef.current) return;
+    if (next === committedRef.current) {
+      // 值改回了上次提交的样子＝错的那版已经不在了，红线要跟着撤，否则一格会一直挂着
+      // 一条与当前内容无关的错误（校验被拦时判等基准没推进，这条路径必然会被走到）。
+      setError(undefined);
+      return;
+    }
+    // 校验在判等之后、写出之前：已提交过的值不重复校验（那是上一次已经放行的），
+    // 拦下时**不推进 committedRef** —— 基准一推进，下次 blur 就会判等短路，等于放过了非法值。
+    // 空串按放行处理：一条看不见的错误却拦着提交，比不校验更糟——用户只会看到「这格存不进去」
+    // 而屏幕上什么都没有。想拦就给一句能读的话。
+    const message = validate?.(next);
+    if (message != null && message !== "") {
+      setError(message);
+      return;
+    }
+    setError(undefined);
     committedRef.current = next;
     const result: unknown = onCommit?.(next);
     // 认 thenable 而不是 `instanceof Promise`：消费方的提交常常来自 axios / SWR mutate 这类
@@ -68,7 +88,11 @@ export function CellEditor({
     void Promise.resolve(result as Promise<void>).then(settle, settle);
   };
 
-  const handleChange = (event: ChangeEvent<CellElement>) => setDraft(event.target.value);
+  const handleChange = (event: ChangeEvent<CellElement>) => {
+    setDraft(event.target.value);
+    // 一开始改就把红线撤掉：那条错误说的是刚才那一版。改完再 blur 会重新校验。
+    setError(undefined);
+  };
 
   const handleBlur = (event: FocusEvent<CellElement>) => {
     commit(draft);
@@ -83,6 +107,8 @@ export function CellEditor({
       commit(draft);
     } else if (event.key === "Escape") {
       setDraft(committedRef.current);
+      // 回滚到上一次提交值＝回到一个已经放行过的状态，错误随之作废。
+      setError(undefined);
     }
     onKeyDown?.(event);
   };
@@ -91,25 +117,27 @@ export function CellEditor({
     value: draft,
     placeholder,
     disabled: disabled || pending,
+    // 红线复用 Input / Textarea 的 cell 档已有的 data-invalid 内嵌下划线（inset shadow，零布局位移），
+    // 不另起一套错误皮肤：一屏几十格里再多一种红，读的人分不清哪种红是哪回事。
+    invalid: error != null,
     onChange: handleChange,
     onBlur: handleBlur,
     onKeyDown: handleKeyDown,
     ...props,
+    ...(error != null && {
+      "aria-describedby": [props["aria-describedby"], errorId].filter(Boolean).join(" "),
+    }),
   };
 
-  if (multiline) {
-    return (
-      <Textarea
-        variant="cell"
-        // 自增高由 Textarea 的 cell 档用 CSS field-sizing-content 做，不走 autoResize 那条
-        // JS 测高：表格里几十个格同时读 scrollHeight 会在滚动时明显掉帧，而且和列宽变化互相触发。
-        className={cn("break-words", missing && "italic text-muted-foreground", className)}
-        {...shared}
-      />
-    );
-  }
-
-  return (
+  const control = multiline ? (
+    <Textarea
+      variant="cell"
+      // 自增高由 Textarea 的 cell 档用 CSS field-sizing-content 做，不走 autoResize 那条
+      // JS 测高：表格里几十个格同时读 scrollHeight 会在滚动时明显掉帧，而且和列宽变化互相触发。
+      className={cn("break-words", missing && "italic text-muted-foreground", className)}
+      {...shared}
+    />
+  ) : (
     <Input
       variant="cell"
       // 灰斜体里只有斜体能留在外壳上：Input 内层控件自带 text-foreground，颜色挂在外壳会被它盖掉，
@@ -117,5 +145,19 @@ export function CellEditor({
       className={cn(missing && "italic [&_input]:text-muted-foreground", className)}
       {...shared}
     />
+  );
+
+  // 错误行是控件的**兄弟节点**而不是包一层容器：套容器会让「出错那一刻」控件的父节点类型变掉，
+  // React 于是卸载重挂输入框——正在编辑的那格会当场失焦，而 Enter 校验失败恰恰是焦点还在的时候。
+  // Fragment 不产生 DOM，控件始终是第 0 个孩子，位置不变即不重挂；没有错误时渲染结果与从前逐字相同。
+  return (
+    <>
+      {control}
+      {error != null && (
+        <span id={errorId} className="mt-0.5 block text-xs text-danger">
+          {error}
+        </span>
+      )}
+    </>
   );
 }

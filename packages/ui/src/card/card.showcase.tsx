@@ -1,5 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
+import { Button } from "../button";
+import { Tag } from "../tag";
 import { Card, CardHeader, CardBody, CardFooter } from "./card";
 
 type CardVariant = "outline" | "elevated" | "featured" | "plain";
@@ -92,6 +94,40 @@ export const cardShowcase: ShowcaseSpec = {
         </div>
       ),
     },
+    {
+      title: "标题 / 副标题 / 右侧操作",
+      description:
+        "CardHeader 传 title 后标题有自己的元素：同一行的图标与标签不再被 header 的 font-medium 染成标题字重，extra 自己对齐右侧。",
+      code: `<Card className="w-80">
+  <CardHeader
+    title={<>指派任务<Tag>按角色</Tag></>}
+    description="按角色批量指派，指派后立即生效"
+    extra={<Button variant="ghost" size="sm">展开</Button>}
+  />
+  <CardBody>三条待办等待处理。</CardBody>
+</Card>`,
+      render: () => (
+        <Card className="w-80">
+          <CardHeader
+            title={
+              <>
+                指派任务
+                <Tag tone="brand" size="sm">
+                  按角色
+                </Tag>
+              </>
+            }
+            description="按角色批量指派，指派后立即生效"
+            extra={
+              <Button variant="ghost" size="sm">
+                展开
+              </Button>
+            }
+          />
+          <CardBody>三条待办等待处理。</CardBody>
+        </Card>
+      ),
+    },
   ],
   controls: [
     {
@@ -115,6 +151,30 @@ export const cardShowcase: ShowcaseSpec = {
       ),
     },
     { name: "无 footer", render: () => <Demo variant="outline" withFooter={false} /> },
+    {
+      name: "标题 / 副标题 / 右侧操作",
+      render: () => (
+        <Card className="w-80">
+          <CardHeader
+            title={
+              <>
+                指派任务
+                <Tag tone="brand" size="sm">
+                  按角色
+                </Tag>
+              </>
+            }
+            description="按角色批量指派，指派后立即生效"
+            extra={
+              <Button variant="ghost" size="sm">
+                展开
+              </Button>
+            }
+          />
+          <CardBody>三条待办等待处理。</CardBody>
+        </Card>
+      ),
+    },
     {
       name: "divided={false}（分区无线）",
       render: () => (

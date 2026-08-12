@@ -6,7 +6,7 @@ import { X } from "../_icons";
 import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss } from "../motion";
-import type { DrawerContentProps } from "./drawer.types";
+import type { DrawerContentProps, DrawerSide, DrawerSize } from "./drawer.types";
 
 // 同 dialog.tsx：overlay 自管 mount/unmount，用 motion token CSS 镜像驱动原生过渡，零 motion 运行时。
 // transition 简写(而非长写)：Base UI 过渡期会往内联 style 注入 transition 简写，与长写混用 →
@@ -24,7 +24,42 @@ const panelTransition = {
   transition: `transform ${motionDurationCss.slow} ${motionEaseCss.drawer}, opacity ${motionDurationCss.base} ${motionEaseCss.out}`,
 } as const;
 
-// side 决定贴边定位 + 尺寸 + 内边框 + 关闭态 translate（落在 starting/ending-style → 滑入/滑出）。
+// 主轴尺寸档（#230）。抽屉的主轴随 side 换手：左右抽屉的主轴是宽，上下抽屉的主轴是高，
+// 所以同一个档在两轴上不是同一个值 —— 视口本来就宽 > 高，「一屏够看」的宽高不等长。
+// md 两列即历史上写死的 24rem / 20rem，故不传 size 的既有调用点渲染不变。
+//
+// 上限沿用既有的 min(90vw,…) / min(90vh,…) 写法而不是裸 rem：窄屏下 48rem 的抽屉会宽过视口，
+// 而抽屉是贴边的，超出的那截直接落在屏幕外 —— 不是「挤一点」，是内容彻底够不着。
+// full 档不设上限，它要的就是整屏。
+const inlineSize: Record<DrawerSize, string> = {
+  sm: "w-[min(90vw,20rem)]",
+  md: "w-[min(90vw,24rem)]",
+  lg: "w-[min(90vw,32rem)]",
+  xl: "w-[min(90vw,48rem)]",
+  full: "w-full",
+};
+const blockSize: Record<DrawerSize, string> = {
+  sm: "h-[min(90vh,16rem)]",
+  md: "h-[min(90vh,20rem)]",
+  lg: "h-[min(90vh,32rem)]",
+  xl: "h-[min(90vh,48rem)]",
+  full: "h-full",
+};
+
+const DRAWER_SIZES = ["sm", "md", "lg", "xl", "full"] as const;
+
+// 走 compoundVariants 而非把尺寸并进 side 的类串：尺寸要同时看 side 与 size 两个维度，
+// 5×4 手写 20 行纯属抄写。这里给「size 等于默认值(md)」那一格也补了 class ——
+// cva 的 compoundVariants 在 defaultVariants 之后匹配，分不出「显式传 md」与「压根没传」，
+// 所以这样写会命中所有没传 size 的调用点。此处正是要的：md 那一格就是今天写死的值。
+// side 数组刻意不加 `as const`：cva 的 ConfigVariantsMulti 收的是可变数组，readonly 元组进不去。
+const sizeCompounds = DRAWER_SIZES.flatMap((size) => [
+  { side: ["left", "right"] as DrawerSide[], size, class: inlineSize[size] },
+  { side: ["top", "bottom"] as DrawerSide[], size, class: blockSize[size] },
+]);
+
+// side 决定贴边定位 + 交叉轴铺满 + 内边框 + 关闭态 translate（落在 starting/ending-style → 滑入/滑出）；
+// 主轴尺寸由 size 档在 compoundVariants 里补。
 export const drawerVariants = cva(
   [
     // 定位（fixed/absolute）由 DrawerContent 按 container 决定，故不写死在这里。
@@ -37,14 +72,17 @@ export const drawerVariants = cva(
     variants: {
       side: {
         right:
-          "inset-y-0 right-0 h-full w-[min(90vw,24rem)] border-l data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full",
-        left: "inset-y-0 left-0 h-full w-[min(90vw,24rem)] border-r data-[starting-style]:-translate-x-full data-[ending-style]:-translate-x-full",
-        top: "inset-x-0 top-0 w-full h-[min(90vh,20rem)] border-b data-[starting-style]:-translate-y-full data-[ending-style]:-translate-y-full",
+          "inset-y-0 right-0 h-full border-l data-[starting-style]:translate-x-full data-[ending-style]:translate-x-full",
+        left: "inset-y-0 left-0 h-full border-r data-[starting-style]:-translate-x-full data-[ending-style]:-translate-x-full",
+        top: "inset-x-0 top-0 w-full border-b data-[starting-style]:-translate-y-full data-[ending-style]:-translate-y-full",
         bottom:
-          "inset-x-0 bottom-0 w-full h-[min(90vh,20rem)] border-t data-[starting-style]:translate-y-full data-[ending-style]:translate-y-full",
+          "inset-x-0 bottom-0 w-full border-t data-[starting-style]:translate-y-full data-[ending-style]:translate-y-full",
       },
+      // 空串：这一维的实际 class 全在 compoundVariants 里（要和 side 一起看才知道压宽还是压高）。
+      size: { sm: "", md: "", lg: "", xl: "", full: "" },
     },
-    defaultVariants: { side: "right" },
+    defaultVariants: { side: "right", size: "md" },
+    compoundVariants: sizeCompounds,
   },
 );
 
@@ -57,6 +95,7 @@ export const DrawerClose = BaseDialog.Close;
 
 export function DrawerContent({
   side = "right",
+  size = "md",
   title,
   description,
   children,
@@ -94,7 +133,7 @@ export function DrawerContent({
         />
       )}
       <BaseDialog.Popup
-        className={cn("relative", place, drawerVariants({ side }), className)}
+        className={cn("relative", place, drawerVariants({ side, size }), className)}
         style={panelTransition}
       >
         {/* 关闭按钮（hulianui/hulian#63）：纯展示型抽屉（导航菜单/详情面板，没有 footer 的那种）

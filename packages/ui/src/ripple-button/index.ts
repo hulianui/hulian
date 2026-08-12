@@ -1,2 +1,6 @@
 export { RippleButton } from "./ripple-button";
-export type { RippleButtonProps } from "./ripple-button.types";
+export type {
+  RippleButtonProps,
+  RippleButtonTone,
+  RippleButtonVariant,
+} from "./ripple-button.types";

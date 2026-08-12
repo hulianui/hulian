@@ -19,6 +19,11 @@ status: enriched
 ## 导入
 ```ts
 import { Table } from "@hulianui/ui"
+
+// 组合原语（结构自己写、只要库皮肤时用）
+import {
+  TableRoot, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell,
+} from "@hulianui/ui"
 ```
 
 ## Props
@@ -51,7 +56,8 @@ import { Table } from "@hulianui/ui"
 | dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
 | cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | — | 单元格合并（对标 el-table `:span-method`）。逐格回调，**被合掉的格子不再回调**；`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，`rowIndex` 是渲染顺序（排序/筛选之后）、`rows` 与之同序。与 `virtual` / `renderExpandedRow` 不能同开（会静默不合并 + dev 告警） |
-| stickyHeader | `boolean` | `false` | 表头吸顶（与 `virtual` 正交）。**必须同时给 `maxHeight`**，否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先（组件在 dev 下告警） |
+| stickyHeader | `boolean ｜ "self" ｜ "scrollParent"` | `false` | 表头吸顶（与 `virtual` 正交）。`true` / `"self"` 吸在**表格自己的滚动区**上，**必须同时给 `maxHeight`**（否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先，组件在 dev 下告警）；`"scrollParent"` 吸在**外部滚动容器**（页面 / 内容区）上，表格自身不滚，但外壳也就**不再有 `overflow-x-auto`**（见「禁忌 / 坑」） |
+| stickyHeaderOffset | `number ｜ string` | `0` | 吸顶表头的偏移（数值按 px），落成 `<thead>` 的 `top`，用来避开自家固定页头（`stickyHeaderOffset={56}`）。两档都生效 |
 | maxHeight | `number ｜ string` | — | 滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准 |
 | minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来 |
 | cellVerticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | 单元格垂直对齐的表级默认；列 `meta.verticalAlign` 覆盖 |
@@ -76,6 +82,8 @@ import { Table } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | renderExpandedRow | `(row: Row<TData>) => ReactNode` | 渲染函数；提供则前插展开器列，展开行下渲染整宽明细面板 |
+| renderRowExtra | `(row: Row<TData>, ctx: { colSpan, rowIndex }) => ReactNode` | 每条数据行**之后**常驻挂 0..N 条附属行。**返回裸 `<tr>`**（数组 / Fragment / `null` 均可），组件不替你包壳；整宽写法 `<tr><td colSpan={ctx.colSpan}>`。不前插展开器列、不要求展开态。与 `cellSpan` 不能同开 |
+| footer | `ReactNode ｜ ((ctx: { rows, colSpan }) => ReactNode)` | 表尾 `<tfoot>` 内容（合计行 / 常驻「+ 添加一条」行）。口径同 `EditableTable.summary`：**消费方自备 `<tr><td colSpan=…>`**；`ctx.rows` 是排序/筛选后的可见行。与 `summary` 的区别是**空表也渲染** |
 | emptyText | `ReactNode` | 空态文案（默认 `locale.table.empty`） |
 | renderEmpty | `() => ReactNode` | 渲染函数；完全自定义空态（优先级高于 emptyText） |
 
@@ -90,9 +98,42 @@ import { Table } from "@hulianui/ui"
 | ellipsis | `boolean` | 溢出截断 + 悬停 Tooltip 显示全文 | `show-overflow-tooltip` |
 | verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | 单元格垂直对齐（表头不跟随，恒 middle）。允许换行的列几乎必然要 `top` | — |
 | whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | 换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行） | — |
+| lockVisible | `boolean` | 锁定显隐：该列不允许在 [ProTable](../pro-table/pro-table.md) 的「列设置」里被关掉（置灰 + 恒选中），受控的 `columnVisibility` 对它写 `false` 也不生效。身份列与操作列典型 | — |
 
 列宽走 TanStack 原生的 `ColumnDef.size / minSize / maxSize`（不另发明 `width` / `min-width`）：
 `size` → `width`、`minSize` → `min-width`、`maxSize` → `max-width`，`th` 与 `td` 用同一口径的内联 style（不使用 `<colgroup>`）。
+
+## 组合原语
+
+`TableRoot / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell` 七件薄包，
+给「结构由业务自己写、只想要库的表格皮肤」的表。判据不是「Table 不够用」，而是**配置表达不了结构**：
+一行里嵌两层、整行是一个编辑器、按数据把一条拆成三行 —— 写成 `ColumnDef[]` 就是把可读的表格结构
+翻译进 `cell` 回调，代码只会更难读。所以两条路并存：数据驱动 + 要排序/分页/冻结列走高层 `Table`，
+其余走原语。皮肤（密度档位、分隔线、悬停、选中底色）与高层 `Table` 同源，不是「长得差不多的另一套」。
+
+### TableRoot
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| density | `"default" ｜ "middle" ｜ "compact"` | `"default"` | 行密度，经 context 下发给 `TableHead` / `TableCell` |
+| striped | `boolean` | `false` | 偶数行斑马纹（只作用于 `TableBody` 里的行）。默认与高层 `Table` **相反**：手写结构常有整宽附属行 / 跨行合并，「第几行」与视觉上的第几条记录对不上 |
+| bordered | `boolean` | `true` | 外层描边 + 圆角；嵌进卡片时置 `false` 避免双框 |
+| layout | `"auto" ｜ "fixed"` | `"auto"` | `table-layout` |
+| minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
+| tableClassName | `string` | — | `<table>` 本体的类名 |
+
+`TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性。
+
+### TableRow / TableHead / TableCell
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
+| align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性 |
+| verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
+
+`TableRow` 的分隔线 / 悬停 / 斑马纹按所在段自动区分（表头行不 hover、不斑马纹，也不吃 `last:border-0`
+—— 单行表头就是最后一行，那条规则会把表头底边线抹掉），消费方不用自己记这个差别。
 
 ## 示例
 ```tsx
@@ -126,6 +167,52 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 // 列宽拖拽（表头右缘拖动改宽，双击复位）；受控可持久化到用户偏好
 <Table columns={geoColumns} data={users} resizable columnSizing={sizing} onColumnSizingChange={setSizing} />
 
+// 常驻整宽附属行 + 表尾（不是明细展开：没有展开器列、不需要展开态、一行可挂多条）
+<Table
+  columns={columns}
+  data={periods}
+  renderRowExtra={(row, ctx) =>
+    row.original.titles.map((t) => (
+      <tr key={t.id} className="bg-surface-hover/30">
+        <td colSpan={ctx.colSpan} className="px-3 py-1.5">{t.name}</td>
+      </tr>
+    ))
+  }
+  footer={(ctx) => (
+    <tr>
+      <td colSpan={ctx.colSpan} className="px-3 py-2">
+        <Button variant="ghost" size="sm" onClick={addPeriod}>+ 手动添加单位</Button>
+      </td>
+    </tr>
+  )}
+/>
+
+// 表头吸在页面滚动容器上（表格自身不滚），避开 56px 的固定页头
+<Table columns={columns} data={rows} stickyHeader="scrollParent" stickyHeaderOffset={56} />
+
+// 组合原语：结构自己写，皮肤用库的
+<TableRoot density="compact">
+  <TableHeader>
+    <TableRow>
+      <TableHead>字段</TableHead>
+      <TableHead align="right">值</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {fields.map((f) => (
+      <TableRow key={f.key} selected={f.key === active}>
+        <TableCell>{f.label}</TableCell>
+        <TableCell align="right">{f.editing ? <Input defaultValue={f.value} /> : f.value}</TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+  <TableFooter>
+    <TableRow>
+      <TableCell colSpan={2}>共 {fields.length} 项</TableCell>
+    </TableRow>
+  </TableFooter>
+</TableRoot>
+
 // 行拖拽排序：回调给的是「相对位置」，不是重排后的数组
 <Table
   columns={columns}
@@ -150,6 +237,11 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
 - **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
 - 表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。
+- **「表内横滚 + 表头吸页面」是拿不到的组合**，这是 CSS 的硬约束不是实现取舍：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是那层外壳自己成了 scrollport，把表头锚死在它身上（实测 Chromium：页面下滚时表头直接划走，同一张表换成 `overflow: visible` 的外壳才稳稳停在 `top: 0`）。所以 `stickyHeader="scrollParent"` 下组件**主动去掉**外壳的 `overflow-x-auto`，横向溢出交给外部滚动容器；`stickyScrollbar` 在这一档下没有可镜像的容器，会被忽略并告警。要保住表内横滚就只能用 `"self"` + `maxHeight`。
+- `renderRowExtra` 与 `renderExpandedRow` 是两件事，别拿后者顶前者：明细面板**每行只能一条、必须展开态、且强制前插一列展开器**。「这条工作经历下面常驻挂 N 张证书」属于行的一部分，不是折叠明细。
+- `renderRowExtra` / `footer` 返回的是**裸 `<tr>`**，组件不替你包 `<tr><td>`：包了就再也表达不了「一条附属行拆成三格」。整宽行的 `colSpan` 一定要用回调给的 `ctx.colSpan` —— 它含自动前插的选择 / 展开器 / 拖拽手柄列，`columns.length` 算出来的数会短一到三列，表现是最右边空出一块。
+- `renderRowExtra` 与 `cellSpan` 不能同开（同 `renderExpandedRow`）：附属行插在数据行之间，纵向合并会跨过它们。同开时静默不合并 + dev 告警。
+- `renderRowExtra` 与 `virtual` 同开会让虚拟化的行高估算失准（它按「一条数据 = 一行 `rowHeight`」撑占位行），表现是滚动漂移 / 底部留白。组件只告警不关闭（关了附属行就没了，比错位更难查）；附属行条数固定时把 `virtual.rowHeight` 调成「数据行 + 附属行」的总高即可。
 - 宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。
 - `meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: "normal"` + `maxSize` 限宽 + `verticalAlign: "top"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。
 - `meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout="fixed"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。
@@ -171,6 +263,8 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - 拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。
 - `dragHandle="row"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `"cell"`。
 - 拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。
+- 组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。
+- 原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。
 - 树形（`getSubRows`）下只有顶层行可拖，子行手柄恒禁用——跨层级拖拽的落点语义未定义，需要拖子节点请用 [Tree](../tree/tree.md) 或按层级拆表。
 
 ## 相关

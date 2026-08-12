@@ -268,6 +268,13 @@
       "top",
       "bottom"
     ],
+    "DrawerSize": [
+      "sm",
+      "md",
+      "lg",
+      "xl",
+      "full"
+    ],
     "ElementSelectionOverlayErrorCode": [
       "cross-origin",
       "no-document"
@@ -584,6 +591,19 @@
       "clear",
       "divider"
     ],
+    "RippleButtonVariant": [
+      "solid",
+      "outline",
+      "ghost",
+      "soft"
+    ],
+    "RippleButtonTone": [
+      "brand",
+      "neutral",
+      "success",
+      "warning",
+      "danger"
+    ],
     "RouteTabsAction": [
       "close",
       "closeOthers",
@@ -777,13 +797,23 @@
       "normal",
       "pre-wrap"
     ],
+    "TableDensity": [
+      "default",
+      "middle",
+      "compact"
+    ],
     "RowDropPosition": [
       "before",
       "after"
     ],
+    "TableStickyHeaderMode": [
+      "self",
+      "scrollParent"
+    ],
     "TagTone": [
       "neutral",
       "brand",
+      "info",
       "success",
       "warning",
       "danger"
@@ -845,6 +875,14 @@
       "success",
       "warning",
       "danger"
+    ],
+    "ToastPosition": [
+      "top-left",
+      "top-center",
+      "top-right",
+      "bottom-left",
+      "bottom-center",
+      "bottom-right"
     ],
     "ToolCallStatus": [
       "pending",
@@ -1361,6 +1399,13 @@
     "formatCountdown": "statistic",
     "StatusDot": "status-dot",
     "Table": "table",
+    "TableRoot": "table",
+    "TableHeader": "table",
+    "TableBody": "table",
+    "TableFooter": "table",
+    "TableRow": "table",
+    "TableHead": "table",
+    "TableCell": "table",
     "Tag": "tag",
     "tagVariants": "tag",
     "TiltedCard": "tilted-card",
@@ -5979,9 +6024,10 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\" | \"iconXs\" | \"icon24\" | \"icon28\"",
+          "type": "\"xs\" | \"28\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\" | \"iconXs\" | \"icon24\" | \"icon28\"",
           "values": [
             "xs",
+            "28",
             "sm",
             "md",
             "lg",
@@ -5994,7 +6040,7 @@
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表）"
+          "description": "尺寸；`xs`(24) 与 `\"28\"` 是两个密集文字档（中后台工具栏 / 表格行内 / 筛选胶囊行）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表）"
         },
         {
           "name": "block",
@@ -6435,6 +6481,14 @@
           "description": "已提交值（受控数据源）。提交成功后把新值写回这里，组件据此重置内部草稿与判等基准"
         },
         {
+          "name": "validate",
+          "required": false,
+          "kind": "function",
+          "type": "(next: string) => string | undefined",
+          "default": null,
+          "description": "提交前校验：返回字符串＝错误消息，拦住 `onCommit` 并把该串显示在格子下方；返回 `undefined`（或空串）放行。见下"
+        },
+        {
           "name": "missing",
           "required": false,
           "kind": "boolean",
@@ -6482,7 +6536,7 @@
           "kind": "function",
           "type": "(next: string) => void | Promise<void>",
           "default": null,
-          "description": "blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用"
+          "description": "blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用。传了 `validate` 且它返回错误串时**不会调用**"
         }
       ],
       "slots": []
@@ -7588,6 +7642,22 @@
           "description": "列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」"
         },
         {
+          "name": "creatable",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "自由输入创建新值：当前输入串在候选里没有完全相同的一项时，列表首位多出一条「使用 “xxx”」。见下"
+        },
+        {
+          "name": "onCreate",
+          "required": false,
+          "kind": "function",
+          "type": "(value: string) => void",
+          "default": null,
+          "description": "创建项被选中时触发（与 `onValueChange` 同时发生，不是二选一）。见下"
+        },
+        {
           "name": "disabled",
           "required": false,
           "kind": "boolean",
@@ -7745,6 +7815,14 @@
           "type": "UIEventHandler<HTMLDivElement>",
           "default": null,
           "description": "列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](../remote-select/remote-select.md)）"
+        },
+        {
+          "name": "header",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "列表**上方**常驻表头（用法提示、分组说明、批量操作），不随列表滚动。与 `emptyMessage` 不同：后者只在零结果时出现"
         },
         {
           "name": "footer",
@@ -12177,7 +12255,9 @@
         "RippleButton"
       ],
       "types": [
-        "RippleButtonProps"
+        "RippleButtonProps",
+        "RippleButtonTone",
+        "RippleButtonVariant"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/ripple-button/ripple-button.md",
       "props": [
@@ -12196,12 +12276,43 @@
           "description": "尺寸档，与 Button 同刻度（32/40/48px 高）"
         },
         {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"solid\" | \"outline\" | \"ghost\" | \"soft\"",
+          "values": [
+            "solid",
+            "outline",
+            "ghost",
+            "soft"
+          ],
+          "valueType": "string",
+          "default": "\"solid\"",
+          "description": "外观档，与 [Button](../button/button.md) 的同名档同色。**没有 `link`**：波纹要有盒子，见「禁忌 / 坑」"
+        },
+        {
+          "name": "tone",
+          "required": false,
+          "kind": "enum",
+          "type": "\"brand\" | \"neutral\" | \"success\" | \"warning\" | \"danger\"",
+          "values": [
+            "brand",
+            "neutral",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"brand\"",
+          "description": "语气色，与 Button 的同名档同色。**没有 `current`**：波纹默认色要从 tone 推导，继承色推不出来"
+        },
+        {
           "name": "rippleColor",
           "required": false,
           "kind": "string",
           "type": "string",
-          "default": "var(--color-primary-foreground)",
-          "description": "波纹颜色"
+          "default": "按 `variant` × `tone` 推导",
+          "description": "波纹颜色。实心档默认取该 tone 的前景色（深底上的浅波纹），其余档取该 tone 的本色。传值即覆盖"
         },
         {
           "name": "duration",
@@ -14446,6 +14557,52 @@
           "description": "形态：拖拽落区 / 单按钮"
         },
         {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "尺寸档：落区高度 / button 形态的按钮高度（button 形态与 `<Button>` 同名档等高）"
+        },
+        {
+          "name": "name",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "内层 `<input type=\"file\">` 的 name。**给了它才是真表单控件**：原生 `<form>` + `new FormData(form)` 读得到文件，`required` 才会被浏览器校验"
+        },
+        {
+          "name": "required",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "原生必填校验，透传到内层 input（**需同时给 `name`**）"
+        },
+        {
+          "name": "inputRef",
+          "required": false,
+          "kind": "other",
+          "type": "Ref<HTMLInputElement>",
+          "default": null,
+          "description": "拿到内层 input 的引用（自定义校验、手动清空、第三方表单库注册）"
+        },
+        {
+          "name": "resetInputAfterSelect",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "无 `name` 时 `true`；有 `name` 时 `false`",
+          "description": "选完是否清空 `input.value`。清了才能重复选同一个文件，清了 FormData 就读不到"
+        },
+        {
           "name": "files",
           "required": false,
           "kind": "array",
@@ -14502,6 +14659,14 @@
           "type": "(id: string) => void",
           "default": null,
           "description": "列表项移除按钮点击"
+        },
+        {
+          "name": "onRetry",
+          "required": false,
+          "kind": "function",
+          "type": "(id: string) => void",
+          "default": null,
+          "description": "失败行重试按钮点击。**传了才渲染这个按钮**（同 `onRemove` 的口径）；直接接 `useUpload` 的 `retry`"
         },
         {
           "name": "onSort",
@@ -15601,7 +15766,8 @@
         "CardFooter"
       ],
       "types": [
-        "CardProps"
+        "CardProps",
+        "CardHeaderProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/card/card.md",
       "props": [
@@ -15627,6 +15793,30 @@
           "type": "boolean",
           "default": "true",
           "description": "是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档"
+        },
+        {
+          "name": "title",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "主标题。标题有自己的元素（`data-slot=\"card-title\"`），因此有独立的字号 / 行高 / 字重"
+        },
+        {
+          "name": "description",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "副标题 / 说明，排在标题下方，次要文字色"
+        },
+        {
+          "name": "extra",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "右侧操作区（按钮、开关、计数），与标题群同行垂直居中，窄屏换行到下方"
         }
       ],
       "events": [],
@@ -18688,6 +18878,14 @@
           "valueType": "string",
           "default": "\"md\"",
           "description": "尺寸"
+        },
+        {
+          "name": "loading",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "加载中。图标区换成 spinner（不再是「空」插画），容器打上 `aria-busy=\"true\"`；「正在加载」由 spinner 自带的 `role=\"status\"` + 本地化 aria-label 播报。`icon={null}` 时图标区仍然整个不渲染"
         }
       ],
       "events": [],
@@ -22227,6 +22425,14 @@
           "description": "命令式句柄：`reload()` 重新请求 / `clearSelection()` 清选"
         },
         {
+          "name": "columnVisibility",
+          "required": false,
+          "kind": "other",
+          "type": "Record<string, boolean>",
+          "default": null,
+          "description": "受控列显隐（`列 id → 是否可见`，**缺省的键视为可见**）。与 `rowSelection` / `sorting` 同口径：传了就受控、必须配 `onColumnVisibilityChange`，不传才内部自持。列 id 取 `ColumnDef.id`，没有则取 `accessorKey`。带 `meta.lockVisible` 的列恒可见，对它写 `false` 不生效"
+        },
+        {
           "name": "rootClassName",
           "required": false,
           "kind": "string",
@@ -22251,6 +22457,14 @@
           "type": "(error: unknown) => void",
           "default": null,
           "description": "托管 request 失败回调（默认 `console.error`）；失败时 loading 复位、保留上次数据"
+        },
+        {
+          "name": "onColumnVisibilityChange",
+          "required": false,
+          "kind": "function",
+          "type": "(next: Record<string, boolean>) => void",
+          "default": null,
+          "description": "列显隐变化。回传的是**完整的下一份**映射（不是 patch），直接落 localStorage / PATCH 回服务端即可"
         }
       ],
       "slots": [
@@ -24092,14 +24306,32 @@
       "category": "data-display",
       "group": "collection",
       "status": "enriched",
-      "import": "import { Table } from \"@hulianui/ui\"",
+      "import": "import { Table, TableRoot, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell } from \"@hulianui/ui\"",
       "exports": [
-        "Table"
+        "Table",
+        "TableRoot",
+        "TableHeader",
+        "TableBody",
+        "TableFooter",
+        "TableRow",
+        "TableHead",
+        "TableCell"
       ],
       "types": [
         "TableProps",
         "VirtualOptions",
         "TableColumnAlign",
+        "TableDensity",
+        "TableStickyHeaderMode",
+        "TableRowExtraContext",
+        "TableFooterContext",
+        "TableRootProps",
+        "TableHeaderProps",
+        "TableBodyProps",
+        "TableFooterProps",
+        "TableRowProps",
+        "TableHeadProps",
+        "TableCellProps",
         "RowDragEndEvent",
         "RowDropPosition",
         "ColumnDef",
@@ -24338,10 +24570,23 @@
         {
           "name": "stickyHeader",
           "required": false,
-          "kind": "boolean",
-          "type": "boolean",
+          "kind": "union",
+          "type": "boolean | \"self\" | \"scrollParent\"",
+          "values": [
+            "self",
+            "scrollParent"
+          ],
+          "valueType": "string",
           "default": "false",
-          "description": "表头吸顶（与 `virtual` 正交）。**必须同时给 `maxHeight`**，否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先（组件在 dev 下告警）"
+          "description": "表头吸顶（与 `virtual` 正交）。`true` / `\"self\"` 吸在**表格自己的滚动区**上，**必须同时给 `maxHeight`**（否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先，组件在 dev 下告警）；`\"scrollParent\"` 吸在**外部滚动容器**（页面 / 内容区）上，表格自身不滚，但外壳也就**不再有 `overflow-x-auto`**（见「禁忌 / 坑」）"
+        },
+        {
+          "name": "stickyHeaderOffset",
+          "required": false,
+          "kind": "other",
+          "type": "number | string",
+          "default": "0",
+          "description": "吸顶表头的偏移（数值按 px），落成 `<thead>` 的 `top`，用来避开自家固定页头（`stickyHeaderOffset={56}`）。两档都生效"
         },
         {
           "name": "maxHeight",
@@ -24469,6 +24714,16 @@
           "description": "渲染函数；提供则前插展开器列，展开行下渲染整宽明细面板"
         },
         {
+          "name": "renderRowExtra",
+          "type": "(row: Row<TData>, ctx: { colSpan, rowIndex }) => ReactNode",
+          "description": "每条数据行**之后**常驻挂 0..N 条附属行。**返回裸 `<tr>`**（数组 / Fragment / `null` 均可），组件不替你包壳；整宽写法 `<tr><td colSpan={ctx.colSpan}>`。不前插展开器列、不要求展开态。与 `cellSpan` 不能同开"
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode | ((ctx: { rows, colSpan }) => ReactNode)",
+          "description": "表尾 `<tfoot>` 内容（合计行 / 常驻「+ 添加一条」行）。口径同 `EditableTable.summary`：**消费方自备 `<tr><td colSpan=…>`**；`ctx.rows` 是排序/筛选后的可见行。与 `summary` 的区别是**空表也渲染**"
+        },
+        {
           "name": "emptyText",
           "type": "ReactNode",
           "description": "空态文案（默认 `locale.table.empty`）"
@@ -24512,6 +24767,11 @@
           "name": "whitespace",
           "type": "\"nowrap\" | \"normal\" | \"pre-wrap\"",
           "description": "换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行）"
+        },
+        {
+          "name": "lockVisible",
+          "type": "boolean",
+          "description": "锁定显隐：该列不允许在 [ProTable](../pro-table/pro-table.md) 的「列设置」里被关掉（置灰 + 恒选中），受控的 `columnVisibility` 对它写 `false` 也不生效。身份列与操作列典型"
         }
       ]
     },
@@ -24551,17 +24811,18 @@
           "name": "tone",
           "required": false,
           "kind": "enum",
-          "type": "\"neutral\" | \"brand\" | \"success\" | \"warning\" | \"danger\"",
+          "type": "\"neutral\" | \"brand\" | \"info\" | \"success\" | \"warning\" | \"danger\"",
           "values": [
             "neutral",
             "brand",
+            "info",
             "success",
             "warning",
             "danger"
           ],
           "valueType": "string",
           "default": "\"neutral\"",
-          "description": "语气色。"
+          "description": "语气色。取值集与 [Alert](../alert/alert.md) 一致。"
         },
         {
           "name": "size",
@@ -26430,6 +26691,14 @@
           "type": "boolean",
           "default": null,
           "description": "显式标记为当前页；缺省时数组末项即当前页"
+        },
+        {
+          "name": "render",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "渲染为自定义元素（`next/link`、`react-router` 的 `Link`…），皮肤类名与 `aria-current` 合并进该元素，`label` 作它的子节点"
         }
       ],
       "events": [],
@@ -28576,6 +28845,14 @@
           "type": "boolean",
           "default": "false",
           "description": "是否在页头底部渲染分隔线（复用 `<Separator/>`）。"
+        },
+        {
+          "name": "metaSeparator",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "\"·\"",
+          "description": "`meta` 各项之间的分隔符，装饰位自动 `aria-hidden`。"
         }
       ],
       "events": [
@@ -28608,6 +28885,11 @@
           "name": "tags",
           "type": "ReactNode",
           "description": "状态标签区（贴标题右侧），传入 `<Chip/>`/`<Badge/>` 等。"
+        },
+        {
+          "name": "meta",
+          "type": "ReactNode[]",
+          "description": "元信息行：标题下面那串用 `metaSeparator` 串起来的事实值。分隔符由组件插在项与项之间，空项自动跳过。"
         },
         {
           "name": "extra",
@@ -30533,7 +30815,8 @@
       "types": [
         "DrawerProps",
         "DrawerContentProps",
-        "DrawerSide"
+        "DrawerSide",
+        "DrawerSize"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/drawer/drawer.md",
       "props": [
@@ -30552,6 +30835,23 @@
           "valueType": "string",
           "default": "\"right\"",
           "description": "贴边方向 + 对应滑入方向"
+        },
+        {
+          "name": "size",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\"",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "full"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "主轴尺寸档。**主轴随 `side` 换手**：左右抽屉吃宽度、上下抽屉吃高度，故同一档在两轴上不是同一个值（见下表）。交叉轴恒 100%，不随此档变"
         },
         {
           "name": "container",
@@ -30633,6 +30933,51 @@
           "type": "string",
           "default": null,
           "description": "内容容器类名"
+        },
+        {
+          "name": "sm",
+          "owner": "尺寸档对照",
+          "required": false,
+          "kind": "other",
+          "type": "20rem (320px)",
+          "default": null,
+          "description": "16rem (256px)"
+        },
+        {
+          "name": "`md`（默认）",
+          "owner": "尺寸档对照",
+          "required": false,
+          "kind": "other",
+          "type": "24rem (384px)",
+          "default": null,
+          "description": "20rem (320px)"
+        },
+        {
+          "name": "lg",
+          "owner": "尺寸档对照",
+          "required": false,
+          "kind": "other",
+          "type": "32rem (512px)",
+          "default": null,
+          "description": "32rem (512px)"
+        },
+        {
+          "name": "xl",
+          "owner": "尺寸档对照",
+          "required": false,
+          "kind": "other",
+          "type": "48rem (768px)",
+          "default": null,
+          "description": "48rem (768px)"
+        },
+        {
+          "name": "full",
+          "owner": "尺寸档对照",
+          "required": false,
+          "kind": "other",
+          "type": "100%",
+          "default": null,
+          "description": "100%"
         }
       ],
       "events": [
@@ -31199,6 +31544,14 @@
           "description": "与触发器的间距"
         },
         {
+          "name": "anchor",
+          "required": false,
+          "kind": "function",
+          "type": "Element | RefObject<Element> | VirtualElement | (() => Element | VirtualElement | null)",
+          "default": null,
+          "description": "把卡片锚到别处而不是触发器，口径同 [Popover](../popover/popover.md) 的 `anchor`。差别只有一条：**触发器不可省**，卡片是 hover 打开的，`anchor` 只改「贴在哪」不改「谁把它打开」"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
@@ -31609,6 +31962,7 @@
         "PopoverContent"
       ],
       "types": [
+        "PopoverAnchor",
         "PopoverContentProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/popover/popover.md",
@@ -31649,6 +32003,14 @@
           "type": "number",
           "default": "8",
           "description": "与触发器的间距"
+        },
+        {
+          "name": "anchor",
+          "required": false,
+          "kind": "function",
+          "type": "Element | RefObject<Element> | VirtualElement | (() => Element | VirtualElement | null)",
+          "default": null,
+          "description": "锚到别处而不是锚到 `PopoverTrigger`；传了就可以整个省掉触发器，见下"
         },
         {
           "name": "plain",
@@ -32083,6 +32445,7 @@
       ],
       "types": [
         "ToastTone",
+        "ToastPosition",
         "ToastOptions",
         "ToastProviderProps"
       ],
@@ -32110,7 +32473,32 @@
           "kind": "number",
           "type": "number",
           "default": "5000",
-          "description": "自动消失毫秒数；`0` = 不自动消失（手动关闭）；缺省取 Provider 默认"
+          "description": "自动消失毫秒数；`0` = 不自动消失（手动关闭）；缺省取 Provider 默认。`loading` 时缺省为 `0`"
+        },
+        {
+          "name": "loading",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "「进行中」态：标题前渲一个转圈图标，且 `timeout` 缺省值变成 `0`（不自动消失）。配 `toast.close(id)` 用"
+        },
+        {
+          "name": "position",
+          "required": false,
+          "kind": "enum",
+          "type": "\"top-left\" | \"top-center\" | \"top-right\" | \"bottom-left\" | \"bottom-center\" | \"bottom-right\"",
+          "values": [
+            "top-left",
+            "top-center",
+            "top-right",
+            "bottom-left",
+            "bottom-center",
+            "bottom-right"
+          ],
+          "valueType": "string",
+          "default": "\"top-right\"",
+          "description": "视口停靠位置。底部三档队列改成从下往上堆（最新一条永远贴着停靠边），入场滑动方向也跟着换手。全局值，单条 toast 不能各挑各的"
         }
       ],
       "events": [],

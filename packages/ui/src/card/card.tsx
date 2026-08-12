@@ -1,7 +1,7 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
-import type { CardProps } from "./card.types";
+import type { CardHeaderProps, CardProps } from "./card.types";
 
 // base 只放「无论哪档都成立」的东西。bg-surface 曾经也在 base 里，于是 plain 无论怎么写都去不掉底色
 // （hulianui/hulian#159）—— 底色属于皮肤，跟着变体走，base 不碰。
@@ -37,13 +37,62 @@ export function Card({ className, variant, divided, ...props }: CardProps) {
   );
 }
 
-export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+// 标题的结构身份（hulianui/hulian#226）：三个槽一个都不传时逐字维持原样（裸插槽 + font-medium），
+// 传了任意一个就切到「标题群 / 右侧操作区」两列排布 —— 这时 font-medium 从容器上撤掉、只落在标题
+// 元素上，否则同一行的图标、Tag、计数会被一起染成标题字重（那正是本 issue 报的现象）。
+export function CardHeader({
+  className,
+  title,
+  description,
+  extra,
+  children,
+  ...props
+}: CardHeaderProps) {
+  // 「有值」的口径与 PageHeader 的 meta 一致：`null` / `undefined` / `false` / `""` 都算没传。
+  // 少了这一条，`title={isEditing && "编辑中"}` 在 false 时会切进结构态而标题是空的 ——
+  // children 被挪进左列、font-medium 从容器撤走，于是一个条件写法悄悄改掉了另一段的字重。
+  const has = (node: ReactNode) => node != null && node !== false && node !== "";
+  const structured = has(title) || has(description) || has(extra);
   return (
     <div
       data-slot="card-header"
-      className={cn("border-b border-border px-5 py-3 font-medium", className)}
+      className={cn(
+        "border-b border-border px-5 py-3",
+        structured
+          ? "flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
+          : "font-medium",
+        className,
+      )}
       {...props}
-    />
+    >
+      {structured ? (
+        <>
+          <div className="min-w-0">
+            {has(title) && (
+              <div
+                data-slot="card-title"
+                className="flex flex-wrap items-center gap-2 text-base leading-snug font-medium text-foreground"
+              >
+                {title}
+              </div>
+            )}
+            {has(description) && (
+              <div data-slot="card-description" className="mt-0.5 text-sm text-muted-foreground">
+                {description}
+              </div>
+            )}
+            {children}
+          </div>
+          {has(extra) && (
+            <div data-slot="card-header-extra" className="flex shrink-0 items-center gap-2">
+              {extra}
+            </div>
+          )}
+        </>
+      ) : (
+        children
+      )}
+    </div>
   );
 }
 
