@@ -1,5 +1,115 @@
 # @hulianui/ui
 
+## 0.40.0
+
+### Minor Changes
+
+- b00e58d: 三条来自消费方的缺口：`CardHeader` 补标题词汇（#226）、`PageHeader` 补元信息行（#240）、`BreadcrumbItem` 补 `render` 插槽（#239）。三处都是「不传新 prop 时渲染结果与上一版逐字相同」。
+
+  **`CardHeader` 的 title / description / extra（#226）。** `title` / `description` 是本库已有的词汇 —— `DialogContent`、`PageHeader`、`PopoverContent`、`Empty`、`Result`、`AlertDialog`、`Drawer` 都有，`Card` 是唯一一个「有 header 插槽却没有标题词汇」的容器。缺的不是某个样式值，是**「哪一段是标题」这个结构信息**：header 里只有一行文字时 `font-medium` 恰好等于标题样式，一旦是中后台最常见的「图标 + 标题 + 状态标签 + 右侧操作」一行，`font-medium` 就会把 Tag、按钮、计数一起染成标题字重，而标题自己反而没有字号 / 行高 / 层级的表达。消费仓的读数很直接：34 个 header 里 16 个是这种一行，33 处本地 `CardTitle` **全部**自己写了 `className` 覆盖字号 —— 调用点在逐个手补一套本该由组件给的标题层级。
+
+  选了「`CardHeader` 加 props」而不是「导出 `CardTitle` / `CardDescription` 子组件」：两者都能让标题有元素，但只有前者顺带回答了排布问题（标题与副标题怎么叠、右侧操作区怎么对齐、窄屏怎么折），而那正是消费方在每个调用点重复手写的部分；`title` / `description` / `extra` 也与库内其余 7 个组件是同一套词汇，不新增两个导出。三个槽一个都不传时 `CardHeader` 仍是今天的裸插槽（`children` 直接作正文、容器带 `font-medium`）；传了任意一个就切到两列排布，此时 `font-medium` 从容器撤到标题元素上。`children` 保留为逃生口，结构态下排在标题与副标题之后。
+
+  **`PageHeader` 的 meta / metaSeparator（#240）。** 标题下面那行用「·」串起来的事实值（证件号 · 性别 · 3 段社保 · 2 家公司 · 最近参保单位…）此前没有槽：它不是 `subTitle`（那是一句话，不是一串）、不是 `tags`（那是状态标记，这些是事实值）、也不是 `footer`（那在最下面，离标题太远）。消费方自造了 `.identity-meta`，中点用 `span + span::before { content: "·" }` 拼 —— 用伪元素而不是直接写在文本里，绕的正是「某一项为空时不能留下孤零零一个点」。
+
+  现在 `meta?: ReactNode[]`：分隔符由组件插在项与项之间，**空项（`null` / `undefined` / `false` / `""`）先被丢掉**，分隔符只插在留下来的项之间，因此调用点不必先 `filter(Boolean)`，中间某项缺值也不会多出一个分隔符。数字 `0` 是事实值（「0 家公司」），不算空。整行渲染为 `<ul>`/`<li>`、分隔符落独立的 `aria-hidden` 装饰位（照 `Breadcrumb` 的分隔符范式），读屏读到的是列表项而不是被中点粘住的一长串文本。分隔符可换（`metaSeparator`，默认 `"·"`）。
+
+  **`BreadcrumbItem.render`（#239）。** `Breadcrumb` 是库内唯一接不上客户端路由的导航件 —— `NavMenuItem` / `Button` / `Link` / `SidebarMenuButton` 都有 `render`。没有它，消费方只能在 `<nav>` 上做事件委托劫持点击，于是**得自己把「Cmd+点击开新标签」「中键」「Shift 开新窗」这些浏览器原生行为一条条放行**，漏一个用户就发现面包屑不能新标签打开 —— 这类兼容本该由框架的 Link 负责。
+
+  `render` 是真渲染成消费方给的元素（`cloneElement`）而不是委托，所以那些原生行为自动成立。皮肤类名与 `aria-current` 合并进该元素，`label` 作它的子节点；类名顺序同库内其它 `render`（本组件皮肤在前、元素自带的 `className` 在后，后者胜出）。传了 `render` 的项以它为准：即使是当前页也仍渲染为该元素，只是带上 `aria-current="page"` —— 想保留「当前页不可点」就别给末项传 `render`。`href` 由该元素自带，若该项也写了 `href` 则以该项的为准。
+
+- b00e58d: 浮层三件补口子：Drawer 尺寸档、Modal 危险语气、Toast 关闭句柄（#230 #231 #227）
+
+  - **Drawer 加 `size`（#230）**：`sm | md | lg | xl | full`。主轴随 `side` 换手——左右抽屉吃宽度、上下抽屉吃高度，故同一档在两轴上不是同一个值（`md` 即 0.39.0 写死的 24rem / 20rem，不传 `size` 渲染不变）。此前 `top`/`bottom` 高度写死 320px 且 `DrawerContentProps` 里没有任何尺寸字段，要 760px 的业务面板只能整块弃用组件自绘。除 `full` 外都保留 `min(90vw, …)` / `min(90vh, …)` 上限：抽屉是贴边的，宽过视口的那截直接落到屏幕外够不着。附带建议的 `inset`（左右留白 + 圆角）本轮未做，`drawer.md` 里给了 className 写法——它必须连出场位移一起改，否则收起时底部留一道残影。
+
+  - **Modal 加 `danger`（#231）**：确定键走 `tone="danger"`，左侧图标同步转 `text-danger`（与 `Popconfirm` 的 `danger` 同名同义）。此前命令式确认框没有危险语气，`type` 只驱动图标与图标色，确定键写死默认主色档 —— 连 `type="error"` 也救不了，「删除后不可恢复」的确定键和「保存」完全同色。图标**字形**仍由 `type` 决定：字形说「这是一个提问」，颜色说「后果不可逆」。
+
+  - **Toast 加 `toast.close(id)`（#227）**：按 id 关掉某一条，不传 id 关掉全部。`toast()` 一直返回 id，但 manager 是模块级私有单例，此前没有任何出口能消费它，于是「进行中 → 完成后关掉它 → 弹结果」这条链路断在中间，「正在上传…」与「上传成功」会同屏并存最多 5 秒。
+
+  - **Toast 加 `loading` 档（#227）**：标题前渲转圈图标，且 `timeout` 缺省值从 5000 变成 0。它与 `timeout: 0` 不是两套常驻语义，只是同一个 `timeout` 的默认值之差，显式传值依然优先。恒走 `priority: "low"`（polite），即使 `tone="danger"` 也不升 assertive——「进行中」是陪跑不是结果，且会长时间挂着。转圈图标 `aria-hidden`（不在 aria-live 区里再嵌活动区），`prefers-reduced-motion` 下减速到 2.4s 一圈而非停转：它是这个状态唯一的视觉记号，定格就等于状态信息消失。
+
+  - **ToastProvider 加 `position`（#227）**：六档停靠位置，默认 `"top-right"`（与今天逐字一致）。底部三档把队列改成从下往上堆，最新一条永远贴着停靠边；入场滑动方向也跟着停靠边换手。toast 出现在哪个角是产品决策不是库决策。
+
+- b00e58d: `Empty` 补「加载中」档（#245）
+
+  列表区实际要表达四种状态：加载中 / 空 / 筛选无结果 / 出错。库里此前只覆盖后三种（`Empty` 两种、`Result` 一种），于是消费方拿 `Empty` 顶加载中 —— 视觉上只是「转不转圈」的差别，语义上却是反的：读屏把加载中的区域念成「暂无数据」，用户据此认为查完了、没有数据，而请求其实还在飞。
+
+  现在 `Empty` 加 `loading?: boolean`（默认 `false`，不传时渲染与上一版逐字相同）：
+
+  - **图标区换成 spinner**，不再是空箱插画 —— 传了自定义 `icon` 也让位，因为此刻要表达的不是「空成什么样」；`icon={null}` 仍然整个不渲染图标区，那是「我不要图标」的显式表态，与状态无关。
+  - **aria 语义按来源分工**：容器打 `aria-busy="true"`（这块正在更新，别当最终内容读），「正在加载」这句话由 spinner 自带的 `role="status"` + 本地化 aria-label 播报。刻意不在容器上再开一个 `role="status"`：两层活动区套在一起会被读两遍，而这里只有一件事要说。
+  - **减弱动效**：`prefers-reduced-motion: reduce` 下 spinner 停转、定格成静态双环（DOM 不变）。这是 `Empty` 新引入的动效，按全库口径由引入方负责，不指望消费方去关。
+  - `title` / `description` / `children` 在加载中**照常渲染**：它们是当前这一态的文案，不是空态那份的延续。所以别写成 `<Empty loading={loading} title="暂无数据" />` —— 那会一边转圈一边写着「暂无数据」。
+
+  没有新造「四态收口件」：`Empty` + `Result` 已经覆盖到三态，再加一层壳只会让两套写法并存，而消费方选错的成本比现在更高。改由文档承担分工——`empty.md` / `empty.en.md` 新增「列表区四态各用什么」一节，逐态写清用哪个组件、文案与动作该给什么，以及为什么出错态必须走 `Result` 而不是 `Empty`（用 `Empty` 会把一次失败伪装成「本来就没有数据」）。这一段此前完全没有，而没有它时消费方的默认动作就是拿 `Empty` 顶。
+
+- b00e58d: 三条来自消费方的缺口：`PopoverContent` 补锚点出口（#229）、`Combobox` 补自由输入创建新值与列表表头（#235）、`CellEditor` 补提交前校验（#244）。三处都是「不传新 prop 时渲染结果与上一版逐字相同」。
+
+  **`PopoverContent` / `HoverCardContent` 的 anchor（#229）。** 触发点是一个**坐标**而不是一个元素时，`PopoverTrigger` 接不住：DOCX 预览上算出来的标注点、canvas 里的锚、右键位置、地图上的经纬度 —— 它们只有一个矩形，没有可当触发器的 DOM 节点。此前这层能力被包死在内部（`Positioner` 只透出 `side` / `align` / `sideOffset`），于是整块浮层只能自绘：消费仓那份 478 行里真正的业务只有一小半，其余是手算 rect、边界翻转、视口 clamp、`createPortal` 写 `left/top`、自己写点外部与 Esc 关闭 —— 而**焦点管理与 `aria-expanded` 干脆没做**，那正是把浮层交给库的理由。
+
+  `anchor` 原样透给 Base UI 的 `Positioner`（元素 / ref / 返回元素的函数 / 只需实现 `getBoundingClientRect()` 的虚拟元素），有它时触发器可以整个省掉、`open` 自己控。坐标变化时要**换一个新对象**（或用 `() => virtualEl` 的函数形态）：定位按 anchor 的 identity 变化重算，原地改字段浮层不会动。
+
+  `HoverCardContent` 一并开：它包的就是同一个 Base UI `Positioner`，只开一半会让「同样长相的两个浮层，一个能挪锚点一个不能」。区别只有一条 —— 那里触发器仍不可省，因为卡片是 hover 打开的，`anchor` 只改「贴在哪」，不改「谁把它打开」。
+
+  **`Combobox` 的 creatable / onCreate 与 `ComboboxContent` 的 header（#235）。** 发证机构、单位名称这类长尾字段有几百个常见值，做成选项能让绝大多数人少打字；但运营手里就是有一张列表上没有的证书。做成纯选择会逼他们挑一个近似值，那比自由输入更糟。开了 `creatable`，当前输入串在候选里没有完全相同的一项时，列表首位多出一条「使用 “xxx”」；选中它照常走 `onValueChange`（拿到 `{ value, label }` 都是那串，两端空白已去除），同时发一次 `onCreate` 供落库 / 追加进 `items` 用 —— 两者同时发生，不是二选一。判重按去空白 + 忽略大小写，且 `value` 与 `label` 两边都比：只比一边，另一边完全相同时仍会冒出创建项，选下去就是给已有条目造了个重复。
+
+  实现上创建项是**塞进 `items` 里的一条真选项**，而不是浮层里额外画的一行。后者试过，走不通：Base UI 在给了 `items` 时会把列表导航的长度截到过滤结果的条数，多出来的那行键盘永远走不到，还会把最后一条真选项挤出导航范围 —— 一条只能用鼠标点的选项比原来的缺口更糟。走 `items` 这一层进去，过滤、键盘上下键、Enter 选中、下标、`Empty` 的判空全都自动一致，超过 100 项自动虚拟化时也照常工作。代价是 `creatable` 需要 `items`（选项写死在 `children` 里的用法没有可插入的地方，开发期会有告警），以及组件在这一档下接管一份输入串（内部补 `defaultInputValue`，否则「创建项出现导致 `items` identity 变化」会触发上游一条输入同步把刚打的第一个字符抹掉）；由此带来的唯一差异是「用 `value` 从外部改选中项时输入框文字不再跟着变」，需要联动请自己传 `inputValue`。创建项的文案走 locale（`combobox.create`），中英已就位。
+
+  `ComboboxContent` 同时补 `header`：`emptyMessage` 只在零结果时出现，所以「找不到就直接输入」这类**始终**该看见的提示挂不上去 —— 有历史值时它永远不显示。`header` 与既有的 `footer` 对称：一个在列表上、一个在列表下，两个都不参与列表滚动。
+
+  **`CellEditor` 的 validate（#244）。** 失焦即提交这条契约意味着，没有校验层时非法值会先交出去、由消费方回滚 —— 而那一刻光标已经在下一格，用户看到的是「我改的东西自己变回去了」。`validate` 把这一层前移：返回字符串就拦住 `onCommit`，值根本不出去，错误串原地显示。顺序是「判等 → `validate` → `onCommit`」：值没变根本不校验（那是上一次已经放行过的）。
+
+  被拦住时草稿**不回滚**（让用户看着自己写错的那串继续改），判等基准也不推进 —— 所以同一个非法值再次失焦仍然会被拦，改对了才提交。开始输入、按 Esc 回滚、把值改回上一次提交的样子，三条路径都会撤掉那条错误（它们说的都是「屏幕上那条错误已经不是眼下这格的内容了」）。红线复用 `Input` / `Textarea` 的 `cell` 档已有的内嵌下划线（`inset` 阴影，零布局位移），不另起一套错误皮肤；错误串用 `aria-describedby` 挂到控件上。错误行是控件的**兄弟节点**而不是包一层容器 —— 套容器会让「出错那一刻」控件的父节点类型变掉，React 于是卸载重挂输入框，正在编辑的那格会当场失焦，而 Enter 校验失败恰恰是焦点还在的时候。`validate` 返回空串按放行处理：一条看不见的错误却拦着提交，比不校验更糟。
+
+- b00e58d: Table / ProTable 四条消费方缺口（#236 #237 #238 #241）
+
+  - **组合原语出口（#241）**：新增 `TableRoot / TableHeader / TableBody / TableFooter / TableRow / TableHead / TableCell`，与高层 `Table` 并存。给「结构由业务自己写、只想要库皮肤」的表用——一行里嵌两层、整行是编辑器、按数据把一条拆成三行这类结构，写成 `ColumnDef[]` 只是把可读的表格结构翻译进 `cell` 回调。密度档位与分隔线/悬停/选中底色与高层 `Table` 同源，不是另一套皮肤。
+  - **常驻整宽行 + 表尾槽（#237）**：`Table` 新增 `renderRowExtra`（每条数据行之后挂 0..N 条附属行，不前插展开器列、不要求展开态）与 `footer`（渲染进 `<tfoot>`，口径同 `EditableTable.summary`，但空表也渲染）。两者的回调都带 `colSpan`（当前可见列数，含自动前插列）——整宽行的 `colSpan` 此前在组件外根本算不准。`renderRowExtra` 与 `cellSpan` 不能同开（同 `renderExpandedRow`）。
+  - **表头吸外部滚动容器（#238）**：`stickyHeader` 扩为 `boolean | "self" | "scrollParent"`，新增 `stickyHeaderOffset` 避开固定页头。`"scrollParent"` 下表格自身不产生滚动区、表头吸在页面/内容区上；该档会主动去掉外壳的 `overflow-x-auto`——`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，外壳自己就成了 scrollport 并把表头锚死在它身上（实测 Chromium 下表头随页面划走）。
+  - **列显隐受控出口 + 锁定列（#236）**：`ProTable` 新增 `columnVisibility` / `onColumnVisibilityChange`（口径同 `rowSelection`：传了就受控，缺省的键视为可见），列偏好可落库、跨设备还原；列上新增 `meta.lockVisible`，锁定列在「列设置」里置灰恒选中，受控值对它写 `false` 也不生效。
+
+  全部为新增能力，一个新 prop 都不传时渲染结果与 0.39.0 逐字相同。
+
+- b00e58d: 三条外观/尺寸档缺口：`Tag` 补 `info` 语气（#232）、`Button` 补 28px 文字档（#228）、`RippleButton` 收 `variant` / `tone`（#233）。三处都是「不传新值时渲染与上一版逐字相同」。
+
+  **`Tag` 的 `info`（#232）。** `info` 这一档 `Alert` 有、`toast` 有、tokens 里的 `--color-info` 也有，唯独 `Tag` 没有。这不是漏了一个颜色，是漏了一个**语义**：`brand` 是主色，说的是「这条和产品/主操作有关」；`info` 走独立的 info 色（与主色差 30° 色相的青蓝），说的是「这是中性事实说明」。两者在 tokens 0.8.0 补齐 `--color-info` 之前确实是同一个颜色，`Alert` 在 #173 让它们分了家，那次统一没有延伸到 `Tag`。
+
+  后果是「当前处于外接浏览器模式」这类行内标签只能二选一：退到 `neutral` 会和一屏灰标签糊在一起读不出来，借 `brand` 则是紫色，在页面里与主 CTA 抢注意力——而它根本不是一个可点的操作。消费方因此一直留着一份自造的 `StatusPill` 不迁。
+
+  `soft` / `solid` / `outline` 三个变体与状态圆点的颜色**同时**补齐，不做「只有 soft 有 info」的半档——半档等于把选型负担原样推回消费方。取值集与顺序现在与 `Alert` 逐字一致（`neutral` / `brand` / `info` / `success` / `warning` / `danger`）。
+
+  **`Button` 的 `size="28"`（#228）。** #222 补完图标档之后，28px 那条行刻度上**只有图标形态**：`icon28` 能用了，紧挨着它的文字按钮却只能继续裸 `<button>`。套 `xs` 会矮 4px，在一行只有两个控件的地方看得一清二楚；套 `sm` 会把整行撑高 4px。这与 #222 描述的症状是同一个，只是换了个方向重演。
+
+  名字是**裸数字**，与 `icon24` / `icon28` 同一条口径：`xs`(24) 与 `sm`(32) 之间的 t-shirt 名早被 `iconXs`(20px) 占满，图标档在这一格已经直接写边长了，而文字档没有 `icon` 前缀，对称的名字就只剩边长本身。造 `xsPlus` / `smMinus` 只会越描越黑。
+
+  三个数值各有判据，不是在 `xs` 与 `sm` 之间随手取中点：高度 `h-7` 的对齐对象与 `icon28` 相同（`Chip` 的 `md`、`Sidebar` 菜单项的 `sm`）；字号跟 `xs` 走（12px）而不是跟同高度的 `Chip` / `Sidebar` 走——那两个一个是胶囊令牌、一个是整行导航项，都不是密集工具栏里的按钮，而密集端的字号带在 `xs` 那段里已经记过是 10~12px，给 14px 会让这批调用点一律补写 `text-xs`，正是「写覆盖类撤销刚加的东西」；内边距 10px 与图文间距 6px 按高度在两档之间插值（24/28/32 → 8/10/12 与 4/6/8）。圆角**不覆盖**，保持 `--radius`：10px 半径落在 28px 上是 0.36，与 `iconSm`(32px) 的 0.31 同组，读不成圆片——所以 `size="28"` 与 `size="icon28"` 并排时高度与半径都齐。它是密集端唯一的等高一对。
+
+  **`RippleButton` 的 `variant` / `tone`（#233）。** 此前只开放 `size` / `rippleColor` / `duration`，底色写死主色实心，「想要涟漪反馈、但外观是描边 / 幽灵 / 危险色」的按钮一个都接不住——消费方 12 处调用无一例外都在从外面注入一整套 `buttonVariants()`，也就删不掉那份依赖。`EFFECT_BUTTON_BASE_CLASS` 那条「特效件自绘背景吃不了 `bg-primary`」的理由对它不成立：它并不自绘背景，涟漪是叠加层。
+
+  取值集是 `Button` 的，各去掉一格：`variant` 没有 `link`（波纹要有盒子，`link` 去掉了高度与横向内边距，波纹落在 `h-auto px-0` 的文字上会裁成一条缝或整片糊住文字），`tone` 没有 `current`（波纹默认色要从 tone 推导，而 `current` 的意思正是「别设色、跟随容器继承」，推不出来——真要跟随容器请显式传 `rippleColor="currentColor"`）。
+
+  配色**另起一张表而不是直接调 `buttonVariants`**，砍掉阴影与颜色 hover 两列：`shadow-sm` 四个特效件一个都没有；而颜色 hover 与本件底座冲突——`EFFECT_BUTTON_BASE_CLASS` 刻意不含 `transition-colors`（特效件变的是背景动画不是颜色），挂 `hover:bg-*` 会是一次无过渡的跳变。本件的交互反馈本来就由波纹与按压位移负责，那正是它存在的理由；要「悬停就有反应」的次要操作请用 `Button`。除这两列外每一格的色号与 `Button` 同名档逐字对齐，`solid` × `brand` 那格因此与 0.39.0 写死的类串完全相同。
+
+  `rippleColor` 保留为覆盖口，默认值改为按档推导：实心档取该 tone 的**前景**色（深底上的浅波纹），描边 / 幽灵 / 浅底档取该 tone 的**本色**——反过来在浅底上用前景色会得到一圈几乎看不见的白。默认档推导出的仍是 `var(--color-primary-foreground)`。
+
+- b00e58d: `Upload` 三条来自消费方的缺口：接上原生表单提交（#234）、失败行补重试入口（#242）、落区补尺寸档（#243）。三条都是「不传新 prop 时渲染结果与上一版逐字相同」。
+
+  **原生 `<form>` + `FormData` 这条路（#234）。** 此前 `Upload` 只把文件回调给 JS：内层 `<input type="file">` 没有 `name`，被 `aria-hidden` + `tabIndex={-1}` 藏起来，`onChange` 里还**无条件**清 `value`。三件事合起来的结果是「原生表单」这条路整条接不住 —— 没有 `name` 的 input 压根不出现在 `FormData` 的 entries 里，`required` 也不会被浏览器校验，而这两件事都不会报错，只是静默不发生。消费仓的读数是 5 个上传弹窗全部卡在这条上，因此自留了一份渲染真实 input 的 `file-upload.tsx`：迁到瑚琏不是「换个组件」，是把 5 个表单改写成 state + 手拼 FormData，并丢掉原生 `required`。
+
+  现在 `name` / `required` / `inputRef` / `resetInputAfterSelect` 四个 prop 一起把这条路补全。**`name` 是这条路的开关**，挂上它同时改三处默认行为（都只在有 name 时发生，因此对既有调用点是零影响）：
+
+  1. 选完不再清 `value` —— 清了 FormData 就永远读到空控件。代价是「同一个文件连选两次不再触发 `onSelect`」，这是原生行为，想要哪一侧由 `resetInputAfterSelect` 显式决定，**二者不可兼得**（这也是为什么它是一个 prop 而不是内部聪明判断）。
+  2. 拖入的文件写回 `input.files` —— 原生拖放不会自己进去，消费方自留组件里那段 `DataTransfer` 就是在补这个。顺带把被 `accept` / `maxSize` / `limit` 拒掉的文件从 `input.files` 里剔出去：不剔的话就是「界面说拒了、表单照样提交」。写回依赖 `DataTransfer` 构造器，环境没有（jsdom）就静默跳过，`onSelect` 那条路不受影响。
+  3. 达到 `limit` 时 input **不**跟着禁用 —— 禁用控件会被 `FormData` 整个跳过，已选中的文件会在提交时凭空消失。触发器那侧照旧 blocked，选择框仍然点不开。
+
+  `aria-hidden` 也只在有 `name` 时撤掉：挂了 name 它就是这个表单里真实存在、会被提交、会被浏览器校验的控件，对辅助技术藏起来会让 `required` 拦下提交时无从解释；同时按 `label` / `buttonLabel`（非字符串则回落 locale）给它一个无障碍名。`tabIndex={-1}` 保留 —— 落区本身已经是 Tab 停靠点，再多一个指向同一动作的停靠点是退步。
+
+  **失败行的重试入口（#242）。** `useUpload` 从一开始就返回 `retry`，但 `upload.tsx` 全文 0 处引用 —— 能力做好了没接线，用户遇到网络抖动只能「移除该行 → 重新选一遍整个文件」，而网络抖动是最常见的失败原因。现在失败行（`status="error"`）右侧渲染重试按钮，文案走 locale（新增 `upload.retry`）。
+
+  按钮**要传 `onRetry` 才渲染**，与 `onRemove` 同口径，而不是内部直接调 `useUpload.retry`：`<Upload>` 是纯皮肤，它根本不认识传输层（受控用法下压根没有 `useUpload`），而「这个失败该不该给重试入口」也确实是消费方的决定 —— 比如已经换用别的补救路径时不该出现它。接法就是 `onRetry={up.retry}`。
+
+  **落区尺寸档 `size`（#243）。** 此前只有形态没有尺寸，落区高度写死。同一个应用里「页面主入口的大落区」与「弹窗里挤在其它字段之间的小落区」是两档真实需求，迁过来只能在每个调用处写 `className="h-44"` —— 那正是文档反对的「用覆盖去撤销组件刚加的东西」。现在 `size?: "sm" | "md" | "lg"`，与库内其它件同一口径；`md` 的内边距、图标尺寸、文案字号与上一版逐字相同，button 形态三档与 `<Button>` 的同名档等高（`h-8` / `h-10` / `h-12`）。
+
 ## 0.39.0
 
 ### Minor Changes
