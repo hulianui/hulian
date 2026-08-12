@@ -8155,7 +8155,23 @@
     "跟随容器": "Inherits container",
     "对照：默认": "Control: default",
     "跟随容器的上移": "Move up, inheriting the container color",
-    "默认色的上移": "Move up with the default color"
+    "默认色的上移": "Move up with the default color",
+    "密集端的三个图标档（20 / 24 / 28）": "The three dense icon sizes (20 / 24 / 28)",
+    "xs 文字档的配套是 icon24 而不是 iconXs —— 名字带 Xs 的那个是 20px，专给表格行内的微操作，抬到 24px 会把 compact 行撑高。icon28 钉的是 Chip md / Sidebar 菜单项那条 28px 行刻度。": "The icon size that matches the xs text size is icon24, not iconXs - the one named Xs is 20px and serves micro actions inside a table row, and raising it to 24px would push compact rows taller. icon28 pins the 28px row scale of Chip md and Sidebar menu items.",
+    "<Button size=\"xs\" variant=\"outline\">筛选</Button>": "<Button size=\"xs\" variant=\"outline\">Filter</Button>",
+    "<Button size=\"icon24\" variant=\"outline\" muted aria-label=\"清空筛选\">": "<Button size=\"icon24\" variant=\"outline\" muted aria-label=\"Clear filters\">",
+    "清空筛选（24px）": "Clear filters (24px)",
+    "xs + icon24：等高 24px": "xs + icon24: both 24px tall",
+    "清空筛选（28px）": "Clear filters (28px)",
+    "展开（24px）": "Expand (24px)",
+    "展开（20px）": "Expand (20px)",
+    "28 / 24 / 20：各钉一条行刻度": "28 / 24 / 20: one row scale each",
+    "描边的 muted 档": "The muted step on outline",
+    "边框与底色原样保留，只把静息文字降一档。卡片里唯一的可点框、两态触发器的未激活态都是这个形状——换成 ghost muted 会连边框一起丢掉，而边框正是「这是个可点的框」这句话本身。": "The border and the fill stay exactly as they are; only the resting text drops one step. The sole clickable box on a card and the inactive half of a two-state trigger both take this shape - swapping in ghost muted drops the border along with it, and the border is the very sentence \"this is a clickable box\".",
+    "<Button variant=\"outline\" size=\"xs\" muted>中止</Button>": "<Button variant=\"outline\" size=\"xs\" muted>Abort</Button>",
+    "<Button variant=\"outline\" size=\"xs\" tone=\"danger\" muted>删除</Button>": "<Button variant=\"outline\" size=\"xs\" tone=\"danger\" muted>Delete</Button>",
+    "<Button variant=\"outline\" size=\"xs\">对照：正常强度</Button>": "<Button variant=\"outline\" size=\"xs\">For contrast: normal emphasis</Button>",
+    "中止": "Abort"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

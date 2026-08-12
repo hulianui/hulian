@@ -27,9 +27,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" ｜ "soft" ｜ "outline" ｜ "ghost" ｜ "link"` | `"solid"` | 视觉变体；`soft` 是浅语义底 + 同色文字，权重介于 `outline` 与 `solid` 之间（见下文） |
 | tone | `"brand" ｜ "success" ｜ "warning" ｜ "danger" ｜ "neutral" ｜ "current"` | `"brand"` | 语义色调（见下表）。`current` 不是语义色，是「别设色、跟随容器继承」，**只对 `ghost` / `outline` 有效**（见「跟随容器的 tone="current"」） |
-| size | `"xs" ｜ "sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs"` | `"md"` | 尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用 |
+| size | `"xs" ｜ "sm" ｜ "md" ｜ "lg" ｜ "icon" ｜ "iconSm" ｜ "iconLg" ｜ "iconXs" ｜ "icon24" ｜ "icon28"` | `"md"` | 尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表） |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
-| muted | `boolean` | `false` | 层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` 有效**（见「muted 层级档」） |
+| muted | `boolean` | `false` | 层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` / `outline` 有效**（见「muted 层级档」） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | type | `"button" ｜ "submit" ｜ "reset"` | `"button"` | **默认是 `button` 而不是原生 `<button>` 的 `submit`**——表单里的辅助按钮不写 `type` 时不会误提交。提交按钮请显式写 `type="submit"` |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled 等） |
@@ -96,19 +96,22 @@ import { Button, buttonVariants } from "@hulianui/ui"
 
 ## muted 层级档
 
-`ghost` / `link` 的最弱色本来就是正文黑（`tone="neutral"` 也是），可日常界面里绝大多数**次要**文字链接与图标按钮，静息色是次要灰、hover 才回到正文黑。`muted` 补的就是这一档（#211）：
+`ghost` / `link` / `outline` 的最弱色本来就是正文黑（`tone="neutral"` 也是），可日常界面里绝大多数**次要**文字链接与图标按钮，静息色是次要灰、hover 才回到正文黑。`muted` 补的就是这一档（#211、#221）：
 
 ```tsx
 <Button variant="ghost" size="xs" muted>显示日志</Button>
 <Button variant="link" muted>清空</Button>
 <Button variant="link" tone="danger" muted>删除</Button>   {/* 静息灰，hover 才变红 */}
+<Button variant="outline" size="xs" muted block>中止</Button>   {/* 描边留着，只降文字 */}
 ```
 
-规则一句话：**静息色降到 `--color-muted-foreground`，hover 回到该 `tone` 的本色**（`ghost` 另有浅底）。所以 `tone="danger" muted` 是「静息灰、悬停变红」的删除链接，不是把语义色丢了——中后台密集行里这是常见形态。
+规则一句话：**静息色降到 `--color-muted-foreground`，hover 回到该 `tone` 的本色**（`ghost` / `outline` 另有各自的 hover 底）。所以 `tone="danger" muted` 是「静息灰、悬停变红」的删除链接，不是把语义色丢了——中后台密集行里这是常见形态。
+
+`outline` 上它**只动文字**：底色 `bg-surface`、`border-hairline`、`hover:bg-surface-hover` 全部保留，非中性 `tone` 的语义色描边（`border-danger` 等）也保留。要「边框留着、文字降级」就用它，别退回 `ghost muted`——那会连边框一起丢掉，而很多场景里边框正是「这是个可点的框」这句话本身。典型位置是两态触发器的未激活态：`variant={active ? "soft" : "outline"}` 里，未激活的那半本来就该比激活态弱一档。
 
 三条边界：
 
-- **只对 `ghost` / `link` 有效。** 落在 `solid` / `soft` / `outline` 上一个类都不加，开发期会打一条 `warnOnce` 点名——静默无效的 prop 比报错更难查。
+- **只对 `ghost` / `link` / `outline` 有效。** 落在 `solid` / `soft` 上一个类都不加，开发期会打一条 `warnOnce` 点名——静默无效的 prop 比报错更难查。这两档的底色与前景是成对的，单降前景会做出对比度不合规的组合。
 - **是 opt-in，不改默认观感。** 不传 `muted` 的 `ghost` 仍是正文黑，既有调用一个像素都不动。表格行里的「查看」「重新加载」这类**正常强度**动作本来就该是正文黑，只有真正次要的那批才加 `muted`。
 - **不是 `tone` 的第六档。** `tone` 是语义色 SSOT、横跨 29 个组件，而 muted 是**层级**不是色相；塞进 `tone` 会逼 `solid` / `soft` 回答「muted 实心是什么」，而 `bg-muted` 实心看起来就是禁用态。
 
@@ -154,27 +157,44 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | `md`（默认） | 40px | 14px | `icon` | 40px |
 | `lg` | 48px | 16px | `iconLg` | 48px |
 
-密集刻度另有两档，**它们互相不等高，也不与上面三档对齐**：
+密集端另有四档，**它们互相不等高**，各钉一条行刻度：
 
-| 密集档 | 尺寸 | 字号 | 用在哪 |
-|--------|------|------|--------|
-| `xs` | 高 24px | 12px | 中后台工具栏、表格行内、面板头部的文字按钮 |
-| `iconXs` | 20px 见方 | — | 表格行内的纯图标微操作：树形展开箭头、拖拽手柄 |
+| 密集档 | 尺寸 | 字号 | 配它的是谁 | 用在哪 |
+|--------|------|------|-----------|--------|
+| `xs` | 高 24px | 12px | `icon24` | 中后台工具栏、表格行内、面板头部的文字按钮 |
+| `iconXs` | 20px 见方 | — | 无（比任何文字档都矮） | 表格行内的纯图标微操作：树形展开箭头、拖拽手柄 |
+| `icon24` | 24px 见方 | — | `xs` 文字档、[Tag](../tag/tag.md) 的 `md`、[Chip](../chip/chip.md) 的 `sm` | 与 `xs` 文字按钮同排的图标按钮 |
+| `icon28` | 28px 见方 | — | [Chip](../chip/chip.md) 的 `md`、[Sidebar](../sidebar/sidebar.md) 菜单项的 `sm` | 28px 那条行刻度上的图标按钮（筛选胶囊行的清空键等） |
 
 `xs` 是密集界面的最小文字档：一屏十几个操作时 `sm`（32px/14px）是**大一档**而不是最小档，
 用它去接 24px 的工具栏，就得写一串覆盖类去撤销 `sm` 自己刚加的高度、内边距、字号和圆角。
 `xs` 已经把圆角降到 4px、图文间距收到 4px，直接用即可，不要再加 `className` 补丁。
 
-`iconXs`（20px）比 `xs` 还矮 4px，是刻意的：把它抬到 24px 会把 `density="compact"` 的表格行
-撑高，而它存在的全部理由就是不撑高行。两者可以同排（工具栏里文字按钮 + 图标按钮），
-差的 4px 在 `items-center` 下看不出来；**别拿 `iconXs` 去配 `sm` 及以上的文字档**，那会矮 12px 以上。
+**`xs` 的配套图标档是 `icon24` 而不是 `iconXs`。** 名字带 `Xs` 的那个是 20px：它比 `xs` 还矮 4px，
+是刻意的——把它抬到 24px 会把 `density="compact"` 的表格行撑高，而它存在的全部理由就是不撑高行。
+两个名字看着像一对，实际是两条刻度，要等高就取 `icon24`（#222）。
+
+这两档的名字是**数字**而不是 t-shirt 档，因为 `xs` 与 `sm` 之间的 t-shirt 名早被 `iconXs`(20px) 占了，
+而那一档不能改边长（改了会无声地压扁所有靠它的展开器）。数字就是这两档的全部含义：钉住某个像素刻度。
+
+圆角随边长分组：`icon24` 与 `xs` / `iconXs` 同为 4px（10px 的 `--radius` 落在 24px 方块上接近圆片），
+`icon28` 保持 `--radius`，与 `iconSm`(32px) 同组。
+
+**密集档只跟密集档混排**：`iconXs` 与 `xs` 同排差 4px，在 `items-center` 下看不出来；
+但拿 `iconXs` 去配 `sm` 及以上的文字档会矮 12px 以上，`icon24` 配 `md` 同理。
 
 ```tsx
-{/* 密集工具栏：xs 文字按钮 + iconXs 图标按钮 */}
+{/* 密集工具栏：xs 文字按钮 + icon24 图标按钮（等高），行内微操作用 iconXs */}
 <Button size="xs" variant="outline">录制</Button>
 <Button size="xs" variant="soft">已筛选</Button>
-<Button size="iconXs" variant="ghost" tone="neutral" aria-label="展开">
+<Button size="icon24" variant="ghost" muted aria-label="更多">
   <ChevronRight className="size-4" />
+</Button>
+
+{/* 28px 那条行刻度：筛选胶囊 + 清空键 */}
+<Chip>状态：进行中</Chip>
+<Button size="icon28" variant="outline" muted aria-label="清空筛选">
+  <X className="size-3.5" />
 </Button>
 ```
 

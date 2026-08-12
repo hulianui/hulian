@@ -4270,6 +4270,13 @@
       "source": "packages/ui/src/image-viewer/image-viewer.md"
     },
     {
+      "id": "component/image-viewer/pitfall/4",
+      "scope": "image-viewer",
+      "title": "ImageViewer",
+      "rule": "**浮层内的滚轮事件整层吃掉**（#223）：顶部条、舞台、左右按钮上的滚轮与触控板捏合（`ctrl` + 滚轮）都被 `preventDefault`，否则捏合会漏给浏览器去缩放**整个宿主页面**（侧栏、表格一起变大位移，看上去像是组件把 transform 加错了元素）。唯一的例外是底部缩略图条：那里普通滚轮放行（它自己要横向滚），只拦捏合。指针落在舞台之外时缩放锚点退回舞台中心。",
+      "source": "packages/ui/src/image-viewer/image-viewer.md"
+    },
+    {
       "id": "component/infinite-menu/pitfall/1",
       "scope": "infinite-menu",
       "title": "InfiniteMenu",
@@ -5881,6 +5888,13 @@
     },
     {
       "id": "component/number-field/pitfall/3",
+      "scope": "number-field",
+      "title": "NumberField",
+      "rule": "**签名外的值按「空」处理，不再落成 `0`**（#220）。`value` 只收 `number | null`，但受控值常常来自类型擦除的路径（`useForm` 的 `register().value` 是 `unknown`、接口回填是 `any`），空串这类值会漏进来——底层会把它渲染成 `0`，而在三态字段里 `0` 恰是最坏的落点（「留空」与「显式为零」是两个相反的业务结论，界面上分不出来）。现在这类值一律当空，并在开发期打一条 `warnOnce` 点名来源。`undefined` 不在其列：那是「非受控」，原样保留。",
+      "source": "packages/ui/src/number-field/number-field.md"
+    },
+    {
+      "id": "component/number-field/pitfall/4",
       "scope": "number-field",
       "title": "NumberField",
       "rule": "无可见标题时给 `aria-label`，否则读屏无名。",
@@ -9713,7 +9727,7 @@
   ],
   "stats": {
     "componentDocs": 390,
-    "componentAdvisories": 1352,
-    "totalAdvisories": 1362
+    "componentAdvisories": 1354,
+    "totalAdvisories": 1364
   }
 }

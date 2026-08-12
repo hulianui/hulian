@@ -98,6 +98,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
           rows={rows}
           onInput={handleInput}
           {...props}
+          // null 当空串（#220，同 Input）：`register().value` 会把「显式清空」的 null 原样给出来，
+          // 而原生 `<textarea value={null}>` 会被 React 判成非受控并打告警。
+          // 只映射 null，undefined 保持非受控。
+          value={props.value === null ? "" : props.value}
           {...(invalid && { "data-invalid": "", "aria-invalid": true })}
           className={cn(
             textareaVariants({ size, variant }),

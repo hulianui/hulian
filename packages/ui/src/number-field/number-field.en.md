@@ -59,6 +59,7 @@ const [v, setV] = useState<number | null>(2);
 
 - The controlled type is `number | null`: clearing emits `null`, so use state such as `useState<number | null>` instead of assuming a number is always present. **The reverse direction holds too**: passing `null` into `value` (or `defaultValue`) renders an empty string with the placeholder visible rather than `0`, and `min={0}` does not clamp it to 0. Tri-state fields (`null` / `0` / a positive number) such as "leave empty to inherit the default" versus "explicitly zero" can therefore be expressed with this component, and the two stay distinguishable on screen.
 - Controlled usage requires both `value` and `onValueChange`. For uncontrolled usage, provide only `defaultValue`.
+- **Values outside the signature are treated as empty rather than falling to `0`** (#220). `value` only accepts `number | null`, yet controlled values often arrive through type-erased paths (`register().value` from `useForm` is `unknown`, an API payload is `any`), so an empty string can slip in - and the underlying control renders that as `0`, the worst possible landing spot for a tri-state field ("left blank" and "explicitly zero" are opposite business conclusions that then look identical on screen). Such values are now treated as empty, with one `warnOnce` in development naming the source. `undefined` is excluded: that means uncontrolled and is passed through untouched.
 - Provide `aria-label` when there is no visible label so screen readers can identify the field.
 
 ## Related

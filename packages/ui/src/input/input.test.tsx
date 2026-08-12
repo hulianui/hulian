@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { createRef } from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { inputShellVariants, Input } from "./input";
 
 describe("inputShellVariants", () => {
@@ -96,6 +96,29 @@ describe("Input", () => {
     expect(ref.current!.value).toBe("abc");
     ref.current!.focus();
     expect(document.activeElement).toBe(ref.current);
+  });
+
+  // #220：`useForm` 的 register().value 会把「显式清空」的 null 原样给出来，而文档推荐的
+  // 绑法（`value={f.value as string}`）就是把它直接交给本组件。原生 <input value={null}>
+  // 会被 React 判成非受控并打告警，故在组件里把 null 收成空串。
+  it("value={null} 按空串渲染，且不触发 React 的受控告警", () => {
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { container } = render(<Input value={null} onChange={() => {}} aria-label="i" />);
+    const input = container.querySelector("input")!;
+    expect(input.value).toBe("");
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("不传 value 时仍是非受控（归一只针对 null，不能把 undefined 变成受控空）", () => {
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { container } = render(<Input defaultValue="abc" aria-label="i" />);
+    const input = container.querySelector("input")!;
+    // 非受控：没有 onChange 也能改动，且 React 不打「受控但没给 onChange」的错
+    fireEvent.change(input, { target: { value: "xyz" } });
+    expect(input.value).toBe("xyz");
+    expect(err).not.toHaveBeenCalled();
+    err.mockRestore();
   });
 
   // #187：存量密集数据表（12px 字 / 27px 行）此前最小只有 sm 的 32px，差 4px 没处接。

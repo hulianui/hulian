@@ -3,6 +3,7 @@ import { memo } from "react";
 import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
 import { Minus, Plus } from "../_icons";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import type { NumberFieldProps } from "./number-field.types";
 import { useComponentLocale } from "../config/locale-context";
 
@@ -18,12 +19,27 @@ function NumberFieldImpl({
   "aria-label": ariaLabel,
   onValueChange,
   defaultValue,
+  value,
   ...props
 }: NumberFieldProps) {
   const labels = useComponentLocale().numberField ?? { decrement: "减少", increment: "增加" };
+  // 签名是 `number | null`，但受控值常常来自类型擦除的路径（`register().value` 是 unknown、
+  // 接口回填是 any），于是空串这类签名外的值会漏进来 —— 而 Base UI 把它渲染成 **0**（#220）。
+  // 0 是最坏的落点：三态字段里「留空 = 沿用上级」和「0 = 显式为零」是两个相反的业务结论，
+  // 静默塌成 0 时界面上分不出来。故这里按「空」处理并在开发期点名。
+  // undefined 必须原样保留：那是「非受控」，改成 null 会把组件切成受控空。
+  const controlled = value === undefined || value === null || Number.isFinite(value) ? value : null;
+  if (controlled !== value) {
+    warnOnce(
+      "number-field-invalid-value",
+      `[hulian] NumberField: value 只收 number | null（null=空），收到 ${JSON.stringify(value)}，已按空处理。` +
+        `常见来源：把 useForm 的 register().value 直接交给本组件——旧版本会把 null 归一成空串（#220）。`,
+    );
+  }
   return (
     <BaseNumberField.Root
       {...props}
+      value={controlled}
       // 瑚琏这一侧 `value` 与 `defaultValue` 都收 null（null=空），Base UI 的 defaultValue 类型
       // 只收 number。两者对「空」的表达法不同而不是语义不同，故在这里归一：`?? undefined`
       // 而不是 `|| undefined`——`defaultValue={0}` 必须留住 0（「显式为零」是三态字段里的一档，

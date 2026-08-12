@@ -101,6 +101,37 @@ export const buttonShowcase: ShowcaseSpec = {
         </>),
         },
         {
+            title: "The three dense icon sizes (20 / 24 / 28)",
+            description: "The icon size that matches the xs text size is icon24, not iconXs - the one named Xs is 20px and serves micro actions inside a table row, and raising it to 24px would push compact rows taller. icon28 pins the 28px row scale of Chip md and Sidebar menu items.",
+            code: `<Button size="xs" variant="outline">Filter</Button>
+<Button size="icon24" variant="outline" muted aria-label="Clear filters">
+  <ChevronDown className="size-3.5" />
+</Button>`,
+            render: () => (<div className="flex flex-col gap-2">
+          <div className="flex items-center gap-1.5 rounded-md border border-hairline bg-surface p-1">
+            <Button size="xs" variant="outline">
+              Filter
+            </Button>
+            <Button size="icon24" variant="outline" muted aria-label="Clear filters (24px)">
+              <ChevronDown className="size-3.5"/>
+            </Button>
+            <span className="text-xs text-muted-foreground">xs + icon24: both 24px tall</span>
+          </div>
+          <div className="flex items-center gap-1.5 rounded-md border border-hairline bg-surface p-1">
+            <Button size="icon28" variant="outline" muted aria-label="Clear filters (28px)">
+              <ChevronDown className="size-3.5"/>
+            </Button>
+            <Button size="icon24" variant="outline" muted aria-label="Expand (24px)">
+              <ChevronDown className="size-3.5"/>
+            </Button>
+            <Button size="iconXs" variant="outline" aria-label="Expand (20px)">
+              <ChevronDown className="size-3"/>
+            </Button>
+            <span className="text-xs text-muted-foreground">28 / 24 / 20: one row scale each</span>
+          </div>
+        </div>),
+        },
+        {
             title: "Semantic tones",
             description: "tone says what kind of action this is, and it is orthogonal to variant. A solid neutral button is inverted, not grey.",
             code: `<Button>Submit</Button>
@@ -189,6 +220,24 @@ export const buttonShowcase: ShowcaseSpec = {
         </>),
         },
         {
+            title: "The muted step on outline",
+            description: "The border and the fill stay exactly as they are; only the resting text drops one step. The sole clickable box on a card and the inactive half of a two-state trigger both take this shape - swapping in ghost muted drops the border along with it, and the border is the very sentence \"this is a clickable box\".",
+            code: `<Button variant="outline" size="xs" muted>Abort</Button>
+<Button variant="outline" size="xs" tone="danger" muted>Delete</Button>
+<Button variant="outline" size="xs">For contrast: normal emphasis</Button>`,
+            render: () => (<>
+          <Button variant="outline" size="xs" muted>
+            Abort
+          </Button>
+          <Button variant="outline" size="xs" tone="danger" muted>
+            Delete
+          </Button>
+          <Button variant="outline" size="xs">
+            For contrast: normal emphasis
+          </Button>
+        </>),
+        },
+        {
             title: "tone=current inherits the container color",
             description: "Icon buttons inside a colored card should take the color of that container instead of being pulled back to body black. current means \"set no color, leave it to inheritance\", unlike the five semantic steps that all hand out an absolute color. Only effective on ghost and outline, and opt-in.",
             code: `<div className="text-green-700">
@@ -250,7 +299,7 @@ export const buttonShowcase: ShowcaseSpec = {
         {
             prop: "size",
             type: "select",
-            options: ["xs", "sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
+            options: ["xs", "sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs", "icon24", "icon28"],
             defaultValue: "md",
         },
         { prop: "block", type: "boolean", defaultValue: false, label: "Full width" },
@@ -277,7 +326,7 @@ export const buttonShowcase: ShowcaseSpec = {
         { name: "disabled", render: () => <Button disabled>Disabled</Button> },
         { name: "loading", render: () => <Button loading>Loading</Button> },
     ],
-    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "soft" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "xs" | "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"} block={p.block as boolean} loading={p.loading as boolean}>
+    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "soft" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "xs" | "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs" | "icon24" | "icon28"} block={p.block as boolean} loading={p.loading as boolean}>
       {p.children as string}
     </Button>),
     toCode: (p) => `<Button variant="${p.variant}" tone="${p.tone}" size="${p.size}"${p.block ? " block" : ""}${p.loading ? " loading" : ""}>${p.children}</Button>`,

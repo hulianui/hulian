@@ -125,6 +125,16 @@ describe("Textarea", () => {
     expect(ref.current!.style.height).not.toBe("");
   });
 
+  // #220：同 Input —— register().value 会把 null 原样给出来，原生 textarea 收 null 会被
+  // React 判成非受控并打告警。
+  it("value={null} 按空串渲染，且不触发 React 的受控告警", () => {
+    const err = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { container } = render(<Textarea value={null} onChange={() => {}} aria-label="t" />);
+    expect(container.querySelector("textarea")!.value).toBe("");
+    expect(err).not.toHaveBeenCalled();
+    err.mockRestore();
+  });
+
   it("size=xs 是与 Input 同档的密集尺寸", () => {
     const { container } = render(<Textarea size="xs" aria-label="t" />);
     const el = container.querySelector("textarea")!;

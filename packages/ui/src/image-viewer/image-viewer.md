@@ -59,6 +59,7 @@ const [index, setIndex] = useState(0);
 - 全受控：open 与 index 都由外部持有，组件不自管当前页——翻页/点缩略图通过 `onIndexChange` 回调，必须 setState 才会动。
 - 缩放/平移是「视图态」，切图（index 变）和开关（open 变）时组件内部自动归零；不要在外部缓存 scale/offset 想跨图保留。
 - 只渲染当前 index 的大图（缩略图条用小尺寸 src），images 很多也不卡；打开前记得把 index 复位到目标图。
+- **浮层内的滚轮事件整层吃掉**（#223）：顶部条、舞台、左右按钮上的滚轮与触控板捏合（`ctrl` + 滚轮）都被 `preventDefault`，否则捏合会漏给浏览器去缩放**整个宿主页面**（侧栏、表格一起变大位移，看上去像是组件把 transform 加错了元素）。唯一的例外是底部缩略图条：那里普通滚轮放行（它自己要横向滚），只拦捏合。指针落在舞台之外时缩放锚点退回舞台中心。
 
 ## 相关
 [Sparkline](../sparkline/sparkline.md) · [LiveProductCard](../live-product-card/live-product-card.md) · [DiffStat](../diff-stat/diff-stat.md) · [ScoreRing](../score-ring/score-ring.md) · [Badge](../badge/badge.md) · [Dot](../dot/dot.md)

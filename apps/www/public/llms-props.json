@@ -5975,7 +5975,7 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\" | \"iconXs\"",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"icon\" | \"iconSm\" | \"iconLg\" | \"iconXs\" | \"icon24\" | \"icon28\"",
           "values": [
             "xs",
             "sm",
@@ -5984,11 +5984,13 @@
             "icon",
             "iconSm",
             "iconLg",
-            "iconXs"
+            "iconXs",
+            "icon24",
+            "icon28"
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。icon 三档为正方形图标按钮，边长与同名文字档一一对应（见下表）。`iconXs` 是 20px 微型档，**不与任何文字档等高**，只给密集表格行内用"
+          "description": "尺寸；`xs` 是 24px 密集档（中后台工具栏 / 表格行内）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表）"
         },
         {
           "name": "block",
@@ -6004,7 +6006,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "false",
-          "description": "层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` 有效**（见「muted 层级档」）"
+          "description": "层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` / `outline` 有效**（见「muted 层级档」）"
         },
         {
           "name": "loading",
@@ -9149,6 +9151,14 @@
           "valueType": "string",
           "default": "\"default\"",
           "description": "外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距、不占固定行高，焦点态用浅底 + 内嵌下划线代替焦点环"
+        },
+        {
+          "name": "value",
+          "required": false,
+          "kind": "other",
+          "type": "string | number | readonly string[] | null",
+          "default": null,
+          "description": "受控值。除原生类型外**还收 `null`，按空串渲染**（#220）：[`useForm`](../form/form.md) 的 `register().value` 会把「显式清空」的 `null` 原样给出来，而原生 `<input value={null}>` 会被 React 判成非受控并打告警，故在本组件收口。不传（`undefined`）仍是非受控"
         },
         {
           "name": "invalid",
@@ -13546,6 +13556,14 @@
           "valueType": "string",
           "default": "\"default\"",
           "description": "外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距，高度由 CSS `field-sizing: content` 跟随内容，焦点态用浅底 + 内嵌下划线代替焦点环"
+        },
+        {
+          "name": "value",
+          "required": false,
+          "kind": "other",
+          "type": "string | number | readonly string[] | null",
+          "default": null,
+          "description": "受控值。除原生类型外**还收 `null`，按空串渲染**（#220，同 [Input](../input/input.md)）：[`useForm`](../form/form.md) 的 `register().value` 会把「显式清空」的 `null` 原样给出来。不传（`undefined`）仍是非受控"
         },
         {
           "name": "invalid",

@@ -47,6 +47,29 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 
 `register()` returns `{ name, value, onChange, onBlur, error, required }`. The `required` flag is derived from whether the rules contain `required: true`; forward it to the `required` prop of [`Field`](../field/field.md) so the requirement is visible before submitting (asterisk plus `aria-required`), while the rules remain the only source of validation.
 
+### How the binding reports emptiness (`null` and `undefined` are not the same)
+
+`register(name).value` **mirrors `form.values[name]` as-is**, with one exception: a field that never received an initial value (`undefined`) reports `""`, because handing `undefined` to a controlled control makes React treat it as uncontrolled and the first keystroke then triggers the "uncontrolled to controlled" warning.
+
+`null` **passes through** (#220). It is the business value "explicitly cleared / left blank", a step the user picked just like `0` or `""`, so three-state fields work:
+
+```tsx
+// null inherits the global setting - 0 is an explicit zero - a positive integer overrides
+const form = useForm({ initialValues: { bonus: null as number | null } });
+const bonus = form.register("bonus");
+
+<NumberField
+  value={bonus.value as number | null}
+  onValueChange={bonus.onChange}
+  aria-label="Points"
+/>
+<Button variant="link" size="xs" muted onClick={() => bonus.onChange(null)}>Clear (inherit global)</Button>
+```
+
+That was **not** true in 0.37.0 and earlier: the binding read `values[name] ?? ""`, so within one render `form.values.bonus` was `null` while `bonus.value` was `""` - two answers to the same question. Patching it downstream with `?? null` does not help either (`??` only fires on `null` and `undefined`, an empty string sails right through), so the control ends up with an out-of-signature `""` - and [`NumberField`](../number-field/number-field.md) renders that as `0`, while "left blank" and "explicitly zero" are opposite business conclusions.
+
+One boundary: when spreading the binding onto a **native** `<input>` or `<textarea>`, write `value={v ?? ""}` yourself, otherwise React logs "value prop should not be null". Hulian's [`Input`](../input/input.md) and [`Textarea`](../textarea/textarea.md) already fold `null` into an empty string, so they can take it directly.
+
 ## Examples
 ```tsx
 <Form className="w-72" onFormSubmit={(v) => console.log(v)}>

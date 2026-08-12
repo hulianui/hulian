@@ -54,13 +54,20 @@ export function ImageViewer({
   className,
 }: ImageViewerProps) {
   const [mounted, setMounted] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  // 缩放与平移是**同一件事的两半**（缩放要围绕锚点同时改 offset），所以合成一个 state（#223）。
+  // 拆成两个 state 时唯一的写法是「在 setScale 的 updater 里派发 setOffset」——而 React 要求
+  // updater 是纯函数，StrictMode 的 dev 检查正是靠**调用两次 updater** 来发现非纯性。
+  // 那个嵌套的 setOffset 依赖前值，于是第二遍在第一遍的结果上再乘一次 ratio：位移不是翻倍，
+  // 是复利，滚三四格图就飞出视口。生产构建不双调用，所以线上看不见——那是运气不是正确性。
+  const [view, setView] = useState({ scale: 1, x: 0, y: 0 });
+  const { scale } = view;
   // 大图加载态：切图时先置 false → 显示 spinner + 占位，onLoad 后淡入，消除「空白后突现」。
   const [loaded, setLoaded] = useState(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  // 缩略图条自己要横向滚，wheel 不能被整层的 preventDefault 吃掉（见下方 onWheel）
+  const stripRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
   // 拖拽平移：记录起点指针与起点 offset，pointermove 时算增量
@@ -77,8 +84,7 @@ export function ImageViewer({
 
   // 切图 / 开关 → 重置缩放与平移（视图态归零）+ 重置加载态
   useLayoutEffect(() => {
-    setScale(1);
-    setOffset({ x: 0, y: 0 });
+    setView({ scale: 1, x: 0, y: 0 });
     // 缓存命中时 onLoad 可能早于挂载，这里同步用 img.complete 兜底，避免 spinner 卡住。
     const el = imgRef.current;
     setLoaded(!!el && el.complete && el.naturalWidth > 0);
@@ -96,16 +102,22 @@ export function ImageViewer({
 
   // 以舞台中心为锚点的步进缩放（键盘 +/-）
   const zoomBy = useCallback((delta: number) => {
-    setScale((s) => {
-      const next = clamp(s + delta, MIN_SCALE, MAX_SCALE);
-      if (next === MIN_SCALE) setOffset({ x: 0, y: 0 });
-      return next;
+    setView((v) => {
+      const next = clamp(v.scale + delta, MIN_SCALE, MAX_SCALE);
+      // 回到 1x 就把平移一并归零（否则图会停在偏移位上，缩到最小却不居中）
+      return next === MIN_SCALE ? { scale: MIN_SCALE, x: 0, y: 0 } : { ...v, scale: next };
     });
   }, []);
 
   // 锁滚 + 焦点管理（复用 dialog 思路）
+  //
+  // 依赖里必须带 mounted（#223 修滚轮时连带发现）：首帧 mounted=false 时组件 return null，
+  // panelRef / stageRef 都还是 null，只依赖 [open] 的话「挂载时就是 open」这条路上
+  // （`{show && <ImageViewer open … />}` 是常见写法）effect 只会在 ref 为空时跑一次，
+  // 之后 mounted 翻真触发的重渲染不会让它重跑 —— 焦点移入与滚轮缩放都静默失效。
+  // 只有先挂载再把 open 从 false 翻成 true 时才碰巧正常，所以一直没被发现。
   useEffect(() => {
-    if (!open) return;
+    if (!open || !mounted) return;
     restoreFocusRef.current = (document.activeElement as HTMLElement) ?? null;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -116,7 +128,7 @@ export function ImageViewer({
       cancelAnimationFrame(id);
       restoreFocusRef.current?.focus?.();
     };
-  }, [open]);
+  }, [open, mounted]);
 
   // 键盘：Esc 关闭 / ← → 翻页 / +/- 缩放
   useEffect(() => {
@@ -154,46 +166,57 @@ export function ImageViewer({
   }, [open, close, goPrev, goNext, zoomBy]);
 
   // 滚轮缩放 —— 以光标处为锚点（指针锚定）。非被动监听以便 preventDefault 阻止页面滚动。
+  //
+  // 监听挂在**整个浮层**上而不是舞台上（#223）：浮层是 flex-col，顶部条（约 60px）与多图时的
+  // 缩略图条都在舞台之外，只挂舞台等于把这两条漏给浏览器原生行为——触控板捏合（ctrlKey+wheel）
+  // 会缩放**整个宿主页面**，侧栏表格顶栏一起变大位移，看上去像是组件把 transform 加错了元素。
+  // 浮层是 fixed inset-0 + aria-modal，背后页面本来已被 body.overflow=hidden 锁住，
+  // 把整层的 wheel 吃掉是合理的，只有捏合这条路此前漏了出去。
   useEffect(() => {
-    if (!open) return;
-    const stage = stageRef.current;
-    if (!stage) return;
+    if (!open || !mounted) return;
+    const panel = panelRef.current;
+    if (!panel) return;
     const onWheel = (e: WheelEvent) => {
+      const stage = stageRef.current;
+      if (!stage) return;
+      // 缩略图条自己要横向滚：普通滚轮交还给它，只吃掉捏合（那条会缩放宿主页面）。
+      if (stripRef.current?.contains(e.target as Node)) {
+        if (e.ctrlKey) e.preventDefault();
+        return;
+      }
       e.preventDefault();
       const rect = stage.getBoundingClientRect();
-      // 指针相对舞台中心的位移
-      const px = e.clientX - (rect.left + rect.width / 2);
-      const py = e.clientY - (rect.top + rect.height / 2);
-      setScale((prevScale) => {
-        const factor = e.deltaY < 0 ? 1 + SCALE_STEP : 1 / (1 + SCALE_STEP);
-        const nextScale = clamp(prevScale * factor, MIN_SCALE, MAX_SCALE);
-        if (nextScale === MIN_SCALE) {
-          setOffset({ x: 0, y: 0 });
-          return MIN_SCALE;
-        }
+      // 指针相对舞台中心的位移。指针落在舞台外（顶部条 / 缩略图条两侧）时锚点退回舞台中心 ——
+      // 拿一个舞台外的点当不动点会把图直接甩出可视区。
+      const inStage =
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom;
+      const px = inStage ? e.clientX - (rect.left + rect.width / 2) : 0;
+      const py = inStage ? e.clientY - (rect.top + rect.height / 2) : 0;
+      const factor = e.deltaY < 0 ? 1 + SCALE_STEP : 1 / (1 + SCALE_STEP);
+      // 一个纯 updater 同时算出 scale 与 offset：StrictMode 双调用等幂（#223）。
+      setView((v) => {
+        const next = clamp(v.scale * factor, MIN_SCALE, MAX_SCALE);
+        if (next === MIN_SCALE) return { scale: MIN_SCALE, x: 0, y: 0 };
         // 让光标下的图像点缩放前后落在同一屏幕位置：
         // screen = center + offset + point*scale ⇒ 保持 screen 不变求新 offset
-        const ratio = nextScale / prevScale;
-        setOffset((o) => ({
-          x: px - (px - o.x) * ratio,
-          y: py - (py - o.y) * ratio,
-        }));
-        return nextScale;
+        const ratio = next / v.scale;
+        return { scale: next, x: px - (px - v.x) * ratio, y: py - (py - v.y) * ratio };
       });
     };
-    stage.addEventListener("wheel", onWheel, { passive: false });
-    return () => stage.removeEventListener("wheel", onWheel);
-  }, [open]);
+    panel.addEventListener("wheel", onWheel, { passive: false });
+    return () => panel.removeEventListener("wheel", onWheel);
+  }, [open, mounted]);
 
   // 双击：1x / 2x 切换
   const onDoubleClick = useCallback(() => {
-    setScale((s) => {
-      if (s > MIN_SCALE) {
-        setOffset({ x: 0, y: 0 });
-        return MIN_SCALE;
-      }
-      return DOUBLE_TAP_SCALE;
-    });
+    setView((v) =>
+      v.scale > MIN_SCALE
+        ? { scale: MIN_SCALE, x: 0, y: 0 }
+        : { scale: DOUBLE_TAP_SCALE, x: v.x, y: v.y },
+    );
   }, []);
 
   // 拖拽平移（仅放大后）
@@ -204,15 +227,16 @@ export function ImageViewer({
       pointerId: e.pointerId,
       startX: e.clientX,
       startY: e.clientY,
-      ox: offset.x,
-      oy: offset.y,
+      ox: view.x,
+      oy: view.y,
     };
   };
 
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const d = dragRef.current;
     if (!d || d.pointerId !== e.pointerId) return;
-    setOffset({ x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) });
+    // 增量从 pointerdown 时的快照算起（不依赖前一帧 state），所以是幂等的。
+    setView((v) => ({ ...v, x: d.ox + (e.clientX - d.startX), y: d.oy + (e.clientY - d.startY) }));
   };
 
   const endDrag = (e: ReactPointerEvent<HTMLDivElement>) => {
@@ -222,7 +246,7 @@ export function ImageViewer({
   if (!mounted || !open || total === 0 || !current) return null;
 
   const imgStyle: CSSProperties = {
-    transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+    transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`,
     cursor: scale > MIN_SCALE ? (dragRef.current ? "grabbing" : "grab") : "zoom-in",
     transition: dragRef.current ? "none" : "transform 160ms ease-out",
     touchAction: "none",
@@ -325,7 +349,7 @@ export function ImageViewer({
 
       {/* 底部缩略图条 */}
       {total > 1 && (
-        <div className="shrink-0 overflow-x-auto px-4 py-3">
+        <div ref={stripRef} className="shrink-0 overflow-x-auto px-4 py-3">
           <div className="mx-auto flex w-max gap-2">
             {images.map((img, i) => (
               <button

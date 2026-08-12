@@ -27,9 +27,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" \| "soft" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. `soft` is a tinted semantic background with matching text, sitting between `outline` and `solid` in weight (see below). |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral" \| "current"` | `"brand"` | Semantic color tone (see the table below). `current` is not a semantic color but "set no color, inherit from the container", and is **only effective on `ghost` and `outline`** (see "Inheriting the container color"). |
-| size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs"` | `"md"` | Control size. `xs` is the 24px dense size for admin toolbars and table rows. The three `icon*` sizes are square icon buttons whose side length matches the text size of the same name (see the table below). `iconXs` is a 20px micro size that matches **no** text size and is meant for dense table rows. |
+| size | `"xs" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | Control size. `xs` is the 24px dense size for admin toolbars and table rows. `iconSm` / `icon` / `iconLg` are square icon buttons whose side length matches the text size of the same name. The dense end has three more icon sizes — `iconXs` (20), `icon24` (24) and `icon28` (28) — each pinned to one row scale (see the table below). |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
-| muted | `boolean` | `false` | Emphasis step: the resting color drops one level to the secondary gray and returns to the tone's own color on hover. **Only effective on `ghost` and `link`** (see "The muted emphasis step"). |
+| muted | `boolean` | `false` | Emphasis step: the resting color drops one level to the secondary gray and returns to the tone's own color on hover. **Only effective on `ghost`, `link` and `outline`** (see "The muted emphasis step"). |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | type | `"button" \| "submit" \| "reset"` | `"button"` | **Defaults to `button` rather than the native `<button>` default of `submit`**, so a helper button inside a form does not submit it when `type` is omitted. Write `type="submit"` explicitly on submit buttons. |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled`. |
@@ -100,19 +100,22 @@ background through `className`.
 
 ## The muted emphasis step
 
-The weakest color `ghost` and `link` can reach is body black (`tone="neutral"` included), yet most **secondary** text links and icon buttons in everyday UI rest in the secondary gray and only return to body black on hover. `muted` adds that step (#211):
+The weakest color `ghost`, `link` and `outline` can reach is body black (`tone="neutral"` included), yet most **secondary** text links and icon buttons in everyday UI rest in the secondary gray and only return to body black on hover. `muted` adds that step (#211, #221):
 
 ```tsx
 <Button variant="ghost" size="xs" muted>Show log</Button>
 <Button variant="link" muted>Clear</Button>
 <Button variant="link" tone="danger" muted>Delete</Button>   {/* gray at rest, red on hover */}
+<Button variant="outline" size="xs" muted block>Abort</Button>   {/* border kept, only the text drops */}
 ```
 
-The rule in one line: **the resting color drops to `--color-muted-foreground` and returns to the tone's own color on hover** (`ghost` also gains its tinted background). So `tone="danger" muted` is the "gray at rest, red on hover" delete link rather than a discarded semantic color - a common shape in dense admin rows.
+The rule in one line: **the resting color drops to `--color-muted-foreground` and returns to the tone's own color on hover** (`ghost` and `outline` each keep their own hover background). So `tone="danger" muted` is the "gray at rest, red on hover" delete link rather than a discarded semantic color - a common shape in dense admin rows.
+
+On `outline` it touches **the text only**: `bg-surface`, `border-hairline` and `hover:bg-surface-hover` all stay, as does the semantic border of a non-neutral `tone` (`border-danger` and friends). Reach for it whenever the border is what carries the message ("this is a clickable box") and only the text is too loud; `ghost muted` is not a substitute because it drops the border along with the color. The typical spot is the inactive half of a two-state trigger — in `variant={active ? "soft" : "outline"}`, the inactive half is supposed to be one step weaker than the active one.
 
 Three boundaries:
 
-- **Only effective on `ghost` and `link`.** On `solid`, `soft`, or `outline` it adds no class at all and logs one `warnOnce` in development - a prop that silently does nothing is harder to track down than an error.
+- **Only effective on `ghost`, `link` and `outline`.** On `solid` or `soft` it adds no class at all and logs one `warnOnce` in development - a prop that silently does nothing is harder to track down than an error. Those two pair their background with their foreground, and dropping the foreground alone would produce combinations that fail contrast.
 - **It is opt-in and changes no default.** A `ghost` without `muted` is still body black, so existing call sites do not move by a pixel. Row actions like "View" or "Reload" are **normal emphasis** and belong in body black; only genuinely secondary affordances take `muted`.
 - **It is not a sixth `tone`.** `tone` is the semantic-color SSOT shared by 29 components, while muted is an **emphasis level**, not a hue. Folding it into `tone` would force `solid` and `soft` to answer "what is a muted fill?" - and a `bg-muted` fill simply reads as disabled.
 
@@ -158,12 +161,14 @@ The regular scale has three steps. Every icon size has the same side length as t
 | `md` (default) | 40px | 14px | `icon` | 40px |
 | `lg` | 48px | 16px | `iconLg` | 48px |
 
-Two more sizes form the dense scale. **They match neither each other nor the three sizes above:**
+Four more sizes form the dense end. **No two of them are the same height**; each is pinned to one row scale:
 
-| Dense size | Dimensions | Font | Where it belongs |
-|------------|------------|------|------------------|
-| `xs` | 24px tall | 12px | Text buttons in admin toolbars, table rows and panel headers |
-| `iconXs` | 20px square | — | Icon-only micro actions inside a table row: tree expanders, drag handles |
+| Dense size | Dimensions | Font | What it pairs with | Where it belongs |
+|------------|------------|------|--------------------|------------------|
+| `xs` | 24px tall | 12px | `icon24` | Text buttons in admin toolbars, table rows and panel headers |
+| `iconXs` | 20px square | — | Nothing (shorter than every text size) | Icon-only micro actions inside a table row: tree expanders, drag handles |
+| `icon24` | 24px square | — | The `xs` text size, [Tag](../tag/tag.md) `md`, [Chip](../chip/chip.md) `sm` | Icon buttons sitting next to `xs` text buttons |
+| `icon28` | 28px square | — | [Chip](../chip/chip.md) `md`, [Sidebar](../sidebar/sidebar.md) menu item `sm` | Icon buttons on the 28px row scale, such as the clear button on a filter-pill row |
 
 `xs` is the smallest text size for dense interfaces. Once a screen carries a dozen actions, `sm`
 (32px / 14px) is one step too large rather than the smallest step, and forcing it into a 24px toolbar
@@ -171,17 +176,34 @@ means a stack of override classes that undo the height, padding, font size and r
 `xs` already lowers the radius to 4px and tightens the icon gap to 4px, so use it as is instead of
 patching it through `className`.
 
-`iconXs` (20px) is another 4px shorter than `xs`, on purpose: raising it to 24px would push
-`density="compact"` table rows taller, and staying out of the row height is its entire reason to exist.
-The two can share a toolbar (a text button next to an icon button) because `items-center` hides the 4px
-difference; **do not pair `iconXs` with `sm` or larger**, where the gap grows past 12px.
+**The icon size that matches `xs` is `icon24`, not `iconXs`.** The one named `Xs` is 20px: it is another
+4px shorter than `xs` on purpose, because raising it to 24px would push `density="compact"` table rows
+taller, and staying out of the row height is its entire reason to exist. The two names look like a pair
+but are two different scales — take `icon24` when you need equal heights (#222).
+
+These two carry **numbers** rather than t-shirt names because the t-shirt names between `xs` and `sm`
+were already taken by `iconXs` (20px), and that size cannot change its side length without silently
+flattening every expander that relies on it. The number is the entire meaning of these sizes: they pin
+one pixel scale.
+
+The radius follows the side length: `icon24` drops to 4px alongside `xs` and `iconXs` (a 10px `--radius`
+on a 24px square reads as a disc), while `icon28` keeps `--radius` alongside `iconSm` (32px).
+
+**Dense sizes only mix with dense sizes.** `iconXs` next to `xs` differs by 4px, which `items-center`
+hides; pairing `iconXs` with `sm` or larger opens a gap past 12px, and so does `icon24` next to `md`.
 
 ```tsx
-{/* Dense toolbar: an xs text button next to an iconXs icon button */}
+{/* Dense toolbar: xs text buttons next to an icon24 icon button (equal height) */}
 <Button size="xs" variant="outline">Record</Button>
 <Button size="xs" variant="soft">Filtered</Button>
-<Button size="iconXs" variant="ghost" tone="neutral" aria-label="Expand">
+<Button size="icon24" variant="ghost" muted aria-label="More">
   <ChevronRight className="size-4" />
+</Button>
+
+{/* The 28px row scale: filter pills plus a clear button */}
+<Chip>Status: running</Chip>
+<Button size="icon28" variant="outline" muted aria-label="Clear filters">
+  <X className="size-3.5" />
 </Button>
 ```
 

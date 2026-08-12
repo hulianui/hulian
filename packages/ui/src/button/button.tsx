@@ -39,7 +39,8 @@ const buttonVariantsCva = cva(BUTTON_BASE_CLASS, {
       // 层级档（#211）：静息色降一档到次要灰，hover 回到该 tone 的本色。
       // **刻意不做成 tone 的第六档**：tone 是语义色 SSOT、横跨 29 个组件，而 muted 是层级不是色相，
       // 塞进去会逼 solid / soft 回答「muted 实心是什么」——而 bg-muted 实心看起来就是 disabled。
-      // 类由 compoundVariants 按 variant × tone 给：只有无底色的 ghost / link 有意义。
+      // 类由 compoundVariants 按 variant × tone 给：只对不靠底色表达强度的 ghost / link / outline
+      // 有意义（outline 见 #221：描边留着、只降文字那一档）。
       muted: { true: "" },
     },
     compoundVariants: [
@@ -101,6 +102,12 @@ const buttonVariantsCva = cva(BUTTON_BASE_CLASS, {
       // 再由更具体的那条把 hover 目标改回本 tone 的颜色。
       // 消费方手写的那批（18 处）正是这个形状：静息 muted → hover 回正文黑 + ghost 的浅底。
       { variant: "ghost", muted: true, class: "text-muted-foreground hover:text-foreground" },
+      // outline（#221）：与 ghost 那条逐字同构，**只动文字**——底色 bg-surface、描边 border-hairline、
+      // hover:bg-surface-hover 全部保留。这批按钮的边框是它自己要表达的东西（「这是个可点的框」），
+      // 所以不能拿 ghost muted 顶：那会连边框一起丢掉。
+      // 0.35.0 把这一档记成「结构上说得通但没有实际需求，等有人提再加」，消费方按 #211 迁完
+      // ghost / link 后剩下的正是这个形状（描边留着、静息文字次要灰），故补上。
+      { variant: "outline", muted: true, class: "text-muted-foreground hover:text-foreground" },
       // link 的默认 tone 是 brand，所以 hover 回主色；neutral 那条在下面改回正文黑。
       { variant: "link", muted: true, class: "text-muted-foreground hover:text-primary" },
       { variant: "link", tone: "neutral", muted: true, class: "hover:text-foreground" },
@@ -120,6 +127,11 @@ const buttonVariantsCva = cva(BUTTON_BASE_CLASS, {
       { variant: "link", tone: "danger", muted: true, class: "hover:text-danger" },
       { variant: "link", tone: "success", muted: true, class: "hover:text-success" },
       { variant: "link", tone: "warning", muted: true, class: "hover:text-warning" },
+      // outline 的非中性 tone：描边保持语义色（border-danger 那条在上面，不受影响），
+      // 只有文字先降成灰、hover 才亮出语义色 —— 「静息灰边红框、悬停变红」的删除按钮。
+      { variant: "outline", tone: "danger", muted: true, class: "hover:text-danger" },
+      { variant: "outline", tone: "success", muted: true, class: "hover:text-success" },
+      { variant: "outline", tone: "warning", muted: true, class: "hover:text-warning" },
     ],
     defaultVariants: { variant: "solid", tone: "brand", size: "md" },
   },
@@ -147,13 +159,14 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const isDisabled = disabled || loading;
-    // muted 只对无底色的两档有意义。落在 solid / soft / outline 上时它一个类都不加，
+    // muted 只对「不靠底色表达强度」的三档有意义（outline 自 #221 起也在内：它的底是画布同色，
+    // 降文字不会破坏底与前景的配对）。落在 solid / soft 上时它一个类都不加，
     // 那就是个静默无效的 prop —— 静默无效比报错更难查，所以开发期点名。
-    if (muted && variant && variant !== "ghost" && variant !== "link") {
+    if (muted && variant && variant !== "ghost" && variant !== "link" && variant !== "outline") {
       warnOnce(
         `button-muted-on-${variant}`,
-        `[hulian] Button: muted 只在 variant="ghost" / "link" 上有效，variant="${variant}" 上不会有任何变化。` +
-          `想要更弱的实心/浅底按钮请改用 variant="ghost" muted 或 tone="neutral"。`,
+        `[hulian] Button: muted 只在 variant="ghost" / "link" / "outline" 上有效，variant="${variant}" 上不会有任何变化。` +
+          `想要更弱的实心/浅底按钮请改用 variant="outline" muted 或 tone="neutral"。`,
       );
     }
     // ghost 上的 brand 与 neutral 渲染结果逐字相同（#218）——`ghost` 的中性外观**就是**它的

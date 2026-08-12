@@ -119,9 +119,23 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
   const register = useCallback(
     (name: string, config?: FieldConfig): FieldBinding => {
       configs.current.set(name, config ?? {});
+      const raw = valuesRef.current[name];
       return {
         name,
-        value: valuesRef.current[name] ?? "",
+        // `null` 必须原样穿透（#220）。它是「显式清空 / 留空」这个**业务值**，与 `0`、`""` 一样
+        // 是用户选出来的一档；`?? ""` 会把它塌成空串，于是 `form.values[name]` 是 null、
+        // 而同一次渲染里 `register(name).value` 是 ""，两处口径对不上。消费方拿 binding 驱动
+        // 受控控件是文档推荐用法，写了 `?? null` 也兜不住（`??` 只对 null/undefined 生效，
+        // 空串直接穿透），最终控件收到签名外的 ""。三态字段（null 沿用上级 / 0 显式为零 /
+        // 正整数覆盖）因此丢掉 null 这一档，而 null 与 0 恰是两个相反的业务结论。
+        //
+        // 只有 `undefined` 归一成 ""：那是「这个字段没有初始值」，把 undefined 交给受控控件
+        // 会被 React 当成非受控，第一次输入就是「非受控 → 受控」的告警。
+        //
+        // 代价：把 binding 展开到**原生** `<input>` 上时，`value={null}` 会触发 React 的
+        // 「value prop should not be null」告警。库内 Input / Textarea 已把 null 当空串兜住，
+        // 直接用原生元素的消费方自己写 `value={v ?? ""}`（文档已写明）。
+        value: raw === undefined ? "" : raw,
         onChange: (valueOrEvent: unknown) => applyChange(name, extractValue(valueOrEvent)),
         onBlur: () => {
           touched.current.add(name);

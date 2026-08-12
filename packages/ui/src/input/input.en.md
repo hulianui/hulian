@@ -29,6 +29,7 @@ Inherit the native `<input>` properties (except `size`/`prefix` are overridden b
 |------|------|------|------|
 | size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | Size (CVA variant, overrides native size). `xs` is a 28px-tall, 12px-text density step for inline editors in dense legacy tables; it keeps its border, unlike the borderless `variant="cell"`. Under `variant="cell"` it only affects font size; height and padding are gone |
 | variant | `"default" \| "cell"` | `"default"` | Shell form. `cell` is the in-place editor for a table cell: no border, transparent background, zero padding, no fixed row height, and focus is shown as a tinted background plus an inset underline instead of a focus ring |
+| value | `string \| number \| readonly string[] \| null` | — | Controlled value. Beyond the native types it **also accepts `null` and renders it as an empty string** (#220): `register().value` from [`useForm`](../form/form.md) passes an explicitly cleared `null` straight through, and a native `<input value={null}>` would be treated as uncontrolled by React with a warning, so this component folds it here. Omitting it (`undefined`) still means uncontrolled |
 | invalid | `boolean` | `false` | Marked red when used independently; automatically driven by Field.Root invalid in hulian Field, no need to repeat the transmission |
 | disabled | `boolean` | `false` | Disable |
 | ref | `Ref<HTMLInputElement>` | — | Forward to the inner native `<input>` (not the shell span). `focus()` / `select()` / `register()` from `.value` / react-hook-form all rely on it |

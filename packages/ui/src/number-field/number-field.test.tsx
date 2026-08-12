@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, fireEvent } from "@testing-library/react";
 import { NumberField } from "./number-field";
 import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
@@ -72,5 +72,33 @@ describe("NumberField 的空值（#220）", () => {
   it("非受控 defaultValue={null} 初始为空", () => {
     const { getByLabelText } = render(<NumberField aria-label="数量" defaultValue={null} />);
     expect((getByLabelText("数量") as HTMLInputElement).value).toBe("");
+  });
+
+  // 签名外的值（空串是最常见的一个：类型擦除的 binding / 接口回填都会送进来）。
+  // Base UI 把空串渲染成 0，而 0 恰好是三态字段里最坏的落点。
+  it("签名外的空串按空处理，而不是 0（并在开发期点名一次）", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { getByLabelText } = render(
+      // @ts-expect-error 故意越过签名：模拟 register().value 这类 unknown 路径送进来的空串
+      <NumberField aria-label="数量" value="" onValueChange={() => {}} />,
+    );
+    expect((getByLabelText("数量") as HTMLInputElement).value).toBe("");
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("NumberField"));
+    warn.mockRestore();
+  });
+
+  it("0 不受影响：显式为零必须留住（与「留空」是两个相反的业务结论）", () => {
+    const { getByLabelText } = render(
+      <NumberField aria-label="数量" value={0} onValueChange={() => {}} />,
+    );
+    expect((getByLabelText("数量") as HTMLInputElement).value).toBe("0");
+  });
+
+  it("不传 value 仍是非受控（归一不能把 undefined 变成受控空）", () => {
+    const { getByLabelText } = render(<NumberField aria-label="数量" defaultValue={3} />);
+    const input = getByLabelText("数量") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "7" } });
+    fireEvent.blur(input);
+    expect(input.value).toBe("7");
   });
 });

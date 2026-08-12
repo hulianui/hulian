@@ -62,7 +62,7 @@ export const inputShellVariants = cva(
 // ref 转发到真正的 <input>（不是外壳 span）：focus()/select()/取 .value、以及 react-hook-form
 // 的 register() 都指望拿到原生控件。此前不转发，消费方只能「受控值 + 包一层容器查询 DOM」绕。
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { className, size, variant, invalid, prefix, suffix, ...props },
+  { className, size, variant, invalid, prefix, suffix, value, ...props },
   ref,
 ) {
   return (
@@ -71,6 +71,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       <BaseInput
         ref={ref}
         {...props}
+        // null 当空串（#220）。`useForm` 的 `register().value` 现在会把 `null` 原样给出来
+        // （它是「显式清空」这个业务值，不能塌成 ""），而文档推荐的绑法正是把它直接交给本组件。
+        // 原生 `<input value={null}>` 会被 React 判成非受控并打告警，故在这里收口。
+        // **只映射 null，不动 undefined**：undefined 是「非受控」，塞 "" 会把它变成受控。
+        value={value === null ? "" : value}
         {...(invalid && { "data-invalid": "", "aria-invalid": true })}
         className="w-full bg-transparent text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
       />

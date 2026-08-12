@@ -46,9 +46,9 @@ export const BUTTON_BASE_CLASS = `${LAYOUT} rounded-[var(--radius)] transition-c
 export const EFFECT_BUTTON_BASE_CLASS = `${LAYOUT} ${INTERACTION}`;
 
 /**
- * 尺寸档。图标档边长严格等于同名文字档的高度（32/40/48），
+ * 尺寸档。同名的图标档边长严格等于文字档的高度（32/40/48），
  * 这样图标按钮与任意文字按钮、与特效按钮混排都等高。
- * 例外是最密的一档（xs / iconXs），见下面各自的注释。
+ * 密集端（xs 24 / iconXs 20 / icon24 / icon28）不走同名对应，见下面各自的注释。
  */
 export const BUTTON_SIZE_CLASS = {
   // 24px 密集文字档（#204）：与 iconXs 一起构成「密集刻度」。
@@ -63,8 +63,9 @@ export const BUTTON_SIZE_CLASS = {
   // 圆角与 iconXs 同为 rounded-sm(4px)：这两档常在同一条工具栏里并排，半径不一致会看出来。
   // 同样**不能写裸 `rounded`**，理由见下面 iconXs 那段。
   //
-  // 没有 24px 的配套图标档：最近的 iconXs 是 20px，并排差 4px。这是刻意的——iconXs 服务的是
-  // 表格行内的纯图标微操作，把它抬到 24px 就会把 density="compact" 的行撑高（#146 的原始诉求）。
+  // 配套的图标档是 icon24（0.38.0 / #222 补），不是 iconXs——后者是 20px，服务的是表格行内的
+  // 纯图标微操作，把它抬到 24px 会把 density="compact" 的行撑高（#146 的原始诉求），
+  // 所以两档并存而不是二选一。
   xs: "h-6 gap-1 px-2 text-xs rounded-sm",
   sm: "h-8 px-3 text-sm",
   md: "h-10 px-4 text-sm",
@@ -91,6 +92,22 @@ export const BUTTON_SIZE_CLASS = {
   // 用 `rounded-sm`（Tailwind 默认 --radius-sm，本库未覆盖 = 4px）才真的降下来。
   // 判据只能靠实机量 borderRadius：className 断言在这上面是绿的，因为两个类名确实不同。
   iconXs: "size-5 rounded-sm p-0",
+  // 24 / 28 两档密集图标档（#222）。名字是**数字**而不是 t-shirt 档，因为 xs~sm 之间的
+  // t-shirt 名早就被占了：iconXs 是 20px（且不能动，消费方的树形展开器正靠它，改边长等于
+  // 无声破坏），而 24px 才是 xs 文字档的配套。与其造 icon2xs / iconXsPlus 这类越描越黑的名字，
+  // 不如直接写边长——这两档本来就是「钉住某个像素刻度」的插档，数字是它们的全部含义。
+  //
+  // 两档都不是拍脑袋的刻度，各有库内的对齐对象（同 #204 定 xs=24 时「与 Tag md 同高」的判据）：
+  //   24px → Button 的 xs 文字档、Tag 的 md 档、Chip 的 sm 档
+  //   28px → Chip 的 md 档、Sidebar 菜单项的 sm 档
+  // 缺了它们，密集行里「文字按钮用库、图标按钮手写 size-6 / size-7」就是必然结果。
+  //
+  // 圆角刻意不同，判据是 10px 的 --radius 落在这个边长上是否读成圆片（半径/边长越接近 0.5
+  // 越像圆）：24px 上是 0.42（与 xs / iconXs 同组，降到 rounded-sm），28px 上是 0.36，
+  // 与 iconSm(32px) 的 0.31 同组，故保持 base 的 --radius 不覆盖——Sidebar 的 28px 菜单项
+  // 用的也正是 rounded-[var(--radius)]。
+  icon24: "size-6 rounded-sm p-0",
+  icon28: "size-7 p-0",
 } as const;
 
 /**

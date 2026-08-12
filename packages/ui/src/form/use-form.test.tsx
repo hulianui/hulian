@@ -121,3 +121,41 @@ describe("useForm 控制器", () => {
     expect(result.current.register("c").required).toBe(false);
   });
 });
+
+// ===== binding 的空值口径（#220）=====
+//
+// `register().value` 曾写作 `values[name] ?? ""`，于是 null 塌成空串：同一次渲染里
+// form.values[name] 是 null、binding.value 是 ""，两处口径对不上。消费方拿 binding 驱动
+// 受控控件是文档推荐用法，写了 `?? null` 也兜不住（`??` 只对 null/undefined 生效，空串直接
+// 穿透），控件最终收到签名外的 ""。三态字段（null 沿用上级 / 0 显式为零 / 正整数覆盖）
+// 因此丢掉 null 这一档 —— 而 null 与 0 是两个相反的业务结论。
+describe("register().value 的空值口径（#220）", () => {
+  it("null 原样穿透，且与 form.values 一致", () => {
+    const { result } = renderHook(() => useForm({ initialValues: { quota: 5 as number | null } }));
+    act(() => {
+      result.current.register("quota").onChange(null);
+    });
+    expect(result.current.values.quota).toBeNull();
+    expect(result.current.register("quota").value).toBeNull();
+  });
+
+  it("初始值就是 null 时也穿透（不只是改出来的 null）", () => {
+    const { result } = renderHook(() => useForm({ initialValues: { quota: null } }));
+    expect(result.current.register("quota").value).toBeNull();
+  });
+
+  it("0 与空串各自原样保留（三态字段的另外两档）", () => {
+    const { result } = renderHook(() =>
+      useForm({ initialValues: { quota: 0 as number | null, note: "" } }),
+    );
+    expect(result.current.register("quota").value).toBe(0);
+    expect(result.current.register("note").value).toBe("");
+  });
+
+  // undefined 是「这个字段没有初始值」，不是一个业务值：直接交给受控控件会被 React 当成
+  // 非受控，第一次输入就是「非受控 → 受控」的告警。这一档保持归一成 ""。
+  it("未给初始值的字段仍归一成空串（避免受控/非受控切换）", () => {
+    const { result } = renderHook(() => useForm({ initialValues: {} }));
+    expect(result.current.register("never-set").value).toBe("");
+  });
+});

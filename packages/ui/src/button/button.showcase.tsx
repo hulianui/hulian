@@ -115,6 +115,40 @@ export const buttonShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "密集端的三个图标档（20 / 24 / 28）",
+      description:
+        "xs 文字档的配套是 icon24 而不是 iconXs —— 名字带 Xs 的那个是 20px，专给表格行内的微操作，抬到 24px 会把 compact 行撑高。icon28 钉的是 Chip md / Sidebar 菜单项那条 28px 行刻度。",
+      code: `<Button size="xs" variant="outline">筛选</Button>
+<Button size="icon24" variant="outline" muted aria-label="清空筛选">
+  <ChevronDown className="size-3.5" />
+</Button>`,
+      render: () => (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-1.5 rounded-md border border-hairline bg-surface p-1">
+            <Button size="xs" variant="outline">
+              筛选
+            </Button>
+            <Button size="icon24" variant="outline" muted aria-label="清空筛选（24px）">
+              <ChevronDown className="size-3.5" />
+            </Button>
+            <span className="text-xs text-muted-foreground">xs + icon24：等高 24px</span>
+          </div>
+          <div className="flex items-center gap-1.5 rounded-md border border-hairline bg-surface p-1">
+            <Button size="icon28" variant="outline" muted aria-label="清空筛选（28px）">
+              <ChevronDown className="size-3.5" />
+            </Button>
+            <Button size="icon24" variant="outline" muted aria-label="展开（24px）">
+              <ChevronDown className="size-3.5" />
+            </Button>
+            <Button size="iconXs" variant="outline" aria-label="展开（20px）">
+              <ChevronDown className="size-3" />
+            </Button>
+            <span className="text-xs text-muted-foreground">28 / 24 / 20：各钉一条行刻度</span>
+          </div>
+        </div>
+      ),
+    },
+    {
       title: "语义档",
       description:
         "tone 表达「这是什么性质的操作」，与 variant（形态）正交。neutral 的实心是反色，不是灰底。",
@@ -214,6 +248,27 @@ export const buttonShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "描边的 muted 档",
+      description:
+        "边框与底色原样保留，只把静息文字降一档。卡片里唯一的可点框、两态触发器的未激活态都是这个形状——换成 ghost muted 会连边框一起丢掉，而边框正是「这是个可点的框」这句话本身。",
+      code: `<Button variant="outline" size="xs" muted>中止</Button>
+<Button variant="outline" size="xs" tone="danger" muted>删除</Button>
+<Button variant="outline" size="xs">对照：正常强度</Button>`,
+      render: () => (
+        <>
+          <Button variant="outline" size="xs" muted>
+            中止
+          </Button>
+          <Button variant="outline" size="xs" tone="danger" muted>
+            删除
+          </Button>
+          <Button variant="outline" size="xs">
+            对照：正常强度
+          </Button>
+        </>
+      ),
+    },
+    {
       title: "跟随容器的 tone=current",
       description:
         "彩色卡片里的图标按钮要跟着容器变色，而不是被拉回正文黑。current 表示「别设色、交给继承」，与五个语义档给绝对色不同。只对 ghost / outline 有效，是 opt-in。",
@@ -282,7 +337,7 @@ export const buttonShowcase: ShowcaseSpec = {
     {
       prop: "size",
       type: "select",
-      options: ["xs", "sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs"],
+      options: ["xs", "sm", "md", "lg", "icon", "iconSm", "iconLg", "iconXs", "icon24", "icon28"],
       defaultValue: "md",
     },
     { prop: "block", type: "boolean", defaultValue: false, label: "块级铺满" },
@@ -315,7 +370,19 @@ export const buttonShowcase: ShowcaseSpec = {
     <Button
       variant={p.variant as "solid" | "soft" | "outline" | "ghost" | "link"}
       tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"}
-      size={p.size as "xs" | "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs"}
+      size={
+        p.size as
+          | "xs"
+          | "sm"
+          | "md"
+          | "lg"
+          | "icon"
+          | "iconSm"
+          | "iconLg"
+          | "iconXs"
+          | "icon24"
+          | "icon28"
+      }
       block={p.block as boolean}
       loading={p.loading as boolean}
     >

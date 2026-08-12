@@ -138,6 +138,48 @@ describe("Button render（按钮样式的链接）", () => {
     expect(cls.split(/\s+/)).not.toContain("rounded");
   });
 
+  // #222：密集端的两个插档。24px 是 xs 文字档的配套（此前只有文字档没有图标档，消费方只能
+  // 手写 size-6），28px 钉的是 Chip md / Sidebar sm 那条行刻度。名字用数字：xs~sm 之间的
+  // t-shirt 名已被 iconXs(20px) 占掉，而 20px 那档不能动（消费方的树形展开器靠它）。
+  it("icon24 与 xs 文字档等高（24px），是它一直缺的配套图标档", () => {
+    expect(buttonVariants({ size: "xs" })).toContain("h-6");
+    expect(buttonVariants({ size: "icon24" })).toContain("size-6");
+    // 图标档不能带文字档的横向内边距，否则不是方的
+    expect(buttonVariants({ size: "icon24" })).toContain("p-0");
+    expect(buttonVariants({ size: "icon24" }).split(/\s+/)).not.toContain("px-2");
+  });
+
+  it("icon28 是 28px 方形（Chip md / Sidebar sm 那条行刻度）", () => {
+    const cls = cn(buttonVariants({ size: "icon28" }));
+    expect(cls).toContain("size-7");
+    expect(cls).toContain("p-0");
+  });
+
+  // 圆角按边长分组，判据是 --radius(10px) 落上去是否读成圆片（半径/边长趋近 0.5 即圆）：
+  // 24px 上是 0.42 → 必须降档；28px 上是 0.36，与 iconSm(32px) 的 0.31 同组 → 保持 --radius。
+  it("icon24 圆角降到 rounded-sm，icon28 保持 --radius", () => {
+    const c24 = cn(buttonVariants({ size: "icon24" }));
+    expect(c24).toContain("rounded-sm");
+    expect(c24).not.toContain("rounded-[var(--radius)]");
+    // 同 xs / iconXs 的坑：裸 rounded 就是 var(--radius)，等于没降
+    expect(c24.split(/\s+/)).not.toContain("rounded");
+
+    const c28 = cn(buttonVariants({ size: "icon28" }));
+    expect(c28).toContain("rounded-[var(--radius)]");
+    expect(c28).not.toContain("rounded-sm");
+  });
+
+  it("四个密集图标档互不等高（20 / 24 / 28 / 32，各服务各的行刻度）", () => {
+    const side = (size: "iconXs" | "icon24" | "icon28" | "iconSm") =>
+      buttonVariants({ size }).match(/\bsize-(\d+)\b/)![1];
+    expect([side("iconXs"), side("icon24"), side("icon28"), side("iconSm")]).toEqual([
+      "5",
+      "6",
+      "7",
+      "8",
+    ]);
+  });
+
   // #138：按钮文字是控件标签不是内容，连点会被浏览器识别成双击选词。
   it("base 带 select-none（全库按钮一起受益）", () => {
     const { container } = rtlRender(<Button>点我</Button>);
@@ -298,8 +340,8 @@ describe("muted 层级档（#211）", () => {
     }
   });
 
-  it("落在 solid / soft / outline 上不加任何类（静默无效比报错更难查，故开发期另有 warnOnce）", () => {
-    for (const variant of ["solid", "soft", "outline"] as const) {
+  it("落在 solid / soft 上不加任何类（静默无效比报错更难查，故开发期另有 warnOnce）", () => {
+    for (const variant of ["solid", "soft"] as const) {
       expect(classesOf(<Button variant={variant}>x</Button>)).toBe(
         classesOf(
           <Button variant={variant} muted>
@@ -308,6 +350,64 @@ describe("muted 层级档（#211）", () => {
         ),
       );
     }
+  });
+});
+
+// ===== outline 的 muted 档（#221）=====
+//
+// 0.35.0 把这一档记成「结构上说得通但没有实际需求，等有人提再加」。消费方按 #211 迁完
+// ghost / link 之后剩下的 3 处正是这个形状：边框是它自己要表达的东西（「这是个可点的框」），
+// 但静息文字不该是正文黑。ghost muted 顶不了——那会连边框一起丢掉。
+describe("outline + muted（#221）", () => {
+  const classesOf = (el: React.ReactElement) =>
+    rtlRender(el).container.querySelector("button")!.className;
+
+  it("只降文字：描边与底色原样保留，静息灰 → hover 回正文黑", () => {
+    const cls = classesOf(
+      <Button variant="outline" muted>
+        中止
+      </Button>,
+    );
+    expect(cls).toContain("text-muted-foreground");
+    expect(cls).toContain("hover:text-foreground");
+    // 边框与底色是 outline 的身份，一个都不能丢（丢了就等于 ghost）
+    expect(cls).toContain("border-hairline");
+    expect(cls).toContain("bg-surface");
+    expect(cls).toContain("hover:bg-surface-hover");
+    // 静息色必须被顶掉而不是两条并存
+    expect(cls.split(/\s+/)).not.toContain("text-foreground");
+  });
+
+  it("不传 muted 的 outline 一个像素都不动（opt-in）", () => {
+    expect(classesOf(<Button variant="outline">描边</Button>)).toContain("text-foreground");
+    expect(classesOf(<Button variant="outline">描边</Button>)).not.toContain(
+      "text-muted-foreground",
+    );
+  });
+
+  it("非中性 tone：描边保持语义色，文字静息灰、hover 才亮出语义色", () => {
+    for (const tone of ["danger", "success", "warning"] as const) {
+      const cls = classesOf(
+        <Button variant="outline" tone={tone} muted>
+          删除
+        </Button>,
+      );
+      expect(cls, tone).toContain(`border-${tone}`);
+      expect(cls, tone).toContain("text-muted-foreground");
+      expect(cls, tone).toContain(`hover:text-${tone}`);
+      expect(cls.split(/\s+/), tone).not.toContain(`text-${tone}`);
+    }
+  });
+
+  it("不再点名 outline（此前的 warnOnce 指路 ghost，会连边框一起丢掉）", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    rtlRender(
+      <Button variant="outline" muted>
+        中止
+      </Button>,
+    );
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });
 
