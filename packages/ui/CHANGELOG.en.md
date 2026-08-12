@@ -1,5 +1,33 @@
 # @hulianui/ui
 
+## 0.34.0
+
+### Minor Changes
+
+- `RichTextEditor` gains a `backgroundColor` toolbar entry (a text-highlight swatch picker), and the swatch pickers no longer write `var(--color-foreground)` into the body text (follow-up to #210). <!-- parity-id: rich-text-background-color-toolbar -->
+
+  0.33.1 only stopped legacy highlights from being **lost on load**; operators still could not apply a new highlight inside the editor. This entry adds that, and deliberately **does not introduce `Highlight`**: that extension renders a `<mark>`, which would grow two different tags inside one field - legacy content as `<span style>`, newly applied highlights as `<mark>` - leaving the consumer's front end (`v-html`, a mini-program `rich-text`) to handle both. The button drives the same `BackgroundColor` mark the legacy content uses, so the output shape is identical (a test asserts zero `<mark>` elements).
+
+  **⚠️ One behavior change, contradicting what 0.33.1 documented.** The new entry is part of `DEFAULT_TOOLBAR` (right after `color`), so **with the default toolbar a legacy `background-color` is now kept**, whereas 0.33.1 said "the highlight is still dropped while off". This is not a regression but the rule falling into place: a highlight's survival now follows the same rule as `color` and `fontSize` - **decided by `toolbar`, not by `legacyHtml`**:
+
+  | | Highlight |
+  |---|---|
+  | Default toolbar | Kept |
+  | `toolbar` without `backgroundColor` | Lost |
+  | Trimmed, but `legacyHtml` on | Kept (the compatibility tier ignores toolbar trimming) |
+
+  Pass an explicit `toolbar` array to leave the button out, exactly as with any other entry. The "open, edit nothing, read it back" table in the docs has been updated to the new contract.
+
+  **A related defect fixed along the way: neither swatch picker offers a `var(--…)` color any more.** The first swatch of the text-color picker used to be `var(--color-foreground)`, and clicking it wrote `color: var(--color-foreground)` **into the body text** (measured: feed HTML containing a `var()` through the editor and it comes back out verbatim). That body text is stored in the consumer's database and rendered **somewhere else**, where the library CSS variables do not exist - the declaration resolves to nothing there and silently falls back to the inherited color, which means an editor-only style was written into permanent content. What "default color" actually means is **not writing the declaration at all**, so it now runs `unsetColor()`; "No highlight" likewise runs `unsetBackgroundColor()`. Both pickers have tests asserting no swatch contains `var(--`.
+
+  Impact on existing consumers: clicking "default color" changes from "set the text color to `var(--color-foreground)`" to "clear the text color". The latter is what the button always meant, and the rendered result inside the editor is the same either way (both inherit) - the difference is only that **the stored string no longer carries a dead declaration**.
+
+  Also in this release:
+
+  - New `Highlighter` icon (lucide-react data under ISC, inlined into `_icons` per the existing convention, with its `/* @__PURE__ */` marker).
+  - Three locale entries added - `backgroundColor`, `noBackground`, `defaultColor` - in both Chinese and English. All three are **optional fields**: adding a required field to an existing locale group would break compilation for consumers who ship their own custom dictionary.
+  - The highlight presets use the saturated tone that actually appears in the legacy content plus two light tints, and like the text colors they carry concrete values rather than `var(--color-*)`.
+
 ## 0.33.1
 
 ### Patch Changes

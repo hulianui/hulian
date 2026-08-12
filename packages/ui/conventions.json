@@ -7171,7 +7171,7 @@
       "id": "component/rich-text-editor/pitfall/2",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "同理，**`toolbar` 裁剪不只是省按钮**：不给 `\"table\"` 就不装表格扩展，于是存量正文里的 `<table>` 会被丢掉；`\"color\"` / `\"fontSize\"` 对应的是 `<span style=\"color|font-size\">`，`\"align\"` 对应的是 `style=\"text-align\"`。裁之前先确认存量内容里没有那类排版。",
+      "rule": "同理，**`toolbar` 裁剪不只是省按钮**：不给 `\"table\"` 就不装表格扩展，于是存量正文里的 `<table>` 会被丢掉；`\"color\"` / `\"fontSize\"` / `\"backgroundColor\"` 对应的是 `<span style=\"color|font-size|background-color\">`，`\"align\"` 对应的是 `style=\"text-align\"`。裁之前先确认存量内容里没有那类排版。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
@@ -7206,25 +7206,32 @@
       "id": "component/rich-text-editor/pitfall/7",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。",
+      "rule": "**取色器里不出现 `var(--…)` 色**，两个都不出现。正文要存进你的库、再由别处的前台（`v-html` / 小程序 `rich-text` / 邮件）渲染，那边没有瑚琏的 CSS 变量，`color: var(--color-foreground)` 到了那儿解析不出值、静默退回继承色 —— 等于把只在编辑器里成立的样式写成了永久内容。所以「默认色」/「无底色」走的是 `unsetColor()` / `unsetBackgroundColor()`，即**不写这条声明**，而不是写一个「默认颜色」。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
       "id": "component/rich-text-editor/pitfall/8",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。",
+      "rule": "图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
       "id": "component/rich-text-editor/pitfall/9",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
-      "rule": "`value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。",
+      "rule": "粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。",
       "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
     },
     {
       "id": "component/rich-text-editor/pitfall/10",
+      "scope": "rich-text-editor",
+      "title": "RichTextEditor",
+      "rule": "`value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。",
+      "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
+    },
+    {
+      "id": "component/rich-text-editor/pitfall/11",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
       "rule": "与 [MarkdownEditor](../markdown-editor/markdown-editor.md) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。",
@@ -9685,7 +9692,7 @@
   ],
   "stats": {
     "componentDocs": 389,
-    "componentAdvisories": 1348,
-    "totalAdvisories": 1358
+    "componentAdvisories": 1349,
+    "totalAdvisories": 1359
   }
 }

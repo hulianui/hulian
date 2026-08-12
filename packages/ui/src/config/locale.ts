@@ -250,6 +250,12 @@ export interface ComponentLocale {
     paragraph: string;
     fontSize: string;
     color: string;
+    /** 可选：新增到既有词条组里的字段必须可选，否则消费方自带的自定义词典会当场编译不过。 */
+    backgroundColor?: string;
+    /** 底色取色器里的「无底色」色块（清除底色）。 */
+    noBackground?: string;
+    /** 文字颜色取色器里的「默认色」色块（清除颜色、回到继承）。 */
+    defaultColor?: string;
     alignLeft: string;
     alignCenter: string;
     alignRight: string;
@@ -1000,6 +1006,9 @@ const zhComponents: ComponentLocale = {
     paragraph: "正文",
     fontSize: "字号",
     color: "文字颜色",
+    backgroundColor: "文字底色",
+    noBackground: "无底色",
+    defaultColor: "默认色",
     alignLeft: "左对齐",
     alignCenter: "居中",
     alignRight: "右对齐",
@@ -1785,6 +1794,9 @@ const enComponents: ComponentLocale = {
     paragraph: "Body text",
     fontSize: "Font size",
     color: "Text color",
+    backgroundColor: "Text highlight",
+    noBackground: "No highlight",
+    defaultColor: "Default color",
     alignLeft: "Align left",
     alignCenter: "Align center",
     alignRight: "Align right",

@@ -575,6 +575,14 @@ export const Table = /* @__PURE__ */ createIcon("table", [
   ["path", { d: "M3 15h18", key: "5xshup" }],
 ]);
 
+export const Highlighter = /* @__PURE__ */ createIcon("highlighter", [
+  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
+  [
+    "path",
+    { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" },
+  ],
+]);
+
 export const Palette = /* @__PURE__ */ createIcon("palette", [
   [
     "path",

@@ -43,7 +43,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | className | `string` | — | Additional class name for the shell. |
 | aria-label | `string` | locale | Accessible name of the content area. |
 
-`RichTextToolbarItem` is `"bold" | "italic" | "underline" | "strike" | "heading" | "fontSize" | "color" | "align" | "bulletList" | "orderedList" | "blockquote" | "link" | "image" | "table" | "clear" | "divider"`.
+`RichTextToolbarItem` is `"bold" | "italic" | "underline" | "strike" | "heading" | "fontSize" | "color" | "backgroundColor" | "align" | "bulletList" | "orderedList" | "blockquote" | "link" | "image" | "table" | "clear" | "divider"`.
 
 ### LegacyHtmlOptions
 
@@ -117,7 +117,7 @@ The editor schema decides which tags survive, and it decides **at load time**. T
 | `<img src>` / `<a href>` | Kept | Kept |
 | `<p style="text-align">` | Kept, if `toolbar` includes `align` | Kept, regardless of `toolbar` |
 | `<span style="color\|font-size">` | Kept, if `toolbar` includes `color` / `fontSize` | Kept, regardless of `toolbar` |
-| `<span style="background-color">` (text highlight) | **Lost** | Kept, and stays a `<span style>` (never becomes a `<mark>`) |
+| `<span style="background-color">` (text highlight) | Kept, if `toolbar` includes `backgroundColor` (it does by default) | Kept, regardless of `toolbar`; always a `<span style>`, never a `<mark>` |
 | `<font color\|face\|size>` | **Lost** | Translated to `<span style>`; output stays a span |
 | `<img style="max-width:100%">` | **Lost** | Keeps `max-width`, `width`, and `height` |
 | `<section style="text-align">` | **Lost**, along with the tag it was attached to | Pushed down to `<p style="text-align">` |
@@ -142,11 +142,12 @@ const html = normalizeLegacyHtml(row.content)
 ## Usage guidelines
 
 - **The editor schema decides which tags survive, and it decides at load time.** A tag outside the extension set — `<iframe>`, `<video>`, or a custom tag — is dropped the moment the content opens, so saving it back loses data. Not touching the content does not protect it. Add the matching node through `extensions` before going live with legacy content.
-- For the same reason, **trimming `toolbar` does more than remove buttons**: dropping `"table"` also drops the table extension, so a legacy `<table>` disappears. `"color"` and `"fontSize"` back `<span style="color|font-size">`, and `"align"` backs `style="text-align"`. Confirm the legacy content does not use that formatting before trimming.
+- For the same reason, **trimming `toolbar` does more than remove buttons**: dropping `"table"` also drops the table extension, so a legacy `<table>` disappears. `"color"`, `"fontSize"`, and `"backgroundColor"` back `<span style="color|font-size|background-color">`, and `"align"` backs `style="text-align"`. Confirm the legacy content does not use that formatting before trimming.
 - **Before shipping, run a batch of real legacy content through "open, edit nothing, read `getHTML`" and diff it.** This matters more than any unit test, because what gets lost is years of layout work. One trap while diffing: reading `innerHTML` off `.ProseMirror` adds a `<br class="ProseMirror-trailingBreak">` that never reaches `getHTML`; leave it in and every `<br>` count looks doubled.
 - `legacyHtml` **preserves formatting, not structure**: `<section>` is still flattened into `<p>`, only the alignment that hung on it is pushed down to the child block. Multi-column or card layouts built out of nested `<section>` elements are not recoverable this way; those need your own nodes through `extensions`.
 - **A centering wrapper around a lone image cannot be preserved.** In `<section style="text-align:center"><img></section>` the image is a block node, so wrapping it in a `<p>` only makes ProseMirror lift it out and leave an empty paragraph behind. That shape is deliberately left alone — center images with front-end styling (`img { display:block; margin:0 auto }`) rather than through the stored string.
 - While `legacyHtml` is on, **none of the removal rules relax** (`class`, `on*`, `<style>`, and `javascript:` are still stripped); the inline `style` allowlist merely gains `font-family` and `max-width`. Values from `<font color>` go through a shape allowlist (named color, `#hex`, `rgb()`) so they cannot smuggle in a second declaration — body content is a user-writable field.
+- **Neither swatch picker offers a `var(--…)` color.** The body text is stored in your database and rendered elsewhere (`v-html`, a mini-program `rich-text`, an email), where the library CSS variables do not exist: `color: var(--color-foreground)` resolves to nothing there and silently falls back to the inherited color, which means an editor-only style was written into permanent content. "Default color" and "No highlight" therefore run `unsetColor()` / `unsetBackgroundColor()` - they remove the declaration rather than writing some "default" color.
 - Images are **never inlined as base64**. Without `onUploadImage` the button falls back to a URL prompt precisely so a single article cannot balloon to several megabytes and overflow the database column. Transport concerns — auth headers, direct upload, progress, retries — stay with the consumer.
 - Paste sanitizing cleans **structure and attributes only**; it is not full XSS disinfection. Escaping and filtering still have to happen server-side when rendering to the front end, because rich text is a user-writable field and a client-side allowlist is not a security boundary.
 - While controlled, the component calls `setContent` only when the incoming string differs from the last emitted one. Passing HTML that is semantically identical but textually different on every render (for example after your own formatting pass) resets the caret repeatedly; feed back exactly the string `onChange` gave you.

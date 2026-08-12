@@ -1,11 +1,38 @@
 # @hulianui/ui
 
+## 0.34.0
+
+### Minor Changes
+
+- `RichTextEditor` 新增 `backgroundColor` 工具栏档（文字底色取色器），并修掉取色器把 `var(--color-foreground)` 写进正文的问题（#210 后续）。 <!-- parity-id: rich-text-background-color-toolbar -->
+
+  0.33.1 只让存量底色**打开时不丢**，运营在编辑器里仍然标不了新底色。这一档把能力补上，并且刻意**不引入 `Highlight`**：那个扩展渲染的是 `<mark>`，会让同一个字段里长出两种标签 —— 存量是 `<span style>`、新标的是 `<mark>`，消费方前台（`v-html` / 小程序 `rich-text`）得处理两套。按钮走的是与存量同一个 `BackgroundColor` mark，产出形状完全一致（有测试断言 `<mark>` 零出现）。
+
+  **⚠️ 一条行为变化，与 0.33.1 的说明相反。** 新档进了 `DEFAULT_TOOLBAR`（排在 `color` 后面），于是**默认工具栏下存量的 `background-color` 现在会被保留**，而 0.33.1 的说明是「默认关时底色照旧丢」。这不是回退，是规则归位：底色的存亡从此与 `color` / `fontSize` 同一条规则 —— **由 `toolbar` 决定，不由 `legacyHtml` 决定**：
+
+  |                                  | 底色                         |
+  | -------------------------------- | ---------------------------- |
+  | 默认工具栏                       | 保留                         |
+  | `toolbar` 裁掉 `backgroundColor` | 丢                           |
+  | 裁掉了、但开着 `legacyHtml`      | 保留（兼容档不吃工具栏裁剪） |
+
+  不想要这个按钮的话传显式 `toolbar` 数组即可，与裁其他档一样。文档里那张「打开 → 不做任何编辑 → 取回」的对照表已按新口径改过。
+
+  **顺带修掉一个同类缺陷：取色器不再提供 `var(--…)` 色。** 文字颜色取色器的首个色块原本是 `var(--color-foreground)`，点它会把 `color: var(--color-foreground)` **写进正文**（实测：喂一段带 `var()` 的 HTML 进去，输出逐字保留）。正文是要存进消费方数据库、再由**别处的前台**渲染的，那边没有瑚琏的 CSS 变量，这条声明解析不出值、静默退回继承色 —— 等于把一个只在编辑器里成立的样式写成了永久内容。「默认色」的真正语义是**不写这条声明**，所以它改走 `unsetColor()`；底色的「无底色」同理走 `unsetBackgroundColor()`。两个取色器都有测试断言色块里不出现 `var(--`。
+
+  对既有消费方的影响：点「默认色」从「把文字色设成 `var(--color-foreground)`」变成「清除文字色」。后者才是这个按钮一直想表达的意思，且清除后渲染结果与原来在编辑器内一致（都是继承色），差别只在**存下来的串里不再多一条无效声明**。
+
+  其他：
+
+  - 新增图标 `Highlighter`（沿用 lucide-react ISC 数据，照既有约定内联进 `_icons`，带 `/* @__PURE__ */`）。
+  - locale 加三条词条 `backgroundColor` / `noBackground` / `defaultColor`，中英都补齐。三条都是**可选字段** —— 往既有词条组里加必填字段会让消费方自带的自定义词典当场编译不过。
+  - 底色预设取存量正文里实际出现过的那档饱和底色，外加两个浅底；同样只写具体色值，不写 `var(--color-*)`。
+
 ## 0.33.1
 
 ### Patch Changes
 
 - `RichTextEditor` 的 `legacyHtml.font` 档补上文字底色 `background-color`（#210）。 <!-- parity-id: legacy-html-background-color -->
-
 
   接 #208。0.32.0 把 `color` / `font-family` / `font-size` / `max-width` / `text-align` 都保住了，剩 `background-color` 关和开都是 3 → 0 —— 运营拿它做「暗红底白字」那种标记，量比 `<font color>`（102 次）小得多，但性质一样：不是脏标记，丢了就是静默的内容变更。
 

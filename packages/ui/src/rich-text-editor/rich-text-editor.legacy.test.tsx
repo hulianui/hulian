@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { render, cleanup, waitFor } from "@testing-library/react";
+import { render, cleanup, waitFor, screen, fireEvent } from "@testing-library/react";
 import { RichTextEditor } from "./rich-text-editor";
 import { normalizeLegacyHtml } from "./rich-text-editor.legacy";
 import { sanitizePastedHtml } from "./rich-text-editor.sanitize";
@@ -209,10 +209,29 @@ describe("RichTextEditor legacyHtml（#208 往返）", () => {
     expect(style).toContain("color");
   });
 
-  it("关着时底色照旧丢 —— #210 报的就是这个，默认行为不许被这次改动带偏", async () => {
-    const { container } = render(<RichTextEditor defaultValue={BG_HTML} />);
-    await readback(container);
-    expect(container.querySelector('[role="textbox"] span')?.getAttribute("style")).toBeFalsy();
+  it("底色的存亡由 toolbar 决定（与 color / fontSize 同一条规则），不由 legacyHtml 决定", async () => {
+    // 0.33.1 时这里是「关着就丢」，因为那版还没有 backgroundColor 工具栏档。
+    // 加了档并进默认集之后，规则回到与 color / fontSize 一致：装了扩展就保得住。
+    // legacyHtml 的作用变成「即便裁掉了这一档也照样保住」——兼容档不吃工具栏裁剪。
+    const kept = render(<RichTextEditor defaultValue={BG_HTML} />);
+    await readback(kept.container);
+    expect(
+      kept.container.querySelector('[role="textbox"] span')?.getAttribute("style"),
+    ).toContain("background-color");
+    cleanup();
+
+    const cropped = render(<RichTextEditor toolbar={["bold"]} defaultValue={BG_HTML} />);
+    await readback(cropped.container);
+    expect(
+      cropped.container.querySelector('[role="textbox"] span')?.getAttribute("style"),
+    ).toBeFalsy();
+    cleanup();
+
+    const legacy = render(<RichTextEditor legacyHtml toolbar={["bold"]} defaultValue={BG_HTML} />);
+    await readback(legacy.container);
+    expect(
+      legacy.container.querySelector('[role="textbox"] span')?.getAttribute("style"),
+    ).toContain("background-color");
   });
 
   it("受控 value 二次灌入同样走归一", async () => {
@@ -225,6 +244,56 @@ describe("RichTextEditor legacyHtml（#208 往返）", () => {
     expect(container.querySelector('[role="textbox"] span')?.getAttribute("style")).toContain(
       "rgb(228, 57, 60)",
     );
+  });
+});
+
+describe("backgroundColor 工具栏档（#210 后续）", () => {
+  it("默认工具栏里有底色按钮", async () => {
+    const { container } = render(<RichTextEditor defaultValue="<p>x</p>" />);
+    await readback(container);
+    expect(screen.getByLabelText("文字底色")).toBeTruthy();
+  });
+
+  it("只留 backgroundColor 一档也能把存量底色接住（这一档自带 schema）", async () => {
+    const { container } = render(
+      <RichTextEditor toolbar={["backgroundColor"]} defaultValue={BG_HTML} />,
+    );
+    await readback(container);
+    expect(container.querySelector('[role="textbox"] span')?.getAttribute("style")).toContain(
+      "background-color",
+    );
+  });
+
+  it("裁掉这一档、又没开 legacyHtml 时底色照旧丢（裁剪即关扩展，与既有约定一致）", async () => {
+    const { container } = render(<RichTextEditor toolbar={["bold"]} defaultValue={BG_HTML} />);
+    await readback(container);
+    expect(container.querySelector('[role="textbox"] span')?.getAttribute("style")).toBeFalsy();
+  });
+
+  it("底色取色器的第一档是「无底色」，用来清除", async () => {
+    const { container } = render(<RichTextEditor defaultValue="<p>x</p>" />);
+    await readback(container);
+    fireEvent.click(screen.getByLabelText("文字底色"));
+    expect(await screen.findByLabelText("无底色")).toBeTruthy();
+  });
+
+  it("两个取色器里都不出现 var(--…) 色 —— 那会把只在编辑器里成立的样式写成永久内容", async () => {
+    // 正文要存进消费方数据库、再由**别处的前台**（v-html / 小程序 rich-text / 邮件）渲染，
+    // 那边没有瑚琏的 CSS 变量：`color: var(--color-foreground)` 到了那儿解析不出值、
+    // 静默退回继承色。实测这类值确实会原样留在正文里（喂一段带 var() 的 HTML 进去，
+    // 输出逐字保留），所以「默认色」的语义只能是**不写这条声明**（走 unsetColor）。
+    const { container } = render(<RichTextEditor defaultValue="<p>x</p>" />);
+    await readback(container);
+    for (const trigger of ["文字颜色", "文字底色"]) {
+      fireEvent.click(screen.getByLabelText(trigger));
+      const group = await screen.findByLabelText(trigger, { selector: '[role="radiogroup"]' });
+      const swatches = Array.from(group.querySelectorAll("[aria-label]"));
+      expect(swatches.length).toBeGreaterThan(1);
+      for (const swatch of swatches) {
+        expect(swatch.getAttribute("style") ?? "").not.toContain("var(--");
+      }
+      fireEvent.keyDown(document.body, { key: "Escape" });
+    }
   });
 });
 

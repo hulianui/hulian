@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.33.1 · 389 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.34.0 · 389 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -7042,7 +7042,7 @@ import { RichTextEditor } from "@hulianui/ui"
 | className | `string` | — | 落在外壳 |
 | aria-label | `string` | locale | 内容区无障碍名 |
 
-`RichTextToolbarItem` = `"bold" | "italic" | "underline" | "strike" | "heading" | "fontSize" | "color" | "align" | "bulletList" | "orderedList" | "blockquote" | "link" | "image" | "table" | "clear" | "divider"`。
+`RichTextToolbarItem` = `"bold" | "italic" | "underline" | "strike" | "heading" | "fontSize" | "color" | "backgroundColor" | "align" | "bulletList" | "orderedList" | "blockquote" | "link" | "image" | "table" | "clear" | "divider"`。
 
 ### LegacyHtmlOptions
 
@@ -7116,7 +7116,7 @@ const [html, setHtml] = useState(detail.content); // 库里取出来就是 HTML
 | `<img src>` / `<a href>` | 保留 | 保留 |
 | `<p style="text-align">` | 保留（需 `toolbar` 含 `align`） | 保留（不看 `toolbar`） |
 | `<span style="color\|font-size">` | 保留（需 `toolbar` 含 `color` / `fontSize`） | 保留（不看 `toolbar`） |
-| `<span style="background-color">`（文字底色） | **丢** | 保留，且仍是 `<span style>`（不换成 `<mark>`） |
+| `<span style="background-color">`（文字底色） | 保留（需 `toolbar` 含 `backgroundColor`，默认含） | 保留（不看 `toolbar`）；始终是 `<span style>`，不换成 `<mark>` |
 | `<font color\|face\|size>` | **丢** | 翻成 `<span style>`，输出保持 span |
 | `<img style="max-width:100%">` | **丢** | 保留 `max-width` / `width` / `height` 三条 |
 | `<section style="text-align">` | **丢**（挂在被拆掉的标签上） | 下推到子块，落成 `<p style="text-align">` |
@@ -7141,11 +7141,12 @@ const html = normalizeLegacyHtml(row.content)
 ## 禁忌 / 坑
 
 - **编辑器的 schema 决定哪些标签能活下来，而且是在载入时就决定的**：不在扩展集里的标签（默认一档之外的 `<iframe>`、`<video>`、自定义标签）打开这篇内容的瞬间就被丢掉，保存回去即数据丢失 —— 不是「不碰它就不会掉」。存量内容里有这类标签时，用 `extensions` 补上对应节点再上线。
-- 同理，**`toolbar` 裁剪不只是省按钮**：不给 `"table"` 就不装表格扩展，于是存量正文里的 `<table>` 会被丢掉；`"color"` / `"fontSize"` 对应的是 `<span style="color|font-size">`，`"align"` 对应的是 `style="text-align"`。裁之前先确认存量内容里没有那类排版。
+- 同理，**`toolbar` 裁剪不只是省按钮**：不给 `"table"` 就不装表格扩展，于是存量正文里的 `<table>` 会被丢掉；`"color"` / `"fontSize"` / `"backgroundColor"` 对应的是 `<span style="color|font-size|background-color">`，`"align"` 对应的是 `style="text-align"`。裁之前先确认存量内容里没有那类排版。
 - **上线前务必拿一批真实存量内容跑一遍「打开 → 不做任何编辑 → 取 `getHTML`」的对比**，确认没有静默丢失。这条比任何单测都重要：丢的是运营五年攒的排版。跑对比时注意：直接读 `.ProseMirror` 的 `innerHTML` 会多出 `<br class="ProseMirror-trailingBreak">`，那是渲染占位、不进 `getHTML`，不剥掉会误判成 `<br>` 翻倍。
 - `legacyHtml` **只保排版，不保结构**：`<section>` 照样被拆成 `<p>`，只是挂在它身上的对齐被下推到了子块。存量正文靠 `<section>` 嵌套做的分栏 / 卡片布局救不回来，那类要走 `extensions` 自己补节点。
 - **只裹一张图的居中包裹层保不住**。`<section style="text-align:center"><img></section>` 里图片是块级节点，套一层 `<p>` 只会让 ProseMirror 把它提出去、留下一个空段落，所以这种形态刻意不转 —— 图片的居中要在前台样式里给（`img { display:block; margin:0 auto }`），不要指望正文串。
 - `legacyHtml` 开着时粘贴净化的**删除类规则一条都不松**（`class` / `on*` / `<style>` / `javascript:` 照删），只是内联 `style` 白名单多放行 `font-family` 与 `max-width` 两条。`<font color>` 的值走形状白名单（命名色 / `#hex` / `rgb()`），拼不出第二条声明 —— 正文是用户可写字段。
+- **取色器里不出现 `var(--…)` 色**，两个都不出现。正文要存进你的库、再由别处的前台（`v-html` / 小程序 `rich-text` / 邮件）渲染，那边没有瑚琏的 CSS 变量，`color: var(--color-foreground)` 到了那儿解析不出值、静默退回继承色 —— 等于把只在编辑器里成立的样式写成了永久内容。所以「默认色」/「无底色」走的是 `unsetColor()` / `unsetBackgroundColor()`，即**不写这条声明**，而不是写一个「默认颜色」。
 - 图片**永远不内联 base64**。没有 `onUploadImage` 时按钮退回填 URL，就是为了不让一篇正文膨胀几 MB 把数据库字段撑爆。传输层（鉴权头、直传、进度、失败重试）一律在消费方手里。
 - 粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。
 - `value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。

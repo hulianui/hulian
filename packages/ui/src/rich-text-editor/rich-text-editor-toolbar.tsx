@@ -11,6 +11,7 @@ import {
   AlignRight,
   Bold,
   Eraser,
+  Highlighter,
   Image as ImageIcon,
   Italic,
   Link as LinkIcon,
@@ -37,6 +38,9 @@ const FALLBACK_LABELS = {
   paragraph: "正文",
   fontSize: "字号",
   color: "文字颜色",
+  backgroundColor: "文字底色",
+  noBackground: "无底色",
+  defaultColor: "默认色",
   alignLeft: "左对齐",
   alignCenter: "居中",
   alignRight: "右对齐",
@@ -56,12 +60,45 @@ const FALLBACK_LABELS = {
 /** 中后台文案常用的一档字号（px）。运营要的是「大一号/小一号」，不是无级调节。 */
 const FONT_SIZES = ["12px", "14px", "16px", "18px", "24px", "32px"];
 
-/** 预设文字色：先给语义 token（跟主题走），再给运营惯用的红/橙/绿/蓝。 */
+/**
+ * 「清除」哨兵：选中它走 `unset*`，而不是往正文里写一个颜色。
+ *
+ * 用 `currentColor` / `transparent` 这两个**合法 CSS 颜色**当哨兵，是为了色块本身还能
+ * 正常画出来（前者显示成色块自己的文字色，后者是空底）—— 换个自造串就画不出来了。
+ */
+const UNSET_TEXT_COLOR = "currentColor";
+const UNSET_BACKGROUND = "transparent";
+
+/**
+ * 预设文字色：首项是「默认色」，再给运营惯用的红/橙/绿/蓝。
+ *
+ * 首项刻意**不是** `var(--color-foreground)`。正文是要存进消费方数据库、再由**别处的前台**
+ * （`v-html` / 小程序 `rich-text` / 邮件）渲染的，那些地方没有瑚琏的 CSS 变量，
+ * `color: var(--color-foreground)` 到了那边解析不出值、静默退回继承色 —— 等于把一个
+ * 只在编辑器里成立的样式写进了永久内容。「默认色」的真正语义就是「不写这条声明」，
+ * 所以它走 `unsetColor()`。
+ */
 const COLORS = [
-  { color: "var(--color-foreground)", labelKey: "default" },
+  { color: UNSET_TEXT_COLOR, labelKey: "defaultColor" as const },
   { color: "#e4393c", labelKey: "red" },
   { color: "#fa8c16", labelKey: "orange" },
   { color: "#52c41a", labelKey: "green" },
+  { color: "#1677ff", labelKey: "blue" },
+  { color: "#8c8c8c", labelKey: "gray" },
+];
+
+/**
+ * 预设文字底色（#210）。运营用它做「暗红底白字」那类标记。
+ *
+ * 第一项是「无底色」= 清除。其余取存量正文里实际出现过的那档饱和底色，外加两个浅底 ——
+ * 浅底配默认文字色可读，深底通常要连文字色一起改，两类都给。
+ * 同样只写具体色值，不写 `var(--color-*)`，理由见 COLORS 上方。
+ */
+const BACKGROUND_COLORS = [
+  { color: UNSET_BACKGROUND, labelKey: "noBackground" as const },
+  { color: "#fff566", labelKey: "yellow" },
+  { color: "#b7eb8f", labelKey: "lightGreen" },
+  { color: "#c24f4a", labelKey: "darkRed" },
   { color: "#1677ff", labelKey: "blue" },
   { color: "#8c8c8c", labelKey: "gray" },
 ];
@@ -268,9 +305,55 @@ export function RichTextEditorToolbar({
               <ColorSwatchPicker
                 aria-label={labels.color}
                 size="sm"
-                colors={COLORS.map((c) => ({ color: c.color, label: c.color }))}
-                value={(editor.getAttributes("textStyle").color as string | undefined) ?? undefined}
-                onValueChange={(color) => editor.chain().focus().setColor(color).run()}
+                colors={COLORS.map((c) => ({
+                  color: c.color,
+                  // 哨兵色块得给人读名，否则读屏念的是 "currentColor"。
+                  label: c.color === UNSET_TEXT_COLOR ? labels.defaultColor : c.color,
+                }))}
+                // 没有 color 属性时让「默认色」显示为选中 —— 那正是当前状态。
+                value={
+                  (editor.getAttributes("textStyle").color as string | undefined) ??
+                  UNSET_TEXT_COLOR
+                }
+                onValueChange={(color) =>
+                  color === UNSET_TEXT_COLOR
+                    ? editor.chain().focus().unsetColor().run()
+                    : editor.chain().focus().setColor(color).run()
+                }
+              />
+            </PopoverContent>
+          </Popover>
+        );
+      case "backgroundColor":
+        return (
+          <Popover key={item}>
+            <PopoverTrigger
+              aria-label={labels.backgroundColor}
+              className={cn(
+                "inline-flex size-8 items-center justify-center rounded-[min(var(--radius),0.375rem)]",
+                "text-foreground transition-colors hover:bg-surface-hover",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              )}
+            >
+              <Highlighter className={icon} />
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto">
+              <ColorSwatchPicker
+                aria-label={labels.backgroundColor}
+                size="sm"
+                colors={BACKGROUND_COLORS.map((c) => ({
+                  color: c.color,
+                  label: c.color === UNSET_BACKGROUND ? labels.noBackground : c.color,
+                }))}
+                value={
+                  (editor.getAttributes("textStyle").backgroundColor as string | undefined) ??
+                  UNSET_BACKGROUND
+                }
+                onValueChange={(color) =>
+                  color === UNSET_BACKGROUND
+                    ? editor.chain().focus().unsetBackgroundColor().run()
+                    : editor.chain().focus().setBackgroundColor(color).run()
+                }
               />
             </PopoverContent>
           </Popover>

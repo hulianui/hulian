@@ -16,6 +16,8 @@ export type RichTextToolbarItem =
   | "heading"
   | "fontSize"
   | "color"
+  /** 文字底色。写出来的是 `<span style="background-color">`，**不是** `<mark>`（#210）。 */
+  | "backgroundColor"
   | "align"
   | "bulletList"
   | "orderedList"

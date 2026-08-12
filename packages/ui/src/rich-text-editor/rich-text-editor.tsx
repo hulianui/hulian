@@ -29,6 +29,7 @@ const DEFAULT_TOOLBAR: RichTextToolbarItem[] = [
   "heading",
   "fontSize",
   "color",
+  "backgroundColor",
   "divider",
   "align",
   "divider",
@@ -161,18 +162,25 @@ export function RichTextEditor({
       Link.configure({ openOnClick: false, autolink: true }),
       Placeholder.configure({ placeholder: placeholder ?? "" }),
     ];
-    // TextStyle 是 color / fontSize / fontFamily 的载体，任一开启都要带上它。
+    // TextStyle 是 color / fontSize / fontFamily / backgroundColor 的载体，任一开启都要带上它。
     // legacyHtml.font 也要：`<font>` 翻成的 span 得有 mark 接住，否则翻了也白翻。
-    if (enabled.has("color") || enabled.has("fontSize") || legacyFont) list.push(TextStyle);
+    if (
+      enabled.has("color") ||
+      enabled.has("fontSize") ||
+      enabled.has("backgroundColor") ||
+      legacyFont
+    )
+      list.push(TextStyle);
     if (enabled.has("color") || legacyFont) list.push(Color);
     if (enabled.has("fontSize") || legacyFont) list.push(FontSize);
     // font-family 没有对应的工具栏按钮（不打算让运营选字体），装它纯粹是为了**别把存量的字体丢了**。
     if (legacyFont) list.push(FontFamily);
     // 文字底色（#210）。存量里它和 color 写在同一个 `style` 上（`<span style="color:…;background-color:…">`），
-    // 一个保住一个丢掉解释不通，所以跟着 font 档一起走，不另开一档。
-    // **刻意不用 Highlight**：那个扩展渲染的是 `<mark>`，会把存量的 `<span style>` 换成另一种标签 ——
-    // 消费方存回库里的正文形状就变了，属于用一次静默内容变更换掉另一次。
-    if (legacyFont) list.push(BackgroundColor);
+    // 一个保住一个丢掉解释不通，所以 legacyHtml.font 也无条件带上它，不另开一档。
+    // **刻意不用 Highlight**：那个扩展渲染的是 `<mark>`，会让同一个字段里长出两种标签 ——
+    // 存量是 `<span style>`、新标的是 `<mark>`，消费方前台（`v-html` / 小程序 `rich-text`）
+    // 得处理两套。工具栏这一档因此也走 BackgroundColor，按钮与存量产出同一种形状。
+    if (enabled.has("backgroundColor") || legacyFont) list.push(BackgroundColor);
     if (enabled.has("align") || legacyAlign)
       list.push(TextAlign.configure({ types: ["heading", "paragraph"] }));
     if (legacyImgStyle) list.push(LegacyImage.configure({ inline: false }));
