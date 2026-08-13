@@ -6,6 +6,20 @@
 /* 模型 A 核心：让消费方 Tailwind 扫到 @hulianui/ui 源码里的 className */
 @source "../../../packages/ui/src/**/*.{ts,tsx}";
 
+/* 把「散文数据产物」排除在扫描之外。
+   Tailwind v4 除了上面这条显式 @source，还会**自动扫描本项目里所有未被 gitignore 的文件**，
+   而且它只做文本候选提取——不区分代码、字符串还是散文。下面这几份产物装的是文档/更新日志
+   正文，正文里会**引用**类名（例如 #141 那条讲的就是 `[border-radius:var(--hulian-*)]`
+   这个非法写法本身），于是引用被当成真类名生成出 `var(--hulian-*)`，整份样式表解析失败：
+   dev 下每条路由 500，且报错指向 globals.css 的行号，与真正的源头隔了两层生成器。
+   这些文件永远不会是类名的来源，扫它们没有收益、只有这一类事故。
+   新增同类产物（数据 JSON / llms 产物）时记得一并加进来，scripts/check-tailwind-candidates.mjs
+   会读这里的 @source not 当排除清单，两边不会漂。 */
+@source not "../lib/changelog*.json";
+@source not "../public/r/**/*.json";
+@source not "../public/registry.json";
+@source not "../public/llms*.txt";
+
 html,
 body {
   background: var(--color-bg);

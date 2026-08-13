@@ -26,9 +26,43 @@ import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const DEFAULT_TARGETS = [join(ROOT, "packages", "ui", "src")];
-const SKIP_DIR = new Set(["node_modules", ".next", "dist", "out", "coverage"]);
-const SCAN_EXT = /\.(ts|tsx)$/;
+// 两片扫描面，理由不同：
+//   packages/ui/src —— 消费方按文档加 @source 后 Tailwind 会扫的那一片（#141 的原始事故面）
+//   apps/www        —— Tailwind v4 **自动**扫描本项目里所有未被 gitignore 的文件，其中包括
+//                      文档站自己的生成数据（changelog.json / registry 产物）。那些文件装的是
+//                      散文，散文里会引用类名 —— 引用被当成真类名，dev 下每条路由 500。
+//                      门禁此前只看第一片，于是那次事故在本地整整存在了一段时间没人发现。
+const DEFAULT_TARGETS = [join(ROOT, "packages", "ui", "src"), join(ROOT, "apps", "www")];
+const SKIP_DIR = new Set(["node_modules", ".next", "dist", "out", "coverage", ".turbo"]);
+// 扩展名要与「Tailwind 会把它当候选源」的集合一致：数据产物（json/txt）正是这次的肇事者，
+// 只扫 ts/tsx 等于把肇事的那一类挡在门外。
+const SCAN_EXT = /\.(ts|tsx|js|jsx|mjs|cjs|json|txt|md)$/;
+
+/**
+ * 从文档站的 CSS 入口读 `@source not` 当排除清单。
+ *
+ * 刻意不在本脚本里另写一份排除表：那样等于同一件事有两个真源，加了新的数据产物时
+ * 改一边忘一边，而漏的那边是**静默**的（要么门禁假绿，要么 dev 假红）。
+ */
+export function excludedPatterns(cssPath = join(ROOT, "apps/www/app/globals.css")) {
+  let css;
+  try {
+    css = readFileSync(cssPath, "utf8");
+  } catch {
+    return [];
+  }
+  return [...css.matchAll(/@source\s+not\s+"([^"]+)"/g)].map((m) =>
+    // @source 的路径相对 CSS 文件；转成相对仓库根，再把 glob 变成正则
+    relative(ROOT, join(dirname(cssPath), m[1])),
+  );
+}
+
+function globToRegExp(glob) {
+  const escaped = glob.replace(/[.+^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(
+    `^${escaped.replace(/\*\*\//g, "(?:.*/)?").replace(/\*\*/g, ".*").replace(/\*/g, "[^/]*")}$`,
+  );
+}
 
 /** 方括号任意值候选：`[prop:value]`，value 不含 `]`（Tailwind 的候选也是这么切的）。 */
 const ARBITRARY = /\[[a-zA-Z-]+:[^\]\s]*\]/g;
@@ -63,11 +97,13 @@ function walk(dir, files = []) {
 function main() {
   const targets = process.argv.slice(2);
   const roots = targets.length ? targets : DEFAULT_TARGETS;
+  const excluded = excludedPatterns().map(globToRegExp);
   const problems = [];
   let scanned = 0;
 
   for (const root of roots) {
     for (const file of walk(root)) {
+      if (excluded.some((pattern) => pattern.test(relative(ROOT, file)))) continue;
       scanned += 1;
       for (const hit of findInvalidCandidates(readFileSync(file, "utf8"))) {
         problems.push({ file: relative(ROOT, file), ...hit });
@@ -88,7 +124,9 @@ function main() {
   console.error(
     `\n[tailwind-candidates] FAIL · ${problems.length} 处 / ${scanned} files\n` +
       `Tailwind v4 会把它当成真类名生成 CSS，消费方按 @source 接入后整份样式表解析失败（全站 500）。\n` +
-      `注释里举例请写成非类名形态（去掉方括号），真类名请用具体的属性名而不是通配。`,
+      `注释里举例请写成非类名形态（去掉方括号），真类名请用具体的属性名而不是通配。\n` +
+      `若命中的是**生成的数据产物**（散文里引用了类名），正确做法是在 apps/www/app/globals.css\n` +
+      `加一条 @source not 把它排除在扫描之外 —— 本脚本会读那里当排除清单。`,
   );
   process.exitCode = 1;
 }
