@@ -97,7 +97,7 @@ export const rowActionsShowcase: ShowcaseSpec = {
         },
         {
             title: "Overflow collapses into a menu past max",
-            description: "The first max - 1 actions stay visible and the rest move into the overflow menu; destructive actions sit last behind a separator so a slipped click cannot land on them.",
+            description: "The first max-1 actions stay visible and the rest move into the overflow menu; destructive actions sit last behind a separator so a slipped click cannot land on them.",
             code: `<RowActions
   max={3}
   actions={[

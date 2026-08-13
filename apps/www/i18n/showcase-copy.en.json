@@ -8208,7 +8208,7 @@
     "基本：主操作 + 常规 + 破坏性": "Basics: primary, regular, destructive",
     "层级用 tone 表达：主操作 brand、破坏性 danger、其余中性。破坏性动作给 confirm。": "Hierarchy comes from tone: brand for the primary action, danger for destructive ones, neutral for the rest. Destructive actions get a confirm step.",
     "超出 max 自动收进菜单": "Overflow collapses into a menu past max",
-    "露出 max-1 个，其余进溢出菜单；破坏性动作在菜单里排最后并用分隔线隔开，避免手滑误触。": "The first max - 1 actions stay visible and the rest move into the overflow menu; destructive actions sit last behind a separator so a slipped click cannot land on them.",
+    "露出 max-1 个，其余进溢出菜单；破坏性动作在菜单里排最后并用分隔线隔开，避免手滑误触。": "The first max-1 actions stay visible and the rest move into the overflow menu; destructive actions sit last behind a separator so a slipped click cannot land on them.",
     "复制发票号": "Copy invoice no.",
     "导出 PDF": "Export PDF",
     "作废": "Void",
@@ -8236,8 +8236,8 @@
     "{ key: \"del\", label: \"删除\", tone: \"danger\", disabled: true, disabledReason: \"已开票不可删除\" },": "{ key: \"del\", label: \"Delete\", tone: \"danger\", disabled: true, disabledReason: \"Invoiced rows cannot be deleted\" },",
     "按钮档（动作会改数据时）": "Button form (when actions change data)",
     "variant=button 换成描边按钮：点击范围与可点性一眼可见。语气色与文字档一致，差的只是明显程度。": "variant=button switches to outlined buttons: the hit area and the fact that it is clickable are both obvious. The tones match the text form; only the prominence differs.",
-    "    { key: \"view\", label: \"查看\", tone: \"brand\" },": "    { key: \"view\", label: \"View\", tone: \"brand\" },",
-    "    { key: \"del\", label: \"删除\", tone: \"danger\", confirm: { title: \"确认删除这条记录？\" } },": "    { key: \"del\", label: \"Delete\", tone: \"danger\", confirm: { title: \"Delete this record?\" } },"
+    "{ key: \"view\", label: \"查看\", tone: \"brand\" },": "    { key: \"view\", label: \"View\", tone: \"brand\" },",
+    "{ key: \"del\", label: \"删除\", tone: \"danger\", confirm: { title: \"确认删除这条记录？\" } },": "    { key: \"del\", label: \"Delete\", tone: \"danger\", confirm: { title: \"Delete this record?\" } },"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {
