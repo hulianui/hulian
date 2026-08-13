@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from "node:fs";
 import { describe, it, expect, vi } from "vitest";
 import { render as rtlRender } from "@testing-library/react";
 import { Button, buttonVariants } from "./button";
@@ -654,5 +655,31 @@ describe("Button 按压反馈（底座）", () => {
 
   it("特效按钮底座刻意不含它：那几件变的是自绘背景，过渡属性各管各的", () => {
     expect(EFFECT_BUTTON_BASE_CLASS).not.toContain("active:scale-");
+  });
+
+  // #260：0.43.0 把 pressableClass 放进底座时，<Button> 上原有的 motion whileTap 没撤，
+  // 两条走不同 CSS 属性（内联 transform vs 独立的 scale 属性）互不覆盖而是相乘，
+  // 按下去缩 0.97² ≈ 6%。两处各自都对、合起来才错，逐处 review 看不出来，故钉死这条。
+  it("同一颗按钮上只有一个缩放来源：底座给 CSS 那份，元素上不再挂 motion 的 whileTap", () => {
+    const { getByRole } = rtlRender(<Button>确定</Button>);
+    const el = getByRole("button", { name: "确定" });
+    // motion 的 whileTap 会在按下时写内联 style.transform；退一步说，只要元素不是 motion
+    // 组件渲染的，就不可能有第二个来源——motion 会在挂载时就打上自己的标记属性。
+    expect(el.tagName).toBe("BUTTON");
+    expect(el.style.transform).toBe("");
+    expect(el.getAttribute("style")).toBeNull();
+    // 缩放只出现在 className 里那一处
+    expect(el.className.match(/active:scale-\[[\d.]+\]/g)).toHaveLength(1);
+  });
+
+  it("Button 不再拖 motion 运行时：源码不从 ../motion 与 motion/react 引任何东西", () => {
+    // 静息态的 DOM 断言拦不住回归——motion 的 whileTap 只在按下的那一刻写内联 transform，
+    // 而 jsdom 里那串指针事件走不通。所以这条直接看源码，且只看 import 行：
+    // 上面那段注释本身要提 whileTap / m.button，扫正文会自己撞自己。
+    // vitest 下 import.meta.url 不是 file: 协议，只能从 cwd 拼（turbo 在包目录里跑测试）。
+    const rel = "src/button/button.tsx";
+    const src = readFileSync(existsSync(rel) ? rel : `packages/ui/${rel}`, "utf8");
+    const imports = src.split("\n").filter((l) => /^import\b/.test(l));
+    expect(imports.filter((l) => /["'](\.\.\/motion|motion\/react)/.test(l))).toEqual([]);
   });
 });

@@ -1,11 +1,9 @@
 "use client";
 import { cloneElement, forwardRef, memo, type ReactNode } from "react";
-import { type HTMLMotionProps } from "motion/react";
 import { cva } from "class-variance-authority";
 import { Loader2 } from "../_icons";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { pressable, LazyMotionProvider, m } from "../motion";
 import { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS } from "./button-base";
 import type { ButtonProps } from "./button.types";
 
@@ -200,7 +198,8 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     // render：渲染为自定义元素（<a>/<Link>）。:disabled 伪类只对表单元素有效，故非 button
-    // 用 aria-disabled + 显式 pointer-events/opacity 表达禁用；不套 motion（无 press 缩放）。
+    // 用 aria-disabled + 显式 pointer-events/opacity 表达禁用。按压反馈与 <button> 分支同源
+    // （都在 buttonVariants 的底座里），故两条路的手感一致。
     if (render) {
       const renderProps = render.props as Record<string, unknown>;
       return cloneElement(
@@ -222,30 +221,32 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      // 减包：m + LazyMotionProvider(domAnimation) 取代全量 motion
-      <LazyMotionProvider>
-        <m.button
-          ref={ref}
-          // 默认 type="button"，而不是原生 <button> 的默认值 submit（#219）。
-          // 表单里的辅助按钮（「查看」「设为封面」「+ 添加一项」）不写 type 时会走完整条提交链路：
-          // 校验 → onFinish → 请求发出 → 抽屉关闭，而且失败得很安静——不抛错、不打 console，
-          // 类型检查与构建全绿，现象只是「点了个查看按钮，抽屉怎么关了」。等发现时数据已经写回去了。
-          // shadcn/ui、Ant Design、MUI 都在这一层抹平这个 HTML 历史包袱，理由相同：
-          // 按钮出现在表单里是常态，而其中绝大多数不是提交按钮。
-          // 库内所有提交按钮（ProForm / LoginForm / FormDialog / SearchForm）本来就显式写了
-          // type="submit"，故这次改动对库内零影响。放在展开之前，调用点写的 type 照样覆盖。
-          type="button"
-          className={cn(buttonVariants({ variant, tone, size, block, muted }), className)}
-          disabled={isDisabled}
-          // press 反馈走 motion 的 transform scale，与 CSS 的颜色过渡互不干扰；禁用态不缩放
-          whileTap={isDisabled ? undefined : pressable.whileTap}
-          transition={pressable.transition}
-          {...(props as HTMLMotionProps<"button">)}
-        >
-          {loading && <Loader2 className="size-4 animate-spin" aria-hidden />}
-          {children}
-        </m.button>
-      </LazyMotionProvider>
+      // 原生 <button>：按压反馈由底座的 `pressableClass`（纯 CSS）给，不再套 motion。
+      // 0.43.0 之前这里是 <m.button whileTap={{ scale: .97 }}>，而 0.43.0 把 pressableClass
+      // 放进了 BUTTON_BASE_CLASS —— 两条走的是不同 CSS 属性（motion 写内联 transform、
+      // Tailwind v4 的 scale-* 编译成独立的 scale 属性），互不覆盖而是**相乘**：
+      // 0.97 × 0.97 = 0.9409，按下去缩约 6%，是意图的两倍（#260）。
+      // 撤 motion 那半而不是撤 CSS 那半：CSS 版能被 reduced-motion 变体守住（whileTap 没有
+      // 对应守卫），且让 Button 少依赖一层 motion 运行时（domAnimation 此前占 Button 首屏
+      // 相当一块）。同一颗按钮上只允许一个缩放来源，见下方测试。
+      <button
+        ref={ref}
+        // 默认 type="button"，而不是原生 <button> 的默认值 submit（#219）。
+        // 表单里的辅助按钮（「查看」「设为封面」「+ 添加一项」）不写 type 时会走完整条提交链路：
+        // 校验 → onFinish → 请求发出 → 抽屉关闭，而且失败得很安静——不抛错、不打 console，
+        // 类型检查与构建全绿，现象只是「点了个查看按钮，抽屉怎么关了」。等发现时数据已经写回去了。
+        // shadcn/ui、Ant Design、MUI 都在这一层抹平这个 HTML 历史包袱，理由相同：
+        // 按钮出现在表单里是常态，而其中绝大多数不是提交按钮。
+        // 库内所有提交按钮（ProForm / LoginForm / FormDialog / SearchForm）本来就显式写了
+        // type="submit"，故这次改动对库内零影响。放在展开之前，调用点写的 type 照样覆盖。
+        type="button"
+        className={cn(buttonVariants({ variant, tone, size, block, muted }), className)}
+        disabled={isDisabled}
+        {...props}
+      >
+        {loading && <Loader2 className="size-4 animate-spin" aria-hidden />}
+        {children}
+      </button>
     );
   },
 );
