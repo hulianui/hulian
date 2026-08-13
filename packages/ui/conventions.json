@@ -2751,6 +2751,27 @@
       "source": "packages/ui/src/descriptions/descriptions.md"
     },
     {
+      "id": "component/descriptions/pitfall/3",
+      "scope": "descriptions",
+      "title": "Descriptions",
+      "rule": "键名**不折行**（折行的键列会跟着变宽变矮，整表的对齐基准就飘了）。键名确实很长时用 `labelWidth` 钉死列宽，别指望它自己换行。",
+      "source": "packages/ui/src/descriptions/descriptions.md"
+    },
+    {
+      "id": "component/descriptions/pitfall/4",
+      "scope": "descriptions",
+      "title": "Descriptions",
+      "rule": "`align=\"baseline\"` 在 `bordered` 下做不到（键格要撑满行高，底色才不会只包住文字），组件会在开发期点名并按 `start` 处理。要基线对齐就别开 `bordered`。",
+      "source": "packages/ui/src/descriptions/descriptions.md"
+    },
+    {
+      "id": "component/descriptions/pitfall/5",
+      "scope": "descriptions",
+      "title": "Descriptions",
+      "rule": "`emptyText` 只认「空」，不认「假」：`0` 会照常渲染成 `0`。这是刻意的——「0 条记录」是事实，不是缺值。",
+      "source": "packages/ui/src/descriptions/descriptions.md"
+    },
+    {
       "id": "component/design-canvas/pitfall/1",
       "scope": "design-canvas",
       "title": "DesignCanvas",
@@ -10070,7 +10091,7 @@
   ],
   "stats": {
     "componentDocs": 390,
-    "componentAdvisories": 1403,
-    "totalAdvisories": 1413
+    "componentAdvisories": 1406,
+    "totalAdvisories": 1416
   }
 }
