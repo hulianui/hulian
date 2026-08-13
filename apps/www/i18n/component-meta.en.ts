@@ -236,6 +236,16 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Surrounds text with animated sparkles generated on the client.",
     keywords: ["sparkles", "text", "typography"],
   },
+  "flip-text": {
+    shortName: "FlipText",
+    description: "Flips a heading character by character in 3D when the pointer enters it.",
+    keywords: ["flip", "text", "heading", "hover"],
+  },
+  "text-reveal": {
+    shortName: "TextReveal",
+    description: "Sweeps a colour band across the text, revealing it from transparent to solid.",
+    keywords: ["reveal", "text", "sweep", "progress"],
+  },
   "split-text": {
     shortName: "SplitText",
     description: "Splits text into animatable characters or words for staggered reveal effects.",

@@ -446,6 +446,9 @@ export const scenarioLoaders = {
         "@hulianui/ui-internal/flickering-grid/flickering-grid.showcase"
       )
     ).flickeringGridShowcase,
+  "flip-text": async () =>
+    (await import("@hulianui/ui-internal/flip-text/flip-text.showcase"))
+      .flipTextShowcase,
   "floating-lines": async () =>
     (
       await import(
@@ -1200,6 +1203,9 @@ export const scenarioLoaders = {
   "text-pressure": async () =>
     (await import("@hulianui/ui-internal/text-pressure/text-pressure.showcase"))
       .textPressureShowcase,
+  "text-reveal": async () =>
+    (await import("@hulianui/ui-internal/text-reveal/text-reveal.showcase"))
+      .textRevealShowcase,
   textarea: async () =>
     (await import("@hulianui/ui-internal/textarea/textarea.showcase"))
       .textareaShowcase,
@@ -2747,6 +2753,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: false,
     source: "packages/ui/src/flickering-grid/index.ts",
+  },
+  "flip-text": {
+    id: "flip-text",
+    scenarioId: "flip-text/frame-budget",
+    component: "FlipText",
+    entry: "@hulianui/ui/flip-text",
+    category: "animation",
+    categories: ["text", "typography"],
+    animated: true,
+    webgl: false,
+    source: "packages/ui/src/flip-text/index.ts",
   },
   "floating-lines": {
     id: "floating-lines",
@@ -5211,6 +5228,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: false,
     source: "packages/ui/src/text-pressure/index.ts",
+  },
+  "text-reveal": {
+    id: "text-reveal",
+    scenarioId: "text-reveal/frame-budget",
+    component: "TextReveal",
+    entry: "@hulianui/ui/text-reveal",
+    category: "animation",
+    categories: ["text", "typography"],
+    animated: true,
+    webgl: false,
+    source: "packages/ui/src/text-reveal/index.ts",
   },
   textarea: {
     id: "textarea",

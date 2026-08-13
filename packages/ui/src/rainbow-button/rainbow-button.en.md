@@ -40,6 +40,7 @@ import { RainbowButton } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | children | `ReactNode` | Button copy, transparently transmitted through the native button attribute |
+| render | `ReactElement` | Custom rendered element, such as `<a>` or Next.js `<Link>`; button styles and the bottom glow layer are merged into it. |
 
 ## Example
 ```tsx
@@ -47,6 +48,9 @@ import { RainbowButton } from "@hulianui/ui"
 
 // Slower animation
 <RainbowButton speed="5s">Get Started</RainbowButton>
+
+// A landing-page CTA is often a link: render swaps the tag, the rainbow and glow stay
+<RainbowButton render={<Link href="/pricing" />}>See pricing</RainbowButton>
 ```
 
 ## Usage guidelines

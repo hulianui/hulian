@@ -121,6 +121,9 @@ export * from "./glitch-text";
 export * from "./circular-text";
 export * from "./scroll-reveal";
 export * from "./true-focus";
+// 悬停交互与「进行中」两档字效（既有 20+ 件全是一次性进场，缺这两档）
+export * from "./flip-text";
+export * from "./text-reveal";
 // 通用逐级揭示原语（块级·非文字）：Reveal / Stagger / StaggerItem
 export * from "./reveal";
 // effects: MagicUI 特效按钮批

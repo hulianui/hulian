@@ -211,6 +211,8 @@ export { glitchTextShowcase } from "./glitch-text/glitch-text.showcase";
 export { circularTextShowcase } from "./circular-text/circular-text.showcase";
 export { scrollRevealShowcase } from "./scroll-reveal/scroll-reveal.showcase";
 export { trueFocusShowcase } from "./true-focus/true-focus.showcase";
+export { flipTextShowcase } from "./flip-text/flip-text.showcase";
+export { textRevealShowcase } from "./text-reveal/text-reveal.showcase";
 // AI 智能体
 export { typingDotsShowcase } from "./typing-dots/typing-dots.showcase";
 export { chatMessageShowcase } from "./chat-message/chat-message.showcase";

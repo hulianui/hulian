@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import type { EffectButtonSize } from "../button/button-base";
 
 export interface PulsatingButtonProps extends ComponentPropsWithoutRef<"button"> {
@@ -12,4 +12,10 @@ export interface PulsatingButtonProps extends ComponentPropsWithoutRef<"button">
   pulseColor?: string;
   /** 一轮脉冲秒数，默认 1.5s */
   duration?: string;
+
+  /**
+   * 渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「脉冲样式的链接」CTA。
+   * 样式与脉冲光环会合并进该元素；文案仍取本组件的 `children`。
+   */
+  render?: ReactElement;
 }

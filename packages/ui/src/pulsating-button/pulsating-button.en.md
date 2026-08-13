@@ -41,6 +41,7 @@ import { PulsatingButton } from "@hulianui/ui"
 | Slot | Type | Description |
 |------|------|------|
 | children | `ReactNode` | Button copy, transparently transmitted through the native button attribute |
+| render | `ReactElement` | Custom rendered element, such as `<a>` or Next.js `<Link>`; button styles and the pulsing halo are merged into it. |
 
 ## Example
 ```tsx
@@ -48,6 +49,9 @@ import { PulsatingButton } from "@hulianui/ui"
 
 // Slower pulse
 <PulsatingButton duration="2.5s">Subscribe now</PulsatingButton>
+
+// When the CTA is a link, render swaps the tag and the halo stays
+<PulsatingButton render={<Link href="/signup" />}>Sign up</PulsatingButton>
 ```
 
 ## Usage guidelines

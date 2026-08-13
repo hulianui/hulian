@@ -141,4 +141,29 @@ describe("RippleButton", () => {
     fireEvent.click(btn);
     expect(onClick).toHaveBeenCalledOnce();
   });
+  it("render 接管元素：长得像实心按钮的导航链接（#256）", () => {
+    const { container } = render(
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <RippleButton render={<a href="/docs" />}>看文档</RippleButton>,
+    );
+    const anchor = container.querySelector("a") as HTMLAnchorElement;
+    expect(anchor.getAttribute("href")).toBe("/docs");
+    expect(anchor.textContent).toContain("看文档");
+    expect(container.querySelector("button")).toBeFalsy();
+    // <a> 默认 display:inline，行内盒裁不住波纹：inline-flex 与 overflow-hidden 必须一起过去
+    expect(anchor.getAttribute("class")).toContain("inline-flex");
+    expect(anchor.getAttribute("class")).toContain("overflow-hidden");
+  });
+  it("render 下点击照样出波纹，且原 onClick 仍被调用", () => {
+    const onClick = vi.fn();
+    const { container } = render(
+      // href 用锚点而非路径：jsdom 不实现真实导航，点 `/docs` 会打一行 not-implemented 噪音
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <RippleButton render={<a href="#docs" />} onClick={onClick}>看文档</RippleButton>,
+    );
+    const anchor = container.querySelector("a")!;
+    fireEvent.click(anchor);
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(container.querySelector('[class*="hulian-button-ripple"]')).not.toBeNull();
+  });
 });

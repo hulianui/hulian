@@ -40,6 +40,7 @@ import { RainbowButton } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 按钮文案，经原生 button 属性透传 |
+| render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与底部光晕层合并进该元素；文案仍取 children |
 
 ## 示例
 ```tsx
@@ -47,6 +48,9 @@ import { RainbowButton } from "@hulianui/ui"
 
 // 放慢流动
 <RainbowButton speed="5s">Get Started</RainbowButton>
+
+// 落地页主 CTA 常常是链接：render 换掉标签，彩虹与光晕照旧
+<RainbowButton render={<Link href="/pricing" />}>看价格</RainbowButton>
 ```
 
 ## 禁忌 / 坑

@@ -183,6 +183,58 @@
   }
 }
 
+/* effects/TextReveal 循环揭示扫光：一条元素宽 3 倍的渐变，窗口从最右滑到最左。
+   起点=整串透明（未揭示），终点=整串 textColor（已揭示）。带 fill-mode: both 使用，
+   于是未开扫时停在起点、扫完停在终点；减弱动效下动画整条不存在，落回静态的
+   background-position(0 0) —— 也就是整串 textColor，不会「关掉动画字就整串消失」。 */
+@keyframes hulian-text-reveal {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+/* effects/TextReveal 多串轮换时的占位串：只撑宽度，文字不进 DOM 文本
+   （否则状态标签的 textContent 会是所有阶段名连在一起）。visibility:hidden 保留占位。 */
+[data-hulian-ghost-text]::after {
+  content: attr(data-hulian-ghost-text);
+}
+
+/* effects/FlipText 背面的字：用伪元素承载，不进 DOM 文本。
+   写成真节点的话背面就是同一个字的第二份拷贝，标题的 textContent 会变成「状状态态」，
+   框选复制与爬虫读到的文案一起被污染。写成 Tailwind 任意值类（after:[content:attr(…)]）
+   则要赌扫描器生成得出来，而这条规则失手的表现是「翻到一半变空白」——所以落成真 CSS 规则。 */
+[data-hulian-flip-back]::after {
+  content: attr(data-hulian-flip-back);
+}
+
+/* effects/FlipText 悬停逐字 3D 翻面（四档方向各一条）。
+   没有 from：起点取元素静息的 transform（none），少写四条恒等式。
+   也刻意**不加 forwards**：正反两面渲染的是同一个字，一轮播完容器自动回到 0°，
+   从背面切回正面那一帧观众看不出差别——「翻完瞬时归零」靠的就是这个。 */
+@keyframes hulian-text-flip-top {
+  to {
+    transform: rotateX(-90deg);
+  }
+}
+@keyframes hulian-text-flip-bottom {
+  to {
+    transform: rotateX(90deg);
+  }
+}
+@keyframes hulian-text-flip-left {
+  to {
+    transform: rotateY(90deg);
+  }
+}
+@keyframes hulian-text-flip-right {
+  to {
+    transform: rotateY(-90deg);
+  }
+}
+
 /* effects/ShimmerButton 火花滑动（@container 宽度内平移） */
 @keyframes hulian-shimmer-slide {
   to {

@@ -2,7 +2,11 @@
 import { forwardRef, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
-import { BUTTON_SIZE_CLASS, EFFECT_BUTTON_BASE_CLASS } from "../button/button-base";
+import {
+  BUTTON_SIZE_CLASS,
+  EFFECT_BUTTON_BASE_CLASS,
+  renderAsElement,
+} from "../button/button-base";
 import type {
   RippleButtonProps,
   RippleButtonTone,
@@ -107,6 +111,7 @@ export const RippleButton = forwardRef<HTMLButtonElement, RippleButtonProps>(
       children,
       onClick,
       style,
+      render,
       ...props
     },
     ref,
@@ -125,22 +130,24 @@ export const RippleButton = forwardRef<HTMLButtonElement, RippleButtonProps>(
     onClick?.(e);
   };
 
-  return (
-    <button
-      ref={ref}
-      {...props}
-      onClick={handleClick}
-      style={{ "--hulian-ripple-duration": duration, ...style } as CSSProperties}
-      // 共享 Button 的排布 / 尺寸 / 焦点环 / 禁用态；波纹层是自己的（#126）。配色跟随 variant/tone（#233）。
-      className={cn(
-        EFFECT_BUTTON_BASE_CLASS,
-        BUTTON_SIZE_CLASS[size],
-        "relative cursor-pointer overflow-hidden rounded-[var(--radius)]",
-        rippleColorVariants({ variant, tone }),
-        "transition-transform duration-200 active:translate-y-px",
-        className,
-      )}
-    >
+  const mergedStyle = { "--hulian-ripple-duration": duration, ...style } as CSSProperties;
+
+  // 共享 Button 的排布 / 尺寸 / 焦点环 / 禁用态；波纹层是自己的（#126）。配色跟随 variant/tone（#233）。
+  //
+  // `overflow-hidden` 与底座里的 `inline-flex` 都是波纹能成立的前提，落到 <a> 上时必须一起过去：
+  // <a> 默认是 `display: inline`，行内盒上的 overflow 裁不出圆角矩形，波纹会溢出成一片色块（#256）。
+  // 两者都在这条串里，cloneElement 合并 className 时天然带过去，不需要额外处理。
+  const mergedClassName = cn(
+    EFFECT_BUTTON_BASE_CLASS,
+    BUTTON_SIZE_CLASS[size],
+    "relative cursor-pointer overflow-hidden rounded-[var(--radius)]",
+    rippleColorVariants({ variant, tone }),
+    "transition-transform duration-200 active:translate-y-px",
+    className,
+  );
+
+  const inner = (
+    <>
       <span className="relative z-10">{children}</span>
       <span className="pointer-events-none absolute inset-0">
         {ripples.map((r) => (
@@ -152,6 +159,22 @@ export const RippleButton = forwardRef<HTMLButtonElement, RippleButtonProps>(
           />
         ))}
       </span>
+    </>
+  );
+
+  // render：渲染为自定义元素（<a>/<Link>）而非 button，用于「实心按钮样式的导航链接」。
+  if (render)
+    return renderAsElement(
+      render,
+      { ...props, onClick: handleClick, ref },
+      mergedClassName,
+      mergedStyle,
+      inner,
+    );
+
+  return (
+    <button ref={ref} {...props} onClick={handleClick} style={mergedStyle} className={mergedClassName}>
+      {inner}
     </button>
   );
   },

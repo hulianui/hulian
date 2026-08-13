@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import type { EffectButtonSize } from "../button/button-base";
 
 /**
@@ -7,6 +7,10 @@ import type { EffectButtonSize } from "../button/button-base";
  * 少 `link` 的判据是「波纹要有盒子」：`link` 那一档专门去掉高度与横向内边距，回归纯文字链接，
  * 而波纹是从点击落点向外扩散、由 `overflow-hidden` 裁在按钮盒子里的——落在一个 `h-auto px-0`
  * 的文字上，波纹要么裁成一条缝要么整片糊住文字。想要「链接样式 + 点击反馈」请用 `Button variant="link"`。
+ *
+ * ⚠️ 这里说的是**外观**，不是**语义**：本件当然可以是一个真链接。需要「长得像实心按钮、但要能
+ * 中键新开标签页 / 右键复制链接 / 被爬虫看见」的导航，用 `render={<a href="…" />}`（见 `render`），
+ * 那条路子渲染出的是 `<a>`、波纹照旧。两件事此前容易被这段注释读混（#256）。
  */
 export type RippleButtonVariant = "solid" | "outline" | "ghost" | "soft";
 
@@ -46,4 +50,13 @@ export interface RippleButtonProps extends ComponentPropsWithoutRef<"button"> {
   rippleColor?: string;
   /** 单次波纹时长，默认 600ms */
   duration?: string;
+
+  /**
+   * 渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「实心按钮样式的导航链接」。
+   * 样式与波纹层会合并进该元素；文案仍取本组件的 `children`。
+   *
+   * 与 `variant` 那段注释里说的「用 `Button variant="link"`」不冲突：那条讲的是外观（要不要按钮盒子），
+   * 这条讲的是标签语义（要不要 `<a>`）。
+   */
+  render?: ReactElement;
 }

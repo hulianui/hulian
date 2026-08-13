@@ -1418,6 +1418,58 @@
       ]
     },
     {
+      "name": "flip-text",
+      "type": "registry:ui",
+      "title": "FlipText",
+      "description": "翻面标题 · 鼠标移入时逐字 3D 翻面(收 children 不收 text · as 参与类型推导让它自己就是 h1/h2 · 一次性播完不跟随 hover 回退 · 纯 CSS 关键帧不引 motion · 背面…",
+      "categories": [
+        "typography"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { FlipText } from \"@hulianui/ui\"",
+        "exports": [
+          "FlipText"
+        ],
+        "types": [
+          "FlipTextProps",
+          "FlipTextOwnProps",
+          "FlipDirection",
+          "FlipSplitType"
+        ],
+        "group": "text",
+        "tags": [
+          "animated"
+        ],
+        "animated": true,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/flip-text/flip-text.md",
+        "docLocal": "packages/ui/src/flip-text/flip-text.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/flip-text/flip-text.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/flip-text/flip-text.tsx"
+        },
+        {
+          "path": "components/hulianui/flip-text/flip-text.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/flip-text/flip-text.types.ts"
+        },
+        {
+          "path": "components/hulianui/flip-text/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/flip-text/index.ts"
+        }
+      ]
+    },
+    {
       "name": "math",
       "type": "registry:ui",
       "title": "Formula",
@@ -2423,6 +2475,55 @@
           "path": "components/hulianui/text-pressure/text-pressure.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/text-pressure/text-pressure.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "text-reveal",
+      "type": "registry:ui",
+      "title": "TextReveal",
+      "description": "揭示扫光 · 一条多色带横扫，带过之处把文字从透明揭示成实色(repeat 循环表示「进行中」· 多串轮换按最宽串预留宽度不跳 · 减弱动效落静态终态而不是整串消失 · 纯 CSS 关键帧不引 motion) · ty…",
+      "categories": [
+        "typography"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { TextReveal } from \"@hulianui/ui\"",
+        "exports": [
+          "TextReveal"
+        ],
+        "types": [
+          "TextRevealProps"
+        ],
+        "group": "text",
+        "tags": [
+          "animated"
+        ],
+        "animated": true,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/text-reveal/text-reveal.md",
+        "docLocal": "packages/ui/src/text-reveal/text-reveal.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/text-reveal/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/text-reveal/index.ts"
+        },
+        {
+          "path": "components/hulianui/text-reveal/text-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/text-reveal/text-reveal.tsx"
+        },
+        {
+          "path": "components/hulianui/text-reveal/text-reveal.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/text-reveal/text-reveal.types.ts"
         }
       ]
     },

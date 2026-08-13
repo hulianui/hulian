@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.42.0 · 391 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.42.0 · 393 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -1684,6 +1684,81 @@ import { FallingText } from "@hulianui/ui"
 [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading) · [Prose](https://hulianui.haloritual.com/zh/components/prose) · [Markdown](https://hulianui.haloritual.com/zh/components/markdown) · [AuroraText](https://hulianui.haloritual.com/zh/components/aurora-text) · [AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# FlipText
+
+**导出**：`FlipText`
+
+> 翻面标题 · 鼠标移入时逐字 3D 翻面(收 children 不收 text · as 参与类型推导让它自己就是 h1/h2 · 一次性播完不跟随 hover 回退 · 纯 CSS 关键帧不引 motion · 背面走伪元素不污染 textContent) · typography/text · #animated
+
+## 何时用
+
+页面/卡片的**主标题**需要一点「摸上去有反应」的交互时用：鼠标移入，标题逐字翻面。
+
+它与库里其它字效件的分界很清楚——那些是**进场**动画（滚入视口播一次就静止），本件是**悬停交互**（每次移入都会再翻一次）。要首屏逐字位移淡入用 [SplitText](https://hulianui.haloritual.com/zh/components/split-text)；要从模糊解析到清晰用 [BlurText](https://hulianui.haloritual.com/zh/components/blur-text)；要表示「这件事正在进行」用 [TextReveal](https://hulianui.haloritual.com/zh/components/text-reveal)；普通静态标题用 [Heading](https://hulianui.haloritual.com/zh/components/heading)。
+
+配 [PageHeader](https://hulianui.haloritual.com/zh/components/page-header) 的 `titleAs` 用：那个 prop 要的正是「自带动画、并且自己就是那个标签」的标题组件。
+
+## 导入
+```ts
+import { FlipText } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| direction | `"top" \| "bottom" \| "left" \| "right"` | `"top"` | 新字面从哪一侧翻上来（说的是新字面**进入**的方向） |
+| splitType | `"char" \| "word"` | `"char"` | 切分粒度：char 逐字（中文友好）/ word 逐词（按空白切，避免西文单词被拆断行） |
+| duration | `number` | `0.5` | 单字翻面时长（秒） |
+| stagger | `number` | `30` | 相邻字的错峰毫秒，等价于 SplitText 的 `delay` |
+| as | `ElementType` | `"span"` | 渲染标签。事件与属性类型跟着它走 |
+
+其余对应标签的原生属性（`className` / `id` / `data-*` / `ref` 等）透传。
+
+## Events
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onMouseEnter | `(e: MouseEvent<HTMLElement>) => void` | 翻转就挂在这个事件上，但组件**先调用你传的这个**再触发翻转，不会顶掉它 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 标题内容。内部递归取纯文本再切分，**嵌套标记不保留**；取不出文字时原样渲染 children |
+
+## 示例
+```tsx
+// 标题自己就是 h1，不套壳
+<FlipText as="h1" className="text-lg font-semibold tracking-tight">AI 状态</FlipText>
+
+// 变量/表达式直接传（这正是收 children 而不是 text: string 的原因）
+<FlipText as="h2">{name || "未命名客户"}</FlipText>
+
+// 配 PageHeader 的 titleAs
+<PageHeader title={templateName} titleAs={FlipText} />
+
+// 换方向、放慢节奏
+<FlipText direction="left" duration={0.8} stagger={90}>慢一点的波浪</FlipText>
+
+// 西文标题按词切，避免长单词逐字后断行
+<FlipText splitType="word" as="h2">Deploy in seconds</FlipText>
+```
+
+## 禁忌 / 坑
+
+- **别套在 `<h1>` 里，用 `as`。** `<h1><FlipText/></h1>` 既是多余嵌套，也会让读屏读出两条 heading（一条来自 h1，一条来自本件的 `aria-label`）。`as` 参与类型推导，`as="h1"` 之后事件与属性类型都跟着 `h1` 走。
+- **`children` 里的嵌套标记会被摊平。** 内部递归取纯文本再逐字切分，`<em>` / `<span>` 之类的结构留不下来。真需要富文本标题，说明它不该逐字翻转。
+- **一轮播完不跟随 hover 回退。** 指针中途划走不会把动画停在斜面上——那一帧是能看出来的。移入即完整播一轮，播放中重复移入不重开（重入保护）。
+- **翻转是正交投影，不带透视。** 视觉上是翻页板而不是立方体。想要纵深自己在 `className` 上加 `[perspective:800px]`，背面的 `translateZ(0.5lh)` 已经按半个行高摆好了。
+- **背面的字不进 DOM 文本。** 它靠 `[data-hulian-flip-back]::after { content: attr(…) }`（规则在 `preset-core.css`）渲染，所以标题的 `textContent` 就是标题本身。写成真节点的话会变成「状状态态」，框选复制与爬虫读到的文案一起被污染。这也意味着**必须引入库的 preset CSS**，否则翻到一半是空白。
+- 读屏读整句不读碎字：根挂 `aria-label`（取自 children 的纯文本），各字段 `aria-hidden`。传自己的 `aria-label` 可以覆盖它。
+- `prefers-reduced-motion: reduce` 下不翻转，正面常驻——两面渲染的是同一个字，静息态本来就是完整可读的。
+
+## 相关
+[SplitText](https://hulianui.haloritual.com/zh/components/split-text) · [BlurText](https://hulianui.haloritual.com/zh/components/blur-text) · [TextReveal](https://hulianui.haloritual.com/zh/components/text-reveal) · [ScrollReveal](https://hulianui.haloritual.com/zh/components/scroll-reveal) · [WordRotate](https://hulianui.haloritual.com/zh/components/word-rotate) · [PageHeader](https://hulianui.haloritual.com/zh/components/page-header) · [Heading](https://hulianui.haloritual.com/zh/components/heading)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # Formula
 
 **导出**：`Formula` · `formulaToPlain` · `splitBareMath` · `hasBareMath` · `splitMathSegments` · `mathToPlain` · `QuestionCard`
@@ -2858,6 +2933,70 @@ import { TextPressure } from "@hulianui/ui"
 
 ## 相关
 [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading) · [Prose](https://hulianui.haloritual.com/zh/components/prose) · [Markdown](https://hulianui.haloritual.com/zh/components/markdown) · [AuroraText](https://hulianui.haloritual.com/zh/components/aurora-text) · [AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# TextReveal
+
+**导出**：`TextReveal`
+
+> 揭示扫光 · 一条多色带横扫，带过之处把文字从透明揭示成实色(repeat 循环表示「进行中」· 多串轮换按最宽串预留宽度不跳 · 减弱动效落静态终态而不是整串消失 · 纯 CSS 关键帧不引 motion) · typography/text · #animated
+
+## 何时用
+
+有两种用法，第二种才是它存在的理由：
+
+1. **进场**：滚入视口扫一轮，停在全部揭示的终态（默认行为）。
+2. **「进行中」的状态文字**：`repeat` 循环扫，表示后台长任务正在推进（「OCR 中」「解析中」「归档中」）。
+
+第二种是库里此前的空白：20 多个字效件按用途只有「一次性进场」一类，播完就静。而「进行中」的动画**停下来本身就是错误信号**——用户是靠它还在动来判断后台没死（#255）。
+
+与邻居的分界：[AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text) 是在**已经可见**的文字上加一道单色高光，不做「从透明揭示成实色」；[StreamingText](https://hulianui.haloritual.com/zh/components/streaming-text) 的语义是「token 正在到达」，文本要由父级增长，而本件的文案是**整串已知**的阶段名；[SplitText](https://hulianui.haloritual.com/zh/components/split-text) / [BlurText](https://hulianui.haloritual.com/zh/components/blur-text) 是一次性进场。
+
+## 导入
+```ts
+import { TextReveal } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| text * | `string \| string[]` | — | 要揭示的文字。传数组即多串轮换（配 `repeat`），容器宽度按最宽那串预留 |
+| colors | `string[]` | chart-1..5 | 扫光带的颜色，吃主题。传单色即单色带 |
+| textColor | `string` | `var(--color-foreground)` | 已揭示部分的文字色。**不能传 `currentColor`**，见下 |
+| duration | `number` | `2` | 扫完一轮的秒数 |
+| repeat | `boolean` | `false` | 循环扫。「进行中」语义必开 |
+| startOnView | `boolean` | `true` | 滚入视口才开始。侧边栏里一开始就在视口内的标签传 `false` |
+| once | `boolean` | `true` | 只扫一次；`false` 则每次滚回视口重扫。仅在 `startOnView` 为 `true` 时有意义 |
+
+其余 `<span>` 原生属性（`className` / `title` / `style` 等）透传。
+
+## 示例
+```tsx
+// 后台长任务的阶段名：一直扫到任务结束
+<TextReveal text={statusTag} repeat startOnView={false} />
+
+// 多串轮换，宽度按最宽那串预留，右边的元素不会跟着跳
+<TextReveal text={["OCR 中", "解析中", "归档中"]} repeat startOnView={false} />
+
+// 进场用法：滚入视口揭示一次
+<TextReveal text="让开发更快更稳更美" className="text-2xl font-bold" />
+
+// 单色带 + 快一点
+<TextReveal text="正在同步" colors={["var(--color-primary)"]} duration={1.2} repeat startOnView={false} />
+```
+
+## 禁忌 / 坑
+
+- **`textColor` 不能传 `currentColor`。** 文字本身是 `color: transparent`（靠背景渐变透过字形显色），`currentColor` 解析出来的就是那个 transparent，整串会消失。要跟随容器色请显式传一个 token，如 `textColor="var(--color-primary)"`。
+- **颜色变量要带 `--color-` 前缀。** 本库 `@theme` 里的真名如此，裸 `var(--primary)` / `var(--chart-1)` 在渐变里不解析。
+- **「进行中」用法必须 `repeat`。** 不开的话扫一轮就停在终态，看上去和普通静态文字没区别——而这类标签的信息量恰恰在「它还在动」。
+- **减弱动效下不会整串消失。** 动画带 `fill-mode: both`，`prefers-reduced-motion: reduce` 时动画整条不存在，落回静态的 `background-position` = 整串 `textColor`。这是结构上排除的，不靠 JS 把扫光位置 set 到终点。
+- **多串轮换的宽度预留是靠把所有串叠进同一个网格单元实现的**，不测量、不写死，换字体换字号都不会失准。占位串的文字挂在 `data-hulian-ghost-text` 上由伪元素渲染，不进 DOM 文本——否则这个标签的 `textContent` 会是所有阶段名连在一起。这条依赖库的 preset CSS，正常接入即可。
+- 传单串时宽度跟着内容走（和普通文本一样）。父级切换阶段名导致宽度变化时若要固宽，把所有可能的阶段名作为数组传进来，或自己在 `className` 上给一个 `min-w-*`。
+
+## 相关
+[AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text) · [StreamingText](https://hulianui.haloritual.com/zh/components/streaming-text) · [SplitText](https://hulianui.haloritual.com/zh/components/split-text) · [BlurText](https://hulianui.haloritual.com/zh/components/blur-text) · [FlipText](https://hulianui.haloritual.com/zh/components/flip-text) · [WordRotate](https://hulianui.haloritual.com/zh/components/word-rotate) · [Spinner](https://hulianui.haloritual.com/zh/components/spinner)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # TrueFocus
@@ -6767,6 +6906,7 @@ import { PulsatingButton } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 按钮文案，经原生 button 属性透传 |
+| render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与脉冲光环合并进该元素；文案仍取 children |
 
 ## 示例
 ```tsx
@@ -6774,6 +6914,9 @@ import { PulsatingButton } from "@hulianui/ui"
 
 // 放慢脉冲
 <PulsatingButton duration="2.5s">立即订阅</PulsatingButton>
+
+// CTA 是链接时用 render 换标签，脉冲光环照旧
+<PulsatingButton render={<Link href="/signup" />}>立即注册</PulsatingButton>
 ```
 
 ## 禁忌 / 坑
@@ -6918,6 +7061,7 @@ import { RainbowButton } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 按钮文案，经原生 button 属性透传 |
+| render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与底部光晕层合并进该元素；文案仍取 children |
 
 ## 示例
 ```tsx
@@ -6925,6 +7069,9 @@ import { RainbowButton } from "@hulianui/ui"
 
 // 放慢流动
 <RainbowButton speed="5s">Get Started</RainbowButton>
+
+// 落地页主 CTA 常常是链接：render 换掉标签，彩虹与光晕照旧
+<RainbowButton render={<Link href="/pricing" />}>看价格</RainbowButton>
 ```
 
 ## 禁忌 / 坑
@@ -7456,6 +7603,7 @@ import { RippleButton } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 按钮内容（文案/图标） |
+| render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与波纹层合并进该元素；文案仍取 children |
 
 ## 示例
 ```tsx
@@ -7471,12 +7619,17 @@ import { RippleButton } from "@hulianui/ui"
 <RippleButton tone="danger">删除</RippleButton>
 <RippleButton variant="outline" tone="danger">删除</RippleButton>
 ```
+```tsx
+// 长得像实心按钮、但需要是真链接（中键新开标签页 / 右键复制链接 / 爬虫可见）
+<RippleButton render={<Link href="/docs" />}>看文档</RippleButton>
+```
 
 ## 禁忌 / 坑
 
 - **与 [Button](https://hulianui.haloritual.com/zh/components/button) 共享底座与配色档**：排布、`size` 三档（32/40/48px 高）、焦点环、禁用态视觉、`forwardRef` 来自同一份 `EFFECT_BUTTON_BASE_CLASS` + `BUTTON_SIZE_CLASS`；`variant` × `tone` 的色号与 Button 逐格对齐（#233）。**不共享的是圆角、阴影与颜色 hover**——圆角是特效件自己的，`shadow-sm` 四个特效件一个都没有，而颜色 hover 与本件底座冲突（下一条）。0.27.0 前四个特效件各写各的，这些全缺，`px-6 py-3` 按内容撑高，工具栏里一排按钮会参差（#126）。
 - **没有颜色 hover，交互反馈由波纹负责。** 特效件的底座刻意不含 `transition-colors`（它们变的是背景动画不是颜色），挂 `hover:bg-*` 会是一次无过渡的跳变。所以 `variant="ghost"` 的静息态就是一段文字，鼠标悬停不变底——要「悬停就有反应」的次要操作请用 `Button variant="ghost"`，本件的反馈是点下去那一下。
 - **`variant` 没有 `link`，`tone` 没有 `current`。** 前者是因为波纹要有盒子：`link` 去掉了高度与横向内边距，波纹落在 `h-auto px-0` 的文字上会裁成一条缝或整片糊住文字。后者是因为波纹默认色要从 tone 推导，而 `current` 的意思正是「别设色、跟随容器继承」——真要跟随容器请显式传 `rippleColor="currentColor"`。
+- **`variant` 讲外观，`render` 讲语义，别读混。** 上一条说的「要链接样式请用 `Button variant="link"`」指的是**长相**（要不要按钮盒子）；如果你要的是「长得就是这颗实心按钮、但它得是个 `<a>`」——中键新开标签页、右键复制链接、爬虫能看见——那是 `render={<a href="…" />}`，波纹与配色一样不少（#256）。
 - 波纹色默认按档推导：实心档用该 tone 的**前景色**（深底上的浅波纹），描边 / 幽灵 / 浅底档用该 tone 的**本色**。反过来（浅底上用前景色）会得到一圈几乎看不见的白，所以自定义 `rippleColor` 时注意底色。
 - 波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。
 

@@ -41,6 +41,7 @@ import { PulsatingButton } from "@hulianui/ui"
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 按钮文案，经原生 button 属性透传 |
+| render | `ReactElement` | 渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与脉冲光环合并进该元素；文案仍取 children |
 
 ## 示例
 ```tsx
@@ -48,6 +49,9 @@ import { PulsatingButton } from "@hulianui/ui"
 
 // 放慢脉冲
 <PulsatingButton duration="2.5s">立即订阅</PulsatingButton>
+
+// CTA 是链接时用 render 换标签，脉冲光环照旧
+<PulsatingButton render={<Link href="/signup" />}>立即注册</PulsatingButton>
 ```
 
 ## 禁忌 / 坑

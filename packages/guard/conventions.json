@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -3498,6 +3498,55 @@
       "title": "FlickeringGrid",
       "rule": "`color` 可传 `var(--color-*)`，组件会逐帧 getComputedStyle 解析（与只吃 rgb 的 Particles 不同），但每帧解析有微小成本。",
       "source": "packages/ui/src/flickering-grid/flickering-grid.md"
+    },
+    {
+      "id": "component/flip-text/pitfall/1",
+      "scope": "flip-text",
+      "title": "FlipText",
+      "rule": "**别套在 `<h1>` 里，用 `as`。** `<h1><FlipText/></h1>` 既是多余嵌套，也会让读屏读出两条 heading（一条来自 h1，一条来自本件的 `aria-label`）。`as` 参与类型推导，`as=\"h1\"` 之后事件与属性类型都跟着 `h1` 走。",
+      "source": "packages/ui/src/flip-text/flip-text.md"
+    },
+    {
+      "id": "component/flip-text/pitfall/2",
+      "scope": "flip-text",
+      "title": "FlipText",
+      "rule": "**`children` 里的嵌套标记会被摊平。** 内部递归取纯文本再逐字切分，`<em>` / `<span>` 之类的结构留不下来。真需要富文本标题，说明它不该逐字翻转。",
+      "source": "packages/ui/src/flip-text/flip-text.md"
+    },
+    {
+      "id": "component/flip-text/pitfall/3",
+      "scope": "flip-text",
+      "title": "FlipText",
+      "rule": "**一轮播完不跟随 hover 回退。** 指针中途划走不会把动画停在斜面上——那一帧是能看出来的。移入即完整播一轮，播放中重复移入不重开（重入保护）。",
+      "source": "packages/ui/src/flip-text/flip-text.md"
+    },
+    {
+      "id": "component/flip-text/pitfall/4",
+      "scope": "flip-text",
+      "title": "FlipText",
+      "rule": "**翻转是正交投影，不带透视。** 视觉上是翻页板而不是立方体。想要纵深自己在 `className` 上加 `[perspective:800px]`，背面的 `translateZ(0.5lh)` 已经按半个行高摆好了。",
+      "source": "packages/ui/src/flip-text/flip-text.md"
+    },
+    {
+      "id": "component/flip-text/pitfall/5",
+      "scope": "flip-text",
+      "title": "FlipText",
+      "rule": "**背面的字不进 DOM 文本。** 它靠 `[data-hulian-flip-back]::after { content: attr(…) }`（规则在 `preset-core.css`）渲染，所以标题的 `textContent` 就是标题本身。写成真节点的话会变成「状状态态」，框选复制与爬虫读到的文案一起被污染。这也意味着**必须引入库的 preset CSS**，否则翻到一半是空白。",
+      "source": "packages/ui/src/flip-text/flip-text.md"
+    },
+    {
+      "id": "component/flip-text/pitfall/6",
+      "scope": "flip-text",
+      "title": "FlipText",
+      "rule": "读屏读整句不读碎字：根挂 `aria-label`（取自 children 的纯文本），各字段 `aria-hidden`。传自己的 `aria-label` 可以覆盖它。",
+      "source": "packages/ui/src/flip-text/flip-text.md"
+    },
+    {
+      "id": "component/flip-text/pitfall/7",
+      "scope": "flip-text",
+      "title": "FlipText",
+      "rule": "`prefers-reduced-motion: reduce` 下不翻转，正面常驻——两面渲染的是同一个字，静息态本来就是完整可读的。",
+      "source": "packages/ui/src/flip-text/flip-text.md"
     },
     {
       "id": "component/floating-lines/pitfall/1",
@@ -7493,11 +7542,18 @@
       "id": "component/ripple-button/pitfall/4",
       "scope": "ripple-button",
       "title": "RippleButton",
-      "rule": "波纹色默认按档推导：实心档用该 tone 的**前景色**（深底上的浅波纹），描边 / 幽灵 / 浅底档用该 tone 的**本色**。反过来（浅底上用前景色）会得到一圈几乎看不见的白，所以自定义 `rippleColor` 时注意底色。",
+      "rule": "**`variant` 讲外观，`render` 讲语义，别读混。** 上一条说的「要链接样式请用 `Button variant=\"link\"`」指的是**长相**（要不要按钮盒子）；如果你要的是「长得就是这颗实心按钮、但它得是个 `<a>`」——中键新开标签页、右键复制链接、爬虫能看见——那是 `render={<a href=\"…\" />}`，波纹与配色一样不少（#256）。",
       "source": "packages/ui/src/ripple-button/ripple-button.md"
     },
     {
       "id": "component/ripple-button/pitfall/5",
+      "scope": "ripple-button",
+      "title": "RippleButton",
+      "rule": "波纹色默认按档推导：实心档用该 tone 的**前景色**（深底上的浅波纹），描边 / 幽灵 / 浅底档用该 tone 的**本色**。反过来（浅底上用前景色）会得到一圈几乎看不见的白，所以自定义 `rippleColor` 时注意底色。",
+      "source": "packages/ui/src/ripple-button/ripple-button.md"
+    },
+    {
+      "id": "component/ripple-button/pitfall/6",
       "scope": "ripple-button",
       "title": "RippleButton",
       "rule": "波纹动画在 `prefers-reduced-motion: reduce` 下自动抑制，无需手动处理。",
@@ -9226,6 +9282,48 @@
       "source": "packages/ui/src/text-pressure/text-pressure.md"
     },
     {
+      "id": "component/text-reveal/pitfall/1",
+      "scope": "text-reveal",
+      "title": "TextReveal",
+      "rule": "**`textColor` 不能传 `currentColor`。** 文字本身是 `color: transparent`（靠背景渐变透过字形显色），`currentColor` 解析出来的就是那个 transparent，整串会消失。要跟随容器色请显式传一个 token，如 `textColor=\"var(--color-primary)\"`。",
+      "source": "packages/ui/src/text-reveal/text-reveal.md"
+    },
+    {
+      "id": "component/text-reveal/pitfall/2",
+      "scope": "text-reveal",
+      "title": "TextReveal",
+      "rule": "**颜色变量要带 `--color-` 前缀。** 本库 `@theme` 里的真名如此，裸 `var(--primary)` / `var(--chart-1)` 在渐变里不解析。",
+      "source": "packages/ui/src/text-reveal/text-reveal.md"
+    },
+    {
+      "id": "component/text-reveal/pitfall/3",
+      "scope": "text-reveal",
+      "title": "TextReveal",
+      "rule": "**「进行中」用法必须 `repeat`。** 不开的话扫一轮就停在终态，看上去和普通静态文字没区别——而这类标签的信息量恰恰在「它还在动」。",
+      "source": "packages/ui/src/text-reveal/text-reveal.md"
+    },
+    {
+      "id": "component/text-reveal/pitfall/4",
+      "scope": "text-reveal",
+      "title": "TextReveal",
+      "rule": "**减弱动效下不会整串消失。** 动画带 `fill-mode: both`，`prefers-reduced-motion: reduce` 时动画整条不存在，落回静态的 `background-position` = 整串 `textColor`。这是结构上排除的，不靠 JS 把扫光位置 set 到终点。",
+      "source": "packages/ui/src/text-reveal/text-reveal.md"
+    },
+    {
+      "id": "component/text-reveal/pitfall/5",
+      "scope": "text-reveal",
+      "title": "TextReveal",
+      "rule": "**多串轮换的宽度预留是靠把所有串叠进同一个网格单元实现的**，不测量、不写死，换字体换字号都不会失准。占位串的文字挂在 `data-hulian-ghost-text` 上由伪元素渲染，不进 DOM 文本——否则这个标签的 `textContent` 会是所有阶段名连在一起。这条依赖库的 preset CSS，正常接入即可。",
+      "source": "packages/ui/src/text-reveal/text-reveal.md"
+    },
+    {
+      "id": "component/text-reveal/pitfall/6",
+      "scope": "text-reveal",
+      "title": "TextReveal",
+      "rule": "传单串时宽度跟着内容走（和普通文本一样）。父级切换阶段名导致宽度变化时若要固宽，把所有可能的阶段名作为数组传进来，或自己在 `className` 上给一个 `min-w-*`。",
+      "source": "packages/ui/src/text-reveal/text-reveal.md"
+    },
+    {
       "id": "component/textarea/pitfall/1",
       "scope": "textarea",
       "title": "Textarea",
@@ -10132,8 +10230,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 391,
-    "componentAdvisories": 1412,
-    "totalAdvisories": 1422
+    "componentDocs": 393,
+    "componentAdvisories": 1426,
+    "totalAdvisories": 1436
   }
 }

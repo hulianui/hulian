@@ -329,6 +329,16 @@
       "untracked",
       "renamed"
     ],
+    "FlipDirection": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "FlipSplitType": [
+      "char",
+      "word"
+    ],
     "FunnelTone": [
       "neutral",
       "brand",
@@ -1002,6 +1012,7 @@
     "CurvedLoop": "curved-loop",
     "DecryptedText": "decrypted-text",
     "FallingText": "falling-text",
+    "FlipText": "flip-text",
     "Formula": "math",
     "formulaToPlain": "math",
     "splitBareMath": "math",
@@ -1029,6 +1040,7 @@
     "Text": "text",
     "TextCursor": "text-cursor",
     "TextPressure": "text-pressure",
+    "TextReveal": "text-reveal",
     "TrueFocus": "true-focus",
     "TypingAnimation": "typing-animation",
     "VariableProximity": "variable-proximity",
@@ -4012,6 +4024,95 @@
       "slots": []
     },
     {
+      "slug": "flip-text",
+      "name": "FlipText",
+      "category": "typography",
+      "group": "text",
+      "status": "enriched",
+      "import": "import { FlipText } from \"@hulianui/ui\"",
+      "exports": [
+        "FlipText"
+      ],
+      "types": [
+        "FlipTextProps",
+        "FlipTextOwnProps",
+        "FlipDirection",
+        "FlipSplitType"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/flip-text/flip-text.md",
+      "props": [
+        {
+          "name": "direction",
+          "required": false,
+          "kind": "enum",
+          "type": "\"top\" | \"bottom\" | \"left\" | \"right\"",
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
+          "valueType": "string",
+          "default": "\"top\"",
+          "description": "新字面从哪一侧翻上来（说的是新字面**进入**的方向）"
+        },
+        {
+          "name": "splitType",
+          "required": false,
+          "kind": "enum",
+          "type": "\"char\" | \"word\"",
+          "values": [
+            "char",
+            "word"
+          ],
+          "valueType": "string",
+          "default": "\"char\"",
+          "description": "切分粒度：char 逐字（中文友好）/ word 逐词（按空白切，避免西文单词被拆断行）"
+        },
+        {
+          "name": "duration",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "0.5",
+          "description": "单字翻面时长（秒）"
+        },
+        {
+          "name": "stagger",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "30",
+          "description": "相邻字的错峰毫秒，等价于 SplitText 的 `delay`"
+        },
+        {
+          "name": "as",
+          "required": false,
+          "kind": "other",
+          "type": "ElementType",
+          "default": "\"span\"",
+          "description": "渲染标签。事件与属性类型跟着它走"
+        }
+      ],
+      "events": [
+        {
+          "name": "onMouseEnter",
+          "required": false,
+          "kind": "function",
+          "type": "(e: MouseEvent<HTMLElement>) => void",
+          "default": null,
+          "description": "翻转就挂在这个事件上，但组件**先调用你传的这个**再触发翻转，不会顶掉它"
+        }
+      ],
+      "slots": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "标题内容。内部递归取纯文本再切分，**嵌套标记不保留**；取不出文字时原样渲染 children"
+        }
+      ]
+    },
+    {
       "slug": "math",
       "name": "Formula",
       "category": "typography",
@@ -5581,6 +5682,81 @@
           "type": "string",
           "default": null,
           "description": "透传到根 div（cn 合并）"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    {
+      "slug": "text-reveal",
+      "name": "TextReveal",
+      "category": "typography",
+      "group": "text",
+      "status": "enriched",
+      "import": "import { TextReveal } from \"@hulianui/ui\"",
+      "exports": [
+        "TextReveal"
+      ],
+      "types": [
+        "TextRevealProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/text-reveal/text-reveal.md",
+      "props": [
+        {
+          "name": "text",
+          "required": true,
+          "kind": "array",
+          "type": "string | string[]",
+          "default": null,
+          "description": "要揭示的文字。传数组即多串轮换（配 `repeat`），容器宽度按最宽那串预留"
+        },
+        {
+          "name": "colors",
+          "required": false,
+          "kind": "array",
+          "type": "string[]",
+          "default": "chart-1..5",
+          "description": "扫光带的颜色，吃主题。传单色即单色带"
+        },
+        {
+          "name": "textColor",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "var(--color-foreground)",
+          "description": "已揭示部分的文字色。**不能传 `currentColor`**，见下"
+        },
+        {
+          "name": "duration",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "2",
+          "description": "扫完一轮的秒数"
+        },
+        {
+          "name": "repeat",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "循环扫。「进行中」语义必开"
+        },
+        {
+          "name": "startOnView",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "滚入视口才开始。侧边栏里一开始就在视口内的标签传 `false`"
+        },
+        {
+          "name": "once",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "只扫一次；`false` 则每次滚回视口重扫。仅在 `startOnView` 为 `true` 时有意义"
         }
       ],
       "events": [],
@@ -11276,6 +11452,11 @@
           "name": "children",
           "type": "ReactNode",
           "description": "按钮文案，经原生 button 属性透传"
+        },
+        {
+          "name": "render",
+          "type": "ReactElement",
+          "description": "渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与脉冲光环合并进该元素；文案仍取 children"
         }
       ]
     },
@@ -11533,6 +11714,11 @@
           "name": "children",
           "type": "ReactNode",
           "description": "按钮文案，经原生 button 属性透传"
+        },
+        {
+          "name": "render",
+          "type": "ReactElement",
+          "description": "渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与底部光晕层合并进该元素；文案仍取 children"
         }
       ]
     },
@@ -12428,6 +12614,11 @@
           "name": "children",
           "type": "ReactNode",
           "description": "按钮内容（文案/图标）"
+        },
+        {
+          "name": "render",
+          "type": "ReactElement",
+          "description": "渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与波纹层合并进该元素；文案仍取 children"
         }
       ]
     },

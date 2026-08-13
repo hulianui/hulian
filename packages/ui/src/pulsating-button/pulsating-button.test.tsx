@@ -27,4 +27,17 @@ describe("PulsatingButton", () => {
     expect(btn.getAttribute("class")).toContain("motion-reduce:[animation:none]");
     expect(btn.getAttribute("type")).toBe("button");
   });
+  it("render 接管元素：脉冲样式的链接 CTA（#256）", () => {
+    const { container } = render(
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <PulsatingButton render={<a href="/signup" />}>立即注册</PulsatingButton>,
+    );
+    const anchor = container.querySelector("a") as HTMLAnchorElement;
+    expect(anchor.getAttribute("href")).toBe("/signup");
+    expect(anchor.textContent).toContain("立即注册");
+    expect(container.querySelector("button")).toBeFalsy();
+    // 光环是元素自己的 box-shadow 关键帧，样式与变量都要跟过去
+    expect(anchor.getAttribute("class")).toContain("[animation:hulian-pulse-ring");
+    expect(anchor.style.getPropertyValue("--hulian-pulse-duration")).toBe("1.5s");
+  });
 });
