@@ -1,5 +1,76 @@
 # @hulianui/ui
 
+## 0.43.0
+
+### Minor Changes
+
+- caf756a: 按压反馈进 `Button` 底座：全库按钮手感统一
+
+  此前这份反馈只长在**裸 `<button>`** 的那几件上（FAB / Segmented / Toggle / FilterChip / SocialButton / AppLauncher / Legend / AwardBadge），而所有走 `<Button>` 的地方一律没有——同一个页面两种手感，且「哪颗有」取决于它碰巧是哪件组件实现的，消费方无从预期。按压反馈是可点击元素的通用语言，应该归底座。
+
+  现在 `BUTTON_BASE_CLASS` 带 `pressableClass`：按下轻微缩放（0.97），时长与曲线取自动效体系的 fast 档，`prefers-reduced-motion: reduce` 下缩放与过渡一并撤掉（这条偏好一律由库负责，不必在调用处关）。**每一颗 `<Button>` 的观感都会变**——多出按下时的形变，颜色过渡照旧。
+
+  两条边界：
+
+  - 底座里放的是 `pressableClass` 而**不是** `transition-colors`，两者不能并列：tailwind-merge 把 `transition-*` 视作同一冲突组、只保留最后一个，先写的会被整条丢弃。`pressableClass` 自带含颜色项的完整 transition-property 列表，正是为平替它而写。推论写进了文档：**自己在 `className` 里补 `transition-*` 会把按压反馈整条挤掉**，要改过渡请连缩放一起写全。
+  - 特效按钮（ShimmerButton / RainbowButton / PulsatingButton / RippleButton）走的是另一套底座，**刻意不含**这份反馈：它们变的是自绘背景，过渡属性各管各的。测试锁了这条边界。
+
+  `RowActions` 上一版自己挂的那份随之撤掉——底座已经有了，重复挂没有意义。
+
+- a3131df: `Combobox` 三条：`ComboboxTrigger` 开内容槽、图 4 范式下不再预填搜索框、创建项文案可单点覆盖
+
+  **`ComboboxTrigger` 收 `children`（#257）。** 此前触发钮的内容写死是「已选 label ?? placeholder」，类型上还显式 `Omit` 掉了 `children`——于是它**无法退化成一枚状态图标**，而那是表格窄单元格里唯一放得下的形态：格子里已经有一个字段在显示这个名字了，触发钮再显示一遍，同一个值出现两遍，看起来像两个字段。`placeholder` 顶不了这件事（只接字符串，且只在未选中时出现，一选中就掉回显示名字），把 `label` 造成图标节点会让弹层列表也变成一排图标。现在传节点即固定内容，传函数即按已选值分叉（`已绑定 / 未绑定` 换两个图标是最常见的形态）；同时补 `showChevron`，口径与 `ComboboxInput` 的同名 prop 一致——一枚图标旁边挂个 chevron 就又占回了宽度，而省宽度正是走这条路的理由。不传 `children` = 原行为。
+
+  **`creatable` 在「触发钮 + 弹层内搜索」范式下不再把搜索框预填成已选 label（#258）。** `creatable` 会注入一个 `defaultInputValue` 用来接管输入串（防第一个字符被 Base UI 的 items 同步抹掉），值取的是选中项的 label。在内联 `ComboboxInput` 下这是对的——输入框自己就是字段；但配 `ComboboxTrigger` 时，被预填的是**弹层里的搜索框**：首次打开时里面已经躺着已选项的全名，用户打的字直接追加在后面，创建项跟着变成拼接串，选下去就落库。而且只有首次会踩（选过一次之后查询被更新，二次打开就空了），是最容易漏测的那一类。现在按范式取值：内联取 label，图 4 范式取空串。
+
+  范式靠扫 `children` 里有没有 `ComboboxTrigger` 认出来——不能让 Trigger 往 context 里注册，因为 `defaultInputValue` 在 Root 挂载那一刻就被消费掉、而子节点是之后才渲染的，注册永远晚一步。Trigger 被消费方自己的包装组件裹起来时认不出，那种情况回落到内联档的行为（即改动前的现状，不是新引入的坑），显式传 `defaultInputValue=""` 即可。
+
+  **`createLabel`（#259）。** 创建项那一行的文案此前只认全局 locale 的 `combobox.create`，同一个应用里两个 `creatable` 想说不同的话，只能嵌一层 `ConfigProvider` 覆盖全局那份（而且覆盖时要把整个 `combobox` 段 spread 一遍才不丢 `clear` / `remove`）。现在挂在 `Combobox` 上单点可覆盖，不传就回落 locale，口径与 `emptyMessage` 一致。
+
+- 533c001: `RainbowButton` / `RippleButton` / `PulsatingButton` 补 `render`：特效按钮的「按钮样式的链接」不再只给一半
+
+  `render`（把按钮样式与内部装饰结构套到 `<a>` / Next `<Link>` 上）此前只有 `ShimmerButton` 与 `InteractiveHoverButton` 给了，另外三个特效件没有。这不是缺个便利 prop，而是同一批件里同一个能力给了一半——消费方选哪个特效，取决于它能不能当链接用，而这件事此前只能靠翻源码知道（#256）。而且判据上说不通：「落地页主 CTA 是个链接」这个理由是为闪光按钮写的，彩虹按钮在同一场景里只多不少。
+
+  三个件的签名、语义与合并规则与既有两处完全一致（本组件的 props/style/className 在前，`render` 元素自带的在后，所以调用方写在 `render` 元素上的东西永远能覆盖默认值），共用 `renderAsElement` 这一份实现。各自的内部结构也一并跟过去：
+
+  - `RainbowButton` 的底部模糊光晕是绝对定位的兄弟层，`relative` 跟着 className 合并过去，光晕不会跑去找别的定位祖先
+  - `RippleButton` 的波纹靠 `overflow-hidden` 裁在盒子里，而 `<a>` 默认是 `display: inline`——底座里的 `inline-flex` 与 `overflow-hidden` 在同一条 className 上，一起过去
+  - `PulsatingButton` 的脉冲光环是元素自身的 `box-shadow` 关键帧，随样式过去
+
+  顺带把 `RippleButton` 的 `variant` 注释划开了「外观」与「语义」两件事：那段说的「想要链接样式请用 `Button variant="link"`」讲的是**长相**（要不要按钮盒子），而需要 `<a>` 标签语义（中键新开标签页 / 右键复制链接 / 爬虫可见）时用的是 `render`，两者不冲突。
+
+- 533c001: 新增 `FlipText`：悬停逐字 3D 翻面的页面标题
+
+  库里 20 多个字效件按用途只有两类——一次性进场与常驻装饰，缺「摸上去它翻一下」的标题交互（#254）。`FlipText` 补的是这一档：鼠标移入，标题逐字翻面。
+
+  三处与既有字效件不同的取舍都是标题场景逼出来的：
+
+  - **收 `children` 而不是 `text: string`。** 标题几乎总是变量或表达式（`{templateName}` / `{name || "未命名客户"}`），要求先拼成字符串会把这类调用点全部挡在门外。内部递归取纯文本再切分，取不出文字时原样渲染 children（而不是让内容凭空消失）。
+  - **`as` 参与类型推导。** 它渲染的是页面主标题，必须自己就是那个 `h1`/`h2`——套一层 `<h1><FlipText/></h1>` 既是多余嵌套，也会让读屏读出两条 heading。`PageHeader` 的 `titleAs` 要接的正是这样的组件。`ref` 也一并补进类型（多态底座用的是 `ComponentPropsWithoutRef`，`ref` 不在里面，此前要 cast 才能用）。
+  - **一次性播完，不跟随 hover 状态回退。** 指针中途划走不会把字停在斜面上；播放中重复移入不重开。
+
+  实现上刻意不引 motion：整件事就是一条 transform 关键帧加每字一个 `animation-delay`，纯 CSS 就够，标题件出现在几乎每个页面上，为一次悬停彩蛋把动画运行时拖进首屏路径不划算。
+
+  背面那个字**不进 DOM 文本**，靠伪元素 `content: attr(…)` 渲染——写成真节点的话它就是同一个字的第二份拷贝，`h1` 的 `textContent` 会变成「状状态态」，框选复制与爬虫读到的标题一起被污染。对应的 CSS 规则与四条方向关键帧落在 `@hulianui/tokens` 的 preset 里，所以本件依赖库的 preset CSS（正常接入即可）。
+
+  `prefers-reduced-motion: reduce` 下不翻转，正面常驻——两面渲染的是同一个字，静息态本来就是完整可读的。
+
+- 533c001: 新增 `TextReveal`：一条多色带横扫，把文字从透明揭示成实色
+
+  库里 20 多个字效件按**用途**只有一类：一次性进场（滚入视口触发、播完即静）。缺的是另一类——持续循环、表示「这件事正在进行」的状态文字（「OCR 中」「解析中」「归档中」）。差别不是参数而是用途：进场动画播完就没了，而「进行中」的动画**停下来本身就是错误信号**，用户是靠它还在动来判断后台任务没死（#255）。
+
+  两种用法共用一件：默认 `startOnView` + 不 `repeat` 是进场（扫一轮停在全部揭示的终态）；`repeat startOnView={false}` 是进行中。
+
+  与最接近的 `AnimatedShinyText` 分界清楚：那件是在**已经可见**的文字上加一道单色高光，本件是从透明**揭示**成实色、色带可配。两种语义没有塞进同一个组件。
+
+  三处实现取舍：
+
+  - **减弱动效下不会整串消失。** 文字本身是 `color: transparent`，靠背景渐变透过字形显色，所以「关掉动画」这个直觉做法会让字整串不见。这里动画带 `fill-mode: both`，`prefers-reduced-motion: reduce` 时动画整条不存在，落回静态的 `background-position` = 整串 `textColor`。是结构上排除的，不靠 JS 把扫光位置 set 到终点。
+  - **多串轮换的宽度预留不测量。** 所有串叠进同一个网格单元，容器宽度自然等于最宽那串——不克隆 ghost 节点量宽度、不等字体加载完重量，换字体换字号都不会失准。占位串的文字挂在 data 属性上由伪元素渲染，不进 DOM 文本，否则这个标签的 `textContent` 会是所有阶段名连在一起。
+  - **不引 motion。** 一条 background-position 关键帧加一个 IntersectionObserver 就够。
+
+  一条要写进调用处的约束：`textColor` **不能传 `currentColor`**——字身是 transparent，`currentColor` 解析出来正是那个 transparent，整串会消失。要跟随容器色请显式传 token。
+
 ## 0.42.0
 
 ### Minor Changes

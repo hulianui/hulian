@@ -1,5 +1,76 @@
 # @hulianui/ui
 
+## 0.43.0
+
+### Minor Changes
+
+- caf756a: Press feedback moves into the `Button` base: one feel across the library
+
+  Until now that feedback only lived on the components built from a **bare `<button>`** (FAB / Segmented / Toggle / FilterChip / SocialButton / AppLauncher / Legend / AwardBadge), while everything going through `<Button>` had none -- two different feels on one page, with "which one has it" depending on which component happened to implement that button. Press feedback is the common language of a clickable element, so it belongs to the base.
+
+  `BUTTON_BASE_CLASS` now carries `pressableClass`: a slight scale on press (0.97), with the duration and curve taken from the motion system's fast step, and both the scale and the transition dropped under `prefers-reduced-motion: reduce` (the library always owns that preference, so call sites need not opt out). **Every `<Button>` changes how it feels** -- it gains the press deformation while colour transitions stay as they were.
+
+  Two boundaries:
+
+  - The base carries `pressableClass` and **not** `transition-colors`, and the two cannot sit side by side: tailwind-merge treats `transition-*` as one conflict group and keeps only the last, discarding the earlier one entirely. `pressableClass` ships a full transition-property list including colour, precisely so it can replace it. The consequence is documented: **adding your own `transition-*` in `className` throws the press feedback out wholesale**, so change the transition only by writing the scale back in too.
+  - The effect buttons (ShimmerButton / RainbowButton / PulsatingButton / RippleButton) sit on a different base and **deliberately** lack this feedback: what they animate is a self-drawn background, and their transition properties are each their own. A test locks that boundary.
+
+  The copy `RowActions` attached for itself last version goes away with it -- the base has it now, and attaching it twice means nothing.
+
+- a3131df: `Combobox`: a content slot on `ComboboxTrigger`, no more prefilled popup search, and per-instance create-row copy
+
+  **`ComboboxTrigger` takes `children` (#257).** The trigger's content was hard-coded to "selected label ?? placeholder", and `children` was explicitly `Omit`ted from the type -- so it **could not degrade into a status icon**, which is the only shape that fits a narrow table cell: the cell already shows that name in a field of its own, and a trigger repeating it puts the same value there twice, reading as two fields. `placeholder` cannot express it (string only, and it disappears the moment something is selected), and turning `label` into an icon node would make the popup list a column of icons. Now a node gives fixed content and a function branches on the selected value (two icons for bound/unbound being the common shape). `showChevron` comes along with the same meaning it has on `ComboboxInput` -- a chevron next to a lone icon takes the width back, and saving width is the whole reason to go down this path. Omitting `children` keeps the original behaviour.
+
+  **`creatable` no longer prefills the popup search box with the selected label (#258).** `creatable` injects a `defaultInputValue` to take ownership of the input string (otherwise Base UI's items sync eats the first keystroke), and the value it used was the selected item's label. With an inline `ComboboxInput` that is right -- the input *is* the field. With `ComboboxTrigger` the prefilled input is the **search box inside the popup**: on first open the selected item's full name is already sitting there, whatever the user types is appended to it, the create row becomes that concatenation, and picking it persists the lot. It also only bites on the first open (the query updates after one selection, so the second open is clean), which is the easiest kind of defect to miss. The value now follows the pattern: the label for inline, an empty string for the trigger form.
+
+  The pattern is detected by scanning `children` for a `ComboboxTrigger`. A context registration cannot work here: `defaultInputValue` is consumed the moment Root mounts, while children render afterwards, so the registration always arrives a step late. A trigger wrapped in the consumer's own component escapes the scan and falls back to the inline behaviour -- the status quo before this change rather than a new trap -- and `defaultInputValue=""` covers it explicitly.
+
+  **`createLabel` (#259).** The create row's copy only honoured the global locale's `combobox.create`, so two `creatable` comboboxes in one app that need to say different things had to nest a `ConfigProvider` overriding the global entry (and spread the whole `combobox` section to avoid dropping `clear` and `remove`). It is now overridable per instance on `Combobox`, falling back to the locale when omitted, mirroring how `emptyMessage` works.
+
+- 533c001: `RainbowButton` / `RippleButton` / `PulsatingButton` gain `render`: the "button-styled link" is no longer half-given across the effect buttons
+
+  `render` -- applying the button's styling and inner decoration to an `<a>` or a Next.js `<Link>` -- existed only on `ShimmerButton` and `InteractiveHoverButton`. That is not a missing convenience prop but one capability given to half of a set: which effect a consumer can pick depends on whether it can act as a link, and until now the only way to find out was to read the source (#256). The rationale did not hold either -- "the landing-page CTA is a link" was written for the shimmer button, and a rainbow button meets that case at least as often.
+
+  All three now share the same signature, semantics and merge order as the existing two (this component's props, style and className first, whatever the `render` element carries second, so a caller's own values always win), through the single `renderAsElement` helper. Their inner structures travel with them:
+
+  - `RainbowButton`'s blurred bottom glow is an absolutely positioned sibling, and `relative` merges across with the className, so the glow cannot go looking for some other positioned ancestor
+  - `RippleButton` clips its ripple with `overflow-hidden`, while an `<a>` defaults to `display: inline` -- the base's `inline-flex` sits on the same className string, so both cross together
+  - `PulsatingButton`'s halo is the element's own `box-shadow` keyframe and follows the styles
+
+  The `variant` note on `RippleButton` now separates two things that were easy to conflate: "use `Button variant=\"link\"` if you want link styling" is about **appearance** (whether there is a button box), while needing `<a>` semantics -- middle-click to open a new tab, copy link address, crawlability -- is what `render` is for. They do not compete.
+
+- 533c001: New `FlipText`: a page heading whose characters flip in 3D on hover
+
+  By purpose, the library's twenty-odd text effects came in two kinds only -- one-shot entrances and standing decoration. The missing one was the heading interaction: touch it and it flips (#254).
+
+  Three choices differ from every existing text effect, and all three come from the heading use case:
+
+  - **It takes `children`, not `text: string`.** A heading is almost always a variable or an expression (`{templateName}`, `{name || "Untitled customer"}`), and demanding a pre-joined string shuts every one of those call sites out. Plain text is extracted recursively before splitting, and when no text can be extracted the children render as-is rather than vanishing.
+  - **`as` participates in type inference.** What it renders is a page heading, so it has to *be* the `h1`/`h2` -- wrapping it as `<h1><FlipText/></h1>` is a redundant nesting and makes a screen reader announce two headings. This is exactly what `PageHeader`'s `titleAs` is designed to receive. `ref` is added to the type too (the polymorphic base uses `ComponentPropsWithoutRef`, so it previously needed a cast).
+  - **One complete round; it does not follow hover state.** Moving the pointer away mid-flight never leaves characters frozen on an angle, and re-entering while it plays does not restart it.
+
+  It deliberately does not pull in motion: the whole effect is one transform keyframe plus one `animation-delay` per character, which plain CSS covers. A heading component appears on nearly every page, and dragging an animation runtime into that first-paint path for a hover flourish does not pay.
+
+  The back-face character **never enters the DOM text** -- it is rendered from a pseudo-element via `content: attr(...)`. As a real node it would be a second copy of the same character, doubling every letter in the `h1`'s `textContent` and polluting both copy-paste and whatever a crawler reads. The rule and the four directional keyframes ship in the `@hulianui/tokens` preset, so this component needs the library preset CSS (a normal setup already has it).
+
+  Under `prefers-reduced-motion: reduce` nothing flips and the front face stays: both faces render the same character, so the resting state is already the complete heading.
+
+- 533c001: New `TextReveal`: a multicolour band sweeps across, revealing text from transparent to solid
+
+  By **purpose** the library's twenty-odd text effects were all one kind: a one-shot entrance, triggered on scroll, resting once played. The missing kind is the looping one that means "this is in progress" -- the stage name of a long background task ("Running OCR", "Parsing", "Archiving"). The difference is not a parameter but a purpose: an entrance is over once it plays, whereas for a progress label **the animation stopping is itself an error signal**, since the user reads "still moving" as "the task is still alive" (#255).
+
+  Both uses share one component: the default `startOnView` without `repeat` is the entrance (one sweep, resting fully revealed), while `repeat startOnView={false}` is the progress form.
+
+  The line against its closest neighbour is clean: `AnimatedShinyText` lays a single-colour highlight over text that is **already visible**, while this reveals it from transparent with a configurable band. The two meanings are not stuffed into one component.
+
+  Three implementation choices:
+
+  - **Reduced motion does not erase the text.** The text itself is `color: transparent` and shows through the background gradient, so the intuitive "turn the animation off" would make the whole string disappear. The animation carries `fill-mode: both`, so under `prefers-reduced-motion: reduce` it simply does not exist and the element falls back to its static `background-position`, i.e. the whole string in `textColor`. Structural, not a JavaScript fallback that seeks the sweep to its end.
+  - **Width reservation for rotating strings measures nothing.** Every string stacks into the same grid cell, so the box is naturally as wide as the widest one -- no cloned ghost node to measure, no re-measure after the webfont loads, and no drift across fonts or sizes. The placeholder strings carry their copy in a data attribute and render it from a pseudo-element, keeping it out of the DOM text; otherwise the label's `textContent` would be every stage name concatenated.
+  - **No motion runtime.** One background-position keyframe and one IntersectionObserver cover it. Restarting a sweep rewinds the animation rather than remounting the node, because the node is the one being observed -- remounting it would leave the observer watching a detached element.
+
+  One constraint worth carrying to call sites: `textColor` **cannot be `currentColor`** -- the glyphs are transparent, so `currentColor` resolves to exactly that transparent and the string disappears. Pass an explicit token to follow the container.
+
 ## 0.42.0
 
 ### Minor Changes

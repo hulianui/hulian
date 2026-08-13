@@ -1,5 +1,15 @@
 # @hulianui/tokens
 
+## 0.9.0
+
+### Minor Changes
+
+- 533c001: The preset gains the keyframes and rules two text effects need (`FlipText` / `TextReveal`)
+
+  - `hulian-text-flip-top` / `-bottom` / `-left` / `-right`: one per direction, each with only a `to` (the start is the element's resting transform), and deliberately without `forwards` -- both faces render the same character, so once a round finishes the container returns to 0 degrees and the switch is invisible.
+  - `hulian-text-reveal`: a gradient three times the element's width sliding from far right to far left. Used with `fill-mode: both` it rests "fully transparent" before the sweep starts and "fully solid" after it ends, while reduced motion removes the animation entirely and falls back to the static `background-position`, i.e. fully solid.
+  - `[data-hulian-flip-back]::after` / `[data-hulian-ghost-text]::after`: `content: attr(...)` carries the text that must **not** enter the DOM (the flip component's back face, the rotating component's placeholder strings). Real nodes would duplicate a heading's `textContent` or concatenate every candidate string, polluting copy-paste and whatever a crawler reads. Written as a Tailwind arbitrary class it would depend on the scanner emitting the rule, and the failure mode there is "the flip goes blank halfway", so it ships as a plain CSS rule.
+
 ## 0.8.0
 
 ### Minor Changes
