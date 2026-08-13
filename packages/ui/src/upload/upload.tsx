@@ -273,7 +273,10 @@ export function Upload({
       : typeof label === "string"
         ? label
         : locale.dropLabel;
-  const inputRef = useRef<HTMLInputElement>(null);
+  // 必须写成 `HTMLInputElement | null`：React 18 的类型里 `useRef<T>(null)` 返回 current 只读的
+  // RefObject，下面那个回调 ref 写 inputRef.current 会被判 TS2540（React 19 类型下不报，
+  // 只有定时任务的 React 18 兼容冒烟能发现）。
+  const inputRef = useRef<HTMLInputElement | null>(null);
   // 内部仍要自己持有 input（openDialog 要点它），所以 inputRef 走「两边都写」的回调 ref。
   // useCallback 是必要的：回调 ref 的函数标识每次变都会被 React 先以 null 再以节点回调一次，
   // 消费方的 ref 会在每次渲染中途瞬间变空。
