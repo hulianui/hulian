@@ -38,7 +38,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 |------|------|------|------|
 | title | `ReactNode` | — | 主标题。标题有自己的元素（`data-slot="card-title"`），因此有独立的字号 / 行高 / 字重 |
 | description | `ReactNode` | — | 副标题 / 说明，排在标题下方，次要文字色 |
-| extra | `ReactNode` | — | 右侧操作区（按钮、开关、计数），与标题群同行垂直居中，窄屏换行到下方 |
+| extra | `ReactNode` | — | 右侧操作区（按钮、开关、计数），与标题群**恒同行**垂直居中：换行判据不看内容长度，`description` 再长也不会把它挤到第二行 |
 
 「有值」的口径与 `PageHeader` 的 `meta` 一致：`null` / `undefined` / `false` / `""` 都算没传，所以 `title={isEditing && "编辑中"}` 在假值时不会切进结构态。
 
@@ -73,6 +73,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 - 列表/侧栏里 Card 末行(时间戳/meta 行)若设了外层 `min-height` 又用 flex 撑高，meta 行可能漏到卡片背景外——参见 [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]]。
 - 标题里放图标 / `Tag` 时用 `title` 而不是把整行塞进 `children`：塞进 `children` 时 header 的 `font-medium` 会连图标、标签、计数一起染成标题字重，而标题自己反而没有字号与行高的表达。
 - `CardHeader` 的 `title` 是 `ReactNode`，与原生 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——需要原生 tooltip 请挂在内层元素上。
+- `extra` **不会因为 `title` / `description` 变长而掉到第二行**（#263）：左列是 `flex: 1 1 0`，换行判据与内容长度脱钩，长文本该 `truncate` / `line-clamp` 就截断。**这也意味着窄容器里 `extra` 会一直占着位置**——想让它挤压标题就得给标题写溢出处理。卡片宽度由布局给（三列网格、侧栏），与视口无关，所以这里刻意没有「窄屏换行」那一档；页面级的 [PageHeader](../page-header/page-header.md) 才有，那边页头总是全宽、视口窄等于页头窄。
 - `divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `"use client"`，能直接放进 server component 里用。
 
 ## 相关

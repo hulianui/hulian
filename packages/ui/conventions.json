@@ -1340,6 +1340,13 @@
       "id": "component/card/pitfall/5",
       "scope": "card",
       "title": "Card",
+      "rule": "`extra` **不会因为 `title` / `description` 变长而掉到第二行**（#263）：左列是 `flex: 1 1 0`，换行判据与内容长度脱钩，长文本该 `truncate` / `line-clamp` 就截断。**这也意味着窄容器里 `extra` 会一直占着位置**——想让它挤压标题就得给标题写溢出处理。卡片宽度由布局给（三列网格、侧栏），与视口无关，所以这里刻意没有「窄屏换行」那一档；页面级的 [PageHeader](../page-header/page-header.md) 才有，那边页头总是全宽、视口窄等于页头窄。",
+      "source": "packages/ui/src/card/card.md"
+    },
+    {
+      "id": "component/card/pitfall/6",
+      "scope": "card",
+      "title": "Card",
       "rule": "`divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `\"use client\"`，能直接放进 server component 里用。",
       "source": "packages/ui/src/card/card.md"
     },
@@ -6198,18 +6205,25 @@
       "id": "component/page-header/pitfall/5",
       "scope": "page-header",
       "title": "PageHeader",
-      "rule": "`titleAs` 只让出标签，不让出字号：换成 `h2` 之后字号仍是 20px/28px。要改字号在 `className` 上用后代选择器（`className` 落在外层 `<header>`），别在 `title` 里再套一层子元素用工具类把父元素的字号顶掉——那是一个标题上两条打架的字号声明。",
+      "rule": "**`extra` 换行看视口，不看标题长度**（#263）。左列是 `flex: 1 1 0`，宽屏下标题再长也不会把操作区挤到第二行；视口 < 640px 才让位换行。同源问题在 [Card](../card/card.md) 的 `CardHeader` 上先暴露：那边卡片宽度由布局决定、与视口无关，所以连这一档窄屏换行都没有。",
       "source": "packages/ui/src/page-header/page-header.md"
     },
     {
       "id": "component/page-header/pitfall/6",
       "scope": "page-header",
       "title": "PageHeader",
-      "rule": "`title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<\"title\">`——别再往 DOM 透传字符串 title。",
+      "rule": "`titleAs` 只让出标签，不让出字号：换成 `h2` 之后字号仍是 20px/28px。要改字号在 `className` 上用后代选择器（`className` 落在外层 `<header>`），别在 `title` 里再套一层子元素用工具类把父元素的字号顶掉——那是一个标题上两条打架的字号声明。",
       "source": "packages/ui/src/page-header/page-header.md"
     },
     {
       "id": "component/page-header/pitfall/7",
+      "scope": "page-header",
+      "title": "PageHeader",
+      "rule": "`title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<\"title\">`——别再往 DOM 透传字符串 title。",
+      "source": "packages/ui/src/page-header/page-header.md"
+    },
+    {
+      "id": "component/page-header/pitfall/8",
       "scope": "page-header",
       "title": "PageHeader",
       "rule": "默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。",
@@ -10273,7 +10287,7 @@
   ],
   "stats": {
     "componentDocs": 393,
-    "componentAdvisories": 1432,
-    "totalAdvisories": 1442
+    "componentAdvisories": 1434,
+    "totalAdvisories": 1444
   }
 }

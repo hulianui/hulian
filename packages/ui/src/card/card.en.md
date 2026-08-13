@@ -38,7 +38,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 |------|------|------|------|
 | title | `ReactNode` | — | The heading. It gets an element of its own (`data-slot="card-title"`) and therefore its own size, leading, and weight. |
 | description | `ReactNode` | — | Supporting text below the heading, in the secondary text color. |
-| extra | `ReactNode` | — | Trailing action area (buttons, switches, counts), vertically centered against the heading group and wrapping below it on narrow viewports. |
+| extra | `ReactNode` | — | Trailing action area (buttons, switches, counts), vertically centered against the heading group and **always on the same line**: wrapping is decided independently of content length, so a long `description` never pushes it to a second row. |
 
 "Present" means the same thing it does for `PageHeader`'s `meta`: `null`, `undefined`, `false`, and `""` all count as not passed, so `title={isEditing && "Editing"}` does not switch layouts when the condition is false.
 
@@ -73,6 +73,7 @@ The "icon + heading + status tag + trailing action" row, the most common admin c
 - A fixed outer minimum height combined with flex stretching can push a final metadata row outside the card background; see [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]].
 - When the heading contains an icon or a `Tag`, pass `title` instead of packing the whole row into `children`: inside `children`, the header's `font-medium` paints the icon, the tag, and the count with heading weight, while the heading itself gets no size or leading of its own.
 - `CardHeader`'s `title` is a `ReactNode` and collides with the native `HTMLAttributes.title?: string`, so the type omits `title`. Put a native tooltip on an inner element instead.
+- `extra` **never drops to a second row because `title` or `description` grew** (#263). The left column is `flex: 1 1 0`, so wrapping is decoupled from content length and long text truncates or clamps as written. **The flip side is that `extra` keeps its slot even in a narrow card**, squeezing the heading -- so give the heading an overflow treatment. Card width comes from the layout (a three-column grid, a sidebar) and has nothing to do with the viewport, which is why there is deliberately no "wrap on narrow screens" step here. [PageHeader](../page-header/page-header.md) has one, because a page header is always full width and a narrow viewport does mean a narrow header.
 - `divided={false}` applies only to the **direct children** `CardHeader` and `CardFooter`, so a nested card does not inherit the outer value and must opt out itself. It is not delivered through context either: Card still has no `"use client"` and works inside a server component.
 
 ## Related

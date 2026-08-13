@@ -16132,7 +16132,7 @@
           "kind": "node",
           "type": "ReactNode",
           "default": null,
-          "description": "右侧操作区（按钮、开关、计数），与标题群同行垂直居中，窄屏换行到下方"
+          "description": "右侧操作区（按钮、开关、计数），与标题群**恒同行**垂直居中：换行判据不看内容长度，`description` 再长也不会把它挤到第二行"
         }
       ],
       "events": [],
@@ -29442,7 +29442,7 @@
         {
           "name": "extra",
           "type": "ReactNode",
-          "description": "右侧操作区（按钮组等），窄屏自动换行到标题下方。"
+          "description": "右侧操作区（按钮组等），**窄屏**（视口 < 640px）自动换行到标题下方；宽屏下标题再长也不换行，长标题该截断就截断。"
         },
         {
           "name": "footer",

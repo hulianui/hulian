@@ -67,7 +67,21 @@ export function CardHeader({
     >
       {structured ? (
         <>
-          <div className="min-w-0">
+          {/*
+            `basis-0 grow` 不是排版微调，是换行判据本身（#263）。
+            flex 容器收集 item 成行时用的是 item 的 **hypothetical main size**（Flexbox §9.3），
+            而 `flex-basis: auto` + 无 width → 它取 **max-content**。`min-w-0` 只放开「同一行里
+            能收缩到多小」，**降不了 base size**，于是一条够长的 description 就能把 extra 整块
+            挤到第二行 —— 哪怕左列完全收缩得起、调用方也写了 truncate / line-clamp（那两个管的是
+            溢出怎么显示，同样不影响 max-content）。base 归 0 之后，换行不再由内容长度决定。
+
+            这里**刻意不挂视口断点**（PageHeader 那边挂了 `max-sm:basis-auto`）：页头总是全宽，
+            「视口窄」等于「页头窄」；而卡片的宽度由布局给（三列网格 515px、侧栏卡 280px），
+            与视口没有关系 —— 900px 的桌面窗口里可能坐着一张 280px 的窄卡，375px 的手机上卡片
+            反而是全宽的。拿视口断点去猜卡片宽度，两种情况都会猜错。extra 恒同行、左列该 truncate
+            就 truncate，与 Ant 的 .ant-card-head-wrapper、MUI 的 CardHeader 同一取舍。
+          */}
+          <div className="min-w-0 grow basis-0">
             {has(title) && (
               <div
                 data-slot="card-title"

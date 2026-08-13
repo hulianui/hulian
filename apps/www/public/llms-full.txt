@@ -9816,7 +9816,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 |------|------|------|------|
 | title | `ReactNode` | — | 主标题。标题有自己的元素（`data-slot="card-title"`），因此有独立的字号 / 行高 / 字重 |
 | description | `ReactNode` | — | 副标题 / 说明，排在标题下方，次要文字色 |
-| extra | `ReactNode` | — | 右侧操作区（按钮、开关、计数），与标题群同行垂直居中，窄屏换行到下方 |
+| extra | `ReactNode` | — | 右侧操作区（按钮、开关、计数），与标题群**恒同行**垂直居中：换行判据不看内容长度，`description` 再长也不会把它挤到第二行 |
 
 「有值」的口径与 `PageHeader` 的 `meta` 一致：`null` / `undefined` / `false` / `""` 都算没传，所以 `title={isEditing && "编辑中"}` 在假值时不会切进结构态。
 
@@ -9851,6 +9851,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 - 列表/侧栏里 Card 末行(时间戳/meta 行)若设了外层 `min-height` 又用 flex 撑高，meta 行可能漏到卡片背景外——参见 [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]]。
 - 标题里放图标 / `Tag` 时用 `title` 而不是把整行塞进 `children`：塞进 `children` 时 header 的 `font-medium` 会连图标、标签、计数一起染成标题字重，而标题自己反而没有字号与行高的表达。
 - `CardHeader` 的 `title` 是 `ReactNode`，与原生 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——需要原生 tooltip 请挂在内层元素上。
+- `extra` **不会因为 `title` / `description` 变长而掉到第二行**（#263）：左列是 `flex: 1 1 0`，换行判据与内容长度脱钩，长文本该 `truncate` / `line-clamp` 就截断。**这也意味着窄容器里 `extra` 会一直占着位置**——想让它挤压标题就得给标题写溢出处理。卡片宽度由布局给（三列网格、侧栏），与视口无关，所以这里刻意没有「窄屏换行」那一档；页面级的 [PageHeader](https://hulianui.haloritual.com/zh/components/page-header) 才有，那边页头总是全宽、视口窄等于页头窄。
 - `divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `"use client"`，能直接放进 server component 里用。
 
 ## 相关
@@ -17995,7 +17996,7 @@ import { PageHeader } from "@hulianui/ui"
 | breadcrumb | `ReactNode` | 面包屑区（标题行上方），传入瑚琏 `<Breadcrumb/>`。 |
 | tags | `ReactNode` | 状态标签区（贴标题右侧），传入 `<Chip/>`/`<Badge/>` 等。 |
 | meta | `ReactNode[]` | 元信息行：标题下面那串用 `metaSeparator` 串起来的事实值。分隔符由组件插在项与项之间，空项自动跳过。 |
-| extra | `ReactNode` | 右侧操作区（按钮组等），窄屏自动换行到标题下方。 |
+| extra | `ReactNode` | 右侧操作区（按钮组等），**窄屏**（视口 < 640px）自动换行到标题下方；宽屏下标题再长也不换行，长标题该截断就截断。 |
 | footer | `ReactNode` | 底部附加区，常放 `<Tabs/>`。 |
 
 ## 示例
@@ -18045,6 +18046,7 @@ import { PageHeader } from "@hulianui/ui"
 - `meta` 里的空项（`null` / `undefined` / `false` / `""`）自动跳过，分隔符只插在留下来的项之间，所以不必在调用点先 `filter(Boolean)`。数字 `0` 是事实值（「0 家公司」），不算空。
 - 元信息行渲染为 `<ul>`/`<li>`，分隔符是独立的 `aria-hidden` 装饰位——读屏读到的是列表项而不是被中点粘住的长串文本。别再用 `span + span::before { content: "·" }` 自己拼点。
 - 从 `span + span::before { content: "·" }` 迁过来时**要逐项核对，不能照搬**：那条选择器的真实语义是「**渲染出来的相邻 `<span>` 之间**才插点」，所以那一行里混了按钮 / 图标 / 链接（渲染成 `<button>` / `<svg>` / `<a>`）的位置，现网**本来就没有点**。而 `meta` 的「一项」是**数组项**，不看它渲染成什么标签，一律在项与项之间插分隔符。把 `[证件号, <CopyButton/>]` 这类混排原样搬过来，会凭空多出一个分隔符——这是真实的视觉回归，不是本组件的 bug（hulianui/hulian#247）。
+- **`extra` 换行看视口，不看标题长度**（#263）。左列是 `flex: 1 1 0`，宽屏下标题再长也不会把操作区挤到第二行；视口 < 640px 才让位换行。同源问题在 [Card](https://hulianui.haloritual.com/zh/components/card) 的 `CardHeader` 上先暴露：那边卡片宽度由布局决定、与视口无关，所以连这一档窄屏换行都没有。
 - `titleAs` 只让出标签，不让出字号：换成 `h2` 之后字号仍是 20px/28px。要改字号在 `className` 上用后代选择器（`className` 落在外层 `<header>`），别在 `title` 里再套一层子元素用工具类把父元素的字号顶掉——那是一个标题上两条打架的字号声明。
 - `title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——别再往 DOM 透传字符串 title。
 - 默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。

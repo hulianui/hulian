@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button";
 import { Tag } from "../../../../packages/ui/src/tag";
+import { ChevronRight } from "../../../../packages/ui/src/_icons";
 import { Card, CardHeader, CardBody, CardFooter } from "../../../../packages/ui/src/card/card";
 type CardVariant = "outline" | "elevated" | "featured" | "plain";
 function Demo(props: {
@@ -144,6 +145,15 @@ export const cardShowcase: ShowcaseSpec = {
               </Button>}/>
           <CardBody>Three items awaiting action.</CardBody>
         </Card>),
+        },
+        {
+            name: "A long description does not push the trailing action down",
+            render: () => (<div className="flex w-[34rem] flex-col gap-3">
+          {["Daily summary", "Daily summary of revenue, average order value, and refund rate per store, grouped by region and pushed to the WeCom group"].map((desc) => (<Card key={desc}>
+                <CardHeader title={<span className="truncate">Daily sales report</span>} description={<span className="line-clamp-1">{desc}</span>} extra={<ChevronRight className="size-4 text-muted-foreground"/>}/>
+                <CardBody>Open it for today's breakdown.</CardBody>
+              </Card>))}
+        </div>),
         },
         {
             name: "divided={false} (sections without rules)",

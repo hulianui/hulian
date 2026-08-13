@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button";
 import { Tag } from "../tag";
+import { ChevronRight } from "../_icons";
 import { Card, CardHeader, CardBody, CardFooter } from "./card";
 
 type CardVariant = "outline" | "elevated" | "featured" | "plain";
@@ -173,6 +174,26 @@ export const cardShowcase: ShowcaseSpec = {
           />
           <CardBody>三条待办等待处理。</CardBody>
         </Card>
+      ),
+    },
+    {
+      // #263：这一格盯的是「换行判据不看内容长度」——两张卡只差描述字数，箭头必须停在同一行。
+      name: "长描述不把右侧操作挤下去",
+      render: () => (
+        <div className="flex w-[34rem] flex-col gap-3">
+          {["每日汇总", "每日汇总各门店的成交额、客单价与退款率，按战区分组后同步至企业微信群"].map(
+            (desc) => (
+              <Card key={desc}>
+                <CardHeader
+                  title={<span className="truncate">销售日报</span>}
+                  description={<span className="line-clamp-1">{desc}</span>}
+                  extra={<ChevronRight className="size-4 text-muted-foreground" />}
+                />
+                <CardBody>点开看今天的明细。</CardBody>
+              </Card>
+            ),
+          )}
+        </div>
       ),
     },
     {

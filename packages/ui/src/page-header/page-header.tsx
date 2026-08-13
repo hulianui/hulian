@@ -35,9 +35,12 @@ export function PageHeader({
     <header className={cn("w-full", className)} {...props}>
       {breadcrumb && <div className="mb-2">{breadcrumb}</div>}
 
-      {/* 主行：左侧标题群 / 右侧操作区垂直居中对齐；窄屏 extra 自动换行到下方 */}
+      {/* 主行：左侧标题群 / 右侧操作区垂直居中对齐；窄屏（真·视口窄）extra 自动换行到下方。
+          左列 `basis-0 grow` 是那句「窄屏」的实现前提：不写它时换行由左列内容的 max-content
+          触发，标题一长 extra 就掉行，与视口无关（#263 在 CardHeader 上先暴露的正是这条，
+          这里只是因为页头总是全宽才一直没踩到）。`max-sm:basis-auto` 保住窄屏那半。 */}
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="flex min-w-0 basis-0 grow items-center gap-3 max-sm:basis-auto">
           {onBack && (
             <Button
               type="button"

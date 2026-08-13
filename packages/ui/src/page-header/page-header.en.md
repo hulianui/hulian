@@ -47,7 +47,7 @@ import { PageHeader } from "@hulianui/ui"
 | breadcrumb | `ReactNode` | Breadcrumb region above the title row, typically a HulianUI `<Breadcrumb/>`. |
 | tags | `ReactNode` | Status indicators beside the title, such as `<Chip/>` or `<Badge/>`. |
 | meta | `ReactNode[]` | Metadata row: the string of factual values under the title, joined by `metaSeparator`. The component inserts the separator between entries and skips empty ones. |
-| extra | `ReactNode` | Actions on the right; wraps below the title on narrow screens. |
+| extra | `ReactNode` | Actions on the right. It wraps below the title on **narrow screens** (viewport under 640px); on wider viewports no title length pushes it down, and a long title truncates instead. |
 | footer | `ReactNode` | Footer region, commonly `<Tabs/>`. |
 
 ## Example
@@ -97,6 +97,7 @@ Metadata row (ID number, gender, insured periods, and so on):
 - Empty entries in `meta` (`null`, `undefined`, `false`, `""`) are skipped, and the separator is inserted only between the entries that survive, so callers do not need to `filter(Boolean)` first. The number `0` is a factual value ("0 companies") and is kept.
 - The metadata row renders as `<ul>`/`<li>` with the separator in its own `aria-hidden` decorative item, so a screen reader announces list items instead of one long string glued together by middle dots. Stop hand-rolling `span + span::before { content: "·" }`.
 - When migrating away from `span + span::before { content: "·" }`, **check the entries one by one instead of copying the row over**. That selector really means "insert a dot only between adjacent rendered `<span>` elements", so wherever the old row mixed in a button, icon, or link (rendered as `<button>`, `<svg>`, or `<a>`) there was **never a dot in production**. A `meta` entry, by contrast, is an **array item**: the separator goes between items regardless of what each one renders as. Porting a mixed row such as `[idNumber, <CopyButton/>]` verbatim adds a separator that was not there before, which is a real visual regression rather than a bug in this component (hulianui/hulian#247).
+- **`extra` wraps based on the viewport, not on title length** (#263). The left column is `flex: 1 1 0`, so on a wide viewport no title, however long, pushes the actions to a second row; only a viewport under 640px makes them give way. The same problem surfaced first on `CardHeader` in [Card](../card/card.md), where card width comes from the layout rather than the viewport -- so that component has no narrow-screen step at all.
 - `titleAs` hands over the tag, not the font size: after switching to `h2` the title is still 20px/28px. Adjust the size with a descendant selector on `className` (which lands on the outer `<header>`), rather than nesting an extra element inside `title` whose utility classes override the parent size, which leaves two conflicting font-size declarations on one heading.
 - `title` is a `ReactNode`, which conflicts with `HTMLAttributes.title?: string`; the native attribute is omitted from the type. Do not expect a string `title` to pass through to the DOM.
 - The default back label follows `ConfigProvider`, while `backLabel` overrides it. PageHeader is therefore a client component; server components can still import and render it.
