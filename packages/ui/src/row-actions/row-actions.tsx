@@ -168,7 +168,16 @@ export function RowActions({
     <>
       <div
         className={cn(
-          "flex items-center gap-1",
+          "flex items-center",
+          // 间距按档给，不是一个常数。文字档的按钮是 `variant="link"`，而 link 在 Button 的
+          // compoundVariants 里被钉了 `h-auto px-0`（回归纯文字链接，文字左缘要与表头对齐）——
+          // 于是两个动作之间的**全部**间隔就只剩这个 gap。4px 在按钮档 / 图标档够用（那两档
+          // 按钮自带横向内边距，视觉间隔是 gap + 2×padding），在文字档却让一排中文动作
+          // 粘成一句话：「编辑 下线 删除」读起来像四个字的短语，而不是三个可点的东西。
+          //
+          // 16px 是照着表格行操作的既有惯例定的（Element UI ~10px、Ant Design 的
+          // 分隔线两侧各 8px），比 4px 明显松，又不至于让三个动作的列宽失控。
+          variant === "text" ? "gap-4" : "gap-1",
           align === "center" && "justify-center",
           align === "end" && "justify-end",
           // 悬浮才显现：Tailwind 的 hover 变体本身就带 (hover: hover) 媒体门，所以触屏上

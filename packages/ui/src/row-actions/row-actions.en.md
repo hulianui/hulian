@@ -118,6 +118,8 @@ Returning a Promise from `onSelect` hands the whole cycle to the component - no 
 
 Tones are identical across the three (that is what `tone` is for), and the overflow trigger follows the form -- no borderless "..." appears among outlined buttons.
 
+**Spacing between actions also follows the form**: 16px for `text`, 4px for `button` and `icon`. Not one constant, because the `text` form renders `variant="link"` buttons, and `link` is pinned to `px-0` inside Button (a plain text link, its left edge aligned with the column header) -- so that gap is **all** the separation two actions get. The other two forms carry horizontal padding of their own, making the visual gap `gap + 2x padding`. One shared number would squeeze the text form into a single phrase.
+
 ## Design rationale
 
 - **Past `max`, only `max - 1` actions stay visible.** The menu trigger occupies a slot of its own, so keeping `max` buttons and adding a "..." makes `max + 1` controls and a column one slot wider than the caller expects.

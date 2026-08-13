@@ -110,6 +110,16 @@ describe("RowActions", () => {
     expect(getByRole("button", { name: "编辑" }).className).not.toMatch(/(^|\s)border(\s|$)/);
   });
 
+  it("间距按档给：文字档松（link 被钉了 px-0，gap 是全部间隔），按钮/图标档紧（自带内边距）", () => {
+    const { container, rerender } = render(<RowActions actions={base} />);
+    const row = () => container.querySelector("div")!;
+    expect(row().className).toContain("gap-4");
+    rerender(<RowActions variant="button" actions={base} />);
+    expect(row().className).toContain("gap-1");
+    rerender(<RowActions variant="icon" actions={base} />);
+    expect(row().className).toContain("gap-1");
+  });
+
   it("render 换成链接：导航型动作保住原生的开新标签能力", () => {
     render(
       <RowActions
