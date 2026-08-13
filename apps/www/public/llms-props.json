@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.40.0",
+  "version": "0.41.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -108,6 +108,16 @@
     "CardSwapPlacement": [
       "bottom-right",
       "center"
+    ],
+    "CellEditorVariant": [
+      "default",
+      "cell"
+    ],
+    "CellEditorSize": [
+      "xs",
+      "sm",
+      "md",
+      "lg"
     ],
     "ChatRole": [
       "user",
@@ -6468,7 +6478,12 @@
         "CellEditor"
       ],
       "types": [
-        "CellEditorProps"
+        "CellEditorProps",
+        "CellEditorBaseProps",
+        "CellEditorSingleProps",
+        "CellEditorMultilineProps",
+        "CellEditorVariant",
+        "CellEditorSize"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/cell-editor/cell-editor.md",
       "props": [
@@ -6502,7 +6517,59 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "false",
-          "description": "多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input"
+          "description": "多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input。要按运行时变量切换多行，请分支渲染两个 `CellEditor`，见「禁忌 / 坑」"
+        },
+        {
+          "name": "revertOnError",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "`onCommit` 的 Promise reject 时把草稿一并退回上一次提交值。判等基准无论开关都会退，见下"
+        },
+        {
+          "name": "blurOnCommit",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "Enter 提交后让出焦点。校验被拦下时不让出（错误就在这一格，得让用户接着改）"
+        },
+        {
+          "name": "blurOnEscape",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "Esc 回滚后让出焦点"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"cell\"",
+          "values": [
+            "default",
+            "cell"
+          ],
+          "valueType": "string",
+          "default": "\"cell\"",
+          "description": "外观档，透传给内层 [Input](../input/input.md) / [Textarea](../textarea/textarea.md)。`\"cell\"` 无边框透明底；同一行里其余列是普通输入框时用 `\"default\"`，见下"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"xs\" | \"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "xs",
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "字号档，透传给内层 Input / Textarea"
         },
         {
           "name": "disabled",
@@ -6537,6 +6604,14 @@
           "type": "(next: string) => void | Promise<void>",
           "default": null,
           "description": "blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用。传了 `validate` 且它返回错误串时**不会调用**"
+        },
+        {
+          "name": "onDraftChange",
+          "required": false,
+          "kind": "function",
+          "type": "(draft: string) => void",
+          "default": null,
+          "description": "草稿每次变化时的**只读回声**（每敲一个键一次），判等 / 校验 / pending 的既有语义全不受影响。给「随打字变化的派生 UI」用：已填计数、实时预览、每键落 `localStorage`。**只反映键入** —— Esc 回滚与外部写回 `value` 不会广播"
         }
       ],
       "slots": []
@@ -28853,6 +28928,14 @@
           "type": "ReactNode",
           "default": "\"·\"",
           "description": "`meta` 各项之间的分隔符，装饰位自动 `aria-hidden`。"
+        },
+        {
+          "name": "titleAs",
+          "required": false,
+          "kind": "other",
+          "type": "ElementType",
+          "default": "\"h1\"",
+          "description": "标题渲染成哪个标签。层级归页面决定；**只让出标签，字号不跟着标签变**（恒为 20px/28px）。"
         }
       ],
       "events": [

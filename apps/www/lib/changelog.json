@@ -1,8 +1,36 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.41.0",
+    "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`CellEditor` 五条缺口一次收口：档位透传 / 草稿出口 / 失败可重试 / 原生属性 / 让出焦点（#248–#252）\n\n这五条来自同一个消费方的同一张表——13 列的工作记录核对表。单看每条都是「少个 prop」，合起来才看出共同的形状：`CellEditor` 只有一种长相、一条出口、一套属性集，凡是与它预设不同的表都迁不进来。\n\n- **档位透传（#248）**：`variant` / `size` 现在能传给内层 Input / Textarea，默认 `variant=\"cell\"`（与上一版渲染逐字相同）。此前 `cell` 档写死在组件里，于是 #244 刚补的 `validate` 反而用不上：同一行里其余可编辑列都是有边框的普通输入框，只把其中三列换成 `CellEditor` 就变成有框无框混排，而库自己在 `input.tsx` 为 `xs` 档保留边框的理由（用户正是靠边框判断哪些格子可编辑，#187）在那张表里逐字成立。「要提交前校验」与「格子看得出可编辑」本来就不该绑在同一个开关上。刻意不加 `bordered` 布尔：库里表达「密集表」已经有 `variant=\"cell\"` 与 `size=\"xs\"` 两种口径，再加第三种以后要另做解释。\n\n- **草稿出口（#249）**：新增 `onDraftChange?: (draft: string) => void`，每次键入广播当前草稿。此前 `onChange` 被 `Omit` 掉、`onInput` 也拿不到受控草稿，于是任何「随打字变化的派生 UI」——已填计数、实时预览、每键落 localStorage——都没有落点，只能整格放弃 `CellEditor`。刻意不放开 `onChange`：同一个组件上两个都像「值变了」的回调，消费方八成会往 `onChange` 里写落库，那就把失焦即提交这条契约绕过去了。\n\n- **失败可重试（#250）**：`onCommit` 返回的 Promise reject 时，判等基准退回上一版。此前基准在 `await` 之前就推进了，于是保存失败后用户不改动直接再失焦会被判等短路——**连重试都点不动**，而文档给的「消费方自己 catch」在 `value` 来自服务端缓存（SWR / React Query）时没有落点：失败时缓存没动，`value` 原样，消费方手上没有任何能拿来回滚的东西。基准的乐观推进本身保留（pending 期间再失焦一次不该把同一个值重发一遍），只在失败时退回来。另加 `revertOnError?: boolean`（默认 `false`）把草稿也一并退回。回滚有两道门：这次提交仍是最新的那次，且基准还停在它身上——期间外部写进来的新值是更近的真相，不能被一个旧请求的失败盖回去。\n\n- **原生属性（#251）**：`CellEditorProps` 按 `multiline` 分叉成联合类型，单行档继承 `<input>` 的属性集、多行档继承 `<textarea>` 的，于是 `name` / `type` / `maxLength` / `autoComplete` / `rows` 都通了。此前继承的是 `HTMLAttributes`（不是 `InputHTMLAttributes`），只有全局属性能传，而内层渲染的恰恰是 `<input>` 和 `<textarea>`。`rows` 尤其别扭：`Textarea` 自己有这个 prop，`cell` 档还专门把默认值从 3 改成 1，但「几行起」终究是每格不同的业务事实（核对表里「经营范围」天生比「邮政编码」高一行）。原生 `size`（字符宽度）让位给档位 `size`，同名不同义，两者不可能都留。代价写在类型注释里：`multiline` 必须是字面量，拿 boolean 变量开关多行时 TS 认不出走哪一档。\n\n- **让出焦点（#252）**：新增 `blurOnCommit` / `blurOnEscape`（默认都是 `false` = 现状，焦点留在格内）。这两条消费方补不了——在 `onKeyDown` 里自己调 `blur()` 会在 `setDraft` flush 之前同步触发提交，闭包里还是旧草稿，**Esc 会变成保存**。实现用一个「最新草稿的镜像 ref」解掉这条时序（提交一律读它而不是闭包值），而不是重造组件注释里明确反对的那个「刚按过 Esc」标志位——那个标志位难在何时清，镜像 ref 没有清除时机。校验被拦下时不让出焦点：错误就在这一格，得让用户接着改。\n\n新增导出：`CellEditorVariant` / `CellEditorSize` / `CellEditorBaseProps` / `CellEditorSingleProps` / `CellEditorMultilineProps`。",
+        "parityId": "cell-editor-passthrough-draft-revert-blur"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`PageHeader` 让出标题标签：新增 `titleAs`（#247）\n\n标题此前写死 `<h1>`，而「这一屏的标题排第几级」是页面的结构信息，不该归页头皮肤：页头未必是本页最高级标题，消费方那几处 hero 当前根本没有 `h1`。更硬的一条是消费方的标题常常是自带动画的组件，它**必须自己就是那个标签**——套进库定的 `h1` 里既是非法 HTML（`h1` 的内容模型是 phrasing content），也会让读屏在一个区域读出两条 heading。\n\n现在 `titleAs?: ElementType`（默认 `\"h1\"`，不传时渲染与上一版逐字相同）：\n\n```tsx\n<PageHeader titleAs=\"h2\" title={<AnimatedTitle as=\"span\">张三</AnimatedTitle>} />\n```\n\n**只让出标签，不让出字号**：换成 `h2` 之后字号仍是 20px/28px。这不是漏做——字号消费方能用落在外层 `<header>` 上的 `className` 后代选择器回贴，标签不能，所以只有标签是必须由库让出来的那个。让字号跟着标签走是 breaking，这次不做。\n\n顺带补一条文档：`meta` 的「一项」是**数组项**，不是渲染出来的 `<span>`。从 `span + span::before { content: \"·\" }` 那套老写法迁过来时要逐项核对——老选择器的真实语义是「相邻 `<span>` 之间才插点」，所以那一行里混了按钮 / 图标 / 链接的位置，现网本来就**没有点**；照搬成 `meta={[证件号, <CopyButton/>]}` 会凭空多一个分隔符。这是真实的视觉回归，但不是 `meta` 的 bug（它一视同仁才是对的），只能靠文档点破。",
+        "parityId": "page-header-title-as"
+      },
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Textarea` 在 `cell` / `autoResize` 档下对拖拽覆盖开发期点名（#253）\n\n这两档发出的「不许拖 + 不许溢出」是一条规则里的**两个不同 CSS 属性**，而它们在 tailwind-merge 里分属不同组：消费方传 `resize-y` 只顶得掉管拖拽的那半边，管溢出的那半边原样留下。拿到的是一个拖得动、但往小拖时内容直接被裁且不出滚动条的框——而且**看上去覆盖成功了**。半覆盖比完全无效更难查：完全无效至少现象一致，半覆盖会让人确信自己 override 成功了，然后去别处找原因。\n\n判据与 `Button` 的 `muted` 那条一致（静默无效的 prop 比报错更难查，所以开发期点名），只是这里更隐蔽——那条是完全无效，这条是一半生效。\n\n告警说清三件事：这一档的高度由内容决定、管溢出的那一半不会跟着被覆盖、想要可拖的框请改 `variant=\"default\"` 且不要传 `autoResize`。同一档只喊一次（一页几十个单元格），两档各有各的 key——它们的出口不同（一条换档、一条别传那个 prop），共用 key 会让后遇到的那一档静默。\n\n**不放开 `resize`**：`cell` 与 `autoResize` 同样是「高度由内容决定」，留着拖拽手柄等于给用户一个下一次重测就会被抹掉的操作。消费方自己也同意这条，来提的是「这条约束既不可拆、也不可见」。",
+        "parityId": "textarea-resize-half-override-warning"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.40.0",
-    "date": "2026-08-13",
+    "date": "2026-08-12",
     "entries": [
       {
         "sha": "b00e58d",
