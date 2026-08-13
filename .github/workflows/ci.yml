@@ -372,6 +372,40 @@ jobs:
           CONSUMER_TS_VERSION: ^5.5.0
         run: bash scripts/consumer-typecheck.sh
 
+  # React 18 类型兼容 —— 全流水线**唯一**用 React 18 类型编译库源码的地方。
+  #
+  # 上面那个 consumer-smoke 照不出这一类问题：消费方拿到的类型是 prepack 生成的 .d.ts，
+  # 而那份 .d.ts 是用仓库里的 React 19 类型生成的，函数体里的类型分歧（典型如
+  # `useRef<T>(null)` 在 React 18 类型下 current 只读、React 19 下可写）到不了消费方的
+  # tsc。要照出来只能用 React 18 的 @types 去编译库**源码**，也就是 packed-consumer 那套
+  # 仓库外工程里 scenarios/packed 的那份拷贝。
+  #
+  # 这条判据此前只挂在每周定时任务的 React 18 冒烟里，代价实测过一次：0.40.0 的 Upload
+  # 带着一个 TS2540 合并进 master，几小时后才被定时任务报出来（#226–#245 那批回流）。
+  # `--typecheck-only` 把后面的 vite 打包、泄漏断言、playwright 测量全砍掉——那些由
+  # runtime-performance 的 packed-consumer 分片保证——剩下的 pack + install + tsc 只要
+  # 两三分钟，便宜到可以挂进每个 PR。
+  #
+  # 定时触发时它与 runtime-performance 里的完整冒烟重复，但那是白送的并行 runner，
+  # 换来的是「类型先红」这个快得多的信号，不值得为省它加一层 if 条件。
+  react18-typecheck:
+    name: React 18 Typecheck (packed consumer)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # 同 consumer-smoke：pnpm pack 会触发 packages/ui 的 prepack 生成预编译 .d.ts（#156），
+      # 那一步的 tsc 要解析 @types/react，没有 node_modules 就是一片 TS7026。
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      - name: Pack, install as a React 18 consumer, typecheck
+        env:
+          PERFORMANCE_CONSUMER_DIR: ${{ runner.temp }}/hulian-scan-consumer-react18-typecheck
+          PERFORMANCE_REACT_VERSION: 18
+        run: pnpm scan:ci -- --react 18 --typecheck-only
+
   # 消费方 bundle 体积门禁 —— 拦「组件悄悄变胖」这一类回归。
   #
   # 源码分发的库量不出体积：仓库里没有 dist/，`du -sh src` 与消费方实际付出的字节
@@ -508,6 +542,7 @@ jobs:
       - gate-a11y
       - gate-demos
       - consumer-smoke
+      - react18-typecheck
       - bundle-size
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest

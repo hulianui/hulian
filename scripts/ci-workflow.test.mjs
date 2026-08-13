@@ -72,3 +72,20 @@ test("deploy 必须 needs 上每一道门禁 job", () => {
       `若某个 job 确实不该阻塞发布，把它显式加进 NON_BLOCKING_JOBS。`,
   );
 });
+
+test("每个 PR 都要用 React 18 类型编译一次库源码", () => {
+  // 同样不绑 job 名，守的是语义：**必须有一条不受 schedule 条件限制的路径**，用 React 18
+  // 的 @types 编译库源码。库的类型分发是 prepack 生成的 .d.ts（用仓库里的 React 19 类型
+  // 生成），所以 consumer-smoke 那两跑照不出函数体里的 React 18/19 类型分歧；此前唯一
+  // 照得出的地方挂在每周定时任务上，实测让一个 TS2540 在 master 上待了几小时（0.40.0
+  // 的 Upload）。谁把这条挪回 `if: github.event_name == 'schedule'`，这里就该红。
+  const job = workflowJobs().find(
+    (candidate) =>
+      candidate.text.includes("--react 18") && candidate.text.includes("--typecheck-only"),
+  );
+  assert.ok(job, "没有任何 job 跑 React 18 的库源码类型门禁（pnpm scan:ci -- --react 18 --typecheck-only）");
+  assert.ok(
+    !/\n {4}if:[^\n]*schedule/.test(job.text),
+    `${job.name} 被限制成只在定时任务跑 —— React 18 类型门禁必须落在 PR 链路上`,
+  );
+});

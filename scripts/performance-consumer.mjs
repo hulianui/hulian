@@ -430,6 +430,15 @@ async function runPackedConsumer(args) {
   });
   const allSlugs = await transformScenarioLoaders(appRoot);
   run("pnpm", ["exec", "tsc", "--noEmit"], { cwd: appRoot });
+  // --typecheck-only：只买上面这一条信息，然后立刻停。
+  //
+  // 为什么值得单独开一个出口：上面这次 tsc 是全流水线**唯一**用 React 18 类型编译库源码
+  // 的地方（消费方拿到的是 prepack 生成的 .d.ts，那份是用仓库里的 React 19 类型生成的，
+  // 所以 consumer-smoke 的 TS7/TS5 两跑都照不出 React 18 特有的类型分歧）。此前它只挂在
+  // 每周定时任务上，代价是 0.40.0 的 Upload 带着一个 TS2540 合并进 master、几小时后才由
+  // 定时任务报出来。拿掉后面的 vite 打包与泄漏断言（那两条由 packed-consumer 门禁本身保证）
+  // 之后，这条路径便宜到可以挂进每个 PR。
+  if (args.includes("--typecheck-only")) return;
   await writeAndBuildBusinessBundle(appRoot, consumerRoot, selectedSlugs(args, allSlugs));
   await assertNoWorkspaceLeaks(appRoot, repositoryRoot);
   if (args.includes("--prepare-only")) return;
