@@ -32,7 +32,10 @@ const nextConfig = {
   // dev（next dev / 桌面 devUrl 5514）不受影响照常热更。
   output: "export",
   basePath,
-  env: { NEXT_PUBLIC_DOCS_LOCALE: docsLocale },
+  // basePath 要**暴露给客户端**：MSW 注册 service worker 时给的是绝对路径，而 public/ 下的
+  // 资产在 basePath 之下（dev 的中文站挂 /zh）。不给客户端这个值，它只能去请求 /mockServiceWorker.js
+  // 然后 404 —— 见 components/msw-provider.tsx。
+  env: { NEXT_PUBLIC_DOCS_LOCALE: docsLocale, NEXT_PUBLIC_DOCS_BASE_PATH: basePath },
   ...(process.env.DOCS_BILINGUAL_BUILD === "1" ? { distDir: localeBuildDir } : {}),
   // export 模式禁用 Next 图片优化服务端；本站皆用原生 <img>，标注 unoptimized 兜底。
   images: { unoptimized: true },
