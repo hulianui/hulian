@@ -15,25 +15,31 @@ const basic: RowActionItem[] = [
   { key: "del", label: "删除", tone: "danger", confirm: { title: "确认删除这条记录？" } },
 ];
 
-function Table({ actionsOf }: { actionsOf: (row: (typeof ROWS)[number]) => RowActionItem[] }) {
+function Table({
+  actionsOf,
+  variant,
+}: {
+  actionsOf: (row: (typeof ROWS)[number]) => RowActionItem[];
+  variant?: "text" | "button" | "icon";
+}) {
   return (
     <table className="w-full text-sm">
       <thead className="text-muted-foreground">
         <tr className="border-b border-border">
-          <th className="py-2 text-left font-medium">发票号</th>
-          <th className="py-2 text-left font-medium">客户</th>
-          <th className="py-2 text-right font-medium">金额</th>
+          <th className="py-2 pe-4 text-left font-medium">发票号</th>
+          <th className="py-2 pe-4 text-left font-medium">客户</th>
+          <th className="py-2 pe-8 text-right font-medium">金额</th>
           <th className="py-2 text-left font-medium">操作</th>
         </tr>
       </thead>
       <tbody>
         {ROWS.map((row) => (
           <tr key={row.id} className="border-b border-hairline">
-            <td className="py-2">{row.id}</td>
-            <td className="py-2">{row.customer}</td>
-            <td className="py-2 text-right tabular-nums">{row.amount}</td>
+            <td className="py-2 pe-4">{row.id}</td>
+            <td className="py-2 pe-4">{row.customer}</td>
+            <td className="py-2 pe-8 text-right tabular-nums">{row.amount}</td>
             <td className="py-2">
-              <RowActions actions={actionsOf(row)} />
+              <RowActions actions={actionsOf(row)} variant={variant} />
             </td>
           </tr>
         ))}
@@ -52,7 +58,7 @@ const PLAYGROUND: RowActionItem[] = [
 
 export const rowActionsShowcase: ShowcaseSpec = {
   controls: [
-    { prop: "variant", type: "select", options: ["text", "icon"], defaultValue: "text", label: "形态" },
+    { prop: "variant", type: "select", options: ["text", "button", "icon"], defaultValue: "text", label: "形态" },
     { prop: "max", type: "number", defaultValue: 3, label: "最多露出" },
   ],
   states: [
@@ -84,7 +90,7 @@ export const rowActionsShowcase: ShowcaseSpec = {
               }))
             : PLAYGROUND
         }
-        variant={p.variant === "icon" ? "icon" : "text"}
+        variant={p.variant === "icon" ? "icon" : p.variant === "button" ? "button" : "text"}
         max={typeof p.max === "number" ? p.max : 3}
       />
     </div>
@@ -92,7 +98,7 @@ export const rowActionsShowcase: ShowcaseSpec = {
   toCode: (p) =>
     [
       "<RowActions",
-      p.variant === "icon" ? '  variant="icon"' : null,
+      p.variant === "text" ? null : `  variant="${p.variant}"`,
       `  max={${typeof p.max === "number" ? p.max : 3}}`,
       "  actions={actions}",
       "/>",
@@ -146,6 +152,24 @@ export const rowActionsShowcase: ShowcaseSpec = {
               },
             ]}
           />
+        </div>
+      ),
+    },
+    {
+      title: "按钮档（动作会改数据时）",
+      description:
+        "variant=button 换成描边按钮：点击范围与可点性一眼可见。语气色与文字档一致，差的只是明显程度。",
+      code: `<RowActions
+  variant="button"
+  actions={[
+    { key: "view", label: "查看", tone: "brand" },
+    { key: "edit", label: "编辑" },
+    { key: "del", label: "删除", tone: "danger", confirm: { title: "确认删除这条记录？" } },
+  ]}
+/>`,
+      render: () => (
+        <div className="w-full max-w-2xl">
+          <Table variant="button" actionsOf={() => basic} />
         </div>
       ),
     },

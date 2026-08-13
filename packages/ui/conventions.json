@@ -7598,6 +7598,20 @@
       "id": "component/row-actions/pitfall/4",
       "scope": "row-actions",
       "title": "RowActions",
+      "rule": "**窄屏不会自动少露几个**：`max` 是个定值。列宽紧张时请自己按断点传更小的 `max`，或者换 `variant=\"icon\"`。刻意没做容器查询自动降档——操作列的宽度本身就由内容决定，再让内容反过来跟着宽度变会绕成循环，实测不稳定。",
+      "source": "packages/ui/src/row-actions/row-actions.md"
+    },
+    {
+      "id": "component/row-actions/pitfall/5",
+      "scope": "row-actions",
+      "title": "RowActions",
+      "rule": "全部动作被 `hidden` 筛掉时组件**什么都不渲染**（不是留个空壳），所以别指望它撑出列宽。",
+      "source": "packages/ui/src/row-actions/row-actions.md"
+    },
+    {
+      "id": "component/row-actions/pitfall/6",
+      "scope": "row-actions",
+      "title": "RowActions",
       "rule": "一行超过 5 个动作时先想想是不是该做成批量操作或详情页里的操作，而不是继续加 `max`。",
       "source": "packages/ui/src/row-actions/row-actions.md"
     },
@@ -10119,7 +10133,7 @@
   ],
   "stats": {
     "componentDocs": 391,
-    "componentAdvisories": 1410,
-    "totalAdvisories": 1420
+    "componentAdvisories": 1412,
+    "totalAdvisories": 1422
   }
 }

@@ -23209,14 +23209,15 @@
           "name": "variant",
           "required": false,
           "kind": "enum",
-          "type": "\"text\" | \"icon\"",
+          "type": "\"text\" | \"button\" | \"icon\"",
           "values": [
             "text",
+            "button",
             "icon"
           ],
           "valueType": "string",
           "default": "\"text\"",
-          "description": "图标档省横向空间，但要求每项都给 `icon`"
+          "description": "三档只差「有多明显」：文字档无边框、按钮档描边、图标档只有图标（要求每项都给 `icon`）"
         },
         {
           "name": "max",
@@ -23260,6 +23261,14 @@
           "type": "string",
           "default": "本地化「更多操作」",
           "description": "溢出菜单触发器的无障碍名"
+        },
+        {
+          "name": "revealOnHover",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "平时隐去、悬浮该行才显现。**需要父级行元素带 `group/row`**；键盘聚焦时同样显现，触屏恒显"
         },
         {
           "name": "key",
@@ -23335,9 +23344,9 @@
           "name": "onSelect",
           "required": false,
           "kind": "function",
-          "type": "() => void",
+          "type": "() => void | Promise<unknown>",
           "default": null,
-          "description": "点击回调；有 `confirm` 时在确认之后才调"
+          "description": "点击回调；有 `confirm` 时在确认之后才调。**返回 Promise 时自动进 loading**（见下）"
         },
         {
           "name": "render",

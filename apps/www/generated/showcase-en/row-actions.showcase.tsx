@@ -12,25 +12,26 @@ const basic: RowActionItem[] = [
     { key: "edit", label: "Edit" },
     { key: "del", label: "Delete", tone: "danger", confirm: { title: "Delete this record?" } },
 ];
-function Table({ actionsOf }: {
+function Table({ actionsOf, variant, }: {
     actionsOf: (row: (typeof ROWS)[number]) => RowActionItem[];
+    variant?: "text" | "button" | "icon";
 }) {
     return (<table className="w-full text-sm">
       <thead className="text-muted-foreground">
         <tr className="border-b border-border">
-          <th className="py-2 text-left font-medium">Invoice no.</th>
-          <th className="py-2 text-left font-medium">Customers</th>
-          <th className="py-2 text-right font-medium">Amount</th>
+          <th className="py-2 pe-4 text-left font-medium">Invoice no.</th>
+          <th className="py-2 pe-4 text-left font-medium">Customers</th>
+          <th className="py-2 pe-8 text-right font-medium">Amount</th>
           <th className="py-2 text-left font-medium">Actions</th>
         </tr>
       </thead>
       <tbody>
         {ROWS.map((row) => (<tr key={row.id} className="border-b border-hairline">
-            <td className="py-2">{row.id}</td>
-            <td className="py-2">{row.customer}</td>
-            <td className="py-2 text-right tabular-nums">{row.amount}</td>
+            <td className="py-2 pe-4">{row.id}</td>
+            <td className="py-2 pe-4">{row.customer}</td>
+            <td className="py-2 pe-8 text-right tabular-nums">{row.amount}</td>
             <td className="py-2">
-              <RowActions actions={actionsOf(row)}/>
+              <RowActions actions={actionsOf(row)} variant={variant}/>
             </td>
           </tr>))}
       </tbody>
@@ -45,7 +46,7 @@ const PLAYGROUND: RowActionItem[] = [
 ];
 export const rowActionsShowcase: ShowcaseSpec = {
     controls: [
-        { prop: "variant", type: "select", options: ["text", "icon"], defaultValue: "text", label: "Form" },
+        { prop: "variant", type: "select", options: ["text", "button", "icon"], defaultValue: "text", label: "Form" },
         { prop: "max", type: "number", defaultValue: 3, label: "Max visible" },
     ],
     states: [
@@ -68,11 +69,11 @@ export const rowActionsShowcase: ShowcaseSpec = {
                 ...a,
                 icon: [<Eye key="a" className="size-4" aria-hidden/>, <Pencil key="b" className="size-4" aria-hidden/>, <Trash2 key="c" className="size-4" aria-hidden/>][i % 3],
             }))
-            : PLAYGROUND} variant={p.variant === "icon" ? "icon" : "text"} max={typeof p.max === "number" ? p.max : 3}/>
+            : PLAYGROUND} variant={p.variant === "icon" ? "icon" : p.variant === "button" ? "button" : "text"} max={typeof p.max === "number" ? p.max : 3}/>
     </div>),
     toCode: (p) => [
         "<RowActions",
-        p.variant === "icon" ? "  variant=\"icon\"" : null,
+        p.variant === "text" ? null : `  variant="${p.variant}"`,
         `  max={${typeof p.max === "number" ? p.max : 3}}`,
         "  actions={actions}",
         "/>",
@@ -120,6 +121,21 @@ export const rowActionsShowcase: ShowcaseSpec = {
                         confirm: { title: "Void this invoice?", description: "Voiding cannot be undone; a new invoice has to be issued." },
                     },
                 ]}/>
+        </div>),
+        },
+        {
+            title: "Button form (when actions change data)",
+            description: "variant=button switches to outlined buttons: the hit area and the fact that it is clickable are both obvious. The tones match the text form; only the prominence differs.",
+            code: `<RowActions
+  variant="button"
+  actions={[
+    { key: "view", label: "View", tone: "brand" },
+    { key: "edit", label: "Edit" },
+    { key: "del", label: "Delete", tone: "danger", confirm: { title: "Delete this record?" } },
+  ]}
+/>`,
+            render: () => (<div className="w-full max-w-2xl">
+          <Table variant="button" actionsOf={() => basic}/>
         </div>),
         },
         {

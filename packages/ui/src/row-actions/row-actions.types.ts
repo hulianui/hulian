@@ -38,8 +38,14 @@ export interface RowActionItem {
   confirm?: RowActionConfirm;
   /** 按权限藏起来。写在数据里比在调用点写一串 `&&` 整齐，也不会把间距一起藏没。 */
   hidden?: boolean;
-  /** 点击回调。有 `confirm` 时在确认之后才调。 */
-  onSelect?: () => void;
+  /**
+   * 点击回调。有 `confirm` 时在确认之后才调。
+   *
+   * **返回 Promise 时组件自己进 loading**：这个动作转圈、同组其他动作暂时不可点（防止一行里
+   * 同时发两个写操作），确认框的确认键也保持 loading 且**不关闭**——直到 resolve 才关。
+   * reject 时只结束 loading、确认框留在原地：错误文案要看业务语义，由你在 `onSelect` 里自己 catch。
+   */
+  onSelect?: () => void | Promise<unknown>;
   /**
    * 换成别的元素来渲染，典型是路由 `<Link>`。
    *
@@ -52,8 +58,16 @@ export interface RowActionItem {
 export interface RowActionsProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
   /** 动作列表。`hidden` 的项先被剔掉，再算折叠。 */
   actions: RowActionItem[];
-  /** 文字档还是图标档，默认 `"text"`。图标档省横向空间，但要求每个动作都有 `icon`。 */
-  variant?: "text" | "icon";
+  /**
+   * 动作长什么样，默认 `"text"`：
+   *
+   * - `"text"` 文字档：无边框的文字动作，最省视觉噪音，适合动作以「只读跳转」为主的列表
+   * - `"button"` 按钮档：描边按钮，点击范围与可点性一眼可见，适合动作真的会改数据的表
+   * - `"icon"` 图标档：只有图标，最省横向空间，要求每个动作都给 `icon`
+   *
+   * 三档的语气色一致（`tone` 说了算），差的只是「有多明显」这一件事。
+   */
+  variant?: "text" | "button" | "icon";
   /**
    * 最多**露出**几个，默认 3。超出时露出前 `max - 1` 个、其余收进溢出菜单——
    * 而不是露满 `max` 个再加一颗菜单键，那样实际控件数会比 `max` 还多，列宽反而失控。
@@ -65,4 +79,12 @@ export interface RowActionsProps extends Omit<HTMLAttributes<HTMLDivElement>, "o
   align?: "start" | "center" | "end";
   /** 溢出菜单触发器的无障碍名，默认取本地化的「更多操作」。 */
   moreLabel?: string;
+  /**
+   * 平时隐去、悬浮该行时才显现，默认 `false`。
+   *
+   * 需要**父级行元素带 `group/row`**（组件只发 `group-hover/row:` 这一侧的类，没法替你在 `<tr>` 上加）。
+   * 键盘用户按 Tab 进来时同样显现（`focus-within`），触屏设备上则恒显 —— 那里根本没有悬浮这回事，
+   * 藏起来等于永远看不见。
+   */
+  revealOnHover?: boolean;
 }

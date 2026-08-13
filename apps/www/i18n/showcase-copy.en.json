@@ -8233,7 +8233,11 @@
     "{ key: \"view\", label: \"查看\", icon: <Eye className=\"size-4\" /> },": "{ key: \"view\", label: \"View\", icon: <Eye className=\"size-4\" /> },",
     "{ key: \"edit\", label: \"编辑\", icon: <Pencil className=\"size-4\" /> },": "{ key: \"edit\", label: \"Edit\", icon: <Pencil className=\"size-4\" /> },",
     "{ key: \"del\", label: \"删除\", tone: \"danger\", icon: <Trash2 className=\"size-4\" />, confirm: { title: \"确认删除？\" } },": "{ key: \"del\", label: \"Delete\", tone: \"danger\", icon: <Trash2 className=\"size-4\" />, confirm: { title: \"Confirm deletion?\" } },",
-    "{ key: \"del\", label: \"删除\", tone: \"danger\", disabled: true, disabledReason: \"已开票不可删除\" },": "{ key: \"del\", label: \"Delete\", tone: \"danger\", disabled: true, disabledReason: \"Invoiced rows cannot be deleted\" },"
+    "{ key: \"del\", label: \"删除\", tone: \"danger\", disabled: true, disabledReason: \"已开票不可删除\" },": "{ key: \"del\", label: \"Delete\", tone: \"danger\", disabled: true, disabledReason: \"Invoiced rows cannot be deleted\" },",
+    "按钮档（动作会改数据时）": "Button form (when actions change data)",
+    "variant=button 换成描边按钮：点击范围与可点性一眼可见。语气色与文字档一致，差的只是明显程度。": "variant=button switches to outlined buttons: the hit area and the fact that it is clickable are both obvious. The tones match the text form; only the prominence differs.",
+    "    { key: \"view\", label: \"查看\", tone: \"brand\" },": "    { key: \"view\", label: \"View\", tone: \"brand\" },",
+    "    { key: \"del\", label: \"删除\", tone: \"danger\", confirm: { title: \"确认删除这条记录？\" } },": "    { key: \"del\", label: \"Delete\", tone: \"danger\", confirm: { title: \"Delete this record?\" } },"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

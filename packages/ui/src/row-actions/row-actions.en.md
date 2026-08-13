@@ -28,11 +28,12 @@ import { RowActions } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | actions * | `RowActionItem[]` | — | The action list. `hidden` entries are dropped before collapsing is computed. |
-| variant | `"text" \| "icon"` | `"text"` | The icon form saves horizontal space but requires an `icon` on every entry. |
+| variant | `"text" \| "button" \| "icon"` | `"text"` | Three steps of prominence: borderless text, outlined buttons, icons only (the last requires an `icon` on every entry). |
 | max | `number` | `3` | How many actions stay **visible**. Past that, the first `max - 1` stay out and the rest move into an overflow menu. |
 | size | `"sm" \| "md"` | `"sm"` | Density step. |
 | align | `"start" \| "center" \| "end"` | `"start"` | Alignment within the column. |
 | moreLabel | `string` | localised "More actions" | Accessible name for the overflow trigger. |
+| revealOnHover | `boolean` | `false` | Hidden until the row is hovered. **Requires `group/row` on the parent row element**; keyboard focus reveals it too, and it stays visible on touch devices. |
 
 `RowActionItem`:
 
@@ -46,7 +47,7 @@ import { RowActions } from "@hulianui/ui"
 | disabledReason | `ReactNode` | — | Why it is unavailable. **If you set `disabled`, set this too.** |
 | confirm | `RowActionConfirm` | — | Confirmation step: `{ title, description?, confirmText?, cancelText? }`. |
 | hidden | `boolean` | `false` | Hide by permission. |
-| onSelect | `() => void` | — | Click callback; with `confirm` it runs only after confirmation. |
+| onSelect | `() => void \| Promise<unknown>` | — | Click callback; with `confirm` it runs only after confirmation. **Returning a Promise turns on loading** (see below). |
 | render | `ReactElement` | — | Render as another element, typically a router `<Link>`. |
 
 ## Examples
@@ -83,6 +84,34 @@ import { RowActions } from "@hulianui/ui"
 { key: "del", label: "Delete", tone: "danger", disabled: row.invoiced, disabledReason: "Invoiced rows cannot be deleted" }
 ```
 
+## Async actions
+
+Returning a Promise from `onSelect` hands the whole cycle to the component - no `loading` or `disabled` props needed on your side:
+
+- That action spins, and **the other actions in the row stop responding** - two writes fired from one row reach the server in essentially random order
+- With `confirm`, the confirm button spins too and **the dialog closes only on success**; a failure leaves it open so the user can retry
+- While it runs, Escape, the overlay and the cancel button all refuse to close: closing mid-flight tells the user they cancelled something that was never cancelled
+- On rejection the component only stops the spinner and **shows no error copy** - that is business semantics, so catch it in `onSelect` and raise your own toast
+
+```tsx
+{ key: "del", label: "Delete", tone: "danger",
+  confirm: { title: "Delete?" },
+  onSelect: async () => {
+    try { await api.remove(row.id); await mutate() }
+    catch (e) { toast({ title: "Delete failed", tone: "danger" }); throw e }  // rethrow, or the dialog closes
+  } }
+```
+
+## Choosing a form
+
+| Form | Looks like | Use it when |
+|---|---|---|
+| `text` (default) | Borderless text | Actions are mostly read-only navigation. A row of borders chops the table up. |
+| `button` | Outlined buttons | Actions actually change data. Clickability and hit area should not have to be guessed. |
+| `icon` | Icons only | Dense tables where column width is tight. The name moves to the accessible name and tooltip. |
+
+Tones are identical across the three (that is what `tone` is for), and the overflow trigger follows the form -- no borderless "..." appears among outlined buttons.
+
 ## Design rationale
 
 - **Past `max`, only `max - 1` actions stay visible.** The menu trigger occupies a slot of its own, so keeping `max` buttons and adding a "..." makes `max + 1` controls and a column one slot wider than the caller expects.
@@ -96,6 +125,8 @@ import { RowActions } from "@hulianui/ui"
 - `label` is a `string`, not a `ReactNode`, because it has to serve as the accessible name, the tooltip text, and the menu type-ahead term at once, and all three only accept strings. If you want rich text, reconsider whether the action name is too long.
 - Give every entry an `icon` in the icon form; without one the button renders empty and only the accessible name remains, which is readable but not visible.
 - Do not conflate `hidden` with `disabled`: **no permission means `hidden`** (the action should not be advertised), while **a state that currently forbids it means `disabled` plus `disabledReason`** (the user should learn why not right now).
+- **Narrow screens do not shrink `max` automatically.** It is a fixed number: pass a smaller `max` at your own breakpoints, or switch to `variant="icon"`. Container-query auto-collapsing was deliberately left out - the actions column is sized by its content, so making the content follow that width closes a loop that proved unstable in practice.
+- When every action is filtered out by `hidden` the component **renders nothing at all** (not an empty shell), so do not rely on it to hold a column open.
 - Past five actions in one row, ask whether these belong in a bulk action bar or on the detail page instead of raising `max` again.
 
 ## Related
