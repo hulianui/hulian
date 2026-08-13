@@ -84,6 +84,14 @@ import { RowActions } from "@hulianui/ui"
 { key: "del", label: "删除", tone: "danger", disabled: row.invoiced, disabledReason: "已开票不可删除" }
 ```
 
+## 动效
+
+动作按钮（含溢出菜单键）接的是库的**按压反馈**（`pressableClass`）：按下轻微缩放，时长与曲线取自动效体系的 fast 档，`prefers-reduced-motion: reduce` 下自动去掉——这条偏好一律由库负责，不必在调用处关。
+
+`revealOnHover` 的显隐同样走 fast 档的过渡，减弱动效下变成直接切换。
+
+> 注意：**`Button` 本身当前不带按压反馈**（基类只有颜色过渡），这份反馈是 `RowActions` 主动接上的。所以同一页里自己手搓的按钮不会有这个手感——想统一得去改 `Button`。
+
 ## 异步动作
 
 `onSelect` 返回 Promise 时组件自己处理这一整套，消费方不必再传 `loading` / `disabled`：

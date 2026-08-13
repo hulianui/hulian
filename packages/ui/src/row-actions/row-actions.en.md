@@ -84,6 +84,14 @@ import { RowActions } from "@hulianui/ui"
 { key: "del", label: "Delete", tone: "danger", disabled: row.invoiced, disabledReason: "Invoiced rows cannot be deleted" }
 ```
 
+## Motion
+
+Action buttons (including the overflow trigger) carry the library's **press feedback** (`pressableClass`): a slight scale on press, with the duration and curve taken from the motion system's fast step, dropped automatically under `prefers-reduced-motion: reduce` -- that preference is the library's job, not something to switch off at the call site.
+
+`revealOnHover` fades on the same fast step and becomes an instant swap under reduced motion.
+
+> Note: **`Button` itself does not currently carry press feedback** (its base class only transitions colours); `RowActions` opts into it. Hand-rolled buttons elsewhere on the page will therefore feel different -- unifying that means changing `Button`.
+
 ## Async actions
 
 Returning a Promise from `onSelect` hands the whole cycle to the component - no `loading` or `disabled` props needed on your side:

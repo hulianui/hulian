@@ -106,7 +106,8 @@ describe("RowActions", () => {
 
   it("text 档不画边框（一排边框会把表格切碎）", () => {
     const { getByRole } = render(<RowActions actions={[{ key: "edit", label: "编辑" }]} />);
-    expect(getByRole("button", { name: "编辑" }).className).not.toContain("border");
+    // 按类名边界切词：pressableClass 的过渡属性列表里含 border-color，裸 contains("border") 会假红
+    expect(getByRole("button", { name: "编辑" }).className).not.toMatch(/(^|\s)border(\s|$)/);
   });
 
   it("render 换成链接：导航型动作保住原生的开新标签能力", () => {
@@ -117,6 +118,23 @@ describe("RowActions", () => {
     );
     const link = screen.getByRole("link", { name: "查看" });
     expect(link.getAttribute("href")).toBe("/orders/1");
+  });
+
+  it("动作按钮接动效体系的按压反馈，且没把 Button 自带的颜色过渡挤掉", () => {
+    const { getByRole } = render(<RowActions actions={[{ key: "edit", label: "编辑" }]} />);
+    const cls = getByRole("button", { name: "编辑" }).className;
+    // pressableClass 自带完整的 transition-property 列表，所以它必须是最后一条 transition-*：
+    // tailwind-merge 只留最后一个，写反了颜色与按压只能活一个。
+    expect(cls).toContain("active:scale-[0.97]");
+    expect(cls).toContain("transition-[scale,background-color,border-color,color,box-shadow,filter,opacity]");
+    expect(cls).not.toContain("transition-colors");
+    // 减弱动效由库负责，不指望消费方去关
+    expect(cls).toContain("motion-reduce:active:scale-100");
+  });
+
+  it("溢出菜单键同样有按压反馈", () => {
+    const { getByRole } = render(<RowActions max={2} actions={base} />);
+    expect(getByRole("button", { name: "更多操作" }).className).toContain("active:scale-[0.97]");
   });
 
   describe("异步动作", () => {
