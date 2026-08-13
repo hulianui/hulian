@@ -554,3 +554,158 @@ describe("ComboboxContent header 槽", () => {
     expect(document.querySelector(".border-b.border-hairline")).toBeNull();
   });
 });
+
+// #257 / #258 / #259：消费方在「触发钮 + 弹层内搜索」范式下报的三条。
+describe("Combobox 图4 范式（ComboboxTrigger + 弹层内搜索）", () => {
+  const ISSUERS = [
+    { value: "bj-psb", label: "北京市公安局" },
+    { value: "sh-psb", label: "上海市公安局" },
+  ];
+
+  it("#257 ComboboxTrigger 收 children：触发钮整段换成自定义内容", () => {
+    render(
+      <Combobox items={ISSUERS} defaultValue={ISSUERS[0]}>
+        <ComboboxTrigger aria-label="绑定公司">
+          <span data-testid="slot">已绑定</span>
+        </ComboboxTrigger>
+      </Combobox>,
+    );
+    const trigger = screen.getByRole("combobox");
+    expect(screen.getByTestId("slot")).toBeTruthy();
+    // 默认那块「已选 label」被整段替换掉，而不是并排多一份
+    expect(trigger.textContent).not.toContain("北京市公安局");
+  });
+
+  it("#257 children 传函数：按有没有选中分叉（触发钮退化成状态图标的典型形态）", () => {
+    const renderState = (value: { label: unknown } | null) => (
+      <span data-testid="state">{value == null ? "未绑定" : "已绑定"}</span>
+    );
+    const unbound = render(
+      <Combobox items={ISSUERS}>
+        <ComboboxTrigger aria-label="绑定公司">{renderState}</ComboboxTrigger>
+      </Combobox>,
+    );
+    expect(screen.getByTestId("state").textContent).toBe("未绑定");
+    unbound.unmount();
+
+    render(
+      <Combobox items={ISSUERS} defaultValue={ISSUERS[0]}>
+        <ComboboxTrigger aria-label="绑定公司">{renderState}</ComboboxTrigger>
+      </Combobox>,
+    );
+    expect(screen.getByTestId("state").textContent).toBe("已绑定");
+  });
+
+  it("#257 showChevron={false} 去掉箭头（省宽度正是走 children 的理由）", () => {
+    const withChevron = render(
+      <Combobox items={ISSUERS}>
+        <ComboboxTrigger aria-label="a" />
+      </Combobox>,
+    );
+    expect(screen.getByRole("combobox").querySelectorAll("svg").length).toBe(1);
+    withChevron.unmount();
+
+    render(
+      <Combobox items={ISSUERS}>
+        <ComboboxTrigger aria-label="b" showChevron={false}>
+          <span>图标</span>
+        </ComboboxTrigger>
+      </Combobox>,
+    );
+    expect(screen.getByRole("combobox").querySelectorAll("svg").length).toBe(0);
+  });
+
+  it("#257 不传 children 时仍是「已选 label ?? placeholder」（向后兼容）", () => {
+    const empty = render(
+      <Combobox items={ISSUERS}>
+        <ComboboxTrigger aria-label="a" placeholder="请选择" />
+      </Combobox>,
+    );
+    expect(screen.getByRole("combobox").textContent).toContain("请选择");
+    empty.unmount();
+
+    render(
+      <Combobox items={ISSUERS} defaultValue={ISSUERS[0]}>
+        <ComboboxTrigger aria-label="b" placeholder="请选择" />
+      </Combobox>,
+    );
+    expect(screen.getByRole("combobox").textContent).toContain("北京市公安局");
+  });
+
+  it("#258 creatable + Trigger：弹层里的搜索框不被预填成已选 label", async () => {
+    render(
+      <Combobox items={ISSUERS} creatable defaultValue={ISSUERS[0]} defaultOpen>
+        <ComboboxTrigger aria-label="发证机构" />
+        <ComboboxContent searchPlaceholder="搜索">
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    const search = screen.getByPlaceholderText("搜索") as HTMLInputElement;
+    expect(search.value).toBe("");
+    // 打字不会追加在已选项全名后面，创建项文案也就干净
+    fireEvent.change(search, { target: { value: "杭州市公安局" } });
+    await waitFor(() => expect(screen.getByText("使用 “杭州市公安局”")).toBeTruthy());
+  });
+
+  it("#258 内联范式不受影响：输入框挂载时照旧显示已选 label", () => {
+    render(
+      <Combobox items={ISSUERS} creatable defaultValue={ISSUERS[0]}>
+        <ComboboxInput aria-label="发证机构" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    expect(screen.getByDisplayValue("北京市公安局")).toBeTruthy();
+  });
+
+  it("#258 消费方显式传的 defaultInputValue 仍然最大（两档都不抢）", () => {
+    render(
+      <Combobox items={ISSUERS} creatable defaultValue={ISSUERS[0]} defaultInputValue="预填">
+        <ComboboxInput aria-label="发证机构" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    expect(screen.getByDisplayValue("预填")).toBeTruthy();
+  });
+
+  it("#259 createLabel 单点覆盖创建项文案，不传则回落全局默认", async () => {
+    render(
+      <Combobox
+        items={ISSUERS}
+        creatable
+        defaultOpen
+        createLabel={(value) => `使用「${value}」（PDF 原文非标状态）`}
+      >
+        <ComboboxInput aria-label="发证机构" />
+        <ComboboxContent>
+          {(item) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.label}
+            </ComboboxItem>
+          )}
+        </ComboboxContent>
+      </Combobox>,
+    );
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "在职" } });
+    await waitFor(() =>
+      expect(screen.getByText("使用「在职」（PDF 原文非标状态）")).toBeTruthy(),
+    );
+    expect(screen.queryByText("使用 “在职”")).toBeNull();
+  });
+});

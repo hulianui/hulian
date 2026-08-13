@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem } from "./combobox";
 import type { ComboboxItemData } from "./combobox.types";
+import { Link, Plus } from "../_icons";
 
 type Size = "sm" | "md" | "lg";
 
@@ -98,6 +99,34 @@ function SearchDemo() {
   );
 }
 
+// #257：触发钮退化成一枚状态图标 —— 窄格子里唯一放得下的形态。
+function IconTriggerDemo() {
+  return (
+    <Combobox items={FRUITS}>
+      <ComboboxTrigger
+        aria-label="绑定水果"
+        showChevron={false}
+        className="size-8 justify-center px-0"
+      >
+        {(value: ComboboxItemData | null) =>
+          value == null ? (
+            <Plus className="size-4 text-muted-foreground" />
+          ) : (
+            <Link className="size-4 text-primary" />
+          )
+        }
+      </ComboboxTrigger>
+      <ComboboxContent searchPlaceholder="搜索水果…">
+        {(item) => (
+          <ComboboxItem key={item.value} value={item}>
+            {item.label}
+          </ComboboxItem>
+        )}
+      </ComboboxContent>
+    </Combobox>
+  );
+}
+
 export const comboboxShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -166,6 +195,28 @@ export const comboboxShowcase: ShowcaseSpec = {
   </ComboboxContent>
 </Combobox>`,
       render: () => <Demo defaultValue={FRUITS[2]} />,
+    },
+    {
+      title: "触发钮退化成状态图标",
+      description:
+        "children 整段替换掉默认的「已选 label」。表格窄格子里名字已经在别处出现过一次，触发钮再显示一遍就像两个字段——那种位置只放得下一枚图标。传函数即按有没有选中分叉。",
+      code: `<Combobox items={fruits}>
+  <ComboboxTrigger
+    aria-label="绑定水果"
+    showChevron={false}
+    className="size-8 justify-center px-0"
+  >
+    {(value) => (value ? <Link className="size-4" /> : <Plus className="size-4" />)}
+  </ComboboxTrigger>
+  <ComboboxContent searchPlaceholder="搜索水果…">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+      render: () => <IconTriggerDemo />,
     },
     {
       title: "禁用与无效态",

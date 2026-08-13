@@ -4615,6 +4615,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
 | creatable | `boolean` | `false` | 自由输入创建新值：当前输入串在候选里没有完全相同的一项时，列表首位多出一条「使用 “xxx”」。见下 |
 | onCreate | `(value: string) => void` | — | 创建项被选中时触发（与 `onValueChange` 同时发生，不是二选一）。见下 |
+| createLabel | `(value: string) => ReactNode` | 全局 locale 的 `combobox.create` | 创建项那一行的文案，单点覆盖。同一个应用里两个 creatable 说的常常不是同一件事 |
 | disabled | `boolean` | `false` | 禁用 |
 
 `ComboboxTrigger`（图4 范式：显示已选 label / placeholder，点击展开弹层内搜索）。继承原生 `<button>` 属性，剩余属性落到按钮自身。
@@ -4624,6 +4625,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | size | `"sm"\|"md"\|"lg"` | `"md"` | 尺寸 |
 | placeholder | `string` | — | 未选中时占位文案（按钮没有原生 placeholder，这是瑚琏语义） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
+| showChevron | `boolean` | `true` | 右侧展开箭头。退化成图标钮时传 `false` |
 | className | `string` | — | — |
 
 `ComboboxInput`（内联自动补全：输入框本身即可见字段）。继承原生 `<input>` 属性，剩余属性落到**内层 `<input>`**（不是外壳 span），见「禁忌 / 坑」。
@@ -4677,6 +4679,12 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | 插槽 | 类型 | 说明 |
 |------|------|------|
 | children | `ReactNode` | 内放 Trigger/Input + Content |
+
+`ComboboxTrigger`
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode \| (value: ComboboxItemData \| null) => ReactNode` | 自定义触发钮内容，替换掉默认那块「已选 label ?? placeholder」。传函数即按已选值分叉。不传 = 原行为 |
 
 `ComboboxContent`
 
@@ -4810,6 +4818,31 @@ const [issuers, setIssuers] = useState(ISSUERS);
 - **创建项是塞进 `items` 里的一条真选项**，不是浮层里多画的一行。所以键盘上下键、highlight、Enter 选中、`Empty` 的判空全都自动一致，超过 100 项自动虚拟化时也照常工作。
 - **`creatable` 需要 `items`**：选项写死在 `children` 里的用法没有可插入的地方，这一档不生效（开发期会有一条告警）。
 - **`creatable` 开着时输入串由组件接管一份**（内部补了 `defaultInputValue`）。带来的唯一差异：用 `value` 从外部改选中项时，输入框里的文字不会跟着变。需要联动请自己传 `inputValue`。
+- **创建项的文案单点可覆盖**：`createLabel` 不传就用全局 locale 的 `combobox.create`（「使用 “xxx”」）。同一个应用里两个 `creatable` 说的常常不是同一件事——一个是「新建一个机构名」，另一个可能要写成「使用「xxx」（原文非标状态）」，括号里那句是给操作者的判断依据。此前只有全局 locale 一个出口，为一行文案得在业务里嵌一层 `ConfigProvider`。
+- **接管的那个初值按范式取，不用自己传**：配 `ComboboxInput`（内联）取已选项的 label，因为输入框自己就是字段；配 `ComboboxTrigger`（弹层内搜索）取空串，因为被预填的是弹层里的**搜索框**——否则首次打开时搜索框里已经躺着已选项的全名，用户打的字直接追加在后面（#258）。范式是扫 `children` 里有没有 `ComboboxTrigger` 认出来的，所以 Trigger 被你自己的包装组件裹起来时认不出，那种情况显式传 `defaultInputValue=""`。
+
+### ComboboxTrigger 的 children：窄格子里触发钮退化成状态图标
+
+表格单元格里常常已经有一个字段在显示这个名字了，触发钮再显示一遍，同一个值在一个格子里出现两遍，看起来像两个字段——那种位置只放得下一枚状态图标：
+
+```tsx
+<Combobox items={companies} value={bound} onValueChange={setBound}>
+  <ComboboxTrigger aria-label="绑定公司" showChevron={false} className="h-7 w-7 justify-center px-0">
+    {(value) => (value ? <Link2 className="size-4 text-primary" /> : <Link2Off className="size-4 text-muted-foreground" />)}
+  </ComboboxTrigger>
+  <ComboboxContent searchPlaceholder="搜索公司">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
+`placeholder` 顶不了这件事：它只接字符串，而且只在**未选中**时出现——一选中就掉回显示名字。把 `label` 造成图标节点也不行，那会让弹层列表跟着变成一排图标。
+
+传节点即固定内容，传函数即按已选值分叉。⚠️ 自定义内容不会自动截断：默认那块自带 `truncate`，换掉之后长文本的省略号得自己写。
 
 ### header：常驻在列表上方的一行
 

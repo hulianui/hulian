@@ -2,6 +2,7 @@
 import {
   createContext,
   forwardRef,
+  isValidElement,
   useContext,
   useMemo,
   useRef,
@@ -62,14 +63,30 @@ const VIRTUALIZE_THRESHOLD = 100;
  */
 const CREATE_ENTRY = Symbol("hulian.combobox.create");
 
-/** 浮层那侧需要知道的两件事：哪一条是创建项（好换皮肤），以及选中它时该通知谁。 */
+/** 浮层那侧需要知道的三件事：哪一条是创建项（好换皮肤）、选中它时该通知谁、那行字怎么写。 */
 interface ComboboxCreatable {
   onCreate?: (value: string) => void;
+  createLabel?: (value: string) => ReactNode;
 }
 const CreatableContext = createContext<ComboboxCreatable | null>(null);
 
 function isCreateEntry(item: unknown): item is ComboboxItemData {
   return item != null && typeof item === "object" && CREATE_ENTRY in item;
+}
+
+/**
+ * 静态元素树里有没有 `ComboboxTrigger` —— 也就是「可见字段是不是一颗按钮」（#258 用它认范式）。
+ *
+ * 只走 `children` 这棵**未渲染**的树，所以纯函数、没有副作用，也不必等挂载。深度设 4：真实写法里
+ * Trigger 最多被 Field / div / Fragment 这类壳裹一两层，再深就该由消费方显式传 `defaultInputValue` 了，
+ * 无限递归换不来准确率，只会在异常大的 children 上白跑。
+ */
+function containsTrigger(node: ReactNode, depth = 0): boolean {
+  if (depth > 4 || node == null || typeof node === "boolean") return false;
+  if (Array.isArray(node)) return node.some((child) => containsTrigger(child, depth));
+  if (!isValidElement(node)) return false;
+  if (node.type === ComboboxTrigger) return true;
+  return containsTrigger((node.props as { children?: ReactNode }).children, depth + 1);
 }
 
 const ChevronDownIcon = () => (
@@ -160,6 +177,7 @@ export function Combobox<Multiple extends boolean = false>({
   children,
   creatable = false,
   onCreate,
+  createLabel,
   ...props
 }: ComboboxProps<Multiple>) {
   const anchorRef = useRef<HTMLElement>(null);
@@ -215,22 +233,38 @@ export function Combobox<Multiple extends boolean = false>({
   );
 
   const creatableValue = useMemo<ComboboxCreatable | null>(
-    () => (creatable ? { onCreate } : null),
-    [creatable, onCreate],
+    () => (creatable ? { onCreate, createLabel } : null),
+    [creatable, onCreate, createLabel],
   );
 
   // creatable 档必须显式给一个 defaultInputValue，否则第一个字符会被吞掉：
   // Base UI 有一条「`items` 变了就把输入框拉回选中项的 label」的同步（`AriaCombobox.js:776`），
   // 它只在「输入串没被接管」时生效，而创建项一出现 `items` 的 identity 就变了 —— 第一次按键那一帧
   // 「查询已变」的标志位还是旧值，于是刚打的那个字被抹掉。给了 defaultInputValue 即算接管，那条同步
-  // 整条跳过。默认值取 Base UI 原本会推出来的那个（单选时是选中项的 label），免得挂载时输入框空着。
+  // 整条跳过。
+  //
+  // **值取什么，取决于那个被预填的输入框是谁**（#258）：
+  //   · 内联范式（ComboboxInput）——输入框自己就是字段，挂载时显示已选值天经地义，取选中项的 label。
+  //   · 图4 范式（ComboboxTrigger + 弹层内搜索）——被预填的是**弹层里的搜索框**。于是首次打开时
+  //     搜索框里已经躺着已选项的全名，用户打的字直接追加在后面，创建项跟着变成拼接串、选下去就落库。
+  //     而且只有首次会踩（选过一次之后查询被更新，二次打开就空了），最容易漏测的那种。
+  //     这一档取空串。
+  //
+  // 为什么靠扫 children 认范式，而不是让 ComboboxTrigger 往 context 里注册一下：`defaultInputValue`
+  // 在 Root 挂载那一刻就被消费掉，而子节点是之后才渲染的 —— 注册永远晚一步，事后也改不回来
+  // （它是非受控初值，不是每帧读的 prop）。扫的是**静态元素树**不是渲染结果，所以只认得出直接写在
+  // 这里的 ComboboxTrigger；被消费方自己的包装组件裹起来时认不出，那种情况回落到内联档的行为
+  // （即改动前的现状，不是新引入的坑），显式传 `defaultInputValue=""` 即可。
   const initialInputValue = useRef<string | undefined>(undefined);
   if (initialInputValue.current === undefined) {
     const selected = (props.value ?? props.defaultValue) as ComboboxItemData | undefined;
     initialInputValue.current =
       props.defaultInputValue != null
         ? String(props.defaultInputValue)
-        : !props.multiple && selected != null && typeof selected.label === "string"
+        : !props.multiple &&
+            !containsTrigger(children) &&
+            selected != null &&
+            typeof selected.label === "string"
           ? selected.label
           : "";
   }
@@ -372,17 +406,17 @@ export function ComboboxTrigger({
   size,
   placeholder,
   invalid,
+  showChevron = true,
   className,
+  children,
   ...props
 }: ComboboxTriggerProps) {
   const anchorRef = useContext(AnchorContext);
-  return (
-    <BaseCombobox.Trigger
-      ref={anchorRef as RefObject<HTMLButtonElement> | null}
-      {...props}
-      {...(invalid && { "data-invalid": "", "aria-invalid": true })}
-      className={cn(comboboxTriggerVariants({ size }), className)}
-    >
+  // children 给了就整段替换掉「已选 label / placeholder」那一块（#257）。
+  // 传函数即按「有没有选中」分叉——那是这条缺口最典型的用法：触发钮退化成一枚绑定状态图标。
+  // Base UI 的 Value 自己不渲染任何元素，所以函数形态不会多包一层。
+  const content =
+    children === undefined ? (
       <BaseCombobox.Value>
         {(value: ComboboxItemData | null) => (
           <span className={cn("truncate", value == null && "text-muted-foreground")}>
@@ -390,9 +424,24 @@ export function ComboboxTrigger({
           </span>
         )}
       </BaseCombobox.Value>
-      <BaseCombobox.Icon className="flex shrink-0 items-center text-muted-foreground transition-transform data-[popup-open]:rotate-180">
-        <ChevronDownIcon />
-      </BaseCombobox.Icon>
+    ) : typeof children === "function" ? (
+      <BaseCombobox.Value>{children}</BaseCombobox.Value>
+    ) : (
+      children
+    );
+  return (
+    <BaseCombobox.Trigger
+      ref={anchorRef as RefObject<HTMLButtonElement> | null}
+      {...props}
+      {...(invalid && { "data-invalid": "", "aria-invalid": true })}
+      className={cn(comboboxTriggerVariants({ size }), className)}
+    >
+      {content}
+      {showChevron && (
+        <BaseCombobox.Icon className="flex shrink-0 items-center text-muted-foreground transition-transform data-[popup-open]:rotate-180">
+          <ChevronDownIcon />
+        </BaseCombobox.Icon>
+      )}
     </BaseCombobox.Trigger>
   );
 }
@@ -425,7 +474,8 @@ function ComboboxCreateItem({ item }: { item: ComboboxItemData }) {
   const virtualizedIndex = useContext(VirtualizedItemIndexContext);
   const ctx = useContext(CreatableContext);
   const copy = useComponentLocale().combobox;
-  const createLabel = copy?.create ?? ((value: string) => `使用 “${value}”`);
+  // 单点覆盖优先于全局 locale（#259），口径同 emptyMessage。
+  const createLabel = ctx?.createLabel ?? copy?.create ?? ((value: string) => `使用 “${value}”`);
   return (
     <BaseCombobox.Item
       data-hulian-create=""

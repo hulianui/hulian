@@ -34,6 +34,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | virtualized | `boolean` | `true` once `items` reaches 100 | Virtualizes the list so only visible options are rendered. Decided from the option count when omitted — see Usage guidelines. |
 | creatable | `boolean` | `false` | Free-text creation: when the current input has no exact match among the options, a "Use “xxx”" row appears at the top of the list. See below. |
 | onCreate | `(value: string) => void` | — | Fires when the create row is selected, alongside `onValueChange` rather than instead of it. See below. |
+| createLabel | `(value: string) => ReactNode` | `combobox.create` from the global locale | Copy of the create row, overridable per instance. Two creatable comboboxes in one app rarely mean the same thing. |
 | disabled | `boolean` | `false` | Disables the control. |
 
 `ComboboxTrigger` displays the selected label or placeholder and opens the searchable popup. It extends the native `<button>` attributes, and remaining attributes land on the button itself.
@@ -43,6 +44,7 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | size | `"sm"\|"md"\|"lg"` | `"md"` | Trigger size. |
 | placeholder | `string` | — | Text shown when nothing is selected. A button has no native placeholder, so this is a HulianUI prop. |
 | invalid | `boolean` | `false` | Applies invalid styling when used outside Field. |
+| showChevron | `boolean` | `true` | Trailing expand chevron. Pass `false` when the trigger degrades to an icon button. |
 | className | `string` | — | Additional class name for the trigger. |
 
 `ComboboxInput` provides inline autocomplete: the visible field is also the search input. It extends the native `<input>` attributes, and remaining attributes land on the **inner `<input>`** rather than the shell span — see Usage guidelines.
@@ -96,6 +98,12 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | Slot | Type | Description |
 |------|------|------|
 | children | `ReactNode` | Trigger or input plus popup content. |
+
+`ComboboxTrigger`
+
+| Slot | Type | Description |
+|------|------|------|
+| children | `ReactNode \| (value: ComboboxItemData \| null) => ReactNode` | Custom trigger content replacing the default "selected label ?? placeholder" block. A function branches on the selected value. Omit it for the original behaviour. |
 
 `ComboboxContent`
 
@@ -203,6 +211,31 @@ The contract:
 - **The create row is a real option injected into `items`**, not an extra row painted inside the popup. Keyboard navigation, highlighting, Enter selection, and the empty check therefore all stay consistent, including once the list virtualizes past 100 options.
 - **`creatable` requires `items`.** Options hard-coded in `children` leave nowhere to inject, so the feature does nothing there and warns in development.
 - **`creatable` makes the component own a copy of the input value** (it supplies a `defaultInputValue` internally). The one consequence: changing the selection externally through `value` no longer updates the text in the input. Pass `inputValue` yourself if you need that link.
+- **The create row copy is overridable per instance.** Without `createLabel` it falls back to the global locale's `combobox.create` ("Use \"xxx\""). Two `creatable` comboboxes in one app rarely say the same thing — one creates an issuer name, another may need "Use \"xxx\" (non-standard status from the source document)", where the parenthetical is what tells the operator they did not mistype. The only previous escape hatch was a nested `ConfigProvider` overriding the global entry for one line of copy.
+- **The owned initial value follows the pattern; you do not pass it yourself.** With `ComboboxInput` (inline) it is the selected item's label, because the input *is* the field. With `ComboboxTrigger` (search inside the popup) it is an empty string, because the prefilled input is the popup's **search box** — otherwise the first open shows the full selected name already sitting there and whatever the user types is appended to it (#258). The pattern is detected by scanning `children` for a `ComboboxTrigger`, so wrapping the trigger in your own component defeats the detection; pass `defaultInputValue=""` explicitly in that case.
+
+### ComboboxTrigger children: degrading the trigger to a status icon in a narrow cell
+
+A table cell often already shows this name in a field of its own. A trigger repeating it puts the same value in the cell twice, which reads as two fields — and such a slot only has room for a status icon:
+
+```tsx
+<Combobox items={companies} value={bound} onValueChange={setBound}>
+  <ComboboxTrigger aria-label="Bind company" showChevron={false} className="h-7 w-7 justify-center px-0">
+    {(value) => (value ? <Link2 className="size-4 text-primary" /> : <Link2Off className="size-4 text-muted-foreground" />)}
+  </ComboboxTrigger>
+  <ComboboxContent searchPlaceholder="Search companies">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>
+```
+
+`placeholder` cannot express this: it only takes a string, and it only appears while **nothing is selected** — selecting something drops back to the name. Turning `label` into an icon node does not work either, since the popup list would become a column of icons.
+
+Pass a node for fixed content or a function to branch on the selected value. Note that custom content is not truncated for you: the default block carries `truncate`, so replacing it means writing your own ellipsis for long text.
 
 ### header: a row that stays above the list
 

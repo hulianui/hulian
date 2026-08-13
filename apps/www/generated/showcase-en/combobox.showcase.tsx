@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem } from "../../../../packages/ui/src/combobox/combobox";
 import type { ComboboxItemData } from "../../../../packages/ui/src/combobox/combobox.types";
+import { Link, Plus } from "../../../../packages/ui/src/_icons";
 type Size = "sm" | "md" | "lg";
 const FRUITS: ComboboxItemData[] = [
     { value: "apple", label: "Apple" },
@@ -59,6 +60,18 @@ function SearchDemo() {
         </ComboboxContent>
       </Combobox>
     </div>);
+}
+function IconTriggerDemo() {
+    return (<Combobox items={FRUITS}>
+      <ComboboxTrigger aria-label="Bind a fruit" showChevron={false} className="size-8 justify-center px-0">
+        {(value: ComboboxItemData | null) => value == null ? (<Plus className="size-4 text-muted-foreground"/>) : (<Link className="size-4 text-primary"/>)}
+      </ComboboxTrigger>
+      <ComboboxContent searchPlaceholder="Search for fruits...">
+        {(item) => (<ComboboxItem key={item.value} value={item}>
+            {item.label}
+          </ComboboxItem>)}
+      </ComboboxContent>
+    </Combobox>);
 }
 export const comboboxShowcase: ShowcaseSpec = {
     examples: [
@@ -127,6 +140,27 @@ export const comboboxShowcase: ShowcaseSpec = {
   </ComboboxContent>
 </Combobox>`,
             render: () => <Demo defaultValue={FRUITS[2]}/>,
+        },
+        {
+            title: "Trigger degraded to a status icon",
+            description: "children replaces the default \"selected label\" block entirely. In a narrow table cell the name already appears elsewhere, so a trigger repeating it reads as two fields - such a slot only has room for an icon. Pass a function to branch on whether anything is selected.",
+            code: `<Combobox items={fruits}>
+  <ComboboxTrigger
+    aria-label="Bind a fruit"
+    showChevron={false}
+    className="size-8 justify-center px-0"
+  >
+    {(value) => (value ? <Link className="size-4" /> : <Plus className="size-4" />)}
+  </ComboboxTrigger>
+  <ComboboxContent searchPlaceholder="Search for fruits...">
+    {(item) => (
+      <ComboboxItem key={item.value} value={item}>
+        {item.label}
+      </ComboboxItem>
+    )}
+  </ComboboxContent>
+</Combobox>`,
+            render: () => <IconTriggerDemo />,
         },
         {
             title: "Disabled and invalid state",

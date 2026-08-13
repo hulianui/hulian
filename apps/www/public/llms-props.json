@@ -7924,6 +7924,14 @@
           "description": "创建项被选中时触发（与 `onValueChange` 同时发生，不是二选一）。见下"
         },
         {
+          "name": "createLabel",
+          "required": false,
+          "kind": "function",
+          "type": "(value: string) => ReactNode",
+          "default": "全局 locale 的 `combobox.create`",
+          "description": "创建项那一行的文案，单点覆盖。同一个应用里两个 creatable 说的常常不是同一件事"
+        },
+        {
           "name": "disabled",
           "required": false,
           "kind": "boolean",
@@ -7960,6 +7968,14 @@
           "type": "boolean",
           "default": "false",
           "description": "独立使用（非 Field 内）时手动置无效态皮肤"
+        },
+        {
+          "name": "showChevron",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "右侧展开箭头。退化成图标钮时传 `false`"
         },
         {
           "name": "className",
@@ -8146,6 +8162,11 @@
           "name": "children",
           "type": "ReactNode",
           "description": "内放 Trigger/Input + Content"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode | (value: ComboboxItemData | null) => ReactNode",
+          "description": "自定义触发钮内容，替换掉默认那块「已选 label ?? placeholder」。传函数即按已选值分叉。不传 = 原行为"
         },
         {
           "name": "children",
