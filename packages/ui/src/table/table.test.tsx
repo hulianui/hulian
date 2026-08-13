@@ -1543,3 +1543,129 @@ describe("Table 组合原语", () => {
     expect(container.querySelector("tbody td")!.className).toContain("px-3 py-2");
   });
 });
+
+// ── 多级表头（#261）────────────────────────────────────────────────────────
+// 组名此前不落 colSpan：一个横跨 4 列的组只占 1 格，上下两行格子数对不上，整排歪掉。
+// 三道门禁（tsc / guard / 构建）一条都不报，控制台也干净，只有肉眼看表头才发现，故钉在这里。
+describe("Table 分组表头", () => {
+  interface GRow {
+    dept: string;
+    users: number;
+    store: string;
+    pos: string;
+    zone: string;
+  }
+  const gdata: GRow[] = [{ dept: "华东一部", users: 12, store: "南京西路店", pos: "P-01", zone: "华东" }];
+  const grouped: ColumnDef<GRow, any>[] = [
+    {
+      id: "wecom",
+      header: "企业微信",
+      columns: [
+        { accessorKey: "dept", header: "部门名" },
+        { accessorKey: "users", header: "部门成员数" },
+      ],
+    },
+    {
+      id: "mini",
+      header: "小程序",
+      columns: [
+        { accessorKey: "store", header: "门店名" },
+        { accessorKey: "pos", header: "POS编码" },
+      ],
+    },
+  ];
+  const dump = (container: HTMLElement) =>
+    [...container.querySelectorAll("thead tr")].map((tr) =>
+      [...tr.querySelectorAll("th")].map((th) => [
+        th.textContent,
+        th.colSpan,
+        th.rowSpan,
+      ]),
+    );
+
+  it("组名横跨它的叶子列，两行的格子加起来一样宽", () => {
+    const { container } = render(<Table columns={grouped} data={gdata} />);
+    expect(dump(container)).toEqual([
+      [
+        ["企业微信", 2, 1],
+        ["小程序", 2, 1],
+      ],
+      [
+        ["部门名", 1, 1],
+        ["部门成员数", 1, 1],
+        ["门店名", 1, 1],
+        ["POS编码", 1, 1],
+      ],
+    ]);
+  });
+
+  it("跨列的组名默认居中（贴左缘会读成第一列的名字）", () => {
+    const { container } = render(<Table columns={grouped} data={gdata} />);
+    const th = container.querySelector("thead th") as HTMLElement;
+    expect(th.className).toContain("text-center");
+    // 叶子列不受影响，仍是历史默认（左）
+    const leaf = container.querySelectorAll("thead tr")[1]!.querySelector("th") as HTMLElement;
+    expect(leaf.className).toContain("text-left");
+  });
+
+  it("独立列与分组列混排：独立列纵向跨满，不再在上面留一格空表头", () => {
+    const mixed: ColumnDef<GRow, any>[] = [{ accessorKey: "zone", header: "战区" }, ...grouped];
+    const { container } = render(<Table columns={mixed} data={gdata} />);
+    expect(dump(container)).toEqual([
+      [
+        ["战区", 1, 2],
+        ["企业微信", 2, 1],
+        ["小程序", 2, 1],
+      ],
+      [
+        ["部门名", 1, 1],
+        ["部门成员数", 1, 1],
+        ["门店名", 1, 1],
+        ["POS编码", 1, 1],
+      ],
+    ]);
+    // 空表头不该再存在
+    expect([...container.querySelectorAll("thead th")].every((th) => th.textContent !== "")).toBe(
+      true,
+    );
+  });
+
+  it("叶子列的显式宽度声明照样生效（分组时它写在嵌套里，只扫顶层就全丢了）", () => {
+    const sized: ColumnDef<GRow, any>[] = [
+      {
+        id: "wecom",
+        header: "企业微信",
+        columns: [
+          { accessorKey: "dept", header: "部门名", size: 220 },
+          { accessorKey: "users", header: "部门成员数", minSize: 90 },
+        ],
+      },
+    ];
+    const { container } = render(<Table columns={sized} data={gdata} />);
+    const leafs = [...container.querySelectorAll("thead tr")[1]!.querySelectorAll("th")];
+    expect((leafs[0] as HTMLElement).style.width).toBe("220px");
+    expect((leafs[1] as HTMLElement).style.minWidth).toBe("90px");
+  });
+
+  it("单级表头的 DOM 不变：不落 colSpan / rowSpan 属性", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    for (const th of container.querySelectorAll("thead th")) {
+      expect(th.hasAttribute("colspan")).toBe(false);
+      expect(th.hasAttribute("rowspan")).toBe(false);
+    }
+  });
+
+  it("分组列里的叶子列照常排序（组名那格不出排序按钮）", () => {
+    const sortable: ColumnDef<GRow, any>[] = [
+      {
+        id: "wecom",
+        header: "企业微信",
+        columns: [{ accessorKey: "users", header: "部门成员数", enableSorting: true }],
+      },
+    ];
+    const { container } = render(<Table columns={sortable} data={gdata} />);
+    const rows = container.querySelectorAll("thead tr");
+    expect(rows[0]!.querySelector("button")).toBeNull();
+    expect(rows[1]!.querySelector("button")).toBeTruthy();
+  });
+});

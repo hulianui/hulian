@@ -183,6 +183,25 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 
 <Table columns={columns} data={rows} stickyHeader="scrollParent" stickyHeaderOffset={56} />
 
+// Grouped (multi-level) headers, the equivalent of nesting el-table-column: wrap
+// columns in a `columns` array. The group name spans its leaves and is centred;
+// a column outside any group spans both header rows instead of leaving a blank cell.
+const groupedColumns: ColumnDef<DemoRow, any>[] = [
+  { accessorKey: "zone", header: "Region" },
+  {
+    id: "wecom",
+    header: "WeCom",
+    columns: [
+      { accessorKey: "dept", header: "Department", size: 220 },
+      { accessorKey: "users", header: "Members" },
+    ],
+  },
+  { id: "mini", header: "Mini Program", columns: [
+      { accessorKey: "store", header: "Store" },
+      { accessorKey: "pos", header: "POS code" }] },
+];
+<Table columns={groupedColumns} data={rows} />
+
 <TableRoot density="compact">
   <TableHeader>
     <TableRow>
@@ -244,6 +263,9 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - `cellSpan` receives a `rowIndex` in **render order** (after sorting and filtering), and `rows` is ordered the same way. That is what avoids the classic el-table trap where enabling column sorting shifts the whole merge map: base the decision on the data, never on the original index.
 - `cellSpan` **cannot be combined** with `virtual` or `renderExpandedRow`. Virtualization renders only the visible window, so a vertical span has nowhere to land, and an expanded panel inserts a `<tr>` between data rows that a vertical span would cross. In both cases the component skips merging and warns in development rather than rendering a misaligned table.
 - With pinned columns (`meta.sticky`), a horizontal span **must not cross the pinned boundary**: pinned offsets accumulate from the unmerged column widths, so a span across the edge misplaces the cell next to it.
+- **Under grouped headers, pinning only applies to leaf columns.** Offsets accumulate from leaf column widths, and a group name spanning several columns has no offset of its own, so it scrolls with the content while only the row of leaf headers below it stays at the edge. When combining grouped headers with pinned columns, keep the pinned ones outside any group -- a standalone column spans both header rows and reads the same.
+- **Sorting and filtering in a grouped header live on the leaf columns**; the group cell has no sort button. A group column has no accessor, so "which column is being sorted" is undefined. Enable `enableSorting` on the leaf you want to sort by.
+- Column widths in a grouped header belong on the **leaf** columns (`size` / `minSize` / `maxSize`). Setting them on the group does not distribute anything downward -- a group is as wide as its leaves add up to.
 - A row hidden behind a vertical span is still **its own row** for selection and dragging; merging is purely visual.
 - Virtualization requires optional `@tanstack/react-virtual` and is best for flat data, not trees, details, or drag-and-drop.
 - Disable `bordered` when Table sits inside another bordered card.

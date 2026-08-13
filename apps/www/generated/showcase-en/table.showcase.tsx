@@ -211,6 +211,40 @@ function CellSpanDemo() {
             return { rowSpan: span };
         }}/>);
 }
+interface JoinRow {
+    zone: string;
+    dept: string;
+    members: number;
+    store: string;
+    pos: string;
+}
+const joinRows: JoinRow[] = [
+    { zone: "South China", dept: "South China Team 1", members: 12, store: "Teemall store", pos: "P-0417" },
+    { zone: "South China", dept: "South China Team 2", members: 9, store: "Grandview store", pos: "P-0418" },
+    { zone: "East China", dept: "East China Team 1", members: 15, store: "West Nanjing Road store", pos: "P-1102" },
+];
+const groupedColumns: ColumnDef<JoinRow, any>[] = [
+    { accessorKey: "zone", header: "Region", size: 90 },
+    {
+        id: "wecom",
+        header: "WeCom",
+        columns: [
+            { accessorKey: "dept", header: "Department", size: 140 },
+            { accessorKey: "members", header: "Members", size: 110, meta: { align: "right" } },
+        ],
+    },
+    {
+        id: "mini",
+        header: "Mini Program",
+        columns: [
+            { accessorKey: "store", header: "Store", size: 140 },
+            { accessorKey: "pos", header: "POS code", size: 110 },
+        ],
+    },
+];
+function GroupedHeaderDemo() {
+    return <Table columns={groupedColumns} data={joinRows} enableSorting={false}/>;
+}
 export const tableShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -348,6 +382,27 @@ export const tableShowcase: ShowcaseSpec = {
 />`,
             render: () => <CellSpanDemo />,
         },
+        {
+            title: "Grouped headers (column groups)",
+            description: "Wrapping columns in a `columns` array makes a group. The group name spans its leaf columns and is centred; a column outside any group spans both header rows instead of leaving a blank cell above it. Sorting and column widths belong on the leaf columns.",
+            code: `const groupedColumns: ColumnDef<JoinRow, any>[] = [
+  { accessorKey: "zone", header: "Region", size: 90 },
+  {
+    id: "wecom",
+    header: "WeCom",
+    columns: [
+      { accessorKey: "dept", header: "Department", size: 140 },
+      { accessorKey: "members", header: "Members", size: 110, meta: { align: "right" } },
+    ],
+  },
+  { id: "mini", header: "Mini Program", columns: [
+      { accessorKey: "store", header: "Store", size: 140 },
+      { accessorKey: "pos", header: "POS code", size: 110 }] },
+];
+
+<Table columns={groupedColumns} data={rows} />`,
+            render: () => <GroupedHeaderDemo />,
+        },
     ],
     controls: [
         { prop: "enableSorting", type: "boolean", defaultValue: true, label: "Sortable" },
@@ -369,6 +424,7 @@ export const tableShowcase: ShowcaseSpec = {
         { name: "Drag and drop rows (rows locked by the administrator cannot be dragged)", render: () => <DragSortLockedDemo /> },
         { name: "Virtual scrolling (200 lines \u00B7 fixed height container)", render: () => <VirtualDemo /> },
         { name: "Cell merging (the store column merges by store)", render: () => <CellSpanDemo /> },
+        { name: "Grouped headers (two groups plus one standalone column)", render: () => <GroupedHeaderDemo /> },
         { name: "Not sortable", render: () => <Demo enableSorting={false}/> },
         { name: "Empty data", render: () => <Table columns={columns} data={[]}/> },
     ],

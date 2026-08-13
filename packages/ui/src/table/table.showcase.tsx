@@ -291,6 +291,44 @@ function CellSpanDemo() {
   );
 }
 
+// 多级表头：两个来源系统各一组列，外加一个不属于任何组的独立列。
+// 组名横跨自己的叶子列，独立列纵向跨满两行——这正是对账表要的形状。
+interface JoinRow {
+  zone: string;
+  dept: string;
+  members: number;
+  store: string;
+  pos: string;
+}
+const joinRows: JoinRow[] = [
+  { zone: "华南", dept: "华南一部", members: 12, store: "天河城店", pos: "P-0417" },
+  { zone: "华南", dept: "华南二部", members: 9, store: "正佳店", pos: "P-0418" },
+  { zone: "华东", dept: "华东一部", members: 15, store: "南京西路店", pos: "P-1102" },
+];
+const groupedColumns: ColumnDef<JoinRow, any>[] = [
+  { accessorKey: "zone", header: "战区", size: 90 },
+  {
+    id: "wecom",
+    header: "企业微信",
+    columns: [
+      { accessorKey: "dept", header: "部门名", size: 140 },
+      { accessorKey: "members", header: "部门成员数", size: 110, meta: { align: "right" } },
+    ],
+  },
+  {
+    id: "mini",
+    header: "小程序",
+    columns: [
+      { accessorKey: "store", header: "门店名", size: 140 },
+      { accessorKey: "pos", header: "POS编码", size: 110 },
+    ],
+  },
+];
+
+function GroupedHeaderDemo() {
+  return <Table columns={groupedColumns} data={joinRows} enableSorting={false} />;
+}
+
 export const tableShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -433,6 +471,28 @@ export const tableShowcase: ShowcaseSpec = {
 />`,
       render: () => <CellSpanDemo />,
     },
+    {
+      title: "多级表头（分组列）",
+      description:
+        "在列上套一层 columns 就是一组；组名自动横跨它的叶子列并居中，不在组里的列纵向跨满两行、上面不留空表头。排序与列宽都写在叶子列上。",
+      code: `const groupedColumns: ColumnDef<JoinRow, any>[] = [
+  { accessorKey: "zone", header: "战区", size: 90 },
+  {
+    id: "wecom",
+    header: "企业微信",
+    columns: [
+      { accessorKey: "dept", header: "部门名", size: 140 },
+      { accessorKey: "members", header: "部门成员数", size: 110, meta: { align: "right" } },
+    ],
+  },
+  { id: "mini", header: "小程序", columns: [
+      { accessorKey: "store", header: "门店名", size: 140 },
+      { accessorKey: "pos", header: "POS编码", size: 110 }] },
+];
+
+<Table columns={groupedColumns} data={rows} />`,
+      render: () => <GroupedHeaderDemo />,
+    },
   ],
   controls: [
     { prop: "enableSorting", type: "boolean", defaultValue: true, label: "可排序" },
@@ -454,6 +514,7 @@ export const tableShowcase: ShowcaseSpec = {
     { name: "行拖拽排序（管理员行锁定不可拖）", render: () => <DragSortLockedDemo /> },
     { name: "虚拟滚动（200 行·固定高容器）", render: () => <VirtualDemo /> },
     { name: "单元格合并（门店列按门店并格）", render: () => <CellSpanDemo /> },
+    { name: "多级表头（两组列 + 一个独立列）", render: () => <GroupedHeaderDemo /> },
     { name: "不可排序", render: () => <Demo enableSorting={false} /> },
     { name: "空数据", render: () => <Table columns={columns} data={[]} /> },
   ],

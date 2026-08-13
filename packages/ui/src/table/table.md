@@ -190,6 +190,24 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 // 表头吸在页面滚动容器上（表格自身不滚），避开 56px 的固定页头
 <Table columns={columns} data={rows} stickyHeader="scrollParent" stickyHeaderOffset={56} />
 
+// 多级表头（分组列，对标 el-table-column 嵌套）：在列上套一层 columns 即可，
+// 组名自动横跨它的叶子列并居中；不在组里的列纵向跨满两行，不会在上面留空表头。
+const groupedColumns: ColumnDef<DemoRow, any>[] = [
+  { accessorKey: "zone", header: "战区" },                       // 独立列，跨两行
+  {
+    id: "wecom",
+    header: "企业微信",                                           // 组名，跨两列
+    columns: [
+      { accessorKey: "dept", header: "部门名", size: 220 },        // 宽度写在叶子列上
+      { accessorKey: "users", header: "部门成员数" },
+    ],
+  },
+  { id: "mini", header: "小程序", columns: [
+      { accessorKey: "store", header: "门店名" },
+      { accessorKey: "pos", header: "POS编码" }] },
+];
+<Table columns={groupedColumns} data={rows} />
+
 // 组合原语：结构自己写，皮肤用库的
 <TableRoot density="compact">
   <TableHeader>
@@ -251,6 +269,9 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - `cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。
 - `cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。
 - `cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。
+- **多级表头下，冻结（`meta.sticky`）只作用到叶子列**：冻结是按叶子列的累计宽度算 offset 的，横跨若干列的组名格没有自己的 offset，横滚时它会跟着内容走、只有下面那行的列头贴住边缘。分组表 + 冻结列的组合请把要冻结的列放在组外（独立列纵向跨满，观感与冻结一致）。
+- **多级表头的排序 / 筛选挂在叶子列上**，组名那格不出排序按钮：组列本身没有取值器，排的是哪一列没有定义。要按组内某列排就在那个叶子列上开 `enableSorting`。
+- 分组时列宽写在**叶子列**上（`size` / `minSize` / `maxSize`）。写在组上不会分配给下面的列——组的宽度是各叶子列之和。
 - 行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。
 - `virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。

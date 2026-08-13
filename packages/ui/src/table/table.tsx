@@ -55,7 +55,7 @@ import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip/tooltip";
 import type { RowDragEndEvent, TableProps } from "./table.types";
-import { planCellSpans, spanKey } from "./table.span";
+import { planCellSpans, planHeaderRows, spanKey } from "./table.span";
 import { TABLE_DENSITY_PAD } from "./table-primitives";
 
 const SELECT_COL = "__select__";
@@ -136,11 +136,20 @@ interface DeclaredWidth {
  */
 function collectDeclaredWidths<TData>(defs: ColumnDef<TData, any>[]): Map<string, DeclaredWidth> {
   const map = new Map<string, DeclaredWidth>();
-  for (const c of defs) {
-    map.set(colId(c), { size: c.size, minSize: c.minSize, maxSize: c.maxSize });
-  }
+  const walk = (list: ColumnDef<TData, any>[]) => {
+    for (const c of list) {
+      map.set(colId(c), { size: c.size, minSize: c.minSize, maxSize: c.maxSize });
+      // 分组列（多级表头）：真正承载数据的是嵌套里的叶子列，宽度也声明在它们身上。
+      // 只扫顶层的话，分组表里每一列的 size / minSize / maxSize 全部读不到，
+      // auto 布局下等于没写（#261）。
+      const sub = (c as { columns?: ColumnDef<TData, any>[] }).columns;
+      if (sub?.length) walk(sub);
+    }
+  };
+  walk(defs);
   return map;
 }
+
 
 /**
  * 把 ColumnDef 的 size / minSize / maxSize 落成真实宽度样式。
@@ -1110,15 +1119,22 @@ export function Table<TData>({
               headerSticks && "sticky top-0 z-[2] bg-surface",
             )}
           >
-            {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id} className="border-b border-border">
-                {hg.headers.map((header) => {
+            {planHeaderRows(table.getHeaderGroups()).map((row, rowIndex) => (
+              <tr
+                key={table.getHeaderGroups()[rowIndex]!.id}
+                className="border-b border-border"
+              >
+                {row.map(({ header, colSpan, rowSpan }) => {
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted(); // false | "asc" | "desc"
                   const meta = header.column.columnDef.meta;
                   const canFilter = header.column.getCanFilter() && meta?.filterable;
-                  // headerAlign 缺省跟随 align，两者都不写维持历史默认（左）
-                  const headerAlign = (meta?.headerAlign ?? meta?.align ?? "left") as Align;
+                  // headerAlign 缺省跟随 align，两者都不写维持历史默认（左）。
+                  // 例外是跨列的组名：贴在最左那列的左缘会读成「这是第一列的名字」，
+                  // 居中才看得出它管着下面这一段（Element Plus / Ant Design 同样如此）。
+                  const headerAlign = (meta?.headerAlign ??
+                    meta?.align ??
+                    (colSpan > 1 ? "center" : "left")) as Align;
                   // 内建前插列（__select__ / __expander__ / __drag__）是固定几何的图标列，恒不可调宽
                   const canResize =
                     resizable &&
@@ -1133,6 +1149,9 @@ export function Table<TData>({
                   return (
                     <th
                       key={header.id}
+                      // 多级表头的跨度（#261）。1 时不落属性，保持单级表头的 DOM 逐字不变。
+                      colSpan={colSpan > 1 ? colSpan : undefined}
+                      rowSpan={rowSpan > 1 ? rowSpan : undefined}
                       style={{
                         ...colWidthStyle(header.column, fixedLayout, declaredWidths),
                         ...stickyStyle(header.column),
@@ -1158,11 +1177,16 @@ export function Table<TData>({
                         // 拖拽手柄绝对定位在 th 右缘（sticky 列的 position:sticky 同样是包含块）
                         canResize && "relative",
                         meta?.ellipsis && "overflow-hidden",
+                        // 纵向跨行的格子（独立列与分组列混排时）在两行之间居中，
+                        // 否则名字吊在第一行、下半格空着
+                        rowSpan > 1 && "align-middle",
                         stickyClass(header.column),
                         headerSticks && header.column.getIsPinned() && "bg-bg",
                       )}
                     >
-                      {header.isPlaceholder ? null : (
+                      {/* 这里不再判 isPlaceholder：planHeaderRows 已把占位格换成真正跨行的
+                          那一格，凡渲染出来的格子都有内容，空表头不会再出现。 */}
+                      {
                         <div
                           className={cn(
                             "flex flex-col gap-1",
@@ -1201,7 +1225,7 @@ export function Table<TData>({
                             />
                           )}
                         </div>
-                      )}
+                      }
                       {canResize && (
                         // 拖拽手柄：TanStack 的 getResizeHandler 自己在 document 上挂 move/up，
                         // 这里只负责起手 + 视觉。双击复位该列到 columnDef.size。
