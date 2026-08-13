@@ -77,6 +77,28 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "月份区间 / 年份区间",
+      description:
+        "picker 决定粒度，与 DatePicker 的同名 prop 同义（对标 el-date-picker 的 monthrange）。值形状随之变成 [\"YYYY-MM\"] / [\"YYYY\"]，预设也换成该粒度的常用档；两端仍由组件自己夹，选不出「起点晚于终点」。",
+      code: `<DateRangePicker picker="month" defaultValue={["2026-03", "2026-06"]} />
+<DateRangePicker picker="year" defaultValue={["2024", "2026"]} />`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-3">
+          <DateRangePicker picker="month" defaultValue={["2026-03", "2026-06"]} />
+          <DateRangePicker picker="year" defaultValue={["2024", "2026"]} />
+        </div>
+      ),
+    },
+    {
+      title: "月份区间的上界",
+      description:
+        "maxDate 恒按 ISO 日期说话。月粒度下判的是「整月都超界才禁」，所以写今天即可得到「当月可选、未来月灰掉」——运营点右面板拿到明年某月那个坑就是这么堵的。",
+      code: `<DateRangePicker picker="month" maxDate="2026-08-14" defaultValue={["2026-05", "2026-08"]} />`,
+      render: () => (
+        <DateRangePicker picker="month" maxDate="2026-08-14" defaultValue={["2026-05", "2026-08"]} />
+      ),
+    },
+    {
       title: "尺寸",
       description:
         "size 与 Input / Select 共用同一套刻度（sm 32px / md 40px / lg 48px），同一行表单里高度天然对齐。面板里日期格的几何不随之变化。",
@@ -128,6 +150,14 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
       ),
     },
     { name: "无预设", render: () => <Demo presets={false} initial={["2026-06-03", "2026-06-09"]} /> },
+    {
+      name: "月份区间(picker=month)",
+      render: () => <DateRangePicker picker="month" defaultValue={["2026-03", "2026-06"]} />,
+    },
+    {
+      name: "年份区间(picker=year)",
+      render: () => <DateRangePicker picker="year" defaultValue={["2024", "2026"]} />,
+    },
     { name: "小号", render: () => <Demo size="sm" initial={["2026-06-08", "2026-06-20"]} /> },
     { name: "大号", render: () => <Demo size="lg" initial={["2026-06-08", "2026-06-20"]} /> },
     { name: "禁用", render: () => <Demo disabled initial={["2026-06-01", "2026-06-15"]} /> },

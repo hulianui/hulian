@@ -5024,11 +5024,11 @@ const [date, setDate] = useState<string | null>(null);
 
 **导出**：`DateRangePicker`
 
-> 日期区间 · 自研零依赖双月范围日历 + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控 · forms/datetime
+> 日期区间 · 自研零依赖双面板范围日历（日 / 月 / 年三档粒度）+ Popover 引擎 + 快捷预设/min-max/disabledDate · 定宽字符串数组受控 · forms/datetime
 
 ## 何时用
 
-选一段**日期区间**（起止两端）时用，自带双月并排 + 快捷预设（今天/最近7天/30天/本月）。选单个日期用 [DatePicker](https://hulianui.haloritual.com/zh/components/date-picker)；连时间一起选用 [DateTimePicker](https://hulianui.haloritual.com/zh/components/date-time-picker)；月历常驻铺开用 [Calendar](https://hulianui.haloritual.com/zh/components/calendar)。全库日期族都是零依赖自研，值一律是定宽字符串。
+选一段**区间**（起止两端）时用，自带双面板并排 + 快捷预设。`picker` 决定粒度：日（默认）/ 月 / 年，分别对应 el-date-picker 的 `daterange` / `monthrange` / `yearrange`。选单个日期用 [DatePicker](https://hulianui.haloritual.com/zh/components/date-picker)；连时间一起选用 [DateTimePicker](https://hulianui.haloritual.com/zh/components/date-time-picker)；月历常驻铺开用 [Calendar](https://hulianui.haloritual.com/zh/components/calendar)。全库日期族都是零依赖自研，值一律是定宽字符串。
 
 ## 导入
 ```ts
@@ -5039,15 +5039,16 @@ import { DateRangePicker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `[string, string] \| null` | — | 受控值 `[start, end]`（ISO `YYYY-MM-DD`）；`null` = 已清空；传入即受控 |
+| value | `[string, string] \| null` | — | 受控值 `[start, end]`，形状随 `picker`（`YYYY-MM-DD` / `YYYY-MM` / `YYYY`）；`null` = 已清空；传入即受控 |
 | defaultValue | `[string, string] \| null` | — | 非受控初始值 |
+| picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，与 [DatePicker](https://hulianui.haloritual.com/zh/components/date-picker) 的同名 prop 同义。面板形态随之变化：两个月历 / 两个年份页（各 12 个月）/ 两个 12 年段 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](https://hulianui.haloritual.com/zh/components/input) 一致（32 / 40 / 48px）；面板里日期格的几何不随之变化 |
-| minDate | `string` | — | 最早可选日（ISO），早于此禁选 |
-| maxDate | `string` | — | 最晚可选日（ISO），晚于此禁选 |
-| disabledDate | `(isoDate: string) => boolean` | — | 自定义禁用某天，入参为 ISO `YYYY-MM-DD` |
-| presets | `boolean \| DateRangePreset[]` | `true` | 快捷预设：`true`/省略 = 默认四项；数组 = 自定义；`false` = 隐藏 |
-| placeholder | `[string, string]` | `["开始日期","结束日期"]` | 占位文案 [开始, 结束] |
-| displayFormat | `string` | `"YYYY-MM-DD"` | 展示格式（dayjs format）；对外受控值始终为 ISO `YYYY-MM-DD` |
+| minDate | `string` | — | 最早可选日，**恒为 ISO `YYYY-MM-DD`，不随 `picker` 变**；月/年粒度下按「整段都超界才禁」判定 |
+| maxDate | `string` | — | 最晚可选日，口径同 `minDate` |
+| disabledDate | `(isoDate: string) => boolean` | — | 自定义禁用，入参恒为 ISO `YYYY-MM-DD`；月/年粒度下只按该段**首日**问一次 |
+| presets | `boolean \| DateRangePreset[]` | `true` | 快捷预设：`true`/省略 = 该粒度的默认档（日：今天/最近 7 天/最近 30 天/本月；月：本月/最近 3 个月/最近 6 个月/今年；年：今年/最近 3 年/最近 5 年）；数组 = 自定义；`false` = 隐藏 |
+| placeholder | `[string, string]` | 随 `picker` | 占位文案 [开始, 结束]，默认「开始日期 / 开始月份 / 开始年份」 |
+| displayFormat | `string` | 随 `picker` | 展示格式（dayjs format），默认 `YYYY-MM-DD` / `YYYY-MM` / `YYYY`；对外受控值的形状不受它影响 |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读：可打开查看，无端点选择/无预设/无清除 |
 | className | `string` | — | 容器类名 |
@@ -5078,11 +5079,26 @@ function Demo() {
   }}
 />
 ```
+```tsx
+// 月份区间（对标 el-date-picker 的 type="monthrange"）：值形状变成 ["YYYY-MM", "YYYY-MM"]，
+// 预设换成本月 / 最近 3 个月 / 最近 6 个月 / 今年。
+<DateRangePicker picker="month" value={months} onValueChange={setMonths} />
+
+// 只让选到当月为止：maxDate 仍写 ISO 日期，月粒度下「整月都超界才禁」，
+// 所以当月可选、之后的月份灰掉——这正是「点右面板的 7 月拿到明年 7 月」那个坑的解法。
+<DateRangePicker picker="month" maxDate={new Date().toISOString().slice(0, 10)} />
+
+// 年份区间：一页 12 年，两页不重叠
+<DateRangePicker picker="year" defaultValue={["2024", "2026"]} />
+```
 
 ## 禁忌 / 坑
 
 - 受控/非受控二选一：给 `value` 走受控须配 `onValueChange`；只想要初值用 `defaultValue`，别同时给。
-- 对外受控值恒为 ISO `YYYY-MM-DD` 数组（不是 Date）；`displayFormat` 只改输入框展示，回传值不变。
+- 对外受控值恒为**定宽字符串**数组（不是 Date），形状由 `picker` 决定：`YYYY-MM-DD` / `YYYY-MM` / `YYYY`。`displayFormat` 只改触发器上的展示，回传值不变。
+- **`minDate` / `maxDate` / `disabledDate` 恒按 ISO 日期说话**，不随 `picker` 变。月/年粒度下的判定是「整段都超界才禁」：`maxDate="2026-06-15"` 时 `2026-06` 仍可选，`2026-07` 才灰掉。想连当月一起禁就把 `maxDate` 写到上一段的末尾（`2026-05-31`）。
+- 月/年粒度下 `disabledDate` 每段只被问一次，入参是该段**首日**（`2026-09-01` 代表整个 9 月）。别在里面写按「日」判断的逻辑（如禁周末），那在这两档没有意义。
+- 年份页是 **12 年整段**（不是十年段），因为两页并排时十年段的首尾补位年会让同一个年份在左右两页各出现一次。
 - `disabledDate` 入参是 ISO 字符串，自己拼 `new Date(iso + "T00:00:00")` 算 getDay 时注意时区，别直接 `new Date(iso)`（会按 UTC 解析偏一天）。
 
 ## 相关
@@ -14315,6 +14331,11 @@ import { RowActions } from "@hulianui/ui"
 
 三档的语气色一致（`tone` 说了算），溢出菜单键也跟着档位走——按钮档里不会冒出一颗无边框的「⋯」。
 
+**动作之间的间距也按档给**：文字档 16px，按钮档与图标档 4px。不是一个常数，因为文字档的按钮是
+`variant="link"`，而 link 在 Button 里被钉了 `px-0`（纯文字链接，文字左缘要与表头对齐）——
+两个动作之间的**全部**间隔就只剩这个 gap；另外两档的按钮自带横向内边距，视觉间隔是 gap + 2×padding。
+给同一个数，文字档就会挤成一句话。
+
 ## 设计判据
 
 - **超出时露出 `max - 1` 个而不是 `max` 个**：菜单键本身也占一格，露满 `max` 再加一颗「⋯」，实际控件数就是 `max + 1`，列宽会比调用方以为的宽一格。
@@ -15283,6 +15304,24 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 // 表头吸在页面滚动容器上（表格自身不滚），避开 56px 的固定页头
 <Table columns={columns} data={rows} stickyHeader="scrollParent" stickyHeaderOffset={56} />
 
+// 多级表头（分组列，对标 el-table-column 嵌套）：在列上套一层 columns 即可，
+// 组名自动横跨它的叶子列并居中；不在组里的列纵向跨满两行，不会在上面留空表头。
+const groupedColumns: ColumnDef<DemoRow, any>[] = [
+  { accessorKey: "zone", header: "战区" },                       // 独立列，跨两行
+  {
+    id: "wecom",
+    header: "企业微信",                                           // 组名，跨两列
+    columns: [
+      { accessorKey: "dept", header: "部门名", size: 220 },        // 宽度写在叶子列上
+      { accessorKey: "users", header: "部门成员数" },
+    ],
+  },
+  { id: "mini", header: "小程序", columns: [
+      { accessorKey: "store", header: "门店名" },
+      { accessorKey: "pos", header: "POS编码" }] },
+];
+<Table columns={groupedColumns} data={rows} />
+
 // 组合原语：结构自己写，皮肤用库的
 <TableRoot density="compact">
   <TableHeader>
@@ -15344,6 +15383,9 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 - `cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。
 - `cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。
 - `cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。
+- **多级表头下，冻结（`meta.sticky`）只作用到叶子列**：冻结是按叶子列的累计宽度算 offset 的，横跨若干列的组名格没有自己的 offset，横滚时它会跟着内容走、只有下面那行的列头贴住边缘。分组表 + 冻结列的组合请把要冻结的列放在组外（独立列纵向跨满，观感与冻结一致）。
+- **多级表头的排序 / 筛选挂在叶子列上**，组名那格不出排序按钮：组列本身没有取值器，排的是哪一列没有定义。要按组内某列排就在那个叶子列上开 `enableSorting`。
+- 分组时列宽写在**叶子列**上（`size` / `minSize` / `maxSize`）。写在组上不会分配给下面的列——组的宽度是各叶子列之和。
 - 行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。
 - `virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。
 - `bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。

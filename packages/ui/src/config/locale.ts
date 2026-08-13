@@ -587,6 +587,17 @@ export interface ComponentLocale {
     clear: string;
     previousMonth: string;
     nextMonth: string;
+    /**
+     * 以下几项服务 `picker="month" | "year"`（月份区间 / 年份区间）。
+     * 刻意是**可选**的：把它们设成必填会让所有自带整份 locale 的消费方当场 TS 报错，
+     * 而这一族文案只有用到那两档粒度时才会被读到。缺省时组件回落到中文原文。
+     */
+    startMonth?: string;
+    endMonth?: string;
+    startYear?: string;
+    endYear?: string;
+    lastMonths?: (months: number) => string;
+    lastYears?: (years: number) => string;
   };
   threadList?: { title: string; empty: string; deleteThread: string };
   sankey?: { chart: string };
@@ -1352,6 +1363,12 @@ const zhComponents: ComponentLocale = {
     clear: "清除",
     previousMonth: "上个月",
     nextMonth: "下个月",
+    startMonth: "开始月份",
+    endMonth: "结束月份",
+    startYear: "开始年份",
+    endYear: "结束年份",
+    lastMonths: (months) => `最近 ${months} 个月`,
+    lastYears: (years) => `最近 ${years} 年`,
   },
   threadList: { title: "历史", empty: "暂无历史", deleteThread: "删除会话" },
   sankey: { chart: "桑基流向图" },
@@ -2219,6 +2236,12 @@ const enComponents: ComponentLocale = {
     clear: "Clear",
     previousMonth: "Previous month",
     nextMonth: "Next month",
+    startMonth: "Start month",
+    endMonth: "End month",
+    startYear: "Start year",
+    endYear: "End year",
+    lastMonths: (months) => `Last ${months} months`,
+    lastYears: (years) => `Last ${years} years`,
   },
   threadList: { title: "History", empty: "No history", deleteThread: "Delete conversation" },
   sankey: { chart: "Sankey diagram" },

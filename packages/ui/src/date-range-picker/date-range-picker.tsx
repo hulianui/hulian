@@ -5,13 +5,23 @@ import { cva } from "class-variance-authority";
 // 内部一律用 YYYY-MM-DD 文本作日期标识（toISO/normISO 出自 lib/date）：
 // 定宽 → 字典序即时间序，区间判定可直接字符串比较，避开时区/UTC 偏移日界坑。
 import {
-  DATE_FORMAT,
   dayjs,
   type Dayjs,
   monthMatrix,
   normISODate as normISO,
   toISODate as toISO,
 } from "../lib/date";
+// 禁用判定与格式化直接吃 Calendar / DatePicker 那份纯逻辑：三件的边界语义必须逐字相同，
+// 各写一份迟早漂开（尤其「月粒度下 maxDate 落在月中，那个月还能不能选」这种问题）。
+import {
+  PICKER_FORMAT,
+  formatValue,
+  isDisabledDay,
+  isDisabledMonth,
+  isDisabledYear,
+  parseValue,
+} from "../calendar/calendar-core";
+import type { CalendarPicker } from "../calendar/calendar.types";
 import { Calendar, ChevronLeft, ChevronRight, X } from "../_icons";
 
 import { useComponentLocale } from "../config/locale-context";
@@ -50,17 +60,42 @@ const triggerIconVariants = cva("shrink-0 text-muted-foreground", {
   defaultVariants: { size: "md" },
 });
 
+// ── 粒度几何 ────────────────────────────────────────────────────────────────
+// 一个「页」= 一个面板。三种粒度只有三处不同：页的跨度、页里有哪些格、格显示什么。
+// 区间判定本身完全共用——三种值都是定宽文本（YYYY-MM-DD / YYYY-MM / YYYY），
+// 字典序即时间序，端点与区间内都能直接比字符串。
+//
+// 年粒度一页 12 年（不是 Calendar 那边的十年段）：那边是下钻用的辅助视图，首尾两格
+// 特意越界一年当「上/下段补位」；这里两页并排，越界格会让同一个年份在左右两页各出现一次，
+// 点哪个都对但读起来像重复项。12 年整段既排满 3×4，也保证两页不重叠。
+const YEARS_PER_PAGE = 12;
+
+/** 把任意时刻对齐到它所在那一页的页首。 */
+function pageStart(d: Dayjs, picker: CalendarPicker): Dayjs {
+  if (picker === "date") return d.startOf("month");
+  if (picker === "month") return d.startOf("year");
+  return d.startOf("year").year(Math.floor(d.year() / YEARS_PER_PAGE) * YEARS_PER_PAGE);
+}
+
+/** 翻页：日→月、月→年、年→12 年。 */
+function pageStep(d: Dayjs, picker: CalendarPicker, dir: number): Dayjs {
+  if (picker === "date") return d.add(dir, "month");
+  if (picker === "month") return d.add(dir, "year");
+  return d.add(dir * YEARS_PER_PAGE, "year");
+}
+
 export function DateRangePicker({
   value: valueProp,
   defaultValue,
   onValueChange,
+  picker = "date",
   size = "md",
   minDate,
   maxDate,
   disabledDate,
   presets,
   placeholder,
-  displayFormat = DATE_FORMAT,
+  displayFormat,
   disabled,
   readOnly,
   className,
@@ -102,8 +137,28 @@ export function DateRangePicker({
     thisMonth: "本月",
     thisYear: "今年",
   };
-  const resolvedPlaceholder = placeholder ?? [locale.startDate, locale.endDate];
-  const defaultPresets: DateRangePreset[] = [
+  // 占位与预设的粒度分支：内置文案一律走 locale，别在这里硬编码中文——英文站会当场露馅。
+  // 新词条在 locale 接口里是**可选**的（加必填会让自带 locale 的消费方 TS 报错），
+  // 故此处保留一份与 zhCN 同文的兜底。
+  const startLabel =
+    picker === "month"
+      ? locale.startMonth ?? "开始月份"
+      : picker === "year"
+      ? locale.startYear ?? "开始年份"
+      : locale.startDate;
+  const endLabel =
+    picker === "month"
+      ? locale.endMonth ?? "结束月份"
+      : picker === "year"
+      ? locale.endYear ?? "结束年份"
+      : locale.endDate;
+  const resolvedPlaceholder = placeholder ?? [startLabel, endLabel];
+  const fmt = (d: Dayjs) => formatValue(d, picker);
+  const lastMonths = (n: number) => locale.lastMonths?.(n) ?? `最近 ${n} 个月`;
+  const lastYears = (n: number) => locale.lastYears?.(n) ?? `最近 ${n} 年`;
+  const thisYearLabel = calendarLocale.thisYear;
+  // 「最近 N 个月/年」含当前这一段（近 3 个月 = 本月与前两个月），与「最近 7 天」含今天同口径。
+  const datePresets: DateRangePreset[] = [
     {
       label: locale.today,
       getValue: () => {
@@ -124,6 +179,25 @@ export function DateRangePicker({
       getValue: () => [toISO(dayjs().startOf("month")), toISO(dayjs().endOf("month"))],
     },
   ];
+  const monthPresets: DateRangePreset[] = [
+    {
+      label: locale.thisMonth,
+      getValue: () => [fmt(dayjs()), fmt(dayjs())],
+    },
+    { label: lastMonths(3), getValue: () => [fmt(dayjs().subtract(2, "month")), fmt(dayjs())] },
+    { label: lastMonths(6), getValue: () => [fmt(dayjs().subtract(5, "month")), fmt(dayjs())] },
+    {
+      label: thisYearLabel,
+      getValue: () => [fmt(dayjs().startOf("year")), fmt(dayjs().endOf("year"))],
+    },
+  ];
+  const yearPresets: DateRangePreset[] = [
+    { label: thisYearLabel, getValue: () => [fmt(dayjs()), fmt(dayjs())] },
+    { label: lastYears(3), getValue: () => [fmt(dayjs().subtract(2, "year")), fmt(dayjs())] },
+    { label: lastYears(5), getValue: () => [fmt(dayjs().subtract(4, "year")), fmt(dayjs())] },
+  ];
+  const defaultPresets: DateRangePreset[] =
+    picker === "month" ? monthPresets : picker === "year" ? yearPresets : datePresets;
   const isControlled = valueProp !== undefined;
   const [internal, setInternal] = useState<DateRangeValue | null>(defaultValue ?? null);
   const value = isControlled ? valueProp ?? null : internal;
@@ -132,24 +206,19 @@ export function DateRangePicker({
   // anchor = 选区起点（一次选择进行中），hover = 预览终点；二者都为 null 时显示已提交 value。
   const [anchor, setAnchor] = useState<string | null>(null);
   const [hoverDate, setHoverDate] = useState<string | null>(null);
-  const [viewMonth, setViewMonth] = useState<Dayjs>(() =>
-    ((isControlled ? valueProp : defaultValue)?.[0]
-      ? dayjs((isControlled ? valueProp : defaultValue)![0])
-      : dayjs()
-    ).startOf("month"),
-  );
+  // 视图停在哪一页。初值对齐到当前起点所在的页（日→该月、月→该年、年→该 12 年段）。
+  const [viewPage, setViewPage] = useState<Dayjs>(() => {
+    const initial = (isControlled ? valueProp : defaultValue)?.[0];
+    return pageStart(parseValue(initial, picker) ?? dayjs(), picker);
+  });
 
   const min = normISO(minDate);
   const max = normISO(maxDate);
+  const rules = { min, max, disabledDate };
   const presetList: DateRangePreset[] | null =
     presets === false ? null : presets === true || presets === undefined ? defaultPresets : presets;
   const today = toISO(dayjs());
-
-  function isDisabledDay(iso: string): boolean {
-    if (min && iso < min) return true;
-    if (max && iso > max) return true;
-    return disabledDate?.(iso) ?? false;
-  }
+  const todayValue = formatValue(dayjs(), picker);
 
   function commit(next: DateRangeValue | null) {
     if (!isControlled) setInternal(next);
@@ -160,8 +229,8 @@ export function DateRangePicker({
     if (disabled) return;
     setOpen(next);
     if (next) {
-      // 打开时把视图对齐到当前起点所在月
-      if (value) setViewMonth(dayjs(value[0]).startOf("month"));
+      // 打开时把视图对齐到当前起点所在的页
+      if (value) setViewPage(pageStart(parseValue(value[0], picker) ?? dayjs(), picker));
     } else {
       // 关闭时丢弃未完成的半选
       setAnchor(null);
@@ -169,14 +238,16 @@ export function DateRangePicker({
     }
   }
 
-  function selectDay(iso: string) {
-    if (readOnly || isDisabledDay(iso)) return;
+  /** 选中一格。入参是该粒度的对外值（定宽文本），三种粒度共用同一套端点逻辑。 */
+  function selectCell(cellValue: string, cellDisabled: boolean) {
+    if (readOnly || cellDisabled) return;
     if (anchor == null) {
-      setAnchor(iso);
-      setHoverDate(iso);
+      setAnchor(cellValue);
+      setHoverDate(cellValue);
       return;
     }
-    const next: DateRangeValue = anchor <= iso ? [anchor, iso] : [iso, anchor];
+    const next: DateRangeValue =
+      anchor <= cellValue ? [anchor, cellValue] : [cellValue, anchor];
     commit(next);
     setAnchor(null);
     setHoverDate(null);
@@ -189,7 +260,7 @@ export function DateRangePicker({
     commit(r);
     setAnchor(null);
     setHoverDate(null);
-    setViewMonth(dayjs(r[0]).startOf("month"));
+    setViewPage(pageStart(parseValue(r[0], picker) ?? dayjs(), picker));
     setOpen(false);
   }
 
@@ -209,11 +280,42 @@ export function DateRangePicker({
     return value;
   })();
 
-  const startText = value ? dayjs(value[0]).format(displayFormat) : "";
-  const endText = value ? dayjs(value[1]).format(displayFormat) : "";
+  const startText = value
+    ? (parseValue(value[0], picker) ?? dayjs(value[0])).format(displayFormat ?? PICKER_FORMAT[picker])
+    : "";
+  const endText = value
+    ? (parseValue(value[1], picker) ?? dayjs(value[1])).format(displayFormat ?? PICKER_FORMAT[picker])
+    : "";
   const showClear = value != null && !disabled && !readOnly;
 
-  function renderMonth(month: Dayjs) {
+  /**
+   * 一格的区间状态。三种粒度共用：值都是定宽文本，字典序即时间序。
+   * 端点朝内侧留底带（rounded 收口），单格选中不带底带——不然一格宽的「区间」看着像被截断了。
+   */
+  function cellState(cellValue: string) {
+    const r = previewRange;
+    const isStart = r != null && cellValue === r[0];
+    const isEnd = r != null && cellValue === r[1];
+    const isEndpoint = isStart || isEnd;
+    return {
+      isEndpoint,
+      isSingle: r != null && r[0] === r[1] && isEndpoint,
+      isStart,
+      isEnd,
+      inRange: r != null && cellValue > r[0] && cellValue < r[1],
+    };
+  }
+
+  // 收口圆角按格形给：日格是圆的（rounded-full），月/年格是圆角矩形（rounded-md）。
+  // 两条都写成完整字面量——拼接出来的类名 Tailwind 扫不到，样式会静默不生成。
+  function bandClass(cellValue: string, shape: "full" | "md") {
+    const { isStart, isEnd, isSingle, inRange } = cellState(cellValue);
+    const left = shape === "full" ? "rounded-l-full bg-primary/10" : "rounded-l-md bg-primary/10";
+    const right = shape === "full" ? "rounded-r-full bg-primary/10" : "rounded-r-md bg-primary/10";
+    return cn(inRange && "bg-primary/10", isStart && !isSingle && left, isEnd && !isSingle && right);
+  }
+
+  function renderDayPage(month: Dayjs) {
     return (
       <div>
         <div className="mb-2 text-center text-sm font-medium text-foreground">
@@ -228,24 +330,13 @@ export function DateRangePicker({
           {monthMatrix(month).map((d) => {
             const iso = toISO(d);
             const inMonth = d.month() === month.month();
-            const dis = isDisabledDay(iso);
-            const r = previewRange;
-            const isStart = r != null && iso === r[0];
-            const isEnd = r != null && iso === r[1];
-            const isEndpoint = isStart || isEnd;
-            const isSingle = r != null && r[0] === r[1] && isEndpoint;
-            const inRange = r != null && iso > r[0] && iso < r[1];
+            const dis = isDisabledDay(iso, rules);
+            const { isEndpoint } = cellState(iso);
             const isToday = iso === today;
             return (
               <div
                 key={iso}
-                className={cn(
-                  "flex h-9 items-center justify-center",
-                  // 中间态连续底带；端点格只在朝内侧保留底带（用 rounded 收口），单日不带底带。
-                  inRange && "bg-primary/10",
-                  isStart && !isSingle && "rounded-l-full bg-primary/10",
-                  isEnd && !isSingle && "rounded-r-full bg-primary/10",
-                )}
+                className={cn("flex h-9 items-center justify-center", bandClass(iso, "full"))}
               >
                 <button
                   type="button"
@@ -253,7 +344,7 @@ export function DateRangePicker({
                   aria-label={iso}
                   aria-pressed={isEndpoint}
                   data-selected={isEndpoint ? "" : undefined}
-                  onClick={() => selectDay(iso)}
+                  onClick={() => selectCell(iso, dis)}
                   onMouseEnter={() => {
                     if (anchor != null && inMonth && !dis) setHoverDate(iso);
                   }}
@@ -275,6 +366,84 @@ export function DateRangePicker({
         </div>
       </div>
     );
+  }
+
+  /** 月 / 年页共用的 3×4 网格：格子形状一样，只有取值与标签不同。 */
+  function renderGridPage(
+    title: string,
+    cells: { value: string; label: string; disabled: boolean; current: boolean }[],
+  ) {
+    return (
+      <div className="w-[15.75rem]">
+        <div className="mb-2 text-center text-sm font-medium text-foreground">{title}</div>
+        <div className="grid grid-cols-3 gap-y-1">
+          {cells.map((c) => {
+            const { isEndpoint } = cellState(c.value);
+            return (
+              <div
+                key={c.value}
+                className={cn("flex h-10 items-center", bandClass(c.value, "md"))}
+              >
+                <button
+                  type="button"
+                  disabled={c.disabled}
+                  aria-label={c.value}
+                  aria-pressed={isEndpoint}
+                  data-selected={isEndpoint ? "" : undefined}
+                  onClick={() => selectCell(c.value, c.disabled)}
+                  onMouseEnter={() => {
+                    if (anchor != null && !c.disabled) setHoverDate(c.value);
+                  }}
+                  className={cn(
+                    "mx-0.5 flex h-9 flex-1 items-center justify-center rounded-md text-sm transition-colors",
+                    isEndpoint
+                      ? "bg-primary font-medium text-primary-foreground"
+                      : "text-foreground hover:bg-surface-hover",
+                    c.current && !isEndpoint && "font-semibold text-primary",
+                    c.disabled && "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
+                  )}
+                >
+                  {c.label}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  function renderMonthPage(year: Dayjs) {
+    const cells = calendarLocale.months.map((label, i) => {
+      const m = year.month(i);
+      return {
+        value: formatValue(m, "month"),
+        label,
+        disabled: isDisabledMonth(m, "month", rules),
+        current: formatValue(m, "month") === todayValue,
+      };
+    });
+    return renderGridPage(calendarLocale.yearTitle(year.year()), cells);
+  }
+
+  function renderYearPage(page: Dayjs) {
+    const first = page.year();
+    const cells = Array.from({ length: YEARS_PER_PAGE }, (_, i) => {
+      const y = first + i;
+      return {
+        value: String(y),
+        label: String(y),
+        disabled: isDisabledYear(y, "year", rules),
+        current: String(y) === todayValue,
+      };
+    });
+    return renderGridPage(`${first} - ${first + YEARS_PER_PAGE - 1}`, cells);
+  }
+
+  function renderPage(page: Dayjs) {
+    if (picker === "month") return renderMonthPage(page);
+    if (picker === "year") return renderYearPage(page);
+    return renderDayPage(page);
   }
 
   return (
@@ -344,26 +513,28 @@ export function DateRangePicker({
             )}
             <div className="p-3">
               <div className="relative mb-1 flex items-center justify-between px-1">
+                {/* 翻页按钮的名字随粒度：日档翻的是月，月/年档翻的是「一页」，
+                    照抄「上个月」会读错（月档一页是一年、年档一页是 12 年）。 */}
                 <button
                   type="button"
-                  aria-label={locale.previousMonth}
-                  onClick={() => setViewMonth(viewMonth.subtract(1, "month"))}
+                  aria-label={picker === "date" ? locale.previousMonth : calendarLocale.previousPage}
+                  onClick={() => setViewPage(pageStep(viewPage, picker, -1))}
                   className="rounded-md p-1 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
                   <ChevronLeft className="size-4" />
                 </button>
                 <button
                   type="button"
-                  aria-label={locale.nextMonth}
-                  onClick={() => setViewMonth(viewMonth.add(1, "month"))}
+                  aria-label={picker === "date" ? locale.nextMonth : calendarLocale.nextPage}
+                  onClick={() => setViewPage(pageStep(viewPage, picker, 1))}
                   className="rounded-md p-1 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >
                   <ChevronRight className="size-4" />
                 </button>
               </div>
               <div className="flex gap-4">
-                {renderMonth(viewMonth)}
-                {renderMonth(viewMonth.add(1, "month"))}
+                {renderPage(viewPage)}
+                {renderPage(pageStep(viewPage, picker, 1))}
               </div>
             </div>
           </BasePopover.Popup>

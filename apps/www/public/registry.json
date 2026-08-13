@@ -2791,8 +2791,7 @@
         "forms"
       ],
       "dependencies": [
-        "class-variance-authority",
-        "motion"
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
@@ -3697,7 +3696,7 @@
       "name": "date-range-picker",
       "type": "registry:ui",
       "title": "DateRangePicker",
-      "description": "日期区间 · 自研零依赖双月范围日历 + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控",
+      "description": "日期区间 · 自研零依赖双面板范围日历（日 / 月 / 年三档粒度）+ Popover 引擎 + 快捷预设/min-max/disabledDate · 定宽字符串数组受控",
       "categories": [
         "forms"
       ],
@@ -3707,6 +3706,7 @@
       ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/calendar.json",
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/motion.json"

@@ -81,7 +81,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Combobox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/combobox/combobox.md): 自动补全 · 触发按钮 + 弹层内搜索(图4 范式)，亦支持内联输入；浮层锚到字段等宽
 - [CountrySelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/country-select/country-select.md): 国家/地区选择 · 内置 250 国(旗+中英文名+区号) + 单/多选 chips + 中英文/码/区号搜索 · dogfood Combobox(新增多选)
 - [DatePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-picker/date-picker.md): 单日期选择 · 自研零依赖(触发器 + Popover 罩 Calendar 面板·日/月/年三粒度) + min-max/disabledDate/清除
-- [DateRangePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-range-picker/date-range-picker.md): 日期区间 · 自研零依赖双月范围日历 + Popover 引擎 + 快捷预设/min-max/disabledDate · ISO 数组受控
+- [DateRangePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-range-picker/date-range-picker.md): 日期区间 · 自研零依赖双面板范围日历（日 / 月 / 年三档粒度）+ Popover 引擎 + 快捷预设/min-max/disabledDate · 定宽字符串数组受控
 - [DateTimePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-time-picker/date-time-picker.md): 日期时间选择 · 自研零依赖(左日历 + 右时/分/秒列一体弹层) + 步进/秒/此刻 · 边界只在压着 min-max 那天生效 · 定宽 YYYY-MM-DD HH:mm 受控
 - [ElasticSlider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/elastic-slider/elastic-slider.md): 橡皮筋音量滑块 · 拖到两端轨道横拉纵压 + 图标回弹位移 + hover 整体放大、松手 spring 弹回(motion·零新依赖·reduced-motion) · forms/basic · #animated
 - [EmojiPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/emoji-picker/emoji-picker.md): 表情选择器 · 内联 emoji 数据集(7 分类·中英关键词) + 关键词搜索 + 分类页签 + 最近使用(受控/内部) · 搜索框 dogfood Input · onSelect 回传 emoji(零依赖·聊天/…

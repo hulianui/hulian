@@ -53,6 +53,22 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
                 }}/>),
         },
         {
+            title: "Month range and year range",
+            description: "picker sets the granularity, with the same meaning as the prop of the same name on DatePicker (the equivalent of el-date-picker monthrange). Values become [\"YYYY-MM\"] or [\"YYYY\"] and the presets switch to the common options for that granularity. The component still orders the two ends itself, so a start later than the end cannot be produced.",
+            code: `<DateRangePicker picker="month" defaultValue={["2026-03", "2026-06"]} />
+<DateRangePicker picker="year" defaultValue={["2024", "2026"]} />`,
+            render: () => (<div className="flex flex-wrap items-center gap-3">
+          <DateRangePicker picker="month" defaultValue={["2026-03", "2026-06"]}/>
+          <DateRangePicker picker="year" defaultValue={["2024", "2026"]}/>
+        </div>),
+        },
+        {
+            title: "An upper bound on a month range",
+            description: "maxDate always speaks in ISO dates. At month granularity a month is disabled only when all of it is out of bounds, so passing today gives you \"current month selectable, future months greyed out\" -- which is what stops an operator from picking next year's month on the right-hand panel.",
+            code: `<DateRangePicker picker="month" maxDate="2026-08-14" defaultValue={["2026-05", "2026-08"]} />`,
+            render: () => (<DateRangePicker picker="month" maxDate="2026-08-14" defaultValue={["2026-05", "2026-08"]}/>),
+        },
+        {
             title: "Size",
             description: "size uses the same scale as Input and Select (sm 32px / md 40px / lg 48px), so controls sitting on one form row line up. Date-cell geometry inside the panel does not change with it.",
             code: `<DateRangePicker size="sm" defaultValue={["2026-06-08", "2026-06-20"]} />
@@ -94,6 +110,14 @@ export const dateRangePickerShowcase: ShowcaseSpec = {
                 }}/>),
         },
         { name: "No preset", render: () => <Demo presets={false} initial={["2026-06-03", "2026-06-09"]}/> },
+        {
+            name: "Month range (picker=month)",
+            render: () => <DateRangePicker picker="month" defaultValue={["2026-03", "2026-06"]}/>,
+        },
+        {
+            name: "Year range (picker=year)",
+            render: () => <DateRangePicker picker="year" defaultValue={["2024", "2026"]}/>,
+        },
         { name: "Small", render: () => <Demo size="sm" initial={["2026-06-08", "2026-06-20"]}/> },
         { name: "Large size", render: () => <Demo size="lg" initial={["2026-06-08", "2026-06-20"]}/> },
         { name: "Disabled", render: () => <Demo disabled initial={["2026-06-01", "2026-06-15"]}/> },
