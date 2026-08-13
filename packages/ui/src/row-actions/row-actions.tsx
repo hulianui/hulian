@@ -7,7 +7,6 @@ import { useComponentLocale } from "../config/locale-context";
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from "../menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
 import { cn } from "../lib/cn";
-import { pressableClass } from "../motion";
 import type { RowActionItem, RowActionTone, RowActionsProps } from "./row-actions.types";
 
 // 表格行的操作区。
@@ -119,10 +118,8 @@ export function RowActions({
         // aria-disabled 保住可聚焦与可读名，点击由下面的 run() 自己短路。
         loading={running}
         aria-disabled={action.disabled || held || undefined}
-        // pressableClass 必须排在最后：它自带完整的 transition-property 列表，而 tailwind-merge
-        // 把 transition-* 视作同一组只留最后一个 —— 写在 Button 基类的 transition-colors 之前
-        // 会被整条丢掉，颜色与按压二选一都没有。
-        className={cn(action.disabled && "pointer-events-auto opacity-50", pressableClass)}
+        // 按压反馈不在这里挂：它已经在 Button 底座里（BUTTON_BASE_CLASS）。
+        className={cn(action.disabled && "pointer-events-auto opacity-50")}
         aria-label={variant === "icon" ? action.label : undefined}
         onClick={() => run(action)}
       >
@@ -197,7 +194,6 @@ export function RowActions({
                   tone="neutral"
                   size={size === "sm" ? "iconSm" : "icon"}
                   aria-label={moreLabel ?? locale.more}
-                  className={pressableClass}
                 >
                   <Ellipsis className="size-4" aria-hidden />
                 </Button>

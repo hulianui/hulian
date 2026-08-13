@@ -227,6 +227,15 @@ import { Button, buttonVariants } from "@hulianui/ui"
 <Button loading>加载中</Button>
 ```
 
+## 动效
+
+底座自带**按压反馈**：按下轻微缩放（0.97），时长与曲线取自动效体系的 fast 档，`prefers-reduced-motion: reduce` 下缩放与过渡一并撤掉——这条偏好由库负责，不必在调用处关。
+
+两条相关事实：
+
+- 底座里放的是 `pressableClass` 而**不是** `transition-colors`。两者不能并列：tailwind-merge 把 `transition-*` 视作同一冲突组、只保留最后一个，先写的会被整条丢弃。`pressableClass` 自带含颜色项的完整 transition-property 列表，正是为平替它而写。**自己在 `className` 里补 `transition-*` 会把按压反馈整条挤掉**，要改过渡请连缩放一起写全。
+- 特效按钮（ShimmerButton / RainbowButton / PulsatingButton / RippleButton）走的是另一套底座，**不含**这份反馈：它们变的是自绘背景，过渡属性各管各的。
+
 ## 禁忌 / 坑
 
 - `render` 模式为降低风险**不套 motion**，故无 press 缩放动效（颜色/hover 过渡仍在）；文案优先取 Button 的 children。

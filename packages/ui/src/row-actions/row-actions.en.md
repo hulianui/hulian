@@ -86,11 +86,9 @@ import { RowActions } from "@hulianui/ui"
 
 ## Motion
 
-Action buttons (including the overflow trigger) carry the library's **press feedback** (`pressableClass`): a slight scale on press, with the duration and curve taken from the motion system's fast step, dropped automatically under `prefers-reduced-motion: reduce` -- that preference is the library's job, not something to switch off at the call site.
+Action buttons (including the overflow trigger) carry the library's **press feedback**: a slight scale on press, with the duration and curve taken from the motion system's fast step, dropped automatically under `prefers-reduced-motion: reduce` -- that preference is the library's job, not something to switch off at the call site. It comes from the `Button` base (`BUTTON_BASE_CLASS`), so every `<Button>` in the library feels the same and `RowActions` adds nothing of its own.
 
 `revealOnHover` fades on the same fast step and becomes an instant swap under reduced motion.
-
-> Note: **`Button` itself does not currently carry press feedback** (its base class only transitions colours); `RowActions` opts into it. Hand-rolled buttons elsewhere on the page will therefore feel different -- unifying that means changing `Button`.
 
 ## Async actions
 

@@ -249,5 +249,14 @@ hides; pairing `iconXs` with `sm` or larger opens a gap past 12px, and so does `
 - If an icon wraps away from its label in a custom or effect button, Tailwind Preflight's `svg{display:block}` rule is usually the cause. See [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]; the wrapper needs `inline-flex`. Button already handles this internally.
 - Use `variant="soft"` (tinted semantic background with semantic text) for a secondary control that shows an on/off state. Do not override the palette with `bg-primary/10 text-primary` in `className`, and do not fall back to `solid`: a filled brand block among `h-7` toolbar controls outweighs the primary action of the page. `soft` combines with every `tone`; the typical form is `variant={isActive ? "soft" : "outline"}`. Note that it does not render `aria-pressed` — use [Toggle](../toggle/toggle.md) for a real toggle. `soft` fits triggers that merely show something is active, such as a sort chip that opens a menu.
 
+## Motion
+
+The base carries **press feedback**: a slight scale (0.97) on press, with the duration and curve from the motion system's fast step, and both the scale and the transition are dropped under `prefers-reduced-motion: reduce` -- the library owns that preference, so there is nothing to switch off at the call site.
+
+Two related facts:
+
+- The base holds `pressableClass`, **not** `transition-colors`. The two cannot coexist: tailwind-merge treats `transition-*` as one conflict group and keeps only the last, discarding the earlier one entirely. `pressableClass` ships a full transition-property list that includes the colour properties precisely so it can replace it. **Adding your own `transition-*` in `className` drops the press feedback wholesale** -- if you need to change the transition, restate the scale as well.
+- Effect buttons (ShimmerButton, RainbowButton, PulsatingButton, RippleButton) use a different base and **do not** carry this feedback: they animate their own painted backgrounds and own their transition properties.
+
 ## Related
 [ShimmerButton](../shimmer-button/shimmer-button.md) · [RainbowButton](../rainbow-button/rainbow-button.md) · [PulsatingButton](../pulsating-button/pulsating-button.md) · [RippleButton](../ripple-button/ripple-button.md) · [ButtonGroup](../button-group/button-group.md) · [SocialButton](../social-button/social-button.md)

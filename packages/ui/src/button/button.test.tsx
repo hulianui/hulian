@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render as rtlRender } from "@testing-library/react";
 import { Button, buttonVariants } from "./button";
+import { EFFECT_BUTTON_BASE_CLASS } from "./button-base";
 import { cn } from "../lib/cn";
 import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
@@ -630,5 +631,28 @@ describe("base 防压缩（#216）", () => {
     const out = buttonVariants({ block: true }).split(/\s+/);
     expect(out).toContain("w-full");
     expect(out).toContain("shrink-0");
+  });
+});
+
+describe("Button 按压反馈（底座）", () => {
+  it("base 带按压缩放，且带的是含颜色项的完整过渡列表（不是 transition-colors）", () => {
+    const { getByRole } = rtlRender(<Button>确定</Button>);
+    const cls = getByRole("button", { name: "确定" }).className;
+    expect(cls).toContain("active:scale-[0.97]");
+    // tailwind-merge 把 transition-* 视作同一冲突组只留最后一个：并列 transition-colors
+    // 会让颜色与按压二选一，所以底座里只能有这一条含颜色项的完整列表。
+    expect(cls).toContain("transition-[scale,background-color,border-color,color,box-shadow,filter,opacity]");
+    expect(cls).not.toContain("transition-colors");
+  });
+
+  it("减弱动效下缩放与过渡都撤掉（这条偏好由库负责，不指望调用处关）", () => {
+    const { getByRole } = rtlRender(<Button>确定</Button>);
+    const cls = getByRole("button", { name: "确定" }).className;
+    expect(cls).toContain("motion-reduce:transition-none");
+    expect(cls).toContain("motion-reduce:active:scale-100");
+  });
+
+  it("特效按钮底座刻意不含它：那几件变的是自绘背景，过渡属性各管各的", () => {
+    expect(EFFECT_BUTTON_BASE_CLASS).not.toContain("active:scale-");
   });
 });

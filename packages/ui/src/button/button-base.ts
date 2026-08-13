@@ -1,5 +1,8 @@
 import { cloneElement, type CSSProperties, type ReactElement, type ReactNode } from "react";
 import { cn } from "../lib/cn";
+// 从深路径而不是 ../motion 引：那个桶还导出 lazy.tsx（"use client" + motion 运行时），
+// 而本模块要保持 RSC 安全、且是四个纯 CSS 特效件的共享底座。pressableClass 只是个字符串常量。
+import { pressableClass } from "../motion/variants";
 
 // Button 底座里**与配色无关**的那一半，单独拆出来给 effects 分类下自绘背景的特效按钮共享
 // （ShimmerButton / RainbowButton / PulsatingButton / RippleButton，见 #126）。
@@ -32,8 +35,21 @@ const LAYOUT =
 const INTERACTION =
   "select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none";
 
-/** 普通 Button 的 base：排布 + 圆角 + 颜色过渡 + 交互态。 */
-export const BUTTON_BASE_CLASS = `${LAYOUT} rounded-[var(--radius)] transition-colors ${INTERACTION}`;
+/**
+ * 普通 Button 的 base：排布 + 圆角 + 按压反馈（含颜色过渡）+ 交互态。
+ *
+ * 这里放的是 `pressableClass` 而不是 `transition-colors`：库里此前只有 FAB / Segmented /
+ * Toggle / FilterChip 等**裸 `<button>`** 的几件有按下缩放，而所有走 `<Button>` 的地方
+ * 一律没有 —— 同一页面两种手感，且「哪种有」取决于那颗按钮碰巧是哪件组件实现的，
+ * 消费方无从预期。按压反馈是可点击元素的通用语言，归底座。
+ *
+ * 不能与 `transition-colors` 并列：tailwind-merge 把 `transition-*` 视作同一冲突组、
+ * 只保留最后一个，先写的会被**整条丢弃**。`pressableClass` 自带一份含颜色项的完整
+ * transition-property 列表，正是为平替它而写的（见 motion/variants.ts 的注释）。
+ *
+ * `prefers-reduced-motion: reduce` 下缩放与过渡都自动去掉，这条偏好一律由库负责。
+ */
+export const BUTTON_BASE_CLASS = `${LAYOUT} rounded-[var(--radius)] ${pressableClass} ${INTERACTION}`;
 
 /**
  * 特效按钮的 base：只有排布与交互态。
