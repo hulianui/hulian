@@ -5,17 +5,22 @@ import { TextReveal } from "./text-reveal";
 // jsdom 没有 IntersectionObserver，组件对此有兜底（直接开扫）。这里装一个可控的假实现，
 // 用来验 startOnView / once 两条分支。
 type Cb = (entries: { isIntersecting: boolean }[]) => void;
-let observers: { cb: Cb; disconnect: () => void }[] = [];
+let observers: { cb: Cb; observed: Element[]; disconnect: () => void }[] = [];
 
 function installIO() {
   observers = [];
   class FakeIO {
     cb: Cb;
+    // 记下观察对象：不记的话「观察的是不是还活着的那个节点」这类 bug 在测试里完全看不见
+    // —— 假 observer 直接调回调，根本不看观察的是谁。
+    observed: Element[] = [];
     constructor(cb: Cb) {
       this.cb = cb;
-      observers.push({ cb, disconnect: () => this.disconnect() });
+      observers.push({ cb, observed: this.observed, disconnect: () => this.disconnect() });
     }
-    observe() {}
+    observe(el: Element) {
+      this.observed.push(el);
+    }
     unobserve() {}
     disconnect() {}
   }
@@ -95,17 +100,23 @@ describe("TextReveal", () => {
     );
   });
 
-  it("once={false}：滚出视口暂停，滚回来重挂节点从头扫（不是从暂停处接着扫）", () => {
+  it("once={false}：滚出视口暂停，滚回来再开扫，且观察的一直是同一个活节点", () => {
     installIO();
     const { container } = render(<TextReveal text="标题" once={false} />);
+    const node = container.querySelector("span")!;
+    expect(observers[0].observed).toEqual([node]);
+
     intersect(true);
-    const first = container.querySelector("span")!;
+    expect(node.getAttribute("class")).not.toContain("animation-play-state:paused");
     intersect(false);
-    expect(container.querySelector("span")!.getAttribute("class")).toContain(
-      "animation-play-state:paused",
-    );
+    expect(node.getAttribute("class")).toContain("animation-play-state:paused");
     intersect(true);
-    expect(container.querySelector("span")).not.toBe(first);
+    expect(node.getAttribute("class")).not.toContain("animation-play-state:paused");
+
+    // 节点不换：换了的话 observer 会继续盯着已卸载的旧节点，第三次进出视口就再也不触发
+    expect(container.querySelector("span")).toBe(node);
+    expect(node.isConnected).toBe(true);
+    expect(observers[0].observed).toEqual([node]);
   });
 
   it("没有 IntersectionObserver 时直接开扫，不把字卡在透明态", () => {

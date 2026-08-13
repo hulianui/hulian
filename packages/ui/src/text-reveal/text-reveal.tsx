@@ -55,9 +55,6 @@ export function TextReveal({
   const items = Array.isArray(text) ? text : [text];
   const ref = useRef<HTMLSpanElement>(null);
   const [started, setStarted] = useState(!startOnView);
-  // 每次重新开扫都换一个 key 把扫光节点重挂：只切 play-state 的话是「从暂停处继续」，
-  // once={false} 第二次滚回视口会从上一轮停下的位置接着扫，而不是重新扫一遍。
-  const [run, setRun] = useState(0);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -76,7 +73,6 @@ export function TextReveal({
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
           setStarted(true);
-          setRun((r) => r + 1);
           if (once) io.disconnect();
         } else if (!once) {
           setStarted(false);
@@ -87,6 +83,22 @@ export function TextReveal({
     io.observe(el);
     return () => io.disconnect();
   }, [startOnView, once]);
+
+  // 重新开扫时把进度拨回 0。只切 play-state 是「从暂停处继续」——`once={false}` 第二次滚回视口
+  // 会从上一轮停下的地方接着扫，而不是重新扫一遍。
+  //
+  // 为什么不换 key 把扫光节点重挂（那是更直觉的写法）：被观察的就是这个节点，重挂之后
+  // IntersectionObserver 仍盯着已经卸载的旧节点，于是第三次进出视口就再也不触发了 —— 而且
+  // 这种坏法在测试里是**看不见**的（假的 observer 直接调回调，根本不看观察的是谁）。
+  // 拨进度不动节点，观察对象自始至终是同一个。
+  useEffect(() => {
+    if (!started) return;
+    // subtree：多串轮换时跑动画的是子节点，不是根。getAnimations 自带样式刷新，
+    // 所以这一帧刚挂上的动画取得到。
+    for (const animation of ref.current?.getAnimations?.({ subtree: true }) ?? []) {
+      animation.currentTime = 0;
+    }
+  }, [started]);
 
   // 动画写在 class 里而不是内联 style：内联优先级高于类，一旦内联，`motion-reduce` 就永远关不掉。
   // fill-mode 取 both 是这件事成立的关键——
@@ -118,7 +130,6 @@ export function TextReveal({
     return (
       <span
         ref={ref}
-        key={run}
         className={cn(sweepClass, className)}
         style={{ ...sweepStyle, ...style }}
         {...props}
@@ -136,7 +147,7 @@ export function TextReveal({
       {items.map((item, i) =>
         i === index ? (
           <span
-            key={`${i}-${run}`}
+            key={i}
             className={cn("[grid-area:1/1]", sweepClass)}
             style={sweepStyle}
             onAnimationIteration={onAnimationIteration}
@@ -146,7 +157,7 @@ export function TextReveal({
         ) : (
           // 占位串只撑宽度：文字挂在 data 属性上由伪元素渲染（规则在 preset-core.css），
           // 不进 DOM 文本 —— 否则这个状态标签的 textContent 会是三个阶段名连在一起。
-          <span key={`${i}-${run}`} aria-hidden data-hulian-ghost-text={item} className="invisible [grid-area:1/1]" />
+          <span key={i} aria-hidden data-hulian-ghost-text={item} className="invisible [grid-area:1/1]" />
         ),
       )}
     </span>
