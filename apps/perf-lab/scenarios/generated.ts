@@ -987,6 +987,9 @@ export const scenarioLoaders = {
   "route-tabs": async () =>
     (await import("@hulianui/ui-internal/route-tabs/route-tabs.showcase"))
       .routeTabsShowcase,
+  "row-actions": async () =>
+    (await import("@hulianui/ui-internal/row-actions/row-actions.showcase"))
+      .rowActionsShowcase,
   safari: async () =>
     (await import("@hulianui/ui-internal/safari/safari.showcase"))
       .safariShowcase,
@@ -4471,6 +4474,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/route-tabs/index.ts",
+  },
+  "row-actions": {
+    id: "row-actions",
+    scenarioId: "row-actions/basic",
+    component: "RowActions",
+    entry: "@hulianui/ui/row-actions",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/row-actions/index.ts",
   },
   safari: {
     id: "safari",

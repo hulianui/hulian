@@ -442,6 +442,7 @@ export interface ComponentLocale {
   animatedThemeToggler?: { switchToLight: string; switchToDark: string };
   backTop?: { backToTop: string };
   pageHeader?: { back: string };
+  rowActions?: { more: string; confirm: string; cancel: string };
   secretField?: { show: string; hide: string; copy: string; copied: string };
   kanban?: { emptyColumn: string };
   gantt?: { chart: string; empty: string; process: string; month: (month: number) => string };
@@ -1176,6 +1177,7 @@ const zhComponents: ComponentLocale = {
   animatedThemeToggler: { switchToLight: "切换到亮色", switchToDark: "切换到暗色" },
   backTop: { backToTop: "回到顶部" },
   pageHeader: { back: "返回" },
+  rowActions: { more: "更多操作", confirm: "确定", cancel: "取消" },
   secretField: { show: "显示", hide: "隐藏", copy: "复制", copied: "已复制" },
   kanban: { emptyColumn: "拖拽卡片到此" },
   gantt: {
@@ -1984,6 +1986,7 @@ const enComponents: ComponentLocale = {
   },
   backTop: { backToTop: "Back to top" },
   pageHeader: { back: "Back" },
+  rowActions: { more: "More actions", confirm: "Confirm", cancel: "Cancel" },
   secretField: { show: "Show", hide: "Hide", copy: "Copy", copied: "Copied" },
   kanban: { emptyColumn: "Drop cards here" },
   gantt: {

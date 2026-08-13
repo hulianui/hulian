@@ -286,6 +286,7 @@ export * from "./ripple-button.showcase";
 export * from "./ripple-grid.showcase";
 export * from "./ripple.showcase";
 export * from "./route-tabs.showcase";
+export * from "./row-actions.showcase";
 export * from "./safari.showcase";
 export * from "./safe-area.showcase";
 export * from "./sankey.showcase";

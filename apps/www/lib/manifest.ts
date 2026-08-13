@@ -271,6 +271,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "editable-table", name: "EditableTable", description: "行内编辑表格 · 行级编辑(草稿副本/保存校验/取消还原) + 自定义编辑器(editor 逃生舱) + 增删行 + 列对齐/宽度(企业录入场景·文案接 i18n)", category: "data-display", group: "collection", status: "new" },
   { slug: "list", name: "List", description: "数据列表 · 复合 List/ListItem/ListItem.Meta + actions/size/bordered/split/grid + 空态/分页/加载更多(零依赖·复用 Empty/Pagination/Avatar/User)", category: "data-display", group: "collection", status: "new" },
   { slug: "descriptions", name: "Descriptions", description: "描述列表 · 详情页键值对 + horizontal/vertical + bordered + span 跨列(纯皮肤·RSC)", category: "data-display", group: "collection", status: "new" },
+  { slug: "row-actions", name: "RowActions", description: "表格行操作区 · 声明式动作表 + tone 层级(主/常规/破坏性) + 超出 max 自动收进溢出菜单 + 破坏性动作分隔并二次确认 + 禁用给原因 + 文字/图标两档 · 自持确认框不依赖 Provider", category: "data-display", group: "collection", status: "new" },
   { slug: "tree", name: "Tree", description: "递归树 · 自研零依赖引擎 + WAI-ARIA tree(roving/方向键/typeahead) + checkable 父子级联半选 + 连接线 + 树内搜索 + grid-rows 高度过渡", category: "data-display", group: "collection", status: "new" },
   { slug: "card", name: "Card", description: "卡片 · Header/Body/Footer 插槽", category: "data-display", group: "collection", status: "new" },
   { slug: "carousel", name: "Carousel", description: "轮播 · 自研零依赖 scroll-snap + 箭头/圆点/autoplay/loop + 拖拽/键盘(reduced-motion)", category: "data-display", group: "collection", status: "new" },

@@ -10240,6 +10240,62 @@
       ]
     },
     {
+      "name": "row-actions",
+      "type": "registry:ui",
+      "title": "RowActions",
+      "description": "表格行操作区 · 声明式动作表 + tone 层级 + 超出 max 收进溢出菜单 + 破坏性动作二次确认",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/alert-dialog.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/menu.json",
+        "https://hulianui.haloritual.com/zh/r/tooltip.json"
+      ],
+      "meta": {
+        "import": "import { RowActions } from \"@hulianui/ui\"",
+        "exports": [
+          "RowActions"
+        ],
+        "types": [
+          "RowActionsProps",
+          "RowActionItem",
+          "RowActionConfirm",
+          "RowActionTone"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/row-actions/row-actions.md",
+        "docLocal": "packages/ui/src/row-actions/row-actions.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/row-actions/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/row-actions/index.ts"
+        },
+        {
+          "path": "components/hulianui/row-actions/row-actions.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/row-actions/row-actions.tsx"
+        },
+        {
+          "path": "components/hulianui/row-actions/row-actions.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/row-actions/row-actions.types.ts"
+        }
+      ]
+    },
+    {
       "name": "sankey",
       "type": "registry:ui",
       "title": "Sankey",

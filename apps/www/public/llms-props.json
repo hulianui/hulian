@@ -235,6 +235,15 @@
       "dot",
       "icon"
     ],
+    "DescriptionsSize": [
+      "sm",
+      "md"
+    ],
+    "DescriptionsAlign": [
+      "baseline",
+      "start",
+      "center"
+    ],
     "DesignCanvasResizeDirection": [
       "n",
       "ne",
@@ -621,6 +630,11 @@
       "closeRight",
       "closeAll",
       "refresh"
+    ],
+    "RowActionTone": [
+      "neutral",
+      "brand",
+      "danger"
     ],
     "SafeAreaEdge": [
       "top",
@@ -1368,6 +1382,7 @@
     "RelativeTime": "relative-time",
     "formatRelative": "relative-time",
     "formatAbsolute": "relative-time",
+    "RowActions": "row-actions",
     "Sankey": "sankey",
     "assignLayers": "sankey",
     "computeSankeyLayout": "sankey",
@@ -18070,7 +18085,7 @@
           "kind": "number",
           "type": "number",
           "default": "3",
-          "description": "每行列数"
+          "description": "每行**最多**几列。实际列数按容器宽度自动降档（见下）"
         },
         {
           "name": "layout",
@@ -18092,6 +18107,49 @@
           "type": "boolean",
           "default": "false",
           "description": "带边框分隔的表格态"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\"",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "密度档。sm 只收紧格内边距，不动字号"
+        },
+        {
+          "name": "labelWidth",
+          "required": false,
+          "kind": "other",
+          "type": "number | string",
+          "default": null,
+          "description": "钉死键列宽度（horizontal 专用）。不传时由整表最长的键名决定并逐列对齐；数字按 px"
+        },
+        {
+          "name": "emptyText",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": "\"—\"",
+          "description": "值为空时的占位。空=`null`/`undefined`/`\"\"`/`false`，数字 `0` 照常渲染；传 `null` 关掉"
+        },
+        {
+          "name": "align",
+          "required": false,
+          "kind": "enum",
+          "type": "\"baseline\" | \"start\" | \"center\"",
+          "values": [
+            "baseline",
+            "start",
+            "center"
+          ],
+          "valueType": "string",
+          "default": "跟布局走",
+          "description": "键与值的纵向对齐。值区放图片/标签组时才需要显式指定"
         },
         {
           "name": "items",
@@ -23116,6 +23174,178 @@
           "type": "string",
           "default": null,
           "description": "—"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    {
+      "slug": "row-actions",
+      "name": "RowActions",
+      "category": "data-display",
+      "group": "collection",
+      "status": "enriched",
+      "import": "import { RowActions } from \"@hulianui/ui\"",
+      "exports": [
+        "RowActions"
+      ],
+      "types": [
+        "RowActionsProps",
+        "RowActionItem",
+        "RowActionConfirm",
+        "RowActionTone"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/row-actions/row-actions.md",
+      "props": [
+        {
+          "name": "actions",
+          "required": true,
+          "kind": "array",
+          "type": "RowActionItem[]",
+          "default": null,
+          "description": "动作表。`hidden` 的项先剔掉，再算折叠"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"text\" | \"icon\"",
+          "values": [
+            "text",
+            "icon"
+          ],
+          "valueType": "string",
+          "default": "\"text\"",
+          "description": "图标档省横向空间，但要求每项都给 `icon`"
+        },
+        {
+          "name": "max",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "3",
+          "description": "最多**露出**几个。超出时露出前 `max - 1` 个，其余进溢出菜单"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\"",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "valueType": "string",
+          "default": "\"sm\"",
+          "description": "密度档"
+        },
+        {
+          "name": "align",
+          "required": false,
+          "kind": "enum",
+          "type": "\"start\" | \"center\" | \"end\"",
+          "values": [
+            "start",
+            "center",
+            "end"
+          ],
+          "valueType": "string",
+          "default": "\"start\"",
+          "description": "列内对齐"
+        },
+        {
+          "name": "moreLabel",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "本地化「更多操作」",
+          "description": "溢出菜单触发器的无障碍名"
+        },
+        {
+          "name": "key",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "React key"
+        },
+        {
+          "name": "label",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "动作名。**必须是纯字符串**：它同时当无障碍名、悬浮提示、菜单 type-ahead 检索词"
+        },
+        {
+          "name": "icon",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "文字档作前缀，图标档是按钮的全部内容"
+        },
+        {
+          "name": "tone",
+          "required": false,
+          "kind": "enum",
+          "type": "\"neutral\" | \"brand\" | \"danger\"",
+          "values": [
+            "neutral",
+            "brand",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"neutral\"",
+          "description": "层级。主操作 `brand`、破坏性 `danger`"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "不可用。仍可聚焦、仍能读到名字"
+        },
+        {
+          "name": "disabledReason",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "为什么不可用。**给了 `disabled` 就该给它**"
+        },
+        {
+          "name": "confirm",
+          "required": false,
+          "kind": "other",
+          "type": "RowActionConfirm",
+          "default": null,
+          "description": "二次确认：`{ title, description?, confirmText?, cancelText? }`"
+        },
+        {
+          "name": "hidden",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "按权限藏起来"
+        },
+        {
+          "name": "onSelect",
+          "required": false,
+          "kind": "function",
+          "type": "() => void",
+          "default": null,
+          "description": "点击回调；有 `confirm` 时在确认之后才调"
+        },
+        {
+          "name": "render",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "换元素渲染，典型是路由 `<Link>`"
         }
       ],
       "events": [],

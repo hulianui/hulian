@@ -41,6 +41,7 @@ export * from "./descriptions";
 export * from "./pagination";
 export * from "./table";
 export * from "./pro-table";
+export * from "./row-actions";
 export * from "./editable-table";
 export * from "./pricing-table";
 export * from "./json-viewer";

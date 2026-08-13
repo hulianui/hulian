@@ -69,6 +69,7 @@ export { dateRangePickerShowcase } from "./date-range-picker/date-range-picker.s
 export { dateTimePickerShowcase } from "./date-time-picker/date-time-picker.showcase";
 export { calendarShowcase } from "./calendar/calendar.showcase";
 export { descriptionsShowcase } from "./descriptions/descriptions.showcase";
+export { rowActionsShowcase } from "./row-actions/row-actions.showcase";
 export { dialogShowcase } from "./dialog/dialog.showcase";
 export { dividerShowcase } from "./divider/divider.showcase";
 export { dockShowcase } from "./dock/dock.showcase";

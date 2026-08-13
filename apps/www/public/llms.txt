@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 390 个组件 · v0.41.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 391 个组件 · v0.41.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -129,7 +129,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（91）
+## 数据展示 data-display（92）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 头像 · Base UI 图片+fallback
@@ -200,6 +200,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [QueueLane](https://github.com/hulianui/hulian/blob/master/packages/ui/src/queue-lane/queue-lane.md): 优先级队列板 · 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」…
 - [ReflectiveCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/reflective-card/reflective-card.md): 金属反光证件卡 · 对角高光横扫 + 磨砂噪点 + 渐变发丝边框(纯 CSS 零依赖·token·RSC 安全·reduced-motion)，内容可插槽化 · data-display/collection · #a…
 - [RelativeTime](https://github.com/hulianui/hulian/blob/master/packages/ui/src/relative-time/relative-time.md): 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> …
+- [RowActions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/row-actions/row-actions.md): 表格行操作区 · 声明式动作表 + tone 层级 + 超出 max 收进溢出菜单 + 破坏性动作二次确认
 - [Sankey](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sankey/sankey.md): 桑基图 · (库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · …
 - [Scheduler](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scheduler/scheduler.md): 事件日历/排班 · 库首个事件日历件 · 月/周/日/资源四视图(横轴资源·纵轴时间) + 时间轴网格事件块 + 重叠并排 + 当前时间红线 · 零依赖原生 PointerEvents 拖空白建预约/拖事件改期/拖下缘…
 - [ScoreRing](https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-ring/score-ring.md): 评分环 · 半径仪表盘 + A-F 等级带(value→grade tone 映射·纯函数 resolveGrade 可测) + 环心分值/等级 · 区别线性 Meter/Progress·SVG dasharray …

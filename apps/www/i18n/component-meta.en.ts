@@ -693,6 +693,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Displays labeled record fields in horizontal or vertical, bordered or unbordered layouts.",
     keywords: ["descriptions", "data-display", "collection"],
   },
+  "row-actions": {
+    shortName: "RowActions",
+    description:
+      "Renders a table row's action set with tone-based hierarchy, an overflow menu past a set count, and built-in confirmation.",
+    keywords: ["row actions", "table", "data-display", "collection"],
+  },
   tree: {
     shortName: "Tree",
     description: "Renders expandable hierarchical nodes with selection and keyboard navigation.",
