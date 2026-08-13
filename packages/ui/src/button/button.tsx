@@ -227,8 +227,11 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
       // Tailwind v4 的 scale-* 编译成独立的 scale 属性），互不覆盖而是**相乘**：
       // 0.97 × 0.97 = 0.9409，按下去缩约 6%，是意图的两倍（#260）。
       // 撤 motion 那半而不是撤 CSS 那半：CSS 版能被 reduced-motion 变体守住（whileTap 没有
-      // 对应守卫），且让 Button 少依赖一层 motion 运行时（domAnimation 此前占 Button 首屏
-      // 相当一块）。同一颗按钮上只允许一个缩放来源，见下方测试。
+      // 对应守卫），且 Button 不再拖 motion 运行时——同一把体积尺子实测，button 入口从
+      // 3 chunk / 418 modules / 38.0KB 降到 1 chunk / 13 modules / 11.1KB（gzip·total）。
+      // **initial 几乎不变**（11.2 → 11.1KB）：那份 domAnimation 本来就走 LazyMotion 懒加载，
+      // 省下的是首屏之后的那一段，别把它说成首屏收益。
+      // 同一颗按钮上只允许一个缩放来源，见下方测试。
       <button
         ref={ref}
         // 默认 type="button"，而不是原生 <button> 的默认值 submit（#219）。

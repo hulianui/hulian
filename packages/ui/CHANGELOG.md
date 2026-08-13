@@ -1,5 +1,135 @@
 # @hulianui/ui
 
+## 0.44.0
+
+### Minor Changes
+
+- 85679f0: `DateRangePicker` 补月份区间与年份区间：新增 `picker="date" | "month" | "year"`
+
+  `DatePicker` 一直有三档粒度，`DateRangePicker` 却只有**天**——「选一段月份」这件事在库里没有对应件，
+  只能拿两个 `picker="month"` 的 `DatePicker` 拼（#262）。拼出来比真区间件少三样：没有区间高亮
+  （两个独立面板，看不出中间那段是选中的）、用不上 `presets`、两端得自己写 `minDate` / `maxDate`
+  互夹，少写一处就能选出「起月晚于止月」。
+
+  新的 `picker` 与 `DatePicker` 的同名 prop 同名同义，对齐关系补齐为：
+
+  | Element Plus        | 瑚琏                             |
+  | ------------------- | -------------------------------- |
+  | `type="daterange"`  | `DateRangePicker`（默认）        |
+  | `type="monthrange"` | `DateRangePicker picker="month"` |
+  | —                   | `DateRangePicker picker="year"`  |
+
+  随之变化的三处，都跟着粒度走：
+
+  - **值形状**：`["YYYY-MM-DD", …]` / `["YYYY-MM", …]` / `["YYYY", …]`（与 `DatePicker`、`Calendar`
+    同源的定宽文本，字典序即时间序）。`displayFormat` 的默认值同理。
+  - **面板**：两个月历 / 两个年份页（各 12 个月）/ 两个 12 年段。年份页刻意是 12 年整段而不是十年段
+    ——十年段的首尾补位年会让同一个年份在左右两页各出现一次。
+  - **预设与占位**：月档给「本月 / 最近 3 个月 / 最近 6 个月 / 今年」，年档给「今年 / 最近 3 年 /
+    最近 5 年」，全部走 locale（新词条在 `dateRangePicker` 下是可选的，自带整份 locale 的消费方不受影响）。
+
+  **`minDate` / `maxDate` / `disabledDate` 恒按 ISO 日期说话**，不随 `picker` 变，判定直接复用
+  `Calendar` / `DatePicker` 那份纯逻辑：整段都超界才禁。于是 `maxDate` 写今天就得到「当月可选、
+  未来月灰掉」——issue 里那个「运营在右面板点 7 月拿到明年 7 月，后端只校验 `yyyy-MM`、那一列
+  统计全 0 还看不出筛错了」的坑，这是它的解法。月/年粒度下 `disabledDate` 每段只按**首日**问一次。
+
+  天粒度的行为与 DOM 不变。
+
+- c6ce7f5: `Table` 支持多级表头（分组列）：组名落 `colSpan`，独立列纵向跨满
+
+  `Table` 一直照 TanStack 的 `getHeaderGroups()` 渲染多行表头，但那圈 `<th>` **从来没落过
+  `colSpan`** —— 一个横跨 4 个叶子列的组名只占 1 格，上下两行的格子数对不上，整排歪掉（#261）。
+  `isPlaceholder` 分支早就在了，说明多级表头是打算支持的，只差跨度这一步。三道门禁
+  （tsc / guard / 构建）一条都不报，控制台也干净，只有肉眼看表头才发现。
+
+  这一版把它补全：
+
+  - **组名横跨它的叶子列**，并且默认**居中**——贴在最左那列的左缘会读成「这是第一列的名字」。
+  - **独立列与分组列混排时，独立列纵向跨满**。TanStack 表达跨行的方式是「上层放一个空占位格」，
+    照着渲染就是每个独立列头上顶着一格空表头；现在改为在它第一次出现的那行渲染真名并 `rowSpan`
+    到底，与 Element Plus / Ant Design 的观感一致。
+  - **叶子列的宽度声明生效了**。`size` / `minSize` / `maxSize` 此前只从**顶层** `columns` 采集，
+    分组时真正承载数据的是嵌套里的叶子列，于是分组表里每一列的宽度声明全部读不到。
+
+  顺带说明两条边界（已写进文档）：多级表头下**冻结（`meta.sticky`）只作用到叶子列**——offset 按
+  叶子列宽度累加，跨列的组名格没有自己的 offset；**排序与筛选也挂在叶子列上**，组列没有取值器。
+
+  单级表头的 DOM **逐字不变**：跨度为 1 时不落 `colSpan` / `rowSpan` 属性。
+
+  > 注：TanStack v8 的 `header.rowSpan` 字段**恒为 0**（它没有实现跨行语义，跨行是用 placeholder
+  > 表达的），所以跨行是本组件自己编排的，照抄 `rowSpan={header.rowSpan}` 只会得到死代码。
+
+### Patch Changes
+
+- 85571aa: `Button` 的按压反馈不再叠两次：按下缩 3%，不是 6%
+
+  0.43.0 把 `pressableClass`（含 `active:scale-[0.97]`）放进了 `BUTTON_BASE_CLASS`，但 `<Button>`
+  上原有的 motion `whileTap={{ scale: 0.97 }}` 没撤。两条走的是**不同的 CSS 属性**——motion 写内联
+  `transform`，而 Tailwind v4 的 `scale-*` 编译成独立的 `scale` 属性——互不覆盖而是**相乘**：
+  0.97 × 0.97 = 0.9409，按下去缩约 6%，是意图的两倍（#260）。
+
+  撤掉的是 motion 那半，留 CSS 那半，两个理由：
+
+  - **减弱动效这条偏好一律由库负责。** `pressableClass` 自带 `motion-reduce:active:scale-100`，
+    `whileTap` 没有对应守卫，`prefers-reduced-motion: reduce` 下 JS 那半照缩。
+  - **`<Button>` 不再拖 motion 运行时**：`m.button` + `LazyMotionProvider(domAnimation)` 从 Button
+    的依赖里整块去掉了。这是 `pressableClass` 当初存在的理由——「零 motion 运行时，让按下去有反应
+    这件事能铺满全库」。同一把体积尺子实测：button 入口 3 chunk / 418 modules / 38.0KB →
+    1 chunk / 13 modules / 11.1KB（gzip·total）。**首屏（initial）几乎不变**（11.2 → 11.1KB），
+    因为那份 `domAnimation` 本来就走 `LazyMotion` 懒加载——省下的是首屏之后的那一段。
+
+  `render`（渲染为 `<a>` / `<Link>`）那条路的按压反馈与 `<button>` 分支自此同源：都在底座的
+  className 里。文档里「render 模式不套 motion，故无 press 缩放」那句同步改掉——0.43.0 起它已经有了。
+
+  新增一条钉死「同一颗按钮上只有一个缩放来源」的测试。这个 bug 的形态是两处各自都对、合起来才错，
+  逐处 review 看不出来。
+
+- 60854de: `CardHeader` / `PageHeader`：`extra` 不再因为标题或描述变长而掉到第二行
+
+  `CardHeader` 结构态的左列此前只有 `min-w-0`。CSS 收集 flex 行时看的是 item 的
+  **hypothetical main size**（Flexbox §9.3），`flex-basis: auto` + 无 width 时它取 **max-content**；
+  `min-w-0` 只放开「同一行里能收缩到多小」，**降不了 base size**。于是一条够长的 `description`
+  就能把 `extra` 整块挤到第二行——哪怕左列完全收缩得起，哪怕调用方已经写了 `truncate` /
+  `line-clamp`（那两个管的是溢出怎么显示，不影响 max-content）。
+
+  现象是同一份调用代码、同一个视口，**只因为数据长度不同排成两种版式**：消费方 12 张同形状的卡里
+  有 3 张（描述最长的那 3 条）把 12px 的箭头掉到了描述下面，孤零零占一行（#263）。
+
+  左列改成 `flex: 1 1 0`（`grow basis-0`）后，换行判据与内容长度脱钩。
+
+  两个组件的差别是**刻意**的，判据是「这个容器的宽度是不是等于视口宽度」：
+
+  - **`PageHeader`** 保留 `max-sm:basis-auto`。页头总是全宽，「视口窄」就等于「页头窄」，
+    那句注释里写的「窄屏 extra 换行到下方」本来就是想要的行为——只是此前它是由内容长度触发的，
+    现在还原成它的字面意思。
+  - **`CardHeader`** 没有这一档。卡片宽度由布局给（三列网格 515px、侧栏卡 280px），与视口无关：
+    900px 的桌面窗口里可能坐着一张窄卡，375px 的手机上卡片反而是全宽的，视口断点两种情况都猜错。
+    取舍与 Ant 的 `.ant-card-head-wrapper`、MUI 的 `CardHeader` 一致：`extra` 恒同行，长标题该截断
+    就截断。**这也意味着窄卡片里 `extra` 会一直占位**，给标题写 `truncate` 是调用方的事。
+
+  不传任何槽的裸插槽分支逐字不变（那条分支根本不是 flex）。
+
+  新增 `card.browser.test.tsx`：判据是「同一个 header，只改 `description` 的字符数，`extra` 的
+  `top` 与 header 高度都不许变」。这条必须在真实浏览器里跑——jsdom 没有布局，
+  `getBoundingClientRect()` 恒为 0、flex 也不换行，这个 bug 在那里根本不会发生；类名断言同样拦不住，
+  因为 `min-w-0` 一直都在、看着也对，错的是它管不到换行。
+
+- 475d11a: `RowActions` 的动作间距按档给：文字档 4px → 16px
+
+  文字档的按钮是 `variant="link"`，而 link 在 `Button` 的 compoundVariants 里被钉了
+  `h-auto px-0`（回归纯文字链接，文字左缘要与表头对齐）——于是两个动作之间的**全部**间隔
+  就只剩容器上那个 `gap-1`。4px 在按钮档 / 图标档是够的（那两档按钮自带横向内边距，
+  视觉间隔是 gap + 2×padding），在文字档却让一排中文动作粘成一句话：「编辑 下线 删除」
+  读起来像四个字的短语，而不是三个可点的东西。而文字档是默认档。
+
+  16px 照着表格行操作的既有惯例定（Element UI ~10px、Ant Design 的分隔线两侧各 8px），
+  比 4px 明显松，又不至于让三个动作的列宽失控。
+
+  **按钮档与图标档的渲染逐字不变**——它们本来就不缺间隔，改了反而白吃横向空间。
+
+  消费方注意：文字档的操作列会变宽，每多一个动作多 12px。列宽是手写常数的表要复核一次
+  （实测三动作「编辑/下线/删除」内容宽 116px，此前按 12px 间距估的 150px 列宽仍有余量）。
+
 ## 0.43.0
 
 ### Minor Changes

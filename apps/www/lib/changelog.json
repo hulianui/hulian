@@ -1,29 +1,38 @@
 [
   {
     "pkg": "@hulianui/ui",
-    "version": "0.41.0",
-    "date": null,
+    "version": "0.44.0",
+    "date": "2026-08-14",
     "entries": [
       {
-        "sha": null,
+        "sha": "85679f0",
         "bump": "minor",
         "breaking": false,
-        "body": "`CellEditor` 五条缺口一次收口：档位透传 / 草稿出口 / 失败可重试 / 原生属性 / 让出焦点（#248–#252）\n\n这五条来自同一个消费方的同一张表——13 列的工作记录核对表。单看每条都是「少个 prop」，合起来才看出共同的形状：`CellEditor` 只有一种长相、一条出口、一套属性集，凡是与它预设不同的表都迁不进来。\n\n- **档位透传（#248）**：`variant` / `size` 现在能传给内层 Input / Textarea，默认 `variant=\"cell\"`（与上一版渲染逐字相同）。此前 `cell` 档写死在组件里，于是 #244 刚补的 `validate` 反而用不上：同一行里其余可编辑列都是有边框的普通输入框，只把其中三列换成 `CellEditor` 就变成有框无框混排，而库自己在 `input.tsx` 为 `xs` 档保留边框的理由（用户正是靠边框判断哪些格子可编辑，#187）在那张表里逐字成立。「要提交前校验」与「格子看得出可编辑」本来就不该绑在同一个开关上。刻意不加 `bordered` 布尔：库里表达「密集表」已经有 `variant=\"cell\"` 与 `size=\"xs\"` 两种口径，再加第三种以后要另做解释。\n\n- **草稿出口（#249）**：新增 `onDraftChange?: (draft: string) => void`，每次键入广播当前草稿。此前 `onChange` 被 `Omit` 掉、`onInput` 也拿不到受控草稿，于是任何「随打字变化的派生 UI」——已填计数、实时预览、每键落 localStorage——都没有落点，只能整格放弃 `CellEditor`。刻意不放开 `onChange`：同一个组件上两个都像「值变了」的回调，消费方八成会往 `onChange` 里写落库，那就把失焦即提交这条契约绕过去了。\n\n- **失败可重试（#250）**：`onCommit` 返回的 Promise reject 时，判等基准退回上一版。此前基准在 `await` 之前就推进了，于是保存失败后用户不改动直接再失焦会被判等短路——**连重试都点不动**，而文档给的「消费方自己 catch」在 `value` 来自服务端缓存（SWR / React Query）时没有落点：失败时缓存没动，`value` 原样，消费方手上没有任何能拿来回滚的东西。基准的乐观推进本身保留（pending 期间再失焦一次不该把同一个值重发一遍），只在失败时退回来。另加 `revertOnError?: boolean`（默认 `false`）把草稿也一并退回。回滚有两道门：这次提交仍是最新的那次，且基准还停在它身上——期间外部写进来的新值是更近的真相，不能被一个旧请求的失败盖回去。\n\n- **原生属性（#251）**：`CellEditorProps` 按 `multiline` 分叉成联合类型，单行档继承 `<input>` 的属性集、多行档继承 `<textarea>` 的，于是 `name` / `type` / `maxLength` / `autoComplete` / `rows` 都通了。此前继承的是 `HTMLAttributes`（不是 `InputHTMLAttributes`），只有全局属性能传，而内层渲染的恰恰是 `<input>` 和 `<textarea>`。`rows` 尤其别扭：`Textarea` 自己有这个 prop，`cell` 档还专门把默认值从 3 改成 1，但「几行起」终究是每格不同的业务事实（核对表里「经营范围」天生比「邮政编码」高一行）。原生 `size`（字符宽度）让位给档位 `size`，同名不同义，两者不可能都留。代价写在类型注释里：`multiline` 必须是字面量，拿 boolean 变量开关多行时 TS 认不出走哪一档。\n\n- **让出焦点（#252）**：新增 `blurOnCommit` / `blurOnEscape`（默认都是 `false` = 现状，焦点留在格内）。这两条消费方补不了——在 `onKeyDown` 里自己调 `blur()` 会在 `setDraft` flush 之前同步触发提交，闭包里还是旧草稿，**Esc 会变成保存**。实现用一个「最新草稿的镜像 ref」解掉这条时序（提交一律读它而不是闭包值），而不是重造组件注释里明确反对的那个「刚按过 Esc」标志位——那个标志位难在何时清，镜像 ref 没有清除时机。校验被拦下时不让出焦点：错误就在这一格，得让用户接着改。\n\n新增导出：`CellEditorVariant` / `CellEditorSize` / `CellEditorBaseProps` / `CellEditorSingleProps` / `CellEditorMultilineProps`。",
-        "parityId": "cell-editor-passthrough-draft-revert-blur"
+        "body": "`DateRangePicker` 补月份区间与年份区间：新增 `picker=\"date\" | \"month\" | \"year\"`\n\n`DatePicker` 一直有三档粒度，`DateRangePicker` 却只有**天**——「选一段月份」这件事在库里没有对应件，\n只能拿两个 `picker=\"month\"` 的 `DatePicker` 拼（#262）。拼出来比真区间件少三样：没有区间高亮\n（两个独立面板，看不出中间那段是选中的）、用不上 `presets`、两端得自己写 `minDate` / `maxDate`\n互夹，少写一处就能选出「起月晚于止月」。\n\n新的 `picker` 与 `DatePicker` 的同名 prop 同名同义，对齐关系补齐为：\n\n| Element Plus        | 瑚琏                             |\n| ------------------- | -------------------------------- |\n| `type=\"daterange\"`  | `DateRangePicker`（默认）        |\n| `type=\"monthrange\"` | `DateRangePicker picker=\"month\"` |\n| —                   | `DateRangePicker picker=\"year\"`  |\n\n随之变化的三处，都跟着粒度走：\n\n- **值形状**：`[\"YYYY-MM-DD\", …]` / `[\"YYYY-MM\", …]` / `[\"YYYY\", …]`（与 `DatePicker`、`Calendar`\n  同源的定宽文本，字典序即时间序）。`displayFormat` 的默认值同理。\n- **面板**：两个月历 / 两个年份页（各 12 个月）/ 两个 12 年段。年份页刻意是 12 年整段而不是十年段\n  ——十年段的首尾补位年会让同一个年份在左右两页各出现一次。\n- **预设与占位**：月档给「本月 / 最近 3 个月 / 最近 6 个月 / 今年」，年档给「今年 / 最近 3 年 /\n  最近 5 年」，全部走 locale（新词条在 `dateRangePicker` 下是可选的，自带整份 locale 的消费方不受影响）。\n\n**`minDate` / `maxDate` / `disabledDate` 恒按 ISO 日期说话**，不随 `picker` 变，判定直接复用\n`Calendar` / `DatePicker` 那份纯逻辑：整段都超界才禁。于是 `maxDate` 写今天就得到「当月可选、\n未来月灰掉」——issue 里那个「运营在右面板点 7 月拿到明年 7 月，后端只校验 `yyyy-MM`、那一列\n统计全 0 还看不出筛错了」的坑，这是它的解法。月/年粒度下 `disabledDate` 每段只按**首日**问一次。\n\n天粒度的行为与 DOM 不变。"
       },
       {
-        "sha": null,
+        "sha": "c6ce7f5",
         "bump": "minor",
         "breaking": false,
-        "body": "`PageHeader` 让出标题标签：新增 `titleAs`（#247）\n\n标题此前写死 `<h1>`，而「这一屏的标题排第几级」是页面的结构信息，不该归页头皮肤：页头未必是本页最高级标题，消费方那几处 hero 当前根本没有 `h1`。更硬的一条是消费方的标题常常是自带动画的组件，它**必须自己就是那个标签**——套进库定的 `h1` 里既是非法 HTML（`h1` 的内容模型是 phrasing content），也会让读屏在一个区域读出两条 heading。\n\n现在 `titleAs?: ElementType`（默认 `\"h1\"`，不传时渲染与上一版逐字相同）：\n\n```tsx\n<PageHeader titleAs=\"h2\" title={<AnimatedTitle as=\"span\">张三</AnimatedTitle>} />\n```\n\n**只让出标签，不让出字号**：换成 `h2` 之后字号仍是 20px/28px。这不是漏做——字号消费方能用落在外层 `<header>` 上的 `className` 后代选择器回贴，标签不能，所以只有标签是必须由库让出来的那个。让字号跟着标签走是 breaking，这次不做。\n\n顺带补一条文档：`meta` 的「一项」是**数组项**，不是渲染出来的 `<span>`。从 `span + span::before { content: \"·\" }` 那套老写法迁过来时要逐项核对——老选择器的真实语义是「相邻 `<span>` 之间才插点」，所以那一行里混了按钮 / 图标 / 链接的位置，现网本来就**没有点**；照搬成 `meta={[证件号, <CopyButton/>]}` 会凭空多一个分隔符。这是真实的视觉回归，但不是 `meta` 的 bug（它一视同仁才是对的），只能靠文档点破。",
-        "parityId": "page-header-title-as"
+        "body": "`Table` 支持多级表头（分组列）：组名落 `colSpan`，独立列纵向跨满\n\n`Table` 一直照 TanStack 的 `getHeaderGroups()` 渲染多行表头，但那圈 `<th>` **从来没落过\n`colSpan`** —— 一个横跨 4 个叶子列的组名只占 1 格，上下两行的格子数对不上，整排歪掉（#261）。\n`isPlaceholder` 分支早就在了，说明多级表头是打算支持的，只差跨度这一步。三道门禁\n（tsc / guard / 构建）一条都不报，控制台也干净，只有肉眼看表头才发现。\n\n这一版把它补全：\n\n- **组名横跨它的叶子列**，并且默认**居中**——贴在最左那列的左缘会读成「这是第一列的名字」。\n- **独立列与分组列混排时，独立列纵向跨满**。TanStack 表达跨行的方式是「上层放一个空占位格」，\n  照着渲染就是每个独立列头上顶着一格空表头；现在改为在它第一次出现的那行渲染真名并 `rowSpan`\n  到底，与 Element Plus / Ant Design 的观感一致。\n- **叶子列的宽度声明生效了**。`size` / `minSize` / `maxSize` 此前只从**顶层** `columns` 采集，\n  分组时真正承载数据的是嵌套里的叶子列，于是分组表里每一列的宽度声明全部读不到。\n\n顺带说明两条边界（已写进文档）：多级表头下**冻结（`meta.sticky`）只作用到叶子列**——offset 按\n叶子列宽度累加，跨列的组名格没有自己的 offset；**排序与筛选也挂在叶子列上**，组列没有取值器。\n\n单级表头的 DOM **逐字不变**：跨度为 1 时不落 `colSpan` / `rowSpan` 属性。\n\n> 注：TanStack v8 的 `header.rowSpan` 字段**恒为 0**（它没有实现跨行语义，跨行是用 placeholder\n> 表达的），所以跨行是本组件自己编排的，照抄 `rowSpan={header.rowSpan}` 只会得到死代码。"
       },
       {
-        "sha": null,
+        "sha": "85571aa",
         "bump": "patch",
         "breaking": false,
-        "body": "`Textarea` 在 `cell` / `autoResize` 档下对拖拽覆盖开发期点名（#253）\n\n这两档发出的「不许拖 + 不许溢出」是一条规则里的**两个不同 CSS 属性**，而它们在 tailwind-merge 里分属不同组：消费方传 `resize-y` 只顶得掉管拖拽的那半边，管溢出的那半边原样留下。拿到的是一个拖得动、但往小拖时内容直接被裁且不出滚动条的框——而且**看上去覆盖成功了**。半覆盖比完全无效更难查：完全无效至少现象一致，半覆盖会让人确信自己 override 成功了，然后去别处找原因。\n\n判据与 `Button` 的 `muted` 那条一致（静默无效的 prop 比报错更难查，所以开发期点名），只是这里更隐蔽——那条是完全无效，这条是一半生效。\n\n告警说清三件事：这一档的高度由内容决定、管溢出的那一半不会跟着被覆盖、想要可拖的框请改 `variant=\"default\"` 且不要传 `autoResize`。同一档只喊一次（一页几十个单元格），两档各有各的 key——它们的出口不同（一条换档、一条别传那个 prop），共用 key 会让后遇到的那一档静默。\n\n**不放开 `resize`**：`cell` 与 `autoResize` 同样是「高度由内容决定」，留着拖拽手柄等于给用户一个下一次重测就会被抹掉的操作。消费方自己也同意这条，来提的是「这条约束既不可拆、也不可见」。",
-        "parityId": "textarea-resize-half-override-warning"
+        "body": "`Button` 的按压反馈不再叠两次：按下缩 3%，不是 6%\n\n0.43.0 把 `pressableClass`（含 `active:scale-[0.97]`）放进了 `BUTTON_BASE_CLASS`，但 `<Button>`\n上原有的 motion `whileTap={{ scale: 0.97 }}` 没撤。两条走的是**不同的 CSS 属性**——motion 写内联\n`transform`，而 Tailwind v4 的 `scale-*` 编译成独立的 `scale` 属性——互不覆盖而是**相乘**：\n0.97 × 0.97 = 0.9409，按下去缩约 6%，是意图的两倍（#260）。\n\n撤掉的是 motion 那半，留 CSS 那半，两个理由：\n\n- **减弱动效这条偏好一律由库负责。** `pressableClass` 自带 `motion-reduce:active:scale-100`，\n  `whileTap` 没有对应守卫，`prefers-reduced-motion: reduce` 下 JS 那半照缩。\n- **`<Button>` 不再拖 motion 运行时**：`m.button` + `LazyMotionProvider(domAnimation)` 从 Button\n  的依赖里整块去掉了。这是 `pressableClass` 当初存在的理由——「零 motion 运行时，让按下去有反应\n  这件事能铺满全库」。同一把体积尺子实测：button 入口 3 chunk / 418 modules / 38.0KB →\n  1 chunk / 13 modules / 11.1KB（gzip·total）。**首屏（initial）几乎不变**（11.2 → 11.1KB），\n  因为那份 `domAnimation` 本来就走 `LazyMotion` 懒加载——省下的是首屏之后的那一段。\n\n`render`（渲染为 `<a>` / `<Link>`）那条路的按压反馈与 `<button>` 分支自此同源：都在底座的\nclassName 里。文档里「render 模式不套 motion，故无 press 缩放」那句同步改掉——0.43.0 起它已经有了。\n\n新增一条钉死「同一颗按钮上只有一个缩放来源」的测试。这个 bug 的形态是两处各自都对、合起来才错，\n逐处 review 看不出来。"
+      },
+      {
+        "sha": "60854de",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`CardHeader` / `PageHeader`：`extra` 不再因为标题或描述变长而掉到第二行\n\n`CardHeader` 结构态的左列此前只有 `min-w-0`。CSS 收集 flex 行时看的是 item 的\n**hypothetical main size**（Flexbox §9.3），`flex-basis: auto` + 无 width 时它取 **max-content**；\n`min-w-0` 只放开「同一行里能收缩到多小」，**降不了 base size**。于是一条够长的 `description`\n就能把 `extra` 整块挤到第二行——哪怕左列完全收缩得起，哪怕调用方已经写了 `truncate` /\n`line-clamp`（那两个管的是溢出怎么显示，不影响 max-content）。\n\n现象是同一份调用代码、同一个视口，**只因为数据长度不同排成两种版式**：消费方 12 张同形状的卡里\n有 3 张（描述最长的那 3 条）把 12px 的箭头掉到了描述下面，孤零零占一行（#263）。\n\n左列改成 `flex: 1 1 0`（`grow basis-0`）后，换行判据与内容长度脱钩。\n\n两个组件的差别是**刻意**的，判据是「这个容器的宽度是不是等于视口宽度」：\n\n- **`PageHeader`** 保留 `max-sm:basis-auto`。页头总是全宽，「视口窄」就等于「页头窄」，\n  那句注释里写的「窄屏 extra 换行到下方」本来就是想要的行为——只是此前它是由内容长度触发的，\n  现在还原成它的字面意思。\n- **`CardHeader`** 没有这一档。卡片宽度由布局给（三列网格 515px、侧栏卡 280px），与视口无关：\n  900px 的桌面窗口里可能坐着一张窄卡，375px 的手机上卡片反而是全宽的，视口断点两种情况都猜错。\n  取舍与 Ant 的 `.ant-card-head-wrapper`、MUI 的 `CardHeader` 一致：`extra` 恒同行，长标题该截断\n  就截断。**这也意味着窄卡片里 `extra` 会一直占位**，给标题写 `truncate` 是调用方的事。\n\n不传任何槽的裸插槽分支逐字不变（那条分支根本不是 flex）。\n\n新增 `card.browser.test.tsx`：判据是「同一个 header，只改 `description` 的字符数，`extra` 的\n`top` 与 header 高度都不许变」。这条必须在真实浏览器里跑——jsdom 没有布局，\n`getBoundingClientRect()` 恒为 0、flex 也不换行，这个 bug 在那里根本不会发生；类名断言同样拦不住，\n因为 `min-w-0` 一直都在、看着也对，错的是它管不到换行。"
+      },
+      {
+        "sha": "475d11a",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`RowActions` 的动作间距按档给：文字档 4px → 16px\n\n文字档的按钮是 `variant=\"link\"`，而 link 在 `Button` 的 compoundVariants 里被钉了\n`h-auto px-0`（回归纯文字链接，文字左缘要与表头对齐）——于是两个动作之间的**全部**间隔\n就只剩容器上那个 `gap-1`。4px 在按钮档 / 图标档是够的（那两档按钮自带横向内边距，\n视觉间隔是 gap + 2×padding），在文字档却让一排中文动作粘成一句话：「编辑 下线 删除」\n读起来像四个字的短语，而不是三个可点的东西。而文字档是默认档。\n\n16px 照着表格行操作的既有惯例定（Element UI ~10px、Ant Design 的分隔线两侧各 8px），\n比 4px 明显松，又不至于让三个动作的列宽失控。\n\n**按钮档与图标档的渲染逐字不变**——它们本来就不缺间隔，改了反而白吃横向空间。\n\n消费方注意：文字档的操作列会变宽，每多一个动作多 12px。列宽是手写常数的表要复核一次\n（实测三动作「编辑/下线/删除」内容宽 116px，此前按 12px 间距估的 150px 列宽仍有余量）。"
       }
     ]
   },
@@ -93,6 +102,34 @@
         "bump": "minor",
         "breaking": false,
         "body": "新增 `RowActions`：表格行操作区\n\n此前库里没有这一层，于是每张表都在「操作」列里手搓 `<div className=\"flex gap-1\">` + 一排 ghost 图标按钮。本仓自己的区块与 demo 就是这么写的，毛病每张表各犯一遍：\n\n- **没有层级**：查看 / 编辑 / 删除长成同一颗按钮，破坏性动作与只读动作一样重\n- **动作一多就堆在一起**：没有「露出几个 + 其余收进菜单」这条线，列宽随动作数飘\n- **同一批琐事每处重写**：图标按钮的无障碍名、禁用原因的提示、破坏性动作的二次确认\n\n这三件都不是某张表的业务，是行操作这个模式本身的形状。\n\n```tsx\n<RowActions\n  actions={[\n    { key: \"view\", label: \"查看\", tone: \"brand\", render: <Link href={`/orders/${row.id}`} /> },\n    { key: \"edit\", label: \"编辑\", onSelect: () => openEdit(row) },\n    {\n      key: \"del\",\n      label: \"删除\",\n      tone: \"danger\",\n      confirm: { title: \"确认删除这条记录？\" },\n      onSelect: remove,\n    },\n  ]}\n/>\n```\n\n几处判据写在实现里，值得单独说：\n\n- **超出 `max` 时露出 `max - 1` 个**，不是 `max` 个：菜单键本身也占一格，露满再加一颗「⋯」，实际控件数就是 `max + 1`，列宽比调用方以为的宽一格。\n- **溢出菜单里，破坏性动作排最后并用分隔线隔开**：菜单是手滑就点中的地方，把删除排在编辑旁边等于鼓励误触。\n- **禁用不用原生 `disabled`**：原生禁用的按钮既不可聚焦、也不派发指针事件，于是「这个按钮为什么是灰的」这条提示永远弹不出来——而那正是最需要它的时候。改用 `aria-disabled` + 点击短路：名字仍可读、提示仍可弹、键盘仍可到达。`disabledReason` 收进菜单时直接写在名字后面（菜单里没有悬浮提示的位置）。\n- **确认框由组件自己持有**，不走命令式 `modal.confirm`：后者要求消费方在根上挂 `<ModalProvider />`，漏挂时是**静默无事发生**——用户点了删除、什么都没弹、动作也没跑，控制台一声不响。行操作是最不该踩这个的地方。自持还顺带保证：同一个动作被折进菜单前后，确认体验完全一致。\n- **导航型动作走 `render`**：用 `onSelect` 做 `router.push` 会丢掉 Cmd+点击开新标签、中键、右键复制链接，而这些是后台用户天天用的。\n- `hidden` 与 `disabled` 是两件事：没权限用 `hidden`（不该让人知道有这个动作），当前状态不允许用 `disabled` + 原因（该让人知道为什么现在不行）。\n\n三档形态（`variant`）只差「有多明显」，语气色一致：`text` 无边框文字（动作以只读跳转为主的列表，一排边框会把表格切碎）、`button` 描边按钮（动作真的会改数据时，可点性不该靠猜）、`icon` 只有图标（列宽紧张的密集表）。溢出菜单键跟着档位走——按钮档里不会冒出一颗无边框的「⋯」。\n\n`label` 刻意收成 `string` 而不是 `ReactNode`：它同时要当无障碍名、悬浮提示与菜单 type-ahead 检索词，这三处都只认字符串。\n\n**异步动作整套内建**：`onSelect` 返回 Promise 时该动作转圈、同行其他动作暂时点不动（一行里同时发两个写操作，服务端看到的顺序基本是随机的）；带 `confirm` 时确认键跟着转圈且**成功才关框**，失败留在原地让用户能重试，执行期间 Esc / 遮罩 / 取消都关不掉（动作还在飞就关掉，用户会以为自己取消了）。reject 时组件只结束 loading、不显示任何错误文案——那是业务语义。\n\n另外两条：`revealOnHover` 平时隐去、悬浮该行才显现（需父级带 `group/row`；键盘聚焦同样显现，触屏恒显——Tailwind 的 hover 变体自带 `(hover: hover)` 媒体门，不显式恢复的话触屏上这一列等于消失）；全部动作被 `hidden` 筛掉时**什么都不渲染**，而不是留一个带 gap 的空 flex 壳。\n\n刻意**没做**「窄屏自动少露几个」：操作列的宽度本身由内容决定，再让内容跟着宽度变会绕成循环。列宽紧张时自己传更小的 `max` 或换 `variant=\"icon\"`。\n\n新增本地化词条 `rowActions`（`more` / `confirm` / `cancel`），跟随 `ConfigProvider`。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.41.0",
+    "date": "2026-08-13",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`CellEditor` 五条缺口一次收口：档位透传 / 草稿出口 / 失败可重试 / 原生属性 / 让出焦点（#248–#252）\n\n这五条来自同一个消费方的同一张表——13 列的工作记录核对表。单看每条都是「少个 prop」，合起来才看出共同的形状：`CellEditor` 只有一种长相、一条出口、一套属性集，凡是与它预设不同的表都迁不进来。\n\n- **档位透传（#248）**：`variant` / `size` 现在能传给内层 Input / Textarea，默认 `variant=\"cell\"`（与上一版渲染逐字相同）。此前 `cell` 档写死在组件里，于是 #244 刚补的 `validate` 反而用不上：同一行里其余可编辑列都是有边框的普通输入框，只把其中三列换成 `CellEditor` 就变成有框无框混排，而库自己在 `input.tsx` 为 `xs` 档保留边框的理由（用户正是靠边框判断哪些格子可编辑，#187）在那张表里逐字成立。「要提交前校验」与「格子看得出可编辑」本来就不该绑在同一个开关上。刻意不加 `bordered` 布尔：库里表达「密集表」已经有 `variant=\"cell\"` 与 `size=\"xs\"` 两种口径，再加第三种以后要另做解释。\n\n- **草稿出口（#249）**：新增 `onDraftChange?: (draft: string) => void`，每次键入广播当前草稿。此前 `onChange` 被 `Omit` 掉、`onInput` 也拿不到受控草稿，于是任何「随打字变化的派生 UI」——已填计数、实时预览、每键落 localStorage——都没有落点，只能整格放弃 `CellEditor`。刻意不放开 `onChange`：同一个组件上两个都像「值变了」的回调，消费方八成会往 `onChange` 里写落库，那就把失焦即提交这条契约绕过去了。\n\n- **失败可重试（#250）**：`onCommit` 返回的 Promise reject 时，判等基准退回上一版。此前基准在 `await` 之前就推进了，于是保存失败后用户不改动直接再失焦会被判等短路——**连重试都点不动**，而文档给的「消费方自己 catch」在 `value` 来自服务端缓存（SWR / React Query）时没有落点：失败时缓存没动，`value` 原样，消费方手上没有任何能拿来回滚的东西。基准的乐观推进本身保留（pending 期间再失焦一次不该把同一个值重发一遍），只在失败时退回来。另加 `revertOnError?: boolean`（默认 `false`）把草稿也一并退回。回滚有两道门：这次提交仍是最新的那次，且基准还停在它身上——期间外部写进来的新值是更近的真相，不能被一个旧请求的失败盖回去。\n\n- **原生属性（#251）**：`CellEditorProps` 按 `multiline` 分叉成联合类型，单行档继承 `<input>` 的属性集、多行档继承 `<textarea>` 的，于是 `name` / `type` / `maxLength` / `autoComplete` / `rows` 都通了。此前继承的是 `HTMLAttributes`（不是 `InputHTMLAttributes`），只有全局属性能传，而内层渲染的恰恰是 `<input>` 和 `<textarea>`。`rows` 尤其别扭：`Textarea` 自己有这个 prop，`cell` 档还专门把默认值从 3 改成 1，但「几行起」终究是每格不同的业务事实（核对表里「经营范围」天生比「邮政编码」高一行）。原生 `size`（字符宽度）让位给档位 `size`，同名不同义，两者不可能都留。代价写在类型注释里：`multiline` 必须是字面量，拿 boolean 变量开关多行时 TS 认不出走哪一档。\n\n- **让出焦点（#252）**：新增 `blurOnCommit` / `blurOnEscape`（默认都是 `false` = 现状，焦点留在格内）。这两条消费方补不了——在 `onKeyDown` 里自己调 `blur()` 会在 `setDraft` flush 之前同步触发提交，闭包里还是旧草稿，**Esc 会变成保存**。实现用一个「最新草稿的镜像 ref」解掉这条时序（提交一律读它而不是闭包值），而不是重造组件注释里明确反对的那个「刚按过 Esc」标志位——那个标志位难在何时清，镜像 ref 没有清除时机。校验被拦下时不让出焦点：错误就在这一格，得让用户接着改。\n\n新增导出：`CellEditorVariant` / `CellEditorSize` / `CellEditorBaseProps` / `CellEditorSingleProps` / `CellEditorMultilineProps`。",
+        "parityId": "cell-editor-passthrough-draft-revert-blur"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`PageHeader` 让出标题标签：新增 `titleAs`（#247）\n\n标题此前写死 `<h1>`，而「这一屏的标题排第几级」是页面的结构信息，不该归页头皮肤：页头未必是本页最高级标题，消费方那几处 hero 当前根本没有 `h1`。更硬的一条是消费方的标题常常是自带动画的组件，它**必须自己就是那个标签**——套进库定的 `h1` 里既是非法 HTML（`h1` 的内容模型是 phrasing content），也会让读屏在一个区域读出两条 heading。\n\n现在 `titleAs?: ElementType`（默认 `\"h1\"`，不传时渲染与上一版逐字相同）：\n\n```tsx\n<PageHeader titleAs=\"h2\" title={<AnimatedTitle as=\"span\">张三</AnimatedTitle>} />\n```\n\n**只让出标签，不让出字号**：换成 `h2` 之后字号仍是 20px/28px。这不是漏做——字号消费方能用落在外层 `<header>` 上的 `className` 后代选择器回贴，标签不能，所以只有标签是必须由库让出来的那个。让字号跟着标签走是 breaking，这次不做。\n\n顺带补一条文档：`meta` 的「一项」是**数组项**，不是渲染出来的 `<span>`。从 `span + span::before { content: \"·\" }` 那套老写法迁过来时要逐项核对——老选择器的真实语义是「相邻 `<span>` 之间才插点」，所以那一行里混了按钮 / 图标 / 链接的位置，现网本来就**没有点**；照搬成 `meta={[证件号, <CopyButton/>]}` 会凭空多一个分隔符。这是真实的视觉回归，但不是 `meta` 的 bug（它一视同仁才是对的），只能靠文档点破。",
+        "parityId": "page-header-title-as"
+      },
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Textarea` 在 `cell` / `autoResize` 档下对拖拽覆盖开发期点名（#253）\n\n这两档发出的「不许拖 + 不许溢出」是一条规则里的**两个不同 CSS 属性**，而它们在 tailwind-merge 里分属不同组：消费方传 `resize-y` 只顶得掉管拖拽的那半边，管溢出的那半边原样留下。拿到的是一个拖得动、但往小拖时内容直接被裁且不出滚动条的框——而且**看上去覆盖成功了**。半覆盖比完全无效更难查：完全无效至少现象一致，半覆盖会让人确信自己 override 成功了，然后去别处找原因。\n\n判据与 `Button` 的 `muted` 那条一致（静默无效的 prop 比报错更难查，所以开发期点名），只是这里更隐蔽——那条是完全无效，这条是一半生效。\n\n告警说清三件事：这一档的高度由内容决定、管溢出的那一半不会跟着被覆盖、想要可拖的框请改 `variant=\"default\"` 且不要传 `autoResize`。同一档只喊一次（一页几十个单元格），两档各有各的 key——它们的出口不同（一条换档、一条别传那个 prop），共用 key 会让后遇到的那一档静默。\n\n**不放开 `resize`**：`cell` 与 `autoResize` 同样是「高度由内容决定」，留着拖拽手柄等于给用户一个下一次重测就会被抹掉的操作。消费方自己也同意这条，来提的是「这条约束既不可拆、也不可见」。",
+        "parityId": "textarea-resize-half-override-warning"
       }
     ]
   },

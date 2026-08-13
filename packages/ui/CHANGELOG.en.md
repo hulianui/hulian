@@ -1,5 +1,167 @@
 # @hulianui/ui
 
+## 0.44.0
+
+### Minor Changes
+
+- 85679f0: `DateRangePicker` gains month and year ranges: the new `picker="date" | "month" | "year"`
+
+  `DatePicker` has had three granularities all along while `DateRangePicker` had only **days** --
+  "pick a range of months" had no component in the library, leaving two `picker="month"` DatePickers
+  stitched together (#262). That stitching is short three things a real range picker has: no range
+  highlight (two independent panels, so the span between them is invisible), no `presets`, and both
+  ends have to bound each other by hand through `minDate` / `maxDate` -- miss one and a range whose
+  start month is later than its end month becomes selectable.
+
+  The new `picker` carries the same name and meaning as the prop on `DatePicker`, completing the map:
+
+  | Element Plus        | HulianUI                         |
+  | ------------------- | -------------------------------- |
+  | `type="daterange"`  | `DateRangePicker` (default)      |
+  | `type="monthrange"` | `DateRangePicker picker="month"` |
+  | —                   | `DateRangePicker picker="year"`  |
+
+  Three things follow the granularity:
+
+  - **Value shape**: `["YYYY-MM-DD", …]` / `["YYYY-MM", …]` / `["YYYY", …]` -- the same fixed-width
+    text `DatePicker` and `Calendar` use, where lexical order is chronological order. The default
+    `displayFormat` follows too.
+  - **Panels**: two month calendars, two year pages (12 months each), or two 12-year pages. A year
+    page is deliberately a full 12-year block rather than a decade: a decade's leading and trailing
+    filler years would make the same year appear on both pages at once.
+  - **Presets and placeholders**: the month step offers This month / Last 3 months / Last 6 months /
+    This year, the year step This year / Last 3 years / Last 5 years, all resolved through the locale.
+    (The new locale entries under `dateRangePicker` are optional, so consumers shipping a full locale
+    of their own are unaffected.)
+
+  **`minDate` / `maxDate` / `disabledDate` always speak in ISO dates**, regardless of `picker`, and
+  the decision reuses the same pure logic as `Calendar` and `DatePicker`: a cell is disabled only when
+  the whole segment is out of bounds. So passing today as `maxDate` gives "current month selectable,
+  future months greyed out" -- the fix for the trap in the issue, where an operator picking "July" on
+  the right-hand panel got *next* year's July, the backend only validated the `yyyy-MM` shape, and the
+  column silently reported zeros with nothing on screen to show the filter was wrong. At month and year
+  granularity `disabledDate` is asked once per segment, with that segment's **first day**.
+
+  Day granularity is unchanged in both behaviour and DOM.
+
+- c6ce7f5: `Table` supports grouped (multi-level) headers: group names get their `colSpan`, standalone columns span both rows
+
+  `Table` has always rendered multi-row headers from TanStack's `getHeaderGroups()`, but that row of
+  `<th>` elements **never carried `colSpan`** -- a group name spanning 4 leaf columns occupied a single
+  cell, the two header rows disagreed on cell count, and the whole thing skewed (#261). The
+  `isPlaceholder` branch was already there, so grouped headers were clearly intended; only the span was
+  missing. None of the three gates (tsc / guard / build) says a word and the console stays clean; you
+  only find it by looking at the header.
+
+  This version completes it:
+
+  - **A group name spans its leaf columns** and is **centred** by default -- pinned to the left edge of
+    the leftmost column it reads as "this is the first column's name".
+  - **When standalone and grouped columns are mixed, the standalone ones span both rows.** TanStack
+    expresses row spanning by putting an empty placeholder cell in the upper row, so rendering it
+    verbatim leaves every standalone column wearing a blank header. It now renders the real name on the
+    row where the column first appears and `rowSpan`s to the bottom, matching Element Plus and Ant Design.
+  - **Width declarations on leaf columns now take effect.** `size` / `minSize` / `maxSize` were only
+    collected from the **top level** of `columns`, and in a grouped table the columns actually carrying
+    data are the nested leaves -- so every width declaration in such a table was silently ignored.
+
+  Two boundaries worth stating (both documented): under grouped headers **pinning (`meta.sticky`) applies
+  to leaf columns only** -- offsets accumulate from leaf widths and a group cell spanning several columns
+  has no offset of its own; **sorting and filtering also live on the leaf columns**, since a group column
+  has no accessor.
+
+  Single-level headers are **byte-for-byte unchanged**: a span of 1 emits no `colSpan` / `rowSpan`.
+
+  > Note: TanStack v8's `header.rowSpan` field is **always 0** (it never implemented row-span semantics;
+  > spanning is expressed through placeholders), so the row spanning here is arranged by the component
+  > itself. Copying `rowSpan={header.rowSpan}` would only produce dead code.
+
+### Patch Changes
+
+- 85571aa: `Button`'s press feedback no longer applies twice: pressing scales by 3%, not 6%
+
+  0.43.0 moved `pressableClass` (which carries `active:scale-[0.97]`) into `BUTTON_BASE_CLASS`, but the
+  motion `whileTap={{ scale: 0.97 }}` already on `<Button>` stayed. The two use **different CSS
+  properties** -- motion writes an inline `transform`, while Tailwind v4 compiles `scale-*` into the
+  standalone `scale` property -- so instead of overriding, they **multiply**: 0.97 × 0.97 = 0.9409, a
+  press of roughly 6%, twice what was intended (#260).
+
+  The motion half is what goes, for two reasons:
+
+  - **Reduced motion is always the library's job.** `pressableClass` ships
+    `motion-reduce:active:scale-100`; `whileTap` has no equivalent guard, so under
+    `prefers-reduced-motion: reduce` the JS half kept scaling.
+  - **`<Button>` no longer pulls in a motion runtime**: `m.button` + `LazyMotionProvider(domAnimation)`
+    are gone from its dependencies. That is exactly why `pressableClass` exists -- "no motion runtime, so
+    that 'a press does something' can cover the whole library". Measured on the same size gate, the button
+    entry goes from 3 chunks / 418 modules / 38.0KB to 1 chunk / 13 modules / 11.1KB (gzip, total).
+    **The initial chunk barely moves** (11.2 → 11.1KB), because that `domAnimation` was always behind
+    `LazyMotion` -- what is saved sits after first paint, not in it.
+
+  The `render` path (rendering as `<a>` / `<Link>`) now shares its press feedback with the `<button>`
+  branch: both come from the base className. The doc line saying "render does not use motion, so there is
+  no press scale" is updated accordingly -- it has had one since 0.43.0.
+
+  A test now pins down "only one source of scale per button". This defect's shape is two places that are
+  each correct and only wrong together, which no per-file review catches.
+
+- 60854de: `CardHeader` / `PageHeader`: `extra` no longer drops to a second row when the title or description grows
+
+  The left column of `CardHeader`'s structured form carried only `min-w-0`. When CSS collects flex items
+  into lines it uses each item's **hypothetical main size** (Flexbox §9.3), and `flex-basis: auto` with no
+  width resolves that to **max-content**; `min-w-0` only relaxes "how small it may shrink within a line"
+  and **does not lower the base size**. So a sufficiently long `description` pushed the whole `extra` block
+  to a second row -- even though the left column could shrink perfectly well, and even though the call site
+  had already written `truncate` / `line-clamp` (those govern how overflow is displayed and do not affect
+  max-content).
+
+  The symptom is one call site and one viewport producing **two layouts purely because the data differs in
+  length**: of 12 identically shaped cards on the consumer's page, the 3 with the longest descriptions
+  dropped their 12px chevron below the description, alone on a row of its own (#263).
+
+  With the left column set to `flex: 1 1 0` (`grow basis-0`), wrapping is decoupled from content length.
+
+  The difference between the two components is **deliberate**, and the test is "does this container's width
+  equal the viewport's":
+
+  - **`PageHeader`** keeps `max-sm:basis-auto`. A page header is always full width, so "narrow viewport"
+    does mean "narrow header", and the comment's "extra wraps below on narrow screens" was the intended
+    behaviour all along -- it was merely being triggered by content length, and now means what it says.
+  - **`CardHeader`** has no such step. Card width comes from the layout (515px in a three-column grid, a
+    280px sidebar card) and has nothing to do with the viewport: a 900px desktop window may hold a narrow
+    card, while on a 375px phone the card is full width -- a viewport breakpoint guesses wrong both times.
+    The trade-off matches Ant's `.ant-card-head-wrapper` and MUI's `CardHeader`: `extra` stays on the line
+    and a long title truncates. **The flip side is that `extra` keeps its slot in a narrow card**, so
+    giving the title an overflow treatment is the call site's job.
+
+  The bare-slot branch (no slots passed) is byte-for-byte unchanged -- that branch is not flex at all.
+
+  Adds `card.browser.test.tsx`, whose test is "for one header, changing only the character count of
+  `description` must not move `extra`'s `top` or the header's height". It has to run in a real browser:
+  jsdom has no layout, `getBoundingClientRect()` is always 0 and flex never wraps, so the bug cannot occur
+  there at all. Class-name assertions cannot catch it either, because `min-w-0` was present the whole time
+  and looks right -- what is wrong is that it has no say in wrapping.
+
+- 475d11a: `RowActions` spaces its actions per form: 4px → 16px in the text form
+
+  The text form renders `variant="link"` buttons, and `link` is pinned to `h-auto px-0` in `Button`'s
+  compoundVariants (a plain text link, whose left edge must line up with the column header) -- so **all**
+  the separation between two actions comes from the container's `gap-1`. 4px is enough in the button and
+  icon forms (those buttons carry horizontal padding of their own, making the visual gap `gap + 2x
+  padding`), but in the text form it glues a row of Chinese actions into one phrase -- three two-character verbs
+  (Edit / Unpublish / Delete) run together and read as a single six-character phrase rather than three
+  clickable things. And the text form is the default.
+
+  16px follows the existing convention for table row actions (Element UI ~10px, Ant Design 8px on each side
+  of its divider): clearly looser than 4px, without letting three actions blow up the column width.
+
+  **The button and icon forms render byte-for-byte as before** -- they were never short of separation, and
+  widening them would only eat horizontal space.
+
+  A note for consumers: the action column gets wider in the text form, by 12px per additional action. Tables
+  with hand-written column widths deserve a second look (measured: those same three actions come to 116px
+  of content, so a 150px column estimated at the old 12px spacing still has room).
+
 ## 0.43.0
 
 ### Minor Changes
