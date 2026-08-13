@@ -1,2 +1,9 @@
 export { CellEditor } from "./cell-editor";
-export type { CellEditorProps } from "./cell-editor.types";
+export type {
+  CellEditorProps,
+  CellEditorBaseProps,
+  CellEditorSingleProps,
+  CellEditorMultilineProps,
+  CellEditorVariant,
+  CellEditorSize,
+} from "./cell-editor.types";

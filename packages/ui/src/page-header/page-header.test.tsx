@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import type { ReactNode } from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { PageHeader } from "./page-header";
 import { ConfigProvider } from "../config/config-provider";
@@ -81,6 +82,35 @@ describe("PageHeader", () => {
   it("透传 className 到根 header", () => {
     const { container } = render(<PageHeader title="标题" className="my-ph" />);
     expect(container.querySelector("header")!.classList.contains("my-ph")).toBe(true);
+  });
+});
+
+describe("PageHeader 标题标签（#247）", () => {
+  it("不传 titleAs 时仍渲染 h1（默认行为与今天逐字相同）", () => {
+    const { container } = render(<PageHeader title="订单详情" />);
+    expect(container.querySelector("h1")!.textContent).toBe("订单详情");
+  });
+
+  it("titleAs='h2' 时渲染 h2、不再有 h1，且类名与默认逐字相同", () => {
+    const { container: base } = render(<PageHeader title="张三" />);
+    const { container } = render(<PageHeader title="张三" titleAs="h2" />);
+    const h2 = container.querySelector("h2")!;
+    expect(h2).toBeTruthy();
+    expect(h2.textContent).toBe("张三");
+    expect(container.querySelector("h1")).toBeNull();
+    expect(h2.className).toBe(base.querySelector("h1")!.className);
+  });
+
+  it("titleAs 接受任意 ElementType（含自定义组件）", () => {
+    function Fancy({ children, className }: { children?: ReactNode; className?: string }) {
+      return (
+        <h3 data-testid="fancy" className={className}>
+          {children}
+        </h3>
+      );
+    }
+    const { getByTestId } = render(<PageHeader title="张三" titleAs={Fancy} />);
+    expect(getByTestId("fancy").tagName).toBe("H3");
   });
 });
 

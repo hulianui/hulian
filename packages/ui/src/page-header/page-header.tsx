@@ -11,6 +11,7 @@ import type { PageHeaderProps } from "./page-header.types";
 
 export function PageHeader({
   title,
+  titleAs: TitleTag = "h1",
   subTitle,
   onBack,
   backLabel,
@@ -50,7 +51,10 @@ export function PageHeader({
             </Button>
           )}
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-            <h1 className="text-xl font-semibold text-foreground">{title}</h1>
+            {/* 标签归页面、字号归组件：页头未必是本页最高级标题，且消费方的标题常是需要
+                「自己就是那个标签」的动画组件；字号留在组件里，改它有 className 后代选择器
+                这条口子，标签没有（#247）。 */}
+            <TitleTag className="text-xl font-semibold text-foreground">{title}</TitleTag>
             {subTitle && <span className="text-sm text-muted-foreground">{subTitle}</span>}
             {tags && <div className="flex items-center gap-1.5">{tags}</div>}
           </div>

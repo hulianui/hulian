@@ -59,6 +59,7 @@ import { Textarea, textareaVariants } from "@hulianui/ui"
 
 - `variant="cell"` 与 `autoResize` 是同一件事的两条路：前者交给 CSS `field-sizing: content`（浏览器原生，无 JS 往返），后者是 JS 读 `scrollHeight`。**默认只需要 `cell`**；`field-sizing` 是较新的 CSS 特性，不支持的浏览器会退回按 `rows` 的固定高度（不破版，只是不自增），需要覆盖到那些浏览器时把 `autoResize` 一起传上——`autoResize` 写的是内联 `style.height`，优先级高于 `field-sizing` 的固有尺寸，叠加不冲突。
 - 表格里就地编辑用 `variant="cell"`，不要在调用处写 `className="border-0 bg-transparent p-0 resize-none field-sizing-content …"` 覆盖默认外壳；同时 `rows` 的下限在 `cell` 下已默认为 `1`，不必每格再传 `rows={1}`。
+- `variant="cell"` / `autoResize` 这一档不接受 `resize-*` 覆盖，而且**覆盖只会成功一半**：这一档发出的是 `resize-none overflow-hidden`，两者在 tailwind-merge 里分属不同组，`className="resize-y"` 只顶得掉 `resize-none`，`overflow-hidden` 原样留下——手柄能拖，但往小拖时内容直接被裁且不出滚动条（同时 `field-sizing-content` 还在按内容算高度，跟手柄写出的内联 height 抢）。组件会在开发期 `console.warn` 点名（每档只喊一次）。要一个可拖的框请改用 `variant="default"` 且不传 `autoResize`。
 - 实现/扩展 field-aware Textarea 时见 [[base-ui-field-control-render-textarea-type-safe]]：Base UI Field 无 Textarea 原语，textarea 专属 props（ref/rows/onInput）要放在 `render` 元素上而非 `Field.Control`，否则 TS 报 ref 类型错或静默丢 Field a11y 接线。
 - 在 hulian Field 内不要重复传 `invalid`，由 Field.Root 自动驱动。
 

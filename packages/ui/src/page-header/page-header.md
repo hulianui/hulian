@@ -28,6 +28,7 @@ import { PageHeader } from "@hulianui/ui"
 | backLabel | `string` | `"返回"` | 返回按钮的无障碍标签。 |
 | bordered | `boolean` | `false` | 是否在页头底部渲染分隔线（复用 `<Separator/>`）。 |
 | metaSeparator | `ReactNode` | `"·"` | `meta` 各项之间的分隔符，装饰位自动 `aria-hidden`。 |
+| titleAs | `ElementType` | `"h1"` | 标题渲染成哪个标签。层级归页面决定；**只让出标签，字号不跟着标签变**（恒为 20px/28px）。 |
 
 > 另继承 `HTMLAttributes<HTMLElement>`（除 `title`，因其类型被改为 ReactNode）。
 
@@ -67,6 +68,15 @@ import { PageHeader } from "@hulianui/ui"
 />
 ```
 
+标题标签交给页面（页头不是本页最高级标题、或标题本身是个动画组件时）：
+```tsx
+// 这一屏的 h1 在别处 → 页头降为 h2；标题组件自己是那个标签的话，用 titleAs 传它
+<PageHeader titleAs="h2" title="张三" />
+
+// 标题带动画：动画组件降成 span 嵌在标签里，标签由 titleAs 决定
+<PageHeader titleAs="h2" title={<AnimatedTitle as="span">张三</AnimatedTitle>} />
+```
+
 元信息行（证件号 · 性别 · 参保段数…）：
 ```tsx
 <PageHeader
@@ -86,6 +96,8 @@ import { PageHeader } from "@hulianui/ui"
 - `meta` 是**一串并列的事实值**，别拿它当别的槽用：一句话说明用 `subTitle`，状态标记用 `tags`，Tabs 之类的整块内容用 `footer`。
 - `meta` 里的空项（`null` / `undefined` / `false` / `""`）自动跳过，分隔符只插在留下来的项之间，所以不必在调用点先 `filter(Boolean)`。数字 `0` 是事实值（「0 家公司」），不算空。
 - 元信息行渲染为 `<ul>`/`<li>`，分隔符是独立的 `aria-hidden` 装饰位——读屏读到的是列表项而不是被中点粘住的长串文本。别再用 `span + span::before { content: "·" }` 自己拼点。
+- 从 `span + span::before { content: "·" }` 迁过来时**要逐项核对，不能照搬**：那条选择器的真实语义是「**渲染出来的相邻 `<span>` 之间**才插点」，所以那一行里混了按钮 / 图标 / 链接（渲染成 `<button>` / `<svg>` / `<a>`）的位置，现网**本来就没有点**。而 `meta` 的「一项」是**数组项**，不看它渲染成什么标签，一律在项与项之间插分隔符。把 `[证件号, <CopyButton/>]` 这类混排原样搬过来，会凭空多出一个分隔符——这是真实的视觉回归，不是本组件的 bug（hulianui/hulian#247）。
+- `titleAs` 只让出标签，不让出字号：换成 `h2` 之后字号仍是 20px/28px。要改字号在 `className` 上用后代选择器（`className` 落在外层 `<header>`），别在 `title` 里再套一层子元素用工具类把父元素的字号顶掉——那是一个标题上两条打架的字号声明。
 - `title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——别再往 DOM 透传字符串 title。
 - 默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。
 

@@ -5,6 +5,7 @@ import { Field as BaseField } from "@base-ui/react/field";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { mergeRefs } from "../lib/merge-refs";
+import { warnOnce } from "../lib/warn-once";
 import type { TextareaProps } from "./textarea.types";
 
 export const textareaVariants = cva(
@@ -48,6 +49,11 @@ export const textareaVariants = cva(
   },
 );
 
+// 按类名边界切词，不能用裸 includes：本档自己发出的那个「不许拖」的类里也含 resize 这个词，
+// 用 includes 会把与本档意图一致的写法也点名。可选的 `x:` 前缀段吃掉响应式/状态变体，
+// 尾部的边界断言把「不许拖」那一档挡在外面（它后面接的不是空白也不是串尾）。
+const RESIZE_OVERRIDE = /(?:^|\s)(?:[\w-]+:)*!?resize(?:-x|-y)?!?(?=\s|$)/;
+
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
   {
     className,
@@ -86,6 +92,23 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     if (autoResize) resize();
     onInput?.(e);
   };
+
+  // 这一档的尾巴（见下）把两个不同 CSS 属性拼在一起，而它们在 tailwind-merge 里分属不同组：
+  // 消费方的覆盖只顶得掉管拖拽的那半边，管溢出的那半边原样留下 —— 拿到的是一个拖得动、
+  // 但拖小了内容直接被裁且不出滚动条的框，而且**看上去覆盖成功了**。半覆盖比完全无效更难查
+  // （完全无效至少现象一致），所以照 button.tsx 的先例开发期点名（#253）。
+  // key 按档分而不是共用一个：两条路各有各的出口（一条换档、一条别传那个 prop），
+  // 而消费方通常只在其中一档上踩到 —— 共用 key 会让后遇到的那一档静默。
+  if ((autoResize || variant === "cell") && className && RESIZE_OVERRIDE.test(className)) {
+    warnOnce(
+      variant === "cell"
+        ? "textarea-resize-override-on-cell"
+        : "textarea-resize-override-on-auto-resize",
+      `[hulian] Textarea: variant="cell" / autoResize 这一档的高度由内容决定，className 里的 ` +
+        `resize-x / resize-y / resize 只顶得掉 resize-none，同一条规则里的 overflow-hidden 不会跟着被覆盖` +
+        `——手柄能拖，但往小拖时内容被裁且不出滚动条。要一个可拖的框请改用 variant="default" 且不要传 autoResize。`,
+    );
+  }
 
   // 用 Base UI Field.Control 承载 → 放进 Field 内自动取 id/aria-describedby/aria-invalid 串联
   // (与 Input 对称)。textarea 专属 props(ref/rows/onInput/...props) 走 render 元素(原生 textarea

@@ -135,6 +135,56 @@ describe("Textarea", () => {
     err.mockRestore();
   });
 
+  // #253：cell / autoResize 档发出的「不许拖 + 不许溢出」是一条规则里的两个不同 CSS 属性，
+  // 在 tailwind-merge 里分属不同组 —— 消费方只顶得掉前一半，于是拿到一个拖得动、拖小了内容
+  // 被裁还不出滚动条的框，全程无提示。这一组用例守的是「开发期点名」这条出口。
+  describe("cell / autoResize 档下覆盖拖拽的开发期告警（#253）", () => {
+    // 下面两条「不告警」必须排在「告警」之前：warnOnce 是模块级去重，同一 key 一旦喊过，
+    // 之后再断言「没喊」就成了空断言。
+    it("cell 档 + resize-none 不告警（与本档意图一致）", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      render(<Textarea variant="cell" className="resize-none" aria-label="t" />);
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+
+    it("default 档 + resize-y 不告警（那一档本来就给手柄，覆不覆盖都自洽）", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      render(<Textarea className="min-h-[2.5rem] resize-y" aria-label="t" />);
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+
+    it("cell 档 + resize-y 点名一次，并指出可拖的框该走哪一档", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      // 消费方 gyj-workflow 的原样写法：min-h + resize-y 落在 cell 档上
+      render(
+        <Textarea variant="cell" size="xs" className="min-h-[2.5rem] resize-y" aria-label="t" />,
+      );
+      expect(warn).toHaveBeenCalledTimes(1);
+      const message = String(warn.mock.calls[0]?.[0]);
+      expect(message).toContain("Textarea");
+      expect(message).toContain("overflow-hidden"); // 说清顶不掉的是哪一半
+      expect(message).toContain('variant="default"'); // 给出出口
+      warn.mockRestore();
+    });
+
+    it("autoResize 档同样点名（它的 key 与 cell 分开，不会被 cell 那次吃掉）", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      render(<Textarea autoResize className="resize" aria-label="t" />);
+      expect(warn).toHaveBeenCalledTimes(1);
+      warn.mockRestore();
+    });
+
+    it("同一档只喊一次（一页几十个单元格，再喊就是把控制台刷爆）", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      render(<Textarea variant="cell" className="resize-y" aria-label="t" />);
+      render(<Textarea autoResize className="md:resize-x" aria-label="t" />);
+      expect(warn).not.toHaveBeenCalled(); // 两个 key 都已在上面的用例里烧掉
+      warn.mockRestore();
+    });
+  });
+
   it("size=xs 是与 Input 同档的密集尺寸", () => {
     const { container } = render(<Textarea size="xs" aria-label="t" />);
     const el = container.querySelector("textarea")!;

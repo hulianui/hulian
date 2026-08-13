@@ -1,33 +1,40 @@
 import { describe, it, expect, vi } from "vitest";
 import { useState } from "react";
+import type { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import { CellEditor } from "./cell-editor";
-import type { CellEditorProps } from "./cell-editor.types";
+import type { CellEditorBaseProps, CellEditorProps } from "./cell-editor.types";
+
+/**
+ * 探针属性：把单行 / 多行两档并成一套。CellEditorProps 是按 `multiline` 分叉的判别联合，
+ * 用例里的 `multiline` 是变量而不是字面量，逐个用例断言太吵 —— 断言收在下面两处渲染点。
+ */
+type CellProbeProps = Partial<CellEditorBaseProps> & { multiline?: boolean } & Omit<
+    InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> &
+      TextareaHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>,
+    "onChange" | "defaultValue" | "value" | "size"
+  >;
 
 /** 逐格编辑的真实用法：父级持有已提交值，onCommit 回来才写回。 */
-function Controlled({
-  initial,
-  onCommit,
-  ...rest
-}: Omit<CellEditorProps, "value"> & { initial: string }) {
+function Controlled({ initial, onCommit, ...rest }: CellProbeProps & { initial: string }) {
   const [value, setValue] = useState(initial);
-  return (
-    <CellEditor
-      aria-label="cell"
-      value={value}
-      onCommit={async (next) => {
-        await onCommit?.(next);
-        setValue(next);
-      }}
-      {...rest}
-    />
-  );
+  const props = {
+    "aria-label": "cell",
+    value,
+    onCommit: async (next: string) => {
+      await onCommit?.(next);
+      setValue(next);
+    },
+    ...rest,
+  } as CellEditorProps;
+  return <CellEditor {...props} />;
 }
 
-function renderCell(props: Partial<CellEditorProps> & { value?: string } = {}) {
+function renderCell(props: CellProbeProps = {}) {
   const onCommit = vi.fn();
   const { value = "原值", ...rest } = props;
-  const view = render(<CellEditor aria-label="cell" value={value} onCommit={onCommit} {...rest} />);
+  const merged = { "aria-label": "cell", value, onCommit, ...rest } as CellEditorProps;
+  const view = render(<CellEditor {...merged} />);
   const el = view.getByLabelText("cell") as HTMLInputElement | HTMLTextAreaElement;
   return { ...view, el, onCommit };
 }
@@ -338,6 +345,235 @@ describe("CellEditor 透传", () => {
     fireEvent.blur(el);
     expect(onKeyDown).toHaveBeenCalledTimes(1);
     expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+});
+
+// #248：同一行里其余列是普通输入框时，只有这几格没边框会让用户靠记忆判断哪些能改。
+describe("CellEditor 档位透传", () => {
+  it("variant=default 换回有边框的普通输入框", () => {
+    const { container } = renderCell({ variant: "default" });
+    const shell = container.firstElementChild!;
+    expect(shell.className).toContain("border-border");
+    expect(shell.className).not.toContain("border-0");
+  });
+
+  it("size 落到内层 Input 的档位上", () => {
+    const { container } = renderCell({ variant: "default", size: "sm" });
+    expect(container.firstElementChild!.className).toContain("h-8");
+  });
+
+  it("多行档同样吃 variant / size", () => {
+    const { el } = renderCell({ multiline: true, variant: "default", size: "xs" });
+    expect(el.className).toContain("border-border");
+    expect(el.className).toContain("text-xs");
+  });
+
+  it("不传时仍是 cell 档（与从前逐字相同）", () => {
+    const { container } = renderCell();
+    const shell = container.firstElementChild!;
+    expect(shell.className).toContain("border-0");
+    expect(shell.className).toContain("bg-transparent");
+  });
+});
+
+// #249：随打字变化的派生 UI（已填计数、实时预览、每键落 localStorage）需要一个落点，
+// 换成 onCommit 就从「边打字边存」变成「失焦才存」，那是功能改动不是等价迁移。
+describe("CellEditor onDraftChange", () => {
+  it("每次键入都广播当前草稿", () => {
+    const onDraftChange = vi.fn();
+    const { el } = renderCell({ onDraftChange });
+    fireEvent.change(el, { target: { value: "一" } });
+    fireEvent.change(el, { target: { value: "一二" } });
+    expect(onDraftChange.mock.calls).toEqual([["一"], ["一二"]]);
+  });
+
+  it("只是回声：不影响判等 / 校验 / onCommit 的既有时机", () => {
+    const onDraftChange = vi.fn();
+    const validate = (next: string) => (next.length < 3 ? "至少 3 个字" : undefined);
+    const { el, onCommit } = renderCell({ onDraftChange, validate });
+    fireEvent.change(el, { target: { value: "短" } });
+    expect(onDraftChange).toHaveBeenCalledTimes(1);
+    expect(onCommit).not.toHaveBeenCalled();
+    fireEvent.blur(el);
+    expect(onCommit).not.toHaveBeenCalled();
+  });
+
+  it("Esc 回滚与外部写回不算键入，不广播", () => {
+    const onDraftChange = vi.fn();
+    const { el, rerender } = renderCell({ onDraftChange, value: "原值" });
+    fireEvent.change(el, { target: { value: "改坏了" } });
+    fireEvent.keyDown(el, { key: "Escape" });
+    rerender(<CellEditor aria-label="cell" value="别处改的" onDraftChange={onDraftChange} />);
+    expect(onDraftChange).toHaveBeenCalledTimes(1);
+  });
+});
+
+// #250：reject 恰恰证明这个值没交出去，基准却已经推进 —— 用户不改动直接再失焦会被判等短路，
+// 保存失败之后连重试都点不动。而 value 来自服务端缓存时失败并不会让它变，消费方手上没有杠杆。
+describe("CellEditor 提交失败", () => {
+  function renderRejecting(props: CellProbeProps = {}) {
+    let rejectCommit: ((reason: Error) => void) | undefined;
+    const onCommit = vi.fn(
+      () =>
+        new Promise<void>((_resolve, reject) => {
+          rejectCommit = reject;
+        }),
+    );
+    const view = renderCell({ ...props, onCommit });
+    return { ...view, onCommit, reject: () => rejectCommit?.(new Error("网络挂了")) };
+  }
+
+  it("失败后不改动直接再失焦即重试（基准退回上一版）", async () => {
+    const { el, onCommit, reject } = renderRejecting();
+    fireEvent.change(el, { target: { value: "会失败" } });
+    fireEvent.blur(el);
+    expect(onCommit).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      reject();
+    });
+    fireEvent.blur(el);
+    expect(onCommit).toHaveBeenCalledTimes(2);
+    expect(onCommit).toHaveBeenLastCalledWith("会失败");
+  });
+
+  it("默认不回滚草稿：用户刚打的那串还在，接着改就是", async () => {
+    const { el, reject } = renderRejecting();
+    fireEvent.change(el, { target: { value: "会失败" } });
+    fireEvent.blur(el);
+    await act(async () => {
+      reject();
+    });
+    expect(el.value).toBe("会失败");
+  });
+
+  it("revertOnError 时草稿一并退回上一次提交值", async () => {
+    const { el, reject } = renderRejecting({ value: "原值", revertOnError: true });
+    fireEvent.change(el, { target: { value: "会失败" } });
+    fireEvent.blur(el);
+    await act(async () => {
+      reject();
+    });
+    expect(el.value).toBe("原值");
+  });
+
+  it("pending 期间外部写进来的新值不会被这次失败盖回去", async () => {
+    let rejectCommit: ((reason: Error) => void) | undefined;
+    const onCommit = vi.fn(
+      () =>
+        new Promise<void>((_resolve, reject) => {
+          rejectCommit = reject;
+        }),
+    );
+    const view = render(
+      <CellEditor aria-label="cell" value="原值" revertOnError onCommit={onCommit} />,
+    );
+    const el = view.getByLabelText("cell") as HTMLInputElement;
+    fireEvent.change(el, { target: { value: "会失败" } });
+    fireEvent.blur(el);
+    view.rerender(
+      <CellEditor aria-label="cell" value="别处刚改的" revertOnError onCommit={onCommit} />,
+    );
+    await act(async () => {
+      rejectCommit?.(new Error("网络挂了"));
+    });
+    expect(el.value).toBe("别处刚改的");
+    // 判等基准也停在外部值上：不改动再失焦不会把它当新值重发一次。
+    fireEvent.blur(el);
+    expect(onCommit).toHaveBeenCalledTimes(1);
+  });
+
+  it("成功路径不受影响：resolve 之后再失焦不重发", async () => {
+    const onCommit = vi.fn(() => Promise.resolve());
+    const { el } = renderCell({ onCommit });
+    fireEvent.change(el, { target: { value: "存好了" } });
+    fireEvent.blur(el);
+    await waitFor(() => expect(el.disabled).toBe(false));
+    fireEvent.blur(el);
+    expect(onCommit).toHaveBeenCalledTimes(1);
+  });
+});
+
+// #251：内层渲染的就是 <input> / <textarea>，而属性集此前继承的是 HTMLAttributes，
+// name / rows / type / maxLength / autoComplete 一个都传不进去。
+describe("CellEditor 原生属性", () => {
+  it("单行档收 <input> 的属性", () => {
+    const { el } = renderCell({ name: "months", maxLength: 4, type: "text", autoComplete: "off" });
+    expect(el.getAttribute("name")).toBe("months");
+    expect(el.getAttribute("maxlength")).toBe("4");
+    expect(el.getAttribute("type")).toBe("text");
+    expect(el.getAttribute("autocomplete")).toBe("off");
+  });
+
+  it("多行档收 <textarea> 的 rows（每格不同的行数下限）", () => {
+    const { el } = renderCell({ multiline: true, rows: 2, name: "scope" });
+    expect((el as HTMLTextAreaElement).rows).toBe(2);
+    expect(el.getAttribute("name")).toBe("scope");
+  });
+});
+
+// #252：焦点留在格内是合理默认，但消费方在 onKeyDown 里自己补 blur() 会踩 stale draft ——
+// blur() 同步触发提交时闭包里还是旧草稿，Esc 于是变成保存。
+describe("CellEditor 提交后让出焦点", () => {
+  it("默认不让出：Enter 之后焦点还在格内", () => {
+    const { el } = renderCell();
+    el.focus();
+    fireEvent.change(el, { target: { value: "改完了" } });
+    fireEvent.keyDown(el, { key: "Enter" });
+    expect(document.activeElement).toBe(el);
+  });
+
+  it("blurOnCommit 时 Enter 提交后让出焦点，且只提交一次", () => {
+    const { el, onCommit } = renderCell({ blurOnCommit: true });
+    el.focus();
+    fireEvent.change(el, { target: { value: "改完了" } });
+    fireEvent.keyDown(el, { key: "Enter" });
+    expect(document.activeElement).not.toBe(el);
+    expect(onCommit).toHaveBeenCalledTimes(1);
+    expect(onCommit).toHaveBeenCalledWith("改完了");
+  });
+
+  it("校验被拦下时不让出焦点：错误就在这一格，得让用户接着改", () => {
+    const { el, onCommit } = renderCell({
+      blurOnCommit: true,
+      validate: (next) => (next.length < 3 ? "至少 3 个字" : undefined),
+    });
+    el.focus();
+    fireEvent.change(el, { target: { value: "短" } });
+    fireEvent.keyDown(el, { key: "Enter" });
+    expect(document.activeElement).toBe(el);
+    expect(onCommit).not.toHaveBeenCalled();
+  });
+
+  it("blurOnEscape 时按 Esc 让出焦点，随之而来的 blur 不会把丢弃的草稿存下去", () => {
+    const { el, onCommit } = renderCell({ value: "原值", blurOnEscape: true });
+    el.focus();
+    fireEvent.change(el, { target: { value: "改坏了" } });
+    fireEvent.keyDown(el, { key: "Escape" });
+    expect(document.activeElement).not.toBe(el);
+    expect(onCommit).not.toHaveBeenCalled();
+    expect(el.value).toBe("原值");
+  });
+
+  it("blurOnEscape 关着时 Esc 只回滚，不动焦点", () => {
+    const { el } = renderCell({ value: "原值" });
+    el.focus();
+    fireEvent.change(el, { target: { value: "改坏了" } });
+    fireEvent.keyDown(el, { key: "Escape" });
+    expect(document.activeElement).toBe(el);
+    expect(el.value).toBe("原值");
+  });
+
+  it("让出焦点排在消费方的 onKeyDown 之后", () => {
+    const order: string[] = [];
+    const { el } = renderCell({
+      blurOnCommit: true,
+      onKeyDown: () => order.push("keydown"),
+      onBlur: () => order.push("blur"),
+    });
+    el.focus();
+    fireEvent.change(el, { target: { value: "改完了" } });
+    fireEvent.keyDown(el, { key: "Enter" });
+    expect(order).toEqual(["keydown", "blur"]);
   });
 });
 

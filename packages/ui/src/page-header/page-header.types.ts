@@ -1,10 +1,22 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ElementType, HTMLAttributes, ReactNode } from "react";
 
 // title 为 ReactNode → 与 HTMLAttributes 的 title?:string 冲突，必须 Omit "title"
 // （同 Alert/Empty/BentoCard 的复发坑）。
 export interface PageHeaderProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   /** 主标题（必填）。 */
   title: ReactNode;
+  /**
+   * 标题渲染成哪个标签，默认 `h1`。
+   *
+   * 「这一屏的标题排第几级」是页面的结构信息，不归页头皮肤：页头未必是本页最高级标题，
+   * 而且消费方的标题常常是自带动画的组件、需要它自己就是那个标签
+   * （套在 `h1` 里既是非法 HTML，也会让读屏读出两条 heading）——hulianui/hulian#247。
+   *
+   * 只让出标签，不让出字号：字号仍由组件定，要改在外层 `className` 上用后代选择器回贴
+   * （标签是消费方回贴不了的那个，字号不是）。
+   * @default "h1"
+   */
+  titleAs?: ElementType;
   /** 副标题，内联于标题右侧，中性弱化色。 */
   subTitle?: ReactNode;
   /** 提供则在标题左侧渲染返回箭头按钮，点击触发该回调（带回调 → 消费侧为 client）。 */

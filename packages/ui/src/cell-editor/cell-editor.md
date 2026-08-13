@@ -41,20 +41,30 @@ import { CellEditor } from "@hulianui/ui"
 | value* | `string` | — | 已提交值（受控数据源）。提交成功后把新值写回这里，组件据此重置内部草稿与判等基准 |
 | validate | `(next: string) => string \| undefined` | — | 提交前校验：返回字符串＝错误消息，拦住 `onCommit` 并把该串显示在格子下方；返回 `undefined`（或空串）放行。见下 |
 | missing | `boolean` | `false` | 「这个字段还没填」：降成 muted + italic，让「空」和「填了空格」一眼可分 |
-| multiline | `boolean` | `false` | 多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input |
+| multiline | `boolean` | `false` | 多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input。要按运行时变量切换多行，请分支渲染两个 `CellEditor`，见「禁忌 / 坑」 |
+| revertOnError | `boolean` | `false` | `onCommit` 的 Promise reject 时把草稿一并退回上一次提交值。判等基准无论开关都会退，见下 |
+| blurOnCommit | `boolean` | `false` | Enter 提交后让出焦点。校验被拦下时不让出（错误就在这一格，得让用户接着改） |
+| blurOnEscape | `boolean` | `false` | Esc 回滚后让出焦点 |
+| variant | `"default" \| "cell"` | `"cell"` | 外观档，透传给内层 [Input](../input/input.md) / [Textarea](../textarea/textarea.md)。`"cell"` 无边框透明底；同一行里其余列是普通输入框时用 `"default"`，见下 |
+| size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | 字号档，透传给内层 Input / Textarea |
 | disabled | `boolean` | `false` | 禁用。`onCommit` 返回 Promise 时组件在 pending 期间自己追加禁用，不必再传 |
 | placeholder | `string` | — | 占位文案（核对表里一般写「未填写」） |
 | className | `string` | — | 落在最外层节点上 |
 
-其余原生属性（`aria-label` / `id` / `onFocus` / `data-*` …）透传到编辑控件本身：单行档是 `<input>`，多行档是 `<textarea>`。
+其余属性按档透传到编辑控件本身：单行档收 `<input>` 的原生属性（`name` / `type` / `maxLength` / `autoComplete` …），多行档收 `<textarea>` 的（`name` / `rows` / `wrap` …）。`rows` 在多行档里是「最少几行」的下限，`cell` 档下默认 1 行。
+
+原生 `size` 传不进来：它是 `<input>` 的字符宽度，与上表的档位 `size` 同名不同义，两者只能留一个。要按字符数定宽用 CSS 宽度。
 
 ## Events
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onCommit | `(next: string) => void \| Promise<void>` | blur 与 Enter 触发。**值与上次提交相同时不会调用**；返回 Promise 则 pending 期间自身禁用。传了 `validate` 且它返回错误串时**不会调用** |
+| onDraftChange | `(draft: string) => void` | 草稿每次变化时的**只读回声**（每敲一个键一次），判等 / 校验 / pending 的既有语义全不受影响。给「随打字变化的派生 UI」用：已填计数、实时预览、每键落 `localStorage`。**只反映键入** —— Esc 回滚与外部写回 `value` 不会广播 |
 
 顺序是「判等 → `validate` → `onCommit`」：值没变根本不校验（那是上一次已经放行过的），校验没过则值不出去。
+
+值真正出去仍然只看 `onCommit`。如果你在 `onDraftChange` 里落库，就把失焦即提交这条契约绕过去了 —— 判等与 `validate` 都拦不住它。
 
 ## 示例
 ```tsx
@@ -99,15 +109,57 @@ const [row, setRow] = useState(initialRow);
 
 跨格约束（结束时间早于开始时间这类）照样写在这里：`validate` 是个闭包，直接读同一行的其它字段即可。
 
+### variant：一行里有框无框不要混排
+
+默认的 `cell` 档解的是「单元格本身就是输入框」——密集成片地铺时，边框 + 底色 + 焦点环会变成盒子套盒子，而焦点环还会溢出单元格顶到相邻格。
+
+但如果同一行里其余可编辑列用的是普通 [Input](../input/input.md) / [Textarea](../textarea/textarea.md)，只有这几格无边框，用户就得靠记忆而不是靠看来判断哪些格子可以改。这种表把这几格也换成 `variant="default"`，跟邻居保持一致：
+
+```tsx
+<CellEditor variant="default" size="sm" value={row.months} onCommit={(next) => save("months", next)} />
+```
+
+### onCommit 失败：基准会自己退回来，回滚草稿是可选项
+
+`onCommit` 返回的 Promise reject 时，组件把判等基准退回上一次提交值——reject 恰恰证明这个值没交出去，基准记成「已交出去」会让用户不改动直接再失焦时被判等短路，保存失败之后连重试都点不动。
+
+草稿默认**不动**：用户刚打的那串还在，改一改再失焦就是重试。如果这一格的 `value` 来自服务端缓存（SWR / React Query / Redux selector），失败时缓存没动、`value` 原样，消费方手上没有任何能拿来回滚的东西 —— 那就开 `revertOnError`，界面一并回到失败前的样子：
+
+```tsx
+<CellEditor
+  value={row.contact}
+  revertOnError
+  onCommit={async (next) => {
+    try {
+      await api.patch(row.id, { contact: next });
+      await mutate();
+    } catch (err) {
+      toast({ title: "保存失败，已还原", tone: "danger" });
+      throw err; // 必须重新抛出：吞掉异常等于告诉组件「存好了」
+    }
+  }}
+/>
+```
+
+报错文案仍然由消费方决定，组件只负责把自己的内部状态退回真相。pending 期间外部把新值写进 `value` 时不回滚 —— 那是更近的真相，不该被一个旧请求的失败盖回去。
+
+### blurOnCommit / blurOnEscape：改完这一格就走
+
+默认两者都是 `false`，焦点留在格内。批量核对宽表时操作员改完一格按 Enter 就该「这格结束了」，焦点还亮在格里会让人以为没生效、回头再按一次 —— 那种手感开 `blurOnCommit`；Esc 之后也想直接走开就再开 `blurOnEscape`。两个分开是因为 Enter 与 Esc 在这里语义相反（一个是「我改完了」，一个是「我不改了」），常常只想开其中一个。
+
+**别自己在 `onKeyDown` 里补 `blur()`**：`blur()` 是同步的，它会在草稿更新落到下一次渲染之前就触发提交，那时读到的还是旧草稿 —— Esc 会因此变成保存。
+
 ## 禁忌 / 坑
 
 - **别在 `onCommit` 里自己判等**：组件已经判过了，值没变根本不会调进来。核对场景下用户会大量「点进去看一眼再点走」，判等这一层就是为了不让一整屏空提交打到后端。
-- **Esc 之后的 blur 不会重发旧值**：Esc 把草稿写回上一次提交值，紧随其后的 blur 判等直接短路。消费方不需要再维护「刚按过 Esc」的标志位。Esc 只回滚，不移走焦点。
+- **Esc 之后的 blur 不会重发旧值**：Esc 把草稿写回上一次提交值，紧随其后的 blur 判等直接短路。消费方不需要再维护「刚按过 Esc」的标志位。Esc 默认只回滚不移走焦点，要它连焦点一起让出就开 `blurOnEscape`，别自己补 `blur()`。
+- **`multiline` 要写成字面量**：属性集按 `multiline` 分叉（单行档收 `<input>` 的原生属性，多行档收 `<textarea>` 的），传一个 boolean 变量时 TS 认不出走哪一档。如果多行与否真的由运行时决定，分支渲染两个 `CellEditor`。
+- **`onDraftChange` 不是提交口**：它每敲一个键响一次，判等与 `validate` 都不参与。在里面落库等于把失焦即提交这条契约整个绕过去。
 - **Enter 提交，Shift+Enter 换行**：多行档里换行让给 Shift+Enter；单行档里 Enter 被 `preventDefault`，不会误提交所在的 form。
 - **自增高是 CSS 的 `field-sizing: content`，不是 JS 测高**：表格里几十个格同时读 `scrollHeight` 会在滚动时明显掉帧，而且和列宽变化互相触发。别再往外面套一层测高逻辑。
 - **能在客户端判的非法值走 `validate`，别放到 `onCommit` 里再回滚**：回滚发生时光标已经在下一格，用户只会看到自己改的东西自己变回去了。`onCommit` 里剩下的是只有服务端才知道的失败（重名、并发冲突），那类仍然要自己 catch。
 - **`validate` 返回空串等于放行**：一条看不见的错误却拦着提交，比不校验更糟 —— 用户只看到这格存不进去，屏幕上什么都没有。想拦就给一句能读的话。
-- **`onCommit` 失败要自己 catch**：组件只负责结束 pending 态，回滚与报错文案要看业务语义，它不替你决定。
+- **`onCommit` 失败时别把异常吞掉**：组件靠 Promise reject 才知道这次没存进去（据此退回判等基准，让用户能重试）。如果你在 `catch` 里 toast 完就不再抛出，组件看到的是一次成功的提交。报错文案与是否回滚草稿（`revertOnError`）仍然由消费方决定，组件不替你选。
 - **父级必须把新值写回 `value`**：不写回时组件仍以自己的草稿显示，但下一次外部刷新会把界面拉回旧值。
 - **放进 [Table](../table/table.md) 时 `columns` 必须 memo**：cell 函数经 TanStack 的 `flexRender` 当组件类型渲染，identity 一变整格卸载重挂 —— 挂了 `onBlur` 提交的编辑器会被重挂时的 blur 误触发。
 

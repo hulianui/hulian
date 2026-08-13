@@ -1466,53 +1466,67 @@
       "id": "component/cell-editor/pitfall/2",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**Esc 之后的 blur 不会重发旧值**：Esc 把草稿写回上一次提交值，紧随其后的 blur 判等直接短路。消费方不需要再维护「刚按过 Esc」的标志位。Esc 只回滚，不移走焦点。",
+      "rule": "**Esc 之后的 blur 不会重发旧值**：Esc 把草稿写回上一次提交值，紧随其后的 blur 判等直接短路。消费方不需要再维护「刚按过 Esc」的标志位。Esc 默认只回滚不移走焦点，要它连焦点一起让出就开 `blurOnEscape`，别自己补 `blur()`。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/3",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**Enter 提交，Shift+Enter 换行**：多行档里换行让给 Shift+Enter；单行档里 Enter 被 `preventDefault`，不会误提交所在的 form。",
+      "rule": "**`multiline` 要写成字面量**：属性集按 `multiline` 分叉（单行档收 `<input>` 的原生属性，多行档收 `<textarea>` 的），传一个 boolean 变量时 TS 认不出走哪一档。如果多行与否真的由运行时决定，分支渲染两个 `CellEditor`。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/4",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**自增高是 CSS 的 `field-sizing: content`，不是 JS 测高**：表格里几十个格同时读 `scrollHeight` 会在滚动时明显掉帧，而且和列宽变化互相触发。别再往外面套一层测高逻辑。",
+      "rule": "**`onDraftChange` 不是提交口**：它每敲一个键响一次，判等与 `validate` 都不参与。在里面落库等于把失焦即提交这条契约整个绕过去。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/5",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**能在客户端判的非法值走 `validate`，别放到 `onCommit` 里再回滚**：回滚发生时光标已经在下一格，用户只会看到自己改的东西自己变回去了。`onCommit` 里剩下的是只有服务端才知道的失败（重名、并发冲突），那类仍然要自己 catch。",
+      "rule": "**Enter 提交，Shift+Enter 换行**：多行档里换行让给 Shift+Enter；单行档里 Enter 被 `preventDefault`，不会误提交所在的 form。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/6",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**`validate` 返回空串等于放行**：一条看不见的错误却拦着提交，比不校验更糟 —— 用户只看到这格存不进去，屏幕上什么都没有。想拦就给一句能读的话。",
+      "rule": "**自增高是 CSS 的 `field-sizing: content`，不是 JS 测高**：表格里几十个格同时读 `scrollHeight` 会在滚动时明显掉帧，而且和列宽变化互相触发。别再往外面套一层测高逻辑。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/7",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**`onCommit` 失败要自己 catch**：组件只负责结束 pending 态，回滚与报错文案要看业务语义，它不替你决定。",
+      "rule": "**能在客户端判的非法值走 `validate`，别放到 `onCommit` 里再回滚**：回滚发生时光标已经在下一格，用户只会看到自己改的东西自己变回去了。`onCommit` 里剩下的是只有服务端才知道的失败（重名、并发冲突），那类仍然要自己 catch。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/8",
       "scope": "cell-editor",
       "title": "CellEditor",
-      "rule": "**父级必须把新值写回 `value`**：不写回时组件仍以自己的草稿显示，但下一次外部刷新会把界面拉回旧值。",
+      "rule": "**`validate` 返回空串等于放行**：一条看不见的错误却拦着提交，比不校验更糟 —— 用户只看到这格存不进去，屏幕上什么都没有。想拦就给一句能读的话。",
       "source": "packages/ui/src/cell-editor/cell-editor.md"
     },
     {
       "id": "component/cell-editor/pitfall/9",
+      "scope": "cell-editor",
+      "title": "CellEditor",
+      "rule": "**`onCommit` 失败时别把异常吞掉**：组件靠 Promise reject 才知道这次没存进去（据此退回判等基准，让用户能重试）。如果你在 `catch` 里 toast 完就不再抛出，组件看到的是一次成功的提交。报错文案与是否回滚草稿（`revertOnError`）仍然由消费方决定，组件不替你选。",
+      "source": "packages/ui/src/cell-editor/cell-editor.md"
+    },
+    {
+      "id": "component/cell-editor/pitfall/10",
+      "scope": "cell-editor",
+      "title": "CellEditor",
+      "rule": "**父级必须把新值写回 `value`**：不写回时组件仍以自己的草稿显示，但下一次外部刷新会把界面拉回旧值。",
+      "source": "packages/ui/src/cell-editor/cell-editor.md"
+    },
+    {
+      "id": "component/cell-editor/pitfall/11",
       "scope": "cell-editor",
       "title": "CellEditor",
       "rule": "**放进 [Table](../table/table.md) 时 `columns` 必须 memo**：cell 函数经 TanStack 的 `flexRender` 当组件类型渲染，identity 一变整格卸载重挂 —— 挂了 `onBlur` 提交的编辑器会被重挂时的 blur 误触发。",
@@ -6086,11 +6100,25 @@
       "id": "component/page-header/pitfall/4",
       "scope": "page-header",
       "title": "PageHeader",
-      "rule": "`title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<\"title\">`——别再往 DOM 透传字符串 title。",
+      "rule": "从 `span + span::before { content: \"·\" }` 迁过来时**要逐项核对，不能照搬**：那条选择器的真实语义是「**渲染出来的相邻 `<span>` 之间**才插点」，所以那一行里混了按钮 / 图标 / 链接（渲染成 `<button>` / `<svg>` / `<a>`）的位置，现网**本来就没有点**。而 `meta` 的「一项」是**数组项**，不看它渲染成什么标签，一律在项与项之间插分隔符。把 `[证件号, <CopyButton/>]` 这类混排原样搬过来，会凭空多出一个分隔符——这是真实的视觉回归，不是本组件的 bug（hulianui/hulian#247）。",
       "source": "packages/ui/src/page-header/page-header.md"
     },
     {
       "id": "component/page-header/pitfall/5",
+      "scope": "page-header",
+      "title": "PageHeader",
+      "rule": "`titleAs` 只让出标签，不让出字号：换成 `h2` 之后字号仍是 20px/28px。要改字号在 `className` 上用后代选择器（`className` 落在外层 `<header>`），别在 `title` 里再套一层子元素用工具类把父元素的字号顶掉——那是一个标题上两条打架的字号声明。",
+      "source": "packages/ui/src/page-header/page-header.md"
+    },
+    {
+      "id": "component/page-header/pitfall/6",
+      "scope": "page-header",
+      "title": "PageHeader",
+      "rule": "`title` 为 ReactNode，与 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<\"title\">`——别再往 DOM 透传字符串 title。",
+      "source": "packages/ui/src/page-header/page-header.md"
+    },
+    {
+      "id": "component/page-header/pitfall/7",
       "scope": "page-header",
       "title": "PageHeader",
       "rule": "默认返回标签跟随 `ConfigProvider`，`backLabel` 显式覆盖；组件因此是 client 组件，服务端组件仍可导入并渲染它。",
@@ -9152,11 +9180,18 @@
       "id": "component/textarea/pitfall/3",
       "scope": "textarea",
       "title": "Textarea",
-      "rule": "实现/扩展 field-aware Textarea 时见 base-ui-field-control-render-textarea-type-safe：Base UI Field 无 Textarea 原语，textarea 专属 props（ref/rows/onInput）要放在 `render` 元素上而非 `Field.Control`，否则 TS 报 ref 类型错或静默丢 Field a11y 接线。",
+      "rule": "`variant=\"cell\"` / `autoResize` 这一档不接受 `resize-*` 覆盖，而且**覆盖只会成功一半**：这一档发出的是 `resize-none overflow-hidden`，两者在 tailwind-merge 里分属不同组，`className=\"resize-y\"` 只顶得掉 `resize-none`，`overflow-hidden` 原样留下——手柄能拖，但往小拖时内容直接被裁且不出滚动条（同时 `field-sizing-content` 还在按内容算高度，跟手柄写出的内联 height 抢）。组件会在开发期 `console.warn` 点名（每档只喊一次）。要一个可拖的框请改用 `variant=\"default\"` 且不传 `autoResize`。",
       "source": "packages/ui/src/textarea/textarea.md"
     },
     {
       "id": "component/textarea/pitfall/4",
+      "scope": "textarea",
+      "title": "Textarea",
+      "rule": "实现/扩展 field-aware Textarea 时见 base-ui-field-control-render-textarea-type-safe：Base UI Field 无 Textarea 原语，textarea 专属 props（ref/rows/onInput）要放在 `render` 元素上而非 `Field.Control`，否则 TS 报 ref 类型错或静默丢 Field a11y 接线。",
+      "source": "packages/ui/src/textarea/textarea.md"
+    },
+    {
+      "id": "component/textarea/pitfall/5",
       "scope": "textarea",
       "title": "Textarea",
       "rule": "在 hulian Field 内不要重复传 `invalid`，由 Field.Root 自动驱动。",
@@ -10035,7 +10070,7 @@
   ],
   "stats": {
     "componentDocs": 390,
-    "componentAdvisories": 1398,
-    "totalAdvisories": 1408
+    "componentAdvisories": 1403,
+    "totalAdvisories": 1413
   }
 }
