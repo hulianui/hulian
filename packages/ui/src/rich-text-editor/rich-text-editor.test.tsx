@@ -135,3 +135,57 @@ describe("RichTextEditor（#175）", () => {
     expect(await findByRole("textbox", { name: "活动详情" })).toBeTruthy();
   });
 });
+
+describe("RichTextEditor 高度上限（#264）", () => {
+  /** 正文滚动容器 = 内容区（role=textbox）的父节点。 */
+  const scrollerOf = (container: HTMLElement) =>
+    container.querySelector('[role="textbox"]')?.parentElement as HTMLElement;
+
+  it("不给上限时正文容器既不定高也不滚（与不认识这两个 prop 时一致）", async () => {
+    const { container } = render(<RichTextEditor defaultValue="<p>x</p>" />);
+    await waitFor(() => expect(scrollerOf(container)).toBeTruthy());
+    expect(scrollerOf(container).style.maxHeight).toBe("");
+    expect(scrollerOf(container).className).not.toContain("overflow-y-auto");
+  });
+
+  it("maxRows 与 minRows 同一把尺子（1 行 = 1.75rem），落在正文容器上并开纵向滚动", async () => {
+    const { container } = render(<RichTextEditor minRows={8} maxRows={20} defaultValue="<p>x</p>" />);
+    await waitFor(() => expect(scrollerOf(container)).toBeTruthy());
+    expect(scrollerOf(container).style.maxHeight).toBe("35rem"); // 20 * 1.75
+    expect(scrollerOf(container).className).toContain("overflow-y-auto");
+  });
+
+  it("工具栏在滚动容器**外面** —— 正文滚到第几千 px 也够得着按钮", async () => {
+    const { container, findByRole } = render(<RichTextEditor maxRows={12} defaultValue="<p>x</p>" />);
+    const toolbar = await findByRole("toolbar");
+    const scroller = scrollerOf(container);
+    expect(scroller.contains(toolbar)).toBe(false);
+    // 外壳自己不滚：滚动只能落在正文那一层，否则工具栏会跟着一起滚走
+    expect((container.firstElementChild as HTMLElement).className).not.toContain("overflow-y-auto");
+  });
+
+  it("maxHeight：数值按 px，字符串按任意 CSS 长度", async () => {
+    const { container, rerender } = render(<RichTextEditor maxHeight={480} defaultValue="<p>x</p>" />);
+    await waitFor(() => expect(scrollerOf(container)).toBeTruthy());
+    expect(scrollerOf(container).style.maxHeight).toBe("480px");
+    rerender(<RichTextEditor maxHeight="60vh" defaultValue="<p>x</p>" />);
+    expect(scrollerOf(container).style.maxHeight).toBe("60vh");
+  });
+
+  it("两个都给：以 maxHeight 为准，并在 dev 下点名 maxRows 被忽略", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(<RichTextEditor maxRows={20} maxHeight={480} defaultValue="<p>x</p>" />);
+    await waitFor(() => expect(scrollerOf(container)).toBeTruthy());
+    expect(scrollerOf(container).style.maxHeight).toBe("480px");
+    expect(warn.mock.calls.flat().join("\n")).toContain("maxHeight 与 maxRows 同给");
+    warn.mockRestore();
+  });
+
+  it("maxRows 小于 minRows：CSS 里 min 压过 max，什么都不会发生，所以要告警", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(<RichTextEditor minRows={8} maxRows={4} defaultValue="<p>x</p>" />);
+    await waitFor(() => expect(scrollerOf(container)).toBeTruthy());
+    expect(warn.mock.calls.flat().join("\n")).toContain("小于 minRows");
+    warn.mockRestore();
+  });
+});

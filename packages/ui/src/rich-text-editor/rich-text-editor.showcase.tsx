@@ -12,6 +12,15 @@ const SAMPLE = [
   "<blockquote>最终解释权归主办方所有。</blockquote>",
 ].join("");
 
+// 存量长文那一档：隐私条款 / 商品详情动辄七八千字，不给上限就会把整页撑到上万 px。
+const LONG_TITLE = "<p style=\"text-align: center\"><strong>用户服务协议</strong></p>";
+const LONG_PARAGRAPH =
+  "本条为运营逐年追加的正文段落示例。存量正文里这样的段落常有几十上百段，不给高度上限时编辑区会一直往下长，把工具栏和页面底部的保存按钮一起顶出视口。";
+const LONG_SAMPLE = [
+  LONG_TITLE,
+  ...Array.from({ length: 12 }, (_, i) => `<p>${i + 1}. ${LONG_PARAGRAPH}</p>`),
+].join("");
+
 function ControlledDemo() {
   const [html, setHtml] = useState('<p>改这段文字，右下方看<strong>存进库里的那串 HTML</strong></p>');
   return (
@@ -49,6 +58,21 @@ export const richTextEditorShowcase: ShowcaseSpec = {
           toolbar={["bold", "italic", "underline", "divider", "bulletList", "link"]}
           placeholder="精简工具栏"
           minRows={4}
+          className="w-[36rem] max-w-full"
+        />
+      ),
+    },
+    {
+      title: "长正文给高度上限",
+      description:
+        "maxRows / maxHeight 给一档上限，超过就让正文自己内部滚动，工具栏留在滚动区外 —— 滚到第几千 px 也够得着加粗按钮。",
+      code: `<RichTextEditor minRows={8} maxRows={12} defaultValue={LONG_HTML} />
+// 或直接给长度：maxHeight={480} / maxHeight="60vh"`,
+      render: () => (
+        <RichTextEditor
+          minRows={8}
+          maxRows={12}
+          defaultValue={LONG_SAMPLE}
           className="w-[36rem] max-w-full"
         />
       ),

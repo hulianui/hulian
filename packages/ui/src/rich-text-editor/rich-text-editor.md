@@ -36,6 +36,8 @@ import { RichTextEditor } from "@hulianui/ui"
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
 | disabled | `boolean` | `false` | 禁用（内容区不可编辑 + 工具栏收起） |
 | minRows | `number` | `8` | 内容区最小高度（行） |
+| maxRows | `number` | — | 内容区**最大**高度（行，与 `minRows` 同一套单位）。超过就让正文自己内部滚动，工具栏留在滚动区外。见「高度上限」 |
+| maxHeight | `number \| string` | — | 同一件事的长度写法（数值按 px，字符串按任意 CSS 长度如 `"60vh"`）。**与 `maxRows` 同给时以它为准**，dev 下告警 |
 | toolbar | `RichTextToolbarItem[]` | 完整一档 | 工具栏条目与顺序；`[]` 则整条工具栏不渲染。**裁掉一档同时会关掉对应扩展**（见「禁忌 / 坑」） |
 | sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>`，`href` / `src` 过协议白名单，内联 `style` 过属性白名单 |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | 存量 HTML 兼容（微信编辑器 / Word / 老 UEditor 的正文）。默认关；`true` 三档全开，给对象则只开写明的那几档。见「存量 HTML 兼容」 |
@@ -105,6 +107,22 @@ const [html, setHtml] = useState(detail.content); // 库里取出来就是 HTML
 // 只要其中某几档
 <RichTextEditor legacyHtml={{ font: true, imgStyle: true }} value={html} onChange={setHtml} />
 ```
+
+## 高度上限
+
+不给上限时编辑区高度**完全跟着正文长度走**。后台里「一个字段就是一整篇长文」是常态（隐私条款、用户协议、活动规则、商品详情），存量正文动辄七八千字 —— 实测一篇 8000 余字的正文能把内容区撑到近 9000px，页面滚动条上万像素，底部的「保存」按钮根本不在视口里；一页放两块富文本时上面那块一长，下面那块直接被推到看不见的地方。
+
+给一档上限就够了，滚动落在**正文**上、工具栏留在原地：
+
+```tsx
+<RichTextEditor minRows={8} maxRows={20} />       // 与 minRows 同一套单位（1 行 = 1.75rem）
+<RichTextEditor minRows={8} maxHeight={480} />    // 或直接给像素
+<RichTextEditor minRows={8} maxHeight="60vh" />   // 或任意 CSS 长度
+```
+
+两档是同一件事的两种单位，留一个即可；同给以 `maxHeight` 为准（dev 下告警）。
+
+**这一档只能由库来给**：在业务侧套 `max-h-[480px] overflow-y-auto` 只能包在**整个外壳**上，而工具栏在外壳里面，于是工具栏会跟着正文一起滚出可视区，比不加更糟。要只滚正文就得钻进组件内部的 DOM 结构去定位那一层——那是把库的内部结构写进业务代码。
 
 ## 图片怎么进来
 
@@ -179,6 +197,8 @@ const html = normalizeLegacyHtml(row.content)
 - **`blob:` 与 `file:` 的图片地址会被粘贴净化删掉。** 前者只在当前页面生命周期内有效、后者只在那台机器上有效，存进库下次打开就是碎图 —— 而且字段大小看不出异常，比 base64 更难查。
 - 粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。
 - `value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。
+- **`maxRows` 比 `minRows` 小时什么都不会发生**：CSS 里 `min-height` 压过 `max-height`，内容区仍按 `minRows` 撑开且不滚动 —— 看不出选错了，所以组件在 dev 下点名。
+- 高度上限开着时，内容区会成为一个滚动容器，另一轴也随之从 `visible` 计算成 `auto`：存量正文里带死宽度的 `<img>` / `<table>` 会在正文里出现横向滚动条，而不是撑破外壳。
 - 与 [MarkdownEditor](../markdown-editor/markdown-editor.md) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。
 
 ## 相关

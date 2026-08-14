@@ -141,6 +141,28 @@ const editorProseClass = cn(
 );
 
 /**
+ * 一「行」= 1.75rem，与内容区的 `leading-7` 逐字对齐 —— `minRows` / `maxRows` 共用这一把尺子，
+ * 所以 `maxRows === minRows` 恰好是「不滚」的临界点。
+ *
+ * min-h 那侧是 Tailwind 静态类（`min-h-[calc(var(--rte-min-rows)*1.75rem)]`，编译期就要拿到字面量），
+ * 改这里必须连它一起改。
+ */
+const ROW_HEIGHT_REM = 1.75;
+
+/**
+ * 高度上限归一成一个 CSS 长度：`maxHeight` 优先（数值按 px），否则按 `maxRows` 折成行高。
+ * 两个都不给返回 `undefined` —— 那时组件行为与不认识这两个 prop 时逐字节一致。
+ */
+function resolveMaxHeight(
+  maxHeight: number | string | undefined,
+  maxRows: number | undefined,
+): string | undefined {
+  if (maxHeight != null) return typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
+  if (maxRows != null) return `${maxRows * ROW_HEIGHT_REM}rem`;
+  return undefined;
+}
+
+/**
  * HTML 富文本编辑器：值进出都是 **HTML 片段串**。
  *
  * 与 MarkdownEditor 的分野不在皮肤而在**值契约**：存量数据库里躺的是 HTML、前台
@@ -157,6 +179,8 @@ export function RichTextEditor({
   invalid,
   disabled,
   minRows = 8,
+  maxRows,
+  maxHeight,
   toolbar = DEFAULT_TOOLBAR,
   onUploadImage,
   sanitizePaste = true,
@@ -184,6 +208,26 @@ export function RichTextEditor({
         : html,
     [legacyFont, legacyAlign],
   );
+
+  // 高度上限（#264）。滚动必须落在**正文容器**上、工具栏留在它外面 ——
+  // 包在整个外壳上工具栏会跟着正文滚走，那正是消费方自己套 max-h 时的下场。
+  const maxContentHeight = resolveMaxHeight(maxHeight, maxRows);
+  if (maxHeight != null && maxRows != null) {
+    warnOnce(
+      "rte-max-height-and-max-rows",
+      "[hulian] RichTextEditor：maxHeight 与 maxRows 同给，本次以 maxHeight 为准、maxRows 被忽略。" +
+        "两者是同一件事的两种单位，留一个即可。",
+    );
+  }
+  // CSS 里 min-height 压过 max-height，所以上限比下限矮时**什么都不会发生**：
+  // 既不滚也不矮，看不出选错了 —— 只能在这里点名。
+  if (maxHeight == null && maxRows != null && maxRows < minRows) {
+    warnOnce(
+      "rte-max-rows-below-min-rows",
+      `[hulian] RichTextEditor：maxRows(${maxRows}) 小于 minRows(${minRows})，上限不会生效 ——` +
+        " CSS 里 min-height 压过 max-height，内容区仍按 minRows 撑开且不滚动。",
+    );
+  }
 
   const raw = value ?? defaultValue ?? "";
   const lastEmitted = useRef<string>(raw);
@@ -461,7 +505,16 @@ export function RichTextEditor({
       {!disabled && toolbar.length > 0 && (
         <RichTextEditorToolbar editor={editor} items={toolbar} onUploadImage={onUploadImage} />
       )}
-      <EditorContent editor={editor} />
+      {/*
+        滚动容器是这一层而不是外壳：工具栏是它的兄弟节点，于是正文滚到第几千 px 都够得着按钮。
+        也不放在 .ProseMirror 自己身上 —— 那层的 class 走 editorProps.attributes，
+        是 useEditor 初始化时定下的，改 prop 不会重新落到 DOM 上。
+      */}
+      <EditorContent
+        editor={editor}
+        className={maxContentHeight != null ? "overflow-y-auto" : undefined}
+        style={maxContentHeight != null ? { maxHeight: maxContentHeight } : undefined}
+      />
       {name != null && <input type="hidden" name={name} value={htmlValue} readOnly />}
     </div>
   );

@@ -36,6 +36,8 @@ import { RichTextEditor } from "@hulianui/ui"
 | invalid | `boolean` | `false` | Invalid state, which switches the shell to the danger color. An enclosing Field can also drive it through `data-invalid`. |
 | disabled | `boolean` | `false` | Disables editing and hides the toolbar. |
 | minRows | `number` | `8` | Minimum height of the content area, in rows. |
+| maxRows | `number` | — | **Maximum** height of the content area, in the same rows unit as `minRows`. Past that the body scrolls internally and the toolbar stays outside the scroll area. See "Height cap". |
+| maxHeight | `number \| string` | — | The same cap expressed as a length (numbers are pixels, strings are any CSS length such as `"60vh"`). **It wins over `maxRows`** when both are given, and the component warns in development. |
 | toolbar | `RichTextToolbarItem[]` | Full set | Toolbar entries and their order; `[]` renders no toolbar at all. **Trimming an entry also disables its extension** — see the usage guidelines. |
 | sanitizePaste | `boolean` | `true` | Sanitizes pasted content: removes `class`, `on*` handlers, and `<style>`, filters `href` / `src` through a URL-scheme allowlist, and filters inline `style` through a property allowlist. |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | Compatibility with legacy HTML from the WeChat editor, Word, or an old UEditor. Off by default; `true` enables all three tiers, and an object enables only the tiers you name. See "Legacy HTML compatibility". |
@@ -105,6 +107,22 @@ const [html, setHtml] = useState(detail.content); // already HTML in storage
 // Or only the tiers you need
 <RichTextEditor legacyHtml={{ font: true, imgStyle: true }} value={html} onChange={setHtml} />
 ```
+
+## Height cap
+
+Without a cap the editor's height simply follows the length of the body. In an admin app "one field is a whole long article" is the norm - privacy policies, terms of service, campaign rules, product descriptions - and legacy content routinely runs to several thousand words. Measured on a real page, an 8,000-word body stretched the content area to nearly 9,000px and the page to over 12,000px, which left the Save button entirely outside the viewport; with two editors on one page, a long first one pushes the second far below the fold.
+
+One cap is enough, and the scrolling lands on the **body** while the toolbar stays put:
+
+```tsx
+<RichTextEditor minRows={8} maxRows={20} />       // same unit as minRows (1 row = 1.75rem)
+<RichTextEditor minRows={8} maxHeight={480} />    // or straight pixels
+<RichTextEditor minRows={8} maxHeight="60vh" />   // or any CSS length
+```
+
+The two props are one thing in two units, so pick one; when both are given `maxHeight` wins and the component warns in development.
+
+**Only the library can provide this tier.** Wrapping `max-h-[480px] overflow-y-auto` around the component in product code can only wrap the **whole shell**, and the toolbar lives inside that shell - so the toolbar scrolls away with the body, which is worse than no cap at all. Scrolling the body alone would mean reaching into the component's internal DOM structure from product code.
 
 ## How images get in
 
@@ -179,6 +197,8 @@ const html = normalizeLegacyHtml(row.content)
 - **`blob:` and `file:` image URLs are stripped by the paste sanitizer.** The first is valid only for the lifetime of the current page and the second only on that one machine, so storing either leaves a broken image the next time the content is opened - and unlike base64 the column size looks perfectly normal, which makes it harder to notice.
 - Paste sanitizing cleans **structure and attributes only**; it is not full XSS disinfection. Escaping and filtering still have to happen server-side when rendering to the front end, because rich text is a user-writable field and a client-side allowlist is not a security boundary.
 - While controlled, the component calls `setContent` only when the incoming string differs from the last emitted one. Passing HTML that is semantically identical but textually different on every render (for example after your own formatting pass) resets the caret repeatedly; feed back exactly the string `onChange` gave you.
+- **A `maxRows` smaller than `minRows` does nothing at all**: `min-height` beats `max-height` in CSS, so the content area still expands to `minRows` and never scrolls. There is no way to tell that from looking at it, so the component names it in development.
+- With a cap in place the content area becomes a scroll container, which also promotes the other axis from `visible` to `auto`: legacy `<img>` or `<table>` elements carrying hard widths get a horizontal scrollbar inside the body instead of bursting out of the shell.
 - Do not switch a field back and forth between this component and [MarkdownEditor](../markdown-editor/markdown-editor.md): their value contracts differ, and each switch is another lossy conversion.
 
 ## Related
