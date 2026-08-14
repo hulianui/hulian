@@ -36,6 +36,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
+| size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
 | className | `string` | — | — |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
@@ -61,7 +62,36 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 </Tabs>
 ```
 
+## 尺寸
+
+`md`（默认）是**页面级 tab 导航**的尺寸。但 tab 条经常不是导航，而是跟标题、搜索框同行的一个切换器 —— 那一行的既有高度是 28–32px，`md` 塞不进去：
+
+| | 轨道（solid） | tab |
+|---|---|---|
+| `md`，纯文字 | 40 | 32 |
+| `md`，文字 + 计数 `Tag` | 44 | 36 |
+| `sm`，纯文字 | **28** | **24** |
+| `sm`，文字 + `Tag size="sm"` | 32 | 28 |
+
+```tsx
+// 跟标题同行的行内切换器
+<div className="flex items-center gap-2">
+  <span className="text-sm font-semibold">职称组报表</span>
+  <Tabs defaultValue="a">
+    <TabsList variant="solid" size="sm">
+      <TabsTab value="a">职称订单<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="b">论文订单<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+    </TabsList>
+    <TabsPanel value="a">…</TabsPanel>
+  </Tabs>
+</div>
+```
+
+`sm` 里的计数 `Tag` **要自己给 `size="sm"`**：Tag 默认 `md` 是 24px，一颗就把 tab 顶回 32px。组件不会去改子元素显式声明的尺寸 —— 那是从外面穿透改内部件，正是本库禁止消费方做的事。
+
 ## 禁忌 / 坑
+
+- **别在消费侧压 `TabsList` 的高度**（`<TabsList className="h-7">`）：它是 `inline-flex items-center`，强压之后 tab 只是居中溢出，solid 的药丸上下各探出轨道 4px（实测），比高一点更难看。要矮就用 `size="sm"` —— tab 的 `py` 与轨道的 `p` 必须一起收，只压一层必然探出。
 
 - [[base-ui-tabs-indicator-slider-via-active-tab-css-vars]]：滑块靠 Base UI 写在 indicator 上的 `--active-tab-*` CSS 变量 + 纯 CSS transition 实现，不引动画库。坑点：激活态钩子是 `data-active` 而非 `data-selected`，写错样式不生效；jsdom 单测无 ResizeObserver 也能跑（指示条几何不会真渲染）。
 

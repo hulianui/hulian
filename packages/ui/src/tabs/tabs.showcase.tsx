@@ -1,11 +1,12 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "./tabs";
+import { Tag } from "../tag";
 
-function Demo({ variant }: { variant: "underline" | "solid" }) {
+function Demo({ variant, size }: { variant: "underline" | "solid"; size?: "sm" | "md" }) {
   return (
     <Tabs defaultValue="account" className="w-80">
-      <TabsList variant={variant}>
+      <TabsList variant={variant} size={size}>
         <TabsTab value="account">账户</TabsTab>
         <TabsTab value="password">密码</TabsTab>
         <TabsTab value="team" disabled>
@@ -67,6 +68,45 @@ export const tabsShowcase: ShowcaseSpec = {
           <TabsPanel value="password">密码面板。</TabsPanel>
           <TabsPanel value="team">团队面板。</TabsPanel>
         </Tabs>
+      ),
+    },
+    {
+      title: "行内切换器（size=sm）",
+      description:
+        "跟标题、搜索框同行时用 sm：纯文字轨道 28px、tab 24px，md 是 40 / 32。计数 Tag 要自己给 size=\"sm\"，否则默认 md 的 24px 会把 tab 顶回去。",
+      code: `<div className="flex items-center gap-2">
+  <span className="text-sm font-semibold">职称组报表</span>
+  <Tabs defaultValue="title">
+    <TabsList variant="solid" size="sm">
+      <TabsTab value="title">职称订单<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="paper">论文订单<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+    </TabsList>
+    <TabsPanel value="title">职称订单列表。</TabsPanel>
+    <TabsPanel value="paper">论文订单列表。</TabsPanel>
+  </Tabs>
+</div>`,
+      render: () => (
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold">职称组报表</span>
+          <Tabs defaultValue="title">
+            <TabsList variant="solid" size="sm">
+              <TabsTab value="title">
+                职称订单
+                <Tag size="sm" className="ml-1.5">
+                  2
+                </Tag>
+              </TabsTab>
+              <TabsTab value="paper">
+                论文订单
+                <Tag size="sm" className="ml-1.5">
+                  7
+                </Tag>
+              </TabsTab>
+            </TabsList>
+            <TabsPanel value="title">职称订单列表。</TabsPanel>
+            <TabsPanel value="paper">论文订单列表。</TabsPanel>
+          </Tabs>
+        </div>
       ),
     },
     {
@@ -136,10 +176,18 @@ export const tabsShowcase: ShowcaseSpec = {
       defaultValue: "underline",
       label: "皮肤",
     },
+    {
+      prop: "size",
+      type: "select",
+      options: ["sm", "md"],
+      defaultValue: "md",
+      label: "尺寸",
+    },
   ],
   states: [
     { name: "underline", render: () => <Demo variant="underline" /> },
     { name: "solid", render: () => <Demo variant="solid" /> },
+    { name: "solid · size=sm", render: () => <Demo variant="solid" size="sm" /> },
     {
       name: "disabled tab",
       render: () => (
@@ -158,7 +206,12 @@ export const tabsShowcase: ShowcaseSpec = {
       ),
     },
   ],
-  renderWithProps: (p) => <Demo variant={(p.variant as "underline" | "solid") ?? "underline"} />,
+  renderWithProps: (p) => (
+    <Demo
+      variant={(p.variant as "underline" | "solid") ?? "underline"}
+      size={(p.size as "sm" | "md") ?? "md"}
+    />
+  ),
   toCode: (p) =>
-    `<Tabs defaultValue="account">\n  <TabsList variant="${p.variant ?? "underline"}">\n    <TabsTab value="account">账户</TabsTab>\n    <TabsTab value="password">密码</TabsTab>\n  </TabsList>\n  <TabsPanel value="account">…</TabsPanel>\n  <TabsPanel value="password">…</TabsPanel>\n</Tabs>`,
+    `<Tabs defaultValue="account">\n  <TabsList variant="${p.variant ?? "underline"}" size="${p.size ?? "md"}">\n    <TabsTab value="account">账户</TabsTab>\n    <TabsTab value="password">密码</TabsTab>\n  </TabsList>\n  <TabsPanel value="account">…</TabsPanel>\n  <TabsPanel value="password">…</TabsPanel>\n</Tabs>`,
 };

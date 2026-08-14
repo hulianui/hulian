@@ -98,3 +98,68 @@ describe("受控/非受控行为", () => {
     expect(onValueChange.mock.calls[0][0]).toBe("b");
   });
 });
+
+describe("Tabs 尺寸档（#269）", () => {
+  const tabsOf = (size?: "sm" | "md") => {
+    const { container, getByText } = render(
+      <Tabs defaultValue="a">
+        <TabsList variant="solid" size={size}>
+          <TabsTab value="a">职称订单</TabsTab>
+          <TabsTab value="b">论文订单</TabsTab>
+        </TabsList>
+        <TabsPanel value="a" />
+      </Tabs>,
+    );
+    return { list: container.querySelector('[role="tablist"]')!, tab: getByText("职称订单"), container };
+  };
+
+  it("不传 size：逐字保持改动前的 md（px-3 py-1.5 text-sm + 轨道 p-1）", () => {
+    const { list, tab } = tabsOf();
+    expect(tab.className).toContain("px-3");
+    expect(tab.className).toContain("py-1.5");
+    expect(tab.className).toContain("text-sm");
+    expect(list.className).toContain("p-1");
+    expect(list.className).toContain("gap-1");
+  });
+
+  it("size=sm：tab 与 solid 轨道一起收，不是只压其中一层", () => {
+    const { list, tab } = tabsOf("sm");
+    expect(tab.className).toContain("px-2");
+    expect(tab.className).toContain("py-1");
+    expect(tab.className).toContain("text-xs");
+    expect(tab.className).not.toContain("text-sm");
+    // 只压轨道会让药丸上下探出（消费方写 h-7 的下场）——两层必须一起收
+    expect(list.className).toContain("p-0.5");
+    expect(list.className).toContain("gap-0.5");
+  });
+
+  it("尺寸经 TabsList 下发，TabsTab 不必逐个传", () => {
+    const { container } = render(
+      <Tabs defaultValue="a">
+        <TabsList size="sm">
+          <TabsTab value="a">甲</TabsTab>
+          <TabsTab value="b">乙</TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    for (const tab of Array.from(container.querySelectorAll('[role="tab"]'))) {
+      expect(tab.className).toContain("text-xs");
+    }
+  });
+
+  it("两条 tab 条各自的尺寸互不串（size 是 List 级、不是全局）", () => {
+    const { container } = render(
+      <Tabs defaultValue="a">
+        <TabsList size="sm">
+          <TabsTab value="a">小</TabsTab>
+        </TabsList>
+        <TabsList>
+          <TabsTab value="b">大</TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    const [small, medium] = Array.from(container.querySelectorAll('[role="tab"]'));
+    expect(small.className).toContain("text-xs");
+    expect(medium.className).toContain("text-sm");
+  });
+});
