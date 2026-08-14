@@ -35,9 +35,19 @@ export interface PopconfirmProps {
   align?: "start" | "center" | "end";
   /** 浮层与触发器间距，默认 8。 */
   sideOffset?: number;
-  /** 禁用：触发器照常渲染但不再唤起确认浮层。 */
+  /**
+   * 跳过确认：触发器照常渲染、点了**照样执行 `onConfirm`**，只是不弹确认浮层。
+   *
+   * 语义是「这次不用问」而不是「这个按钮失效」——「同一个按钮，某些条件下才需要二次确认」
+   * 是它的正主用法，不必再维护两份按钮。要让按钮真的不可点请在子元素上写 `disabled`。
+   */
   disabled?: boolean;
-  /** 触发器（单个元素，确认浮层锚定到它）。 */
+  /**
+   * 触发器（单个元素，确认浮层锚定到它）。
+   *
+   * **它自带的 `onClick` 会被丢弃**（dev 下告警）：二次确认要拦住的正是那个动作。
+   * 动作一律写在 `onConfirm` 里。
+   */
   children: ReactElement;
   /** 透传到浮层 Popup 的类名。 */
   className?: string;

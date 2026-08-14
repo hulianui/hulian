@@ -128,3 +128,58 @@ describe("Popconfirm", () => {
     expect(document.querySelector(".lucide-triangle-alert")).toBeNull();
   });
 });
+
+describe("Popconfirm 拦截子元素动作（#267）", () => {
+  it("children 带 onClick 时 dev 下点名（否则「被丢弃」这件事无从察觉）", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    render(
+      <Popconfirm title="t">
+        <button onClick={() => {}}>删除</button>
+      </Popconfirm>,
+    );
+    expect(warn.mock.calls.flat().join("\n")).toContain("children 自带的 onClick 已被忽略");
+    warn.mockRestore();
+  });
+
+  it("点触发器只打开确认框，子元素自带的 onClick 不执行", async () => {
+    const childClick = vi.fn();
+    const onConfirm = vi.fn();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { getByText } = render(
+      <Popconfirm title="确定要删除吗？" onConfirm={onConfirm}>
+        <button onClick={childClick}>删除</button>
+      </Popconfirm>,
+    );
+    fireEvent.click(getByText("删除"));
+    await waitFor(() => expect(document.body.textContent).toContain("确定要删除吗？"));
+    expect(childClick).not.toHaveBeenCalled(); // 破坏性动作不该在确认之前跑
+    expect(onConfirm).not.toHaveBeenCalled();
+    fireEvent.click(getByText("确认"));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(childClick).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("disabled：不弹确认，但照样执行 onConfirm（「这次不用问」不是「按钮失效」）", () => {
+    const onConfirm = vi.fn();
+    const { getByText } = render(
+      <Popconfirm disabled title="确定要删除吗？" onConfirm={onConfirm}>
+        <button>删除</button>
+      </Popconfirm>,
+    );
+    fireEvent.click(getByText("删除"));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(document.body.textContent).not.toContain("确定要删除吗？");
+  });
+
+  it("disabled 下 onConfirm 抛 rejected promise 不炸（失败反馈仍归消费方）", () => {
+    const onConfirm = vi.fn(() => Promise.reject(new Error("boom")));
+    const { getByText } = render(
+      <Popconfirm disabled title="t" onConfirm={onConfirm}>
+        <button>删除</button>
+      </Popconfirm>,
+    );
+    expect(() => fireEvent.click(getByText("删除"))).not.toThrow();
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+});

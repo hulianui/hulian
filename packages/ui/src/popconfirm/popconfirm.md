@@ -31,7 +31,7 @@ import { Popconfirm } from "@hulianui/ui"
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 浮层对齐 |
 | sideOffset | `number` | `8` | 浮层与触发器间距 |
-| disabled | `boolean` | `false` | 禁用：触发器照常渲染但不唤起浮层 |
+| disabled | `boolean` | `false` | 跳过确认：不弹浮层，但点了**照样执行 `onConfirm`**。语义是「这次不用问」，不是「按钮失效」——要让按钮不可点请在子元素上写 `disabled` |
 | className | `string` | — | 透传到浮层 Popup 的类名 |
 
 ## Events
@@ -51,7 +51,7 @@ import { Popconfirm } from "@hulianui/ui"
 | icon | `ReactNode` | `undefined`=默认警示三角；`null`=不渲染；ReactNode=自定义。默认色随 danger 切换 |
 | okText | `ReactNode` | 确认按钮文案（默认「确认」） |
 | cancelText | `ReactNode` | 取消按钮文案（默认「取消」） |
-| children* | `ReactElement` | 触发器（单个元素，浮层锚定到它） |
+| children* | `ReactElement` | 触发器（单个元素，浮层锚定到它）。**它自带的 `onClick` 会被丢弃**——动作一律写在 `onConfirm` 里 |
 
 ## 示例
 ```tsx
@@ -70,8 +70,48 @@ import { Popconfirm } from "@hulianui/ui"
 </Popconfirm>
 ```
 
+```tsx
+// 同一个按钮，只有某些条件下才需要问一句：不必维护两份
+<Popconfirm
+  title="正文里还有未填写的占位符，仍要导出？"
+  disabled={!hasPlaceholders}   // 没有占位符时不弹确认，点了直接导出
+  onConfirm={exportDocx}        // 动作永远住在这里
+>
+  <Button variant="outline" loading={exporting}>导出 Word</Button>
+</Popconfirm>
+```
+
+## 动作只能写在 onConfirm
+
+`children` 自带的 `onClick` **会被丢弃**（dev 下打一条告警）：
+
+```tsx
+// ✅ 动作在 onConfirm
+<Popconfirm title="确定删除？" danger onConfirm={remove}>
+  <Button tone="danger">删除</Button>
+</Popconfirm>
+
+// ❌ 动作留在子元素上：0.45.0 之前它会先跑完、确认框才事后弹出来问一句
+<Popconfirm title="确定删除？" danger>
+  <Button tone="danger" onClick={remove}>删除</Button>
+</Popconfirm>
+```
+
+这一条与 [Popover](../popover/popover.md) / [Tooltip](../tooltip/tooltip.md) **刻意不同**：那些浮层「打开」不该吃掉子元素原有行为，合并才是对的；Popconfirm 存在的意义就是**拦住**那个动作，替换才自洽。
+
+子元素上原本只用来 `stopPropagation`（整行可点的表格里常见）的 handler 也一并没了，把它挪到 Popconfirm **外面**包一层：
+
+```tsx
+<span onClick={(e) => e.stopPropagation()}>
+  <Popconfirm title="确定删除？" danger onConfirm={remove}>
+    <Button tone="danger" size="sm">删除</Button>
+  </Popconfirm>
+</span>
+```
+
 ## 禁忌 / 坑
 
+- **`disabled` 不是「按钮失效」，是「这次不用问」**：不弹浮层，但点了照样执行 `onConfirm`。要让按钮真的不可点，把 `disabled` 写在子元素上。
 - `onConfirm` 返回 Promise 时：resolve 才自动关闭，reject **保持打开并清 loading**，错误反馈（如弹 Toast）须由调用方自己负责。
 - `onCancel` 只在显式点「取消」按钮时触发；点外部/按 Esc 关闭只走 `onOpenChange`，别在 onCancel 里做必跑的清理。
 - `children` 必须是**单个 ReactElement**（浮层要锚定它），不能传文本或 Fragment。
