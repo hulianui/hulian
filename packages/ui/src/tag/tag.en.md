@@ -25,7 +25,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variant | `"soft" \| "solid" \| "outline"` | `"soft"` | Visual style. |
+| variant | `"soft" \| "solid" \| "outline"` | `"soft"` | Visual style. See Surface recipes for the fill and text colour of each step. |
 | tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | Semantic tone. Same value set as [Alert](../alert/alert.md). |
 | size | `"sm" \| "md"` | `"md"` | Size. |
 | dot | `boolean` | `false` | Leading tone-colored dot. |
@@ -61,6 +61,18 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <Tag tone="info">External browser mode</Tag>
 <Tag variant="outline" tone="info">Read only</Tag>
 ```
+
+## Surface recipes
+
+Building a semantic highlight of your own — not a Tag, not an Alert, just a block you assemble — follow this table. It is the recipe this component uses internally:
+
+| Step | Fill | Text |
+|---|---|---|
+| solid | `bg-warning` | `text-warning-foreground` |
+| soft | `bg-warning-subtle` (or `bg-warning/12`) | `text-warning` |
+| outline | `border-warning` | `text-warning` |
+
+**`-foreground` only matches a solid fill**: in light mode it is plain white. Reaching for `text-warning-foreground` on a tint by naming intuition gives you white on white and the text disappears — while dark mode looks right, because `-foreground` is near-black there, so whoever develops in dark mode never sees it. On a tint the text colour is always the semantic colour itself.
 
 ## Usage notes
 

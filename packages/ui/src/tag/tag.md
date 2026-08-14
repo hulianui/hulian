@@ -25,7 +25,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"soft" \| "solid" \| "outline"` | `"soft"` | 视觉变体：soft 浅底（最常用于状态标签）/ solid 实底 / outline 描边。 |
+| variant | `"soft" \| "solid" \| "outline"` | `"soft"` | 视觉变体：soft 浅底（最常用于状态标签）/ solid 实底 / outline 描边。三档各自的底与文字色见「三档配色」 |
 | tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色。取值集与 [Alert](../alert/alert.md) 一致。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
@@ -64,6 +64,18 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <Tag dot pulse tone="brand">部署中</Tag>
 <Tag onClose={() => remove(id)}>待审核</Tag>
 ```
+
+## 三档配色
+
+自己拼一块带语义色的高亮区（不是 Tag、不是 Alert）时照这张表配 —— 它就是本组件内部那份配方：
+
+| 档 | 底 | 文字 |
+|---|---|---|
+| solid | `bg-warning` | `text-warning-foreground` |
+| soft | `bg-warning-subtle`（或 `bg-warning/12`） | `text-warning` |
+| outline | `border-warning` | `text-warning` |
+
+**`-foreground` 只配实心底**：亮色下它就是白。浅底上按命名直觉写 `text-warning-foreground` 得到的是白字白底、文字整个看不见，而暗色下反而是对的（那边 `-foreground` 是近黑），谁在暗色主题里开发谁查不出来。浅底的文字色一律用语义色本身。
 
 ## 禁忌 / 坑
 

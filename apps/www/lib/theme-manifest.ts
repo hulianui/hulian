@@ -83,6 +83,12 @@ export interface SemanticColor {
   /** 用途约束 / 误用警示（有值则在色卡下渲染一行提示） */
   note?: string;
 }
+/**
+ * 实心档的配色说明（#268）。挂在**有 fg 示意的那几行**上：色卡右侧那块「Aa」正是实心底，
+ * 读到这里的人下一步多半就要自己画一块浅底，那正是踩坑的地方。
+ */
+const NOTE_FOREGROUND =
+  "配它的文字色是 -foreground，但那只配这块实心底：亮色下它就是白。自己画浅底（-subtle 或 /12）时按命名直觉写 text-x-foreground 就是白字白底、文字整个看不见，而暗色下反而是对的，谁在暗色主题里开发谁查不出来。浅底的文字色用语义色本身：solid = bg-x + text-x-foreground，soft = bg-x-subtle + text-x，outline = border-x + text-x。";
 const NOTE_SUBTLE =
   "提示条底、选中行、Tag/Badge 浅底、侧栏当前项高亮。暗色下方向翻转——不是抬亮度，而是把语义色掺进表面色，底仍比表面深沉、只是染上该语义的色相。别自己拿主色 mix() 到白色派生，暗色主题下必错。";
 const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
@@ -145,6 +151,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         light: "brand-700",
         dark: "brand-400",
         fg: "color-primary-foreground",
+        note: NOTE_FOREGROUND,
       },
       {
         token: "color-primary-hover",
@@ -178,6 +185,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         light: "danger-700",
         dark: "danger-400",
         fg: "color-danger-foreground",
+        note: NOTE_FOREGROUND,
       },
       { token: "color-danger-hover", label: "危险悬停", light: "danger-500", dark: "danger-500" },
       {
@@ -199,6 +207,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         light: "success-700",
         dark: "success-500",
         fg: "color-success-foreground",
+        note: NOTE_FOREGROUND,
       },
       { token: "color-success-hover", label: "成功悬停", light: "success-600", dark: "success-600" },
       {
@@ -220,6 +229,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         light: "warning-700",
         dark: "warning-500",
         fg: "color-warning-foreground",
+        note: NOTE_FOREGROUND,
       },
       { token: "color-warning-hover", label: "警告悬停", light: "warning-600", dark: "warning-600" },
       {
@@ -241,7 +251,9 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         light: "info-700",
         dark: "info-400",
         fg: "color-info-foreground",
-        note: "提示 / 说明 / 中性通知，刻意与主色分开：主色说「这里可以点」，信息色说「这段是说明」。两者同为蓝族但差 30° 色相，借主色当提示色会让页面上最稀缺的注意力资源被说明文案占掉。",
+        note:
+          "提示 / 说明 / 中性通知，刻意与主色分开：主色说「这里可以点」，信息色说「这段是说明」。两者同为蓝族但差 30° 色相，借主色当提示色会让页面上最稀缺的注意力资源被说明文案占掉。" +
+          NOTE_FOREGROUND,
       },
       { token: "color-info-hover", label: "信息悬停", light: "info-500", dark: "info-500" },
       {
@@ -261,6 +273,8 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
   },
 ];
 const SEMANTIC_GROUP_EN = ["Interface and surfaces", "Text", "Brand and emphasis", "Status"];
+const NOTE_FOREGROUND_EN =
+  "The matching text colour is -foreground, but it only matches this solid fill: in light mode it is plain white. Painting a tint of your own (-subtle, or /12) and reaching for text-x-foreground by naming intuition gives you white on white and the text disappears — while dark mode looks right, so whoever develops in dark mode never sees it. On a tint the text colour is the semantic colour itself: solid = bg-x + text-x-foreground, soft = bg-x-subtle + text-x, outline = border-x + text-x.";
 const NOTE_SUBTLE_EN =
   "Tinted backgrounds: notice bars, selected rows, Tag and Badge fills, the active sidebar item. The direction flips in dark mode — instead of getting lighter, the semantic colour is mixed into the surface, so the fill stays deeper than the surface and only picks up the hue. Do not derive these by mixing the accent towards white; that is wrong in dark mode.";
 const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
@@ -289,7 +303,7 @@ const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
     label: "Secondary text",
     note: "Descriptive copy, timestamps, placeholders, disabled labels. Named --color-muted before 0.28.0.",
   },
-  "color-primary": { label: "Primary" },
+  "color-primary": { label: "Primary", note: NOTE_FOREGROUND_EN },
   "color-primary-hover": {
     label: "Primary hover",
     note: "Every semantic hover token picks the step between the light and dark values, so it moves one step towards lower contrast in both themes.",
@@ -297,21 +311,23 @@ const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
   "color-primary-subtle": { label: "Primary tint", note: NOTE_SUBTLE_EN },
   "color-primary-border": { label: "Primary tinted border" },
   "color-ring": { label: "Focus ring" },
-  "color-danger": { label: "Danger" },
+  "color-danger": { label: "Danger", note: NOTE_FOREGROUND_EN },
   "color-danger-hover": { label: "Danger hover" },
   "color-danger-subtle": { label: "Danger tint", note: NOTE_SUBTLE_EN },
   "color-danger-border": { label: "Danger tinted border" },
-  "color-success": { label: "Success" },
+  "color-success": { label: "Success", note: NOTE_FOREGROUND_EN },
   "color-success-hover": { label: "Success hover" },
   "color-success-subtle": { label: "Success tint", note: NOTE_SUBTLE_EN },
   "color-success-border": { label: "Success tinted border" },
-  "color-warning": { label: "Warning" },
+  "color-warning": { label: "Warning", note: NOTE_FOREGROUND_EN },
   "color-warning-hover": { label: "Warning hover" },
   "color-warning-subtle": { label: "Warning tint", note: NOTE_SUBTLE_EN },
   "color-warning-border": { label: "Warning tinted border" },
   "color-info": {
     label: "Info",
-    note: "Hints, explanations and neutral notices, deliberately separate from the primary colour: primary means “this is actionable”, info means “this is an explanation”. Both are blues but 30° apart in hue — borrowing the primary colour for notices spends the scarcest attention budget on the page on descriptive copy.",
+    note:
+      "Hints, explanations and neutral notices, deliberately separate from the primary colour: primary means “this is actionable”, info means “this is an explanation”. Both are blues but 30° apart in hue — borrowing the primary colour for notices spends the scarcest attention budget on the page on descriptive copy. " +
+      NOTE_FOREGROUND_EN,
   },
   "color-info-hover": { label: "Info hover" },
   "color-info-subtle": { label: "Info tint", note: NOTE_SUBTLE_EN },

@@ -54,6 +54,16 @@
      --color-border 或 --color-muted-foreground。 */
   --color-hairline: transparent;
   --color-ring: var(--brand-500);
+  /* `-foreground` 一组**只配实心底**（`bg-primary` / `bg-danger` / …）。名字读起来像
+     「配这个语义色的前景色」，但它配的是那块**实心**底：亮色下它就是 var(--white)。
+     自己画一块浅底（`bg-warning-subtle` 或 `bg-warning/12`）时按命名直觉写
+     text-warning-foreground 就是**白字白底**，文字整个看不见——不报错、不告警，
+     而且暗色下反而是对的（那边 -foreground = --gray-950），谁在暗色主题里开发谁查不出来。
+     浅底上的文字色用**语义色本身**：`bg-warning-subtle text-warning`。
+     三档配方（与 tag.tsx 的 compoundVariants 同源）：
+       solid   → bg-warning        + text-warning-foreground
+       soft    → bg-warning-subtle + text-warning
+       outline → border-warning    + text-warning                              （#268） */
   --color-primary: var(--brand-700);
   --color-primary-foreground: var(--white);
   --color-primary-hover: var(--brand-500);
@@ -165,6 +175,8 @@
   --color-hairline: var(--color-border);
   --color-ring: var(--brand-400);
   --color-primary: var(--brand-400);
+  /* 暗色下 -foreground 变成近黑：它仍然只配实心底。浅底的文字色两态都是语义色本身，
+     所以「浅底配 text-x」这条口径不随主题变（#268）。 */
   --color-primary-foreground: var(--gray-950);
   --color-primary-hover: var(--brand-500);
   /* 浅档在暗色下**方向翻转**：不是抬亮度，而是把语义色掺进表面色 —— 底仍然比 surface 深沉，
