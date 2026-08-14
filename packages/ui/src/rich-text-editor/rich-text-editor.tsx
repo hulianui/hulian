@@ -212,6 +212,13 @@ export function RichTextEditor({
   // 高度上限（#264）。滚动必须落在**正文容器**上、工具栏留在它外面 ——
   // 包在整个外壳上工具栏会跟着正文滚走，那正是消费方自己套 max-h 时的下场。
   const maxContentHeight = resolveMaxHeight(maxHeight, maxRows);
+  // `EditorContent` 是 memo 过的（`NamedExoticComponent`）：内联字面量 style 每次渲染都是
+  // 新引用，会把那层 memo 打掉 —— 正是「有 memo 却仍然重渲染」那一类。上限本身是个字符串，
+  // 按它缓存即可。
+  const contentStyle = useMemo(
+    () => (maxContentHeight != null ? { maxHeight: maxContentHeight } : undefined),
+    [maxContentHeight],
+  );
   if (maxHeight != null && maxRows != null) {
     warnOnce(
       "rte-max-height-and-max-rows",
@@ -513,7 +520,7 @@ export function RichTextEditor({
       <EditorContent
         editor={editor}
         className={maxContentHeight != null ? "overflow-y-auto" : undefined}
-        style={maxContentHeight != null ? { maxHeight: maxContentHeight } : undefined}
+        style={contentStyle}
       />
       {name != null && <input type="hidden" name={name} value={htmlValue} readOnly />}
     </div>
