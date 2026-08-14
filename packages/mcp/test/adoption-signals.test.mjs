@@ -12,6 +12,7 @@ import {
   RISK_RULES,
   buildSymbolIndex,
   collectHulianImports,
+  maskComments,
   walkCodeFiles,
 } from "../src/adoption-signals.mjs";
 
@@ -182,4 +183,53 @@ test("全局正则可被两侧反复消费，不残留 lastIndex", () => {
   assert.equal(src.match(rule.re).length, 2);
   assert.equal([...src.matchAll(rule.re)].length, 2, "matchAll 之后再匹配仍应从头开始");
   assert.equal(src.match(rule.re).length, 2);
+});
+
+// —— 注释不算手搓（#266）——
+
+test("maskComments：三种注释里的裸标签都不再命中", () => {
+  const bare = RISK_RULES.find((r) => r.id === "bare-table");
+  const src = [
+    "// 行为按原手写 <table> 1:1 复刻：同样 7 列。",
+    "/* minWidth 落在 <table> 本体上，外壳照常横滚。 */",
+    "{/* 这里以前是 <table> */}",
+    "<Table columns={columns} data={rows} />",
+  ].join("\n");
+  assert.equal(src.match(bare.re).length, 3, "抹之前：三条注释全是误报");
+  assert.equal(maskComments(src).match(bare.re), null);
+});
+
+test("maskComments：真的 JSX 原生标签照旧命中", () => {
+  const bare = RISK_RULES.find((r) => r.id === "bare-table");
+  const src = "// 换掉了手写 <table>\n<table><tbody /></table>";
+  assert.equal(maskComments(src).match(bare.re).length, 1);
+});
+
+test("maskComments：不碰字符串字面量 —— 遮罩与写死颜色恰恰住在里面", () => {
+  const overlay = RISK_RULES.find((r) => r.id === "handmade-overlay");
+  const color = RISK_RULES.find((r) => r.id === "hardcoded-color");
+  const src = '<div className="fixed inset-0 text-[#123456]" />';
+  assert.equal(maskComments(src).match(overlay.re).length, 1);
+  assert.equal(maskComments(src).match(color.re).length, 1);
+});
+
+test("maskComments：字符串里的 // 不是注释（URL 后面的代码不能被抹掉）", () => {
+  const bare = RISK_RULES.find((r) => r.id === "bare-input");
+  const src = 'const doc = "https://example.com/a"; <input name="x" />';
+  assert.equal(maskComments(src).match(bare.re).length, 1);
+});
+
+test("maskComments：长度与换行逐字保留，行号算得准", () => {
+  const src = "const a = 1; // <table>\n<input />\n";
+  const masked = maskComments(src);
+  assert.equal(masked.length, src.length);
+  assert.equal(masked.split("\n").length, src.split("\n").length);
+  const bare = RISK_RULES.find((r) => r.id === "bare-input");
+  const index = masked.match(bare.re) ? masked.search(bare.re) : -1;
+  assert.equal(src.slice(0, index).split("\n").length, 2, "命中仍落在第 2 行");
+});
+
+test("maskComments：未闭合的块注释吃到文件尾，不抛", () => {
+  const bare = RISK_RULES.find((r) => r.id === "bare-table");
+  assert.equal(maskComments("/* 忘了闭合 <table>").match(bare.re), null);
 });

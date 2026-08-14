@@ -20,6 +20,7 @@ import {
   RISK_RULES,
   buildSymbolIndex,
   collectHulianImports,
+  maskComments,
   walkCodeFiles,
 } from "../packages/mcp/src/adoption-signals.mjs";
 
@@ -174,8 +175,10 @@ function scanProject(root, proj) {
 
     if (!JSX_EXT.test(rel)) continue;
     jsxFiles++;
+    // 与 audit 同一口径：注释里的 <table> / <input> 不算手搓（#266）
+    const scanned = maskComments(src);
     for (const r of RISK_RULES) {
-      const m = src.match(r.re);
+      const m = scanned.match(r.re);
       if (!m) continue;
       handmade[r.id] ??= { count: 0, files: [] };
       handmade[r.id].count += m.length;

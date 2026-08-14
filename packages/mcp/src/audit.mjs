@@ -30,6 +30,7 @@ import {
   RISK_RULES,
   buildSymbolIndex,
   collectHulianImports,
+  maskComments,
   walkCodeFiles,
 } from "./adoption-signals.mjs";
 import { getModifier, getSurface, listModifiers, listSurfaces, loadProfiles } from "./profiles.mjs";
@@ -433,6 +434,9 @@ export function auditAdoption({
   const unmapped = new Set();
   const risks = [];
   const gaps = [];
+  // 同一条规则在同一文件同一行只报一次（#266）
+  const seenRisk = new Set();
+  const seenGap = new Set();
   const usedBlocks = new Set();
   let filesUsingHulian = 0;
 
@@ -465,8 +469,17 @@ export function auditAdoption({
 
     if (!JSX_EXT.test(rel)) continue;
 
+    // 注释抹成空格再匹配（#266）：位移与行号不变，片段仍从原文取。
+    const scanned = maskComments(text);
+
     for (const rule of RISK_RULES) {
-      for (const match of text.matchAll(rule.re)) {
+      for (const match of scanned.matchAll(rule.re)) {
+        // 报告的粒度就是「一行」（snippet 是整行），同一行命中两次在读者眼里是同一条 ——
+        // 例如 `from-[#a] to-[#b]` 会出两条一模一样的 hardcoded-color。
+        const line = lineOf(text, match.index);
+        const key = `${rule.id}:${rel}:${line}`;
+        if (seenRisk.has(key)) continue;
+        seenRisk.add(key);
         const snippet = snippetAt(text, match.index);
         const refined = refineRisk(rule, { text, index: match.index, snippet, file: rel, usesHulian });
         risks.push({
@@ -474,7 +487,7 @@ export function auditAdoption({
           should: rule.should,
           why: rule.why,
           file: rel,
-          line: lineOf(text, match.index),
+          line,
           snippet,
           confidence: refined.confidence,
           basis: refined.reasons,
@@ -482,12 +495,16 @@ export function auditAdoption({
       }
     }
     for (const rule of GAP_RULES) {
-      for (const match of text.matchAll(rule.re)) {
+      for (const match of scanned.matchAll(rule.re)) {
+        const line = lineOf(text, match.index);
+        const key = `${rule.id}:${rel}:${line}`;
+        if (seenGap.has(key)) continue;
+        seenGap.add(key);
         gaps.push({
           id: rule.id,
           why: rule.why,
           file: rel,
-          line: lineOf(text, match.index),
+          line,
           snippet: snippetAt(text, match.index),
         });
       }

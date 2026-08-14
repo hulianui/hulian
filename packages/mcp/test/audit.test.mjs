@@ -217,6 +217,47 @@ export default function App() {
   });
 });
 
+test("注释里的 <table> / <input> 不是手搓（#266）—— 迁移写得越清楚，误报越多", () => {
+  // issue 里的原文：一个 100% 迁完的文件，只因为注释写了「原来这里是手写 <table>」被报风险；
+  // 第二条更荒唐，它是从 table.md 的「禁忌 / 坑」抄下来的原话 —— 遵守文档反被自家审计扣分。
+  const root = makeConsumer({
+    files: {
+      "src/installs-table.tsx": `import { Table, Input } from "@hulianui/ui"
+// 瑚琏 Table 迁移。行为按原手写 <table> 1:1 复刻：同样 7 列。
+export default function InstallsTable({ rows }) {
+  return (
+    <div>
+      {/* minWidth 落在 <table> 本体上，写进 className 会钉住滚动容器。 */}
+      <Table data={rows} minWidth={940} />
+      {/* ref 落在瑚琏 Input 内层原生 <input> 上。 */}
+      <Input />
+    </div>
+  )
+}\n`,
+    },
+  });
+  withRoot(root, () => {
+    const r = run(root);
+    assert.equal(r.risks.find((x) => x.id === "bare-table"), undefined);
+    assert.equal(r.risks.find((x) => x.id === "bare-input"), undefined);
+  });
+});
+
+test("同一行命中两次只报一条 —— 报告的粒度就是一行（#266）", () => {
+  const root = makeConsumer({
+    files: {
+      "src/Hero.tsx": `import { Button } from "@hulianui/ui"
+export default () => <div className="bg-gradient-to-r from-[#ff0000] to-[#0000ff]"><Button /></div>\n`,
+    },
+  });
+  withRoot(root, () => {
+    const r = run(root);
+    const colors = r.risks.filter((x) => x.id === "hardcoded-color");
+    assert.equal(colors.length, 1);
+    assert.equal(colors[0].line, 2);
+  });
+});
+
 test("表单提交按钮升到 high —— 承担主要动作就该用 Button", () => {
   const root = makeConsumer({
     files: {

@@ -119,6 +119,62 @@ export const RISK_RULES = [
 ];
 
 /**
+ * 把注释内容抹成空格再拿去匹配风险规则（#266）。
+ *
+ * 裸标签检测判的是 JSX 里的原生元素，而注释里写 `<table>` 是**迁移做得好**的标志 ——
+ * 「原来这里是手写 <table>，现在换成 Table」正是最该写的注释，却成了扣分项。更荒唐的是
+ * 照抄库自己文档的坑位说明（`table.md` 里那句「minWidth 落在 <table> 本体上」）也会中招：
+ * 遵守文档 → 记下来 → 被自家审计报风险。
+ *
+ * **只抹注释，不碰字符串字面量** —— `className="fixed inset-0"` 与 `text-[#fff]` 这些
+ * 恰恰住在字符串里，抹掉它们就把 handmade-overlay / hardcoded-color 两条规则一起废了。
+ * 所以这里是个带状态的小扫描器而不是几条正则：`"https://x"` 里的 `//` 不是注释。
+ *
+ * 长度与换行逐字保留 —— 调用方按 `match.index` 算行号、并从**原文**取片段，位移一变全错。
+ */
+export function maskComments(text) {
+  const out = text.split("");
+  const n = text.length;
+  let i = 0;
+  // normal | line | block | ' | " | `
+  let state = "normal";
+  const blank = (from, to) => {
+    for (let k = from; k < to; k++) if (out[k] !== "\n") out[k] = " ";
+  };
+  while (i < n) {
+    const c = text[i];
+    const next = text[i + 1];
+    if (state === "normal") {
+      if (c === "/" && next === "/") {
+        let end = text.indexOf("\n", i);
+        if (end === -1) end = n;
+        blank(i, end);
+        i = end;
+        continue;
+      }
+      if (c === "/" && next === "*") {
+        let end = text.indexOf("*/", i + 2);
+        end = end === -1 ? n : end + 2;
+        blank(i, end);
+        i = end;
+        continue;
+      }
+      if (c === '"' || c === "'" || c === "`") state = c;
+      i += 1;
+      continue;
+    }
+    // 字符串里：只找收尾引号，转义符跳过下一个字符
+    if (c === "\\") {
+      i += 2;
+      continue;
+    }
+    if (c === state) state = "normal";
+    i += 1;
+  }
+  return out.join("");
+}
+
+/**
  * 递归收集代码文件，返回相对 `base` 的 posix 路径。
  *
  * `maxFiles` 是安全阀而非优化：扫到 monorepo 根时文件数没有上界，静默扫穿不如如实截断。
