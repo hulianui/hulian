@@ -1,5 +1,165 @@
 # @hulianui/ui
 
+## 0.45.0
+
+### Minor Changes
+
+- **BREAKING**: `Popconfirm` now **intercepts** the child's action instead of merging with it, and `disabled` means "skip the question", not "dead button" <!-- parity-id: popconfirm-intercept-child-onclick -->
+
+  The trigger used to be `<PopoverTrigger render={children} />`, and Base UI's `render` has **mergeProps**
+  semantics: same-named handlers run one after another. So the most natural use of all -- wrapping an
+  existing button in a Popconfirm to add a confirmation step -- produced **the destructive action running
+  to completion, and only then a dialog asking about it**, at which point clicking "Cancel" changes
+  nothing (#267).
+
+  This one fails on the worst possible side: the safety net goes out silently, with no symptom at all --
+  the confirmation still pops, nothing throws, nothing warns, and you only find out by checking the data
+  afterwards. The reporter discovered it in production after one click on Export handed a Word file
+  straight to the client. And what trips it is the most typical usage there is: Delete / Export / Reset
+  buttons in an admin app **already have an `onClick`**.
+
+  **Two behaviour changes:**
+
+  - An `onClick` on `children` **is dropped**, and development builds log a warning naming it. The action
+    always belongs in `onConfirm`.
+  - `disabled` changes from "render the trigger but never open the popup" to "**skip the confirmation and
+    still run `onConfirm`**". Otherwise, once the action has moved into `onConfirm`, that tier turns into
+    "this button does nothing at all" -- the same trap waiting one step further along. To make the button
+    genuinely unclickable, put `disabled` on the child element.
+
+  With that, "one button that only sometimes needs a question" no longer needs two copies:
+
+  ```tsx
+  <Popconfirm
+    title="The body still has unfilled placeholders. Export anyway?"
+    disabled={!hasPlaceholders} // no placeholders: no confirmation, the click exports directly
+    onConfirm={exportDocx} // the action always lives here
+  >
+    <Button variant="outline" loading={exporting}>
+      Export Word
+    </Button>
+  </Popconfirm>
+  ```
+
+  **Only `Popconfirm` changes.** For `Popover` / `Tooltip` / `Dropdown`, opening an overlay should not
+  swallow whatever the child already did, so merging is right for them; Popconfirm exists to *stop* that
+  action, so replacing is the only self-consistent option. A handler that only called `stopPropagation`
+  (common inside clickable table rows) goes as well -- move it to a wrapper outside Popconfirm.
+
+- `RichTextEditor` gains a height cap: the new `maxRows` / `maxHeight` make the body scroll internally <!-- parity-id: rich-text-editor-max-height -->
+
+  There was only `minRows` and **no way at all to express an upper bound**, so the editor's height simply
+  followed the length of the body. In an admin app "one field is a whole long article" is the norm
+  (privacy policies, terms of service, campaign rules, product descriptions), and legacy content the
+  content team has accumulated over years routinely runs to several thousand words. Measured on a real
+  page, an 8,343-word body stretched the content area to 8,897px and the page to 12,237px, so an operator
+  had to scroll 14.6 screens to reach Save at the bottom; with two editors on one page, a long first one
+  pushed the second down to 9,000px (#264).
+
+  The two props are one thing in two units, so pick one:
+
+  ```tsx
+  <RichTextEditor minRows={8} maxRows={20} />       // same unit as minRows (1 row = 1.75rem)
+  <RichTextEditor minRows={8} maxHeight={480} />    // or straight pixels
+  <RichTextEditor minRows={8} maxHeight="60vh" />   // or any CSS length
+  ```
+
+  When both are given `maxHeight` wins (with a development warning). A `maxRows` smaller than `minRows`
+  **does nothing at all** -- `min-height` beats `max-height` in CSS, so the content area still expands to
+  `minRows` and never scrolls, and there is no way to tell that from looking at it, so that case is named
+  too.
+
+  **The scrolling lands on the body container, with the toolbar as its sibling**, so the bold button is
+  still within reach several thousand pixels down. Only the library can provide this tier: wrapping
+  `max-h-[480px] overflow-y-auto` around the component in product code can only wrap the **whole shell**,
+  and the toolbar lives inside that shell, so the toolbar scrolls away with the body -- worse than no cap.
+  Scrolling the body alone would mean reaching into the component's internal DOM structure.
+
+  With neither prop, the component's DOM and behaviour are **byte-for-byte unchanged** -- existing
+  consumers are not quietly altered.
+
+- All seven Table composition primitives now take a `ref`, so the scroll container inside `TableRoot` finally has a handle <!-- parity-id: table-primitives-ref -->
+
+  `TableRoot` is the only element among the composition primitives carrying `overflow-x-auto`, yet
+  `TableRootProps` extended `HTMLAttributes<HTMLDivElement>`, which has no `ref` -- so **there was no way
+  in the type system to reach that scroll container** (#265). It worked at runtime, because in React 19 a
+  function component's `ref` is an ordinary prop that rides along in `...rest` and gets spread onto the
+  div, which left it "usable but not safe to use": a coincidence that was never written into the
+  contract. This change is types only; the implementation is untouched.
+
+  Horizontal scroll state **exists only on that div**, so product code needs the reference the moment it
+  wants to do anything with horizontal scrolling: a hand-drawn floating scrollbar (on a wide table the
+  native one sits at the bottom of the table, out of reach until you scroll all the way down), a
+  `ResizeObserver` on the container width, "scroll to column N", or two tables scrolling in sync. None of
+  the existing workarounds hold up: `querySelector` cannot pick the right one with several tables on
+  screen or a table inside a table; walking up from the child `<table>` with `parentElement` writes the
+  library's internals into product code (the high-level `Table` really does add a wrapper for
+  `stickyScrollbar`); and wrapping another `div` around it gives you a layer that is not the scrollport,
+  where `scrollLeft` is always 0.
+
+  ```tsx
+  const scroller = useRef<HTMLDivElement>(null)
+  <TableRoot ref={scroller}>…</TableRoot>   // scrollLeft / scrollWidth live on this layer
+  ```
+
+  `TableHeader` / `TableBody` / `TableFooter` / `TableRow` / `TableHead` / `TableCell` get the same
+  treatment -- "scroll to this row" and "measure this cell" are just as common in a hand-written table.
+
+  The docs add one more note: when forwarding primitive props through a thin wrapper, `Omit` the `align`
+  from `TableHeadProps` / `TableCellProps` the same way they do (they replace the wider native union with
+  `"left" | "center" | "right"`).
+
+- `TabsList` gains `size="sm"`, for an inline switcher sharing a row with a heading or a search box <!-- parity-id: tabs-size-sm -->
+
+  `Tabs` had a single size, but in an admin app a tab bar is often not page-level navigation -- it is a
+  switcher on the same row as a heading and a search box, and that row is already 28-32px tall. With a
+  count `Tag` in it, a tab in the old tier was **36px in a 44px track**, which does not fit (#269).
+
+  The size is stacked up layer by layer, each of them reasonable on its own: `py-1.5` on `TabsTab` (12px)
+  plus a default `md` `Tag` (24px) plus `p-1` on a solid `TabsList` (8px) = 44. So the whole tier **has to
+  shrink together**, which is also why product code cannot squeeze it back: `TabsList` is an
+  `inline-flex items-center`, so `className="h-7"` only makes the tabs overflow while staying centred,
+  and the solid pill sticks out 4px above and below the track -- worse than being slightly too tall.
+
+  Measured in a real browser (`getBoundingClientRect`, not arithmetic):
+
+  |                                | Track (solid) | Tab    |
+  | ------------------------------ | ------------- | ------ |
+  | `md`, text only                | 40            | 32     |
+  | `md`, text plus a count `Tag`  | 44            | 36     |
+  | `sm`, text only                | **28**        | **24** |
+  | `sm`, text plus `Tag size="sm"`| 32            | 28     |
+
+  `size` sits on `TabsList` (the same layer as the `variant` skin) and reaches `TabsTab` through context,
+  so it never has to be repeated. `md` is the default and **keeps the previous class names verbatim**, so
+  call sites that do not pass `size` render identical DOM. The `--active-tab-*` machinery behind the
+  Indicator needs no change: the pill box follows the tab box, and in both tiers it measured pixel-equal
+  to the active tab and entirely inside the track.
+
+  A count `Tag` inside a `sm` tab **needs its own `size="sm"`** -- the component does not override a size
+  the child declared explicitly, because reaching in from the outside to restyle an inner component is
+  exactly what product code is told not to do here.
+
+### Patch Changes
+
+- `Tag` docs gain a "surface recipes" table: which text colour goes on a soft tint now has a public answer <!-- parity-id: tag-surface-recipes -->
+
+  Those three lines in the `compoundVariants` of `tag.tsx` were the answer all along, but they lived
+  **only in the source**: what `tag.md` said about `variant` was one sentence -- soft tint / solid fill /
+  outline -- with nothing about the text colour of each step. Anyone painting a tinted highlight of their
+  own (not a Tag, not an Alert, just a block they assemble) had to read the component source to find the
+  recipe.
+
+  | Step    | Fill                                      | Text                      |
+  | ------- | ----------------------------------------- | ------------------------- |
+  | solid   | `bg-warning`                              | `text-warning-foreground` |
+  | soft    | `bg-warning-subtle` (or `bg-warning/12`)  | `text-warning`            |
+  | outline | `border-warning`                          | `text-warning`            |
+
+  It also spells out that `-foreground` **only matches a solid fill**: in light mode it is plain white, so
+  on a tint it is white on white and the text disappears, while dark mode looks right (#268). The
+  token-side comment is in the `@hulianui/tokens` entry of the same release.
+
 ## 0.44.0
 
 ### Minor Changes

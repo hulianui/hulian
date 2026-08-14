@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.44.0 · 393 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.45.0 · 393 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -7465,6 +7465,8 @@ import { RichTextEditor } from "@hulianui/ui"
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
 | disabled | `boolean` | `false` | 禁用（内容区不可编辑 + 工具栏收起） |
 | minRows | `number` | `8` | 内容区最小高度（行） |
+| maxRows | `number` | — | 内容区**最大**高度（行，与 `minRows` 同一套单位）。超过就让正文自己内部滚动，工具栏留在滚动区外。见「高度上限」 |
+| maxHeight | `number \| string` | — | 同一件事的长度写法（数值按 px，字符串按任意 CSS 长度如 `"60vh"`）。**与 `maxRows` 同给时以它为准**，dev 下告警 |
 | toolbar | `RichTextToolbarItem[]` | 完整一档 | 工具栏条目与顺序；`[]` 则整条工具栏不渲染。**裁掉一档同时会关掉对应扩展**（见「禁忌 / 坑」） |
 | sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>`，`href` / `src` 过协议白名单，内联 `style` 过属性白名单 |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | 存量 HTML 兼容（微信编辑器 / Word / 老 UEditor 的正文）。默认关；`true` 三档全开，给对象则只开写明的那几档。见「存量 HTML 兼容」 |
@@ -7534,6 +7536,22 @@ const [html, setHtml] = useState(detail.content); // 库里取出来就是 HTML
 // 只要其中某几档
 <RichTextEditor legacyHtml={{ font: true, imgStyle: true }} value={html} onChange={setHtml} />
 ```
+
+## 高度上限
+
+不给上限时编辑区高度**完全跟着正文长度走**。后台里「一个字段就是一整篇长文」是常态（隐私条款、用户协议、活动规则、商品详情），存量正文动辄七八千字 —— 实测一篇 8000 余字的正文能把内容区撑到近 9000px，页面滚动条上万像素，底部的「保存」按钮根本不在视口里；一页放两块富文本时上面那块一长，下面那块直接被推到看不见的地方。
+
+给一档上限就够了，滚动落在**正文**上、工具栏留在原地：
+
+```tsx
+<RichTextEditor minRows={8} maxRows={20} />       // 与 minRows 同一套单位（1 行 = 1.75rem）
+<RichTextEditor minRows={8} maxHeight={480} />    // 或直接给像素
+<RichTextEditor minRows={8} maxHeight="60vh" />   // 或任意 CSS 长度
+```
+
+两档是同一件事的两种单位，留一个即可；同给以 `maxHeight` 为准（dev 下告警）。
+
+**这一档只能由库来给**：在业务侧套 `max-h-[480px] overflow-y-auto` 只能包在**整个外壳**上，而工具栏在外壳里面，于是工具栏会跟着正文一起滚出可视区，比不加更糟。要只滚正文就得钻进组件内部的 DOM 结构去定位那一层——那是把库的内部结构写进业务代码。
 
 ## 图片怎么进来
 
@@ -7608,6 +7626,8 @@ const html = normalizeLegacyHtml(row.content)
 - **`blob:` 与 `file:` 的图片地址会被粘贴净化删掉。** 前者只在当前页面生命周期内有效、后者只在那台机器上有效，存进库下次打开就是碎图 —— 而且字段大小看不出异常，比 base64 更难查。
 - 粘贴净化只洗**结构与属性**，不做 XSS 意义上的完全消毒。渲染到前台时该转义/该过滤仍要在服务端做一遍 —— 富文本正文是用户可写字段，前端白名单不是安全边界。
 - `value` 受控时组件按「与上次 emit 的串不同才 setContent」防回环。若外部每次渲染都传一个**语义相同但字符串不同**的 HTML（比如自己格式化过），会反复重置光标位置；受控值请直接回填 `onChange` 给的那串。
+- **`maxRows` 比 `minRows` 小时什么都不会发生**：CSS 里 `min-height` 压过 `max-height`，内容区仍按 `minRows` 撑开且不滚动 —— 看不出选错了，所以组件在 dev 下点名。
+- 高度上限开着时，内容区会成为一个滚动容器，另一轴也随之从 `visible` 计算成 `auto`：存量正文里带死宽度的 `<img>` / `<table>` 会在正文里出现横向滚动条，而不是撑破外壳。
 - 与 [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。
 
 ## 相关
@@ -15236,8 +15256,17 @@ import {
 | layout | `"auto" ｜ "fixed"` | `"auto"` | `table-layout` |
 | minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
 | tableClassName | `string` | — | `<table>` 本体的类名 |
+| ref | `Ref<HTMLDivElement>` | — | **外层滚动容器**（`overflow-x-auto` 那层）的引用。横向滚动态只存在于那一层 |
 
-`TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性。
+`TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性，外加一个 `ref`。
+
+七件原语**都收 `ref`**，落在各自的那个 DOM 节点上（`TableRoot` → 滚动容器 `div`，其余 → `thead` / `tbody` / `tfoot` / `tr` / `th` / `td`）。`TableRoot` 这一个尤其要紧：横向滚动状态只存在于那层 `overflow-x-auto` 的 `div` 上，自绘底部悬浮横滚条、`ResizeObserver` 观察容器宽、「滚到第 N 列」、两张表联动横滚都得从它拿。
+
+```tsx
+const scroller = useRef<HTMLDivElement>(null)
+// scroller.current!.scrollLeft / scrollWidth / clientWidth 都在这一层
+<TableRoot ref={scroller}>…</TableRoot>
+```
 
 ### TableRow / TableHead / TableCell
 
@@ -15246,6 +15275,7 @@ import {
 | selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
 | align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性 |
 | verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
+| ref | `Ref<HTMLTableRowElement ｜ HTMLTableCellElement>` | — | 落在 `tr` / `th` / `td` 本体上（「滚到某一行」「量某个格子的宽」） |
 
 `TableRow` 的分隔线 / 悬停 / 斑马纹按所在段自动区分（表头行不 hover、不斑马纹，也不吃 `last:border-0`
 —— 单行表头就是最后一行，那条规则会把表头底边线抹掉），消费方不用自己记这个差别。
@@ -15369,6 +15399,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
 - **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
+- 写薄包装转发原语 props 时，`TableHeadProps` / `TableCellProps` 的 `align` 得跟着 `Omit` 一次：那两个接口把原生的 `align`（更宽的联合，含 `justify` / `char`）换成了 `"left" | "center" | "right"`，直接 `extends ThHTMLAttributes<…>` 转发会类型不兼容。
 - 表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。
 - **「表内横滚 + 表头吸页面」是拿不到的组合**，这是 CSS 的硬约束不是实现取舍：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是那层外壳自己成了 scrollport，把表头锚死在它身上（实测 Chromium：页面下滚时表头直接划走，同一张表换成 `overflow: visible` 的外壳才稳稳停在 `top: 0`）。所以 `stickyHeader="scrollParent"` 下组件**主动去掉**外壳的 `overflow-x-auto`，横向溢出交给外部滚动容器；`stickyScrollbar` 在这一档下没有可镜像的容器，会被忽略并告警。要保住表内横滚就只能用 `"self"` + `maxHeight`。
 - `renderRowExtra` 与 `renderExpandedRow` 是两件事，别拿后者顶前者：明细面板**每行只能一条、必须展开态、且强制前插一列展开器**。「这条工作经历下面常驻挂 N 张证书」属于行的一部分，不是折叠明细。
@@ -15426,7 +15457,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"soft" \| "solid" \| "outline"` | `"soft"` | 视觉变体：soft 浅底（最常用于状态标签）/ solid 实底 / outline 描边。 |
+| variant | `"soft" \| "solid" \| "outline"` | `"soft"` | 视觉变体：soft 浅底（最常用于状态标签）/ solid 实底 / outline 描边。三档各自的底与文字色见「三档配色」 |
 | tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色。取值集与 [Alert](https://hulianui.haloritual.com/zh/components/alert) 一致。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
@@ -15465,6 +15496,18 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <Tag dot pulse tone="brand">部署中</Tag>
 <Tag onClose={() => remove(id)}>待审核</Tag>
 ```
+
+## 三档配色
+
+自己拼一块带语义色的高亮区（不是 Tag、不是 Alert）时照这张表配 —— 它就是本组件内部那份配方：
+
+| 档 | 底 | 文字 |
+|---|---|---|
+| solid | `bg-warning` | `text-warning-foreground` |
+| soft | `bg-warning-subtle`（或 `bg-warning/12`） | `text-warning` |
+| outline | `border-warning` | `text-warning` |
+
+**`-foreground` 只配实心底**：亮色下它就是白。浅底上按命名直觉写 `text-warning-foreground` 得到的是白字白底、文字整个看不见，而暗色下反而是对的（那边 `-foreground` 是近黑），谁在暗色主题里开发谁查不出来。浅底的文字色一律用语义色本身。
 
 ## 禁忌 / 坑
 
@@ -18790,6 +18833,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
+| size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
 | className | `string` | — | — |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
@@ -18815,7 +18859,36 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 </Tabs>
 ```
 
+## 尺寸
+
+`md`（默认）是**页面级 tab 导航**的尺寸。但 tab 条经常不是导航，而是跟标题、搜索框同行的一个切换器 —— 那一行的既有高度是 28–32px，`md` 塞不进去：
+
+| | 轨道（solid） | tab |
+|---|---|---|
+| `md`，纯文字 | 40 | 32 |
+| `md`，文字 + 计数 `Tag` | 44 | 36 |
+| `sm`，纯文字 | **28** | **24** |
+| `sm`，文字 + `Tag size="sm"` | 32 | 28 |
+
+```tsx
+// 跟标题同行的行内切换器
+<div className="flex items-center gap-2">
+  <span className="text-sm font-semibold">职称组报表</span>
+  <Tabs defaultValue="a">
+    <TabsList variant="solid" size="sm">
+      <TabsTab value="a">职称订单<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="b">论文订单<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+    </TabsList>
+    <TabsPanel value="a">…</TabsPanel>
+  </Tabs>
+</div>
+```
+
+`sm` 里的计数 `Tag` **要自己给 `size="sm"`**：Tag 默认 `md` 是 24px，一颗就把 tab 顶回 32px。组件不会去改子元素显式声明的尺寸 —— 那是从外面穿透改内部件，正是本库禁止消费方做的事。
+
 ## 禁忌 / 坑
+
+- **别在消费侧压 `TabsList` 的高度**（`<TabsList className="h-7">`）：它是 `inline-flex items-center`，强压之后 tab 只是居中溢出，solid 的药丸上下各探出轨道 4px（实测），比高一点更难看。要矮就用 `size="sm"` —— tab 的 `py` 与轨道的 `p` 必须一起收，只压一层必然探出。
 
 - [[base-ui-tabs-indicator-slider-via-active-tab-css-vars]]：滑块靠 Base UI 写在 indicator 上的 `--active-tab-*` CSS 变量 + 纯 CSS transition 实现，不引动画库。坑点：激活态钩子是 `data-active` 而非 `data-selected`，写错样式不生效；jsdom 单测无 ResizeObserver 也能跑（指示条几何不会真渲染）。
 
@@ -19994,7 +20067,7 @@ import { Popconfirm } from "@hulianui/ui"
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"top"` | 浮层方位 |
 | align | `"start"\|"center"\|"end"` | `"center"` | 浮层对齐 |
 | sideOffset | `number` | `8` | 浮层与触发器间距 |
-| disabled | `boolean` | `false` | 禁用：触发器照常渲染但不唤起浮层 |
+| disabled | `boolean` | `false` | 跳过确认：不弹浮层，但点了**照样执行 `onConfirm`**。语义是「这次不用问」，不是「按钮失效」——要让按钮不可点请在子元素上写 `disabled` |
 | className | `string` | — | 透传到浮层 Popup 的类名 |
 
 ## Events
@@ -20014,7 +20087,7 @@ import { Popconfirm } from "@hulianui/ui"
 | icon | `ReactNode` | `undefined`=默认警示三角；`null`=不渲染；ReactNode=自定义。默认色随 danger 切换 |
 | okText | `ReactNode` | 确认按钮文案（默认「确认」） |
 | cancelText | `ReactNode` | 取消按钮文案（默认「取消」） |
-| children* | `ReactElement` | 触发器（单个元素，浮层锚定到它） |
+| children* | `ReactElement` | 触发器（单个元素，浮层锚定到它）。**它自带的 `onClick` 会被丢弃**——动作一律写在 `onConfirm` 里 |
 
 ## 示例
 ```tsx
@@ -20033,8 +20106,48 @@ import { Popconfirm } from "@hulianui/ui"
 </Popconfirm>
 ```
 
+```tsx
+// 同一个按钮，只有某些条件下才需要问一句：不必维护两份
+<Popconfirm
+  title="正文里还有未填写的占位符，仍要导出？"
+  disabled={!hasPlaceholders}   // 没有占位符时不弹确认，点了直接导出
+  onConfirm={exportDocx}        // 动作永远住在这里
+>
+  <Button variant="outline" loading={exporting}>导出 Word</Button>
+</Popconfirm>
+```
+
+## 动作只能写在 onConfirm
+
+`children` 自带的 `onClick` **会被丢弃**（dev 下打一条告警）：
+
+```tsx
+// ✅ 动作在 onConfirm
+<Popconfirm title="确定删除？" danger onConfirm={remove}>
+  <Button tone="danger">删除</Button>
+</Popconfirm>
+
+// ❌ 动作留在子元素上：0.45.0 之前它会先跑完、确认框才事后弹出来问一句
+<Popconfirm title="确定删除？" danger>
+  <Button tone="danger" onClick={remove}>删除</Button>
+</Popconfirm>
+```
+
+这一条与 [Popover](https://hulianui.haloritual.com/zh/components/popover) / [Tooltip](https://hulianui.haloritual.com/zh/components/tooltip) **刻意不同**：那些浮层「打开」不该吃掉子元素原有行为，合并才是对的；Popconfirm 存在的意义就是**拦住**那个动作，替换才自洽。
+
+子元素上原本只用来 `stopPropagation`（整行可点的表格里常见）的 handler 也一并没了，把它挪到 Popconfirm **外面**包一层：
+
+```tsx
+<span onClick={(e) => e.stopPropagation()}>
+  <Popconfirm title="确定删除？" danger onConfirm={remove}>
+    <Button tone="danger" size="sm">删除</Button>
+  </Popconfirm>
+</span>
+```
+
 ## 禁忌 / 坑
 
+- **`disabled` 不是「按钮失效」，是「这次不用问」**：不弹浮层，但点了照样执行 `onConfirm`。要让按钮真的不可点，把 `disabled` 写在子元素上。
 - `onConfirm` 返回 Promise 时：resolve 才自动关闭，reject **保持打开并清 loading**，错误反馈（如弹 Toast）须由调用方自己负责。
 - `onCancel` 只在显式点「取消」按钮时触发；点外部/按 Esc 关闭只走 `onOpenChange`，别在 onCancel 里做必跑的清理。
 - `children` 必须是**单个 ReactElement**（浮层要锚定它），不能传文本或 Fragment。

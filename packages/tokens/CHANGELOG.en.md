@@ -1,5 +1,40 @@
 # @hulianui/tokens
 
+## 0.9.1
+
+### Patch Changes
+
+- Spell out that `-foreground` only matches a solid fill: on a tint the text colour is the semantic colour itself <!-- parity-id: tokens-foreground-solid-only -->
+
+  Every semantic colour ships both `--color-x` and `--color-x-foreground`, which read like "the fill" and
+  "the foreground that goes with it". But `-foreground` **only holds for a solid fill** -- in light mode
+  it equals `var(--white)`. Painting a tint of your own (`bg-warning-subtle`, `bg-warning/12`) and
+  reaching for `text-warning-foreground` by naming intuition gives you **white on white**, and the text
+  disappears (#268).
+
+  It also looks right in dark mode (where `-foreground` is near-black), so whoever develops in dark mode
+  never sees it; nothing throws, nothing warns, and neither typecheck nor guard can see it. The correct
+  recipe previously **lived only in the `compoundVariants` of `tag.tsx`** and appeared in no
+  documentation at all.
+
+  The same sentence now appears in three places, following what `--color-hairline` already does (it is
+  the precedent for this class of problem):
+
+  - a comment on the `-foreground` group in `semantic.css`, stating that it only matches a solid fill and
+    what a tint should use instead
+  - the colour page of the docs site: one note under each of the five solid semantic swatches (primary /
+    danger / success / warning / info) -- that row already shows "solid fill plus foreground" on the
+    right, and whoever reads it is usually about to paint a tint next
+  - a "surface recipes" table in the `Tag` docs (see the `@hulianui/ui` entry of the same release)
+
+  | Surface | Fill                                      | Text                      |
+  | ------- | ----------------------------------------- | ------------------------- |
+  | solid   | `bg-warning`                              | `text-warning-foreground` |
+  | soft    | `bg-warning-subtle` (or `bg-warning/12`)  | `text-warning`            |
+  | outline | `border-warning`                          | `text-warning`            |
+
+  Documentation and comments only; not a single token value changed.
+
 ## 0.9.0
 
 ### Minor Changes

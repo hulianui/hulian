@@ -6506,25 +6506,32 @@
       "id": "component/popconfirm/pitfall/1",
       "scope": "popconfirm",
       "title": "Popconfirm",
-      "rule": "`onConfirm` 返回 Promise 时：resolve 才自动关闭，reject **保持打开并清 loading**，错误反馈（如弹 Toast）须由调用方自己负责。",
+      "rule": "**`disabled` 不是「按钮失效」，是「这次不用问」**：不弹浮层，但点了照样执行 `onConfirm`。要让按钮真的不可点，把 `disabled` 写在子元素上。",
       "source": "packages/ui/src/popconfirm/popconfirm.md"
     },
     {
       "id": "component/popconfirm/pitfall/2",
       "scope": "popconfirm",
       "title": "Popconfirm",
-      "rule": "`onCancel` 只在显式点「取消」按钮时触发；点外部/按 Esc 关闭只走 `onOpenChange`，别在 onCancel 里做必跑的清理。",
+      "rule": "`onConfirm` 返回 Promise 时：resolve 才自动关闭，reject **保持打开并清 loading**，错误反馈（如弹 Toast）须由调用方自己负责。",
       "source": "packages/ui/src/popconfirm/popconfirm.md"
     },
     {
       "id": "component/popconfirm/pitfall/3",
       "scope": "popconfirm",
       "title": "Popconfirm",
-      "rule": "`children` 必须是**单个 ReactElement**（浮层要锚定它），不能传文本或 Fragment。",
+      "rule": "`onCancel` 只在显式点「取消」按钮时触发；点外部/按 Esc 关闭只走 `onOpenChange`，别在 onCancel 里做必跑的清理。",
       "source": "packages/ui/src/popconfirm/popconfirm.md"
     },
     {
       "id": "component/popconfirm/pitfall/4",
+      "scope": "popconfirm",
+      "title": "Popconfirm",
+      "rule": "`children` 必须是**单个 ReactElement**（浮层要锚定它），不能传文本或 Fragment。",
+      "source": "packages/ui/src/popconfirm/popconfirm.md"
+    },
+    {
+      "id": "component/popconfirm/pitfall/5",
       "scope": "popconfirm",
       "title": "Popconfirm",
       "rule": "受控用法须 `open` + `onOpenChange` 成对；只传 `open` 不传 onOpenChange 会卡死无法关闭。",
@@ -7533,6 +7540,20 @@
     },
     {
       "id": "component/rich-text-editor/pitfall/12",
+      "scope": "rich-text-editor",
+      "title": "RichTextEditor",
+      "rule": "**`maxRows` 比 `minRows` 小时什么都不会发生**：CSS 里 `min-height` 压过 `max-height`，内容区仍按 `minRows` 撑开且不滚动 —— 看不出选错了，所以组件在 dev 下点名。",
+      "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
+    },
+    {
+      "id": "component/rich-text-editor/pitfall/13",
+      "scope": "rich-text-editor",
+      "title": "RichTextEditor",
+      "rule": "高度上限开着时，内容区会成为一个滚动容器，另一轴也随之从 `visible` 计算成 `auto`：存量正文里带死宽度的 `<img>` / `<table>` 会在正文里出现横向滚动条，而不是撑破外壳。",
+      "source": "packages/ui/src/rich-text-editor/rich-text-editor.md"
+    },
+    {
+      "id": "component/rich-text-editor/pitfall/14",
       "scope": "rich-text-editor",
       "title": "RichTextEditor",
       "rule": "与 [MarkdownEditor](../markdown-editor/markdown-editor.md) 不要在同一个字段上换来换去：两者的值契约不同，换一次就是一次有损转换。",
@@ -8935,228 +8956,235 @@
       "id": "component/table/pitfall/3",
       "scope": "table",
       "title": "Table",
-      "rule": "表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。",
+      "rule": "写薄包装转发原语 props 时，`TableHeadProps` / `TableCellProps` 的 `align` 得跟着 `Omit` 一次：那两个接口把原生的 `align`（更宽的联合，含 `justify` / `char`）换成了 `\"left\" | \"center\" | \"right\"`，直接 `extends ThHTMLAttributes<…>` 转发会类型不兼容。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/4",
       "scope": "table",
       "title": "Table",
-      "rule": "**「表内横滚 + 表头吸页面」是拿不到的组合**，这是 CSS 的硬约束不是实现取舍：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是那层外壳自己成了 scrollport，把表头锚死在它身上（实测 Chromium：页面下滚时表头直接划走，同一张表换成 `overflow: visible` 的外壳才稳稳停在 `top: 0`）。所以 `stickyHeader=\"scrollParent\"` 下组件**主动去掉**外壳的 `overflow-x-auto`，横向溢出交给外部滚动容器；`stickyScrollbar` 在这一档下没有可镜像的容器，会被忽略并告警。要保住表内横滚就只能用 `\"self\"` + `maxHeight`。",
+      "rule": "表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/5",
       "scope": "table",
       "title": "Table",
-      "rule": "`renderRowExtra` 与 `renderExpandedRow` 是两件事，别拿后者顶前者：明细面板**每行只能一条、必须展开态、且强制前插一列展开器**。「这条工作经历下面常驻挂 N 张证书」属于行的一部分，不是折叠明细。",
+      "rule": "**「表内横滚 + 表头吸页面」是拿不到的组合**，这是 CSS 的硬约束不是实现取舍：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是那层外壳自己成了 scrollport，把表头锚死在它身上（实测 Chromium：页面下滚时表头直接划走，同一张表换成 `overflow: visible` 的外壳才稳稳停在 `top: 0`）。所以 `stickyHeader=\"scrollParent\"` 下组件**主动去掉**外壳的 `overflow-x-auto`，横向溢出交给外部滚动容器；`stickyScrollbar` 在这一档下没有可镜像的容器，会被忽略并告警。要保住表内横滚就只能用 `\"self\"` + `maxHeight`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/6",
       "scope": "table",
       "title": "Table",
-      "rule": "`renderRowExtra` / `footer` 返回的是**裸 `<tr>`**，组件不替你包 `<tr><td>`：包了就再也表达不了「一条附属行拆成三格」。整宽行的 `colSpan` 一定要用回调给的 `ctx.colSpan` —— 它含自动前插的选择 / 展开器 / 拖拽手柄列，`columns.length` 算出来的数会短一到三列，表现是最右边空出一块。",
+      "rule": "`renderRowExtra` 与 `renderExpandedRow` 是两件事，别拿后者顶前者：明细面板**每行只能一条、必须展开态、且强制前插一列展开器**。「这条工作经历下面常驻挂 N 张证书」属于行的一部分，不是折叠明细。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/7",
       "scope": "table",
       "title": "Table",
-      "rule": "`renderRowExtra` 与 `cellSpan` 不能同开（同 `renderExpandedRow`）：附属行插在数据行之间，纵向合并会跨过它们。同开时静默不合并 + dev 告警。",
+      "rule": "`renderRowExtra` / `footer` 返回的是**裸 `<tr>`**，组件不替你包 `<tr><td>`：包了就再也表达不了「一条附属行拆成三格」。整宽行的 `colSpan` 一定要用回调给的 `ctx.colSpan` —— 它含自动前插的选择 / 展开器 / 拖拽手柄列，`columns.length` 算出来的数会短一到三列，表现是最右边空出一块。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/8",
       "scope": "table",
       "title": "Table",
-      "rule": "`renderRowExtra` 与 `virtual` 同开会让虚拟化的行高估算失准（它按「一条数据 = 一行 `rowHeight`」撑占位行），表现是滚动漂移 / 底部留白。组件只告警不关闭（关了附属行就没了，比错位更难查）；附属行条数固定时把 `virtual.rowHeight` 调成「数据行 + 附属行」的总高即可。",
+      "rule": "`renderRowExtra` 与 `cellSpan` 不能同开（同 `renderExpandedRow`）：附属行插在数据行之间，纵向合并会跨过它们。同开时静默不合并 + dev 告警。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/9",
       "scope": "table",
       "title": "Table",
-      "rule": "宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。",
+      "rule": "`renderRowExtra` 与 `virtual` 同开会让虚拟化的行高估算失准（它按「一条数据 = 一行 `rowHeight`」撑占位行），表现是滚动漂移 / 底部留白。组件只告警不关闭（关了附属行就没了，比错位更难查）；附属行条数固定时把 `virtual.rowHeight` 调成「数据行 + 附属行」的总高即可。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/10",
       "scope": "table",
       "title": "Table",
-      "rule": "`meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: \"normal\"` + `maxSize` 限宽 + `verticalAlign: \"top\"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。",
+      "rule": "宽表的宽度下限用 `minWidth`，**不要写进 `className`**：`className` 落在滚动外壳上，`min-w-*` 会让容器再也收不窄 → `scrollWidth === clientWidth` → 横滚条永不出现，超出视口的列被祖先裁掉且滚不出来。宽窗口下自查不到，只有收窄到阈值以下才暴露。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/11",
       "scope": "table",
       "title": "Table",
-      "rule": "`meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout=\"fixed\"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。",
+      "rule": "`meta.whitespace` 与 `meta.ellipsis` 是互斥的两条路：截断本身要求单行。要「不截断、只换行」的核对型表格，用 `whitespace: \"normal\"` + `maxSize` 限宽 + `verticalAlign: \"top\"`（换行列不配顶对齐，同一行的短单元格会浮在中线上、与长单元格首行对不齐）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/12",
       "scope": "table",
       "title": "Table",
-      "rule": "固定列（`meta.sticky`）的 offset 由 `getStart/getAfter` 按 `getSize()` 累加得出，所以固定列的渲染宽会被**强制钉成 `getSize()`**（没写 size 就是默认 150）——想要多宽就显式写 `size`。同时内容要够宽触发横滚才看得到效果。",
+      "rule": "`meta.ellipsis` 要生效必须该列有确定宽度：给显式 `size`（会自动兜成 `max-width`）或 `maxSize`，或整表 `layout=\"fixed\"`；否则 auto 布局下列被内容撑开，省略号永远不出现。Tooltip 全文取该列的**原始值**（string/number），自定义 cell 渲染成非文本（图片/按钮）时只截断不挂浮层。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/13",
       "scope": "table",
       "title": "Table",
-      "rule": "`resizable` 会强制 `layout=\"fixed\"`（拖拽必须有确定列宽）。fixed 下表宽 = 各列 `getSize()` 之和，窄于容器时靠 `min-w-full` 撑满、列宽被浏览器按比例放大——那种情况下没有横滚，固定列 offset 也就无从体现。",
+      "rule": "固定列（`meta.sticky`）的 offset 由 `getStart/getAfter` 按 `getSize()` 累加得出，所以固定列的渲染宽会被**强制钉成 `getSize()`**（没写 size 就是默认 150）——想要多宽就显式写 `size`。同时内容要够宽触发横滚才看得到效果。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/14",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 的回调**只在没被合掉的格子上跑**，所以「与上一行同门店就合并」的写法是：在段首返回整段长度（`while (rows[i + n]?.store === rows[i].store) n++`），后面几行根本不会被问到。从 el-table 直译过来的 `[0, 0]` 写法也认（返回 `rowSpan: 0` 即该格不渲染）。",
+      "rule": "`resizable` 会强制 `layout=\"fixed\"`（拖拽必须有确定列宽）。fixed 下表宽 = 各列 `getSize()` 之和，窄于容器时靠 `min-w-full` 撑满、列宽被浏览器按比例放大——那种情况下没有横滚，固定列 offset 也就无从体现。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/15",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。",
+      "rule": "`cellSpan` 的回调**只在没被合掉的格子上跑**，所以「与上一行同门店就合并」的写法是：在段首返回整段长度（`while (rows[i + n]?.store === rows[i].store) n++`），后面几行根本不会被问到。从 el-table 直译过来的 `[0, 0]` 写法也认（返回 `rowSpan: 0` 即该格不渲染）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/16",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。",
+      "rule": "`cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/17",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。",
+      "rule": "`cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/18",
       "scope": "table",
       "title": "Table",
-      "rule": "**多级表头下，冻结（`meta.sticky`）只作用到叶子列**：冻结是按叶子列的累计宽度算 offset 的，横跨若干列的组名格没有自己的 offset，横滚时它会跟着内容走、只有下面那行的列头贴住边缘。分组表 + 冻结列的组合请把要冻结的列放在组外（独立列纵向跨满，观感与冻结一致）。",
+      "rule": "`cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/19",
       "scope": "table",
       "title": "Table",
-      "rule": "**多级表头的排序 / 筛选挂在叶子列上**，组名那格不出排序按钮：组列本身没有取值器，排的是哪一列没有定义。要按组内某列排就在那个叶子列上开 `enableSorting`。",
+      "rule": "**多级表头下，冻结（`meta.sticky`）只作用到叶子列**：冻结是按叶子列的累计宽度算 offset 的，横跨若干列的组名格没有自己的 offset，横滚时它会跟着内容走、只有下面那行的列头贴住边缘。分组表 + 冻结列的组合请把要冻结的列放在组外（独立列纵向跨满，观感与冻结一致）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/20",
       "scope": "table",
       "title": "Table",
-      "rule": "分组时列宽写在**叶子列**上（`size` / `minSize` / `maxSize`）。写在组上不会分配给下面的列——组的宽度是各叶子列之和。",
+      "rule": "**多级表头的排序 / 筛选挂在叶子列上**，组名那格不出排序按钮：组列本身没有取值器，排的是哪一列没有定义。要按组内某列排就在那个叶子列上开 `enableSorting`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/21",
       "scope": "table",
       "title": "Table",
-      "rule": "行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。",
+      "rule": "分组时列宽写在**叶子列**上（`size` / `minSize` / `maxSize`）。写在组上不会分配给下面的列——组的宽度是各叶子列之和。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/22",
       "scope": "table",
       "title": "Table",
-      "rule": "`virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。",
+      "rule": "行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/23",
       "scope": "table",
       "title": "Table",
-      "rule": "`bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。",
+      "rule": "`virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/24",
       "scope": "table",
       "title": "Table",
-      "rule": "排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。",
+      "rule": "`bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/25",
       "scope": "table",
       "title": "Table",
-      "rule": "`rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。",
+      "rule": "排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/26",
       "scope": "table",
       "title": "Table",
-      "rule": "`onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。",
+      "rule": "`rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/27",
       "scope": "table",
       "title": "Table",
-      "rule": "行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。",
+      "rule": "`onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/28",
       "scope": "table",
       "title": "Table",
-      "rule": "行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。",
+      "rule": "行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/29",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。",
+      "rule": "行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/30",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。",
+      "rule": "拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/31",
       "scope": "table",
       "title": "Table",
-      "rule": "`dragHandle=\"row\"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `\"cell\"`。",
+      "rule": "拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/32",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。",
+      "rule": "`dragHandle=\"row\"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `\"cell\"`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/33",
       "scope": "table",
       "title": "Table",
-      "rule": "组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。",
+      "rule": "拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/34",
       "scope": "table",
       "title": "Table",
-      "rule": "原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。",
+      "rule": "组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/35",
+      "scope": "table",
+      "title": "Table",
+      "rule": "原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/36",
       "scope": "table",
       "title": "Table",
       "rule": "树形（`getSubRows`）下只有顶层行可拖，子行手柄恒禁用——跨层级拖拽的落点语义未定义，需要拖子节点请用 [Tree](../tree/tree.md) 或按层级拆表。",
@@ -9185,6 +9213,13 @@
     },
     {
       "id": "component/tabs/pitfall/1",
+      "scope": "tabs",
+      "title": "Tabs",
+      "rule": "**别在消费侧压 `TabsList` 的高度**（`<TabsList className=\"h-7\">`）：它是 `inline-flex items-center`，强压之后 tab 只是居中溢出，solid 的药丸上下各探出轨道 4px（实测），比高一点更难看。要矮就用 `size=\"sm\"` —— tab 的 `py` 与轨道的 `p` 必须一起收，只压一层必然探出。",
+      "source": "packages/ui/src/tabs/tabs.md"
+    },
+    {
+      "id": "component/tabs/pitfall/2",
       "scope": "tabs",
       "title": "Tabs",
       "rule": "base-ui-tabs-indicator-slider-via-active-tab-css-vars：滑块靠 Base UI 写在 indicator 上的 `--active-tab-*` CSS 变量 + 纯 CSS transition 实现，不引动画库。坑点：激活态钩子是 `data-active` 而非 `data-selected`，写错样式不生效；jsdom 单测无 ResizeObserver 也能跑（指示条几何不会真渲染）。",
@@ -10287,7 +10322,7 @@
   ],
   "stats": {
     "componentDocs": 393,
-    "componentAdvisories": 1434,
-    "totalAdvisories": 1444
+    "componentAdvisories": 1439,
+    "totalAdvisories": 1449
   }
 }

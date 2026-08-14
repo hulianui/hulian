@@ -1,5 +1,33 @@
 # @hulianui/mcp
 
+## 0.10.0
+
+### Minor Changes
+
+- `audit_hulian_adoption`: a `<table>` or `<input>` inside a comment is no longer a bare tag, and one line is no longer counted twice <!-- parity-id: mcp-audit-skip-comments -->
+
+  Bare-tag detection matched raw text and **did not exclude comments**. So a file already 100% migrated to
+  `@hulianui/ui` was reported as a `bare-table` risk purely because a comment said "this used to be a
+  hand-written `<table>`" (#266). Two things make that especially hard to live with:
+
+  1. **The better the comment, the more false positives.** A note left behind by a migration inevitably
+     reads "this used to be a hand-written `<table>`, now it is `<Table>`" -- the single most worthwhile
+     comment to write, turned into a demerit.
+  2. **Copying the library's own documentation trips it.** The text of one reported false positive was
+     lifted verbatim from the Usage notes in `table.md`: follow the docs, write it down, get flagged by
+     our own audit.
+
+  The fix adds a `maskComments()` pass in the shared signal layer (`adoption-signals.mjs`, the common
+  ground between the audit tool and the cross-project scan): comment contents are blanked to spaces
+  before matching. **Comments only, never string literals** -- `className="fixed inset-0"` and
+  `text-[#fff]` live inside strings, and blanking those would take out the `handmade-overlay` and
+  `hardcoded-color` rules with them. So it is a small stateful scanner rather than a few regexes: the
+  `//` inside `"https://x"` is not a comment. Length and newlines are preserved character for character,
+  so line numbers and snippets stay accurate.
+
+  Findings are also deduplicated by `(rule, file, line)`: the report's unit is a line (the snippet is the
+  whole line), so `from-[#a] to-[#b]` used to emit two identical `hardcoded-color` entries.
+
 ## 0.6.0
 
 ### Minor Changes

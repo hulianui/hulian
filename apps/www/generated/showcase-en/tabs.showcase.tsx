@@ -1,11 +1,13 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "../../../../packages/ui/src/tabs/tabs";
-function Demo({ variant }: {
+import { Tag } from "../../../../packages/ui/src/tag";
+function Demo({ variant, size }: {
     variant: "underline" | "solid";
+    size?: "sm" | "md";
 }) {
     return (<Tabs defaultValue="account" className="w-80">
-      <TabsList variant={variant}>
+      <TabsList variant={variant} size={size}>
         <TabsTab value="account">Account</TabsTab>
         <TabsTab value="password">Password</TabsTab>
         <TabsTab value="team" disabled>
@@ -62,6 +64,42 @@ export const tabsShowcase: ShowcaseSpec = {
           <TabsPanel value="password">Password panel.</TabsPanel>
           <TabsPanel value="team">Team Panel.</TabsPanel>
         </Tabs>),
+        },
+        {
+            title: "Inline switcher (size=sm)",
+            description: "Use sm when the tab bar shares a row with a heading or a search box: 28px track and 24px tab for text only, against 40 / 32 for md. Give the count Tag its own size=\"sm\" as well, or the default md at 24px pushes the tab back up.",
+            code: `<div className="flex items-center gap-2">
+  <span className="text-sm font-semibold">Reports by title group</span>
+  <Tabs defaultValue="title">
+    <TabsList variant="solid" size="sm">
+      <TabsTab value="title">Title orders<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="paper">Paper orders<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+    </TabsList>
+    <TabsPanel value="title">Title order list.</TabsPanel>
+    <TabsPanel value="paper">Paper order list.</TabsPanel>
+  </Tabs>
+</div>`,
+            render: () => (<div className="flex items-center gap-2">
+          <span className="text-sm font-semibold">Reports by title group</span>
+          <Tabs defaultValue="title">
+            <TabsList variant="solid" size="sm">
+              <TabsTab value="title">
+                Title orders
+                <Tag size="sm" className="ml-1.5">
+                  2
+                </Tag>
+              </TabsTab>
+              <TabsTab value="paper">
+                Paper orders
+                <Tag size="sm" className="ml-1.5">
+                  7
+                </Tag>
+              </TabsTab>
+            </TabsList>
+            <TabsPanel value="title">Title order list.</TabsPanel>
+            <TabsPanel value="paper">Paper order list.</TabsPanel>
+          </Tabs>
+        </div>),
         },
         {
             title: "Disable a page",
@@ -126,10 +164,18 @@ export const tabsShowcase: ShowcaseSpec = {
             defaultValue: "underline",
             label: "Skin",
         },
+        {
+            prop: "size",
+            type: "select",
+            options: ["sm", "md"],
+            defaultValue: "md",
+            label: "Size",
+        },
     ],
     states: [
         { name: "underline", render: () => <Demo variant="underline"/> },
         { name: "solid", render: () => <Demo variant="solid"/> },
+        { name: "solid \u00B7 size=sm", render: () => <Demo variant="solid" size="sm"/> },
         {
             name: "disabled tab",
             render: () => (<Tabs defaultValue="a" className="w-80">
@@ -146,9 +192,9 @@ export const tabsShowcase: ShowcaseSpec = {
         </Tabs>),
         },
     ],
-    renderWithProps: (p) => <Demo variant={(p.variant as "underline" | "solid") ?? "underline"}/>,
+    renderWithProps: (p) => (<Demo variant={(p.variant as "underline" | "solid") ?? "underline"} size={(p.size as "sm" | "md") ?? "md"}/>),
     toCode: (p) => `<Tabs defaultValue="account">
-  <TabsList variant="${p.variant ?? "underline"}">
+  <TabsList variant="${p.variant ?? "underline"}" size="${p.size ?? "md"}">
     <TabsTab value="account">Account</TabsTab>
     <TabsTab value="password">Password</TabsTab>
   </TabsList>

@@ -1,5 +1,28 @@
 # @hulianui/mcp
 
+## 0.10.0
+
+### Minor Changes
+
+- `audit_hulian_adoption`：注释里的 `<table>` / `<input>` 不再当成裸标签，同一行也不再重复计数 <!-- parity-id: mcp-audit-skip-comments -->
+
+  裸标签检测是按文本匹配的，**没有排除注释**。于是一个已经 100% 迁到 `@hulianui/ui` 的文件，
+  只因为注释里写了「原来这里是手写 `<table>`」就被报成 `bare-table` 风险（#266）。两个让它更难忍的点：
+
+  1. **注释写得越好，误报越多。** 迁移留下的说明必然长成「原来是手写 `<table>`，现在换成 `<Table>`」，
+     这是最该写的注释，却成了扣分项。
+  2. **照抄库自己的文档就会中招。** 报告里那条误报的原文，是从 `table.md` 的「禁忌 / 坑」抄下来的
+     ——遵守文档 → 记下来 → 被自家审计报风险。
+
+  修法是在共享的信号层（`adoption-signals.mjs`，audit tool 与横比脚本的共同事实）加一道
+  `maskComments()`：把注释内容抹成空格再拿去匹配。**只抹注释，不碰字符串字面量** ——
+  `className="fixed inset-0"` 与 `text-[#fff]` 恰恰住在字符串里，抹掉它们会把 `handmade-overlay` /
+  `hardcoded-color` 两条规则一起废掉。所以它是个带状态的小扫描器而不是几条正则：`"https://x"` 里的
+  `//` 不是注释。长度与换行逐字保留，行号与片段照旧准确。
+
+  顺带按 `(规则, 文件, 行)` 去重：报告的粒度就是「一行」（snippet 就是整行），
+  `from-[#a] to-[#b]` 这样一行两个色值此前会出两条一模一样的 `hardcoded-color`。
+
 ## 0.9.0
 
 ### Minor Changes

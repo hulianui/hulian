@@ -9,6 +9,12 @@ const SAMPLE = [
     "<ul><li>Window: Nov 1, 00:00 to Nov 11, 24:00</li><li>Scope: the entire skincare category</li></ul>",
     "<blockquote>The organizer reserves the right of final interpretation.</blockquote>",
 ].join("");
+const LONG_TITLE = "<p style=\"text-align: center\"><strong>Terms of service</strong></p>";
+const LONG_PARAGRAPH = "A sample clause of the kind the content team appends year after year. Legacy bodies routinely carry dozens or hundreds of them, and without a height cap the editor just keeps growing until the toolbar and the Save button at the bottom of the page are both pushed out of the viewport.";
+const LONG_SAMPLE = [
+    LONG_TITLE,
+    ...Array.from({ length: 12 }, (_, i) => `<p>${i + 1}. ${LONG_PARAGRAPH}</p>`),
+].join("");
 function ControlledDemo() {
     const [html, setHtml] = useState("<p>Edit this text and watch <strong>the HTML string that gets stored</strong> below.</p>");
     return (<div className="w-[36rem] max-w-full space-y-2">
@@ -37,6 +43,13 @@ export const richTextEditorShowcase: ShowcaseSpec = {
   placeholder="Trimmed toolbar"
 />`,
             render: () => (<RichTextEditor toolbar={["bold", "italic", "underline", "divider", "bulletList", "link"]} placeholder="Trimmed toolbar" minRows={4} className="w-[36rem] max-w-full"/>),
+        },
+        {
+            title: "Capping the height of a long body",
+            description: "maxRows / maxHeight set a cap; past it the body scrolls internally while the toolbar stays outside the scroll area, so the bold button is still within reach a few thousand px down.",
+            code: `<RichTextEditor minRows={8} maxRows={12} defaultValue={LONG_HTML} />
+// Or give a length directly: maxHeight={480} / maxHeight="60vh"`,
+            render: () => (<RichTextEditor minRows={8} maxRows={12} defaultValue={LONG_SAMPLE} className="w-[36rem] max-w-full"/>),
         },
         {
             title: "Image uploads stay with the consumer",

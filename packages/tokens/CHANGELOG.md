@@ -1,5 +1,35 @@
 # @hulianui/tokens
 
+## 0.9.1
+
+### Patch Changes
+
+- 写清 `-foreground` 只配实心底：浅底的文字色是语义色本身 <!-- parity-id: tokens-foreground-solid-only -->
+
+  语义色每一档都有 `--color-x` 和 `--color-x-foreground`，命名上读起来就是「底色」与「配它的前景色」。
+  但 `-foreground` **只对实心底成立** —— 亮色下它等于 `var(--white)`。消费方自己画一块浅底
+  （`bg-warning-subtle` / `bg-warning/12`）时按命名直觉配上 `text-warning-foreground`，得到的是
+  **白字白底**，文字直接消失（#268）。
+
+  而且它在暗色下反而是对的（那边 `-foreground` 是近黑），所以谁在暗色主题里开发谁就查不出来；
+  不报错、不告警、typecheck 与 guard 都看不见。正确配方此前**只存在于 `tag.tsx` 的
+  `compoundVariants` 表里**，任何文档都没写。
+
+  三处补上同一句话，照 `--color-hairline` 那条注释的既有做法（它是同类问题的先例）：
+
+  - `semantic.css` 的 `-foreground` 组补注释，写明它只配实心底、浅底该用什么
+  - 文档站色彩页：五个实心语义色（primary / danger / success / warning / info）的色卡下各挂一条
+    ——那一行右侧正好就是「实心底 + 前景色」的示意，读到这里的人下一步多半就要自己画一块浅底
+  - `Tag` 文档新增「三档配色」表（见 `@hulianui/ui` 同版本条目）
+
+  | 表面    | 底                                        | 文字                      |
+  | ------- | ----------------------------------------- | ------------------------- |
+  | solid   | `bg-warning`                              | `text-warning-foreground` |
+  | soft    | `bg-warning-subtle`（或 `bg-warning/12`） | `text-warning`            |
+  | outline | `border-warning`                          | `text-warning`            |
+
+  纯文档与注释，token 的值一个没动。
+
 ## 0.9.0
 
 ### Minor Changes

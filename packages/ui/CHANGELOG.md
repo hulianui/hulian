@@ -1,5 +1,138 @@
 # @hulianui/ui
 
+## 0.45.0
+
+### Minor Changes
+
+- **破坏性**：`Popconfirm` 改成**拦截**子元素的动作，不再与它合并；`disabled` 变成「跳过确认」而不是「按钮失效」 <!-- parity-id: popconfirm-intercept-child-onclick -->
+
+  此前 trigger 走 `<PopoverTrigger render={children} />`，Base UI 的 `render` 是 **mergeProps** 语义 ——
+  同名 handler 依次调用。于是「给已有按钮套一层 Popconfirm 加二次确认」这个最自然的用法，得到的是
+  **那个破坏性动作已经跑完 + 确认框才弹出来事后问一句**，此时点「取消」也无济于事（#267）。
+
+  这条的失败方向是最坏的那一侧：安全网静默失效，而且失效得毫无征兆 —— 确认框照常弹出、不报错、
+  不告警，只有事后查数据才发现东西已经没了（报告方是在生产里点了一次导出、Word 直接下载下来才发现的）。
+  踩中它的又恰恰是最典型的用法：中后台的「删除 / 导出 / 重置」按钮**本来就有 `onClick`**。
+
+  **两处行为变化：**
+
+  - `children` 自带的 `onClick` **被丢弃**，dev 下打一条告警点名。动作一律写在 `onConfirm` 里。
+  - `disabled` 从「触发器照常渲染但不唤起浮层」改为「**跳过确认，点了照样执行 `onConfirm`**」。
+    否则把动作挪进 `onConfirm` 之后，`disabled` 那一档就成了「按钮彻底失效」——同一个坑换个地方等着。
+    要让按钮真的不可点，把 `disabled` 写在子元素上。
+
+  改完之后「同一个按钮，某些条件下才需要问一句」不必再维护两份：
+
+  ```tsx
+  <Popconfirm
+    title="正文里还有未填写的占位符，仍要导出？"
+    disabled={!hasPlaceholders} // 没有占位符时不弹确认，点了直接导出
+    onConfirm={exportDocx} // 动作永远住在这里
+  >
+    <Button variant="outline" loading={exporting}>
+      导出 Word
+    </Button>
+  </Popconfirm>
+  ```
+
+  **只改 `Popconfirm` 一个。** `Popover` / `Tooltip` / `Dropdown` 那些「打开浮层」不该吃掉子元素原有
+  行为，合并才是对的；Popconfirm 存在的意义就是**拦住**那个动作，替换才自洽。子元素上原本只用来
+  `stopPropagation`（整行可点的表格里常见）的 handler 也一并没了，把它挪到 Popconfirm 外面包一层。
+
+- `RichTextEditor` 补高度上限：新增 `maxRows` / `maxHeight`，超过就让正文自己内部滚动 <!-- parity-id: rich-text-editor-max-height -->
+
+  此前只有 `minRows`，**没有任何一档表达高度上限**，于是编辑区高度完全跟着正文长度走。
+  后台里「一个字段就是一整篇长文」是常态（隐私条款、用户协议、活动规则、商品详情），
+  存量正文是运营几年攒下来的，动辄七八千字——实测一篇 8343 字的正文把内容区撑到 8897px、
+  整页 12237px，运营要滚 14.6 屏才够得着底部的「保存」；一页放两块富文本时上面那块一长，
+  下面那块直接被推到第 9000px（#264）。
+
+  两个 prop 是同一件事的两种单位，留一个即可：
+
+  ```tsx
+  <RichTextEditor minRows={8} maxRows={20} />       // 与 minRows 同一把尺子（1 行 = 1.75rem）
+  <RichTextEditor minRows={8} maxHeight={480} />    // 或直接给像素
+  <RichTextEditor minRows={8} maxHeight="60vh" />   // 或任意 CSS 长度
+  ```
+
+  两个都给以 `maxHeight` 为准（dev 下告警）。`maxRows` 比 `minRows` 小时**什么都不会发生**
+  ——CSS 里 `min-height` 压过 `max-height`，内容区仍按 `minRows` 撑开且不滚动，看不出选错了，
+  所以那一档也点名。
+
+  **滚动落在正文容器上，工具栏是它的兄弟节点**，于是正文滚到第几千 px 也够得着加粗按钮。
+  这一档只能由库来给：消费方在业务侧套 `max-h-[480px] overflow-y-auto` 只能包在**整个外壳**上，
+  而工具栏在外壳里面，套完工具栏会跟着正文一起滚出可视区，比不加更糟；要只滚正文就得钻进
+  组件内部的 DOM 结构去定位那一层。
+
+  两个都不给时组件的 DOM 与行为**逐字节不变**——存量消费方不会被静默改掉。
+
+- Table 的七件组合原语补 `ref` 类型：`TableRoot` 那层滚动容器终于拿得到把手 <!-- parity-id: table-primitives-ref -->
+
+  `TableRoot` 是组合原语里唯一带 `overflow-x-auto` 的元素，但 `TableRootProps` 继承的是
+  `HTMLAttributes<HTMLDivElement>`（不含 `ref`），于是**类型上没有任何办法拿到那层滚动容器**（#265）。
+  运行时其实是通的 —— React 19 里函数组件的 `ref` 就是普通 prop，混在 `...rest` 里被 spread 到 div 上 ——
+  所以现状是「能用但不敢用」，靠的是一个没写进契约的巧合。这次只补类型，实现一行没动。
+
+  横向滚动状态**只存在于那层 div 上**，消费方一旦要对横滚做点什么就必须有它的引用：自绘底部悬浮
+  横滚条（宽表比屏幕高时原生滚动条长在表底、要竖着滚到底才够得着）、`ResizeObserver` 观察容器宽、
+  「滚到第 N 列」、两张表联动横滚。既有的绕法一条都不成立：`querySelector` 在一屏多表 / 表里嵌表时
+  选不准；从子 `<table>` 往上 `parentElement` 是把库的内部结构写进业务代码（高层 `Table` 的
+  `stickyScrollbar` 就确实会多包一层）；在外面再套一个 `div`，那层不是 scrollport、`scrollLeft` 恒为 0。
+
+  ```tsx
+  const scroller = useRef<HTMLDivElement>(null)
+  <TableRoot ref={scroller}>…</TableRoot>   // scrollLeft / scrollWidth 都在这一层
+  ```
+
+  `TableHeader` / `TableBody` / `TableFooter` / `TableRow` / `TableHead` / `TableCell` 一并补齐 ——
+  手写结构的表里「滚动到某一行」「量某个格子的宽」同样常见。
+
+  文档另补一条：写薄包装转发原语 props 时，`TableHeadProps` / `TableCellProps` 的 `align` 得跟着
+  `Omit` 一次（它们把原生那个更宽的联合换成了 `"left" | "center" | "right"`）。
+
+- `TabsList` 补尺寸档 `size="sm"`：给「跟标题、搜索框同行」的行内切换器 <!-- parity-id: tabs-size-sm -->
+
+  `Tabs` 此前只有一档尺寸，而中后台里 tab 条经常不是页面级导航，是跟标题、搜索框同行的一个切换器 ——
+  那一行的既有高度是 28–32px。带一颗计数 `Tag` 的 tab 在原来那档是 **36px、轨道 44px**，塞不进去（#269）。
+
+  尺寸是逐层叠出来的，每一层单看都合理：`TabsTab` 的 `py-1.5`（12px）+ `Tag` 默认 `md`（24px）+
+  `TabsList` solid 的 `p-1`（8px）= 44。所以**必须整档一起收**，这也是消费方压不回来的原因：
+  `TabsList` 是 `inline-flex items-center`，业务侧写 `className="h-7"` 只会让 tab 居中溢出、
+  solid 的药丸上下各探出轨道 4px，比高一点更难看。
+
+  真实浏览器实测（`getBoundingClientRect`，不是算的）：
+
+  |                              | 轨道（solid） | tab    |
+  | ---------------------------- | ------------- | ------ |
+  | `md`，纯文字                 | 40            | 32     |
+  | `md`，文字 + 计数 `Tag`      | 44            | 36     |
+  | `sm`，纯文字                 | **28**        | **24** |
+  | `sm`，文字 + `Tag size="sm"` | 32            | 28     |
+
+  `size` 放在 `TabsList` 上（与皮肤变体 `variant` 同层），经 context 下发给 `TabsTab`，不必逐个传。
+  `md` 是默认值且**逐字保持改动前的类名**，不传 `size` 的调用点 DOM 一模一样。Indicator 那套
+  `--active-tab-*` 不用动：药丸盒子跟着 tab 盒子走，两档实测都与激活 tab 逐像素相等、且完全落在轨道内。
+
+  `sm` 里的计数 `Tag` **要自己给 `size="sm"`** —— 组件不会去改子元素显式声明的尺寸，那是从外面穿透
+  改内部件，正是本库禁止消费方做的事。
+
+### Patch Changes
+
+- `Tag` 文档新增「三档配色」表：soft 浅底该配什么文字色，终于有了公开说法 <!-- parity-id: tag-surface-recipes -->
+
+  `tag.tsx` 的 `compoundVariants` 里那三行本来就是答案，但它**只在源码里**：`tag.md` 对 `variant`
+  的说明只有一句「soft 浅底 / solid 实底 / outline 描边」，没说各档该配什么文字色。消费方要自绘
+  一块浅底提示区（不是 Tag、不是 Alert，就是个自己拼的高亮块）时，唯一能查到配方的地方是去读组件源码。
+
+  | 档      | 底                                        | 文字                      |
+  | ------- | ----------------------------------------- | ------------------------- |
+  | solid   | `bg-warning`                              | `text-warning-foreground` |
+  | soft    | `bg-warning-subtle`（或 `bg-warning/12`） | `text-warning`            |
+  | outline | `border-warning`                          | `text-warning`            |
+
+  并写明 `-foreground` **只配实心底**：亮色下它就是白，写在浅底上就是白字白底、文字整个看不见，
+  而暗色下反而是对的（#268）。token 侧的注释见 `@hulianui/tokens` 同版本条目。
+
 ## 0.44.0
 
 ### Minor Changes
