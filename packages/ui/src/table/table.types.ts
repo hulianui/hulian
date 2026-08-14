@@ -1,6 +1,7 @@
 import type {
   HTMLAttributes,
   ReactNode,
+  Ref,
   TdHTMLAttributes,
   ThHTMLAttributes,
 } from "react";
@@ -435,6 +436,15 @@ export interface TableProps<TData> {
 
 /** `TableRoot`：滚动外壳 + `<table>`。密度/斑马纹经 context 下发给下面的原语。 */
 export interface TableRootProps extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * **外层滚动容器**（`overflow-x-auto` 那层）的引用（#265）。
+   *
+   * 横向滚动态只存在于那一层：读写 `scrollLeft` / `scrollWidth`、挂 `ResizeObserver`、
+   * 自绘底部悬浮横滚条都得从这里拿。绕不过去 —— 从子 `<table>` 往上 `parentElement`
+   * 是在业务里写死实现细节（外壳哪天多包一层就断），在外面再套一个 `div` 拿到的
+   * 又不是 scrollport（`scrollLeft` 恒为 0）。
+   */
+  ref?: Ref<HTMLDivElement>;
   /** 行密度（仅调单元格内边距），下发给 `TableHead` / `TableCell`。@default "default" */
   density?: TableDensity;
   /**
@@ -455,26 +465,35 @@ export interface TableRootProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 /** `TableHeader`：`<thead>`。 */
-export type TableHeaderProps = HTMLAttributes<HTMLTableSectionElement>;
+export interface TableHeaderProps extends HTMLAttributes<HTMLTableSectionElement> {
+  ref?: Ref<HTMLTableSectionElement>;
+}
 /** `TableBody`：`<tbody>`。 */
-export type TableBodyProps = HTMLAttributes<HTMLTableSectionElement>;
+export interface TableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {
+  ref?: Ref<HTMLTableSectionElement>;
+}
 /** `TableFooter`：`<tfoot>`（自带上边框 + 表尾底色 + 中等字重）。 */
-export type TableFooterProps = HTMLAttributes<HTMLTableSectionElement>;
+export interface TableFooterProps extends HTMLAttributes<HTMLTableSectionElement> {
+  ref?: Ref<HTMLTableSectionElement>;
+}
 
 /** `TableRow`：`<tr>`。分隔线/悬停/斑马纹按所在段（thead/tbody/tfoot）自动区分。 */
 export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
+  ref?: Ref<HTMLTableRowElement>;
   /** 选中态：主色底 + `data-selected`（同高层 `Table` 的选中行皮肤）。 */
   selected?: boolean;
 }
 
 /** `TableHead`：`<th>`（表头单元格，恒不换行 + 半粗）。 */
 export interface TableHeadProps extends Omit<ThHTMLAttributes<HTMLTableCellElement>, "align"> {
+  ref?: Ref<HTMLTableCellElement>;
   /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
   align?: TableColumnAlign;
 }
 
 /** `TableCell`：`<td>`。 */
 export interface TableCellProps extends Omit<TdHTMLAttributes<HTMLTableCellElement>, "align"> {
+  ref?: Ref<HTMLTableCellElement>;
   /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
   align?: TableColumnAlign;
   /** 垂直对齐。@default "middle" */

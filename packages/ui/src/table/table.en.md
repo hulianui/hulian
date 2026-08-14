@@ -124,8 +124,17 @@ so this is not a second look-alike system.
 | layout | `"auto" \| "fixed"` | `"auto"` | `table-layout`. |
 | minWidth | `number \| string` | — | Minimum width of the `<table>` element itself. `className` lands on the scroll shell, where `min-w-*` would stop the horizontal scrollbar from ever appearing. |
 | tableClassName | `string` | — | Class name for the `<table>` element. |
+| ref | `Ref<HTMLDivElement>` | — | The **outer scroll container** (the `overflow-x-auto` layer). Horizontal scroll state exists only there. |
 
-`TableHeader`, `TableBody`, and `TableFooter` accept the native `<thead>`, `<tbody>`, and `<tfoot>` attributes only.
+`TableHeader`, `TableBody`, and `TableFooter` accept the native `<thead>`, `<tbody>`, and `<tfoot>` attributes, plus a `ref`.
+
+All seven primitives **take a `ref`**, each landing on its own DOM node (`TableRoot` on the scrolling `div`, the rest on `thead` / `tbody` / `tfoot` / `tr` / `th` / `td`). `TableRoot` matters most: horizontal scroll state lives only on that `overflow-x-auto` `div`, so a hand-drawn floating horizontal scrollbar, a `ResizeObserver` on the container width, "scroll to column N", and two tables scrolling in sync all need it.
+
+```tsx
+const scroller = useRef<HTMLDivElement>(null)
+// scrollLeft / scrollWidth / clientWidth all live on this layer
+<TableRoot ref={scroller}>…</TableRoot>
+```
 
 ### TableRow / TableHead / TableCell
 
@@ -134,6 +143,7 @@ so this is not a second look-alike system.
 | selected | `boolean` | `false` | `TableRow`: selected state (accent background plus `data-selected`, the same skin as a selected row in the high-level `Table`). |
 | align | `"left" \| "center" \| "right"` | `"left"` | `TableHead` and `TableCell`: horizontal alignment, applied as a class rather than the deprecated HTML `align` attribute. |
 | verticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | `TableCell`: vertical alignment. |
+| ref | `Ref<HTMLTableRowElement \| HTMLTableCellElement>` | — | Lands on the `tr` / `th` / `td` itself ("scroll to this row", "measure this cell"). |
 
 `TableRow` derives its separator, hover, and stripe treatment from the section it sits in. Header rows
 do not hover, do not stripe, and do not take `last:border-0` — a single header row is also the last
@@ -245,6 +255,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 ## Usage notes
 
 - **Memoize `columns`.** TanStack's `flexRender` renders a function `cell` **as a component type**, so a changed identity **unmounts and remounts** the whole cell rather than re-rendering it. On a display-only table that merely burns time; with an input inside the cell it breaks behavior: a controlled input loses focus on every keystroke and the caret jumps to the end, an `onBlur` submit fires on the remount blur and **commits a half-typed value**, and an uncontrolled input snaps back to its `defaultValue` and loses characters. None of those symptoms point at the columns array, so debugging usually starts by blaming the input component. For the same reason, never put a per-keystroke value in the `useMemo` dependencies — that is the same as no memo. Prefer uncontrolled inputs for inline editing.
+- When forwarding primitive props through a thin wrapper, `Omit` the `align` from `TableHeadProps` and `TableCellProps` the same way they do: those interfaces replace the native `align` (a wider union that includes `justify` and `char`) with `"left" | "center" | "right"`, so extending `ThHTMLAttributes<…>` directly is not assignable.
 - A sticky header needs `stickyHeader` **and** `maxHeight`: sticky positioning requires an ancestor that actually scrolls vertically, and the shell only has `overflow-x-auto` with no height constraint by default. Applying `[&_thead]:sticky` from product code cannot reach it either, because that overflow container sits in between.
 - **"Horizontal scrolling inside the table plus a header pinned to the page" is not an available combination**, and that is a CSS constraint rather than an implementation trade-off: `overflow-x: auto` makes `visible` on the other axis compute to `auto`, so that shell becomes a scrollport itself and anchors the header to it. Measured in Chromium, the header slides straight off as the page scrolls, while the same table under an `overflow: visible` shell stops cleanly at `top: 0`. `stickyHeader="scrollParent"` therefore **drops `overflow-x-auto` from the shell** and leaves horizontal overflow to the outer scroll container; `stickyScrollbar` has nothing to mirror in that mode and is ignored with a warning. Keep `"self"` plus `maxHeight` when the horizontal scroll has to stay inside the table.
 - `renderRowExtra` and `renderExpandedRow` are two different things, and the latter does not substitute for the former: a detail panel allows **one row at a time, only while expanded, and always adds an expander column**. "This employment period permanently carries N certificate rows" is part of the row, not a collapsible detail.

@@ -121,8 +121,17 @@ import {
 | layout | `"auto" ｜ "fixed"` | `"auto"` | `table-layout` |
 | minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
 | tableClassName | `string` | — | `<table>` 本体的类名 |
+| ref | `Ref<HTMLDivElement>` | — | **外层滚动容器**（`overflow-x-auto` 那层）的引用。横向滚动态只存在于那一层 |
 
-`TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性。
+`TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性，外加一个 `ref`。
+
+七件原语**都收 `ref`**，落在各自的那个 DOM 节点上（`TableRoot` → 滚动容器 `div`，其余 → `thead` / `tbody` / `tfoot` / `tr` / `th` / `td`）。`TableRoot` 这一个尤其要紧：横向滚动状态只存在于那层 `overflow-x-auto` 的 `div` 上，自绘底部悬浮横滚条、`ResizeObserver` 观察容器宽、「滚到第 N 列」、两张表联动横滚都得从它拿。
+
+```tsx
+const scroller = useRef<HTMLDivElement>(null)
+// scroller.current!.scrollLeft / scrollWidth / clientWidth 都在这一层
+<TableRoot ref={scroller}>…</TableRoot>
+```
 
 ### TableRow / TableHead / TableCell
 
@@ -131,6 +140,7 @@ import {
 | selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
 | align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性 |
 | verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
+| ref | `Ref<HTMLTableRowElement ｜ HTMLTableCellElement>` | — | 落在 `tr` / `th` / `td` 本体上（「滚到某一行」「量某个格子的宽」） |
 
 `TableRow` 的分隔线 / 悬停 / 斑马纹按所在段自动区分（表头行不 hover、不斑马纹，也不吃 `last:border-0`
 —— 单行表头就是最后一行，那条规则会把表头底边线抹掉），消费方不用自己记这个差别。
@@ -254,6 +264,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
 - **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
+- 写薄包装转发原语 props 时，`TableHeadProps` / `TableCellProps` 的 `align` 得跟着 `Omit` 一次：那两个接口把原生的 `align`（更宽的联合，含 `justify` / `char`）换成了 `"left" | "center" | "right"`，直接 `extends ThHTMLAttributes<…>` 转发会类型不兼容。
 - 表头吸顶要 `stickyHeader` **加** `maxHeight`：sticky 需要一个真的会纵向滚动的祖先，而外壳默认只有 `overflow-x-auto`、没有高度约束。业务侧套 `[&_thead]:sticky` 也够不到（中间隔着这层 overflow 容器）。
 - **「表内横滚 + 表头吸页面」是拿不到的组合**，这是 CSS 的硬约束不是实现取舍：`overflow-x: auto` 会让另一轴的 `visible` 一并计算成 `auto`，于是那层外壳自己成了 scrollport，把表头锚死在它身上（实测 Chromium：页面下滚时表头直接划走，同一张表换成 `overflow: visible` 的外壳才稳稳停在 `top: 0`）。所以 `stickyHeader="scrollParent"` 下组件**主动去掉**外壳的 `overflow-x-auto`，横向溢出交给外部滚动容器；`stickyScrollbar` 在这一档下没有可镜像的容器，会被忽略并告警。要保住表内横滚就只能用 `"self"` + `maxHeight`。
 - `renderRowExtra` 与 `renderExpandedRow` 是两件事，别拿后者顶前者：明细面板**每行只能一条、必须展开态、且强制前插一列展开器**。「这条工作经历下面常驻挂 N 张证书」属于行的一部分，不是折叠明细。

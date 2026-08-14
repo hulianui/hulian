@@ -82,7 +82,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   stat: [3, 4],
   "status-dot": [0, 1],
   "streaming-text": [2, 3],
-  table: [35, 36],
+  table: [36, 37],
   tag: [5, 4],
   "task-runner": [3, 4],
   text: [0, 1],

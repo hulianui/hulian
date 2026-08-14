@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { createRef } from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
@@ -1451,6 +1452,28 @@ describe("Table 组合原语", () => {
         </TableFooter>
       </TableRoot>,
     );
+
+  // #265：`ref` 在 React 19 里是普通 prop，实现早已透传（混在 ...rest 里 spread 到 DOM），
+  // 缺的只是类型。这条同时守住类型（编译不过就红）与运行时（拿到的必须是滚动那层）。
+  it("ref 拿到的是外层滚动容器（overflow-x-auto 那一层），不是 <table>", () => {
+    const rootRef = createRef<HTMLDivElement>();
+    const bodyRef = createRef<HTMLTableSectionElement>();
+    const cellRef = createRef<HTMLTableCellElement>();
+    render(
+      <TableRoot ref={rootRef}>
+        <TableBody ref={bodyRef}>
+          <TableRow>
+            <TableCell ref={cellRef}>Alice</TableCell>
+          </TableRow>
+        </TableBody>
+      </TableRoot>,
+    );
+    expect(rootRef.current?.tagName).toBe("DIV");
+    expect(rootRef.current?.className).toContain("overflow-x-auto");
+    expect(rootRef.current?.querySelector("table")).toBeTruthy();
+    expect(bodyRef.current?.tagName).toBe("TBODY");
+    expect(cellRef.current?.tagName).toBe("TD");
+  });
 
   it("渲染出真实的 table 结构（thead/tbody/tfoot + th/td）", () => {
     const { container, getByRole, getAllByRole } = primitive();
