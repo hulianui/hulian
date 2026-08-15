@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, fireEvent, act } from "@testing-library/react";
 
 // jsdom: ResponsiveContainer 测量为 0 → 子图不出。mock 成克隆 child 注入固定尺寸，使 recharts 渲 SVG。
 vi.mock("recharts", async (importOriginal) => {
@@ -369,20 +369,28 @@ describe("referenceLines 在笛卡尔三件上同样可用（#274）", () => {
 
 // #275 数据点点击。笛卡尔走图表根的活跃类目，Pie/Radial 走扇区级 onClick。
 describe("onPointClick · 扁平图种的扇区点击（#275）", () => {
-  // 扇区是入场动画驱动的：首帧 recharts 只渲染一个空的 layer，要等一帧才有 path。
-  // 直接 querySelectorAll 会拿到 0 个，看起来像「点击没接上」，其实是取样取早了。
-  const sectorsOf = async (container: HTMLElement) => {
-    await waitFor(
-      () => expect(container.querySelectorAll(".recharts-sector").length).toBeGreaterThan(0),
-      { timeout: 4000 },
-    );
-    return container.querySelectorAll(".recharts-sector");
+  // 扇区是**入场动画驱动**的：首帧 recharts 只渲染一个空的 layer，要等动画跑起来才有 path。
+  // 早先这里用 waitFor + 真实时钟等它，本机 1.5–3s 能过，CI 上卡在 4s 超时红了两条 ——
+  // 动画推进快慢跟机器走，任何等待阈值都是在赌。改用假时钟把 rAF/定时器推到动画结束：
+  // 与机器无关，且本机从 3s 降到毫秒级。
+  const settleAnimation = () => {
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
   };
 
-  it("PieChart 点某片 → 回传该数据点与下标", async () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("PieChart 点某片 → 回传该数据点与下标", () => {
     const onPointClick = vi.fn();
     const { container } = render(<PieChart data={flat} onPointClick={onPointClick} />);
-    const sectors = await sectorsOf(container);
+    settleAnimation();
+    const sectors = container.querySelectorAll(".recharts-sector");
     expect(sectors.length).toBe(2);
     fireEvent.click(sectors[1]);
     expect(onPointClick).toHaveBeenCalledWith({ datum: flat[1], index: 1 });
@@ -393,18 +401,13 @@ describe("onPointClick · 扁平图种的扇区点击（#275）", () => {
     expect(container.querySelector(".recharts-pie")!.getAttribute("class")).not.toContain("cursor-pointer");
   });
 
-  it("RadialChart 同款签名", async () => {
+  it("RadialChart 同款签名", () => {
     const onPointClick = vi.fn();
     const { container } = render(<RadialChart data={flat} onPointClick={onPointClick} />);
+    settleAnimation();
     // 径向图的背景环也是 recharts-sector，取数据环那一组（radial-bar-sectors 下的）
-    await waitFor(
-      () =>
-        expect(
-          container.querySelectorAll(".recharts-radial-bar-sectors .recharts-sector").length,
-        ).toBeGreaterThan(0),
-      { timeout: 4000 },
-    );
     const bars = container.querySelectorAll(".recharts-radial-bar-sectors .recharts-sector");
+    expect(bars.length).toBeGreaterThan(0);
     fireEvent.click(bars[0]);
     expect(onPointClick).toHaveBeenCalledWith({ datum: flat[0], index: 0 });
   });
