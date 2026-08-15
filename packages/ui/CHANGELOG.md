@@ -1,5 +1,52 @@
 # @hulianui/ui
 
+## 0.46.0
+
+### Minor Changes
+
+- `Button` 补虚线笔形档 `dashed`：中后台的「这块是空的，等你往里放东西」 <!-- parity-id: button-dashed -->
+
+  五个 variant（solid / soft / outline / ghost / link）全是实线或无线，**没有虚线描边**。而虚线在
+  中后台里不是装饰，是一个有固定含义的形状：实线框说的是「这是一个可点的框」，虚线框说的是
+  「这里还没有内容」。把补录入口画成实线框，它就从「表格还能往下长」变成了「又一个操作按钮」，
+  跟同一行里真正的操作按钮抢注意力（#270）。
+
+  **做成 `outline` / `soft` 上的修饰 prop，而不是第六个 variant** —— 虚线是**笔形**，与 `tone`（色）
+  和 `muted`（层级）正交。做成 variant 的话，`outline` 现有的 tone × muted 组合要在新 variant 上
+  重抄一遍 `compoundVariants`，而它们的差别只有 `border-style` 一个属性。判据同 `muted`（#211）。
+
+  两档各自对应一种「空位」：
+
+  ```tsx
+  {
+    /* 无底色：表格行内「还没绑佐证材料」的上传 chip */
+  }
+  <Button variant="outline" size="xs" dashed>
+    上传
+  </Button>;
+
+  {
+    /* 浅语义底：表尾整行的补录入口，虚线整行铺开 = 表格还能往下长 */
+  }
+  <Button variant="soft" dashed block>
+    + 手动添加单位
+  </Button>;
+  ```
+
+  - `outline dashed` —— 只换笔形，边色照旧跟着 `tone` 走（`tone="danger"` 仍是红边），业务侧不必
+    为每个 tone 各抄一遍边色。
+  - `soft dashed` —— soft 本来无边，这一档给它**补**一条同色虚线，得到「浅语义底 + 虚线框 +
+    语义文字」的完整空位形状。边色走 `currentColor` 的 40%，六个 tone 共用同一条规则（40% 是
+    刻意的：虚线与文字等浓会读成一个实心方框）。
+
+  实机自证时逮到一处：`outline` 的底座是 `border-hairline`，而 hairline 在**亮色下就是
+  `transparent`**（那一档靠阴影自带的发丝边分隔）。实线时看不出来，一换成虚线就露馅 —— 虚线全透明、
+  只剩底下那条连续的阴影边，画出来还是一条实线。所以 `outline dashed` 这一格额外给一条真的功能性
+  边框色（`border-border`），并排在三条 tone 边色**之前**，让 `border-danger` 那几条仍然后来居上。
+
+  落在 `solid` / `ghost` / `link`（以及不写 `variant` 时的默认 `solid`）上一个类都不加，开发期打一条
+  `warnOnce` 点名 —— 同 `muted` 的判据，静默无效的 prop 比报错更难查。
+
 ## 0.45.0
 
 ### Minor Changes

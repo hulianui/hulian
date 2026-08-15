@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.45.0 · 393 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.46.0 · 393 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -3326,6 +3326,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | size | `"xs" \| "28" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | 尺寸；`xs`(24) 与 `"28"` 是两个密集文字档（中后台工具栏 / 表格行内 / 筛选胶囊行）。`iconSm` / `icon` / `iconLg` 三档为正方形图标按钮，边长与同名文字档一一对应。密集端另有三个图标档 `iconXs`(20) / `icon24`(24) / `icon28`(28)，各钉一条行刻度（见下表） |
 | block | `boolean` | `false` | 块级铺满容器宽度（移动端主操作、表单底部提交） |
 | muted | `boolean` | `false` | 层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` / `outline` 有效**（见「muted 层级档」） |
+| dashed | `boolean` | `false` | 笔形档：虚线描边，语义是「这块是空的，等你往里放东西」。**只对 `outline` / `soft` 有效**（见「dashed 笔形档」） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | type | `"button" \| "submit" \| "reset"` | `"button"` | **默认是 `button` 而不是原生 `<button>` 的 `submit`**——表单里的辅助按钮不写 `type` 时不会误提交。提交按钮请显式写 `type="submit"` |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled 等） |
@@ -3410,6 +3411,29 @@ import { Button, buttonVariants } from "@hulianui/ui"
 - **只对 `ghost` / `link` / `outline` 有效。** 落在 `solid` / `soft` 上一个类都不加，开发期会打一条 `warnOnce` 点名——静默无效的 prop 比报错更难查。这两档的底色与前景是成对的，单降前景会做出对比度不合规的组合。
 - **是 opt-in，不改默认观感。** 不传 `muted` 的 `ghost` 仍是正文黑，既有调用一个像素都不动。表格行里的「查看」「重新加载」这类**正常强度**动作本来就该是正文黑，只有真正次要的那批才加 `muted`。
 - **不是 `tone` 的第六档。** `tone` 是语义色 SSOT、横跨 29 个组件，而 muted 是**层级**不是色相；塞进 `tone` 会逼 `solid` / `soft` 回答「muted 实心是什么」，而 `bg-muted` 实心看起来就是禁用态。
+
+## dashed 笔形档
+
+虚线在中后台里不是装饰，是一个有固定含义的形状：**「这块是空的，等你往里放东西」**。实线框说的是「这是一个可点的框」，虚线框说的是「这里还没有内容」——两者不能互相顶替。把补录入口画成实线框，它就从「表格还能往下长」变成了「又一个操作按钮」，跟同一行里真正的操作按钮抢注意力（#270）。
+
+两档各自对应一种「空位」：
+
+```tsx
+{/* 无底色：表格行内「还没绑佐证材料」的上传 chip */}
+<Button variant="outline" size="xs" dashed>上传</Button>
+
+{/* 浅语义底：表尾整行的补录入口，虚线整行铺开 = 表格还能往下长 */}
+<Button variant="soft" dashed block>+ 手动添加单位</Button>
+```
+
+- `outline dashed` —— **只换笔形**，边色照旧跟着 `tone` 走（`tone="danger"` 仍是红边）。所以业务侧不必为每个 tone 各写一遍边色。
+- `soft dashed` —— soft 本来无边，这一档给它**补**一条同色虚线，得到「浅语义底 + 虚线框 + 语义文字」的完整空位形状。边色走 `currentColor` 的 40%，六个 tone 共用同一条规则；40% 是刻意的：虚线与文字等浓会读成一个实心方框。
+
+三条边界：
+
+- **只对 `outline` / `soft` 有效。** 落在 `solid` / `ghost` / `link`（以及不写 `variant` 时的默认 `solid`）上一个类都不加，开发期打一条 `warnOnce` 点名——同 `muted` 的判据，静默无效的 prop 比报错更难查。`ghost` 没有描边可换，`solid` 的实心底本身就否定了「这里是空的」。
+- **与 `tone` / `muted` 正交。** 虚线是**笔形**，色由 `tone` 给、层级由 `muted` 给，三者各管各的：`outline dashed muted` 就是「虚线边留着、文字降级」。
+- **不是第六个 variant。** 做成 variant 的话，`outline` 现有的 tone × muted 组合要在新 variant 上重抄一遍 `compoundVariants`，而它们的差别只有 `border-style` 一个属性。判据同 `muted`（#211）。
 
 ## 跟随容器的 `tone="current"`
 

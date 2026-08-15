@@ -198,6 +198,28 @@ export const buttonShowcase: ShowcaseSpec = {
         </>),
         },
         {
+            title: "The dashed stroke step (empty slots)",
+            description: "A dashed border is not decoration but a shape with a fixed meaning: this slot is empty, put something in it. A solid border says \"this is a clickable box\", a dashed one says \"there is nothing here yet\". outline dashed changes the stroke only and keeps the border colour following tone; soft has no border, so dashed adds one in the matching colour, which is the complete empty-slot shape.",
+            code: `<Button variant="outline" size="xs" dashed>Upload</Button>
+<Button variant="soft" dashed>+ Add a unit manually</Button>
+<Button variant="outline" tone="danger" dashed>Border colour still follows tone</Button>
+<Button variant="outline" size="xs">Baseline: solid</Button>`,
+            render: () => (<>
+          <Button variant="outline" size="xs" dashed>
+            Upload
+          </Button>
+          <Button variant="soft" dashed>
+            + Add a unit manually
+          </Button>
+          <Button variant="outline" tone="danger" dashed>
+            Border colour still follows tone
+          </Button>
+          <Button variant="outline" size="xs">
+            Baseline: solid
+          </Button>
+        </>),
+        },
+        {
             title: "The muted emphasis step",
             description: "The resting color drops one step to the secondary gray and returns to the tone's own color on hover. Secondary text links and icon buttons in dense rows want exactly this step - a ghost without muted is still body black, so existing call sites are unaffected. Only effective on ghost and link.",
             code: `<Button variant="ghost" size="xs" muted>Show log</Button>
@@ -303,6 +325,7 @@ export const buttonShowcase: ShowcaseSpec = {
             defaultValue: "md",
         },
         { prop: "block", type: "boolean", defaultValue: false, label: "Full width" },
+        { prop: "dashed", type: "boolean", defaultValue: false, label: "Dashed border" },
         { prop: "loading", type: "boolean", defaultValue: false },
         { prop: "children", type: "text", defaultValue: "Hulian Button", label: "Copywriting" },
     ],
@@ -326,7 +349,7 @@ export const buttonShowcase: ShowcaseSpec = {
         { name: "disabled", render: () => <Button disabled>Disabled</Button> },
         { name: "loading", render: () => <Button loading>Loading</Button> },
     ],
-    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "soft" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "xs" | "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs" | "icon24" | "icon28"} block={p.block as boolean} loading={p.loading as boolean}>
+    renderWithProps: (p) => (<Button variant={p.variant as "solid" | "soft" | "outline" | "ghost" | "link"} tone={p.tone as "brand" | "success" | "warning" | "danger" | "neutral"} size={p.size as "xs" | "sm" | "md" | "lg" | "icon" | "iconSm" | "iconLg" | "iconXs" | "icon24" | "icon28"} block={p.block as boolean} dashed={p.dashed as boolean} loading={p.loading as boolean}>
       {p.children as string}
     </Button>),
     toCode: (p) => `<Button variant="${p.variant}" tone="${p.tone}" size="${p.size}"${p.block ? " block" : ""}${p.loading ? " loading" : ""}>${p.children}</Button>`,

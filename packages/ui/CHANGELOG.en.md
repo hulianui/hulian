@@ -1,5 +1,50 @@
 # @hulianui/ui
 
+## 0.46.0
+
+### Minor Changes
+
+- `Button` gains a dashed stroke step: the admin-app shape for "this slot is empty, put something in it" <!-- parity-id: button-dashed -->
+
+  All five variants (solid / soft / outline / ghost / link) were either solid-bordered or borderless,
+  with **no dashed option**. In an admin app a dashed border is not decoration: a solid border says
+  "this is a clickable box", a dashed one says "there is nothing here yet". Drawing an "add a row" entry
+  point with a solid border turns it from "the table can still grow" into "yet another action button",
+  competing for attention with the real actions on the same row (#270).
+
+  **It is a modifier prop on `outline` / `soft`, not a sixth variant** -- the dash is a **stroke**, and it
+  is orthogonal to `tone` (colour) and `muted` (emphasis). As a variant it would have to restate every
+  existing `outline` tone × muted combination in new `compoundVariants`, when the only difference between
+  them is one `border-style`. Same reasoning as `muted` (#211).
+
+  Each of the two steps covers one kind of empty slot:
+
+  ```tsx
+  {/* No fill: an upload chip on a table row that has no evidence attached yet */}
+  <Button variant="outline" size="xs" dashed>Upload</Button>
+
+  {/* Tinted: the add-row entry at the end of a table, dashed across the full width */}
+  <Button variant="soft" dashed block>+ Add a unit manually</Button>
+  ```
+
+  - `outline dashed` -- changes the stroke only; the border colour still follows `tone` (`tone="danger"`
+    stays red), so product code never has to restate the tone table just to get a dashed edge.
+  - `soft dashed` -- `soft` has no border, so this step **adds** one in the matching colour, giving the
+    complete empty-slot shape: tinted semantic fill, dashed border, semantic text. The border uses 40% of
+    `currentColor`, so all six tones share one rule (the 40% is deliberate: a dash as strong as the text
+    reads as a solid box).
+
+  Verifying it in a real browser caught one thing: the base of `outline` is `border-hairline`, and
+  hairline is **`transparent` in light mode** (that tier relies on the hairline edge the shadow already
+  provides). With a solid border nobody notices; a dashed one gives it away, because a fully transparent
+  dash leaves only the continuous shadow edge underneath -- which still draws as a solid line. So the
+  `outline dashed` cell also carries a real functional border colour (`border-border`), placed **before**
+  the three tone border colours so that `border-danger` and friends still win.
+
+  On `solid`, `ghost` and `link` (including the default `solid` when no `variant` is passed) it adds no
+  class at all and development builds log a `warnOnce` naming it -- same reasoning as `muted`, since a
+  silently inert prop is harder to track down than an error.
+
 ## 0.45.0
 
 ### Minor Changes

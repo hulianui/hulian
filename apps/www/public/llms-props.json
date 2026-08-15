@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.45.0",
+  "version": "0.46.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -6262,6 +6262,14 @@
           "type": "boolean",
           "default": "false",
           "description": "层级档：静息色降一档到次要灰，hover 回到本 tone 的色。**只对 `ghost` / `link` / `outline` 有效**（见「muted 层级档」）"
+        },
+        {
+          "name": "dashed",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "笔形档：虚线描边，语义是「这块是空的，等你往里放东西」。**只对 `outline` / `soft` 有效**（见「dashed 笔形档」）"
         },
         {
           "name": "loading",
