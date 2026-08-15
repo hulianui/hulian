@@ -10011,7 +10011,6 @@
         "https://hulianui.haloritual.com/zh/r/pagination.json",
         "https://hulianui.haloritual.com/zh/r/popover.json",
         "https://hulianui.haloritual.com/zh/r/search-form.json",
-        "https://hulianui.haloritual.com/zh/r/select.json",
         "https://hulianui.haloritual.com/zh/r/spin.json",
         "https://hulianui.haloritual.com/zh/r/table.json"
       ],
@@ -12959,7 +12958,8 @@
         "https://hulianui.haloritual.com/zh/r/button.json",
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
-        "https://hulianui.haloritual.com/zh/r/motion.json"
+        "https://hulianui.haloritual.com/zh/r/motion.json",
+        "https://hulianui.haloritual.com/zh/r/select.json"
       ],
       "meta": {
         "import": "import { Pagination, getPaginationRange } from \"@hulianui/ui\"",
@@ -12986,6 +12986,16 @@
           "path": "components/hulianui/pagination/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/pagination/index.ts"
+        },
+        {
+          "path": "components/hulianui/pagination/pagination.page-size-select.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/pagination/pagination.page-size-select.tsx"
+        },
+        {
+          "path": "components/hulianui/pagination/pagination.page-size.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/pagination/pagination.page-size.ts"
         },
         {
           "path": "components/hulianui/pagination/pagination.range.ts",

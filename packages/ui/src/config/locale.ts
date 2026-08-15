@@ -40,6 +40,8 @@ export interface Locale {
     clearSelection: string;
     /** 每页条数选项文案（参数化，如「10 条/页」）。 */
     pageSize: (count: number) => string;
+    /** 每页条数切换器的无障碍名（说「这是什么控件」，不是它当前的值）。 */
+    pageSizeLabel: string;
     /** cursor 分页模式：上一页按钮。 */
     prevPage: string;
     /** cursor 分页模式：下一页按钮。 */
@@ -361,6 +363,10 @@ export interface ComponentLocale {
     jump: string;
     jumpPrefix: string;
     jumpSuffix: string;
+    /** 每页条数选项文案（参数化，如「10 条/页」）。与 proTable.pageSize 同文案、各自可覆盖。 */
+    pageSize: (count: number) => string;
+    /** 每页条数切换器的无障碍名（说「这是什么控件」，不是它当前的值）。 */
+    pageSizeLabel: string;
   };
   searchForm: {
     selectPlaceholder: string;
@@ -1114,6 +1120,8 @@ const zhComponents: ComponentLocale = {
     jump: "跳至第几页",
     jumpPrefix: "跳至",
     jumpSuffix: "页",
+    pageSize: (n) => `${n} 条/页`,
+    pageSizeLabel: "每页条数",
   },
   searchForm: {
     selectPlaceholder: "请选择",
@@ -1916,6 +1924,8 @@ const enComponents: ComponentLocale = {
     jump: "Page to jump to",
     jumpPrefix: "Go to",
     jumpSuffix: "page",
+    pageSize: (n) => `${n} / page`,
+    pageSizeLabel: "Items per page",
   },
   searchForm: {
     selectPlaceholder: "Select",
@@ -2572,6 +2582,7 @@ export const zhCN: Locale = {
     selected: (n) => `已选 ${n} 项`,
     clearSelection: "清空",
     pageSize: (n) => `${n} 条/页`,
+    pageSizeLabel: "每页条数",
     prevPage: "上一页",
     nextPage: "下一页",
   },
@@ -2689,6 +2700,7 @@ export const enUS: Locale = {
     selected: (n) => `${n} selected`,
     clearSelection: "Clear",
     pageSize: (n) => `${n} / page`,
+    pageSizeLabel: "Items per page",
     prevPage: "Previous",
     nextPage: "Next",
   },

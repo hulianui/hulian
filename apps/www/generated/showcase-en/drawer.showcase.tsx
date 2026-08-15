@@ -19,6 +19,18 @@ function Demo({ side }: {
       </DrawerContent>
     </Drawer>);
 }
+function ExtraDemo() {
+    return (<Drawer>
+      <DrawerTrigger render={<Button variant="outline">Open the notice panel</Button>}/>
+      <DrawerContent side="right" title="Notice" extra={<Button variant="ghost" size="sm">
+            Mark all read
+          </Button>}>
+        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+          {Array.from({ length: 5 }, (_, i) => (<p key={i}>Configuration items {i + 1}: Here is a longer explanatory copy to demonstrate the scrolling behavior when the text exceeds the limit.</p>))}
+        </div>
+      </DrawerContent>
+    </Drawer>);
+}
 export const drawerShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -79,6 +91,18 @@ export const drawerShowcase: ShowcaseSpec = {
 </Drawer>`,
             render: () => <Demo side="right"/>,
         },
+        {
+            title: "Title-row actions",
+            description: "extra places buttons to the right of the title, and they never contribute to the accessible name. Do not push buttons into title: it renders an h2, so screen readers would read the button copy as part of the drawer's name.",
+            code: `<DrawerContent
+  side="right"
+  title="Notice"
+  extra={<Button variant="ghost" size="sm">Mark all read</Button>}
+>
+  {/* Notice list */}
+</DrawerContent>`,
+            render: () => <ExtraDemo />,
+        },
     ],
     controls: [
         {
@@ -94,6 +118,7 @@ export const drawerShowcase: ShowcaseSpec = {
         { name: "left", render: () => <Demo side="left"/> },
         { name: "top", render: () => <Demo side="top"/> },
         { name: "bottom", render: () => <Demo side="bottom"/> },
+        { name: "Title-row actions (extra)", render: () => <ExtraDemo /> },
     ],
     renderWithProps: (p) => <Demo side={(p.side as DrawerSide) ?? "right"}/>,
     toCode: (p) => `<Drawer>

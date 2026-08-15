@@ -8,8 +8,8 @@ import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { Pagination } from "../pagination/pagination";
+import { PageSizeSelect } from "../pagination/pagination.page-size-select";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "../select";
 import { SearchForm } from "../search-form/search-form";
 import { Spin } from "../spin/spin";
 import { Table } from "../table/table";
@@ -109,6 +109,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     selected: (n) => `已选 ${n} 项`,
     clearSelection: "清空",
     pageSize: (n) => `${n} 条/页`,
+    pageSizeLabel: "每页条数",
     prevPage: "上一页",
     nextPage: "下一页",
   });
@@ -476,27 +477,19 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="text-sm text-muted-foreground">{t.total(pagination.total)}</span>
           <div className="flex flex-wrap items-center gap-3">
+            {/* 切换器与 Pagination 的 pageSizeOptions（#271）共用同一份皮肤（PageSizeSelect），
+                改一次两处同步。这里没有把它交给 Pagination 内部渲染：ProTable 的底栏是
+                「左总数 / 右工具」的两列版式，切换器归右列的 gap-3，与分页器的 gap-1.5 不是一档。 */}
             {pageSizeOptions != null &&
               pageSizeOptions.length > 0 &&
               pagination.onPageSizeChange != null && (
-                <Select
-                  items={pageSizeOptions.map((n) => ({ value: String(n), label: t.pageSize(n) }))}
-                  value={String(pagination.pageSize)}
-                  onValueChange={(v) => pagination.onPageSizeChange!(Number(v))}
-                >
-                  <SelectTrigger
-                    size="sm"
-                    aria-label={t.pageSize(pagination.pageSize)}
-                    className="w-28"
-                  />
-                  <SelectContent>
-                    {pageSizeOptions.map((n) => (
-                      <SelectItem key={n} value={String(n)}>
-                        {t.pageSize(n)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <PageSizeSelect
+                  options={pageSizeOptions}
+                  value={pagination.pageSize}
+                  onChange={(n) => pagination.onPageSizeChange!(n)}
+                  label={t.pageSize}
+                  ariaLabel={t.pageSizeLabel}
+                />
               )}
             {/* pagination.total 是总条数，直接喂 Pagination 的 totalItems（0.11.0 起），
                 不再在这里手算 Math.ceil —— 页数换算只留一处，边界（0 条 / 整除）不会两边各算各的。 */}
@@ -514,23 +507,16 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
       {cursorMode && (
         <div className="flex flex-wrap items-center justify-end gap-3">
           {pageSizeOptions != null && pageSizeOptions.length > 0 && (
-            <Select
-              items={pageSizeOptions.map((n) => ({ value: String(n), label: t.pageSize(n) }))}
-              value={String(pageSize)}
-              onValueChange={(v) => {
-                setPageSize(Number(v));
+            <PageSizeSelect
+              options={pageSizeOptions}
+              value={pageSize}
+              onChange={(n) => {
+                setPageSize(n);
                 resetCursor(); // 换页长回到第 1 页：旧游标对应的页边界已失效
               }}
-            >
-              <SelectTrigger size="sm" aria-label={t.pageSize(pageSize)} className="w-28" />
-              <SelectContent>
-                {pageSizeOptions.map((n) => (
-                  <SelectItem key={n} value={String(n)}>
-                    {t.pageSize(n)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              label={t.pageSize}
+              ariaLabel={t.pageSizeLabel}
+            />
           )}
           <div className="flex items-center gap-2">
             <Button

@@ -27,8 +27,12 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `DialogContent.title` * | `ReactNode` | — | 标题（a11y label）。收 ReactNode，「图标 + 文案」直接写 |
+| `DialogContent.title` | `ReactNode` | — | 标题（a11y 名字的常规来源）。收 ReactNode，「图标 + 文案」直接写。承载元素是 `<h2>`，**只收 phrasing content**，按钮组放 `extra`。0.47.0 起由必填改为可选（见下方「对话框必须有名字」） |
+| `DialogContent.extra` | `ReactNode` | — | 标题右侧的操作区，与标题同排右对齐，**不参与无障碍名** |
 | `DialogContent.description` | `ReactNode` | — | 说明文案。渲染成 `<p>`，**只能放 phrasing content**（块级内容放 children） |
+| `DialogContent.aria-label` | `string` | — | 对话框的无障碍名，直接落到 popup 上。不传 `title` 时用它（铺满型对话框的可见 header 由消费方自己画） |
+| `DialogContent.aria-labelledby` | `string` | — | 无障碍名的来源元素 id，优先于 `title` 自动生成的 id。与 `aria-label` 二选一 |
+| `DialogContent.titleClassName` | `string` | — | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
 | `DialogContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」——面包屑式标题的弹窗里可见区只留标题，读屏仍拿得到那句话 |
 | `DialogContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
 | `DialogContent.backdropClassName` | `string` | — | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
@@ -72,6 +76,21 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 - `DialogTrigger` / `DialogClose` 用 `render={<Button…/>}` 把自家行为合并到目标元素上，**不要**再额外包一层按钮，否则会出现嵌套交互元素 / 双重 onClick。
 - 操作按钮优先放 `footer` 槽（带分隔线、右对齐），正文 `children` 留给主内容。
+
+### 对话框必须有名字
+
+`title` 在 0.47.0 之前是必填，但那不真的保证有名字 —— `title={null}` 一样过类型检查，渲染出的是个空 `<h2>`。改成可选之后，保证换成了运行时告警：`title` / `aria-label` / `aria-labelledby` **三者全无**时开发期会打一条 warn。
+
+因此「可见 header 是一行控件」的铺满型对话框不必再塞一个 `sr-only` 的假标题：
+
+```tsx
+<DialogContent aria-label="通知" className="p-0 [--hl-overlay-pad:0px]">
+  <div className="flex items-center justify-between border-b px-4 py-3">…</div>
+  {/* 正文 */}
+</DialogContent>
+```
+
+标题旁只是要摆几个按钮时用 `extra`，别把整行塞进 `title`：`<h2>` 只收 phrasing content，而 `aria-labelledby` 指向整个 `<h2>`，按钮文案会被一起念进对话框的名字里。同款槽见 [DrawerContent.extra](../drawer/drawer.md) 与 [CardHeader.extra](../card/card.md)。
 
 ## 相关
 [Modal](../modal/modal.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Drawer](../drawer/drawer.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md) · [HoverCard](../hover-card/hover-card.md)

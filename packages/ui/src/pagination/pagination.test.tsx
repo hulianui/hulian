@@ -124,7 +124,9 @@ describe("totalItems / pageSize（总条数口径）", () => {
   });
 
   it("pageSize 缺省为 10", () => {
-    const { getByLabelText } = render(<Pagination page={1} totalItems={15} onPageChange={() => {}} />);
+    const { getByLabelText } = render(
+      <Pagination page={1} totalItems={15} onPageChange={() => {}} />,
+    );
     expect(getByLabelText("第 2 页")).toBeTruthy();
   });
 
@@ -136,7 +138,9 @@ describe("totalItems / pageSize（总条数口径）", () => {
   });
 
   it("0 条也至少 1 页，且末页按钮禁用", () => {
-    const { getByLabelText } = render(<Pagination page={1} totalItems={0} onPageChange={() => {}} />);
+    const { getByLabelText } = render(
+      <Pagination page={1} totalItems={0} onPageChange={() => {}} />,
+    );
     expect(getByLabelText("第 1 页")).toBeTruthy();
     expect(getByLabelText("下一页").hasAttribute("disabled")).toBe(true);
   });
@@ -175,7 +179,9 @@ describe("showTotal / showQuickJumper", () => {
   });
 
   it("只给了 total（页数）时算不出条数 → showTotal 静默不渲染", () => {
-    const { container } = render(<Pagination page={1} total={5} onPageChange={() => {}} showTotal />);
+    const { container } = render(
+      <Pagination page={1} total={5} onPageChange={() => {}} showTotal />,
+    );
     expect(container.textContent).not.toContain("共");
   });
 
@@ -200,5 +206,41 @@ describe("showTotal / showQuickJumper", () => {
     fireEvent.change(input, { target: { value: "2a" } });
     expect(input.value).toBe("2");
     expect(onPageChange).not.toHaveBeenCalled();
+  });
+});
+
+// #271 每页条数切换档。Base UI Select 的 Trigger 渲染 role="combobox" 的 button。
+// 这里只验「渲不渲染 / 渲成什么样」—— 切档之后页码怎么走在 pagination.page-size.test.ts 里验：
+// Base UI 的选项浮层在 jsdom 下打不开（实测点 Trigger 后 aria-expanded 恒 false、option 数为 0），
+// 从这里点选项验回调等于验了个空。
+describe("Pagination · 每页条数切换（pageSizeOptions）", () => {
+  it("不传 pageSizeOptions 时不渲染切换器（向后兼容）", () => {
+    const { queryByRole } = render(
+      <Pagination page={1} totalItems={100} onPageChange={() => {}} />,
+    );
+    expect(queryByRole("combobox")).toBeNull();
+  });
+
+  it("只给档不给回调 → 不渲染（切了没人收，不如不给）", () => {
+    const { queryByRole } = render(
+      <Pagination page={1} totalItems={100} onPageChange={() => {}} pageSizeOptions={[20, 50]} />,
+    );
+    expect(queryByRole("combobox")).toBeNull();
+  });
+
+  it("档 + 回调齐全 → 渲染切换器，显示当前页长，无障碍名是「每页条数」而非当前值", () => {
+    const { getByRole } = render(
+      <Pagination
+        page={1}
+        totalItems={100}
+        pageSize={20}
+        onPageChange={() => {}}
+        pageSizeOptions={[20, 50, 100]}
+        onPageSizeChange={() => {}}
+      />,
+    );
+    const trigger = getByRole("combobox");
+    expect(trigger.textContent).toContain("20 条/页");
+    expect(trigger.getAttribute("aria-label")).toBe("每页条数");
   });
 });

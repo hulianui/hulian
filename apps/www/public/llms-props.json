@@ -29562,6 +29562,14 @@
           "description": "右侧「跳至 __ 页」输入框（回车/失焦提交，自动夹紧到合法范围）"
         },
         {
+          "name": "pageSizeOptions",
+          "required": false,
+          "kind": "array",
+          "type": "number[]",
+          "default": null,
+          "description": "每页条数候选档（对标 el-pagination 的 `page-sizes`）。**与 `onPageSizeChange` 同传才渲染切换器**，只给一个静默不渲染"
+        },
+        {
           "name": "disabled",
           "required": false,
           "kind": "boolean",
@@ -29578,6 +29586,14 @@
           "type": "(page: number) => void",
           "default": null,
           "description": "页码变更回调（点击页码/上下页/首末页时触发，已夹紧到 `[1, total]`）"
+        },
+        {
+          "name": "onPageSizeChange",
+          "required": false,
+          "kind": "function",
+          "type": "(pageSize: number) => void",
+          "default": null,
+          "description": "每页条数变更回调。组件不自持 `pageSize`，但**页码归位由组件负责**：给了 `totalItems` 时若当前页超出新页数，会再补发一次 `onPageChange`（夹到新末页，不是回第 1 页）"
         }
       ],
       "slots": []
@@ -31292,11 +31308,20 @@
         {
           "name": "title",
           "owner": "DialogContent",
-          "required": true,
+          "required": false,
           "kind": "node",
           "type": "ReactNode",
           "default": null,
-          "description": "标题（a11y label）。收 ReactNode，「图标 + 文案」直接写"
+          "description": "标题（a11y 名字的常规来源）。收 ReactNode，「图标 + 文案」直接写。承载元素是 `<h2>`，**只收 phrasing content**，按钮组放 `extra`。0.47.0 起由必填改为可选（见下方「对话框必须有名字」）"
+        },
+        {
+          "name": "extra",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标题右侧的操作区，与标题同排右对齐，**不参与无障碍名**"
         },
         {
           "name": "description",
@@ -31306,6 +31331,33 @@
           "type": "ReactNode",
           "default": null,
           "description": "说明文案。渲染成 `<p>`，**只能放 phrasing content**（块级内容放 children）"
+        },
+        {
+          "name": "aria-label",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "对话框的无障碍名，直接落到 popup 上。不传 `title` 时用它（铺满型对话框的可见 header 由消费方自己画）"
+        },
+        {
+          "name": "aria-labelledby",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "无障碍名的来源元素 id，优先于 `title` 自动生成的 id。与 `aria-label` 二选一"
+        },
+        {
+          "name": "titleClassName",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到标题（默认 `text-lg font-semibold`），走 twMerge"
         },
         {
           "name": "descriptionClassName",
@@ -31471,6 +31523,33 @@
           "description": "内置关闭按钮的无障碍名（默认取 `locale.drawer.close`）"
         },
         {
+          "name": "aria-label",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "抽屉的无障碍名，直接落到 popup 上。**不传 `title` 时唯一的命名手段**（铺满型抽屉的可见 header 由消费方自己画时用它，见下方「自己画 header 的抽屉怎么命名」）"
+        },
+        {
+          "name": "aria-labelledby",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "无障碍名的来源元素 id；指向页面上已有的可见标题时用它，优先于 `title` 自动生成的 id。与 `aria-label` 二选一"
+        },
+        {
+          "name": "titleClassName",
+          "owner": "DrawerContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到标题（默认 `text-lg font-semibold`），走 twMerge"
+        },
+        {
           "name": "descriptionClassName",
           "owner": "DrawerContent",
           "required": false,
@@ -31586,7 +31665,13 @@
           "name": "title",
           "owner": "DrawerContent",
           "type": "ReactNode",
-          "description": "提供则渲 Dialog.Title 作 a11y label"
+          "description": "提供则渲 Dialog.Title 作 a11y label。承载元素是 `<h2>`，**只收 phrasing content**（文本 / `<span>` / 图标），按钮组放 `extra`"
+        },
+        {
+          "name": "extra",
+          "owner": "DrawerContent",
+          "type": "ReactNode",
+          "description": "标题右侧的操作区（按钮 / 徽标 / 计数），与标题同排右对齐，**不参与无障碍名**。与内置关闭按钮共存时自动让位"
         },
         {
           "name": "description",

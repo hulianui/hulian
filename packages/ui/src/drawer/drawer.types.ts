@@ -28,8 +28,21 @@ export interface DrawerContentProps {
    * 交叉轴恒为 100%（右侧抽屉永远通高、底部抽屉永远通宽），不随此档变化。
    */
   size?: DrawerSize;
-  /** 提供则渲 Dialog.Title 作 a11y label。 */
+  /**
+   * 提供则渲 Dialog.Title 作 a11y label。
+   *
+   * 承载元素是 `<h2>`（Base UI `Dialog.Title`），**只收 phrasing content** —— 文本、`<span>`、
+   * `<strong>`、图标都行，`<div>` / 按钮组不行。标题旁边要摆操作按钮时放 `extra`，
+   * 别把整行塞进这里：那既是非法嵌套，也会让读屏念出的对话框名字变成「通知 2 条未读 全部已读」。
+   */
   title?: ReactNode;
+  /**
+   * 标题右侧的操作区（#272）。与 `title` 同排一行，右对齐，不参与 a11y 名字。
+   *
+   * 形状同 [CardHeader.extra](../card/card.md)：`title` 只放标题本身，按钮 / 徽标 / 计数放这里。
+   * 与内置关闭按钮共存时组件自动为它让出右上角的位置。
+   */
+  extra?: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
   /**
@@ -46,6 +59,8 @@ export interface DrawerContentProps {
   showClose?: boolean;
   /** 关闭按钮的无障碍名（默认取 locale 的 drawer.close）。 */
   closeLabel?: string;
+  /** 追加到标题（默认 `text-lg font-semibold`）。走 twMerge，可压成正文字号。 */
+  titleClassName?: string;
   /**
    * 追加到说明文案（默认 `text-sm text-muted-foreground`）。走 twMerge。
    * 传 `"sr-only"` 即「只给读屏的说明」：可见区域只留标题，读屏仍拿得到那句话。
@@ -78,4 +93,21 @@ export interface DrawerContentProps {
 
   container?: ComponentProps<typeof BaseDialog.Portal>["container"];
   className?: string;
+  /**
+   * 抽屉的无障碍名，直接落到 popup 上（#272）。
+   *
+   * **不传 `title` 时唯一的命名手段**。铺满型抽屉（`className="p-0 [--hl-overlay-pad:0px]"`）的
+   * 可见 header 常常是消费方自己画的一整行控件，连自己的分隔线和 `env()` 内距都要管 ——
+   * 那一行进不了 `<h2>`，此前只能塞一个 `sr-only` 的假标题换名字。有了本项直接写
+   * `aria-label="通知"` 即可，不必再多渲一个零高度的 `<h2>`。
+   *
+   * 传了 `title` 时以本项为准（ARIA 里 `aria-label` 压过 `aria-labelledby` 之外的一切），
+   * 但那通常说明两处文案不一致，是个信号而不是特性。
+   */
+  "aria-label"?: string;
+  /**
+   * 抽屉无障碍名的来源元素 id（#272）。指向页面上已有的可见标题时用它，
+   * 优先于 `title` 自动生成的那个 id。与 `aria-label` 二选一即可，不必都给。
+   */
+  "aria-labelledby"?: string;
 }

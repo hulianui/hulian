@@ -64,7 +64,9 @@ describe("drawerVariants size 档（#230）", () => {
   });
 
   it("xl 覆盖 760px 级面板（issue #230 的实际诉求：底部抽屉要 760px 高）", () => {
-    expect(classes(drawerVariants({ side: "bottom", size: "xl" }))).toContain("h-[min(90vh,48rem)]");
+    expect(classes(drawerVariants({ side: "bottom", size: "xl" }))).toContain(
+      "h-[min(90vh,48rem)]",
+    );
     expect(classes(drawerVariants({ side: "right", size: "xl" }))).toContain("w-[min(90vw,48rem)]");
   });
 
@@ -200,5 +202,102 @@ describe("DrawerContent 遮罩与正文滚动（#185 / #188）", () => {
     const body = screen.getByTestId("drawer-body-child").parentElement!;
     expect(body.className).not.toContain("overflow-y-auto");
     expect(body.className).toContain("flex flex-col");
+  });
+});
+
+// #272 铺满型抽屉的命名手段：aria-* 透传 + extra 槽。
+describe("DrawerContent 无障碍名与 extra 槽（#272）", () => {
+  const popup = () => document.querySelector('[role="dialog"]') as HTMLElement;
+
+  it("只传 title：aria-labelledby 仍指向 Dialog.Title（回归防护）", () => {
+    // Base UI 的 mergeProps 按 `for...in` 覆盖，键存在即生效、不看值是否 undefined。
+    // 一旦把新增的 aria-* 写成常规属性而非条件展开，这里就会红 —— 而后果是全库抽屉集体失名。
+    render(
+      <Drawer open>
+        <DrawerContent title="设置面板">正文</DrawerContent>
+      </Drawer>,
+    );
+    const id = popup().getAttribute("aria-labelledby");
+    expect(id).toBeTruthy();
+    expect(document.getElementById(id!)!.textContent).toBe("设置面板");
+    expect(popup().getAttribute("aria-label")).toBeNull();
+  });
+
+  it("不传 title、只传 aria-label：抽屉拿到名字，且不多渲一个假标题", () => {
+    render(
+      <Drawer open>
+        <DrawerContent aria-label="通知" showClose={false} className="p-0 [--hl-overlay-pad:0px]">
+          <div>列表</div>
+        </DrawerContent>
+      </Drawer>,
+    );
+    expect(popup().getAttribute("aria-label")).toBe("通知");
+    expect(popup().querySelector("h2")).toBeNull();
+  });
+
+  it("aria-labelledby 指向页面上已有的标题元素", () => {
+    render(
+      <>
+        <span id="ext-title">外部标题</span>
+        <Drawer open>
+          <DrawerContent aria-labelledby="ext-title">正文</DrawerContent>
+        </Drawer>
+      </>,
+    );
+    expect(popup().getAttribute("aria-labelledby")).toBe("ext-title");
+  });
+
+  it("extra：操作是标题的兄弟而非子节点，无障碍名里不含按钮文案", () => {
+    render(
+      <Drawer open>
+        <DrawerContent
+          title="通知"
+          extra={<button type="button">全部已读</button>}
+          showClose={false}
+        >
+          列表
+        </DrawerContent>
+      </Drawer>,
+    );
+    const h2 = popup().querySelector("h2")!;
+    expect(h2.textContent).toBe("通知"); // 不是「通知 全部已读」
+    expect(h2.querySelector("button")).toBeNull();
+    expect(screen.getByText("全部已读").closest("h2")).toBeNull();
+    // 名字取自这个 h2 → 干净。
+    expect(document.getElementById(popup().getAttribute("aria-labelledby")!)).toBe(h2);
+  });
+
+  it("extra + showClose：标题行让出右上角，不被内置关闭按钮压住", () => {
+    render(
+      <Drawer open>
+        <DrawerContent title="通知" extra={<button type="button">全部已读</button>}>
+          列表
+        </DrawerContent>
+      </Drawer>,
+    );
+    const row = popup().querySelector("h2")!.parentElement!;
+    expect(row.className).toContain("pr-10");
+  });
+
+  it("不传 extra 时标题不多包一层：h2 的父级仍是 popup 本身", () => {
+    render(
+      <Drawer open>
+        <DrawerContent title="设置面板">正文</DrawerContent>
+      </Drawer>,
+    );
+    expect(popup().querySelector("h2")!.parentElement).toBe(popup());
+  });
+
+  it("titleClassName 走 twMerge，可压掉默认字号", () => {
+    render(
+      <Drawer open>
+        <DrawerContent title="通知" titleClassName="text-base font-medium">
+          正文
+        </DrawerContent>
+      </Drawer>,
+    );
+    const cls = popup().querySelector("h2")!.className;
+    expect(cls).toContain("text-base");
+    expect(cls).not.toContain("text-lg");
   });
 });

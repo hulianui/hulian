@@ -35,6 +35,7 @@ Pagination is controlled only: store `page` externally and update it from `onPag
 | showFirstLast | `boolean` | `false` | Whether to show first-page and last-page buttons. |
 | showTotal | `boolean \| (totalItems, [from, to]) => ReactNode` | `false` | Total-items summary on the left. The built-in Chinese format means “N items total.” Requires `totalItems` and silently renders nothing when only `total` is provided. |
 | showQuickJumper | `boolean` | `false` | Whether to show the page-jump input. Enter and blur submit, clamped to the valid range. |
+| pageSizeOptions | `number[]` | — | Page-size choices, mirroring el-pagination's `page-sizes`. **The switcher renders only when `onPageSizeChange` is supplied as well**; supplying just one of the two renders nothing. |
 | disabled | `boolean` | `false` | Whether all pagination controls are disabled. |
 
 ## Events
@@ -42,6 +43,7 @@ Pagination is controlled only: store `page` externally and update it from `onPag
 | Event | Type | Description |
 |------|------|------|
 | onPageChange* | `(page: number) => void` | Called by page, previous/next, and first/last controls with a value clamped to `[1, total]`. |
+| onPageSizeChange | `(pageSize: number) => void` | Called with the new page size. The component does not own `pageSize`, but it does own **page repositioning**: when `totalItems` is available and the current page falls outside the new page count, it fires `onPageChange` as well, clamping to the new last page rather than resetting to page 1. |
 
 ## Example
 ```tsx
@@ -69,6 +71,26 @@ With an API envelope whose `total` is an item count:
 />
 ```
 
+### Page-size switcher
+
+```tsx
+function Demo() {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  return (
+    <Pagination
+      page={page}
+      totalItems={5151}
+      pageSize={pageSize}
+      onPageChange={setPage}
+      pageSizeOptions={[20, 50, 100]}
+      onPageSizeChange={setPageSize}
+      showTotal
+    />
+  );
+}
+```
+
 ## Usage guidelines
 
 - [[pagination-range-single-gap-fill-not-ellipsis]]: `getPaginationRange` inserts the missing page number when a gap hides exactly one page. It uses an ellipsis only when the gap is greater than one, avoiding awkward output such as `1 … 3`. This follows MUI's `usePagination` model.
@@ -76,6 +98,9 @@ With an API envelope whose `total` is an item count:
 - **`total` means pages, unlike the item count commonly named `total` by APIs.** Prefer `totalItems` with `pageSize` for API data instead of duplicating `Math.ceil` at call sites. Passing both props warns in development and uses `total`.
 - The `total` semantics are reserved for a breaking correction in 1.0, when the two props can be consolidated. Prefer `totalItems` in new code.
 - `showTotal` requires `totalItems`; page count alone cannot produce an item count, so the summary is omitted rather than throwing.
+- Changing the page size can fire **two callbacks for one interaction**: `onPageSizeChange` with the new size, then `onPageChange` with the clamped page when the current page no longer exists. Write both state updates as usual; React batches them into one render. When only `total` (page count) is supplied, the new page count cannot be derived, so no `onPageChange` follows and repositioning is left to you.
+- `pageSizeOptions` and `onPageSizeChange` must both be present for the switcher to render: options without a callback means the change has nowhere to go, and a callback without options has nothing to switch between. It renders nothing rather than throwing, matching `showTotal`.
+- The switcher uses the library [Select](../select/select.md). It is the same implementation as the switcher in the [ProTable](../pro-table/pro-table.md) footer, so appearance, copy, and accessible name match in both places.
 - Built-in button and jumper labels are Chinese copy: `"\u8df3\u5230\u9996\u9875"` (“Go to first page”), `"\u4e0a\u4e00\u9875"` (“Previous page”), `"\u4e0b\u4e00\u9875"` (“Next page”), `"\u8df3\u5230\u672b\u9875"` (“Go to last page”), and `"\u8df3\u81f3\u7b2c\u51e0\u9875"` (“Page to jump to”). Supply a custom `showTotal` renderer when the built-in Chinese `"\u5171 N \u6761"` format is not appropriate.
 
 ## Related

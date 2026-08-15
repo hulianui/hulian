@@ -22,6 +22,8 @@ import { buttonVariants } from "../button";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
+import { pageAfterPageSizeChange } from "./pagination.page-size";
+import { PageSizeSelect } from "./pagination.page-size-select";
 import { getPaginationRange } from "./pagination.range";
 import type { PaginationProps } from "./pagination.types";
 import { useComponentLocale } from "../config/locale-context";
@@ -88,6 +90,8 @@ export function Pagination({
   showFirstLast = false,
   showTotal = false,
   showQuickJumper = false,
+  pageSizeOptions,
+  onPageSizeChange,
   disabled = false,
   className,
   "aria-label": ariaLabel = "pagination",
@@ -104,6 +108,8 @@ export function Pagination({
     jump: "跳至第几页",
     jumpPrefix: "跳至",
     jumpSuffix: "页",
+    pageSize: (n) => `${n} 条/页`,
+    pageSizeLabel: "每页条数",
   };
   // 页数真源：total（页数）优先，其次由 totalItems/pageSize 算。
   // 两条路并存是为了兼容既有调用方 —— `total` 一开始就被定义成「总页数」，而几乎所有后端回的
@@ -132,7 +138,18 @@ export function Pagination({
   const measure = useCallback(() => {
     const el = activeRef.current;
     if (el) setIndicator({ left: el.offsetLeft, width: el.offsetWidth });
-  }, [current, totalPages, siblingCount, showFirstLast, disabled]);
+    // 依赖列表列的是「会改变按钮列几何」的东西（函数体本身只读 ref）。切换器出现/消失会把整列
+    // 右移或左移，而它未必带来 nav 自身的尺寸变化（nav 宽度由外层决定时 ResizeObserver 不触发），
+    // 故这里显式列出，否则滑块会停在旧位置。切换器的 w-28 是定宽，pageSize 变化不移动几何。
+  }, [
+    current,
+    totalPages,
+    siblingCount,
+    showFirstLast,
+    disabled,
+    pageSizeOptions?.length ?? 0,
+    onPageSizeChange != null,
+  ]);
 
   useIsoLayoutEffect(() => {
     measure();
@@ -156,6 +173,16 @@ export function Pagination({
   const go = (p: number) => {
     const next = Math.min(Math.max(p, 1), totalPages);
     if (next !== current) onPageChange(next);
+  };
+
+  // 切换每页条数（#271）。组件不自持 pageSize，只把新值回给消费方；但**页码归位由组件负责**：
+  // 100/页看到第 52 页，切到 500/页就只剩 11 页，第 52 页不再存在 —— 归位规则若交给每个消费方
+  // 各猜一套，同一个库会长出好几种行为。规则本身见 pageAfterPageSizeChange。
+  const changePageSize = (next: number) => {
+    if (next === pageSize) return;
+    onPageSizeChange?.(next);
+    const nextPage = pageAfterPageSizeChange({ page: current, pageSize: next, totalItems, total });
+    if (nextPage != null) onPageChange(nextPage);
   };
 
   const atFirst = current <= 1;
@@ -202,6 +229,21 @@ export function Pagination({
       {totalNode != null && (
         <span className="relative z-10 mr-1 select-none whitespace-nowrap text-sm text-muted-foreground">
           {totalNode}
+        </span>
+      )}
+      {/* 每页条数切换器。位置照 el-pagination 的默认 layout（`total, sizes, prev, pager, next, jumper`）
+          排在总数之后、翻页之前 —— 迁移过来的页面视觉顺序不变。
+          档与回调缺一即不渲染：只给档等于切了没人收，只给回调则无从切起。 */}
+      {pageSizeOptions != null && pageSizeOptions.length > 0 && onPageSizeChange != null && (
+        <span className="relative z-10 mr-1">
+          <PageSizeSelect
+            options={pageSizeOptions}
+            value={pageSize}
+            disabled={disabled}
+            onChange={changePageSize}
+            label={labels.pageSize}
+            ariaLabel={labels.pageSizeLabel}
+          />
         </span>
       )}
       {showFirstLast && (

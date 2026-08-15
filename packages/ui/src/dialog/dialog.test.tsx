@@ -124,3 +124,59 @@ describe("DialogContent", () => {
     expect(screen.getByTestId("body-child2").parentElement!.className).toContain("my-body");
   });
 });
+
+// #272 与 DrawerContent 同源：铺满型对话框的可见 header 进不了 <h2>，需要 aria-* 与 extra。
+describe("DialogContent 无障碍名与 extra 槽（#272）", () => {
+  const popup = () => document.querySelector('[role="dialog"]') as HTMLElement;
+
+  it("只传 title：aria-labelledby 仍指向 Dialog.Title（回归防护）", () => {
+    // 新增的 aria-* 若写成常规属性，Base UI 的 mergeProps 会用 undefined 覆盖内部的 titleElementId。
+    render(
+      <Dialog open>
+        <DialogContent title="导入数据">正文</DialogContent>
+      </Dialog>,
+    );
+    const id = popup().getAttribute("aria-labelledby");
+    expect(id).toBeTruthy();
+    expect(document.getElementById(id!)!.textContent).toBe("导入数据");
+  });
+
+  it("不传 title、只传 aria-label：对话框拿到名字，不渲染空标题", () => {
+    render(
+      <Dialog open>
+        <DialogContent aria-label="通知" className="p-0 [--hl-overlay-pad:0px]">
+          <div>列表</div>
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(popup().getAttribute("aria-label")).toBe("通知");
+    expect(popup().querySelector("h2")).toBeNull();
+  });
+
+  it("extra：操作是标题的兄弟，无障碍名里不含按钮文案", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="通知" extra={<button type="button">全部已读</button>}>
+          列表
+        </DialogContent>
+      </Dialog>,
+    );
+    const h2 = popup().querySelector("h2")!;
+    expect(h2.textContent).toBe("通知");
+    expect(screen.getByText("全部已读").closest("h2")).toBeNull();
+    expect(document.getElementById(popup().getAttribute("aria-labelledby")!)).toBe(h2);
+  });
+
+  it("titleClassName 走 twMerge", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="通知" titleClassName="text-base">
+          正文
+        </DialogContent>
+      </Dialog>,
+    );
+    const cls = popup().querySelector("h2")!.className;
+    expect(cls).toContain("text-base");
+    expect(cls).not.toContain("text-lg");
+  });
+});

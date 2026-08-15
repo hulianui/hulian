@@ -5,6 +5,7 @@ import type { ComponentProps } from "react";
 import { X } from "../_icons";
 import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DrawerContentProps, DrawerSide, DrawerSize } from "./drawer.types";
 
@@ -97,22 +98,38 @@ export function DrawerContent({
   side = "right",
   size = "md",
   title,
+  extra,
   description,
   children,
   footer,
   container,
   showClose = true,
   closeLabel,
+  titleClassName,
   descriptionClassName,
   backdrop = true,
   backdropClassName,
   scrollable = true,
   bodyClassName,
   className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
 }: DrawerContentProps) {
   const loc = useLocaleValue("drawer", {
     close: "关闭",
   });
+  // 沿用改动前 `{title && …}` 的真假口径：title="" / null / undefined 都不渲染标题元素。
+  // 告警也挂在同一个判据上 —— 否则 title="" 会渲不出标题、又不触发告警，正好漏在中间。
+  const hasTitle = Boolean(title);
+  // 一个模态浮层必须有名字，而 Base UI 的 aria-labelledby 只来自 Dialog.Title，没有 Title 时
+  // 它是 undefined 且不回落到任何东西 —— 三个槽都不给，读屏念出来的就是个无名对话框。
+  // 这不是类型能拦住的（title 本来就可选），只能在开发期喊一声（#272）。
+  if (!hasTitle && ariaLabel == null && ariaLabelledBy == null) {
+    warnOnce(
+      "drawer/no-accessible-name",
+      "[hulian] DrawerContent 既没有 title 也没有 aria-label / aria-labelledby，读屏用户拿到的是一个没有名字的对话框。可见 header 由你自己画时（铺满型抽屉），传 aria-label 即可。",
+    );
+  }
   // 提供 container（如手机框 ref）→ 抽屉就地 portal 进该元素并改用 absolute 定位，
   // 贴该容器的边而非视口（容器须 position:relative + overflow-hidden）。否则默认 fixed 贴视口。
   const contained = container != null;
@@ -135,6 +152,13 @@ export function DrawerContent({
       <BaseDialog.Popup
         className={cn("relative", place, drawerVariants({ side, size }), className)}
         style={panelTransition}
+        // 消费方给的 aria-* 最后落，压过 Base UI 由 Dialog.Title 派生的那份（#272）。
+        // **必须条件展开，不能写 aria-labelledby={ariaLabelledBy}**：Base UI 的 mergeProps 用
+        // `for...in` 遍历外部 props，键存在即覆盖，不看值是不是 undefined
+        // （merge-props/mergeProps.js 的 mutablyMergeInto）。写成常规属性的话，每个只传了 title
+        // 的抽屉都会被一个 undefined 抹掉 titleElementId —— 全库抽屉当场集体失去无障碍名。
+        {...(ariaLabel != null && { "aria-label": ariaLabel })}
+        {...(ariaLabelledBy != null && { "aria-labelledby": ariaLabelledBy })}
       >
         {/* 关闭按钮（hulianui/hulian#63）：纯展示型抽屉（导航菜单/详情面板，没有 footer 的那种）
             此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc，读屏用户面板里根本没有「关闭」可达元素。
@@ -147,14 +171,41 @@ export function DrawerContent({
             <X className="size-4" aria-hidden />
           </BaseDialog.Close>
         )}
-        {title && (
-          <BaseDialog.Title className={cn("text-lg font-semibold", showClose && "pr-10")}>
-            {title}
-          </BaseDialog.Title>
+        {/* extra 缺席时保持原样：标题直接是 Popup 的 flex 子项，不多包一层 —— 这条列上的
+            gap-1 是按「标题 / 说明 / 正文」三个直接子项调的，凭空多一个 div 会改动既有间距。 */}
+        {extra == null ? (
+          hasTitle && (
+            <BaseDialog.Title
+              className={cn("text-lg font-semibold", showClose && "pr-10", titleClassName)}
+            >
+              {title}
+            </BaseDialog.Title>
+          )
+        ) : (
+          // 标题行（#272）：标题左、操作右。`<h2>` 只收 phrasing content，按钮组塞进去既是
+          // 非法嵌套，也会被 aria-labelledby 一并念进对话框的名字里（「通知 2 条未读 全部已读」），
+          // 所以 extra 是标题的**兄弟**而不是子节点。
+          // showClose 时整行让出右上角那 40px，让 extra 不被绝对定位的关闭按钮压住。
+          <div
+            className={cn(
+              "flex items-center gap-2",
+              hasTitle ? "justify-between" : "justify-end",
+              showClose && "pr-10",
+            )}
+          >
+            {hasTitle && (
+              <BaseDialog.Title className={cn("min-w-0 text-lg font-semibold", titleClassName)}>
+                {title}
+              </BaseDialog.Title>
+            )}
+            <div className="flex shrink-0 items-center gap-2">{extra}</div>
+          </div>
         )}
         {description && (
           // 同 dialog.tsx：传 "sr-only" 即「只给读屏的说明」（#179 评论）。
-          <BaseDialog.Description className={cn("text-sm text-muted-foreground", descriptionClassName)}>
+          <BaseDialog.Description
+            className={cn("text-sm text-muted-foreground", descriptionClassName)}
+          >
             {description}
           </BaseDialog.Description>
         )}

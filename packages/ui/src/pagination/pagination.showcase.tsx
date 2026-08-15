@@ -30,6 +30,23 @@ function Demo({
   );
 }
 
+// 每页条数切换：pageSize 也归消费方持有（组件只回值不自持），页码归位由组件负责。
+function SizeDemo({ totalItems = 5151 }: { totalItems?: number }) {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  return (
+    <Pagination
+      page={page}
+      totalItems={totalItems}
+      pageSize={pageSize}
+      onPageChange={setPage}
+      pageSizeOptions={[20, 50, 100]}
+      onPageSizeChange={setPageSize}
+      showTotal
+    />
+  );
+}
+
 export const paginationShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -57,6 +74,24 @@ export const paginationShowcase: ShowcaseSpec = {
       description: "siblingCount 控制当前页左右各显示的页码数，默认 1。",
       code: `<Pagination page={page} total={20} onPageChange={setPage} siblingCount={2} />`,
       render: () => <Demo total={20} initial={10} siblingCount={2} />,
+    },
+    {
+      title: "每页条数",
+      description:
+        "pageSizeOptions 与 onPageSizeChange 同传才渲染切换器。切档后当前页若越界，组件会补发一次 onPageChange 夹到新末页。",
+      code: `const [page, setPage] = useState(1);
+const [pageSize, setPageSize] = useState(20);
+
+<Pagination
+  page={page}
+  totalItems={5151}
+  pageSize={pageSize}
+  onPageChange={setPage}
+  pageSizeOptions={[20, 50, 100]}
+  onPageSizeChange={setPageSize}
+  showTotal
+/>`,
+      render: () => <SizeDemo />,
     },
     {
       title: "禁用态",
@@ -98,6 +133,10 @@ export const paginationShowcase: ShowcaseSpec = {
     {
       name: "少页不省略（3 页）",
       render: () => <Demo total={3} initial={2} />,
+    },
+    {
+      name: "每页条数切换（pageSizeOptions）",
+      render: () => <SizeDemo />,
     },
     {
       name: "禁用态",

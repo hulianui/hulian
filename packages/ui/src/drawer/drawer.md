@@ -32,6 +32,9 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
 | `DrawerContent.showClose` | `boolean` | `true` | 是否渲染右上角内置关闭按钮 |
 | `DrawerContent.closeLabel` | `string` | 取自 locale | 内置关闭按钮的无障碍名（默认取 `locale.drawer.close`） |
+| `DrawerContent.aria-label` | `string` | — | 抽屉的无障碍名，直接落到 popup 上。**不传 `title` 时唯一的命名手段**（铺满型抽屉的可见 header 由消费方自己画时用它，见下方「自己画 header 的抽屉怎么命名」） |
+| `DrawerContent.aria-labelledby` | `string` | — | 无障碍名的来源元素 id；指向页面上已有的可见标题时用它，优先于 `title` 自动生成的 id。与 `aria-label` 二选一 |
+| `DrawerContent.titleClassName` | `string` | — | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
 | `DrawerContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」 |
 | `DrawerContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
 | `DrawerContent.backdropClassName` | `string` | — | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
@@ -61,7 +64,8 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 
 | 插槽 | 类型 | 说明 |
 |------|------|------|
-| `DrawerContent.title` | `ReactNode` | 提供则渲 Dialog.Title 作 a11y label |
+| `DrawerContent.title` | `ReactNode` | 提供则渲 Dialog.Title 作 a11y label。承载元素是 `<h2>`，**只收 phrasing content**（文本 / `<span>` / 图标），按钮组放 `extra` |
+| `DrawerContent.extra` | `ReactNode` | 标题右侧的操作区（按钮 / 徽标 / 计数），与标题同排右对齐，**不参与无障碍名**。与内置关闭按钮共存时自动让位 |
 | `DrawerContent.description` | `ReactNode` | 说明文案 |
 | `DrawerContent.footer` | `ReactNode` | 钉底操作区（带分隔线，正文独立滚动，footer 始终可见） |
 | `DrawerContent.children` | `ReactNode` | 正文内容 |
@@ -112,6 +116,44 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
              data-[ending-style]:translate-y-[calc(100%+1rem)]"
 />
 ```
+
+### 自己画 header 的抽屉怎么命名（铺满型）
+
+抽屉是模态浮层，**必须有名字**：Base UI 的 `aria-labelledby` 只来自 `Dialog.Title`，没有 Title 时它是 `undefined`，不会回落到任何东西——读屏用户拿到的就是一个无名对话框。三个槽（`title` / `aria-label` / `aria-labelledby`）一个都不给时开发期会打一条告警。
+
+「一行控件」形态的 header 不要塞进 `title`：`Dialog.Title` 渲染成 `<h2>`，它只收 phrasing content，`<div>` 进去是非法嵌套；而且 `aria-labelledby` 指向整个 `<h2>`，读屏念出的名字会变成「通知 2 条未读 全部已读」——把两个按钮的文案也念了。按 header 的复杂度选：
+
+```tsx
+// 1) 标题 + 少量操作 —— 用 extra，组件负责排成一行、给内置关闭按钮让位
+<DrawerContent
+  title="通知"
+  extra={
+    <>
+      <Tag>2 条未读</Tag>
+      <Button variant="ghost" size="sm">全部已读</Button>
+    </>
+  }
+>
+  {/* 列表 */}
+</DrawerContent>
+
+// 2) 铺满型 —— header 连自己的分隔线、内距、env() 安全区都要管，那就整块自己画，
+//    名字走 aria-label（不必再渲一个 sr-only 的假标题）
+<DrawerContent
+  aria-label="通知"
+  showClose={false}
+  scrollable={false}
+  className="gap-0 p-0 [--hl-overlay-pad:0px]"
+>
+  <div className="flex items-center justify-between border-b px-4 py-3">…</div>
+  <ScrollArea className="min-h-0 flex-1">{/* 列表 */}</ScrollArea>
+</DrawerContent>
+
+// 3) 页面上已有可见标题 —— 指过去即可
+<DrawerContent aria-labelledby="panel-heading">…</DrawerContent>
+```
+
+`aria-label` 与 `title` 同传时以 `aria-label` 为准，但那通常意味着两处文案不一致，是个该修的信号而不是特性。
 
 ### 关闭按钮
 

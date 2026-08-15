@@ -12,6 +12,13 @@ function Demo({ total, initial = 1, siblingCount, showFirstLast, disabled, }: {
     const [page, setPage] = useState(initial);
     return (<Pagination page={page} total={total} onPageChange={setPage} siblingCount={siblingCount} showFirstLast={showFirstLast} disabled={disabled}/>);
 }
+function SizeDemo({ totalItems = 5151 }: {
+    totalItems?: number;
+}) {
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    return (<Pagination page={page} totalItems={totalItems} pageSize={pageSize} onPageChange={setPage} pageSizeOptions={[20, 50, 100]} onPageSizeChange={setPageSize} showTotal/>);
+}
 export const paginationShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -39,6 +46,23 @@ export const paginationShowcase: ShowcaseSpec = {
             description: "siblingCount Controls the number of page numbers displayed on the left and right of the current page, the default is 1.",
             code: `<Pagination page={page} total={20} onPageChange={setPage} siblingCount={2} />`,
             render: () => <Demo total={20} initial={10} siblingCount={2}/>,
+        },
+        {
+            title: "Items per page",
+            description: "The switcher renders only when pageSizeOptions and onPageSizeChange are both supplied. If the current page falls outside the new page count after a switch, the component fires onPageChange as well, clamping to the new last page.",
+            code: `const [page, setPage] = useState(1);
+const [pageSize, setPageSize] = useState(20);
+
+<Pagination
+  page={page}
+  totalItems={5151}
+  pageSize={pageSize}
+  onPageChange={setPage}
+  pageSizeOptions={[20, 50, 100]}
+  onPageSizeChange={setPageSize}
+  showTotal
+/>`,
+            render: () => <SizeDemo />,
         },
         {
             title: "Disabled",
@@ -80,6 +104,10 @@ export const paginationShowcase: ShowcaseSpec = {
         {
             name: "Do not omit missing pages (3 pages)",
             render: () => <Demo total={3} initial={2}/>,
+        },
+        {
+            name: "Page-size switcher (pageSizeOptions)",
+            render: () => <SizeDemo />,
         },
         {
             name: "Disabled",

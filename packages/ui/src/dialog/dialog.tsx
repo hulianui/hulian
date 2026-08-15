@@ -2,6 +2,7 @@
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
 import type { DialogContentProps } from "./dialog.types";
 
@@ -23,16 +24,31 @@ export const DialogClose = BaseDialog.Close;
 
 export function DialogContent({
   title,
+  extra,
   description,
   children,
   footer,
+  titleClassName,
   descriptionClassName,
   backdrop = true,
   backdropClassName,
   scrollable = true,
   bodyClassName,
   className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
 }: DialogContentProps) {
+  // 与 DrawerContent 同一口径：title="" / null / undefined 都不渲染标题元素。
+  const hasTitle = Boolean(title);
+  // 同 DrawerContent：Base UI 的 aria-labelledby 只来自 Dialog.Title，没有 Title 时不回落，
+  // 三个槽都不给就是个无名对话框。title 改可选（#272）后这条告警是唯一的兜底 ——
+  // 而且它比改前的「必填」更严：title={null} 过得了类型检查，过不了这一关。
+  if (!hasTitle && ariaLabel == null && ariaLabelledBy == null) {
+    warnOnce(
+      "dialog/no-accessible-name",
+      "[hulian] DialogContent 既没有 title 也没有 aria-label / aria-labelledby，读屏用户拿到的是一个没有名字的对话框。可见 header 由你自己画时，传 aria-label 即可。",
+    );
+  }
   return (
     <BaseDialog.Portal>
       {/* 遮罩可关（#185）：自动弹出的「陪跑型」浮层里，40% 黑 + 模糊是错的默认值。
@@ -60,8 +76,37 @@ export function DialogContent({
           className,
         )}
         style={overlayTransition}
+        // 条件展开而非 aria-label={ariaLabel}：Base UI 的 mergeProps 用 `for...in` 遍历外部 props，
+        // 键存在即覆盖、不看值是否 undefined —— 常规写法会把内部由 Dialog.Title 派生的
+        // titleElementId 一并抹掉，全库对话框当场集体失去无障碍名（#272）。
+        {...(ariaLabel != null && { "aria-label": ariaLabel })}
+        {...(ariaLabelledBy != null && { "aria-labelledby": ariaLabelledBy })}
       >
-        <BaseDialog.Title className="shrink-0 text-lg font-semibold">{title}</BaseDialog.Title>
+        {/* extra 缺席时保持原样（标题直接是 Popup 的 flex 子项），不为了统一写法凭空多包一层 div。 */}
+        {extra == null ? (
+          hasTitle && (
+            <BaseDialog.Title className={cn("shrink-0 text-lg font-semibold", titleClassName)}>
+              {title}
+            </BaseDialog.Title>
+          )
+        ) : (
+          // 标题行（#272）：标题左、操作右。extra 是标题的**兄弟**而不是子节点 ——
+          // `<h2>` 只收 phrasing content，且 aria-labelledby 指向整个 `<h2>`，
+          // 按钮塞进去会被一并念进对话框的名字。
+          <div
+            className={cn(
+              "flex shrink-0 items-center gap-2",
+              hasTitle ? "justify-between" : "justify-end",
+            )}
+          >
+            {hasTitle && (
+              <BaseDialog.Title className={cn("min-w-0 text-lg font-semibold", titleClassName)}>
+                {title}
+              </BaseDialog.Title>
+            )}
+            <div className="flex shrink-0 items-center gap-2">{extra}</div>
+          </div>
+        )}
         {description && (
           // descriptionClassName 走 twMerge：传 "sr-only" 即得到「只给读屏的说明」——
           // 面包屑式标题的弹窗里可见区域只有标题，但读屏仍需要那句说明（#179 评论）。

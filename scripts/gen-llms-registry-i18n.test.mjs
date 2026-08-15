@@ -58,7 +58,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "magic-bento": [3, 4],
   "message-actions": [2, 3],
   "nav-menu": [9, 8],
-  pagination: [5, 6],
+  pagination: [8, 9],
   "password-generator": [0, 3],
   "pro-table": [14, 13],
   "profile-card": [2, 3],

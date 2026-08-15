@@ -27,6 +27,23 @@ export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onCh
   showTotal?: boolean | ((totalItems: number, range: [number, number]) => ReactNode);
   /** 右侧「跳至 __ 页」快捷跳转框，默认 false */
   showQuickJumper?: boolean;
+  /**
+   * 每页条数候选档（对标 el-pagination 的 `page-sizes`）。**与 `onPageSizeChange` 同传才渲染切换器**
+   * ——组件不自持 `pageSize`，只给档而不给回调等于切了没人收，故两者缺一即静默不渲染。
+   */
+  pageSizeOptions?: number[];
+  /**
+   * 每页条数变更回调。
+   *
+   * 换页长之后当前页可能已经超出新的总页数（100/页的第 3 页，切回 20/页时第 3 页还在，
+   * 但 5151 条 / 100 的第 52 页切到 20/页就没有第 52 页了）。**这一夹紧由组件负责**：
+   * 给了 `totalItems` 时，组件按新页长重算总页数，若当前页越界则**再补发一次 `onPageChange`**
+   * （夹到新的末页，而不是回第 1 页 —— 用户的位置尽量保住）。所以一次切档最多触发两个回调，
+   * 消费方两个 setState 都照常写即可，React 会批到同一次渲染。
+   *
+   * 只给了 `total`（总页数）时算不出新页数，组件**不**补发 `onPageChange`，页码归位由消费方自理。
+   */
+  onPageSizeChange?: (pageSize: number) => void;
   /** 禁用整个分页器 */
   disabled?: boolean;
 }

@@ -2894,7 +2894,7 @@
       "id": "component/dialog/pitfall/4",
       "scope": "dialog",
       "title": "Dialog",
-      "rule": "操作按钮优先放 `footer` 槽（带分隔线、右对齐），正文 `children` 留给主内容。",
+      "rule": "操作按钮优先放 `footer` 槽（带分隔线、右对齐），正文 `children` 留给主内容。 ### 对话框必须有名字 `title` 在 0.47.0 之前是必填，但那不真的保证有名字 —— `title={null}` 一样过类型检查，渲染出的是个空 `<h2>`。改成可选之后，保证换成了运行时告警：`title` / `aria-label` / `aria-labelledby` **三者全无**时开发期会打一条 warn。 因此「可见 header 是一行控件」的铺满型对话框不必再塞一个 `sr-only` 的假标题： ```tsx <DialogContent aria-label=\"通知\" className=\"p-0 [--hl-overlay-pad:0px]\"> <div className=\"flex items-center justify-between border-b px-4 py-3\">…</div> {/* 正文 */} </DialogContent> ``` 标题旁只是要摆几个按钮时用 `extra`，别把整行塞进 `title`：`<h2>` 只收 phrasing content，而 `aria-labelledby` 指向整个 `<h2>`，按钮文案会被一起念进对话框的名字里。同款槽见 [DrawerContent.extra](../drawer/drawer.md) 与 [CardHeader.extra](../card/card.md)。",
       "source": "packages/ui/src/dialog/dialog.md"
     },
     {
@@ -3097,7 +3097,7 @@
       "id": "component/drawer/pitfall/5",
       "scope": "drawer",
       "title": "Drawer",
-      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。 ### 尺寸该用 `size` 还是 `className` 先用 `size`。`className` 里压 `w-` / `h-` 也能改出来，但那要连同 `inset-x-` / `w-full` 一起顶（组件刚给的东西又撤一遍），而且失去了 `min(90vw, …)` 上限保护——窄屏上抽屉会宽过视口，超出的那截落在屏幕外，里面的控件彻底够不着。`size` 五档不够用（比如要按容器百分比）时再用 `className`，此时**必须自己补一条上限**，例如 `className=\"w-[min(90vw,52rem)]\"`。 ### 「浮起式」底部抽屉（左右留白 + 圆角）需要自己写 组件目前只有贴边一种形态。移动端常见的\"离边框还有一圈留白、四角带圆角\"的浮起式 sheet 得靠 `className`，且**必须连出场位移一起改**——面板一旦离开屏幕边缘 16px，原来的 `translate-y-full` 就送不出屏幕了，收起时底部会留一道 16px 的残影： ```tsx <DrawerContent side=\"bottom\" size=\"lg\" className=\"inset-x-4 bottom-4 w-auto rounded-[var(--radius)] border data-[starting-style]:translate-y-[calc(100%+1rem)] data-[ending-style]:translate-y-[calc(100%+1rem)]\" /> ``` ### 关闭按钮 `DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。 纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc， 读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。",
+      "rule": "用 `container` 收进局部容器（如手机框）时，容器必须 `position:relative` + `overflow-hidden`，否则抽屉会逃逸出框、遮罩盖满整屏。 ### 尺寸该用 `size` 还是 `className` 先用 `size`。`className` 里压 `w-` / `h-` 也能改出来，但那要连同 `inset-x-` / `w-full` 一起顶（组件刚给的东西又撤一遍），而且失去了 `min(90vw, …)` 上限保护——窄屏上抽屉会宽过视口，超出的那截落在屏幕外，里面的控件彻底够不着。`size` 五档不够用（比如要按容器百分比）时再用 `className`，此时**必须自己补一条上限**，例如 `className=\"w-[min(90vw,52rem)]\"`。 ### 「浮起式」底部抽屉（左右留白 + 圆角）需要自己写 组件目前只有贴边一种形态。移动端常见的\"离边框还有一圈留白、四角带圆角\"的浮起式 sheet 得靠 `className`，且**必须连出场位移一起改**——面板一旦离开屏幕边缘 16px，原来的 `translate-y-full` 就送不出屏幕了，收起时底部会留一道 16px 的残影： ```tsx <DrawerContent side=\"bottom\" size=\"lg\" className=\"inset-x-4 bottom-4 w-auto rounded-[var(--radius)] border data-[starting-style]:translate-y-[calc(100%+1rem)] data-[ending-style]:translate-y-[calc(100%+1rem)]\" /> ``` ### 自己画 header 的抽屉怎么命名（铺满型） 抽屉是模态浮层，**必须有名字**：Base UI 的 `aria-labelledby` 只来自 `Dialog.Title`，没有 Title 时它是 `undefined`，不会回落到任何东西——读屏用户拿到的就是一个无名对话框。三个槽（`title` / `aria-label` / `aria-labelledby`）一个都不给时开发期会打一条告警。 「一行控件」形态的 header 不要塞进 `title`：`Dialog.Title` 渲染成 `<h2>`，它只收 phrasing content，`<div>` 进去是非法嵌套；而且 `aria-labelledby` 指向整个 `<h2>`，读屏念出的名字会变成「通知 2 条未读 全部已读」——把两个按钮的文案也念了。按 header 的复杂度选： ```tsx // 1) 标题 + 少量操作 —— 用 extra，组件负责排成一行、给内置关闭按钮让位 <DrawerContent title=\"通知\" extra={ <> <Tag>2 条未读</Tag> <Button variant=\"ghost\" size=\"sm\">全部已读</Button> </> } > {/* 列表 */} </DrawerContent> // 2) 铺满型 —— header 连自己的分隔线、内距、env() 安全区都要管，那就整块自己画， // 名字走 aria-label（不必再渲一个 sr-only 的假标题） <DrawerContent aria-label=\"通知\" showClose={false} scrollable={false} className=\"gap-0 p-0 [--hl-overlay-pad:0px]\" > <div className=\"flex items-center justify-between border-b px-4 py-3\">…</div> <ScrollArea className=\"min-h-0 flex-1\">{/* 列表 */}</ScrollArea> </DrawerContent> // 3) 页面上已有可见标题 —— 指过去即可 <DrawerContent aria-labelledby=\"panel-heading\">…</DrawerContent> ``` `aria-label` 与 `title` 同传时以 `aria-label` 为准，但那通常意味着两处文案不一致，是个该修的信号而不是特性。 ### 关闭按钮 `DrawerContent` 默认渲染右上角关闭按钮（`showClose`，无障碍名走 `closeLabel` 或 locale 的 `drawer.close`）。 纯展示型抽屉（导航菜单、详情面板，没有 footer 的那种）此前唯一的可见退路只有点遮罩，键盘用户只剩 Esc， 读屏用户在面板里根本找不到「关闭」（hulianui/hulian#63）。按钮绝对定位，不占布局。",
       "source": "packages/ui/src/drawer/drawer.md"
     },
     {
@@ -6262,6 +6262,27 @@
       "scope": "pagination",
       "title": "Pagination",
       "rule": "`showTotal` 依赖 `totalItems` —— 只给了 `total`（页数）时算不出条数，本项静默不渲染而非报错。",
+      "source": "packages/ui/src/pagination/pagination.md"
+    },
+    {
+      "id": "component/pagination/pitfall/6",
+      "scope": "pagination",
+      "title": "Pagination",
+      "rule": "切换每页条数时**一次动作可能触发两个回调**：先 `onPageSizeChange(新页长)`，当前页越界时再 `onPageChange(新末页)`。两个 setState 照常写即可，React 会批到同一次渲染。只给了 `total`（总页数）时算不出新页数，组件不补发 `onPageChange`，页码归位由你自己处理。",
+      "source": "packages/ui/src/pagination/pagination.md"
+    },
+    {
+      "id": "component/pagination/pitfall/7",
+      "scope": "pagination",
+      "title": "Pagination",
+      "rule": "`pageSizeOptions` 与 `onPageSizeChange` 缺一即不渲染切换器：只给档等于「切了没人收」，只给回调则无从切起——静默不渲染而非报错，与 `showTotal` 同一口径。",
+      "source": "packages/ui/src/pagination/pagination.md"
+    },
+    {
+      "id": "component/pagination/pitfall/8",
+      "scope": "pagination",
+      "title": "Pagination",
+      "rule": "切换器用的是库内 [Select](../select/select.md)。它是 [ProTable](../pro-table/pro-table.md) 底栏那个切换器的同一份实现，两处外观、文案、无障碍名一致。",
       "source": "packages/ui/src/pagination/pagination.md"
     },
     {
@@ -10322,7 +10343,7 @@
   ],
   "stats": {
     "componentDocs": 393,
-    "componentAdvisories": 1439,
-    "totalAdvisories": 1449
+    "componentAdvisories": 1442,
+    "totalAdvisories": 1452
   }
 }
