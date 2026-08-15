@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { Dialog, DialogContent } from "./dialog";
 
 afterEach(cleanup);
@@ -178,5 +178,96 @@ describe("DialogContent 无障碍名与 extra 槽（#272）", () => {
     const cls = popup().querySelector("h2")!.className;
     expect(cls).toContain("text-base");
     expect(cls).not.toContain("text-lg");
+  });
+});
+
+// #279：关闭键与 DrawerContent（#63）同形状同默认值 —— 只读详情型对话框（没有 footer、
+// 正文没有关闭控件）此前唯一的可见退路只有点遮罩，键盘只剩 Esc，读屏没有「关闭」可达元素。
+describe("DialogContent 关闭按钮（#279）", () => {
+  const popup = () => document.querySelector('[role="dialog"]') as HTMLElement;
+
+  it("默认渲染右上角关闭按钮，带无障碍名", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="审计日志详情">只读字段</DialogContent>
+      </Dialog>,
+    );
+    expect(screen.getByLabelText("关闭")).toBeTruthy();
+  });
+
+  it("closeLabel 可覆盖无障碍名", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="详情" closeLabel="关闭详情">
+          正文
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(screen.getByLabelText("关闭详情")).toBeTruthy();
+  });
+
+  it("showClose=false 关掉（全局搜索框这类自带关闭手段的弹层）", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="搜索" showClose={false}>
+          正文
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(screen.queryByLabelText("关闭")).toBeNull();
+  });
+
+  it("点击关闭按钮真的关掉对话框", () => {
+    render(
+      <Dialog defaultOpen>
+        <DialogContent title="详情">正文</DialogContent>
+      </Dialog>,
+    );
+    fireEvent.click(screen.getByLabelText("关闭"));
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
+  });
+
+  it("showClose 时标题让出右上角（pr-10），关掉则不让", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="很长很长的标题">正文</DialogContent>
+      </Dialog>,
+    );
+    expect(popup().querySelector("h2")!.className).toContain("pr-10");
+    cleanup();
+    render(
+      <Dialog open>
+        <DialogContent title="标题" showClose={false}>
+          正文
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(popup().querySelector("h2")!.className).not.toContain("pr-10");
+  });
+
+  it("extra + showClose：标题行让出右上角，extra 不被关闭按钮压住", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="通知" extra={<button type="button">全部已读</button>}>
+          列表
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(popup().querySelector("h2")!.parentElement!.className).toContain("pr-10");
+  });
+});
+
+describe("DialogContent 关闭按钮的 locale 接线", () => {
+  it("enUS 下无障碍名是 Close", async () => {
+    const { ConfigProvider } = await import("../config/config-provider");
+    const { enUS } = await import("../config/locale");
+    render(
+      <ConfigProvider locale={enUS}>
+        <Dialog open>
+          <DialogContent title="Details">body</DialogContent>
+        </Dialog>
+      </ConfigProvider>,
+    );
+    expect(screen.getByLabelText("Close")).toBeTruthy();
   });
 });

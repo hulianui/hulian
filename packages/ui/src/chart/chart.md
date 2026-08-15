@@ -39,9 +39,11 @@ import { AreaChart, BarChart, ComposedChart, LineChart, PieChart, RadarChart, Ra
 | radiusAxis | `boolean` | `true` | **RadarChart 专属**：半径轴的刻度数字（`0 15 30 …`）。传 `false` 只留环线与角轴名，即 echarts radar 的默认形态（它的 `axisLabel.show` 默认就是 `false`）。**如果**你的雷达图序列较多或数据填得满，建议关掉——见下方注意事项 |
 | onPointClick | `(info: { datum, index, seriesKey? }) => void` | — | 数据点点击（对标 echarts 的 `chart.on('click')`，用于钻取）。命中判据与 tooltip 同源：**tooltip 亮了点下去就一定有回调**，不必精确点中 2px 的折线；点在画布空白或坐标轴上不触发。`seriesKey` **不保证有值**（共享 tooltip 时 recharts 不认为某一条序列被单独命中）。**RadarChart 没有这个 prop** |
 | referenceLines | `ChartReferenceLine[]` | — | 值轴参考线（对标 echarts 的 `markLine`）：帕累托的 80/95 线、均值线、目标线。见下方 `ChartReferenceLine` 表。**RadarChart 没有这个 prop** |
+| yAxisDomain | `[number \| "auto", number \| "auto"]` | 自适应 | 值轴显示范围 `[min, max]`，`"auto"` 表示该端仍按数据自适应（对标 echarts 的 `yAxis.min/max`）。典型场景是百分比轴锁 `[0, 100]`：auto 会把「82%」画到顶格读成快满，且越界的 `referenceLines` 会被静默丢弃不画。数据超出锁定范围时轴会扩大容纳（不裁剪路径）。`horizontal` 柱图的值轴是横轴，同样由它管。**ComposedChart 用 `leftAxisDomain`/`rightAxisDomain` 代替；RadarChart 没有这个 prop** |
 | series[].type | `"bar" \| "line" \| "area"` | `"bar"` | **ComposedChart 专属**：该序列画成什么 |
 | series[].axis | `"left" \| "right"` | `"left"` | **ComposedChart 专属**：该序列吃哪根值轴 |
 | leftAxisLabel / rightAxisLabel | `string` | — | **ComposedChart 专属**：轴标题。左右各画各的量纲时不标名字，读者分不出哪条线读哪根轴 |
+| leftAxisDomain / rightAxisDomain | `[number \| "auto", number \| "auto"]` | 自适应 | **ComposedChart 专属**：逐轴 domain，语义同 `yAxisDomain`。右轴的第一大用户是百分比轴（帕累托累计占比、退货率、达成率），锁 `rightAxisDomain={[0, 100]}` 满量程后，`referenceLines={[{ y: 95, axis: "right" }]}` 不再因越界被丢弃 |
 | axisMax | `Record<string, number>` | — | **RadarChart 专属**：每根角轴各自的满量程，键是角轴维度值。见下方「量纲差很多的雷达图」 |
 | className | `string` | — | 透传类名（宽度在此设，如 `w-[32rem]`） |
 

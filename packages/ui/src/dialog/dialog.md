@@ -32,6 +32,8 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 | `DialogContent.description` | `ReactNode` | — | 说明文案。渲染成 `<p>`，**只能放 phrasing content**（块级内容放 children） |
 | `DialogContent.aria-label` | `string` | — | 对话框的无障碍名，直接落到 popup 上。不传 `title` 时用它（铺满型对话框的可见 header 由消费方自己画） |
 | `DialogContent.aria-labelledby` | `string` | — | 无障碍名的来源元素 id，优先于 `title` 自动生成的 id。与 `aria-label` 二选一 |
+| `DialogContent.showClose` | `boolean` | `true` | 右上角关闭按钮（#279，形状与默认值对齐 DrawerContent）。只读详情型对话框（没有 footer）此前唯一可见退路是点遮罩，键盘只剩 Esc，读屏没有「关闭」可达元素。开着时标题/`extra` 行自动让出右上角 40px。全局搜索框这类自带关闭手段的弹层传 `false` |
+| `DialogContent.closeLabel` | `string` | locale `dialog.close` | 关闭按钮的无障碍名，缺省吃 ConfigProvider locale（zh「关闭」/ en "Close"） |
 | `DialogContent.titleClassName` | `string` | — | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
 | `DialogContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」——面包屑式标题的弹窗里可见区只留标题，读屏仍拿得到那句话 |
 | `DialogContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |

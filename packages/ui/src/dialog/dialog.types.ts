@@ -32,6 +32,18 @@ export interface DialogContentProps {
   children?: ReactNode;
   /** 底部操作区（如取消/确定按钮）。渲染在正文下方，顶部分隔线 + 右对齐，与 DrawerContent 对齐。 */
   footer?: ReactNode;
+  /**
+   * 右上角关闭按钮（#279）。形状与默认值都与 `DrawerContent` 对齐 —— #63 的理由对
+   * 对话框一字不改地成立：只读详情型对话框（没有 footer、正文没有关闭控件）此前唯一的
+   * 可见退路只有点遮罩，键盘用户只剩 Esc，读屏用户对话框里根本没有「关闭」可达元素。
+   *
+   * 开着时标题/`extra` 行自动让出右上角 40px（`pr-10`），长标题不会钻到按钮底下。
+   * 全局搜索框这类自带关闭手段的弹层传 `false` 关掉。
+   * @default true
+   */
+  showClose?: boolean;
+  /** 关闭按钮的无障碍名。缺省吃 ConfigProvider locale（`dialog.close`，zh「关闭」/ en "Close"）。 */
+  closeLabel?: string;
   /** 追加到标题（默认 `text-lg font-semibold`）。走 twMerge，可压成正文字号。 */
   titleClassName?: string;
   /**

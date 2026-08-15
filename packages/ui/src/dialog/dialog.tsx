@@ -1,6 +1,8 @@
 "use client";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { ComponentProps } from "react";
+import { X } from "../_icons";
+import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { motionDurationCss, motionEaseCss } from "../motion";
@@ -28,6 +30,8 @@ export function DialogContent({
   description,
   children,
   footer,
+  showClose = true,
+  closeLabel,
   titleClassName,
   descriptionClassName,
   backdrop = true,
@@ -38,6 +42,9 @@ export function DialogContent({
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
 }: DialogContentProps) {
+  const loc = useLocaleValue("dialog", {
+    close: "关闭",
+  });
   // 与 DrawerContent 同一口径：title="" / null / undefined 都不渲染标题元素。
   const hasTitle = Boolean(title);
   // 同 DrawerContent：Base UI 的 aria-labelledby 只来自 Dialog.Title，没有 Title 时不回落，
@@ -82,10 +89,30 @@ export function DialogContent({
         {...(ariaLabel != null && { "aria-label": ariaLabel })}
         {...(ariaLabelledBy != null && { "aria-labelledby": ariaLabelledBy })}
       >
+        {/* 关闭按钮（#279，形状与默认值对齐 DrawerContent 的 #63）：只读详情型对话框
+            （没有 footer、正文没有关闭控件的那种）此前唯一的可见退路只有点遮罩，
+            键盘用户只剩 Esc，读屏用户对话框里根本没有「关闭」可达元素。
+            绝对定位不占布局，对既有的 title/正文/footer 结构零影响；它落在正文滚动区
+            之外（包含块是 fixed 的 Popup），不会被 overflow-y-auto 裁掉。 */}
+        {showClose && (
+          <BaseDialog.Close
+            aria-label={closeLabel ?? loc.close}
+            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X className="size-4" aria-hidden />
+          </BaseDialog.Close>
+        )}
         {/* extra 缺席时保持原样（标题直接是 Popup 的 flex 子项），不为了统一写法凭空多包一层 div。 */}
         {extra == null ? (
           hasTitle && (
-            <BaseDialog.Title className={cn("shrink-0 text-lg font-semibold", titleClassName)}>
+            <BaseDialog.Title
+              className={cn(
+                "shrink-0 text-lg font-semibold",
+                // 与 drawer 同款联动：开着关闭键就给标题让出右上角那 40px，长标题不钻到按钮底下。
+                showClose && "pr-10",
+                titleClassName,
+              )}
+            >
               {title}
             </BaseDialog.Title>
           )
@@ -97,6 +124,8 @@ export function DialogContent({
             className={cn(
               "flex shrink-0 items-center gap-2",
               hasTitle ? "justify-between" : "justify-end",
+              // showClose 时整行让出右上角，extra 不被绝对定位的关闭按钮压住（同 drawer）。
+              showClose && "pr-10",
             )}
           >
             {hasTitle && (

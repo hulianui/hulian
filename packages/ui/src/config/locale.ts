@@ -86,6 +86,10 @@ export interface Locale {
     /** 右上角关闭按钮的无障碍名。 */
     close: string;
   };
+  dialog: {
+    /** 右上角关闭按钮的无障碍名（#279，与 drawer 同口径）。 */
+    close: string;
+  };
   loginForm: {
     title: string;
     username: string;
@@ -2624,6 +2628,9 @@ export const zhCN: Locale = {
   drawer: {
     close: "关闭",
   },
+  dialog: {
+    close: "关闭",
+  },
   loginForm: {
     title: "登录",
     username: "账号",
@@ -2740,6 +2747,9 @@ export const enUS: Locale = {
     submit: "Submit",
   },
   drawer: {
+    close: "Close",
+  },
+  dialog: {
     close: "Close",
   },
   loginForm: {

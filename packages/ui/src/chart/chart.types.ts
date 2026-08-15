@@ -78,7 +78,22 @@ export interface CartesianChartProps<TDatum = Record<string, unknown>> extends C
    * `color` 缺省取 `--color-muted-foreground`，可传语义色名（`"danger"` 等）。
    */
   referenceLines?: ChartReferenceLine[];
+  /**
+   * 值轴的显示范围 `[min, max]`（#282），`"auto"` 表示该端仍按数据自适应。
+   *
+   * 典型场景是百分比/占比轴锁 `[0, 100]` 满量程：TOP N 截断的数据往往只到 80 多，
+   * auto domain 会让「82%」画到接近顶格、读成「快到 100%」，且越界的 `referenceLines`
+   * （如 95 线）会被 recharts 静默丢弃不画。锁定后两个问题一起消失。
+   *
+   * 数据超出锁定范围时 recharts 会扩轴容纳（不裁剪路径），所以它的语义是「至少覆盖到这里」。
+   * `horizontal` 柱图的值轴是横轴，同样由本 prop 管。
+   * @example yAxisDomain={[0, 100]}
+   */
+  yAxisDomain?: ChartAxisDomain;
 }
+
+/** 值轴 domain：`[min, max]`，任一端可写 `"auto"` 保持按数据自适应（#282）。 */
+export type ChartAxisDomain = [number | "auto", number | "auto"];
 
 export interface ChartReferenceLine {
   /** 值轴上的位置。 */
@@ -129,12 +144,20 @@ export interface ComposedSeries extends ChartSeries {
 }
 
 export interface ComposedChartProps<TDatum = Record<string, unknown>>
-  extends Omit<CartesianChartProps<TDatum>, "series"> {
+  extends Omit<CartesianChartProps<TDatum>, "series" | "yAxisDomain"> {
   series: ComposedSeries[];
   /** 右轴标题（写在轴外侧）。左右轴各画各的量纲时，不标名字读者分不出哪条线读哪根轴。 */
   rightAxisLabel?: string;
   /** 左轴标题，语义同 `rightAxisLabel`。 */
   leftAxisLabel?: string;
+  /** 左轴 domain（#282），语义同单轴图的 `yAxisDomain`；与 `leftAxisLabel` 对称。 */
+  leftAxisDomain?: ChartAxisDomain;
+  /**
+   * 右轴 domain（#282）。右轴的第一大用户是百分比轴（帕累托累计占比、退货率、达成率），
+   * 锁 `[0, 100]` 满量程后，`referenceLines={[{ y: 95, axis: "right" }]}` 不再因越界被丢弃。
+   * @example rightAxisDomain={[0, 100]}
+   */
+  rightAxisDomain?: ChartAxisDomain;
 }
 
 /** Bar 专属：横向柱状（layout=vertical） */

@@ -13778,6 +13778,8 @@
         "@base-ui/react"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/motion.json"
       ],

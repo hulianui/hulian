@@ -367,6 +367,57 @@ describe("referenceLines 在笛卡尔三件上同样可用（#274）", () => {
   });
 });
 
+// #282 值轴 domain：百分比轴锁满量程。复刻 issue 的帕累托现场 —— TOP N 截断后累计占比只到 82，
+// auto domain 下 95 参考线越界被 recharts 静默丢弃（只画出 80 那条）。
+describe("值轴 domain（#282）", () => {
+  // 右轴序列 max=40：auto domain 的 nice ticks 到 40 就停（不像 82 会被圆整到 100），
+  // 80/95 参考线在 auto 下必然越界 —— 基线与锁定的对比是确定的，不押 recharts 的圆整口味。
+  const pareto = [
+    { name: "A", amount: 40, cum: 12 },
+    { name: "B", amount: 18, cum: 28 },
+    { name: "C", amount: 10, cum: 40 },
+  ];
+  const paretoSeries = [
+    { key: "amount", label: "销售额" },
+    { key: "cum", label: "累计占比", type: "line" as const, axis: "right" as const },
+  ];
+  const refs = [
+    { y: 80, label: "80%", axis: "right" as const },
+    { y: 95, label: "95%", axis: "right" as const },
+  ];
+
+  it("不锁 domain（现状基线）：越界参考线被 recharts 静默丢弃", () => {
+    const { container } = render(
+      <ComposedChart data={pareto} series={paretoSeries} xKey="name" referenceLines={refs} />,
+    );
+    expect(container.querySelectorAll(".recharts-reference-line").length).toBe(0);
+    expect(container.textContent).not.toContain("95%");
+  });
+
+  it("rightAxisDomain=[0,100]：两条参考线都画，右轴顶格是 100", () => {
+    const { container } = render(
+      <ComposedChart
+        data={pareto}
+        series={paretoSeries}
+        xKey="name"
+        referenceLines={refs}
+        rightAxisDomain={[0, 100]}
+      />,
+    );
+    expect(container.querySelectorAll(".recharts-reference-line").length).toBe(2);
+    expect(container.textContent).toContain("95%");
+    // 左轴序列 max=40（刻度到不了三位数），全文出现 100 只能来自锁定后的右轴顶格刻度
+    expect(container.textContent).toContain("100");
+  });
+
+  it("单轴图 yAxisDomain：锁 [0,250] 后刻度到顶", () => {
+    const { container } = render(
+      <LineChart data={data} series={series} xKey="month" yAxisDomain={[0, 250]} />,
+    );
+    expect(container.textContent).toContain("250");
+  });
+});
+
 // #275 数据点点击。笛卡尔走图表根的活跃类目，Pie/Radial 走扇区级 onClick。
 describe("onPointClick · 扁平图种的扇区点击（#275）", () => {
   // 扇区是**入场动画驱动**的：首帧 recharts 只渲染一个空的 layer，要等动画跑起来才有 path。
@@ -399,6 +450,44 @@ describe("onPointClick · 扁平图种的扇区点击（#275）", () => {
   it("不传 onPointClick 时不给指针手型（免得看着能点其实不能）", () => {
     const { container } = render(<PieChart data={flat} />);
     expect(container.querySelector(".recharts-pie")!.getAttribute("class")).not.toContain("cursor-pointer");
+  });
+
+  // #281 回归：recharts 3.x 的 activeTooltipIndex 是字符串（"1" 而不是 1），
+  // 旧的 typeof !== "number" 判据把笛卡尔图的点击全拦掉。#275 只测了扇区级路径，
+  // 这里补上「真实 hover → click」走 recharts 状态机的那条。
+  it("BarChart（笛卡尔路径）hover 亮 tooltip 后点击 → 回传该数据点与下标", () => {
+    const onPointClick = vi.fn();
+    const { container } = render(
+      <BarChart data={data} series={series} xKey="month" onPointClick={onPointClick} />,
+    );
+    settleAnimation();
+    const surface = container.querySelector(".recharts-wrapper")!;
+    // jsdom 的 getBoundingClientRect 全 0，recharts 会把任何坐标判成「不在图内」——
+    // 桩出与 ResponsiveContainer mock 同尺寸的矩形，hover 坐标才落得进类目带。
+    const rectSpy = vi
+      .spyOn(Element.prototype, "getBoundingClientRect")
+      .mockReturnValue({
+        x: 0, y: 0, width: 600, height: 300, top: 0, left: 0, right: 600, bottom: 300,
+        toJSON: () => ({}),
+      } as DOMRect);
+    // 600px 宽 3 个类目：x=300 落在第 2 个类目带（index 1）。
+    // recharts 对 mousemove 有节流，假时钟下要手动推一拍状态才落盘。
+    fireEvent.mouseMove(surface, { clientX: 300, clientY: 150 });
+    settleAnimation();
+    fireEvent.click(surface, { clientX: 300, clientY: 150 });
+    rectSpy.mockRestore();
+    expect(onPointClick).toHaveBeenCalledTimes(1);
+    expect(onPointClick).toHaveBeenCalledWith({ datum: data[1], index: 1, seriesKey: undefined });
+  });
+
+  it("点在画布上但没有活跃类目（无 hover）→ 不回调", () => {
+    const onPointClick = vi.fn();
+    const { container } = render(
+      <LineChart data={data} series={series} xKey="month" onPointClick={onPointClick} />,
+    );
+    settleAnimation();
+    fireEvent.click(container.querySelector(".recharts-wrapper")!);
+    expect(onPointClick).not.toHaveBeenCalled();
   });
 
   it("RadialChart 同款签名", () => {

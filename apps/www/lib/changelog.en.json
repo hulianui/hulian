@@ -1,22 +1,8 @@
 [
   {
-    "pkg": "@hulianui/tokens",
-    "version": "0.9.1",
-    "date": null,
-    "entries": [
-      {
-        "sha": null,
-        "bump": "patch",
-        "breaking": false,
-        "body": "Spell out that `-foreground` only matches a solid fill: on a tint the text colour is the semantic colour itself\n\nEvery semantic colour ships both `--color-x` and `--color-x-foreground`, which read like \"the fill\" and\n\"the foreground that goes with it\". But `-foreground` **only holds for a solid fill** -- in light mode\nit equals `var(--white)`. Painting a tint of your own (`bg-warning-subtle`, `bg-warning/12`) and\nreaching for `text-warning-foreground` by naming intuition gives you **white on white**, and the text\ndisappears (#268).\n\nIt also looks right in dark mode (where `-foreground` is near-black), so whoever develops in dark mode\nnever sees it; nothing throws, nothing warns, and neither typecheck nor guard can see it. The correct\nrecipe previously **lived only in the `compoundVariants` of `tag.tsx`** and appeared in no\ndocumentation at all.\n\nThe same sentence now appears in three places, following what `--color-hairline` already does (it is\nthe precedent for this class of problem):\n\n- a comment on the `-foreground` group in `semantic.css`, stating that it only matches a solid fill and\n  what a tint should use instead\n- the colour page of the docs site: one note under each of the five solid semantic swatches (primary /\n  danger / success / warning / info) -- that row already shows \"solid fill plus foreground\" on the\n  right, and whoever reads it is usually about to paint a tint next\n- a \"surface recipes\" table in the `Tag` docs (see the `@hulianui/ui` entry of the same release)\n\n| Surface | Fill                                      | Text                      |\n| ------- | ----------------------------------------- | ------------------------- |\n| solid   | `bg-warning`                              | `text-warning-foreground` |\n| soft    | `bg-warning-subtle` (or `bg-warning/12`)  | `text-warning`            |\n| outline | `border-warning`                          | `text-warning`            |\n\nDocumentation and comments only; not a single token value changed.",
-        "parityId": "tokens-foreground-solid-only"
-      }
-    ]
-  },
-  {
     "pkg": "@hulianui/ui",
     "version": "0.47.0",
-    "date": null,
+    "date": "2026-08-15",
     "entries": [
       {
         "sha": null,
@@ -79,7 +65,7 @@
   {
     "pkg": "@hulianui/ui",
     "version": "0.46.0",
-    "date": null,
+    "date": "2026-08-15",
     "entries": [
       {
         "sha": null,
@@ -91,9 +77,23 @@
     ]
   },
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.9.1",
+    "date": "2026-08-14",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "Spell out that `-foreground` only matches a solid fill: on a tint the text colour is the semantic colour itself\n\nEvery semantic colour ships both `--color-x` and `--color-x-foreground`, which read like \"the fill\" and\n\"the foreground that goes with it\". But `-foreground` **only holds for a solid fill** -- in light mode\nit equals `var(--white)`. Painting a tint of your own (`bg-warning-subtle`, `bg-warning/12`) and\nreaching for `text-warning-foreground` by naming intuition gives you **white on white**, and the text\ndisappears (#268).\n\nIt also looks right in dark mode (where `-foreground` is near-black), so whoever develops in dark mode\nnever sees it; nothing throws, nothing warns, and neither typecheck nor guard can see it. The correct\nrecipe previously **lived only in the `compoundVariants` of `tag.tsx`** and appeared in no\ndocumentation at all.\n\nThe same sentence now appears in three places, following what `--color-hairline` already does (it is\nthe precedent for this class of problem):\n\n- a comment on the `-foreground` group in `semantic.css`, stating that it only matches a solid fill and\n  what a tint should use instead\n- the colour page of the docs site: one note under each of the five solid semantic swatches (primary /\n  danger / success / warning / info) -- that row already shows \"solid fill plus foreground\" on the\n  right, and whoever reads it is usually about to paint a tint next\n- a \"surface recipes\" table in the `Tag` docs (see the `@hulianui/ui` entry of the same release)\n\n| Surface | Fill                                      | Text                      |\n| ------- | ----------------------------------------- | ------------------------- |\n| solid   | `bg-warning`                              | `text-warning-foreground` |\n| soft    | `bg-warning-subtle` (or `bg-warning/12`)  | `text-warning`            |\n| outline | `border-warning`                          | `text-warning`            |\n\nDocumentation and comments only; not a single token value changed.",
+        "parityId": "tokens-foreground-solid-only"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.45.0",
-    "date": null,
+    "date": "2026-08-14",
     "entries": [
       {
         "sha": null,
@@ -133,9 +133,22 @@
     ]
   },
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.9.0",
+    "date": "2026-08-13",
+    "entries": [
+      {
+        "sha": "533c001",
+        "bump": "minor",
+        "breaking": false,
+        "body": "The preset gains the keyframes and rules two text effects need (`FlipText` / `TextReveal`)\n\n- `hulian-text-flip-top` / `-bottom` / `-left` / `-right`: one per direction, each with only a `to` (the start is the element's resting transform), and deliberately without `forwards` -- both faces render the same character, so once a round finishes the container returns to 0 degrees and the switch is invisible.\n- `hulian-text-reveal`: a gradient three times the element's width sliding from far right to far left. Used with `fill-mode: both` it rests \"fully transparent\" before the sweep starts and \"fully solid\" after it ends, while reduced motion removes the animation entirely and falls back to the static `background-position`, i.e. fully solid.\n- `[data-hulian-flip-back]::after` / `[data-hulian-ghost-text]::after`: `content: attr(...)` carries the text that must **not** enter the DOM (the flip component's back face, the rotating component's placeholder strings). Real nodes would duplicate a heading's `textContent` or concatenate every candidate string, polluting copy-paste and whatever a crawler reads. Written as a Tailwind arbitrary class it would depend on the scanner emitting the rule, and the failure mode there is \"the flip goes blank halfway\", so it ships as a plain CSS rule."
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.44.0",
-    "date": "2026-08-14",
+    "date": "2026-08-13",
     "entries": [
       {
         "sha": "85679f0",
@@ -166,19 +179,6 @@
         "bump": "patch",
         "breaking": false,
         "body": "`RowActions` spaces its actions per form: 4px → 16px in the text form\n\nThe text form renders `variant=\"link\"` buttons, and `link` is pinned to `h-auto px-0` in `Button`'s\ncompoundVariants (a plain text link, whose left edge must line up with the column header) -- so **all**\nthe separation between two actions comes from the container's `gap-1`. 4px is enough in the button and\nicon forms (those buttons carry horizontal padding of their own, making the visual gap `gap + 2x\npadding`), but in the text form it glues a row of Chinese actions into one phrase -- three two-character verbs\n(Edit / Unpublish / Delete) run together and read as a single six-character phrase rather than three\nclickable things. And the text form is the default.\n\n16px follows the existing convention for table row actions (Element UI ~10px, Ant Design 8px on each side\nof its divider): clearly looser than 4px, without letting three actions blow up the column width.\n\n**The button and icon forms render byte-for-byte as before** -- they were never short of separation, and\nwidening them would only eat horizontal space.\n\nA note for consumers: the action column gets wider in the text form, by 12px per additional action. Tables\nwith hand-written column widths deserve a second look (measured: those same three actions come to 116px\nof content, so a 150px column estimated at the old 12px spacing still has room)."
-      }
-    ]
-  },
-  {
-    "pkg": "@hulianui/tokens",
-    "version": "0.9.0",
-    "date": "2026-08-13",
-    "entries": [
-      {
-        "sha": "533c001",
-        "bump": "minor",
-        "breaking": false,
-        "body": "The preset gains the keyframes and rules two text effects need (`FlipText` / `TextReveal`)\n\n- `hulian-text-flip-top` / `-bottom` / `-left` / `-right`: one per direction, each with only a `to` (the start is the element's resting transform), and deliberately without `forwards` -- both faces render the same character, so once a round finishes the container returns to 0 degrees and the switch is invisible.\n- `hulian-text-reveal`: a gradient three times the element's width sliding from far right to far left. Used with `fill-mode: both` it rests \"fully transparent\" before the sweep starts and \"fully solid\" after it ends, while reduced motion removes the animation entirely and falls back to the static `background-position`, i.e. fully solid.\n- `[data-hulian-flip-back]::after` / `[data-hulian-ghost-text]::after`: `content: attr(...)` carries the text that must **not** enter the DOM (the flip component's back face, the rotating component's placeholder strings). Real nodes would duplicate a heading's `textContent` or concatenate every candidate string, polluting copy-paste and whatever a crawler reads. Written as a Tailwind arbitrary class it would depend on the scanner emitting the rule, and the failure mode there is \"the flip goes blank halfway\", so it ships as a plain CSS rule."
       }
     ]
   },

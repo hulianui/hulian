@@ -16558,6 +16558,15 @@
           "description": "值轴参考线（对标 echarts 的 `markLine`）：帕累托的 80/95 线、均值线、目标线。见下方 `ChartReferenceLine` 表。**RadarChart 没有这个 prop**"
         },
         {
+          "name": "yAxisDomain",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
+          "required": false,
+          "kind": "other",
+          "type": "[number | \"auto\", number | \"auto\"]",
+          "default": "自适应",
+          "description": "值轴显示范围 `[min, max]`，`\"auto\"` 表示该端仍按数据自适应（对标 echarts 的 `yAxis.min/max`）。典型场景是百分比轴锁 `[0, 100]`：auto 会把「82%」画到顶格读成快满，且越界的 `referenceLines` 会被静默丢弃不画。数据超出锁定范围时轴会扩大容纳（不裁剪路径）。`horizontal` 柱图的值轴是横轴，同样由它管。**ComposedChart 用 `leftAxisDomain`/`rightAxisDomain` 代替；RadarChart 没有这个 prop**"
+        },
+        {
           "name": "type",
           "owner": "series[]",
           "required": false,
@@ -16594,6 +16603,15 @@
           "type": "string",
           "default": null,
           "description": "**ComposedChart 专属**：轴标题。左右各画各的量纲时不标名字，读者分不出哪条线读哪根轴"
+        },
+        {
+          "name": "leftAxisDomain / rightAxisDomain",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
+          "required": false,
+          "kind": "other",
+          "type": "[number | \"auto\", number | \"auto\"]",
+          "default": "自适应",
+          "description": "**ComposedChart 专属**：逐轴 domain，语义同 `yAxisDomain`。右轴的第一大用户是百分比轴（帕累托累计占比、退货率、达成率），锁 `rightAxisDomain={[0, 100]}` 满量程后，`referenceLines={[{ y: 95, axis: \"right\" }]}` 不再因越界被丢弃"
         },
         {
           "name": "axisMax",
@@ -31589,6 +31607,24 @@
           "type": "string",
           "default": null,
           "description": "无障碍名的来源元素 id，优先于 `title` 自动生成的 id。与 `aria-label` 二选一"
+        },
+        {
+          "name": "showClose",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "右上角关闭按钮（#279，形状与默认值对齐 DrawerContent）。只读详情型对话框（没有 footer）此前唯一可见退路是点遮罩，键盘只剩 Esc，读屏没有「关闭」可达元素。开着时标题/`extra` 行自动让出右上角 40px。全局搜索框这类自带关闭手段的弹层传 `false`"
+        },
+        {
+          "name": "closeLabel",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "locale `dialog.close`",
+          "description": "关闭按钮的无障碍名，缺省吃 ConfigProvider locale（zh「关闭」/ en \"Close\"）"
         },
         {
           "name": "titleClassName",

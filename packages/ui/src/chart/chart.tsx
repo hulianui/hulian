@@ -222,8 +222,15 @@ function cartesianPointClickHandler<TDatum>(
 ) {
   if (!onPointClick) return undefined;
   return (state: { activeTooltipIndex?: unknown; activeDataKey?: unknown }) => {
-    const index = state.activeTooltipIndex;
-    if (typeof index !== "number") return;
+    // recharts 3.x 的 activeTooltipIndex 是字符串（TooltipIndex = string | null，
+    // combineActiveTooltipIndex 两个出口都 String(...)），`typeof !== "number"` 会把
+    // 笛卡尔图的点击**全部**拦掉且不报错（#281）。数值化后再收窄：
+    // null / ""（Number 化都是 0，会误点第 0 条）与 Sankey/Treemap 的 "children[0]"
+    // （NaN）都进不来，只放行真正的整数下标。
+    const raw = state.activeTooltipIndex;
+    const index =
+      typeof raw === "number" ? raw : typeof raw === "string" && raw !== "" ? Number(raw) : NaN;
+    if (!Number.isInteger(index) || index < 0) return;
     const datum = data[index];
     if (datum === undefined) return;
     const seriesKey = typeof state.activeDataKey === "string" ? state.activeDataKey : undefined;
@@ -283,6 +290,7 @@ export function AreaChart<TDatum>({
   legendScroll,
   onPointClick,
   referenceLines,
+  yAxisDomain,
 }: CartesianChartProps<TDatum>) {
   const handleClick = cartesianPointClickHandler(data, onPointClick);
   return (
@@ -292,7 +300,7 @@ export function AreaChart<TDatum>({
         <ReAreaChart data={data} margin={MARGIN} onClick={handleClick}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
-          <YAxis {...axisProps} />
+          <YAxis {...axisProps} domain={yAxisDomain} />
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
           {series.map((s, i) => {
             const color = resolveTone(s.color) ?? chartColor(i);
@@ -331,6 +339,7 @@ export function BarChart<TDatum>({
   legendScroll,
   onPointClick,
   referenceLines,
+  yAxisDomain,
 }: BarChartProps<TDatum>) {
   const handleClick = cartesianPointClickHandler(data, onPointClick);
   return (
@@ -346,7 +355,8 @@ export function BarChart<TDatum>({
           <CartesianGrid {...gridProps} vertical={horizontal} horizontal={!horizontal} />
           {horizontal ? (
             <>
-              <XAxis type="number" {...axisProps} />
+              {/* horizontal 时值轴是横轴，yAxisDomain 落在这里而不是类目轴上。 */}
+              <XAxis type="number" {...axisProps} domain={yAxisDomain} />
               <YAxis
                 type="category"
                 dataKey={xKey}
@@ -360,7 +370,7 @@ export function BarChart<TDatum>({
           ) : (
             <>
               <XAxis dataKey={xKey} {...axisProps} />
-              <YAxis {...axisProps} />
+              <YAxis {...axisProps} domain={yAxisDomain} />
             </>
           )}
           <Tooltip
@@ -398,6 +408,7 @@ export function LineChart<TDatum>({
   legendScroll,
   onPointClick,
   referenceLines,
+  yAxisDomain,
 }: CartesianChartProps<TDatum>) {
   const handleClick = cartesianPointClickHandler(data, onPointClick);
   return (
@@ -407,7 +418,7 @@ export function LineChart<TDatum>({
         <ReLineChart data={data} margin={MARGIN} onClick={handleClick}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
-          <YAxis {...axisProps} />
+          <YAxis {...axisProps} domain={yAxisDomain} />
           <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
           {series.map((s, i) => {
             const color = resolveTone(s.color) ?? chartColor(i);
@@ -454,6 +465,8 @@ export function ComposedChart<TDatum>({
   referenceLines,
   leftAxisLabel,
   rightAxisLabel,
+  leftAxisDomain,
+  rightAxisDomain,
 }: ComposedChartProps<TDatum>) {
   const handleClick = cartesianPointClickHandler(data, onPointClick);
   const hasRight = series.some((s) => s.axis === "right");
@@ -478,6 +491,7 @@ export function ComposedChart<TDatum>({
             <YAxis
               yAxisId="left"
               {...axisProps}
+              domain={leftAxisDomain}
               label={
                 leftAxisLabel
                   ? {
@@ -491,11 +505,14 @@ export function ComposedChart<TDatum>({
               }
             />
             {/* 右轴恒建、无右序列时 hide：见组件头注释（轴 id 缺席会让写了 yAxisId 的序列整条消失）。 */}
+            {/* 右轴 domain（#282）：百分比轴锁 [0,100] 满量程 —— TOP N 截断的帕累托数据
+                accumulate 只到 80 多，auto domain 会把 95 参考线判越界丢弃、82% 画到顶格。 */}
             <YAxis
               yAxisId="right"
               orientation="right"
               hide={!hasRight}
               {...axisProps}
+              domain={rightAxisDomain}
               label={
                 rightAxisLabel
                   ? {

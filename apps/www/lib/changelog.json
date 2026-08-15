@@ -1,22 +1,8 @@
 [
   {
-    "pkg": "@hulianui/tokens",
-    "version": "0.9.1",
-    "date": null,
-    "entries": [
-      {
-        "sha": null,
-        "bump": "patch",
-        "breaking": false,
-        "body": "写清 `-foreground` 只配实心底：浅底的文字色是语义色本身\n\n语义色每一档都有 `--color-x` 和 `--color-x-foreground`，命名上读起来就是「底色」与「配它的前景色」。\n但 `-foreground` **只对实心底成立** —— 亮色下它等于 `var(--white)`。消费方自己画一块浅底\n（`bg-warning-subtle` / `bg-warning/12`）时按命名直觉配上 `text-warning-foreground`，得到的是\n**白字白底**，文字直接消失（#268）。\n\n而且它在暗色下反而是对的（那边 `-foreground` 是近黑），所以谁在暗色主题里开发谁就查不出来；\n不报错、不告警、typecheck 与 guard 都看不见。正确配方此前**只存在于 `tag.tsx` 的\n`compoundVariants` 表里**，任何文档都没写。\n\n三处补上同一句话，照 `--color-hairline` 那条注释的既有做法（它是同类问题的先例）：\n\n- `semantic.css` 的 `-foreground` 组补注释，写明它只配实心底、浅底该用什么\n- 文档站色彩页：五个实心语义色（primary / danger / success / warning / info）的色卡下各挂一条\n  ——那一行右侧正好就是「实心底 + 前景色」的示意，读到这里的人下一步多半就要自己画一块浅底\n- `Tag` 文档新增「三档配色」表（见 `@hulianui/ui` 同版本条目）\n\n| 表面    | 底                                        | 文字                      |\n| ------- | ----------------------------------------- | ------------------------- |\n| solid   | `bg-warning`                              | `text-warning-foreground` |\n| soft    | `bg-warning-subtle`（或 `bg-warning/12`） | `text-warning`            |\n| outline | `border-warning`                          | `text-warning`            |\n\n纯文档与注释，token 的值一个没动。",
-        "parityId": "tokens-foreground-solid-only"
-      }
-    ]
-  },
-  {
     "pkg": "@hulianui/ui",
     "version": "0.47.0",
-    "date": null,
+    "date": "2026-08-15",
     "entries": [
       {
         "sha": null,
@@ -79,7 +65,7 @@
   {
     "pkg": "@hulianui/ui",
     "version": "0.46.0",
-    "date": null,
+    "date": "2026-08-15",
     "entries": [
       {
         "sha": null,
@@ -91,9 +77,23 @@
     ]
   },
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.9.1",
+    "date": "2026-08-14",
+    "entries": [
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "写清 `-foreground` 只配实心底：浅底的文字色是语义色本身\n\n语义色每一档都有 `--color-x` 和 `--color-x-foreground`，命名上读起来就是「底色」与「配它的前景色」。\n但 `-foreground` **只对实心底成立** —— 亮色下它等于 `var(--white)`。消费方自己画一块浅底\n（`bg-warning-subtle` / `bg-warning/12`）时按命名直觉配上 `text-warning-foreground`，得到的是\n**白字白底**，文字直接消失（#268）。\n\n而且它在暗色下反而是对的（那边 `-foreground` 是近黑），所以谁在暗色主题里开发谁就查不出来；\n不报错、不告警、typecheck 与 guard 都看不见。正确配方此前**只存在于 `tag.tsx` 的\n`compoundVariants` 表里**，任何文档都没写。\n\n三处补上同一句话，照 `--color-hairline` 那条注释的既有做法（它是同类问题的先例）：\n\n- `semantic.css` 的 `-foreground` 组补注释，写明它只配实心底、浅底该用什么\n- 文档站色彩页：五个实心语义色（primary / danger / success / warning / info）的色卡下各挂一条\n  ——那一行右侧正好就是「实心底 + 前景色」的示意，读到这里的人下一步多半就要自己画一块浅底\n- `Tag` 文档新增「三档配色」表（见 `@hulianui/ui` 同版本条目）\n\n| 表面    | 底                                        | 文字                      |\n| ------- | ----------------------------------------- | ------------------------- |\n| solid   | `bg-warning`                              | `text-warning-foreground` |\n| soft    | `bg-warning-subtle`（或 `bg-warning/12`） | `text-warning`            |\n| outline | `border-warning`                          | `text-warning`            |\n\n纯文档与注释，token 的值一个没动。",
+        "parityId": "tokens-foreground-solid-only"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.45.0",
-    "date": null,
+    "date": "2026-08-14",
     "entries": [
       {
         "sha": null,
@@ -133,9 +133,22 @@
     ]
   },
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.9.0",
+    "date": "2026-08-13",
+    "entries": [
+      {
+        "sha": "533c001",
+        "bump": "minor",
+        "breaking": false,
+        "body": "preset 补两组文字特效所需的关键帧与规则（`FlipText` / `TextReveal`）\n\n- `hulian-text-flip-top` / `-bottom` / `-left` / `-right`：四档方向各一条，只有 `to`（起点取元素静息的 transform），刻意不带 `forwards`——正反两面渲染的是同一个字，一轮播完容器自动回到 0°，观众看不出切换。\n- `hulian-text-reveal`：一条元素宽 3 倍的渐变从最右滑到最左。配 `fill-mode: both` 用，于是未开扫停在「整串透明」、扫完停在「整串实色」，而减弱动效下动画整条不存在、落回静态的 `background-position` = 整串实色。\n- `[data-hulian-flip-back]::after` / `[data-hulian-ghost-text]::after`：用 `content: attr(…)` 承载「不该进 DOM 文本」的那份文字（翻面件的背面、轮换件的占位串）。写成真节点会让标题的 `textContent` 出现双份或把所有候选串连在一起，框选复制与爬虫读到的文案一起被污染。写成 Tailwind 任意值类则要赌扫描器生成得出来，而它失手的表现是「翻到一半变空白」，所以落成真 CSS 规则。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.44.0",
-    "date": "2026-08-14",
+    "date": "2026-08-13",
     "entries": [
       {
         "sha": "85679f0",
@@ -166,19 +179,6 @@
         "bump": "patch",
         "breaking": false,
         "body": "`RowActions` 的动作间距按档给：文字档 4px → 16px\n\n文字档的按钮是 `variant=\"link\"`，而 link 在 `Button` 的 compoundVariants 里被钉了\n`h-auto px-0`（回归纯文字链接，文字左缘要与表头对齐）——于是两个动作之间的**全部**间隔\n就只剩容器上那个 `gap-1`。4px 在按钮档 / 图标档是够的（那两档按钮自带横向内边距，\n视觉间隔是 gap + 2×padding），在文字档却让一排中文动作粘成一句话：「编辑 下线 删除」\n读起来像四个字的短语，而不是三个可点的东西。而文字档是默认档。\n\n16px 照着表格行操作的既有惯例定（Element UI ~10px、Ant Design 的分隔线两侧各 8px），\n比 4px 明显松，又不至于让三个动作的列宽失控。\n\n**按钮档与图标档的渲染逐字不变**——它们本来就不缺间隔，改了反而白吃横向空间。\n\n消费方注意：文字档的操作列会变宽，每多一个动作多 12px。列宽是手写常数的表要复核一次\n（实测三动作「编辑/下线/删除」内容宽 116px，此前按 12px 间距估的 150px 列宽仍有余量）。"
-      }
-    ]
-  },
-  {
-    "pkg": "@hulianui/tokens",
-    "version": "0.9.0",
-    "date": "2026-08-13",
-    "entries": [
-      {
-        "sha": "533c001",
-        "bump": "minor",
-        "breaking": false,
-        "body": "preset 补两组文字特效所需的关键帧与规则（`FlipText` / `TextReveal`）\n\n- `hulian-text-flip-top` / `-bottom` / `-left` / `-right`：四档方向各一条，只有 `to`（起点取元素静息的 transform），刻意不带 `forwards`——正反两面渲染的是同一个字，一轮播完容器自动回到 0°，观众看不出切换。\n- `hulian-text-reveal`：一条元素宽 3 倍的渐变从最右滑到最左。配 `fill-mode: both` 用，于是未开扫停在「整串透明」、扫完停在「整串实色」，而减弱动效下动画整条不存在、落回静态的 `background-position` = 整串实色。\n- `[data-hulian-flip-back]::after` / `[data-hulian-ghost-text]::after`：用 `content: attr(…)` 承载「不该进 DOM 文本」的那份文字（翻面件的背面、轮换件的占位串）。写成真节点会让标题的 `textContent` 出现双份或把所有候选串连在一起，框选复制与爬虫读到的文案一起被污染。写成 Tailwind 任意值类则要赌扫描器生成得出来，而它失手的表现是「翻到一半变空白」，所以落成真 CSS 规则。"
       }
     ]
   },

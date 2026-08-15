@@ -655,7 +655,7 @@ export const frFR: Locale = {
 
 | 层 | 键 |
 |------|------|
-| `Locale` 顶层 | `table` · `proTable` · `adminLayout` · `modalForm` · `editableTable` · `proForm` · `stepsForm` · `drawer` · `loginForm` · `clickCaptcha` · `passwordGenerator` · `components` |
+| `Locale` 顶层 | `table` · `proTable` · `adminLayout` · `modalForm` · `editableTable` · `proForm` · `stepsForm` · `drawer` · `dialog` · `loginForm` · `clickCaptcha` · `passwordGenerator` · `components` |
 | `Locale["components"]` | 低层原语，按组件名分节：`popconfirm` · `toast` · `alert` · `tag` · `select` · `spinner` · `numberField` · `upload` · `pagination` · `combobox` …（100+ 节，随版本增长） |
 
 **别把完整清单抄进自己的代码库**，它每个版本都在长。要当前实装版本的全量键就从字典自己打，
