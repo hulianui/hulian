@@ -223,6 +223,31 @@ export const buttonShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "dashed 笔形档（空位）",
+      description:
+        "虚线不是装饰，是一个有固定含义的形状：这块是空的，等你往里放东西。实线框说「这是一个可点的框」，虚线框说「这里还没有内容」。outline dashed 只换笔形、边色仍跟着 tone；soft 本来无边，dashed 给它补一条同色虚线，那才是空位的完整形状。",
+      code: `<Button variant="outline" size="xs" dashed>上传</Button>
+<Button variant="soft" dashed>+ 手动添加单位</Button>
+<Button variant="outline" tone="danger" dashed>边色仍跟着 tone</Button>
+<Button variant="outline" size="xs">对照：实线</Button>`,
+      render: () => (
+        <>
+          <Button variant="outline" size="xs" dashed>
+            上传
+          </Button>
+          <Button variant="soft" dashed>
+            + 手动添加单位
+          </Button>
+          <Button variant="outline" tone="danger" dashed>
+            边色仍跟着 tone
+          </Button>
+          <Button variant="outline" size="xs">
+            对照：实线
+          </Button>
+        </>
+      ),
+    },
+    {
       title: "muted 层级档",
       description:
         "静息色降一档到次要灰，hover 回到本 tone 的色。次要文字链接与密集行里的图标按钮要的就是这一档 —— 不传 muted 的 ghost 仍是正文黑，既有调用不受影响。只对 ghost / link 有效。",
@@ -341,6 +366,7 @@ export const buttonShowcase: ShowcaseSpec = {
       defaultValue: "md",
     },
     { prop: "block", type: "boolean", defaultValue: false, label: "块级铺满" },
+    { prop: "dashed", type: "boolean", defaultValue: false, label: "虚线描边" },
     { prop: "loading", type: "boolean", defaultValue: false },
     { prop: "children", type: "text", defaultValue: "瑚琏按钮", label: "文案" },
   ],
@@ -384,6 +410,7 @@ export const buttonShowcase: ShowcaseSpec = {
           | "icon28"
       }
       block={p.block as boolean}
+      dashed={p.dashed as boolean}
       loading={p.loading as boolean}
     >
       {p.children as string}

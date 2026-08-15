@@ -40,6 +40,15 @@ const buttonVariantsCva = cva(BUTTON_BASE_CLASS, {
       // 类由 compoundVariants 按 variant × tone 给：只对不靠底色表达强度的 ghost / link / outline
       // 有意义（outline 见 #221：描边留着、只降文字那一档）。
       muted: { true: "" },
+      // 笔形档（#270）：虚线描边。虚线在中后台里不是装饰，是一个有固定含义的形状 ——
+      // **「这块是空的，等你往里放东西」**。实线框说的是「这是一个可点的框」，虚线框说的是
+      // 「这里还没有内容」，两者不能互相顶替：把补录入口画成实线，它就从「表格还能往下长」
+      // 变成了「又一个操作按钮」，跟同一行里真正的操作按钮抢注意力。
+      //
+      // **刻意不做成第六个 variant**：虚线是笔形，与 tone（色）和 muted（层级）正交，
+      // 做成 variant 就要把 outline 现有的 tone × muted 组合在新 variant 上重抄一遍
+      // compoundVariants，而它们的差别只有 border-style 一个属性。同 muted 的判据（#211）。
+      dashed: { true: "" },
     },
     compoundVariants: [
       // solid：语义底 + 对应前景 + 独立的 hover 档。0.27.0 前 danger 的 hover 写回自身
@@ -75,6 +84,14 @@ const buttonVariantsCva = cva(BUTTON_BASE_CLASS, {
       { variant: "soft", tone: "warning", class: "bg-warning/12 text-warning hover:bg-warning/20" },
       { variant: "soft", tone: "danger", class: "bg-danger/12 text-danger hover:bg-danger/20" },
       { variant: "soft", tone: "neutral", class: "bg-foreground/8 text-foreground hover:bg-foreground/14" },
+      // outline + dashed（#270）：只换笔形，边色照旧跟着 tone 走 —— 所以这一格必须排在下面
+      // 三条 tone 边色**之前**（tailwind-merge 后来者胜），否则 danger 的红边会被它顶掉。
+      //
+      // `border-border` 不是多余的：outline 的底座是 `border-hairline`，而 hairline 在**亮色下
+      // 就是 transparent**（那一档靠 shadow 自带的发丝边分隔，见 tokens 的注释）。实线时看不出来，
+      // 一换成虚线就露馅 —— 虚线全透明、只剩底下那条连续的阴影边，画出来还是一条实线。
+      // 虚线的全部意义就是「看得见的断口」，所以这一档要一条真的功能性边框色。
+      { variant: "outline", dashed: true, class: "border-dashed border-border" },
       { variant: "outline", tone: "danger", class: "border-danger text-danger" },
       { variant: "outline", tone: "success", class: "border-success text-success" },
       { variant: "outline", tone: "warning", class: "border-warning text-warning" },
@@ -95,6 +112,14 @@ const buttonVariantsCva = cva(BUTTON_BASE_CLASS, {
       { variant: "link", tone: "success", class: "text-success" },
       { variant: "link", tone: "warning", class: "text-warning" },
       { variant: "link", tone: "neutral", class: "text-foreground" },
+      // ── dashed 笔形档（#270）──────────────────────────────────────────────
+      // soft：本来无边，dashed 给它**补**一条同色虚线 —— 这一格才是「空位」的完整形状
+      // （浅语义底 + 虚线框 + 语义文字），也是消费方那两处手写 CSS 的原样。
+      // 边色走 `border-current`：soft 的文字色由 tone 的 compound 给（text-primary /
+      // text-danger / …），跟着 currentColor 走就自动覆盖全部 tone，不必逐 tone 再开六格。
+      // 40% 与消费方手写的 `color-mix(#7C3AED 40%, transparent)` 同档 —— 虚线要比文字弱，
+      // 与文字等浓会读成一个实心方框。
+      { variant: "soft", dashed: true, class: "border border-dashed border-current/40" },
       // ── muted 层级档（#211）────────────────────────────────────────────────
       // 顺序要紧：这几条排在上面的 tone 档之后，靠 tailwind-merge「后来者胜」把静息色顶掉，
       // 再由更具体的那条把 hover 目标改回本 tone 的颜色。
@@ -153,7 +178,20 @@ export { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS };
 
 const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant, tone, size, block, muted, loading, disabled, children, render, ...props },
+    {
+      className,
+      variant,
+      tone,
+      size,
+      block,
+      muted,
+      dashed,
+      loading,
+      disabled,
+      children,
+      render,
+      ...props
+    },
     ref,
   ) => {
     const isDisabled = disabled || loading;
@@ -165,6 +203,19 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
         `button-muted-on-${variant}`,
         `[hulian] Button: muted 只在 variant="ghost" / "link" / "outline" 上有效，variant="${variant}" 上不会有任何变化。` +
           `想要更弱的实心/浅底按钮请改用 variant="outline" muted 或 tone="neutral"。`,
+      );
+    }
+    // dashed 只在有描边可换（outline）或值得补一条描边（soft）的两档上有意义（#270）。
+    // 落在 solid / ghost / link 上时它一个类都不加 —— 静默无效的 prop 比报错更难查，
+    // 故照 muted / tone="current" 的先例开发期点名。
+    // 不写 variant 也要点名：那时默认档是 solid，同样接不住 dashed（这一格与 muted 的既有
+    // 判断不同 —— 那条只在显式传了 variant 时才报，漏掉了「一个 prop 都没配对」的写法）。
+    if (dashed && variant !== "outline" && variant !== "soft") {
+      const actual = variant ?? "solid";
+      warnOnce(
+        `button-dashed-on-${actual}`,
+        `[hulian] Button: dashed 只在 variant="outline" / "soft" 上有效，variant="${actual}" 上不会有任何变化。` +
+          `要「空位 / 可添加」的虚线入口：无底色用 variant="outline" dashed，浅语义底用 variant="soft" dashed。`,
       );
     }
     // ghost 上的 brand 与 neutral 渲染结果逐字相同（#218）——`ghost` 的中性外观**就是**它的
@@ -208,7 +259,7 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
           ...props,
           ref,
           className: cn(
-            buttonVariants({ variant, tone, size, block, muted }),
+            buttonVariants({ variant, tone, size, block, muted, dashed }),
             isDisabled && "pointer-events-none opacity-50",
             className,
             renderProps.className as string | undefined,
@@ -243,7 +294,7 @@ const ButtonImpl = forwardRef<HTMLButtonElement, ButtonProps>(
         // 库内所有提交按钮（ProForm / LoginForm / FormDialog / SearchForm）本来就显式写了
         // type="submit"，故这次改动对库内零影响。放在展开之前，调用点写的 type 照样覆盖。
         type="button"
-        className={cn(buttonVariants({ variant, tone, size, block, muted }), className)}
+        className={cn(buttonVariants({ variant, tone, size, block, muted, dashed }), className)}
         disabled={isDisabled}
         {...props}
       >

@@ -683,3 +683,87 @@ describe("Button 按压反馈（底座）", () => {
     expect(imports.filter((l) => /["'](\.\.\/motion|motion\/react)/.test(l))).toEqual([]);
   });
 });
+
+describe("dashed 笔形档（#270）", () => {
+  const classesOf = (el: React.ReactElement) =>
+    rtlRender(el).container.querySelector("button")!.className;
+
+  it("不传 dashed 时一个类都不变 —— 2459 处既有 outline 调用不许被这档带偏", () => {
+    const cls = classesOf(<Button variant="outline">x</Button>);
+    expect(cls.split(/\s+/)).not.toContain("border-dashed");
+    expect(classesOf(<Button variant="soft">x</Button>).split(/\s+/)).not.toContain("border");
+  });
+
+  it("outline + dashed：只换笔形，边色仍跟着 tone 走（业务侧不必抄一遍 tone 表）", () => {
+    const plain = classesOf(<Button variant="outline" dashed>x</Button>);
+    expect(plain).toContain("border-dashed");
+    // 亮色下 hairline 就是 transparent，虚线会全隐形、只剩阴影那条连续边 —— 必须换成功能性边框色
+    expect(plain).toContain("border-border");
+    expect(plain.split(/\s+/)).not.toContain("border-hairline");
+    const danger = classesOf(
+      <Button variant="outline" tone="danger" dashed>
+        x
+      </Button>,
+    );
+    expect(danger).toContain("border-dashed");
+    expect(danger).toContain("border-danger"); // 边色没被笔形顶掉
+    expect(danger).toContain("text-danger");
+  });
+
+  it("soft + dashed：本来无边的 soft 补一条同色虚线 —— 「空位」的完整形状", () => {
+    const cls = classesOf(
+      <Button variant="soft" dashed>
+        + 手动添加单位
+      </Button>,
+    );
+    expect(cls).toContain("bg-primary/12"); // 浅语义底
+    expect(cls).toContain("text-primary"); // 语义文字
+    expect(cls).toContain("border-dashed");
+    expect(cls).toContain("border-current/40"); // 边色跟 currentColor，六个 tone 共用一格
+  });
+
+  it("dashed 与 muted 正交：笔形与层级各管各的", () => {
+    const cls = classesOf(
+      <Button variant="outline" dashed muted>
+        x
+      </Button>,
+    );
+    expect(cls).toContain("border-dashed");
+    expect(cls).toContain("text-muted-foreground");
+    expect(cls).toContain("hover:text-foreground");
+  });
+
+  it("dashed 落在无效档上开发期点名，连「一个 variant 都不写」那种也点", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    rtlRender(<Button dashed>x</Button>); // 不写 variant → 默认 solid，同样接不住
+    expect(warn.mock.calls.flat().join("\n")).toContain('variant="solid"');
+    warn.mockRestore();
+  });
+
+  it("落在 solid / ghost / link 上不加任何类（静默无效比报错更难查，故另有 warnOnce）", () => {
+    for (const variant of ["solid", "ghost", "link"] as const) {
+      const cls = classesOf(
+        <Button variant={variant} dashed>
+          x
+        </Button>,
+      );
+      expect(cls.split(/\s+/)).not.toContain("border-dashed");
+    }
+  });
+
+  it("outline / soft 上不点名", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    rtlRender(
+      <>
+        <Button variant="outline" dashed>
+          x
+        </Button>
+        <Button variant="soft" dashed>
+          y
+        </Button>
+      </>,
+    );
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+});

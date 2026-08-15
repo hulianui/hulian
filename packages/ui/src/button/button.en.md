@@ -30,6 +30,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | size | `"xs" \| "28" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | Control size. `xs` (24) and `"28"` are the two dense text sizes, for admin toolbars, table rows and filter-pill rows. `iconSm` / `icon` / `iconLg` are square icon buttons whose side length matches the text size of the same name. The dense end has three more icon sizes — `iconXs` (20), `icon24` (24) and `icon28` (28) — each pinned to one row scale (see the table below). |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
 | muted | `boolean` | `false` | Emphasis step: the resting color drops one level to the secondary gray and returns to the tone's own color on hover. **Only effective on `ghost`, `link` and `outline`** (see "The muted emphasis step"). |
+| dashed | `boolean` | `false` | Stroke step: a dashed border, meaning "this slot is empty, put something in it". **Only effective on `outline` and `soft`** (see "The dashed stroke step"). |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | type | `"button" \| "submit" \| "reset"` | `"button"` | **Defaults to `button` rather than the native `<button>` default of `submit`**, so a helper button inside a form does not submit it when `type` is omitted. Write `type="submit"` explicitly on submit buttons. |
 | ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled`. |
@@ -118,6 +119,29 @@ Three boundaries:
 - **Only effective on `ghost`, `link` and `outline`.** On `solid` or `soft` it adds no class at all and logs one `warnOnce` in development - a prop that silently does nothing is harder to track down than an error. Those two pair their background with their foreground, and dropping the foreground alone would produce combinations that fail contrast.
 - **It is opt-in and changes no default.** A `ghost` without `muted` is still body black, so existing call sites do not move by a pixel. Row actions like "View" or "Reload" are **normal emphasis** and belong in body black; only genuinely secondary affordances take `muted`.
 - **It is not a sixth `tone`.** `tone` is the semantic-color SSOT shared by 29 components, while muted is an **emphasis level**, not a hue. Folding it into `tone` would force `solid` and `soft` to answer "what is a muted fill?" - and a `bg-muted` fill simply reads as disabled.
+
+## The dashed stroke step
+
+In an admin app a dashed border is not decoration, it is a shape with a fixed meaning: **"this slot is empty, put something in it"**. A solid border says "this is a clickable box"; a dashed one says "there is nothing here yet" -- and neither can stand in for the other. Drawing an "add a row" entry point with a solid border turns it from "the table can still grow" into "yet another action button", competing for attention with the real actions on the same row (#270).
+
+Each of the two steps covers one kind of empty slot:
+
+```tsx
+{/* No fill: an upload chip on a table row that has no evidence attached yet */}
+<Button variant="outline" size="xs" dashed>Upload</Button>
+
+{/* Tinted: the add-row entry at the end of a table, dashed across the full width */}
+<Button variant="soft" dashed block>+ Add a unit manually</Button>
+```
+
+- `outline dashed` -- **changes the stroke only**; the border colour still follows `tone` (`tone="danger"` stays red). Product code therefore never has to restate the tone table just to get a dashed edge.
+- `soft dashed` -- `soft` has no border, so this step **adds** one in the matching colour, giving the complete empty-slot shape: tinted semantic fill, dashed border, semantic text. The border uses 40% of `currentColor`, so all six tones share one rule; the 40% is deliberate, because a dash as strong as the text reads as a solid box.
+
+Three boundaries:
+
+- **Only effective on `outline` and `soft`.** On `solid`, `ghost` and `link` (including the default `solid` when no `variant` is passed) it adds no class at all, and development builds log a `warnOnce` naming it -- same reasoning as `muted`, since a silently inert prop is harder to track down than an error. `ghost` has no border to convert, and the solid fill of `solid` already contradicts "this is empty".
+- **Orthogonal to `tone` and `muted`.** The dash is a **stroke**; colour comes from `tone` and emphasis from `muted`, and the three never overlap: `outline dashed muted` is "keep the dashed border, drop the text one level".
+- **Not a sixth variant.** As a variant it would have to restate every existing `outline` tone × muted combination in new `compoundVariants`, when the only difference between them is one `border-style`. Same reasoning as `muted` (#211).
 
 ## Inheriting the container color with `tone="current"`
 
