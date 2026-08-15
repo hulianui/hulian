@@ -8,6 +8,7 @@
 // recharts 引擎（squarify 布局）+ 瑚琏皮肤：格子色走 chart token，格内文字按尺寸取舍
 // （放不下就不画，见 treemap-label）。单层，不做层级下钻 —— 消费场景是「点一格钻到列表页」，
 // 钻取语义由 onItemClick 交给业务侧。
+import { memo } from "react";
 import { ResponsiveContainer, Tooltip, Treemap as ReTreemap } from "recharts";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
@@ -99,7 +100,7 @@ function TreemapCell({
   );
 }
 
-export function Treemap({
+function TreemapImpl({
   data,
   height = 280,
   className,
@@ -140,3 +141,10 @@ export function Treemap({
     </div>
   );
 }
+
+TreemapImpl.displayName = "Treemap";
+
+// 稳定父更新时整棵子树 bail out —— 与 Funnel/Button/Checkbox/Chip 同一处方（性能门禁的
+// avoidable-render 规则实测报到 14 次白跑）。recharts 的 squarify 布局与 391 个格子的
+// SVG 不该跟着无关的父级重算。
+export const Treemap = memo(TreemapImpl);

@@ -14,6 +14,7 @@ vi.mock("recharts", async (importOriginal) => {
 });
 
 import { Treemap } from "./treemap";
+import { expectMemoSkipsSubtree } from "../../test/memo-guard";
 
 afterEach(cleanup);
 
@@ -73,5 +74,14 @@ describe("Treemap 点击钻取（#276）", () => {
   it("不传 onItemClick 时不给指针手型（免得看着能点其实不能）", () => {
     const { container } = render(<Treemap data={data} />);
     expect(container.querySelectorAll("g.cursor-pointer").length).toBe(0);
+  });
+});
+
+describe("Treemap 渲染跳过", () => {
+  // 回归护栏：Treemap 若被改回普通函数组件（去掉 memo），这条立刻红。
+  // 性能门禁的 avoidable-render 实测报过 14 次白跑 —— squarify 布局与整棵 SVG
+  // 不该跟着无关的父级重算。
+  it("稳定父更新时跳过树图子树", async () => {
+    await expectMemoSkipsSubtree(() => <Treemap data={data} />);
   });
 });
