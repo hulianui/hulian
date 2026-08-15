@@ -15,6 +15,69 @@
   },
   {
     "pkg": "@hulianui/ui",
+    "version": "0.47.0",
+    "date": null,
+    "entries": [
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 `ComposedChart`（双 Y 轴 + 柱线混排），笛卡尔各图种补 `referenceLines`\n\n一个类目轴上同时画柱与线、各自吃一条 Y 轴，是 echarts 看板的常规版式：销售额（¥ 十万级）\n配订单数（百级）、新增会员配累计会员、帕累托的柱配累计占比线。库里 Area/Bar/Line 都是\n单轴单图种，迁移时只能上下拆成两块图共用同一份 x 数据 —— 一屏占高翻倍，且两块图的 hover\n不联动（#274）。\n\n**做成新组件而不是给 `BarChart` 加 `series.type`**：那会得到一个「渲染折线的柱状图」，\n组件名与它画出来的东西对不上，文档也没法写。双量纲本身就该有个名字，echarts 用\n`yAxisIndex`、recharts 用 `ComposedChart`，业界口径一致。\n\n```tsx\n<ComposedChart\n  data={pareto}\n  xKey=\"sku\"\n  series={[\n    { key: \"amount\", label: \"销售额\", type: \"bar\" },\n    { key: \"cumulative\", label: \"累计占比\", type: \"line\", axis: \"right\" },\n  ]}\n  referenceLines={[\n    { y: 80, label: \"80%\", axis: \"right\" },\n    { y: 95, label: \"95%\", axis: \"right\" },\n  ]}\n  leftAxisLabel=\"销售额\"\n  rightAxisLabel=\"累计占比\"\n/>\n```\n\n`referenceLines`（对标 echarts 的 `markLine`）同时给到 `AreaChart` / `BarChart` / `LineChart`：\n目标线、均值线、帕累托的 80/95 线。线色缺省取 `--color-muted-foreground` 而不是某个\n`chart-N` —— 它不是一条数据，抢了序列的色相反而会被读成「第 N 条序列」。\n\n`stacked` 在组合图里只对**同轴同图种**的柱成立：两根轴的量纲不同，把它们相加得到的是\n没有意义的数，所以堆叠分组按轴隔开。",
+        "parityId": "chart-composed-reference-lines"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "图表补数据点点击 `onPointClick`：echarts 看板的点图钻取终于迁得过来\n\n`chart.on('click', params => 钻取)` 是 echarts 后台看板的标准交互：点趋势图某天开当日明细\n抽屉、点饼图某分类带条件跳列表。库里 Area/Bar/Line/Pie/Radial 都不透出数据点级点击，\n迁移时只能把钻取改成图卡右上角的「查看明细 →」，丢掉「带着点中的那个数据点的条件去钻」\n那半截（#275）。\n\n```tsx\n<BarChart\n  data={daily}\n  series={[{ key: \"count\" }]}\n  xKey=\"date\"\n  onPointClick={({ datum }) => openDetail(datum.date)}\n/>\n```\n\n笛卡尔各图种的命中判据取 recharts 的「当前活跃类目」，**与 tooltip 同源** —— 也就是说\n只要 tooltip 亮了，点下去就一定有回调，不必精确点中 2px 的折线；点在画布空白或坐标轴上\n不触发（回一个「点了但不知道点了什么」的事件，只会逼消费方在钻取里写防御式判空）。\n`seriesKey` 标注为**不保证有值**：笛卡尔图默认整根类目轴共享 tooltip，那时 recharts 并不\n认为某一条序列被单独命中。\n\n`PieChart` / `RadialChart` 走扇区级 onClick，精确到片，回调形状是 `{ datum, index }` ——\n一片就是一个数据点，不存在序列的概念。\n\n只透事件不管路由：跳页、开抽屉、带 query 这些钻取语义留在业务侧。",
+        "parityId": "chart-point-click"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`Safari` / `Chrome` 拟物壳补 `headerExtra` 槽，内容区接上高度链：不再只服务截图\n\n两件拟物壳此前只按「包截图 / 落地页配图」设计，遇到**活内容**场景（Electron 桌面壳里用\n它包住原生 `WebContentsView`，DOM 里留一块 viewport 量几何喂给主进程 `setBounds`）卡在两处，\n都不是消费侧能绕的（#278）：\n\n- **顶栏右端的 48px 占位是写死的空 `<div>`**。它的存在理由是让地址胶囊相对红绿灯居中对称，\n  完全正确 —— 但那个位置正是浏览器工具入口该住的地方（Safari 本尊右上角放的就是分享/下载）。\n  现在开成 `headerExtra` 槽：**不传时该格逐字节保持原样**，传了就让出来，宽度下限仍锁在\n  占位宽（内容窄于它对称性完全保持，宽于它该格随内容生长 —— 宁可胶囊偏一点，也不裁掉按钮）。\n- **内容区那层 div 不在高度链上**，消费方既够不着也改不了，`h-full` 的子节点实际高度是 0。\n  现在根是列向 flex、内容区 `min-h-0 flex-1`，「壳撑满父容器、内容吃掉顶栏之外的剩余高度」\n  只要在根上给高度即可。\n\n```tsx\n<div style={{ height: 500 }}>\n  <Safari url=\"zwfw.example.gov.cn\" className=\"h-full\" headerExtra={<DownloadButton />}>\n    <div ref={viewportRef} className=\"h-full\" />\n  </Safari>\n</div>\n```\n\n截图场景零改动：auto 高度的列向 flex 容器仍按内容定高。「`min-h-0` 会不会让它塌成 0」是这个\n改法唯一值得担心的地方，已在 Chromium 实测排除（两种写法都是 162px），所以没有为它新增\n`fill` 开关。`Chrome` 同构一并补（占位是 `w-6`）。",
+        "parityId": "device-shell-live-content"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`MenuItem` 补 `render`：导航型菜单项终于能渲染成真 `<a>` / Next `<Link>`\n\n`MenuItemProps` 是封闭接口，唯独缺 `render` —— 同组件的 `MenuTrigger` 有，`Button` /\n`NavMenuItem` / `SidebarMenuButton` 也都有（#273）。这是**纯类型缺口**：`MenuItem` 本来就把\nprops 摊给 `BaseMenu.Item`，值一直能到底，挡住的只有 `.d.ts`。\n\n差别不是写法偏好。退回 `onClick` + `router.push` 会丢掉一整片**只有真 `<a href>` 才有的\n浏览器行为**：中键点击、Cmd/Ctrl+点击开新标签、右键「在新标签页中打开」、悬停时状态栏的\nhref 预览。后台系统里「设置里这一项我想另开一个标签对着看」是日常操作，劫持 click 的一方\n得把这些逐条补回来，漏一条用户就发现「这个菜单不能新标签打开」。\n\n```tsx\n<MenuItem render={<Link href=\"/settings/roles\" />}>角色管理</MenuItem>\n```\n\n`MenuCheckboxItem` / `MenuRadioItem` / `MenuSubTrigger` 不加：它们的语义是「切一个状态」\n「展开下一级」，不是「去一个地方」。\n\n顺带更正一条记录：#239 说 `BreadcrumbItem` 是「库内唯一接不上 Next Link 的导航件」，\n当时漏了 `MenuItem`，它是第二个。",
+        "parityId": "menu-item-render"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`DrawerContent` / `DialogContent` 补无障碍名的逃生口与 `extra` 槽；`DialogContent.title` 由必填改为可选\n\n铺满型抽屉（`className=\"p-0 [--hl-overlay-pad:0px]\"`）的可见 header 常常是消费方自己画的\n一整行控件（标题 + 徽标 + 若干按钮），而给抽屉命名的唯一途径 `title` 渲染成 `<h2>`：\n`<h2>` 只收 phrasing content，塞一行控件是非法嵌套；更要命的是 `aria-labelledby` 指向整个\n`<h2>`，读屏念出的对话框名字会变成「通知 2 条未读 全部已读」。不用 `title` 也不成立 ——\nBase UI 的 `aria-labelledby` 只来自 `Dialog.Title`，没有它就是 `undefined` 且不回落到任何东西，\n于是一个模态浮层彻底没有名字（#272）。\n\n三条一起补：\n\n- **`aria-label` / `aria-labelledby` 透传**到 popup。不传 `title` 时的唯一命名手段，\n  铺满型抽屉自此不必再渲一个 `sr-only` 的假标题换名字。\n- **`extra` 槽**（形状同 `CardHeader.extra`）：标题只放标题，按钮/徽标/计数放这里，\n  组件负责排成一行并给内置关闭按钮让位。它是标题的**兄弟**而不是子节点，所以不进无障碍名。\n- **`titleClassName`**：`descriptionClassName` 早就有，标题这侧一直缺。\n\n`DialogContent.title` 同时由必填改为可选。原先的「必填」并不真的保证有名字 —— `title={null}`\n一样过类型检查，渲染出的是个空 `<h2>`、名字是空串。保证换成运行时告警：`title` /\n`aria-label` / `aria-labelledby` **三者全无**时开发期打一条 warn，这比类型上的必填更严。\n\n```tsx\n// 标题 + 少量操作：用 extra\n<DrawerContent title=\"通知\" extra={<Button variant=\"ghost\" size=\"sm\">全部已读</Button>} />\n\n// 铺满型：header 整块自己画，名字走 aria-label\n<DrawerContent aria-label=\"通知\" showClose={false} className=\"gap-0 p-0 [--hl-overlay-pad:0px]\">\n  <div className=\"flex items-center justify-between border-b px-4 py-3\">…</div>\n</DrawerContent>\n```",
+        "parityId": "overlay-accessible-name-extra"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`Pagination` 补「每页条数」切换档：`pageSizeOptions` + `onPageSizeChange`（对标 el-pagination 的 `page-sizes`）\n\n原先 `pageSize` 只参与「由 totalItems 算总页数」，既没有 UI 档也没有对应回调，运营常用的\n「先切到 100/页 粗扫一遍再筛」在库里做不出来（#271）。切换器排在「共 N 条」之后、翻页之前，\n与 el-pagination 的默认 layout 一致，迁移过来的页面视觉顺序不变。\n\n**页码归位由组件负责，不交给每个消费方各猜一套**：给了 `totalItems` 时按新页长重算总页数，\n当前页越界就再补发一次 `onPageChange`，夹到**新的末页**而不是回第 1 页 —— 用户是「粗扫完再细看」，\n把他扔回开头比停在最后一页更远离原位置。只给 `total`（总页数）时算不出新页数，不补发。\n\n```tsx\n<Pagination\n  page={page}\n  totalItems={5151}\n  pageSize={pageSize}\n  onPageChange={setPage}\n  pageSizeOptions={[20, 50, 100]}\n  onPageSizeChange={setPageSize}\n  showTotal\n/>\n```\n\n两个 prop 缺一即静默不渲染切换器（只给档等于切了没人收），与 `showTotal` 同一口径。\n切换器与 `ProTable` 底栏那个是同一份实现，外观、文案、无障碍名三处一致。",
+        "parityId": "pagination-page-size-options"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`RadarChart` 补逐轴满量程 `axisMax`：量纲差几个数量级的多维对比图不必再靠业务侧预处理\n\n销售额（十万级）/ 订单数（百级）/ 客单价（百级）/ 会员数（千级）/ 退货率（0–100）五根轴\n放一张雷达，单一刻度会把量纲小的轴全压成靠近圆心的一个点 —— 图还在，形状对比没了。\necharts 的 `radar.indicator` 每根轴可配独立 `max`，正是为此（#277）。\n\n```tsx\n<RadarChart\n  data={dims}\n  xKey=\"dim\"\n  series={[\n    { key: \"hubin\", label: \"湖滨店\" },\n    { key: \"xinjiekou\", label: \"新街口店\" },\n  ]}\n  axisMax={{ 销售额: 500000, 订单数: 800, 客单价: 600, 会员数: 4000, 退货率: 100 }}\n/>\n```\n\n**tooltip 仍显示原始值** —— 自己在业务侧先归一再喂进来也能得到同样的形状，但 tooltip 里\n就只剩归一值，运营看到 63.2 得自己换算回 31.6 万。这正是这条缺口里最容易被忽略的那半截。\n\n某个维度没在 `axisMax` 里给出时退回「该维度在当前数据里的最大值」并在开发期告警：混着归一\n和不归一才是最糟的结果，而且错得不显眼 —— 那根轴会莫名其妙地贴着圆心或顶满外环。\n开启 `axisMax` 后半径轴刻度默认关闭（0–100 的归一刻度没有意义），需要时显式传 `radiusAxis`。\n\n归一数学抽成纯函数 `normalizeRadarData` 带单测（整除边界、0 条、非法量程、非数字单元格）。",
+        "parityId": "radar-axis-max"
+      },
+      {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "新增 `Treemap` 矩形树图：一组扁平数据按 value 占面积铺满，「谁占大头」一眼可见\n\n50 家门店按会员数、各渠道按销售额这类「占比分布」，此前只能退化成横向条形列表：\n数据一个不少，但「面积即占比」那半截没了 —— 前三名和第四十名的差距要靠读数字才能感到（#276）。\n\nrecharts 的 squarify 布局 + 瑚琏 chart token 皮肤，`onItemClick` 做钻取，`valueFormat`\n同时管格内文字与 tooltip（不必两处各写一套）。\n\n```tsx\n<Treemap\n  data={stores}\n  showValue\n  onItemClick={({ datum }) => router.push(`/members?store=${datum.name}`)}\n/>\n```\n\n**长尾项的名字会不画出来，这是设计不是 bug**：格子大小由数据决定，占比小的那批必然小到\n放不下任何字；放不下还硬画得到的是一片互相压叠的碎字（SVG 的 `text` 不会被 `rect` 裁掉，\n溢出直接盖在邻格上）。取舍规则抽成纯函数 `treemapLabelFit` 带单测，判据是「减去内边距后\n宽高都够不够」。\n\n单层，不做层级下钻：多层树图的交互（点进去、面包屑返回）是另一个组件的量级，而消费场景里\n的「钻取」实际是「跳到另一个页面」，那由 `onItemClick` 交给业务侧。",
+        "parityId": "treemap"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.46.0",
     "date": null,
     "entries": [

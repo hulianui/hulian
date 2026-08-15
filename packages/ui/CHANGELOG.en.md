@@ -1,5 +1,245 @@
 # @hulianui/ui
 
+## 0.47.0
+
+### Minor Changes
+
+- New `ComposedChart` (dual Y axes with mixed bars and lines); Cartesian charts gain `referenceLines` <!-- parity-id: chart-composed-reference-lines -->
+
+  Drawing bars and a line on one category axis, each reading its own Y axis, is standard layout in
+  echarts dashboards: revenue (hundreds of thousands) with order count (hundreds), new members with
+  cumulative members, Pareto bars with a cumulative-share line. Area/Bar/Line were single-axis and
+  single-mark, so migrations had to split one chart into two stacked charts sharing the same x data --
+  double the vertical space, and the two halves do not share hover (#274).
+
+  **A new component rather than a `series.type` on `BarChart`**: the latter yields "a bar chart that
+  draws lines", whose name no longer matches what it renders and which cannot be documented honestly.
+  Two units in one chart deserves its own name; echarts calls it `yAxisIndex`, recharts calls it
+  `ComposedChart`, and the industry agrees.
+
+  ```tsx
+  <ComposedChart
+    data={pareto}
+    xKey="sku"
+    series={[
+      { key: "amount", label: "Revenue", type: "bar" },
+      { key: "cumulative", label: "Cumulative share", type: "line", axis: "right" },
+    ]}
+    referenceLines={[{ y: 80, label: "80%", axis: "right" }, { y: 95, label: "95%", axis: "right" }]}
+    leftAxisLabel="Revenue"
+    rightAxisLabel="Cumulative share"
+  />
+  ```
+
+  `referenceLines` (matching echarts' `markLine`) also lands on `AreaChart` / `BarChart` / `LineChart`:
+  target lines, average lines, the 80/95 lines of a Pareto chart. The default line color is
+  `--color-muted-foreground` rather than a `chart-N`: a reference line is not data, and borrowing a
+  series hue makes it read as "series N".
+
+  In a composed chart `stacked` only applies within the same axis and the same mark type: the two axes
+  carry different units, so adding them produces a meaningless number, and stack groups are kept
+  separate per axis.
+
+- Charts gain data-point clicks via `onPointClick`: echarts-style drill-down finally migrates <!-- parity-id: chart-point-click -->
+
+  `chart.on('click', params => drillDown)` is the standard interaction in echarts dashboards: click a
+  day on a trend chart to open that day's detail drawer, click a pie slice to open a filtered list.
+  Area/Bar/Line/Pie/Radial exposed no data-point click, so migrations degraded drill-down into a
+  "View details →" link in the card header, losing the "carry the clicked point's condition into the
+  next screen" half of it (#275).
+
+  ```tsx
+  <BarChart data={daily} series={[{ key: "count" }]} xKey="date"
+    onPointClick={({ datum }) => openDetail(datum.date)} />
+  ```
+
+  Cartesian charts detect the hit through recharts' active category, **the same rule the tooltip uses**:
+  if the tooltip is showing, a click always fires, and there is no need to hit a 2px line exactly.
+  Clicks on empty canvas or on an axis do not fire -- emitting a "something was clicked but we do not
+  know what" event only forces defensive null checks into every drill-down handler. `seriesKey` is
+  documented as **not guaranteed**: with the default shared tooltip, recharts does not consider any
+  single series to be hit.
+
+  `PieChart` / `RadialChart` use per-sector clicks with a `{ datum, index }` payload -- a slice *is* a
+  data point, so there is no series to report.
+
+  The component emits the event and nothing else: navigation, drawers, and query parameters stay in
+  application code.
+
+- `Safari` / `Chrome` device shells gain a `headerExtra` slot and put their content area on the height chain: no longer screenshot-only <!-- parity-id: device-shell-live-content -->
+
+  Both shells were designed purely to frame screenshots. A **live content** case -- an Electron desktop
+  shell wrapping a native `WebContentsView`, with a DOM viewport measured and fed to the main process
+  via `setBounds` -- hit two walls, neither of which application code could work around (#278):
+
+  - **The 48px spacer at the trailing edge of the chrome was a hardcoded empty `<div>`.** Its reason to
+    exist -- keeping the address capsule centered relative to the traffic lights -- is entirely correct,
+    but that spot is exactly where a browser tool entry belongs (Safari itself puts share and download
+    there). It is now the `headerExtra` slot: **omitted, the cell stays byte-for-byte as it was**;
+    provided, the cell is handed over with its width floored at the spacer width (narrower content keeps
+    the symmetry exactly, wider content grows the cell -- better an off-center capsule than a clipped
+    button).
+  - **The content area was not on the height chain**, unreachable and unmodifiable from application code,
+    so an `h-full` child resolved to zero height. The root is now a column flex container and the content
+    area is `min-h-0 flex-1`, so "shell fills its parent, content takes the remaining height" needs only
+    a height on the root.
+
+  ```tsx
+  <div style={{ height: 500 }}>
+    <Safari url="zwfw.example.gov.cn" className="h-full" headerExtra={<DownloadButton />}>
+      <div ref={viewportRef} className="h-full" />
+    </Safari>
+  </div>
+  ```
+
+  Screenshot usage is unchanged: an auto-height column flex container is still sized by its content.
+  "Does `min-h-0` collapse it to zero?" was the one real risk in this approach and was ruled out by
+  measurement in Chromium (both forms render 162px), so no `fill` switch was added for it. `Chrome`
+  gets the same treatment (its spacer is `w-6`).
+
+- `MenuItem` gains `render`: navigation items can finally be real `<a>` / Next `<Link>` elements <!-- parity-id: menu-item-render -->
+
+  `MenuItemProps` was a closed interface missing only `render` -- the same component's `MenuTrigger`
+  has it, and so do `Button` / `NavMenuItem` / `SidebarMenuButton` (#273). This was a **pure type gap**:
+  `MenuItem` already spreads its props onto `BaseMenu.Item`, so the value always reached the bottom;
+  only the `.d.ts` stood in the way.
+
+  This is not a stylistic preference. Falling back to `onClick` + `router.push` discards a whole set of
+  behaviors **only a real `<a href>` has**: middle-click, Cmd/Ctrl-click to open in a new tab, the
+  "Open link in new tab" context menu, and the href preview in the status bar on hover. In an admin
+  console "I want this settings page open in a second tab" is routine, and whoever hijacks the click
+  has to reimplement each of those -- missing one reads to users as "this menu can't be opened in a new tab".
+
+  ```tsx
+  <MenuItem render={<Link href="/settings/roles" />}>Roles</MenuItem>
+  ```
+
+  `MenuCheckboxItem` / `MenuRadioItem` / `MenuSubTrigger` do not get it: they mean "toggle a state" or
+  "open the next level", not "go somewhere".
+
+  A correction to the record: #239 called `BreadcrumbItem` "the only navigation component in the library
+  that cannot take a Next Link". It missed `MenuItem`, which is the second.
+
+- `DrawerContent` / `DialogContent` gain an accessible-name escape hatch and an `extra` slot; `DialogContent.title` becomes optional <!-- parity-id: overlay-accessible-name-extra -->
+
+  An edge-to-edge drawer (`className="p-0 [--hl-overlay-pad:0px]"`) usually has a visible header drawn
+  by application code -- a row of controls (title + badge + a couple of buttons). The only way to name
+  the drawer was `title`, which renders an `<h2>`: an `<h2>` accepts phrasing content only, so a control
+  row inside it is invalid nesting, and worse, `aria-labelledby` points at the whole `<h2>`, so screen
+  readers announce the dialog as "Notifications 2 unread Mark all read". Dropping `title` does not work
+  either -- Base UI derives `aria-labelledby` from `Dialog.Title` alone, and without it the value is
+  `undefined` with no fallback, leaving a modal surface with no name at all (#272).
+
+  Three additions:
+
+  - **`aria-label` / `aria-labelledby` pass through** to the popup. The only way to name a drawer with
+    no `title`, so edge-to-edge drawers no longer need an `sr-only` placeholder heading.
+  - **An `extra` slot** (shaped like `CardHeader.extra`): the title stays a title and buttons, badges,
+    and counts go here; the component lays out the row and yields room for the built-in close button.
+    It is the title's **sibling**, not its child, so it never enters the accessible name.
+  - **`titleClassName`** -- `descriptionClassName` has existed all along; the title side was missing.
+
+  `DialogContent.title` also becomes optional. The old "required" never actually guaranteed a name:
+  `title={null}` type-checks and renders an empty `<h2>` with an empty-string name. The guarantee moves
+  to a runtime warning instead -- supplying **none** of `title` / `aria-label` / `aria-labelledby` logs a
+  development warning, which is stricter than the type ever was.
+
+  ```tsx
+  // Title plus a couple of actions: use extra
+  <DrawerContent title="Notifications" extra={<Button variant="ghost" size="sm">Mark all read</Button>} />
+
+  // Edge-to-edge: draw the whole header yourself, name it with aria-label
+  <DrawerContent aria-label="Notifications" showClose={false} className="gap-0 p-0 [--hl-overlay-pad:0px]">
+    <div className="flex items-center justify-between border-b px-4 py-3">…</div>
+  </DrawerContent>
+  ```
+
+- `Pagination` gains a page-size switcher: `pageSizeOptions` + `onPageSizeChange` (matching el-pagination's `page-sizes`) <!-- parity-id: pagination-page-size-options -->
+
+  `pageSize` only ever fed "derive the page count from totalItems"; there was no UI step and no matching
+  callback, so the common operator workflow -- switch to 100 per page, skim, then filter -- could not be
+  built with the library (#271). The switcher sits after the total and before the pager, matching
+  el-pagination's default layout, so migrated pages keep their visual order.
+
+  **Page repositioning is the component's job, not something every consumer guesses at**: given
+  `totalItems`, it recomputes the page count for the new page size and, when the current page falls
+  outside it, fires `onPageChange` again clamping to the **new last page** rather than resetting to page
+  1 -- the user was skimming before narrowing down, and throwing them back to the start is further from
+  where they were than the last page is. With only `total` (a page count) the new page count cannot be
+  derived, so nothing is fired.
+
+  ```tsx
+  <Pagination
+    page={page}
+    totalItems={5151}
+    pageSize={pageSize}
+    onPageChange={setPage}
+    pageSizeOptions={[20, 50, 100]}
+    onPageSizeChange={setPageSize}
+    showTotal
+  />
+  ```
+
+  Either prop alone renders nothing (options without a callback means the change has nowhere to go),
+  matching how `showTotal` behaves. The switcher is the same implementation as the one in the `ProTable`
+  footer, so appearance, copy, and accessible name match in both places.
+
+- `RadarChart` gains per-axis full scale via `axisMax`: multi-dimension comparisons no longer need application-side preprocessing <!-- parity-id: radar-axis-max -->
+
+  Revenue (hundreds of thousands) / orders (hundreds) / average order value (hundreds) / members
+  (thousands) / return rate (0–100) on one radar: a single scale flattens the small-unit axes into a dot
+  near the center -- the chart is still there, the shape comparison is not. echarts' `radar.indicator`
+  configures a `max` per axis for exactly this reason (#277).
+
+  ```tsx
+  <RadarChart
+    data={dims}
+    xKey="dim"
+    series={[{ key: "hubin", label: "Hubin" }, { key: "xinjiekou", label: "Xinjiekou" }]}
+    axisMax={{ Revenue: 500000, Orders: 800, "Avg order": 600, Members: 4000, "Return rate": 100 }}
+  />
+  ```
+
+  **The tooltip still shows the original values.** Normalizing in application code produces the same
+  shape, but then the tooltip carries only normalized numbers and the reader has to convert back. That is
+  the half of this gap most easily overlooked.
+
+  An axis missing from `axisMax` falls back to "the largest value that axis has in the current data" and
+  logs a development warning: mixing normalized and non-normalized axes is the worst outcome, and it
+  fails invisibly -- that axis silently hugs the center or pins to the outer ring. Enabling `axisMax`
+  also turns the radius-axis ticks off by default (0–100 normalized ticks carry no meaning); pass
+  `radiusAxis` explicitly to bring them back.
+
+  The normalization math is the unit-tested pure function `normalizeRadarData` (exact-division
+  boundaries, zero rows, invalid scales, non-numeric cells).
+
+- New `Treemap`: a flat dataset tiled by value so the biggest contributors read at a glance <!-- parity-id: treemap -->
+
+  Distributions such as 50 stores by member count or channels by revenue previously degraded into a
+  horizontal bar list: no data is lost, but "area is share" goes with it -- the gap between the top three
+  and the fortieth has to be read off the numbers instead of seen (#276).
+
+  recharts' squarify layout with a Hulian chart-token skin, `onItemClick` for drill-down, and
+  `valueFormat` covering both the in-cell text and the tooltip so the two cannot drift apart.
+
+  ```tsx
+  <Treemap
+    data={stores}
+    showValue
+    onItemClick={({ datum }) => router.push(`/members?store=${datum.name}`)}
+  />
+  ```
+
+  **Labels disappear on long-tail cells by design, not by accident**: cell size follows the data, so the
+  small share of items is inevitably too small to fit any text, and drawing it anyway produces a mat of
+  overlapping fragments (SVG `text` is not clipped by its `rect`, so overflow paints over neighboring
+  cells). The rule is the unit-tested pure function `treemapLabelFit`, which asks whether width *and*
+  height still fit after padding.
+
+  Single level, no nested drill-down: multi-level treemap interaction (descend, breadcrumb back) is a
+  different component's worth of behavior, and in practice "drill down" means "navigate to another page",
+  which `onItemClick` hands to application code.
+
 ## 0.46.0
 
 ### Minor Changes
