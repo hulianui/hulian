@@ -9,6 +9,7 @@ export function Chrome({
   url = "hulian.design",
   title,
   imageSrc,
+  headerExtra,
   children,
   className,
   ...props
@@ -16,7 +17,11 @@ export function Chrome({
   return (
     <div
       {...props}
-      className={cn("overflow-hidden rounded-xl border border-hairline bg-surface shadow-lg", className)}
+      // flex flex-col + 内容区 flex-1：与 Safari 同一处改动（#278），理由见 safari.tsx。
+      className={cn(
+        "flex flex-col overflow-hidden rounded-xl border border-hairline bg-surface shadow-lg",
+        className,
+      )}
     >
       {/* 标签页条：红绿灯 + 单个激活标签 */}
       <div className="flex items-end gap-2 bg-bg px-3 pt-2">
@@ -55,10 +60,20 @@ export function Chrome({
           </svg>
           <span className="truncate">{url}</span>
         </div>
-        <div className="w-6 shrink-0" />
+        {/* 工具栏右端：同 Safari 的 headerExtra 槽，只是占位宽度按本壳的版式是 w-6
+            （左侧多了前进/后退/刷新三颗，占位窄一档）。 */}
+        <div
+          className={
+            headerExtra == null
+              ? "w-6 shrink-0"
+              : "flex min-w-6 shrink-0 items-center justify-end gap-1"
+          }
+        >
+          {headerExtra}
+        </div>
       </div>
-      {/* 内容区 */}
-      <div className="bg-bg">
+      {/* 内容区。min-h-0 flex-1 让活内容吃掉 chrome 之外的剩余高度（截图场景高度仍由内容决定）。 */}
+      <div className="min-h-0 flex-1 bg-bg">
         {imageSrc ? <img src={imageSrc} alt="" className="block w-full" /> : children}
       </div>
     </div>

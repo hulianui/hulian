@@ -7190,10 +7190,11 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, categoryAxisWidth, chartColor } from \"@hulianui/ui\"",
+        "import": "import { AreaChart, BarChart, ComposedChart, LineChart, PieChart, RadarChart, RadialChart, categoryAxisWidth, chartColor } from \"@hulianui/ui\"",
         "exports": [
           "AreaChart",
           "BarChart",
+          "ComposedChart",
           "LineChart",
           "PieChart",
           "RadarChart",
@@ -7203,7 +7204,13 @@
         ],
         "types": [
           "ChartProps",
+          "CartesianChartProps",
           "BarChartProps",
+          "ComposedChartProps",
+          "ComposedSeries",
+          "ChartPointClickInfo",
+          "ChartDatumClickInfo",
+          "ChartReferenceLine",
           "RadarChartProps",
           "ChartSeries",
           "ChartDatum",
@@ -7220,6 +7227,11 @@
         "preferred": "npm"
       },
       "files": [
+        {
+          "path": "components/hulianui/chart/chart-radar-axis.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/chart/chart-radar-axis.ts"
+        },
         {
           "path": "components/hulianui/chart/chart-theme.ts",
           "type": "registry:ui",
@@ -11359,6 +11371,64 @@
           "path": "components/hulianui/tree/tree.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/tree/tree.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "treemap",
+      "type": "registry:ui",
+      "title": "Treemap",
+      "description": "矩形树图 · 一组扁平数据按 value 占面积铺满矩形，「谁占大头」一眼可见 · recharts squarify 引擎 + chart token 皮肤 · 格内文字按格子尺寸自动取舍(放不下就不画·treema…",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/chart.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { Treemap, treemapLabelFit } from \"@hulianui/ui\"",
+        "exports": [
+          "Treemap",
+          "treemapLabelFit"
+        ],
+        "types": [
+          "TreemapProps",
+          "TreemapDatum",
+          "TreemapItemClickInfo"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/treemap/treemap.md",
+        "docLocal": "packages/ui/src/treemap/treemap.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/treemap/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/treemap/index.ts"
+        },
+        {
+          "path": "components/hulianui/treemap/treemap-label.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/treemap/treemap-label.ts"
+        },
+        {
+          "path": "components/hulianui/treemap/treemap.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/treemap/treemap.tsx"
+        },
+        {
+          "path": "components/hulianui/treemap/treemap.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/treemap/treemap.types.ts"
         }
       ]
     },

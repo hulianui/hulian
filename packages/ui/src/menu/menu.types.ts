@@ -1,4 +1,4 @@
-import type { MouseEventHandler, ReactNode } from "react";
+import type { MouseEventHandler, ReactElement, ReactNode } from "react";
 
 export interface MenuContentProps {
   children: ReactNode;
@@ -11,6 +11,20 @@ export interface MenuContentProps {
 export interface MenuItemProps {
   children?: ReactNode;
   onClick?: MouseEventHandler<HTMLElement>;
+  /**
+   * 渲染成另一个元素（Next `<Link>` / `<a>`），菜单项的 props 与 `role="menuitem"`、
+   * 键盘漫游一并合并进去（#273）。
+   *
+   * **导航型菜单项应当用它，而不是 `onClick` + `router.push`**：只有真 `<a href>` 才有
+   * 中键点击、Cmd/Ctrl+点击开新标签、右键「在新标签页中打开」、悬停时状态栏的 href 预览。
+   * 劫持 click 的一方得把这些原生行为一条条补回来，漏一条用户就发现「这个菜单不能新标签打开」。
+   *
+   * 只有 `MenuItem` 有：`MenuCheckboxItem` / `MenuRadioItem` / `MenuSubTrigger` 的语义是
+   * 「切一个状态」「展开下一级」而不是「去一个地方」。
+   *
+   * @example <MenuItem render={<Link href="/settings/roles" />}>角色管理</MenuItem>
+   */
+  render?: ReactElement;
   disabled?: boolean;
   /** 点击后是否关闭菜单。@default true */
   closeOnClick?: boolean;

@@ -1259,6 +1259,9 @@ export const scenarioLoaders = {
   "tree-select": async () =>
     (await import("@hulianui/ui-internal/tree-select/tree-select.showcase"))
       .treeSelectShowcase,
+  treemap: async () =>
+    (await import("@hulianui/ui-internal/treemap/treemap.showcase"))
+      .treemapShowcase,
   "true-focus": async () =>
     (await import("@hulianui/ui-internal/true-focus/true-focus.showcase"))
       .trueFocusShowcase,
@@ -5437,6 +5440,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/tree-select/index.ts",
+  },
+  treemap: {
+    id: "treemap",
+    scenarioId: "treemap/basic",
+    component: "Treemap",
+    entry: "@hulianui/ui/treemap",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/treemap/index.ts",
   },
   "true-focus": {
     id: "true-focus",

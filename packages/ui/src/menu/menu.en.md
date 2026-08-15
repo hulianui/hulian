@@ -34,6 +34,7 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 ### MenuItem
 | Name | Type | Default | Description |
 |------|------|------|------|
+| render | `ReactElement` | — | Render as another element (a Next `<Link>` or an `<a>`); the item's props, `role="menuitem"`, and keyboard roving all merge into it. **Use this for navigation items instead of `onClick` + `router.push`** — see "Navigation menu items". |
 | disabled | `boolean` | `false` | Whether the item is unavailable. |
 | closeOnClick | `boolean` | `true` | Whether selecting the item closes the menu. |
 | label | `string` | — | Text override used by keyboard type-ahead. |
@@ -222,6 +223,18 @@ A cascading submenu, which groups options by dimension and suits filter menus ho
 - `MenuSubTrigger` and `MenuSubContent` must share one `MenuSub`, and that `MenuSub` must sit inside a `MenuContent`. Replacing `MenuSubTrigger` with a `MenuItem` plus a hand-drawn arrow is an invisible mistake: it looks the same, but without `aria-haspopup` and `aria-expanded` screen reader users cannot tell the entry leads to another level.
 - Do not use `MenuContent side="right"` as a submenu panel. Inside a `MenuSub` it does render as one, because both are the same Portal/Positioner/Popup underneath, but the chevron, the `sideOffset`, and the parent item staying highlighted while expanded all become your job, and missing any one of them makes the submenu inconsistent with the rest of the library. `MenuSubContent` is the layer that pins those three down.
 - The menu ships with `max-h-[min(24rem,var(--available-height))] overflow-y-auto`: no visual difference when everything fits, internal scrolling once it does not. This is a library-level guarantee rather than something every consumer must remember, because the popup is fixed-positioned — whatever overflows the viewport is neither clickable nor reachable by page scroll, and it only shows up once the data grows (three items in development, forty in production). Override `max-h-*` through `className` for a different ceiling. `ContextMenu` behaves the same.
+
+### Navigation menu items
+
+An item that takes the user to another page should render as a real link via `render`, not `onClick` + `router.push`:
+
+```tsx
+<MenuItem render={<Link href="/settings/roles" />}>Roles</MenuItem>
+```
+
+This is not a style preference. A real `<a href>` carries a whole set of browser behaviors: middle-click, Cmd/Ctrl-click to open in a new tab, the "Open link in new tab" context menu, and the href preview in the status bar on hover. In an admin console, "I want this settings page open in a second tab" is routine. Whoever hijacks the click has to reimplement each of those, and missing one reads to users as "this menu can't be opened in a new tab".
+
+`MenuCheckboxItem` / `MenuRadioItem` / `MenuSubTrigger` have no `render`: they mean "toggle a state" or "open the next level", not "go somewhere".
 
 ## Related
 [Navbar](../navbar/navbar.md) · [BeianFooter](../beian-footer/beian-footer.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

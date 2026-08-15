@@ -270,6 +270,7 @@ export { codeReviewThreadShowcase } from "./code-review-thread/code-review-threa
 export { sankeyShowcase } from "./sankey/sankey.showcase";
 export { sparklineShowcase } from "./sparkline/sparkline.showcase";
 export { funnelShowcase } from "./funnel/funnel.showcase";
+export { treemapShowcase } from "./treemap/treemap.showcase";
 export { queueLaneShowcase } from "./queue-lane/queue-lane.showcase";
 export { fileTreeShowcase } from "./file-tree/file-tree.showcase";
 // 设计感背景批（复刻 react-bits/Aceternity·canvas + WebGL/ogl·吃 chart token）

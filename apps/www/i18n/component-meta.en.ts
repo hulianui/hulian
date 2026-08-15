@@ -790,6 +790,11 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Visualizes stage-by-stage quantities as a proportional conversion funnel.",
     keywords: ["funnel", "data-display", "collection"],
   },
+  treemap: {
+    shortName: "Treemap",
+    description: "Tiles a flat dataset into a rectangle with area proportional to value, so the biggest contributors read at a glance.",
+    keywords: ["treemap", "data-display", "collection"],
+  },
   "event-stream": {
     shortName: "EventStream",
     description: "Displays a live chronological stream of typed operational events.",

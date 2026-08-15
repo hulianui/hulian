@@ -36,6 +36,63 @@ export interface ChartProps<TDatum = Record<string, unknown>> {
   legendScroll?: boolean;
 }
 
+/**
+ * 数据点点击（#275）—— echarts 后台看板的标准钻取交互：点趋势图某天开当日明细、
+ * 点饼图某分类带条件跳列表。只透事件不管路由，钻取语义留给业务侧。
+ */
+export interface ChartPointClickInfo<TDatum> {
+  /** 被点中的那一行原始数据（就是 `data[index]`，不是 recharts 的内部形状）。 */
+  datum: TDatum;
+  /** 该行在 `data` 里的下标。 */
+  index: number;
+  /**
+   * 命中的序列 key。**不保证有值**：笛卡尔图的 tooltip 默认是「整根类目轴共享」的，
+   * 点在类目上时 recharts 并不认为某一条序列被单独命中，此时为 `undefined`。
+   * 需要区分序列的钻取请自己在 `datum` 上判断。
+   */
+  seriesKey?: string;
+}
+
+/** 扁平数据点（Pie/Radial）的点击信息：那一片就是一个数据点，不存在序列的概念。 */
+export interface ChartDatumClickInfo {
+  datum: ChartDatum;
+  index: number;
+}
+
+/**
+ * 笛卡尔三件（Area/Bar/Line）与 ComposedChart 共有的能力。
+ * 刻意不放进 `ChartProps`：那是 RadarChart 的基类，参考线与直角坐标是绑定的。
+ */
+export interface CartesianChartProps<TDatum = Record<string, unknown>> extends ChartProps<TDatum> {
+  /**
+   * 数据点点击回调（对标 echarts 的 `chart.on('click')`）。点在画布空白处或坐标轴上不触发。
+   *
+   * 命中判据是 recharts 的「当前活跃类目」，与 tooltip 同源 —— 也就是说**只要 tooltip 亮了，
+   * 点下去就一定有回调**，不需要精确点中 2px 的折线。
+   */
+  onPointClick?: (info: ChartPointClickInfo<TDatum>) => void;
+  /**
+   * 值轴参考线（对标 echarts 的 `markLine`）：帕累托的 80/95 线、均值线、目标线。
+   *
+   * `y` 是值轴上的位置；双轴图（ComposedChart）用 `axis` 指定挂在哪根轴上，默认 `"left"`。
+   * `color` 缺省取 `--color-muted-foreground`，可传语义色名（`"danger"` 等）。
+   */
+  referenceLines?: ChartReferenceLine[];
+}
+
+export interface ChartReferenceLine {
+  /** 值轴上的位置。 */
+  y: number;
+  /** 线上文案（如「80%」「目标」）。 */
+  label?: string;
+  /** 挂在哪根值轴上，仅双轴图有意义。@default "left" */
+  axis?: "left" | "right";
+  /** 线色，缺省 `--color-muted-foreground`；可传语义色名或任意 CSS 颜色。 */
+  color?: string;
+  /** 虚线段样式，缺省 `"4 4"`；传 `undefined` 之外的空串即实线。 */
+  dash?: string;
+}
+
 /** Radar 专属 */
 export interface RadarChartProps<TDatum = Record<string, unknown>> extends ChartProps<TDatum> {
   /**
@@ -47,10 +104,41 @@ export interface RadarChartProps<TDatum = Record<string, unknown>> extends Chart
    * @default true
    */
   radiusAxis?: boolean;
+  /**
+   * 每根角轴各自的满量程（#277）—— 键是角轴维度值（即 `data[i][xKey]`），值是该维度的 100% 对应的原始值。
+   *
+   * 不给它时雷达图是**单一刻度**：销售额（十万级）和退货率（0–100）放同一张图，
+   * 量纲大的轴会把其它轴全压成一个点，形状对比就没了。给了之后组件内部把每根轴按各自的
+   * 满量程归一，**tooltip 仍显示原始值**（这正是消费方自己在业务侧归一时丢掉的那半截）。
+   *
+   * 某个维度没在这里给出时，退回「该维度在当前 data 里的最大值」并在开发期告警 ——
+   * 混着归一和不归一才是最糟的结果。开启后半径轴刻度默认关闭（0–100 的归一刻度没有意义），
+   * 需要的话显式传 `radiusAxis`。
+   *
+   * @example axisMax={{ 销售额: 500000, 订单数: 800, 退货率: 100 }}
+   */
+  axisMax?: Record<string, number>;
+}
+
+/** ComposedChart 的序列：在 ChartSeries 之上多两维 —— 画成什么、吃哪根值轴。 */
+export interface ComposedSeries extends ChartSeries {
+  /** 该序列的图种。@default "bar" */
+  type?: "bar" | "line" | "area";
+  /** 该序列吃哪根值轴。@default "left" */
+  axis?: "left" | "right";
+}
+
+export interface ComposedChartProps<TDatum = Record<string, unknown>>
+  extends Omit<CartesianChartProps<TDatum>, "series"> {
+  series: ComposedSeries[];
+  /** 右轴标题（写在轴外侧）。左右轴各画各的量纲时，不标名字读者分不出哪条线读哪根轴。 */
+  rightAxisLabel?: string;
+  /** 左轴标题，语义同 `rightAxisLabel`。 */
+  leftAxisLabel?: string;
 }
 
 /** Bar 专属：横向柱状（layout=vertical） */
-export interface BarChartProps<TDatum = Record<string, unknown>> extends ChartProps<TDatum> {
+export interface BarChartProps<TDatum = Record<string, unknown>> extends CartesianChartProps<TDatum> {
   horizontal?: boolean;
   /**
    * horizontal 模式类目轴（Y 轴）宽度 px。默认按最长类目标签自适应
@@ -83,6 +171,11 @@ export interface PieChartProps {
   legend?: boolean | "top" | "bottom";
   /** 图例恒为单行 + 横向滚动，语义同 `ChartProps.legendScroll`。 @default false */
   legendScroll?: boolean;
+  /**
+   * 点中某一片时回调（#275）：点分类饼图某片带条件跳列表这类钻取。
+   * 只在扇区上触发，点在留白处不触发。
+   */
+  onPointClick?: (info: ChartDatumClickInfo) => void;
 }
 
 export type RadialChartProps = PieChartProps;

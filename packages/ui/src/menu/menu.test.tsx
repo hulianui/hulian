@@ -389,3 +389,40 @@ describe("MenuSub / MenuSubTrigger / MenuSubContent", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
+
+// #273：MenuItem 的 render 此前只缺类型 —— 值本来就能穿透到 BaseMenu.Item。
+// 这两条钉的是「穿透之后语义没退化」：链接是真 <a href>，role 与键盘漫游仍在。
+describe("MenuItem render（导航型菜单项 · #273）", () => {
+  it("render 成 <a>：拿到真 href，role=menuitem 不退化", () => {
+    render(
+      <Menu defaultOpen modal={false}>
+        <MenuTrigger render={<button>更多</button>} />
+        <MenuContent>
+          <MenuItem render={<a href="/settings/roles" />}>角色管理</MenuItem>
+        </MenuContent>
+      </Menu>,
+    );
+    const item = screen.getByText("角色管理");
+    expect(item.tagName).toBe("A");
+    expect(item.getAttribute("href")).toBe("/settings/roles");
+    expect(item.getAttribute("role")).toBe("menuitem");
+  });
+
+  it("render 成 <a> 后 onClick 仍然合并进去（两者可以并存）", () => {
+    const onClick = vi.fn();
+    render(
+      <Menu defaultOpen modal={false}>
+        <MenuTrigger render={<button>更多</button>} />
+        <MenuContent>
+          {/* 用片段 href：真路径会让 jsdom 打一条 "Not implemented: navigation" 噪音，
+              而本条验的是回调合并，不是导航目标（那条在上一个用例里验）。 */}
+          <MenuItem render={<a href="#roles" />} onClick={onClick}>
+            角色管理
+          </MenuItem>
+        </MenuContent>
+      </Menu>,
+    );
+    fireEvent.click(screen.getByText("角色管理"));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});

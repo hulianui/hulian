@@ -1,6 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart } from "../../../../packages/ui/src/chart/chart";
+import { AreaChart, BarChart, ComposedChart, LineChart, PieChart, RadarChart, RadialChart, } from "../../../../packages/ui/src/chart/chart";
 const data = [
     { month: "January", revenue: 42, orders: 168 },
     { month: "February", revenue: 55, orders: 142 },
@@ -15,6 +15,28 @@ const data = [
     { month: "November", revenue: 134, orders: 402 },
     { month: "December", revenue: 126, orders: 375 },
 ];
+const composedSeries = [
+    { key: "revenue", label: "Revenue (thousand yuan)", type: "bar" as const },
+    { key: "orders", label: "Order", type: "line" as const, axis: "right" as const },
+];
+const storeDims = [
+    { dim: "Revenue", hubin: 312000, xinjiekou: 186000 },
+    { dim: "Number of orders", hubin: 640, xinjiekou: 412 },
+    { dim: "Price per customer", hubin: 488, xinjiekou: 451 },
+    { dim: "Members", hubin: 3820, xinjiekou: 1980 },
+    { dim: "Return rate", hubin: 24, xinjiekou: 41 },
+];
+const storeSeries = [
+    { key: "hubin", label: "Hubin" },
+    { key: "xinjiekou", label: "Xinjiekou" },
+];
+const storeAxisMax = Object.fromEntries([
+    ["Revenue", 500000],
+    ["Number of orders", 800],
+    ["Price per customer", 600],
+    ["Members", 4000],
+    ["Return rate", 100],
+]);
 const series = [
     { key: "revenue", label: "Revenue (thousand yuan)" },
     { key: "orders", label: "Order" },
@@ -139,6 +161,33 @@ export const chartShowcase: ShowcaseSpec = {
         </div>),
         },
         {
+            title: "Dual Y axes",
+            description: "ComposedChart gives bars and lines their own value axis, so two series whose units differ by orders of magnitude can share one chart (matching echarts' dual axes).",
+            code: `<ComposedChart
+  data={data}
+  xKey="month"
+  series={[
+    { key: "revenue", label: "Revenue (k)", type: "bar" },
+    { key: "orders", label: "Orders", type: "line", axis: "right" },
+  ]}
+  leftAxisLabel="Revenue (k)"
+  rightAxisLabel="Orders"
+  legend
+/>`,
+            render: () => (<ComposedChart data={data} series={composedSeries} xKey="month" leftAxisLabel="Revenue (thousand yuan)" rightAxisLabel="Order" legend className={W}/>),
+        },
+        {
+            title: "Reference lines",
+            description: "referenceLines draws target lines, average lines, and the 80% line of a Pareto chart (matching echarts markLine).",
+            code: `<BarChart
+  data={data}
+  series={[{ key: "revenue", label: "Revenue (k)" }]}
+  xKey="month"
+  referenceLines={[{ y: 100, label: "Target" }]}
+/>`,
+            render: () => (<BarChart data={data} series={[{ key: "revenue", label: "Revenue (thousand yuan)" }]} xKey="month" referenceLines={[{ y: 100, label: "Target" }]} className={W}/>),
+        },
+        {
             title: "Radar chart",
             description: "Comparison of multi-dimensional capabilities, xKey is the dimension field, multi-sequence superposition.",
             code: `<RadarChart
@@ -148,11 +197,34 @@ export const chartShowcase: ShowcaseSpec = {
 />`,
             render: () => <RadarChart data={radarData} series={radarSeries} xKey="dim" className={W}/>,
         },
+        {
+            title: "Radar with per-axis full scale",
+            description: "axisMax gives every angle axis its own full scale, so shapes stay comparable across three orders of magnitude; the tooltip still shows the original values.",
+            code: `<RadarChart
+  data={dims}
+  series={[{ key: "hubin", label: "Hubin" }, { key: "xinjiekou", label: "Xinjiekou" }]}
+  xKey="dim"
+  axisMax={{ Revenue: 500000, Orders: 800, "Avg order": 600, Members: 4000, "Return rate": 100 }}
+/>`,
+            render: () => (<RadarChart data={storeDims} series={storeSeries} xKey="dim" axisMax={storeAxisMax} className={W}/>),
+        },
     ],
     controls: [
         { prop: "type", type: "select", options: [...TYPES], defaultValue: "area", label: "Chart Type" },
     ],
     states: [
+        {
+            name: "Dual Y axes (bars + line)",
+            render: () => (<ComposedChart data={data} series={composedSeries} xKey="month" legend className={W}/>),
+        },
+        {
+            name: "Reference line (target)",
+            render: () => (<BarChart data={data} series={[{ key: "revenue", label: "Revenue (thousand yuan)" }]} xKey="month" referenceLines={[{ y: 100, label: "Target" }]} className={W}/>),
+        },
+        {
+            name: "Per-axis full scale radar (axisMax)",
+            render: () => (<RadarChart data={storeDims} series={storeSeries} xKey="dim" axisMax={storeAxisMax} className={W}/>),
+        },
         {
             name: "Area Chart (Multiple Series)",
             render: () => <AreaChart data={data} series={series} xKey="month" className={W}/>,

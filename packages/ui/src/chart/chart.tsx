@@ -14,6 +14,8 @@ import {
   Cell,
   Radar,
   RadialBar,
+  ComposedChart as ReComposedChart,
+  ReferenceLine,
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
@@ -26,6 +28,8 @@ import {
 import { Dot } from "../dot/dot";
 import { cn } from "../lib/cn";
 import { resolveTone } from "../lib/tone";
+import { warnOnce } from "../lib/warn-once";
+import { RADAR_RAW, normalizeRadarData } from "./chart-radar-axis";
 import {
   chartColor,
   axisProps,
@@ -34,10 +38,14 @@ import {
   tooltipLabelStyle,
   polarAngleTick,
 } from "./chart-theme";
+import type { ReactNode } from "react";
 import type {
-  ChartProps,
+  CartesianChartProps,
   BarChartProps,
+  ComposedChartProps,
   RadarChartProps,
+  ChartPointClickInfo,
+  ChartReferenceLine,
   ChartSeries,
   ChartDatum,
   PieChartProps,
@@ -200,6 +208,69 @@ export function categoryAxisWidth(labels: unknown[], override?: number): number 
   return Math.min(160, Math.max(48, Math.ceil(longest) + 16));
 }
 
+// 数据点点击（#275）。判据取 recharts 的「当前活跃类目」，与 tooltip 同源 ——
+// 也就是说只要 tooltip 亮了点下去就一定有回调，不必精确点中 2px 的折线。
+// 反过来，点在画布空白或坐标轴上时 activeTooltipIndex 是 undefined，此时**不回调** ——
+// 回一个「点了但不知道点了什么」的事件，只会让消费方在钻取里写防御式判空。
+//
+// seriesKey 用 recharts 的 activeDataKey：笛卡尔图默认是整根类目轴共享 tooltip，
+// 那时它是 undefined（类型上也标了「不保证有值」）；Pie/Radial 走各自的扇区级 onClick，
+// 精确得多，不经过这里。
+function cartesianPointClickHandler<TDatum>(
+  data: TDatum[],
+  onPointClick?: (info: ChartPointClickInfo<TDatum>) => void,
+) {
+  if (!onPointClick) return undefined;
+  return (state: { activeTooltipIndex?: unknown; activeDataKey?: unknown }) => {
+    const index = state.activeTooltipIndex;
+    if (typeof index !== "number") return;
+    const datum = data[index];
+    if (datum === undefined) return;
+    const seriesKey = typeof state.activeDataKey === "string" ? state.activeDataKey : undefined;
+    onPointClick({ datum, index, seriesKey });
+  };
+}
+
+// 逐轴归一后的 tooltip：显示随行带走的原始值（RADAR_RAW），而不是画在图上的 0–100。
+// 取不到原始值时回落到归一值 —— 宁可显示一个数，也不要显示空白。
+function radarRawFormatter(
+  value: ReactNode,
+  name: ReactNode,
+  item: { dataKey?: unknown; payload?: Record<string, unknown> },
+): [ReactNode, ReactNode] {
+  const raw = item?.payload?.[RADAR_RAW] as Record<string, number> | undefined;
+  const key = typeof item?.dataKey === "string" ? item.dataKey : undefined;
+  const original = key != null ? raw?.[key] : undefined;
+  return [original ?? value, name];
+}
+
+// 参考线（#274）：帕累托的 80/95 线、均值线、目标线。虚线 + 端部标签，色缺省取 muted-foreground
+// 而不是某个 chart-N —— 它不是一条数据，抢了数据序列的色相反而会被读成「第 N 条序列」。
+function renderReferenceLines(lines: ChartReferenceLine[] | undefined, dualAxis: boolean) {
+  if (!lines?.length) return null;
+  return lines.map((line, i) => (
+    <ReferenceLine
+      key={`${line.axis ?? "left"}-${line.y}-${i}`}
+      y={line.y}
+      // 单轴图不给 YAxis 设 id，这里也不能传 yAxisId，否则 recharts 找不到轴、整条线不画。
+      yAxisId={dualAxis ? (line.axis ?? "left") : undefined}
+      stroke={resolveTone(line.color) ?? "var(--color-muted-foreground)"}
+      strokeDasharray={line.dash ?? "4 4"}
+      strokeWidth={1}
+      label={
+        line.label
+          ? {
+              value: line.label,
+              position: "insideTopRight",
+              fill: "var(--color-muted-foreground)",
+              fontSize: 11,
+            }
+          : undefined
+      }
+    />
+  ));
+}
+
 // recharts 引擎（坐标系/比例尺/路径）+ 瑚琏皮肤（SVG 色走 var(--color-chart-N)/token，明暗自适应）。
 export function AreaChart<TDatum>({
   data,
@@ -210,12 +281,15 @@ export function AreaChart<TDatum>({
   stacked,
   legend,
   legendScroll,
-}: ChartProps<TDatum>) {
+  onPointClick,
+  referenceLines,
+}: CartesianChartProps<TDatum>) {
+  const handleClick = cartesianPointClickHandler(data, onPointClick);
   return (
     <ChartFrame height={height} className={className} legend={legend} legendScroll={legendScroll} series={series}>
       {(canvasHeight) => (
       <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
-        <ReAreaChart data={data} margin={MARGIN}>
+        <ReAreaChart data={data} margin={MARGIN} onClick={handleClick}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
           <YAxis {...axisProps} />
@@ -236,6 +310,7 @@ export function AreaChart<TDatum>({
               />
             );
           })}
+          {renderReferenceLines(referenceLines, false)}
         </ReAreaChart>
       </ResponsiveContainer>
       )}
@@ -254,7 +329,10 @@ export function BarChart<TDatum>({
   yAxisWidth,
   legend,
   legendScroll,
+  onPointClick,
+  referenceLines,
 }: BarChartProps<TDatum>) {
+  const handleClick = cartesianPointClickHandler(data, onPointClick);
   return (
     <ChartFrame height={height} className={className} legend={legend} legendScroll={legendScroll} series={series}>
       {(canvasHeight) => (
@@ -263,6 +341,7 @@ export function BarChart<TDatum>({
           data={data}
           margin={MARGIN}
           layout={horizontal ? "vertical" : "horizontal"}
+          onClick={handleClick}
         >
           <CartesianGrid {...gridProps} vertical={horizontal} horizontal={!horizontal} />
           {horizontal ? (
@@ -301,6 +380,7 @@ export function BarChart<TDatum>({
               }
             />
           ))}
+          {renderReferenceLines(referenceLines, false)}
         </ReBarChart>
       </ResponsiveContainer>
       )}
@@ -316,12 +396,15 @@ export function LineChart<TDatum>({
   className,
   legend,
   legendScroll,
-}: ChartProps<TDatum>) {
+  onPointClick,
+  referenceLines,
+}: CartesianChartProps<TDatum>) {
+  const handleClick = cartesianPointClickHandler(data, onPointClick);
   return (
     <ChartFrame height={height} className={className} legend={legend} legendScroll={legendScroll} series={series}>
       {(canvasHeight) => (
       <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
-        <ReLineChart data={data} margin={MARGIN}>
+        <ReLineChart data={data} margin={MARGIN} onClick={handleClick}>
           <CartesianGrid {...gridProps} />
           <XAxis dataKey={xKey} {...axisProps} />
           <YAxis {...axisProps} />
@@ -341,8 +424,147 @@ export function LineChart<TDatum>({
               />
             );
           })}
+          {renderReferenceLines(referenceLines, false)}
         </ReLineChart>
       </ResponsiveContainer>
+      )}
+    </ChartFrame>
+  );
+}
+
+// 组合图（#274）：一个类目轴上同时画柱与线，各自吃一条 Y 轴。
+//
+// 为什么是新组件而不是给 BarChart 加 series.type：那会得到一个「渲染折线的柱状图」——
+// 组件名与它画出来的东西对不上，文档也没法写。反过来，双量纲这件事本身就该有个名字，
+// echarts 用 markLine + yAxisIndex 表达，recharts 用 ComposedChart，业界口径一致。
+//
+// 双轴恒开（左右都建 YAxis）而不是「有 axis:'right' 的序列才建右轴」：轴 id 是 recharts 的
+// 硬约束 —— 序列写了 yAxisId 就必须有同 id 的轴，两边分叉会得到一张空图。恒开的代价只是
+// 右侧多一条没有刻度的轴线，而 hide 掉它即可。
+export function ComposedChart<TDatum>({
+  data,
+  series,
+  xKey,
+  height = 280,
+  className,
+  stacked,
+  legend,
+  legendScroll,
+  onPointClick,
+  referenceLines,
+  leftAxisLabel,
+  rightAxisLabel,
+}: ComposedChartProps<TDatum>) {
+  const handleClick = cartesianPointClickHandler(data, onPointClick);
+  const hasRight = series.some((s) => s.axis === "right");
+  return (
+    <ChartFrame
+      height={height}
+      className={className}
+      legend={legend}
+      legendScroll={legendScroll}
+      series={series}
+    >
+      {(canvasHeight) => (
+        <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
+          <ReComposedChart
+            data={data}
+            // 右轴要显示刻度，左负边距那套（MARGIN.left=-8）只贴左轴，右边得留出位置。
+            margin={hasRight ? { ...MARGIN, right: 8 } : MARGIN}
+            onClick={handleClick}
+          >
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey={xKey} {...axisProps} />
+            <YAxis
+              yAxisId="left"
+              {...axisProps}
+              label={
+                leftAxisLabel
+                  ? {
+                      value: leftAxisLabel,
+                      angle: -90,
+                      position: "insideLeft",
+                      fill: "var(--color-muted-foreground)",
+                      fontSize: 11,
+                    }
+                  : undefined
+              }
+            />
+            {/* 右轴恒建、无右序列时 hide：见组件头注释（轴 id 缺席会让写了 yAxisId 的序列整条消失）。 */}
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              hide={!hasRight}
+              {...axisProps}
+              label={
+                rightAxisLabel
+                  ? {
+                      value: rightAxisLabel,
+                      angle: 90,
+                      position: "insideRight",
+                      fill: "var(--color-muted-foreground)",
+                      fontSize: 11,
+                    }
+                  : undefined
+              }
+            />
+            <Tooltip
+              contentStyle={tooltipContentStyle}
+              labelStyle={tooltipLabelStyle}
+              cursor={{ fill: "var(--color-surface-hover)" }}
+            />
+            {series.map((s, i) => {
+              const color = resolveTone(s.color) ?? chartColor(i);
+              const axis = s.axis ?? "left";
+              const name = s.label ?? s.key;
+              // 堆叠只在同轴同图种的柱之间成立，故 stackId 带上轴名 —— 否则左右轴的柱会被
+              // recharts 叠到一起，两个量纲相加是没有意义的数。
+              if (s.type === "line") {
+                return (
+                  <Line
+                    key={s.key}
+                    yAxisId={axis}
+                    type="monotone"
+                    dataKey={s.key}
+                    name={name}
+                    stroke={color}
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 4 }}
+                  />
+                );
+              }
+              if (s.type === "area") {
+                return (
+                  <Area
+                    key={s.key}
+                    yAxisId={axis}
+                    type="monotone"
+                    dataKey={s.key}
+                    name={name}
+                    stackId={stacked ? `a-${axis}` : undefined}
+                    stroke={color}
+                    fill={color}
+                    fillOpacity={stacked ? 0.4 : 0.15}
+                    strokeWidth={2}
+                  />
+                );
+              }
+              return (
+                <Bar
+                  key={s.key}
+                  yAxisId={axis}
+                  dataKey={s.key}
+                  name={name}
+                  stackId={stacked ? `a-${axis}` : undefined}
+                  fill={color}
+                  radius={[4, 4, 0, 0]}
+                />
+              );
+            })}
+            {renderReferenceLines(referenceLines, true)}
+          </ReComposedChart>
+        </ResponsiveContainer>
       )}
     </ChartFrame>
   );
@@ -358,6 +580,7 @@ export function PieChart({
   className,
   legend = true,
   legendScroll,
+  onPointClick,
 }: PieChartProps) {
   return (
     <ChartFrame
@@ -381,6 +604,10 @@ export function PieChart({
             paddingAngle={donut ? 2 : 0}
             stroke="var(--color-surface)"
             strokeWidth={2}
+            // 扇区级 onClick（#275）：比图表根的活跃类目精确 —— 一片就是一个数据点，
+            // 且点在留白处不会误触发。index 直接对应 data 的下标。
+            onClick={onPointClick ? (_, index) => onPointClick({ datum: data[index]!, index }) : undefined}
+            className={onPointClick ? "cursor-pointer" : undefined}
           >
             {data.map((d, i) => (
               <Cell key={d.name} fill={resolveTone(d.color) ?? chartColor(i)} />
@@ -403,8 +630,24 @@ export function RadarChart<TDatum>({
   className,
   legend = true,
   legendScroll,
-  radiusAxis = true,
+  radiusAxis,
+  axisMax,
 }: RadarChartProps<TDatum>) {
+  // 逐轴归一（#277）。归一后半径轴刻度是 0–100 的无量纲数，写在图上只会误导，
+  // 所以此时默认关掉刻度；显式传 radiusAxis 仍以消费方为准。
+  const showRadiusAxis = radiusAxis ?? axisMax == null;
+  const rows = data as ReadonlyArray<Record<string, unknown>>;
+  const seriesKeys = series.map((s) => s.key);
+  const normalized = axisMax
+    ? normalizeRadarData({ data: rows, xKey, seriesKeys, axisMax })
+    : null;
+  if (normalized?.missingAxes.length) {
+    warnOnce(
+      "chart/radar-axis-max-missing",
+      `[hulian] RadarChart 的 axisMax 缺少这几根轴的满量程：${normalized.missingAxes.join("、")}。已退回「该维度在当前数据里的最大值」，形状仍可比，但换一批数据图形会变。`,
+    );
+  }
+  const chartData = normalized ? normalized.data : rows;
   return (
     <ChartFrame
       height={height}
@@ -415,12 +658,19 @@ export function RadarChart<TDatum>({
     >
       {(canvasHeight) => (
       <ResponsiveContainer width="100%" height={canvasHeight} minWidth={0} minHeight={0}>
-        <ReRadarChart data={data} margin={{ top: 12, right: 12, bottom: 12, left: 12 }}>
+        <ReRadarChart data={chartData} margin={{ top: 12, right: 12, bottom: 12, left: 12 }}>
           <PolarGrid stroke="var(--color-border)" />
           <PolarAngleAxis dataKey={xKey} tick={<PolarAngleWrapTick />} />
           {/* 半径轴刻度沿一条水平半径排列，正好穿过数据区 —— 序列一多就压在多边形上。
               echarts radar 的 axisLabel.show 默认是 false，这里默认 true 只为不动存量版式。 */}
-          {radiusAxis ? <PolarRadiusAxis tick={polarAngleTick} axisLine={false} /> : null}
+          {showRadiusAxis ? (
+            <PolarRadiusAxis
+              tick={polarAngleTick}
+              axisLine={false}
+              // 归一后固定 0–100：让刻度跟着数据自适应会让「满量程」这件事失效。
+              domain={axisMax ? [0, 100] : undefined}
+            />
+          ) : null}
           {series.map((s, i) => {
             const color = resolveTone(s.color) ?? chartColor(i);
             return (
@@ -435,7 +685,13 @@ export function RadarChart<TDatum>({
               />
             );
           })}
-          <Tooltip contentStyle={tooltipContentStyle} labelStyle={tooltipLabelStyle} />
+          {/* 归一之后 tooltip 必须显示原始值 —— 否则运营看到的是 63.2 而不是 31.6 万，
+              等于把「自己换算」这件事从业务侧挪到了用户脑子里。 */}
+          <Tooltip
+            contentStyle={tooltipContentStyle}
+            labelStyle={tooltipLabelStyle}
+            formatter={axisMax ? radarRawFormatter : undefined}
+          />
         </ReRadarChart>
       </ResponsiveContainer>
       )}
@@ -450,6 +706,7 @@ export function RadialChart({
   className,
   legend = true,
   legendScroll,
+  onPointClick,
 }: RadialChartProps) {
   return (
     <ChartFrame
@@ -470,7 +727,13 @@ export function RadialChart({
           startAngle={90}
           endAngle={-270}
         >
-          <RadialBar dataKey="value" background cornerRadius={6}>
+          <RadialBar
+            dataKey="value"
+            background
+            cornerRadius={6}
+            onClick={onPointClick ? (_, index) => onPointClick({ datum: data[index]!, index }) : undefined}
+            className={onPointClick ? "cursor-pointer" : undefined}
+          >
             {data.map((d, i) => (
               <Cell key={d.name} fill={resolveTone(d.color) ?? chartColor(i)} />
             ))}

@@ -1269,6 +1269,7 @@
     "Carousel": "carousel",
     "AreaChart": "chart",
     "BarChart": "chart",
+    "ComposedChart": "chart",
     "LineChart": "chart",
     "PieChart": "chart",
     "RadarChart": "chart",
@@ -1465,6 +1466,8 @@
     "canDropOn": "tree",
     "isDescendant": "tree",
     "resolveDropPosition": "tree",
+    "Treemap": "treemap",
+    "treemapLabelFit": "treemap",
     "User": "user",
     "Video": "video",
     "formatTime": "video",
@@ -16412,10 +16415,11 @@
       "category": "data-display",
       "group": "stat",
       "status": "enriched",
-      "import": "import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, categoryAxisWidth, chartColor } from \"@hulianui/ui\"",
+      "import": "import { AreaChart, BarChart, ComposedChart, LineChart, PieChart, RadarChart, RadialChart, categoryAxisWidth, chartColor } from \"@hulianui/ui\"",
       "exports": [
         "AreaChart",
         "BarChart",
+        "ComposedChart",
         "LineChart",
         "PieChart",
         "RadarChart",
@@ -16425,7 +16429,13 @@
       ],
       "types": [
         "ChartProps",
+        "CartesianChartProps",
         "BarChartProps",
+        "ComposedChartProps",
+        "ComposedSeries",
+        "ChartPointClickInfo",
+        "ChartDatumClickInfo",
+        "ChartReferenceLine",
         "RadarChartProps",
         "ChartSeries",
         "ChartDatum",
@@ -16436,7 +16446,7 @@
       "props": [
         {
           "name": "data",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": true,
           "kind": "array",
           "type": "TDatum[]",
@@ -16445,7 +16455,7 @@
         },
         {
           "name": "series",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": true,
           "kind": "array",
           "type": "ChartSeries[]",
@@ -16454,7 +16464,7 @@
         },
         {
           "name": "xKey",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": true,
           "kind": "string",
           "type": "string",
@@ -16463,7 +16473,7 @@
         },
         {
           "name": "height",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "number",
           "type": "number",
@@ -16472,7 +16482,7 @@
         },
         {
           "name": "stacked",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -16481,7 +16491,7 @@
         },
         {
           "name": "legend",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "union",
           "type": "boolean | \"top\" | \"bottom\"",
@@ -16495,7 +16505,7 @@
         },
         {
           "name": "legendScroll",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -16504,7 +16514,7 @@
         },
         {
           "name": "horizontal",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -16513,7 +16523,7 @@
         },
         {
           "name": "yAxisWidth",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "number",
           "type": "number",
@@ -16522,7 +16532,7 @@
         },
         {
           "name": "radiusAxis",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -16530,8 +16540,73 @@
           "description": "**RadarChart 专属**：半径轴的刻度数字（`0 15 30 …`）。传 `false` 只留环线与角轴名，即 echarts radar 的默认形态（它的 `axisLabel.show` 默认就是 `false`）。**如果**你的雷达图序列较多或数据填得满，建议关掉——见下方注意事项"
         },
         {
+          "name": "onPointClick",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
+          "required": false,
+          "kind": "function",
+          "type": "(info: { datum, index, seriesKey? }) => void",
+          "default": null,
+          "description": "数据点点击（对标 echarts 的 `chart.on('click')`，用于钻取）。命中判据与 tooltip 同源：**tooltip 亮了点下去就一定有回调**，不必精确点中 2px 的折线；点在画布空白或坐标轴上不触发。`seriesKey` **不保证有值**（共享 tooltip 时 recharts 不认为某一条序列被单独命中）。**RadarChart 没有这个 prop**"
+        },
+        {
+          "name": "referenceLines",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
+          "required": false,
+          "kind": "array",
+          "type": "ChartReferenceLine[]",
+          "default": null,
+          "description": "值轴参考线（对标 echarts 的 `markLine`）：帕累托的 80/95 线、均值线、目标线。见下方 `ChartReferenceLine` 表。**RadarChart 没有这个 prop**"
+        },
+        {
+          "name": "type",
+          "owner": "series[]",
+          "required": false,
+          "kind": "enum",
+          "type": "\"bar\" | \"line\" | \"area\"",
+          "values": [
+            "bar",
+            "line",
+            "area"
+          ],
+          "valueType": "string",
+          "default": "\"bar\"",
+          "description": "**ComposedChart 专属**：该序列画成什么"
+        },
+        {
+          "name": "axis",
+          "owner": "series[]",
+          "required": false,
+          "kind": "enum",
+          "type": "\"left\" | \"right\"",
+          "values": [
+            "left",
+            "right"
+          ],
+          "valueType": "string",
+          "default": "\"left\"",
+          "description": "**ComposedChart 专属**：该序列吃哪根值轴"
+        },
+        {
+          "name": "leftAxisLabel / rightAxisLabel",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "**ComposedChart 专属**：轴标题。左右各画各的量纲时不标名字，读者分不出哪条线读哪根轴"
+        },
+        {
+          "name": "axisMax",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
+          "required": false,
+          "kind": "other",
+          "type": "Record<string, number>",
+          "default": null,
+          "description": "**RadarChart 专属**：每根角轴各自的满量程，键是角轴维度值。见下方「量纲差很多的雷达图」"
+        },
+        {
           "name": "className",
-          "owner": "AreaChart / BarChart / LineChart / RadarChart（笛卡尔类）",
+          "owner": "AreaChart / BarChart / LineChart / ComposedChart / RadarChart（笛卡尔类）",
           "required": false,
           "kind": "string",
           "type": "string",
@@ -16589,6 +16664,15 @@
           "description": "同上：图例恒为单行 + 横向滚动"
         },
         {
+          "name": "onPointClick",
+          "owner": "PieChart / RadialChart（扁平数据类）",
+          "required": false,
+          "kind": "function",
+          "type": "(info: { datum, index }) => void",
+          "default": null,
+          "description": "点中某一片时回调（钻取用）。扇区级命中，点在留白处不触发"
+        },
+        {
           "name": "className",
           "owner": "PieChart / RadialChart（扁平数据类）",
           "required": false,
@@ -16596,6 +16680,56 @@
           "type": "string",
           "default": null,
           "description": "透传类名"
+        },
+        {
+          "name": "y",
+          "owner": "ChartReferenceLine",
+          "required": true,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "值轴上的位置"
+        },
+        {
+          "name": "label",
+          "owner": "ChartReferenceLine",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "线上文案（如「80%」「目标」）"
+        },
+        {
+          "name": "axis",
+          "owner": "ChartReferenceLine",
+          "required": false,
+          "kind": "enum",
+          "type": "\"left\" | \"right\"",
+          "values": [
+            "left",
+            "right"
+          ],
+          "valueType": "string",
+          "default": "\"left\"",
+          "description": "挂在哪根值轴上，仅 ComposedChart 有意义"
+        },
+        {
+          "name": "color",
+          "owner": "ChartReferenceLine",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "--color-muted-foreground",
+          "description": "线色。缺省刻意不取 `chart-N`：它不是一条数据，抢了序列的色相会被读成「第 N 条序列」"
+        },
+        {
+          "name": "dash",
+          "owner": "ChartReferenceLine",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"4 4\"",
+          "description": "虚线段样式，传空串即实线"
         }
       ],
       "events": [],
@@ -25943,6 +26077,103 @@
       "slots": []
     },
     {
+      "slug": "treemap",
+      "name": "Treemap",
+      "category": "data-display",
+      "group": "collection",
+      "status": "enriched",
+      "import": "import { Treemap, treemapLabelFit } from \"@hulianui/ui\"",
+      "exports": [
+        "Treemap",
+        "treemapLabelFit"
+      ],
+      "types": [
+        "TreemapProps",
+        "TreemapDatum",
+        "TreemapItemClickInfo"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/treemap/treemap.md",
+      "props": [
+        {
+          "name": "data",
+          "required": true,
+          "kind": "array",
+          "type": "TreemapDatum[]",
+          "default": null,
+          "description": "扁平数据（单层）`{ name, value, color? }`；面积按 `value` 占总量的比例分配"
+        },
+        {
+          "name": "height",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "280",
+          "description": "组件总高（SSR 安全：宽走 ResponsiveContainer，高需显式值）"
+        },
+        {
+          "name": "showValue",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "格子里是否在名字下面加一行数值"
+        },
+        {
+          "name": "valueFormat",
+          "required": false,
+          "kind": "function",
+          "type": "(value: number) => string",
+          "default": "String",
+          "description": "数值显示格式，**同时作用于格内文字与 tooltip**（避免两处各写一套）"
+        },
+        {
+          "name": "onItemClick",
+          "required": false,
+          "kind": "function",
+          "type": "(info: { datum, index }) => void",
+          "default": null,
+          "description": "点中某一格时回调（钻取：点门店进该店会员列表）。只在格子上触发，点留白不触发"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "透传类名（宽度在此设）"
+        },
+        {
+          "name": "name",
+          "owner": "TreemapDatum",
+          "required": true,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "格内显示的名字，也是 tooltip 的标题"
+        },
+        {
+          "name": "value",
+          "owner": "TreemapDatum",
+          "required": true,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "决定面积的值"
+        },
+        {
+          "name": "color",
+          "owner": "TreemapDatum",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "按 index 取 `chart-N`",
+          "description": "格子色；可传语义色名（`\"success\"` 等）或任意 CSS 颜色"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    {
       "slug": "user",
       "name": "User",
       "category": "data-display",
@@ -28577,6 +28808,15 @@
           "type": "string",
           "default": null,
           "description": "—"
+        },
+        {
+          "name": "render",
+          "owner": "MenuItem",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "渲染成另一个元素（Next `<Link>` / `<a>`），props 与 `role=\"menuitem\"`、键盘漫游一并合并进去。**导航型菜单项用它而不是 `onClick` + `router.push`**，见下方「导航型菜单项」"
         },
         {
           "name": "disabled",
@@ -44466,6 +44706,14 @@
           "type": "string",
           "default": null,
           "description": "内容区图片地址，优先于 children。"
+        },
+        {
+          "name": "headerExtra",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "工具栏右端的工具入口。不传时该格是原来那块 `w-6` 占位，尺寸逐字节不变；传了就让出该格，宽度下限锁在占位宽。见下方「活内容」"
         }
       ],
       "events": [],
@@ -44567,6 +44815,14 @@
           "type": "string",
           "default": null,
           "description": "内容区图片地址，优先于 children。"
+        },
+        {
+          "name": "headerExtra",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "顶栏右端的工具入口（分享/下载这类）。不传时该格是让地址胶囊居中的 `w-12` 占位，尺寸逐字节不变；传了就让出该格，宽度下限锁在占位宽。见下方「活内容」"
         }
       ],
       "events": [],

@@ -337,6 +337,8 @@ export * from "./code-review-thread";
 export * from "./sankey";
 export * from "./sparkline";
 export * from "./funnel";
+// 矩形树图（#276）：占比一眼可见的那种分布图，与 chart 族同源（recharts 引擎 + chart token）
+export * from "./treemap";
 export * from "./queue-lane";
 export * from "./file-tree";
 

@@ -1,6 +1,14 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
-import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart } from "./chart";
+import {
+  AreaChart,
+  BarChart,
+  ComposedChart,
+  LineChart,
+  PieChart,
+  RadarChart,
+  RadialChart,
+} from "./chart";
 
 // 内联静态样例（确定性，防 SSR/CSR hydration mismatch）——
 // 刻意不依赖 @hulianui/mocks/faker：demo 数据不该把 dev-only 依赖带进组件库导出图。
@@ -18,6 +26,35 @@ const data = [
   { month: "11月", revenue: 134, orders: 402 },
   { month: "12月", revenue: 126, orders: 375 },
 ];
+// 组合图（#274）：柱是千元级、线是百级，两个量纲共用一根轴会把柱压成一条底边。
+const composedSeries = [
+  { key: "revenue", label: "营收(千元)", type: "bar" as const },
+  { key: "orders", label: "订单", type: "line" as const, axis: "right" as const },
+];
+
+// 雷达逐轴满量程（#277）：五个维度量纲差三个数量级。
+// 序列键与 axisMax 的键刻意都用 ASCII：showcase 会被整体译成英文，而 AST 翻译只认字符串
+// 字面量，中文一旦当了对象键（标识符）就翻不动 —— 那正是「只支持字面量翻译」那条报错。
+const storeDims = [
+  { dim: "销售额", hubin: 312000, xinjiekou: 186000 },
+  { dim: "订单数", hubin: 640, xinjiekou: 412 },
+  { dim: "客单价", hubin: 488, xinjiekou: 451 },
+  { dim: "会员数", hubin: 3820, xinjiekou: 1980 },
+  { dim: "退货率", hubin: 24, xinjiekou: 41 },
+];
+const storeSeries = [
+  { key: "hubin", label: "湖滨店" },
+  { key: "xinjiekou", label: "新街口店" },
+];
+// axisMax 的键必须与 dim 的值逐字相同，所以从同一批字面量构造，翻译时两边一起改。
+const storeAxisMax = Object.fromEntries([
+  ["销售额", 500000],
+  ["订单数", 800],
+  ["客单价", 600],
+  ["会员数", 4000],
+  ["退货率", 100],
+]);
+
 const series = [
   { key: "revenue", label: "营收(千元)" },
   { key: "orders", label: "订单" },
@@ -168,6 +205,52 @@ export const chartShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "双 Y 轴组合图",
+      description:
+        "ComposedChart 让柱与线各吃一根值轴，量纲差几个数量级的两条序列才能同框（对标 echarts 双轴）。",
+      code: `<ComposedChart
+  data={data}
+  xKey="month"
+  series={[
+    { key: "revenue", label: "营收(千元)", type: "bar" },
+    { key: "orders", label: "订单", type: "line", axis: "right" },
+  ]}
+  leftAxisLabel="营收(千元)"
+  rightAxisLabel="订单"
+  legend
+/>`,
+      render: () => (
+        <ComposedChart
+          data={data}
+          series={composedSeries}
+          xKey="month"
+          leftAxisLabel="营收(千元)"
+          rightAxisLabel="订单"
+          legend
+          className={W}
+        />
+      ),
+    },
+    {
+      title: "参考线",
+      description: "referenceLines 画目标线/均值线/帕累托的 80 线（对标 echarts markLine）。",
+      code: `<BarChart
+  data={data}
+  series={[{ key: "revenue", label: "营收(千元)" }]}
+  xKey="month"
+  referenceLines={[{ y: 100, label: "目标" }]}
+/>`,
+      render: () => (
+        <BarChart
+          data={data}
+          series={[{ key: "revenue", label: "营收(千元)" }]}
+          xKey="month"
+          referenceLines={[{ y: 100, label: "目标" }]}
+          className={W}
+        />
+      ),
+    },
+    {
       title: "雷达图",
       description: "多维能力对比，xKey 为维度字段，多序列叠加。",
       code: `<RadarChart
@@ -177,11 +260,55 @@ export const chartShowcase: ShowcaseSpec = {
 />`,
       render: () => <RadarChart data={radarData} series={radarSeries} xKey="dim" className={W} />,
     },
+    {
+      title: "逐轴满量程的雷达图",
+      description:
+        "axisMax 给每根角轴各配一个满量程，量纲差三个数量级也能比形状；tooltip 仍显示原始值。",
+      code: `<RadarChart
+  data={dims}
+  series={[{ key: "hubin", label: "湖滨店" }, { key: "xinjiekou", label: "新街口店" }]}
+  xKey="dim"
+  axisMax={{ 销售额: 500000, 订单数: 800, 客单价: 600, 会员数: 4000, 退货率: 100 }}
+/>`,
+      render: () => (
+        <RadarChart
+          data={storeDims}
+          series={storeSeries}
+          xKey="dim"
+          axisMax={storeAxisMax}
+          className={W}
+        />
+      ),
+    },
   ],
   controls: [
     { prop: "type", type: "select", options: [...TYPES], defaultValue: "area", label: "图表类型" },
   ],
   states: [
+    {
+      name: "双 Y 轴组合图（柱 + 线）",
+      render: () => (
+        <ComposedChart data={data} series={composedSeries} xKey="month" legend className={W} />
+      ),
+    },
+    {
+      name: "参考线（目标线）",
+      render: () => (
+        <BarChart
+          data={data}
+          series={[{ key: "revenue", label: "营收(千元)" }]}
+          xKey="month"
+          referenceLines={[{ y: 100, label: "目标" }]}
+          className={W}
+        />
+      ),
+    },
+    {
+      name: "逐轴满量程雷达图（axisMax）",
+      render: () => (
+        <RadarChart data={storeDims} series={storeSeries} xKey="dim" axisMax={storeAxisMax} className={W} />
+      ),
+    },
     {
       name: "面积图（多序列）",
       render: () => <AreaChart data={data} series={series} xKey="month" className={W} />,

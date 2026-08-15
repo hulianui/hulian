@@ -34,6 +34,7 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 ### MenuItem
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| render | `ReactElement` | — | 渲染成另一个元素（Next `<Link>` / `<a>`），props 与 `role="menuitem"`、键盘漫游一并合并进去。**导航型菜单项用它而不是 `onClick` + `router.push`**，见下方「导航型菜单项」 |
 | disabled | `boolean` | `false` | 禁用 |
 | closeOnClick | `boolean` | `true` | 点击后是否关闭菜单 |
 | label | `string` | — | 键盘 type-ahead 的文案覆盖 |
@@ -222,6 +223,18 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 - `MenuSubTrigger` 与 `MenuSubContent` 必须同在一个 `MenuSub` 内，且 `MenuSub` 必须在 `MenuContent` 里。用 `MenuItem` 加一个自己画的箭头替代 `MenuSubTrigger` 是看不出问题的错误：视觉一样，但没有 `aria-haspopup` / `aria-expanded`，读屏用户听不出这一项还有下一级。
 - 别拿 `MenuContent side="right"` 当子面板用。它在 `MenuSub` 里确实能渲染成子菜单（内部是同一套 Portal/Positioner/Popup），但 chevron、`sideOffset`、展开时父项保持高亮这三样都要自己补，漏一样就与库内其它子菜单不一致 —— `MenuSubContent` 就是把这三样固化下来的那一层。
 - 菜单默认带 `max-h-[min(24rem,var(--available-height))] overflow-y-auto`：放得下时不产生任何视觉差异，项数一多就改为内部滚动。这是库内兜底而不是「每个消费方自己记得加」——浮层是 fixed 的，溢出视口那截既点不到、页面也滚不出来，而且只有等数据长起来才暴露（开发时 3 项、上线后 40 项）。要更矮/更高就在 `className` 上覆盖 `max-h-*`。`ContextMenu` 同款。
+
+### 导航型菜单项
+
+「点了会跳到另一个页面」的菜单项要用 `render` 渲染成真链接，不要用 `onClick` + `router.push`：
+
+```tsx
+<MenuItem render={<Link href="/settings/roles" />}>角色管理</MenuItem>
+```
+
+差别不是写法偏好，是一整片**只有真 `<a href>` 才有的浏览器行为**：中键点击、Cmd/Ctrl+点击开新标签、右键「在新标签页中打开」、悬停时状态栏的 href 预览。后台系统里「设置里这一项我想另开一个标签对着看」是日常操作。劫持 click 的一方得把这些逐条补回来，漏一条用户就发现「这个菜单不能新标签打开」。
+
+`MenuCheckboxItem` / `MenuRadioItem` / `MenuSubTrigger` 没有 `render`：它们的语义是「切一个状态」「展开下一级」，不是「去一个地方」。
 
 ## 相关
 [Navbar](../navbar/navbar.md) · [BeianFooter](../beian-footer/beian-footer.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

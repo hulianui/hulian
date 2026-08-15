@@ -4,7 +4,7 @@ name: Chart
 category: data-display
 group: stat
 tags: []
-exports: [AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, chartColor, categoryAxisWidth]
+exports: [AreaChart, BarChart, ComposedChart, LineChart, PieChart, RadarChart, RadialChart, chartColor, categoryAxisWidth]
 status: enriched
 ---
 
@@ -18,12 +18,12 @@ Use Chart for complete dashboard trends, distributions, and comparisons with one
 
 ## Import
 ```ts
-import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, chartColor } from "@hulianui/ui"
+import { AreaChart, BarChart, ComposedChart, LineChart, PieChart, RadarChart, RadialChart, chartColor } from "@hulianui/ui"
 ```
 
 ## Props
 
-### AreaChart / BarChart / LineChart / RadarChart (Cartesian)
+### AreaChart / BarChart / LineChart / ComposedChart / RadarChart (Cartesian)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
@@ -37,6 +37,12 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | horizontal | `boolean` | `false` | BarChart-only horizontal orientation. |
 | yAxisWidth | `number` | Adaptive | BarChart-only category-axis width; horizontal mode estimates 48-160 px through `categoryAxisWidth`. |
 | radiusAxis | `boolean` | `true` | RadarChart-only radius-axis tick numbers (`0 15 30 …`). Pass `false` to keep only the grid rings and angle labels, which is what echarts' radar renders by default (its `axisLabel.show` defaults to `false`). **If** your radar has many series or densely filled data, turning it off is recommended — see the pitfalls below. |
+| onPointClick | `(info: { datum, index, seriesKey? }) => void` | — | Data-point click, matching echarts' `chart.on('click')` for drill-down. Hit detection shares its rule with the tooltip: **if the tooltip is showing, a click always fires**, so there is no need to hit a 2px line exactly; clicks on empty canvas or on an axis do not fire. `seriesKey` is **not guaranteed**: with a shared tooltip recharts does not consider any single series to be hit. **RadarChart does not have this prop.** |
+| referenceLines | `ChartReferenceLine[]` | — | Value-axis reference lines, matching echarts' `markLine`: the 80/95 lines of a Pareto chart, an average line, a target line. See the `ChartReferenceLine` table below. **RadarChart does not have this prop.** |
+| series[].type | `"bar" \| "line" \| "area"` | `"bar"` | **ComposedChart only**: how this series is drawn. |
+| series[].axis | `"left" \| "right"` | `"left"` | **ComposedChart only**: which value axis this series reads. |
+| leftAxisLabel / rightAxisLabel | `string` | — | **ComposedChart only**: axis titles. With two different units in play, unlabeled axes leave readers unable to tell which line reads which axis. |
+| axisMax | `Record<string, number>` | — | **RadarChart only**: full scale per angle axis, keyed by the angle-axis value. See "Radars with mismatched units". |
 | className | `string` | — | Custom class, commonly used for width. |
 
 ### PieChart / RadialChart (flat data)
@@ -48,7 +54,18 @@ import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, char
 | height | `number` | `280` | Chart height. |
 | legend | `boolean \| "top" \| "bottom"` | `true` | Legend built from `data[].name`, same semantics as above but **on by default** because these two have always shipped a legend. Pass `false` to turn it off — required before drawing your own, otherwise two legends render side by side. |
 | legendScroll | `boolean` | `false` | Same as above: keeps the legend on a single horizontally scrollable row. |
+| onPointClick | `(info: { datum, index }) => void` | — | Fires when a slice is clicked (for drill-down). Hit detection is per sector; clicks on empty space do not fire. |
 | className | `string` | — | Custom class name. |
+
+### ChartReferenceLine
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| y* | `number` | — | Position on the value axis. |
+| label | `string` | — | Text drawn on the line ("80%", "Target"). |
+| axis | `"left" \| "right"` | `"left"` | Which value axis to attach to; only meaningful on ComposedChart. |
+| color | `string` | `--color-muted-foreground` | Line color. The default deliberately avoids `chart-N`: a reference line is not data, and borrowing a series hue makes it read as "series N". |
+| dash | `string` | `"4 4"` | Dash pattern; pass an empty string for a solid line. |
 
 ## Examples
 ```tsx
@@ -71,6 +88,73 @@ const data = [{ month: "Jan", revenue: 42, orders: 168 }, { month: "Feb", revenu
   series={[{ key: "p50" }]}
 />
 ```
+
+### Two units: bars and a line on separate axes
+
+Use `ComposedChart` when one category axis carries both bars and a line, each reading its own Y axis (revenue in hundreds of thousands, orders in hundreds):
+
+```tsx
+<ComposedChart
+  data={data}
+  xKey="month"
+  series={[
+    { key: "revenue", label: "Revenue", type: "bar" },
+    { key: "orders", label: "Orders", type: "line", axis: "right" },
+  ]}
+  leftAxisLabel="Revenue"
+  rightAxisLabel="Orders"
+  legend
+/>
+```
+
+A Pareto chart is exactly "bars + a cumulative-share line + 80/95 reference lines":
+
+```tsx
+<ComposedChart
+  data={pareto}
+  xKey="sku"
+  series={[
+    { key: "amount", label: "Revenue", type: "bar" },
+    { key: "cumulative", label: "Cumulative share", type: "line", axis: "right" },
+  ]}
+  referenceLines={[
+    { y: 80, label: "80%", axis: "right" },
+    { y: 95, label: "95%", axis: "right" },
+  ]}
+/>
+```
+
+`stacked` only applies **within the same axis and the same mark type**: the two axes carry different units, so adding them produces a meaningless number, and stack groups are therefore kept separate per axis.
+
+### Click to drill down
+
+```tsx
+<BarChart
+  data={daily}
+  series={[{ key: "count", label: "Orders" }]}
+  xKey="date"
+  onPointClick={({ datum }) => openDetail(datum.date)}
+/>
+```
+
+The component emits the event and nothing else: navigation, drawers, and query parameters stay in application code. Pie charts take the same prop with a `{ datum, index }` payload — a slice *is* a data point, so there is no series to report.
+
+### Radars with mismatched units
+
+With five axes covering revenue (hundreds of thousands), orders (hundreds), and return rate (0–100), a single scale flattens the small-unit axes into a dot near the center — the chart is still there, the shape comparison is not. Configure the full scale per axis with `axisMax`:
+
+```tsx
+<RadarChart
+  data={dims}
+  xKey="dim"
+  series={[{ key: "storeA", label: "Store A" }, { key: "storeB", label: "Store B" }]}
+  axisMax={{ Revenue: 500000, Orders: 800, "Avg order": 600, Members: 4000, "Return rate": 100 }}
+/>
+```
+
+**The tooltip still shows the original values.** Normalizing the data yourself before passing it in produces the same shape, but then the tooltip only carries normalized numbers and the reader has to convert back.
+
+An axis missing from `axisMax` falls back to "the largest value that axis has in the current data" and logs a development warning: mixing normalized and non-normalized axes is the worst outcome, because that axis silently hugs the center or pins to the outer ring. Enabling `axisMax` also turns the radius-axis ticks off by default (0–100 normalized ticks carry no meaning); pass `radiusAxis` explicitly to bring them back.
 
 ## Pitfalls
 - Width comes from the parent or className, but height must be nonzero; the default is 280.

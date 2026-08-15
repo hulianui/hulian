@@ -373,6 +373,7 @@ export * from "./tour.showcase";
 export * from "./transfer.showcase";
 export * from "./tree-select.showcase";
 export * from "./tree.showcase";
+export * from "./treemap.showcase";
 export * from "./true-focus.showcase";
 export * from "./typing-animation.showcase";
 export * from "./typing-dots.showcase";

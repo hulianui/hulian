@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 
 // jsdom: ResponsiveContainer 测量为 0 → 子图不出。mock 成克隆 child 注入固定尺寸，使 recharts 渲 SVG。
 vi.mock("recharts", async (importOriginal) => {
@@ -12,7 +12,16 @@ vi.mock("recharts", async (importOriginal) => {
   };
 });
 
-import { AreaChart, BarChart, LineChart, PieChart, RadarChart, RadialChart, categoryAxisWidth } from "./chart";
+import {
+  AreaChart,
+  BarChart,
+  ComposedChart,
+  LineChart,
+  PieChart,
+  RadarChart,
+  RadialChart,
+  categoryAxisWidth,
+} from "./chart";
 import { chartColor } from "./chart-theme";
 
 const data = [
@@ -287,5 +296,116 @@ describe("Chart legend · 极坐标三件", () => {
     const { container } = render(<AreaChart data={data} series={series} xKey="month" legend />);
     expect(container.querySelector("[class*='overflow-x-auto']")).toBeNull();
     expect(container.innerHTML).toContain("flex-wrap");
+  });
+});
+
+
+// #274 双 Y 轴组合图与参考线。
+describe("ComposedChart · 双 Y 轴 + 混合图种", () => {
+  const mixed = [
+    { key: "revenue", label: "销售额", type: "bar" as const },
+    { key: "orders", label: "订单数", type: "line" as const, axis: "right" as const },
+  ];
+
+  it("左右两根值轴都建出来（有右序列时右轴显示）", () => {
+    const { container } = render(<ComposedChart data={data} series={mixed} xKey="month" />);
+    // recharts 的轴容器带 recharts-yAxis 类名，左右各一条
+    expect(container.querySelectorAll(".recharts-yAxis").length).toBe(2);
+  });
+
+  it("柱与线同时画出来（各自吃一根轴）", () => {
+    const { container } = render(<ComposedChart data={data} series={mixed} xKey="month" />);
+    expect(container.querySelector(".recharts-bar")).toBeTruthy();
+    expect(container.querySelector(".recharts-line")).toBeTruthy();
+  });
+
+  it("没有右序列时右轴 hide（不留一条空轴线占位）", () => {
+    const { container } = render(
+      <ComposedChart data={data} series={[{ key: "revenue", type: "bar" }]} xKey="month" />,
+    );
+    // hide 的轴 recharts 不渲染刻度组
+    expect(container.querySelectorAll(".recharts-yAxis").length).toBe(1);
+  });
+
+  it("series.type 缺省为柱", () => {
+    const { container } = render(
+      <ComposedChart data={data} series={[{ key: "revenue" }]} xKey="month" />,
+    );
+    expect(container.querySelector(".recharts-bar")).toBeTruthy();
+  });
+
+  it("referenceLines 画出参考线并带标签", () => {
+    const { container } = render(
+      <ComposedChart
+        data={data}
+        series={mixed}
+        xKey="month"
+        referenceLines={[{ y: 80, label: "80%", axis: "right" }]}
+      />,
+    );
+    expect(container.querySelector(".recharts-reference-line")).toBeTruthy();
+    expect(container.textContent).toContain("80%");
+  });
+});
+
+describe("referenceLines 在笛卡尔三件上同样可用（#274）", () => {
+  it.each([
+    ["AreaChart", AreaChart],
+    ["BarChart", BarChart],
+    ["LineChart", LineChart],
+  ])("%s 支持参考线", (_name, Comp: any) => {
+    const { container } = render(
+      <Comp data={data} series={series} xKey="month" referenceLines={[{ y: 40, label: "均值" }]} />,
+    );
+    expect(container.querySelector(".recharts-reference-line")).toBeTruthy();
+    expect(container.textContent).toContain("均值");
+  });
+
+  it("不传时一条都不画（既有调用零改动）", () => {
+    const { container } = render(<AreaChart data={data} series={series} xKey="month" />);
+    expect(container.querySelector(".recharts-reference-line")).toBeNull();
+  });
+});
+
+// #275 数据点点击。笛卡尔走图表根的活跃类目，Pie/Radial 走扇区级 onClick。
+describe("onPointClick · 扁平图种的扇区点击（#275）", () => {
+  // 扇区是入场动画驱动的：首帧 recharts 只渲染一个空的 layer，要等一帧才有 path。
+  // 直接 querySelectorAll 会拿到 0 个，看起来像「点击没接上」，其实是取样取早了。
+  const sectorsOf = async (container: HTMLElement) => {
+    await waitFor(
+      () => expect(container.querySelectorAll(".recharts-sector").length).toBeGreaterThan(0),
+      { timeout: 4000 },
+    );
+    return container.querySelectorAll(".recharts-sector");
+  };
+
+  it("PieChart 点某片 → 回传该数据点与下标", async () => {
+    const onPointClick = vi.fn();
+    const { container } = render(<PieChart data={flat} onPointClick={onPointClick} />);
+    const sectors = await sectorsOf(container);
+    expect(sectors.length).toBe(2);
+    fireEvent.click(sectors[1]);
+    expect(onPointClick).toHaveBeenCalledWith({ datum: flat[1], index: 1 });
+  });
+
+  it("不传 onPointClick 时不给指针手型（免得看着能点其实不能）", () => {
+    const { container } = render(<PieChart data={flat} />);
+    expect(container.querySelector(".recharts-pie")!.getAttribute("class")).not.toContain("cursor-pointer");
+  });
+
+  it("RadialChart 同款签名", async () => {
+    const onPointClick = vi.fn();
+    const { container } = render(<RadialChart data={flat} onPointClick={onPointClick} />);
+    // 径向图的背景环也是 recharts-sector，取数据环那一组（radial-bar-sectors 下的）
+    await waitFor(
+      () =>
+        expect(
+          container.querySelectorAll(".recharts-radial-bar-sectors .recharts-sector").length,
+        ).toBeGreaterThan(0),
+      { timeout: 4000 },
+    );
+    const bars = container.querySelectorAll(".recharts-radial-bar-sectors .recharts-sector");
+    fireEvent.click(bars[0]);
+    expect(onPointClick).toHaveBeenCalledWith({ datum: flat[0], index: 0 });
   });
 });

@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|treemap|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -1704,7 +1704,7 @@
       "id": "component/chrome/pitfall/2",
       "scope": "chrome",
       "title": "Chrome",
-      "rule": "`imageSrc` 与 `children` 同传时 `imageSrc` 优先，children 被忽略。",
+      "rule": "`imageSrc` 与 `children` 同传时 `imageSrc` 优先，children 被忽略。 ### 活内容（不只服务截图） 壳的内容区在高度链上：根是列向 flex，内容区 `min-h-0 flex-1`。所以「壳撑满父容器、内容吃掉 chrome 之外的剩余高度」只要在根上给高度即可 —— 内嵌真实网页、原生视图（Electron 的 `WebContentsView`）、可滚动面板都靠这条： ```tsx <div style={{ height: 500 }}> <Chrome url=\"zwfw.example.gov.cn\" className=\"h-full\" headerExtra={<DownloadButton />}> <div ref={viewportRef} className=\"h-full\" /> {/* 量几何喂给主进程 setBounds */} </Chrome> </div> ``` 截图场景不受影响：auto 高度的列向 flex 容器仍按内容定高（`min-h-0` 也不会让它塌成 0，这点已在 Chromium 实测排除）。 工具栏右端那格默认是块 `w-6` 空占位。`headerExtra` 传了就把它让出来，宽度下限仍锁在占位宽：内容窄于它时版式完全保持，宽于它时该格随内容生长 —— 宁可地址栏偏一点，也不裁掉按钮。",
       "source": "packages/ui/src/chrome/chrome.md"
     },
     {
@@ -5778,7 +5778,7 @@
       "id": "component/menu/pitfall/7",
       "scope": "menu",
       "title": "Menu",
-      "rule": "菜单默认带 `max-h-[min(24rem,var(--available-height))] overflow-y-auto`：放得下时不产生任何视觉差异，项数一多就改为内部滚动。这是库内兜底而不是「每个消费方自己记得加」——浮层是 fixed 的，溢出视口那截既点不到、页面也滚不出来，而且只有等数据长起来才暴露（开发时 3 项、上线后 40 项）。要更矮/更高就在 `className` 上覆盖 `max-h-*`。`ContextMenu` 同款。",
+      "rule": "菜单默认带 `max-h-[min(24rem,var(--available-height))] overflow-y-auto`：放得下时不产生任何视觉差异，项数一多就改为内部滚动。这是库内兜底而不是「每个消费方自己记得加」——浮层是 fixed 的，溢出视口那截既点不到、页面也滚不出来，而且只有等数据长起来才暴露（开发时 3 项、上线后 40 项）。要更矮/更高就在 `className` 上覆盖 `max-h-*`。`ContextMenu` 同款。 ### 导航型菜单项 「点了会跳到另一个页面」的菜单项要用 `render` 渲染成真链接，不要用 `onClick` + `router.push`： ```tsx <MenuItem render={<Link href=\"/settings/roles\" />}>角色管理</MenuItem> ``` 差别不是写法偏好，是一整片**只有真 `<a href>` 才有的浏览器行为**：中键点击、Cmd/Ctrl+点击开新标签、右键「在新标签页中打开」、悬停时状态栏的 href 预览。后台系统里「设置里这一项我想另开一个标签对着看」是日常操作。劫持 click 的一方得把这些逐条补回来，漏一条用户就发现「这个菜单不能新标签打开」。 `MenuCheckboxItem` / `MenuRadioItem` / `MenuSubTrigger` 没有 `render`：它们的语义是「切一个状态」「展开下一级」，不是「去一个地方」。",
       "source": "packages/ui/src/menu/menu.md"
     },
     {
@@ -7759,7 +7759,7 @@
       "id": "component/safari/pitfall/2",
       "scope": "safari",
       "title": "Safari",
-      "rule": "`imageSrc` 与 `children` 同传时 `imageSrc` 优先，children 被忽略。",
+      "rule": "`imageSrc` 与 `children` 同传时 `imageSrc` 优先，children 被忽略。 ### 活内容（不只服务截图） 壳的内容区在高度链上：根是列向 flex，内容区 `min-h-0 flex-1`。所以「壳撑满父容器、内容吃掉顶栏之外的剩余高度」只要在根上给高度即可 —— 内嵌真实网页、原生视图（Electron 的 `WebContentsView`）、可滚动面板都靠这条： ```tsx <div style={{ height: 500 }}> <Safari url=\"zwfw.example.gov.cn\" className=\"h-full\" headerExtra={<DownloadButton />}> <div ref={viewportRef} className=\"h-full\" /> {/* 量几何喂给主进程 setBounds */} </Safari> </div> ``` 截图场景不受影响：auto 高度的列向 flex 容器仍按内容定高（`min-h-0` 也不会让它塌成 0，这点已在 Chromium 实测排除）。 顶栏右端那格默认是块 `w-12` 空占位，作用是让地址胶囊相对红绿灯居中对称。`headerExtra` 传了就把它让出来，宽度下限仍锁在占位宽：内容窄于它时对称性完全保持，宽于它时该格随内容生长 —— 宁可胶囊偏一点，也不裁掉按钮。",
       "source": "packages/ui/src/safari/safari.md"
     },
     {
@@ -10017,6 +10017,34 @@
       "source": "packages/ui/src/tree-select/tree-select.md"
     },
     {
+      "id": "component/treemap/pitfall/1",
+      "scope": "treemap",
+      "title": "Treemap",
+      "rule": "**长尾项的名字会不画出来，这是设计不是 bug。** 格子大小由数据决定，占比小的那批必然小到放不下任何字；放不下还硬画得到的是一片互相压叠的碎字（SVG 的 `text` 不会被 `rect` 裁掉，溢出直接盖在邻格上）。取舍规则在纯函数 `treemapLabelFit` 里，判据是「减去内边距后宽高都够不够」。要让读者认得长尾项，靠 tooltip 或配一份列表，别指望格内文字。",
+      "source": "packages/ui/src/treemap/treemap.md"
+    },
+    {
+      "id": "component/treemap/pitfall/2",
+      "scope": "treemap",
+      "title": "Treemap",
+      "rule": "**不做层级下钻。** 单层就是全部能力：`data` 不收 `children`。多层树图的交互（点进去、面包屑返回）是另一个组件的量级，而消费场景里的「钻取」实际是「跳到另一个页面」，那由 `onItemClick` 交给业务侧。",
+      "source": "packages/ui/src/treemap/treemap.md"
+    },
+    {
+      "id": "component/treemap/pitfall/3",
+      "scope": "treemap",
+      "title": "Treemap",
+      "rule": "格内文字固定用白色而不是 `foreground`：格子填的是 `chart-N`（深浅不一），跟着主题前景色走会在浅色格上变成浅灰对浅底。与饼图的扇区标签同口径。",
+      "source": "packages/ui/src/treemap/treemap.md"
+    },
+    {
+      "id": "component/treemap/pitfall/4",
+      "scope": "treemap",
+      "title": "Treemap",
+      "rule": "项太多（>60）时树图会退化成一片碎格，此时该换聚合口径（Top 20 + 「其它」）而不是继续塞。",
+      "source": "packages/ui/src/treemap/treemap.md"
+    },
+    {
       "id": "component/true-focus/pitfall/1",
       "scope": "true-focus",
       "title": "TrueFocus",
@@ -10342,8 +10370,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 393,
-    "componentAdvisories": 1442,
-    "totalAdvisories": 1452
+    "componentDocs": 394,
+    "componentAdvisories": 1446,
+    "totalAdvisories": 1456
   }
 }

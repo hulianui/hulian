@@ -30,6 +30,7 @@ Extends `ComponentPropsWithoutRef<"div">`, forwarding `className`, `style`, and 
 | url | `string` | `"hulian.design"` | Address bar text. |
 | title | `string` | Get the url | tab title. |
 | imageSrc | `string` | — | The image address of the content area, taking precedence over children. |
+| headerExtra | `ReactNode` | — | Tool entry at the trailing edge of the chrome (share, download, and the like). When omitted the cell stays the `w-6` spacer from the original layout, byte for byte; when provided the cell is handed over, with its width floored at the spacer width. See "Live content". |
 
 ## Slots
 
@@ -48,6 +49,22 @@ Extends `ComponentPropsWithoutRef<"div">`, forwarding `className`, `style`, and 
 
 - This presentational shell has no default width. Set one with `style={{ width }}` or `className`, or it shrinks to its content width.
 - When both `imageSrc` and `children` are provided, `imageSrc` wins and `children` is ignored.
+
+### Live content (not just screenshots)
+
+The content area sits on the height chain: the root is a column flex container and the content area is `min-h-0 flex-1`. So "shell fills its parent, content takes the height left over by the chrome" only needs a height on the root — embedded live pages, native views (Electron's `WebContentsView`), and scrollable panels all rely on this:
+
+```tsx
+<div style={{ height: 500 }}>
+  <Chrome url="zwfw.example.gov.cn" className="h-full" headerExtra={<DownloadButton />}>
+    <div ref={viewportRef} className="h-full" />   {/* measured and fed to setBounds in the main process */}
+  </Chrome>
+</div>
+```
+
+Screenshot usage is unaffected: an auto-height column flex container is still sized by its content, and `min-h-0` does not collapse it to zero — verified in Chromium.
+
+The trailing cell in the toolbar is an empty `w-6` spacer by default. Passing `headerExtra` hands that cell over, with its width floored at the spacer width: narrower content keeps the symmetry exactly, wider content grows the cell — better an off-center capsule than a clipped button.
 
 ## Related
 [Safari](../safari/safari.md) · [Terminal](../terminal/terminal.md) · [iPhone](../iphone/iphone.md) · [Android](../android/android.md) · [Tablet](../tablet/tablet.md) · [Watch](../watch/watch.md)
