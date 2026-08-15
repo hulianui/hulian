@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.48.0
+
+### Minor Changes
+
+- a795fab: Chart interaction fix and axis-domain escape hatch; Dialog gains a close button (#279 / #281 / #282)
+
+  - **Fix (#281)**: `onPointClick` on Cartesian charts (Area/Bar/Line/Composed) never fired -- in recharts 3.x `activeTooltipIndex` is always a string, and the old `typeof !== "number"` check silently rejected every click. It is now safely coerced (`null`, empty strings and Sankey-style `"children[0]"` indices are still rejected), restoring the promise that "if the tooltip is showing, a click always fires". PieChart/RadialChart use the per-sector path and were never affected.
+  - **New (#282)**: value-axis domain props. Single-axis Cartesian charts gain `yAxisDomain`; `ComposedChart` gains `leftAxisDomain` / `rightAxisDomain` (symmetric with `leftAxisLabel`/`rightAxisLabel`), shaped like `[0, 100]` with `"auto"` allowed on either end. Locking a percentage right axis (Pareto cumulative share, return rate, attainment) to `[0, 100]` keeps out-of-range reference lines (such as the 95 line) from being silently discarded, and stops "82%" from drawing near the top and reading as almost-full.
+  - **New (#279)**: `DialogContent` gains `showClose` / `closeLabel`, matching `DrawerContent` (#63) in both shape and default -- **default `true`**, rendering a visible, focusable, screen-reader-reachable close button in the top-right corner; while on, the title/`extra` row reserves the top-right 40px (`pr-10`) so long titles never slide under the button. The accessible name reads the new `dialog.close` locale section ("Close" in enUS). Layers with their own close affordance, such as a global search box, pass `showClose={false}` to keep the previous look.
+
 ## 0.47.0
 
 ### Minor Changes
