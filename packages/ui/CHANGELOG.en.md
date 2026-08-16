@@ -1,5 +1,16 @@
 # @hulianui/ui
 
+## 0.50.0
+
+### Minor Changes
+
+- 3bf4544: ShimmerButton gains `foreground` (#288): the text color is paired with `background`, so a fixed brand gradient no longer renders black text in dark mode
+
+  `ShimmerButton` accepted `background` (default `var(--color-primary)`) while the text color was hard-wired to `text-primary-foreground`. That pairing holds for the default background (primary and primary-foreground move together with the theme), but once a consumer passes a **fixed** background -- the login-page brand gradient `linear-gradient(135deg,#7c3aed,#4f46e5)` that ignores the theme -- the foreground still follows the theme: in dark mode primary-foreground is near-black, and the purple gradient shows black text.
+
+  - New `foreground?: string`, default `var(--color-primary-foreground)`, landing in `--hulian-shimmer-fg`; the text color now reads that variable (written as `[color:var(--hulian-shimmer-fg)]` rather than an inline `style.color`, so call sites that used to force `text-white` through `className` keep working and can migrate to the prop at their own pace).
+  - `shimmerColor` now defaults to follow `foreground` (the same variable), so a paired call does not need a third value; without `foreground` the value is byte-for-byte the old one (primary-foreground), and an explicit `shimmerColor` is unaffected.
+
 ## 0.49.0
 
 ### Minor Changes

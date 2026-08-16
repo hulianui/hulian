@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.49.0",
+  "version": "0.50.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -13452,8 +13452,8 @@
           "required": false,
           "kind": "string",
           "type": "string",
-          "default": "var(--color-primary-foreground)",
-          "description": "火花高光色"
+          "default": "跟随 `foreground`",
+          "description": "火花高光色，缺省读 `--hulian-shimmer-fg`（即 `foreground`）"
         },
         {
           "name": "shimmerSize",
@@ -13486,6 +13486,14 @@
           "type": "string",
           "default": "var(--color-primary)",
           "description": "按钮底色"
+        },
+        {
+          "name": "foreground",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "var(--color-primary-foreground)",
+          "description": "文字前景色（#288），与 `background` 成对：默认两者都随主题；传了**固定**底色（如不随主题的品牌渐变）就配一个固定前景，否则暗色下渐变上出黑字。落 `--hulian-shimmer-fg`，火花色缺省也读它"
         },
         {
           "name": "buttonProps",
