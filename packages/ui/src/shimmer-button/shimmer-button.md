@@ -26,11 +26,12 @@ import { ShimmerButton } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
-| shimmerColor | `string` | `var(--color-primary-foreground)` | 火花高光色 |
+| shimmerColor | `string` | 跟随 `foreground` | 火花高光色，缺省读 `--hulian-shimmer-fg`（即 `foreground`） |
 | shimmerSize | `string` | `0.05em` | 火花宽度 |
 | borderRadius | `string` | `var(--radius)` | 圆角 |
 | shimmerDuration | `string` | `3s` | 一轮火花秒数 |
 | background | `string` | `var(--color-primary)` | 按钮底色 |
+| foreground | `string` | `var(--color-primary-foreground)` | 文字前景色（#288），与 `background` 成对：默认两者都随主题；传了**固定**底色（如不随主题的品牌渐变）就配一个固定前景，否则暗色下渐变上出黑字。落 `--hulian-shimmer-fg`，火花色缺省也读它 |
 | ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
 
 ## Events
@@ -51,7 +52,9 @@ import { ShimmerButton } from "@hulianui/ui"
 <ShimmerButton>开始使用 瑚琏</ShimmerButton>
 
 // 换底色
-<ShimmerButton background="var(--color-danger)">删除</ShimmerButton>
+<ShimmerButton background="var(--color-danger)" foreground="var(--color-danger-foreground)">删除</ShimmerButton>
+// 固定品牌渐变（不随主题）：前景也要固定，否则暗色主题下 primary-foreground 变近黑，紫渐变上出黑字
+<ShimmerButton background="linear-gradient(135deg,#7c3aed,#4f46e5)" foreground="#fff">开始使用</ShimmerButton>
 ```
 
 ## 禁忌 / 坑

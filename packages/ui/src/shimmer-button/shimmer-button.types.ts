@@ -8,7 +8,7 @@ export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
    */
   size?: EffectButtonSize;
 
-  /** 火花高光色，默认 var(--color-primary-foreground) */
+  /** 火花高光色，默认跟随 `foreground`（即 var(--hulian-shimmer-fg)） */
   shimmerColor?: string;
   /** 火花宽度，默认 0.05em */
   shimmerSize?: string;
@@ -18,6 +18,12 @@ export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
   shimmerDuration?: string;
   /** 按钮底色，默认 var(--color-primary) */
   background?: string;
+  /**
+   * 文字前景色，默认 var(--color-primary-foreground)（#288）。与 `background` 成对：默认底色随主题、
+   * 前景也随主题；传了**固定**底色（不随主题的品牌渐变）就配一个固定前景，否则暗色下渐变上出黑字。
+   * 落 `--hulian-shimmer-fg`，火花色缺省也读它。
+   */
+  foreground?: string;
   /**
    * 渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「闪光样式的链接」CTA。
    * 样式/内部火花结构会合并进该元素；文案仍取 ShimmerButton 的 children。

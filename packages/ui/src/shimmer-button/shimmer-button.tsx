@@ -9,17 +9,18 @@ import {
 import type { ShimmerButtonProps } from "./shimmer-button.types";
 
 // 吸取自 magicui.design Shimmer Button：周边游走的高光火花（conic-gradient + container 查询 + 双关键帧）。
-// 瑚琏化：纯 CSS（RSC 安全）；底色默认 var(--color-primary)、文字 primary-foreground、火花默认 primary-foreground；
+// 瑚琏化：纯 CSS（RSC 安全）；底色默认 var(--color-primary)、前景默认 primary-foreground、火花默认跟随前景；
 // CSS 变量全 hulian- 前缀避与全局 --radius 冲突；关键帧 hulian-shimmer-slide/spin-around 落 preset.css；
 // container-type 用内联 [container-type:size] 兜底（不依赖 TW v4 @container 工具类）。
 export const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
   function ShimmerButton(
     {
-      shimmerColor = "var(--color-primary-foreground)",
+      shimmerColor = "var(--hulian-shimmer-fg)",
       shimmerSize = "0.05em",
       shimmerDuration = "3s",
       borderRadius = "var(--radius)",
       background = "var(--color-primary)",
+      foreground = "var(--color-primary-foreground)",
       size = "md",
       className,
       children,
@@ -36,6 +37,10 @@ export const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       "--hulian-shimmer-speed": shimmerDuration,
       "--hulian-shimmer-cut": shimmerSize,
       "--hulian-shimmer-bg": background,
+      // 前景色与底色成对（#288）：默认 primary ↔ primary-foreground 随主题；消费方传了固定底色
+      // （不随主题的品牌渐变）就必须能配一个固定前景，否则暗色下渐变上出黑字。
+      // 火花色缺省跟随前景（同一个变量），配对时不必再传第三个值。
+      "--hulian-shimmer-fg": foreground,
       ...style,
     } as CSSProperties;
 
@@ -44,7 +49,9 @@ export const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
     const mergedClassName = cn(
       EFFECT_BUTTON_BASE_CLASS,
       BUTTON_SIZE_CLASS[size],
-      "group relative z-0 cursor-pointer overflow-hidden border border-border text-primary-foreground",
+      // 文字色走变量而非 text-primary-foreground（#288）；写成 [color:…] 而非 style.color，
+      // 消费方 className 里的 text-* 仍能像以前一样盖过它（Tailwind 把任意属性排在具名工具类之前）。
+      "group relative z-0 cursor-pointer overflow-hidden border border-border [color:var(--hulian-shimmer-fg)]",
       "[border-radius:var(--hulian-shimmer-radius)] [background:var(--hulian-shimmer-bg)]",
       "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
       className,
