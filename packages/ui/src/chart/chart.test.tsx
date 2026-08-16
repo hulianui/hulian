@@ -1,5 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from "vitest";
 import { render, fireEvent, act } from "@testing-library/react";
+
+// recharts 的 RTK store 用 autoBatch "raf"：每次 dispatch 起一个 rAF + 100ms 兜底 setTimeout。
+// 文件跑完 jsdom 环境先拆、那颗 Node 计时器却还活着 → 回调里的 cancelAnimationFrame 已随 window 消失，
+// 报成「Unhandled Error: cancelAnimationFrame is not defined」把整个 test job 判红（CI 拥挤时 rAF
+// 来不及先跑就会撞上）。收尾等它过期，让它在 window 还在时安静落地。
+afterAll(() => new Promise<void>((r) => setTimeout(r, 120)));
 
 // jsdom: ResponsiveContainer 测量为 0 → 子图不出。mock 成克隆 child 注入固定尺寸，使 recharts 渲 SVG。
 vi.mock("recharts", async (importOriginal) => {
