@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.48.0",
+  "version": "0.49.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -25052,6 +25052,8 @@
         "TableRowProps",
         "TableHeadProps",
         "TableCellProps",
+        "TableCellWhitespace",
+        "TablePrimitiveWidthProps",
         "RowDragEndEvent",
         "RowDropPosition",
         "ColumnDef",
@@ -26978,11 +26980,32 @@
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-theme-toggler/animated-theme-toggler.md",
       "props": [
         {
+          "name": "theme",
+          "required": false,
+          "kind": "enum",
+          "type": "\"light\" | \"dark\"",
+          "values": [
+            "light",
+            "dark"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "受控主题：传了即受控，显示与切换目标都由它决定，忽略 `ThemeProvider` / 自持态的值；点击只回调 `onThemeChange`"
+        },
+        {
+          "name": "onThemeChange",
+          "required": false,
+          "kind": "function",
+          "type": "(next: \"light\" | \"dark\") => void",
+          "default": null,
+          "description": "主题即将切换时回调下一个值；受控与非受控都触发，受控时是唯一的落值出口"
+        },
+        {
           "name": "duration",
           "required": false,
           "kind": "number",
           "type": "number",
-          "default": null,
+          "default": "500",
           "description": "圆形揭示动画时长(ms)"
         },
         {

@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.48.0 · 394 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.49.0 · 394 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -854,6 +854,7 @@ import { ScrollArea } from "@hulianui/ui"
 
 - **不给限高/限宽就不滚**：组件不自带尺寸，必须经 `className` 给 Root 限定 `h-*` / `w-*`（横向则限 `w-*`），否则内容撑开容器、滚动条永不出现。
 - **滚动条是覆盖式的，内容要自己留出让位内边距**。滚动条 `absolute` 定位、不占布局宽度，宽 `w-2`（8px），横向条高同理。所以内容区请自留 **≥ `pr-2.5`（10px = 8px 条 + 2px 呼吸）**，横向滚动则是 `pb-2.5`；留不够（比如常见的 `pr-1`=4px）滚动条就会稳定地压在最右一列内容上（#118）。这条是隐式约定，组件不代劳——因为「让位」该加在内容层还是各列上，只有消费方知道。
+- **非声明方向的溢出被锁死（hidden），不会静默可滚**：`vertical` 的视口 `overflow-x: hidden`、`horizontal` 的视口 `overflow-y: hidden`（`both` 两轴都放开）。Base UI 给视口的是两轴 `overflow: scroll` 且原生条隐藏，此前内容比视口宽哪怕 1px 都能被触控板横扫、又没有任何滚动条提示，观感像布局坏了（#287）。所以放进 `vertical` 区域的内容要自己不超宽（`w-full` / `min-w-0` / 内部截断），超出的部分现在是被裁而不是可滚；真要两轴滚就声明 `orientation="both"`。
 
 ## 相关
 [Layout](https://hulianui.haloritual.com/zh/components/layout) · [AdminLayout](https://hulianui.haloritual.com/zh/components/admin-layout) · [Viewport](https://hulianui.haloritual.com/zh/components/viewport) · [Resizable](https://hulianui.haloritual.com/zh/components/resizable) · [AspectRatio](https://hulianui.haloritual.com/zh/components/aspect-ratio) · [FitScreen](https://hulianui.haloritual.com/zh/components/fit-screen)
@@ -8215,7 +8216,7 @@ const { data, isLoading } = useFonts();
 - `searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要"搜索 + 分组"直接用 [Combobox](https://hulianui.haloritual.com/zh/components/combobox)。
 - `searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](https://hulianui.haloritual.com/zh/components/combobox) 自带 `filter`。
 - `searchable` 下 `items` **给到 100 项及以上时列表自动虚拟化**（底层 Combobox 的策略）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认 `SelectItem` 恰好 32px，通常无感。**如果**你的 `SelectItem` 高度不是 32px（两行文案、带头像、自定义 padding/字号），那么在 ≥100 项时滚动落位会逐渐偏移——**不报错、短列表也复现不出来**，请显式传 `virtualized={false}`。同理，测试里 `getAllByRole("option")` 在虚拟化后只拿得到视口内那几条。
-- `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。
+- `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。`loading` 是展示态，**不改值**：浮层开着时把选项卸掉，Base UI 会把「已卸载」的选中项当成被移除而回调剔除后的值，本组件在加载期间把这类内部回调吞掉（受控不触发 `onValueChange`，非受控内部值也保留），加载结束后已选项照常显示。注意这只覆盖 `loading` 括住的窗口：浮层开着时直接换掉 `items` 且新列表不含已选项，Base UI 仍会回调剔除后的值——远程搜索请让已选项留在 `items` 里，或改用 `searchable`（Combobox 皮肤没有这条剔除逻辑）。
 
 ## 相关
 [Input](https://hulianui.haloritual.com/zh/components/input) · [Textarea](https://hulianui.haloritual.com/zh/components/textarea) · [Checkbox](https://hulianui.haloritual.com/zh/components/checkbox) · [CheckboxGroup](https://hulianui.haloritual.com/zh/components/checkbox-group) · [Radio](https://hulianui.haloritual.com/zh/components/radio) · [Switch](https://hulianui.haloritual.com/zh/components/switch)
@@ -15366,6 +15367,7 @@ import {
 | layout | `"auto" ｜ "fixed"` | `"auto"` | `table-layout` |
 | minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
 | tableClassName | `string` | — | `<table>` 本体的类名 |
+| cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | 表级换行策略（#285），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellWhitespace` 同名同义。不写为浏览器默认（换行）。典型形状是「表级 `nowrap` + 少数几列 `TableCell whitespace="normal"`」；`TableHead` 不受影响，恒不换行 |
 | ref | `Ref<HTMLDivElement>` | — | **外层滚动容器**（`overflow-x-auto` 那层）的引用。横向滚动态只存在于那一层 |
 
 `TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性，外加一个 `ref`。
@@ -15385,6 +15387,10 @@ const scroller = useRef<HTMLDivElement>(null)
 | selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
 | align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性 |
 | verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
+| whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | `TableCell`：按格换行策略（#285），覆盖 `TableRoot` 的 `cellWhitespace`；同高层 `Table` 的列级 `meta.whitespace`。`pre-wrap` / `normal` 连带 `break-words` |
+| width | `number ｜ string` | — | `TableHead` / `TableCell`：宽度，落 `style.width`（数字按 px，字符串原样）（#286）。列宽是**数据**（来自字段配置、用户可改）时用它，别在业务里写 `style`——那会被 `@hulianui/guard` 的 no-style-override 拦下；`w-[${px}px]` 动态类 Tailwind 不编译；`<col>` 只在 `layout="fixed"` 下可靠且给不了 `maxWidth` |
+| minWidth | `number ｜ string` | — | `TableHead` / `TableCell`：宽度下限，落 `style.minWidth` |
+| maxWidth | `number ｜ string` | — | `TableHead` / `TableCell`：宽度上限，落 `style.maxWidth`。`truncate` 要生效必须有它收口，否则 auto 布局下列被内容撑开、省略号永不触发。三者语义同高层 `Table` 的 `size` / `minSize` / `maxSize`；消费方明写的 `style` 仍透传且优先 |
 | ref | `Ref<HTMLTableRowElement ｜ HTMLTableCellElement>` | — | 落在 `tr` / `th` / `td` 本体上（「滚到某一行」「量某个格子的宽」） |
 
 `TableRow` 的分隔线 / 悬停 / 斑马纹按所在段自动区分（表头行不 hover、不斑马纹，也不吃 `last:border-0`
@@ -16493,13 +16499,18 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `duration` | `number` | — | 圆形揭示动画时长(ms) |
+| `theme` | `"light" \| "dark"` | — | 受控主题：传了即受控，显示与切换目标都由它决定，忽略 `ThemeProvider` / 自持态的值；点击只回调 `onThemeChange` |
+| `onThemeChange` | `(next: "light" \| "dark") => void` | — | 主题即将切换时回调下一个值；受控与非受控都触发，受控时是唯一的落值出口 |
+| `duration` | `number` | `500` | 圆形揭示动画时长(ms) |
 | `className` | `string` | — | 按钮类名 |
 | `aria-label` | `string` | — | 无障碍标签 |
 
 ## 示例
 ```tsx
 <AnimatedThemeToggler aria-label="切换明暗主题" />
+
+// 受控：主题真源在消费方（接口 / 自己的存储），ThemeProvider 只是 forcedTheme 镜像
+<AnimatedThemeToggler theme={theme} onThemeChange={(next) => savePreference(next)} />
 ```
 
 ## 禁忌 / 坑
@@ -16507,6 +16518,7 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 - 依赖 View Transitions API 做圆形揭示，浏览器不支持时自动降级为瞬时切换（无动画），切换本身仍生效。
 - 点击时读按钮位置算扩散圆心，属客户端组件；在 RSC 树里使用须确保父级有 `"use client"` 边界。
 - **上层没有 `ThemeProvider` 时不再抛错**（此前会整页白屏）：自动降级为自持主题态，直接读写 `<html data-theme>` 与同一个 `localStorage` 键（`hulian-theme`），dev 下打一条告警。降级态下它与其他消费 `useTheme` 的组件**不联动**，正式用法仍应在上层挂 `ThemeProvider`。
+- **受控形态（#284）**：`ThemeProvider` 挂着 `forcedTheme` 时其 `toggle` 按文档「写偏好不改视觉」，非受控的本组件点了动画照播、主题却不切。主题真源不在瑚琏这边（外壳 + iframe 各挂一份 `forcedTheme` Provider 从同一处读值）就传 `theme` + `onThemeChange`：圆形揭示不变，只是「切到哪」由消费方落值；受控时不会去碰 `useTheme().toggle`，也不进自持降级。
 - 应用代码里想要「缺 Provider 就报错」的硬约束，继续用 `useTheme`；库内组件与需要容错的场景用 `useThemeOptional`（缺上下文返回 `null`）。
 
 ## 相关

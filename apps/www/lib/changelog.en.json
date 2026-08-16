@@ -1,6 +1,25 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.49.0",
+    "date": "2026-08-16",
+    "entries": [
+      {
+        "sha": "3a4f834",
+        "bump": "minor",
+        "breaking": false,
+        "body": "#283–#287 cleared in one round: Select `loading` no longer rewrites the value · controlled AnimatedThemeToggler · Table primitives gain `cellWhitespace` / width props · AdminLayout sidebar no longer pans sideways\n\n- **Fix (#283)**: a controlled `Select` (especially `multiple`) with the popup open received one `onValueChange([])` (`null` for single) and lost its selection the moment `loading` flipped to `true`. Root cause: the loading state unmounts every option, and Base UI Select's Positioner treats the now-unmounted selected items as removed and proactively emits the pruned value. `loading` is a display state, so that internal callback is now swallowed and `cancel()`ed while loading: controlled mode never sees `onValueChange`, uncontrolled mode keeps its internal value, and the selection shows up again once loading ends. This only covers the window bracketed by `loading` -- swapping `items` while the popup is open with a list that omits the selected item still lets Base UI emit the pruned value; for remote search keep the selected items inside `items`, or use `searchable` (the Combobox skin has no such pruning).\n- **New (#284)**: `AnimatedThemeToggler` gains a controlled form, `theme` + `onThemeChange(next)`. With `ThemeProvider forcedTheme`, `toggle` writes the preference without changing the visual theme, so an uncontrolled toggler played the reveal but nothing switched. When the theme source of truth lives outside the library (shell + iframes each mounting a `forcedTheme` provider), pass the controlled pair: the circular reveal is unchanged, only where the value lands is up to the consumer. Controlled mode never touches `useTheme().toggle`, never enters the standalone fallback and never warns; `onThemeChange` also fires in uncontrolled mode. Leaving it out keeps the previous behaviour.\n- **New (#285)**: the composable `TableRoot` gains `cellWhitespace` (`\"nowrap\" | \"normal\" | \"pre-wrap\"`, passed down through context) and `TableCell` gains a per-cell `whitespace` override -- same name and meaning as `cellWhitespace` / `meta.whitespace` on the high-level `Table`, with one shared class map (`TABLE_WHITESPACE_CLASS`). `TableHead` still never wraps. Previously \"table-level nowrap\" could only be inherited through `tableClassName=\"whitespace-nowrap\"`, and columns that had to wrap had no per-column override.\n- **New (#286)**: `TableHead` / `TableCell` gain `width` / `minWidth` / `maxWidth` (`number | string`, applied as inline style, mirroring `size` / `minSize` / `maxSize` on the high-level `Table`). When the column width is data (field configuration, user-editable), the only route used to be `style={{ width }}`, which `@hulianui/guard`'s no-style-override rejects; dynamic `w-[${px}px]` classes never compile and `<col>` is only reliable under fixed layout and cannot express `maxWidth`. An explicit `style` on the element still passes through and wins.\n- **Fix (#287)**: the `AdminLayout` sidebar menu could be panned about 9px sideways with a trackpad. The real culprit is the 232px sidebar container versus `NavMenu`'s own `w-60` (240px) -- not scrollbar space; the sidebar `NavMenu` now takes its width from the container (`w-full`). `ScrollArea` also locks overflow on the undeclared axis: a `vertical` viewport gets `overflow-x: hidden`, a `horizontal` viewport gets `overflow-y: hidden` (`both` locks nothing). Base UI styles the viewport with two-axis `overflow: scroll` and hides the native bars, so content even 1px wider than the viewport used to pan sideways with no scrollbar to explain it; content inside a `vertical` area now has to fit its width, and anything wider is clipped rather than scrollable."
+      },
+      {
+        "sha": "bb9a113",
+        "bump": "patch",
+        "breaking": false,
+        "body": "The npm package README now reports 394 components, and the package README is part of the count gate\n\n`packages/ui/README.md` (the one shown on the `@hulianui/ui` npm page) had said \"383 components\" since 0.27.0 while the root README had long moved on to 394: `pnpm readme:sync` and the CI count gate only covered the two root READMEs, so the package copy was neither synced nor checked -- \"GitHub shows 394, npm shows 383, CI green\". All three READMEs now share one source of truth and one gate; a stale package README fails immediately."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.48.0",
     "date": "2026-08-15",
     "entries": [
