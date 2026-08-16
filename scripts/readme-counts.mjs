@@ -14,7 +14,12 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-export const README_FILES = ["README.md", "README.en.md"];
+// 仓库根的两份是 GitHub 首页；packages/ui/README.md 是 npm 包页面（发布以子包目录为根，
+// 根 README 不会被继承）。三份都写了组件数，缺一份就会像 0.27→0.48 那样：GitHub 显示 394、
+// npm 页面还挂着 383，而 CI 全绿。
+export const ROOT_README_FILES = ["README.md", "README.en.md"];
+export const PACKAGE_README_FILES = ["packages/ui/README.md"];
+export const README_FILES = [...ROOT_README_FILES, ...PACKAGE_README_FILES];
 
 export function componentCount() {
   const src = join(ROOT, "packages/ui/src");

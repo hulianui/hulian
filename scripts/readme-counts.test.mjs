@@ -8,6 +8,7 @@ import test from "node:test";
 import {
   README_FILES,
   ROOT,
+  ROOT_README_FILES,
   componentCount,
   componentNumbersIn,
   demoCount,
@@ -31,7 +32,8 @@ for (const file of README_FILES) {
 
   test(`${file} 的 demo 数与 demos.ts 一致`, () => {
     const claimed = demoNumbersIn(readme);
-    assert.ok(claimed.length > 0, `${file} 里找不到 demo 数`);
+    // 包 README 只讲怎么装怎么接，不列 demo；根 README 必须有 demo 数
+    if (ROOT_README_FILES.includes(file)) assert.ok(claimed.length > 0, `${file} 里找不到 demo 数`);
     for (const n of claimed) {
       assert.equal(
         n,
