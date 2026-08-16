@@ -342,6 +342,89 @@ describe("Select loading", () => {
     );
     expect(queryClear()).toBeNull();
   });
+
+  // #283：加载期间浮层卸掉全部选项，Base UI 会把「已卸载」的选中项当成被移除而回调剔除后的值；
+  // loading 是展示态，不许借这条路改写受控值。
+  function ControlledMulti(props: {
+    loading?: boolean;
+    value: string[];
+    onValueChange: (v: unknown) => void;
+    itemList?: typeof items;
+  }) {
+    const list = props.itemList ?? items;
+    return (
+      <Select
+        items={list}
+        multiple
+        open
+        value={props.value}
+        onValueChange={props.onValueChange}
+        loading={props.loading}
+      >
+        <SelectTrigger />
+        <SelectContent>
+          {list.map((it) => (
+            <SelectItem key={it.value} value={it.value}>
+              {it.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  }
+
+  it("受控多选浮层开着时把 loading 置 true 再置回：不回调 onValueChange，值原样保留", () => {
+    const spy = vi.fn();
+    const r = render(<ControlledMulti value={["serif"]} onValueChange={spy} />);
+    r.rerender(<ControlledMulti value={["serif"]} onValueChange={spy} loading />);
+    r.rerender(<ControlledMulti value={["serif"]} onValueChange={spy} loading={false} />);
+    expect(spy).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("option", { name: "衬线" }).getAttribute("aria-selected"),
+    ).toBe("true");
+  });
+
+  it("受控单选同样：loading 往返不回调 null", () => {
+    const spy = vi.fn();
+    const Single = (p: { loading?: boolean }) => (
+      <Select items={items} open value="serif" onValueChange={spy} loading={p.loading}>
+        <SelectTrigger />
+        <SelectContent>
+          {items.map((it) => (
+            <SelectItem key={it.value} value={it.value}>
+              {it.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+    const r = render(<Single />);
+    r.rerender(<Single loading />);
+    r.rerender(<Single loading={false} />);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it("非受控多选：loading 往返后 Base UI 内部值也保住（cancel 了内部剔除）", () => {
+    const Un = (p: { loading?: boolean }) => (
+      <Select items={items} multiple open defaultValue={["serif"]} loading={p.loading}>
+        <SelectTrigger />
+        <SelectContent>
+          {items.map((it) => (
+            <SelectItem key={it.value} value={it.value}>
+              {it.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+    const r = render(<Un />);
+    r.rerender(<Un loading />);
+    r.rerender(<Un loading={false} />);
+    expect(
+      screen.getByRole("option", { name: "衬线" }).getAttribute("aria-selected"),
+    ).toBe("true");
+    expect(getTrigger().textContent).toContain("衬线");
+  });
 });
 
 // ——— searchable ———

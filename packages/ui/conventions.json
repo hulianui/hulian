@@ -556,6 +556,13 @@
       "id": "component/animated-theme-toggler/pitfall/4",
       "scope": "animated-theme-toggler",
       "title": "AnimatedThemeToggler",
+      "rule": "**受控形态（#284）**：`ThemeProvider` 挂着 `forcedTheme` 时其 `toggle` 按文档「写偏好不改视觉」，非受控的本组件点了动画照播、主题却不切。主题真源不在瑚琏这边（外壳 + iframe 各挂一份 `forcedTheme` Provider 从同一处读值）就传 `theme` + `onThemeChange`：圆形揭示不变，只是「切到哪」由消费方落值；受控时不会去碰 `useTheme().toggle`，也不进自持降级。",
+      "source": "packages/ui/src/animated-theme-toggler/animated-theme-toggler.md"
+    },
+    {
+      "id": "component/animated-theme-toggler/pitfall/5",
+      "scope": "animated-theme-toggler",
+      "title": "AnimatedThemeToggler",
       "rule": "应用代码里想要「缺 Provider 就报错」的硬约束，继续用 `useTheme`；库内组件与需要容错的场景用 `useThemeOptional`（缺上下文返回 `null`）。",
       "source": "packages/ui/src/animated-theme-toggler/animated-theme-toggler.md"
     },
@@ -7868,6 +7875,13 @@
       "source": "packages/ui/src/scroll-area/scroll-area.md"
     },
     {
+      "id": "component/scroll-area/pitfall/3",
+      "scope": "scroll-area",
+      "title": "ScrollArea",
+      "rule": "**非声明方向的溢出被锁死（hidden），不会静默可滚**：`vertical` 的视口 `overflow-x: hidden`、`horizontal` 的视口 `overflow-y: hidden`（`both` 两轴都放开）。Base UI 给视口的是两轴 `overflow: scroll` 且原生条隐藏，此前内容比视口宽哪怕 1px 都能被触控板横扫、又没有任何滚动条提示，观感像布局坏了（#287）。所以放进 `vertical` 区域的内容要自己不超宽（`w-full` / `min-w-0` / 内部截断），超出的部分现在是被裁而不是可滚；真要两轴滚就声明 `orientation=\"both\"`。",
+      "source": "packages/ui/src/scroll-area/scroll-area.md"
+    },
+    {
       "id": "component/scroll-float/pitfall/1",
       "scope": "scroll-float",
       "title": "ScrollFloat",
@@ -8144,7 +8158,7 @@
       "id": "component/select/pitfall/10",
       "scope": "select",
       "title": "Select",
-      "rule": "`loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。",
+      "rule": "`loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。`loading` 是展示态，**不改值**：浮层开着时把选项卸掉，Base UI 会把「已卸载」的选中项当成被移除而回调剔除后的值，本组件在加载期间把这类内部回调吞掉（受控不触发 `onValueChange`，非受控内部值也保留），加载结束后已选项照常显示。注意这只覆盖 `loading` 括住的窗口：浮层开着时直接换掉 `items` 且新列表不含已选项，Base UI 仍会回调剔除后的值——远程搜索请让已选项留在 `items` 里，或改用 `searchable`（Combobox 皮肤没有这条剔除逻辑）。",
       "source": "packages/ui/src/select/select.md"
     },
     {
@@ -10371,7 +10385,7 @@
   ],
   "stats": {
     "componentDocs": 394,
-    "componentAdvisories": 1446,
-    "totalAdvisories": 1456
+    "componentAdvisories": 1448,
+    "totalAdvisories": 1458
   }
 }

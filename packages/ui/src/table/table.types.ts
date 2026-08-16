@@ -462,6 +462,22 @@ export interface TableRootProps extends HTMLAttributes<HTMLDivElement> {
   minWidth?: number | string;
   /** `<table>` 本体的类名（`className` 落在外层滚动容器上）。 */
   tableClassName?: string;
+  /**
+   * 表级换行策略（#285），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellWhitespace` 同名同义。
+   * 不写为浏览器默认（换行）。典型形状是「表级 `nowrap` + 少数几列 `TableCell whitespace="normal"`」。
+   * `TableHead` 不受它影响，恒不换行（同高层 `Table`）。
+   */
+  cellWhitespace?: TableCellWhitespace;
+}
+
+/** 原语列宽（#286）：数字按 px，字符串原样落 CSS。落 inline style，语义同高层 `Table` 的 `size` / `minSize` / `maxSize`。 */
+export interface TablePrimitiveWidthProps {
+  /** 单元格宽度（落 `style.width`）。列宽是数据（来自配置 / 用户可改）时用它，别写 `style`。 */
+  width?: number | string;
+  /** 宽度下限（落 `style.minWidth`）。 */
+  minWidth?: number | string;
+  /** 宽度上限（落 `style.maxWidth`）；`truncate` 要生效必须有它收口，否则 auto 布局下列被内容撑开。 */
+  maxWidth?: number | string;
 }
 
 /** `TableHeader`：`<thead>`。 */
@@ -485,17 +501,23 @@ export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
 }
 
 /** `TableHead`：`<th>`（表头单元格，恒不换行 + 半粗）。 */
-export interface TableHeadProps extends Omit<ThHTMLAttributes<HTMLTableCellElement>, "align"> {
+export interface TableHeadProps
+  extends Omit<ThHTMLAttributes<HTMLTableCellElement>, "align" | "width">,
+    TablePrimitiveWidthProps {
   ref?: Ref<HTMLTableCellElement>;
   /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
   align?: TableColumnAlign;
 }
 
 /** `TableCell`：`<td>`。 */
-export interface TableCellProps extends Omit<TdHTMLAttributes<HTMLTableCellElement>, "align"> {
+export interface TableCellProps
+  extends Omit<TdHTMLAttributes<HTMLTableCellElement>, "align" | "width">,
+    TablePrimitiveWidthProps {
   ref?: Ref<HTMLTableCellElement>;
   /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
   align?: TableColumnAlign;
   /** 垂直对齐。@default "middle" */
   verticalAlign?: TableCellVerticalAlign;
+  /** 按格换行策略（#285），覆盖 `TableRoot` 的 `cellWhitespace`；同高层 `Table` 的列级 `meta.whitespace`。 */
+  whitespace?: TableCellWhitespace;
 }

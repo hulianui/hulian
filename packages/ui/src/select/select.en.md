@@ -166,7 +166,7 @@ const { data, isLoading } = useFonts();
 - Search mode flattens options, so declarative SelectGroup structure does not apply. Use [Combobox](../combobox/combobox.md) for combined search and grouping.
 - Search matches string labels. For a JSX label such as icon plus text, it falls back to matching `value`. Use [Combobox](../combobox/combobox.md)'s `filter` for multi-field matching such as localized names, transliteration, and codes.
 - For remote completion or free-form entry, use [Combobox](../combobox/combobox.md) rather than extending Select's fixed-option contract.
-- During `loading`, the popup renders only loading content—never stale options—and hides the clear action while the current value may be refreshing.
+- During `loading`, the popup renders only loading content—never stale options—and hides the clear action while the current value may be refreshing. `loading` is a display state and never rewrites the value: unmounting the options while the popup is open makes Base UI treat the selected items as removed and emit a pruned value; the component swallows that internal callback while loading (controlled: no `onValueChange`; uncontrolled: the internal value stays), so the selection is intact once loading ends. This only covers the window bracketed by `loading`—swapping `items` while the popup is open with a list that omits the selected item still lets Base UI emit the pruned value. For remote search keep the selected items inside `items`, or use `searchable` (the Combobox skin has no such pruning).
 
 ## Related
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

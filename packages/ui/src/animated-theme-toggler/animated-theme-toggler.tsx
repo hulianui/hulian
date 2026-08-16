@@ -55,14 +55,25 @@ function useStandaloneTheme(enabled: boolean) {
 }
 
 export function AnimatedThemeToggler({
+  theme: themeProp,
+  onThemeChange,
   duration = 500,
   className,
   "aria-label": ariaLabel,
 }: AnimatedThemeTogglerProps) {
+  const controlled = themeProp !== undefined;
   const ctx = useThemeOptional();
-  const standalone = useStandaloneTheme(ctx == null);
-  const theme = ctx?.theme ?? standalone.theme;
-  const toggle = ctx?.toggle ?? standalone.toggle;
+  // 受控时不进自持降级（也不该为「缺 Provider」告警：消费方明说了真源在自己手里）。
+  const standalone = useStandaloneTheme(!controlled && ctx == null);
+  const theme = themeProp ?? ctx?.theme ?? standalone.theme;
+  const uncontrolledToggle = ctx?.toggle ?? standalone.toggle;
+  // 受控（#284）：只回调，不动 ThemeProvider —— 挂着 forcedTheme 的 Provider 其 toggle 按文档
+  // 「写偏好不改视觉」，点了动画照播主题却不切，等于按钮失效；把「切到哪」交还消费方。
+  const toggle = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    onThemeChange?.(next);
+    if (!controlled) uncontrolledToggle();
+  };
   const ref = useRef<HTMLButtonElement>(null);
   const locale = useComponentLocale().animatedThemeToggler;
 

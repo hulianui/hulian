@@ -1,13 +1,16 @@
 "use client";
 import { createContext, useContext } from "react";
 import { cn } from "../lib/cn";
+import type { CSSProperties } from "react";
 import type {
   TableBodyProps,
   TableCellProps,
+  TableCellWhitespace,
   TableDensity,
   TableFooterProps,
   TableHeadProps,
   TableHeaderProps,
+  TablePrimitiveWidthProps,
   TableRootProps,
   TableRowProps,
 } from "./table.types";
@@ -31,11 +34,40 @@ export const TABLE_DENSITY_PAD: Record<TableDensity, string> = {
   compact: "px-2 py-1",
 };
 
+/** 换行策略 → 类名（#194 / #285）。高层 `Table` 与原语共用这一份，换行是皮肤的一部分，不能两边各写一套。 */
+export const TABLE_WHITESPACE_CLASS: Record<TableCellWhitespace, string> = {
+  nowrap: "whitespace-nowrap",
+  normal: "whitespace-normal break-words",
+  "pre-wrap": "whitespace-pre-wrap break-words",
+};
+
 const ALIGN_TEXT = { left: "text-left", center: "text-center", right: "text-right" } as const;
 const VALIGN_CLASS = { top: "align-top", middle: "align-middle", bottom: "align-bottom" } as const;
 
+/**
+ * 原语列宽（#286）：数据驱动的列宽只能落 inline style（`w-[${px}px]` 不编译、`<col>` 只在 fixed 下可靠且给不了 maxWidth），
+ * 消费方直接写 `style` 又会被 guard 的 no-style-override 拦下 —— 所以入口必须是 prop，由原语代落。
+ * 消费方自己的 `style` 仍透传，且优先级更高（明写的就是想覆盖）。
+ */
+function widthStyle(
+  { width, minWidth, maxWidth }: TablePrimitiveWidthProps,
+  style: CSSProperties | undefined,
+): CSSProperties | undefined {
+  if (width == null && minWidth == null && maxWidth == null) return style;
+  return {
+    ...(width != null ? { width } : null),
+    ...(minWidth != null ? { minWidth } : null),
+    ...(maxWidth != null ? { maxWidth } : null),
+    ...style,
+  };
+}
+
 /** 表级皮肤（由 TableRoot 下发）。原语是散件，逐个传 density 必然漂。 */
-const TableSkinContext = createContext<{ density: TableDensity; striped: boolean }>({
+const TableSkinContext = createContext<{
+  density: TableDensity;
+  striped: boolean;
+  cellWhitespace?: TableCellWhitespace;
+}>({
   density: "default",
   striped: false,
 });
@@ -54,6 +86,7 @@ export function TableRoot({
   layout = "auto",
   minWidth,
   tableClassName,
+  cellWhitespace,
   className,
   children,
   ...rest
@@ -67,7 +100,7 @@ export function TableRoot({
       )}
       {...rest}
     >
-      <TableSkinContext.Provider value={{ density, striped }}>
+      <TableSkinContext.Provider value={{ density, striped, cellWhitespace }}>
         <table
           style={{
             ...(layout === "fixed" ? { tableLayout: "fixed" as const } : null),
@@ -129,10 +162,19 @@ export function TableRow({ selected, className, ...rest }: TableRowProps) {
   );
 }
 
-export function TableHead({ align = "left", className, ...rest }: TableHeadProps) {
+export function TableHead({
+  align = "left",
+  width,
+  minWidth,
+  maxWidth,
+  style,
+  className,
+  ...rest
+}: TableHeadProps) {
   const { density } = useContext(TableSkinContext);
   return (
     <th
+      style={widthStyle({ width, minWidth, maxWidth }, style)}
       className={cn(
         TABLE_DENSITY_PAD[density],
         ALIGN_TEXT[align],
@@ -148,16 +190,24 @@ export function TableHead({ align = "left", className, ...rest }: TableHeadProps
 export function TableCell({
   align = "left",
   verticalAlign = "middle",
+  whitespace,
+  width,
+  minWidth,
+  maxWidth,
+  style,
   className,
   ...rest
 }: TableCellProps) {
-  const { density } = useContext(TableSkinContext);
+  const { density, cellWhitespace } = useContext(TableSkinContext);
+  const ws = whitespace ?? cellWhitespace;
   return (
     <td
+      style={widthStyle({ width, minWidth, maxWidth }, style)}
       className={cn(
         TABLE_DENSITY_PAD[density],
         ALIGN_TEXT[align],
         VALIGN_CLASS[verticalAlign],
+        ws && TABLE_WHITESPACE_CLASS[ws],
         className,
       )}
       {...rest}

@@ -33,6 +33,13 @@ describe("AdminLayout", () => {
     expect(getByText("内容")).toBeTruthy();
   });
 
+  it("侧栏 NavMenu 宽度交给容器（w-full），不再带自身 w-60 撑出横向溢出（#287）", () => {
+    const { container } = render(<AdminLayout menuItems={menu} defaultActiveKey="dashboard" />);
+    const nav = container.querySelector("aside nav");
+    expect(nav?.className).toContain("w-full");
+    expect(nav?.className).not.toMatch(/\bw-60\b/);
+  });
+
   it("defaultActiveKey 自动打开对应页签", () => {
     const { container } = render(<AdminLayout menuItems={menu} defaultActiveKey="dashboard" />);
     const tabs = tabsOf(container);

@@ -220,8 +220,10 @@ export function AdminLayout({
           {collapsed ? logoCollapsed ?? logo : logo}
         </div>
         <ScrollArea className="min-h-0 flex-1 rounded-none">
+          {/* 宽度交给侧栏容器：NavMenu 自带的 w-60 (240px) 比这里的 232px 侧栏还宽，
+              装进 ScrollArea 就横向溢出 9px、可被触控板横扫（#287）。 */}
           <NavMenu
-            className="p-2"
+            className="w-full p-2"
             items={menuItems}
             mode={collapsed ? "collapsed" : "inline"}
             selectedKeys={selected ? [selected] : []}

@@ -166,10 +166,18 @@ export function Select({
 
   const handleValueChange = useCallback(
     (next: unknown, eventDetails?: unknown) => {
+      // loading 是展示态，不许改值（#283）：加载期间浮层不渲染选项，Base UI Select 的 Positioner 会把
+      // 「已卸载」的选中项当作被移除，主动回调剔除后的值（多选回 []、单选回 null）——受控消费方一接就把
+      // 已选清空了。此时用户根本点不到任何选项，来的值变更只可能是这类内部剔除 → 吞掉，并 cancel()
+      // 让 Base UI 自己的内部状态也别落值（非受控档同样保住）。
+      if (loading) {
+        (eventDetails as { cancel?: () => void } | undefined)?.cancel?.();
+        return;
+      }
       if (!controlled) setMirror(next as string | string[] | null);
       onValueChange?.(next, eventDetails);
     },
-    [controlled, onValueChange],
+    [controlled, loading, onValueChange],
   );
 
   const hasValue = multiple

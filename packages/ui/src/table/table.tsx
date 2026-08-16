@@ -56,7 +56,7 @@ import { warnOnce } from "../lib/warn-once";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip/tooltip";
 import type { RowDragEndEvent, TableProps } from "./table.types";
 import { planCellSpans, planHeaderRows, spanKey } from "./table.span";
-import { TABLE_DENSITY_PAD } from "./table-primitives";
+import { TABLE_DENSITY_PAD, TABLE_WHITESPACE_CLASS } from "./table-primitives";
 
 const SELECT_COL = "__select__";
 const EXPANDER_COL = "__expander__";
@@ -77,11 +77,8 @@ const VALIGN_CLASS = { top: "align-top", middle: "align-middle", bottom: "align-
  * `pre-wrap` 连带 `break-words` —— 否则超长无空格串（URL / 身份证号）会撑破列宽，
  * 而「保留原文换行」的那些字段恰恰最容易混进这种串。
  */
-const WHITESPACE_CLASS = {
-  nowrap: "whitespace-nowrap",
-  normal: "whitespace-normal break-words",
-  "pre-wrap": "whitespace-pre-wrap break-words",
-} as const;
+// 类名与组合原语共用一份（#285）：换行是皮肤的一部分，两边不能各写一套。
+const WHITESPACE_CLASS = TABLE_WHITESPACE_CLASS;
 
 function stickyStyle<TData>(column: Column<TData, unknown>): React.CSSProperties | undefined {
   const pinned = column.getIsPinned();

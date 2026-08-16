@@ -24,6 +24,8 @@ export type {
   TableRowProps,
   TableHeadProps,
   TableCellProps,
+  TableCellWhitespace,
+  TablePrimitiveWidthProps,
   RowDragEndEvent,
   RowDropPosition,
   ColumnDef,

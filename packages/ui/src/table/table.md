@@ -121,6 +121,7 @@ import {
 | layout | `"auto" ｜ "fixed"` | `"auto"` | `table-layout` |
 | minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
 | tableClassName | `string` | — | `<table>` 本体的类名 |
+| cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | 表级换行策略（#285），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellWhitespace` 同名同义。不写为浏览器默认（换行）。典型形状是「表级 `nowrap` + 少数几列 `TableCell whitespace="normal"`」；`TableHead` 不受影响，恒不换行 |
 | ref | `Ref<HTMLDivElement>` | — | **外层滚动容器**（`overflow-x-auto` 那层）的引用。横向滚动态只存在于那一层 |
 
 `TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性，外加一个 `ref`。
@@ -140,6 +141,10 @@ const scroller = useRef<HTMLDivElement>(null)
 | selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
 | align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性 |
 | verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
+| whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | `TableCell`：按格换行策略（#285），覆盖 `TableRoot` 的 `cellWhitespace`；同高层 `Table` 的列级 `meta.whitespace`。`pre-wrap` / `normal` 连带 `break-words` |
+| width | `number ｜ string` | — | `TableHead` / `TableCell`：宽度，落 `style.width`（数字按 px，字符串原样）（#286）。列宽是**数据**（来自字段配置、用户可改）时用它，别在业务里写 `style`——那会被 `@hulianui/guard` 的 no-style-override 拦下；`w-[${px}px]` 动态类 Tailwind 不编译；`<col>` 只在 `layout="fixed"` 下可靠且给不了 `maxWidth` |
+| minWidth | `number ｜ string` | — | `TableHead` / `TableCell`：宽度下限，落 `style.minWidth` |
+| maxWidth | `number ｜ string` | — | `TableHead` / `TableCell`：宽度上限，落 `style.maxWidth`。`truncate` 要生效必须有它收口，否则 auto 布局下列被内容撑开、省略号永不触发。三者语义同高层 `Table` 的 `size` / `minSize` / `maxSize`；消费方明写的 `style` 仍透传且优先 |
 | ref | `Ref<HTMLTableRowElement ｜ HTMLTableCellElement>` | — | 落在 `tr` / `th` / `td` 本体上（「滚到某一行」「量某个格子的宽」） |
 
 `TableRow` 的分隔线 / 悬停 / 斑马纹按所在段自动区分（表头行不 hover、不斑马纹，也不吃 `last:border-0`

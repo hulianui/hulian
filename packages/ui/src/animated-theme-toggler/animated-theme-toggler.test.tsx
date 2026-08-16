@@ -77,4 +77,51 @@ describe("AnimatedThemeToggler", () => {
       warn.mockRestore();
     });
   });
+
+  // #284：主题真源在消费方（ThemeProvider 挂 forcedTheme 只是镜像）时，非受控 toggle 点了不切。
+  describe("受控 theme + onThemeChange", () => {
+    it("forcedTheme 下：点击回调下一个值，不改 Provider 视觉；显示跟随 theme prop", () => {
+      const onThemeChange = vi.fn();
+      const ui = (theme: "light" | "dark") => (
+        <ThemeProvider defaultSetting="light" forcedTheme="light">
+          <AnimatedThemeToggler theme={theme} onThemeChange={onThemeChange} />
+        </ThemeProvider>
+      );
+      const { getByRole, rerender } = render(ui("dark"));
+      // 显示以受控值为准（Provider 是 light，按钮却按 dark 显示「切换到亮色」）
+      expect(getByRole("button").getAttribute("aria-label")).toBe("切换到亮色");
+      fireEvent.click(getByRole("button"));
+      expect(onThemeChange).toHaveBeenCalledWith("light");
+      // 只回调不落值：外部没改 theme 前按钮不翻
+      expect(getByRole("button").getAttribute("aria-label")).toBe("切换到亮色");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+      rerender(ui("light"));
+      expect(getByRole("button").getAttribute("aria-label")).toBe("切换到暗色");
+    });
+
+    it("受控且无 ThemeProvider：不进自持降级（不告警、不写 <html> / localStorage）", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      document.documentElement.setAttribute("data-theme", "light");
+      const onThemeChange = vi.fn();
+      const { getByRole } = render(<AnimatedThemeToggler theme="light" onThemeChange={onThemeChange} />);
+      fireEvent.click(getByRole("button"));
+      expect(onThemeChange).toHaveBeenCalledWith("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+      expect(localStorage.getItem("hulian-theme")).toBeNull();
+      expect(warn).not.toHaveBeenCalled();
+      warn.mockRestore();
+    });
+
+    it("非受控也回调 onThemeChange，且照常切换", () => {
+      const onThemeChange = vi.fn();
+      const { getByRole } = render(
+        <ThemeProvider defaultSetting="light">
+          <AnimatedThemeToggler onThemeChange={onThemeChange} />
+        </ThemeProvider>,
+      );
+      fireEvent.click(getByRole("button"));
+      expect(onThemeChange).toHaveBeenCalledWith("dark");
+      expect(getByRole("button").getAttribute("aria-label")).toBe("切换到亮色");
+    });
+  });
 });

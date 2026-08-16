@@ -165,7 +165,7 @@ const { data, isLoading } = useFonts();
 - `searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要"搜索 + 分组"直接用 [Combobox](../combobox/combobox.md)。
 - `searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](../combobox/combobox.md) 自带 `filter`。
 - `searchable` 下 `items` **给到 100 项及以上时列表自动虚拟化**（底层 Combobox 的策略）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认 `SelectItem` 恰好 32px，通常无感。**如果**你的 `SelectItem` 高度不是 32px（两行文案、带头像、自定义 padding/字号），那么在 ≥100 项时滚动落位会逐渐偏移——**不报错、短列表也复现不出来**，请显式传 `virtualized={false}`。同理，测试里 `getAllByRole("option")` 在虚拟化后只拿得到视口内那几条。
-- `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。
+- `loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。`loading` 是展示态，**不改值**：浮层开着时把选项卸掉，Base UI 会把「已卸载」的选中项当成被移除而回调剔除后的值，本组件在加载期间把这类内部回调吞掉（受控不触发 `onValueChange`，非受控内部值也保留），加载结束后已选项照常显示。注意这只覆盖 `loading` 括住的窗口：浮层开着时直接换掉 `items` 且新列表不含已选项，Base UI 仍会回调剔除后的值——远程搜索请让已选项留在 `items` 里，或改用 `searchable`（Combobox 皮肤没有这条剔除逻辑）。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

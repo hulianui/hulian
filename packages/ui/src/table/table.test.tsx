@@ -1565,6 +1565,99 @@ describe("Table 组合原语", () => {
     expect(container.querySelectorAll("tbody tr").length).toBe(3);
     expect(container.querySelector("tbody td")!.className).toContain("px-3 py-2");
   });
+
+  // #285：表级换行策略与高层 Table 的 cellWhitespace 同名同义，按格 whitespace 反向覆盖；TableHead 恒 nowrap。
+  describe("换行策略（TableRoot.cellWhitespace / TableCell.whitespace）", () => {
+    it("默认不设：td 无 whitespace-* 类（浏览器默认换行）", () => {
+      const { container } = primitive();
+      expect(container.querySelector("tbody td")!.className).not.toMatch(/whitespace-/);
+    });
+
+    it("表级 nowrap 下发到每个 TableCell；按格 whitespace=normal 反向覆盖；th 不受影响仍 nowrap", () => {
+      const { container } = render(
+        <TableRoot cellWhitespace="nowrap">
+          <TableHeader>
+            <TableRow>
+              <TableHead>名称</TableHead>
+              <TableHead>备注</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>A</TableCell>
+              <TableCell whitespace="normal">很长的备注</TableCell>
+            </TableRow>
+          </TableBody>
+        </TableRoot>,
+      );
+      const tds = container.querySelectorAll("tbody td");
+      expect(tds[0].className).toContain("whitespace-nowrap");
+      expect(tds[1].className).toContain("whitespace-normal");
+      expect(tds[1].className).not.toContain("whitespace-nowrap");
+      const ths = container.querySelectorAll("thead th");
+      expect(ths[0].className).toContain("whitespace-nowrap");
+    });
+
+    it("pre-wrap 连带 break-words（与高层 Table 同一份类名表）", () => {
+      const { container } = render(
+        <TableRoot cellWhitespace="pre-wrap">
+          <TableBody>
+            <TableRow>
+              <TableCell>x</TableCell>
+            </TableRow>
+          </TableBody>
+        </TableRoot>,
+      );
+      const cls = container.querySelector("td")!.className;
+      expect(cls).toContain("whitespace-pre-wrap");
+      expect(cls).toContain("break-words");
+    });
+  });
+
+  // #286：列宽是数据时只能落 inline style，消费方写 style 会被 guard 拦下 → 原语给 prop 代落。
+  describe("列宽（TableHead / TableCell 的 width / minWidth / maxWidth）", () => {
+    it("数字按 px、字符串原样落 style；不传则不写 style 属性", () => {
+      const { container } = render(
+        <TableRoot>
+          <TableHeader>
+            <TableRow>
+              <TableHead width={120} maxWidth={200}>名称</TableHead>
+              <TableHead>备注</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell width="30%" minWidth={80}>A</TableCell>
+              <TableCell>B</TableCell>
+            </TableRow>
+          </TableBody>
+        </TableRoot>,
+      );
+      const th = container.querySelector("th") as HTMLElement;
+      expect(th.style.width).toBe("120px");
+      expect(th.style.maxWidth).toBe("200px");
+      expect(container.querySelectorAll("th")[1].getAttribute("style")).toBeNull();
+      const td = container.querySelector("td") as HTMLElement;
+      expect(td.style.width).toBe("30%");
+      expect(td.style.minWidth).toBe("80px");
+      expect(container.querySelectorAll("td")[1].getAttribute("style")).toBeNull();
+    });
+
+    it("消费方明写的 style 仍透传且优先于 prop", () => {
+      const { container } = render(
+        <TableRoot>
+          <TableBody>
+            <TableRow>
+              <TableCell width={100} style={{ width: 50, color: "red" }}>A</TableCell>
+            </TableRow>
+          </TableBody>
+        </TableRoot>,
+      );
+      const td = container.querySelector("td") as HTMLElement;
+      expect(td.style.width).toBe("50px");
+      expect(td.style.color).toBe("red");
+    });
+  });
 });
 
 // ── 多级表头（#261）────────────────────────────────────────────────────────

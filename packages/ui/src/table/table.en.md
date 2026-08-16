@@ -124,6 +124,7 @@ so this is not a second look-alike system.
 | layout | `"auto" \| "fixed"` | `"auto"` | `table-layout`. |
 | minWidth | `number \| string` | — | Minimum width of the `<table>` element itself. `className` lands on the scroll shell, where `min-w-*` would stop the horizontal scrollbar from ever appearing. |
 | tableClassName | `string` | — | Class name for the `<table>` element. |
+| cellWhitespace | `"nowrap" \| "normal" \| "pre-wrap"` | — | Table-level wrapping policy (#285), passed down to `TableCell` through context; same name and meaning as `cellWhitespace` on the high-level `Table`. Unset means the browser default (wrap). The typical shape is "table-level `nowrap` plus a few `TableCell whitespace="normal"`"; `TableHead` is unaffected and never wraps. |
 | ref | `Ref<HTMLDivElement>` | — | The **outer scroll container** (the `overflow-x-auto` layer). Horizontal scroll state exists only there. |
 
 `TableHeader`, `TableBody`, and `TableFooter` accept the native `<thead>`, `<tbody>`, and `<tfoot>` attributes, plus a `ref`.
@@ -143,6 +144,10 @@ const scroller = useRef<HTMLDivElement>(null)
 | selected | `boolean` | `false` | `TableRow`: selected state (accent background plus `data-selected`, the same skin as a selected row in the high-level `Table`). |
 | align | `"left" \| "center" \| "right"` | `"left"` | `TableHead` and `TableCell`: horizontal alignment, applied as a class rather than the deprecated HTML `align` attribute. |
 | verticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | `TableCell`: vertical alignment. |
+| whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | — | `TableCell`: per-cell wrapping policy (#285) that overrides `TableRoot`'s `cellWhitespace`; same as the column-level `meta.whitespace` on the high-level `Table`. `pre-wrap` / `normal` also apply `break-words`. |
+| width | `number \| string` | — | `TableHead` / `TableCell`: width, applied as `style.width` (numbers are px, strings are passed through) (#286). Use it when the column width is **data** (field configuration, user-editable) instead of writing `style` in product code — `@hulianui/guard`'s no-style-override rejects that, dynamic `w-[${px}px]` classes are never compiled by Tailwind, and `<col>` is only reliable under `layout="fixed"` and cannot express `maxWidth`. |
+| minWidth | `number \| string` | — | `TableHead` / `TableCell`: lower bound, applied as `style.minWidth`. |
+| maxWidth | `number \| string` | — | `TableHead` / `TableCell`: upper bound, applied as `style.maxWidth`. `truncate` needs it to cap the column; otherwise auto layout lets content widen the column and the ellipsis never appears. The three mirror `size` / `minSize` / `maxSize` on the high-level `Table`; an explicit `style` on the element still passes through and wins. |
 | ref | `Ref<HTMLTableRowElement \| HTMLTableCellElement>` | — | Lands on the `tr` / `th` / `td` itself ("scroll to this row", "measure this cell"). |
 
 `TableRow` derives its separator, hover, and stripe treatment from the section it sits in. Header rows
