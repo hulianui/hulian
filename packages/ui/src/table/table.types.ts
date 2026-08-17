@@ -6,6 +6,7 @@ import type {
   ThHTMLAttributes,
 } from "react";
 import type {
+  Column,
   ColumnDef,
   SortingState,
   RowSelectionState,
@@ -39,6 +40,23 @@ export type TableCellWhitespace = "nowrap" | "normal" | "pre-wrap";
 /** 行密度（仅调单元格内边距）。高层 `Table` 与组合原语 `TableRoot` 共用同一档位。 */
 export type TableDensity = "default" | "middle" | "compact";
 
+/** `meta.filterRender` 的上下文（#290）。 */
+export interface TableColumnFilterRenderContext<TData> {
+  /** 该列当前的筛选值（`column.getFilterValue()`）。内置文本框那档是 `string`。 */
+  value: unknown;
+  /** 写该列筛选值；传 `undefined` 即清除这一列的筛选（不是写空串）。 */
+  setValue: (next: unknown) => void;
+  /** TanStack 的列实例：取 `column.id`、`getFacetedUniqueValues()` 之类都从这里走。 */
+  column: Column<TData, unknown>;
+}
+
+/**
+ * 列筛选控件的位置（#290）：
+ * · `"header"`（默认）—— 控件长在表头格里，与列名 / 排序按钮同格；
+ * · `"row"` —— 表头行**之下**另起一整行放这些控件（后台表的经典形状），表头行不再被顶高。
+ */
+export type TableFilterPlacement = "header" | "row";
+
 // 列 meta 增量（模块增强）：固定列 / 筛选框 / 对齐 / 溢出省略。皆为可选，不写即关。
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,6 +65,25 @@ declare module "@tanstack/react-table" {
     sticky?: "left" | "right";
     /** 该列表头渲染内置文本筛选框（驱动 column.setFilterValue + getFilteredRowModel）。 */
     filterable?: boolean;
+    /**
+     * 换掉该列的筛选控件（#290）：对标 antd 的 `column.filterDropdown`、el-table 的自绘表头。
+     * 不写则维持内置文本框 —— 纯增量，默认行为不变。
+     *
+     * 内置文本框只会「按子串搜」：枚举列（状态 / 部门 / 年份）只能让用户手打出精确值，
+     * 日期列拿不到日期控件，数字列拿不到区间。这些列要的是自己的控件，不是同一个输入框。
+     *
+     * 写了它就等于该列可筛选（不必再写 `filterable: true`）。回调拿到当前值与写值函数，
+     * 值的形状由这一列的 `filterFn` 决定（传 `undefined` 即清除该列筛选）：
+     * ```tsx
+     * meta: {
+     *   filterRender: ({ value, setValue }) => (
+     *     <Select value={(value as string) ?? ""} onValueChange={(v) => setValue(v || undefined)} …/>
+     *   ),
+     * }
+     * ```
+     * 控件的无障碍名字归你（内置文本框那份 `aria-label` 只属于内置文本框）。
+     */
+    filterRender?: (ctx: TableColumnFilterRenderContext<TData>) => ReactNode;
     /** 单元格内容水平对齐；不写则沿用表格默认（左）。对标 el-table-column 的 `align`。 */
     align?: TableColumnAlign;
     /** 表头水平对齐；不写则跟随 `align`，两者都不写为左。对标 el-table-column 的 `header-align`。 */
@@ -95,8 +132,8 @@ export interface TableCellSpan {
   colSpan?: number;
 }
 
-/** `cellSpan` 回调的上下文。 */
-export interface TableCellSpanContext<TData> {
+/** 单元格级回调（`cellSpan` / `cellClassName`）的公共上下文。 */
+export interface TableCellContext<TData> {
   /** 当前行的原始数据。 */
   row: TData;
   /** 渲染顺序下标（排序/筛选之后），与 `rows` 同序。 */
@@ -110,6 +147,12 @@ export interface TableCellSpanContext<TData> {
   /** 该格的取值（`column.accessorKey` 解出来的原始值）。 */
   value: unknown;
 }
+
+/** `cellSpan` 回调的上下文。 */
+export type TableCellSpanContext<TData> = TableCellContext<TData>;
+
+/** `cellClassName` 回调的上下文（#289）。形状同 `cellSpan`，两者判断依据是同一套。 */
+export type TableCellClassNameContext<TData> = TableCellContext<TData>;
 
 /**
  * 行拖拽落点（相对目标行）：
@@ -213,6 +256,20 @@ export interface TableProps<TData> {
    */
   rowClassName?: (row: TData, index: number) => string | undefined;
   /**
+   * 单元格级附加 className（#289）：对标 el-table 的 `cell-class-name`、antd 的 `column.onCell`。
+   * 落在 `<td>` **本体**上，与斑马纹 / 选中态 / 固定列底色等类**合并**（同 `rowClassName`），
+   * 返回 `undefined` 则该格不加。
+   *
+   * 用于「按值着色」——枚举字段（状态 / 阶段 / 优先级）同一列不同行不同底色。这既不是行态
+   * （`rowClassName`）也不是列态（`meta.align` 那批枚举），只能逐 (行, 列) 派生。
+   *
+   * 走 `ColumnDef.cell` 在格子**里面**套一层带背景的元素顶不上：`<td>` 自己已有斑马纹 / 选中态 /
+   * 固定列底色，内层色块与 td 底色是两层，单元格内边距那一圈会露出底下的颜色，做不到整格着色。
+   *
+   * 内建前插列（`__select__` / `__expander__` / `__drag__`）同样会回调到，按 `columnId` 自行排除。
+   */
+  cellClassName?: (ctx: TableCellClassNameContext<TData>) => string | undefined;
+  /**
    * 落在**滚动外壳**上，不是 `<table>` 本体（`stickyScrollbar` 开启时根节点还会再外移一层）。
    *
    * 所以 `min-w-*` 写在这里是错的：它钉住的是滚动容器，容器从此收不窄 → 横滚条永不出现 →
@@ -309,10 +366,17 @@ export interface TableProps<TData> {
   expanded?: ExpandedState;
   onExpandedChange?: OnChangeFn<ExpandedState>;
 
-  // —— 筛选（无 filterable 列即关）——
+  // —— 筛选（无 filterable / filterRender 列即关）——
   /** 受控列筛选态；不传则内部非受控。 */
   columnFilters?: ColumnFiltersState;
   onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
+  /**
+   * 筛选控件放哪（#290）。默认 `"header"` 即历史行为：控件长在 `<th>` 内部，与列名、排序按钮同格。
+   *
+   * `"row"` 把它们挪到表头行**之下**独立的一整行：表头恢复成单行高度，排序按钮不再与输入框挤在
+   * 一格；多级表头下这一行永远贴在最末级列名之下，与叶子列一一对齐。没有任何可筛选列时不渲染。
+   */
+  filterPlacement?: TableFilterPlacement;
 
   // —— 行拖拽排序（不传=关）——
   /**

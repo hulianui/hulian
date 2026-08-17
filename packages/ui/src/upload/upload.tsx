@@ -92,6 +92,17 @@ const DROPZONE_SIZE_CLASS = { sm: "gap-1.5 px-4 py-4", md: "gap-2 px-6 py-8", lg
 const BUTTON_SIZE_CLASS = { sm: "h-8 px-3 text-sm", md: "h-10 px-4 text-sm", lg: "h-12 px-6 text-base" };
 const DROPZONE_ICON_CLASS = { sm: "size-6", md: "size-7", lg: "size-9" };
 const DROPZONE_LABEL_CLASS = { sm: "text-sm", md: "text-sm", lg: "text-base" };
+/**
+ * 根节点恒 `relative`（#291）：藏起来的 file input 是 `sr-only`（`position:absolute` + clip），
+ * 祖先链全 `static` 时它的包含块退到初始包含块，`offsetParent` 落到 `<body>` —— 于是它不受中间
+ * `overflow` 容器裁剪，而是按自己在文档流里的纵坐标参与 `documentElement.scrollHeight` 计算。
+ * 后台「视口定高 + 内容区自己滚」的布局里，长表单越往下放 Upload，整个文档被撑得越高，
+ * 表现为「内容区滚到底后侧栏跟着一起上滑」。这里给它一个定位祖先，把它关回组件自己内部。
+ *
+ * 刻意不改成 `hidden` / `display:none`：挂了 `name` 的 input 要走原生表单提交与 `required` 校验，
+ * 而 `display:none` 的必填控件会让浏览器报「invalid form control is not focusable」并静默拦下提交。
+ */
+const ROOT_CLASS = "relative";
 
 interface RowProps {
   file: UploadFile;
@@ -422,7 +433,7 @@ export function Upload({
 
   if (variant === "button") {
     return (
-      <div className={cn(className)}>
+      <div className={cn(ROOT_CLASS, className)}>
         {input}
         <button
           type="button"
@@ -452,7 +463,7 @@ export function Upload({
   }
 
   return (
-    <div className={cn(className)}>
+    <div className={cn(ROOT_CLASS, className)}>
       {input}
       <div
         role="button"

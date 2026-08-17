@@ -440,6 +440,7 @@ export function Table<TData>({
   bordered = true,
   getRowId,
   rowClassName,
+  cellClassName,
   className,
   // 列几何（列宽 / 布局 / 拖拽调宽）
   layout = "auto",
@@ -469,6 +470,7 @@ export function Table<TData>({
   // 筛选
   columnFilters: columnFiltersProp,
   onColumnFiltersChange,
+  filterPlacement = "header",
   // 行拖拽排序
   rowDraggable = false,
   dragHandle = "cell",
@@ -716,6 +718,13 @@ export function Table<TData>({
     });
   }, [cellSpan, spanEnabled, rows]);
 
+  // cellClassName 的 ctx.rows（#289）：与 cellSpan 同口径 —— 渲染顺序（排序/筛选之后）的原始数据。
+  // 不传 cellClassName 的表一格也不回调，这份数组也就不必存在。
+  const originalRows = useMemo(
+    () => (cellClassName ? rows.map((r) => r.original) : ([] as TData[])),
+    [cellClassName, rows],
+  );
+
 
   // ── 底部悬浮横向滚动条（#149）────────────────────────────────────────────────
   // 宽表比视口高时，真正的横向滚动条落在表格底边、被挤到折叠线以下 —— 想横向拖一下
@@ -953,6 +962,15 @@ export function Table<TData>({
                 // 加 border 会与相邻行分隔线合并、把行高顶掉 1~2px（拖拽中抖动）。
                 dropEdge === "before" && "shadow-[inset_0_2px_0_0_var(--color-primary)]",
                 dropEdge === "after" && "shadow-[inset_0_-2px_0_0_var(--color-primary)]",
+                // 按值着色（#289）：放在最后一位，消费方的底色才盖得住固定列 / 拖拽指示那几档
+                cellClassName?.({
+                  row: row.original,
+                  rowIndex: index,
+                  rows: originalRows,
+                  columnId: cell.column.id,
+                  columnIndex: colIndex,
+                  value: cell.getValue(),
+                }),
               )}
             >
               {meta?.ellipsis ? (
@@ -1074,6 +1092,65 @@ export function Table<TData>({
   const headerStickyStyle =
     headerSticks && stickyHeaderOffset != null ? { top: stickyHeaderOffset } : undefined;
 
+  // ── 列筛选（#290）──────────────────────────────────────────────────────────
+  // 开筛选的两条路：meta.filterable 要内置文本框，meta.filterRender 自带控件（写了就等于开）。
+  const canColumnFilter = (column: Column<TData, unknown>) => {
+    const meta = column.columnDef.meta;
+    return column.getCanFilter() && Boolean(meta?.filterable || meta?.filterRender);
+  };
+  // 控件本体。列自带 filterRender 就用它，否则给内置文本框。
+  // filterRender 是**回调**不是组件（同 ColumnDef.cell 的口径）：状态请放进你自己的组件里，
+  // 不要在回调体内直接调 hooks。
+  const renderColumnFilter = (column: Column<TData, unknown>) => {
+    const custom = column.columnDef.meta?.filterRender;
+    if (custom) {
+      return custom({
+        value: column.getFilterValue(),
+        setValue: (next) => column.setFilterValue(next),
+        column,
+      });
+    }
+    return (
+      <input
+        type="text"
+        value={(column.getFilterValue() as string) ?? ""}
+        onChange={(e) => column.setFilterValue(e.target.value)}
+        placeholder={loc.filterPlaceholder ?? "筛选…"}
+        aria-label={loc.filter?.(column.id) ?? `筛选 ${column.id}`}
+        className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs font-normal text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+      />
+    );
+  };
+  // 独立筛选行：贴在最末级表头之下，与**叶子列**一一对齐（多级表头下也是）。
+  // 用 `<td>` 而不是 `<th>`：这一行装的是控件不是列名，落成表头单元格会被读屏当作第二层列名念。
+  // 一列都不可筛选时整行不渲染 —— 否则空着的一行只是把表头凭空加厚。
+  const filterRow = (() => {
+    if (filterPlacement !== "row") return null;
+    const leaves = table.getVisibleLeafColumns();
+    if (!leaves.some(canColumnFilter)) return null;
+    return (
+      <tr className="border-b border-border">
+        {leaves.map((column) => (
+          <td
+            key={column.id}
+            style={{
+              ...colWidthStyle(column, fixedLayout, declaredWidths),
+              ...stickyStyle(column),
+            }}
+            className={cn(
+              cellPad,
+              "font-normal",
+              stickyClass(column),
+              headerSticks && column.getIsPinned() && "bg-bg",
+            )}
+          >
+            {canColumnFilter(column) ? renderColumnFilter(column) : null}
+          </td>
+        ))}
+      </tr>
+    );
+  })();
+
   const shell = (
     <div
       ref={scrollRef}
@@ -1125,7 +1202,8 @@ export function Table<TData>({
                   const canSort = header.column.getCanSort();
                   const sorted = header.column.getIsSorted(); // false | "asc" | "desc"
                   const meta = header.column.columnDef.meta;
-                  const canFilter = header.column.getCanFilter() && meta?.filterable;
+                  const canFilter =
+                    filterPlacement === "header" && canColumnFilter(header.column);
                   // headerAlign 缺省跟随 align，两者都不写维持历史默认（左）。
                   // 例外是跨列的组名：贴在最左那列的左缘会读成「这是第一列的名字」，
                   // 居中才看得出它管着下面这一段（Element Plus / Ant Design 同样如此）。
@@ -1209,18 +1287,7 @@ export function Table<TData>({
                           ) : (
                             labelNode
                           )}
-                          {canFilter && (
-                            <input
-                              type="text"
-                              value={(header.column.getFilterValue() as string) ?? ""}
-                              onChange={(e) => header.column.setFilterValue(e.target.value)}
-                              placeholder={loc.filterPlaceholder ?? "筛选…"}
-                              aria-label={
-                                loc.filter?.(header.column.id) ?? `筛选 ${header.column.id}`
-                              }
-                              className="w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-surface px-2 py-1 text-xs font-normal text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
-                            />
-                          )}
+                          {canFilter && renderColumnFilter(header.column)}
                         </div>
                       }
                       {canResize && (
@@ -1246,6 +1313,7 @@ export function Table<TData>({
                 })}
               </tr>
             ))}
+            {filterRow}
           </thead>
           <tbody>
             {dragEnabled ? (

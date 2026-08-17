@@ -9096,130 +9096,151 @@
       "id": "component/table/pitfall/18",
       "scope": "table",
       "title": "Table",
-      "rule": "`cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。",
+      "rule": "`cellClassName` 落在 `<td>` 本体上、排在类名串**最后**，所以同名工具类（背景、文字色）会盖过斑马纹 / 固定列底色 —— 这正是「整格着色」要的效果；不想盖住固定列底色就别在固定列上返回 `bg-*`。回调对**内建前插列**（`__select__` / `__expander__` / `__drag__`）同样会跑，按 `ctx.columnId` 自行排除。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/19",
       "scope": "table",
       "title": "Table",
-      "rule": "**多级表头下，冻结（`meta.sticky`）只作用到叶子列**：冻结是按叶子列的累计宽度算 offset 的，横跨若干列的组名格没有自己的 offset，横滚时它会跟着内容走、只有下面那行的列头贴住边缘。分组表 + 冻结列的组合请把要冻结的列放在组外（独立列纵向跨满，观感与冻结一致）。",
+      "rule": "`meta.filterRender` 是**回调不是组件**（同 `ColumnDef.cell`）：不要在回调体内直接调 hooks，状态放进你自己的控件组件里。清除某列筛选是 `setValue(undefined)`，不是写空串（空串是一个「按空串筛」的有效值）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/20",
       "scope": "table",
       "title": "Table",
-      "rule": "**多级表头的排序 / 筛选挂在叶子列上**，组名那格不出排序按钮：组列本身没有取值器，排的是哪一列没有定义。要按组内某列排就在那个叶子列上开 `enableSorting`。",
+      "rule": "`filterPlacement=\"row\"` 那一行渲染成 `<thead>` 里的 `<td>` 而不是 `<th>`：装的是控件不是列名，落成表头单元格会被读屏当成第二层列名念。一列都不可筛选时整行不渲染。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/21",
       "scope": "table",
       "title": "Table",
-      "rule": "分组时列宽写在**叶子列**上（`size` / `minSize` / `maxSize`）。写在组上不会分配给下面的列——组的宽度是各叶子列之和。",
+      "rule": "`cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/22",
       "scope": "table",
       "title": "Table",
-      "rule": "行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。",
+      "rule": "**多级表头下，冻结（`meta.sticky`）只作用到叶子列**：冻结是按叶子列的累计宽度算 offset 的，横跨若干列的组名格没有自己的 offset，横滚时它会跟着内容走、只有下面那行的列头贴住边缘。分组表 + 冻结列的组合请把要冻结的列放在组外（独立列纵向跨满，观感与冻结一致）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/23",
       "scope": "table",
       "title": "Table",
-      "rule": "`virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。",
+      "rule": "**多级表头的排序 / 筛选挂在叶子列上**，组名那格不出排序按钮：组列本身没有取值器，排的是哪一列没有定义。要按组内某列排就在那个叶子列上开 `enableSorting`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/24",
       "scope": "table",
       "title": "Table",
-      "rule": "`bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。",
+      "rule": "分组时列宽写在**叶子列**上（`size` / `minSize` / `maxSize`）。写在组上不会分配给下面的列——组的宽度是各叶子列之和。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/25",
       "scope": "table",
       "title": "Table",
-      "rule": "排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。",
+      "rule": "行选择框挂在每一行上，被纵向合并的行**仍然是独立的一行**（选择/拖拽都按行算），合并只是视觉上的并格。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/26",
       "scope": "table",
       "title": "Table",
-      "rule": "`rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。",
+      "rule": "`virtual` 是可选依赖（@tanstack/react-virtual），需手动安装；仅推荐大数据平铺表，不建议与树形/明细面板同开。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/27",
       "scope": "table",
       "title": "Table",
-      "rule": "`onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。",
+      "rule": "`bordered` 默认 true 自带外框——嵌进 ProTable 或其他卡片容器时置 `false`，否则双层描边。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/28",
       "scope": "table",
       "title": "Table",
-      "rule": "行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。",
+      "rule": "排序/选择/展开/筛选均「不传受控 prop 即内部非受控」；要受控就成对接上 `xxx` + `onXxxChange`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/29",
       "scope": "table",
       "title": "Table",
-      "rule": "行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。",
+      "rule": "`rowHref` 走 `window.location.assign` 整页跳转——Next.js/SPA 里会丢客户端路由状态，客户端跳转请用 `onRowClick` + `router.push`。`onRowClick` 与 `rowHref` 同传时 `onRowClick` 优先，导航不执行。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/30",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。",
+      "rule": "`onRowClick` 与 `onRowDoubleClick` 同传时，浏览器双击必然先派两次 `click`，所以 `onRowClick` 会先跑两次。请保证它的动作可重入、且不与双击语义冲突（典型安排：单击选中、双击进编辑）。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/31",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。",
+      "rule": "行点击的冒泡隔离按选择器识别行内交互元素（`a/button/input/select/textarea/label` + `role=button/checkbox/switch/menuitem`）；自定义 cell 里的可点元素若不属于这些（如裸 `div` 加 onClick），点击会同时触发行级动作——给它补上语义 role 即可隔离。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/32",
       "scope": "table",
       "title": "Table",
-      "rule": "`dragHandle=\"row\"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `\"cell\"`。",
+      "rule": "行拖拽**不改 data**：`onRowDragEnd` 只回报落点，界面顺序要变必须自己把 `e.nextData`（或后端返回的新序）写回 `data`，否则拖完会弹回原位。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/33",
       "scope": "table",
       "title": "Table",
-      "rule": "拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。",
+      "rule": "拖拽排序和列排序（`enableSorting`）同开没有意义：列排序下可见顺序 ≠ 存储顺序，拖出来的相对位置对后端是错的。要拖就把 `enableSorting` 关掉（或至少清空 `sorting`）。同理，筛选态下拖拽只在**可见行之间**表达相对位置。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/34",
       "scope": "table",
       "title": "Table",
-      "rule": "组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。",
+      "rule": "拖拽 id 就是行 id：不传 `getRowId` 时行 id 是数组下标，回调里的 `activeId/overId` 也就只是下标。要把 id 直接甩给后端，必须传 `getRowId={(r) => r.id}`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/35",
       "scope": "table",
       "title": "Table",
-      "rule": "原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。",
+      "rule": "`dragHandle=\"row\"` 与 `onRowClick` 同开时，键盘 <kbd>Space</kbd> 归 dnd-kit（抓起/放下），行点击只保留 <kbd>Enter</kbd>；指针端靠 6px 距离阈值区分点击与拖拽。要完全零冲突就用默认的 `\"cell\"`。",
       "source": "packages/ui/src/table/table.md"
     },
     {
       "id": "component/table/pitfall/36",
+      "scope": "table",
+      "title": "Table",
+      "rule": "拖拽与 `virtual` 同开不推荐：视口外的行没有挂载，拖到列表边缘时既无落点也不会自动翻页。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/37",
+      "scope": "table",
+      "title": "Table",
+      "rule": "组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/38",
+      "scope": "table",
+      "title": "Table",
+      "rule": "原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
+      "id": "component/table/pitfall/39",
       "scope": "table",
       "title": "Table",
       "rule": "树形（`getSubRows`）下只有顶层行可拖，子行手柄恒禁用——跨层级拖拽的落点语义未定义，需要拖子节点请用 [Tree](../tree/tree.md) 或按层级拆表。",
@@ -10385,7 +10406,7 @@
   ],
   "stats": {
     "componentDocs": 394,
-    "componentAdvisories": 1448,
-    "totalAdvisories": 1458
+    "componentAdvisories": 1451,
+    "totalAdvisories": 1461
   }
 }

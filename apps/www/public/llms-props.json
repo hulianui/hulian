@@ -836,6 +836,10 @@
       "middle",
       "compact"
     ],
+    "TableFilterPlacement": [
+      "header",
+      "row"
+    ],
     "RowDropPosition": [
       "before",
       "after"
@@ -25152,6 +25156,14 @@
           "description": "行级附加 className（与斑马/选中类合并，不覆盖）"
         },
         {
+          "name": "cellClassName",
+          "required": false,
+          "kind": "function",
+          "type": "(ctx) => string | undefined",
+          "default": null,
+          "description": "**单元格级**附加 className，落在 `<td>` 本体上（对标 el-table `cell-class-name`、antd `column.onCell`）。`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，与 `cellSpan` 同形。用于「按值着色」——同一列不同行不同底色；走 `ColumnDef.cell` 在格子里套色块顶不上（内边距那圈会露出 td 自己的斑马/固定列底色）。与既有单元格类合并，不覆盖"
+        },
+        {
           "name": "layout",
           "required": false,
           "kind": "enum",
@@ -25259,6 +25271,19 @@
           "type": "ColumnFiltersState",
           "default": null,
           "description": "受控列筛选态"
+        },
+        {
+          "name": "filterPlacement",
+          "required": false,
+          "kind": "enum",
+          "type": "\"header\" | \"row\"",
+          "values": [
+            "header",
+            "row"
+          ],
+          "valueType": "string",
+          "default": "\"header\"",
+          "description": "筛选控件放哪。`header` 控件长在表头格里（与列名、排序按钮同格）；`row` 挪到表头行**之下**独立的一整行 `<tr>`，表头恢复单行高度，多级表头下与叶子列一一对齐。一列都不可筛选时该行不渲染"
         },
         {
           "name": "rowDraggable",
@@ -25472,6 +25497,11 @@
           "name": "filterable",
           "type": "boolean",
           "description": "表头渲染内置文本筛选框"
+        },
+        {
+          "name": "filterRender",
+          "type": "(ctx) => ReactNode",
+          "description": "换掉该列的筛选控件（枚举列给下拉、日期列给日期控件、数字列给区间）。`ctx = { value, setValue, column }`，`setValue(undefined)` 清除该列筛选。**写了它就等于该列可筛选**，不必再写 `filterable`；控件的无障碍名字归你"
         },
         {
           "name": "align",

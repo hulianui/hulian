@@ -342,6 +342,31 @@ describe("Upload · size 尺寸档（#243）", () => {
   });
 });
 
+describe("Upload · 根节点自带定位祖先（#291）", () => {
+  // sr-only 的 file input 是 position:absolute。祖先全 static 时它的包含块退到初始包含块，
+  // 于是不受中间 overflow 容器裁剪，按文档流纵坐标撑高 documentElement —— 后台「视口定高 +
+  // 内容区自己滚」的长表单里表现为整页可滚（侧栏跟着上滑）。根节点自带 relative 关住它。
+  const root = (c: HTMLElement) => c.firstElementChild as HTMLElement;
+
+  it("落区形态：根节点是 relative，且 input 就在这个根里", () => {
+    const { container } = render(<Upload />);
+    expect(root(container).className.split(/\s+/)).toContain("relative");
+    expect(root(container).contains(fileInput(container))).toBe(true);
+  });
+
+  it("button 形态同样是 relative", () => {
+    const { container } = render(<Upload variant="button" />);
+    expect(root(container).className.split(/\s+/)).toContain("relative");
+  });
+
+  it("消费方 className 与 relative 合并，不把它挤掉", () => {
+    const { container } = render(<Upload className="mt-4" />);
+    const cls = root(container).className.split(/\s+/);
+    expect(cls).toContain("relative");
+    expect(cls).toContain("mt-4");
+  });
+});
+
 describe("Upload · sortable 调序", () => {
   const files: UploadFile[] = [
     { id: "a", name: "1.png", status: "success" },

@@ -39,6 +39,7 @@ import {
 | density | `"default" \| "middle" \| "compact"` | `"default"` | 行密度（仅调单元格内边距） |
 | getRowId | `(row: TData, index: number) => string` | 按 index | 行稳定 key |
 | rowClassName | `(row: TData, index: number) => string \| undefined` | — | 行级附加 className（与斑马/选中类合并，不覆盖） |
+| cellClassName | `(ctx) => string \| undefined` | — | **单元格级**附加 className，落在 `<td>` 本体上（对标 el-table `cell-class-name`、antd `column.onCell`）。`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，与 `cellSpan` 同形。用于「按值着色」——同一列不同行不同底色；走 `ColumnDef.cell` 在格子里套色块顶不上（内边距那圈会露出 td 自己的斑马/固定列底色）。与既有单元格类合并，不覆盖 |
 | layout | `"auto" \| "fixed"` | `"auto"` | 列宽布局：auto 只让显式写了 size/minSize/maxSize 的列出宽度，其余按内容自适应；fixed 每列都按 `getSize()` 出实宽、表宽 = 各列之和 |
 | resizable | `boolean` | `false` | 列宽拖拽（表头右缘手柄，双击复位）。开启即强制 `layout="fixed"`；单列可用 `ColumnDef.enableResizing=false` 关掉，内建选择/展开器/拖拽列恒不可调宽 |
 | columnSizing | `ColumnSizingState` | — | 受控列宽态（列 id → 像素宽）；不传走内部非受控 |
@@ -52,6 +53,7 @@ import {
 | indent | `number` | `16` | 树形/明细每级缩进像素 |
 | expanded | `ExpandedState` | — | 受控展开态（树形 + 明细共用） |
 | columnFilters | `ColumnFiltersState` | — | 受控列筛选态 |
+| filterPlacement | `"header" \| "row"` | `"header"` | 筛选控件放哪。`header` 控件长在表头格里（与列名、排序按钮同格）；`row` 挪到表头行**之下**独立的一整行 `<tr>`，表头恢复单行高度，多级表头下与叶子列一一对齐。一列都不可筛选时该行不渲染 |
 | rowDraggable | `boolean` | `false` | 开行拖拽排序（@dnd-kit，useSortable 挂在 `<tr>`）；组件不改 data，顺序由 onRowDragEnd 交还消费方 |
 | dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
@@ -93,6 +95,7 @@ import {
 |------|------|------|------|
 | sticky | `"left" \| "right"` | 固定列贴左/右 | `fixed` |
 | filterable | `boolean` | 表头渲染内置文本筛选框 | — |
+| filterRender | `(ctx) => ReactNode` | 换掉该列的筛选控件（枚举列给下拉、日期列给日期控件、数字列给区间）。`ctx = { value, setValue, column }`，`setValue(undefined)` 清除该列筛选。**写了它就等于该列可筛选**，不必再写 `filterable`；控件的无障碍名字归你 | `filters` / 自绘表头（antd 为 `filterDropdown`） |
 | align | `"left" \| "center" \| "right"` | 单元格内容水平对齐 | `align` |
 | headerAlign | `"left" \| "center" \| "right"` | 表头对齐；不写则跟随 `align` | `header-align` |
 | ellipsis | `boolean` | 溢出截断 + 悬停 Tooltip 显示全文 | `show-overflow-tooltip` |
@@ -181,6 +184,34 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 
 // 列宽拖拽（表头右缘拖动改宽，双击复位）；受控可持久化到用户偏好
 <Table columns={geoColumns} data={users} resizable columnSizing={sizing} onColumnSizingChange={setSizing} />
+
+// 按值着色：整格底色落在 <td> 本体（在 cell 里套色块只会露出 td 自己的斑马 / 固定列底色）
+<Table
+  columns={columns}
+  data={users}
+  cellClassName={({ columnId, value }) =>
+    columnId === "status" && value === "overdue" ? "bg-danger/10 text-danger" : undefined
+  }
+/>
+
+// 列筛选：枚举列换成自己的控件，且把控件挪到表头下独立一行
+const filterColumns: ColumnDef<DemoUser, any>[] = [
+  { accessorKey: "name", header: "姓名", meta: { filterable: true } }, // 内置文本框
+  {
+    accessorKey: "role",
+    header: "角色",
+    meta: {
+      // 写了 filterRender 就等于该列可筛选，不必再写 filterable
+      filterRender: ({ value, setValue }) => (
+        <RoleSelect
+          value={(value as string) ?? ""}
+          onChange={(v) => setValue(v || undefined)} // 空值传 undefined = 清除这一列的筛选
+        />
+      ),
+    },
+  },
+];
+<Table columns={filterColumns} data={users} filterPlacement="row" />
 
 // 常驻整宽附属行 + 表尾（不是明细展开：没有展开器列、不需要展开态、一行可挂多条）
 <Table
@@ -284,6 +315,9 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 - `cellSpan` 的回调**只在没被合掉的格子上跑**，所以「与上一行同门店就合并」的写法是：在段首返回整段长度（`while (rows[i + n]?.store === rows[i].store) n++`），后面几行根本不会被问到。从 el-table 直译过来的 `[0, 0]` 写法也认（返回 `rowSpan: 0` 即该格不渲染）。
 - `cellSpan` 拿到的 `rowIndex` 是**渲染顺序**的下标（排序/筛选之后），`rows` 也是同序的 —— 这正是 el-table 里「开了列排序合并就整片错位」那个坑的解法：判断只比数据，不依赖原始下标。
 - `cellSpan` 与 `virtual`、`renderExpandedRow` **不能同开**：前者只渲染可见窗口、跨窗口的纵向合并没有落点，后者会把明细 `<tr>` 插在数据行之间、被纵向合并跨过。同开时组件静默不合并并在 dev 下告警（而不是画出一张错位的表）。
+- `cellClassName` 落在 `<td>` 本体上、排在类名串**最后**，所以同名工具类（背景、文字色）会盖过斑马纹 / 固定列底色 —— 这正是「整格着色」要的效果；不想盖住固定列底色就别在固定列上返回 `bg-*`。回调对**内建前插列**（`__select__` / `__expander__` / `__drag__`）同样会跑，按 `ctx.columnId` 自行排除。
+- `meta.filterRender` 是**回调不是组件**（同 `ColumnDef.cell`）：不要在回调体内直接调 hooks，状态放进你自己的控件组件里。清除某列筛选是 `setValue(undefined)`，不是写空串（空串是一个「按空串筛」的有效值）。
+- `filterPlacement="row"` 那一行渲染成 `<thead>` 里的 `<td>` 而不是 `<th>`：装的是控件不是列名，落成表头单元格会被读屏当成第二层列名念。一列都不可筛选时整行不渲染。
 - `cellSpan` 与冻结列（`meta.sticky`）同开时，横向合并**不要跨过冻结边界**：冻结列的 offset 按未合并的原始列宽累加，跨边界的 colSpan 会让贴边那格错位。
 - **多级表头下，冻结（`meta.sticky`）只作用到叶子列**：冻结是按叶子列的累计宽度算 offset 的，横跨若干列的组名格没有自己的 offset，横滚时它会跟着内容走、只有下面那行的列头贴住边缘。分组表 + 冻结列的组合请把要冻结的列放在组外（独立列纵向跨满，观感与冻结一致）。
 - **多级表头的排序 / 筛选挂在叶子列上**，组名那格不出排序按钮：组列本身没有取值器，排的是哪一列没有定义。要按组内某列排就在那个叶子列上开 `enableSorting`。

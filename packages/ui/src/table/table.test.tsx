@@ -232,6 +232,151 @@ describe("筛选（meta.filterable·列内置文本筛选框）", () => {
   });
 });
 
+describe("筛选控件可替换 / 独立筛选行（#290）", () => {
+  // 枚举列要的是下拉不是「按子串搜」的文本框；控件由列自己决定。
+  const selectColumns: ColumnDef<Row, any>[] = [
+    {
+      accessorKey: "name",
+      header: "姓名",
+      meta: {
+        filterRender: ({ value, setValue }) => (
+          <select
+            aria-label="按姓名筛选"
+            value={(value as string) ?? ""}
+            onChange={(e) => setValue(e.target.value || undefined)}
+          >
+            <option value="">全部</option>
+            <option value="Alice">Alice</option>
+            <option value="Bob">Bob</option>
+          </select>
+        ),
+      },
+    },
+    { accessorKey: "age", header: "年龄" },
+  ];
+
+  it("filterRender 换掉内置文本框（不必再写 filterable），选中值即过滤", () => {
+    const { container, getByLabelText } = render(<Table columns={selectColumns} data={data} />);
+    expect(container.querySelectorAll('thead input[type="text"]').length).toBe(0);
+    const select = getByLabelText("按姓名筛选") as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: "Alice" } });
+    expect(nameOrder(container)).toEqual(["Alice"]);
+    // 回到「全部」＝ setValue(undefined) 清除该列筛选
+    fireEvent.change(select, { target: { value: "" } });
+    expect(nameOrder(container)).toEqual(["Charlie", "Alice", "Bob"]);
+  });
+
+  it("filterRender 拿得到列实例（列 id / 当前值）", () => {
+    const seen: { id: string; value: unknown }[] = [];
+    render(
+      <Table
+        columns={[
+          {
+            accessorKey: "name",
+            header: "姓名",
+            meta: {
+              filterRender: ({ column, value }) => {
+                seen.push({ id: column.id, value });
+                return <span />;
+              },
+            },
+          },
+        ]}
+        data={data}
+      />,
+    );
+    expect(seen[0]).toEqual({ id: "name", value: undefined });
+  });
+
+  it("filterPlacement=\"row\"：控件挪到表头下独立一行，表头格里不再有输入框", () => {
+    const filterColumns: ColumnDef<Row, any>[] = [
+      { accessorKey: "name", header: "姓名", meta: { filterable: true } },
+      { accessorKey: "age", header: "年龄" },
+    ];
+    const { container } = render(
+      <Table columns={filterColumns} data={data} filterPlacement="row" />,
+    );
+    expect(container.querySelectorAll("thead th input").length).toBe(0);
+    const filterCells = container.querySelectorAll("thead td");
+    expect(filterCells.length).toBe(2); // 每个叶子列一格，含不可筛选的年龄列（占位对齐）
+    const input = filterCells[0].querySelector('input[type="text"]') as HTMLInputElement;
+    expect(input).not.toBeNull();
+    expect(filterCells[1].querySelector("input")).toBeNull();
+    fireEvent.change(input, { target: { value: "Ali" } });
+    expect(nameOrder(container)).toEqual(["Alice"]);
+  });
+
+  it("filterPlacement=\"row\" 但一列都不可筛选 → 整行不渲染（不凭空加厚表头）", () => {
+    const { container } = render(<Table columns={columns} data={data} filterPlacement="row" />);
+    expect(container.querySelectorAll("thead td").length).toBe(0);
+  });
+
+  it("独立筛选行跟随固定列（sticky 几何与表头格同口径）", () => {
+    const { container } = render(
+      <Table
+        columns={[
+          { accessorKey: "name", header: "姓名", meta: { sticky: "left", filterable: true } },
+          { accessorKey: "age", header: "年龄" },
+        ]}
+        data={data}
+        filterPlacement="row"
+      />,
+    );
+    const cells = container.querySelectorAll("thead td") as NodeListOf<HTMLElement>;
+    expect(cells[0].style.position).toBe("sticky");
+    expect(cells[1].style.position).toBe("");
+  });
+});
+
+describe("cellClassName（按值着色到 <td> 本体·#289）", () => {
+  it("命中格加类、未命中格不加，且与既有单元格类合并", () => {
+    const { container } = render(
+      <Table
+        columns={columns}
+        data={data}
+        cellClassName={({ value, columnId }) =>
+          columnId === "age" && (value as number) > 28 ? "cell-hot" : undefined
+        }
+      />,
+    );
+    const tds = Array.from(container.querySelectorAll("tbody td")) as HTMLElement[];
+    // 渲染序：Charlie 30 / Alice 25 / Bob 35 —— 每行两格
+    expect(tds[1].className).toContain("cell-hot"); // Charlie 的年龄
+    expect(tds[3].className).not.toContain("cell-hot"); // Alice 的年龄
+    expect(tds[5].className).toContain("cell-hot"); // Bob 的年龄
+    expect(tds[0].className).not.toContain("cell-hot"); // 姓名列不参与
+    // 既有单元格类保留（内边距等）
+    expect(tds[1].className).toContain("align-middle");
+  });
+
+  it("ctx 给到行数据 / 行号 / 列号 / 同序 rows（可与上一行比值）", () => {
+    const seen: string[] = [];
+    render(
+      <Table
+        columns={columns}
+        data={data}
+        cellClassName={({ row, rowIndex, columnIndex, rows }) => {
+          if (columnIndex === 0) {
+            const prev = rows[rowIndex - 1];
+            seen.push(`${rowIndex}:${row.name}:${prev ? prev.name : "-"}`);
+          }
+          return undefined;
+        }}
+      />,
+    );
+    expect(seen).toEqual(["0:Charlie:-", "1:Alice:Charlie", "2:Bob:Alice"]);
+  });
+
+  it("不传 cellClassName 时 <td> 类逐字不变", () => {
+    const { container: a } = render(<Table columns={columns} data={data} />);
+    const { container: b } = render(
+      <Table columns={columns} data={data} cellClassName={() => undefined} />,
+    );
+    const cls = (c: HTMLElement) => (c.querySelector("tbody td") as HTMLElement).className;
+    expect(cls(b)).toBe(cls(a));
+  });
+});
+
 describe("固定列（meta.sticky·position:sticky 几何）", () => {
   const stickyColumns: ColumnDef<Row, any>[] = [
     { accessorKey: "name", header: "姓名", meta: { sticky: "left" } },

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { demoImage } from "../lib/demo-image";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../select/select";
 import { Table } from "./table";
 import type { ColumnDef } from "./table.types";
 
@@ -62,6 +63,59 @@ const filterColumns: ColumnDef<DemoUser, any>[] = [
 ];
 function FilterDemo() {
   return <Table columns={filterColumns} data={users} />;
+}
+
+// 筛选控件可换 + 独立筛选行（#290）：文本列留内置输入框，角色是枚举列 → 换成下拉。
+// 写了 filterRender 就等于该列可筛选，不必再写 filterable。
+const ROLE_ITEMS = [{ value: "", label: "全部角色" }, ...ROLES.map((r) => ({ value: r, label: r }))];
+const filterRowColumns: ColumnDef<DemoUser, any>[] = [
+  { ...columns[0], meta: { filterable: true } },
+  { ...columns[1], meta: { filterable: true } },
+  {
+    ...columns[2],
+    meta: {
+      filterRender: ({ value, setValue }) => (
+        <Select
+          items={ROLE_ITEMS}
+          value={(value as string) ?? ""}
+          // 选「全部角色」= 清除这一列的筛选（传 undefined，不是空串）
+          onValueChange={(next) => setValue((next as string) || undefined)}
+        >
+          <SelectTrigger size="xs" className="w-full font-normal" />
+          <SelectContent>
+            {ROLE_ITEMS.map((r) => (
+              <SelectItem key={r.value} value={r.value}>
+                {r.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ),
+    },
+  },
+];
+function FilterRowDemo() {
+  return <Table columns={filterRowColumns} data={users} filterPlacement="row" />;
+}
+
+// 按值着色（#289）：底色落在 <td> 本体上，才盖得住斑马纹 —— 在 cell 里套色块的话，
+// 单元格内边距那一圈会露出 td 自己的底色，做不到整格着色。
+function CellClassNameDemo() {
+  return (
+    <Table
+      columns={columns}
+      data={users}
+      cellClassName={({ columnId, value }) =>
+        columnId !== "role"
+          ? undefined
+          : value === "管理员"
+          ? "bg-danger/10 text-danger"
+          : value === "编辑"
+          ? "bg-warning/10 text-warning"
+          : undefined
+      }
+    />
+  );
 }
 
 // 固定列：首列贴左、操作列贴右；列给 size 让 sticky offset 精确，并加宽内容触发横滚
@@ -360,6 +414,52 @@ export const tableShowcase: ShowcaseSpec = {
 
 <Table columns={filterColumns} data={users} />`,
       render: () => <FilterDemo />,
+    },
+    {
+      title: "筛选控件可换 + 独立筛选行",
+      description:
+        "枚举列（角色）要的是下拉不是「按子串搜」的文本框：meta.filterRender 换掉这一列的控件，写了它就等于该列可筛选。filterPlacement=\"row\" 再把这些控件挪到表头下独立的一整行，表头恢复单行高度、排序按钮不再与输入框挤在一格。",
+      code: `const filterRowColumns: ColumnDef<DemoUser, any>[] = [
+  // 文本列留内置输入框
+  { ...columns[0], meta: { filterable: true } },
+  { ...columns[1], meta: { filterable: true } },
+  {
+    ...columns[2],
+    meta: {
+      // 枚举列换成下拉；写了 filterRender 就等于该列可筛选
+      filterRender: ({ value, setValue }) => (
+        <Select
+          items={ROLE_ITEMS}
+          value={(value as string) ?? ""}
+          onValueChange={(next) => setValue(next || undefined)}
+        >
+          <SelectTrigger size="xs" className="w-full font-normal" />
+          <SelectContent>
+            {ROLE_ITEMS.map((r) => (
+              <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ),
+    },
+  },
+];
+
+<Table columns={filterRowColumns} data={users} filterPlacement="row" />`,
+      render: () => <FilterRowDemo />,
+    },
+    {
+      title: "按值着色（cellClassName）",
+      description:
+        "逐 (行, 列) 派生类名，落在 <td> 本体上并与斑马纹 / 选中态类合并。同一列不同行不同底色这件事，rowClassName（行态）与 meta（列态）都表达不了；在 ColumnDef.cell 里套一层色块也不行——单元格内边距那圈会露出 td 自己的底色。",
+      code: `<Table
+  columns={columns}
+  data={users}
+  cellClassName={({ columnId, value }) =>
+    columnId === "role" && value === "管理员" ? "bg-danger/10 text-danger" : undefined
+  }
+/>`,
+      render: () => <CellClassNameDemo />,
     },
     {
       title: "列几何（列宽 / 对齐 / 溢出省略）",

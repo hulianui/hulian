@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { demoImage } from "../../../../packages/ui/src/lib/demo-image";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../../../../packages/ui/src/select/select";
 import { Table } from "../../../../packages/ui/src/table/table";
 import type { ColumnDef } from "../../../../packages/ui/src/table/table.types";
 export interface DemoUser {
@@ -52,6 +53,34 @@ const filterColumns: ColumnDef<DemoUser, any>[] = [
 ];
 function FilterDemo() {
     return <Table columns={filterColumns} data={users}/>;
+}
+const ROLE_ITEMS = [{ value: "", label: "All roles" }, ...ROLES.map((r) => ({ value: r, label: r }))];
+const filterRowColumns: ColumnDef<DemoUser, any>[] = [
+    { ...columns[0], meta: { filterable: true } },
+    { ...columns[1], meta: { filterable: true } },
+    {
+        ...columns[2],
+        meta: {
+            filterRender: ({ value, setValue }) => (<Select items={ROLE_ITEMS} value={(value as string) ?? ""} onValueChange={(next) => setValue((next as string) || undefined)}>
+          <SelectTrigger size="xs" className="w-full font-normal"/>
+          <SelectContent>
+            {ROLE_ITEMS.map((r) => (<SelectItem key={r.value} value={r.value}>
+                {r.label}
+              </SelectItem>))}
+          </SelectContent>
+        </Select>),
+        },
+    },
+];
+function FilterRowDemo() {
+    return <Table columns={filterRowColumns} data={users} filterPlacement="row"/>;
+}
+function CellClassNameDemo() {
+    return (<Table columns={columns} data={users} cellClassName={({ columnId, value }) => columnId !== "role"
+            ? undefined
+            : value === "Administrator"
+                ? "bg-danger/10 text-danger" : value === "Edit"
+                ? "bg-warning/10 text-warning" : undefined}/>);
 }
 const stickyColumns: ColumnDef<DemoUser, any>[] = [
     { ...columns[0], size: 200, meta: { sticky: "left" } },
@@ -276,6 +305,50 @@ export const tableShowcase: ShowcaseSpec = {
 
 <Table columns={filterColumns} data={users} />`,
             render: () => <FilterDemo />,
+        },
+        {
+            title: "Swappable filter controls and a dedicated filter row",
+            description: "An enum column such as Role needs a select, not a substring text box. meta.filterRender replaces the control for that column, and setting it already makes the column filterable. filterPlacement=\"row\" then moves the controls to a dedicated row below the header, so the header keeps its single-row height and the sort button no longer shares a cell with an input.",
+            code: `const filterRowColumns: ColumnDef<DemoUser, any>[] = [
+  // Text columns keep the built-in input
+  { ...columns[0], meta: { filterable: true } },
+  { ...columns[1], meta: { filterable: true } },
+  {
+    ...columns[2],
+    meta: {
+      // The enum column swaps in a select; filterRender alone makes the column filterable
+      filterRender: ({ value, setValue }) => (
+        <Select
+          items={ROLE_ITEMS}
+          value={(value as string) ?? ""}
+          onValueChange={(next) => setValue(next || undefined)}
+        >
+          <SelectTrigger size="xs" className="w-full font-normal" />
+          <SelectContent>
+            {ROLE_ITEMS.map((r) => (
+              <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ),
+    },
+  },
+];
+
+<Table columns={filterRowColumns} data={users} filterPlacement="row" />`,
+            render: () => <FilterRowDemo />,
+        },
+        {
+            title: "Colouring cells by value (cellClassName)",
+            description: "Derives a class per (row, column) that lands on the <td> itself and merges with the stripe and selection classes. One column painting a different background per row is beyond both rowClassName (row state) and meta (column state), and wrapping a coloured box inside ColumnDef.cell does not work either: the cell padding still shows the td's own background.",
+            code: `<Table
+  columns={columns}
+  data={users}
+  cellClassName={({ columnId, value }) =>
+    columnId === "role" && value === "Administrator" ? "bg-danger/10 text-danger" : undefined
+  }
+/>`,
+            render: () => <CellClassNameDemo />,
         },
         {
             title: "Column geometry (column width/alignment/overflow omitted)",

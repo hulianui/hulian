@@ -39,6 +39,7 @@ import {
 | density | `"default" \| "middle" \| "compact"` | `"default"` | Cell padding density. |
 | getRowId | `(row: TData, index: number) => string` | By index | Stable row key. |
 | rowClassName | `(row: TData, index: number) => string \| undefined` | — | Additional row class merged with stripe and selection classes. |
+| cellClassName | `(ctx) => string \| undefined` | — | Additional **cell** class landing on the `<td>` itself, the equivalent of the el-table `cell-class-name` and the antd `column.onCell`. `ctx` is `{ row, rowIndex, rows, columnId, columnIndex, value }`, the same shape as `cellSpan`. Use it to colour cells by value, where one column paints a different background per row. Wrapping a coloured box inside `ColumnDef.cell` cannot do this: the cell padding still shows the stripe or pinned-column background underneath. Merged with the existing cell classes, never replacing them. |
 | layout | `"auto" \| "fixed"` | `"auto"` | Auto sizes only explicitly constrained columns; fixed emits every TanStack width and sums table width. |
 | resizable | `boolean` | `false` | Enables header-edge resizing and double-click reset, forcing fixed layout. |
 | columnSizing | `ColumnSizingState` | — | Controlled column widths by column id. |
@@ -52,6 +53,7 @@ import {
 | indent | `number` | `16` | Tree and detail indentation per level in pixels. |
 | expanded | `ExpandedState` | — | Controlled state shared by tree and detail expansion. |
 | columnFilters | `ColumnFiltersState` | — | Controlled column filters. |
+| filterPlacement | `"header" \| "row"` | `"header"` | Where filter controls live. `header` keeps them inside the header cell, next to the column name and the sort button; `row` moves them to a dedicated `<tr>` below the header row, so the header keeps its single-row height and the controls line up with the leaf columns even under grouped headers. The row is not rendered when no column is filterable. |
 | rowDraggable | `boolean` | `false` | Enables dnd-kit row sorting; data remains controlled and the result is returned by `onRowDragEnd`. |
 | dragHandle | `"row" \| "cell"` | `"cell"` | Uses the entire row or a prepended handle cell. |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | All rows | Disables dragging and drop targeting per row; nested rows are always disabled. |
@@ -93,6 +95,7 @@ Additional `ColumnDef.meta` fields:
 |------|------|------|------|
 | sticky | `"left" \| "right"` | Pins a column and computes its offset. | `fixed` |
 | filterable | `boolean` | Renders a built-in text filter in the header. | — |
+| filterRender | `(ctx) => ReactNode` | Replaces the filter control for this column, so enum columns get a select, date columns get a date control and numeric columns get a range. `ctx` is `{ value, setValue, column }`; call `setValue(undefined)` to clear this column's filter. **Setting it already makes the column filterable**, so `filterable` is not needed as well. The accessible name of your control is yours to provide. | `filters` or a custom header (antd calls this `filterDropdown`) |
 | align | `"left" \| "center" \| "right"` | Horizontal cell alignment. | `align` |
 | headerAlign | `"left" \| "center" \| "right"` | Header alignment, otherwise following `align`. | `header-align` |
 | ellipsis | `boolean` | Truncates overflow and shows the full raw value in a tooltip. | `show-overflow-tooltip` |
@@ -176,6 +179,35 @@ const geoColumns: ColumnDef<DemoUser, any>[] = [
 ];
 <Table columns={geoColumns} data={users} />
 <Table columns={geoColumns} data={users} resizable columnSizing={sizing} onColumnSizingChange={setSizing} />
+
+// Colour a cell by its value; the background lands on the <td> itself, so it is
+// not layered on top of the stripe or pinned-column colour.
+<Table
+  columns={columns}
+  data={users}
+  cellClassName={({ columnId, value }) =>
+    columnId === "status" && value === "overdue" ? "bg-danger/10 text-danger" : undefined
+  }
+/>
+
+// Per-column filter controls, moved to a dedicated row below the header.
+const filterColumns: ColumnDef<DemoUser, any>[] = [
+  { accessorKey: "name", header: "Name", meta: { filterable: true } }, // built-in text box
+  {
+    accessorKey: "role",
+    header: "Role",
+    meta: {
+      // filterRender alone already makes the column filterable
+      filterRender: ({ value, setValue }) => (
+        <RoleSelect
+          value={(value as string) ?? ""}
+          onChange={(v) => setValue(v || undefined)} // undefined clears this column's filter
+        />
+      ),
+    },
+  },
+];
+<Table columns={filterColumns} data={users} filterPlacement="row" />
 
 <Table
   columns={columns}
@@ -277,6 +309,9 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 - Resizing forces fixed layout. If summed widths are narrower than the container, `min-w-full` lets the browser stretch them and no horizontal scroll occurs.
 - The `cellSpan` callback runs **only for cells that are not already covered**, so the "merge while the store matches the previous row" pattern is to return the whole run length at the start of the run (`while (rows[i + n]?.store === rows[i].store) n++`); the following rows are never asked. The el-table `[0, 0]` style is also honored: returning `rowSpan: 0` hides that cell.
 - `cellSpan` receives a `rowIndex` in **render order** (after sorting and filtering), and `rows` is ordered the same way. That is what avoids the classic el-table trap where enabling column sorting shifts the whole merge map: base the decision on the data, never on the original index.
+- `cellClassName` lands on the `<td>` itself and sits **last** in the class string, so a background or text colour it returns wins over the stripe and pinned-column colours — which is exactly what full-cell colouring needs. Do not return a `bg-*` class on a pinned column unless you mean to replace its opaque background. The callback also runs for the built-in leading columns (`__select__`, `__expander__`, `__drag__`); skip them via `ctx.columnId`.
+- `meta.filterRender` is a **callback, not a component** (the same contract as `ColumnDef.cell`): do not call hooks inside its body, keep state in your own control component. Clear a column filter with `setValue(undefined)`, not with an empty string, which is a valid value meaning "filter by the empty string".
+- `filterPlacement="row"` renders that row as `<td>` cells inside `<thead>` rather than `<th>`: it holds controls, not column names, and header cells would be announced as a second level of column names. The row is not rendered when no column is filterable.
 - `cellSpan` **cannot be combined** with `virtual` or `renderExpandedRow`. Virtualization renders only the visible window, so a vertical span has nowhere to land, and an expanded panel inserts a `<tr>` between data rows that a vertical span would cross. In both cases the component skips merging and warns in development rather than rendering a misaligned table.
 - With pinned columns (`meta.sticky`), a horizontal span **must not cross the pinned boundary**: pinned offsets accumulate from the unmerged column widths, so a span across the edge misplaces the cell next to it.
 - **Under grouped headers, pinning only applies to leaf columns.** Offsets accumulate from leaf column widths, and a group name spanning several columns has no offset of its own, so it scrolls with the content while only the row of leaf headers below it stays at the edge. When combining grouped headers with pinned columns, keep the pinned ones outside any group -- a standalone column spans both header rows and reads the same.
