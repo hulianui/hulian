@@ -1,5 +1,16 @@
 # @hulianui/ui
 
+## 0.51.0
+
+### Minor Changes
+
+- fd9c623: Table gains a cell-level `cellClassName` plus swappable column filter controls and a dedicated filter row; the Upload root now carries its own positioned ancestor and no longer stretches the whole page (#289 / #290 / #291)
+
+  - **`Table.cellClassName` (#289)** -- derives a class per (row, column) that lands on the `<td>` **itself**, the equivalent of the el-table `cell-class-name` and the antd `column.onCell`. `ctx = { row, rowIndex, rows, columnId, columnIndex, value }`, the same shape as `cellSpan`; returning `undefined` leaves the cell untouched, and the class is **merged** with the stripe, selection and pinned-column classes rather than replacing them. Colouring cells by value (a status, stage or priority column painting a different background per row) had nowhere to land before: `rowClassName` is row state, the `meta` fields are column state, and wrapping a coloured box inside `ColumnDef.cell` only paints **inside** the `<td>`, so the cell padding still shows the td's own stripe or pinned-column background.
+  - **`ColumnMeta.filterRender` (#290)** -- replaces the filter control for one column, so an enum column gets a select, a date column gets a date control and a numeric column gets a range. `ctx = { value, setValue, column }`, and `setValue(undefined)` clears that column's filter. Leaving it out keeps the built-in text box, so the default behaviour is byte-for-byte unchanged; setting it already makes the column filterable, with no need for `filterable` as well.
+  - **`Table.filterPlacement` (#290)** -- defaults to `"header"`, the previous behaviour where the control lives inside the header cell. `"row"` moves the controls to a dedicated row **below** the header row, so the header keeps its single-row height and the sort button no longer shares a cell with an input. Under grouped headers that row sits below the deepest level of column names and lines up with the leaf columns, following the sticky geometry of pinned columns; it is not rendered at all when no column is filterable. The row is built from `<td>` cells inside `<thead>` rather than `<th>`: it holds controls, not column names, and header cells would be announced as a second level of column names.
+  - **Upload root is always `relative` (#291, fix)** -- the hidden file input is `sr-only` (`position: absolute` plus clip). When every ancestor is `static`, its containing block falls back to the initial containing block and `offsetParent` lands on `<body>`, so it escapes the intermediate `overflow` container and contributes its document-flow vertical position to `documentElement`'s scroll height. In the common admin layout of a fixed-height viewport with a self-scrolling content area, a long form makes the whole page scrollable: once the content area reaches the bottom, the scroll chains to the document and the sidebar slides up with it. The root now provides a positioned ancestor that keeps the input inside the component, and consumer-side workarounds that added `relative` to upload wrappers can be removed. Deliberately not switched to `display: none`: an input carrying `name` takes part in native form submission and `required` validation, and a hidden required control makes the browser block submission silently.
+
 ## 0.50.0
 
 ### Minor Changes
