@@ -119,6 +119,14 @@ const geometryColumns: ColumnDef<DemoUser, any>[] = [
 function GeometryDemo() {
     return <Table columns={geometryColumns} data={users.slice(0, 5)}/>;
 }
+const tableAlignColumns: ColumnDef<DemoUser, any>[] = [
+    { accessorKey: "name", header: "Name", size: 120 },
+    { accessorKey: "role", header: "Role", size: 100 },
+    { accessorKey: "id", header: "No.", size: 140, meta: { align: "right" } },
+];
+function TableAlignDemo() {
+    return <Table columns={tableAlignColumns} data={users.slice(0, 5)} cellAlign="center"/>;
+}
 function ResizableDemo() {
     return <Table columns={geometryColumns} data={users.slice(0, 5)} resizable/>;
 }
@@ -362,6 +370,20 @@ export const tableShowcase: ShowcaseSpec = {
 
 <Table columns={columns} data={users} />`,
             render: () => <GeometryDemo />,
+        },
+        {
+            title: "Table-level alignment (cellAlign / headerAlign)",
+            description: "Alignment is a whole-table decision: when an admin list has some columns centered and others left-aligned, that is almost never a design call \u2014 it is dozens of column definitions each written on their own. Set it once at the table level; a column's meta.align still wins, and the usual shape is a centered table with amount columns right-aligned (digits only line up by place value that way). headerAlign exists separately for the \"centered headers, left-aligned content\" layout.",
+            code: `<Table
+  columns={columns}
+  data={users}
+  cellAlign="center"          // table level: both cells and headers centered
+  // headerAlign="center"     // set it alone when only the header should move
+/>
+
+// A column can still override it as before:
+{ accessorKey: "id", header: "No.", meta: { align: "right" } }`,
+            render: () => <TableAlignDemo />,
         },
         {
             title: "Column width drag",

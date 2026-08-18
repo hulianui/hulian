@@ -1368,6 +1368,38 @@ describe("Table 排版与滚动（#191–#194）", () => {
     expect(ageCell.className).toContain("whitespace-nowrap"); // 未覆盖的列跟随表级
   });
 
+  // #292：对齐是整表口径，逐列写 meta.align 表达不了「这张表统一居中」。
+  it("表级 cellAlign 下发到每格与表头；列 meta.align 反向覆盖", () => {
+    const cols: ColumnDef<Row, any>[] = [
+      { accessorKey: "name", header: "姓名" },
+      { accessorKey: "age", header: "年龄", meta: { align: "right" } },
+    ];
+    const { container } = render(<Table columns={cols} data={data} cellAlign="center" />);
+    const [nameCell, ageCell] = Array.from(container.querySelectorAll("tbody tr:first-child td"));
+    expect(nameCell.className).toContain("text-center"); // 表级默认
+    expect(ageCell.className).toContain("text-right"); // 列覆盖表级
+    expect(ageCell.className).not.toContain("text-center");
+    const ths = container.querySelectorAll("thead th");
+    expect(ths[0].className).toContain("text-center"); // 表头缺省跟随 cellAlign
+    expect(ths[1].className).toContain("text-right"); // 跟随该列的 meta.align
+  });
+
+  it("表级 headerAlign 独立于 cellAlign：表头居中、内容靠左", () => {
+    const cols: ColumnDef<Row, any>[] = [{ accessorKey: "name", header: "姓名" }];
+    const { container } = render(
+      <Table columns={cols} data={data} headerAlign="center" cellAlign="left" />,
+    );
+    expect(container.querySelector("thead th")!.className).toContain("text-center");
+    expect(container.querySelector("tbody td")!.className).toContain("text-left");
+  });
+
+  it("不写表级对齐时维持历史默认（td 不落 text-*，th 为左）", () => {
+    const cols: ColumnDef<Row, any>[] = [{ accessorKey: "name", header: "姓名" }];
+    const { container } = render(<Table columns={cols} data={data} />);
+    expect(container.querySelector("tbody td")!.className).not.toMatch(/text-(left|center|right)/);
+    expect(container.querySelector("thead th")!.className).toContain("text-left");
+  });
+
   it("pre-wrap 保留原文换行，且默认仍是 align-middle", () => {
     const cols: ColumnDef<Row, any>[] = [
       { accessorKey: "name", header: "姓名", meta: { whitespace: "pre-wrap", verticalAlign: "top" } },
@@ -1756,6 +1788,59 @@ describe("Table 组合原语", () => {
       const cls = container.querySelector("td")!.className;
       expect(cls).toContain("whitespace-pre-wrap");
       expect(cls).toContain("break-words");
+    });
+  });
+
+  // #292：表级对齐经 context 下发，与高层 Table 的 cellAlign / headerAlign 同名同义。
+  describe("水平对齐（TableRoot.cellAlign / headerAlign）", () => {
+    it("默认不设：td / th 为左", () => {
+      const { container } = primitive();
+      expect(container.querySelector("tbody td")!.className).toContain("text-left");
+      expect(container.querySelector("thead th")!.className).toContain("text-left");
+    });
+
+    it("表级 cellAlign 同时管住 td 与 th；按格 align 反向覆盖", () => {
+      const { container } = render(
+        <TableRoot cellAlign="center">
+          <TableHeader>
+            <TableRow>
+              <TableHead>名称</TableHead>
+              <TableHead align="right">金额</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>A</TableCell>
+              <TableCell align="right">12.00</TableCell>
+            </TableRow>
+          </TableBody>
+        </TableRoot>,
+      );
+      const tds = container.querySelectorAll("tbody td");
+      expect(tds[0].className).toContain("text-center");
+      expect(tds[1].className).toContain("text-right");
+      const ths = container.querySelectorAll("thead th");
+      expect(ths[0].className).toContain("text-center");
+      expect(ths[1].className).toContain("text-right");
+    });
+
+    it("headerAlign 只管表头，td 仍跟 cellAlign", () => {
+      const { container } = render(
+        <TableRoot cellAlign="left" headerAlign="center">
+          <TableHeader>
+            <TableRow>
+              <TableHead>名称</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>A</TableCell>
+            </TableRow>
+          </TableBody>
+        </TableRoot>,
+      );
+      expect(container.querySelector("thead th")!.className).toContain("text-center");
+      expect(container.querySelector("tbody td")!.className).toContain("text-left");
     });
   });
 

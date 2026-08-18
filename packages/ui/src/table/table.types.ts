@@ -420,6 +420,24 @@ export interface TableProps<TData> {
 
   // —— 单元格排版（表级默认，列 meta 可逐列覆盖）——
   /**
+   * 单元格水平对齐的**表级默认**（#292）。不写即维持历史默认（左）。
+   *
+   * 对齐是**整表口径**而不是逐列偏好：后台列表里「有的列居中、有的列靠左」几乎都不是设计决定，
+   * 而是几十份列定义各写各的。逐列写 `meta.align` 表达不了「这张表统一居中」——同一句话要在
+   * 每个列定义里重复一遍，漏写的那列就是那条视觉裂缝，而且下次改口径要再犁一遍所有列。
+   *
+   * 列 `meta.align` 仍然优先：整表居中、金额列右对齐（数字按个位对齐才比得出量级）是常见形状。
+   */
+  cellAlign?: TableColumnAlign;
+  /**
+   * 表头水平对齐的**表级默认**（#292）。不写则跟随 `cellAlign`，两者都不写维持历史默认
+   * （普通列左、跨列的组名居中）。列 `meta.headerAlign` / `meta.align` 仍然优先。
+   *
+   * 单独给它是为了「表头居中、内容靠左」这种排版——表头是标签、正文是内容，两者本可不同轴。
+   * 显式写了它，跨列组名那条「恒居中」的兜底也让位于你（组名要不要居中由你说了算）。
+   */
+  headerAlign?: TableColumnAlign;
+  /**
    * 单元格垂直对齐的**表级默认**（#194）。默认 `middle`（与此前逐像素一致）。
    * 允许换行的表通常整表 `top`，个别列再用 `meta.verticalAlign` 调回来。
    */
@@ -532,6 +550,16 @@ export interface TableRootProps extends HTMLAttributes<HTMLDivElement> {
    * `TableHead` 不受它影响，恒不换行（同高层 `Table`）。
    */
   cellWhitespace?: TableCellWhitespace;
+  /**
+   * 表级单元格水平对齐（#292），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellAlign` 同名同义。
+   * 不写为 `left`。按格的 `TableCell align` 仍然优先。
+   */
+  cellAlign?: TableColumnAlign;
+  /**
+   * 表级表头水平对齐（#292），经 context 下发给 `TableHead`；与高层 `Table` 的 `headerAlign` 同名同义。
+   * 不写则跟随 `cellAlign`，仍不写为 `left`。按格的 `TableHead align` 仍然优先。
+   */
+  headerAlign?: TableColumnAlign;
 }
 
 /** 原语列宽（#286）：数字按 px，字符串原样落 CSS。落 inline style，语义同高层 `Table` 的 `size` / `minSize` / `maxSize`。 */
@@ -569,7 +597,10 @@ export interface TableHeadProps
   extends Omit<ThHTMLAttributes<HTMLTableCellElement>, "align" | "width">,
     TablePrimitiveWidthProps {
   ref?: Ref<HTMLTableCellElement>;
-  /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
+  /**
+   * 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。
+   * 不写则跟随 `TableRoot` 的 `headerAlign`，再跟随 `cellAlign`（#292）。@default "left"
+   */
   align?: TableColumnAlign;
 }
 
@@ -578,7 +609,10 @@ export interface TableCellProps
   extends Omit<TdHTMLAttributes<HTMLTableCellElement>, "align" | "width">,
     TablePrimitiveWidthProps {
   ref?: Ref<HTMLTableCellElement>;
-  /** 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。@default "left" */
+  /**
+   * 水平对齐（走 class，不是 HTML 的废弃 `align` 属性）。
+   * 不写则跟随 `TableRoot` 的 `cellAlign`（#292）。@default "left"
+   */
   align?: TableColumnAlign;
   /** 垂直对齐。@default "middle" */
   verticalAlign?: TableCellVerticalAlign;

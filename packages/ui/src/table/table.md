@@ -62,6 +62,8 @@ import {
 | stickyHeaderOffset | `number ｜ string` | `0` | 吸顶表头的偏移（数值按 px），落成 `<thead>` 的 `top`，用来避开自家固定页头（`stickyHeaderOffset={56}`）。两档都生效 |
 | maxHeight | `number ｜ string` | — | 滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准 |
 | minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来 |
+| cellAlign | `"left" ｜ "center" ｜ "right"` | — | 单元格水平对齐的**表级默认**（#292）；列 `meta.align` 覆盖。不写维持历史默认（左）。对齐是整表口径——逐列写 `meta.align` 表达不了「这张表统一居中」，漏写的那列就是视觉裂缝 |
+| headerAlign | `"left" ｜ "center" ｜ "right"` | — | 表头水平对齐的**表级默认**（#292）；不写则跟随 `cellAlign`，列 `meta.headerAlign` / `meta.align` 仍优先。显式写了它，跨列组名那条「恒居中」的兜底也让位 |
 | cellVerticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | 单元格垂直对齐的表级默认；列 `meta.verticalAlign` 覆盖 |
 | cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | 换行策略的表级默认；列 `meta.whitespace` 覆盖。典型形状是「表级 nowrap + 少数几列 normal」 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
@@ -125,6 +127,8 @@ import {
 | minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
 | tableClassName | `string` | — | `<table>` 本体的类名 |
 | cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | 表级换行策略（#285），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellWhitespace` 同名同义。不写为浏览器默认（换行）。典型形状是「表级 `nowrap` + 少数几列 `TableCell whitespace="normal"`」；`TableHead` 不受影响，恒不换行 |
+| cellAlign | `"left" ｜ "center" ｜ "right"` | — | 表级单元格水平对齐（#292），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellAlign` 同名同义。不写为 `left`，按格 `TableCell align` 优先 |
+| headerAlign | `"left" ｜ "center" ｜ "right"` | — | 表级表头水平对齐（#292），下发给 `TableHead`；不写则跟随 `cellAlign`，按格 `TableHead align` 优先 |
 | ref | `Ref<HTMLDivElement>` | — | **外层滚动容器**（`overflow-x-auto` 那层）的引用。横向滚动态只存在于那一层 |
 
 `TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性，外加一个 `ref`。
@@ -142,7 +146,7 @@ const scroller = useRef<HTMLDivElement>(null)
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
-| align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性 |
+| align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性。不写则跟随 `TableRoot` 的 `headerAlign` / `cellAlign`（#292） |
 | verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
 | whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | `TableCell`：按格换行策略（#285），覆盖 `TableRoot` 的 `cellWhitespace`；同高层 `Table` 的列级 `meta.whitespace`。`pre-wrap` / `normal` 连带 `break-words` |
 | width | `number ｜ string` | — | `TableHead` / `TableCell`：宽度，落 `style.width`（数字按 px，字符串原样）（#286）。列宽是**数据**（来自字段配置、用户可改）时用它，别在业务里写 `style`——那会被 `@hulianui/guard` 的 no-style-override 拦下；`w-[${px}px]` 动态类 Tailwind 不编译；`<col>` 只在 `layout="fixed"` 下可靠且给不了 `maxWidth` |

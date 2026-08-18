@@ -479,6 +479,8 @@ export function Table<TData>({
   // 单元格合并
   cellSpan,
   // 单元格排版（表级默认，列 meta 可覆盖）
+  cellAlign,
+  headerAlign: headerAlignProp,
   cellVerticalAlign,
   cellWhitespace,
   // 表头吸顶 / 表体宽度下限
@@ -955,7 +957,8 @@ export function Table<TData>({
                   WHITESPACE_CLASS[
                     (meta?.whitespace ?? cellWhitespace) as keyof typeof WHITESPACE_CLASS
                   ],
-                meta?.align && ALIGN_TEXT[meta.align as Align],
+                // 水平对齐（#292）：列 `meta.align` 优先，缺省落表级 `cellAlign`，都不写才不落类（左）
+                (meta?.align ?? cellAlign) && ALIGN_TEXT[(meta?.align ?? cellAlign) as Align],
                 meta?.ellipsis && "overflow-hidden",
                 stickyClass(cell.column),
                 // 指示线走 inset box-shadow 而非真 border：<table> 是 border-collapse，
@@ -1204,11 +1207,15 @@ export function Table<TData>({
                   const meta = header.column.columnDef.meta;
                   const canFilter =
                     filterPlacement === "header" && canColumnFilter(header.column);
-                  // headerAlign 缺省跟随 align，两者都不写维持历史默认（左）。
+                  // headerAlign 缺省跟随 align，再缺省落表级（#292：表头 → 单元格两级兜底），
+                  // 都不写才维持历史默认（左）。
                   // 例外是跨列的组名：贴在最左那列的左缘会读成「这是第一列的名字」，
                   // 居中才看得出它管着下面这一段（Element Plus / Ant Design 同样如此）。
+                  // 显式写了表级对齐即让位于消费方——组名要不要居中由那张表自己说了算。
                   const headerAlign = (meta?.headerAlign ??
                     meta?.align ??
+                    headerAlignProp ??
+                    cellAlign ??
                     (colSpan > 1 ? "center" : "left")) as Align;
                   // 内建前插列（__select__ / __expander__ / __drag__）是固定几何的图标列，恒不可调宽
                   const canResize =

@@ -25360,6 +25360,34 @@
           "description": "`<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来"
         },
         {
+          "name": "cellAlign",
+          "required": false,
+          "kind": "enum",
+          "type": "\"left\" | \"center\" | \"right\"",
+          "values": [
+            "left",
+            "center",
+            "right"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "单元格水平对齐的**表级默认**（#292）；列 `meta.align` 覆盖。不写维持历史默认（左）。对齐是整表口径——逐列写 `meta.align` 表达不了「这张表统一居中」，漏写的那列就是视觉裂缝"
+        },
+        {
+          "name": "headerAlign",
+          "required": false,
+          "kind": "enum",
+          "type": "\"left\" | \"center\" | \"right\"",
+          "values": [
+            "left",
+            "center",
+            "right"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "表头水平对齐的**表级默认**（#292）；不写则跟随 `cellAlign`，列 `meta.headerAlign` / `meta.align` 仍优先。显式写了它，跨列组名那条「恒居中」的兜底也让位"
+        },
+        {
           "name": "cellVerticalAlign",
           "required": false,
           "kind": "enum",

@@ -6,6 +6,7 @@ import type {
   TableBodyProps,
   TableCellProps,
   TableCellWhitespace,
+  TableColumnAlign,
   TableDensity,
   TableFooterProps,
   TableHeadProps,
@@ -67,6 +68,8 @@ const TableSkinContext = createContext<{
   density: TableDensity;
   striped: boolean;
   cellWhitespace?: TableCellWhitespace;
+  cellAlign?: TableColumnAlign;
+  headerAlign?: TableColumnAlign;
 }>({
   density: "default",
   striped: false,
@@ -87,6 +90,8 @@ export function TableRoot({
   minWidth,
   tableClassName,
   cellWhitespace,
+  cellAlign,
+  headerAlign,
   className,
   children,
   ...rest
@@ -100,7 +105,7 @@ export function TableRoot({
       )}
       {...rest}
     >
-      <TableSkinContext.Provider value={{ density, striped, cellWhitespace }}>
+      <TableSkinContext.Provider value={{ density, striped, cellWhitespace, cellAlign, headerAlign }}>
         <table
           style={{
             ...(layout === "fixed" ? { tableLayout: "fixed" as const } : null),
@@ -163,7 +168,7 @@ export function TableRow({ selected, className, ...rest }: TableRowProps) {
 }
 
 export function TableHead({
-  align = "left",
+  align,
   width,
   minWidth,
   maxWidth,
@@ -171,13 +176,15 @@ export function TableHead({
   className,
   ...rest
 }: TableHeadProps) {
-  const { density } = useContext(TableSkinContext);
+  const { density, cellAlign, headerAlign } = useContext(TableSkinContext);
+  // 表头对齐（#292）：按格 `align` 优先，缺省落表级 `headerAlign`，再落表级 `cellAlign`，都不写为左。
+  const ha = align ?? headerAlign ?? cellAlign ?? "left";
   return (
     <th
       style={widthStyle({ width, minWidth, maxWidth }, style)}
       className={cn(
         TABLE_DENSITY_PAD[density],
-        ALIGN_TEXT[align],
+        ALIGN_TEXT[ha],
         // 表头恒不换行：auto 布局下中文表头会被挤成一列一个字，列宽反而更窄（同高层 Table）
         "whitespace-nowrap font-semibold",
         className,
@@ -188,7 +195,7 @@ export function TableHead({
 }
 
 export function TableCell({
-  align = "left",
+  align,
   verticalAlign = "middle",
   whitespace,
   width,
@@ -198,14 +205,16 @@ export function TableCell({
   className,
   ...rest
 }: TableCellProps) {
-  const { density, cellWhitespace } = useContext(TableSkinContext);
+  const { density, cellWhitespace, cellAlign } = useContext(TableSkinContext);
   const ws = whitespace ?? cellWhitespace;
+  // 水平对齐（#292）：按格 `align` 优先，缺省落表级 `cellAlign`，都不写为左。
+  const ca = align ?? cellAlign ?? "left";
   return (
     <td
       style={widthStyle({ width, minWidth, maxWidth }, style)}
       className={cn(
         TABLE_DENSITY_PAD[density],
-        ALIGN_TEXT[align],
+        ALIGN_TEXT[ca],
         VALIGN_CLASS[verticalAlign],
         ws && TABLE_WHITESPACE_CLASS[ws],
         className,

@@ -159,6 +159,17 @@ function GeometryDemo() {
   return <Table columns={geometryColumns} data={users.slice(0, 5)} />;
 }
 
+// 表级对齐（#292）：整表居中，金额列用 meta.align 反向覆盖成右对齐
+const tableAlignColumns: ColumnDef<DemoUser, any>[] = [
+  { accessorKey: "name", header: "姓名", size: 120 },
+  { accessorKey: "role", header: "角色", size: 100 },
+  { accessorKey: "id", header: "编号", size: 140, meta: { align: "right" } },
+];
+
+function TableAlignDemo() {
+  return <Table columns={tableAlignColumns} data={users.slice(0, 5)} cellAlign="center" />;
+}
+
 // 列宽拖拽：表头右缘拖动改宽（自动切 fixed 布局），双击手柄复位
 function ResizableDemo() {
   return <Table columns={geometryColumns} data={users.slice(0, 5)} resizable />;
@@ -474,6 +485,21 @@ export const tableShowcase: ShowcaseSpec = {
 
 <Table columns={columns} data={users} />`,
       render: () => <GeometryDemo />,
+    },
+    {
+      title: "表级对齐（cellAlign / headerAlign）",
+      description:
+        "对齐是整表口径：一张后台列表里「有的列居中、有的列靠左」几乎都不是设计决定，而是几十份列定义各写各的。表级写一次即可，列 meta.align 仍可反向覆盖——整表居中、金额列右对齐（数字按个位对齐才比得出量级）是最常见的形状。headerAlign 单独给，是为了「表头居中、内容靠左」这种排版。",
+      code: `<Table
+  columns={columns}
+  data={users}
+  cellAlign="center"          // 表级：单元格 + 表头都居中
+  // headerAlign="center"     // 只想动表头时单独写它
+/>
+
+// 列上照旧可以反向覆盖：
+{ accessorKey: "id", header: "编号", meta: { align: "right" } }`,
+      render: () => <TableAlignDemo />,
     },
     {
       title: "列宽拖拽",
