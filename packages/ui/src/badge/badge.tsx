@@ -11,12 +11,42 @@ export function formatCount(count: number, max?: number): string {
   return max != null && count > max ? `${max}+` : String(count);
 }
 
-const toneClass: Record<BadgeTone, string> = {
+/**
+ * 语义面配色（`variant="themed"`）：跟着主题走，与按钮 / 警示条同一套口径。
+ */
+const themedToneClass: Record<BadgeTone, string> = {
   neutral: "bg-surface-hover text-foreground",
   brand: "bg-primary text-primary-foreground",
   success: "bg-success text-success-foreground",
   warning: "bg-warning text-warning-foreground",
   danger: "bg-danger text-danger-foreground",
+};
+
+/**
+ * 信号色配色（`variant="signal"`，默认）：明暗两个主题下都是同一个实心色 + 白字（#295）。
+ *
+ * 为什么角标不该跟主题走：暗色下 `--color-danger` 会抬亮到 400 档（#fc5855），于是配套的
+ * `-foreground` 必须翻成近黑才够对比 —— 落到角标上就是「红底黑字」，与所有人对通知红的
+ * 肌肉记忆相反（Ant Design / MUI 的角标两个主题都是红底白字）。角标是**极小的实心标记**，
+ * 颜色本身就是语义，不是一块要融进主题的语义面。
+ *
+ * 走 `var(--color-signal-*, <旧语义色>)` 而不是直接写 `bg-signal-danger`：这一族令牌是
+ * `@hulianui/tokens` 0.10.0 才有的，而 tokens 与 ui 是两条独立版本线、消费方分别安装。
+ * 直接用工具类的话，装了新 ui 却没升 tokens 的消费方会拿到一个 Tailwind 根本没生成的类 ——
+ * 角标底色变透明、白字落在白底上直接消失，而且不报错。有兜底则退化成升级前的表现。
+ * 待 tokens 下界能被强制之后可以简化成 `bg-signal-danger text-signal-danger-foreground`。
+ */
+const signalToneClass: Record<BadgeTone, string> = {
+  // neutral 没有信号色：它本来就是「中性计数」而不是警示标记，两档一致地跟随主题
+  neutral: "bg-surface-hover text-foreground",
+  brand:
+    "bg-[color:var(--color-signal-brand,var(--color-primary))] text-[color:var(--color-signal-brand-foreground,var(--color-primary-foreground))]",
+  success:
+    "bg-[color:var(--color-signal-success,var(--color-success))] text-[color:var(--color-signal-success-foreground,var(--color-success-foreground))]",
+  warning:
+    "bg-[color:var(--color-signal-warning,var(--color-warning))] text-[color:var(--color-signal-warning-foreground,var(--color-warning-foreground))]",
+  danger:
+    "bg-[color:var(--color-signal-danger,var(--color-danger))] text-[color:var(--color-signal-danger-foreground,var(--color-danger-foreground))]",
 };
 
 const placementAnchor: Record<BadgePlacement, string> = {
@@ -42,6 +72,7 @@ export function Badge({
   showZero,
   invisible,
   tone = "danger",
+  variant = "signal",
   size = "md",
   placement = "top-right",
   offset,
@@ -70,7 +101,7 @@ export function Badge({
 
   const markClassName = cn(
     "inline-flex items-center justify-center rounded-full font-medium leading-none tabular-nums",
-    toneClass[tone],
+    (variant === "signal" ? signalToneClass : themedToneClass)[tone],
     markSize,
   );
 

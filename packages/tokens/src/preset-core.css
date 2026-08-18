@@ -35,6 +35,15 @@
   --color-success-hover: var(--color-success-hover);
   --color-success-subtle: var(--color-success-subtle);
   --color-success-border: var(--color-success-border);
+  /* 信号色（#295）：不随主题变的实心小标记（角标 / 未读点）。语义与档位选择见 semantic.css。 */
+  --color-signal-danger: var(--color-signal-danger);
+  --color-signal-danger-foreground: var(--color-signal-danger-foreground);
+  --color-signal-brand: var(--color-signal-brand);
+  --color-signal-brand-foreground: var(--color-signal-brand-foreground);
+  --color-signal-success: var(--color-signal-success);
+  --color-signal-success-foreground: var(--color-signal-success-foreground);
+  --color-signal-warning: var(--color-signal-warning);
+  --color-signal-warning-foreground: var(--color-signal-warning-foreground);
   --color-warning: var(--color-warning);
   --color-warning-foreground: var(--color-warning-foreground);
   --color-warning-hover: var(--color-warning-hover);

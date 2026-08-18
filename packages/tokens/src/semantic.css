@@ -117,6 +117,36 @@
   --code-tag: var(--danger-700);
   --code-attr: oklch(0.55 0.2 300);
   --radius: 0.625rem;
+  /* ===== 信号色（#295）：不随主题变的实心标记 =====
+     角标 / 未读点这类**极小的实心块**，颜色本身就是语义（"红 = 有未读"）。它们与
+     按钮、警示条那种大面积语义面不同，不能套 `-foreground` 那套随主题翻转的口径：
+
+     暗色下 `--color-danger` 会抬亮到 400 档（#fc5855），于是 `-foreground` 必须变近黑
+     才够对比 —— 结果就是「红底黑字」的角标，与所有人对通知红的肌肉记忆相反
+     （Ant Design / MUI 的角标在明暗两个主题下都是红底白字）。
+
+     所以这一族**故意只在 :root 定义、不在暗色块里重定义**：一个固定色同时满足
+       · 白字 ≥ 4.5（AA 正文）
+       · 色块 vs 亮色页底 ≥ 3、vs 暗色页底 ≥ 3（AA 非文本 1.4.11 —— 小块必须找得到）
+     实测（sRGB 光栅化后算，2026-08-18）：
+       danger-600  #d40924  白字 5.43 · vs暗底 3.66 · vs亮底 5.21
+       brand-600   #0067df  白字 5.24 · vs暗底 3.79 · vs亮底 5.02
+       success-700 #00753e  白字 5.81 · vs暗底 3.42 · vs亮底 5.57
+       warning-700 #915200  白字 6.16 · vs暗底 3.23 · vs亮底 5.90
+     档位不齐（danger/brand 取 600、success/warning 取 700）是按对比度选出来的，不是笔误：
+     同一档下绿与琥珀天然更亮，600 档配白字只有 3.97 / 3.76，够不到 AA。
+     反过来 700 档的红在暗底上只剩 2.99，色块自己会沉进背景 —— 两头都卡住之后只剩这一组解。
+
+     只给「实心小标记」用。大面积语义面继续用 --color-danger 那一族（它们该随主题走）。 */
+  --color-signal-danger: var(--danger-600);
+  --color-signal-danger-foreground: var(--white);
+  --color-signal-brand: var(--brand-600);
+  --color-signal-brand-foreground: var(--white);
+  --color-signal-success: var(--success-700);
+  --color-signal-success-foreground: var(--white);
+  --color-signal-warning: var(--warning-700);
+  --color-signal-warning-foreground: var(--white);
+
   /* 整页骨架的顶栏高度。Layout.Header / AdminLayout 的顶栏与侧栏品牌区都读它。
      此前这个 4rem 硬编码在三个组件里，消费方想让「侧栏顶部 logo 区与 Header 齐平」
      （几乎必做的一件事）只能去源码里翻那个数，翻错一次就是一条永远对不齐的分隔线（#120）。

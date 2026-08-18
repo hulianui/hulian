@@ -1,6 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
 export type BadgeTone = "neutral" | "brand" | "success" | "warning" | "danger";
+export type BadgeVariant = "signal" | "themed";
 export type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
 export interface BadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, "content"> {
@@ -18,6 +19,18 @@ export interface BadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, "conte
   invisible?: boolean;
   /** 语气色，默认 danger（通知红）。 */
   tone?: BadgeTone;
+  /**
+   * 配色口径（#295）。默认 `"signal"`。
+   *
+   * · `"signal"` —— 明暗两个主题下同一个实心色 + 白字，即通知角标的通行样子
+   *   （Ant Design / MUI 同此）。角标是极小的实心标记、颜色本身就是语义，不该随主题漂。
+   * · `"themed"` —— 跟着主题走（`bg-danger text-danger-foreground` 那一套），与按钮 /
+   *   警示条同口径。角标被当作**行内状态块**（跟在文字后面表示状态，而不是叠在图标角上）
+   *   时用它，那种用法要的是融进当前主题。
+   *
+   * `neutral` 不受影响：它是中性计数而非警示标记，两档都跟随主题。
+   */
+  variant?: BadgeVariant;
   size?: "sm" | "md";
   /** 有 children 时角标叠加的角位，默认 top-right。 */
   placement?: BadgePlacement;

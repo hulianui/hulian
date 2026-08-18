@@ -62,6 +62,10 @@
       "warning",
       "danger"
     ],
+    "BadgeVariant": [
+      "signal",
+      "themed"
+    ],
     "BadgePlacement": [
       "top-right",
       "top-left",
@@ -15747,6 +15751,19 @@
           "valueType": "string",
           "default": "danger",
           "description": "语气色（默认通知红）。"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"signal\" | \"themed\"",
+          "values": [
+            "signal",
+            "themed"
+          ],
+          "valueType": "string",
+          "default": "signal",
+          "description": "配色口径（#295）。`signal` = 明暗两个主题下同一个实心色 + 白字（通知角标的通行样子）；`themed` = 跟随主题的语义面配色（`bg-danger text-danger-foreground` 那一套），角标当行内状态块用时选它。`neutral` 不受影响，两档都跟随主题"
         },
         {
           "name": "size",

@@ -2,6 +2,13 @@ import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Badge, formatCount } from "./badge";
 
+/** 角标节点：独立成标时它就是根，包裹模式下是内层那个 —— 两种形态都带 rounded-full。 */
+function mark(container: HTMLElement): string {
+  const el = container.querySelector<HTMLElement>('[class*="rounded-full"]');
+  if (!el) throw new Error("角标没渲染");
+  return el.className;
+}
+
 describe("formatCount", () => {
   it("普通数字原样", () => expect(formatCount(5)).toBe("5"));
   it("超过 max 显示 max+", () => expect(formatCount(120, 99)).toBe("99+"));
@@ -30,15 +37,32 @@ describe("Badge 计数角标", () => {
     expect(getByText("99+")).toBeTruthy();
   });
 
-  it("默认 tone=danger 红底", () => {
+  it("默认 tone=danger + variant=signal：明暗同色的信号红 + 白字（#295）", () => {
     const { container } = render(<Badge count={1} />);
+    const cls = mark(container);
+    expect(cls).toContain("--color-signal-danger");
+    expect(cls).toContain("--color-signal-danger-foreground");
+    // 兜底链在：装了新 ui 却没升 tokens 的消费方退化成旧语义色，而不是变透明
+    expect(cls).toContain("var(--color-danger)");
+  });
+
+  it('variant="themed" 回到跟随主题的语义面配色', () => {
+    const { container } = render(<Badge count={1} variant="themed" />);
     expect(container.querySelector(".bg-danger")).toBeTruthy();
+    expect(mark(container)).not.toContain("signal");
+  });
+
+  it("neutral 两档一致：它是中性计数不是警示标记，恒随主题", () => {
+    const a = render(<Badge count={1} tone="neutral" />).container;
+    const b = render(<Badge count={1} tone="neutral" variant="themed" />).container;
+    expect(a.querySelector(".bg-surface-hover")).toBeTruthy();
+    expect(b.querySelector(".bg-surface-hover")).toBeTruthy();
   });
 
   it("dot 模式只渲染圆点不渲染数字", () => {
     const { container, queryByText } = render(<Badge dot count={5} />);
     expect(queryByText("5")).toBeNull();
-    expect(container.querySelector(".rounded-full.bg-danger")).toBeTruthy();
+    expect(mark(container)).toContain("--color-signal-danger");
   });
 
   it("content 覆盖 count 渲染自定义内容", () => {
@@ -84,7 +108,7 @@ describe("Badge 计数角标", () => {
         <span>EM</span>
       </Badge>,
     );
-    expect(container.querySelector(".bg-success")).toBeTruthy();
+    expect(mark(container)).toContain("--color-signal-success");
   });
 
   it("placement=bottom-right 锚定右下角", () => {
