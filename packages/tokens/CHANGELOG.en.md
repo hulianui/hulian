@@ -1,5 +1,19 @@
 # @hulianui/tokens
 
+## 0.10.0
+
+### Minor Changes
+
+- 068dd0f: Signal colors (#295): a new `--color-signal-*` family that **does not follow the theme**
+
+  `--color-signal-{danger,brand,success,warning}` and their `-foreground` counterparts are defined **only in `:root` and deliberately not redefined in the dark block**, then mapped to utilities in the `@theme` block of `preset-core.css` (`bg-signal-danger` / `text-signal-danger-foreground`).
+
+  They exist for **tiny solid markers such as badges and unread dots**, where the color itself carries the meaning ("red = unread") rather than being a surface that should blend into the theme. The `-foreground` policy does not hold for them: in dark mode `--color-danger` moves up to the 400 step (#fc5855), so its paired foreground has to flip to near-black for contrast (white text only reaches 3.15, below AA) — on a badge that reads as "red with black text", the opposite of what Ant Design and MUI do.
+
+  The steps were picked by contrast rather than by aligning numbers: danger and brand use 600, success and warning use 700 (green and amber are naturally lighter at the same step, and their 600 only reaches 3.97 / 3.76 against white text, short of AA 4.5). All four satisfy "white text >= 4.5" and "chip vs both light and dark page backgrounds >= 3" (1.4.11 — a small marker has to be findable). Measured for danger-600 `#d40924`: 5.43 against white text, 3.66 against a dark page, 5.21 against a light one. The light-mode danger-700 was deliberately not reused: it only reaches 2.99 on a dark page, so the chip sinks into the background.
+
+  Larger semantic surfaces keep using the `--color-danger` family, which should follow the theme.
+
 ## 0.9.1
 
 ### Patch Changes

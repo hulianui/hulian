@@ -1,5 +1,19 @@
 # @hulianui/tokens
 
+## 0.10.0
+
+### Minor Changes
+
+- 068dd0f: 信号色（#295）：新增**不随主题变**的 `--color-signal-*` 一族
+
+  `--color-signal-{danger,brand,success,warning}` 与各自的 `-foreground`，**只在 `:root` 定义、暗色块里刻意不重定义**，并在 `preset-core.css` 的 `@theme` 里映射成工具类（`bg-signal-danger` / `text-signal-danger-foreground`）。
+
+  给的是**角标 / 未读点这类极小的实心标记**：它们的颜色本身就是语义（「红 = 有未读」），不是一块要融进主题的语义面。`-foreground` 那套口径对它们不成立 —— 暗色下 `--color-danger` 抬亮到 400 档（#fc5855），配套前景只能翻成近黑才够对比（同底白字仅 3.15，达不到 AA），落到角标上就是「红底黑字」，与 Ant Design / MUI 的通行样子相反。
+
+  档位按对比度选，不按数字对齐：danger / brand 取 600，success / warning 取 700（绿与琥珀同档天然更亮，600 配白字只有 3.97 / 3.76，够不到 AA 4.5）。四组均满足「白字 ≥ 4.5」且「色块 vs 明暗两种页底 ≥ 3」（1.4.11：小块必须找得到）。实测 danger-600 `#d40924` —— 白字 5.43 / vs 暗底 3.66 / vs 亮底 5.21。刻意没用亮色那档的 danger-700：它在暗底上只有 2.99，色块会沉进背景。
+
+  大面积语义面继续用 `--color-danger` 那一族，它们本就该随主题走。
+
 ## 0.9.1
 
 ### Patch Changes

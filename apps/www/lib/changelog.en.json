@@ -1,5 +1,31 @@
 [
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.10.0",
+    "date": "2026-08-18",
+    "entries": [
+      {
+        "sha": "068dd0f",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Signal colors (#295): a new `--color-signal-*` family that **does not follow the theme**\n\n`--color-signal-{danger,brand,success,warning}` and their `-foreground` counterparts are defined **only in `:root` and deliberately not redefined in the dark block**, then mapped to utilities in the `@theme` block of `preset-core.css` (`bg-signal-danger` / `text-signal-danger-foreground`).\n\nThey exist for **tiny solid markers such as badges and unread dots**, where the color itself carries the meaning (\"red = unread\") rather than being a surface that should blend into the theme. The `-foreground` policy does not hold for them: in dark mode `--color-danger` moves up to the 400 step (#fc5855), so its paired foreground has to flip to near-black for contrast (white text only reaches 3.15, below AA) — on a badge that reads as \"red with black text\", the opposite of what Ant Design and MUI do.\n\nThe steps were picked by contrast rather than by aligning numbers: danger and brand use 600, success and warning use 700 (green and amber are naturally lighter at the same step, and their 600 only reaches 3.97 / 3.76 against white text, short of AA 4.5). All four satisfy \"white text >= 4.5\" and \"chip vs both light and dark page backgrounds >= 3\" (1.4.11 — a small marker has to be findable). Measured for danger-600 `#d40924`: 5.43 against white text, 3.66 against a dark page, 5.21 against a light one. The light-mode danger-700 was deliberately not reused: it only reaches 2.99 on a dark page, so the chip sinks into the background.\n\nLarger semantic surfaces keep using the `--color-danger` family, which should follow the theme."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.53.0",
+    "date": "2026-08-18",
+    "entries": [
+      {
+        "sha": "068dd0f",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Badge gains `variant` (#295): notification badges are red with white text in both themes\n\n**`Badge.variant` (default `\"signal\"`)** -- `signal` uses the signal colors added in `@hulianui/tokens` 0.10.0 (one solid color plus white text in both themes), which is how notification badges normally look; `themed` keeps the previous theme-following policy (`bg-danger text-danger-foreground`) for badges used as inline status chips. `neutral` behaves the same under both variants, since it is a neutral count rather than an alert marker.\n\nThe default changed because the old policy necessarily produces \"red with black text\" in dark mode: once `--color-danger` moves up to the 400 step, its paired foreground has to flip to near-black (white text only reaches 3.15, below AA). A badge's color *is* the message, and both Ant Design and MUI keep it red with white text in either theme.\n\nThe colors are written as `var(--color-signal-danger, var(--color-danger))` rather than the `bg-signal-danger` utility: tokens and ui are separate version lines that consumers install independently, so **someone on the new ui without upgrading tokens** would get a class Tailwind never generated -- a transparent chip with white text vanishing on a light background, silently. The fallback degrades to the pre-upgrade appearance instead, and upgrading tokens switches it on."
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.52.0",
     "date": "2026-08-18",

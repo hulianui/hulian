@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.53.0
+
+### Minor Changes
+
+- 068dd0f: Badge gains `variant` (#295): notification badges are red with white text in both themes
+
+  **`Badge.variant` (default `"signal"`)** -- `signal` uses the signal colors added in `@hulianui/tokens` 0.10.0 (one solid color plus white text in both themes), which is how notification badges normally look; `themed` keeps the previous theme-following policy (`bg-danger text-danger-foreground`) for badges used as inline status chips. `neutral` behaves the same under both variants, since it is a neutral count rather than an alert marker.
+
+  The default changed because the old policy necessarily produces "red with black text" in dark mode: once `--color-danger` moves up to the 400 step, its paired foreground has to flip to near-black (white text only reaches 3.15, below AA). A badge's color *is* the message, and both Ant Design and MUI keep it red with white text in either theme.
+
+  The colors are written as `var(--color-signal-danger, var(--color-danger))` rather than the `bg-signal-danger` utility: tokens and ui are separate version lines that consumers install independently, so **someone on the new ui without upgrading tokens** would get a class Tailwind never generated -- a transparent chip with white text vanishing on a light background, silently. The fallback degrades to the pre-upgrade appearance instead, and upgrading tokens switches it on.
+
 ## 0.52.0
 
 ### Minor Changes

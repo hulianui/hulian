@@ -1,6 +1,6 @@
 {
   "name": "@hulianui/tokens",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "瑚琏 Hulian 设计令牌 —— OKLCH 两层 token + Tailwind v4 preset(供 @hulianui/ui 与下游应用共享主题）。",
   "license": "MIT",
   "author": "hulianui",

@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.53.0
+
+### Minor Changes
+
+- 068dd0f: Badge 补 `variant`（#295）：通知角标在明暗两个主题下都是红底白字
+
+  **`Badge.variant`（默认 `"signal"`）** —— `signal` 走 `@hulianui/tokens` 0.10.0 新增的信号色（明暗同一个实心色 + 白字），即通知角标的通行样子；`themed` 保留原来的跟随主题口径（`bg-danger text-danger-foreground`），给「角标当行内状态块用」那种场景留出口。`neutral` 两档一致 —— 它是中性计数而不是警示标记。
+
+  改默认值的原因：暗色下原口径必然产出「红底黑字」（`--color-danger` 抬亮到 400 档后，配套前景只能翻近黑，同底白字仅 3.15、达不到 AA），而角标的颜色本身就是语义，Ant Design / MUI 在两个主题下都是红底白字。
+
+  颜色写成 `var(--color-signal-danger, var(--color-danger))` 而不是 `bg-signal-danger` 工具类：tokens 与 ui 是两条独立版本线、消费方分别安装，**装了新 ui 却没升 tokens** 的人会拿到一个 Tailwind 根本没生成的类 —— 角标底色变透明、白字落在白底上直接消失，而且不报错。有兜底则退化成升级前的表现，升 tokens 即自动生效。
+
 ## 0.52.0
 
 ### Minor Changes
