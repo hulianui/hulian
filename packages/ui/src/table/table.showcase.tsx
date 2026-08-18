@@ -490,12 +490,10 @@ export const tableShowcase: ShowcaseSpec = {
       title: "表级对齐（cellAlign / headerAlign）",
       description:
         "对齐是整表口径：一张后台列表里「有的列居中、有的列靠左」几乎都不是设计决定，而是几十份列定义各写各的。表级写一次即可，列 meta.align 仍可反向覆盖——整表居中、金额列右对齐（数字按个位对齐才比得出量级）是最常见的形状。headerAlign 单独给，是为了「表头居中、内容靠左」这种排版。",
-      code: `<Table
-  columns={columns}
-  data={users}
-  cellAlign="center"          // 表级：单元格 + 表头都居中
-  // headerAlign="center"     // 只想动表头时单独写它
-/>
+      code: `<Table columns={columns} data={users} cellAlign="center" />
+
+// 只想动表头就单独写 headerAlign
+<Table columns={columns} data={users} headerAlign="center" />
 
 // 列上照旧可以反向覆盖：
 { accessorKey: "id", header: "编号", meta: { align: "right" } }`,

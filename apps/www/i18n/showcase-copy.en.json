@@ -1,8 +1,6 @@
 {
   "exact": {
-    "  // headerAlign=\"center\"     // 只想动表头时单独写它": "  // headerAlign=\"center\"     // set it alone when only the header should move",
     "  AI 状态": "  AI status",
-    "  cellAlign=\"center\"          // 表级：单元格 + 表头都居中": "  cellAlign=\"center\"          // table level: both cells and headers centered",
     "\"\"\"比大小并给提示。": "\"\"\"Compare the guess and return a hint.",
     "\">开始使用</ShimmerButton>": "\">Get started</ShimmerButton>",
     "\">正文内容</Callout>": "\">Text content</Callout>",
@@ -40,6 +38,7 @@
     "// 内层滚动容器场景：getContainer 指向真正的滚动体": "// Inner scrolling container scene: getContainer points to the real scrolling body",
     "// 列上照旧可以反向覆盖：": "// A column can still override it as before:",
     "// 受控列宽（列 id → 像素宽），可持久化到用户偏好": "// Controlled column width (column id → pixel width), persistable to user preferences",
+    "// 只想动表头就单独写 headerAlign": "// Set headerAlign alone when only the header should move",
     "// 回吐的仍是 color 串，不是 label": "// The emitted value is still the color string, not the label",
     "// 必须提到模块作用域：组件是 memo 的，内联对象会让 memo 失效": "// Keep it at module scope: the component uses memo, and an inline object breaks memo",
     "// 或声明式整行导航（整页跳转，cmd/ctrl+点击新开 tab）": "// Or declarative whole-row navigation (whole page jump, cmd/ctrl + click to open new tab)",
