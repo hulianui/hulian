@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.52.0",
+    "date": "2026-08-18",
+    "entries": [
+      {
+        "sha": "cf2bbfc",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Table / TableRoot 补表级水平对齐 `cellAlign` / `headerAlign`（#292）：对齐是整表口径，逐列写 `meta.align` 表达不了「这张表统一居中」\n\n- **`Table.cellAlign` / `Table.headerAlign`（#292）** —— 与已有的 `cellVerticalAlign` / `cellWhitespace` 同一档（表级默认 + 列 `meta` 逐列覆盖）。此前水平对齐只有列级一个口子，于是「这张表统一居中」这句话在库里表达不出来：同一个决定要在几十份列定义里各写一遍，漏写的那列就是那条视觉裂缝，改口径还得再犁一遍所有列（实测一份后台的 2359 个列定义里 1192 列居中、1075 列没写，肉眼就是「有的表头居中有的靠左、内容也各走各的」）。优先级为单元格 `meta.align ?? cellAlign`、表头 `meta.headerAlign ?? meta.align ?? headerAlign ?? cellAlign ?? (跨列组名 ? center : left)`：整表居中、金额列 `meta.align: \"right\"` 反向覆盖（数字按个位对齐才比得出量级）是最常见的形状。`headerAlign` 单独给而不是只跟 `cellAlign`，是因为表头是标签、正文是内容，「表头居中 + 内容靠左」本就是一种排版；显式写了它，跨列组名那条「恒居中」的兜底也让位于消费方。\n- **`TableRoot.cellAlign` / `TableRoot.headerAlign`（#292）** —— 组合原语同步同名同义（照 `cellWhitespace` 的形状经 context 下发给 `TableHead` / `TableCell`），按格 `align` 仍然优先。为此去掉 `TableHead` / `TableCell` 两处 `align = \"left\"` 的解构默认值——留着它 `align` 恒有值，表级默认永远轮不上。\n- 不写这两个 prop 时**默认行为逐字不变**：`<td>` 不落 `text-*` 类，`<th>` 仍为左、跨列组名仍居中。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.51.0",
     "date": "2026-08-17",
     "entries": [

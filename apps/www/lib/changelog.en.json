@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.52.0",
+    "date": "2026-08-18",
+    "entries": [
+      {
+        "sha": "cf2bbfc",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Table / TableRoot gain table-level horizontal alignment via `cellAlign` / `headerAlign` (#292): alignment is a whole-table decision, and per-column `meta.align` cannot express \"this table is centered\"\n\n- **`Table.cellAlign` / `Table.headerAlign` (#292)** -- the same tier as the existing `cellVerticalAlign` / `cellWhitespace` (a table-level default that a column's `meta` overrides). Horizontal alignment used to have a column-level knob only, so \"this table is centered\" was not expressible: the same decision had to be repeated across dozens of column definitions, the one you forget is the visual crack, and changing the policy later means ploughing through every column again (one real admin app has 1192 centered columns and 1075 with nothing set out of 2359 -- what you see is some headers centered and others left-aligned, with the cell content going its own way too). Precedence is `meta.align ?? cellAlign` for cells and `meta.headerAlign ?? meta.align ?? headerAlign ?? cellAlign ?? (group header ? center : left)` for headers, so the common shape is a centered table with amount columns overriding back via `meta.align: \"right\"` (digits only line up by place value that way). `headerAlign` is offered separately rather than merely following `cellAlign` because a header is a label and the body is content: \"centered headers, left-aligned content\" is a real layout, and setting it explicitly also takes over the \"group headers are always centered\" fallback.\n- **`TableRoot.cellAlign` / `TableRoot.headerAlign` (#292)** -- the composable primitives get the same names and meanings, passed down to `TableHead` / `TableCell` through context exactly like `cellWhitespace`, with a per-cell `align` still winning. This required dropping the `align = \"left\"` destructuring defaults in `TableHead` and `TableCell`: while they were there `align` always had a value and the table-level default could never apply.\n- With neither prop set the **default behaviour is byte-for-byte unchanged**: `<td>` carries no `text-*` class, `<th>` is still left-aligned, and group headers are still centered."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.51.0",
     "date": "2026-08-17",
     "entries": [
