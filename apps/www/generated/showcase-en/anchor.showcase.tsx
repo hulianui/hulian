@@ -85,7 +85,7 @@ const sections: {
         title: "items",
         level: 3,
         paras: [
-            "AnchorItem[] \u2014\u2014 Required. Each item contains href, title, and children is optional to form the second level. title accepts ReactNode so you can plug an icon or logo.",
+            "AnchorItem[]. Required. Each item contains href, title, and children is optional to form the second level. title accepts ReactNode so you can plug an icon or logo.",
         ],
     },
     {

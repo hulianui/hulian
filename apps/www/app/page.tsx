@@ -15,10 +15,15 @@ import {
   Tag,
   Text,
 } from "@hulianui/ui";
-import { manifest, CATEGORIES } from "../lib/manifest";
+import { manifest } from "../lib/manifest";
 import { TierBrowser } from "../components/tier-browser";
 import { SiteNavbar } from "../components/site-navbar";
-import { DOCS_LOCALE, ROOT_LOCALE, canonicalPathForLocale } from "../lib/docs-locale";
+import {
+  DOCS_LOCALE,
+  ROOT_LOCALE,
+  canonicalPathForLocale,
+  withDocsBasePath,
+} from "../lib/docs-locale";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "../lib/site";
 
 const english = DOCS_LOCALE === "en";
@@ -54,7 +59,6 @@ const STACK_TAGS = [
 ];
 
 const total = manifest.length;
-const liveCategories = CATEGORIES.filter((cat) => manifest.some((m) => m.category === cat.key));
 
 // 入场逐级揭示的延迟（prefers-reduced-motion 下由 globals.css 整体禁用）
 const rise = (i: number): CSSProperties => ({ animationDelay: `${i * 70}ms` });
@@ -96,7 +100,7 @@ export default function Home() {
       <SiteNavbar />
       <main className="mx-auto max-w-4xl px-6 pb-12 pt-8 sm:pb-16">
         {/* Hero —— 左对齐、非对称，靠层级与留白说话；isolate 让背景层锁在本段内 */}
-        <section className="relative isolate pt-20 sm:pt-28">
+        <section className="relative isolate pt-16 sm:pt-24">
           {/* 纹理层：dogfood 自家 DotPattern，径向遮罩向四周淡出（库无「辉光」件，渐变仍走 CSS） */}
           <DotPattern className="-z-10 text-border/70 [mask-image:radial-gradient(40%_50%_at_30%_10%,black,transparent)]" />
           {/* 品牌辉光：径向渐变叠在纹理上做层次（纯 CSS，无库对应件） */}
@@ -133,12 +137,14 @@ export default function Home() {
             {content.origin}
           </Text>
 
-          {/* CTA：dogfood 自家 Button —— render 成 Next <Link>（按钮样式的链接） */}
+          {/* 主动作只留两个：先看有什么（唯一实心按钮），再装上就能用（Snippet 一键复制）。
+              「区块 / 页面 / 模版」刻意不在这里再开三个按钮 —— 顶栏有一处、下方 TierBrowser
+              有一处，同一意图在首屏出现第三遍，只会让「先做什么」失去唯一答案。 */}
           <Stack
             direction="row"
             wrap
             align="center"
-            gap={4}
+            gap={3}
             className="hl-rise mt-9"
             style={rise(5)}
           >
@@ -149,71 +155,16 @@ export default function Home() {
                 aria-hidden
               />
             </Button>
-            <Button variant="outline" render={<Link href="/blocks" />} className="group h-11 px-5">
-              {content.blocks}
-              <ArrowRight
-                className="size-4 transition-transform group-hover:translate-x-0.5"
-                aria-hidden
-              />
-            </Button>
-            <Button variant="outline" render={<Link href="/pages" />} className="group h-11 px-5">
-              {content.pages}
-              <ArrowRight
-                className="size-4 transition-transform group-hover:translate-x-0.5"
-                aria-hidden
-              />
-            </Button>
-            <Button variant="ghost" render={<Link href="/demos" />} className="group h-11 px-5">
-              {content.demos}
-              <ArrowRight
-                className="size-4 transition-transform group-hover:translate-x-0.5"
-                aria-hidden
-              />
-            </Button>
-          </Stack>
-
-          {/* 安装命令：dogfood Snippet，一行复制即用 */}
-          <div className="hl-rise mt-6 w-fit max-w-full" style={rise(6)}>
             <Snippet copyLabel={content.copy} copiedLabel={content.copied}>
               pnpm add @hulianui/ui @hulianui/tokens
             </Snippet>
-          </div>
-
-          {/* AI 接入：给出可复制的实体动作（装 MCP + 写使用契约），而不是一句「我们支持 AI」 */}
-          <div className="hl-rise mt-8 max-w-xl" style={rise(7)}>
-            <Text size="sm" tone="muted" className="mb-2 leading-relaxed">
-              {content.aiLead}
-            </Text>
-            <div className="w-fit max-w-full">
-              <Snippet copyLabel={content.copy} copiedLabel={content.copied}>
-                npx @hulianui/mcp init-agent
-              </Snippet>
-            </div>
-            <Stack direction="row" wrap align="center" gap={4} className="mt-3">
-              <Link
-                href="/start"
-                className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {content.aiStart}
-                <ArrowRight
-                  className="size-3.5 transition-transform group-hover:translate-x-0.5"
-                  aria-hidden
-                />
-              </Link>
-              <a
-                href="/llms.txt"
-                className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-              >
-                llms.txt
-              </a>
-            </Stack>
-          </div>
+          </Stack>
         </section>
 
         {/* 浏览区：按「组件 / 区块 / 页面 / 示例」四档切换的发丝线列表（dogfood Segmented） */}
         <section
           className="hl-rise mt-20 sm:mt-24"
-          style={rise(8)}
+          style={rise(6)}
           // getIntlayer 拿到的是 intlayer 节点：放在 children 位置 React 会解析，
           // 但属性值只会 stringify 成 [object Object]。字符串属性一律显式转。
           aria-label={String(content.browseLabel)}
@@ -221,8 +172,45 @@ export default function Home() {
           <TierBrowser />
         </section>
 
+        {/* AI 接入 —— 本库的差异点，但不是首屏的主动作：hero 里并排两个安装框，
+            访客反而分不清先敲哪个。放在浏览区之后，看完有什么再讲怎么接。 */}
+        <section className="hl-rise mt-20 sm:mt-24" style={rise(7)}>
+          <Heading as="p" size="sm" weight="medium" className="mb-3 text-foreground">
+            {content.aiHeading}
+          </Heading>
+          <Text size="sm" tone="muted" className="mb-3 max-w-xl leading-relaxed">
+            {content.aiLead}
+          </Text>
+          <div className="w-fit max-w-full">
+            <Snippet copyLabel={content.copy} copiedLabel={content.copied}>
+              npx @hulianui/mcp init-agent
+            </Snippet>
+          </div>
+          <Stack direction="row" wrap align="center" gap={4} className="mt-4">
+            <Link
+              href="/start"
+              className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {content.aiStart}
+              <ArrowRight
+                className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                aria-hidden
+              />
+            </Link>
+            {/* 裸 <a>：llms.txt 是 public 下的静态文件不是路由，Next Link 不该接管它。
+                但也正因为不走 Link，basePath 得自己拼 —— 中文站挂 /zh，写死 "/llms.txt"
+                会落到英文站的命名空间去。 */}
+            <a
+              href={withDocsBasePath("/llms.txt")}
+              className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            >
+              llms.txt
+            </a>
+          </Stack>
+        </section>
+
         {/* 技术底座（新区块）：dogfood Marquee 滚动展示吸取的上游 */}
-        <section className="hl-rise mt-20 sm:mt-24" style={rise(9)}>
+        <section className="hl-rise mt-20 sm:mt-24" style={rise(8)}>
           <Heading as="p" size="sm" weight="medium" className="mb-4 text-foreground">
             {content.foundations}
           </Heading>
@@ -239,7 +227,7 @@ export default function Home() {
         </section>
 
         {/* 一句品牌宣言，立住调性 */}
-        <footer className="hl-rise mt-16" style={rise(10 + liveCategories.length)}>
+        <footer className="hl-rise mt-16" style={rise(9)}>
           <Separator className="mb-6" />
           <Text size="sm" tone="muted">
             {content.declaration}

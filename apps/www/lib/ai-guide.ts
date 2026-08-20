@@ -186,3 +186,25 @@ npx -y @hulianui/guard src
 export function aiGuide(locale: DocsLocale): string {
   return locale === "en" ? AI_GUIDE_EN_MD : AI_GUIDE_MD;
 }
+
+/**
+ * 去掉正文开头的 H1 与紧随其后的引言，供 /start 页面渲染。
+ *
+ * 这份 Markdown 有两个消费方，需求正相反：复制给 AI 编程助手时，标题与「把这份文档整段
+ * 复制给你的助手」的引言是必要的上下文；而在 /start 页面上，页头已经把同样的两句话说过
+ * 一遍了，正文再来一遍就是同一屏内的双标题。所以剥离只发生在渲染这一侧，复制按钮拿的
+ * 始终是完整原文。
+ */
+export function aiGuideBody(md: string): string {
+  const lines = md.split("\n");
+  let i = 0;
+  if (!lines[i]?.startsWith("# ")) return md;
+  i++;
+  while (lines[i]?.trim() === "") i++;
+  // 引言是可选的：只有紧跟标题的那段 blockquote 算引言，正文中间的引用块不受影响。
+  if (lines[i]?.startsWith("> ")) {
+    while (i < lines.length && lines[i].trim() !== "") i++;
+    while (i < lines.length && lines[i].trim() === "") i++;
+  }
+  return lines.slice(i).join("\n");
+}

@@ -28,7 +28,7 @@ export async function generateMetadata({
   // 每页独立 description：复用 manifest 里组件的真实用途文案，杜绝全站雷同。
   const description =
     DOCS_LOCALE === "en"
-      ? `${display.description} — Hulian React component documentation with examples, props, and copyable source.`
+      ? `${display.description} Hulian React component documentation with examples, props, and copyable source.`
       : `${meta.description} —— 瑚琏 Hulian React 组件库，含用法示例、Props 说明与可复制源码。`;
   const barePath = `/components/${slug}`;
   const path = canonicalPathForLocale(barePath, DOCS_LOCALE);

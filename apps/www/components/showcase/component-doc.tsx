@@ -67,10 +67,10 @@ export function ComponentDoc({
         </header>
 
         {hasExamples ? (
-          <section
-            id="sec-usage"
-            className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7"
-          >
+          // 用法区不再包一层卡：ExamplesSection 里每个示例自带「预览 + 代码」边框，
+          // 外面再套一个 border + bg-surface + shadow 只是套娃 —— 它不划分任何新信息，
+          // 却让每个示例的边框离页面底色隔了两层。h2 仍在（TOC 锚点 + 分节标签）。
+          <section id="sec-usage" className="scroll-mt-6">
             <h2 className="mb-5 text-sm font-medium text-muted-foreground">{english ? "Usage" : "用法"}</h2>
             <ExamplesSection examples={examples} />
           </section>

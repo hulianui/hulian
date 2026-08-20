@@ -3,11 +3,13 @@ import { getIntlayer } from "next-intlayer";
 import { Markdown } from "@hulianui/ui";
 import { SiteNavbar } from "../../components/site-navbar";
 import { CopyMarkdownButton } from "../../components/copy-markdown-button";
-import { aiGuide } from "../../lib/ai-guide";
+import { aiGuide, aiGuideBody } from "../../lib/ai-guide";
 import { DOCS_LOCALE } from "../../lib/docs-locale";
 
 const content = getIntlayer("start", DOCS_LOCALE);
 const guide = aiGuide(DOCS_LOCALE);
+// 页面渲染剥掉正文自带的标题与引言（页头已说过）；复制按钮仍拿完整原文。
+const guideBody = aiGuideBody(guide);
 
 export const metadata: Metadata = {
   title: `${content.metadataTitle}`,
@@ -28,7 +30,7 @@ export default function StartPage() {
         </header>
 
         <article className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-8">
-          <Markdown size="sm">{guide}</Markdown>
+          <Markdown size="sm">{guideBody}</Markdown>
         </article>
       </main>
     </>

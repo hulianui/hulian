@@ -34,13 +34,13 @@ export const infiniteScrollShowcase: ShowcaseSpec = {
         {
             title: "Reached the end",
             description: "When hasMore={false}, stop observing and display the completed copy (can be customized with finishedText).",
-            code: `<InfiniteScroll onLoadMore={loadMore} hasMore={false} finishedText="\u2014\u2014The end\u2014\u2014">
+            code: `<InfiniteScroll onLoadMore={loadMore} hasMore={false} finishedText="\u00B7 The end \u00B7">
   {items.map((it) => (
     <Row key={it.id} data={it} />
   ))}
 </InfiniteScroll>`,
             render: () => (<div className="h-72 w-full max-w-md overflow-y-auto rounded-[var(--radius)] border border-border bg-surface">
-          <InfiniteScroll onLoadMore={() => { }} hasMore={false} finishedText="——The end——">
+          <InfiniteScroll onLoadMore={() => { }} hasMore={false} finishedText="· The end ·">
             <div className="divide-y divide-border">
               {Array.from({ length: 5 }, (_, i) => i + 1).map((n) => (<div key={n} className="px-4 py-3 text-sm text-foreground">
                   List items {n}

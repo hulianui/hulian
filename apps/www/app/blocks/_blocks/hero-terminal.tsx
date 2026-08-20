@@ -60,7 +60,7 @@ export function HeroTerminalBlock({ ctaHref = "#" }: { ctaHref?: string }) {
         {/* 右：终端演示 */}
         <div className="md:justify-self-end">
           <Terminal
-            title="bash — hulian deploy"
+            title="bash · hulian deploy"
             lines={LINES}
             className="max-w-full shadow-xl md:max-w-lg"
           />

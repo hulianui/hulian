@@ -57,7 +57,7 @@ export function SiteNavbar() {
           aria-label={open ? content.closeMenu : content.openMenu}
           className="sm:inline-flex xl:hidden"
         />
-        {/* min-w-0 让品牌区可收缩：375px 下顶栏要塞下 汉堡+品牌+搜索+语言+开源+主题切换，
+        {/* min-w-0 让品牌区可收缩：最窄屏顶栏要塞下 汉堡+品牌+搜索+语言+主题切换，
             品牌区不让步就会把最右的主题切换钮顶出视口（横向溢出 6px）。 */}
         {/* NavbarBrand 自 0.21.0 起默认 flex-1 basis-0（可收缩），只需再给 min-w-0 解开
             flex 项的 min-width:auto，truncate 才生效。 */}
@@ -72,7 +72,11 @@ export function SiteNavbar() {
               height={26}
               className="shrink-0 rounded-[6px]"
             />
-            <span className="hidden truncate tracking-tight min-[480px]:inline">
+            {/* 实测 360px 起「瑚琏 Hulian」完整放得下且零溢出；再窄只够一个字加省略号，
+                半截品牌名比只留 logo 更糟，故在 360 以下整段收起。断点原先是 480px ——
+                那把 390/393/430 这些主流手机宽度全划进了「不显示品牌名」的一侧，
+                而同屏还留着语言切换 / 开源 / 主题三个次要控件，主次颠倒。 */}
+            <span className="hidden truncate tracking-tight min-[360px]:inline">
               {content.brand}
             </span>
           </Link>
@@ -98,11 +102,14 @@ export function SiteNavbar() {
             与开源、主题切换同属「站点级」动作，全断点常驻、不折进汉堡菜单。 */}
         <DocsSearch />
         <LanguageSwitcher pathname={pathname} />
-        {/* 开源入口全断点常驻：它和主题切换一样是「站点级」动作，不该跟着导航折进汉堡菜单。 */}
+        {/* 开源入口在 sm 以上常驻顶栏；最窄屏（<640px）让位给品牌名，改由折叠菜单承接。
+            顶栏在 390px 要塞下 汉堡+品牌+搜索+语言+开源+主题，总得有人退一格 ——
+            退的应该是「跳去仓库」这种低频动作，不是「这是谁家的站」。 */}
         <Button
           variant="ghost"
           size="icon"
           aria-label={content.github}
+          className="max-sm:hidden"
           render={<a href={REPO} target="_blank" rel="noreferrer" />}
         >
           <GithubIcon className="size-[18px]" />
@@ -119,6 +126,17 @@ export function SiteNavbar() {
               </Link>
             </NavbarItem>
           ))}
+          <NavbarItem className="sm:hidden" onClick={() => setOpen(false)}>
+            <a
+              href={REPO}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 px-2 py-1.5"
+            >
+              <GithubIcon className="size-4" />
+              GitHub
+            </a>
+          </NavbarItem>
         </ul>
       )}
     </>

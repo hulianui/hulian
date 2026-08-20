@@ -14,7 +14,7 @@ const english = DOCS_LOCALE === "en";
 const localizedSite = english
   ? {
       name: "Hulian UI",
-      title: "Hulian UI — Beautiful, practical React components",
+      title: "Hulian UI: Beautiful, practical React components",
       description:
         "Hulian UI is a production-ready React component library and design system with 349+ components, OKLCH color, Tailwind CSS v4, dark mode, and source-first distribution.",
       keywords: [
