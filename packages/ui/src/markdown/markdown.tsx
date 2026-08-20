@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { Prose } from "../prose";
 import { CodeBlock } from "../code-block";
 import { parseBlocks, type MdBlock } from "./parse";
+import { createHeadingSlugger } from "./headings";
 import type { MarkdownProps } from "./markdown.types";
 import { useComponentLocale } from "../config/locale-context";
 
@@ -58,11 +59,16 @@ function renderText(text: string): ReactNode[] {
 type ProseBlock = Exclude<MdBlock, { type: "code" }>;
 
 // 渲染单个非代码块（在 Prose 排版作用域内，吃 Prose 的标题/段落/列表/引用样式）。
-function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
+// id 只在 headingIds 开启时有值，undefined 即不落 id 属性（默认行为逐字不变）。
+function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string, id?: string) {
   switch (b.type) {
     case "heading": {
       const H = `h${b.level}` as "h1" | "h2" | "h3";
-      return <H key={key}>{renderInline(b.text)}</H>;
+      return (
+        <H key={key} id={id}>
+          {renderInline(b.text)}
+        </H>
+      );
     }
     case "list":
       return b.ordered ? (
@@ -118,9 +124,16 @@ function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
   }
 }
 
-function MarkdownImpl({ children = "", size = "base", className }: MarkdownProps) {
+function MarkdownImpl({ children = "", size = "base", headingIds = false, className }: MarkdownProps) {
   const labels = useComponentLocale().markdown ?? { dataTable: "数据表格" };
   const blocks = parseBlocks(children);
+  // 锚点 id 必须在切 Prose 段之前、按文档顺序一次算完：去重后缀依赖标题的先后，
+  // 而下面的分组会把标题打散进多个 Prose，届时顺序已不可靠。
+  const ids = new Map<MdBlock, string>();
+  if (headingIds !== false) {
+    const slug = createHeadingSlugger(typeof headingIds === "string" ? headingIds : "");
+    for (const b of blocks) if (b.type === "heading") ids.set(b, slug(b.text));
+  }
   // 连续文本块分组进 Prose，围栏代码块作为独立 CodeBlock 夹在中间 ——
   // 关键：CodeBlock 不能当 Prose 的后代 pre，否则 Prose 的 [&_pre] 样式(p-4/border/bg)会覆盖
   // CodeBlock 自己的 pt-8 避让与边框，导致语言标签/复制钮压住首行 + 双重边框。
@@ -132,7 +145,7 @@ function MarkdownImpl({ children = "", size = "base", className }: MarkdownProps
     const items = run;
     out.push(
       <Prose key={`p${key++}`} size={size}>
-        {items.map((b, j) => renderProseBlock(b, j, labels.dataTable))}
+        {items.map((b, j) => renderProseBlock(b, j, labels.dataTable, ids.get(b)))}
       </Prose>,
     );
     run = [];

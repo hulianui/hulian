@@ -1,36 +1,48 @@
 "use client";
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Anchor } from "./anchor";
 import type { AnchorItem } from "./anchor.types";
 
-const docItems: AnchorItem[] = [
-  { href: "#sec-overview", title: "概述" },
-  {
-    href: "#sec-guide",
-    title: "快速上手",
-    children: [
-      { href: "#sec-install", title: "安装" },
-      { href: "#sec-usage", title: "基础用法" },
-      { href: "#sec-nested", title: "二级锚点" },
-    ],
-  },
-  {
-    href: "#sec-api",
-    title: "API",
-    children: [
-      { href: "#sec-api-items", title: "items" },
-      { href: "#sec-api-offset", title: "offsetTop" },
-      { href: "#sec-api-container", title: "getContainer" },
-    ],
-  },
-  { href: "#sec-faq", title: "常见问题" },
-];
+// 章节 id 逐实例派生，不写死。两条理由都实测过：
+//  1. 组件文档页会同时渲染本 demo 好几份（示例区 ×2、全状态区、Playground），而 Anchor 点击走的是
+//     document.getElementById —— 写死 id 时只有 DOM 里第一份会被命中，后面几份点目录滚的是别人的盒子；
+//  2. 这批 id 曾与文档页自己的分节重名（同页实测 sec-usage 出现 4 次），点页面目录的「用法」会跳错地方。
+// useId 的 :r0: 形态含冒号，去掉后再当 id 前缀，免得写进 href 还要考虑选择器转义。
+function useSectionId() {
+  const uid = useId().replace(/:/g, "");
+  return (key: string) => `${uid}-${key}`;
+}
+
+function docItems(id: (key: string) => string): AnchorItem[] {
+  return [
+    { href: `#${id("overview")}`, title: "概述" },
+    {
+      href: `#${id("guide")}`,
+      title: "快速上手",
+      children: [
+        { href: `#${id("install")}`, title: "安装" },
+        { href: `#${id("usage")}`, title: "基础用法" },
+        { href: `#${id("nested")}`, title: "二级锚点" },
+      ],
+    },
+    {
+      href: `#${id("api")}`,
+      title: "API",
+      children: [
+        { href: `#${id("api-items")}`, title: "items" },
+        { href: `#${id("api-offset")}`, title: "offsetTop" },
+        { href: `#${id("api-container")}`, title: "getContainer" },
+      ],
+    },
+    { href: `#${id("faq")}`, title: "常见问题" },
+  ];
+}
 
 // 真实长文章 —— 每节多段，足够撑高滚动容器，scrollspy 才能在滚动中真正切换高亮。
-const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] = [
+const sections: { key: string; title: string; level: 2 | 3; paras: string[] }[] = [
   {
-    id: "sec-overview",
+    key: "overview",
     title: "概述",
     level: 2,
     paras: [
@@ -40,13 +52,13 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     ],
   },
   {
-    id: "sec-guide",
+    key: "guide",
     title: "快速上手",
     level: 2,
     paras: ["分三步：安装、给内容区的每个章节加 id、把同样的结构喂给 Anchor 的 items。"],
   },
   {
-    id: "sec-install",
+    key: "install",
     title: "安装",
     level: 3,
     paras: [
@@ -55,7 +67,7 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     ],
   },
   {
-    id: "sec-usage",
+    key: "usage",
     title: "基础用法",
     level: 3,
     paras: [
@@ -64,7 +76,7 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     ],
   },
   {
-    id: "sec-nested",
+    key: "nested",
     title: "二级锚点",
     level: 3,
     paras: [
@@ -73,13 +85,13 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     ],
   },
   {
-    id: "sec-api",
+    key: "api",
     title: "API",
     level: 2,
     paras: ["三个核心属性覆盖了绝大多数场景。"],
   },
   {
-    id: "sec-api-items",
+    key: "api-items",
     title: "items",
     level: 3,
     paras: [
@@ -87,7 +99,7 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     ],
   },
   {
-    id: "sec-api-offset",
+    key: "api-offset",
     title: "offsetTop",
     level: 3,
     paras: [
@@ -95,7 +107,7 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     ],
   },
   {
-    id: "sec-api-container",
+    key: "api-container",
     title: "getContainer",
     level: 3,
     paras: [
@@ -104,7 +116,7 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
     ],
   },
   {
-    id: "sec-faq",
+    key: "faq",
     title: "常见问题",
     level: 2,
     paras: [
@@ -118,10 +130,11 @@ const sections: { id: string; title: string; level: 2 | 3; paras: string[] }[] =
 // 自包含联动 demo：左侧 sticky 锚点 + 右侧独立滚动容器（Anchor 经 getContainer 挂到它）。
 function AnchorDemo({ offsetTop = 8 }: { offsetTop?: number }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const id = useSectionId();
   return (
     <div className="flex w-full max-w-2xl gap-6 rounded-[var(--radius)] border border-border p-4">
       <Anchor
-        items={docItems}
+        items={docItems(id)}
         offsetTop={offsetTop}
         getContainer={() => scrollRef.current}
         className="sticky top-0 w-40 shrink-0 self-start"
@@ -131,7 +144,7 @@ function AnchorDemo({ offsetTop = 8 }: { offsetTop?: number }) {
         className="h-80 min-w-0 flex-1 space-y-6 overflow-y-auto overscroll-contain pr-2"
       >
         {sections.map((s) => (
-          <section key={s.id} id={s.id} className="scroll-mt-2">
+          <section key={s.key} id={id(s.key)} className="scroll-mt-2">
             {s.level === 2 ? (
               <h3 className="mb-2 text-base font-semibold text-foreground">{s.title}</h3>
             ) : (
@@ -145,6 +158,17 @@ function AnchorDemo({ offsetTop = 8 }: { offsetTop?: number }) {
           </section>
         ))}
       </div>
+    </div>
+  );
+}
+
+// 只展示结构、不配正文：hrefs 同样逐实例派生，因此不会去命中另一份 demo 的章节
+// （点击落不到目标时 Anchor 交回默认行为，不会滚错盒子）。
+function AnchorStructure() {
+  const id = useSectionId();
+  return (
+    <div className="rounded-[var(--radius)] border border-border p-4">
+      <Anchor items={docItems(id)} className="w-48" />
     </div>
   );
 }
@@ -182,11 +206,7 @@ export const anchorShowcase: ShowcaseSpec = {
   ]}
   className="w-48"
 />`,
-      render: () => (
-        <div className="rounded-[var(--radius)] border border-border p-4">
-          <Anchor items={docItems} className="w-48" />
-        </div>
-      ),
+      render: () => <AnchorStructure />,
     },
     {
       title: "避开固定页头",
@@ -212,11 +232,7 @@ export const anchorShowcase: ShowcaseSpec = {
     },
     {
       name: "结构总览（二级缩进 + 静态）",
-      render: () => (
-        <div className="rounded-[var(--radius)] border border-border p-4">
-          <Anchor items={docItems} className="w-48" />
-        </div>
-      ),
+      render: () => <AnchorStructure />,
     },
   ],
   renderWithProps: (p) => <AnchorDemo offsetTop={Number(p.offsetTop) || 0} />,

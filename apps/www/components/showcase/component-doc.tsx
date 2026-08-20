@@ -1,7 +1,7 @@
 "use client";
 import { useCallback } from "react";
 import { notFound } from "next/navigation";
-import { Anchor, Markdown, type ShowcaseSpec, type AnchorItem } from "@hulianui/ui";
+import { Anchor, Markdown, extractHeadings, type ShowcaseSpec, type AnchorItem } from "@hulianui/ui";
 import { componentMeta, manifest } from "../../lib/manifest";
 import { DOCS_LOCALE } from "../../lib/docs-locale";
 import { specBySlug } from "../../lib/registry";
@@ -11,6 +11,12 @@ import { StatesGallery } from "./states-gallery";
 import { Playground } from "./playground";
 import { CopyMarkdownButton } from "../copy-markdown-button";
 import { ComponentDocNav, localizeComponentMarkdownLinks } from "./component-doc-nav";
+
+// md 章节的锚点统一带前缀。判据：本页的 id 命名空间不止 sec-* 这批分节 —— 「用法」区渲染的是
+// 组件自己的示例，示例里可以出现任何 id（Anchor 的示例就实打实渲染出一批 sec-* 分节，其中
+// sec-usage 与本页的分节 id 已经字面重名）。而 md 的 h2 又都是「Props」「相关」这类通用词，
+// 不隔离迟早撞上，且撞了的表现是「点目录跳到页面另一处」——没人会把它当 bug 报上来。
+const DOC_ID_PREFIX = "doc-";
 
 function defaultProps(spec: ShowcaseSpec) {
   return Object.fromEntries(spec.controls.map((c) => [c.prop, c.defaultValue]));
@@ -35,6 +41,14 @@ export function ComponentDoc({
   const localizedCopyMd = localizeComponentMarkdownLinks(copyMd);
   const english = DOCS_LOCALE === "en";
 
+  // 文档区章节进 TOC 二级。只收 h2：Anchor 只支持一层嵌套，顶层已被「文档」占住，md 的 h2
+  // 正好落二级，h3 没有第三层可放；且 394 份组件 md 里 343 份一个 h3 都没有，为它拉平层级不值。
+  // 与下方 <Markdown headingIds={DOC_ID_PREFIX}> 喂的是同一份 localizedDoc、同一个前缀，
+  // 故 href 与 DOM 里的 id 必然一致（示例区已被 loadComponentDoc 剥掉，这里抽不到它）。
+  const docSections = localizedDoc
+    ? extractHeadings(localizedDoc, DOC_ID_PREFIX).filter((h) => h.level === 2)
+    : [];
+
   const hasPlayground = spec.controls.length > 0;
   const examples = spec.examples ?? [];
   const hasExamples = examples.length > 0;
@@ -42,7 +56,15 @@ export function ComponentDoc({
     hasExamples
       ? { href: "#sec-usage", title: english ? "Usage" : "用法" }
       : { href: "#sec-preview", title: english ? "Preview" : "预览" },
-    ...(localizedDoc ? [{ href: "#sec-doc", title: english ? "Documentation" : "文档" }] : []),
+    ...(localizedDoc
+      ? [
+          {
+            href: "#sec-doc",
+            title: english ? "Documentation" : "文档",
+            children: docSections.map((h) => ({ href: `#${h.id}`, title: h.plainText })),
+          },
+        ]
+      : []),
     ...(hasExamples ? [] : [{ href: "#sec-states", title: english ? "States" : "全状态" }]),
     ...(hasPlayground ? [{ href: "#sec-playground", title: "Playground" }] : []),
   ];
@@ -83,11 +105,18 @@ export function ComponentDoc({
         )}
 
         {localizedDoc && (
-          <section
-            id="sec-doc"
-            className="scroll-mt-6 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7"
-          >
-            <Markdown size="sm">{localizedDoc}</Markdown>
+          <section className="relative rounded-xl border border-border bg-surface p-6 shadow-sm [&_h2]:scroll-mt-6 sm:p-7">
+            {/* sec-doc 挂在这个 1px 高的定位标记上，而不是整个 <section> 上。
+                Anchor 的 scrollspy 取「文档顺序最靠前的可见项」——若父项的观测目标是整块文档
+                容器，它在文档区内任何位置都处于可见状态，就会永远压过自己的子项，二级高亮
+                只在点击的一瞬间存在，滚动/落位后立刻弹回「文档」。换成贴在卡片顶边的点状标记，
+                父项只在文档区开头当选，往下就把高亮交给具体章节。
+                位置与原来的 section 顶边逐像素相同，故点击落点不变；scroll-mt 同为 24px，
+                与 Anchor 的 offsetTop 对齐（章节标题的那份写在 [&_h2] 上，供 #doc-xxx 深链）。 */}
+            <span id="sec-doc" aria-hidden className="absolute inset-x-0 top-0 h-px scroll-mt-6" />
+            <Markdown size="sm" headingIds={DOC_ID_PREFIX}>
+              {localizedDoc}
+            </Markdown>
           </section>
         )}
 
@@ -116,7 +145,11 @@ export function ComponentDoc({
 
       {/* 本页目录：真·瑚琏 Anchor（dogfood）。锚到 <main> 滚动容器，随滚动高亮、点击平滑跳转。 */}
       <aside className="hidden w-44 shrink-0 lg:block">
-        <div className="sticky top-2">
+        {/* 限高 + 内部滚动。实测 1440×640 都还溢不出来（button 那页目录整列 562px），
+            留着不是因为已经复现过，而是因为两侧都会变：章节条数随组件 md 增长，视口高度
+            在横屏手机与分屏窗口下比我们测过的 640 还矮。一个 className 换掉「将来目录末尾
+            滚不到且没人发现」，值。别当死代码删。 */}
+        <div className="sticky top-2 max-h-[calc(100dvh-1rem)] overflow-y-auto">
           <p className="mb-2 pl-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {english ? "On this page" : "本页"}
           </p>

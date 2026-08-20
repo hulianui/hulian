@@ -2,6 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { extractHeadings } from "@hulianui/ui";
 import { loadComponentDoc, loadComponentMarkdownForCopy, resolveMd } from "./load-component-doc";
 import { basePathForLocale } from "./docs-locale";
 
@@ -139,5 +140,35 @@ describe("localized component Markdown resolution", () => {
     const rendered = loadComponentDoc("button", "en", [root])!;
     expect(rendered).toContain("[Fenced](../fenced/fenced.md)");
     expect(rendered).toContain(`[Visible](${EN}/components/visible)`);
+  });
+});
+
+// 组件文档页的 TOC 二级项就是这么抽的（component-doc.tsx）：同一份 localizedDoc、同一个前缀。
+// 这里用仓库里真实的 md 跑一遍两种语言 —— 英文站是**构建期**按 DOCS_LOCALE 定的，
+// 中文 dev server 上根本走不到英文那条分支，浏览器验不了，只能在这一层守住。
+const DOC_ID_PREFIX = "doc-";
+// 页面自己的分节 id：md 抽出来的锚点一个都不许与它们重名，否则点目录会跳去别处。
+const PAGE_SECTION_IDS = ["sec-usage", "sec-preview", "sec-doc", "sec-states", "sec-playground"];
+
+describe("doc section anchors feeding the on-page TOC", () => {
+  for (const locale of ["zh-CN", "en"] as const) {
+    it(`${locale}: 章节 id 带前缀、互不重复、不与页面分节 id 撞`, () => {
+      const md = loadComponentDoc("button", locale);
+      const sections = extractHeadings(md!, DOC_ID_PREFIX).filter((h) => h.level === 2);
+      const ids = sections.map((h) => h.id);
+
+      expect(ids.length).toBeGreaterThan(3);
+      expect(ids.every((id) => id.startsWith(DOC_ID_PREFIX))).toBe(true);
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(ids.filter((id) => PAGE_SECTION_IDS.includes(id))).toEqual([]);
+      expect(ids).toContain("doc-props");
+      // 示例区被 loadComponentDoc 剥掉，不该出现在目录里（渲染不出来的锚点点了跳不动）
+      expect(ids).not.toContain(locale === "en" ? "doc-examples" : "doc-示例");
+    });
+  }
+
+  it("英文文档抽出的是英文章节名（不是中文那份的兜底）", () => {
+    const sections = extractHeadings(loadComponentDoc("button", "en")!, DOC_ID_PREFIX);
+    expect(sections.map((h) => h.text)).toContain("When to use");
   });
 });
