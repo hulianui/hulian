@@ -85,7 +85,7 @@ export function useChatStream() {
       try {
         // 静态导出(prod)无后端 + 不启 MSW → 客户端内存生成同款事件流
         // （与 MSW handler 同口径：selectScript/scriptToEvents/chatEventDelayMs 单一真源）。
-        // dev 仍走 fetch 经 MSW Service Worker 拦截，保留「真流式」语义。同 async-users 的 prod 回退模式。
+        // dev 仍走 fetch 经 MSW Service Worker 拦截，保留「真流式」语义。
         if (process.env.NODE_ENV === "production" || DOCS_LOCALE === "en") {
           const script =
             DOCS_LOCALE === "en" ? englishScript(selectEnglishScriptId(text)) : selectScript(text);
