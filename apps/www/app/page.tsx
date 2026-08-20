@@ -16,7 +16,6 @@ import {
   Text,
 } from "@hulianui/ui";
 import { manifest } from "../lib/manifest";
-import { TierBrowser } from "../components/tier-browser";
 import { SiteNavbar } from "../components/site-navbar";
 import {
   DOCS_LOCALE,
@@ -138,8 +137,8 @@ export default function Home() {
           </Text>
 
           {/* 主动作只留两个：先看有什么（唯一实心按钮），再装上就能用（Snippet 一键复制）。
-              「区块 / 页面 / 模版」刻意不在这里再开三个按钮 —— 顶栏有一处、下方 TierBrowser
-              有一处，同一意图在首屏出现第三遍，只会让「先做什么」失去唯一答案。 */}
+              「区块 / 页面 / 模版」刻意不在这里再开三个按钮 —— 顶栏已经有一处，
+              同一意图在首屏出现第二遍，只会让「先做什么」失去唯一答案。 */}
           <Stack
             direction="row"
             wrap
@@ -199,15 +198,60 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 浏览区：按「组件 / 区块 / 页面 / 示例」四档切换的发丝线列表（dogfood Segmented） */}
-        <section
-          className="hl-rise mt-20 sm:mt-24"
-          style={rise(7)}
-          // getIntlayer 拿到的是 intlayer 节点：放在 children 位置 React 会解析，
-          // 但属性值只会 stringify 成 [object Object]。字符串属性一律显式转。
-          aria-label={String(content.browseLabel)}
-        >
-          <TierBrowser />
+        {/* 用瑚琏搭的 —— 换掉原先那块站内目录（Segmented 四档 + 搜索 + 分类列表）。
+            那块列的入口顶栏有一份、hero 的「浏览组件」按钮有一份，它是第三份重复：
+            人扫不动，AI 也不会从这里取信息。挂两个真在跑的站更能说明问题。
+            与下方「站在巨人肩上」正好成一对：上面是我们吸取谁，这里是谁在用我们。 */}
+        <section className="hl-rise mt-20 sm:mt-24" style={rise(7)}>
+          <Heading as="p" size="sm" weight="medium" className="mb-4 text-foreground">
+            {content.builtWith}
+          </Heading>
+          {/* 只有两行，直接写开：intlayer 取到的是节点，放 JSX children 位置 React 才会解析，
+              先塞进普通数组再 map 出来会渲染成空。同理 aria-label 这类字符串属性要显式 String()。 */}
+          <nav className="border-t border-border" aria-label={String(content.builtWith)}>
+            <a
+              href="https://haloritual.com"
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
+            >
+              <Text as="span" weight="medium" className="shrink-0 whitespace-nowrap">
+                {content.abelName}
+              </Text>
+              <Text as="span" size="sm" tone="muted" truncate className="hidden min-w-0 flex-1 sm:block">
+                {content.abelBlurb}
+              </Text>
+              <Text
+                as="span"
+                size="sm"
+                tone="muted"
+                className="ml-auto shrink-0 font-mono transition-colors group-hover:text-primary"
+              >
+                haloritual.com
+              </Text>
+            </a>
+            <a
+              href="https://mock.haloritual.com"
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
+            >
+              <Text as="span" weight="medium" className="shrink-0 whitespace-nowrap">
+                Mock Pilot
+              </Text>
+              <Text as="span" size="sm" tone="muted" truncate className="hidden min-w-0 flex-1 sm:block">
+                {content.mockBlurb}
+              </Text>
+              <Text
+                as="span"
+                size="sm"
+                tone="muted"
+                className="ml-auto shrink-0 font-mono transition-colors group-hover:text-primary"
+              >
+                mock.haloritual.com
+              </Text>
+            </a>
+          </nav>
         </section>
 
         {/* 技术底座（新区块）：dogfood Marquee 滚动展示吸取的上游 */}
