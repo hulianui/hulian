@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.54.1",
+    "date": "2026-08-20",
+    "entries": [
+      {
+        "sha": "73d4893",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Segmented` re-measures the selected indicator when the item count changes (#297): measurement used to hang off two signals only -- \"the selected index changed\" and \"the root resized\". Inside a `Field` column (`flex flex-col`, `align-items: stretch` by default) the root is stretched to the full column width, so adding or removing a segment never resizes it and the ResizeObserver never fires once -- while the segments are `min-w-0 flex-1` and their width is precisely what does change. The one failure channel did not line up with the one quantity in motion: growing two segments to three left the indicator at its old width, spanning two segments, and clicking the already-selected segment did not heal it either (the selected index never changed). The observer now also watches the selected segment -- the box actually being measured -- and the item count feeds the re-measure. Call sites working around this with `className=\"self-start\"` can drop it."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.54.0",
     "date": "2026-08-20",
     "entries": [

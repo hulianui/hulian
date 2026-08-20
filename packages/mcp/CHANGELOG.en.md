@@ -1,5 +1,11 @@
 # @hulianui/mcp
 
+## 0.10.1
+
+### Patch Changes
+
+- 73d4893: `get_component_doc` now returns Events alongside Props (#298): only Slots used to get that treatment, so Events were filtered out by `sections`. Asking for the props of `Tag` showed no `onClose` -- its **only** interactive capability -- and code written from that answer used a bare `<button>`, which is exactly what the "no bare HTML elements in the UI" gate rejects. Both the markdown and the `format:"json"` path are fixed; in the JSON path events are also merged into the `props` array (tagged `kind:"event"`, with the function signature still in `type`), so tool chains that walk props to build validators or property panels no longer miss the interactive entry point. The reverse narrow query (asking for `events` alone) is unchanged.
+
 ## 0.10.0
 
 ### Minor Changes
