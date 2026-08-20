@@ -30,8 +30,9 @@ const proseBase = cn(
   // 代码块
   "[&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-[var(--radius)] [&_pre]:border [&_pre]:border-border [&_pre]:bg-surface [&_pre]:p-4 [&_pre]:text-sm",
   "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-mono",
-  // 引用
-  "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground",
+  // 引用：不加 italic —— 中文字体没有真意大利体字形，浏览器会合成伪斜体把笔画拉变形。
+  // 引用语义由左边线 + 弱化文字色承担，倾斜不表达任何东西。
+  "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground",
   // 折叠块（GFM <details>/<summary>，markdown→HTML 的标配）：与 pre 同一视觉家族——
   // 同样的圆角 + border + surface 底，让它在正文里读起来是「一块可展开的容器」而不是裸文字。
   "[&_details]:my-4 [&_details]:rounded-[var(--radius)] [&_details]:border [&_details]:border-border [&_details]:bg-surface [&_details]:px-4 [&_details]:py-3",
