@@ -159,54 +159,55 @@ export default function Home() {
               pnpm add @hulianui/ui @hulianui/tokens
             </Snippet>
           </Stack>
+
+          {/* AI 接入紧跟在装库命令下面，而不是另开一节放到页面底部。
+              它是本库的差异点，可访客多半只看首屏 —— 挪下去等于没有。而且这两条都是
+              「复制即用」的命令，形态一致，并排成一组读起来是「装库 + 装 MCP」两步，
+              比拆成两个相隔一屏的区块更省事。
+              代价是 hero 的元素数超出 taste-skill 的 4 个上限，这里是有意破例：
+              那条规则防的是「hero 变成功能清单」，而这里多出来的是主动作的第二步。 */}
+          <div className="hl-rise mt-8 max-w-xl" style={rise(6)}>
+            <Text size="sm" tone="muted" className="mb-2 leading-relaxed">
+              {content.aiLead}
+            </Text>
+            <div className="w-fit max-w-full">
+              <Snippet copyLabel={content.copy} copiedLabel={content.copied}>
+                npx @hulianui/mcp init-agent
+              </Snippet>
+            </div>
+            <Stack direction="row" wrap align="center" gap={4} className="mt-3">
+              <Link
+                href="/start"
+                className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {content.aiStart}
+                <ArrowRight
+                  className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden
+                />
+              </Link>
+              {/* 裸 <a>：llms.txt 是 public 下的静态文件不是路由，Next Link 不该接管它。
+                  但也正因为不走 Link，basePath 得自己拼 —— 中文站挂 /zh，写死 "/llms.txt"
+                  会落到英文站的命名空间去。 */}
+              <a
+                href={withDocsBasePath("/llms.txt")}
+                className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+              >
+                llms.txt
+              </a>
+            </Stack>
+          </div>
         </section>
 
         {/* 浏览区：按「组件 / 区块 / 页面 / 示例」四档切换的发丝线列表（dogfood Segmented） */}
         <section
           className="hl-rise mt-20 sm:mt-24"
-          style={rise(6)}
+          style={rise(7)}
           // getIntlayer 拿到的是 intlayer 节点：放在 children 位置 React 会解析，
           // 但属性值只会 stringify 成 [object Object]。字符串属性一律显式转。
           aria-label={String(content.browseLabel)}
         >
           <TierBrowser />
-        </section>
-
-        {/* AI 接入 —— 本库的差异点，但不是首屏的主动作：hero 里并排两个安装框，
-            访客反而分不清先敲哪个。放在浏览区之后，看完有什么再讲怎么接。 */}
-        <section className="hl-rise mt-20 sm:mt-24" style={rise(7)}>
-          <Heading as="p" size="sm" weight="medium" className="mb-3 text-foreground">
-            {content.aiHeading}
-          </Heading>
-          <Text size="sm" tone="muted" className="mb-3 max-w-xl leading-relaxed">
-            {content.aiLead}
-          </Text>
-          <div className="w-fit max-w-full">
-            <Snippet copyLabel={content.copy} copiedLabel={content.copied}>
-              npx @hulianui/mcp init-agent
-            </Snippet>
-          </div>
-          <Stack direction="row" wrap align="center" gap={4} className="mt-4">
-            <Link
-              href="/start"
-              className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {content.aiStart}
-              <ArrowRight
-                className="size-3.5 transition-transform group-hover:translate-x-0.5"
-                aria-hidden
-              />
-            </Link>
-            {/* 裸 <a>：llms.txt 是 public 下的静态文件不是路由，Next Link 不该接管它。
-                但也正因为不走 Link，basePath 得自己拼 —— 中文站挂 /zh，写死 "/llms.txt"
-                会落到英文站的命名空间去。 */}
-            <a
-              href={withDocsBasePath("/llms.txt")}
-              className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-            >
-              llms.txt
-            </a>
-          </Stack>
         </section>
 
         {/* 技术底座（新区块）：dogfood Marquee 滚动展示吸取的上游 */}
