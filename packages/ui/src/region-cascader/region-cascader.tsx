@@ -37,6 +37,7 @@ export function RegionCascader({
   disabled,
   invalid,
   className,
+  ...rest
 }: RegionCascaderProps) {
   const locale = useComponentLocale().regionCascader ?? {
     provinceCity: "请选择省/市",
@@ -51,6 +52,9 @@ export function RegionCascader({
   );
   return (
     <Cascader
+      // 未列出的原生属性接着往底座传（#293）：本体只是薄封装，吃掉它们等于让 Field 注的
+      // aria-required、消费方给的 id / data-* 在这一层凭空消失。
+      {...rest}
       nodes={nodes}
       value={value}
       defaultValue={defaultValue}

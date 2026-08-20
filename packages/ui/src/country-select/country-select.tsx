@@ -45,6 +45,7 @@ function CountrySelectImpl({
   disabled,
   invalid,
   className,
+  ...rest
 }: CountrySelectProps) {
   const locale = useComponentLocale().countrySelect ?? DEFAULT_COUNTRY_LOCALE;
   const resolvedPlaceholder = placeholder ?? locale.placeholder;
@@ -134,6 +135,7 @@ function CountrySelectImpl({
         onValueChange={handleMultipleChange}
       >
         <ComboboxChips
+          {...rest}
           size={size}
           invalid={invalid}
           placeholder={selected.length ? "" : resolvedPlaceholder}
@@ -166,6 +168,7 @@ function CountrySelectImpl({
       onValueChange={handleSingleChange}
     >
       <ComboboxTrigger
+        {...rest}
         size={size}
         placeholder={resolvedPlaceholder}
         invalid={invalid}

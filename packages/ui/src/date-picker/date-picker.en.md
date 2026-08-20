@@ -91,6 +91,9 @@ const [date, setDate] = useState<string | null>(null);
 - At `date` granularity, `disabledDate` runs once per visible day, typically 42 times per panel. Keep it a pure, inexpensive calculation: do not issue requests or repeatedly allocate heavy objects. Month and year pickers call it only for the first day of each month/year, so the rule is necessarily coarser.
 - Clicking the panel title moves upward through date → month → year. `picker` determines which level submits a value, so choosing a year or month while `picker="date"` only drills down; it does not emit a final selection.
 - When migrating from the pre-0.15.0 MUI `DatePicker`, note that the **value format changed** from a full ISO timestamp to a fixed-width date string. The old `views` and `openTo` props are consolidated into `picker`, while `label` is replaced by `placeholder` plus `aria-label`.
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
+- Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 
 ## Related
 [Calendar](../calendar/calendar.md) · [DateRangePicker](../date-range-picker/date-range-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [TimePicker](../time-picker/time-picker.md) · [TimeField](../time-field/time-field.md) · [ColorField](../color-field/color-field.md)

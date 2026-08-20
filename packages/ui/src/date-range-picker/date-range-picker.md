@@ -86,6 +86,9 @@ function Demo() {
 - 月/年粒度下 `disabledDate` 每段只被问一次，入参是该段**首日**（`2026-09-01` 代表整个 9 月）。别在里面写按「日」判断的逻辑（如禁周末），那在这两档没有意义。
 - 年份页是 **12 年整段**（不是十年段），因为两页并排时十年段的首尾补位年会让同一个年份在左右两页各出现一次。
 - `disabledDate` 入参是 ISO 字符串，自己拼 `new Date(iso + "T00:00:00")` 算 getDay 时注意时区，别直接 `new Date(iso)`（会按 UTC 解析偏一天）。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [Calendar](../calendar/calendar.md) · [DatePicker](../date-picker/date-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [TimeField](../time-field/time-field.md) · [Button](../button/button.md) · [ShimmerButton](../shimmer-button/shimmer-button.md)

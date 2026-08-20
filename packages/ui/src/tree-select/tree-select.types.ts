@@ -1,6 +1,15 @@
+import type { ComponentPropsWithoutRef } from "react";
 import type { TreeNode } from "../tree/tree-core";
 
-export interface TreeSelectProps {
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**触发器按钮**上 ——
+ * 读屏念的、能聚焦的都是它。`Field required` 注进来的 `aria-required` 也走这条路（#293）。
+ */
+export interface TreeSelectProps
+  extends Omit<
+    ComponentPropsWithoutRef<"button">,
+    "value" | "defaultValue" | "onChange" | "disabled" | "className" | "children" | "role"
+  > {
   nodes: TreeNode[];
   value?: string | string[];
   defaultValue?: string | string[];

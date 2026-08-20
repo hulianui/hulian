@@ -494,6 +494,8 @@ export interface ComponentLocale {
   upload?: {
     dropLabel: string;
     buttonLabel: string;
+    /** 必填字段触发器上的 sr-only 说明（`role="button"` 不支持 aria-required，见 Upload #294）。 */
+    required: string;
     progress: (name: string) => string;
     remove: (name: string) => string;
     reorder: (name: string) => string;
@@ -1247,6 +1249,7 @@ const zhComponents: ComponentLocale = {
   upload: {
     dropLabel: "点击或拖拽文件到此处",
     buttonLabel: "选择文件",
+    required: "必填",
     progress: (name) => `${name} 上传进度`,
     remove: (name) => `移除 ${name}`,
     reorder: (name) => `拖拽排序 ${name}`,
@@ -2068,6 +2071,7 @@ const enComponents: ComponentLocale = {
   upload: {
     dropLabel: "Click or drag files here",
     buttonLabel: "Choose files",
+    required: "Required",
     progress: (name) => `${name} upload progress`,
     remove: (name) => `Remove ${name}`,
     reorder: (name) => `Reorder ${name}`,

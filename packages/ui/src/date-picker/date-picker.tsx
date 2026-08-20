@@ -1,5 +1,6 @@
 "use client";
 import { memo, useState } from "react";
+import { Field as BaseField } from "@base-ui/react/field";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
 import { Calendar as CalendarIcon, X } from "../_icons";
@@ -57,6 +58,7 @@ function DatePickerImpl({
   readOnly,
   "aria-label": ariaLabel,
   className,
+  ...rest
 }: DatePickerProps) {
   const labels = {
     clear: "清除",
@@ -91,19 +93,29 @@ function DatePickerImpl({
   return (
     <BasePopover.Root open={open} onOpenChange={handleOpenChange}>
       <div className={cn("relative inline-flex", className)}>
-        <BasePopover.Trigger
+        {/* 触发器过一层 Field.Control（#293）：Field 生成的 id / aria-labelledby /
+            aria-describedby / invalid / disabled 由此串上 —— 此前 label 的 htmlFor 指向一个
+            不存在的 id，读屏连字段名都念不出来。role="combobox"：aria-required 与 aria-expanded
+            在 role=button 上都不受支持，而「从浮层挑一个值填进字段」正是 combobox 模式。 */}
+        <BaseField.Control
           render={
-            <button
-              type="button"
-              disabled={disabled}
-              aria-label={ariaLabel}
-              className={cn(triggerVariants({ size }), showClear && "pr-8")}
-            >
-              <CalendarIcon className={triggerIconVariants({ size })} aria-hidden />
-              <span className={cn("truncate", !text && "text-muted-foreground")}>
-                {text || placeholder || labels[picker]}
-              </span>
-            </button>
+            <BasePopover.Trigger
+              render={
+                <button
+                  type="button"
+                  {...rest}
+                  role="combobox"
+                  disabled={disabled}
+                  aria-label={ariaLabel}
+                  className={cn(triggerVariants({ size }), showClear && "pr-8")}
+                >
+                  <CalendarIcon className={triggerIconVariants({ size })} aria-hidden />
+                  <span className={cn("truncate", !text && "text-muted-foreground")}>
+                    {text || placeholder || labels[picker]}
+                  </span>
+                </button>
+              }
+            />
           }
         />
         {showClear && (

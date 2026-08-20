@@ -58,6 +58,7 @@ const [codes, setCodes] = useState<string[]>([]);
 
 - `value` and `onChange` use `string` in single-select mode and `string[]` in multi-select mode. The callback exposes the union type, so narrow it from `multiple` or with an `as` type assertion before treating it as an array.
 - Stored values are ISO 3166-1 alpha-2 codes such as `"CN"`, not display names. Resolve display data with `getCountry(code)`.
+- Native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, …) land on the **trigger** — the input inside the chips shell in multiple mode — not on the outer container, because that is the element which takes focus and is announced. The `aria-required` injected by `<Field required>` travels the same way (#293).
 
 ## Related
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

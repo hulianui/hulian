@@ -1,5 +1,6 @@
 "use client";
 import { memo, useMemo, useState } from "react";
+import { Field as BaseField } from "@base-ui/react/field";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
 import { ChevronRight } from "../_icons";
@@ -69,6 +70,7 @@ function CascaderImpl({
   invalid,
   size = "md",
   className,
+  ...rest
 }: CascaderProps) {
   const defaultValue = defaultValueProp ?? [];
   const [open, setOpen] = useState(false);
@@ -126,18 +128,31 @@ function CascaderImpl({
         if (!o) setQuery(""); // 关闭清空搜索，下次打开回到浏览态
       }}
     >
-      <BasePopover.Trigger
-        disabled={disabled}
-        {...(invalid && { "data-invalid": "", "aria-invalid": true })}
-        className={cn(triggerVariants({ size }), className)}
-      >
-        <span className={cn("truncate text-left", !triggerLabel && "text-muted-foreground")}>
-          {triggerLabel ?? placeholder}
-        </span>
-        <span className="flex shrink-0 text-muted-foreground transition-transform data-[popup-open]:rotate-180">
-          <ChevronDownIcon />
-        </span>
-      </BasePopover.Trigger>
+      {/* 触发器过一层 Field.Control（#293）：它是 Base UI 认的「本字段的控件」——
+          由此拿到 Field 生成的 id（label 的 htmlFor 这才有落点）、aria-labelledby、
+          串好 description/error 的 aria-describedby，以及 Field 的 invalid / disabled 传导。
+          在 Field 之外单独用时它退化成透明包装，DOM 与此前一致。
+          role="combobox"：Popover.Trigger 默认只是 button，而 aria-required / aria-expanded
+          在 button 这个 role 上都不受支持 —— 「从浮层挑一个值填进字段」本就是 combobox 模式，
+          与库内 Select 触发器口径一致。 */}
+      <BaseField.Control
+        render={
+          <BasePopover.Trigger
+            {...rest}
+            role="combobox"
+            disabled={disabled}
+            {...(invalid && { "data-invalid": "", "aria-invalid": true })}
+            className={cn(triggerVariants({ size }), className)}
+          >
+            <span className={cn("truncate text-left", !triggerLabel && "text-muted-foreground")}>
+              {triggerLabel ?? placeholder}
+            </span>
+            <span className="flex shrink-0 text-muted-foreground transition-transform data-[popup-open]:rotate-180">
+              <ChevronDownIcon />
+            </span>
+          </BasePopover.Trigger>
+        }
+      />
       <BasePopover.Portal>
         <BasePopover.Positioner side="bottom" align="start" sideOffset={6} className="z-50">
           <BasePopover.Popup

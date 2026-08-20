@@ -88,6 +88,9 @@ function Demo() {
 - At month and year granularity `disabledDate` is asked once per cell with the **first day** of that segment (`2026-09-01` stands for all of September). Do not put per-day logic such as "disable weekends" there; it has no meaning at those granularities.
 - The year page shows a **full 12-year block**, not a decade. With two pages side by side, a decade's leading and trailing filler years would make the same year appear on both pages.
 - `disabledDate` receives an ISO date string. For weekday calculations, use `new Date(iso + "T00:00:00")` and account for the local timezone. Avoid `new Date(iso)`, which parses as UTC and can shift the calendar day.
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
+- Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 
 ## Related
 [Calendar](../calendar/calendar.md) · [DatePicker](../date-picker/date-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [TimeField](../time-field/time-field.md) · [Button](../button/button.md) · [ShimmerButton](../shimmer-button/shimmer-button.md)

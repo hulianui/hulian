@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Field as BaseField } from "@base-ui/react/field";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
 // 内部一律用 YYYY-MM-DD 文本作日期标识（toISO/normISO 出自 lib/date）：
@@ -99,6 +100,7 @@ export function DateRangePicker({
   disabled,
   readOnly,
   className,
+  ...rest
 }: DateRangePickerProps) {
   const componentLocale = useComponentLocale();
   const locale = componentLocale.dateRangePicker ?? {
@@ -246,8 +248,7 @@ export function DateRangePicker({
       setHoverDate(cellValue);
       return;
     }
-    const next: DateRangeValue =
-      anchor <= cellValue ? [anchor, cellValue] : [cellValue, anchor];
+    const next: DateRangeValue = anchor <= cellValue ? [anchor, cellValue] : [cellValue, anchor];
     commit(next);
     setAnchor(null);
     setHoverDate(null);
@@ -281,10 +282,14 @@ export function DateRangePicker({
   })();
 
   const startText = value
-    ? (parseValue(value[0], picker) ?? dayjs(value[0])).format(displayFormat ?? PICKER_FORMAT[picker])
+    ? (parseValue(value[0], picker) ?? dayjs(value[0])).format(
+        displayFormat ?? PICKER_FORMAT[picker],
+      )
     : "";
   const endText = value
-    ? (parseValue(value[1], picker) ?? dayjs(value[1])).format(displayFormat ?? PICKER_FORMAT[picker])
+    ? (parseValue(value[1], picker) ?? dayjs(value[1])).format(
+        displayFormat ?? PICKER_FORMAT[picker],
+      )
     : "";
   const showClear = value != null && !disabled && !readOnly;
 
@@ -312,7 +317,11 @@ export function DateRangePicker({
     const { isStart, isEnd, isSingle, inRange } = cellState(cellValue);
     const left = shape === "full" ? "rounded-l-full bg-primary/10" : "rounded-l-md bg-primary/10";
     const right = shape === "full" ? "rounded-r-full bg-primary/10" : "rounded-r-md bg-primary/10";
-    return cn(inRange && "bg-primary/10", isStart && !isSingle && left, isEnd && !isSingle && right);
+    return cn(
+      inRange && "bg-primary/10",
+      isStart && !isSingle && left,
+      isEnd && !isSingle && right,
+    );
   }
 
   function renderDayPage(month: Dayjs) {
@@ -323,7 +332,10 @@ export function DateRangePicker({
         </div>
         <div className="grid grid-cols-7">
           {calendarLocale.weekdays.map((w) => (
-            <div key={w} className="flex h-8 items-center justify-center text-xs text-muted-foreground">
+            <div
+              key={w}
+              className="flex h-8 items-center justify-center text-xs text-muted-foreground"
+            >
               {w}
             </div>
           ))}
@@ -380,10 +392,7 @@ export function DateRangePicker({
           {cells.map((c) => {
             const { isEndpoint } = cellState(c.value);
             return (
-              <div
-                key={c.value}
-                className={cn("flex h-10 items-center", bandClass(c.value, "md"))}
-              >
+              <div key={c.value} className={cn("flex h-10 items-center", bandClass(c.value, "md"))}>
                 <button
                   type="button"
                   disabled={c.disabled}
@@ -400,7 +409,8 @@ export function DateRangePicker({
                       ? "bg-primary font-medium text-primary-foreground"
                       : "text-foreground hover:bg-surface-hover",
                     c.current && !isEndpoint && "font-semibold text-primary",
-                    c.disabled && "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
+                    c.disabled &&
+                      "cursor-not-allowed text-muted-foreground/40 hover:bg-transparent",
                   )}
                 >
                   {c.label}
@@ -449,22 +459,32 @@ export function DateRangePicker({
   return (
     <BasePopover.Root open={open} onOpenChange={handleOpenChange}>
       <div className={cn("relative inline-flex", className)}>
-        <BasePopover.Trigger
+        {/* 触发器过一层 Field.Control（#293）：Field 生成的 id / aria-labelledby /
+            aria-describedby / invalid / disabled 由此串上 —— 此前 label 的 htmlFor 指向一个
+            不存在的 id，读屏连字段名都念不出来。role="combobox"：aria-required 与 aria-expanded
+            在 role=button 上都不受支持，而「从浮层挑一个值填进字段」正是 combobox 模式。 */}
+        <BaseField.Control
           render={
-            <button
-              type="button"
-              disabled={disabled}
-              className={cn(triggerVariants({ size }), showClear && "pr-8")}
-            >
-              <Calendar className={triggerIconVariants({ size })} aria-hidden />
-              <span className={cn(!startText && "text-muted-foreground")}>
-                {startText || resolvedPlaceholder[0]}
-              </span>
-              <span className="text-muted-foreground">~</span>
-              <span className={cn(!endText && "text-muted-foreground")}>
-                {endText || resolvedPlaceholder[1]}
-              </span>
-            </button>
+            <BasePopover.Trigger
+              render={
+                <button
+                  type="button"
+                  {...rest}
+                  role="combobox"
+                  disabled={disabled}
+                  className={cn(triggerVariants({ size }), showClear && "pr-8")}
+                >
+                  <Calendar className={triggerIconVariants({ size })} aria-hidden />
+                  <span className={cn(!startText && "text-muted-foreground")}>
+                    {startText || resolvedPlaceholder[0]}
+                  </span>
+                  <span className="text-muted-foreground">~</span>
+                  <span className={cn(!endText && "text-muted-foreground")}>
+                    {endText || resolvedPlaceholder[1]}
+                  </span>
+                </button>
+              }
+            />
           }
         />
         {showClear && (
@@ -517,7 +537,9 @@ export function DateRangePicker({
                     照抄「上个月」会读错（月档一页是一年、年档一页是 12 年）。 */}
                 <button
                   type="button"
-                  aria-label={picker === "date" ? locale.previousMonth : calendarLocale.previousPage}
+                  aria-label={
+                    picker === "date" ? locale.previousMonth : calendarLocale.previousPage
+                  }
                   onClick={() => setViewPage(pageStep(viewPage, picker, -1))}
                   className="rounded-md p-1 text-muted-foreground outline-none hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30"
                 >

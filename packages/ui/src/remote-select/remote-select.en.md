@@ -106,6 +106,7 @@ Multiple selection:
 - There is no second local filter because the underlying Combobox uses `filter={null}`. Results are entirely server-defined; if `fetcher` ignores `query`, typing does not search.
 - Closing the popup ends the search session: the query is cleared and the first page loads again on the next open, matching remote `el-select` behavior. Keep `fetcher` free of side effects beyond idempotent caching for identical parameters.
 - Pagination works without `total` by assuming a page with at least `pageSize` rows may have a successor. This can cause one final empty request, so return `total` when the API provides it.
+- Native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, …) land on the **input** — the one inside the chips shell in multiple mode — not on the outer container, because that is the element which takes focus and is announced. The `aria-required` injected by `<Field required>` travels the same way (#293); it used to be swallowed by the closed props interface, leaving the required state visual-only.
 
 ## Related
 [Combobox](../combobox/combobox.md) · [Select](../select/select.md) · [CountrySelect](../country-select/country-select.md) · [Cascader](../cascader/cascader.md) · [ProTable](../pro-table/pro-table.md)

@@ -22,7 +22,7 @@ describe("DateRangePicker", () => {
 
   it("点击触发器打开: 渲染双月 + 默认四项预设", () => {
     render(<DateRangePicker value={["2026-06-08", "2026-06-20"]} />);
-    fireEvent.click(screen.getAllByRole("button")[0]); // 首个 button = 触发器
+    fireEvent.click(screen.getByRole("combobox")); // 首个 button = 触发器
     expect(screen.getByText("2026 年 6 月")).toBeTruthy();
     expect(screen.getByText("2026 年 7 月")).toBeTruthy();
     expect(screen.getByText("今天")).toBeTruthy();
@@ -33,14 +33,14 @@ describe("DateRangePicker", () => {
 
   it("presets={false}: 打开后不渲染预设", () => {
     render(<DateRangePicker value={["2026-06-08", "2026-06-20"]} presets={false} />);
-    fireEvent.click(screen.getAllByRole("button")[0]);
+    fireEvent.click(screen.getByRole("combobox"));
     expect(screen.getByText("2026 年 6 月")).toBeTruthy();
     expect(screen.queryByText("今天")).toBeNull();
   });
 
   it("disabled: 触发器禁用且点击不打开日历", () => {
     render(<DateRangePicker disabled value={["2026-06-08", "2026-06-20"]} />);
-    const trigger = screen.getAllByRole("button")[0] as HTMLButtonElement;
+    const trigger = screen.getByRole("combobox") as HTMLButtonElement;
     expect(trigger.disabled).toBe(true);
     fireEvent.click(trigger);
     expect(screen.queryByText("今天")).toBeNull();
@@ -49,7 +49,7 @@ describe("DateRangePicker", () => {
   it("两次点击选区: onValueChange 收到排序后的 [start,end]", () => {
     const onChange = vi.fn();
     render(<DateRangePicker defaultValue={["2026-06-10", "2026-06-12"]} onValueChange={onChange} />);
-    fireEvent.click(screen.getAllByRole("button")[0]); // 打开（视图对齐到 2026-06）
+    fireEvent.click(screen.getByRole("combobox")); // 打开（视图对齐到 2026-06）
     // 先点较晚日作起点，再点较早日 → 应自动排序
     fireEvent.click(screen.getByLabelText("2026-06-20"));
     fireEvent.click(screen.getByLabelText("2026-06-05"));
@@ -58,7 +58,7 @@ describe("DateRangePicker", () => {
 
   it("minDate: 早于下限的当月日被禁用", () => {
     render(<DateRangePicker defaultValue={["2026-06-15", "2026-06-18"]} minDate="2026-06-10" />);
-    fireEvent.click(screen.getAllByRole("button")[0]);
+    fireEvent.click(screen.getByRole("combobox"));
     const early = screen.getByLabelText("2026-06-05") as HTMLButtonElement;
     expect(early.disabled).toBe(true);
   });
@@ -92,7 +92,7 @@ describe("DateRangePicker", () => {
 // 对标 el-date-picker 的 type="monthrange"。此前只有天粒度，「选一段月份」只能拿两个
 // picker="month" 的 DatePicker 拼——拼出来没有区间高亮、用不上 presets、两端还得自己夹。
 describe("DateRangePicker 粒度", () => {
-  const openPanel = () => fireEvent.click(screen.getAllByRole("button")[0]!);
+  const openPanel = () => fireEvent.click(screen.getByRole("combobox"));
 
   it('picker="month"：值形状是 YYYY-MM，面板是两个年份页', () => {
     const onChange = vi.fn();
@@ -163,14 +163,14 @@ describe("DateRangePicker 粒度", () => {
   // 整段都超界才禁，所以 maxDate 落在月中时，当月仍可选、只有之后的月份灰掉。
   it("maxDate 落在月中：当月仍可选，之后的月份禁用", () => {
     render(<DateRangePicker picker="month" defaultValue={["2026-01", "2026-02"]} maxDate="2026-06-15" />);
-    fireEvent.click(screen.getAllByRole("button")[0]!);
+    fireEvent.click(screen.getByRole("combobox"));
     expect((screen.getByLabelText("2026-06") as HTMLButtonElement).disabled).toBe(false);
     expect((screen.getByLabelText("2026-07") as HTMLButtonElement).disabled).toBe(true);
   });
 
   it("年档同理：maxDate 落在年中时当年仍可选", () => {
     render(<DateRangePicker picker="year" defaultValue={["2020", "2021"]} maxDate="2026-06-15" />);
-    fireEvent.click(screen.getAllByRole("button")[0]!);
+    fireEvent.click(screen.getByRole("combobox"));
     expect((screen.getByLabelText("2026") as HTMLButtonElement).disabled).toBe(false);
     expect((screen.getByLabelText("2027") as HTMLButtonElement).disabled).toBe(true);
   });
@@ -187,7 +187,7 @@ describe("DateRangePicker 粒度", () => {
         }}
       />,
     );
-    fireEvent.click(screen.getAllByRole("button")[0]!);
+    fireEvent.click(screen.getByRole("combobox"));
     expect((screen.getByLabelText("2026-09") as HTMLButtonElement).disabled).toBe(true);
     expect((screen.getByLabelText("2026-08") as HTMLButtonElement).disabled).toBe(false);
     expect(seen.every((iso) => /^\d{4}-\d{2}-01$/.test(iso))).toBe(true);
@@ -195,7 +195,7 @@ describe("DateRangePicker 粒度", () => {
 
   it("区间高亮跨页连续：中间月带底带，端点不带（单选那格除外）", () => {
     const { container } = render(<DateRangePicker picker="month" defaultValue={["2026-03", "2026-06"]} />);
-    fireEvent.click(screen.getAllByRole("button")[0]!);
+    fireEvent.click(screen.getByRole("combobox"));
     const band = (label: string) =>
       (container.ownerDocument.querySelector(`[aria-label="${label}"]`)!.parentElement as HTMLElement)
         .className;
@@ -207,7 +207,7 @@ describe("DateRangePicker 粒度", () => {
 
   it("翻页按 picker 的步长走（月档一页一年，年档一页 12 年）", () => {
     render(<DateRangePicker picker="month" defaultValue={["2026-03", "2026-05"]} />);
-    fireEvent.click(screen.getAllByRole("button")[0]!);
+    fireEvent.click(screen.getByRole("combobox"));
     fireEvent.click(screen.getByLabelText("下一页"));
     expect(screen.getByText("2027 年")).toBeTruthy();
     expect(screen.getByText("2028 年")).toBeTruthy();
@@ -216,7 +216,7 @@ describe("DateRangePicker 粒度", () => {
 
   it("日档不受影响：仍是双月历、翻页按月、预设仍是那四项", () => {
     render(<DateRangePicker defaultValue={["2026-06-08", "2026-06-20"]} />);
-    fireEvent.click(screen.getAllByRole("button")[0]!);
+    fireEvent.click(screen.getByRole("combobox"));
     expect(screen.getByText("2026 年 6 月")).toBeTruthy();
     expect(screen.getByText("最近 7 天")).toBeTruthy();
     fireEvent.click(screen.getByLabelText("下个月"));

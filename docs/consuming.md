@@ -585,9 +585,19 @@ react-hook-form 的 `Controller`，缺一个 `title` 就没法挂 tooltip，于�
   所以你传的 `role` 不会顶掉 `Listbox` 的 `role="listbox"`。这是有意的——那些属性一旦被顶掉，
   组件的无障碍语义与键盘导航当场失效。想换语义请提 issue，不要靠覆盖。
 
-**还没拉平的**：`Cascader` / `TreeSelect` / `CountrySelect` / `RegionCascader` /
-`DatePicker` 族这些 Popover 包壳的选择器 —— 它们的"根"不是一个 DOM 节点，
-`id` / `data-*` 该落触发器还是浮层要逐件定，机械展开会静默落错位置。需要哪个先提 issue。
+**Popover 包壳的选择器（0.54.0 起也已拉平）**：`Cascader` / `RegionCascader` / `TreeSelect` /
+`CountrySelect` / `RemoteSelect` / `DatePicker` / `DateTimePicker` / `DateRangePicker`。
+它们的"根"不是一个 DOM 节点，所以落点是逐件定的，一律落在**那个可聚焦、读屏会念的元素**上
+（触发按钮，或搜索型选择器的输入框），不是外层容器、也不是浮层（#293）。
+
+这批同时接上了 Base UI 的 Field 控件上下文：放进 `<Field>` 时 label 的 `htmlFor`、
+`aria-labelledby`、`aria-describedby`、`invalid`、`disabled` 才真正串到触发器上 ——
+0.54.0 之前那条链是断的（label 指向一个不存在的 id），`<Field required>` 注入的
+`aria-required` 也被封闭 props 吃掉。**升级注意**：这些触发器的 role 从 `button` 变成了
+`combobox`，测试里按角色取它要改成 `getByRole("combobox")`。
+
+`Upload` 是另一档：它的落区是 `role="button"`，`aria-required` 在该 role 上不受支持，
+必填改由组件自己渲染一段 sr-only 说明表达（#294）。
 
 ## 8. 几个不那么致命但值得先知道的
 

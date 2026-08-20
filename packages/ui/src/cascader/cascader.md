@@ -65,7 +65,9 @@ const [value, setValue] = useState<string[]>([]);
 - `value` 是**完整 key 路径数组**（如 `["zhejiang","hangzhou","xihu"]`），不是单个叶子 key；回填时要给全路径，否则展开列对不上。
 - `disabled` 的节点不可选、其子树也不会因它而展开。
 - `onChange` 第二参是节点链（`TreeNode[]`），需要 label 做回显时取它而非自己再查表。
-- 暂无其它已知坑。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

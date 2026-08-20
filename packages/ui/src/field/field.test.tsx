@@ -206,4 +206,40 @@ describe("Field", () => {
       expect(container.querySelector("input")!.getAttribute("aria-required")).toBe("true");
     });
   });
+
+  describe("label 的命中区（#296）", () => {
+    // 真 <label> 被 flex stretch 拉满整行时，行尾那片看不见的空白照样把 click 转发给控件 ——
+    // 对浮层型控件就是「点了下拉框上方的空处，浮层凭空弹开」。宽度在 jsdom 里量不出来，
+    // 这里钉的是「盒子按内容收」这条类，视觉/命中的实际效果由浏览器的盒模型保证。
+    it("label 默认按文字宽收窄，不吃满整行", () => {
+      const { getByText } = render(
+        <Field label="一级分类">
+          <Input />
+        </Field>,
+      );
+      expect(getByText("一级分类").className).toContain("w-fit");
+    });
+
+    it("horizontal 的标签列同样收窄（第一列是 1fr，label 在其中仍会被 stretch）", () => {
+      const { getByText } = render(
+        <Field label="一级分类" orientation="horizontal">
+          <Input />
+        </Field>,
+      );
+      expect(getByText("一级分类").className).toContain("w-fit");
+    });
+
+    it("需要满宽 label 的消费方传 w-full 顶掉（同族类走 twMerge，不并存）", () => {
+      const { getByText, container } = render(
+        <Field label="一级分类" labelClassName="w-full">
+          <Input />
+        </Field>,
+      );
+      const label = getByText("一级分类");
+      expect(label.className).toContain("w-full");
+      expect(label.className).not.toContain("w-fit");
+      // 收窄只动盒宽：htmlFor 关联照旧
+      expect(label.getAttribute("for")).toBe(container.querySelector("input")!.id);
+    });
+  });
 });

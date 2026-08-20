@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useId, useRef, useState } from "react";
+import { Field as BaseField } from "@base-ui/react/field";
 import { GripVertical, RotateCw } from "lucide-react";
 import {
   DndContext,
@@ -81,15 +82,24 @@ const LOCALE_FALLBACK = {
   reorder: (name: string) => `拖拽排序 ${name}`,
   retry: (name: string) => `重新上传 ${name}`,
   selected: (count: number, limit: number) => `已选 ${count}/${limit}`,
+  required: "必填",
 };
 
 // 尺寸档（#243）：落区高度此前写死，同一个应用里「页面主入口的大落区」与「弹窗里的小落区」
 // 只能在每个调用处贴 className="h-44" 去撤销组件刚给的内边距——那正是文档反对的覆盖。
 // md 一档的数值与 0.39.0 逐字相同，不传 size 的调用点渲染不变。
-const DROPZONE_SIZE_CLASS = { sm: "gap-1.5 px-4 py-4", md: "gap-2 px-6 py-8", lg: "gap-3 px-8 py-12" };
+const DROPZONE_SIZE_CLASS = {
+  sm: "gap-1.5 px-4 py-4",
+  md: "gap-2 px-6 py-8",
+  lg: "gap-3 px-8 py-12",
+};
 // button 形态与 Button 的同名档逐字等高（button-base.ts 的 BUTTON_SIZE_CLASS）。刻意不 import：
 // 那份表还带 icon/xs 等本组件用不到的档，而这三行的全部意义就是「和旁边那颗按钮对齐」。
-const BUTTON_SIZE_CLASS = { sm: "h-8 px-3 text-sm", md: "h-10 px-4 text-sm", lg: "h-12 px-6 text-base" };
+const BUTTON_SIZE_CLASS = {
+  sm: "h-8 px-3 text-sm",
+  md: "h-10 px-4 text-sm",
+  lg: "h-12 px-6 text-base",
+};
 const DROPZONE_ICON_CLASS = { sm: "size-6", md: "size-7", lg: "size-9" };
 const DROPZONE_LABEL_CLASS = { sm: "text-sm", md: "text-sm", lg: "text-base" };
 /**
@@ -152,13 +162,17 @@ function RowBody({ file: f, renderPreview, onRemove, onRetry }: RowProps) {
                 style={{ width: `${pct}%` }}
               />
             </span>
-            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{Math.round(pct)}%</span>
+            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+              {Math.round(pct)}%
+            </span>
           </span>
         ) : f.status === "error" && f.error ? (
           <span className="mt-0.5 block text-xs text-danger">{f.error}</span>
         ) : (
           f.size != null && (
-            <span className="mt-0.5 block text-xs text-muted-foreground">{formatBytes(f.size)}</span>
+            <span className="mt-0.5 block text-xs text-muted-foreground">
+              {formatBytes(f.size)}
+            </span>
           )
         )}
       </span>
@@ -255,6 +269,7 @@ export function Upload({
   size = "md",
   name,
   required,
+  "aria-required": ariaRequired,
   inputRef: inputRefProp,
   resetInputAfterSelect,
   files,
@@ -282,8 +297,8 @@ export function Upload({
         ? buttonLabel
         : locale.buttonLabel
       : typeof label === "string"
-        ? label
-        : locale.dropLabel;
+      ? label
+      : locale.dropLabel;
   // 必须写成 `HTMLInputElement | null`：React 18 的类型里 `useRef<T>(null)` 返回 current 只读的
   // RefObject，下面那个回调 ref 写 inputRef.current 会被判 TS2540（React 19 类型下不报，
   // 只有定时任务的 React 18 兼容冒烟能发现）。
@@ -305,6 +320,24 @@ export function Upload({
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
+
+  // 必填的无障碍表达（#294）：落区是 `role="button"`、button 形态是真 `<button>`，
+  // 而 `aria-required` 在 ARIA 里只对输入型 role（textbox / combobox / listbox …）有效 ——
+  // 把它透传到触发器读屏也不会念。所以这里把「必填」翻译成对 button 合法的那条路：
+  // 一段 sr-only 说明 + `aria-describedby`。`Field required` 注进来的 `aria-required`
+  // 与自己传的 `required` 等价看待（前者是语义标记，后者还额外开原生校验，见 `required` 文档）。
+  const isRequired = required === true || ariaRequired === true || ariaRequired === "true";
+  const requiredNoteId = `${listId}-required`;
+  const requiredNote = isRequired ? (
+    <span id={requiredNoteId} className="sr-only">
+      {locale.required}
+    </span>
+  ) : null;
+
+  const describedBy =
+    [hint ? `${listId}-hint` : null, isRequired ? requiredNoteId : null]
+      .filter(Boolean)
+      .join(" ") || undefined;
 
   const count = files?.length ?? 0;
   // 达到 limit 后触发器整体不可交互（比"能点开却全被拒"更诚实）
@@ -435,27 +468,37 @@ export function Upload({
     return (
       <div className={cn(ROOT_CLASS, className)}>
         {input}
-        <button
-          type="button"
-          disabled={blocked}
-          onClick={openDialog}
-          className={cn(
-            "inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50",
-            BUTTON_SIZE_CLASS[size],
-          )}
-        >
-          <svg
-            viewBox="0 0 20 20"
-            className="size-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.6}
-            aria-hidden
-          >
-            <path d="M10 13V4M6 8l4-4 4 4M4 15h12" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {resolvedButtonLabel}
-        </button>
+        {requiredNote}
+        <BaseField.Control
+          render={
+            <button
+              type="button"
+              disabled={blocked}
+              aria-describedby={describedBy}
+              onClick={openDialog}
+              className={cn(
+                "inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50",
+                BUTTON_SIZE_CLASS[size],
+              )}
+            >
+              <svg
+                viewBox="0 0 20 20"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.6}
+                aria-hidden
+              >
+                <path
+                  d="M10 13V4M6 8l4-4 4 4M4 15h12"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {resolvedButtonLabel}
+            </button>
+          }
+        />
         {fileList}
         {counter}
       </div>
@@ -465,66 +508,75 @@ export function Upload({
   return (
     <div className={cn(ROOT_CLASS, className)}>
       {input}
-      <div
-        role="button"
-        tabIndex={blocked ? -1 : 0}
-        aria-disabled={blocked || undefined}
-        aria-describedby={hint ? `${listId}-hint` : undefined}
-        onClick={openDialog}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            openDialog();
-          }
-        }}
-        onDragOver={(e) => {
-          if (blocked) return;
-          e.preventDefault();
-          setDragging(true);
-        }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDragging(false);
-          if (!blocked && e.dataTransfer.files) syncInputFiles(process(e.dataTransfer.files));
-        }}
-        className={cn(
-          "flex flex-col items-center justify-center rounded-[var(--radius)] border border-dashed text-center outline-none transition-colors",
-          DROPZONE_SIZE_CLASS[size],
-          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-          dragging
-            ? "border-primary bg-primary/5"
-            : "border-border bg-surface hover:bg-surface-hover",
-          blocked && "pointer-events-none opacity-50",
-        )}
-      >
-        {children ?? (
-          <>
-            <svg
-              viewBox="0 0 24 24"
-              className={cn(DROPZONE_ICON_CLASS[size], "text-muted-foreground")}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.6}
-              aria-hidden
-            >
-              <path
-                d="M12 16V5M7 10l5-5 5 5M4 19h16"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <div className={cn(DROPZONE_LABEL_CLASS[size], "font-medium text-foreground")}>
-              {resolvedLabel}
-            </div>
-            {hint && (
-              <div id={`${listId}-hint`} className="text-xs text-muted-foreground">
-                {hint}
-              </div>
+      {requiredNote}
+      {/* 落区过一层 Field.Control（#294）：Field 生成的 id / aria-labelledby / invalid 由此串上，
+          读屏这才念得出字段名（此前 label 的 htmlFor 指向一个不存在的 id）。
+          注意 aria-describedby 是「外部赢」——落区自己要串 hint 与必填说明，所以 Field 的
+          description / error 不经这条路（与改动前一致，说明文案请走组件的 `hint`）。 */}
+      <BaseField.Control
+        render={
+          <div
+            role="button"
+            tabIndex={blocked ? -1 : 0}
+            aria-disabled={blocked || undefined}
+            aria-describedby={describedBy}
+            onClick={openDialog}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openDialog();
+              }
+            }}
+            onDragOver={(e) => {
+              if (blocked) return;
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              if (!blocked && e.dataTransfer.files) syncInputFiles(process(e.dataTransfer.files));
+            }}
+            className={cn(
+              "flex flex-col items-center justify-center rounded-[var(--radius)] border border-dashed text-center outline-none transition-colors",
+              DROPZONE_SIZE_CLASS[size],
+              "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+              dragging
+                ? "border-primary bg-primary/5"
+                : "border-border bg-surface hover:bg-surface-hover",
+              blocked && "pointer-events-none opacity-50",
             )}
-          </>
-        )}
-      </div>
+          >
+            {children ?? (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  className={cn(DROPZONE_ICON_CLASS[size], "text-muted-foreground")}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.6}
+                  aria-hidden
+                >
+                  <path
+                    d="M12 16V5M7 10l5-5 5 5M4 19h16"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <div className={cn(DROPZONE_LABEL_CLASS[size], "font-medium text-foreground")}>
+                  {resolvedLabel}
+                </div>
+                {hint && (
+                  <div id={`${listId}-hint`} className="text-xs text-muted-foreground">
+                    {hint}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        }
+      />
       {fileList}
       {counter}
     </div>

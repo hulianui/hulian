@@ -12,14 +12,14 @@ describe("TreeSelect", () => {
   it("点 Trigger 开浮层，显示 placeholder", () => {
     render(<TreeSelect nodes={NODES} placeholder="请选择" />);
     expect(screen.getByText("请选择")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("combobox"));
     expect(screen.getByRole("tree")).toBeTruthy();
   });
 
   it("单选叶子 → onChange(key) + Trigger 显示 label", () => {
     const onChange = vi.fn();
     render(<TreeSelect nodes={NODES} onChange={onChange} placeholder="请选择" />);
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("combobox"));
     fireEvent.click(screen.getByText("乙").closest('[role="treeitem"]')!);
     expect(onChange).toHaveBeenCalledWith("b");
   });
@@ -27,7 +27,7 @@ describe("TreeSelect", () => {
   it("多选 → checkable 树，value 为数组", () => {
     const onChange = vi.fn();
     render(<TreeSelect nodes={NODES} multiple onChange={onChange} placeholder="请选择" />);
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("combobox"));
     const boxes = screen.getAllByRole("checkbox");
     fireEvent.click(boxes.at(-1)!); // 乙
     expect(onChange).toHaveBeenCalledWith(expect.arrayContaining(["b"]));
@@ -73,7 +73,7 @@ describe("TreeSelect", () => {
     it("默认（row）：单选点分支行只展开，不回传 —— 既有行为不变", () => {
       const onChange = vi.fn();
       render(<TreeSelect nodes={NODES} onChange={onChange} placeholder="请选择" />);
-      fireEvent.click(screen.getByRole("button"));
+      fireEvent.click(screen.getByRole("combobox"));
       fireEvent.click(branchRow());
       expect(onChange).not.toHaveBeenCalled();
       expect(screen.getByText("甲一")).toBeTruthy(); // 展开了
@@ -84,7 +84,7 @@ describe("TreeSelect", () => {
       render(
         <TreeSelect nodes={NODES} expandTrigger="icon" onChange={onChange} placeholder="请选择" />,
       );
-      fireEvent.click(screen.getByRole("button"));
+      fireEvent.click(screen.getByRole("combobox"));
       fireEvent.click(branchRow());
       expect(onChange).toHaveBeenCalledWith("a");
     });
@@ -108,7 +108,7 @@ describe("TreeSelect", () => {
           placeholder="请选择"
         />,
       );
-      fireEvent.click(screen.getByRole("button"));
+      fireEvent.click(screen.getByRole("combobox"));
       fireEvent.click(screen.getAllByRole("checkbox").at(-1)!);
       expect(onChange).toHaveBeenCalledWith(expect.arrayContaining(["b"]));
     });

@@ -60,6 +60,9 @@ const [names, setNames] = useState<string[]>([]);
 
 - `onChange` 给两个数组：code 路径与 name 路径。表单存名称时取第二参，但受控 `value` 要回传的是 **code 路径**（第一参），两者别搞反。
 - `value` 必须是合法的 code 链路（每级 code 是上级的子项），否则浮层无法定位回显。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

@@ -1478,6 +1478,27 @@
       "source": "packages/ui/src/cascader/cascader.md"
     },
     {
+      "id": "component/cascader/pitfall/4",
+      "scope": "cascader",
+      "title": "Cascader",
+      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
+      "source": "packages/ui/src/cascader/cascader.md"
+    },
+    {
+      "id": "component/cascader/pitfall/5",
+      "scope": "cascader",
+      "title": "Cascader",
+      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "source": "packages/ui/src/cascader/cascader.md"
+    },
+    {
+      "id": "component/cascader/pitfall/6",
+      "scope": "cascader",
+      "title": "Cascader",
+      "rule": "测试里按角色取触发器要用 `getByRole(\"combobox\")`，不再是 `\"button\"`。",
+      "source": "packages/ui/src/cascader/cascader.md"
+    },
+    {
       "id": "component/cell-editor/pitfall/1",
       "scope": "cell-editor",
       "title": "CellEditor",
@@ -2451,6 +2472,13 @@
       "source": "packages/ui/src/country-select/country-select.md"
     },
     {
+      "id": "component/country-select/pitfall/3",
+      "scope": "country-select",
+      "title": "CountrySelect",
+      "rule": "未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**触发器**上（多选时是 chips 外壳里的输入框），不是外层容器 —— 读屏念的、能聚焦的都是它。`<Field required>` 注入的 `aria-required` 也走这条路（#293）。",
+      "source": "packages/ui/src/country-select/country-select.md"
+    },
+    {
       "id": "component/coupon/pitfall/1",
       "scope": "coupon",
       "title": "Coupon",
@@ -2640,6 +2668,27 @@
       "source": "packages/ui/src/date-picker/date-picker.md"
     },
     {
+      "id": "component/date-picker/pitfall/7",
+      "scope": "date-picker",
+      "title": "DatePicker",
+      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
+      "source": "packages/ui/src/date-picker/date-picker.md"
+    },
+    {
+      "id": "component/date-picker/pitfall/8",
+      "scope": "date-picker",
+      "title": "DatePicker",
+      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "source": "packages/ui/src/date-picker/date-picker.md"
+    },
+    {
+      "id": "component/date-picker/pitfall/9",
+      "scope": "date-picker",
+      "title": "DatePicker",
+      "rule": "测试里按角色取触发器要用 `getByRole(\"combobox\")`，不再是 `\"button\"`。",
+      "source": "packages/ui/src/date-picker/date-picker.md"
+    },
+    {
       "id": "component/date-range-picker/pitfall/1",
       "scope": "date-range-picker",
       "title": "DateRangePicker",
@@ -2679,6 +2728,27 @@
       "scope": "date-range-picker",
       "title": "DateRangePicker",
       "rule": "`disabledDate` 入参是 ISO 字符串，自己拼 `new Date(iso + \"T00:00:00\")` 算 getDay 时注意时区，别直接 `new Date(iso)`（会按 UTC 解析偏一天）。",
+      "source": "packages/ui/src/date-range-picker/date-range-picker.md"
+    },
+    {
+      "id": "component/date-range-picker/pitfall/7",
+      "scope": "date-range-picker",
+      "title": "DateRangePicker",
+      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
+      "source": "packages/ui/src/date-range-picker/date-range-picker.md"
+    },
+    {
+      "id": "component/date-range-picker/pitfall/8",
+      "scope": "date-range-picker",
+      "title": "DateRangePicker",
+      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "source": "packages/ui/src/date-range-picker/date-range-picker.md"
+    },
+    {
+      "id": "component/date-range-picker/pitfall/9",
+      "scope": "date-range-picker",
+      "title": "DateRangePicker",
+      "rule": "测试里按角色取触发器要用 `getByRole(\"combobox\")`，不再是 `\"button\"`。",
       "source": "packages/ui/src/date-range-picker/date-range-picker.md"
     },
     {
@@ -2728,6 +2798,27 @@
       "scope": "date-time-picker",
       "title": "DateTimePicker",
       "rule": "`minuteStep` 只影响**列里能点到的候选**，不校验外部传入的 `value`： 传 `\"2026-06-08 09:07\"` 配 `minuteStep={15}` 时，07 分不在列里，分钟列会显示为无选中。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/8",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/9",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "source": "packages/ui/src/date-time-picker/date-time-picker.md"
+    },
+    {
+      "id": "component/date-time-picker/pitfall/10",
+      "scope": "date-time-picker",
+      "title": "DateTimePicker",
+      "rule": "测试里按角色取触发器要用 `getByRole(\"combobox\")`，不再是 `\"button\"`。",
       "source": "packages/ui/src/date-time-picker/date-time-picker.md"
     },
     {
@@ -3441,39 +3532,53 @@
       "id": "component/field/pitfall/2",
       "scope": "field",
       "title": "Field",
-      "rule": "不要为了画星号把 label 包成自定义的 `RequiredLabel` —— 那样只有视力用户知道必填，读屏用户拿不到，而且每个页面的星号位置/颜色会各写各的。",
+      "rule": "`aria-required` 只对**输入型 role** 有效（textbox / combobox / listbox / radiogroup / checkbox …）。控件的可聚焦元素是 `role=\"button\"` 时（典型是 [Upload](../upload/upload.md) 的落区），注进去读屏也不会念 —— 那一档由组件自己把必填翻成说明文本，用法不变。",
       "source": "packages/ui/src/field/field.md"
     },
     {
       "id": "component/field/pitfall/3",
       "scope": "field",
       "title": "Field",
-      "rule": "`error` 字符串非空时已隐含 `invalid`，无需再传 `invalid`；想强制无错状态下也标红才单独传 `invalid`。",
+      "rule": "label 默认按文字宽收窄（`w-fit`）：它是带 `htmlFor` 的真 `<label>`，被 flex 拉满整行时行尾那片看不见的空白照样把点击转发给控件 —— 对浮层型控件就是「点了下拉框上方的空处，浮层凭空弹开」。需要满宽 label（如标签与右侧开关两端对齐）时传 `labelClassName=\"w-full\"`。",
       "source": "packages/ui/src/field/field.md"
     },
     {
       "id": "component/field/pitfall/4",
       "scope": "field",
       "title": "Field",
-      "rule": "底层是 Base UI Field，错误文本通过 `match={true}` 强制渲染——别在 Field 外另起一个 `<p>` 写错误，会丢失自动的 `aria-describedby` 串联。详见 base-ui-field-error-match-true-for-external-controlled-error：外部受控 error 不走 Base UI 校验时，默认分支会让错误文本「框红字没」。",
+      "rule": "不要为了画星号把 label 包成自定义的 `RequiredLabel` —— 那样只有视力用户知道必填，读屏用户拿不到，而且每个页面的星号位置/颜色会各写各的。",
       "source": "packages/ui/src/field/field.md"
     },
     {
       "id": "component/field/pitfall/5",
       "scope": "field",
       "title": "Field",
-      "rule": "若 children 是 Textarea，注意 render-as 的类型问题，见 base-ui-field-control-render-textarea-type-safe。",
+      "rule": "`error` 字符串非空时已隐含 `invalid`，无需再传 `invalid`；想强制无错状态下也标红才单独传 `invalid`。",
       "source": "packages/ui/src/field/field.md"
     },
     {
       "id": "component/field/pitfall/6",
       "scope": "field",
       "title": "Field",
-      "rule": "横排的标签列宽度**没有**单独的 prop：`orientation=\"horizontal\"` 下 Field.Root 是 `grid-cols-[1fr_auto]` 的网格，传 `className=\"grid-cols-[8rem_1fr]\"` 顶掉默认列模板即可。默认的 `auto` 列让控件贴右边缘（设置行），换成 `1fr` 则让控件填满（表单行）。",
+      "rule": "底层是 Base UI Field，错误文本通过 `match={true}` 强制渲染——别在 Field 外另起一个 `<p>` 写错误，会丢失自动的 `aria-describedby` 串联。详见 base-ui-field-error-match-true-for-external-controlled-error：外部受控 error 不走 Base UI 校验时，默认分支会让错误文本「框红字没」。",
       "source": "packages/ui/src/field/field.md"
     },
     {
       "id": "component/field/pitfall/7",
+      "scope": "field",
+      "title": "Field",
+      "rule": "若 children 是 Textarea，注意 render-as 的类型问题，见 base-ui-field-control-render-textarea-type-safe。",
+      "source": "packages/ui/src/field/field.md"
+    },
+    {
+      "id": "component/field/pitfall/8",
+      "scope": "field",
+      "title": "Field",
+      "rule": "横排的标签列宽度**没有**单独的 prop：`orientation=\"horizontal\"` 下 Field.Root 是 `grid-cols-[1fr_auto]` 的网格，传 `className=\"grid-cols-[8rem_1fr]\"` 顶掉默认列模板即可。默认的 `auto` 列让控件贴右边缘（设置行），换成 `1fr` 则让控件填满（表单行）。",
+      "source": "packages/ui/src/field/field.md"
+    },
+    {
+      "id": "component/field/pitfall/9",
       "scope": "field",
       "title": "Field",
       "rule": "只要一个标签、不要 help/error 三段与 a11y 串联时，用 [Label](../label/label.md)，别为了拿标签皮肤而空套一层 Field。",
@@ -7267,6 +7372,27 @@
       "source": "packages/ui/src/region-cascader/region-cascader.md"
     },
     {
+      "id": "component/region-cascader/pitfall/3",
+      "scope": "region-cascader",
+      "title": "RegionCascader",
+      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
+      "source": "packages/ui/src/region-cascader/region-cascader.md"
+    },
+    {
+      "id": "component/region-cascader/pitfall/4",
+      "scope": "region-cascader",
+      "title": "RegionCascader",
+      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "source": "packages/ui/src/region-cascader/region-cascader.md"
+    },
+    {
+      "id": "component/region-cascader/pitfall/5",
+      "scope": "region-cascader",
+      "title": "RegionCascader",
+      "rule": "测试里按角色取触发器要用 `getByRole(\"combobox\")`，不再是 `\"button\"`。",
+      "source": "packages/ui/src/region-cascader/region-cascader.md"
+    },
+    {
       "id": "component/region-select/pitfall/1",
       "scope": "region-select",
       "title": "RegionSelect",
@@ -7404,6 +7530,13 @@
       "scope": "remote-select",
       "title": "RemoteSelect",
       "rule": "`total` 不给也能分页：此时按「本页返回条数 ≥ pageSize 即可能还有下一页」推断，最后会多打一次空请求；能给就给。",
+      "source": "packages/ui/src/remote-select/remote-select.md"
+    },
+    {
+      "id": "component/remote-select/pitfall/8",
+      "scope": "remote-select",
+      "title": "RemoteSelect",
+      "rule": "未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**输入框**上（多选时是 chips 外壳里的那个 input），不是外层容器 —— 读屏念的、能聚焦的都是它。`<Field required>` 注入的 `aria-required` 也走这条路（#293），此前被封闭 props 吃掉，必填只剩视觉星号。",
       "source": "packages/ui/src/remote-select/remote-select.md"
     },
     {
@@ -10060,6 +10193,27 @@
       "source": "packages/ui/src/tree-select/tree-select.md"
     },
     {
+      "id": "component/tree-select/pitfall/5",
+      "scope": "tree-select",
+      "title": "TreeSelect",
+      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
+      "source": "packages/ui/src/tree-select/tree-select.md"
+    },
+    {
+      "id": "component/tree-select/pitfall/6",
+      "scope": "tree-select",
+      "title": "TreeSelect",
+      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "source": "packages/ui/src/tree-select/tree-select.md"
+    },
+    {
+      "id": "component/tree-select/pitfall/7",
+      "scope": "tree-select",
+      "title": "TreeSelect",
+      "rule": "测试里按角色取触发器要用 `getByRole(\"combobox\")`，不再是 `\"button\"`。",
+      "source": "packages/ui/src/tree-select/tree-select.md"
+    },
+    {
       "id": "component/treemap/pitfall/1",
       "scope": "treemap",
       "title": "Treemap",
@@ -10204,6 +10358,27 @@
       "scope": "upload",
       "title": "Upload",
       "rule": "引入 `sortable` 让 upload 静态依赖了 `@dnd-kit/*`（与 Sortable/Kanban 同源），source 分发下不用 sortable 也会打进包里。",
+      "source": "packages/ui/src/upload/upload.md"
+    },
+    {
+      "id": "component/upload/pitfall/12",
+      "scope": "upload",
+      "title": "Upload",
+      "rule": "必填对辅助技术的表达走**说明文本**，不是 `aria-required`（#294）：落区是 `role=\"button\"`、button 形态是真 `<button>`，而 `aria-required` 在 ARIA 里只对输入型 role 有效，挂上去读屏不会念。传 `required`（或把 Upload 放进 `<Field required>`）时，触发器会串上一段 sr-only 的「必填」说明。",
+      "source": "packages/ui/src/upload/upload.md"
+    },
+    {
+      "id": "component/upload/pitfall/13",
+      "scope": "upload",
+      "title": "Upload",
+      "rule": "`<Field required>` 只给语义标记，**不**打开原生 `required` 校验 —— 要浏览器拦下提交，仍需自己传 `required` 且同时给 `name`。",
+      "source": "packages/ui/src/upload/upload.md"
+    },
+    {
+      "id": "component/upload/pitfall/14",
+      "scope": "upload",
+      "title": "Upload",
+      "rule": "落区自己的 `aria-describedby` 串的是 `hint` 与必填说明，Field 的 `description` / `error` 不走这条路：说明文案请用组件的 `hint`。",
       "source": "packages/ui/src/upload/upload.md"
     },
     {
@@ -10414,7 +10589,7 @@
   ],
   "stats": {
     "componentDocs": 394,
-    "componentAdvisories": 1451,
-    "totalAdvisories": 1461
+    "componentAdvisories": 1476,
+    "totalAdvisories": 1486
   }
 }

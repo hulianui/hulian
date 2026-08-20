@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, fireEvent, cleanup } from "@testing-library/react";
 import { Upload, matchesAccept, moveUploadFile } from "./upload";
 import type { UploadFile } from "./upload.types";
+import { Field } from "../field/field";
 
 afterEach(cleanup);
 
@@ -401,5 +402,57 @@ describe("Upload · sortable 调序", () => {
     const onSort = vi.fn();
     render(<Upload files={files} sortable onSort={onSort} />);
     expect(onSort).not.toHaveBeenCalled();
+  });
+});
+
+describe("必填的无障碍表达（#294）", () => {
+  it("Field required 注入的 aria-required 被翻成落区上的 sr-only 说明", () => {
+    const { container } = render(
+      <Field label="附件" required>
+        <Upload />
+      </Field>,
+    );
+    const zone = container.querySelector('[role="button"]')!;
+    const noteId = zone.getAttribute("aria-describedby")!;
+    expect(noteId).toBeTruthy();
+    const note = document.getElementById(noteId)!;
+    expect(note.textContent).toBe("必填");
+    // 不是把 aria-required 挂到落区：role=button 不支持它，挂了读屏也不念
+    expect(zone.getAttribute("aria-required")).toBeNull();
+    // 字段名经 Field 的 label 串上（此前 label 的 htmlFor 指向一个不存在的 id）
+    expect(zone.getAttribute("aria-labelledby")).toBe(container.querySelector("label")!.id);
+  });
+
+  it("hint 与必填说明同时串上，顺序为 hint 在前", () => {
+    const { container } = render(
+      <Field label="附件" required>
+        <Upload hint="单个不超过 5MB" />
+      </Field>,
+    );
+    const ids = container.querySelector('[role="button"]')!.getAttribute("aria-describedby")!.split(" ");
+    expect(ids).toHaveLength(2);
+    expect(document.getElementById(ids[0]!)!.textContent).toBe("单个不超过 5MB");
+    expect(document.getElementById(ids[1]!)!.textContent).toBe("必填");
+  });
+
+  it("button 形态同样给出必填说明", () => {
+    const { container } = render(<Upload variant="button" required name="file" />);
+    const btn = container.querySelector("button")!;
+    const noteId = btn.getAttribute("aria-describedby")!;
+    expect(document.getElementById(noteId)!.textContent).toBe("必填");
+  });
+
+  it("aria-required 不打开原生 required（能否提交由消费方显式决定）", () => {
+    const { container } = render(
+      <Field label="附件" required>
+        <Upload name="file" />
+      </Field>,
+    );
+    expect((container.querySelector('input[type="file"]') as HTMLInputElement).required).toBe(false);
+  });
+
+  it("不必填时既无说明节点也无 aria-describedby", () => {
+    const { container } = render(<Upload />);
+    expect(container.querySelector('[role="button"]')!.getAttribute("aria-describedby")).toBeNull();
   });
 });

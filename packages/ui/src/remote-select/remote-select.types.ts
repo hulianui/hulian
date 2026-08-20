@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import type { ComboboxSize } from "../combobox/combobox.types";
 
 export type RemoteSelectSize = ComboboxSize;
@@ -49,7 +49,23 @@ export type RemoteSelectResolver = (values: string[]) => Promise<RemoteSelectRow
 /** 对外 value 允许 string | number（后端主键常是数字），内部一律按 string 处理。 */
 export type RemoteSelectRawValue = string | number;
 
-export interface RemoteSelectBaseProps {
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**输入框**上（多选时是 chips
+ * 外壳里的那个 input）—— 读屏念的、能聚焦的都是它。`Field required` 注进来的 `aria-required`
+ * 也走这条路，此前被封闭 props 静默吃掉（#293）。
+ */
+export interface RemoteSelectBaseProps
+  extends Omit<
+    ComponentPropsWithoutRef<"input">,
+    | "value"
+    | "defaultValue"
+    | "onChange"
+    | "size"
+    | "disabled"
+    | "className"
+    | "placeholder"
+    | "children"
+  > {
   /** 远程搜索数据源（必填）。 */
   fetcher: RemoteSelectFetcher;
   /** 初值回显解析器：value 不在已加载列表里时用它单独解 label（编辑表单必传）。 */

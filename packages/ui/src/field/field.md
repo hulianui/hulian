@@ -33,7 +33,7 @@ import { Field } from "@hulianui/ui"
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | 排列方向。`horizontal` = 标签区在左、控件在右、错误另起一行占满整行（设置页「一行一个设置项」版式），a11y 串联与错误渲染完全一致 |
 | colSpan | `"full"` | — | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
 | className | `string` | — | 落在 Field.Root（竖排为 flex 列容器，横排为两列网格） |
-| labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
+| labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground w-fit`）；走 twMerge，传 `text-xs` 会顶掉默认字号，传 `w-full` 会让 label 恢复满宽 |
 | descriptionClassName | `string` | — | 追加到 description（默认 `text-xs text-muted-foreground`） |
 | errorClassName | `string` | — | 追加到 error（默认 `text-xs text-danger`） |
 
@@ -78,6 +78,8 @@ const email = form.register("email", { rules: [{ required: true, message: "请�
 ## 禁忌 / 坑
 
 - `required` 的 `aria-required` **只在 `children` 是单个元素时能注入** —— 那是 Field 唯一够得着的节点。children 是多节点（控件 + 按钮）或纯文本时，请自己给控件加 `aria-required`，否则读屏拿不到必填信息（自建的 `aria-hidden` 星号读屏读不到）。
+- `aria-required` 只对**输入型 role** 有效（textbox / combobox / listbox / radiogroup / checkbox …）。控件的可聚焦元素是 `role="button"` 时（典型是 [Upload](../upload/upload.md) 的落区），注进去读屏也不会念 —— 那一档由组件自己把必填翻成说明文本，用法不变。
+- label 默认按文字宽收窄（`w-fit`）：它是带 `htmlFor` 的真 `<label>`，被 flex 拉满整行时行尾那片看不见的空白照样把点击转发给控件 —— 对浮层型控件就是「点了下拉框上方的空处，浮层凭空弹开」。需要满宽 label（如标签与右侧开关两端对齐）时传 `labelClassName="w-full"`。
 - 不要为了画星号把 label 包成自定义的 `RequiredLabel` —— 那样只有视力用户知道必填，读屏用户拿不到，而且每个页面的星号位置/颜色会各写各的。
 - `error` 字符串非空时已隐含 `invalid`，无需再传 `invalid`；想强制无错状态下也标红才单独传 `invalid`。
 - 底层是 Base UI Field，错误文本通过 `match={true}` 强制渲染——别在 Field 外另起一个 `<p>` 写错误，会丢失自动的 `aria-describedby` 串联。详见 [[base-ui-field-error-match-true-for-external-controlled-error]]：外部受控 error 不走 Base UI 校验时，默认分支会让错误文本「框红字没」。

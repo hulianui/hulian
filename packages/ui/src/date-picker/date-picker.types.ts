@@ -1,6 +1,15 @@
+import type { ComponentPropsWithoutRef } from "react";
 import type { CalendarPicker } from "../calendar/calendar.types";
 
-export interface DatePickerProps {
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**触发器按钮**上 ——
+ * 读屏念的、能聚焦的都是它。`Field required` 注进来的 `aria-required` 也走这条路（#293）。
+ */
+export interface DatePickerProps
+  extends Omit<
+    ComponentPropsWithoutRef<"button">,
+    "value" | "defaultValue" | "onChange" | "disabled" | "className" | "children" | "role"
+  > {
   /**
    * 受控值。形状随 `picker` 变化：
    * `"date"` → `"YYYY-MM-DD"`；`"month"` → `"YYYY-MM"`；`"year"` → `"YYYY"`。

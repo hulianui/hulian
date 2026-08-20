@@ -5,7 +5,7 @@ import { enUS } from "../config/locale";
 import { DateTimePicker } from "./date-time-picker";
 import { inputShellVariants } from "../input/input";
 
-const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择日期时间" }));
+const openPanel = () => fireEvent.click(screen.getByRole("combobox", { name: "选择日期时间" }));
 
 describe("DateTimePicker", () => {
   it("enUS localizes the trigger controls and time columns", () => {
@@ -15,7 +15,7 @@ describe("DateTimePicker", () => {
       </ConfigProvider>,
     );
     expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Select date and time" }));
+    fireEvent.click(screen.getByRole("combobox", { name: "Select date and time" }));
     expect(screen.getByRole("listbox", { name: "Hour" })).toBeTruthy();
     expect(screen.getByRole("listbox", { name: "Minute" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Now" })).toBeTruthy();
@@ -37,7 +37,7 @@ describe("DateTimePicker", () => {
     );
     expect(screen.getByText("选择日期时间")).toBeTruthy();
     expect(screen.getByRole("button", { name: "清除" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Legacy date time" }));
+    fireEvent.click(screen.getByRole("combobox", { name: "Legacy date time" }));
     expect(screen.getByRole("listbox", { name: "时" })).toBeTruthy();
     expect(screen.getByRole("listbox", { name: "分" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "此刻" })).toBeTruthy();

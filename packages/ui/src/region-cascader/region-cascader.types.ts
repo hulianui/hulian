@@ -1,4 +1,14 @@
-export interface RegionCascaderProps {
+import type { ComponentPropsWithoutRef } from "react";
+
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**触发器按钮**上 ——
+ * 读屏念的、能聚焦的都是它。`Field required` 注进来的 `aria-required` 也走这条路（#293）。
+ */
+export interface RegionCascaderProps
+  extends Omit<
+    ComponentPropsWithoutRef<"button">,
+    "value" | "defaultValue" | "onChange" | "disabled" | "className" | "children" | "role"
+  > {
   /** 受控值：行政区划 code 路径，如 ["11","1101","110101"]。 */
   value?: string[];
   defaultValue?: string[];

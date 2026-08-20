@@ -3780,7 +3780,9 @@ const [value, setValue] = useState<string[]>([]);
 - `value` 是**完整 key 路径数组**（如 `["zhejiang","hangzhou","xihu"]`），不是单个叶子 key；回填时要给全路径，否则展开列对不上。
 - `disabled` 的节点不可选、其子树也不会因它而展开。
 - `onChange` 第二参是节点链（`TreeNode[]`），需要 label 做回显时取它而非自己再查表。
-- 暂无其它已知坑。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](https://hulianui.haloritual.com/zh/components/field) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Rating](https://hulianui.haloritual.com/zh/components/rating)
@@ -4942,6 +4944,7 @@ const [codes, setCodes] = useState<string[]>([]);
 
 - `value`/`onChange` 入参在单选与多选下类型不同（`string` vs `string[]`），onChange 回调拿到的是联合类型，需按 `multiple` 用 `as` 收窄，别直接当数组用。
 - value 存的是 ISO2 码（如 `"CN"`），不是中文名；展示名用 `getCountry(code)` 现取。
+- 未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**触发器**上（多选时是 chips 外壳里的输入框），不是外层容器 —— 读屏念的、能聚焦的都是它。`<Field required>` 注入的 `aria-required` 也走这条路（#293）。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Rating](https://hulianui.haloritual.com/zh/components/rating)
@@ -5040,6 +5043,9 @@ const [date, setDate] = useState<string | null>(null);
   所以 `picker="date"` 时点月份只是下钻，不会提交。
 - 从 0.15.0 之前的 MUI 版 `DatePicker` 迁过来时注意**值格式变了**：那份对外是完整 ISO 时间戳，
   这份是定宽日期串。另外 `views` / `openTo` 合并成了 `picker`，`label` 换成 `placeholder` + `aria-label`。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](https://hulianui.haloritual.com/zh/components/field) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [Calendar](https://hulianui.haloritual.com/zh/components/calendar) · [DateRangePicker](https://hulianui.haloritual.com/zh/components/date-range-picker) · [DateTimePicker](https://hulianui.haloritual.com/zh/components/date-time-picker) · [TimePicker](https://hulianui.haloritual.com/zh/components/time-picker) · [TimeField](https://hulianui.haloritual.com/zh/components/time-field) · [ColorField](https://hulianui.haloritual.com/zh/components/color-field)
@@ -5125,6 +5131,9 @@ function Demo() {
 - 月/年粒度下 `disabledDate` 每段只被问一次，入参是该段**首日**（`2026-09-01` 代表整个 9 月）。别在里面写按「日」判断的逻辑（如禁周末），那在这两档没有意义。
 - 年份页是 **12 年整段**（不是十年段），因为两页并排时十年段的首尾补位年会让同一个年份在左右两页各出现一次。
 - `disabledDate` 入参是 ISO 字符串，自己拼 `new Date(iso + "T00:00:00")` 算 getDay 时注意时区，别直接 `new Date(iso)`（会按 UTC 解析偏一天）。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](https://hulianui.haloritual.com/zh/components/field) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [Calendar](https://hulianui.haloritual.com/zh/components/calendar) · [DatePicker](https://hulianui.haloritual.com/zh/components/date-picker) · [DateTimePicker](https://hulianui.haloritual.com/zh/components/date-time-picker) · [TimeField](https://hulianui.haloritual.com/zh/components/time-field) · [Button](https://hulianui.haloritual.com/zh/components/button) · [ShimmerButton](https://hulianui.haloritual.com/zh/components/shimmer-button)
@@ -5222,6 +5231,9 @@ const [dt, setDt] = useState<string | null>(null);
   需要在提交时自行校验。
 - `minuteStep` 只影响**列里能点到的候选**，不校验外部传入的 `value`：
   传 `"2026-06-08 09:07"` 配 `minuteStep={15}` 时，07 分不在列里，分钟列会显示为无选中。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](https://hulianui.haloritual.com/zh/components/field) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [DatePicker](https://hulianui.haloritual.com/zh/components/date-picker) · [Calendar](https://hulianui.haloritual.com/zh/components/calendar) · [TimePicker](https://hulianui.haloritual.com/zh/components/time-picker) · [TimeField](https://hulianui.haloritual.com/zh/components/time-field) · [DateRangePicker](https://hulianui.haloritual.com/zh/components/date-range-picker) · [Scheduler](https://hulianui.haloritual.com/zh/components/scheduler)
@@ -5376,7 +5388,7 @@ import { Field } from "@hulianui/ui"
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | 排列方向。`horizontal` = 标签区在左、控件在右、错误另起一行占满整行（设置页「一行一个设置项」版式），a11y 串联与错误渲染完全一致 |
 | colSpan | `"full"` | — | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
 | className | `string` | — | 落在 Field.Root（竖排为 flex 列容器，横排为两列网格） |
-| labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
+| labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground w-fit`）；走 twMerge，传 `text-xs` 会顶掉默认字号，传 `w-full` 会让 label 恢复满宽 |
 | descriptionClassName | `string` | — | 追加到 description（默认 `text-xs text-muted-foreground`） |
 | errorClassName | `string` | — | 追加到 error（默认 `text-xs text-danger`） |
 
@@ -5421,6 +5433,8 @@ const email = form.register("email", { rules: [{ required: true, message: "请�
 ## 禁忌 / 坑
 
 - `required` 的 `aria-required` **只在 `children` 是单个元素时能注入** —— 那是 Field 唯一够得着的节点。children 是多节点（控件 + 按钮）或纯文本时，请自己给控件加 `aria-required`，否则读屏拿不到必填信息（自建的 `aria-hidden` 星号读屏读不到）。
+- `aria-required` 只对**输入型 role** 有效（textbox / combobox / listbox / radiogroup / checkbox …）。控件的可聚焦元素是 `role="button"` 时（典型是 [Upload](https://hulianui.haloritual.com/zh/components/upload) 的落区），注进去读屏也不会念 —— 那一档由组件自己把必填翻成说明文本，用法不变。
+- label 默认按文字宽收窄（`w-fit`）：它是带 `htmlFor` 的真 `<label>`，被 flex 拉满整行时行尾那片看不见的空白照样把点击转发给控件 —— 对浮层型控件就是「点了下拉框上方的空处，浮层凭空弹开」。需要满宽 label（如标签与右侧开关两端对齐）时传 `labelClassName="w-full"`。
 - 不要为了画星号把 label 包成自定义的 `RequiredLabel` —— 那样只有视力用户知道必填，读屏用户拿不到，而且每个页面的星号位置/颜色会各写各的。
 - `error` 字符串非空时已隐含 `invalid`，无需再传 `invalid`；想强制无错状态下也标红才单独传 `invalid`。
 - 底层是 Base UI Field，错误文本通过 `match={true}` 强制渲染——别在 Field 外另起一个 `<p>` 写错误，会丢失自动的 `aria-describedby` 串联。详见 [[base-ui-field-error-match-true-for-external-controlled-error]]：外部受控 error 不走 Base UI 校验时，默认分支会让错误文本「框红字没」。
@@ -7276,6 +7290,9 @@ const [names, setNames] = useState<string[]>([]);
 
 - `onChange` 给两个数组：code 路径与 name 路径。表单存名称时取第二参，但受控 `value` 要回传的是 **code 路径**（第一参），两者别搞反。
 - `value` 必须是合法的 code 链路（每级 code 是上级的子项），否则浮层无法定位回显。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](https://hulianui.haloritual.com/zh/components/field) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Rating](https://hulianui.haloritual.com/zh/components/rating)
@@ -7455,6 +7472,7 @@ import { RemoteSelect } from "@hulianui/ui"
 - 本地不做二次过滤（底层 `filter={null}`）：搜索结果完全由服务端决定，`fetcher` 忽略 `query` 就等于没有搜索。
 - 关闭浮层即结束一次搜索会话：关键词清空、下次打开重新拉第一页（与 el-select 的 remote 行为一致），因此不要在 `fetcher` 里做「同参数缓存穿透」以外的副作用。
 - `total` 不给也能分页：此时按「本页返回条数 ≥ pageSize 即可能还有下一页」推断，最后会多打一次空请求；能给就给。
+- 未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**输入框**上（多选时是 chips 外壳里的那个 input），不是外层容器 —— 读屏念的、能聚焦的都是它。`<Field required>` 注入的 `aria-required` 也走这条路（#293），此前被封闭 props 吃掉，必填只剩视觉星号。
 
 ## 相关
 [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Select](https://hulianui.haloritual.com/zh/components/select) · [CountrySelect](https://hulianui.haloritual.com/zh/components/country-select) · [Cascader](https://hulianui.haloritual.com/zh/components/cascader) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table)
@@ -9043,6 +9061,9 @@ const [dept, setDept] = useState<string | string[]>("");
 - `value` 受控时 `multiple` 切换会改变值的类型（string ↔ string[]），onChange 回调的入参类型随 `multiple` 而变，消费侧需按当前模式分支处理，不要混存。
 - 多选下 `value` 只需传叶子/已选 key，父级半选态由组件依树结构派生，不要手动塞入半选父 key。
 - **单选默认只有叶子节点可选**：`expandTrigger` 缺省是 `"row"`，有子节点的行点了只展开、不回传 `onChange`，点几次都选不中。需要提交任意层级就传 `expandTrigger="icon"`（箭头管展开、行管选中），或改用 [Cascader](https://hulianui.haloritual.com/zh/components/cascader) 的 `changeOnSelect`。多选不受影响——勾选框是独立命中区。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](https://hulianui.haloritual.com/zh/components/field) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Rating](https://hulianui.haloritual.com/zh/components/rating)
@@ -9084,7 +9105,8 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | variant | `"dropzone" \| "button"` | `"dropzone"` | 形态：拖拽落区 / 单按钮 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档：落区高度 / button 形态的按钮高度（button 形态与 `<Button>` 同名档等高） |
 | name | `string` | — | 内层 `<input type="file">` 的 name。**给了它才是真表单控件**：原生 `<form>` + `new FormData(form)` 读得到文件，`required` 才会被浏览器校验 |
-| required | `boolean` | — | 原生必填校验，透传到内层 input（**需同时给 `name`**） |
+| required | `boolean` | — | 原生必填校验，透传到内层 input（**需同时给 `name`**）；同时给触发器挂上 sr-only 的「必填」说明 |
+| aria-required | `boolean \| "true" \| "false"` | — | 必填的**语义标记**，通常由 `<Field required>` 自动注入，不用自己传。只开无障碍那一半（触发器上的 sr-only「必填」说明），**不**打开原生 `required` 校验 |
 | inputRef | `Ref<HTMLInputElement>` | — | 拿到内层 input 的引用（自定义校验、手动清空、第三方表单库注册） |
 | resetInputAfterSelect | `boolean` | 无 `name` 时 `true`；有 `name` 时 `false` | 选完是否清空 `input.value`。清了才能重复选同一个文件，清了 FormData 就读不到 |
 | files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度/url）；不传则不渲染列表 |
@@ -9218,6 +9240,9 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
 - `limit` 按受控 `files.length` 算；`files` 没传时视为 0，此时 `limit` 只能拦住"单次选太多"，拦不住累计。
 - `useUpload` 的 `remove` 会 `abort()`，但**只有你把 `signal` 透传下去**才真取消；迟到的 resolve 会被丢弃，不会复活已移除的行。
 - 引入 `sortable` 让 upload 静态依赖了 `@dnd-kit/*`（与 Sortable/Kanban 同源），source 分发下不用 sortable 也会打进包里。
+- 必填对辅助技术的表达走**说明文本**，不是 `aria-required`（#294）：落区是 `role="button"`、button 形态是真 `<button>`，而 `aria-required` 在 ARIA 里只对输入型 role 有效，挂上去读屏不会念。传 `required`（或把 Upload 放进 `<Field required>`）时，触发器会串上一段 sr-only 的「必填」说明。
+- `<Field required>` 只给语义标记，**不**打开原生 `required` 校验 —— 要浏览器拦下提交，仍需自己传 `required` 且同时给 `name`。
+- 落区自己的 `aria-describedby` 串的是 `hint` 与必填说明，Field 的 `description` / `error` 不走这条路：说明文案请用组件的 `hint`。
 
 ## 相关
 [Sortable](https://hulianui.haloritual.com/zh/components/sortable) · [ImageCropper](https://hulianui.haloritual.com/zh/components/image-cropper) · [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Progress](https://hulianui.haloritual.com/zh/components/progress)

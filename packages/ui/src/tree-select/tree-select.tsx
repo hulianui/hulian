@@ -1,5 +1,6 @@
 "use client";
 import { memo, useMemo, useState } from "react";
+import { Field as BaseField } from "@base-ui/react/field";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
 
@@ -68,6 +69,7 @@ function TreeSelectImpl({
   expandTrigger,
   showLine = false,
   className,
+  ...rest
 }: TreeSelectProps) {
   const copy = useComponentLocale().treeSelect ?? { placeholder: "请选择", clear: "清除" };
   const resolvedPlaceholder = placeholder ?? copy.placeholder;
@@ -96,43 +98,53 @@ function TreeSelectImpl({
   // 否则 `value ?? internal` 会退回内部旧值，受控清除会「弹回」。
   const handleClear = () => setValue(multiple ? [] : "");
 
+  // 触发器过一层 Field.Control（#293）：Field 的 id / aria-labelledby / aria-describedby /
+  // invalid / disabled 由此串上（此前 label 的 htmlFor 指向一个不存在的 id，读屏念不出字段名）。
+  // role="combobox"：aria-required、aria-expanded 在 role=button 上都不受支持，
+  // 而「从浮层挑值填进字段」就是 combobox，与 Select 触发器同口径。
   const trigger = (
-    <BasePopover.Trigger
-      disabled={disabled}
-      {...(invalid && { "data-invalid": "", "aria-invalid": true })}
-      className={cn(triggerVariants({ size }), "py-1.5", className)}
-    >
-      <span
-        className={cn(
-          "flex min-w-0 flex-1 flex-wrap items-center gap-1 text-left",
-          !hasValue && "text-muted-foreground",
-        )}
-      >
-        {!hasValue ? (
-          resolvedPlaceholder
-        ) : multiple ? (
-          selectedArr.map((k) => (
-            <span
-              key={k}
-              className="inline-flex items-center rounded bg-surface-hover px-1.5 py-0.5 text-xs text-foreground"
-            >
-              {labelOf(k)}
-            </span>
-          ))
-        ) : (
-          <span className="truncate">{labelOf(selectedArr[0])}</span>
-        )}
-      </span>
-      <span
-        className={cn(
-          "flex shrink-0 text-muted-foreground transition-transform data-[popup-open]:rotate-180",
-          // 清除按钮浮出时把箭头让位（二者共用右侧同一格，同 Select）。
-          showClear && "group-hover:opacity-0 group-focus-within:opacity-0",
-        )}
-      >
-        <ChevronDownIcon />
-      </span>
-    </BasePopover.Trigger>
+    <BaseField.Control
+      render={
+        <BasePopover.Trigger
+          {...rest}
+          role="combobox"
+          disabled={disabled}
+          {...(invalid && { "data-invalid": "", "aria-invalid": true })}
+          className={cn(triggerVariants({ size }), "py-1.5", className)}
+        >
+          <span
+            className={cn(
+              "flex min-w-0 flex-1 flex-wrap items-center gap-1 text-left",
+              !hasValue && "text-muted-foreground",
+            )}
+          >
+            {!hasValue ? (
+              resolvedPlaceholder
+            ) : multiple ? (
+              selectedArr.map((k) => (
+                <span
+                  key={k}
+                  className="inline-flex items-center rounded bg-surface-hover px-1.5 py-0.5 text-xs text-foreground"
+                >
+                  {labelOf(k)}
+                </span>
+              ))
+            ) : (
+              <span className="truncate">{labelOf(selectedArr[0])}</span>
+            )}
+          </span>
+          <span
+            className={cn(
+              "flex shrink-0 text-muted-foreground transition-transform data-[popup-open]:rotate-180",
+              // 清除按钮浮出时把箭头让位（二者共用右侧同一格，同 Select）。
+              showClear && "group-hover:opacity-0 group-focus-within:opacity-0",
+            )}
+          >
+            <ChevronDownIcon />
+          </span>
+        </BasePopover.Trigger>
+      }
+    />
   );
 
   return (

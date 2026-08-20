@@ -9099,7 +9099,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "追加到 label（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号"
+          "description": "追加到 label（默认 `text-sm font-medium text-foreground w-fit`）；走 twMerge，传 `text-xs` 会顶掉默认字号，传 `w-full` 会让 label 恢复满宽"
         },
         {
           "name": "descriptionClassName",
@@ -14947,7 +14947,20 @@
           "kind": "boolean",
           "type": "boolean",
           "default": null,
-          "description": "原生必填校验，透传到内层 input（**需同时给 `name`**）"
+          "description": "原生必填校验，透传到内层 input（**需同时给 `name`**）；同时给触发器挂上 sr-only 的「必填」说明"
+        },
+        {
+          "name": "aria-required",
+          "required": false,
+          "kind": "union",
+          "type": "boolean | \"true\" | \"false\"",
+          "values": [
+            "true",
+            "false"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "必填的**语义标记**，通常由 `<Field required>` 自动注入，不用自己传。只开无障碍那一半（触发器上的 sr-only「必填」说明），**不**打开原生 `required` 校验"
         },
         {
           "name": "inputRef",

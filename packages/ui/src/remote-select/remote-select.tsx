@@ -21,6 +21,7 @@ import type { ComboboxItemData } from "../combobox/combobox.types";
 import { useComponentLocale } from "../config/locale-context";
 import { Spinner } from "../spinner/spinner";
 import type {
+  RemoteSelectBaseProps,
   RemoteSelectOption,
   RemoteSelectProps,
   RemoteSelectRawValue,
@@ -77,7 +78,19 @@ export function RemoteSelect(props: RemoteSelectProps) {
     virtualized,
     className,
     popupClassName,
-  } = props;
+    // 判别联合直接解构会连 multiple/value/defaultValue/onChange 一起要求「每个成员都有」，
+    // 这里先摊平成宽类型再取剩余属性；这四个是本组件自己的语义，不能混进透传的 rest。
+    multiple: _multiple,
+    value: _value,
+    defaultValue: _defaultValue,
+    onChange: _onChange,
+    ...rest
+  } = props as RemoteSelectBaseProps & {
+    multiple?: boolean;
+    value?: unknown;
+    defaultValue?: unknown;
+    onChange?: unknown;
+  };
   const copy = useComponentLocale().remoteSelect ?? {
     placeholder: "请选择",
     empty: "无匹配数据",
@@ -387,6 +400,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
         onValueChange={(next: ComboboxItemData[]) => commit(next as RemoteSelectOption[])}
       >
         <ComboboxChips
+          {...rest}
           size={size}
           invalid={invalid}
           placeholder={selectedOptions.length ? "" : resolvedPlaceholder}
@@ -419,6 +433,7 @@ export function RemoteSelect(props: RemoteSelectProps) {
       }
     >
       <ComboboxInput
+        {...rest}
         size={size}
         placeholder={resolvedPlaceholder}
         invalid={invalid}

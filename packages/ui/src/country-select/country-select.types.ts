@@ -1,3 +1,5 @@
+import type { HTMLAttributes } from "react";
+
 /** 国家/地区数据条目。value 统一用 ISO 3166-1 alpha-2 码（如 CN/US）。国旗 emoji 由 code 现算，不入库。 */
 export interface Country {
   /** ISO2 国码，如 "CN"。 */
@@ -10,7 +12,18 @@ export interface Country {
   dial: string;
 }
 
-export interface CountrySelectProps {
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**触发器**上（多选时是 chips
+ * 外壳里的输入框）—— 读屏念的、能聚焦的都是它。`Field required` 注入的 `aria-required`
+ * 也走这条路（#293）。
+ */
+export interface CountrySelectProps
+  extends Omit<
+    // 落点随形态变（单选是触发按钮、多选是 chips 外壳里的 input），所以继承的是通用元素属性：
+    // 按 button 收会让事件处理器的元素类型跟 input 那一支对不上。
+    HTMLAttributes<HTMLElement>,
+    "defaultValue" | "onChange" | "className" | "children" | "role"
+  > {
   /** 受控值：单选为 ISO2 码字符串；多选为码数组。 */
   value?: string | string[];
   defaultValue?: string | string[];

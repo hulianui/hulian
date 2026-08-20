@@ -1,3 +1,4 @@
+import type { ComponentPropsWithoutRef } from "react";
 import type { CalendarPicker } from "../calendar/calendar.types";
 
 /**
@@ -14,7 +15,15 @@ export interface DateRangePreset {
   getValue: () => DateRangeValue;
 }
 
-export interface DateRangePickerProps {
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**触发器按钮**上 ——
+ * 读屏念的、能聚焦的都是它。`Field required` 注进来的 `aria-required` 也走这条路（#293）。
+ */
+export interface DateRangePickerProps
+  extends Omit<
+    ComponentPropsWithoutRef<"button">,
+    "value" | "defaultValue" | "onChange" | "placeholder" | "disabled" | "className" | "children" | "role"
+  > {
   /** 受控值 [start, end]（ISO YYYY-MM-DD）；null = 已清空。传入即受控。 */
   value?: DateRangeValue | null;
   /** 非受控初始值。 */

@@ -38,8 +38,12 @@ export function Field({
       </span>
     ) : null;
 
+  // label 收到文字宽（#296）：BaseField.Label 是带 htmlFor 的真 <label>，作为 flex item 被
+  // stretch 拉满整行后，行尾那片看不见的空白照样是命中区，点它等于点控件 —— 对浮层型控件
+  // （Select / DatePicker / Cascader …）就是「浮层凭空弹开」。w-fit 只收盒子，文字区照常可点，
+  // 键盘与读屏路径不变。需要满宽 label 的传 `labelClassName="w-full"` 顶掉（走 twMerge）。
   const labelNode = label ? (
-    <BaseField.Label className={cn(labelClass, labelClassName)}>
+    <BaseField.Label className={cn(labelClass, "w-fit", labelClassName)}>
       {requiredMarkNode}
       {label}
     </BaseField.Label>

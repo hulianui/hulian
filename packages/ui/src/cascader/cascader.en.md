@@ -65,6 +65,9 @@ Allow selection at any level, such as a province or a city:
 - `value` is a **complete key-path array**, such as `["zhejiang","hangzhou","xihu"]`, not a single leaf key. Provide the full path when restoring a value so the expanded columns align correctly.
 - A `disabled` node cannot be selected, and its subtree cannot be expanded through that node.
 - The second `onChange` argument is the selected `TreeNode[]` chain. Use it to display labels instead of looking the nodes up again.
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
+- Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 
 ## Related
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

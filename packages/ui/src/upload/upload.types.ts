@@ -62,8 +62,23 @@ export interface UploadProps {
    * input 不跟着禁用（禁用的 input 会被 FormData 整个跳过，已选的文件会凭空消失）。
    */
   name?: string;
-  /** 原生必填校验，透传到内层 input。**需同时给 `name`**，否则表单读不到这个控件。 */
+  /**
+   * 原生必填校验，透传到内层 input。**需同时给 `name`**，否则表单读不到这个控件。
+   *
+   * 它同时打开必填的无障碍表达：触发器（落区 / 按钮）挂上一段 sr-only 的「必填」说明。
+   * 只要必填语义（不要原生校验拦提交）时用 `<Field required>`，见下面的 `aria-required`。
+   */
   required?: boolean;
+  /**
+   * 必填的**语义标记**，通常不用自己传 —— `<Field required>` 会把它注到 children 上（#294）。
+   *
+   * 收到它等价于 `required` 的无障碍那一半：触发器串上 sr-only 的「必填」说明。
+   * 之所以不是把 `aria-required` 直接挂到触发器：落区是 `role="button"`，而 `aria-required`
+   * 在 ARIA 里只对输入型 role 有效，挂上去读屏也不会念。
+   *
+   * 它**不**打开原生 `required` 校验 —— 那会改变表单能否提交，属于消费方显式决定的事。
+   */
+  "aria-required"?: boolean | "true" | "false";
   /** 拿到内层 `<input type="file">` 的引用（自定义校验、手动清空、第三方表单库注册）。 */
   inputRef?: Ref<HTMLInputElement>;
   /**

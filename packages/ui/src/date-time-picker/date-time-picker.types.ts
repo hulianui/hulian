@@ -1,4 +1,14 @@
-export interface DateTimePickerProps {
+import type { ComponentPropsWithoutRef } from "react";
+
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**触发器按钮**上 ——
+ * 读屏念的、能聚焦的都是它。`Field required` 注进来的 `aria-required` 也走这条路（#293）。
+ */
+export interface DateTimePickerProps
+  extends Omit<
+    ComponentPropsWithoutRef<"button">,
+    "value" | "defaultValue" | "onChange" | "disabled" | "className" | "children" | "role"
+  > {
   /**
    * 受控值，`"YYYY-MM-DD HH:mm"`（`withSeconds` 时为 `"YYYY-MM-DD HH:mm:ss"`）。
    * 定宽文本 → 字典序即时间序，范围比较可直接比字符串，避开时区/UTC 日界坑。

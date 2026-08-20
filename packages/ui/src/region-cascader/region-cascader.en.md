@@ -60,6 +60,9 @@ const [names, setNames] = useState<string[]>([]);
 
 - `onChange` returns code and name paths in that order. Use the second argument when persisting names, but pass the **code path**—the first argument—back as controlled `value`.
 - `value` must be a valid ancestry path in which every code belongs to its preceding parent; otherwise the popup cannot locate and display the selection.
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
+- Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 
 ## Related
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

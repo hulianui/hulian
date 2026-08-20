@@ -42,7 +42,8 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | variant | `"dropzone" \| "button"` | `"dropzone"` | 形态：拖拽落区 / 单按钮 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档：落区高度 / button 形态的按钮高度（button 形态与 `<Button>` 同名档等高） |
 | name | `string` | — | 内层 `<input type="file">` 的 name。**给了它才是真表单控件**：原生 `<form>` + `new FormData(form)` 读得到文件，`required` 才会被浏览器校验 |
-| required | `boolean` | — | 原生必填校验，透传到内层 input（**需同时给 `name`**） |
+| required | `boolean` | — | 原生必填校验，透传到内层 input（**需同时给 `name`**）；同时给触发器挂上 sr-only 的「必填」说明 |
+| aria-required | `boolean \| "true" \| "false"` | — | 必填的**语义标记**，通常由 `<Field required>` 自动注入，不用自己传。只开无障碍那一半（触发器上的 sr-only「必填」说明），**不**打开原生 `required` 校验 |
 | inputRef | `Ref<HTMLInputElement>` | — | 拿到内层 input 的引用（自定义校验、手动清空、第三方表单库注册） |
 | resetInputAfterSelect | `boolean` | 无 `name` 时 `true`；有 `name` 时 `false` | 选完是否清空 `input.value`。清了才能重复选同一个文件，清了 FormData 就读不到 |
 | files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度/url）；不传则不渲染列表 |
@@ -176,6 +177,9 @@ const request: UploadRequest = (file, { onProgress, signal }) =>
 - `limit` 按受控 `files.length` 算；`files` 没传时视为 0，此时 `limit` 只能拦住"单次选太多"，拦不住累计。
 - `useUpload` 的 `remove` 会 `abort()`，但**只有你把 `signal` 透传下去**才真取消；迟到的 resolve 会被丢弃，不会复活已移除的行。
 - 引入 `sortable` 让 upload 静态依赖了 `@dnd-kit/*`（与 Sortable/Kanban 同源），source 分发下不用 sortable 也会打进包里。
+- 必填对辅助技术的表达走**说明文本**，不是 `aria-required`（#294）：落区是 `role="button"`、button 形态是真 `<button>`，而 `aria-required` 在 ARIA 里只对输入型 role 有效，挂上去读屏不会念。传 `required`（或把 Upload 放进 `<Field required>`）时，触发器会串上一段 sr-only 的「必填」说明。
+- `<Field required>` 只给语义标记，**不**打开原生 `required` 校验 —— 要浏览器拦下提交，仍需自己传 `required` 且同时给 `name`。
+- 落区自己的 `aria-describedby` 串的是 `hint` 与必填说明，Field 的 `description` / `error` 不走这条路：说明文案请用组件的 `hint`。
 
 ## 相关
 [Sortable](../sortable/sortable.md) · [ImageCropper](../image-cropper/image-cropper.md) · [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Progress](../progress/progress.md)

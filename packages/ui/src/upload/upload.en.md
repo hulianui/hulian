@@ -42,7 +42,8 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | variant | `"dropzone" \| "button"` | `"dropzone"` | Presentation as either a drag-and-drop area or a compact button. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Size step for the dropzone height, or the trigger height in button mode. Button mode matches the same step of `<Button>`. |
 | name | `string` | — | The `name` of the inner `<input type="file">`. **Only with a name is it a real form control**: a native `<form>` plus `new FormData(form)` can read the file, and `required` is validated by the browser. |
-| required | `boolean` | — | Native required validation, forwarded to the inner input. **Provide `name` as well**, otherwise the form never sees the control. |
+| required | `boolean` | — | Native required validation, forwarded to the inner input. **Provide `name` as well**, otherwise the form never sees the control. It also attaches a screen-reader-only "required" note to the trigger. |
+| aria-required | `boolean \| "true" \| "false"` | — | The **semantic** required marker, normally injected by `<Field required>` — you rarely pass it yourself. It only turns on the accessibility half (the screen-reader-only note on the trigger); it does **not** enable native `required` validation. |
 | inputRef | `Ref<HTMLInputElement>` | — | Access to the inner input for custom validation, manual clearing, or registration with a third-party form library. |
 | resetInputAfterSelect | `boolean` | `true` without `name`, `false` with `name` | Whether to clear `input.value` after a selection. Clearing allows picking the same file twice; keeping the value is what lets FormData read it. |
 | files | `UploadFile[]` | — | Controlled display list, including status, progress, and URL metadata. Omit it to hide the list. |
@@ -176,6 +177,9 @@ Fully controlled transport without useUpload:
 - `limit` counts controlled `files.length`. Without `files`, the existing count is treated as zero, so the limit can reject an oversized single selection but cannot prevent accumulation across selections.
 - `useUpload.remove` calls `abort()`, but cancellation reaches the transport only if `request` forwards `signal`. Late resolutions are discarded and cannot revive removed rows.
 - Enabling `sortable` introduces a static dependency on `@dnd-kit/*`, shared with Sortable and Kanban. Under source distribution it may be bundled even when a specific Upload instance is not sortable.
+- The required state is exposed to assistive tech through a **description**, not `aria-required` (#294): the dropzone is a `role="button"` element and the button variant is a real `<button>`, and `aria-required` is only valid on input-like roles, so screen readers ignore it there. Passing `required` — or placing Upload inside `<Field required>` — attaches a screen-reader-only "Required" note to the trigger.
+- `<Field required>` only sets the semantic marker; it does **not** turn on native `required` validation. To have the browser block submission, pass `required` yourself together with `name`.
+- The trigger's own `aria-describedby` carries `hint` plus the required note, so Field's `description` / `error` do not travel that path — put explanatory copy in the component's `hint`.
 
 ## Related
 [Sortable](../sortable/sortable.md) · [ImageCropper](../image-cropper/image-cropper.md) · [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Progress](../progress/progress.md)

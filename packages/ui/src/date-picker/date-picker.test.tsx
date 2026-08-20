@@ -5,7 +5,7 @@ import { enUS } from "../config/locale";
 import { DatePicker } from "./date-picker";
 import { inputShellVariants } from "../input/input";
 
-const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择日期" }));
+const openPanel = () => fireEvent.click(screen.getByRole("combobox", { name: "选择日期" }));
 
 describe("DatePicker", () => {
   it("enUS localizes the clear button", () => {

@@ -106,6 +106,7 @@ import { RemoteSelect } from "@hulianui/ui"
 - 本地不做二次过滤（底层 `filter={null}`）：搜索结果完全由服务端决定，`fetcher` 忽略 `query` 就等于没有搜索。
 - 关闭浮层即结束一次搜索会话：关键词清空、下次打开重新拉第一页（与 el-select 的 remote 行为一致），因此不要在 `fetcher` 里做「同参数缓存穿透」以外的副作用。
 - `total` 不给也能分页：此时按「本页返回条数 ≥ pageSize 即可能还有下一页」推断，最后会多打一次空请求；能给就给。
+- 未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**输入框**上（多选时是 chips 外壳里的那个 input），不是外层容器 —— 读屏念的、能聚焦的都是它。`<Field required>` 注入的 `aria-required` 也走这条路（#293），此前被封闭 props 吃掉，必填只剩视觉星号。
 
 ## 相关
 [Combobox](../combobox/combobox.md) · [Select](../select/select.md) · [CountrySelect](../country-select/country-select.md) · [Cascader](../cascader/cascader.md) · [ProTable](../pro-table/pro-table.md)

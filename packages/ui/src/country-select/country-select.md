@@ -58,6 +58,7 @@ const [codes, setCodes] = useState<string[]>([]);
 
 - `value`/`onChange` 入参在单选与多选下类型不同（`string` vs `string[]`），onChange 回调拿到的是联合类型，需按 `multiple` 用 `as` 收窄，别直接当数组用。
 - value 存的是 ISO2 码（如 `"CN"`），不是中文名；展示名用 `getCountry(code)` 现取。
+- 未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` …）落到**触发器**上（多选时是 chips 外壳里的输入框），不是外层容器 —— 读屏念的、能聚焦的都是它。`<Field required>` 注入的 `aria-required` 也走这条路（#293）。
 
 ## 相关
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

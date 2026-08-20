@@ -90,6 +90,9 @@ const [dt, setDt] = useState<string | null>(null);
 - If the user chooses a time before a date, the date defaults to **today** so the action produces a usable value.
 - `disabledDate` filters whole dates only. Validate more granular rules, such as a blocked time window on certain weekdays, when the form is submitted.
 - `minuteStep` limits clickable minute options but does not validate an external `value`. With `"2026-06-08 09:07"` and `minuteStep={15}`, 07 is absent and the minute column appears unselected.
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
+- Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 
 ## Related
 [DatePicker](../date-picker/date-picker.md) · [Calendar](../calendar/calendar.md) · [TimePicker](../time-picker/time-picker.md) · [TimeField](../time-field/time-field.md) · [DateRangePicker](../date-range-picker/date-range-picker.md) · [Scheduler](../scheduler/scheduler.md)

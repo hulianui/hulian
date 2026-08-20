@@ -6432,6 +6432,7 @@
         "forms"
       ],
       "dependencies": [
+        "@base-ui/react",
         "@dnd-kit/core",
         "@dnd-kit/sortable",
         "@dnd-kit/utilities",

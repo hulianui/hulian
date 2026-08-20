@@ -33,7 +33,7 @@ import { Field } from "@hulianui/ui"
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction. `horizontal` places the label area on the left, the control on the right, and the error message on its own full-width row, which is the one-setting-per-row layout of a settings page. ARIA wiring and error rendering are identical in both directions. |
 | colSpan | `"full"` | — | Spans the full row in a ProForm column grid; has no effect outside that grid. |
 | className | `string` | — | Additional class name for the `Field.Root` container, which is a flex column when vertical and a two-column grid when horizontal. |
-| labelClassName | `string` | — | Appended to the label, whose default is `text-sm font-medium text-foreground`. Classes are merged with twMerge, so passing `text-xs` overrides the default size. |
+| labelClassName | `string` | — | Appended to the label, whose default is `text-sm font-medium text-foreground w-fit`. Classes are merged with twMerge, so passing `text-xs` overrides the default size and `w-full` restores a full-width label. |
 | descriptionClassName | `string` | — | Appended to the description, whose default is `text-xs text-muted-foreground`. |
 | errorClassName | `string` | — | Appended to the error message, whose default is `text-xs text-danger`. |
 
@@ -78,6 +78,8 @@ const email = form.register("email", { rules: [{ required: true, message: "Enter
 ## Usage guidelines
 
 - `required` can inject `aria-required` **only when `children` is a single element**, since that is the only node Field can reach. When children is a fragment (control plus a button) or plain text, set `aria-required` on the control yourself; otherwise assistive technology never learns the field is required, because a decorative asterisk is `aria-hidden`.
+- `aria-required` is only valid on **input-like roles** (textbox, combobox, listbox, radiogroup, checkbox, …). When the control's focusable element is a `role="button"` — the dropzone of [Upload](../upload/upload.md) being the typical case — injecting it changes nothing for screen readers, so that class of component translates the required state into a description itself. Usage does not change.
+- The label shrinks to its text by default (`w-fit`). It is a real `<label>` with `htmlFor`, so when flex stretches it across the row, the invisible space after the text still forwards clicks to the control — for overlay controls that reads as "the dropdown opened out of nowhere when I clicked above it". Pass `labelClassName="w-full"` when you need a full-width label, for example to push a switch to the far right.
 - Do not wrap the label in a hand-rolled `RequiredLabel` just to draw an asterisk: that marks the field for sighted users only, and every page ends up with a different asterisk position and color.
 - A non-empty `error` already implies `invalid`; do not pass both. Pass `invalid` alone only when the control needs invalid styling without an error message.
 - Field uses Base UI Field and renders externally controlled errors with `match={true}`. Keep the error inside Field so it remains part of the generated `aria-describedby` relationship; a separate `<p>` will not be connected automatically. See [[base-ui-field-error-match-true-for-external-controlled-error]].

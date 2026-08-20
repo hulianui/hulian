@@ -99,6 +99,9 @@ const [date, setDate] = useState<string | null>(null);
   所以 `picker="date"` 时点月份只是下钻，不会提交。
 - 从 0.15.0 之前的 MUI 版 `DatePicker` 迁过来时注意**值格式变了**：那份对外是完整 ISO 时间戳，
   这份是定宽日期串。另外 `views` / `openTo` 合并成了 `picker`，`label` 换成 `placeholder` + `aria-label`。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
+- 放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。
 
 ## 相关
 [Calendar](../calendar/calendar.md) · [DateRangePicker](../date-range-picker/date-range-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [TimePicker](../time-picker/time-picker.md) · [TimeField](../time-field/time-field.md) · [ColorField](../color-field/color-field.md)
