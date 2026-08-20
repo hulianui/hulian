@@ -22191,6 +22191,7 @@ function Demo() {
 - 流光扫描方向由 `reverse` 决定（沿容器水平方向，与 path 端点顺序无关）：`false` 左→右、`true` 右→左；做"四周汇聚到中枢"时需让右侧光束 `reverse`。
 - 颜色 prop 喂 token 需带 `--color-` 前缀——参见 [[hulian-token-color-var-needs-color-prefix]]。
 - 端点元素与光束同处容器，记得给端点 `z-10` 之类层级使其压在光束上。
+- 系统开启「减少动态效果」时，流光与渐变不渲染，只留静态连线。连线表达的「A 连到 B」是信息，不随动效一起去掉。
 
 ## 相关
 [BorderBeam](https://hulianui.haloritual.com/zh/components/border-beam) · [ShineBorder](https://hulianui.haloritual.com/zh/components/shine-border) · [GlareHover](https://hulianui.haloritual.com/zh/components/glare-hover) · [Lens](https://hulianui.haloritual.com/zh/components/lens) · [OrbitingCircles](https://hulianui.haloritual.com/zh/components/orbiting-circles) · [ProgressiveBlur](https://hulianui.haloritual.com/zh/components/progressive-blur)
@@ -22635,7 +22636,7 @@ import { BorderBeam } from "@hulianui/ui"
 
 - 必须置于 `position:relative` 容器内，且容器一般 `overflow-hidden`，否则光束绕到圆角外溢出。
 - 颜色 prop 喂 token 时需带 `--color-` 前缀（默认值已带），裸 `var(--primary)` 不解析——参见 [[hulian-token-color-var-needs-color-prefix]]。
-- 基于 motion 动画，reduced-motion 偏好下应预期被弱化/停止。
+- 系统开启「减少动态效果」时整个组件不渲染。光束是纯装饰层（`absolute inset-0 pointer-events-none`），不渲染既不影响布局也不丢信息；让它静止在半途反而像渲染残留。
 
 ## 相关
 [ShineBorder](https://hulianui.haloritual.com/zh/components/shine-border) · [GlareHover](https://hulianui.haloritual.com/zh/components/glare-hover) · [Lens](https://hulianui.haloritual.com/zh/components/lens) · [AnimatedBeam](https://hulianui.haloritual.com/zh/components/animated-beam) · [OrbitingCircles](https://hulianui.haloritual.com/zh/components/orbiting-circles) · [ProgressiveBlur](https://hulianui.haloritual.com/zh/components/progressive-blur)

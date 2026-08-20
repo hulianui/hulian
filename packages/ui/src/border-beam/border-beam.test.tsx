@@ -6,6 +6,7 @@ import { BorderBeam } from "./border-beam";
 const beamOf = (container: HTMLElement) =>
   container.firstElementChild!.firstElementChild as HTMLElement;
 
+
 describe("BorderBeam", () => {
   it("渲染绝对定位容器（inset-0 rounded-[inherit]）+ 内层光束", () => {
     const { container } = render(<BorderBeam />);

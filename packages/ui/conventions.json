@@ -498,6 +498,13 @@
       "source": "packages/ui/src/animated-beam/animated-beam.md"
     },
     {
+      "id": "component/animated-beam/pitfall/5",
+      "scope": "animated-beam",
+      "title": "AnimatedBeam",
+      "rule": "系统开启「减少动态效果」时，流光与渐变不渲染，只留静态连线。连线表达的「A 连到 B」是信息，不随动效一起去掉。",
+      "source": "packages/ui/src/animated-beam/animated-beam.md"
+    },
+    {
       "id": "component/animated-gradient-text/pitfall/1",
       "scope": "animated-gradient-text",
       "title": "AnimatedGradientText",
@@ -1068,7 +1075,7 @@
       "id": "component/border-beam/pitfall/3",
       "scope": "border-beam",
       "title": "BorderBeam",
-      "rule": "基于 motion 动画，reduced-motion 偏好下应预期被弱化/停止。",
+      "rule": "系统开启「减少动态效果」时整个组件不渲染。光束是纯装饰层（`absolute inset-0 pointer-events-none`），不渲染既不影响布局也不丢信息；让它静止在半途反而像渲染残留。",
       "source": "packages/ui/src/border-beam/border-beam.md"
     },
     {
@@ -10589,7 +10596,7 @@
   ],
   "stats": {
     "componentDocs": 394,
-    "componentAdvisories": 1476,
-    "totalAdvisories": 1486
+    "componentAdvisories": 1477,
+    "totalAdvisories": 1487
   }
 }

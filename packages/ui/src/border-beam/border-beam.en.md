@@ -57,7 +57,7 @@ import { BorderBeam } from "@hulianui/ui"
 
 - It must be placed in a `position:relative` container, and the container is generally `overflow-hidden`, otherwise the beam will go around the rounded corners and overflow.
 - The color prop needs to be prefixed with `--color-` when feeding the token (the default value is already included). The bare `var(--primary)` does not resolve - see [[hulian-token-color-var-needs-color-prefix]].
-- Motion-based animations should be expected to be weakened/stopped with reduced-motion preferences.
+- Renders nothing when the system prefers reduced motion. The beam is a purely decorative layer (`absolute inset-0 pointer-events-none`), so skipping it neither shifts layout nor drops information; freezing it mid-path would instead read as a rendering artifact.
 
 ## Related
 [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md) · [ProgressiveBlur](../progressive-blur/progressive-blur.md)
