@@ -1429,9 +1429,35 @@ test("get_component_doc format=json 支持按 sections 裁剪", async () => {
     component.slots.some((slot) => slot.name === "render"),
     "Button.render 必须能从 props 查询里看到",
   );
-  assert.equal(component.events, undefined, "其余没要的章节仍然不该出现");
+  // events 与 slots 同款待遇：onClick 这类回调同样写在 JSX 属性位、进类型检查（#298）。
+  assert.ok(Array.isArray(component.events), "要 props 时应一并给出 events");
   // 反向不搭：单独要 events 是明确的窄查询，不该被塞进 slots。
   assert.equal(dataOf(only).components[0].slots, undefined);
+});
+
+test("get_component_doc 要 props 时把 events 一并给出（#298）", async () => {
+  const [md, json, narrow] = await rpc([
+    call(65, "get_component_doc", { name: "tag", sections: ["props", "slots", "pitfalls"] }),
+    call(66, "get_component_doc", { name: "tag", format: "json", sections: ["props"] }),
+    call(67, "get_component_doc", { name: "tag", format: "json", sections: ["events"] }),
+  ]);
+  // Tag 的**唯一**交互能力就是一个 event（onClose）。按工作流「要 props 时查 props」查完，
+  // 若看到的是一个没有任何交互能力的展示组件，使用方就会自己拼一个裸 <button> 去做关闭 ——
+  // 而「禁止裸 HTML 元素」正是这套 MCP 要防的那类错（#298）。
+  // 只 match `onClose` 会假绿 —— 它在 tag.md 的「禁忌 / 坑」里也出现一次，
+  // 而那一章是本次显式请求的。要验的是 Events **章节**没被裁掉。
+  assert.match(bodyOf(md), /^## Events$/m, "markdown 路径：要 props 时 Events 章节不该被裁掉");
+  const component = dataOf(json).components[0];
+  assert.ok(
+    component.events?.some((e) => e.name === "onClose"),
+    "json 路径：要 props 时应一并给出 events",
+  );
+  assert.ok(
+    component.props.some((p) => p.name === "onClose" && p.kind === "event"),
+    "events 也要并进 props 数组（带 kind 可区分），遍历 props 的工具链才不会漏掉交互入口",
+  );
+  // 反向仍不搭：单独要 events 是明确的窄查询，不该把 props/slots 塞回来。
+  assert.equal(dataOf(narrow).components[0].props, undefined);
 });
 
 test("get_component_doc 拒绝未知 format", async () => {

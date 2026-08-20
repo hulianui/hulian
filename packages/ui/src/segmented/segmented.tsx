@@ -44,6 +44,8 @@ export function Segmented({
     items.findIndex((i) => i.value === selected),
   );
 
+  const itemCount = items.length;
+
   const rootRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [indicator, setIndicator] = useState<{ left: number; width: number } | null>(null);
@@ -59,8 +61,17 @@ export function Segmented({
     if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
     if (rootRef.current) ro.observe(rootRef.current);
+    // 只观察 root 兜不住「段数变了」：Field 竖排是 `flex flex-col`，align-items 默认 stretch，
+    // 会把 inline-flex 的 root 拉满整列宽 —— 加/删段时 root 宽度恒定，RO 一次都不响；而段是
+    // `min-w-0 flex-1` 均分列宽，宽度恰恰随段数变。唯一的失效通道对不上唯一发生变化的量
+    // （#297），所以**被测量的那个盒子**（选中段自身）也要观察。
+    const selectedBtn = btnRefs.current[selectedIndex];
+    if (selectedBtn) ro.observe(selectedBtn);
     return () => ro.disconnect();
-  }, [measure]);
+    // itemCount 进依赖：段数变化会换掉整排 button（选中段的 DOM 节点也可能被复用成另一段），
+    // 必须重新测量并把 RO 挪到新的那颗上。少了它，「点已经选中的那一段」不会让 selectedIndex
+    // 变化，于是永远等不到重测。
+  }, [measure, selectedIndex, itemCount]);
 
   const select = (next: string) => {
     if (value === undefined) setInternal(next);

@@ -381,7 +381,9 @@ async function buildTools() {
           sections: {
             type: "array",
             items: { type: "string", enum: DOC_SECTIONS },
-            description: "只取指定章节，默认全文。props/pitfalls 通常就够写对代码",
+            description:
+              "只取指定章节，默认全文。props/pitfalls 通常就够写对代码 —— 要 props 时" +
+              "Slots 与 Events 会自动跟着一起给，不必分开点名",
           },
           format: {
             type: "string",
@@ -860,28 +862,35 @@ const SECTION_TITLES = {
 };
 
 /**
- * 只要了 props 就把 slots 一并带上。
+ * 只要了 props 就把 slots 与 events 一并带上。
  *
- * 从消费方视角 `Button.render` / `Upload.label` **就是 props** —— 它们写在 JSX 属性位、
- * 进 TS 类型检查。归到 Slots 是库内的编排口径。而 MCP 的工作流写着「用到的每个组件在写
- * 第一行代码前必须查 props」，于是老老实实传 `sections:["props"]` 的人会得出
- * 「Button 没有 render」「Upload 的落区文案不能改」这种结论，照着写完才回头翻源码发现有
- * （hulianui/hulian#150）。省 context 的初衷不该以「查了等于没查」为代价。
+ * 从消费方视角 `Button.render` / `Upload.label` / `Tag.onClose` **都是 props** —— 它们写在
+ * JSX 属性位、进 TS 类型检查。拆成 Slots / Events 是库内的编排口径。而 MCP 的工作流写着
+ * 「用到的每个组件在写第一行代码前必须查 props」，于是老老实实传 `sections:["props"]` 的人
+ * 会得出「Button 没有 render」「Upload 的落区文案不能改」这种结论，照着写完才回头翻源码
+ * 发现有（hulianui/hulian#150）。
  *
- * 反向不成立：单独要 slots 时不搭 props —— 那是明确知道自己在找什么的窄查询。
+ * events 起初漏在这条口径外，代价更重：`Tag` 的**唯一**交互能力就是 `onClose`，查完 props
+ * 看到的是一个没有任何交互能力的展示组件，于是使用方自己拼了个裸 `<button>` 去做关闭 ——
+ * 而「禁止裸 HTML 元素」正是这套 MCP 要防的那类错（hulianui/hulian#298）。
+ * 省 context 的初衷不该以「查了等于没查」、乃至「照着查到的写反而写错」为代价。
+ *
+ * 反向不成立：单独要 slots / events 时不搭 props —— 那是明确知道自己在找什么的窄查询。
  */
-function withSlots(sections) {
+const COMPANIONS_OF_PROPS = ["slots", "events"];
+
+function withCompanions(sections) {
   if (!sections?.length) return sections;
-  return sections.includes("props") && !sections.includes("slots")
-    ? [...sections, "slots"]
-    : sections;
+  if (!sections.includes("props")) return sections;
+  const missing = COMPANIONS_OF_PROPS.filter((key) => !sections.includes(key));
+  return missing.length ? [...sections, ...missing] : sections;
 }
 
 /** 按 H2 切文档；只取需要的章节能把一次 doc 调用从几千 token 压到几百。 */
 function sliceSections(doc, sections) {
   if (!sections?.length) return doc;
   const wanted = new Set(
-    withSlots(sections).map((key) => SECTION_TITLES[key]).filter(Boolean),
+    withCompanions(sections).map((key) => SECTION_TITLES[key]).filter(Boolean),
   );
   if (!wanted.size) return doc;
   const lines = doc.split("\n");
@@ -915,7 +924,7 @@ async function getComponentProps(wanted, sections) {
   const catalog = await loadPropsCatalog();
   const bySlug = new Map(catalog.components.map((c) => [c.slug, c]));
   const byName = new Map(catalog.components.map((c) => [c.name.toLowerCase(), c]));
-  const asked = withSlots(sections);
+  const asked = withCompanions(sections);
   const keys = asked?.length ? asked.filter((s) => JSON_SECTIONS.includes(s)) : JSON_SECTIONS;
   const components = [];
   const missing = [];
@@ -941,14 +950,22 @@ async function getComponentProps(wanted, sections) {
       ...Object.fromEntries(
         (keys.length ? keys : JSON_SECTIONS).map((k) => [
           k,
-          // 要 props 时把 slots **并进 props 数组**（各带 kind:"slot" 可区分），同时
-          // 下面那条 map 仍会给出独立的 slots 数组 —— 两种消费方式都不漏：
+          // 要 props 时把 slots 与 events **并进 props 数组**（各带 kind:"slot" / "event"
+          // 可区分），同时下面那条 map 仍会给出独立的 slots / events 数组 —— 两种消费方式
+          // 都不漏：
           //   · 遍历 .props 生成 Zod / 属性面板的工具链，不会漏掉 Stat.label、Stat.value
-          //     这类**必填**入口（它们全在 Slots 里，只看 props 会得出「Stat 没有 label」）
-          //   · 想按语义分开处理的调用方照旧读 .slots
-          // 重复出现是刻意的：漏一个必填项的代价远大于多一条记录（hulianui/hulian#150）。
+          //     这类**必填**入口（它们全在 Slots 里，只看 props 会得出「Stat 没有 label」），
+          //     也不会漏掉 Tag.onClose 这类**唯一的交互入口**（#298）
+          //   · 想按语义分开处理的调用方照旧读 .slots / .events
+          // 重复出现是刻意的：漏一个入口的代价远大于多一条记录（hulianui/hulian#150、#298）。
           k === "props"
-            ? [...(hit.props ?? []), ...(hit.slots ?? []).map((slot) => ({ ...slot, kind: "slot" }))]
+            ? [
+                ...(hit.props ?? []),
+                ...(hit.slots ?? []).map((slot) => ({ ...slot, kind: "slot" })),
+                // events 同理并进来，`kind:"event"` 标记出身；函数签名本来就写在 type 里
+                // （`() => void`），覆盖 kind 不丢信息（#298）。
+                ...(hit.events ?? []).map((event) => ({ ...event, kind: "event" })),
+              ]
             : (hit[k] ?? []),
         ]),
       ),
@@ -1387,9 +1404,10 @@ const WORKFLOW = `瑚琏 @hulianui/ui 工作流（按顺序，不要跳步）：
 4. list_components —— 需要按关键词补齐候选时用；结果多就 limit + offset 翻页，别整吞。
 5. get_component_doc —— **用到的每个组件在写第一行代码前必须查**，props 不许猜。
    一次可传多个 names；只要 props / pitfalls 时传 sections 省 context。
-   注意「插槽」是独立的 Slots 章节：Button.render、Upload.label/hint、Stat.label/value
-   这类字段在那里，不在 Props 表，而且其中有**必填**项。要 props 时会自动把 slots
-   一并给你，所以别因为 Props 表里没有就断定「组件没这个能力」。
+   注意「插槽」和「事件」各是独立章节：Button.render、Upload.label/hint、Stat.label/value
+   在 Slots（其中有**必填**项），Tag.onClose、Upload.onChange 这类回调在 Events —— 都不在
+   Props 表里。要 props 时会自动把 slots 与 events 一并给你，所以别因为 Props 表里没有就
+   断定「组件没这个能力」，更别因此自己拼裸 HTML 元素去补那个能力。
    要按 props 做校验 / 生成 Zod / 自动生成属性面板，传 format="json" 拿结构化 props，
    别去解析 markdown 表格。
 6. get_conventions —— 新页面 / 新功能开工前取一次硬约束。
