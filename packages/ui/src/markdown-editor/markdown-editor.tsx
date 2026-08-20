@@ -33,7 +33,8 @@ const editorProseClass = cn(
   "[&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-[var(--radius)] [&_pre]:border [&_pre]:border-border [&_pre]:bg-surface [&_pre]:p-4 [&_pre]:text-sm",
   "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-mono",
   // 引用
-  "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground",
+  // 引用不加 italic：中文无真意大利体字形，合成伪斜体会让笔画变形（与 Prose 同一判据）。
+  "[&_blockquote]:my-4 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground",
 );
 
 export function MarkdownEditor({

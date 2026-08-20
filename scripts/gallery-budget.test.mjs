@@ -41,9 +41,18 @@ const ok = {
 
 const check = (patch) => checkBudget(budget, { ...ok, ...patch });
 
-test("门禁覆盖 issue #40 点名的两个画廊", () => {
+// 覆盖面是这道门禁的价值本身：漏掉一个画廊，那个画廊就能悄悄退回「整座同时运行」。
+// /pages 与 /blocks 来自 issue #40；/components 是组件画廊接上活预览后并入的。
+test("门禁覆盖全部三个画廊（双语）", () => {
   const routes = GALLERY_BUDGETS.map((b) => b.route);
-  assert.deepEqual(routes, [zh("/pages"), en("/pages"), zh("/blocks"), en("/blocks")]);
+  assert.deepEqual(routes, [
+    zh("/pages"),
+    en("/pages"),
+    zh("/blocks"),
+    en("/blocks"),
+    zh("/components"),
+    en("/components"),
+  ]);
   assert.deepEqual(
     GALLERY_BUDGETS.map(({ route, locale }) => ({ route, locale })),
     [
@@ -51,6 +60,8 @@ test("门禁覆盖 issue #40 点名的两个画廊", () => {
       { route: en("/pages"), locale: "en" },
       { route: zh("/blocks"), locale: "zh-CN" },
       { route: en("/blocks"), locale: "en" },
+      { route: zh("/components"), locale: "zh-CN" },
+      { route: en("/components"), locale: "en" },
     ],
   );
 });

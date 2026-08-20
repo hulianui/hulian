@@ -66,6 +66,7 @@ function Demo() {
 - 流光扫描方向由 `reverse` 决定（沿容器水平方向，与 path 端点顺序无关）：`false` 左→右、`true` 右→左；做"四周汇聚到中枢"时需让右侧光束 `reverse`。
 - 颜色 prop 喂 token 需带 `--color-` 前缀——参见 [[hulian-token-color-var-needs-color-prefix]]。
 - 端点元素与光束同处容器，记得给端点 `z-10` 之类层级使其压在光束上。
+- 系统开启「减少动态效果」时，流光与渐变不渲染，只留静态连线。连线表达的「A 连到 B」是信息，不随动效一起去掉。
 
 ## 相关
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md) · [ProgressiveBlur](../progressive-blur/progressive-blur.md)

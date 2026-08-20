@@ -1,5 +1,11 @@
 # @hulianui/guard
 
+## 0.5.2
+
+### Patch Changes
+
+- 06177c0: `conventions.json` 收进 `BorderBeam` / `AnimatedBeam` 新增的 reduced-motion 行为条目（随 `@hulianui/ui` 同批文档改动重新生成）。
+
 ## 0.5.1
 
 ### Patch Changes

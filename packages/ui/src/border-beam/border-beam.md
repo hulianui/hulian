@@ -57,7 +57,7 @@ import { BorderBeam } from "@hulianui/ui"
 
 - 必须置于 `position:relative` 容器内，且容器一般 `overflow-hidden`，否则光束绕到圆角外溢出。
 - 颜色 prop 喂 token 时需带 `--color-` 前缀（默认值已带），裸 `var(--primary)` 不解析——参见 [[hulian-token-color-var-needs-color-prefix]]。
-- 基于 motion 动画，reduced-motion 偏好下应预期被弱化/停止。
+- 系统开启「减少动态效果」时整个组件不渲染。光束是纯装饰层（`absolute inset-0 pointer-events-none`），不渲染既不影响布局也不丢信息；让它静止在半途反而像渲染残留。
 
 ## 相关
 [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md) · [ProgressiveBlur](../progressive-blur/progressive-blur.md)

@@ -66,6 +66,7 @@ function Demo() {
 - `reverse` controls the horizontal scan direction independently of endpoint order: `false` moves left to right and `true` moves right to left. For beams converging on a center node, reverse the beam on the right.
 - Token-valued color props need the `--color-` prefix; see [[hulian-token-color-var-needs-color-prefix]].
 - Endpoints and the beam share a container. Give endpoints a layer such as `z-10` so they render above the beam.
+- When the system prefers reduced motion, the travelling light and its gradient are skipped and only the static connector line remains. That line carries the "A connects to B" information, so it is not dropped along with the animation.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md) · [ProgressiveBlur](../progressive-blur/progressive-blur.md)

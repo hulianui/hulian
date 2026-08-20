@@ -104,12 +104,19 @@ function probeDocsLayout() {
     const r = rect(el);
     return !!r && r.width > 0 && r.height > 0;
   };
-  const content = document.querySelector("main[data-layout-content]");
+  // 画廊卡片里的活预览会渲染组件真实示例，Layout / AdminLayout 这类骨架件的示例
+  // 自带 main[data-layout-content]。那是**预览内容**，不是本页的正文出口 ——
+  // 不排掉的话 contentCount 会把它算进来，误报成「children 被双挂载」。
+  const inPreview = (el) => !!el.closest("[data-component-thumbnail], [data-preview-thumbnail]");
+  const contentOutlets = Array.from(
+    document.querySelectorAll("main[data-layout-content]"),
+  ).filter((el) => !inPreview(el));
+  const content = contentOutlets[0] ?? null;
   const contentRect = rect(content);
   const heading = document.querySelector("h1");
   const sider = document.querySelector("aside[data-layout-sider]");
   return {
-    contentCount: document.querySelectorAll("main[data-layout-content]").length,
+    contentCount: contentOutlets.length,
     contentWidth: contentRect ? Math.round(contentRect.width) : 0,
     contentHeight: contentRect ? Math.round(contentRect.height) : 0,
     headingText: heading ? heading.textContent : null,

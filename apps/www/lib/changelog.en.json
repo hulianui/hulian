@@ -1,6 +1,25 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.54.2",
+    "date": "2026-08-20",
+    "entries": [
+      {
+        "sha": "06177c0",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`BorderBeam` / `AnimatedBeam` now honour reduced motion (#300): these were the only two infinite-loop animation components in the library without a fallback, so they kept orbiting and pulsing after the user turned on \"reduce motion\" at the OS level -- and `BorderBeam`'s docs claimed support that the code never implemented. They slipped through because the mechanism is not uniform: `Meteors` / `AuroraText` / `ShimmerButton` / `Marquee` use CSS animations plus Tailwind's `motion-reduce:` variant, while these two are JS-driven tweens (`offsetDistance`, gradient `x1`/`x2`). A class variant cannot reach a JS tween, so an audit that looks for \"does it have a `motion-reduce:` class\" reports them as already covered. The two degrade differently, because the line between decoration and information sits in a different place for each: `BorderBeam` renders nothing at all (it is a purely decorative layer, `absolute inset-0 pointer-events-none`, so skipping it neither shifts layout nor drops information -- whereas freezing the beam mid-path would read as a rendering artifact); `AnimatedBeam` drops only the travelling light and its gradient while keeping the base path, because that line carries the \"A connects to B\" information and must not disappear along with the animation."
+      },
+      {
+        "sha": "06177c0",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Blockquotes in `Prose` / `MarkdownEditor` / `RichTextEditor` no longer force `italic`: Chinese typefaces (PingFang SC, Microsoft YaHei) ship no true italic, so `font-style: italic` makes the browser synthesise an oblique -- strokes shear and legibility drops noticeably. A blockquote's meaning is already carried by its left rule and muted text colour; the slant conveys nothing, so removing it loses no information. The `italic` on `<em>` stays, because that one is emphasis the author wrote explicitly -- content semantics, not decoration imposed by the container."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.54.1",
     "date": "2026-08-20",
     "entries": [

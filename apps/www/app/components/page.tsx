@@ -1,9 +1,7 @@
-import { Sparkles } from "lucide-react";
 import { manifest, CATEGORIES, componentMeta } from "../../lib/manifest";
-import { DOCS_LOCALE, withDocsBasePath } from "../../lib/docs-locale";
-import { SampleTable } from "../../components/showcase/sample-table";
-import { AsyncUsers } from "../../components/showcase/async-users";
+import { DOCS_LOCALE } from "../../lib/docs-locale";
 import { ComponentQuickJump } from "../../components/component-quick-jump";
+import { ComponentCard } from "../../components/component-card";
 
 export default function ComponentsIndexPage() {
   return (
@@ -42,22 +40,14 @@ export default function ComponentsIndexPage() {
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {items.map((m) => (
-                      <a
+                      <ComponentCard
                         key={m.slug}
-                        href={withDocsBasePath(`/components/${m.slug}`)}
-                        className="rounded-[var(--radius)] border border-border bg-surface p-4 outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-medium text-foreground">{m.name}</span>
-                          {m.tags?.includes("animated") && (
-                            <Sparkles
-                              className="size-3.5 shrink-0 text-primary/60"
-                              aria-label={DOCS_LOCALE === "en" ? "Animated" : "动效"}
-                            />
-                          )}
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">{componentMeta(m).description}</p>
-                      </a>
+                        slug={m.slug}
+                        name={m.name}
+                        description={componentMeta(m).description}
+                        categoryKey={cat.key}
+                        animated={m.tags?.includes("animated")}
+                      />
                     ))}
                   </div>
                 </div>
@@ -66,24 +56,6 @@ export default function ComponentsIndexPage() {
           </section>
         );
       })}
-
-      {/* 数据层 mock 能力总览（保留 P1 的 faker / MSW 演示可达）*/}
-      <section className="space-y-4">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          {DOCS_LOCALE === "en" ? "Realistic sample data (Faker)" : "真实样例数据（faker）"}
-        </h2>
-        <div className="rounded-[var(--radius)] border border-border p-4">
-          <SampleTable />
-        </div>
-      </section>
-      <section className="space-y-4">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          {DOCS_LOCALE === "en" ? "Async loading and pagination (MSW)" : "异步加载 + 分页（MSW）"}
-        </h2>
-        <div className="rounded-[var(--radius)] border border-border p-4">
-          <AsyncUsers />
-        </div>
-      </section>
     </div>
   );
 }

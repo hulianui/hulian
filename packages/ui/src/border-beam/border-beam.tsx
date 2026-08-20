@@ -1,5 +1,5 @@
 "use client";
-import { type MotionStyle } from "motion/react";
+import { type MotionStyle, useReducedMotion } from "motion/react";
 import type { CSSProperties } from "react";
 import { LazyMotionProvider, m } from "../motion";
 import { cn } from "../lib/cn";
@@ -20,6 +20,13 @@ export function BorderBeam({
   className,
   style,
 }: BorderBeamProps) {
+  const reduce = useReducedMotion();
+  // 光束是纯装饰层（absolute inset-0 pointer-events-none），不渲染既不影响布局也不丢信息。
+  // 不选「停在某处」：静止的半段光带看着像渲染残留，比没有更糟。
+  // 注意 motion 的 motion-reduce: 类变体够不着这里 —— 那是 CSS 动画的开关，
+  // 而这道光束是 JS 驱动的 offsetDistance 补间，只能靠 useReducedMotion 判。
+  if (reduce) return null;
+
   return (
     <div
       className="pointer-events-none absolute inset-0 rounded-[inherit]"

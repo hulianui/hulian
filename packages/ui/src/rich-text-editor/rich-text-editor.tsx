@@ -131,7 +131,8 @@ const editorProseClass = cn(
   "[&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4",
   "[&_ul]:my-3 [&_ul]:ml-6 [&_ul]:list-disc [&_ol]:my-3 [&_ol]:ml-6 [&_ol]:list-decimal",
   "[&_li]:my-1 [&_li]:marker:text-muted-foreground",
-  "[&_blockquote]:my-3 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground",
+  // 引用不加 italic：中文无真意大利体字形，合成伪斜体会让笔画变形（与 Prose 同一判据）。
+  "[&_blockquote]:my-3 [&_blockquote]:border-l-2 [&_blockquote]:border-border [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground",
   "[&_img]:my-3 [&_img]:max-w-full [&_img]:rounded-[var(--radius)]",
   "[&_table]:my-3 [&_table]:w-full [&_table]:table-fixed [&_table]:border-collapse",
   "[&_td]:border [&_td]:border-border [&_td]:px-2 [&_td]:py-1 [&_td]:align-top",

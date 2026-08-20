@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useState } from "react";
+import { useReducedMotion } from "motion/react";
 import { LazyMotionProvider, m } from "../motion";
 import { cn } from "../lib/cn";
 import type { AnimatedBeamProps } from "./animated-beam.types";
@@ -60,6 +61,11 @@ export function AnimatedBeam({
     ? { x1: ["90%", "-10%"], x2: ["100%", "0%"] }
     : { x1: ["10%", "110%"], x2: ["0%", "100%"] };
 
+  // 与 BorderBeam 不同：底线 path 是**信息**（表达 A 连到 B），reduced-motion 下必须留着。
+  // 只有那道流动的渐变光是装饰，去掉它就退成一条静态连线，语义不丢。
+  // motion-reduce: 类变体在这里同样无效——渐变是 JS 驱动的 x1/x2 补间，不是 CSS animation。
+  const reduce = useReducedMotion();
+
   return (
     <LazyMotionProvider>
       <svg
@@ -71,21 +77,25 @@ export function AnimatedBeam({
         aria-hidden
       >
         <path d={pathD} stroke={pathColor} strokeWidth={pathWidth} strokeOpacity={pathOpacity} strokeLinecap="round" />
-        <path d={pathD} stroke={`url(#${id})`} strokeWidth={pathWidth} strokeLinecap="round" />
-        <defs>
-          <m.linearGradient
-            id={id}
-            gradientUnits="userSpaceOnUse"
-            initial={{ x1: "0%", x2: "0%", y1: "0%", y2: "0%" }}
-            animate={{ x1: grad.x1, x2: grad.x2, y1: ["0%", "0%"], y2: ["0%", "0%"] }}
-            transition={{ delay, duration, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <stop stopColor={gradientStartColor} stopOpacity={0} />
-            <stop stopColor={gradientStartColor} />
-            <stop offset="32.5%" stopColor={gradientStopColor} />
-            <stop offset="100%" stopColor={gradientStopColor} stopOpacity={0} />
-          </m.linearGradient>
-        </defs>
+        {!reduce && (
+          <>
+            <path d={pathD} stroke={`url(#${id})`} strokeWidth={pathWidth} strokeLinecap="round" />
+            <defs>
+              <m.linearGradient
+                id={id}
+                gradientUnits="userSpaceOnUse"
+                initial={{ x1: "0%", x2: "0%", y1: "0%", y2: "0%" }}
+                animate={{ x1: grad.x1, x2: grad.x2, y1: ["0%", "0%"], y2: ["0%", "0%"] }}
+                transition={{ delay, duration, repeat: Infinity, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <stop stopColor={gradientStartColor} stopOpacity={0} />
+                <stop stopColor={gradientStartColor} />
+                <stop offset="32.5%" stopColor={gradientStopColor} />
+                <stop offset="100%" stopColor={gradientStopColor} stopOpacity={0} />
+              </m.linearGradient>
+            </defs>
+          </>
+        )}
       </svg>
     </LazyMotionProvider>
   );

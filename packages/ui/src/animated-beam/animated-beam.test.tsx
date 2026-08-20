@@ -17,6 +17,7 @@ function Harness() {
   );
 }
 
+
 describe("AnimatedBeam", () => {
   it("渲染 svg（含两条 path：底线 + 流光）不抛", () => {
     const { container } = render(<Harness />);

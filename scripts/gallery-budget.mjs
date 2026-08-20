@@ -41,6 +41,16 @@ export const GALLERY_BUDGETS = expandBilingualRoutes([
     maxDomNodes: 4200,
     maxConsoleWarnings: 6,
   },
+  {
+    // 组件画廊：299 张活预览（装饰件按 canPreviewCategory 排除，理由见 lib/gallery-preview.ts），
+    // 全站预览最密的一页。首屏实测：已挂载 6 个、DOM 4935，下面的预算按实测留余量。
+    // DOM 基线本就比 /blocks 高——299 张卡片自身的节点摆在那，与预览无关。
+    route: "/components",
+    minPreviews: 250,
+    maxMountedOnLoad: 16,
+    maxDomNodes: 6000,
+    maxConsoleWarnings: 6,
+  },
 ]);
 
 /** 判据。probe 见 probeGallery；返回失败原因数组，空 = 通过。 */
@@ -82,7 +92,11 @@ export function checkBudget(budget, probe) {
 
 // 必须是真函数：page.evaluate 收字符串时按表达式求值，函数源码只会求出个函数对象。
 function probeGallery() {
-  const thumbs = Array.from(document.querySelectorAll("[data-preview-thumbnail]"));
+  // 两种缩略图都要盯：整页/区块用 PreviewThumbnail（按设计宽缩放），
+  // 组件画廊用 ComponentThumbnail（按内容自适应缩放）。预算判据对两者一致。
+  const thumbs = Array.from(
+    document.querySelectorAll("[data-preview-thumbnail], [data-component-thumbnail]"),
+  );
   const mounted = thumbs.filter((t) => t.hasAttribute("data-mounted"));
   const thumbsMissingInert = thumbs.filter(
     (t) => !t.hasAttribute("inert") || t.getAttribute("aria-hidden") !== "true",
