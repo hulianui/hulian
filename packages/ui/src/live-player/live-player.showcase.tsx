@@ -2,6 +2,9 @@
 import { useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { LivePlayer } from "./live-player";
+import { demoAsset } from "../lib/demo-asset";
+
+const SRC = demoAsset("/demo/sample-video.mp4");
 
 function LivePlayerDemo({ orientation = "landscape" }: { orientation?: "portrait" | "landscape" }) {
   const [followed, setFollowed] = useState(false);
@@ -9,7 +12,7 @@ function LivePlayerDemo({ orientation = "landscape" }: { orientation?: "portrait
   return (
     <div className={orientation === "portrait" ? "w-56" : "w-full max-w-xl"}>
       <LivePlayer
-        src="/demo/sample-video.mp4"
+        src={SRC}
         orientation={orientation}
         viewers={12840}
         qualities={["蓝光", "超清", "高清", "标清"]}
@@ -42,7 +45,7 @@ export const livePlayerShowcase: ShowcaseSpec = {
 </div>`,
       render: () => (
         <div className="w-full max-w-xl">
-          <LivePlayer src="/demo/sample-video.mp4" viewers={12840} />
+          <LivePlayer src={SRC} viewers={12840} />
         </div>
       ),
     },
@@ -61,7 +64,7 @@ export const livePlayerShowcase: ShowcaseSpec = {
       render: () => (
         <div className="w-full max-w-xl">
           <LivePlayer
-            src="/demo/sample-video.mp4"
+            src={SRC}
             viewers={12840}
             host={{ name: "瀚选优品·主播阿楠", meta: "粉丝 28.6w", onFollow: () => {} }}
           />

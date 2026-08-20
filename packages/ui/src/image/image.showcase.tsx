@@ -1,9 +1,10 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Image } from "./image";
+import { demoAsset } from "../lib/demo-asset";
 
 type Radius = "none" | "sm" | "md" | "lg" | "full";
-const DEMO = "/demo/photo-image.jpg";
+const DEMO = demoAsset("/demo/photo-image.jpg");
 
 export const imageShowcase: ShowcaseSpec = {
   examples: [

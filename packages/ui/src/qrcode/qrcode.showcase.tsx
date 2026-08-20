@@ -4,6 +4,9 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { QRCode } from "./qrcode";
 import { qrCodeSvgString } from "./qrcode-core";
 import { qrCodeToPngDataUrl } from "./qrcode-png";
+import { demoAsset } from "../lib/demo-asset";
+
+const LOGO = demoAsset("/demo/avatar-12.jpg");
 
 const EXPORT_VALUE = "https://hulian.dev/components/qrcode";
 
@@ -91,7 +94,7 @@ export const qrcodeShowcase: ShowcaseSpec = {
           value="https://hulian.dev"
           size={160}
           level="H"
-          logo={{ src: "/demo/avatar-12.jpg", size: 36 }}
+          logo={{ src: LOGO, size: 36 }}
         />
       ),
     },
@@ -108,7 +111,7 @@ export const qrcodeShowcase: ShowcaseSpec = {
           value="https://hulian.dev"
           size={160}
           level="H"
-          logo={{ src: "/demo/avatar-12.jpg", size: 60, excavate: false, opacity: 0.25 }}
+          logo={{ src: LOGO, size: 60, excavate: false, opacity: 0.25 }}
         />
       ),
     },

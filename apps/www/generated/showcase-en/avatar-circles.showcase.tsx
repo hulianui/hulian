@@ -1,11 +1,12 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { AvatarCircles } from "../../../../packages/ui/src/avatar-circles/avatar-circles";
+import { demoAsset } from "../../../../packages/ui/src/lib/demo-asset";
 const avatars = [
-    { src: "/demo/avatar-1.jpg", alt: "u1" },
-    { src: "/demo/avatar-2.jpg", alt: "u2" },
-    { src: "/demo/avatar-3.jpg", alt: "u3" },
-    { src: "/demo/avatar-4.jpg", alt: "u4" },
+    { src: demoAsset("/demo/avatar-1.jpg"), alt: "u1" },
+    { src: demoAsset("/demo/avatar-2.jpg"), alt: "u2" },
+    { src: demoAsset("/demo/avatar-3.jpg"), alt: "u3" },
+    { src: demoAsset("/demo/avatar-4.jpg"), alt: "u4" },
 ];
 export const avatarCirclesShowcase: ShowcaseSpec = {
     examples: [

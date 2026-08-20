@@ -1,8 +1,9 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Avatar } from "./avatar";
+import { demoAsset } from "../lib/demo-asset";
 
-const IMG = "/demo/avatar-12.jpg";
+const IMG = demoAsset("/demo/avatar-12.jpg");
 
 export const avatarShowcase: ShowcaseSpec = {
   examples: [

@@ -1,11 +1,12 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Video } from "./video";
+import { demoAsset } from "../lib/demo-asset";
 
 // 本地测试素材（放在 apps/www/public/demo 下，离线可用、不依赖外网 CDN）。
-const MP4 = "/demo/sample-video.mp4";
-const HLS = "/demo/hls/stream.m3u8";
-const POSTER = "/demo/sample-poster.jpg";
+const MP4 = demoAsset("/demo/sample-video.mp4");
+const HLS = demoAsset("/demo/hls/stream.m3u8");
+const POSTER = demoAsset("/demo/sample-poster.jpg");
 
 const W = "w-full max-w-2xl";
 

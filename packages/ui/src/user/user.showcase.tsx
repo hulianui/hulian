@@ -1,6 +1,9 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { User } from "./user";
+import { demoAsset } from "../lib/demo-asset";
+
+const AVATAR = demoAsset("/demo/avatar-12.jpg");
 
 export const userShowcase: ShowcaseSpec = {
   examples: [
@@ -16,7 +19,7 @@ export const userShowcase: ShowcaseSpec = {
         <User
           name="瑚琏"
           description="zhangzhiwei@hulian.dev"
-          avatarProps={{ src: "/demo/avatar-12.jpg", alt: "瑚琏" }}
+          avatarProps={{ src: AVATAR, alt: "瑚琏" }}
         />
       ),
     },
@@ -57,7 +60,7 @@ export const userShowcase: ShowcaseSpec = {
         <User
           name="瑚琏"
           description="zhangzhiwei@hulian.dev"
-          avatarProps={{ src: "/demo/avatar-12.jpg", alt: "瑚琏" }}
+          avatarProps={{ src: AVATAR, alt: "瑚琏" }}
         />
       ),
     },
@@ -74,7 +77,7 @@ export const userShowcase: ShowcaseSpec = {
     <User
       name="瑚琏"
       description="组件库设计系统"
-      avatarProps={{ src: "/demo/avatar-12.jpg", alt: "瑚琏" }}
+      avatarProps={{ src: AVATAR, alt: "瑚琏" }}
     />
   ),
   toCode: () =>

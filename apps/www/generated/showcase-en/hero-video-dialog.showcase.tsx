@@ -1,7 +1,8 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { HeroVideoDialog } from "../../../../packages/ui/src/hero-video-dialog/hero-video-dialog";
-const THUMB = "/demo/photo-hero.jpg";
+import { demoAsset } from "../../../../packages/ui/src/lib/demo-asset";
+const THUMB = demoAsset("/demo/photo-hero.jpg");
 const VIDEO = "https://www.youtube.com/embed/dQw4w9WgXcQ";
 export const heroVideoDialogShowcase: ShowcaseSpec = {
     examples: [

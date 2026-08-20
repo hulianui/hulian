@@ -21219,6 +21219,11 @@
           "target": "components/hulianui/lib/date.ts"
         },
         {
+          "path": "components/hulianui/lib/demo-asset.ts",
+          "type": "registry:lib",
+          "target": "components/hulianui/lib/demo-asset.ts"
+        },
+        {
           "path": "components/hulianui/lib/demo-image.ts",
           "type": "registry:lib",
           "target": "components/hulianui/lib/demo-image.ts"

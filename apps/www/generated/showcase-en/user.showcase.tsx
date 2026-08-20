@@ -1,6 +1,8 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { User } from "../../../../packages/ui/src/user/user";
+import { demoAsset } from "../../../../packages/ui/src/lib/demo-asset";
+const AVATAR = demoAsset("/demo/avatar-12.jpg");
 export const userShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -11,7 +13,7 @@ export const userShowcase: ShowcaseSpec = {
   description="zhangzhiwei@hulian.dev"
   avatarProps={{ src: "/avatar.png", alt: "Hulian" }}
 />`,
-            render: () => (<User name="Hulian" description="zhangzhiwei@hulian.dev" avatarProps={{ src: "/demo/avatar-12.jpg", alt: "Hulian" }}/>),
+            render: () => (<User name="Hulian" description="zhangzhiwei@hulian.dev" avatarProps={{ src: AVATAR, alt: "Hulian" }}/>),
         },
         {
             title: "Initials",
@@ -42,7 +44,7 @@ export const userShowcase: ShowcaseSpec = {
     states: [
         {
             name: "with-avatar",
-            render: () => (<User name="Hulian" description="zhangzhiwei@hulian.dev" avatarProps={{ src: "/demo/avatar-12.jpg", alt: "Hulian" }}/>),
+            render: () => (<User name="Hulian" description="zhangzhiwei@hulian.dev" avatarProps={{ src: AVATAR, alt: "Hulian" }}/>),
         },
         {
             name: "fallback-initials",
@@ -53,7 +55,7 @@ export const userShowcase: ShowcaseSpec = {
             render: () => <User name="No user description" avatarProps={{ fallback: "U" }}/>,
         },
     ],
-    renderWithProps: () => (<User name="Hulian" description="Component library design system" avatarProps={{ src: "/demo/avatar-12.jpg", alt: "Hulian" }}/>),
+    renderWithProps: () => (<User name="Hulian" description="Component library design system" avatarProps={{ src: AVATAR, alt: "Hulian" }}/>),
     toCode: () => `<User
   name="Hulian"
   description="Component library design system"
