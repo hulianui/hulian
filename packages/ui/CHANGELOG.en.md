@@ -1,5 +1,21 @@
 # @hulianui/ui
 
+## 0.54.0
+
+### Minor Changes
+
+- e6b2a73: Overlay-style controls join Field's accessibility chain (#293 / #294): the trigger is now a `role="combobox"` element wired into Base UI's field control context
+
+  `Cascader` / `RegionCascader` / `TreeSelect` / `DatePicker` / `DateTimePicker` / `DateRangePicker` render their trigger through `Field.Control`, so the label's `htmlFor`, `aria-labelledby`, `aria-describedby`, `invalid`, and `disabled` finally reach it. That chain used to be broken: the label pointed at an id that did not exist, so a screen reader never even announced the field name. Those six components, together with `RemoteSelect` and `CountrySelect`, also forward attributes that are not listed in Props to the focusable element itself (the trigger button, or the input of the search-style selectors), which is where the `aria-required` injected by `<Field required>` now lands instead of being silently dropped by a closed props interface.
+
+  The role change is deliberate rather than cosmetic: `aria-required` and `aria-expanded` are not supported on `role="button"`, so forwarding the attribute to a button would have fixed nothing. **Upgrade note: query these triggers with `getByRole("combobox")` in tests, not `getByRole("button")`.**
+
+  `Upload` is a different case and is fixed differently. Its dropzone is a `role="button"` element where `aria-required` is invalid, so the required state is expressed as a screen-reader-only note referenced through `aria-describedby`. Both `required` and the `aria-required` injected by `<Field required>` turn it on; the latter deliberately does **not** enable native `required` validation, because whether the browser blocks submission is the consumer's explicit decision. A new `upload.required` locale entry ships with it.
+
+### Patch Changes
+
+- e6b2a73: `Field` labels now shrink to their text (#296): the label is a real `<label>` with `htmlFor`, and once flex stretched it across the row, the invisible space after the text still forwarded clicks to the control -- for overlay controls such as `Select` or `DatePicker` that reads as "the dropdown opened out of nowhere when I clicked above it". Pass `labelClassName="w-full"` when a full-width label is what you want.
+
 ## 0.53.0
 
 ### Minor Changes
