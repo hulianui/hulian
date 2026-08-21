@@ -11,10 +11,11 @@ import localFont from "next/font/local";
 // 用可变字体而非 9 个静态字重：Geist-Variable 69KB + GeistMono-Variable 71KB 就覆盖了
 // Thin–UltraBlack 全档，比按需挑几个静态档还省，且以后想用 500/600 不必再加请求。
 //
-// fallback 里的中文栈是有意为之：CJK 字体是 MB 级，自托管要 subset + unicode-range 分片，
-// 会给静态导出多一道工序和几百个分片文件。西文写在前面、中文落到系统（苹方 / 微软雅黑），
-// 英文与数字命中 Geist，中文交给系统 —— 代价是 Windows 与 macOS 的中文观感不一致，
-// 这一轮接受（#319 的待定 2）。
+// 中文由自托管的思源黑体承担（Noto Sans SC，OFL-1.1，97 个 unicode-range 分片，
+// 见同目录 noto-sans-sc.css）。它在 fallback 数组里必须排在 ui-sans-serif / system-ui
+// **之前** —— 那几个通用族对中文字符会直接命中系统中文字体（苹方 / 微软雅黑），
+// 排在它们后面的 Noto 永远轮不到，自托管等于白做。
+// 排在最后的系统中文栈是兜底：Noto 未覆盖的生僻字仍然有字可用。
 
 export const geistSans = localFont({
   src: "./fonts/Geist-Variable.woff2",
@@ -22,6 +23,7 @@ export const geistSans = localFont({
   weight: "100 900",
   display: "swap",
   fallback: [
+    "Noto Sans SC",
     "ui-sans-serif",
     "system-ui",
     "-apple-system",
@@ -37,5 +39,14 @@ export const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
   display: "swap",
-  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
+  // 等宽里的中文（代码块里的注释）同样交给 Noto Sans SC —— 中文没有真正的等宽版，
+  // 但至少与正文同一副字，不会在一段代码里冒出第三种字形。
+  fallback: [
+    "Noto Sans SC",
+    "ui-monospace",
+    "SFMono-Regular",
+    "Menlo",
+    "Consolas",
+    "monospace",
+  ],
 });

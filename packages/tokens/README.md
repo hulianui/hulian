@@ -143,8 +143,14 @@ pnpm add @hulianui/tokens
 <div class="font-sans" style="--hl-font-sans: Georgia, serif">…</div>
 ```
 
-CJK 直接写进同一个变量即可（`Geist, "Noto Sans SC", …`）。西文放前面、中文放后面，
-让英文和数字命中西文字体 —— 中文字体自带的西文通常很难看，顺序反了整站英文都会被拖下水。
+CJK 直接写进同一个变量即可（`Geist, "Noto Sans SC", …`）。两条顺序规则都别踩：
+
+- **西文放中文前面** —— 中文字体自带的西文通常很难看，顺序反了整站英文数字都被拖下水；
+- **中文放 `ui-sans-serif` / `system-ui` 前面** —— 这两个通用族对汉字会直接命中系统字体
+  （苹方 / 微软雅黑），排在它们后面的中文字体永远轮不到，自托管等于白做。
+
+本站自己的做法可作参考：`Geist, "Noto Sans SC", ui-sans-serif, system-ui, "PingFang SC", …`，
+中文按 `unicode-range` 切成 97 片按需加载（见 `apps/www/app/fonts/`）。
 
 ## 不用 Tailwind 也能只吃令牌
 

@@ -81,9 +81,9 @@ export default function TypographyPage() {
       </Section>
 
       <Section title={content.cjkNote} desc={content.cjkNoteDescription}>
-        <Code>{`:root {
-  --hl-font-sans: Geist, "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
-}`}</Code>
+        <Code>{`/* 本站实际的栈：西文 Geist → 中文思源黑体 → 系统字体兜底生僻字 */
+--hl-font-sans: Geist, "Noto Sans SC", ui-sans-serif, system-ui,
+  "PingFang SC", "Microsoft YaHei", sans-serif;`}</Code>
       </Section>
     </div>
   );

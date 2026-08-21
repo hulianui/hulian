@@ -39,7 +39,7 @@ export const themeContent = {
     typography: {
       title: "排版",
       eyebrow: "Typography",
-      lede: "本站西文用 Geist、等宽用 Geist Mono（均为 OFL 授权、自托管的可变字体），中文交给系统字体。字号沿用 Tailwind CSS v4 的 text-* 比例。",
+      lede: "本站西文用 Geist、等宽用 Geist Mono、中文用思源黑体 Noto Sans SC —— 三副都是 OFL 授权、自托管，中文按 unicode-range 切成 97 片按需加载。字号沿用 Tailwind CSS v4 的 text-* 比例。",
       sizes: "字号阶梯",
       sizesDescription: "每行使用真实尺寸渲染。",
       sample: "颜值 + 好用 Aa",
@@ -51,8 +51,8 @@ export const themeContent = {
       customizeDescription: "全局改 :root 上的变量即可，库里 48 个用 font-mono 的组件会一起跟上。",
       scoped: "只换某一块",
       scopedDescription: "在容器上写同一个变量。要注意正文与等宽不对称：等宽只写变量就生效，正文还要给容器加一个 font-sans 类 —— 自定义属性会继承，但 font-family: var(…) 只在声明了这条属性的元素上重新解析，普通文字继承的是根节点那里已经解析完的字体名，不会回头读变量。",
-      cjkNote: "中文为什么不自托管",
-      cjkNoteDescription: "CJK 字体是 MB 级，自托管要切片 + unicode-range 分段加载。西文写在字体栈前面、中文落到系统字体（苹方 / 微软雅黑），代价是两个平台的中文观感不一致。要全平台统一就把中文字体也放进变量里。",
+      cjkNote: "中文是怎么装进来的",
+      cjkNoteDescription: "思源黑体全量是 MB 级，整包下发会拖死首屏，所以切成 97 个 unicode-range 分片，浏览器只取页面实际用到的那几片（本页实测 15 片）。分片本身是可变字体，一套覆盖全字重。字体栈里中文必须排在 ui-sans-serif / system-ui 之前 —— 那几个通用族对汉字会直接命中系统字体，排在它们后面的思源黑体永远轮不到。",
     },
     spacing: {
       title: "间距",
@@ -215,7 +215,7 @@ export const themeContent = {
     typography: {
       title: "Typography",
       eyebrow: "Typography",
-      lede: "This site sets Latin text in Geist and monospace in Geist Mono, both OFL-licensed variable fonts served from our own origin, and leaves CJK to the system font. Sizes follow the Tailwind CSS v4 text-* scale.",
+      lede: "This site sets Latin text in Geist, monospace in Geist Mono, and Chinese in Noto Sans SC. All three are OFL-licensed and served from our own origin, with the Chinese face split into 97 unicode-range subsets that load on demand. Sizes follow the Tailwind CSS v4 text-* scale.",
       sizes: "Type scale",
       sizesDescription: "Each row is rendered at its real size.",
       sample: "Beautiful and useful Aa",
@@ -227,8 +227,8 @@ export const themeContent = {
       customizeDescription: "Set the variables on :root and you are done. The 48 components that use font-mono follow along.",
       scoped: "Change one region only",
       scopedDescription: "Set the same variable on a container. Body text and monospace are not symmetric here: monospace needs only the variable, while body text also needs a font-sans class on the container. Custom properties inherit, but font-family: var(…) is re-resolved only on elements that declare it, so ordinary text inherits the already-resolved family from the root and never looks at the variable again.",
-      cjkNote: "Why CJK is not self-hosted",
-      cjkNoteDescription: "CJK fonts weigh megabytes and need subsetting plus unicode-range splitting to serve. Latin faces come first in the stack and CJK falls through to the system font, at the cost of a different look on macOS and Windows. Put a CJK family in the variable if you need both platforms to match.",
+      cjkNote: "How the Chinese face is served",
+      cjkNoteDescription: "A full Noto Sans SC weighs megabytes and would stall first paint, so it is split into 97 unicode-range subsets and the browser fetches only the ones a page actually uses (15 on this page). Each subset is itself a variable font, so one set covers every weight. In the stack, the CJK family must come before ui-sans-serif and system-ui: those generic families resolve Han characters to the system font, and anything listed after them never gets a turn.",
     },
     spacing: {
       title: "Spacing",

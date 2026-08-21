@@ -2,6 +2,9 @@
 @import "@hulianui/tokens/tokens.css";
 /* Tailwind v4 + 瑚琏 preset（语义 token → 工具类，dark variant 绑 data-theme） */
 @import "@hulianui/tokens/preset.css";
+/* 中文：自托管思源黑体分片（#319）。放在 preset 之后、@source 之前 —— CSS 的 @import
+   必须在其他规则之前，而这份只声明 @font-face，不产出任何工具类。 */
+@import "./fonts/noto-sans-sc.css";
 
 /* 模型 A 核心：让消费方 Tailwind 扫到 @hulianui/ui 源码里的 className */
 @source "../../../packages/ui/src/**/*.{ts,tsx}";
