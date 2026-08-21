@@ -54,7 +54,10 @@ import { BeianFooter } from "@hulianui/ui"
 ## Usage guidelines
 
 - The displayed registration number must exactly match the record in the MIIT or public-security system, including suffixes such as `-1` or `-2`; otherwise the linked lookup result will not match.
-- The component is an RSC, and all external record links open in a new window.
+- Client component (`"use client"`): its labels come from the Locale context, and reading that
+  context requires the client. It can still be nested inside a server page, but it does land in
+  the client bundle.
+- External record links always open in a new window (`target="_blank"` + `rel="noreferrer"`).
 
 ## Related
 [Navbar](../navbar/navbar.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menu](../menu/menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

@@ -54,7 +54,9 @@ import { BeianFooter } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 备案号文本须与工信部/公安备案系统登记的完全一致（含「号-N」后缀），否则外链查询页对不上。
-- 暂无其他已知坑（纯 RSC，外链统一新窗打开）。
+- 客户端组件（`"use client"`）—— 「ICP备案」这类文案取自 Locale context，读它就得在客户端。
+  可以嵌进 server 页当子组件用，但它本身会进 client bundle。
+- 外链统一新窗打开（`target="_blank"` + `rel="noreferrer"`）。
 
 ## 相关
 [Navbar](../navbar/navbar.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menu](../menu/menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

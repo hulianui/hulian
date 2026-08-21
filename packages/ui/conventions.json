@@ -960,6 +960,20 @@
       "source": "packages/ui/src/beian-footer/beian-footer.md"
     },
     {
+      "id": "component/beian-footer/pitfall/2",
+      "scope": "beian-footer",
+      "title": "BeianFooter",
+      "rule": "客户端组件（`\"use client\"`）—— 「ICP备案」这类文案取自 Locale context，读它就得在客户端。 可以嵌进 server 页当子组件用，但它本身会进 client bundle。",
+      "source": "packages/ui/src/beian-footer/beian-footer.md"
+    },
+    {
+      "id": "component/beian-footer/pitfall/3",
+      "scope": "beian-footer",
+      "title": "BeianFooter",
+      "rule": "外链统一新窗打开（`target=\"_blank\"` + `rel=\"noreferrer\"`）。",
+      "source": "packages/ui/src/beian-footer/beian-footer.md"
+    },
+    {
       "id": "component/bento-grid/pitfall/1",
       "scope": "bento-grid",
       "title": "BentoGrid",
@@ -1887,7 +1901,14 @@
       "id": "component/click-spark/pitfall/3",
       "scope": "click-spark",
       "title": "ClickSpark",
-      "rule": "reduced-motion 下静默不放火花；RSC/jsdom 环境安全（不报错），但实际火花需浏览器运行时。",
+      "rule": "reduced-motion 下静默不放火花。",
+      "source": "packages/ui/src/click-spark/click-spark.md"
+    },
+    {
+      "id": "component/click-spark/pitfall/4",
+      "scope": "click-spark",
+      "title": "ClickSpark",
+      "rule": "客户端组件（`\"use client\"`）：canvas 取不到时静默跳过，SSR 与 jsdom 下都不报错，但实际火花需浏览器运行时。",
       "source": "packages/ui/src/click-spark/click-spark.md"
     },
     {
@@ -6311,18 +6332,25 @@
       "id": "component/orbit-images/pitfall/1",
       "scope": "orbit-images",
       "title": "OrbitImages",
-      "rule": "纯 CSS `offset-path` 驱动，零依赖 RSC 安全；但 `offset-path` 在老浏览器/部分 WebKit 上有兼容差异，关键场景需验真机。",
+      "rule": "纯 CSS `offset-path` 驱动，零依赖；但 `offset-path` 在老浏览器/部分 WebKit 上有兼容差异，关键场景需验真机。",
       "source": "packages/ui/src/orbit-images/orbit-images.md"
     },
     {
       "id": "component/orbit-images/pitfall/2",
       "scope": "orbit-images",
       "title": "OrbitImages",
-      "rule": "`radiusX/Y/radius/baseWidth` 都是 baseWidth 坐标系内的设计像素，不是最终屏幕像素——容器靠 CSS 缩放铺满父宽，调几何比例改这些、调实际大小改父容器尺寸。",
+      "rule": "客户端组件（`\"use client\"`）：要在 layout effect 里量容器尺寸算缩放。SSR 期不量、不报错，首帧按未缩放渲染。",
       "source": "packages/ui/src/orbit-images/orbit-images.md"
     },
     {
       "id": "component/orbit-images/pitfall/3",
+      "scope": "orbit-images",
+      "title": "OrbitImages",
+      "rule": "`radiusX/Y/radius/baseWidth` 都是 baseWidth 坐标系内的设计像素，不是最终屏幕像素——容器靠 CSS 缩放铺满父宽，调几何比例改这些、调实际大小改父容器尺寸。",
+      "source": "packages/ui/src/orbit-images/orbit-images.md"
+    },
+    {
+      "id": "component/orbit-images/pitfall/4",
       "scope": "orbit-images",
       "title": "OrbitImages",
       "rule": "`pathColor` 给 token 时用 `var(--color-border)` 这类带 `--color-` 前缀的语义色，避免裸 var 不解析。见 hulian-token-color-var-needs-color-prefix。",
@@ -8880,7 +8908,14 @@
       "id": "component/splash-cursor/pitfall/3",
       "scope": "splash-cursor",
       "title": "SplashCursor",
-      "rule": "canvas2d 零依赖、RSC 安全、自带 `pointer-events-none` 不拦下层交互；父级必须 `relative` 它才能 `absolute inset-0` 铺满。reduced-motion 下降级不溅射。",
+      "rule": "canvas2d 零依赖、自带 `pointer-events-none` 不拦下层交互；父级必须 `relative` 它才能 `absolute inset-0` 铺满。reduced-motion 下降级不溅射。",
+      "source": "packages/ui/src/splash-cursor/splash-cursor.md"
+    },
+    {
+      "id": "component/splash-cursor/pitfall/4",
+      "scope": "splash-cursor",
+      "title": "SplashCursor",
+      "rule": "客户端组件（`\"use client\"`）：canvas 与指针监听全在 effect 内，SSR 期不碰 DOM、不报错，但要浏览器运行时才有溅射。",
       "source": "packages/ui/src/splash-cursor/splash-cursor.md"
     },
     {
@@ -10645,7 +10680,7 @@
   ],
   "stats": {
     "componentDocs": 394,
-    "componentAdvisories": 1484,
-    "totalAdvisories": 1494
+    "componentAdvisories": 1489,
+    "totalAdvisories": 1499
   }
 }

@@ -31,7 +31,7 @@ import { CircularGallery } from "@hulianui/ui"
 | borderRadius | `number` | `0.05` | Normalized card radius from 0 to 0.5. `0` is square and `0.5` is pill-shaped or circular. |
 | scrollSpeed | `number` | `2` | Wheel and drag sensitivity. Larger values move farther per gesture. |
 | scrollEase | `number` | `0.05` | Inertial lerp factor from 0 to 1. Smaller values feel heavier and smoother. |
-| font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | Canvas font shorthand for titles. The default system font stack is offline- and RSC-safe. |
+| font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | Canvas font shorthand for titles. The default system font stack needs no network request and never goes missing during SSR. |
 | className | `string` | - | Class name forwarded to the root container. |
 
 `CircularGalleryItem`

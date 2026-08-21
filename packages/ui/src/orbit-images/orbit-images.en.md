@@ -10,7 +10,7 @@ status: enriched
 
 # OrbitImages
 
-> Shape-based orbit layout · Moves child items around nine preset tracks or a custom path + even distribution or shared start + tilt + center overlay (CSS `offset-path` · zero dependencies · RSC-safe · reduced-motion support) · decoration/overlay-fx · #animated
+> Shape-based orbit layout · Moves child items around nine preset tracks or a custom path + even distribution or shared start + tilt + center overlay (CSS `offset-path` · zero dependencies · client component · reduced-motion support) · decoration/overlay-fx · #animated
 
 ## When to Use
 
@@ -70,7 +70,10 @@ import { OrbitImages } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- Pure CSS `offset-path` driver, zero dependence on RSC security; however, `offset-path` has compatibility differences in old browsers/some WebKit, and key scenarios need to be verified on a real machine.
+- Pure CSS `offset-path` driver with zero dependencies; however, `offset-path` has compatibility
+  differences in old browsers and some WebKit builds, so verify key scenarios on real devices.
+- Client component (`"use client"`): it measures the container in a layout effect to compute the
+  scale. Nothing is measured during SSR and nothing errors out; the first frame renders unscaled.
 - `radiusX/Y/radius/baseWidth` are all design pixels in the baseWidth coordinate system, not the final screen pixels - the container is scaled by CSS to fill the parent width, adjust the geometric proportion to change these, and adjust the actual size to change the size of the parent container.
 - `pathColor` uses semantic colors such as `var(--color-border)` with `--color-` prefix when giving tokens to avoid naked var from not being parsed. See [[hulian-token-color-var-needs-color-prefix]].
 

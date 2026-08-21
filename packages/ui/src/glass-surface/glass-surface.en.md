@@ -10,7 +10,7 @@ status: enriched
 
 # GlassSurface
 
-> Liquid glass refractive surface · SVG feDisplacementMap three-channel dispersion + RGB chromatic aberration edge (zero dependency · token frosted bottom/hair edge/focus ring · RSC client · non-SVG browser fallback backdrop-blur · reduced-motion off transition) · decoration/overlay-fx · #animated
+> Liquid glass refractive surface · SVG feDisplacementMap three-channel dispersion + RGB chromatic aberration edge (zero dependency · token frosted bottom/hair edge/focus ring · client component · non-SVG browser fallback backdrop-blur · reduced-motion off transition) · decoration/overlay-fx · #animated
 
 ## When to Use
 

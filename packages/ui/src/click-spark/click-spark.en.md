@@ -10,7 +10,7 @@ status: enriched
 
 # ClickSpark
 
-> Click on sparks · Click on the interactive background wrapper that bursts out sparks · Click on the point to emit a circle of short line segments that spread slowly along the angle + quantity/radius/length/duration/easing are fully adjustable (canvas2d+RAF zero dependency·token color selection·reduced-motion silent·RSC safety·jsdom safety) · decoration/overlay-fx · #animated
+> Click on sparks · Click on the interactive background wrapper that bursts out sparks · Click on the point to emit a circle of short line segments that spread slowly along the angle + quantity/radius/length/duration/easing are fully adjustable (canvas2d+RAF zero dependency·token color selection·reduced-motion silent·client component·jsdom safety) · decoration/overlay-fx · #animated
 
 ## When to Use
 
@@ -60,7 +60,9 @@ import { ClickSpark } from "@hulianui/ui"
 
 - The token used for `sparkColor` must be prefixed with `--color-` (`var(--color-foreground)`), and the canvas strokeStyle feed `var(--foreground)` does not resolve. See [[hulian-token-color-var-needs-color-prefix]].
 - It is a wrapper: sparks are only triggered when clicked in the wrapped `children` area; the root container must be the positioning context (relative).
-- No sparks are released silently under reduced-motion; the RSC/jsdom environment is safe (no errors are reported), but the actual sparks require the browser to run.
+- No sparks are released under reduced-motion; the component stays silent.
+- Client component (`"use client"`): when the canvas is unavailable it silently skips, so neither
+  SSR nor jsdom errors out. Real sparks still need a browser runtime.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

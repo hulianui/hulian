@@ -10,7 +10,7 @@ status: enriched
 
 # ClickSpark
 
-> 点击火花 · 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·RSC 安全·jsdom 安全） · decoration/overlay-fx · #animated
+> 点击火花 · 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·客户端组件·jsdom 安全） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -60,7 +60,8 @@ import { ClickSpark } from "@hulianui/ui"
 
 - `sparkColor` 用 token 必须带 `--color-` 前缀（`var(--color-foreground)`），canvas strokeStyle 喂裸 `var(--foreground)` 不解析。见 [[hulian-token-color-var-needs-color-prefix]]。
 - 是包裹器：火花只在包住的 `children` 区域内点击触发；根容器须为定位上下文（relative）。
-- reduced-motion 下静默不放火花；RSC/jsdom 环境安全（不报错），但实际火花需浏览器运行时。
+- reduced-motion 下静默不放火花。
+- 客户端组件（`"use client"`）：canvas 取不到时静默跳过，SSR 与 jsdom 下都不报错，但实际火花需浏览器运行时。
 
 ## 相关
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)

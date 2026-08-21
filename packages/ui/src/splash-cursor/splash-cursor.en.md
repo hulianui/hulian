@@ -10,7 +10,7 @@ status: enriched
 
 # SplashCursor
 
-> Fluid splash cursor · Pointer fluid splash cursor special effects · Moving splash color + click explosion spot + trailing dispersion · Rainbow hue wheel/fixed chart token dual mode (canvas2d zero dependency·reduced-motion·RSC security) · decoration/overlay-fx · #animated
+> Fluid splash cursor · Pointer fluid splash cursor special effects · Moving splash color + click explosion spot + trailing dispersion · Rainbow hue wheel/fixed chart token dual mode (canvas2d zero dependency·reduced-motion·client component) · decoration/overlay-fx · #animated
 
 ## When to Use
 
@@ -51,7 +51,11 @@ import { SplashCursor } from "@hulianui/ui"
 
 - Note that `dissipation` has "retention rate" semantics (the opposite of the original DENSITY_DISSIPATION): bigger is more durable, not bigger is faster to dissipate.
 - Non-rainbow mode `color` uses a variable prefixed with `--color-` for token; this value is ignored when rainbow is enabled. See [[hulian-token-color-var-needs-color-prefix]].
-- canvas2d has zero dependency, RSC security, and comes with `pointer-events-none`, which does not block layer interaction; the parent must be `relative` before it can be filled with `absolute inset-0`. reduced-motion The reduced stage does not sputter.
+- canvas2d with zero dependencies, and it ships `pointer-events-none` so it never blocks the
+  interaction underneath; the parent must be `relative` for `absolute inset-0` to fill it. Under
+  reduced-motion it degrades and stops splashing.
+- Client component (`"use client"`): the canvas and the pointer listeners all live inside effects,
+  so SSR touches no DOM and never errors out. A browser runtime is required for actual splashes.
 
 ## Related
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)
