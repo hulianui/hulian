@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
 import { checkRscClaims, findClaims } from "./check-rsc-claims.mjs";
@@ -79,6 +82,61 @@ test("reports the line number and the matched phrase", () => {
 test("escape hatch needs a stated reason", () => {
   assert.deepEqual(findClaims("- 纯 RSC 的历史说法 <!-- rsc-claim-ok: 讲的是上游库不是本组件 -->"), []);
   assert.equal(findClaims("- 纯 RSC 的历史说法 <!-- rsc-claim-ok: -->").length, 1);
+});
+
+// 扫描面必须盖住 .types.ts：那里的 JSDoc 会编进 .d.ts，消费方悬浮一个 prop 就看到。
+// 0.55.1 发布后从 npm 拉包复查，正是在 circular-gallery.types.ts 里逮到 md 那侧已经改掉的同一句。
+test("scans .types.ts JSDoc, not just markdown", () => {
+  const root = mkdtempSync(join(tmpdir(), "rsc-claims-"));
+  const dir = join(root, "packages", "ui", "src", "probe");
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "probe.tsx"), '"use client";\nexport function Probe() { return null; }\n');
+  writeFileSync(join(dir, "probe.md"), "> 探针组件 · 一切正常\n");
+  writeFileSync(
+    join(dir, "probe.types.ts"),
+    "export interface ProbeProps {\n  /** 默认用系统字体栈，离线 / RSC 安全。 */\n  font?: string;\n}\n",
+  );
+
+  const hit = checkRscClaims({ repoRoot: root });
+  assert.equal(hit.findings.length, 1);
+  assert.equal(hit.findings[0].file, "packages/ui/src/probe/probe.types.ts");
+
+  // 同一份 .types.ts 挂在 server 组件下就该放行
+  writeFileSync(join(dir, "probe.tsx"), "export function Probe() { return null; }\n");
+  assert.deepEqual(checkRscClaims({ repoRoot: root }).findings, []);
+
+  rmSync(root, { recursive: true, force: true });
+});
+
+// 源码文件按「会不会编进 .d.ts」划线：JSDoc 会，`//` 行注释不会。
+// 后者保住了 glass-surface.tsx:12 那种把话说全了的写法，它准确且只给读源码的人看。
+test("in source files it reads JSDoc but not line comments", () => {
+  const root = mkdtempSync(join(tmpdir(), "rsc-claims-jsdoc-"));
+  const dir = join(root, "packages", "ui", "src", "probe");
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, "probe.md"), "> 探针组件 · 一切正常\n");
+
+  const withJsdoc = [
+    '"use client";',
+    "/**",
+    " * 探针：纯 CSS 零依赖，RSC 安全。",
+    " */",
+    "export function Probe() { return null; }",
+  ].join("\n");
+  writeFileSync(join(dir, "probe.tsx"), withJsdoc);
+  const hit = checkRscClaims({ repoRoot: root });
+  assert.equal(hit.findings.length, 1);
+  assert.equal(hit.findings[0].line, 3);
+
+  const withLineComment = [
+    '"use client";',
+    "// 探针：纯 CSS 零依赖，RSC 安全。这句停在源码里，进不了 .d.ts。",
+    "export function Probe() { return null; }",
+  ].join("\n");
+  writeFileSync(join(dir, "probe.tsx"), withLineComment);
+  assert.deepEqual(checkRscClaims({ repoRoot: root }).findings, []);
+
+  rmSync(root, { recursive: true, force: true });
 });
 
 test("the repository is clean", () => {
