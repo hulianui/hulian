@@ -373,7 +373,7 @@ export const tableShowcase: ShowcaseSpec = {
         },
         {
             title: "Table-level alignment (cellAlign / headerAlign)",
-            description: "Alignment is a whole-table decision: when an admin list has some columns centered and others left-aligned, that is almost never a design call \u2014 it is dozens of column definitions each written on their own. Set it once at the table level; a column's meta.align still wins, and the usual shape is a centered table with amount columns right-aligned (digits only line up by place value that way). headerAlign exists separately for the \"centered headers, left-aligned content\" layout.",
+            description: "Alignment is a whole-table decision: when an admin list has some columns centered and others left-aligned, that is almost never a design call. It is dozens of column definitions each written on their own. Set it once at the table level; a column's meta.align still wins, and the usual shape is a centered table with amount columns right-aligned (digits only line up by place value that way). headerAlign exists separately for the \"centered headers, left-aligned content\" layout.",
             code: `<Table columns={columns} data={users} cellAlign="center" />
 
 // Set headerAlign alone when only the header should move

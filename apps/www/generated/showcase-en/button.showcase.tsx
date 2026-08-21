@@ -22,7 +22,7 @@ export const buttonShowcase: ShowcaseSpec = {
         },
         {
             title: "Size",
-            description: "xs / sm / md / lg \u2014 four heights: 24 / 32 / 40 / 48px.",
+            description: "xs / sm / md / lg: four heights of 24 / 32 / 40 / 48px.",
             code: `<Button size="xs">Extra small</Button>
 <Button size="sm">small</Button>
 <Button size="md">medium</Button>

@@ -84,7 +84,7 @@ export const logViewerShowcase: ShowcaseSpec = {
   ]}
 />`,
             render: () => (<LogViewer wrap height={140} lines={[
-                    { level: "error", message: "Error: connect ECONNREFUSED 127.0.0.1:5432 at TCPConnectWrap.afterConnect \u2014 This is a very long log, wrap After opening, it will wrap lines instead of scrolling horizontally, ensuring that it can be read in a narrow container." },
+                    { level: "error", message: "Error: connect ECONNREFUSED 127.0.0.1:5432 at TCPConnectWrap.afterConnect. This is a very long log, wrap After opening, it will wrap lines instead of scrolling horizontally, ensuring that it can be read in a narrow container." },
                 ]}/>),
         },
     ],
@@ -92,7 +92,7 @@ export const logViewerShowcase: ShowcaseSpec = {
         { name: "Build log (multi-level + timestamp)", render: () => <LogViewer lines={STATIC} showTimestamp height={220}/> },
         { name: "Streaming append (automatically stick to the bottom)", render: () => <StreamDemo /> },
         { name: "Wrap mode", render: () => (<LogViewer wrap height={140} lines={[
-                    { level: "error", message: "Error: connect ECONNREFUSED 127.0.0.1:5432 at TCPConnectWrap.afterConnect \u2014 This is a very long log, wrap After opening, it will wrap lines instead of scrolling horizontally, ensuring that it can be read in a narrow container." },
+                    { level: "error", message: "Error: connect ECONNREFUSED 127.0.0.1:5432 at TCPConnectWrap.afterConnect. This is a very long log, wrap After opening, it will wrap lines instead of scrolling horizontally, ensuring that it can be read in a narrow container." },
                 ]}/>) },
     ],
     renderWithProps: () => <LogViewer lines={STATIC} showTimestamp height={220}/>,

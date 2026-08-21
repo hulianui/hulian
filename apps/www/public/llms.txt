@@ -9,20 +9,20 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 
 ## 布局 layout（15）
 - [AdminLayout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/admin-layout/admin-layout.md): 中后台骨架 · 侧栏(品牌+NavMenu可折叠) + 顶栏(折叠/面包屑/扩展区) + 多页签导航(开/切/关·关闭其他/全部·受控接路由或菜单点击自动维护) + 内容区(复用 NavMenu/ScrollArea/…
-- [AspectRatio](https://github.com/hulianui/hulian/blob/master/packages/ui/src/aspect-ratio/aspect-ratio.md): 比例容器 · CSS aspect-ratio 锁宽高比 + 图片/视频自动铺满(零依赖·RSC)
-- [Container](https://github.com/hulianui/hulian/blob/master/packages/ui/src/container/container.md): 内容容器 · 限制最大宽度(sm/md/lg/xl/full) + 居中 + 左右安全内距 + as 多态(收口全站 mx-auto max-w-Nxl px-6 样板·零依赖·RSC)
-- [Divider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/divider/divider.md): 带文字分隔 · orientation 左/中/右 + dashed/plain + 行内垂直(纯皮肤·零依赖·RSC·与 Separator 互补)
-- [FitScreen](https://github.com/hulianui/hulian/blob/master/packages/ui/src/fit-screen/fit-screen.md): 大屏适配 · 固定设计尺寸(默认 1920×1080)等比缩放铺满父容器并居中 + fit/cover/stretch 三模式(纯函数 computeFit 可测·ResizeObserver 监听·SSR 安全·数据…
-- [Grid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grid/grid.md): 栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC)
-- [Layout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/layout/layout.md): 整页布局 · 复合 Header/Sider/Content/Footer + Sider 可折叠(受控/断点/trigger) + 宽度过渡(零依赖·尽量 RSC·复用 ScrollArea)
-- [Masonry](https://github.com/hulianui/hulian/blob/master/packages/ui/src/masonry/masonry.md): 瀑布流布局 · 确定性 round-robin 分列(item[i]→第 i%列·SSR 安全·顺序稳定·非 CSS columns 抖动) + 响应式列数(base/sm/md/lg·首帧 base 防 hydrat…
+- [AspectRatio](https://github.com/hulianui/hulian/blob/master/packages/ui/src/aspect-ratio/aspect-ratio.md): 把图片、视频或任意内容锁在固定的宽高比里
+- [Container](https://github.com/hulianui/hulian/blob/master/packages/ui/src/container/container.md): 给页面内容限定最大宽度并居中，留出左右安全边距
+- [Divider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/divider/divider.md): 用一条分隔线把内容切开，线上可以带文字
+- [FitScreen](https://github.com/hulianui/hulian/blob/master/packages/ui/src/fit-screen/fit-screen.md): 把固定尺寸的设计稿等比缩放，铺满任意大小的屏幕
+- [Grid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grid/grid.md): 按栅格排列内容，子项可跨列跨行
+- [Layout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/layout/layout.md): 把页面拆成页头、侧栏、内容和页脚四块，侧栏可折叠
+- [Masonry](https://github.com/hulianui/hulian/blob/master/packages/ui/src/masonry/masonry.md): 把长短不一的卡片分列排成瀑布流，列数随屏幕宽度变化
 - [PreviewSandbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/preview-sandbox/preview-sandbox.md): 预览沙箱 · 把「隔离渲染容器 + 设备视口 + 缩放适配 + 错误捕获 + 就绪/重载生命周期」一次做对的外壳 · iframe 模式（`code` 传完整 HTML 文档串 → `srcDoc`，默认不透明源隔离，…
-- [Resizable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/resizable/resizable.md): 拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator)
-- [ScrollArea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-area/scroll-area.md): 滚动区 · Base UI 自定义细滚动条 + 竖/横/双向
-- [Separator](https://github.com/hulianui/hulian/blob/master/packages/ui/src/separator/separator.md): 分隔线 · Base UI role=separator + 横/竖几何
-- [Spacer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/spacer/spacer.md): 间距 · x/y × 0.25rem 布局留白 + aria-hidden + RSC
-- [Stack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stack/stack.md): 弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC)
-- [Viewport](https://github.com/hulianui/hulian/blob/master/packages/ui/src/viewport/viewport.md): 响应式容器 · container-type 容器查询上下文 + web/平板/手机 预设宽度(可 width 覆盖) + 可选设备切换器(dogfood Segmented) · 内部组件用 @md/@5xl 等容器…
+- [Resizable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/resizable/resizable.md): 把区域切成可拖动的分栏，能限制大小也能用键盘微调
+- [ScrollArea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-area/scroll-area.md): 给溢出内容换上更细的自定义滚动条，可竖可横
+- [Separator](https://github.com/hulianui/hulian/blob/master/packages/ui/src/separator/separator.md): 画一条横向或竖向的分隔线，带正确的无障碍语义
+- [Spacer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/spacer/spacer.md): 在布局中插入一段纯粹的空白间距
+- [Stack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stack/stack.md): 按一个方向排列子元素，统一控制间距、对齐和换行
+- [Viewport](https://github.com/hulianui/hulian/blob/master/packages/ui/src/viewport/viewport.md): 按网页、平板、手机三档宽度预览，内部布局随容器宽度重排
 
 ## 排版 typography（37）
 - [AnimatedGradientText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-gradient-text/animated-gradient-text.md): 渐变文字 · 行内 chart 渐变流动 + RSC · typography/text · #animated
@@ -31,9 +31,9 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [AuroraText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/aurora-text/aurora-text.md): 极光文字 · bg-clip 流动渐变 + chart token + RSC · typography/text · #animated
 - [BlurText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/blur-text/blur-text.md): 模糊解析 · 各词从模糊+位移解析到清晰 + 滚入视口触发(motion · top/bottom 方向 · aria-label 整段 · reduced-motion 直呈清晰) · typography/text…
 - [CircularText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/circular-text/circular-text.md): 环形文字 · 每字按等分角排到圆周 + 整体匀速自转 + 悬停调速(加速/减速/暂停/抓狂 · 颜色继承 currentColor · reduced-motion 静态) · typography/text · #a…
-- [Code](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code/code.md): 行内代码 · <code> 等宽皮肤 + tone(default/primary/danger) + RSC
-- [CodeBlock](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-block/code-block.md): 代码块 · 多行 <pre> + 一键复制(剪贴板+反馈) + 可选语言标签
-- [CodeDiff](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-diff/code-diff.md): 代码对比 · 零依赖行级 LCS diff(纯函数 diffLines 可测) + unified 单栏/split 双栏 + 增绿删红行底色 + 双行号槽 + filename 头条与 +/− 摘要 · agent …
+- [Code](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code/code.md): 给行内代码片段套上等宽皮肤，可选语义色调
+- [CodeBlock](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-block/code-block.md): 展示多行代码，带语言标签和一键复制
+- [CodeDiff](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-diff/code-diff.md): 按行展示代码增删，可单栏也可左右双栏对照
 - [CurvedLoop](https://github.com/hulianui/hulian/blob/master/packages/ui/src/curved-loop/curved-loop.md): 弧形跑马灯 · 沿二次贝塞尔曲线无缝循环滚动的弧形跑马灯文字 · SVG textPath + rAF 续滚 + 可拖拽拨动(零依赖·token/currentColor·reduced-motion) · typog…
 - [DecryptedText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/decrypted-text/decrypted-text.md): 乱码解码 · 字符翻滚后逐位解码到明文 + view/hover 触发(随机仅客户端 effect 避 hydration mismatch · 等宽 tabular-nums 防抖 · aria-label 明文) …
 - [FallingText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/falling-text/falling-text.md): 文字散落 · 文字按词散落物理特效 · 触发后逐词受重力下落/撞墙反弹堆叠 + 指针拖拽抛掷(零依赖 RAF 自写二维刚体·token·reduced-motion) · typography/text · #anim…
@@ -41,20 +41,20 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Formula](https://github.com/hulianui/hulian/blob/master/packages/ui/src/math/math.md): KaTeX 驱动的数学排版，本库唯一的数学渲染路径 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符，上游没包 `…
 - [FuzzyText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/fuzzy-text/fuzzy-text.md): 噪点模糊标题 · 信号噪点模糊标题 · canvas2d 逐行/逐列随机错位扫描 + 悬停增强抖动(零依赖·token·reduced-motion 退静态帧) · typography/text · #animated
 - [GlitchText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/glitch-text/glitch-text.md): 故障撕裂 · 双伪元素 RGB 错位 + clip-path 切片抖动(纯 CSS 零依赖 RSC · 撕裂色吃 chart token · enableOnHover 门控 · motion-reduce 退普通文本…
-- [Heading](https://github.com/hulianui/hulian/blob/master/packages/ui/src/heading/heading.md): 标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC)
+- [Heading](https://github.com/hulianui/hulian/blob/master/packages/ui/src/heading/heading.md): 输出各级标题，视觉大小与标题层级可以分开设定
 - [Kbd](https://github.com/hulianui/hulian/blob/master/packages/ui/src/kbd/kbd.md): 按键 · <kbd> 等宽皮肤 + KbdGroup 组合键容器 + RSC
-- [LineShadowText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/line-shadow-text/line-shadow-text.md): 斜线投影文字 · 硬边条纹偏移层 + 默认静态 + RSC
-- [Markdown](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown/markdown.md): Markdown 渲染 · 只读，零依赖块级解析(标题/代码块/列表/引用/行内粗斜码链) · 套 Prose 排版 + 围栏代码块委托 CodeBlock · 区别 MarkdownEditor 可编辑 · RSC …
-- [Prose](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prose/prose.md): 排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC)
+- [LineShadowText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/line-shadow-text/line-shadow-text.md): 在标题文字背后错开一层硬边条纹投影
+- [Markdown](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown/markdown.md): 把 Markdown 字符串渲染成只读的富文本内容
+- [Prose](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prose/prose.md): 给富文本或 Markdown 内容套上统一的排版样式
 - [ScrambledText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scrambled-text/scrambled-text.md): 乱码悬停文字 · 指针靠近文字逐字翻滚乱码再收敛的悬停文字特效 · 半径内越近翻滚越久 + 可自定字符集/速度（零依赖 RAF·reduced-motion） · typography/text · #animated
 - [ScrollFloat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-float/scroll-float.md): 滚动浮现标题 · ：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（…
 - [ScrollReveal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-reveal/scroll-reveal.md): 滚动显影 · 整段随容器滚过视口逐词 opacity+blur 解析(motion useScroll/useTransform · 每词独立进度区间 · reduced-motion 直呈可读) · typograp…
 - [ScrollVelocity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-velocity/scroll-velocity.md): 滚动跑马灯 · 滚动速度跑马灯文字 · 多行交替方向视差 + 随页面滚动加速/变向、静止匀速漂移(motion 速度值驱动·零额外依赖·reduced-motion 冻结自走帧保留 DOM) · typography/…
 - [Shuffle](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shuffle/shuffle.md): 洗牌解密文字 · 逐字「洗牌解密」文本动画 · 字位先滚乱码再按方向顺序锁定真字 + 视口/悬停/循环触发(零依赖 rAF·reduced-motion 直落终态·token 着色) · typography/text…
-- [Snippet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/snippet/snippet.md): 代码片段 · 命令提示符 + 一键复制(剪贴板+反馈)
+- [Snippet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/snippet/snippet.md): 展示一行命令，带提示符和一键复制
 - [SparklesText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sparkles-text/sparkles-text.md): 星闪文字 · 随机小星脉冲(客户端生成) + token · typography/text · #animated
 - [SplitText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/split-text/split-text.md): 切字进场 · 文本切字/词 + 滚入视口逐段错峰位移淡入(motion · useInView 触发一次 · aria-label 整段读屏友好 · reduced-motion 直呈终态) · typography/…
-- [Text](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text/text.md): 文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC)
+- [Text](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text/text.md): 统一正文的字号、字重、语义色和截断方式
 - [TextCursor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text-cursor/text-cursor.md): 光标拖尾文字 · 特效组件 · 在容器内移动光标时沿轨迹按间距落下一串字形并随机微浮动淡出回收（沿方向旋转 / emoji / 自定义间距上限）(零依赖·motion 运行时·reduced-motion 去浮动) ·…
 - [TextPressure](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text-pressure/text-pressure.md): 逐字符"压感"标题 · 字形随鼠标距离实时插值字重/宽度/倾斜 + 透明度(零依赖 RAF·token 配色·reduced-motion·系统字体兜底) · typography/text · #animated
 - [TextReveal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/text-reveal/text-reveal.md): 揭示扫光 · 一条多色带横扫，带过之处把文字从透明揭示成实色(repeat 循环表示「进行中」· 多串轮换按最宽串预留宽度不跳 · 减弱动效落静态终态而不是整串消失 · 纯 CSS 关键帧不引 motion) · ty…
@@ -64,69 +64,69 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
 ## 表单 forms（66）
-- [AuthPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md): 认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind…
-- [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 按钮 · CVA 变体 + press 动效
-- [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体)
-- [Calendar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/calendar/calendar.md): 日历面板 · 自研零依赖(日/月/年三层下钻·常驻不带浮层) + min-max/disabledDate/今天快捷 · 定宽字符串受控
-- [Cascader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/cascader/cascader.md): 级联选择 · 触发器 + Popover 横向逐级面板列 + 路径数组受控 + click/hover 展开 + changeOnSelect · 复用树引擎核
-- [CellEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/cell-editor/cell-editor.md): 单元格内联编辑器 · 逐格常驻编辑原语(静止态与纯文本同形/失焦或 Enter 即提交/值没变不发/Esc 回滚/missing 灰斜体/field-sizing 自增高/onCommit 返 Promise 自带 p…
-- [Checkbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/checkbox/checkbox.md): 复选框 · 三态(含半选) + Base UI
-- [CheckboxGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/checkbox-group/checkbox-group.md): 复选组 · Base UI 值数组协调 + 复用瑚琏 Checkbox
-- [Choicebox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/choicebox/choicebox.md): 卡片选择 · 复合 ChoiceboxGroup/Choicebox(标题/描述/图标卡片) · 单选(radio)/多选(checkbox)对称 + 受控非受控 + 网格列数 · 隐藏原生 input 承载键盘与 a…
+- [AuthPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md): 搭出分屏登录页的品牌一侧，含渐变底、标语和卖点
+- [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 触发操作的按钮，提供实心、浅色、描边、幽灵和危险等变体
+- [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 把相关按钮连成一体或分组排列，做成分段控件
+- [Calendar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/calendar/calendar.md): 常驻的日历面板，可在日、月、年三层之间下钻
+- [Cascader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/cascader/cascader.md): 沿逐级展开的选项列选出一条路径
+- [CellEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/cell-editor/cell-editor.md): 在表格单元格里就地编辑，静止时看起来和纯文本一样
+- [Checkbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/checkbox/checkbox.md): 切换一个独立的布尔值，支持半选态
+- [CheckboxGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/checkbox-group/checkbox-group.md): 让一组复选框共同维护一个值数组
+- [Choicebox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/choicebox/choicebox.md): 用带标题和描述的卡片做单选或多选
 - [ClickCaptcha](https://github.com/hulianui/hulian/blob/master/packages/ui/src/click-captcha/click-captcha.md): 点选式人机验证 UI · 采集点击序列回传相对坐标(0~1) + 序号标记/撤销/换一张 + 键盘准星可达 + 失败抖动清空(零协议·不碰网络)
 - [CodeEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-editor/code-editor.md): 代码编辑器 · 零依赖 textarea + 高亮层叠加（不引 CodeMirror/Monaco） · 受控 value/onChange + 行号槽 + 当前行高亮 + 语法着色(JS 家族/JSON/Shell …
 - [ColorField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/color-field/color-field.md): 颜色输入框 · 紧凑单行：色块(调起系统取色器) + 十六进制文本输入 + 短写自动展开(#abc→#aabbcc) + 草稿态支持手输
-- [ColorPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/colorpicker/colorpicker.md): 颜色选择 · react-colorful 内核 + HEX/RGB/HSL 多格式输出与切换器(零依赖派生) + 瑚琏 token 皮肤
-- [ColorSwatchPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/color-swatch-picker/color-swatch-picker.md): 预设色块单选 · base-ui RadioGroup 换皮(方向键 a11y) + 选中 ring + mix-blend 勾(零依赖)
-- [Combobox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/combobox/combobox.md): 自动补全 · 触发按钮 + 弹层内搜索(图4 范式)，亦支持内联输入；浮层锚到字段等宽
-- [CountrySelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/country-select/country-select.md): 国家/地区选择 · 内置 250 国(旗+中英文名+区号) + 单/多选 chips + 中英文/码/区号搜索 · dogfood Combobox(新增多选)
+- [ColorPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/colorpicker/colorpicker.md): 拖取饱和度与色相选颜色，可输出 HEX、RGB 或 HSL
+- [ColorSwatchPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/color-swatch-picker/color-swatch-picker.md): 从一组预设色块里挑一个颜色，方向键可达
+- [Combobox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/combobox/combobox.md): 边输入边过滤候选项，可用触发按钮也可内联输入
+- [CountrySelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/country-select/country-select.md): 搜索并选择国家和地区，带旗帜与区号
 - [DatePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-picker/date-picker.md): 单日期选择 · 自研零依赖(触发器 + Popover 罩 Calendar 面板·日/月/年三粒度) + min-max/disabledDate/清除
 - [DateRangePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-range-picker/date-range-picker.md): 日期区间 · 自研零依赖双面板范围日历（日 / 月 / 年三档粒度）+ Popover 引擎 + 快捷预设/min-max/disabledDate · 定宽字符串数组受控
-- [DateTimePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-time-picker/date-time-picker.md): 日期时间选择 · 自研零依赖(左日历 + 右时/分/秒列一体弹层) + 步进/秒/此刻 · 边界只在压着 min-max 那天生效 · 定宽 YYYY-MM-DD HH:mm 受控
+- [DateTimePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/date-time-picker/date-time-picker.md): 在一个浮层里同时选好日期和时间
 - [ElasticSlider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/elastic-slider/elastic-slider.md): 橡皮筋音量滑块 · 拖到两端轨道横拉纵压 + 图标回弹位移 + hover 整体放大、松手 spring 弹回(motion·零新依赖·reduced-motion) · forms/basic · #animated
-- [EmojiPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/emoji-picker/emoji-picker.md): 表情选择器 · 内联 emoji 数据集(7 分类·中英关键词) + 关键词搜索 + 分类页签 + 最近使用(受控/内部) · 搜索框 dogfood Input · onSelect 回传 emoji(零依赖·聊天/…
+- [EmojiPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/emoji-picker/emoji-picker.md): 按分类浏览或关键词搜索表情，带最近使用
 - [Field](https://github.com/hulianui/hulian/blob/master/packages/ui/src/field/field.md): 字段包装 · label/help/error a11y 串联
-- [Form](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form/form.md): 表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同
+- [Form](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form/form.md): 组织具名字段，统一收集提交和字段级错误
 - [IconPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/icon-picker/icon-picker.md): 图标选择 · 分类页签 + 跨类搜索(名字/别名) + 网格 + 最近使用 · 图标集由消费方经 renderIcon 注入
-- [ImageCropper](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image-cropper/image-cropper.md): 图片裁剪 · 固定比例框(默认证件照 5:7) + 触屏双指捏合/拖拽对位 + 缩放滑杆 + canvas 出 Blob(尺寸/质量/字节上限可配·react-easy-crop MIT)
-- [Input](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input/input.md): 输入框 · Base UI Field + 前后缀 + invalid
-- [InputOTP](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input-otp/input-otp.md): 验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖)
+- [ImageCropper](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image-cropper/image-cropper.md): 让用户拖动缩放图片，按固定比例裁出成品
+- [Input](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input/input.md): 收单行文本输入，可加前后缀和错误态
+- [InputOTP](https://github.com/hulianui/hulian/blob/master/packages/ui/src/input-otp/input-otp.md): 分格输入验证码，自动跳格并支持整段粘贴
 - [InspectorPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/inspector-panel/inspector-panel.md): 设计工具属性检查器 · **字段 schema 驱动**（给一份 `{ key, label, kind }` 就派生控件，不是写死五个分类）· 七种控件 kind 全部换皮自既有表单件 · spacing 四联 + …
 - [InteractiveHoverButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/interactive-hover-button/interactive-hover-button.md): 悬停展开按钮 · 圆点扩成整块底色 + 尾随箭头 CTA · forms/button · #animated
 - [IssueReporter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/issue-reporter/issue-reporter.md): GitHub issue 草稿器 · 表单收集（类型 Select / 相关组件 Combobox / 标题 Input / 模板字段 Textarea 或 MarkdownEditor）→ 按模板 `toMarkdo…
 - [Label](https://github.com/hulianui/hulian/blob/master/packages/ui/src/label/label.md): 表单标签原语 · `<label>` + 与 Field 同源皮肤 + htmlFor
-- [Listbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/listbox/listbox.md): 可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖)
+- [Listbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/listbox/listbox.md): 用键盘可漫游的列表做单选、多选或纯动作项
 - [LoginForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/login-form/login-form.md): 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + field…
-- [MarkdownEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown-editor/markdown-editor.md): Markdown 编辑器 · WYSIWYG 罩 TipTap + 值进出 markdown 字符串 + 隐藏 input 桥 Field + 标准集工具栏
-- [Mentions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/mentions/mentions.md): @提及输入 · 复用 Textarea 皮肤 + 触发符唤起候选(镜像 div 测光标像素坐标) + aria-activedescendant 虚拟焦点(零依赖)
-- [ModalForm / DrawerForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form-dialog/form-dialog.md): 弹窗/抽屉表单 · 列表页新增/编辑编排件(复用 Dialog/Drawer + useForm + Button footer) · 提交前自动 validate · async onFinish 成功关闭/失败保持…
-- [NumberField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-field/number-field.md): 数字步进 · Base UI ±按钮 + 键盘步进 + min/max
+- [MarkdownEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown-editor/markdown-editor.md): 所见即所得地编辑内容，值进出都是 Markdown
+- [Mentions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/mentions/mentions.md): 输入触发符后弹出候选，把提及插进文本
+- [ModalForm / DrawerForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form-dialog/form-dialog.md): 把带校验的表单装进弹窗或抽屉，管好提交与关闭
+- [NumberField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-field/number-field.md): 编辑数字，带上下限、步进按钮和键盘步进
 - [PasswordGenerator](https://github.com/hulianui/hulian/blob/master/packages/ui/src/password-generator/password-generator.md): 密码生成器 · Bitwarden 式双模面板（字符密码 + 密码短语·内置 1747 词表）+ 熵值实时评级四档强度条 + 参数即改即重算 + 逐字符着色（数字蓝符号红·手抄可辨）+ 复制/重生成 + i18n · …
-- [ProForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-form/pro-form.md): 内联表单编排 · useForm + 自动 footer(提交/重置) + async onFinish loading + 自定义 footer(ModalForm 的内联姊妹件·文案接 i18n)
+- [ProForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-form/pro-form.md): 内联表单编排，自动配好提交与重置底栏
 - [PulsatingButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pulsating-button/pulsating-button.md): 脉冲按钮 · 外扩光环(box-shadow) + RSC · forms/button · #animated
-- [Radio](https://github.com/hulianui/hulian/blob/master/packages/ui/src/radio/radio.md): 单选 · RadioGroup 单选组 + 键盘方向键
+- [Radio](https://github.com/hulianui/hulian/blob/master/packages/ui/src/radio/radio.md): 从一组互斥选项里选一个，支持方向键操作
 - [RainbowButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rainbow-button/rainbow-button.md): 彩虹按钮 · chart 流光底 + 模糊光晕 + RSC · forms/button · #animated
-- [Rating](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rating/rating.md): 评分 · 零依赖受控星级(radio 语义) + 自定义图标 + hover 预览 + token 星色
-- [RegionCascader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-cascader/region-cascader.md): 中国省市区级联 · 内置全量行政区划(国家统计局口径·3级) + 浮层搜索直达 + onChange 同回码与名 · dogfood Cascader
+- [Rating](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rating/rating.md): 用星级打分，可换图标并带悬停预览
+- [RegionCascader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-cascader/region-cascader.md): 逐级选出中国的省、市、区，内置行政区划数据
 - [RegionSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/region-select/region-select.md): 图上框选回坐标 · 拖框拿回**原图像素** [x1,y1,x2,y2](区别 ImageCropper 出 Blob) · 反向拖规范化 + minSide 滤误点 + aspect 固定比例(撞边界整体缩不破比例)…
-- [RemoteSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/remote-select/remote-select.md): 远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips
-- [RichTextEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rich-text-editor/rich-text-editor.md): 富文本编辑器 · 值进出 HTML 字符串 + 工具栏可裁 + 图片上传注入 + 粘贴净化
+- [RemoteSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/remote-select/remote-select.md): 从远端接口搜索选项，带防抖、分页和初值回显
+- [RichTextEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rich-text-editor/rich-text-editor.md): 所见即所得地编辑内容，值进出都是 HTML
 - [RippleButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ripple-button/ripple-button.md): 波纹按钮 · 点击落点扩散(Material) + reduced-motion · forms/button · #animated
 - [ScopeMatrix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scope-matrix/scope-matrix.md): 范围矩阵 · 允许 / 禁止两个语义对立的模式桶，并把「最终有效范围」写成人话
-- [SearchForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/search-form/search-form.md): 查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖)
-- [SecretField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/secret-field/secret-field.md): 密钥掩码字段 · sk-abc…wxyz 掩码(full/prefix-suffix) + 眼睛 toggle 显形 + 一键复制原值(同 Snippet idiom·1.5s 反馈) + 尾部动作槽(重置/吊销) +…
-- [Segmented](https://github.com/hulianui/hulian/blob/master/packages/ui/src/segmented/segmented.md): 分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖)
+- [SearchForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/search-form/search-form.md): 拼出列表页顶部的查询条件区，可折叠可重置
+- [SecretField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/secret-field/secret-field.md): 掩码显示密钥，可一键显形和复制原值
+- [Segmented](https://github.com/hulianui/hulian/blob/master/packages/ui/src/segmented/segmented.md): 在紧凑的分段控件里选一项，滑块跟着移动
 - [Select](https://github.com/hulianui/hulian/blob/master/packages/ui/src/select/select.md): 下拉选择 · Base UI overlay 单选/多选（multiple）+ items 自动 label + clearable / searchable / loading / 分组
 - [ShimmerButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shimmer-button/shimmer-button.md): 微光按钮 · 边缘游走火花(conic) + token + RSC · forms/button · #animated
-- [Slider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/slider/slider.md): 滑块 · Base UI 单值/range + 键盘步进
+- [Slider](https://github.com/hulianui/hulian/blob/master/packages/ui/src/slider/slider.md): 沿轨道拖出一个数值或一段区间，支持键盘步进
 - [SocialButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/social-button/social-button.md): 第三方登录按钮 · 微信/支付宝/QQ/微博 + GitHub/Google/Apple/X/Discord/GitLab 品牌 logo(内联 simple-icons·零依赖) + 自定义品牌逃生口 + outli…
-- [StepsForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/steps-form/steps-form.md): 分步表单 · 复用 Steps 指示器 + 上一步/下一步/提交导航 + onStepValidate 逐步校验 + 跨步保值(消费者 useForm 持有·文案接 i18n)
-- [Switch](https://github.com/hulianui/hulian/blob/master/packages/ui/src/switch/switch.md): 开关 · Base UI 受控 + ARIA
-- [Textarea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/textarea/textarea.md): 多行输入 · 自适应高度
-- [TimeField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/time-field/time-field.md): 时间分段输入 · 自研零依赖(时/分/秒各一段 spinbutton·↑↓ 调值/←→ 切段/数字键两位覆写) + min-max 钳制 · 定宽 HH:mm[:ss] 受控
-- [TimePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/time-picker/time-picker.md): 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控
-- [Toggle](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toggle/toggle.md): 切换按钮 · Base UI pressed 态 + ToggleGroup 单/多选
-- [Transfer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/transfer/transfer.md): 穿梭框 · 左右双 listbox 面板 + 移动按钮(选中/全部) + 可选搜索 + 空态(零依赖·复用 Listbox/Empty)
+- [StepsForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/steps-form/steps-form.md): 把长表单拆成多步，逐步校验并保留已填内容
+- [Switch](https://github.com/hulianui/hulian/blob/master/packages/ui/src/switch/switch.md): 用一个开关切换二元设置，语义是改完即刻生效
+- [Textarea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/textarea/textarea.md): 收多行文本输入，高度随内容自增
+- [TimeField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/time-field/time-field.md): 用键盘直接编辑时、分、秒各段，不弹浮层
+- [TimePicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/time-picker/time-picker.md): 从时、分、秒三列浮层里选一个时间
+- [Toggle](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toggle/toggle.md): 让单个按钮在按下与未按下之间切换
+- [Transfer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/transfer/transfer.md): 在待选和已选两个列表之间搬运条目
 - [TreeSelect](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tree-select/tree-select.md): 树选择器 · 触发器 + Popover 浮层内嵌 Tree + 单选/多选(checkable)对称 + 树内搜索 · 复用树引擎核
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
@@ -134,176 +134,176 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 ## 数据展示 data-display（93）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
-- [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 头像 · Base UI 图片+fallback
-- [AvatarCircles](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar-circles/avatar-circles.md): 堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC)
+- [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 展示用户头像，加载失败时回退到备用内容
+- [AvatarCircles](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar-circles/avatar-circles.md): 把多个头像叠成一排，末尾带溢出计数
 - [AwardBadge](https://github.com/hulianui/hulian/blob/master/packages/ui/src/award-badge/award-badge.md): 桂冠奖章 · 左桂冠圈名次 + 右「前缀小字 + 粗体主标题」两行 · 对标 GitHub Trending「#1 Repository Of The Day」/ Product Hunt 荣誉牌 · outline/…
-- [Badge](https://github.com/hulianui/hulian/blob/master/packages/ui/src/badge/badge.md): 计数角标 · count/max 溢出 + dot + 自定义内容 + 包裹叠加(四角/offset)
-- [BentoGrid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/bento-grid/bento-grid.md): 错落栅格 · BentoGrid/BentoCard 复合 + 跨列跨行 + hover CTA(纯 CSS·RSC)
+- [Badge](https://github.com/hulianui/hulian/blob/master/packages/ui/src/badge/badge.md): 在内容一角叠加计数或小红点，计数可封顶
+- [BentoGrid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/bento-grid/bento-grid.md): 用跨行跨列的卡片拼出错落有致的功能墙
 - [Book3D](https://github.com/hulianui/hulian/blob/master/packages/ui/src/book-3d/book-3d.md): 3D 立体书 · CSS 3D transform 透视书体(前封/书脊/页块/后封) + 渐变或图封面 + 封面标题副标 + 角标缎带 + hover 翻正(纯 transform·GPU 合成·reduced-mo…
 - [BounceCards](https://github.com/hulianui/hulian/blob/master/packages/ui/src/bounce-cards/bounce-cards.md): 扇形弹跳卡 · 一叠卡片扇形铺开的入场弹跳组件 · 逐张 scale 0 弹性弹入 + hover 推挤让位（零依赖去 gsap·motion 弹簧·reduced-motion） · data-display/col…
-- [Card](https://github.com/hulianui/hulian/blob/master/packages/ui/src/card/card.md): 卡片 · Header/Body/Footer 插槽
+- [Card](https://github.com/hulianui/hulian/blob/master/packages/ui/src/card/card.md): 把相关内容装进带页头、正文和页脚的卡片
 - [CardSwap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/card-swap/card-swap.md): 卡片洗牌 · 3D 透视卡片自动洗牌组件 · 最前卡下坠 → 其余递进 → 绕回队尾循环 + 复合 CardSwap.Card 默认皮肤（去 gsap·motion useAnimate·reduced-motion）…
-- [Carousel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/carousel/carousel.md): 轮播 · 自研零依赖 scroll-snap + 箭头/圆点/autoplay/loop + 拖拽/键盘(reduced-motion)
+- [Carousel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/carousel/carousel.md): 轮播多张幻灯片，带箭头、圆点、自动播放和拖拽
 - [Chart](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chart/chart.md): 图表 · recharts 直裹 + chart token 皮肤(Area/Bar)
-- [Chip](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chip/chip.md): 标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数)
+- [Chip](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chip/chip.md): 紧凑的标记令牌，可带圆点也可移除
 - [ChromaGrid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chroma-grid/chroma-grid.md): 聚光卡片墙 · 光标聚光揭示的卡片墙 · 整片灰度暗化、光标圈内透出全彩 + 单卡 hover 径向高光（弹性跟随·reduced-motion） · data-display/collection · #animat…
 - [CircularGallery](https://github.com/hulianui/hulian/blob/master/packages/ui/src/circular-gallery/circular-gallery.md): 弧形图片画廊 · ogl 弧形图片画廊 · 卡片沿圆弧弯曲倾斜排开 + 滚轮/拖拽惯性平移首尾无缝循环(ogl·圆角SDF·token化标题·reduced-motion 降级静态轨道) · data-display/…
-- [CodeReviewThread](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-review-thread/code-review-thread.md): 代码评审线程 · 代码审查评论线程 · severity 左边色条(四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠 · 嵌 code-diff annotati…
-- [Comment](https://github.com/hulianui/hulian/blob/master/packages/ui/src/comment/comment.md): 评论 · 嵌套回复缩进 + 可选连接线 + 操作区 + comment/log 类型(复用 Avatar/Link·RSC)
+- [CodeReviewThread](https://github.com/hulianui/hulian/blob/master/packages/ui/src/code-review-thread/code-review-thread.md): 展示代码评审线程，带严重度、建议改动和解决状态
+- [Comment](https://github.com/hulianui/hulian/blob/master/packages/ui/src/comment/comment.md): 展示可嵌套的评论回复，带缩进和操作区
 - [ComponentPicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/component-picker/component-picker.md): 组件库浏览器 · 左分类树(复用 Tree) + 顶部模糊搜索 + 结果网格(Card) + 详情面板(预览/Props 表/示例代码三开关) · 自研零依赖打分器(slug 命中远重于描述命中·不引 fuse.js)…
 - [ContributionGraph](https://github.com/hulianui/hulian/blob/master/packages/ui/src/contribution-graph/contribution-graph.md): 贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星…
-- [Coupon](https://github.com/hulianui/hulian/blob/master/packages/ui/src/coupon/coupon.md): 优惠券 · 撕票造型(中缝虚线+上下半圆穿孔·纯CSS) + 满减/折扣/包邮三类 + 可领/已领/已用/过期四态 + 选券高亮(电商标配·只消费 token)
-- [CreditCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/credit-card/credit-card.md): 银行卡展示 · 卡号前缀识别品牌(visa/mastercard/amex/银联/jcb/discover) + 分组格式化/打码(纯函数可测) + token 渐变卡面 + 芯片/品牌字标 + 正反面(磁条/CVC)…
+- [Coupon](https://github.com/hulianui/hulian/blob/master/packages/ui/src/coupon/coupon.md): 展示优惠券的面额、门槛、有效期和领取状态
+- [CreditCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/credit-card/credit-card.md): 展示银行卡卡面，自动识别品牌并可打码
 - [Danmaku](https://github.com/hulianui/hulian/blob/master/packages/ui/src/danmaku/danmaku.md): 弹幕引擎 · 轨道分配防重叠(等速模型·第二条入场后发车永不追尾) · scroll 滚动/top 顶部/bottom 底部三模式 + 轨道数/速度/密度(low/normal/high)/占屏比/透明度/暂停 + p…
 - [DecayCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/decay-card/decay-card.md): 湍流溶解卡 · 鼠标驱动的「湍流溶解」图片卡 · SVG feTurbulence+feDisplacementMap 随鼠标速度融化图像 + 带阻尼的视差倾斜平移（零依赖去 gsap·RAF 缓动·reduced-m…
 - [DeployStatus](https://github.com/hulianui/hulian/blob/master/packages/ui/src/deploy-status/deploy-status.md): 部署状态 · 部署/构建生命周期态 · 排队/构建中(转圈)/已上线/失败/已取消/已跳过 六态(→success/danger/primary/neutral 软填充) · badge 徽标/dot 圆点(build…
-- [Descriptions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/descriptions/descriptions.md): 描述列表 · 详情页键值对 + horizontal/vertical + bordered + span 跨列(纯皮肤·RSC)
+- [Descriptions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/descriptions/descriptions.md): 在详情页里成组展示只读的键值对字段
 - [DesignCanvas](https://github.com/hulianui/hulian/blob/master/packages/ui/src/design-canvas/design-canvas.md): 视觉设计画布 · 零依赖原生 Pointer Events · 无限平移缩放（滚轮以指针为锚点/空格·中键·右键拖拽）+ 元素选择框 + 拖拽移动 + 八向 resize（越过锚定边自动翻转）· 受控 items 托管…
 - [DiffStat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/diff-stat/diff-stat.md): 改动统计条 · +N −M 绿红格子条按比例填充(纯函数 splitBlocks 可测) + A/M/D/R 状态徽标 · 代码审查/PR 列表刚需·零依赖
-- [DocumentSheet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/document-sheet/document-sheet.md): 单据纸张 · A4 居中纸面(白底/暗色近黑纸·shadow·210mm 宽) + 打印态隔离(工具栏/阴影/外边距 print:hidden·data-document-sheet 钩子) + 内置打印按钮(onPr…
+- [DocumentSheet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/document-sheet/document-sheet.md): 把单据排在 A4 纸面上，带页眉页脚和打印支持
 - [DomeGallery](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dome-gallery/dome-gallery.md): 球面图库 · ：图片瓦片贴在 CSS 3D 半球内壁，拖拽旋转浏览、点击放大查看 · 原生 PointerEvents 自搓拖拽+RAF 惯性 + motion 灯箱(零依赖·token·reduced-motion)…
-- [Dot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot/dot.md): 状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC)
-- [EditableTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/editable-table/editable-table.md): 行内编辑表格 · 行级编辑(草稿副本/保存校验/取消还原) + 自定义编辑器(editor 逃生舱) + 增删行 + 列对齐/宽度(企业录入场景·文案接 i18n)
+- [Dot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot/dot.md): 一个状态圆点，可带语义色、呼吸动效和无障碍名
+- [EditableTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/editable-table/editable-table.md): 在表格里直接编辑整行，带校验、取消和增删行
 - [Empty](https://github.com/hulianui/hulian/blob/master/packages/ui/src/empty/empty.md): 空状态 · 图标+标题+描述+操作槽 + 内置空箱图标 + 加载中档 + sm/md(零依赖·RSC)
 - [EventStream](https://github.com/hulianui/hulian/blob/master/packages/ui/src/event-stream/event-stream.md): 事件流 · 高频机器事件的连续时间线。语义色是主要信息载体，用来一眼分辨「哪些不对劲」
-- [FileTree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/file-tree/file-tree.md): 文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义)…
+- [FileTree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/file-tree/file-tree.md): 浏览文件和目录，带展开、选中和改动状态标记
 - [FilterChip](https://github.com/hulianui/hulian/blob/master/packages/ui/src/filter-chip/filter-chip.md): 已应用筛选条件胶囊 · 主语｜操作符｜值｜移除 四段(段间竖线) + 操作符可省 + 值收 ReactNode + 整段可点
-- [Flow](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flow/flow.md): 节点画布编排器 · 零依赖原生 Pointer Events + SVG 贝塞尔连线 · 拖节点/拖桩连线/平移缩放/适配视图 + 受控 nodes/edges(onNodesChange/onConnect/删点删线…
+- [Flow](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flow/flow.md): 编排节点和连线，可拖节点、连桩、平移和缩放
 - [FlyingPosters](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flying-posters/flying-posters.md): WebGL 海报飞行长廊 · 一列海报随滚轮/拖拽无限循环上下飞过，顶点着色器按 distortion 翻折"飞起"·离屏循环复用 + 透视相机景深(ogl·懒加载·StrictMode 安全·reduced-moti…
 - [Folder](https://github.com/hulianui/hulian/blob/master/packages/ui/src/folder/folder.md): 3D 文件夹 · 点击展开的 3D 文件夹 · 三层纸张扇形铺开 + 展开后磁吸跟随鼠标(零依赖纯 CSS transform·token 派生·reduced-motion) · data-display/colle…
-- [Funnel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/funnel/funnel.md): 漏斗图 · 阶段宽度按 value 比例 + 级间转化率徽标(本级/上一级) · 纵/横双向 + per-stage tone + renderStage 自定义 · computeFunnel 纯函数(不除零)带单测…
-- [Gantt](https://github.com/hulianui/hulian/blob/master/packages/ui/src/gantt/gantt.md): 甘特图(只读) · 项目排期可视化 · 左固定列(按 group 分组小标题) + 右时间轴(day/week/month 刻度) · CSS grid + 百分比定位条形 + progress 深色填充层 + tod…
-- [GitCommit](https://github.com/hulianui/hulian/blob/master/packages/ui/src/git-commit/git-commit.md): git 提交引用 · 分支 chip(GitBranch) + 短哈希等宽(纯函数 shortSha 可测·可定制位数/href 跳链) + 提交信息单行截断 + 作者头像槽 · inline 单行/stacked 两…
+- [Funnel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/funnel/funnel.md): 按各阶段数量画漏斗，并标出级间转化率
+- [Gantt](https://github.com/hulianui/hulian/blob/master/packages/ui/src/gantt/gantt.md): 把任务排到时间轴上，展示分组、进度和今天的位置
+- [GitCommit](https://github.com/hulianui/hulian/blob/master/packages/ui/src/git-commit/git-commit.md): 展示一次提交的分支、短哈希、说明和作者
 - [Heatmap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/heatmap/heatmap.md): 热力图 · 网格色阶映射(value→bucket→primary 透明度档·纯函数 buildMatrix/bucketize 可测) + 小数值域 domain/百分比 valueFormat + 色阶图例 + 无…
-- [Image](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image/image.md): 图片 · 加载淡入 + 失败回退/占位 + isZoomed hover 放大 + radius
-- [ImageViewer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image-viewer/image-viewer.md): 图片查看器 · 全屏 Lightbox(portal+锁滚复用 dialog) · 受控 index 翻页(箭头/← →/序号) + 滚轮指针锚定缩放/双击 1x↔2x/拖拽平移(切图重置) + 底部缩略图条 + ro…
+- [Image](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image/image.md): 加载图片并处理淡入、失败回退和悬停放大
+- [ImageViewer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image-viewer/image-viewer.md): 全屏查看图片，可缩放、平移、翻页和看缩略图
 - [InfiniteMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/infinite-menu/infinite-menu.md): 球面菜单 · 可拖拽旋转的菜单球，菜单项围绕球面分布、正对镜头者贴靠为激活项并显覆盖层标题/描述+动作箭头 · 松手惯性衰减 + 自动自旋（零依赖 CSS-3D/RAF·reduced-motion） · data-d…
-- [InfiniteScroll](https://github.com/hulianui/hulian/blob/master/packages/ui/src/infinite-scroll/infinite-scroll.md): 无限滚动 · IntersectionObserver 底部哨兵 + 自动定位可滚祖先作 root + 加载锁防重入 + hasMore 完结态(零依赖·分页加载)
-- [JsonViewer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/json-viewer/json-viewer.md): 只读 JSON 树 · 折叠 JSON 树(只读) · 递归零依赖 + 语法着色(key/string/number/bool/null) + 行级展开折叠 + 折叠态 {…} N keys/[…] N items +…
-- [Kanban](https://github.com/hulianui/hulian/blob/master/packages/ui/src/kanban/kanban.md): 看板 · @dnd-kit headless 多容器 + 跨列/列内拖拽 + 键盘可拖 + 列头统计槽 + 空列占位 · 受控 onMove(消费者改业务字段) · 商机看板/任务流转旗舰
+- [InfiniteScroll](https://github.com/hulianui/hulian/blob/master/packages/ui/src/infinite-scroll/infinite-scroll.md): 滚到接近底部时自动加载下一批内容
+- [JsonViewer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/json-viewer/json-viewer.md): 折叠查看 JSON，带语法着色、复制和层级控制
+- [Kanban](https://github.com/hulianui/hulian/blob/master/packages/ui/src/kanban/kanban.md): 把卡片在多个状态列之间拖动流转
 - [Legend](https://github.com/hulianui/hulian/blob/master/packages/ui/src/legend/legend.md): 独立图例 · 彩标记 + 系列名 + 可选数值 · dot/square/line 三标记 × row 横排自动换行/column 竖排(value 右对齐) × sm/md · 缺省色按序取 chart-1..6(与…
-- [List](https://github.com/hulianui/hulian/blob/master/packages/ui/src/list/list.md): 数据列表 · 复合 List/ListItem/ListItem.Meta + actions/size/bordered/split/grid + 空态/分页/加载更多(零依赖·复用 Empty/Pagination…
-- [LiveChat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/live-chat/live-chat.md): 直播公屏 · 高频自动滚消息流 + message/enter(进场)/gift(送礼)/follow(关注)/system(系统)五类型默认皮肤 + 等级牌/身份徽标 + 置顶区 + 上滚查看历史时浮出「N 条新消息…
-- [LivePlayer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/live-player/live-player.md): 直播播放器壳 · 自带极简 muted/loop/autoPlay video(非 VOD scrubber chrome·与 Video 互补) 或 surface 自定义画面 + LIVE 呼吸徽标(ping 红点…
-- [LiveProductCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/live-product-card/live-product-card.md): 小黄车讲解卡 · 序号链接角标 + 现价/划线原价 + 讲解中脉冲徽标 + 库存/已售 + 秒杀限量角标 + 抢购按钮插槽 + row 列表行/card 网格卡两布局(直播带货标配·只消费 token·区别通用 Car…
+- [List](https://github.com/hulianui/hulian/blob/master/packages/ui/src/list/list.md): 排列结构化列表项，带元信息、操作区、空态和分页
+- [LiveChat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/live-chat/live-chat.md): 展示直播公屏消息流，带礼物、进场、置顶和自动滚动
+- [LivePlayer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/live-player/live-player.md): 直播画面外壳，带在线人数、清晰度切换和互动叠层
+- [LiveProductCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/live-product-card/live-product-card.md): 展示直播带货商品，含价格、库存和抢购入口
 - [LogoLoop](https://github.com/hulianui/hulian/blob/master/packages/ui/src/logo-loop/logo-loop.md): logo 跑马灯 · 无缝无限滚动的 logo 跑马灯 · RAF 速度低通平滑 + 序列复制无缝回卷 · 横纵四向/悬停变速暂停/单项放大/两端渐隐(零依赖·token·reduced-motion) · data-…
-- [LogViewer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/log-viewer/log-viewer.md): 日志查看器 · 数据驱动行 lines(level/message/timestamp/source) + info/warn/error/debug/success 级别着色(纯函数 levelClass 可测) +…
+- [LogViewer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/log-viewer/log-viewer.md): 按级别着色展示日志行，新行自动贴底
 - [MagicBento](https://github.com/hulianui/hulian/blob/master/packages/ui/src/magic-bento/magic-bento.md): 便当卡片网格 · 魔法便当卡片网格 · 光标跟随径向聚光 + 描边光呼吸 + 可选 3D 倾斜(零依赖·token·reduced-motion) · data-display/collection · #animat…
 - [MagicCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/magic-card/magic-card.md): 魔法卡片 · 鼠标跟随径向高光(motion) + surface token · data-display/collection · #animated
 - [Marquee](https://github.com/hulianui/hulian/blob/master/packages/ui/src/marquee/marquee.md): 跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向 · data-display/collection · #animated
-- [Meter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/meter/meter.md): 度量条 · Base UI role=meter(静态量占比，区别 Progress)
+- [Meter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/meter/meter.md): 用语义化的量条表示某个值在已知范围里的占比
 - [NumberTicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-ticker/number-ticker.md): 数字滚动 · 进入视口 tween 到目标值 + reduced-motion · data-display/stat · #animated
 - [PixelCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pixel-card/pixel-card.md): 像素卡片 · canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion …
-- [PricingTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pricing-table/pricing-table.md): 定价对比矩阵 · 行列转置(列=被比项/模型·行=属性/价目) + 列高亮描边 + 角标(推荐/最佳性价比) + 表头吸顶 + 窄屏横滚(复用 ScrollArea·区别 Table 行=记录·模型市场定价对照刚需)
+- [PricingTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pricing-table/pricing-table.md): 把多个方案按属性逐行对照，可高亮推荐列
 - [ProfileCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/profile-card/profile-card.md): 全息名片卡 · 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-d…
-- [ProTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-table/pro-table.md): 高级表格 · 列表页编排层(复用 Table/SearchForm/Pagination) · 查询区 + 工具栏(密度/列设置/刷新/全屏) + 行选择 + 集成分页(企业中后台列表页旗舰)
+- [ProTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-table/pro-table.md): 在数据列表外配齐查询条件、工具栏、行选择和分页，拼出完整列表页
 - [QRCode](https://github.com/hulianui/hulian/blob/master/packages/ui/src/qrcode/qrcode.md): 二维码 · 编码内核 qrcode-generator + 瑚琏自渲 SVG(暗块合 path/crispEdges) + currentColor 吃主题(区别 qrcode.react 写死黑白) + UTF-8 …
 - [QuestionCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-card/question-card.md): 题目卡片 · 教辅题库标准展示件(题号/题型/分层/题干/选项/小问/附图/章节/出处) · 题干选项走 Formula(KaTeX) 真排版 · 走 @hulianui/ui/math 独立 subpath 主包不付…
-- [QueueLane](https://github.com/hulianui/hulian/blob/master/packages/ui/src/queue-lane/queue-lane.md): 优先级队列板 · 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」…
+- [QueueLane](https://github.com/hulianui/hulian/blob/master/packages/ui/src/queue-lane/queue-lane.md): 按优先级泳道展示队列积压，道头给出深度与等待
 - [ReflectiveCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/reflective-card/reflective-card.md): 金属反光证件卡 · 对角高光横扫 + 磨砂噪点 + 渐变发丝边框(纯 CSS 零依赖·token·RSC 安全·reduced-motion)，内容可插槽化 · data-display/collection · #a…
 - [RelativeTime](https://github.com/hulianui/hulian/blob/master/packages/ui/src/relative-time/relative-time.md): 相对时间 · 时间戳→「3分钟前/昨天/2个月后」+ 自动 tick 刷新(可设间隔/受控基准) + 中英 locale · 纯函数 formatRelative/formatAbsolute 可测 · <time> …
 - [RowActions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/row-actions/row-actions.md): 表格行操作区 · 声明式动作表 + tone 层级 + 超出 max 收进溢出菜单 + 破坏性动作二次确认
-- [Sankey](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sankey/sankey.md): 桑基图 · (库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · …
-- [Scheduler](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scheduler/scheduler.md): 事件日历/排班 · 库首个事件日历件 · 月/周/日/资源四视图(横轴资源·纵轴时间) + 时间轴网格事件块 + 重叠并排 + 当前时间红线 · 零依赖原生 PointerEvents 拖空白建预约/拖事件改期/拖下缘…
-- [ScoreRing](https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-ring/score-ring.md): 评分环 · 半径仪表盘 + A-F 等级带(value→grade tone 映射·纯函数 resolveGrade 可测) + 环心分值/等级 · 区别线性 Meter/Progress·SVG dasharray …
+- [Sankey](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sankey/sankey.md): 用带宽度的流向图展示各阶段之间的分配与去向
+- [Scheduler](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scheduler/scheduler.md): 在月、周、日和资源视图里排事件，可拖拽建单改期
+- [ScoreRing](https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-ring/score-ring.md): 用彩色环形仪表盘展示分值和对应等级
 - [ScrollStack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-stack/scroll-stack.md): 滚动堆叠卡 · 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collec…
 - [ShieldBadge](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shield-badge/shield-badge.md): README 徽章 · shields.io 风格「左灰标签 + 右彩数值」双段贴纸(版本/许可证/下载量/CI/星标) · 5 语气 + color 逃生舱 · solid/soft/outline 三皮肤 × ro…
-- [Skeleton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/skeleton/skeleton.md): 骨架屏 · shimmer 高光占位(text/circle/rect) + 无边框组合预设 CardSkeleton/ListSkeleton/TableSkeleton
+- [Skeleton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/skeleton/skeleton.md): 用占位骨架预留内容位置，等待数据到达
 - [Sortable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sortable/sortable.md): 拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove)
-- [Sparkline](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sparkline/sparkline.md): 内联趋势迷你图 · 无轴无网格的极简趋势 · line/area/bar 三态 + highlightLast 末点圆点 + 原生 SVG <title> tooltip(RSC 安全零 JS) · 几何抽纯函数(归一…
+- [Sparkline](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sparkline/sparkline.md): 在一行里画出极简趋势，不带坐标轴和网格
 - [Stat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stat/stat.md): 指标卡 · KPI 数值/标签/升降趋势(无图表库)
-- [Statistic](https://github.com/hulianui/hulian/blob/master/packages/ui/src/statistic/statistic.md): 统计数值 · 千分位/precision/前后缀/valueStyle + 可选 NumberTicker 入场滚动 + Statistic.Countdown 倒计时(SSR 安全·零依赖·与 Stat 互补)
-- [StatusDot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/status-dot/status-dot.md): 健康状态点 · 在线/降级/离线/维护四语义态(→success/warning/danger/neutral 映射) + 默认仅在线脉冲 + 状态文字 + 尾部数值槽(延迟/成功率)(封装 Dot·网关渠道健康墙刚需…
+- [Statistic](https://github.com/hulianui/hulian/blob/master/packages/ui/src/statistic/statistic.md): 格式化统计数值，可带前后缀、滚动入场或倒计时
+- [StatusDot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/status-dot/status-dot.md): 用圆点加文字表示服务在线、降级、离线还是维护
 - [Table](https://github.com/hulianui/hulian/blob/master/packages/ui/src/table/table.md): 表格 · TanStack headless + 列排序 + 列几何(size/align/ellipsis/resizable·固定列 offset 自动重算) + 行点击/整行导航(onRowClick/rowHr…
 - [Tag](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tag/tag.md): 状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)
 - [TiltedCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilted-card/tilted-card.md): 倾斜卡片 · 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · dat…
-- [Timeline](https://github.com/hulianui/hulian/blob/master/packages/ui/src/timeline/timeline.md): 时间线 · 复合 Timeline/Item + items 数组 + 彩色节点/自定义 dot + left/right/alternate + pending 加载态(纯皮肤·零依赖·RSC)
-- [Tree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tree/tree.md): 递归树 · 自研零依赖引擎 + WAI-ARIA tree(roving/方向键/typeahead) + checkable 父子级联半选 + 连接线 + 树内搜索 + grid-rows 高度过渡
-- [Treemap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/treemap/treemap.md): 矩形树图 · 一组扁平数据按 value 占面积铺满矩形，「谁占大头」一眼可见 · recharts squarify 引擎 + chart token 皮肤 · 格内文字按格子尺寸自动取舍(放不下就不画·treema…
-- [User](https://github.com/hulianui/hulian/blob/master/packages/ui/src/user/user.md): 用户卡 · Avatar + 名称/描述组合(复用瑚琏 Avatar) + RSC
-- [Video](https://github.com/hulianui/hulian/blob/master/packages/ui/src/video/video.md): 视频播放器 · Vidstack 引擎 + 瑚琏 token 自搓皮肤(播放/进度/音量/倍速/PiP/全屏) + 文件/HLS + 章节标记/续播/结束屏
-- [VirtualList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/virtual-list/virtual-list.md): 虚拟滚动 · 包 @tanstack/react-virtual 仅渲染可见区 + 定高/变高(measureElement)双模 + initialRect 首帧可算 + 末行触发 onReachEnd(万行列表/长…
-- [Watermark](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watermark/watermark.md): 水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密)
+- [Timeline](https://github.com/hulianui/hulian/blob/master/packages/ui/src/timeline/timeline.md): 把事件按时间排成一条线，节点样式可自定义
+- [Tree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tree/tree.md): 展示可展开的层级节点，支持选择和键盘操作
+- [Treemap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/treemap/treemap.md): 按数值把矩形铺满，一眼看出谁占大头
+- [User](https://github.com/hulianui/hulian/blob/master/packages/ui/src/user/user.md): 把头像、姓名和描述组合成一行用户信息
+- [Video](https://github.com/hulianui/hulian/blob/master/packages/ui/src/video/video.md): 播放本地或 HLS 视频，带自定义控件、章节和续播
+- [VirtualList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/virtual-list/virtual-list.md): 只渲染可见行，让上万条列表也能流畅滚动
+- [Watermark](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watermark/watermark.md): 给页面铺上防篡改的水印，支持高清屏
 - [WorldMap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/world-map/world-map.md): 点阵世界地图 · 预烘点阵(零依赖·吃主题) + 经纬度动画弧线(pathLength 画入 + 端点脉冲) + 独立节点 points(value 分大小/可选标签) + onPointClick 可点击键盘下钻(交…
 
 ## 导航 navigation（33）
-- [Accordion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/accordion/accordion.md): 手风琴 · Base UI 单/多开 + 高度过渡
-- [Affix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/affix/affix.md): 固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器
-- [Anchor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/anchor/anchor.md): 锚点导航 · 自研零依赖 scrollspy(IntersectionObserver) + 平滑滚动 + active CSS 变量滑动指示条 + offsetTop/二级项
+- [Accordion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/accordion/accordion.md): 折叠展开多段内容，可单开也可多开
+- [Affix](https://github.com/hulianui/hulian/blob/master/packages/ui/src/affix/affix.md): 滚过一定距离后把内容固定在屏幕上，不让布局跳动
+- [Anchor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/anchor/anchor.md): 在长文里跟踪当前标题并平滑跳转到各节
 - [AnimatedThemeToggler](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-theme-toggler/animated-theme-toggler.md): 主题切换 · View Transitions 圆形揭示明暗(复用瑚琏 useTheme + 降级) · navigation/action · #animated
 - [AppLauncher](https://github.com/hulianui/hulian/blob/master/packages/ui/src/app-launcher/app-launcher.md): 应用启动台 · 毛玻璃面板 + 搜索(标题即 placeholder) + 分类胶囊 + 图标网格(macOS Launchpad/工作台首页) · 搜索与分类各自可受控/非受控 · keywords 别名(拼音/英文…
-- [BackTop](https://github.com/hulianui/hulian/blob/master/packages/ui/src/back-top/back-top.md): 回顶 · 监听滚动容器超 visibilityHeight 淡入 + scrollTo smooth + prefers-reduced-motion 降级 auto(零依赖)
-- [BeianFooter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/beian-footer/beian-footer.md): 备案页脚 · ICP 备案号(可多个·默认链 miit) + 公网安备(警徽 icon·默认链 mps) + 版权行 · 中国大陆合规底栏(发丝边卡片·语义 token·外链新窗·RSC)
+- [BackTop](https://github.com/hulianui/hulian/blob/master/packages/ui/src/back-top/back-top.md): 滚动超过一定高度后浮出按钮，点它平滑回到顶部
+- [BeianFooter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/beian-footer/beian-footer.md): 在页脚展示 ICP 备案与公安备案信息并链到官网
 - [Brand](https://github.com/hulianui/hulian/blob/master/packages/ui/src/brand/brand.md): 品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底…
-- [Breadcrumb](https://github.com/hulianui/hulian/blob/master/packages/ui/src/breadcrumb/breadcrumb.md): 面包屑 · 纯皮肤静态 + aria-current 当前页语义
+- [Breadcrumb](https://github.com/hulianui/hulian/blob/master/packages/ui/src/breadcrumb/breadcrumb.md): 展示当前页面在层级中的位置，并标出当前页
 - [BubbleMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/bubble-menu/bubble-menu.md): 气泡导航菜单 · logo 气泡 + 汉堡切换钮，点开整屏铺一组错落旋转胶囊导航 · 胶囊弹性 scale 入场 + 标签上滑淡入按序错峰(motion·零 gsap·reduced-motion) · navigat…
 - [CardNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/card-nav/card-nav.md): 卡片导航 · ：胶囊顶栏汉堡点击后整条高度展开，内部卡片逐张错峰 y 位移淡入 · 受控/非受控开合 + token 卡片色(motion 去 gsap·reduced-motion) · navigation/glo…
-- [Collapsible](https://github.com/hulianui/hulian/blob/master/packages/ui/src/collapsible/collapsible.md): 折叠区 · Base UI collapsible 薄包 + 高度过渡(复用 Accordion --collapsible-panel-height)
-- [Command](https://github.com/hulianui/hulian/blob/master/packages/ui/src/command/command.md): 命令面板 · ⌘K 模态(复用 Dialog 引擎) + 实时过滤 + 分组 + 键盘漫游(零依赖)
-- [ContextMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/context-menu/context-menu.md): 右键菜单 · Base UI context-menu 原语薄包(锚到光标) + 复用 Menu 皮肤/data-highlighted + danger
-- [Dock](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dock/dock.md): 放大坞 · macOS 式按鼠标距离放大图标(motion 弹簧 + context 下发 mouseX)
+- [Collapsible](https://github.com/hulianui/hulian/blob/master/packages/ui/src/collapsible/collapsible.md): 折叠或展开一块内容，带高度过渡
+- [Command](https://github.com/hulianui/hulian/blob/master/packages/ui/src/command/command.md): 用快捷键唤起面板，搜索并执行分好组的命令
+- [ContextMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/context-menu/context-menu.md): 在右键落点弹出上下文操作菜单，可标危险项
+- [Dock](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dock/dock.md): 一排会随鼠标靠近放大的图标快捷入口
 - [FlowingMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flowing-menu/flowing-menu.md): 竖排流动菜单 · 指针近边缘判进/离向揭幕 + 循环跑马灯(文字/图片)(零依赖去 gsap·CSS keyframes + transition·token·reduced-motion) · navigation/…
 - [GooeyNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/gooey-nav/gooey-nav.md): 胶质导航条 · 切换时白色药丸 motion 弹簧滑到目标 + 迸射一圈彩色粒子经 blur/contrast 熔成黏稠液滴(零依赖 CSS 关键帧·token 取色·受控/非受控·reduced-motion) · …
-- [Link](https://github.com/hulianui/hulian/blob/master/packages/ui/src/link/link.md): 链接 · tone×underline + external 自动 target/rel/图标 + RSC
-- [Menu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/menu/menu.md): 下拉菜单 · Base UI 命令式 + Item/分隔/分组 + danger
-- [Menubar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/menubar/menubar.md): 菜单条 · Base UI menubar 薄包(File/Edit/View 顶层项+下拉) + dogfood Menu 皮肤 + 键盘切换/方向键漫游
-- [Navbar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/navbar/navbar.md): 导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换
-- [NavigationMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/navigation-menu/navigation-menu.md): 导航菜单 · Base UI navigation-menu 薄包(mega 面板/共享 Viewport 尺寸形变) + 触发器/内容/链接 + chevron 旋转
+- [Link](https://github.com/hulianui/hulian/blob/master/packages/ui/src/link/link.md): 带样式的链接，外链自动加图标和安全属性
+- [Menu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/menu/menu.md): 用下拉菜单收纳操作项，支持分组和危险项
+- [Menubar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/menubar/menubar.md): 把常驻的应用菜单排成一条键盘可达的菜单栏
+- [Navbar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/navbar/navbar.md): 搭出响应式顶部导航，含品牌、链接和移动端菜单
+- [NavigationMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/navigation-menu/navigation-menu.md): 用共享浮层承载导航触发器、链接和大面板
 - [NavMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/nav-menu/nav-menu.md): 侧边导航菜单 · 自研零依赖 · inline 手风琴/collapsed 图标飞出 + 树形 items + 选中/展开受控 + 纯 CSS grid 高度过渡 + WAI-ARIA tree 键盘漫游 + sema…
 - [PageHeader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/page-header/page-header.md): 页头骨架 · 返回/面包屑/标题/标签/操作区/Tabs 页脚(dogfood 复用·零依赖)
-- [Pagination](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pagination/pagination.md): 分页器 · 纯皮肤受控 + 页码区间算法(省略号)
+- [Pagination](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pagination/pagination.md): 在分好页的数据间跳转，页码过多时折叠成省略号
 - [PillNav](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pill-nav/pill-nav.md): 胶囊导航条 · 悬停底部圆涨满 + 文案翻转反相 + 激活指示圆点(纯 CSS·零依赖·RSC 安全·reduced-motion) · navigation/global · #animated
-- [RouteTabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/route-tabs/route-tabs.md): 路由页签条 · 中后台多标签工作区(右键关闭其他/左侧/右侧/全部/刷新 + 固定页签 + 拖拽调序 + 激活项滚入视口 + 溢出滚动) · 完全受控
+- [RouteTabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/route-tabs/route-tabs.md): 把打开过的页面排成一条页签，支持固定、调序和批量关闭
 - [Sidebar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sidebar/sidebar.md): 应用侧栏 · 组合式外壳 + 折叠状态机(offcanvas/icon/none) + 移动端自动切抽屉
 - [StaggeredMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/staggered-menu/staggered-menu.md): 侧滑分层菜单 · 侧滑分层导航菜单 · 触发按钮（菜单↔关闭文字滚动 + 加号旋转 225°）唤起面板 · 多层色层错峰滑入做叠纸质感 + 主条目自下而上带旋转依次入场 + 序号/社交链接尾随淡入（motion 去 g…
-- [Stepper](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stepper/stepper.md): 步骤条 · 零依赖 flex 布局 + 自绘完成对勾 + 连接线随进度点亮 + aria-current
-- [Steps](https://github.com/hulianui/hulian/blob/master/packages/ui/src/steps/steps.md): 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(分步表单/审批流)
-- [Tabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tabs/tabs.md): 选项卡 · Base UI 无浮层 + underline/solid 滑块
-- [Toolbar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toolbar/toolbar.md): 工具栏 · Base UI role=toolbar + 键盘漫游 + Button/Group/Separator
+- [Stepper](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stepper/stepper.md): 只标当前进度的极简横向步骤条，一条线走到底
+- [Steps](https://github.com/hulianui/hulian/blob/master/packages/ui/src/steps/steps.md): 分步流程的完整步骤条，可横可竖、能派生状态也能点击跳转
+- [Tabs](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tabs/tabs.md): 在多个内容面板之间切换，指示条可下划线可实心
+- [Toolbar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toolbar/toolbar.md): 把一组操作控件排成工具栏，焦点可键盘漫游
 
 ## 反馈 feedback（25）
-- [Alert](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert/alert.md): 提示条 · tone×variant 皮肤 + a11y role
-- [AlertDialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert-dialog/alert-dialog.md): 确认对话框 · Base UI 强制决策(不点遮罩/Esc 关) + Dialog 引擎
-- [Banner](https://github.com/hulianui/hulian/blob/master/packages/ui/src/banner/banner.md): 公告条 · 横贯容器顶部全宽 bar(站点维护/促销/版本更新) · 6 语气×soft/solid + 前导图标/操作区/可关闭 + 居中或左对齐 + 长文案 dogfood Marquee 单行无缝滚动 · 区别 …
+- [Alert](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert/alert.md): 在页面里常驻一条信息、成功、警告或危险提示
+- [AlertDialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/alert-dialog/alert-dialog.md): 对高风险操作要求明确确认，不能随手关掉
+- [Banner](https://github.com/hulianui/hulian/blob/master/packages/ui/src/banner/banner.md): 在容器顶部通栏播报公告，可带操作和关闭
 - [Callout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/callout/callout.md): 文章 / 文档用提示框（admonition）。 · 反馈/提示
-- [Dialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dialog/dialog.md): 对话框 · Base UI Portal + focus trap
-- [Drawer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/drawer/drawer.md): 抽屉 · Base UI Dialog 引擎 + 四向侧滑
+- [Dialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dialog/dialog.md): 在模态浮层里承载内容，并锁住键盘焦点
+- [Drawer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/drawer/drawer.md): 从屏幕任意一边滑出抽屉，承载内容或任务
 - [ElementSelectionOverlay](https://github.com/hulianui/hulian/blob/master/packages/ui/src/element-selection-overlay/element-selection-overlay.md): 元素选择叠加层 · 在容器或**同源** iframe 里 hover 高亮 / 点击选中元素并回吐组件树路径 · 路径优先读 `data-hulian-path` 标记、读不到回退结构化选择器（两者皆为带单测的纯函数…
 - [FloatingReactions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/floating-reactions/floating-reactions.md): 飘心点赞 · 命令式 ref.emit(content,{count}) 从底部喷射上浮表情 + 随机起点/横向漂移/缩放/时长扰动 + 上浮渐隐(keyframe)动画结束自移除 + palette 随机池 + ri…
 - [GiftFeed](https://github.com/hulianui/hulian/blob/master/packages/ui/src/gift-feed/gift-feed.md): 礼物连击 · 受控礼物事件流 + 同 id 连击合并 combo ×N 滚动弹跳计数(纯函数 applyGiftEvent 可测) + 横幅左滑入/自动消散计时(每连击重置) + max 同屏上限挤旧 + dogfoo…
-- [Glimpse](https://github.com/hulianui/hulian/blob/master/packages/ui/src/glimpse/glimpse.md): 链接预览 · dogfood HoverCard 引擎换皮成「封面图+标题+描述+域名」预览卡(维基式 hover preview) · 触发器随 href 渲染外链 a 或纯 span 保持行内排版 · 描述多行截断
-- [HeroVideoDialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/hero-video-dialog/hero-video-dialog.md): 视频弹层 · 缩略图+播放钮→Portal 模态(Esc/遮罩关 + 锁滚)
-- [HoverCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/hover-card/hover-card.md): 悬停卡片 · Popover 引擎自研 hover 开/移出延迟关(复刻 Tooltip delay 范式) + 富内容
+- [Glimpse](https://github.com/hulianui/hulian/blob/master/packages/ui/src/glimpse/glimpse.md): 悬停链接时预览目标的封面、标题和摘要
+- [HeroVideoDialog](https://github.com/hulianui/hulian/blob/master/packages/ui/src/hero-video-dialog/hero-video-dialog.md): 点击封面缩略图，在模态浮层里播放视频
+- [HoverCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/hover-card/hover-card.md): 悬停后浮出富内容卡片，移开延时关闭
 - [InterceptCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/intercept-card/intercept-card.md): 拦截卡 · 「某个动作被规则挡下了」的完整交代：规则是什么、出处在哪、违反点在哪、该怎么改、我要不要放行
-- [Modal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/modal/modal.md): 命令式对话框 · confirm/info/success/error/warning 函数式 API + Dialog 引擎
-- [Notification](https://github.com/hulianui/hulian/blob/master/packages/ui/src/notification/notification.md): 通知 · 四角堆叠卡片 + 图标/操作区/位置 + 命令式 API(比 Toast 重)
-- [Popconfirm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/popconfirm/popconfirm.md): 气泡确认 · dogfood Popover 引擎 + 危险操作就地确认(标题/图标/确认取消) + async onConfirm loading + 受控开合
-- [Popover](https://github.com/hulianui/hulian/blob/master/packages/ui/src/popover/popover.md): 气泡卡片 · click 触发 + 标题/描述/Close
-- [Progress](https://github.com/hulianui/hulian/blob/master/packages/ui/src/progress/progress.md): 进度条 · linear/circular + 不定态 · 几何自有(reduced-motion)
-- [Result](https://github.com/hulianui/hulian/blob/master/packages/ui/src/result/result.md): 结果页 · 7 状态(success/error/info/warning/403/404/500)内置图标+语义色 + 标题/副标题/详情/操作槽(零依赖·RSC)
-- [ServiceMessage](https://github.com/hulianui/hulian/blob/master/packages/ui/src/service-message/service-message.md): 服务通知卡片 · 复刻微信「服务通知」会话内消息卡(模板/订阅消息) · 头部(头像+来源+⋯)/正文(标题+键值字段或自定义 children)/底部(引导文字+小程序入口) · 数据驱动 fields + onMo…
-- [Spin](https://github.com/hulianui/hulian/blob/master/packages/ui/src/spin/spin.md): 加载遮罩 · 覆盖内容区 + tip + delay 防闪 + fullscreen
+- [Modal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/modal/modal.md): 用函数调用直接弹出确认、成功、警告等对话框
+- [Notification](https://github.com/hulianui/hulian/blob/master/packages/ui/src/notification/notification.md): 在屏幕角落堆叠通知卡片，可带图标和操作
+- [Popconfirm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/popconfirm/popconfirm.md): 在操作按钮旁就地确认一次危险动作
+- [Popover](https://github.com/hulianui/hulian/blob/master/packages/ui/src/popover/popover.md): 把可交互的内容锚在触发元素旁边
+- [Progress](https://github.com/hulianui/hulian/blob/master/packages/ui/src/progress/progress.md): 展示确定或不确定的进度，可线形可环形
+- [Result](https://github.com/hulianui/hulian/blob/master/packages/ui/src/result/result.md): 展示操作结果或错误页，含图标、说明和后续操作
+- [ServiceMessage](https://github.com/hulianui/hulian/blob/master/packages/ui/src/service-message/service-message.md): 展示服务通知卡片，含来源抬头、字段和底部入口
+- [Spin](https://github.com/hulianui/hulian/blob/master/packages/ui/src/spin/spin.md): 给内容区盖上加载遮罩，可延迟出现避免闪烁
 - [Spinner](https://github.com/hulianui/hulian/blob/master/packages/ui/src/spinner/spinner.md): 加载旋转器 · 纯 CSS animate-spin SVG 环 + role=status + 本地化读屏文案
-- [Toast](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toast/toast.md): 命令式轻提示 · 自动消失 + 队列堆叠 + 手动关闭
-- [Tooltip](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tooltip/tooltip.md): 提示浮层 · Base UI Positioner + 箭头 + hover 触发
-- [Tour](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tour/tour.md): 漫游引导 · 自研零依赖 SVG mask 镂空高亮 + 自定位气泡卡(标题/描述/上一步/下一步/跳过/进度) + resize/scroll 重算
+- [Toast](https://github.com/hulianui/hulian/blob/master/packages/ui/src/toast/toast.md): 用命令式调用弹出会自动消失的轻提示
+- [Tooltip](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tooltip/tooltip.md): 悬停时在旁边浮出一句简短说明，带指向箭头
+- [Tour](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tour/tour.md): 带用户走一遍功能引导，高亮目标并逐步说明
 
 ## AI 智能体 ai（16）
-- [AgentPlan](https://github.com/hulianui/hulian/blob/master/packages/ui/src/agent-plan/agent-plan.md): 执行计划 · 数据驱动任务清单 + 状态图标(空心环待办/Spinner进行·行高亮/Check完成删除线/X失败) + 每步右侧 meta 槽(耗时) + bare 内嵌 · 复用 Spinner·纯皮肤RSC
-- [Artifact](https://github.com/hulianui/hulian/blob/master/packages/ui/src/artifact/artifact.md): 工件卡 · 智能体产出物(文档/简历/代码)对话内承载：头部(图标+标题+版本Chip+操作槽) + 折叠限高+底部渐隐遮罩 + 展开/收起(受控/非受控) · dogfood Chip
+- [AgentPlan](https://github.com/hulianui/hulian/blob/master/packages/ui/src/agent-plan/agent-plan.md): 列出智能体的执行计划，逐条标出进行和完成
+- [Artifact](https://github.com/hulianui/hulian/blob/master/packages/ui/src/artifact/artifact.md): 在对话里承载生成的文档或代码，可展开收起
 - [ChatMessage](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chat-message/chat-message.md): 对话气泡 · user右(primary)/assistant左(surface)/system居中 + 头像(复用Avatar)/名称/时间 + loading态(TypingDots) + 操作槽
-- [Citation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/citation/citation.md): 引用来源 · 序号角标 + 标题/来源 + href 新标签页外链 · 内联标注 agent 回答信息出处 · 纯皮肤RSC
-- [ConfirmCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/confirm-card/confirm-card.md): 确认卡 · human-in-the-loop 标准件：结构化字段摘要(dl) + 确认/修正双动作 + acted 锁定态(已确认/修改中) · dogfood Button
-- [Conversation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/conversation/conversation.md): 消息流容器 · 纵向堆叠 ChatMessage + 内容增长自动贴底(新消息/流式 token)·消费侧给高度获独立滚动区
-- [Dossier](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dossier/dossier.md): 案卷面板 · 智能体槽位填充进度可视化：分域清单 + 三态(空心环/半填充/Check) + 当前采集域高亮 + 域内容摘要 + 自动进度(已归档 n/m·可选域不计分母) + bare 内嵌 · 纯皮肤RSC
-- [MessageActions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/message-actions/message-actions.md): 消息操作条 · 复制(剪贴板+Check反馈)/重新生成/赞/踩 · 各键按需渲染 · 复用内联图标 · 挂 ChatMessage actions 槽
-- [PromptInput](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prompt-input/prompt-input.md): 提示输入 · 自增高Textarea + 发送/停止键 + Enter提交/Shift+Enter换行/IME合成保护 + 受控非受控两用 + 左侧操作槽
-- [PromptSuggestions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prompt-suggestions/prompt-suggestions.md): 建议提示 · 可点击 pill 列表 + string/{label,value} 两式 + onSelect 回传 value 填充输入或发起对话
+- [Citation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/citation/citation.md): 在正文里内联标注一条来源，可点开原文
+- [ConfirmCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/confirm-card/confirm-card.md): 请用户确认智能体提出的操作，或要求修正
+- [Conversation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/conversation/conversation.md): 纵向堆叠对话消息，新内容自动贴底
+- [Dossier](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dossier/dossier.md): 展示智能体各信息域的收集进度和内容摘要
+- [MessageActions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/message-actions/message-actions.md): 给一条消息配上复制、重试和点赞点踩
+- [PromptInput](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prompt-input/prompt-input.md): 输入并发送提示词，支持停止、换行和输入法保护
+- [PromptSuggestions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prompt-suggestions/prompt-suggestions.md): 给出可点击的起始提问或追问建议
 - [StreamingText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/streaming-text/streaming-text.md): 流式文本 · 渲染父级累积 text(随token增长) + 流式中尾随闪烁光标(hulian-blink) · 区别 TypingAnimation 自驱定时 · 纯皮肤RSC · ai/assist · #anim…
-- [TaskRunner](https://github.com/hulianui/hulian/blob/master/packages/ui/src/task-runner/task-runner.md): 任务运行卡 · dogfood AgentPlan(bare)步骤列表 + Progress顶部进度 + Tag标签 + Dot状态徽标 · idle/running/success/error四态派生 + 每步耗时(…
+- [TaskRunner](https://github.com/hulianui/hulian/blob/master/packages/ui/src/task-runner/task-runner.md): 汇总一次任务运行的状态、步骤、进度和耗时
 - [ThinkingBlock](https://github.com/hulianui/hulian/blob/master/packages/ui/src/thinking-block/thinking-block.md): 思考折叠块 · dogfood Collapsible(自带chevron+平滑高度) + thinking态(转圈+AnimatedShinyText高光+默认展开) + 耗时标记·收起隐藏 chain-of-tho…
-- [ThreadList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/thread-list/thread-list.md): 会话历史列表 · ChatGPT 式智能体侧栏：标题+meta 双行条目 + active 高亮 + 删除按钮(stopPropagation 不触发选中) + 头部动作槽(新对话) + 空态占位 + bare 内嵌
-- [ToolCall](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tool-call/tool-call.md): 工具调用卡 · dogfood Collapsible + Dot状态色 + Spinner(运行中) · pending/running/success/error 四态 + 参数/结果折叠面板 + 工具图标
+- [ThreadList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/thread-list/thread-list.md): 列出历史会话，可切换、删除和新建
+- [ToolCall](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tool-call/tool-call.md): 展示一次工具调用的参数、进度和结果
 - [TypingDots](https://github.com/hulianui/hulian/blob/master/packages/ui/src/typing-dots/typing-dots.md): 打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
 
 ## 装饰 decoration（92）
@@ -324,7 +324,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [DarkVeil](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dark-veil/dark-veil.md): 暗色帷幕 · CPPN 神经场暗色流动帷幕 WebGL 背景 · 色相旋转/扫描线/颗粒/空间扭曲(ogl·懒加载·reduced-motion 降级静态渐变) · decoration/backdrop · #ani…
 - [Dither](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dither/dither.md): 抖动波纹 · 复古有序抖动波纹 WebGL 背景 · Perlin/fbm 波纹场 + 8×8 Bayer 抖动 + 色阶量化/像素马赛克(ogl 单遍 shader·token·reduced-motion 降级) …
 - [DotField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot-field/dot-field.md): 交互式点阵背景 · 光标推挤点阵鼓胀 + 移动泛起径向辉光，可选波浪起伏/星点闪烁（canvas2d 零依赖·token 配色·reduced-motion 静态降级） · decoration/backdrop · …
-- [DotPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot-pattern/dot-pattern.md): 点阵背景 · 纯 SVG pattern + currentColor token + RSC
+- [DotPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot-pattern/dot-pattern.md): 铺一层跟随主题配色的点阵背景，点距可调
 - [ElectricBorder](https://github.com/hulianui/hulian/blob/master/packages/ui/src/electric-border/electric-border.md): 通电边框 · 通电跳动的边框装饰 · SVG 湍流位移描边 + 多层模糊光晕模拟放电辉光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 - [EvilEye](https://github.com/hulianui/hulian/blob/master/packages/ui/src/evil-eye/evil-eye.md): 火焰邪眼 · WebGL 背景 · 极坐标多层程序化噪声画出翻腾火焰瞳孔 + 瞳孔惯性跟随光标 + 外圈弥散辉光（ogl·token 自适应·reduced-motion 静态降级） · decoration/back…
 - [FaultyTerminal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/faulty-terminal/faulty-terminal.md): 故障终端雨 · 出故障的 CRT 终端字符雨 WebGL 背景 · fbm 噪声点阵 + 横向撕裂/扫描线/闪烁/桶形畸变/色散 + 鼠标涟漪(ogl·token 着色·reduced-motion 兜底) · dec…
@@ -342,7 +342,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Grainient](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grainient/grainient.md): 颗粒渐变 · 三色域扭曲 + 胶片颗粒的 WebGL 渐变背景 · 噪声驱动旋转 + 实时 grain/对比度后期(ogl·reduced-motion 降级静态渐变) · decoration/backdrop · …
 - [GridDistortion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grid-distortion/grid-distortion.md): 网格扭曲 · 鼠标拖拽的液态网格扭曲 WebGL 背景 · 数据纹理位移场 + 鼠标速度涟漪/弛豫回弹(ogl·零外部资源默认程序化网格底纹·token 着色·reduced-motion 降级) · decorati…
 - [GridMotion](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grid-motion/grid-motion.md): 倾斜网格视差 · 背景 · 鼠标横移每行奇偶反向弹性追随 + 中心径向光晕(零依赖 motion useSpring·token·reduced-motion) · decoration/backdrop · #ani…
-- [GridPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grid-pattern/grid-pattern.md): 网格背景 · 纯 SVG 线 + 虚线可配 + currentColor
+- [GridPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grid-pattern/grid-pattern.md): 铺一层线条网格作为区块背景，可换成虚线
 - [GridScan](https://github.com/hulianui/hulian/blob/master/packages/ui/src/grid-scan/grid-scan.md): 扫描网格 · 透视扫描网格 WebGL 背景 · 射线投射无限网格(实线/虚线/点线)+纵深推进的发光扫描脉冲+鼠标视差偏摆(ogl·token·reduced-motion 降级静态网格) · decoration/…
 - [Hyperspeed](https://github.com/hulianui/hulian/blob/master/packages/ui/src/hyperspeed/hyperspeed.md): 跃迁隧道 · 超空间跃迁 warp 隧道背景 · 从消失点放射的双色车灯光带向观察者冲来 + 湍流扭曲 + 程序化辉光(ogl 单 shader·零新依赖·token·reduced-motion 静态降级) · de…
 - [ImageTrail](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image-trail/image-trail.md): 光标图片拖尾 · 光标拖尾图片组件 · 移动光标沿轨迹依次甩出图片淡入跟随、缩小淡出(零依赖 RAF+lerp·token·reduced-motion) · decoration/overlay-fx · #anim…
@@ -377,7 +377,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [PlasmaWave](https://github.com/hulianui/hulian/blob/master/packages/ui/src/plasma-wave/plasma-wave.md): 等离子波 · WebGL 背景 · raymarch 双丝带交织流动 + 双色权重混合(ogl·主题感知 chart token·reduced-motion 静态渐变降级) · decoration/backdrop…
 - [Prism](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prism/prism.md): 棱镜分光 · WebGL 背景 · ray-march 八面体 SDF 折射出彩虹体积光 + rotate/3drotate/hover 三姿态(ogl·主题色相自适应·reduced-motion 降级) · dec…
 - [PrismaticBurst](https://github.com/hulianui/hulian/blob/master/packages/ui/src/prismatic-burst/prismatic-burst.md): 棱镜光爆 · WebGL 背景 · 从中心放射的体积步进光谱射线(可弯曲扭曲/N 瓣梳理/三维翻滚/hover 跟随) · 默认色带吃 --color-chart-1..5 token(明暗自适应) + 懒加载 ogl…
-- [ProgressiveBlur](https://github.com/hulianui/hulian/blob/master/packages/ui/src/progressive-blur/progressive-blur.md): 渐进模糊 · 分层 backdrop-blur + mask 渐变(纯 CSS·RSC)
+- [ProgressiveBlur](https://github.com/hulianui/hulian/blob/master/packages/ui/src/progressive-blur/progressive-blur.md): 在内容一侧做出层层递进的方向性模糊
 - [Radar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/radar/radar.md): 雷达扫描 · WebGL 背景 · 同心环波纹 + 径向辐条 + 旋转扫描臂 + 边缘衰减 + 鼠标视差(ogl·主色吃 chart token·reduced-motion 降级静态盘) · decoration/b…
 - [RetroGrid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/retro-grid/retro-grid.md): 复古透视网格 · CSS 滚动 + reduced-motion · decoration/backdrop · #animated
 - [Reveal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/reveal/reveal.md): 逐级揭示 · 通用「逐级揭示」块级动效原语 · Reveal 包裹元素进入视口时从位移/透明/缩放过渡到正常 + Stagger/StaggerItem 让子项按序错峰入场（非文字动画 · 作用于任意块级内容 · mo…
@@ -391,32 +391,32 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Silk](https://github.com/hulianui/hulian/blob/master/packages/ui/src/silk/silk.md): 丝绸流动背景 · WebGL/ogl 懒加载 shader(复刻 react-bits) + chart token 主色 + reduced-motion 渐变兜底 · decoration/backdrop · #…
 - [SoftAurora](https://github.com/hulianui/hulian/blob/master/packages/ui/src/soft-aurora/soft-aurora.md): 柔和极光 · WebGL 柔和极光背景 · 3D Perlin 噪声 + cosine 渐变双层叠加 · 鼠标视差(ogl·token 着色·reduced-motion 降级) · decoration/backdr…
 - [SplashCursor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/splash-cursor/splash-cursor.md): 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decorati…
-- [Spotlight](https://github.com/hulianui/hulian/blob/master/packages/ui/src/spotlight/spotlight.md): 径向辉光背景 · token 驱动 radial-gradient + 明暗自适应 + RSC
+- [Spotlight](https://github.com/hulianui/hulian/blob/master/packages/ui/src/spotlight/spotlight.md): 在内容后面打一片跟随主题的径向辉光
 - [StarBorder](https://github.com/hulianui/hulian/blob/master/packages/ui/src/star-border/star-border.md): 流星描边按钮 · 上下两道 radial-gradient 光带沿边沿来回扫过(纯 CSS·零依赖·RSC 安全)，光带色走 token、内壳 bg-surface/border-border，多态 as + redu…
 - [StickerPeel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sticker-peel/sticker-peel.md): 可拖拽贴纸 · hover/按住顶部卷边揭起 + 落地投影 + 鼠标跟随高光（零依赖·PointerEvents 拖拽·reduced-motion） · decoration/overlay-fx · #animat…
-- [StripedPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/striped-pattern/striped-pattern.md): 斜条纹背景 · 纯 CSS 渐变 + currentColor
+- [StripedPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/striped-pattern/striped-pattern.md): 用轻量的斜条纹给区块打底，颜色跟随文字色
 - [TargetCursor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/target-cursor/target-cursor.md): 准星光标 · 跟随鼠标的准星自定义光标 · 中心圆点 + 四角括号空闲自转、悬停命中元素时展开包裹其包围盒(去 gsap·裸 rAF lerp·token 着色·reduced-motion) · decoration…
 - [Threads](https://github.com/hulianui/hulian/blob/master/packages/ui/src/threads/threads.md): 流动丝线背景 · WebGL/ogl Perlin 波动线随鼠标摆动 + 透明底叠加 + chart token + 静态 fallback · decoration/backdrop · #animated #web…
 - [Tilt](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilt/tilt.md): 视差倾斜包裹器 · 裹住任意 children 做 3D 倾斜(区别 TiltedCard 的固定卡片结构) · 指针/陀螺仪/手动角度三种驱动 + 全窗跟踪 + 单轴限制 + 反向 + 静息角 + 悬停放大 · gl…
 - [WavyBackground](https://github.com/hulianui/hulian/blob/master/packages/ui/src/wavy-background/wavy-background.md): 噪声波浪 · canvas 多彩波浪带叠加 + 内联零依赖 value noise + chart token + reduced-motion 静态 · decoration/backdrop · #animated
 
 ## 设备外壳 mockups（7）
-- [Android](https://github.com/hulianui/hulian/blob/master/packages/ui/src/android/android.md): 安卓外壳 · 打孔摄像头机身包裹屏幕 + RSC
-- [Chrome](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chrome/chrome.md): 浏览器外壳 · 标签页+工具栏(前进/后退/刷新+地址栏)包裹截图 + RSC
-- [iPhone](https://github.com/hulianui/hulian/blob/master/packages/ui/src/iphone/iphone.md): 手机外壳 · 灵动岛机身包裹屏幕(token themeable) + RSC
-- [Safari](https://github.com/hulianui/hulian/blob/master/packages/ui/src/safari/safari.md): 浏览器外壳 · 顶栏红绿灯+地址栏包裹截图 + RSC
-- [Tablet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tablet/tablet.md): 平板外壳 · iPad 系机身(model 预设尺寸/比例·token themeable) + RSC
+- [Android](https://github.com/hulianui/hulian/blob/master/packages/ui/src/android/android.md): 用带打孔摄像头的安卓手机外壳包住内容
+- [Chrome](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chrome/chrome.md): 用 Chrome 风格的浏览器窗口包住截图，带标签页
+- [iPhone](https://github.com/hulianui/hulian/blob/master/packages/ui/src/iphone/iphone.md): 用带灵动岛的手机外壳把内容包成展示图
+- [Safari](https://github.com/hulianui/hulian/blob/master/packages/ui/src/safari/safari.md): 用 Safari 风格的浏览器窗口包住截图
+- [Tablet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tablet/tablet.md): 用平板外壳把内容包成设备展示图，可选机型
 - [Terminal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/terminal/terminal.md): 终端框 · mac 窗口外壳 + 命令行逐行揭示(motion + tone) + 语法着色(命令名/flag/URL/数字) · mockups/window · #animated
-- [Watch](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watch/watch.md): 手表外壳 · Apple Watch 系 squircle 表壳+数码表冠(model 预设尺寸) + RSC
+- [Watch](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watch/watch.md): 用智能手表外壳包住紧凑内容做展示
 
 ## 移动端 mobile（7）
-- [ActionSheet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/action-sheet/action-sheet.md): 动作面板 · 建在 Base UI Dialog 底滑(同 Drawer 范式·motion token CSS 镜像) + 动作即 Close + 危险态 + 独立取消块 + 安全区
-- [Fab](https://github.com/hulianui/hulian/blob/master/packages/ui/src/fab/fab.md): 悬浮操作钮 · fixed 贴边 + speed-dial 子动作错峰展开/主钮旋 45°(零依赖·reduced-motion)
-- [Picker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/picker/picker.md): 滚轮选择器 · 多列 CSS scroll-snap 吸附 + 即时高亮居中项 + 停稳防抖 emit + 受控滚定位(零依赖·H5 选时间/地区)
-- [PullToRefresh](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pull-to-refresh/pull-to-refresh.md): 下拉刷新 · 置顶下拉带阻尼 + 过阈进 armed + 松手触发并保持刷新态至 Promise 结束回弹(零依赖·Pointer Events)
-- [SafeArea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/safe-area/safe-area.md): 安全区适配 · env(safe-area-inset-*) 作 padding/margin 应用到指定边 + min 兜底 + as 多态(零依赖·RSC·刘海/底部横条)
-- [SwipeAction](https://github.com/hulianui/hulian/blob/master/packages/ui/src/swipe-action/swipe-action.md): 列表项滑动操作 · 内容层 translateX 跟手 + 左/右动作面板 + 过半吸附全开/回弹 + 主轴判定放行纵向滚动(零依赖·Pointer Events)
-- [TabBar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tab-bar/tab-bar.md): 底部导航栏 · items 驱动受控/非受控 + 激活 text-primary/aria-current + 角标/红点 + 吃底部安全区(零依赖·H5 主导航)
+- [ActionSheet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/action-sheet/action-sheet.md): 从屏幕底部滑出一组适合触屏的操作项
+- [Fab](https://github.com/hulianui/hulian/blob/master/packages/ui/src/fab/fab.md): 在页面上方浮一个主操作按钮，可展开子动作
+- [Picker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/picker/picker.md): 用一到多列滚轮选值，松手吸附到居中项
+- [PullToRefresh](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pull-to-refresh/pull-to-refresh.md): 顶部下拉触发刷新，松手后保持到请求结束
+- [SafeArea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/safe-area/safe-area.md): 给指定边加上设备安全区内距，避开刘海和横条
+- [SwipeAction](https://github.com/hulianui/hulian/blob/master/packages/ui/src/swipe-action/swipe-action.md): 横向滑动列表项，露出后面的操作按钮
+- [TabBar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tab-bar/tab-bar.md): 移动端底部导航栏，带角标并避开底部安全区
 
 ## uncatalogued uncatalogued（3）
 - [Access](https://github.com/hulianui/hulian/blob/master/packages/ui/src/access/access.md): 声明式权限门禁：有权限渲染 children，否则渲染 fallback（默认隐藏）。 · uncatalogued

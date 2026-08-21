@@ -8,14 +8,14 @@ function Stage({ children }: {
       {children}
     </div>);
 }
-const SAMPLE = "Move the pointer over this text \u2014 Hover scrambles the glyphs.";
+const SAMPLE = "Move the pointer over this text. Hover scrambles the glyphs.";
 export const scrambledTextShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
             description: "Move the pointer over the text, and the characters within the radius will roll over one by one into garbled characters and then converge back to the original characters.",
             code: `<ScrambledText>
-  Move the pointer over this text \u2014 Hover scrambles the glyphs.
+  Move the pointer over this text. Hover scrambles the glyphs.
 </ScrambledText>`,
             render: () => (<Stage>
           <ScrambledText>{SAMPLE}</ScrambledText>
@@ -96,7 +96,7 @@ export const scrambledTextShowcase: ShowcaseSpec = {
         `  speed={${p.speed}}`,
         `  scrambleChars=${JSON.stringify(p.scrambleChars)}`,
         `>`,
-        `  Move the pointer over this text \u2014 Hover scrambles the glyphs.`,
+        `  Move the pointer over this text. Hover scrambles the glyphs.`,
         `</ScrambledText>`,
     ].join("\n"),
 };

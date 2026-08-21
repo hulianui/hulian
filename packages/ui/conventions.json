@@ -1957,7 +1957,7 @@
       "id": "component/code-editor/pitfall/4",
       "scope": "code-editor",
       "title": "CodeEditor",
-      "rule": "**不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60–80px。需要缩略图请外接 Monaco。",
+      "rule": "**不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60-80px。需要缩略图请外接 Monaco。",
       "source": "packages/ui/src/code-editor/code-editor.md"
     },
     {
@@ -4344,7 +4344,7 @@
       "id": "component/heatmap/pitfall/1",
       "scope": "heatmap",
       "title": "Heatmap",
-      "rule": "`unit` 是纯后缀拼接：0–1 比率数据配 `unit=\"%\"` 会显示「0.55%」——比率转百分比必须用 `valueFormat`。",
+      "rule": "`unit` 是纯后缀拼接：0-1 比率数据配 `unit=\"%\"` 会显示「0.55%」——比率转百分比必须用 `valueFormat`。",
       "source": "packages/ui/src/heatmap/heatmap.md"
     },
     {
@@ -4386,11 +4386,39 @@
       "id": "component/hero-video-dialog/pitfall/1",
       "scope": "hero-video-dialog",
       "title": "HeroVideoDialog",
-      "rule": "`videoSrc` 必须是 iframe **embed** 地址（`.../embed/...`），不是普通观看页 URL，否则模态内 iframe 加载失败。",
+      "rule": "用第三方平台时 `videoSrc` 必须是 **embed** 地址（`.../embed/...`），不是普通观看页 URL，否则模态内 iframe 加载失败。",
       "source": "packages/ui/src/hero-video-dialog/hero-video-dialog.md"
     },
     {
       "id": "component/hero-video-dialog/pitfall/2",
+      "scope": "hero-video-dialog",
+      "title": "HeroVideoDialog",
+      "rule": "自动判别只看扩展名。如果视频文件藏在没有扩展名的地址后面（`/api/video?id=1`、签名直链等），`\"auto\"` 会判成 embed 并挂上 iframe —— 浏览器自带的媒体查看器仍会把它放出来，画面正常但没有 poster、控件样式不受控，**光看页面不容易发现选错了**。这类地址请显式传 `videoType=\"video\"`。",
+      "source": "packages/ui/src/hero-video-dialog/hero-video-dialog.md"
+    },
+    {
+      "id": "component/hero-video-dialog/pitfall/3",
+      "scope": "hero-video-dialog",
+      "title": "HeroVideoDialog",
+      "rule": "反过来，embed 地址里如果带 `.mp4` 之类的路径片段，`\"auto\"` 会误判成 video，请显式传 `videoType=\"embed\"`。",
+      "source": "packages/ui/src/hero-video-dialog/hero-video-dialog.md"
+    },
+    {
+      "id": "component/hero-video-dialog/pitfall/4",
+      "scope": "hero-video-dialog",
+      "title": "HeroVideoDialog",
+      "rule": "HLS（`.m3u8`）刻意不在自动判别范围内：只有 Safari 原生放得动，Chrome/Firefox 需要 hls.js。要放 HLS 用 Video 播放器组件，不要硬传 `videoType=\"video\"`。",
+      "source": "packages/ui/src/hero-video-dialog/hero-video-dialog.md"
+    },
+    {
+      "id": "component/hero-video-dialog/pitfall/5",
+      "scope": "hero-video-dialog",
+      "title": "HeroVideoDialog",
+      "rule": "`videoType=\"video\"` 时弹层里的 `<video>` 带 `autoPlay`；若被浏览器的自动播放策略拦下，控件仍在，用户点一下即可播放。",
+      "source": "packages/ui/src/hero-video-dialog/hero-video-dialog.md"
+    },
+    {
+      "id": "component/hero-video-dialog/pitfall/6",
       "scope": "hero-video-dialog",
       "title": "HeroVideoDialog",
       "rule": "缩略图尺寸靠 `className`（如 `w-80`）控制，组件本身不设固定宽度。",
@@ -5699,6 +5727,27 @@
       "source": "packages/ui/src/markdown/markdown.md"
     },
     {
+      "id": "component/markdown/pitfall/3",
+      "scope": "markdown",
+      "title": "Markdown",
+      "rule": "抽目录与渲染必须喂**同一份源文本**：页面若只渲染剥掉页头之后的正文，却拿完整原文抽 TOC，目录会多出页面上并不存在的顶级条目，点它跳不动。",
+      "source": "packages/ui/src/markdown/markdown.md"
+    },
+    {
+      "id": "component/markdown/pitfall/4",
+      "scope": "markdown",
+      "title": "Markdown",
+      "rule": "组件不替你留 `scroll-mt-*`：跳转落点被 sticky 顶栏盖住时，在外层容器上按顶栏高度补 `[&_h2]:scroll-mt-20` 这类后代类，并与 `Anchor` 的 `offsetTop` 取同一档，否则高亮总慢一格。",
+      "source": "packages/ui/src/markdown/markdown.md"
+    },
+    {
+      "id": "component/markdown/pitfall/5",
+      "scope": "markdown",
+      "title": "Markdown",
+      "rule": "页面真正的滚动体不是 window（如内层 `overflow-y-auto` 的 `<main>`）时，`Anchor` 要传 `getContainer` 指向它，否则点击目录不动。",
+      "source": "packages/ui/src/markdown/markdown.md"
+    },
+    {
       "id": "component/markdown-editor/pitfall/1",
       "scope": "markdown-editor",
       "title": "MarkdownEditor",
@@ -6017,7 +6066,7 @@
       "id": "component/meter/pitfall/3",
       "scope": "meter",
       "title": "Meter",
-      "rule": "**`value` 超出 `[min, max]` 时文案会夹到 0–100%**，但 `aria-valuenow` 仍如实上报原始值 —— 越界应当在数据侧解决，组件不替你掩盖。",
+      "rule": "**`value` 超出 `[min, max]` 时文案会夹到 0-100%**，但 `aria-valuenow` 仍如实上报原始值 —— 越界应当在数据侧解决，组件不替你掩盖。",
       "source": "packages/ui/src/meter/meter.md"
     },
     {
@@ -8474,7 +8523,7 @@
       "id": "component/side-rays/pitfall/3",
       "scope": "side-rays",
       "title": "SideRays",
-      "rule": "`intensity` 过大光源处易过曝纯白；叠在内容上用 `opacity` 0.5–0.8 降干扰。",
+      "rule": "`intensity` 过大光源处易过曝纯白；叠在内容上用 `opacity` 0.5-0.8 降干扰。",
       "source": "packages/ui/src/side-rays/side-rays.md"
     },
     {
@@ -9720,7 +9769,7 @@
       "id": "component/threads/pitfall/1",
       "scope": "threads",
       "title": "Threads",
-      "rule": "WebGL 组件，须客户端渲染；`color` 既收 0–1 的 `[r,g,b]` 数组也收 CSS 字符串（含 `var(--color-chart-3)`/oklch/hex）。",
+      "rule": "WebGL 组件，须客户端渲染；`color` 既收 0-1 的 `[r,g,b]` 数组也收 CSS 字符串（含 `var(--color-chart-3)`/oklch/hex）。",
       "source": "packages/ui/src/threads/threads.md"
     },
     {
@@ -10596,7 +10645,7 @@
   ],
   "stats": {
     "componentDocs": 394,
-    "componentAdvisories": 1477,
-    "totalAdvisories": 1487
+    "componentAdvisories": 1484,
+    "totalAdvisories": 1494
   }
 }

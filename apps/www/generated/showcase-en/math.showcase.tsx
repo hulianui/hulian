@@ -49,8 +49,8 @@ export const mathShowcase: ShowcaseSpec = {
         },
         {
             title: "Bare notation and answer blanks",
-            description: "When upstream has not wrapped formulas in $\u2026$ yet \u2014 which is exactly how stems come out of PDF/Word/OCR \u2014 the whole string falls back to bare-notation splitting and still typesets; ____ becomes a writable slot rather than four underscores.",
-            code: `{/* Not a single $ \u2014 the splitter finds the formula boundaries */}
+            description: "When upstream has not wrapped formulas in $\u2026$ yet (which is exactly how stems come out of PDF/Word/OCR), the whole string falls back to bare-notation splitting and still typesets; ____ becomes a writable slot rather than four underscores.",
+            code: `{/* Not a single $: the splitter finds the formula boundaries */}
 <Formula>{"Convert \\\\frac{3}{8} to a decimal: ____"}</Formula>
 
 {/* Answer blanks are recognised outside $ too */}
@@ -69,7 +69,7 @@ export const mathShowcase: ShowcaseSpec = {
         },
         {
             title: "Common notation",
-            description: "What you write and what it typesets to, for the notation that shows up most in question stems, stacked one above the other. This is not a capability list \u2014 KaTeX is underneath, and it supports the whole of LaTeX.",
+            description: "What you write and what it typesets to, for the notation that shows up most in question stems, stacked one above the other. This is not a capability list: KaTeX is underneath, and it supports the whole of LaTeX.",
             code: `const NOTATIONS = [
   { label: "Fraction", src: "\\\\frac{16}{9}" },
   { label: "Radical / index", src: "\\\\sqrt{a^{2}+b^{2}} and \\\\sqrt[3]{8}" },
@@ -99,7 +99,7 @@ export const mathShowcase: ShowcaseSpec = {
         },
         {
             title: "Piecewise function",
-            description: "The workhorse of senior-high function questions. Flattened onto one line with row separators turned into semicolons, the stem stops being readable \u2014 this is real two-dimensional layout.",
+            description: "The workhorse of senior-high function questions. Flattened onto one line with row separators turned into semicolons, the stem stops being readable. This is real two-dimensional layout.",
             code: `<Formula>{"$$f(x)=\\\\begin{cases} -x^{2}-2ax-a, & x<0 \\\\\\\\ e^{x}+\\\\ln(x+1), & x \\\\geq 0 \\\\end{cases}$$"}</Formula>`,
             render: () => (<Formula>
           {"$$f(x)=\\begin{cases} -x^{2}-2ax-a, & x<0 \\\\ e^{x}+\\ln(x+1), & x \\geq 0 \\end{cases}$$"}
@@ -107,7 +107,7 @@ export const mathShowcase: ShowcaseSpec = {
         },
         {
             title: "Prose and formulas interleaved",
-            description: "Only content inside the delimiters is typeset; everything outside is emitted verbatim \u2014 the boundary is carried explicitly by the upstream data rather than guessed at by the rendering layer.",
+            description: "Only content inside the delimiters is typeset; everything outside is emitted verbatim: the boundary is carried explicitly by the upstream data rather than guessed at by the rendering layer.",
             code: `<Formula>{"Given that $f(x)=x^{2}$ is increasing on the interval, find $f(1)$."}</Formula>`,
             render: () => (<p className="text-base leading-8">
           <Formula>
@@ -141,7 +141,7 @@ export const mathShowcase: ShowcaseSpec = {
         },
         {
             title: "Broken data stays visible",
-            description: "An unrecognised control sequence is highlighted in place and shown verbatim while everything around it is typeset normally \u2014 quietly rendering something that merely looks right is the dangerous outcome.",
+            description: "An unrecognised control sequence is highlighted in place and shown verbatim while everything around it is typeset normally. Quietly rendering something that merely looks right is the dangerous outcome.",
             code: `<Formula mode="math">{"\\\\begin{cases}x=my\\\\y^2=6x\\\\end{cases}"}</Formula>`,
             render: () => <Formula mode="math">{"\\begin{cases}x=my\\y^2=6x\\end{cases}"}</Formula>,
         },

@@ -7,10 +7,10 @@ export const typingAnimationShowcase: ShowcaseSpec = {
             title: "Basic usage",
             description: "Type the text word by word with a blinking cursor, and automatically hide the cursor after typing.",
             code: `<TypingAnimation
-  text="Hulian \u2014 Composable design system"
+  text="Hulian, a composable design system"
   className="text-2xl font-semibold text-foreground"
 />`,
-            render: () => (<TypingAnimation text="Hulian — Composable design system" className="text-2xl font-semibold text-foreground" startOnView={false}/>),
+            render: () => (<TypingAnimation text="Hulian, a composable design system" className="text-2xl font-semibold text-foreground" startOnView={false}/>),
         },
         {
             title: "Typing speed",
@@ -50,9 +50,9 @@ export const typingAnimationShowcase: ShowcaseSpec = {
     states: [
         {
             name: "default (Enter the viewport and type word by word + blinking cursor)",
-            render: () => (<TypingAnimation text="Hulian — Composable design system" className="text-2xl font-semibold text-foreground" startOnView={false}/>),
+            render: () => (<TypingAnimation text="Hulian, a composable design system" className="text-2xl font-semibold text-foreground" startOnView={false}/>),
         },
     ],
-    renderWithProps: (p) => (<TypingAnimation text="Hulian — Composable design system" className="text-2xl font-semibold text-foreground" duration={p.duration as number} showCursor={p.showCursor as boolean} startOnView={false}/>),
+    renderWithProps: (p) => (<TypingAnimation text="Hulian, a composable design system" className="text-2xl font-semibold text-foreground" duration={p.duration as number} showCursor={p.showCursor as boolean} startOnView={false}/>),
     toCode: (p) => `<TypingAnimation text="Hulian" duration={${p.duration}} showCursor={${p.showCursor}} />`,
 };
