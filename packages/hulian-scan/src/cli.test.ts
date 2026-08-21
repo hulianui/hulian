@@ -3,12 +3,16 @@ import { describe, expect, it } from "vitest";
 import type { ScanReport } from "./contracts";
 import { parseCliArgs, runCli } from "./cli";
 
-function report(findings: ScanReport["findings"] = []): ScanReport {
+function report(
+  findings: ScanReport["findings"] = [],
+  failures: ScanReport["failures"] = [],
+): ScanReport {
   return {
     schemaVersion: 1,
     environment: "workspace",
     runs: [],
     findings,
+    failures,
   };
 }
 
@@ -96,5 +100,26 @@ describe("runCli", () => {
         execute: async () => report([warning, error]),
       }),
     ).resolves.toBe(1);
+  });
+
+  // 场景失败被隔离进报告是为了保住其余场景的读数，**不是**为了把失败咽下去。
+  // 一个组件这一轮压根没被扫到，必须有人看见。
+  it("fails CI when a scenario produced no usable measurement", async () => {
+    const failure = {
+      scenarioId: "faulty-terminal/frame-budget",
+      stage: "measurement" as const,
+      reason: "scenario timeout after 30000 ms",
+    };
+
+    await expect(
+      runCli(["--scenario", "faulty-terminal/frame-budget", "--ci"], {
+        execute: async () => report([], [failure]),
+      }),
+    ).resolves.toBe(1);
+    await expect(
+      runCli(["--scenario", "faulty-terminal/frame-budget", "--ci", "--report-only"], {
+        execute: async () => report([], [failure]),
+      }),
+    ).resolves.toBe(0);
   });
 });

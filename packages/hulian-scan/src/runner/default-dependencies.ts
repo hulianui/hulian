@@ -12,7 +12,7 @@ import { loadCheckpoint, saveCheckpoint, type Checkpoint } from "../report/check
 import type { PerformanceBaseline } from "../report/baseline";
 import { writeReport } from "../report/report";
 import { repositoryRoot } from "../paths";
-import type { RunDependencies, RunScanOptions } from "./run-scan";
+import { isBrowserCrash, type RunDependencies, type RunScanOptions } from "./run-scan";
 
 const execFileAsync = promisify(execFile);
 
@@ -258,6 +258,22 @@ async function runBrowserStage(
       timezoneId: "Asia/Shanghai",
       colorScheme: "light",
     });
+    // 成功和失败走同一条落盘路径：失败的 run 也要进 checkpoint，
+    // 否则 --resume 会把它当成「没跑过」，而不是「跑过、错了、该重跑」。
+    const record = async (run: ScenarioRun): Promise<void> => {
+      stageRuns.set(run.scenarioId, run);
+      checkpoint.runs = [
+        ...checkpoint.runs.filter(
+          (existing) => !(existing.stage === run.stage && existing.scenarioId === run.scenarioId),
+        ),
+        run,
+      ];
+      checkpoint.completed = [
+        ...new Set([...checkpoint.completed, `${run.stage}:${run.scenarioId}`]),
+      ];
+      await saveCheckpoint(options.checkpointPath, checkpoint);
+    };
+
     try {
       for (const scenarioId of scenarioIds) {
         const completionId = `${stage}:${scenarioId}`;
@@ -335,29 +351,51 @@ async function runBrowserStage(
               gitRevision: revision,
             },
           };
-          stageRuns.set(scenarioId, normalized);
-          checkpoint.runs = [
-            ...checkpoint.runs.filter(
-              (existing) => !(existing.stage === stage && existing.scenarioId === scenarioId),
-            ),
-            normalized,
-          ];
-          checkpoint.completed = [...new Set([...checkpoint.completed, completionId])];
-          await saveCheckpoint(options.checkpointPath, checkpoint);
+          await record(normalized);
+        } catch (error) {
+          const raw = error instanceof Error ? error.message : String(error);
+          // 浏览器整个没了要往上抛，让 runScan 重试一次整轮；这里逐个吞掉的话，
+          // 后面每个场景都会挨个失败，一次可恢复的崩溃被放大成几百条噪声。
+          // 判据喂**整段** raw：关键词不一定落在首行。
+          if (isBrowserCrash(raw)) throw error;
+          // 存进 run 的只留首行：后面那截是**压缩后**产物的浏览器端栈
+          //（main-C4FpQOxQ.js:120836），行号对不回源码，却会把终端摘要和 issue 正文撑爆。
+          const message = raw.split("\n")[0] ?? raw;
+          // 其余异常按**单个场景没量成**处理，而不是掀掉整轮。
+          //
+          // 走这条路的典型是外层硬超时（withHardTimeout：animation 240s / 其余 90s）
+          // 和场景模块加载失败 —— 和「内层超时把错误塞进 run.errors」是同一类问题，
+          // 却因为一个抛异常一个不抛，此前只有后者被当成可隔离的失败。
+          await record({
+            schemaVersion: 1,
+            scenarioId,
+            stage,
+            environment: options.environment,
+            samples: [],
+            events: [],
+            errors: [message],
+            metadata: {
+              browserVersion: browser.version(),
+              gitRevision: revision,
+            },
+          });
         } finally {
-          await page.close();
+          // 浏览器已经死了的话 close 自己也会抛，那会盖掉上面真正的错因。
+          await page.close().catch(() => undefined);
         }
       }
     } finally {
-      await context.close();
+      // 同上：浏览器死了的话 close 也会抛，别让它盖掉正在往上传的真实错因。
+      await context.close().catch(() => undefined);
     }
-    return scenarioIds.map((scenarioId) => {
+    return scenarioIds.flatMap((scenarioId) => {
       const run = stageRuns.get(scenarioId);
-      if (!run) throw new Error(`missing ${stage} run: ${scenarioId}`);
-      return run;
+      // 缺席不再抛：交给 runScan 的 partitionRuns 记成这个场景的失败，
+      // 其余场景的读数照常成报告。
+      return run ? [run] : [];
     });
   } finally {
-    await browser?.close();
+    await browser?.close().catch(() => undefined);
     await stopChild(preview);
   }
 }

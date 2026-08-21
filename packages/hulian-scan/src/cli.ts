@@ -271,7 +271,11 @@ export async function runCli(
   // 形同虚设 —— 一条会让构建变红的 warning 不是 warning。发现类信号（avoidable-render、
   // avoidable-render-candidate）照常进报告与产物，供 weekly sweep 人工过目。
   const blocking = report.findings.filter((finding) => finding.severity === "error");
-  return options.ci && !options.reportOnly && blocking.length > 0 ? 1 : 0;
+  // 量不成的场景同样判失败。它不是 finding，但「这个组件这一轮没被扫到」是必须有人
+  // 处理的信号 —— 隔离机制的目的是保住其余场景的报告，不是把失败悄悄咽下去。
+  return options.ci && !options.reportOnly && (blocking.length > 0 || report.failures.length > 0)
+    ? 1
+    : 0;
 }
 
 const entry = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : undefined;

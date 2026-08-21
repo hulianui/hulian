@@ -45,7 +45,10 @@ test("CI rejects stale committed English showcase modules before build can regen
 
 // 观测性质、不阻塞发布的 job —— 从「deploy 必须等它」的要求里显式豁免。
 // 加进这个集合是一次**主动决策**：意思是「这道 job 红了也照发」。
-const NON_BLOCKING_JOBS = new Set(["runtime-performance"]);
+//
+// scheduled-notice 不是门禁而是**报信的**：它只在定时链路上跑（push 时压根不触发），
+// 让 deploy 等它没有任何意义。
+const NON_BLOCKING_JOBS = new Set(["runtime-performance", "scheduled-notice"]);
 
 test("deploy 必须 needs 上每一道门禁 job", () => {
   const jobs = workflowJobs();
@@ -84,8 +87,57 @@ test("每个 PR 都要用 React 18 类型编译一次库源码", () => {
       candidate.text.includes("--react 18") && candidate.text.includes("--typecheck-only"),
   );
   assert.ok(job, "没有任何 job 跑 React 18 的库源码类型门禁（pnpm scan:ci -- --react 18 --typecheck-only）");
+  // 两种把它推回定时链路的写法都要拦住：直接判 event_name，或者用 env.SWEEP
+  // 这个新加的定时判据。后者是 2026-08-21 引入的，不写进来就是留了个同款后门。
   assert.ok(
-    !/\n {4}if:[^\n]*schedule/.test(job.text),
+    !/\n {4}if:[^\n]*(?:schedule|SWEEP)/.test(job.text),
     `${job.name} 被限制成只在定时任务跑 —— React 18 类型门禁必须落在 PR 链路上`,
   );
+});
+
+test("定时链路的失败必须有一个看得见的落点，且不漏掉任何 job", () => {
+  // 2026-08-05 / 08-12 两次 React 18 冒烟连续失败没人发现，08-19 又整轮被 Playwright
+  // 挂死吃掉 —— 三周零信号。定时任务不出现在任何人当天要看的界面上，只能自己造落点。
+  const jobs = workflowJobs();
+  const notice = jobs.find((job) => job.name === "scheduled-notice");
+  assert.ok(notice, "缺少 scheduled-notice job：定时链路失败会退回「只有邮件」的状态");
+
+  assert.match(
+    notice.text,
+    /\n {4}if: always\(\)/,
+    "scheduled-notice 必须 always() —— 上游红了才最需要它跑",
+  );
+  assert.match(
+    notice.text,
+    /\n {6}issues: write\n/,
+    "仓库默认工作流权限是只读，scheduled-notice 必须显式声明 issues: write",
+  );
+
+  const block = notice.text.match(/\n {4}needs:\n((?: {6}- [a-z][a-z0-9-]*\n)+)/);
+  assert.ok(block, "scheduled-notice 的 needs 必须写成多行列表（本断言按这个形状解析）");
+  const needs = block[1].trim().split("\n").map((line) => line.replace(/^\s*-\s*/, ""));
+
+  // deploy-zh 只在 push 上跑，定时链路里它恒为 skipped，纳入 needs 只会让通知永远等不到。
+  const watched = jobs
+    .map((job) => job.name)
+    .filter((name) => name !== "scheduled-notice" && name !== "deploy-zh");
+  const missing = watched.filter((name) => !needs.includes(name));
+
+  assert.deepEqual(
+    missing,
+    [],
+    `scheduled-notice 漏看了这些 job：${missing.join(", ")}。` +
+      `漏一个，它的失败就又回到「只有一封没人读的邮件」——那正是这道断言要防的事。`,
+  );
+});
+
+test("每个 job 都要有 timeout-minutes", () => {
+  // 2026-08-19：`Install Playwright chromium` 卡了整整 6 小时，一直到 GitHub 的硬上限
+  // 才被强杀，那一轮的 React 18 冒烟因此压根没跑（runs/32294199543）。GitHub 默认的
+  // 360 分钟对本仓任何一步都不是「超时」，是「挂死也当正常」。
+  const missing = workflowJobs()
+    .filter((job) => !/\n {4}timeout-minutes: \d+\n/.test(job.text))
+    .map((job) => job.name);
+
+  assert.deepEqual(missing, [], `这些 job 没有 timeout-minutes：${missing.join(", ")}`);
 });

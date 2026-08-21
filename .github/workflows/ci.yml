@@ -7,11 +7,29 @@ on:
     branches: [master]
   schedule:
     - cron: "17 19 * * 3"
+  # 定时那条链路（weekly 全量 sweep + React 18 兼容冒烟）此前**只有等一周**这一种跑法。
+  # 代价实测过：08-05 与 08-12 两次连续失败，改完也没法当场验，只能再等下一个周三。
+  # 这个开关让它变成可按需触发的普通 job。
+  workflow_dispatch:
+    inputs:
+      sweep:
+        description: "跑定时链路（全量 sweep + React 18 冒烟），而不是 PR 那套 affected 场景"
+        type: boolean
+        default: false
 
-# 同一分支/PR 新推送时取消仍在跑的旧任务，省 CI 时间
+# 同一分支/PR 新推送时取消仍在跑的旧任务，省 CI 时间。
+#
+# 分道键里带 event_name 是必须的：schedule 跑在 refs/heads/master 上，与 push 同 ref ——
+# 不分道的话，sweep 跑到一半时任何一次 master push 都会把这 77 分钟直接取消掉，
+# 而且取消得毫无声响（结论就是「这周没有 sweep 结果」，跟没跑过一样）。
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
+
+# 「跑不跑定时链路」的单一判据。schedule 与手动勾了 sweep 的 workflow_dispatch 都算。
+# 步骤级 if 用 env.SWEEP == 'true'（表达式求值成字符串，别写成布尔比较）。
+env:
+  SWEEP: ${{ github.event_name == 'schedule' || inputs.sweep }}
 
 # 工具链版本的单一来源：Node 读 .nvmrc，pnpm 由根 package.json 的 packageManager 字段与
 # .github/actions/setup 共同钉死（那四步 setup 在下面每个 job 里都要用，抄多份必然漂移）。
@@ -50,6 +68,12 @@ jobs:
   static-checks:
     name: Static Gates (typecheck · guard · docs)
     runs-on: ubuntu-latest
+    # 超时是**挂死探测器**，不是时间预算 —— 数字都留了几倍余量。
+    # 起因：2026-08-19 定时跑里 `Install Playwright chromium` 卡了整整 6 小时，
+    # 一直到 GitHub 的 6 小时硬上限才被强杀（runs/32294199543 的 test 与
+    # runtime-performance/packed-consumer 两片），那一轮的 React 18 冒烟因此压根没跑。
+    # 没有任何一步该跑到 6 小时；挂死要在几十分钟内变成一条明确的失败。
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -139,6 +163,7 @@ jobs:
   test:
     name: Test (vitest + build scripts)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -147,6 +172,8 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Playwright chromium
+        # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
+        timeout-minutes: 10
         run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
 
       # MCP 的 install_block 端到端测试读取 apps/www/public/r/*.json 中的完整源码，
@@ -169,6 +196,7 @@ jobs:
   registry-smoke:
     name: Registry Pages Smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -187,6 +215,7 @@ jobs:
   build:
     name: Build (static export)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       # fetch-depth: 0 拉全量历史与 tag —— changelog 的发布日期只存在于 `@hulianui/ui@x.y.z`
       # 这类 annotated tag 上，浅克隆拿不到，构建期生成的 changelog.json 会整片丢日期。
@@ -241,6 +270,7 @@ jobs:
     name: Gate · English showcases (browser)
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -249,6 +279,8 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Playwright chromium
+        # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
+        timeout-minutes: 10
         run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
 
       - name: Download static export
@@ -266,6 +298,7 @@ jobs:
     name: Gate · A11y · viewport · gallery
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -274,6 +307,8 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Playwright chromium
+        # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
+        timeout-minutes: 10
         run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
 
       - name: Download static export
@@ -302,6 +337,7 @@ jobs:
     name: Gate · i18n output · demos (browser)
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -310,6 +346,8 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Playwright chromium
+        # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
+        timeout-minutes: 10
         run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
 
       - name: Download static export
@@ -358,6 +396,7 @@ jobs:
   consumer-smoke:
     name: Consumer Typecheck (packed tarball)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -405,6 +444,7 @@ jobs:
   react18-typecheck:
     name: React 18 Typecheck (packed consumer)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -429,6 +469,7 @@ jobs:
   bundle-size:
     name: Bundle Size (packed tarball)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -456,6 +497,7 @@ jobs:
   runtime-performance:
     name: Runtime Performance (${{ matrix.environment }})
     runs-on: ubuntu-latest
+    timeout-minutes: 150
     strategy:
       # 一个环境红了，另一个也要跑完 —— 两边的报告要一起看才知道是「库变慢了」还是
       # 「只有打包消费路径变慢了」。
@@ -472,6 +514,8 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Playwright chromium
+        # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
+        timeout-minutes: 10
         run: pnpm --filter @hulianui/hulian-scan exec playwright install --with-deps chromium
 
       - name: Generate distribution metadata and check performance inventory
@@ -483,7 +527,7 @@ jobs:
 
       - name: Select affected and core/heavy scenarios
         id: affected
-        if: github.event_name != 'schedule'
+        if: env.SWEEP != 'true'
         env:
           PERFORMANCE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD^' }}
         run: |
@@ -491,17 +535,17 @@ jobs:
           echo "scenarios=$scenarios" >> "$GITHUB_OUTPUT"
 
       - name: Scan affected workspace scenarios
-        if: github.event_name != 'schedule' && matrix.environment == 'workspace'
+        if: env.SWEEP != 'true' && matrix.environment == 'workspace'
         run: node scripts/hulian-scan.mjs --ci --scenario "${{ steps.affected.outputs.scenarios }}" --environment workspace --output .hulian-scan/reports/workspace-affected
 
       - name: Gate affected packed-consumer scenarios
-        if: github.event_name != 'schedule' && matrix.environment == 'packed-consumer'
+        if: env.SWEEP != 'true' && matrix.environment == 'packed-consumer'
         env:
           PERFORMANCE_CONSUMER_DIR: ${{ runner.temp }}/hulian-scan-consumer
         run: pnpm scan:ci -- --scenario "${{ steps.affected.outputs.scenarios }}" --output .hulian-scan/reports/packed-affected
 
       - name: React 18 compatibility smoke
-        if: github.event_name == 'schedule' && matrix.environment == 'packed-consumer'
+        if: env.SWEEP == 'true' && matrix.environment == 'packed-consumer'
         env:
           PERFORMANCE_CONSUMER_DIR: ${{ runner.temp }}/hulian-scan-consumer-react18
           PERFORMANCE_REACT_VERSION: 18
@@ -517,7 +561,7 @@ jobs:
       # （全库 306/380 本来就没有 memo），且检测本身被挂载期异步工作污染、对已 memo 的组件
       # 也会误报。这一支现在的作用是**把候选列出来**，人工过目后决定要不要补 memo。
       - name: Weekly structural sweep (full inventory)
-        if: github.event_name == 'schedule' && matrix.environment == 'workspace'
+        if: env.SWEEP == 'true' && matrix.environment == 'workspace'
         run: node scripts/hulian-scan.mjs --ci --full --environment workspace --output .hulian-scan/reports/weekly-full
 
       - name: Upload runtime performance evidence
@@ -532,6 +576,69 @@ jobs:
           # .hulian-scan/ 是隐藏目录，upload-artifact 默认跳过隐藏文件 ——
           # 不开这个开关，这一步会一直「成功」但零文件上传，红了只能靠本地复现定位。
           include-hidden-files: true
+
+      # env.SWEEP 判据万一失效，上面那两步会**一步不跑而且整个 job 是绿的** —— 那比现在
+      # 的「红了没人看」更糟：连红都没有。所以这里用**另一套**判据（直接读 github/inputs，
+      # 不经过 env）交叉验一次「定时链路确实产出了报告」。
+      - name: Assert the scheduled branch actually produced a report
+        if: always() && (github.event_name == 'schedule' || inputs.sweep)
+        run: |
+          if [ ! -d .hulian-scan/reports/weekly-full ] && [ ! -d .hulian-scan/reports/react18-smoke ]; then
+            echo "定时链路一步都没跑：env.SWEEP 判据失效，检查 workflow 顶部的 env 与各步骤的 if" >&2
+            exit 1
+          fi
+
+  # ══ 定时链路的落点 ════════════════════════════════════════════════════════
+  #
+  # 定时任务没有「PR 页面上那块红」—— 它的失败不出现在任何人当天要看的界面上。
+  # 实测代价：08-05 与 08-12 两次 React 18 冒烟连续失败无人发现，08-19 那轮又被
+  # Playwright 挂死吃掉，三周零信号，而库在这三周里照常发版。
+  #
+  # 所以定时链路必须自己造一个看得见的落点：红了开/追评一个固定 issue，绿了自动关掉。
+  # 这个 job 的 needs 必须覆盖**全部**其它 job —— 漏一个，那个 job 的失败就又回到
+  # 「只有邮件」的状态，也就是回到本来要修的问题。
+  scheduled-notice:
+    name: Notice · 定时链路结果
+    needs:
+      - static-checks
+      - test
+      - registry-smoke
+      - build
+      - gate-showcase
+      - gate-a11y
+      - gate-demos
+      - consumer-smoke
+      - react18-typecheck
+      - bundle-size
+      - runtime-performance
+    # always()：上游红了才最需要它跑。只管定时链路 —— PR 与 push 的失败，作者当场就看得见。
+    if: always() && (github.event_name == 'schedule' || inputs.sweep)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # 仓库默认工作流权限是只读，开 issue 必须在这里显式要 —— 且只要这一项。
+    permissions:
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # 拿 failures.json 抄进 issue 正文。产物可能因为上游挂死而根本不存在，
+      # 所以这一步不允许拖垮通知本身。
+      - name: Download runtime performance evidence
+        continue-on-error: true
+        uses: actions/download-artifact@v7
+        with:
+          pattern: hulian-scan-*
+          path: scan-evidence
+
+      - name: Open, update, or close the scheduled-failure issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULTS: ${{ toJSON(needs) }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TRIGGER: ${{ github.event_name }}
+          SCAN_DIR: scan-evidence
+        run: bash .github/scripts/scheduled-run-notice.sh
 
   # ══ 部署 ══════════════════════════════════════════════════════════════════
   #
@@ -560,6 +667,7 @@ jobs:
       - bundle-size
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Download static export
         uses: actions/download-artifact@v7

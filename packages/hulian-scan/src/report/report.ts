@@ -1,12 +1,13 @@
 import { mkdir, rename, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
-import type { Finding, ScanReport, ScenarioRun } from "../contracts";
+import type { Finding, ScanReport, ScenarioFailure, ScenarioRun } from "../contracts";
 import { summarize } from "../analyzer/statistics";
 
 export interface ReportPaths {
   summary: string;
   findings: string;
+  failures: string;
   inventory: string;
   markdown: string;
 }
@@ -64,6 +65,18 @@ function findingTable(findings: Finding[]): string[] {
   ];
 }
 
+function failureTable(failures: ScenarioFailure[]): string[] {
+  if (failures.length === 0) return ["No scenario failures."];
+  return [
+    "| Scenario | Stage | Reason |",
+    "| --- | --- | --- |",
+    ...failures.map(
+      (failure) =>
+        `| ${escapeTable(failure.scenarioId)} | ${escapeTable(failure.stage)} | ${escapeTable(failure.reason)} |`,
+    ),
+  ];
+}
+
 function markdownReport(report: ScanReport): string {
   const uncovered = (report.inventory ?? []).filter(
     (entry) => entry.kind === "renderable" && !entry.scenarioId,
@@ -77,9 +90,17 @@ function markdownReport(report: ScanReport): string {
     "",
     `Findings: ${report.findings.length}`,
     "",
+    `Scenario failures: ${report.failures.length}`,
+    "",
     "## Findings",
     "",
     ...findingTable(report.findings),
+    "",
+    // 场景失败单开一节，不并进 Findings 表：一个量不成的场景和一个真回归，
+    // 读的人要做的事完全不同（修扫描/修场景 vs 修组件）。
+    "## Scenario failures",
+    "",
+    ...failureTable(report.failures),
     "",
     "## Uncovered inventory",
     "",
@@ -107,6 +128,16 @@ export function formatTerminalSummary(report: ScanReport): string {
     `Hulian Scan: ${report.findings.length} findings across ${report.runs.length} runs` +
       (report.findings.length > 0 ? ` (${errors} error, ${warnings} warning)` : ""),
   ];
+  // 场景失败印在最前面：它说明「这一轮有多少组件根本没量到」，先看这个才知道
+  // 上面那句 findings 数覆盖了多大范围。
+  if (report.failures.length > 0) {
+    lines.push(`${report.failures.length} scenarios produced no usable measurement:`);
+    lines.push(
+      ...report.failures.map(
+        (failure) => `- ${failure.scenarioId} (${failure.stage}): ${failure.reason}`,
+      ),
+    );
+  }
   if (ranking.length > 0) {
     lines.push("Slowest median commit durations:");
     lines.push(
@@ -126,6 +157,7 @@ export async function writeReport(
   const paths: ReportPaths = {
     summary: join(outputDir, "summary.json"),
     findings: join(outputDir, "findings.json"),
+    failures: join(outputDir, "failures.json"),
     inventory: join(outputDir, "inventory.json"),
     markdown: join(outputDir, "report.md"),
   };
@@ -145,9 +177,11 @@ export async function writeReport(
     writeJsonAtomic(paths.summary, {
       ...report,
       findingCount: report.findings.length,
+      failureCount: report.failures.length,
       slowest: rankedRuns(report),
     }),
     writeJsonAtomic(paths.findings, report.findings),
+    writeJsonAtomic(paths.failures, report.failures),
     writeJsonAtomic(paths.inventory, report.inventory ?? []),
     writeTextAtomic(paths.markdown, markdownReport(report)),
     ...rawWrites,

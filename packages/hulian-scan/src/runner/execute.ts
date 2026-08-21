@@ -65,6 +65,7 @@ export async function executeDefaultScan(options: CliOptions): Promise<ScanRepor
       environment: options.environment,
       runs: [],
       findings: [],
+      failures: [],
       inventory: inventory?.map((entry) => ({ ...entry })) ?? [],
     };
     await deps.write(report, resolve(repositoryRoot, options.outputDir));
@@ -84,6 +85,7 @@ export async function executeDefaultScan(options: CliOptions): Promise<ScanRepor
       environment: options.environment,
       runs: diagnosis,
       findings: deps.attachDiagnosis(findings, diagnosis),
+      failures: [],
     };
     await deps.write(report, resolve(repositoryRoot, options.outputDir));
     return report;

@@ -47,6 +47,7 @@ function makeReportWithFindings(count: number): ScanReport {
       },
     ],
     findings: Array.from({ length: count }, (_, index) => makeFinding(index)),
+    failures: [],
     inventory: [
       { id: "button", kind: "renderable", scenarioId: "button/basic" },
       { id: "missing", kind: "renderable" },
