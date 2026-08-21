@@ -42,4 +42,28 @@ describe("Markdown", () => {
     );
     expect(getByLabelText("Data table")).toBeTruthy();
   });
+
+  it("多反引号围栏里的 Markdown 语法原样保留，不再被二次解析", () => {
+    // 「用 Markdown 讲 Markdown 语法」的文档必踩：`` `x` `` 若被单反引号分支从第一个
+    // 反引号切开，围栏错位会让后面整行的标记跟着错 —— 本库 markdown.md 里那句
+    // 「剥掉行内标记（…）」曾因此产出 <a href="链接">，静态导出后才被链接门禁抓到。
+    const { container } = render(
+      <Markdown>{"剥掉行内标记（`` `代码` `` / `**粗**` / `[文字](链接)`）"}</Markdown>,
+    );
+
+    expect(container.querySelectorAll("a")).toHaveLength(0);
+    expect(container.querySelectorAll("strong")).toHaveLength(0);
+    const codes = [...container.querySelectorAll("code")].map((el) => el.textContent);
+    expect(codes).toEqual(["`代码`", "**粗**", "[文字](链接)"]);
+  });
+
+  it("行内代码照常解析，不因多反引号支持而回归", () => {
+    const { container } = render(
+      <Markdown>{"普通 `code` 与 **粗** 与 [链接](https://example.com/a) 混排"}</Markdown>,
+    );
+
+    expect(container.querySelector("code")?.textContent).toBe("code");
+    expect(container.querySelector("strong")?.textContent).toBe("粗");
+    expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com/a");
+  });
 });

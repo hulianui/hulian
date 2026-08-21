@@ -162,13 +162,13 @@ function AnchorDemo({ offsetTop = 8 }: { offsetTop?: number }) {
   );
 }
 
-// 只展示结构、不配正文：hrefs 同样逐实例派生，因此不会去命中另一份 demo 的章节
-// （点击落不到目标时 Anchor 交回默认行为，不会滚错盒子）。
+// 只展示结构、不配正文：href 一律给裸 "#"。
+// 派生 id 会指向本页并不存在的锚点，静态导出后 bilingual-links 判定为悬空链接（实测 20 处）；
+// 而裸 "#" 是本仓占位锚点的既定写法，既不会误命中另一份 demo 的章节，也不留悬空目标。
 function AnchorStructure() {
-  const id = useSectionId();
   return (
     <div className="rounded-[var(--radius)] border border-border p-4">
-      <Anchor items={docItems(id)} className="w-48" />
+      <Anchor items={docItems(() => "")} className="w-48" />
     </div>
   );
 }

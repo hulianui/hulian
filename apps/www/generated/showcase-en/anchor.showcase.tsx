@@ -140,9 +140,8 @@ function AnchorDemo({ offsetTop = 8 }: {
     </div>);
 }
 function AnchorStructure() {
-    const id = useSectionId();
     return (<div className="rounded-[var(--radius)] border border-border p-4">
-      <Anchor items={docItems(id)} className="w-48"/>
+      <Anchor items={docItems(() => "")} className="w-48"/>
     </div>);
 }
 export const anchorShowcase: ShowcaseSpec = {

@@ -13,7 +13,29 @@ import { useComponentLocale } from "../config/locale-context";
 // 与 StreamingText 配合：流式中用 StreamingText 逐字、done 后切 Markdown 出完整富文本。
 
 // 行内标记：代码优先（其内不再解析），其次粗体、斜体、链接。
-const INLINE = /(`[^`]+`)|(\*\*[^*]+\*\*)|(\*[^*]+\*)|(\[[^\]]+\]\([^)]+\))/g;
+//
+// 多反引号围栏（CommonMark 的 code span）必须排在单反引号之前 —— 正则交替是左优先，
+// 反过来写的话 `` `x` `` 会先被单反引号分支从第一个反引号切开，围栏错位，后面整行的
+// 标记全部跟着错位：实测「剥掉行内标记（`` `代码` `` / `**粗**` / `[文字](链接)`）」
+// 里的 `**粗**` 被解析成了 <strong>、`[文字](链接)` 被解析成了 <a href="链接">，
+// 而它们本该原样躺在行内代码里。「用 Markdown 讲 Markdown 语法」的文档必然踩这条
+// （本库的 markdown.md 就踩了，静态导出后被 bilingual-links 判成悬空链接才暴露）。
+const INLINE =
+  /(```[^\n]*?```|``[^\n]*?``|`[^`\n]+`)|(\*\*[^*]+\*\*)|(\*[^*]+\*)|(\[[^\]]+\]\([^)]+\))/g;
+
+/**
+ * 取行内代码的内容：剥掉两侧的反引号围栏。
+ *
+ * 按 CommonMark，围栏内首尾各有一个空格且内容不全为空格时，两侧各去掉一个 ——
+ * 这正是 `` `x` `` 这种写法能把反引号本身放进代码里的机制，去早了就会多出两个空格。
+ */
+function codeContent(raw: string): string {
+  const fence = /^`+/.exec(raw)?.[0].length ?? 1;
+  const inner = raw.slice(fence, -fence);
+  return inner.length > 2 && inner.startsWith(" ") && inner.endsWith(" ") && inner.trim() !== ""
+    ? inner.slice(1, -1)
+    : inner;
+}
 
 function renderInline(text: string): ReactNode[] {
   const out: ReactNode[] = [];
@@ -23,7 +45,7 @@ function renderInline(text: string): ReactNode[] {
     if (m.index > last) out.push(<Fragment key={key++}>{text.slice(last, m.index)}</Fragment>);
     const tok = m[0];
     if (tok.startsWith("`")) {
-      out.push(<code key={key++}>{tok.slice(1, -1)}</code>);
+      out.push(<code key={key++}>{codeContent(tok)}</code>);
     } else if (tok.startsWith("**")) {
       out.push(<strong key={key++}>{tok.slice(2, -2)}</strong>);
     } else if (tok.startsWith("*")) {
