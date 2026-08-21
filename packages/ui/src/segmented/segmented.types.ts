@@ -12,6 +12,13 @@ export interface SegmentedItem {
 }
 
 /**
+ * 语义档。与 `TabsList` 的 `tone` 同名同取值 —— Segmented 与 solid Tabs 是同一套视觉
+ *（同 `bg-track` 凹槽、同 `bg-surface` 滑块），选中色再分叉就会出现「长得一样、选中色不同」
+ * 的两件组件（#316）。取值仍是「语义 tone SSOT」（见 `Button` 的 `tone`）的子集。
+ */
+export type SegmentedTone = "brand" | "success" | "warning" | "danger" | "neutral";
+
+/**
  * 继承根节点原生属性（`id` / `data-*` / `aria-*` / `onFocus` / `onBlur` …）。
  * 表单受控件必须能接 react-hook-form 的 `Controller` —— 尤其 `field.onBlur` 传不进去时
  * `touchedFields` 永不更新、`mode: "onBlur"` 的表单静默失效（#157）。
@@ -28,6 +35,14 @@ export interface SegmentedProps extends HTMLAttributes<HTMLDivElement> {
   /** 整体禁用。 */
   disabled?: boolean;
   size?: "sm" | "md";
+  /**
+   * 选中段的语义色档。@default "neutral"
+   *
+   * 只染选中段的文字，滑块保持 `bg-surface` 白药丸（同 Tabs solid：白药丸 + 语义字）。
+   * 默认 `neutral` = **逐字保持库既有的渲染**（选中段 `text-foreground`），不是"换成灰"——
+   * 这一档存在的意义是让存量页面零视觉变化；要品牌色显式传 `tone="brand"`。
+   */
+  tone?: SegmentedTone;
   className?: string;
   "aria-label"?: string;
 }

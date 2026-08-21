@@ -1,12 +1,21 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "./tabs";
+import type { TabsTone } from "./tabs.types";
 import { Tag } from "../tag";
 
-function Demo({ variant, size }: { variant: "underline" | "solid"; size?: "sm" | "md" }) {
+function Demo({
+  variant,
+  size,
+  tone,
+}: {
+  variant: "underline" | "solid";
+  size?: "sm" | "md";
+  tone?: TabsTone;
+}) {
   return (
     <Tabs defaultValue="account" className="w-80">
-      <TabsList variant={variant} size={size}>
+      <TabsList variant={variant} size={size} tone={tone}>
         <TabsTab value="account">账户</TabsTab>
         <TabsTab value="password">密码</TabsTab>
         <TabsTab value="team" disabled>
@@ -68,6 +77,45 @@ export const tabsShowcase: ShowcaseSpec = {
           <TabsPanel value="password">密码面板。</TabsPanel>
           <TabsPanel value="team">团队面板。</TabsPanel>
         </Tabs>
+      ),
+    },
+    {
+      title: "语义色档（tone）",
+      description:
+        "TabsList 加 tone，选中态就带上语义色：solid 是白药丸配语义文字，underline 的下划线也跟着换。默认 neutral 保持库既有的中性选中态，不传就不变。",
+      code: `<Tabs defaultValue="account" className="w-80">
+  <TabsList variant="solid" tone="brand">
+    <TabsTab value="account">账户</TabsTab>
+    <TabsTab value="password">密码</TabsTab>
+    <TabsTab value="team">团队</TabsTab>
+  </TabsList>
+  <TabsPanel value="account">账户面板。</TabsPanel>
+  <TabsPanel value="password">密码面板。</TabsPanel>
+  <TabsPanel value="team">团队面板。</TabsPanel>
+</Tabs>`,
+      render: () => (
+        <div className="flex flex-col gap-4">
+          <Tabs defaultValue="account" className="w-80">
+            <TabsList variant="solid" tone="brand">
+              <TabsTab value="account">账户</TabsTab>
+              <TabsTab value="password">密码</TabsTab>
+              <TabsTab value="team">团队</TabsTab>
+            </TabsList>
+            <TabsPanel value="account">账户面板。</TabsPanel>
+            <TabsPanel value="password">密码面板。</TabsPanel>
+            <TabsPanel value="team">团队面板。</TabsPanel>
+          </Tabs>
+          <Tabs defaultValue="account" className="w-80">
+            <TabsList tone="brand">
+              <TabsTab value="account">账户</TabsTab>
+              <TabsTab value="password">密码</TabsTab>
+              <TabsTab value="team">团队</TabsTab>
+            </TabsList>
+            <TabsPanel value="account">账户面板。</TabsPanel>
+            <TabsPanel value="password">密码面板。</TabsPanel>
+            <TabsPanel value="team">团队面板。</TabsPanel>
+          </Tabs>
+        </div>
       ),
     },
     {
@@ -183,11 +231,20 @@ export const tabsShowcase: ShowcaseSpec = {
       defaultValue: "md",
       label: "尺寸",
     },
+    {
+      prop: "tone",
+      type: "select",
+      options: ["neutral", "brand", "success", "warning", "danger"],
+      defaultValue: "neutral",
+      label: "语义档",
+    },
   ],
   states: [
     { name: "underline", render: () => <Demo variant="underline" /> },
     { name: "solid", render: () => <Demo variant="solid" /> },
     { name: "solid · size=sm", render: () => <Demo variant="solid" size="sm" /> },
+    { name: "solid · tone=brand", render: () => <Demo variant="solid" tone="brand" /> },
+    { name: "underline · tone=danger", render: () => <Demo variant="underline" tone="danger" /> },
     {
       name: "disabled tab",
       render: () => (
@@ -210,8 +267,11 @@ export const tabsShowcase: ShowcaseSpec = {
     <Demo
       variant={(p.variant as "underline" | "solid") ?? "underline"}
       size={(p.size as "sm" | "md") ?? "md"}
+      tone={(p.tone as TabsTone) ?? "neutral"}
     />
   ),
   toCode: (p) =>
-    `<Tabs defaultValue="account">\n  <TabsList variant="${p.variant ?? "underline"}" size="${p.size ?? "md"}">\n    <TabsTab value="account">账户</TabsTab>\n    <TabsTab value="password">密码</TabsTab>\n  </TabsList>\n  <TabsPanel value="account">…</TabsPanel>\n  <TabsPanel value="password">…</TabsPanel>\n</Tabs>`,
+    `<Tabs defaultValue="account">\n  <TabsList variant="${p.variant ?? "underline"}" size="${p.size ?? "md"}"${
+      p.tone && p.tone !== "neutral" ? ` tone="${p.tone}"` : ""
+    }>\n    <TabsTab value="account">账户</TabsTab>\n    <TabsTab value="password">密码</TabsTab>\n  </TabsList>\n  <TabsPanel value="account">…</TabsPanel>\n  <TabsPanel value="password">…</TabsPanel>\n</Tabs>`,
 };

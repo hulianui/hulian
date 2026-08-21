@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { tabsListVariants, Tabs, TabsList, TabsTab, TabsPanel } from "./tabs";
+import type { TabsTone } from "./tabs.types";
 
 describe("tabsListVariants", () => {
   it("默认 underline：下划线条 + relative 锚", () => {
@@ -161,5 +162,101 @@ describe("Tabs 尺寸档（#269）", () => {
     const [small, medium] = Array.from(container.querySelectorAll('[role="tab"]'));
     expect(small.className).toContain("text-xs");
     expect(medium.className).toContain("text-sm");
+  });
+});
+
+// #316 语义档 tone。第一条是这次改动的"零破坏"证据：默认档 neutral 必须逐字保持改动前的
+// class 串（下面两个字面量是从改动前的 DOM 里原样抄出来的），因为 tone 是纯增量 ——
+// 存量页面不传 tone，就一个像素都不该动。
+describe("Tabs tone（#316）", () => {
+  const TAB_CLASS_BEFORE_TONE =
+    "relative z-10 cursor-pointer select-none rounded-[var(--radius)] font-medium " +
+    "text-muted-foreground transition-colors hover:text-foreground data-[active]:text-foreground " +
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg " +
+    "data-[disabled]:pointer-events-none data-[disabled]:opacity-50 px-3 py-1.5 text-sm";
+  const UNDERLINE_INDICATOR_BEFORE_TONE =
+    "pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-primary";
+
+  function listOf(props: { variant?: "underline" | "solid"; tone?: TabsTone }) {
+    const { container } = render(
+      <Tabs defaultValue="a">
+        <TabsList {...props}>
+          <TabsTab value="a">甲</TabsTab>
+          <TabsTab value="b">乙</TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    const tabs = Array.from(container.querySelectorAll('[role="tab"]'));
+    return {
+      indicator: container.querySelector('[role="tablist"] span')!,
+      active: tabs[0],
+      inactive: tabs[1],
+    };
+  }
+
+  it("不传 tone：tab 与 underline 滑块的 class 逐字等于改动前", () => {
+    const { indicator, active } = listOf({});
+    expect(active.className).toBe(TAB_CLASS_BEFORE_TONE);
+    expect(indicator.className).toBe(UNDERLINE_INDICATOR_BEFORE_TONE);
+  });
+
+  it("显式 tone=\"neutral\" 与不传 tone 渲染完全一致（neutral 是维持现状，不是换成灰）", () => {
+    expect(listOf({ tone: "neutral" }).active.className).toBe(listOf({}).active.className);
+    expect(listOf({ tone: "neutral" }).indicator.className).toBe(listOf({}).indicator.className);
+  });
+
+  it("tone 换掉选中文字色，且顶掉基类那条中性色（tailwind-merge 后者胜）", () => {
+    const { active } = listOf({ tone: "brand" });
+    expect(active.className).toContain("data-[active]:text-primary");
+    expect(active.className).not.toContain("data-[active]:text-foreground");
+  });
+
+  it("未选中态不受 tone 影响：静息仍是 muted、hover 仍回 foreground", () => {
+    const { inactive } = listOf({ tone: "danger" });
+    expect(inactive.className).toContain("text-muted-foreground");
+    expect(inactive.className).toContain("hover:text-foreground");
+    expect(inactive.className).not.toContain("text-danger ");
+  });
+
+  it("underline 的下划线跟 tone；solid 的药丸底不跟（保持 bg-surface 白药丸 + 语义字）", () => {
+    const underline = listOf({ tone: "success" }).indicator;
+    expect(underline.className).toContain("bg-success");
+    expect(underline.className).not.toContain("bg-primary");
+    const solid = listOf({ variant: "solid", tone: "success" }).indicator;
+    expect(solid.className).toContain("bg-surface");
+    expect(solid.className).not.toContain("bg-success");
+  });
+
+  it("tone 经 TabsList 下发，TabsTab 不必逐个传；两条 tab 条互不串", () => {
+    const { container } = render(
+      <Tabs defaultValue="a">
+        <TabsList tone="warning">
+          <TabsTab value="a">甲</TabsTab>
+          <TabsTab value="b">乙</TabsTab>
+        </TabsList>
+        <TabsList>
+          <TabsTab value="c">丙</TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    const tabs = Array.from(container.querySelectorAll('[role="tab"]'));
+    expect(tabs[0].className).toContain("data-[active]:text-warning");
+    expect(tabs[1].className).toContain("data-[active]:text-warning");
+    expect(tabs[2].className).toContain("data-[active]:text-foreground");
+  });
+
+  it("消费方 className 仍是最后一道，能盖住库给的选中色", () => {
+    const { container } = render(
+      <Tabs defaultValue="a">
+        <TabsList tone="brand">
+          <TabsTab value="a" className="data-[active]:text-success">
+            甲
+          </TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    const tab = container.querySelector('[role="tab"]')!;
+    expect(tab.className).toContain("data-[active]:text-success");
+    expect(tab.className).not.toContain("data-[active]:text-primary");
   });
 });

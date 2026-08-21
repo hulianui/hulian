@@ -37,6 +37,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | Underline slider or solid pill styling. |
 | size | `"sm" \| "md"` | `"md"` | Size step, passed down to `TabsTab` so it never has to be repeated. `md` is page-level tab navigation; `sm` is for an inline switcher sitting on the same row as a heading or a search box. See Size. |
+| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"neutral"` | Semantic colour of the selected state, passed down to `TabsTab` so it never has to be repeated. See Semantic tone. |
 | className | `string` | - | Additional class name. |
 
 `TabsTab` accepts required `value`, plus `disabled` and `className`; `TabsPanel` accepts `value` and `className`.
@@ -61,6 +62,24 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
   <TabsPanel value="team">Invite members and assign roles.</TabsPanel>
 </Tabs>
 ```
+
+## Semantic tone
+
+`tone` on `TabsList` describes **what being selected means**. Its values are a subset of the semantic tone SSOT (see `tone` on [Button](../button/button.md)): `brand`, `success`, `warning`, `danger`, and `neutral`. `current` is deliberately left out: that step means "set no colour, inherit from the container", and a tab bar does not sit inside a coloured container.
+
+| Variant | Selected label | Slider |
+|---|---|---|
+| `solid` | Text colour of that tone | Pill keeps `bg-surface`, so a white pill carries semantic text |
+| `underline` | Text colour of that tone | Underline follows the tone |
+
+```tsx
+<TabsList variant="solid" tone="brand">…</TabsList>
+```
+
+- **The `neutral` default keeps today's rendering, it does not turn the brand colour grey.** The selected label stays `text-foreground` and the `underline` indicator stays `bg-primary`, byte for byte what they were before this prop existed. Existing pages that pass no `tone` do not move a single pixel; a white pill with a brand-blue label needs an explicit `tone="brand"`.
+- **Only the selected state is coloured.** Unselected tabs are unaffected and stay `text-muted-foreground`, moving to `text-foreground` on hover.
+- **The solid pill does not follow `tone`.** Filling the pill with a semantic colour would drown out the semantics of the label itself. A soft semantic fill, matching `soft` on Button, is left for later.
+- `Segmented` takes a `tone` with the same name and the same values, because it shares this visual language and its selected colour has to match.
 
 ## Size
 
