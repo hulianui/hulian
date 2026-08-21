@@ -29,7 +29,7 @@ Inherits `<div>` attributes except `color` and `onClick`, which are redefined be
 |------|------|------|------|
 | color | `string` | `var(--color-primary)` | Folder color. Accepts any CSS color; a theme token is recommended. |
 | size | `number` | `1` | Scale relative to the 100 by 80 px base. |
-| open | `boolean` | — | Controlled open state; pair with `onOpenChange`. |
+| open | `boolean` | - | Controlled open state; pair with `onOpenChange`. |
 | defaultOpen | `boolean` | `false` | Initial state in uncontrolled mode. |
 | disableMagnet | `boolean` | `false` | Prevents open papers from following the pointer. |
 

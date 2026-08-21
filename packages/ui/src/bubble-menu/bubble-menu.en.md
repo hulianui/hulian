@@ -30,18 +30,18 @@ import { BubbleMenu } from "@hulianui/ui"
 | useFixedPosition | `boolean` | `false` | Fixed to the viewport when true, or absolute within the nearest positioned ancestor. |
 | animationDuration | `number` | `0.5` | Pill entrance duration in seconds. |
 | staggerDelay | `number` | `0.12` | Delay between adjacent pill entrances in seconds. |
-| className | `string` | — | Root nav class name. |
-| style | `CSSProperties` | — | Root inline styles. |
+| className | `string` | - | Root nav class name. |
+| style | `CSSProperties` | - | Root inline styles. |
 
 `BubbleMenuItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label * | `string` | — | Link text. |
-| href * | `string` | — | Link destination. |
+| label * | `string` | - | Link text. |
+| href * | `string` | - | Link destination. |
 | ariaLabel | `string` | Falls back to `label` | Accessible label. |
-| rotation | `number` | — | Desktop pill rotation in degrees for a hand-placed feel; it resets to zero on mobile. |
-| hoverStyles | `{ bgColor?: string; textColor?: string }` | — | Inverted colors on hover. |
+| rotation | `number` | - | Desktop pill rotation in degrees for a hand-placed feel; it resets to zero on mobile. |
+| hoverStyles | `{ bgColor?: string; textColor?: string }` | - | Inverted colors on hover. |
 
 ## Events
 

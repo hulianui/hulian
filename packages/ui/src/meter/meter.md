@@ -10,7 +10,7 @@ status: enriched
 
 # Meter
 
-> 度量条 · Base UI role=meter(静态量占比，区别 Progress) · data-display/stat
+> 用语义化的量条表示某个值在已知范围里的占比 · data-display/stat
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { Meter } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `number` | — | 当前值 |
+| value* | `number` | - | 当前值 |
 | min | `number` | `0` | 下限 |
 | max | `number` | `100` | 上限 |
 | showValue | `boolean` | `false` | 是否显示数值文案。默认按 `(value - min) / (max - min)` 渲染成百分比，与指示条同口径（最多一位小数） |
-| formatValue | `(info: { value, min, max, percent }) => string` | — | 自定义数值文案。返回值同时用于可见文字与 `aria-valuetext`，两者不会不一致。`percent` 已归一并夹到 0–100（未取整）。用于绝对数表述：`({ value, max }) => \`${value} / ${max} 道题\`` |
-| className | `string` | — | 透传类名（宽度在此设，如 `w-64`） |
+| formatValue | `(info: { value, min, max, percent }) => string` | - | 自定义数值文案。返回值同时用于可见文字与 `aria-valuetext`，两者不会不一致。`percent` 已归一并夹到 0-100（未取整）。用于绝对数表述：`({ value, max }) => \`${value} / ${max} 道题\`` |
+| className | `string` | - | 透传类名（宽度在此设，如 `w-64`） |
 
 ## Slots
 
@@ -67,7 +67,7 @@ import { Meter } from "@hulianui/ui"
 
 - **无障碍名只能由 `label` 给**。`role="meter"` 内部靠 `aria-labelledby` 关联到 `label`，自己在组件外面写一行标题不会被关联上。
 - **按 `textContent` 断言时会多出一个 `x`**。Base UI 的 Meter.Root 末尾固定塞了一个 `role="presentation"` 的视觉隐藏 `<span>x</span>`（读屏不会念，也不进无障碍名）。要精确断言可见文案请查具体节点，别整树取 `textContent`。
-- **`value` 超出 `[min, max]` 时文案会夹到 0–100%**，但 `aria-valuenow` 仍如实上报原始值 —— 越界应当在数据侧解决，组件不替你掩盖。
+- **`value` 超出 `[min, max]` 时文案会夹到 0-100%**，但 `aria-valuenow` 仍如实上报原始值 —— 越界应当在数据侧解决，组件不替你掩盖。
 
 ## 相关
 [Stat](../stat/stat.md) · [Statistic](../statistic/statistic.md) · [Chart](../chart/chart.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)

@@ -10,7 +10,7 @@ status: enriched
 
 # SearchForm
 
-> 查询筛选表单 · 中后台列表页顶部条件区 · fields 配置 + 固定列栅格 + 一行折叠 + 查询/重置(dogfood Grid/Field/Input/Select/Button·零依赖) · forms/framework
+> 拼出列表页顶部的查询条件区，可折叠可重置 · forms/framework
 
 ## 何时用
 
@@ -25,14 +25,14 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| fields* | `SearchField[]` | — | 字段配置数组 |
-| values | `Record<string, unknown>` | — | 受控值；缺省走内部 state |
+| fields* | `SearchField[]` | - | 字段配置数组 |
+| values | `Record<string, unknown>` | - | 受控值；缺省走内部 state |
 | columns | `number` | `3` | 桌面列数 |
 | gap | `number` | `4` | 行列间距（× 0.25rem） |
 | collapsible | `boolean` | `true` | 字段填不满一行时自动失效 |
 | defaultCollapsed | `boolean` | `true` | 初始折叠 |
 | loading | `boolean` | `false` | 查询按钮 loading 态 |
-| className | `string` | — | 根节点类名 |
+| className | `string` | - | 根节点类名 |
 
 ## Events
 

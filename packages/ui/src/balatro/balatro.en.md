@@ -38,7 +38,7 @@ import { Balatro } from "@hulianui/ui"
 | spinEase | `number` | `1.0` | Rotation easing coefficient used to fine-tune the overall twist and speed |
 | isRotate | `boolean` | `false` | Continuously rotate over time; when enabled, `spinRotation` influences rotation speed |
 | mouseInteraction | `boolean` | `true` | Enable pointer interaction; disabling it makes the effect pointer-transparent |
-| className | `string` | — | Additional class name for the root container or fallback div |
+| className | `string` | - | Additional class name for the root container or fallback div |
 
 ## Slots
 

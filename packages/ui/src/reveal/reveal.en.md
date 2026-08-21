@@ -37,7 +37,7 @@ import { Reveal, Stagger, StaggerItem } from "@hulianui/ui"
 | y | `number` | `24` | Starting downward movement distance px (floating from bottom) |
 | blur | `number` | `8` | Starting blur px (focus pulled in, GPU compositing) |
 | scale | `number` | `1` | Start zoom (<1 position like "put on bookshelf") |
-| delay | `number` | — | Delay seconds (used for peak staggering of independent blocks; no delay is required for container orchestration in Stagger) |
+| delay | `number` | - | Delay seconds (used for peak staggering of independent blocks; no delay is required for container orchestration in Stagger) |
 
 **Stagger** (extra):
 

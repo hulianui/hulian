@@ -27,7 +27,7 @@ import { Lens } from "@hulianui/ui"
 |------|------|------|------|
 | zoom | `number` | `1.6` | Magnification |
 | size | `number` | `140` | Lens diameter in pixels |
-| className | `string` | — | Forwarding className |
+| className | `string` | - | Forwarding className |
 
 ## Slots
 

@@ -32,13 +32,13 @@ import { LineWaves } from "@hulianui/ui"
 | rotation | `number` | `-45` | 整体纹理旋转角（度）；-45° 使波纹呈对角线走向 |
 | edgeFadeWidth | `number` | `0` | 上下边缘渐隐起始宽度；增大可让中心线条区收窄 |
 | colorCycleSpeed | `number` | `1` | 颜色循环速度；三通道色相随时间漂移，0 = 颜色恒定 |
-| brightness | `number` | `0.2` | 整体亮度系数；因 alpha=颜色长度，同时影响透明度。建议 0.1–0.6 |
+| brightness | `number` | `0.2` | 整体亮度系数；因 alpha=颜色长度，同时影响透明度。建议 0.1-0.6 |
 | color1 | `string` | `--color-chart-1` | 第一通道颜色，CSS 颜色串；默认取 chart token 明暗自适应 |
 | color2 | `string` | `--color-chart-2` | 第二通道颜色 |
 | color3 | `string` | `--color-chart-4` | 第三通道颜色；三色都传同一值（如 #ffffff）可还原原版白线 |
 | enableMouseInteraction | `boolean` | `true` | 开启指针局部扭曲外推；关闭则纯自动流动 |
 | mouseInfluence | `number` | `2` | 指针影响强度；仅 enableMouseInteraction=true 时生效 |
-| className | `string` | — | 透传到根容器（或 reduced-motion fallback div） |
+| className | `string` | - | 透传到根容器（或 reduced-motion fallback div） |
 
 ## Slots
 

@@ -34,14 +34,14 @@ import { LaserFlow } from "@hulianui/ui"
 | fogIntensity | `number` | `0.45` | 体积雾强度，0=无雾（→ uFogIntensity） |
 | fogScale | `number` | `0.3` | 雾噪声缩放，越大雾团越细碎（→ uFogScale） |
 | fogFallSpeed | `number` | `0.6` | 雾团下落速度（→ uFogFallSpeed） |
-| wispDensity | `number` | `1` | 微流光密度 0–2（→ uWispDensity） |
+| wispDensity | `number` | `1` | 微流光密度 0-2（→ uWispDensity） |
 | wispSpeed | `number` | `15` | 微流光行进速度（→ uWSpeed） |
 | wispIntensity | `number` | `5` | 微流光亮度强度（→ uWIntensity） |
-| flowStrength | `number` | `0.25` | 光流明暗脉冲强度 0–1（→ uFlowStrength） |
+| flowStrength | `number` | `0.25` | 光流明暗脉冲强度 0-1（→ uFlowStrength） |
 | decay | `number` | `1.1` | 光束衰减相位宽度（→ uDecay） |
 | falloffStart | `number` | `1.2` | 光束发光起始衰减（→ uFalloffStart） |
 | mouseTiltStrength | `number` | `0.01` | 鼠标牵引雾团倾斜强度；设 0 即关闭鼠标交互（→ uTiltScale） |
-| className | `string` | — | 透传根容器（或 reduced-motion fallback div）额外 className |
+| className | `string` | - | 透传根容器（或 reduced-motion fallback div）额外 className |
 
 ## Slots
 

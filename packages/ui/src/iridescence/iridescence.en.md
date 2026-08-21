@@ -25,11 +25,11 @@ import { Iridescence } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| color | `[number, number, number] \| string` | `--color-chart-3` | Base tint as a 0–1 RGB tuple or CSS color. When omitted, the component reads the theme chart token |
-| speed | number | 1.0 | Animation speed magnification, recommended 0.1–5 |
-| amplitude | number | 0.1 | Pointer offset amplitude (disturbance intensity), recommended 0.01–0.5 |
+| color | `[number, number, number] \| string` | `--color-chart-3` | Base tint as a 0-1 RGB tuple or CSS color. When omitted, the component reads the theme chart token |
+| speed | number | 1.0 | Animation speed magnification, recommended 0.1-5 |
+| amplitude | number | 0.1 | Pointer offset amplitude (disturbance intensity), recommended 0.01-0.5 |
 | mouseReact | boolean | true | Responds to pointer and touch through `uPointer`; when false, the coordinate stays at (0.5, 0.5) |
-| className | string | — | Forwarded to canvas or fallback container |
+| className | string | - | Forwarded to canvas or fallback container |
 
 ## Slots
 

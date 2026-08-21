@@ -33,15 +33,15 @@ import { LoginForm } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| loading | `boolean` | — | 外部 loading 覆盖（父层托管提交态时用） |
+| loading | `boolean` | - | 外部 loading 覆盖（父层托管提交态时用） |
 | showRemember | `boolean` | `true` | 是否显示「记住我」 |
 | rememberLabel | `ReactNode` | 取自 locale | 「记住我」的标签文案。这个勾选并不总是「下次免登录」的体验糖 —— 有的系统里它是**刷新令牌能力开关**（勾上才下发 refresh_token），文案是刻意写的，锁死在 locale 就没法用了（#64） |
-| rememberDescription | `ReactNode` | — | 「记住我」下方的一行说明（解释这个勾选到底意味着什么） |
-| rules | `{ username?: FormRule[]; password?: FormRule[] }` | — | 字段级校验规则，追加在内置必填之后（`FormRule` 同 [Form](../form/form.md)：`pattern`/`min`/`max`/`validator`/`message`） |
-| values | `Partial<LoginValues>` | — | 受控值：传入即受控，需配合 `onValuesChange` 回写；不传维持内部自管 |
-| fields | `{ username?: LoginFieldSlot; password?: LoginFieldSlot }` | — | 两个主字段的**外观槽**：`label` / `placeholder` / `prefix` / `suffix` / `description` / `autoComplete`。取值与校验仍由模板托管 |
+| rememberDescription | `ReactNode` | - | 「记住我」下方的一行说明（解释这个勾选到底意味着什么） |
+| rules | `{ username?: FormRule[]; password?: FormRule[] }` | - | 字段级校验规则，追加在内置必填之后（`FormRule` 同 [Form](../form/form.md)：`pattern`/`min`/`max`/`validator`/`message`） |
+| values | `Partial<LoginValues>` | - | 受控值：传入即受控，需配合 `onValuesChange` 回写；不传维持内部自管 |
+| fields | `{ username?: LoginFieldSlot; password?: LoginFieldSlot }` | - | 两个主字段的**外观槽**：`label` / `placeholder` / `prefix` / `suffix` / `description` / `autoComplete`。取值与校验仍由模板托管 |
 | surface | `boolean` | `true` | 自带卡面（边框 + 底色 + 阴影 + 内距）。分屏登录页 / 已经有卡的容器里传 `false`，表面交给外层 |
-| className | `string` | — | 根节点类名 |
+| className | `string` | - | 根节点类名 |
 
 ## Events
 

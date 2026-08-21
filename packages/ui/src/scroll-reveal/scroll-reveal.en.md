@@ -25,7 +25,7 @@ import { ScrollReveal } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| baseOpacity | `number` | `0.12` | Opacity of unrevealed words from 0–1; lower values create stronger contrast. |
+| baseOpacity | `number` | `0.12` | Opacity of unrevealed words from 0-1; lower values create stronger contrast. |
 | baseRotation | `number` | `3` | Initial paragraph rotation in degrees, returning to 0 with progress; set to 0 to disable. |
 | enableBlur | `boolean` | `true` | Blurs unrevealed words and clears them with progress. |
 | blurStrength | `number` | `4` | When `enableBlur` is true, the starting blur radius (px) of the word will decrease to 0 as the progress progresses. |

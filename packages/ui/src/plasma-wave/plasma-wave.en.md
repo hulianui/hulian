@@ -29,13 +29,13 @@ import { PlasmaWave } from "@hulianui/ui"
 | xOffset | `number` | `0` | Offset the ribbon horizontally (device pixels), moving the ripple focus away from the center |
 | yOffset | `number` | `0` | Ribbon vertical offset (device pixels) |
 | rotationDeg | `number` | `0` | Overall rotation angle (degrees), arranging transverse wave bands diagonally for more tension |
-| focalLength | `number` | `0.8` | Focal length (sight convergence); the larger, the more concentrated the depth, the smaller the more spread. Recommendation 0.4–1.6 |
+| focalLength | `number` | `0.8` | Focal length (sight convergence); the larger, the more concentrated the depth, the smaller the more spread. Recommendation 0.4-1.6 |
 | speed1 | `number` | `0.05` | The flow rate of the first ribbon; the bigger, the faster |
 | speed2 | `number` | `0.05` | Second ribbon flow rate |
 | dir2 | `number` | `1` | Second-ribbon direction: +1 follows the first ribbon and -1 reverses it to emphasize interweaving |
 | bend1 | `number` | `1` | The bending amplitude of the first ribbon; the greater the undulations, the more exaggerated |
 | bend2 | `number` | `0.5` | The bending amplitude of the second ribbon |
-| className | `string` | — | Additional class name for the canvas container or fallback div, often used for sizing, rounding, and opacity |
+| className | `string` | - | Additional class name for the canvas container or fallback div, often used for sizing, rounding, and opacity |
 
 ## Slots
 

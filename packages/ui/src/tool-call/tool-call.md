@@ -10,7 +10,7 @@ status: enriched
 
 # ToolCall
 
-> 工具调用卡 · dogfood Collapsible + Dot状态色 + Spinner(运行中) · pending/running/success/error 四态 + 参数/结果折叠面板 + 工具图标 · ai/agent
+> 展示一次工具调用的参数、进度和结果 · ai/agent
 
 ## 何时用
 
@@ -26,9 +26,9 @@ import { ToolCall } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | status | `"pending" ｜ "running" ｜ "success" ｜ "error"` | `"success"` | pending 等待 / running 运行中(转圈) / success 完成 / error 失败 |
-| defaultOpen | `boolean` | — | 非受控初始展开态 |
-| open | `boolean` | — | 受控展开态 |
-| className | `string` | — | 容器类名 |
+| defaultOpen | `boolean` | - | 非受控初始展开态 |
+| open | `boolean` | - | 受控展开态 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

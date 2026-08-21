@@ -10,7 +10,7 @@ status: enriched
 
 # ImageCropper
 
-> Image cropping · Fixed ratio frame (default ID photo 5:7) + touch screen two-finger pinch/drag alignment + zoom slider + canvas output Blob (size/quality/byte upper limit configurable·react-easy-crop MIT) · forms/advanced
+> Lets users pan, pinch, zoom, and crop an image to a fixed ratio before Blob export. · forms/advanced
 
 ## When to use
 
@@ -25,15 +25,15 @@ import { ImageCropper, cropImageToBlob } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| image* | `string` | — | Image source: object URL / data URL / origin address |
+| image* | `string` | - | Image source: object URL / data URL / origin address |
 | aspect | `number` | `5/7` | Cropping frame aspect ratio (identity photo 1 inch/2 inches same ratio) |
 | outputWidth | `number` | `413` | The output bitmap width (px), the height is rounded according to the aspect derivation (2 inches @300DPI) |
 | outputType | `string` | `"image/jpeg"` | output mime |
-| quality | `number` | `0.9` | Encoding quality 0–1 |
-| maxBytes | `number` | — | Upper limit of output bytes (such as `200*1024`): If the limit is exceeded, the quality will be reduced and try again. |
+| quality | `number` | `0.9` | Encoding quality 0-1 |
+| maxBytes | `number` | - | Upper limit of output bytes (such as `200*1024`): If the limit is exceeded, the quality will be reduced and try again. |
 | maxZoom | `number` | `3` | Maximum zoom factor |
 | cropAreaClassName | `string` | `h-64 sm:h-80` | Cropping canvas area height class |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 ## Events
 

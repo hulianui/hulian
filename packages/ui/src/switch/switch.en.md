@@ -10,7 +10,7 @@ status: enriched
 
 # Switch
 
-> Accessible switch control built on Base UI · controlled and uncontrolled state · forms/basic
+> Toggles a binary setting with a compact track-and-thumb control. · forms/basic
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { Switch } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| checked | `boolean` | — | Checked state in controlled mode. |
+| checked | `boolean` | - | Checked state in controlled mode. |
 | defaultChecked | `boolean` | `false` | Initial checked state in uncontrolled mode. |
 | disabled | `boolean` | `false` | Whether to disable the switch. |
-| id | `string` | — | HTML identifier used to associate the switch with a label. |
-| className | `string` | — | Additional class name for the switch root. |
-| aria-label | `string` | — | Accessible label when no visible label is present. |
+| id | `string` | - | HTML identifier used to associate the switch with a label. |
+| className | `string` | - | Additional class name for the switch root. |
+| aria-label | `string` | - | Accessible label when no visible label is present. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Visual size: 36×20, 40×24, or 48×28 px. The default `md` size preserves the original dimensions. |
 | touchTarget | `boolean` | `false` | Expands the invisible hit area to at least 44 px without changing layout or appearance; enable it for touch interfaces when spacing permits. |
 

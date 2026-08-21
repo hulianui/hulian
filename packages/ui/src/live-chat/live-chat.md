@@ -10,7 +10,7 @@ status: enriched
 
 # LiveChat
 
-> 直播公屏 · 高频自动滚消息流 + message/enter(进场)/gift(送礼)/follow(关注)/system(系统)五类型默认皮肤 + 等级牌/身份徽标 + 置顶区 + 上滚查看历史时浮出「N 条新消息」恢复钮(贴底判定) + maxItems 窗口限流 + renderItem 逃生舱 + overlay 浅色态(叠加深色视频上白字) · 区别 AI 轮次制 Conversation · data-display/collection
+> 展示直播公屏消息流，带礼物、进场、置顶和自动滚动 · data-display/collection
 
 ## 何时用
 
@@ -25,23 +25,23 @@ import { LiveChat } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `LiveChatItem[]` | — | 消息流（受控，追加） |
-| pinned | `LiveChatItem[]` | — | 顶部置顶区（公告/规则） |
+| items* | `LiveChatItem[]` | - | 消息流（受控，追加） |
+| pinned | `LiveChatItem[]` | - | 顶部置顶区（公告/规则） |
 | autoScroll | `boolean` | `true` | 自动滚到底；用户上滚时暂停并浮出「N 条新消息」恢复钮 |
 | maxItems | `number` | `200` | 滚动窗保留上限（性能） |
 | overlay | `boolean` | `false` | 叠在深色视频上的浅色态（文字改白/半透白 + 文字阴影） |
-| className | `string` | — | 容器自定义类 |
+| className | `string` | - | 容器自定义类 |
 
 `LiveChatItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| id * | `string` | — | 去重键 |
-| type * | `"message" ｜ "gift" ｜ "system" ｜ "enter"` | — | 条目类型，决定渲染成哪一种行 |
-| user | `LiveChatUser` | — | 发送者 `{ name, avatar?, badge?, level? }`；`system` 类型可省 |
-| text | `ReactNode` | — | `message` 类型的正文 |
-| gift | `{ name: string; icon?: ReactNode; combo?: number }` | — | `gift` 类型的礼物信息 |
-| at | `string` | — | 时间戳文本（原样展示，不做格式化） |
+| id * | `string` | - | 去重键 |
+| type * | `"message" ｜ "gift" ｜ "system" ｜ "enter"` | - | 条目类型，决定渲染成哪一种行 |
+| user | `LiveChatUser` | - | 发送者 `{ name, avatar?, badge?, level? }`；`system` 类型可省 |
+| text | `ReactNode` | - | `message` 类型的正文 |
+| gift | `{ name: string; icon?: ReactNode; combo?: number }` | - | `gift` 类型的礼物信息 |
+| at | `string` | - | 时间戳文本（原样展示，不做格式化） |
 
 ## Slots
 

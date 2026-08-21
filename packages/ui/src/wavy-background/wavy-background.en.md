@@ -30,10 +30,10 @@ import { WavyBackground, valueNoise2D } from "@hulianui/ui"
 | backgroundFill | string | `--color-background` / `--color-bg` | Background fill color, translucent drawing of each frame produces smear |
 | blur | number | 10 | canvas filter blur (px), 0=no blur |
 | speed | `"slow" \| "fast"` | `"fast"` | Animation speed |
-| waveOpacity | number | 0.5 | Overall transparency of each wave (0–1) |
-| className | string | — | Content container class (wrapper div overlaid on the wave) |
-| containerClassName | string | — | Outer root container class |
-| containerProps | `Omit<HTMLAttributes<HTMLDivElement>, "className"> & Record<\`data-${string}\`, …>` | — | Attributes forwarded to the outer root div, including custom `data-*` attributes |
+| waveOpacity | number | 0.5 | Overall transparency of each wave (0-1) |
+| className | string | - | Content container class (wrapper div overlaid on the wave) |
+| containerClassName | string | - | Outer root container class |
+| containerProps | `Omit<HTMLAttributes<HTMLDivElement>, "className"> & Record<\`data-${string}\`, …>` | - | Attributes forwarded to the outer root div, including custom `data-*` attributes |
 
 ## Slots
 

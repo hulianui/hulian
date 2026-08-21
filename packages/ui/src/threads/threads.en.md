@@ -25,11 +25,11 @@ import { Threads } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| color | `[number, number, number] \| string` | `--color-chart-1` | Thread color as a 0–1 RGB tuple or CSS color. When omitted, the component reads the chart token |
-| amplitude | number | 1 | Wave amplitude; higher values produce stronger motion. Recommended range 0.3–3 |
-| distance | number | 0 | The longitudinal spacing of each wire is scaled. Positive values expand and negative values compress. It is recommended to -1–2 |
+| color | `[number, number, number] \| string` | `--color-chart-1` | Thread color as a 0-1 RGB tuple or CSS color. When omitted, the component reads the chart token |
+| amplitude | number | 1 | Wave amplitude; higher values produce stronger motion. Recommended range 0.3-3 |
+| distance | number | 0 | The longitudinal spacing of each wire is scaled. Positive values expand and negative values compress. It is recommended to -1-2 |
 | enableMouseInteraction | boolean | true | Mouse following: X affects time flow rate, Y affects amplitude, with 0.05 smooth interpolation |
-| className | string | — | Additional class name for the canvas or fallback div |
+| className | string | - | Additional class name for the canvas or fallback div |
 
 ## Slots
 
@@ -51,7 +51,7 @@ import { Threads } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- WebGL component, which must be rendered by the client; `color` accepts both the `[r,g,b]` array of 0–1 and the CSS string (including `var(--color-chart-3)`/oklch/hex).
+- WebGL component, which must be rendered by the client; `color` accepts both the `[r,g,b]` array of 0-1 and the CSS string (including `var(--color-chart-3)`/oklch/hex).
 - When ogl/WebGL is dual-mounted in StrictMode or cleanup, it is easy to step on the context reuse poison pit - when changing the source code, do not cleanup and adjust `loseContext` and then reuse the same canvas (see [[webgl-canvas-loseContext-poisons-strictmode-remount]]); use fallback when there is no WebGL in headless, use a real browser for visual verification.
 - Transparent bottom, you need to put it in a container with a background color to see clearly; the parent container must be `relative` + `overflow-hidden`.
 

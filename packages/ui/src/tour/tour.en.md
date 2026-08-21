@@ -10,7 +10,7 @@ status: enriched
 
 # Tour
 
-> Guided tour · Dependency-free SVG mask spotlight and positioned explanation card with navigation, skip, progress, and resize/scroll recalculation · feedback/guide
+> Guides users through anchored steps with a cutout highlight, positioned card, navigation, and progress. · feedback/guide
 
 ## When to use
 
@@ -25,9 +25,9 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| steps* | `TourStep[]` | — | Guided steps described below. |
-| open* | `boolean` | — | Controlled open state. |
-| current* | `number` | — | Controlled zero-based step index. |
+| steps* | `TourStep[]` | - | Guided steps described below. |
+| open* | `boolean` | - | Controlled open state. |
+| current* | `number` | - | Controlled zero-based step index. |
 | maskClosable | `boolean` | `false` | Whether clicking the mask closes the tour. |
 | spotlightPadding | `number` | `8` | Space around the target cutout in pixels. |
 | spotlightRadius | `number` | `8` | Cutout corner radius. |
@@ -37,9 +37,9 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 **TourStep**:
 | Field | Type | Default | Description |
 |------|------|------|------|
-| target | `(() => Element \| null) \| string \| null` | — | Target getter, CSS selector, or null for a centered card. Getters are most reliable for dynamic DOM. |
-| title | `ReactNode` | — | Step title. |
-| description | `ReactNode` | — | Step description. |
+| target | `(() => Element \| null) \| string \| null` | - | Target getter, CSS selector, or null for a centered card. Getters are most reliable for dynamic DOM. |
+| title | `ReactNode` | - | Step title. |
+| description | `ReactNode` | - | Step description. |
 | placement | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Preferred side, flipped when necessary; ignored without a target. |
 
 ## Events

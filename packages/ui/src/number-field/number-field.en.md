@@ -10,7 +10,7 @@ status: enriched
 
 # NumberField
 
-> Numeric stepping · Base UI ± buttons + keyboard stepping + min/max · forms/basic
+> Edits numeric values with bounds, step buttons, and keyboard stepping. · forms/basic
 
 ## When to use
 
@@ -25,18 +25,18 @@ import { NumberField } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `number\|null` | — | Controlled value; `null` represents empty. |
-| defaultValue | `number\|null` | — | Initial value when uncontrolled; `null` starts empty, matching `value`. |
-| min | `number` | — | Minimum value. |
-| max | `number` | — | Maximum value. |
+| value | `number\|null` | - | Controlled value; `null` represents empty. |
+| defaultValue | `number\|null` | - | Initial value when uncontrolled; `null` starts empty, matching `value`. |
+| min | `number` | - | Minimum value. |
+| max | `number` | - | Maximum value. |
 | step | `number` | `1` | Increment or decrement amount. |
 | disabled | `boolean` | `false` | Disables interaction. |
 | readOnly | `boolean` | `false` | Makes the field read-only. |
-| required | `boolean` | — | Marks the native form field as required. |
-| name | `string` | — | Native form name |
-| id | `string` | — | — |
-| className | `string` | — | — |
-| aria-label | `string` | — | Provided when no title is visible |
+| required | `boolean` | - | Marks the native form field as required. |
+| name | `string` | - | Native form name |
+| id | `string` | - | - |
+| className | `string` | - | - |
+| aria-label | `string` | - | Provided when no title is visible |
 
 ## Events
 

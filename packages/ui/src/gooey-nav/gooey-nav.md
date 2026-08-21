@@ -25,21 +25,21 @@ import { GooeyNav } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `GooeyNavItem[]` | — | 导航项数组，每项含 `label`（必填）+ `href`（可选，默认 `"#"`），至少 1 项 |
+| items* | `GooeyNavItem[]` | - | 导航项数组，每项含 `label`（必填）+ `href`（可选，默认 `"#"`），至少 1 项 |
 | initialActiveIndex | `number` | `0` | 初始选中下标，仅非受控（未传 `activeIndex`）时生效 |
-| activeIndex | `number` | — | 受控选中下标，传入即受控，高亮位置由父级驱动 |
+| activeIndex | `number` | - | 受控选中下标，传入即受控，高亮位置由父级驱动 |
 | animationTime | `number` | `600` | 单次迸射基准时长（ms），越大整体节奏越缓 |
 | particleCount | `number` | `14` | 每次切换迸射的粒子数；`0` 关闭粒子仅保留药丸滑动 |
 | particleDistances | `[number, number]` | `[86, 12]` | 粒子飞行的 [起始爆开半径, 回落收束半径]（px） |
 | colors | `number[]` | `[1, 2, 3, 1, 4]` | 粒子调色板，取 chart token 序号（1..5），随机取色，吃明暗主题 |
-| className | `string` | — | 透传根容器类名 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器类名 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 `GooeyNavItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label * | `string` | — | 显示文案 |
+| label * | `string` | - | 显示文案 |
 | href | `string` | `"#"` | 链接地址 |
 
 ## Events

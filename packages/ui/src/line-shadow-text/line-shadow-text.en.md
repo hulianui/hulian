@@ -10,11 +10,11 @@ status: enriched
 
 # LineShadowText
 
-> Line-shadow text · Hard-edged striped offset layer, static by default, RSC-safe · typography/text
+> Offsets a hard-edged striped shadow behind short display text. · typography/text
 
 ## When to use
 
-Use LineShadowText to give a two-to-four word brand phrase or hero heading a hard-edged diagonal shadow. It is the **most restrained** member of the text-effect family: static by default, no animation frame loop, pure CSS — so print pages, corporate sites, and `prefers-reduced-motion` environments can all use it.
+Use LineShadowText to give a two-to-four word brand phrase or hero heading a hard-edged diagonal shadow. It is the **most restrained** member of the text-effect family: static by default, no animation frame loop, pure CSS, so print pages, corporate sites, and `prefers-reduced-motion` environments can all use it.
 
 For a flowing gradient use [AuroraText](../aurora-text/aurora-text.md), for a sweeping highlight use [AnimatedShinyText](../animated-shiny-text/animated-shiny-text.md), and for per-character entrances use [SplitText](../split-text/split-text.md). Use [Text](../text/text.md) for ordinary copy.
 
@@ -29,7 +29,7 @@ Inherits the native `<span>` attributes; `children` is narrowed below.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| children * | `string` | — | Text to shadow. **Strings only**: the shadow layer is a copy of the same text, and non-text nodes cannot be reproduced. |
+| children * | `string` | - | Text to shadow. **Strings only**: the shadow layer is a copy of the same text, and non-text nodes cannot be reproduced. |
 | shadowColor | `string` | `var(--color-foreground)` | Shadow color. Tokens need the `--color-` prefix; a bare `var(--primary)` does not resolve under Tailwind v4's `@theme`. |
 | offset | `string` | `"0.04em"` | Shadow offset from the text. Using `em` keeps it proportional to the font size. |
 | lineWidth | `string` | `"0.06em"` | Stripe thickness and spacing. Larger values give coarse stripes, smaller ones approach a solid shadow. |

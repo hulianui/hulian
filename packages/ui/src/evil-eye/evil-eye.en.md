@@ -27,15 +27,15 @@ import { EvilEye } from "@hulianui/ui"
 |------|------|------|------|
 | eyeColor | `string` | `--color-chart-3` | Main flame color; accepts any CSS color, including theme variables |
 | backgroundColor | `string` | Transparent, resolving to black | Background color; usually inherited from the container |
-| intensity | `number` | `1.5` | Overall light intensity; 0.8–2.5 is recommended |
-| pupilSize | `number` | `0.6` | Pupil size; higher values look fuller and lower values narrower, with 0.2–1.0 recommended |
-| irisWidth | `number` | `0.25` | Iris (inner ring flame) width, recommended 0.1–0.4 |
-| glowIntensity | `number` | `0.35` | Outer-ring glow strength; 0.1–0.6 is recommended |
-| scale | `number` | `0.8` | Eye scale; higher values occupy more of the viewport, with 0.5–1.2 recommended |
-| noiseScale | `number` | `1.0` | Flame-noise scale; higher values create finer detail, with 0.5–2.0 recommended |
+| intensity | `number` | `1.5` | Overall light intensity; 0.8-2.5 is recommended |
+| pupilSize | `number` | `0.6` | Pupil size; higher values look fuller and lower values narrower, with 0.2-1.0 recommended |
+| irisWidth | `number` | `0.25` | Iris (inner ring flame) width, recommended 0.1-0.4 |
+| glowIntensity | `number` | `0.35` | Outer-ring glow strength; 0.1-0.6 is recommended |
+| scale | `number` | `0.8` | Eye scale; higher values occupy more of the viewport, with 0.5-1.2 recommended |
+| noiseScale | `number` | `1.0` | Flame-noise scale; higher values create finer detail, with 0.5-2.0 recommended |
 | pupilFollow | `number` | `1.0` | Pointer-follow amplitude; 0 disables movement, while inertial interpolation returns the pupil toward center after the pointer leaves |
-| flameSpeed | `number` | `1.0` | Flame flow speed, recommended 0.3–2.0 |
-| className | `string` | — | Forward the root container, the component defaults to `block h-full w-full`, and the size is determined by the container |
+| flameSpeed | `number` | `1.0` | Flame flow speed, recommended 0.3-2.0 |
+| className | `string` | - | Forward the root container, the component defaults to `block h-full w-full`, and the size is determined by the container |
 
 ## Slots
 

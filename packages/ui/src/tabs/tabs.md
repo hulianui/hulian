@@ -10,7 +10,7 @@ status: enriched
 
 # Tabs
 
-> 选项卡 · Base UI 无浮层 + underline/solid 滑块 · navigation/inpage
+> 在多个内容面板之间切换，指示条可下划线可实心 · navigation/inpage
 
 ## 何时用
 
@@ -28,8 +28,8 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 ### Tabs（根）
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `any` | — | 受控当前 tab |
-| defaultValue | `any` | — | 非受控初始 tab |
+| value | `any` | - | 受控当前 tab |
+| defaultValue | `any` | - | 非受控初始 tab |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 方向 |
 
 ### TabsList
@@ -37,7 +37,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
 
@@ -64,7 +64,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 
 ## 尺寸
 
-`md`（默认）是**页面级 tab 导航**的尺寸。但 tab 条经常不是导航，而是跟标题、搜索框同行的一个切换器 —— 那一行的既有高度是 28–32px，`md` 塞不进去：
+`md`（默认）是**页面级 tab 导航**的尺寸。但 tab 条经常不是导航，而是跟标题、搜索框同行的一个切换器 —— 那一行的既有高度是 28-32px，`md` 塞不进去：
 
 | | 轨道（solid） | tab |
 |---|---|---|

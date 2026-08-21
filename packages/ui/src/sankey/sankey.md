@@ -10,7 +10,7 @@ status: enriched
 
 # Sankey
 
-> 桑基图 · (库内首个) · 多层流向/分配比例 · 零依赖 SVG ribbon · 拓扑自动分层(未给 layer 按 links 推) + 节点高度/流宽按 value 占比 + 跨层一致比例尺(值域守恒) · hover 高亮关联链路 tooltip + 点击节点/连线下钻 · 调度流向/流量来源/预算分配/转化路径旗舰 · data-display/collection
+> 用带宽度的流向图展示各阶段之间的分配与去向 · data-display/collection
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { Sankey, assignLayers, computeSankeyLayout } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes* | `SankeyNode[]` | — | 节点。`{id, label?, layer?, tone?}`；不给 layer 按 links 拓扑推导（source 层 < target 层）；tone 为 CSS 颜色或 token 变量如 `var(--color-chart-3)` |
-| links* | `SankeyLink[]` | — | 连线。`{source, target, value, tone?}`；流宽按 value 占比 |
+| nodes* | `SankeyNode[]` | - | 节点。`{id, label?, layer?, tone?}`；不给 layer 按 links 拓扑推导（source 层 < target 层）；tone 为 CSS 颜色或 token 变量如 `var(--color-chart-3)` |
+| links* | `SankeyLink[]` | - | 连线。`{source, target, value, tone?}`；流宽按 value 占比 |
 | height | `number` | `320` | 容器高 |
 | nodeWidth | `number` | `16` | 节点矩形宽 |
 | nodePadding | `number` | `12` | 同层节点间垂直间隔 |
 | linkOpacity | `number` | `0.35` | ribbon 描边透明度（hover 提至 0.6） |
-| className | `string` | — | 外层类名 |
+| className | `string` | - | 外层类名 |
 
 ## Events
 

@@ -34,7 +34,7 @@ import { FaultyTerminal } from "@hulianui/ui"
 | glitchAmount | `number` | `1` | Lateral tear amount, >1 is more exaggerated, 1=original displacement |
 | flickerAmount | `number` | `1` | The amount of flickering on and off the entire screen, 0=none |
 | noiseAmp | `number` | `0` | Background organic noise amplitude, increasing superimposed flow fog noise |
-| chromaticAberration | `number` | `0` | Dispersion (RGB separation) pixel amount, recommended 0–6 |
+| chromaticAberration | `number` | `0` | Dispersion (RGB separation) pixel amount, recommended 0-6 |
 | dither | `number \| boolean` | `0` | Jitter particle intensity, boolean true=1/false=0 |
 | curvature | `number` | `0.2` | Barrel distortion (CRT spherical curvature), 0=planar |
 | tint | `string` | `--color-chart-2` | Character coloring, any CSS color, no theme token |
@@ -42,8 +42,8 @@ import { FaultyTerminal } from "@hulianui/ui"
 | mouseStrength | `number` | `0.2` | Pointer influence intensity, only effective when `mouseReact=true` |
 | pageLoadAnimation | `boolean` | `true` | Fade in animation frame by frame when loading |
 | brightness | `number` | `1` | Overall brightness ratio |
-| className | `string` | — | Class name forwarded to the root container or fallback |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Class name forwarded to the root container or fallback |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

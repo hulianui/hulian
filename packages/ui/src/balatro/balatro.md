@@ -38,7 +38,7 @@ import { Balatro } from "@hulianui/ui"
 | spinEase | `number` | `1.0` | 旋转缓动系数，整体缩放旋转量与速度作微调 |
 | isRotate | `boolean` | `false` | 是否随时间持续自转；true 时 spinRotation 改为驱动旋转速度 |
 | mouseInteraction | `boolean` | `true` | 是否开启鼠标交互；关闭后 pointer-events-none |
-| className | `string` | — | 透传到根容器（或 fallback div） |
+| className | `string` | - | 透传到根容器（或 fallback div） |
 
 ## Slots
 

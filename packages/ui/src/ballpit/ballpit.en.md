@@ -28,11 +28,11 @@ import { Ballpit } from "@hulianui/ui"
 | count | `number` | `80` | Maximum ball count; the component reduces it for small containers. Collision cost is O(n²), so keep it at or below 200 |
 | colors | `string[]` | chart token ×5 | Ball color matching, circularly allocated according to index; any CSS color string can be passed, the default is light and dark theme |
 | gravity | `number` | `900` | Gravity in px/s²; `0` floats weightlessly, while higher values fall faster |
-| bounce | `number` | `0.86` | Wall/collision energy retention coefficient (0–1); 1 = completely elastic and never stops |
+| bounce | `number` | `0.86` | Wall/collision energy retention coefficient (0-1); 1 = completely elastic and never stops |
 | sizeRange | `[number, number]` | `[10, 26]` | Ball radius range [minimum, maximum] (px); also constrained by the short side of the container |
 | followCursor | `boolean` | `true` | Treat the pointer as a repulsive ball; disable it to remove pointer interaction |
-| className | `string` | — | Class name forwarded to the root, which includes `absolute inset-0 z-0` |
-| style | `CSSProperties` | — | Inline styles passed through to the root container |
+| className | `string` | - | Class name forwarded to the root, which includes `absolute inset-0 z-0` |
+| style | `CSSProperties` | - | Inline styles passed through to the root container |
 
 ## Slots
 

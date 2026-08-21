@@ -10,7 +10,7 @@ status: enriched
 
 # Chip
 
-> 标签 · 可移除(onClose×) + dot + tone×variant(区别 Badge 计数) · data-display/info
+> 紧凑的标记令牌，可带圆点也可移除 · data-display/info
 
 ## 何时用
 
@@ -28,9 +28,9 @@ import { Chip, chipVariants } from "@hulianui/ui"
 | variant | `"solid"｜"soft"｜"outline"` | `soft` | 视觉风格。 |
 | tone | `"brand"｜"danger"｜"neutral"` | `brand` | 语气色。 |
 | size | `"sm"｜"md"` | `md` | 尺寸。 |
-| dot | `boolean` | — | 前导小圆点（状态指示）。 |
-| isDisabled | `boolean` | — | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
-| className | `string` | — | — |
+| dot | `boolean` | - | 前导小圆点（状态指示）。 |
+| isDisabled | `boolean` | - | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
+| className | `string` | - | - |
 
 ## Events
 

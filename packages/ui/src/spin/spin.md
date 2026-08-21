@@ -10,7 +10,7 @@ status: enriched
 
 # Spin
 
-> 加载遮罩 · 覆盖内容区 + tip + delay 防闪 + fullscreen · feedback/loading
+> 给内容区盖上加载遮罩，可延迟出现避免闪烁 · feedback/loading
 
 ## 何时用
 
@@ -29,7 +29,7 @@ import { Spin } from "@hulianui/ui"
 | delay | `number` | `0` | 延迟显示 ms：spinning 持续超过 delay 才显遮罩（防快速完成时闪烁） |
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸，透传内部 Spinner |
 | fullscreen | `boolean` | `false` | 整页遮罩（fixed 覆盖视口），忽略 children |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Slots
 

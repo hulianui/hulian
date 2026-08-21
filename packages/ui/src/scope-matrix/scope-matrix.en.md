@@ -46,12 +46,12 @@ const [scope, setScope] = useState({ allow: ["src/**"], deny: ["**/dist/**"] });
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `allow` | `string[]` | — | Allow patterns; an empty array disables allowlisting. |
-| `deny` | `string[]` | — | Deny patterns. |
-| `onChange` | `(next: { allow, deny }) => void` | — | Called with both buckets; omitting it makes the component read-only. |
+| `allow` | `string[]` | - | Allow patterns; an empty array disables allowlisting. |
+| `deny` | `string[]` | - | Deny patterns. |
+| `onChange` | `(next: { allow, deny }) => void` | - | Called with both buckets; omitting it makes the component read-only. |
 | `suggestions` | `string[]` | `[]` | Suggested patterns that populate the input when clicked. |
 | `readOnly` | `boolean` | `false` | Forces read-only mode. |
-| `validate` | `(pattern) => string \| null` | — | Returns an error message for an invalid pattern, or `null`. |
+| `validate` | `(pattern) => string \| null` | - | Returns an error message for an invalid pattern, or `null`. |
 | `allowLabel` / `denyLabel` | `ReactNode` | `"\u5141\u8bb8"` / `"\u7981\u6b62"` | Bucket headings; the built-in Chinese copy means “Allow” and “Deny.” |
 | `allowHint` / `denyHint` | `ReactNode` | See defaults | Guidance shown below each bucket. |
 | `placeholder` | `string` | `"\u8f93\u5165\u6a21\u5f0f\u540e\u56de\u8f66"` | Input placeholder; the built-in Chinese copy means “Enter a pattern, then press Enter.” |

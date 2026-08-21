@@ -25,13 +25,13 @@ import { ImageTrail } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| images* | `string[]` | — | 拖尾依次出现的图片 URL 列表（循环复用）；至少 1 张，建议 6–12 张 |
+| images* | `string[]` | - | 拖尾依次出现的图片 URL 列表（循环复用）；至少 1 张，建议 6-12 张 |
 | threshold | `number` | `80` | 光标累计位移触发下一张图的阈值（px），越小越密集越频繁 |
 | imageWidth | `number` | `190` | 单张图片宽度（px），高度按 1.1 宽高比自动派生 |
-| followStrength | `number` | `0.5` | 跟随插值系数 0–1，越大跟手越紧，越小越黏滞 |
+| followStrength | `number` | `0.5` | 跟随插值系数 0-1，越大跟手越紧，越小越黏滞 |
 | fadeDuration | `number` | `0.8` | 单张图从出现到淡出消失的时长（秒） |
-| className | `string` | — | 透传根容器（relative+overflow-hidden 捕获层）额外 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器（relative+overflow-hidden 捕获层）额外 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

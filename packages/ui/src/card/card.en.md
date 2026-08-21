@@ -10,7 +10,7 @@ status: enriched
 
 # Card
 
-> Card · Header, Body, and Footer slots · data-display/collection
+> Groups related content into header, body, and footer regions. · data-display/collection
 
 ## When to use
 
@@ -36,15 +36,15 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| title | `ReactNode` | — | The heading. It gets an element of its own (`data-slot="card-title"`) and therefore its own size, leading, and weight. |
-| description | `ReactNode` | — | Supporting text below the heading, in the secondary text color. |
-| extra | `ReactNode` | — | Trailing action area (buttons, switches, counts), vertically centered against the heading group and **always on the same line**: wrapping is decided independently of content length, so a long `description` never pushes it to a second row. |
+| title | `ReactNode` | - | The heading. It gets an element of its own (`data-slot="card-title"`) and therefore its own size, leading, and weight. |
+| description | `ReactNode` | - | Supporting text below the heading, in the secondary text color. |
+| extra | `ReactNode` | - | Trailing action area (buttons, switches, counts), vertically centered against the heading group and **always on the same line**: wrapping is decided independently of content length, so a long `description` never pushes it to a second row. |
 
 "Present" means the same thing it does for `PageHeader`'s `meta`: `null`, `undefined`, `false`, and `""` all count as not passed, so `title={isEditing && "Editing"}` does not switch layouts when the condition is false.
 
-With **none** of the three passed, `CardHeader` stays the bare slot it is today: `children` is the content and the container carries `font-medium`. Passing any of them switches to a two-column heading / action layout, and `font-medium` moves off the container onto the title element — so icons, `Tag`s, and counts on the same row are no longer painted with heading weight. `children` remains the escape hatch and renders after the title and description, still in the left column.
+With **none** of the three passed, `CardHeader` stays the bare slot it is today: `children` is the content and the container carries `font-medium`. Passing any of them switches to a two-column heading / action layout, and `font-medium` moves off the container onto the title element, so icons, `Tag`s, and counts on the same row are no longer painted with heading weight. `children` remains the escape hatch and renders after the title and description, still in the left column.
 
-`plain` is the no-chrome variant: no border, no background, no shadow — only the corner radius, the text color, and the three slot roles. Use it when **the container already gets its appearance from somewhere else**: a hero style the page brings along during a migration, an outer card that already draws a frame, or a card sitting inside a gradient section. The other three variants all paint a background (`bg-surface`), so they produce a doubled border and a doubled surface. The [Accordion](../accordion/accordion.md) and [Collapsible](../collapsible/collapsible.md) panels take a `plain` prop with the same meaning: **when the content brings its own appearance, the answer is no skin rather than a different skin**.
+`plain` is the no-chrome variant: no border, no background, no shadow, just the corner radius, the text color, and the three slot roles. Use it when **the container already gets its appearance from somewhere else**: a hero style the page brings along during a migration, an outer card that already draws a frame, or a card sitting inside a gradient section. The other three variants all paint a background (`bg-surface`), so they produce a doubled border and a doubled surface. The [Accordion](../accordion/accordion.md) and [Collapsible](../collapsible/collapsible.md) panels take a `plain` prop with the same meaning: **when the content brings its own appearance, the answer is no skin rather than a different skin**.
 
 ## Example
 ```tsx

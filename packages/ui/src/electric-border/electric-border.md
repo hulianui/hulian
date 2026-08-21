@@ -30,8 +30,8 @@ import { ElectricBorder } from "@hulianui/ui"
 | chaos | `number` | `1` | 紊乱程度（湍流位移强度），越大描边被撕扯越剧烈，映射 `feDisplacementMap` 的 scale |
 | thickness | `number` | `2` | 边框外发光柔边的厚度（px） |
 | borderRadius | `number` | `16` | 圆角半径（px），同时应用到容器与电流描边 |
-| className | `string` | — | 透传根容器额外 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器额外 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

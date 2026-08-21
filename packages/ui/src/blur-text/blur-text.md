@@ -25,7 +25,7 @@ import { BlurText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text * | `string` | — | 要逐段模糊浮现的文本 |
+| text * | `string` | - | 要逐段模糊浮现的文本 |
 | splitType | `"char" \| "word"` | `"word"` | 切分粒度：word 逐词（按空白切）/ char 逐字（中文友好） |
 | direction | `"top" \| "bottom"` | `"top"` | 进场方向，伴随 y 位移与中段过冲 |
 | delay | `number` | `120` | 相邻段错峰毫秒，越大波浪推进越慢 |

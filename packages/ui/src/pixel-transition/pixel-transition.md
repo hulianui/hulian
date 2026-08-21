@@ -30,8 +30,8 @@ import { PixelTransition } from "@hulianui/ui"
 | animationStepDuration | `number` | `0.3` | 单次过场时长（秒），散入+散出各占一半，中点切换 |
 | once | `boolean` | `false` | 只进不退：激活后停在 secondContent，离开/失焦不返回 |
 | aspectRatio | `string` | `"4 / 3"` | 容器宽高比（CSS aspect-ratio 写法，如 `"1 / 1"`、`"16 / 9"`） |
-| className | `string` | — | 透传到根元素，cn 合并 |
-| style | `CSSProperties` | — | 透传到根元素 |
+| className | `string` | - | 透传到根元素，cn 合并 |
+| style | `CSSProperties` | - | 透传到根元素 |
 
 ## Slots
 

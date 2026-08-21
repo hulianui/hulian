@@ -10,7 +10,7 @@ status: enriched
 
 # DocumentSheet
 
-> 单据纸张 · A4 居中纸面(白底/暗色近黑纸·shadow·210mm 宽) + 打印态隔离(工具栏/阴影/外边距 print:hidden·data-document-sheet 钩子) + 内置打印按钮(onPrint ?? window.print) + 子件 Header(左右抬头)/Section(带小标题段)/Footer(签章位) · 报价单/发票等单据容器 · data-display/collection
+> 把单据排在 A4 纸面上，带页眉页脚和打印支持 · data-display/collection
 
 ## 何时用
 
@@ -29,7 +29,7 @@ DocumentSheet（继承 `HTMLAttributes<HTMLDivElement>`）：
 |------|------|------|------|
 | size | `"a4" \| "auto"` | `"a4"` | a4 固定 210mm 宽纸面 / auto 自适应容器宽 |
 | printable | `boolean` | `true` | 是否渲染内置打印按钮 |
-| className | `string` | — | 纸面类名 |
+| className | `string` | - | 纸面类名 |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # StatusDot
 
-> Health status · online, degraded, offline, and maintenance mapping to semantic dots, optional pulse, label, and trailing metric · data-display/info
+> Pairs a status label with a colored dot and optional animated activity state. · data-display/info
 
 ## When to use
 
@@ -25,7 +25,7 @@ import { StatusDot } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| status* | `"online"\|"degraded"\|"offline"\|"maintenance"` | — | Maps to success, warning, danger, or neutral. |
+| status* | `"online"\|"degraded"\|"offline"\|"maintenance"` | - | Maps to success, warning, danger, or neutral. |
 | pulse | `boolean` | Online only | Explicitly overrides automatic online pulse. |
 | size | `"sm"\|"md"\|"lg"` | `md` | Size. |
 

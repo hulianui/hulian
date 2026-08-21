@@ -27,18 +27,18 @@ import { GlassIcons } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `GlassIconItem[]` | — | A list of icon items, rendered as glass buttons in order according to the grid |
+| items* | `GlassIconItem[]` | - | A list of icon items, rendered as glass buttons in order according to the grid |
 | columns | `number` | `3` | Number of grid columns, narrow screen will automatically fall back to fewer columns |
-| className | `string` | — | Forward the root grid container className (can cover the number of columns/spacing/alignment) |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Forward the root grid container className (can cover the number of columns/spacing/alignment) |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ### GlassIconItem · Props
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label* | `string` | — | hover/focus slides out the text and also acts as a button `aria-label` |
+| label* | `string` | - | hover/focus slides out the text and also acts as a button `aria-label` |
 | color | `string` | `"primary"` | Backside glow color, default name `primary\|blue\|purple\|red\|indigo\|orange\|green`, or any CSS color/gradient |
-| className | `string` | — | Transmit this button className |
+| className | `string` | - | Transmit this button className |
 
 ### GlassIconItem · Events
 

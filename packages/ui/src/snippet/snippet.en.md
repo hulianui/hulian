@@ -10,7 +10,7 @@ status: enriched
 
 # Snippet
 
-> Code snippets · Command prompt + one-click copy (clipboard + feedback) · typography/code
+> Presents a compact command or code snippet with one-click copying. · typography/code
 
 ## When to use
 
@@ -25,13 +25,13 @@ import { Snippet } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text | `string` | — | Clipboard text; defaults to `children` when it is a string. |
+| text | `string` | - | Clipboard text; defaults to `children` when it is a string. |
 | symbol | `string \| null` | `"$"` | Command prompt; pass `null` for non-command fragments. |
-| lang | `string` | — | Syntax coloring language (such as `"tsx"`/`"bash"`), only takes effect when children is a string |
+| lang | `string` | - | Syntax coloring language (such as `"tsx"`/`"bash"`), only takes effect when children is a string |
 | highlight | `boolean` | `true` | Whether to use syntax coloring, only takes effect when children is a string |
 | copyLabel | `string` | Locale value | Copy-button accessible label; an explicit value takes precedence. |
 | copiedLabel | `string` | Locale value | Post-copy accessible label; an explicit value takes precedence. |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 ## Slots
 

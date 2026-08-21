@@ -44,12 +44,12 @@ const [scope, setScope] = useState({ allow: ["src/**"], deny: ["**/dist/**"] });
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `allow` | `string[]` | — | 允许列表；空数组 = 不启用白名单 |
-| `deny` | `string[]` | — | 禁止列表 |
-| `onChange` | `(next: { allow, deny }) => void` | — | 不给则为只读 |
+| `allow` | `string[]` | - | 允许列表；空数组 = 不启用白名单 |
+| `deny` | `string[]` | - | 禁止列表 |
+| `onChange` | `(next: { allow, deny }) => void` | - | 不给则为只读 |
 | `suggestions` | `string[]` | `[]` | 候选模式，点击填入输入框 |
 | `readOnly` | `boolean` | `false` | 强制只读 |
-| `validate` | `(pattern) => string \| null` | — | 返回错误文案表示非法 |
+| `validate` | `(pattern) => string \| null` | - | 返回错误文案表示非法 |
 | `allowLabel` / `denyLabel` | `ReactNode` | `"允许"` / `"禁止"` | 桶标题 |
 | `allowHint` / `denyHint` | `ReactNode` | 见默认值 | 桶下方说明 |
 | `placeholder` | `string` | `"输入模式后回车"` | 输入占位符 |

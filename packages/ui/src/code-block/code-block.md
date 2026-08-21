@@ -10,7 +10,7 @@ status: enriched
 
 # CodeBlock
 
-> 代码块 · 多行 <pre> + 一键复制(剪贴板+反馈) + 可选语言标签 · typography/code
+> 展示多行代码，带语言标签和一键复制 · typography/code
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| code* | `string` | — | 代码文本，多行用 `\n` |
-| lang | `string` | — | 右上角语言标签（如 `"tsx"`），同时决定着色规则走 JS 家族、Shell 还是 Python |
+| code* | `string` | - | 代码文本，多行用 `\n` |
+| lang | `string` | - | 右上角语言标签（如 `"tsx"`），同时决定着色规则走 JS 家族、Shell 还是 Python |
 | copyable | `boolean` | `true` | 是否显示复制按钮 |
 | highlight | `boolean` | `true` | 是否语法着色；关掉则纯文本 |
 | lineNumbers | `boolean \| { start?: number }` | `false` | 是否显示行号。`{ start: 120 }` 让片段从指定行号起算；列宽按最大行号的位数自适应 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## 着色支持的语言
 

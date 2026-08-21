@@ -30,7 +30,7 @@ import { MagicCard } from "@hulianui/ui"
 | gradientSize | number | 200 | 高光半径（px） |
 | gradientColor | string | `var(--color-primary)` | 高光色 |
 | gradientOpacity | number | 0.15 | 高光不透明度 |
-| ...div | ComponentPropsWithoutRef\<"div"\> | — | 透传（`className` 控尺寸） |
+| ...div | ComponentPropsWithoutRef\<"div"\> | - | 透传（`className` 控尺寸） |
 
 ## Slots
 

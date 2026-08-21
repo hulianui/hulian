@@ -27,7 +27,7 @@ Inherits every native `span` attribute except `children`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `number` | — | Target value reached after entering the viewport. |
+| value* | `number` | - | Target value reached after entering the viewport. |
 | startValue | `number` | `0` | Initial value; values above the target naturally count down. |
 | decimalPlaces | `number` | `0` | Fraction digits passed to `Intl.NumberFormat`. |
 | duration | `number` | `1.2` | Duration in seconds using `motionEase.out`. |

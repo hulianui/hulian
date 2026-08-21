@@ -10,7 +10,7 @@ status: enriched
 
 # Chrome
 
-> 浏览器外壳 · 标签页+工具栏(前进/后退/刷新+地址栏)包裹截图 + RSC · mockups/window
+> 用 Chrome 风格的浏览器窗口包住截图，带标签页 · mockups/window
 
 ## 何时用
 
@@ -29,8 +29,8 @@ import { Chrome } from "@hulianui/ui"
 |------|------|------|------|
 | url | `string` | `"hulian.design"` | 地址栏文本。 |
 | title | `string` | 取 url | 标签页标题。 |
-| imageSrc | `string` | — | 内容区图片地址，优先于 children。 |
-| headerExtra | `ReactNode` | — | 工具栏右端的工具入口。不传时该格是原来那块 `w-6` 占位，尺寸逐字节不变；传了就让出该格，宽度下限锁在占位宽。见下方「活内容」 |
+| imageSrc | `string` | - | 内容区图片地址，优先于 children。 |
+| headerExtra | `ReactNode` | - | 工具栏右端的工具入口。不传时该格是原来那块 `w-6` 占位，尺寸逐字节不变；传了就让出该格，宽度下限锁在占位宽。见下方「活内容」 |
 
 ## Slots
 

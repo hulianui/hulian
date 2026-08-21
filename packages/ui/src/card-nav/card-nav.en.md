@@ -25,18 +25,18 @@ import { CardNav } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items * | `CardNavItem[]` | — | Card groups, rendered in a row or mobile column; only the first three are used. |
+| items * | `CardNavItem[]` | - | Card groups, rendered in a row or mobile column; only the first three are used. |
 | duration | `number` | `0.4` | Expand/collapse duration in seconds, reduced to zero under reduced motion. |
-| open | `boolean` | — | Controlled open state paired with onOpenChange. |
-| className | `string` | — | Root class name. |
-| style | `CSSProperties` | — | Root inline styles. |
+| open | `boolean` | - | Controlled open state paired with onOpenChange. |
+| className | `string` | - | Root class name. |
+| style | `CSSProperties` | - | Root inline styles. |
 
 `CardNavItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label * | `string` | — | Card heading. |
-| links | `CardNavLink[]` | — | Links inside the card, each `{ label, href?, ariaLabel? }`. |
+| label * | `string` | - | Card heading. |
+| links | `CardNavLink[]` | - | Links inside the card, each `{ label, href?, ariaLabel? }`. |
 | bgColor | `string` | The `bg-surface` token | Card background as any CSS color string. Chart tokens such as `var(--color-chart-1)` through `var(--color-chart-5)` work well for branded blocks. |
 | textColor | `string` | The `text-foreground` token | Card text color. |
 

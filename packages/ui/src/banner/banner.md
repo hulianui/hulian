@@ -10,7 +10,7 @@ status: enriched
 
 # Banner
 
-> 公告条 · 横贯容器顶部全宽 bar(站点维护/促销/版本更新) · 6 语气×soft/solid + 前导图标/操作区/可关闭 + 居中或左对齐 + 长文案 dogfood Marquee 单行无缝滚动 · 区别 Alert(局部卡片)/Notification(命令式四角) · feedback/message
+> 在容器顶部通栏播报公告，可带操作和关闭 · feedback/message
 
 ## 何时用
 
@@ -29,8 +29,8 @@ import { Banner } from "@hulianui/ui"
 | variant | `"soft"｜"solid"` | `"soft"` | soft=浅底 / solid=实色填充（更醒目，适合促销/重大公告） |
 | align | `"start"｜"center"` | `"center"` | 内容对齐 |
 | scrollable | `boolean` | `false` | 文案过长时单行无缝滚动（纯 CSS marquee·hover 暂停） |
-| closeLabel | `string` | — | 关闭按钮无障碍标签 |
-| className | `string` | — | 额外类名 |
+| closeLabel | `string` | - | 关闭按钮无障碍标签 |
+| className | `string` | - | 额外类名 |
 
 ## Events
 

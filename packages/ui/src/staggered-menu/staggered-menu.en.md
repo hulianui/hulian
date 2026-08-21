@@ -25,8 +25,8 @@ import { StaggeredMenu } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items | `StaggeredMenuItem[]` | — | Primary entries; an empty array displays “No items.” |
-| socialItems | `StaggeredMenuSocial[]` | — | Footer social links used with displaySocials. |
+| items | `StaggeredMenuItem[]` | - | Primary entries; an empty array displays “No items.” |
+| socialItems | `StaggeredMenuSocial[]` | - | Footer social links used with displaySocials. |
 | position | `"left" \| "right"` | `"right"` | Panel and color-layer side. |
 | colors | `string[]` | chart-4 / chart-1 layers | Up to four staggered background-layer colors. |
 | displaySocials | `boolean` | `true` | Shows the footer only when socialItems is non-empty. |
@@ -34,15 +34,15 @@ import { StaggeredMenu } from "@hulianui/ui"
 | accentColor | `string` | `var(--color-primary)` | Numbering, social heading, and hover color. |
 | isFixed | `boolean` | `false` | Fixed viewport overlay or absolute parent-filling layer. |
 | closeOnClickAway | `boolean` | `true` | Whether outside interaction closes the panel. |
-| className | `string` | — | Root class name. |
-| style | `CSSProperties` | — | Root inline styles. |
+| className | `string` | - | Root class name. |
+| style | `CSSProperties` | - | Root inline styles. |
 
 `StaggeredMenuItem` (`StaggeredMenuSocial` is `{ label; link }`)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label * | `string` | — | Entry text, rendered as a large heading. |
-| link | `string` | — | Link destination; without it the entry renders as a non-navigating `<span>`. |
+| label * | `string` | - | Entry text, rendered as a large heading. |
+| link | `string` | - | Link destination; without it the entry renders as a non-navigating `<span>`. |
 | ariaLabel | `string` | Falls back to `label` | Accessible label. |
 
 ## Events

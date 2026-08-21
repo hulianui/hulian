@@ -10,7 +10,7 @@ status: enriched
 
 # ColorPicker
 
-> Color picker · react-colorful core with HEX/RGB/HSL output and format switching, plus HulianUI token styling · forms/advanced
+> Selects colors through saturation and hue controls with HEX, RGB, or HSL output. · forms/advanced
 
 ## When to use
 
@@ -25,14 +25,14 @@ import { ColorPicker, parseColor, rgbToHex, rgbToHsl, formatColor } from "@hulia
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | Controlled color values. Accepts hex / rgb() / hsl() strings, and the internal unified specification is that hex is the single source of truth. |
+| value | `string` | - | Controlled color values. Accepts hex / rgb() / hsl() strings, and the internal unified specification is that hex is the single source of truth. |
 | defaultValue | `string` | `"#3b82f6"` | uncontrolled initial value |
-| format | `"hex" \| "rgb" \| "hsl"` | — | Controlled output/display format, input will enter the format controlled mode |
+| format | `"hex" \| "rgb" \| "hsl"` | - | Controlled output/display format, input will enter the format controlled mode |
 | defaultFormat | `"hex" \| "rgb" \| "hsl"` | `"hex"` | uncontrolled initial format |
 | disabled | `boolean` | `false` | Disabled: Overlay + Shield interaction |
 | showInput | `boolean` | `true` | Whether to display text input |
 | showFormatSwitcher | `boolean` | `true` | Whether to display the HEX/RGB/HSL format switcher |
-| className | `string` | — | Additional class name for the outer shell. |
+| className | `string` | - | Additional class name for the outer shell. |
 
 ## Events
 

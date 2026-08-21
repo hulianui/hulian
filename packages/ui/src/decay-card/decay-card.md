@@ -29,13 +29,13 @@ import { DecayCard } from "@hulianui/ui"
 | height | `number` | `400` | 卡片高度（px） |
 | image | `string` | 灰度占位图 | 卡片主图地址，鼠标快速划过时被湍流位移溶解；生产请替换为业务图 |
 | alt | `string` | `""` | 图片 alt 文本（默认空，按纯装饰图） |
-| baseFrequency | `number` | `0.015` | feTurbulence 基础频率，越大噪声越密、溶解颗粒越细，建议 0.005–0.05 |
+| baseFrequency | `number` | `0.015` | feTurbulence 基础频率，越大噪声越密、溶解颗粒越细，建议 0.005-0.05 |
 | numOctaves | `number` | `5` | feTurbulence 倍频层数，越多细节越丰富也越耗 |
 | seed | `number` | `4` | 湍流随机种子，换数字即换一套溶解纹理 |
 | maxDisplacement | `number` | `400` | 位移上限（feDisplacementMap scale 峰值），鼠标越快溶解越剧烈 |
 | movementBound | `number` | `50` | 卡片随鼠标平移软边界（px），超出后按 0.2 系数推进形成弹性阻尼手感 |
-| className | `string` | — | 透传到根容器的额外 className |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器的额外 className |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Slots
 

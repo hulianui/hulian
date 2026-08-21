@@ -10,7 +10,7 @@ status: enriched
 
 # Kanban
 
-> Kanban · controlled dnd-kit multi-container board with cross-column and within-column movement, keyboard support, header metrics, and empty-column targets · data-display/collection
+> Organizes draggable cards across status columns with controlled movement callbacks. · data-display/collection
 
 ## When to use
 
@@ -27,12 +27,12 @@ import { Kanban, resolveKanbanMove } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| columns * | KanbanColumn[] | — | Ordered `{ id, title, header?, footer? }` definitions. |
-| items * | T[] | — | Controlled cards grouped by `getColumnId`; array order defines order within a column. |
-| getId * | (item: T) => string | — | Globally stable unique card id. |
-| getColumnId * | (item: T) => string | — | Current column id. |
-| className | string | — | Board class name. |
-| columnClassName | string | — | Class applied to each column. |
+| columns * | KanbanColumn[] | - | Ordered `{ id, title, header?, footer? }` definitions. |
+| items * | T[] | - | Controlled cards grouped by `getColumnId`; array order defines order within a column. |
+| getId * | (item: T) => string | - | Globally stable unique card id. |
+| getColumnId * | (item: T) => string | - | Current column id. |
+| className | string | - | Board class name. |
+| columnClassName | string | - | Class applied to each column. |
 
 ## Events
 

@@ -30,7 +30,7 @@ import { OrbitingCircles } from "@hulianui/ui"
 | reverse | `boolean` | `false` | Reverse rotation |
 | iconSize | `number` | `40` | Child element box size in pixels |
 | showPath | `boolean` | `true` | Whether to draw a dotted orbital circle |
-| className | `string` | — | Additional class name for the root element |
+| className | `string` | - | Additional class name for the root element |
 
 ## Slots
 

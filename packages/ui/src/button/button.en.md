@@ -10,7 +10,7 @@ status: enriched
 
 # Button
 
-> Button · CVA variant + press animation · forms/button
+> Triggers actions through solid, soft, outline, ghost, or danger variants. · forms/button
 
 ## When to use
 
@@ -27,13 +27,13 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"solid" \| "soft" \| "outline" \| "ghost" \| "link"` | `"solid"` | Visual style. `soft` is a tinted semantic background with matching text, sitting between `outline` and `solid` in weight (see below). |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral" \| "current"` | `"brand"` | Semantic color tone (see the table below). `current` is not a semantic color but "set no color, inherit from the container", and is **only effective on `ghost` and `outline`** (see "Inheriting the container color"). |
-| size | `"xs" \| "28" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | Control size. `xs` (24) and `"28"` are the two dense text sizes, for admin toolbars, table rows and filter-pill rows. `iconSm` / `icon` / `iconLg` are square icon buttons whose side length matches the text size of the same name. The dense end has three more icon sizes — `iconXs` (20), `icon24` (24) and `icon28` (28) — each pinned to one row scale (see the table below). |
+| size | `"xs" \| "28" \| "sm" \| "md" \| "lg" \| "icon" \| "iconSm" \| "iconLg" \| "iconXs" \| "icon24" \| "icon28"` | `"md"` | Control size. `xs` (24) and `"28"` are the two dense text sizes, for admin toolbars, table rows and filter-pill rows. `iconSm` / `icon` / `iconLg` are square icon buttons whose side length matches the text size of the same name. The dense end has three more icon sizes, `iconXs` (20), `icon24` (24) and `icon28` (28), each pinned to one row scale (see the table below). |
 | block | `boolean` | `false` | Stretches the button to the full container width, for mobile primary actions and form footers. |
 | muted | `boolean` | `false` | Emphasis step: the resting color drops one level to the secondary gray and returns to the tone's own color on hover. **Only effective on `ghost`, `link` and `outline`** (see "The muted emphasis step"). |
 | dashed | `boolean` | `false` | Stroke step: a dashed border, meaning "this slot is empty, put something in it". **Only effective on `outline` and `soft`** (see "The dashed stroke step"). |
 | loading | `boolean` | `false` | Shows a spinner and disables the button. |
 | type | `"button" \| "submit" \| "reset"` | `"button"` | **Defaults to `button` rather than the native `<button>` default of `submit`**, so a helper button inside a form does not submit it when `type` is omitted. Write `type="submit"` explicitly on submit buttons. |
-| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | Native attributes such as `disabled`. |
+| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | - | Native attributes such as `disabled`. |
 
 ## Events
 
@@ -71,8 +71,8 @@ Coming from a one-dimensional `type` model: `type="primary"` becomes a plain `<B
 
 ## Tinted semantic fill (soft)
 
-`soft` is a tinted semantic background with matching text — Radix calls it soft, MUI calls it tonal,
-Ant calls it filled — and its visual weight sits between `outline` and `solid`. **A tinted fill is not
+`soft` is a tinted semantic background with matching text (Radix calls it soft, MUI calls it tonal,
+Ant calls it filled), and its visual weight sits between `outline` and `solid`. **A tinted fill is not
 an outline**: `outline` keeps the canvas background and only adds a semantic border, so the fill never
 gets lighter. When you want a tinted fill, use `soft` instead of writing `bg-*-50` in `className`.
 
@@ -88,8 +88,8 @@ Three typical places:
 <Button variant="soft" tone="success" size="xs">Enabled</Button>
 ```
 
-The fill uses the opacity recipe the library already has — `bg-{tone}/12`, deepening to 20% on hover, with
-`neutral` on `bg-foreground/8` so it adapts to light and dark — exactly as `soft` works on
+The fill uses the opacity recipe the library already has: `bg-{tone}/12`, deepening to 20% on hover, with
+`neutral` on `bg-foreground/8` so it adapts to light and dark, exactly as `soft` works on
 [Tag](../tag/tag.md), [Chip](../chip/chip.md) and [Alert](../alert/alert.md). It **deliberately avoids the
 `--color-*-subtle` tokens**: switching to them would mean minting a `--color-primary-subtle` plus four
 `*-subtle-hover` tokens, leaving the library with two parallel soft palettes where retuning one leaves the
@@ -112,7 +112,7 @@ The weakest color `ghost`, `link` and `outline` can reach is body black (`tone="
 
 The rule in one line: **the resting color drops to `--color-muted-foreground` and returns to the tone's own color on hover** (`ghost` and `outline` each keep their own hover background). So `tone="danger" muted` is the "gray at rest, red on hover" delete link rather than a discarded semantic color - a common shape in dense admin rows.
 
-On `outline` it touches **the text only**: `bg-surface`, `border-hairline` and `hover:bg-surface-hover` all stay, as does the semantic border of a non-neutral `tone` (`border-danger` and friends). Reach for it whenever the border is what carries the message ("this is a clickable box") and only the text is too loud; `ghost muted` is not a substitute because it drops the border along with the color. The typical spot is the inactive half of a two-state trigger — in `variant={active ? "soft" : "outline"}`, the inactive half is supposed to be one step weaker than the active one.
+On `outline` it touches **the text only**: `bg-surface`, `border-hairline` and `hover:bg-surface-hover` all stay, as does the semantic border of a non-neutral `tone` (`border-danger` and friends). Reach for it whenever the border is what carries the message ("this is a clickable box") and only the text is too loud; `ghost muted` is not a substitute because it drops the border along with the color. The typical spot is the inactive half of a two-state trigger: in `variant={active ? "soft" : "outline"}`, the inactive half is supposed to be one step weaker than the active one.
 
 Three boundaries:
 
@@ -177,7 +177,7 @@ Use `cn()` as usual when composing further classes; merging twice is idempotent.
 
 ## Size scale
 
-The regular scale has three steps. Every icon size has the same side length as the text size of the same name, so **pair icon buttons with the matching text size** — otherwise an attached group ([ButtonGroup](../button-group/button-group.md)) shows a visible step at the seam.
+The regular scale has three steps. Every icon size has the same side length as the text size of the same name, so **pair icon buttons with the matching text size**. Otherwise an attached group ([ButtonGroup](../button-group/button-group.md)) shows a visible step at the seam.
 
 | Text size | Height | Font | Matching icon size | Side |
 |-----------|--------|------|--------------------|------|
@@ -192,9 +192,9 @@ pinned to its own row scale:
 |------------|------------|------|--------------------|------------------|
 | `xs` | 24px tall | 12px | `icon24` | Text buttons in admin toolbars, table rows and panel headers |
 | `"28"` | 28px tall | 12px | `icon28`, [Chip](../chip/chip.md) `md`, [Sidebar](../sidebar/sidebar.md) menu item `sm` | Text buttons on the 28px row scale: filter-pill triggers, secondary actions at the foot of an info card |
-| `iconXs` | 20px square | — | Nothing (shorter than every text size) | Icon-only micro actions inside a table row: tree expanders, drag handles |
-| `icon24` | 24px square | — | The `xs` text size, [Tag](../tag/tag.md) `md`, [Chip](../chip/chip.md) `sm` | Icon buttons sitting next to `xs` text buttons |
-| `icon28` | 28px square | — | The `"28"` text size, [Chip](../chip/chip.md) `md`, [Sidebar](../sidebar/sidebar.md) menu item `sm` | Icon buttons on the 28px row scale, such as the clear button on a filter-pill row |
+| `iconXs` | 20px square | - | Nothing (shorter than every text size) | Icon-only micro actions inside a table row: tree expanders, drag handles |
+| `icon24` | 24px square | - | The `xs` text size, [Tag](../tag/tag.md) `md`, [Chip](../chip/chip.md) `sm` | Icon buttons sitting next to `xs` text buttons |
+| `icon28` | 28px square | - | The `"28"` text size, [Chip](../chip/chip.md) `md`, [Sidebar](../sidebar/sidebar.md) menu item `sm` | Icon buttons on the 28px row scale, such as the clear button on a filter-pill row |
 
 `xs` is the smallest text size for dense interfaces. Once a screen carries a dozen actions, `sm`
 (32px / 14px) is one step too large rather than the smallest step, and forcing it into a 24px toolbar
@@ -205,7 +205,7 @@ patching it through `className`.
 `"28"` fills the gap between `xs` and `sm`, and its **name is a bare number**: it differs from
 `icon28` only by the `icon` prefix, and a text size has no prefix, so the side length is all that is
 left to name it after (the same rule as `icon24` / `icon28` below). Its font follows `xs` (12px)
-rather than `sm` — the dense band runs 10 to 12px, and 14px would make every one of these call sites
+rather than `sm`: the dense band runs 10 to 12px, and 14px would make every one of these call sites
 add `text-xs` back. Padding (10px) and icon gap (6px) are interpolated by height between `xs` and
 `sm`. The radius stays at `--radius`, matching `icon28`, so a 28px text button and a 28px icon button
 on the same row also agree on their corners (#228).
@@ -213,7 +213,7 @@ on the same row also agree on their corners (#228).
 **The icon size that matches `xs` is `icon24`, not `iconXs`.** The one named `Xs` is 20px: it is another
 4px shorter than `xs` on purpose, because raising it to 24px would push `density="compact"` table rows
 taller, and staying out of the row height is its entire reason to exist. The two names look like a pair
-but are two different scales — take `icon24` when you need equal heights (#222).
+but are two different scales, so take `icon24` when you need equal heights (#222).
 
 These two carry **numbers** rather than t-shirt names because the t-shirt names between `xs` and `sm`
 were already taken by `iconXs` (20px), and that size cannot change its side length without silently
@@ -268,10 +268,10 @@ hides; pairing `iconXs` with `sm` or larger opens a gap past 12px, and so does `
 - To avoid unsafe element animation, `render` mode **does not apply Motion**, so it has no press-scale effect. Color and hover transitions remain, and Button's `children` take precedence as the visible content.
 - `loading` disables the button automatically; do not add `disabled` solely for the loading state.
 - Button text **cannot be selected** (the base class carries `select-none`). A button label is a control affordance, not content, and rapid clicking would otherwise make the browser select the word or the whole line. Do not turn text people need to copy into a button.
-- `tone` changes meaning, never shape. For a light-background success button use `tone="success" variant="soft"` instead of overriding the background through `className`. **It is not `variant="outline"`**: `outline` keeps the canvas background and only adds a semantic border, so nothing appears to change and the next move is usually to write `bg-green-50` — exactly what this rule forbids.
+- `tone` changes meaning, never shape. For a light-background success button use `tone="success" variant="soft"` instead of overriding the background through `className`. **It is not `variant="outline"`**: `outline` keeps the canvas background and only adds a semantic border, so nothing appears to change and the next move is usually to write `bg-green-50`, exactly what this rule forbids.
 - `tone="neutral"` in `solid` is an **inverted** fill (dark background in light mode, light background in dark mode), not a grey one. A grey fill is nearly indistinguishable from `variant="outline"`, which would make the tone pointless.
 - If an icon wraps away from its label in a custom or effect button, Tailwind Preflight's `svg{display:block}` rule is usually the cause. See [[tailwind-preflight-svg-block-breaks-icon-text-in-nonflex-button]]; the wrapper needs `inline-flex`. Button already handles this internally.
-- Use `variant="soft"` (tinted semantic background with semantic text) for a secondary control that shows an on/off state. Do not override the palette with `bg-primary/10 text-primary` in `className`, and do not fall back to `solid`: a filled brand block among `h-7` toolbar controls outweighs the primary action of the page. `soft` combines with every `tone`; the typical form is `variant={isActive ? "soft" : "outline"}`. Note that it does not render `aria-pressed` — use [Toggle](../toggle/toggle.md) for a real toggle. `soft` fits triggers that merely show something is active, such as a sort chip that opens a menu.
+- Use `variant="soft"` (tinted semantic background with semantic text) for a secondary control that shows an on/off state. Do not override the palette with `bg-primary/10 text-primary` in `className`, and do not fall back to `solid`: a filled brand block among `h-7` toolbar controls outweighs the primary action of the page. `soft` combines with every `tone`; the typical form is `variant={isActive ? "soft" : "outline"}`. Note that it does not render `aria-pressed`, so use [Toggle](../toggle/toggle.md) for a real toggle. `soft` fits triggers that merely show something is active, such as a sort chip that opens a menu.
 
 ## Motion
 

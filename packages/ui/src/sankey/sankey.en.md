@@ -10,7 +10,7 @@ status: enriched
 
 # Sankey
 
-> Sankey diagram · dependency-free SVG ribbons for multilayer flow allocation, topology-derived layers, conserved cross-layer scale, related-path highlighting, tooltips, and drill-down events · data-display/collection
+> Visualizes weighted flow between stages with proportional nodes and links. · data-display/collection
 
 ## When to use
 
@@ -25,13 +25,13 @@ import { Sankey, assignLayers, computeSankeyLayout } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| nodes* | `SankeyNode[]` | — | `{id, label?, layer?, tone?}` nodes. Layers are inferred topologically when omitted. |
-| links* | `SankeyLink[]` | — | `{source, target, value, tone?}` links whose ribbon width follows value. |
+| nodes* | `SankeyNode[]` | - | `{id, label?, layer?, tone?}` nodes. Layers are inferred topologically when omitted. |
+| links* | `SankeyLink[]` | - | `{source, target, value, tone?}` links whose ribbon width follows value. |
 | height | `number` | `320` | Container height. |
 | nodeWidth | `number` | `16` | Node rectangle width. |
 | nodePadding | `number` | `12` | Vertical spacing between same-layer nodes. |
 | linkOpacity | `number` | `0.35` | Ribbon opacity, raised to 0.6 on hover. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
 ## Events
 

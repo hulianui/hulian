@@ -10,7 +10,7 @@ status: enriched
 
 # iPhone
 
-> Mobile phone case · Smart island body wrapped screen (token themeable) + RSC · mockups/device
+> Frames content inside an iPhone-style shell with a Dynamic Island. · mockups/device
 
 ## When to Use
 
@@ -29,7 +29,7 @@ Inherited from `ComponentPropsWithoutRef<"div">`. `IPHONE_MODELS` Export model�
 |------|------|------|------|
 | model | `"16-pro-max" \| "16-pro" \| "16-plus" \| "16" \| "15-pro" \| "13-mini"` | `"15-pro"`(showcase) | Default model, determines the default width. |
 | width | `number` | model default, if there is no model, `280` | Device width (px), when passed in explicitly, it takes precedence over model. |
-| imageSrc | `string` | — | Screen content image address, taking precedence over children. |
+| imageSrc | `string` | - | Screen content image address, taking precedence over children. |
 
 ## Slots
 

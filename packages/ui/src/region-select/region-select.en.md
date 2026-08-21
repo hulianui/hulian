@@ -27,21 +27,21 @@ import { RegionSelect, type RegionBox } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| src* | `string` | — | Source image URL. |
-| value | `RegionBox \| null` | — | Controlled current box in original-image pixels: `[x1,y1,x2,y2]`. |
-| onChange | `(box: RegionBox) => void` | — | Called after a drag with a normalized and rounded box, including for reverse drags. |
-| onDrafting | `(box: RegionBox \| null) => void` | — | Receives the live floating-point draft during a drag and `null` when it ends. It is not affected by `round`. |
+| src* | `string` | - | Source image URL. |
+| value | `RegionBox \| null` | - | Controlled current box in original-image pixels: `[x1,y1,x2,y2]`. |
+| onChange | `(box: RegionBox) => void` | - | Called after a drag with a normalized and rounded box, including for reverse drags. |
+| onDrafting | `(box: RegionBox \| null) => void` | - | Receives the live floating-point draft during a drag and `null` when it ends. It is not affected by `round`. |
 | round | `"expand" \| "nearest" \| "none"` | `"expand"` | Output rounding: `expand` floors the top-left and ceils the bottom-right without shrinking; `nearest` rounds each coordinate; `none` preserves subpixel values. |
 | minSide | `number` | `8` | Ignores a selection whose shorter side is below this many original-image pixels. Evaluated after rounding. |
-| boxes | `{ box, color?, label?, id? }[]` | — | Other read-only boxes rendered with dashed outlines and optional labels. |
-| aspect | `number` | — | Fixed width-to-height ratio. Omit for free-form selection. |
-| naturalSize | `{ width, height }` | — | Known natural image dimensions. When omitted, the component measures them with `new Image()`. |
+| boxes | `{ box, color?, label?, id? }[]` | - | Other read-only boxes rendered with dashed outlines and optional labels. |
+| aspect | `number` | - | Fixed width-to-height ratio. Omit for free-form selection. |
+| naturalSize | `{ width, height }` | - | Known natural image dimensions. When omitted, the component measures them with `new Image()`. |
 | maxHeight | `string \| number` | `"60vh"` | Internal scrolling limit for tall images. |
 | color | `string` | `"primary"` | Main box outline color, accepting a semantic tone or arbitrary CSS color. |
 | readOnly | `boolean` | `false` | Disables dragging while continuing to display existing boxes. |
 | placeholder | `ReactNode` | Built-in loading copy | Content shown before natural dimensions are available. |
 | errorPlaceholder | `ReactNode` | Built-in load-error copy | Content shown when the source fails because of HTTP, CORS, or network errors. |
-| onError | `(event: unknown) => void` | — | Called when either image preloading or the SVG `<image>` fails. |
+| onError | `(event: unknown) => void` | - | Called when either image preloading or the SVG `<image>` fails. |
 | alt | `string` | `""` | Accessible name for the canvas. |
 
 ### Exported pure functions

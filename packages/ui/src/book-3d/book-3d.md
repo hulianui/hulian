@@ -25,16 +25,16 @@ import { Book3D } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| cover | `string` | — | 封面图 url；提供时覆盖 coverColor 渐变 |
-| logo | `string` | — | 封面中心叠加的产品 logo / app icon（图 url），标题落底部 |
+| cover | `string` | - | 封面图 url；提供时覆盖 coverColor 渐变 |
+| logo | `string` | - | 封面中心叠加的产品 logo / app icon（图 url），标题落底部 |
 | coverColor | `{ from: string; to: string }` | 品牌渐变 | 封面渐变色 |
 | spineColor | `string` | 浅纸色 | 书脊/页厚颜色（CSS color） |
 | thickness | `string` | `"2.25rem"` | 书脊厚度（CSS 长度） |
-| ribbon | `string` | — | 角标缎带文字（如 "NEW" / "N°1"） |
+| ribbon | `string` | - | 角标缎带文字（如 "NEW" / "N°1"） |
 | ribbonTone | `"brand" \| "danger" \| "success"` | `"danger"` | 缎带语气 |
-| href | `string` | — | 提供则整本书是链接 |
-| target | `string` | — | 外链是否新窗（href 时生效） |
-| className | `string` | — | 根节点类名 |
+| href | `string` | - | 提供则整本书是链接 |
+| target | `string` | - | 外链是否新窗（href 时生效） |
+| className | `string` | - | 根节点类名 |
 
 ## Events
 

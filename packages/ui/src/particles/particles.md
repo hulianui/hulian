@@ -32,8 +32,8 @@ import { Particles } from "@hulianui/ui"
 | color | string | `--color-foreground` | 粒子颜色。不传则读主题 token 并随 data-theme 切换；传入接受 `#rrggbb`/`#rgb`/`rgb(r,g,b)` |
 | vx | number | 0 | X 轴常量漂移速度（px/帧） |
 | vy | number | 0 | Y 轴常量漂移速度（px/帧） |
-| refresh | boolean \| number \| string | — | 刷新信号——值变化时强制重绘粒子（等价 MagicUI refresh） |
-| className | string | — | 透传到容器 div |
+| refresh | boolean \| number \| string | - | 刷新信号——值变化时强制重绘粒子（等价 MagicUI refresh） |
+| className | string | - | 透传到容器 div |
 
 ## 示例
 ```tsx

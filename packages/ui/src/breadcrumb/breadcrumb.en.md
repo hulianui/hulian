@@ -10,7 +10,7 @@ status: enriched
 
 # Breadcrumb
 
-> Breadcrumb · Static styling with `aria-current` semantics for the current page · navigation/inpage
+> Shows a static page hierarchy with a semantic current-page marker. · navigation/inpage
 
 ## When to use
 
@@ -25,16 +25,16 @@ import { Breadcrumb } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `BreadcrumbItem[]` | — | Path entries ordered from the root to the current page. |
+| items* | `BreadcrumbItem[]` | - | Path entries ordered from the root to the current page. |
 
 `BreadcrumbItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label * | `ReactNode` | — | Displayed content. |
-| href | `string` | — | Link destination. Omitting it renders a non-interactive item, such as the current page or an ancestor without its own destination. |
-| current | `boolean` | — | Explicitly marks the current page; when no item sets it, the final entry is current. |
-| render | `ReactElement` | — | Render the entry as a custom element (`next/link`, the `react-router` `Link`, and so on). The skin classes and `aria-current` are merged into that element, and `label` becomes its children. |
+| label * | `ReactNode` | - | Displayed content. |
+| href | `string` | - | Link destination. Omitting it renders a non-interactive item, such as the current page or an ancestor without its own destination. |
+| current | `boolean` | - | Explicitly marks the current page; when no item sets it, the final entry is current. |
+| render | `ReactElement` | - | Render the entry as a custom element (`next/link`, the `react-router` `Link`, and so on). The skin classes and `aria-current` are merged into that element, and `label` becomes its children. |
 
 ## Slots
 

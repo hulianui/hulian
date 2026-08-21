@@ -31,18 +31,18 @@ import { ShieldBadge, ShieldBadgeGroup, compactCount } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `ReactNode` | — | Colored value segment, such as `MIT`, `1.5k/month`, or `failing`. |
-| label | `ReactNode` | — | Neutral label segment; omission creates a single-segment badge. |
-| icon | `ReactNode` | — | Leading brand mark in the label segment, or value segment without a label. |
+| value* | `ReactNode` | - | Colored value segment, such as `MIT`, `1.5k/month`, or `failing`. |
+| label | `ReactNode` | - | Neutral label segment; omission creates a single-segment badge. |
+| icon | `ReactNode` | - | Leading brand mark in the label segment, or value segment without a label. |
 | tone | `"neutral" \| "brand" \| "success" \| "warning" \| "danger"` | `"brand"` | Value-segment tone. |
-| color | `string` | — | CSS color or semantic name such as `chart-1`, overriding tone. |
+| color | `string` | - | CSS color or semantic name such as `chart-1`, overriding tone. |
 | variant | `"solid" \| "soft" \| "outline"` | `"solid"` | Sticker, quiet, or outlined skin. |
 | shape | `"rounded" \| "square" \| "pill"` | `"rounded"` | Badge shape. |
 | size | `"sm" \| "md"` | `"md"` | Component size. |
-| href | `string` | — | Makes the whole badge a focusable link. |
-| target | `string` | — | Link target; `_blank` adds `rel="noreferrer noopener"` unless explicitly overridden. |
-| rel | `string` | — | Explicitly overrides the `rel` added above. |
-| className | `string` | — | Custom class plus forwarded native attributes. |
+| href | `string` | - | Makes the whole badge a focusable link. |
+| target | `string` | - | Link target; `_blank` adds `rel="noreferrer noopener"` unless explicitly overridden. |
+| rel | `string` | - | Explicitly overrides the `rel` added above. |
+| className | `string` | - | Custom class plus forwarded native attributes. |
 
 ### ShieldBadgeGroup
 

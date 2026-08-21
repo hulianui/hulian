@@ -25,15 +25,15 @@ import { GhostCursor } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| trailLength | `number` | `32` | Number of historical pointer positions retained; higher values create a longer trail and increase fragment cost linearly, with 16–64 recommended |
+| trailLength | `number` | `32` | Number of historical pointer positions retained; higher values create a longer trail and increase fragment cost linearly, with 16-64 recommended |
 | inertia | `number` | `0.5` | Inertia from 0 to 1; values near 1 drift farther, while values near 0 track the pointer closely |
 | grainIntensity | `number` | `0.05` | Film-grain intensity from 0 to 0.3; 0 disables grain |
-| brightness | `number` | `1.2` | Overall brightness multiplier; 0.8–2.0 is recommended |
+| brightness | `number` | `1.2` | Overall brightness multiplier; 0.8-2.0 is recommended |
 | color | `string` | `var(--color-chart-1)` | Main smoke color; accepts any CSS color and defaults to a theme-aware token |
 | scale | `number` | `1` | Positive noise-radius factor; higher values spread the smoke and lower values concentrate it |
 | mixBlendMode | `CSSProperties["mixBlendMode"]` | `"screen"` | Canvas blend mode; `screen` creates light on dark backgrounds, while `multiply` or `normal` may suit light surfaces |
-| className | `string` | — | Additional class name for the `absolute inset-0` root |
-| style | `CSSProperties` | — | Inline styles forwarded to the root, such as `zIndex` |
+| className | `string` | - | Additional class name for the `absolute inset-0` root |
+| style | `CSSProperties` | - | Inline styles forwarded to the root, such as `zIndex` |
 
 ## Examples
 ```tsx

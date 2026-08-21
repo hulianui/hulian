@@ -10,7 +10,7 @@ status: enriched
 
 # Masonry
 
-> 瀑布流布局 · 确定性 round-robin 分列(item[i]→第 i%列·SSR 安全·顺序稳定·非 CSS columns 抖动) + 响应式列数(base/sm/md/lg·首帧 base 防 hydration mismatch·挂载后 matchMedia 调整) + 列内外统一 gap(泛型·token 主题) · layout/container
+> 把长短不一的卡片分列排成瀑布流，列数随屏幕宽度变化 · layout/container
 
 ## 何时用
 
@@ -27,10 +27,10 @@ import { Masonry } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `T[]` | — | 数据源，按源顺序 round-robin 分列。 |
+| items* | `T[]` | - | 数据源，按源顺序 round-robin 分列。 |
 | columns | `number \| { base?: number; sm?: number; md?: number; lg?: number }` | `3` | 列数。传数字固定；传对象按断点响应式（base 为 SSR/首帧值，挂载后 matchMedia 切换）。 |
 | gap | `number` | `16` | 列间 & 列内 item 间距（像素）。 |
-| className | `string` | — | 根容器类名。 |
+| className | `string` | - | 根容器类名。 |
 
 ## Slots
 

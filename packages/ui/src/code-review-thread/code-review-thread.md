@@ -10,7 +10,7 @@ status: enriched
 
 # CodeReviewThread
 
-> 代码评审线程 · 代码审查评论线程 · severity 左边色条(四级语气) + AI/人类作者 + 内嵌建议修改 diff 可采纳 + 回复/标记已解决·误报 + 折叠 · 嵌 code-diff annotations 槽或独立用·复用 Avatar/Tag/CodeDiff · data-display/collection
+> 展示代码评审线程，带严重度、建议改动和解决状态 · data-display/collection
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { CodeReviewThread, severityStyle, SEVERITY } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| comments* | `ReviewComment[]` | — | 线程内评论数组（含作者 kind、severity、body、可选 suggestion）。 |
+| comments* | `ReviewComment[]` | - | 线程内评论数组（含作者 kind、severity、body、可选 suggestion）。 |
 | status | `"open"｜"resolved"｜"wontfix"` | `open`（内部自管） | 线程状态；受控，传则由外部托管。 |
 | replyable | `boolean` | `true` | 是否显示回复框。 |
 | defaultCollapsed | `boolean` | `false` | 非受控初始折叠态。 |
-| collapsed | `boolean` | — | 受控折叠（优先于 defaultCollapsed）。 |
-| className | `string` | — | — |
+| collapsed | `boolean` | - | 受控折叠（优先于 defaultCollapsed）。 |
+| className | `string` | - | - |
 
 ## Events
 

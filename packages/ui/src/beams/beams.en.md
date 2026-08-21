@@ -25,14 +25,14 @@ import { Beams } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| beamNumber | `number` | `12` | Number of vertical beam bands; 4–24 is recommended, since high values blur together on lower-end devices |
+| beamNumber | `number` | `12` | Number of vertical beam bands; 4-24 is recommended, since high values blur together on lower-end devices |
 | beamWidth | `number` | `2` | Relative width of each beam; higher values leave narrower gaps |
 | speed | `number` | `2` | The speed of the beam flowing along the axis; 0 = static (still retains the static texture) |
 | lightColor | `string` | `--color-chart-1` | Beam color, CSS color string, default theme token light and dark adaptive |
 | noiseIntensity | `number` | `1.75` | Grain noise intensity, simulated film texture; 0 = pure and grain-free |
 | scale | `number` | `0.2` | Noise scale; lower values stretch the waves, while higher values create finer detail |
 | rotation | `number` | `30` | Rotation angle of the entire set of beams (degrees); 0 = vertical, positive value clockwise oblique |
-| className | `string` | — | Class name forwarded to the root container, which includes `absolute inset-0 z-0` |
+| className | `string` | - | Class name forwarded to the root container, which includes `absolute inset-0 z-0` |
 
 ## Slots
 

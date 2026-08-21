@@ -10,7 +10,7 @@ status: enriched
 
 # RichTextEditor
 
-> 富文本编辑器 · 值进出 HTML 字符串 + 工具栏可裁 + 图片上传注入 + 粘贴净化 · forms/advanced
+> 所见即所得地编辑内容，值进出都是 HTML · forms/advanced
 
 ## 何时用
 
@@ -29,20 +29,20 @@ import { RichTextEditor } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string` | — | 受控 **HTML 片段串** |
-| defaultValue | `string` | — | 非受控初值（HTML 串） |
-| name | `string` | — | 桥给原生表单 / Field 的隐藏 input name（值为 HTML 串） |
-| placeholder | `string` | — | 空态占位 |
+| value | `string` | - | 受控 **HTML 片段串** |
+| defaultValue | `string` | - | 非受控初值（HTML 串） |
+| name | `string` | - | 桥给原生表单 / Field 的隐藏 input name（值为 HTML 串） |
+| placeholder | `string` | - | 空态占位 |
 | invalid | `boolean` | `false` | 校验失败态：外壳变 danger（也可由外层 Field 经 data-invalid 驱动） |
 | disabled | `boolean` | `false` | 禁用（内容区不可编辑 + 工具栏收起） |
 | minRows | `number` | `8` | 内容区最小高度（行） |
-| maxRows | `number` | — | 内容区**最大**高度（行，与 `minRows` 同一套单位）。超过就让正文自己内部滚动，工具栏留在滚动区外。见「高度上限」 |
-| maxHeight | `number \| string` | — | 同一件事的长度写法（数值按 px，字符串按任意 CSS 长度如 `"60vh"`）。**与 `maxRows` 同给时以它为准**，dev 下告警 |
+| maxRows | `number` | - | 内容区**最大**高度（行，与 `minRows` 同一套单位）。超过就让正文自己内部滚动，工具栏留在滚动区外。见「高度上限」 |
+| maxHeight | `number \| string` | - | 同一件事的长度写法（数值按 px，字符串按任意 CSS 长度如 `"60vh"`）。**与 `maxRows` 同给时以它为准**，dev 下告警 |
 | toolbar | `RichTextToolbarItem[]` | 完整一档 | 工具栏条目与顺序；`[]` 则整条工具栏不渲染。**裁掉一档同时会关掉对应扩展**（见「禁忌 / 坑」） |
 | sanitizePaste | `boolean` | `true` | 粘贴净化：洗掉 `class` / `on*` / `<style>`，`href` / `src` 过协议白名单，内联 `style` 过属性白名单 |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | 存量 HTML 兼容（微信编辑器 / Word / 老 UEditor 的正文）。默认关；`true` 三档全开，给对象则只开写明的那几档。见「存量 HTML 兼容」 |
-| extensions | `AnyExtension[]` | — | 追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频补一个节点类型） |
-| className | `string` | — | 落在外壳 |
+| extensions | `AnyExtension[]` | - | 追加自定义 TipTap 扩展（如给存量内容里的 `<iframe>` 视频补一个节点类型） |
+| className | `string` | - | 落在外壳 |
 | aria-label | `string` | locale | 内容区无障碍名 |
 
 `RichTextToolbarItem` = `"bold" | "italic" | "underline" | "strike" | "heading" | "fontSize" | "color" | "backgroundColor" | "align" | "bulletList" | "orderedList" | "blockquote" | "link" | "image" | "table" | "clear" | "divider"`。

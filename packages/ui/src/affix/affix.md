@@ -10,7 +10,7 @@ status: enriched
 
 # Affix
 
-> 固钉 · 自研零依赖滚动吸附 + offsetTop/offsetBottom + 占位防跳动 + 自定义容器 · navigation/inpage
+> 滚过一定距离后把内容固定在屏幕上，不让布局跳动 · navigation/inpage
 
 ## 何时用
 
@@ -26,9 +26,9 @@ import { Affix } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | offsetTop | `number` | `0` | 距容器顶部多少 px 时吸顶固定。 |
-| offsetBottom | `number` | — | 距容器底部多少 px 时吸底固定。仅在未给 offsetTop 时生效（同时给则 offsetTop 优先）。 |
+| offsetBottom | `number` | - | 距容器底部多少 px 时吸底固定。仅在未给 offsetTop 时生效（同时给则 offsetTop 优先）。 |
 | target | `HTMLElement \| Window \| null \| (() => HTMLElement \| Window \| null)` | `window` | 滚动监听容器，可传元素 / Window / getter。 |
-| affixedClassName | `string` | — | 吸附时附加到固定元素的类名（如阴影 `shadow-lg`）。 |
+| affixedClassName | `string` | - | 吸附时附加到固定元素的类名（如阴影 `shadow-lg`）。 |
 
 > 另继承 `HTMLAttributes<HTMLDivElement>`（除 `children` / `onChange`）。
 

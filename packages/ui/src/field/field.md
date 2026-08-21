@@ -29,13 +29,13 @@ import { Field } from "@hulianui/ui"
 | required | `boolean` | `false` | 必填态：label 前画红星 + 给控件注入 `aria-required`。**不产生校验**（校验仍只由 rules 表达），解决的是「提交前看不出哪些字段必填」。`useForm` 的 `register()` 会按 rules 派生 `required`，直接透传即可 |
 | requiredMark | `boolean \| ReactNode` | `true` | 必填标记形态。`false` = 只留 `aria-required` 不画标记；传 ReactNode = 换成自家标记。`required` 为假时无效 |
 | disabled | `boolean` | `false` | 禁用 |
-| name | `string` | — | 提交标识，透传 Field.Root |
+| name | `string` | - | 提交标识，透传 Field.Root |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | 排列方向。`horizontal` = 标签区在左、控件在右、错误另起一行占满整行（设置页「一行一个设置项」版式），a11y 串联与错误渲染完全一致 |
-| colSpan | `"full"` | — | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
-| className | `string` | — | 落在 Field.Root（竖排为 flex 列容器，横排为两列网格） |
-| labelClassName | `string` | — | 追加到 label（默认 `text-sm font-medium text-foreground w-fit`）；走 twMerge，传 `text-xs` 会顶掉默认字号，传 `w-full` 会让 label 恢复满宽 |
-| descriptionClassName | `string` | — | 追加到 description（默认 `text-xs text-muted-foreground`） |
-| errorClassName | `string` | — | 追加到 error（默认 `text-xs text-danger`） |
+| colSpan | `"full"` | - | 在 ProForm columns 栅格中跨整行；栅格外无副作用 |
+| className | `string` | - | 落在 Field.Root（竖排为 flex 列容器，横排为两列网格） |
+| labelClassName | `string` | - | 追加到 label（默认 `text-sm font-medium text-foreground w-fit`）；走 twMerge，传 `text-xs` 会顶掉默认字号，传 `w-full` 会让 label 恢复满宽 |
+| descriptionClassName | `string` | - | 追加到 description（默认 `text-xs text-muted-foreground`） |
+| errorClassName | `string` | - | 追加到 error（默认 `text-xs text-danger`） |
 
 ## Slots
 

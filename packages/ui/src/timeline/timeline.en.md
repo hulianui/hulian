@@ -10,7 +10,7 @@ status: enriched
 
 # Timeline
 
-> A compound or data-driven vertical event timeline with colored or custom dots, three layouts, and pending states.
+> Orders events along a timeline with colored or custom markers, alternate placement, and a pending state.
 
 ## When to use
 
@@ -27,9 +27,9 @@ import { Timeline, TimelineItem } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items | `TimelineItemProps[]` | — | Data-driven items equivalent to `<TimelineItem {...item} />`; exclusive with children. |
+| items | `TimelineItemProps[]` | - | Data-driven items equivalent to `<TimelineItem {...item} />`; exclusive with children. |
 | mode | `"left" \| "right" \| "alternate"` | `"left"` | Left nodes, mirrored right nodes, or alternating content around a center line. |
-| …HTMLAttributes | `Omit<HTMLAttributes<HTMLOListElement>, "children">` | — | Forwarded ordered-list attributes. |
+| …HTMLAttributes | `Omit<HTMLAttributes<HTMLOListElement>, "children">` | - | Forwarded ordered-list attributes. |
 
 ### TimelineItem
 
@@ -37,7 +37,7 @@ import { Timeline, TimelineItem } from "@hulianui/ui"
 |------|------|------|------|
 | color | `"default" \| "primary" \| "success" \| "danger" \| "warning"` | `"default"` | Default dot tone; ignored with a custom dot. |
 | pending | `boolean` | `false` | Shows a spinning pending ring and makes the incoming connector dashed. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Slots
 

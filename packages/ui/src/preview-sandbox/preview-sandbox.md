@@ -45,18 +45,18 @@ import {
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| code | string | — | iframe 模式内容：**完整 HTML 文档串**，写进 `srcDoc`。传了就走 iframe 模式 |
-| children | ReactNode | — | 同文档模式内容：直接渲染的 React 子树。`code` 存在时被忽略 |
+| code | string | - | iframe 模式内容：**完整 HTML 文档串**，写进 `srcDoc`。传了就走 iframe 模式 |
+| children | ReactNode | - | 同文档模式内容：直接渲染的 React 子树。`code` 存在时被忽略 |
 | device | "desktop" ｜ "iphone" ｜ "android" ｜ "tablet" ｜ { width, height } | "desktop" | 预览视口（预览内 `window.innerWidth` 与媒体查询看到的就是它） |
 | showDeviceFrame | boolean | false | 是否套设备外框（仅三个机型档位有外框，desktop / 自由尺寸无效并开发期告警） |
-| frameWidth | number | — | 设备外框机身宽度 px；不传用对应外框组件的默认宽度 |
+| frameWidth | number | - | 设备外框机身宽度 px；不传用对应外框组件的默认宽度 |
 | scale | "fit" ｜ number | "fit" | 内容缩放。`fit` 等比缩到装得下且**不放大**；给数字则原样使用 |
 | sandbox | string | "allow-scripts" | iframe 的 `sandbox` 属性（默认不给 `allow-same-origin`，取舍见「禁忌 / 坑」） |
 | instrument | boolean | true | 是否注入错误转发引导脚本。关掉后 iframe 内的运行时错误收不到 |
 | title | string | 取自 locale | iframe 的无障碍名称；不传则跟随 ConfigProvider（内置中文兜底「预览沙箱」） |
 | errorTitle | string | 取自 locale | 内置错误态标题；不传则跟随 ConfigProvider（内置中文兜底「预览渲染失败」） |
 | retryLabel | string | 取自 locale | 重试按钮文案；不传则跟随 ConfigProvider（内置中文兜底「重试」） |
-| renderError | (error: PreviewSandboxError, retry: () => void) => ReactNode | — | 自定义错误态；给了就完全接管（含重试入口） |
+| renderError | (error: PreviewSandboxError, retry: () => void) => ReactNode | - | 自定义错误态；给了就完全接管（含重试入口） |
 
 `PreviewSandboxError` 两种模式同形状：`{ source: "iframe" ｜ "react", kind: "error" ｜ "unhandledrejection", message, stack, filename, lineno, colno, componentStack, error }`。`error`（原始 Error 实例）只有同文档模式拿得到，iframe 模式跨 realm 恒为 `null`。
 

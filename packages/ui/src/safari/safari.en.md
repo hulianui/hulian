@@ -10,7 +10,7 @@ status: enriched
 
 # Safari
 
-> Browser mockup · Safari-style traffic lights + address bar + screenshot or custom content + RSC-safe · mockups/window
+> Frames screenshots in a Safari-style browser window with an address bar. · mockups/window
 
 ## When to Use
 
@@ -28,8 +28,8 @@ Inherits `ComponentPropsWithoutRef<"div">`; `className`, `style`, and other div 
 | Name | Type | Default | Description |
 |------|------|------|------|
 | url | `string` | `"hulian.design"` | Address bar text. |
-| imageSrc | `string` | — | The image address of the content area, taking precedence over children. |
-| headerExtra | `ReactNode` | — | Tool entry at the trailing edge of the chrome (share, download, and the like). When omitted the cell stays the `w-12` spacer that keeps the address capsule centered, byte for byte; when provided the cell is handed over, with its width floored at the spacer width. See "Live content". |
+| imageSrc | `string` | - | The image address of the content area, taking precedence over children. |
+| headerExtra | `ReactNode` | - | Tool entry at the trailing edge of the chrome (share, download, and the like). When omitted the cell stays the `w-12` spacer that keeps the address capsule centered, byte for byte; when provided the cell is handed over, with its width floored at the spacer width. See "Live content". |
 
 ## Slots
 
@@ -51,7 +51,7 @@ Inherits `ComponentPropsWithoutRef<"div">`; `className`, `style`, and other div 
 
 ### Live content (not just screenshots)
 
-The content area sits on the height chain: the root is a column flex container and the content area is `min-h-0 flex-1`. So "shell fills its parent, content takes the height left over by the chrome" only needs a height on the root — embedded live pages, native views (Electron's `WebContentsView`), and scrollable panels all rely on this:
+The content area sits on the height chain: the root is a column flex container and the content area is `min-h-0 flex-1`. So "shell fills its parent, content takes the height left over by the chrome" only needs a height on the root. Embedded live pages, native views (Electron's `WebContentsView`), and scrollable panels all rely on this:
 
 ```tsx
 <div style={{ height: 500 }}>
@@ -61,9 +61,9 @@ The content area sits on the height chain: the root is a column flex container a
 </div>
 ```
 
-Screenshot usage is unaffected: an auto-height column flex container is still sized by its content, and `min-h-0` does not collapse it to zero — verified in Chromium.
+Screenshot usage is unaffected: an auto-height column flex container is still sized by its content, and `min-h-0` does not collapse it to zero (verified in Chromium).
 
-The trailing cell in the chrome is an empty `w-12` spacer by default; it exists so the address capsule stays centered relative to the traffic lights. Passing `headerExtra` hands that cell over, with its width floored at the spacer width: narrower content keeps the symmetry exactly, wider content grows the cell — better an off-center capsule than a clipped button.
+The trailing cell in the chrome is an empty `w-12` spacer by default; it exists so the address capsule stays centered relative to the traffic lights. Passing `headerExtra` hands that cell over, with its width floored at the spacer width: narrower content keeps the symmetry exactly, wider content grows the cell, since an off-center capsule beats a clipped button.
 
 ## Related
 [Chrome](../chrome/chrome.md) · [Terminal](../terminal/terminal.md) · [iPhone](../iphone/iphone.md) · [Android](../android/android.md) · [Tablet](../tablet/tablet.md) · [Watch](../watch/watch.md)

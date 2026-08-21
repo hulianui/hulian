@@ -34,8 +34,8 @@ import { CardSwap } from "@hulianui/ui"
 | skewAmount | `number` | `5` | `skewY` depth angle in degrees. |
 | easing | `"elastic" \| "smooth"` | `"elastic"` | Bouncy or restrained transition. |
 | placement | `"bottom-right" \| "center"` | `"bottom-right"` | Edge-overflow marketing layout or fully visible centered stack. |
-| className | `string` | — | Root class name. |
-| style | `CSSProperties` | — | Root inline styles. |
+| className | `string` | - | Root class name. |
+| style | `CSSProperties` | - | Root inline styles. |
 
 ## Events
 

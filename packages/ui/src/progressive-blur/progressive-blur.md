@@ -10,7 +10,7 @@ status: enriched
 
 # ProgressiveBlur
 
-> 渐进模糊 · 分层 backdrop-blur + mask 渐变(纯 CSS·RSC) · decoration/overlay-fx
+> 在内容一侧做出层层递进的方向性模糊 · decoration/overlay-fx
 
 ## 何时用
 
@@ -26,9 +26,9 @@ import { ProgressiveBlur } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | side | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | 模糊增强的方向，该侧最糊。 |
-| layers | `number` | — | 分层数，越多过渡越平滑。 |
-| blur | `number` | — | 基础模糊量(px)，逐层翻倍。 |
-| className | `string` | — | 透传到根叠层。 |
+| layers | `number` | - | 分层数，越多过渡越平滑。 |
+| blur | `number` | - | 基础模糊量(px)，逐层翻倍。 |
+| className | `string` | - | 透传到根叠层。 |
 
 ## 示例
 ```tsx

@@ -31,9 +31,9 @@ import { MetallicPaint } from "@hulianui/ui"
 | scale | `number` | `1` | 纹理缩放，越大纹路越密 |
 | refraction | `number` | `1` | 折射强度，越大 RGB 错位色散/虹彩越明显 |
 | liquid | `number` | `0.6` | 液态扰动强度，越大越像流动水银，0=平整镜面 |
-| blur | `number` | `0.6` | 色带边缘模糊，建议 0.2–1.5；过小条纹生硬、过大金属感消散 |
+| blur | `number` | `0.6` | 色带边缘模糊，建议 0.2-1.5；过小条纹生硬、过大金属感消散 |
 | angle | `number` | `-45` | 整体旋转角度（度），改变光线入射方向 |
-| className | `string` | — | 透传到容器（或 fallback div） |
+| className | `string` | - | 透传到容器（或 fallback div） |
 
 ## Slots
 

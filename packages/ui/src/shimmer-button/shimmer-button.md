@@ -32,7 +32,7 @@ import { ShimmerButton } from "@hulianui/ui"
 | shimmerDuration | `string` | `3s` | 一轮火花秒数 |
 | background | `string` | `var(--color-primary)` | 按钮底色 |
 | foreground | `string` | `var(--color-primary-foreground)` | 文字前景色（#288），与 `background` 成对：默认两者都随主题；传了**固定**底色（如不随主题的品牌渐变）就配一个固定前景，否则暗色下渐变上出黑字。落 `--hulian-shimmer-fg`，火花色缺省也读它 |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | - | 透传原生 button 属性 |
 
 ## Events
 

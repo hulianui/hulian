@@ -27,7 +27,7 @@ import { GradientBlinds } from "@hulianui/ui"
 |------|------|------|------|
 | gradientColors | `string[]` | `--color-chart-1/3` | 渐变色站，水平插值，最多取前 8；任意 CSS 颜色 |
 | angle | `number` | `0` | 色带旋转角度（度），仅转渐变与百叶纹理不转容器 |
-| noise | `number` | `0.3` | 颗粒噪声强度，0=纯净，建议 0–1 |
+| noise | `number` | `0.3` | 颗粒噪声强度，0=纯净，建议 0-1 |
 | blindCount | `number` | `16` | 百叶竖条数量，与 blindMinWidth 取较小者 |
 | blindMinWidth | `number` | `60` | 单条最小宽度(px)，窄容器按此收敛条数；传 0/负值关闭约束 |
 | mouseDampening | `number` | `0.15` | 聚光灯跟随阻尼(秒)，0=瞬时无阻尼 |
@@ -38,8 +38,8 @@ import { GradientBlinds } from "@hulianui/ui"
 | distortAmount | `number` | `0` | 渐变扭曲幅度，越大色带越波浪 |
 | shineDirection | `"left" \| "right"` | `"left"` | 高光扫光方向，"right" 翻转每条百叶明暗倾向 |
 | dpr | `number` | `min(dpr, 2)` | 设备像素比上限 |
-| className | `string` | — | 透传根容器 div |
-| style | `CSSProperties` | — | 根容器内联样式，如 `mixBlendMode` |
+| className | `string` | - | 透传根容器 div |
+| style | `CSSProperties` | - | 根容器内联样式，如 `mixBlendMode` |
 
 ## Slots
 

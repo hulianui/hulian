@@ -39,8 +39,8 @@ import { DomeGallery } from "@hulianui/ui"
 | overlayColor | `string` | `"var(--color-background)"` | 边缘渐隐/中心遮罩底色，传 token 以匹配容器背景 |
 | enlargeTransitionMs | `number` | `320` | 放大查看/自动旋转过渡时长（ms） |
 | autoRotate | `boolean` | `false` | 无拖拽时自动缓慢自转（展示/壁纸场景） |
-| className | `string` | — | 透传根元素类名 |
-| style | `CSSProperties` | — | 透传根元素内联样式 |
+| className | `string` | - | 透传根元素类名 |
+| style | `CSSProperties` | - | 透传根元素内联样式 |
 
 `DomeGalleryImage`：`string` 或 `{ src: string; alt?: string }`。
 

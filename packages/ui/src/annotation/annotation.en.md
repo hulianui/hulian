@@ -27,7 +27,7 @@ import { Annotation } from "@hulianui/ui/annotation"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| note | `ReactNode` | — | Handwritten label content. Omit it for a highlight without an arrow or label. |
+| note | `ReactNode` | - | Handwritten label content. Omit it for a highlight without an arrow or label. |
 | side | `"n"\|"ne"\|"e"\|"se"\|"s"\|"sw"\|"w"\|"nw"` | `ne` | Label position; the arrow points back to the target. |
 | tone | `"neutral"\|"primary"\|"success"\|"warning"\|"danger"\|"rainbow"` | `neutral` | Annotation color; the annotated content keeps its own color. |
 | mark | `boolean` | `true` | Shows the highlighter background controlled by `--hl-ann-spread`. |
@@ -35,11 +35,11 @@ import { Annotation } from "@hulianui/ui/annotation"
 | labelWidth | `number` | `150` | Maximum label width before wrapping, in pixels. |
 | gap | `number` | `5` | Space between the target and arrow, in pixels. |
 | labelGap | `number` | `6` | Space between the arrow and label, in pixels. |
-| offset | `{ x?: number; y?: number }` | — | Fine adjustment; positive values move away on the side axis and right or down on the other axis. |
+| offset | `{ x?: number; y?: number }` | - | Fine adjustment; positive values move away on the side axis and right or down on the other axis. |
 | handwritten | `boolean` | `true` | Applies the handwritten font stack described below. |
 | as | `ElementType` | `span` | Host element; use `mark` when semantic highlighting is appropriate. |
-| className | `string` | — | Class on the annotated host. |
-| labelClassName | `string` | — | Class on the label for typography adjustments. |
+| className | `string` | - | Class on the annotated host. |
+| labelClassName | `string` | - | Class on the label for typography adjustments. |
 
 ### CSS variables
 

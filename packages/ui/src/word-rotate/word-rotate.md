@@ -25,7 +25,7 @@ import { WordRotate } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| words* | `string[]` | — | 轮换的词数组 |
+| words* | `string[]` | - | 轮换的词数组 |
 | duration | `number` | `2500` | 每词停留毫秒 |
 
 继承 `ComponentPropsWithoutRef<"span">`（除 `children` 及 motion 冲突的 `onDrag`/`onDragStart`/`onDragEnd`/`onAnimationStart`），如 `className` / `style`。

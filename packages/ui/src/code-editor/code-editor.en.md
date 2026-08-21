@@ -29,18 +29,18 @@ import { CodeEditor, applyEdit, autoPairEdit, backspacePairEdit, getLanguageRule
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value * | string | — | Controlled code text. **Must be written back from onChange**, otherwise every edit is rolled back by React. |
+| value * | string | - | Controlled code text. **Must be written back from onChange**, otherwise every edit is rolled back by React. |
 | language | CodeEditorLanguage | "tsx" | Selects the tokenizer, comment markers, and pair rules. `typescript` \| `tsx` \| `javascript` \| `jsx` \| `json` \| `css` \| `bash` \| any string (unknown values fall back to the JS family). |
 | readOnly | boolean | false | Read-only. Focus, selection, and copy still work; input and keyboard shortcuts do not. |
 | lineNumbers | boolean | true | Shows the gutter, pinned horizontally and following vertical scroll. |
 | highlightActiveLine | boolean | true | Highlights the caret line while the editor is focused. |
 | lineHeight | number | 1.6 | Unitless line-height applied to both the gutter and the code area. |
 | tabSize | number | 2 | Width of one indent level in spaces; also used as `tab-size`. |
-| placeholder | string | — | Placeholder shown when the value is empty. |
+| placeholder | string | - | Placeholder shown when the value is empty. |
 | rows | number | 12 | Default visible rows; an explicit height on `className` wins. |
-| theme | "light" \| "dark" | — | Forced theme escape hatch. Omit it to follow the global `[data-theme]`, which is the recommended usage. |
+| theme | "light" \| "dark" | - | Forced theme escape hatch. Omit it to follow the global `[data-theme]`, which is the recommended usage. |
 | ariaLabel | string | From locale | Accessible name; without it the editor takes a generic code-editor label plus the language from the ConfigProvider locale. |
-| className | string | — | Wrapper class for width, height, or max height. |
+| className | string | - | Wrapper class for width, height, or max height. |
 
 ## Events
 
@@ -120,7 +120,7 @@ const [code, setCode] = useState(source);
 
 ## Pitfalls
 
-- **The root already carries `w-full`; do not rely on a parent to size it.** A `textarea` derives its intrinsic width from the HTML default `cols` (20), so the editor's max-content width is anchored at roughly 20 characters. In a normal block context the block-flex root fills its parent and hides the problem, but as a flex or grid item — exactly the "tree on the left, editor on the right" layout it is built for — it collapses to a narrow strip (#116). Use an explicit `max-w-*` when you want it narrower.
+- **The root already carries `w-full`; do not rely on a parent to size it.** A `textarea` derives its intrinsic width from the HTML default `cols` (20), so the editor's max-content width is anchored at roughly 20 characters. In a normal block context the block-flex root fills its parent and hides the problem, but as a flex or grid item (exactly the "tree on the left, editor on the right" layout it is built for) it collapses to a narrow strip (#116). Use an explicit `max-w-*` when you want it narrower.
 
 - **It must be controlled.** If `onChange` does not write `value` back, edits are rolled back immediately and it looks like typing does nothing. That is by design, not a bug.
 - **Do not bypass the component and expect undo to survive.** Every shortcut writes through `document.execCommand("insertText" | "delete")` so the change lands in the native undo stack. If you fork this and replace that with a whole-document `setState`, Cmd+Z stops working instantly; this is the single easiest thing to get wrong in a textarea-based editor. Where `execCommand` is unavailable (jsdom, very old browsers) the component falls back to emitting the whole document, so editing still works but native undo is lost.
@@ -128,7 +128,7 @@ const [code, setCode] = useState(source);
 - **Not implemented**: code folding, completion, multiple cursors and column selection, semantic diagnostics and squiggles, a find-and-replace panel, and bracket-match highlighting. Embed CodeMirror 6 or Monaco for those.
 - Text never wraps (`wrap="off"`; long lines scroll horizontally). This is deliberate: with soft wrapping the gutter can no longer line up with visual rows, so `lineNumbers` would start lying. Use [Textarea](../textarea/textarea.md) if you want wrapping.
 - **Styling changes must be applied to all three layers.** The transparent `<textarea>`, the colored `<pre>`, and the gutter must agree on font family, font size, line height, padding, `white-space`, and `tab-size`. Change padding or font size on only one of them and the caret drifts half a character, visible only on long lines or deep indentation.
-- **`theme` now holds in both directions** (since @hulianui/tokens 0.3.0): a light island inside a dark page sticks just as well as a dark island inside a light page, and the island also owns its `dark:` utilities, shadows and hairline borders. Older versions only supported the dark-inside-light direction (hulianui/hulian#101). Omitting `theme` and following the global theme is still the recommended usage — a forced theme is an escape hatch, not the default.
+- **`theme` now holds in both directions** (since @hulianui/tokens 0.3.0): a light island inside a dark page sticks just as well as a dark island inside a light page, and the island also owns its `dark:` utilities, shadows and hairline borders. Older versions only supported the dark-inside-light direction (hulianui/hulian#101). Omitting `theme` and following the global theme is still the recommended usage. A forced theme is an escape hatch, not the default.
 - Highlighting is **approximate, not a parser**. The CSS scanner only tracks whether it is inside `{}` and whether it has passed a `:`; the JS family reuses the single-regex scanner from CodeBlock. Complex generics, regex literals, and nested template strings may be colored wrong. Coloring never affects editing, and `value` is always your exact text.
 - With `language="json"`, Cmd+/ **deliberately does nothing**: JSON has no comments, so inserting one would produce invalid JSON.
 - The selection background is a translucent `bg-primary/25` because the textarea paints above the highlight layer and an opaque selection would hide the code. If you change that class, re-check contrast in the dark theme.

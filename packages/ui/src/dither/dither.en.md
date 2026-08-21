@@ -32,7 +32,7 @@ import { Dither } from "@hulianui/ui"
 | colorNum | `number` | `4` | Quantized color-step count used with the Bayer matrix; lower values look more 8-bit |
 | pixelSize | `number` | `2` | Dither-block size; higher values produce a coarser mosaic |
 | disableAnimation | `boolean` | `false` | Freeze the wave field on a still frame, matching reduced-motion behavior |
-| className | `string` | — | Class name forwarded to the canvas or fallback div |
+| className | `string` | - | Class name forwarded to the canvas or fallback div |
 
 ## Slots
 

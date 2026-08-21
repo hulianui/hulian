@@ -26,11 +26,11 @@ import { Crosshair } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | color | `string` | `var(--color-primary)` | Crosshair color (automatic light and dark theme), it is recommended to use token |
-| smoothing | `number` | `0.15` | Follow the smoothing coefficient (0–1), the smaller it is, the sticky and trailing it will be, the larger it will be, the more trailing it will be |
+| smoothing | `number` | `0.15` | Follow the smoothing coefficient (0-1), the smaller it is, the sticky and trailing it will be, the larger it will be, the more trailing it will be |
 | thickness | `number` | `1` | Crosshair thickness (px) |
 | pulseOnEnter | `boolean` | `true` | Trigger a jitter pulse (CSS scale) when entering the container; invalid under reduced-motion, the following is still retained |
-| className | `string` | — | Forwarded to the root container (must be positioning context, absolute inset-0 inside the component is filled with the parent) |
-| style | `CSSProperties` | — | Forward inline styles to the root container |
+| className | `string` | - | Forwarded to the root container (must be positioning context, absolute inset-0 inside the component is filled with the parent) |
+| style | `CSSProperties` | - | Forward inline styles to the root container |
 
 ## Examples
 ```tsx

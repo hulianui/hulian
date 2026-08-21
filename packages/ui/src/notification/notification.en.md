@@ -10,7 +10,7 @@ status: enriched
 
 # Notification
 
-> Notification · Corner-stacked card with icon, actions, placement, and an imperative API richer than Toast · feedback/message
+> Stacks positioned notification cards with icons, content, actions, and an imperative API. · feedback/message
 
 ## When to use
 
@@ -27,7 +27,7 @@ import { notification, NotificationProvider, hulianNotificationManager } from "@
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| type | `"open"\|"success"\|"error"\|"info"\|"warning"` | — | Implied by the method. `open` is neutral without a default icon; other types derive the accent and icon from Alert-aligned tokens. |
+| type | `"open"\|"success"\|"error"\|"info"\|"warning"` | - | Implied by the method. `open` is neutral without a default icon; other types derive the accent and icon from Alert-aligned tokens. |
 | duration | `number` | `4500` | Automatic dismissal in milliseconds. `0` remains open. |
 | placement | `"topRight"\|"topLeft"\|"bottomRight"\|"bottomLeft"` | `"topRight"` | Screen corner. |
 

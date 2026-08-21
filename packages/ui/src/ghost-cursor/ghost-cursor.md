@@ -25,15 +25,15 @@ import { GhostCursor } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| trailLength | `number` | `32` | 拖尾保留的历史帧数，越大尾迹越长，片元开销线性增长，建议 16–64 |
-| inertia | `number` | `0.5` | 惯性系数 0–1，越接近 1 越「飘」（拖远），越接近 0 越跟手 |
-| grainIntensity | `number` | `0.05` | 胶片颗粒强度 0–0.3，叠加噪点；0 = 关闭 |
-| brightness | `number` | `1.2` | 整体亮度增益，补偿去掉 Bloom 后的亮度损失，建议 0.8–2.0 |
+| trailLength | `number` | `32` | 拖尾保留的历史帧数，越大尾迹越长，片元开销线性增长，建议 16-64 |
+| inertia | `number` | `0.5` | 惯性系数 0-1，越接近 1 越「飘」（拖远），越接近 0 越跟手 |
+| grainIntensity | `number` | `0.05` | 胶片颗粒强度 0-0.3，叠加噪点；0 = 关闭 |
+| brightness | `number` | `1.2` | 整体亮度增益，补偿去掉 Bloom 后的亮度损失，建议 0.8-2.0 |
 | color | `string` | `var(--color-chart-1)` | 烟雾主色，吃明暗主题；任意 CSS 颜色串均可 |
 | scale | `number` | `1` | 噪声活动半径系数 >0，越大烟团越弥散，越小越聚拢 |
 | mixBlendMode | `CSSProperties["mixBlendMode"]` | `"screen"` | canvas 混合模式，深色底用 screen 叠加发光；浅色底可改 multiply/normal |
-| className | `string` | — | 透传根容器（absolute inset-0）额外 className |
-| style | `CSSProperties` | — | 透传根容器内联样式（如 zIndex） |
+| className | `string` | - | 透传根容器（absolute inset-0）额外 className |
+| style | `CSSProperties` | - | 透传根容器内联样式（如 zIndex） |
 
 ## 示例
 ```tsx

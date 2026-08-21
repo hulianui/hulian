@@ -10,7 +10,7 @@ status: enriched
 
 # FitScreen
 
-> 大屏适配 · 固定设计尺寸(默认 1920×1080)等比缩放铺满父容器并居中 + fit/cover/stretch 三模式(纯函数 computeFit 可测·ResizeObserver 监听·SSR 安全·数据可视化大屏刚需) · layout/container
+> 把固定尺寸的设计稿等比缩放，铺满任意大小的屏幕 · layout/container
 
 ## 何时用
 
@@ -28,7 +28,7 @@ import { FitScreen, computeFit } from "@hulianui/ui"
 | designWidth | `number` | `1920` | 设计稿宽。 |
 | designHeight | `number` | `1080` | 设计稿高。 |
 | mode | `"fit" \| "cover" \| "stretch"` | `"fit"` | fit=取 min(等比不裁切，四周可能留黑边)；cover=取 max(等比铺满，可能裁切)；stretch=非等比拉满(可能变形)。 |
-| className | `string` | — | 外层容器类名。 |
+| className | `string` | - | 外层容器类名。 |
 
 `computeFit(input: FitInput)`：纯函数（`{ outerW, outerH, designW, designH, mode }` → 缩放结果），可单测，组件内部据 ResizeObserver 测量后调用它。
 

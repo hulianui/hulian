@@ -28,8 +28,8 @@ import { ShineBorder } from "@hulianui/ui"
 | borderWidth | `number` | `1` | Border width px |
 | duration | `number` | `14` | Duration of one gradient cycle in seconds |
 | shineColor | `string \| string[]` | Hulian chart token | Streamer color, single color or multi-color array |
-| className | `string` | — | Additional class name for the overlay |
-| style | `CSSProperties` | — | Inline styles forwarded to the overlay |
+| className | `string` | - | Additional class name for the overlay |
+| style | `CSSProperties` | - | Inline styles forwarded to the overlay |
 
 ## Examples
 

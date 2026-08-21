@@ -25,14 +25,14 @@ import { VariableProximity } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label* | `string` | — | 渲染文本（按词与字拆分，空格保留为不可断词隙）；sr-only 副本完整朗读 |
-| fromFontVariationSettings* | `string` | — | 鼠标远端时的可变轴设置，如 `"'wght' 400, 'opsz' 9"`（需可变字体才有视觉变化） |
-| toFontVariationSettings* | `string` | — | 鼠标贴近时的目标轴设置，逐轴向此插值；缺省轴回退到 from 值 |
-| containerRef | `RefObject<HTMLElement \| null>` | — | 计算鼠标相对坐标的参照容器；缺省回退到视口坐标 |
+| label* | `string` | - | 渲染文本（按词与字拆分，空格保留为不可断词隙）；sr-only 副本完整朗读 |
+| fromFontVariationSettings* | `string` | - | 鼠标远端时的可变轴设置，如 `"'wght' 400, 'opsz' 9"`（需可变字体才有视觉变化） |
+| toFontVariationSettings* | `string` | - | 鼠标贴近时的目标轴设置，逐轴向此插值；缺省轴回退到 from 值 |
+| containerRef | `RefObject<HTMLElement \| null>` | - | 计算鼠标相对坐标的参照容器；缺省回退到视口坐标 |
 | radius | `number` | `50` | 影响半径（px）；超出则恢复 from 设置 |
 | falloff | `"linear" \| "exponential" \| "gaussian"` | `"linear"` | 衰减曲线；exponential 更陡、gaussian 中心更聚拢柔和 |
-| className | `string` | — | 合并到根 span 的额外类名 |
-| style | `CSSProperties` | — | 合并到根 span 的内联样式 |
+| className | `string` | - | 合并到根 span 的额外类名 |
+| style | `CSSProperties` | - | 合并到根 span 的内联样式 |
 
 > 注：showcase controls 默认演示用 `radius={90}`，但接口默认值为 `50`。
 

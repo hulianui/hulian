@@ -10,7 +10,7 @@ status: enriched
 
 # Breadcrumb
 
-> 面包屑 · 纯皮肤静态 + aria-current 当前页语义 · navigation/inpage
+> 展示当前页面在层级中的位置，并标出当前页 · navigation/inpage
 
 ## 何时用
 
@@ -25,16 +25,16 @@ import { Breadcrumb } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `BreadcrumbItem[]` | — | 路径项数组，从根到当前页自左向右 |
+| items* | `BreadcrumbItem[]` | - | 路径项数组，从根到当前页自左向右 |
 
 `BreadcrumbItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label * | `ReactNode` | — | 显示内容 |
-| href | `string` | — | 链接地址；省略则该项不可点（当前页或不可导航的祖先） |
-| current | `boolean` | — | 显式标记为当前页；缺省时数组末项即当前页 |
-| render | `ReactElement` | — | 渲染为自定义元素（`next/link`、`react-router` 的 `Link`…），皮肤类名与 `aria-current` 合并进该元素，`label` 作它的子节点 |
+| label * | `ReactNode` | - | 显示内容 |
+| href | `string` | - | 链接地址；省略则该项不可点（当前页或不可导航的祖先） |
+| current | `boolean` | - | 显式标记为当前页；缺省时数组末项即当前页 |
+| render | `ReactElement` | - | 渲染为自定义元素（`next/link`、`react-router` 的 `Link`…），皮肤类名与 `aria-current` 合并进该元素，`label` 作它的子节点 |
 
 ## Slots
 

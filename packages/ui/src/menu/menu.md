@@ -10,7 +10,7 @@ status: enriched
 
 # Menu
 
-> 下拉菜单 · Base UI 命令式 + Item/分隔/分组 + danger · navigation/global
+> 用下拉菜单收纳操作项，支持分组和危险项 · navigation/global
 
 ## 何时用
 
@@ -28,53 +28,53 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 |------|------|------|------|
 | side | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | 弹出方位 |
 | align | `"start" \| "center" \| "end"` | `"start"` | 沿触发器的对齐 |
-| sideOffset | `number` | — | 与触发器的间距(px) |
-| className | `string` | — | — |
+| sideOffset | `number` | - | 与触发器的间距(px) |
+| className | `string` | - | - |
 
 ### MenuItem
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| render | `ReactElement` | — | 渲染成另一个元素（Next `<Link>` / `<a>`），props 与 `role="menuitem"`、键盘漫游一并合并进去。**导航型菜单项用它而不是 `onClick` + `router.push`**，见下方「导航型菜单项」 |
+| render | `ReactElement` | - | 渲染成另一个元素（Next `<Link>` / `<a>`），props 与 `role="menuitem"`、键盘漫游一并合并进去。**导航型菜单项用它而不是 `onClick` + `router.push`**，见下方「导航型菜单项」 |
 | disabled | `boolean` | `false` | 禁用 |
 | closeOnClick | `boolean` | `true` | 点击后是否关闭菜单 |
-| label | `string` | — | 键盘 type-ahead 的文案覆盖 |
+| label | `string` | - | 键盘 type-ahead 的文案覆盖 |
 | variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ### MenuCheckboxItem
 可开关的设置项，渲染 `role="menuitemcheckbox"` + `aria-checked`。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| checked | `boolean` | — | 是否勾选（受控）。要非受控请改用 `defaultChecked` |
+| checked | `boolean` | - | 是否勾选（受控）。要非受控请改用 `defaultChecked` |
 | defaultChecked | `boolean` | `false` | 初始是否勾选（非受控） |
 | disabled | `boolean` | `false` | 禁用 |
 | closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。勾选项默认**不关**，便于连续勾选 |
-| label | `string` | — | 键盘 type-ahead 的文案覆盖 |
+| label | `string` | - | 键盘 type-ahead 的文案覆盖 |
 | variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ### MenuRadioGroup
 一组互斥选项的容器；互斥关系由它维护，`MenuRadioItem` 必须放在它内部。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string` | — | 当前选中项的值（受控）。要非受控请改用 `defaultValue` |
-| defaultValue | `string` | — | 初始选中项的值（非受控） |
+| value | `string` | - | 当前选中项的值（受控）。要非受控请改用 `defaultValue` |
+| defaultValue | `string` | - | 初始选中项的值（非受控） |
 | disabled | `boolean` | `false` | 整组禁用 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ### MenuRadioItem
 互斥选项中的一项，渲染 `role="menuitemradio"` + `aria-checked`。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `string` | — | 本项的值；与所在 `MenuRadioGroup` 的 value 相等即为选中态 |
+| value* | `string` | - | 本项的值；与所在 `MenuRadioGroup` 的 value 相等即为选中态 |
 | disabled | `boolean` | `false` | 禁用 |
 | closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。单选项默认**不关**，选完想收起菜单要显式传 `true` |
-| label | `string` | — | 键盘 type-ahead 的文案覆盖 |
+| label | `string` | - | 键盘 type-ahead 的文案覆盖 |
 | variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ### MenuSubTrigger
 展开级联子菜单的菜单项，右侧带 chevron。必须与 `MenuSubContent` 一起放在 `MenuSub` 内。
@@ -82,9 +82,9 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | disabled | `boolean` | `false` | 禁用（不可展开子菜单） |
-| label | `string` | — | 键盘 type-ahead 的文案覆盖 |
+| label | `string` | - | 键盘 type-ahead 的文案覆盖 |
 | variant | `"default" \| "danger"` | `"default"` | danger 为危险操作（红色） |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 没有 `closeOnClick`：它的点击语义是「展开下一级」而不是「执行动作」。
 
@@ -93,7 +93,7 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 `MenuTrigger` 用 `render={<Button />}` 把任意元素作触发器。`MenuSub` 是纯结构件，只负责把 `MenuSubTrigger` 与 `MenuSubContent` 绑成一级。
 

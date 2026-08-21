@@ -25,19 +25,19 @@ import { DateRangePicker } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `[string, string] \| null` | — | Controlled value `[start, end]`; the shape follows `picker` (`YYYY-MM-DD` / `YYYY-MM` / `YYYY`); `null` = cleared; controlled when passed in |
-| defaultValue | `[string, string] \| null` | — | uncontrolled initial value |
+| value | `[string, string] \| null` | - | Controlled value `[start, end]`; the shape follows `picker` (`YYYY-MM-DD` / `YYYY-MM` / `YYYY`); `null` = cleared; controlled when passed in |
+| defaultValue | `[string, string] \| null` | - | uncontrolled initial value |
 | picker | `"date" \| "month" \| "year"` | `"date"` | Selection granularity, same meaning as the prop of the same name on [DatePicker](../date-picker/date-picker.md). The panels follow: two month calendars, two year pages (12 months each), or two 12-year pages. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px). Date-cell geometry inside the panel does not change with it. |
-| minDate | `string` | — | The earliest selectable date. Always an ISO `YYYY-MM-DD` string, **regardless of `picker`**; at month and year granularity a cell is disabled only when the whole month or year is out of bounds. |
-| maxDate | `string` | — | The latest selectable date, same convention as `minDate` |
-| disabledDate | `(isoDate: string) => boolean` | — | Custom disabling. The argument is always an ISO `YYYY-MM-DD` string; at month and year granularity it is asked once per cell, with the **first day** of that month or year. |
+| minDate | `string` | - | The earliest selectable date. Always an ISO `YYYY-MM-DD` string, **regardless of `picker`**; at month and year granularity a cell is disabled only when the whole month or year is out of bounds. |
+| maxDate | `string` | - | The latest selectable date, same convention as `minDate` |
+| disabledDate | `(isoDate: string) => boolean` | - | Custom disabling. The argument is always an ISO `YYYY-MM-DD` string; at month and year granularity it is asked once per cell, with the **first day** of that month or year. |
 | presets | `boolean \| DateRangePreset[]` | `true` | `true` or omitted uses the defaults for that granularity (day: Today / Last 7 days / Last 30 days / This month; month: This month / Last 3 months / Last 6 months / This year; year: This year / Last 3 years / Last 5 years), all resolved through the active locale. Pass an array for custom presets or `false` to hide them. |
 | placeholder | `[string, string]` | follows `picker` | Placeholder pair `[start, end]`; defaults to the locale's "Start date" / "Start month" / "Start year" wording. |
 | displayFormat | `string` | follows `picker` | Display format (dayjs format), defaulting to `YYYY-MM-DD` / `YYYY-MM` / `YYYY`. It never changes the shape of the controlled value. |
 | disabled | `boolean` | `false` | Disable |
 | readOnly | `boolean` | `false` | Read only: can be opened for viewing, no endpoint selection/no preset/no clearing |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 ## Events
 
@@ -88,7 +88,7 @@ function Demo() {
 - At month and year granularity `disabledDate` is asked once per cell with the **first day** of that segment (`2026-09-01` stands for all of September). Do not put per-day logic such as "disable weekends" there; it has no meaning at those granularities.
 - The year page shows a **full 12-year block**, not a decade. With two pages side by side, a decade's leading and trailing filler years would make the same year appear on both pages.
 - `disabledDate` receives an ISO date string. For weekday calculations, use `new Date(iso + "T00:00:00")` and account for the local timezone. Avoid `new Date(iso)`, which parses as UTC and can shift the calendar day.
-- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container, which is the element that takes focus and that screen readers announce (#293).
 - Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
 - Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 

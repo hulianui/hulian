@@ -10,7 +10,7 @@ status: enriched
 
 # AvatarCircles
 
-> An overlapping avatar group with rings and an optional +N overflow count.
+> Stacks overlapping avatars with an optional overflow count.
 
 ## When to use
 
@@ -25,17 +25,17 @@ import { AvatarCircles, avatarCirclesItemVariants } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| avatars* | `AvatarCirclesItem[]` | — | Ordered images; later items overlap earlier ones. See the table below. |
-| extraCount | `number` | — | Additional people rendered in a trailing "+N" circle. |
+| avatars* | `AvatarCirclesItem[]` | - | Ordered images; later items overlap earlier ones. See the table below. |
+| extraCount | `number` | - | Additional people rendered in a trailing "+N" circle. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Circle diameter preset. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 `AvatarCirclesItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| src * | `string` | — | Avatar image URL. There is no fallback slot here (unlike a single Avatar), so a missing image leaves an empty circle. |
-| alt | `string` | — | Alternative text for the image. |
+| src * | `string` | - | Avatar image URL. There is no fallback slot here (unlike a single Avatar), so a missing image leaves an empty circle. |
+| alt | `string` | - | Alternative text for the image. |
 
 ## Examples
 ```tsx

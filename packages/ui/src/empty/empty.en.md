@@ -18,7 +18,7 @@ Use Empty when a list, table, or search result has no content, explaining why an
 
 ### Which component each list state needs
 
-A list region normally has to express four states. They are not four wordings of one component — picking the wrong one makes screen readers announce the wrong thing:
+A list region normally has to express four states. They are not four wordings of one component, and picking the wrong one makes screen readers announce the wrong thing:
 
 | State | Use | Notes |
 |-------|-----|-------|

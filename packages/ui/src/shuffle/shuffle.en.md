@@ -25,7 +25,7 @@ import { Shuffle } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text* | `string` | — | The final rendered text (the parsing target) |
+| text* | `string` | - | The final rendered text (the parsing target) |
 | duration | `number` | `0.6` | Total animation duration in seconds; each character's resolve point is based on its index. |
 | shuffleDirection | `"left" \| "right"` | `"right"` | Resolve order: `left` resolves right-to-left; `right` resolves left-to-right. |
 | scrambleCharset | `string` | Uppercase letters + numbers + a few symbols | Before parsing, each character is randomly selected and flashes into a garbled character set. |
@@ -36,8 +36,8 @@ import { Shuffle } from "@hulianui/ui"
 | triggerOnHover | `boolean` | `false` | Reshuffle the cards when the mouse moves in (the animation will only respond when it is idle) |
 | tag | `"p" \| "span" \| "div" \| "h1" \| "h2" \| "h3" \| "h4"` | `"p"` | render tag |
 | textAlign | `CSSProperties["textAlign"]` | `"center"` | text alignment |
-| className | `string` | — | The class name merged into the root element |
-| style | `CSSProperties` | — | Inline styles (merged with textAlign) |
+| className | `string` | - | The class name merged into the root element |
+| style | `CSSProperties` | - | Inline styles (merged with textAlign) |
 
 ## Events
 

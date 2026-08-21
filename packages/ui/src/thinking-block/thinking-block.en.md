@@ -27,8 +27,8 @@ import { ThinkingBlock } from "@hulianui/ui"
 |------|------|------|------|
 | thinking | `boolean` | `false` | Active state with a spinner and highlight; also supplies the default expanded state |
 | defaultOpen | `boolean` | With thinking | Uncontrolled initial expansion state |
-| open | `boolean` | — | Controlled expansion state |
-| className | `string` | — | Container class name |
+| open | `boolean` | - | Controlled expansion state |
+| className | `string` | - | Container class name |
 
 ## Events
 

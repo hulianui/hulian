@@ -10,7 +10,7 @@ status: enriched
 
 # Watermark
 
-> A high-DPI tiled canvas watermark with text or image content and MutationObserver tamper recovery.
+> Tiles a high-DPI canvas watermark and restores it after DOM tampering.
 
 ## When to use
 
@@ -27,8 +27,8 @@ Inherits all native `div` attributes except `content`, which is redefined as a s
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| content | `string \| string[]` | — | One or multiple text lines; `image` takes precedence when both are supplied. |
-| image | `string` | — | Data URL or remote image source. |
+| content | `string \| string[]` | - | One or multiple text lines; `image` takes precedence when both are supplied. |
+| image | `string` | - | Data URL or remote image source. |
 | width | `number` | `120` | Image width in pixels. |
 | height | `number` | Original aspect ratio | Image height in pixels. |
 | rotate | `number` | `-22` | Rotation in degrees. |

@@ -10,7 +10,7 @@ status: enriched
 
 # ActionSheet
 
-> Mobile action sheet · Bottom-up Base UI Dialog using the Drawer motion pattern and CSS motion tokens · Close-on-select actions, destructive state, separate cancel block, and safe-area support · mobile/overlay
+> Presents touch-friendly actions in a modal sheet from the bottom edge. · mobile/overlay
 
 ## When to Use
 
@@ -25,13 +25,13 @@ import { ActionSheet, ActionSheetTrigger, ActionSheetClose, ActionSheetContent }
 
 `ActionSheet` accepts the Base UI `Dialog.Root` props, including the usual controlled or uncontrolled open state and `onOpenChange`. `ActionSheetTrigger` and `ActionSheetClose` are direct Base UI Dialog counterparts.
 
-**ActionSheetContent — Props**
+**ActionSheetContent Props**
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `actions` * | `ActionSheetAction[]` | — | Actions listed below; selecting any action closes the sheet |
+| `actions` * | `ActionSheetAction[]` | - | Actions listed below; selecting any action closes the sheet |
 | `container` | `HTMLElement \| null` | `document.body` | Portal container; pass an ancestor such as a transformed, overflow-hidden device frame to contain both backdrop and sheet |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **ActionSheetAction**: `key: string` · `label: ReactNode` · `description?: ReactNode` (supporting text) · `danger?: boolean` (destructive red treatment) · `disabled?: boolean` · `onClick?: () => void`.
 

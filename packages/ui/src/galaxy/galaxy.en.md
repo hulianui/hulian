@@ -40,7 +40,7 @@ import { Galaxy } from "@hulianui/ui"
 | rotationSpeed | `number` | `0.1` | Galaxy automatic rotation speed, 0 = no rotation |
 | autoCenterRepulsion | `number` | `0` | Automatic repulsion from the center; values above 0 open a central cavity surrounded by stars |
 | transparent | `boolean` | `true` | Preserve alpha so the container background shows through; false renders a solid black deep-space background |
-| className | `string` | — | Root container (or div) |
+| className | `string` | - | Root container (or div) |
 
 ## Slots
 

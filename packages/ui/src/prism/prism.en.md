@@ -39,7 +39,7 @@ import { Prism } from "@hulianui/ui"
 | inertia | `number` | `0.05` | Pointer interpolation factor from 0 to 1; lower positive values ease for longer and higher values track more directly. The current runtime normalizes 0 to 0.12. |
 | bloom | `number` | `1` | Brightness multiplier applied together with `glow`. The current runtime normalizes 0 to 1. |
 | timeScale | `number` | `0.5` | Overall animation-speed multiplier. The current runtime normalizes 0 to 1 rather than freezing the frame. |
-| className | `string` | — | Class name forwarded to the root container or reduced-motion fallback |
+| className | `string` | - | Class name forwarded to the root container or reduced-motion fallback |
 
 ## Slots
 

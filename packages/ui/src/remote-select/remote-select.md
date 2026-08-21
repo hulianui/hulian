@@ -10,7 +10,7 @@ status: enriched
 
 # RemoteSelect
 
-> 远程搜索选择器 · 防抖搜索 + AbortSignal 取消 + 滚到底分页 + resolveValue 初值回显，支持多选 chips · forms/advanced
+> 从远端接口搜索选项，带防抖、分页和初值回显 · forms/advanced
 
 ## 何时用
 
@@ -27,15 +27,15 @@ import { RemoteSelect } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| fetcher * | `(query, { page, pageSize, signal }) => Promise<{ options, total? }>` | — | 远程搜索数据源。`options` 是后端原始行数组；`total` 给了就用它判断还有没有下一页 |
-| resolveValue | `(values: string[]) => Promise<Row[]>` | — | 初值回显解析器：按 value 批量解 label。**编辑表单必配**，见下方「禁忌 / 坑」 |
+| fetcher * | `(query, { page, pageSize, signal }) => Promise<{ options, total? }>` | - | 远程搜索数据源。`options` 是后端原始行数组；`total` 给了就用它判断还有没有下一页 |
+| resolveValue | `(values: string[]) => Promise<Row[]>` | - | 初值回显解析器：按 value 批量解 label。**编辑表单必配**，见下方「禁忌 / 坑」 |
 | labelKey | `string` | `"name"` | 从原始行取显示文案的字段名 |
 | valueKey | `string` | `"id"` | 从原始行取值的字段名 |
 | debounce | `number` | `300` | 输入防抖毫秒数 |
 | pageSize | `number` | `10` | 每页条数，透传给 `fetcher` |
 | multiple | `boolean` | `false` | 多选（chips 形态）。开启后 `value`/`onChange` 变数组 |
-| value | `string｜number｜null`（多选为数组） | — | 受控值。数组顺序即 chip 渲染顺序 |
-| defaultValue | 同上 | — | 非受控初值 |
+| value | `string｜number｜null`（多选为数组） | - | 受控值。数组顺序即 chip 渲染顺序 |
+| defaultValue | 同上 | - | 非受控初值 |
 | placeholder | `string` | `"请选择"` | 字段占位 |
 | emptyMessage | `ReactNode` | `"无匹配数据"` | 空态文案 |
 | loadingMessage | `ReactNode` | `"加载中…"` | 加载态文案 |
@@ -44,10 +44,10 @@ import { RemoteSelect } from "@hulianui/ui"
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | defaultOpen | `boolean` | `false` | 非受控初始展开（调试 / 文档演示用） |
-| renderOption | `(option) => ReactNode` | — | 自定义选项行（`option.raw` 是后端原始行） |
+| renderOption | `(option) => ReactNode` | - | 自定义选项行（`option.raw` 是后端原始行） |
 | virtualized | `boolean` | 已累积候选 ≥ 100 时为 `true` | 列表虚拟化。配 `renderOption` 渲染多行选项时要显式关掉，见「禁忌 / 坑」 |
-| className | `string` | — | 字段（输入框 / chips 外壳）类名 |
-| popupClassName | `string` | — | 浮层类名 |
+| className | `string` | - | 字段（输入框 / chips 外壳）类名 |
+| popupClassName | `string` | - | 浮层类名 |
 
 ## Events
 

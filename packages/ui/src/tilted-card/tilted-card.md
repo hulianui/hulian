@@ -25,8 +25,8 @@ import { TiltedCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| imageSrc | `string` | — | 卡面图片地址，传了即渲染铺满的 `<img>`；也可只用 children 自定义卡面 |
-| altText | `string` | — | 图片 alt 文案（无障碍） |
+| imageSrc | `string` | - | 卡面图片地址，传了即渲染铺满的 `<img>`；也可只用 children 自定义卡面 |
+| altText | `string` | - | 图片 alt 文案（无障碍） |
 | containerHeight | `CSSProperties["height"]` | `"300px"` | 外层透视容器高度 |
 | containerWidth | `CSSProperties["width"]` | `"100%"` | 外层透视容器宽度 |
 | cardHeight | `CSSProperties["height"]` | `"300px"` | 倾斜卡面高度 |
@@ -35,8 +35,8 @@ import { TiltedCard } from "@hulianui/ui"
 | rotateAmplitude | `number` | `14` | 倾斜最大角度（度），越大越立体 |
 | showTooltip | `boolean` | `true` | 是否渲染跟随指针的浮动提示气泡 |
 | displayOverlayContent | `boolean` | `false` | 是否显示 overlayContent |
-| className | `string` | — | 合并到外层 `<figure>` 的额外类名 |
-| style | `CSSProperties` | — | 额外内联样式（合并到外层透视容器） |
+| className | `string` | - | 合并到外层 `<figure>` 的额外类名 |
+| style | `CSSProperties` | - | 额外内联样式（合并到外层透视容器） |
 
 ## Slots
 

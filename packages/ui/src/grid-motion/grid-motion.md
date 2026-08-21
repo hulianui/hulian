@@ -31,8 +31,8 @@ import { GridMotion } from "@hulianui/ui"
 | gradientColor | `string` | `var(--color-primary)` | 中心径向光晕颜色，从画布中心向外渐隐 |
 | maxMoveAmount | `number` | `300` | 鼠标横移时每行最大平移幅度(px)，越大视差越夸张 |
 | rotate | `number` | `-15` | 网格整体旋转角度(deg)，营造透视斜切 |
-| className | `string` | — | 透传根容器 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## 示例
 ```tsx

@@ -35,12 +35,12 @@ import { Radar } from "@hulianui/ui"
 | sweepWidth | `number` | `2` | 扫描臂宽度（幂次锐度），越大越窄越锐 |
 | sweepLobes | `number` | `1` | 扫描臂瓣数，1=单束 / 2=对称双束 |
 | color | `string` | `var(--color-chart-1)` | 雷达主色（环/辐条/扫描臂），任意 CSS 颜色串 |
-| backgroundColor | `string` | — | 雷达底色（常驻基色），缺省透明透出宿主背景 |
+| backgroundColor | `string` | - | 雷达底色（常驻基色），缺省透明透出宿主背景 |
 | falloff | `number` | `2` | 边缘衰减幂次，越大中心越聚焦边缘消散越快 |
 | brightness | `number` | `1` | 整体亮度倍率 |
 | enableMouseInteraction | `boolean` | `true` | 是否开启鼠标视差（盘随指针平滑偏移） |
 | mouseInfluence | `number` | `0.1` | 鼠标视差影响系数 |
-| className | `string` | — | 透传到根容器（或 fallback div） |
+| className | `string` | - | 透传到根容器（或 fallback div） |
 
 ## Slots
 

@@ -25,21 +25,21 @@ import { AnimatedBeam } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| containerRef* | `RefObject<HTMLElement \| null>` | — | 定位基准容器，须 `position:relative` |
-| fromRef* | `RefObject<HTMLElement \| null>` | — | 起点元素 ref |
-| toRef* | `RefObject<HTMLElement \| null>` | — | 终点元素 ref |
+| containerRef* | `RefObject<HTMLElement \| null>` | - | 定位基准容器，须 `position:relative` |
+| fromRef* | `RefObject<HTMLElement \| null>` | - | 起点元素 ref |
+| toRef* | `RefObject<HTMLElement \| null>` | - | 终点元素 ref |
 | curvature | `number` | `0` | 曲率（>0 上凸） |
 | reverse | `boolean` | `false` | 光束反向流动 |
-| duration | `number` | — | 一趟时长(s) |
-| delay | `number` | — | 起始延迟 |
+| duration | `number` | - | 一趟时长(s) |
+| delay | `number` | - | 起始延迟 |
 | pathColor | `string` | border token | 底线颜色 |
-| pathWidth | `number` | — | 底线宽度 |
-| pathOpacity | `number` | — | 底线不透明度 |
+| pathWidth | `number` | - | 底线宽度 |
+| pathOpacity | `number` | - | 底线不透明度 |
 | gradientStartColor | `string` | chart token | 流光渐变起色 |
 | gradientStopColor | `string` | chart token | 流光渐变止色 |
-| startXOffset / startYOffset | `number` | — | 起点偏移 |
-| endXOffset / endYOffset | `number` | — | 终点偏移 |
-| className | `string` | — | 透传 className |
+| startXOffset / startYOffset | `number` | - | 起点偏移 |
+| endXOffset / endYOffset | `number` | - | 终点偏移 |
+| className | `string` | - | 透传 className |
 
 ## 示例
 

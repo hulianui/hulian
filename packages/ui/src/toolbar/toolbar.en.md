@@ -10,7 +10,7 @@ status: enriched
 
 # Toolbar
 
-> Toolbar · Base UI `role=toolbar` with arrow-key navigation, buttons, groups, toggles, and separators · navigation/action
+> Groups related action controls with roving keyboard focus. · navigation/action
 
 ## When to use
 
@@ -28,28 +28,28 @@ import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarGroup, ToolbarSeparator }
 | Name | Type | Default | Description |
 |------|------|------|------|
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. |
-| disabled | `boolean` | — | Whether the entire toolbar is disabled. |
+| disabled | `boolean` | - | Whether the entire toolbar is disabled. |
 | loopFocus | `boolean` | `true` | Whether keyboard navigation wraps after the final control. |
-| aria-label | `string` | — | Accessible toolbar label. |
-| className | `string` | — | Additional class name. |
+| aria-label | `string` | - | Accessible toolbar label. |
+| className | `string` | - | Additional class name. |
 
 **ToolbarButton**
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| disabled | `boolean` | — | Whether the button is disabled. |
-| aria-label | `string` | — | Accessible label, required for an icon-only button. |
-| className | `string` | — | Additional class name. |
+| disabled | `boolean` | - | Whether the button is disabled. |
+| aria-label | `string` | - | Accessible label, required for an icon-only button. |
+| className | `string` | - | Additional class name. |
 
 **ToolbarToggle**
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| pressed | `boolean` | — | Controlled pressed state. |
+| pressed | `boolean` | - | Controlled pressed state. |
 | defaultPressed | `boolean` | `false` | Initial pressed state when uncontrolled. |
-| disabled | `boolean` | — | Whether the toggle is disabled. |
-| aria-label | `string` | — | Accessible label. |
-| className | `string` | — | Additional class name. |
+| disabled | `boolean` | - | Whether the toggle is disabled. |
+| aria-label | `string` | - | Accessible label. |
+| className | `string` | - | Additional class name. |
 
 **ToolbarGroup**: props `disabled` / `aria-label` / `className`; slot `children`.
 **ToolbarSeparator**: props `orientation?: "horizontal" \| "vertical"` / `className`; `orientation` defaults to `"vertical"`, independently of the root Toolbar's `"horizontal"` default.

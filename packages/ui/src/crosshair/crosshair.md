@@ -26,11 +26,11 @@ import { Crosshair } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | color | `string` | `var(--color-primary)` | 准星十字线颜色（自动吃明暗主题），推荐用 token |
-| smoothing | `number` | `0.15` | 跟随平滑系数（0–1），越小越黏越拖尾，越大越跟手 |
+| smoothing | `number` | `0.15` | 跟随平滑系数（0-1），越小越黏越拖尾，越大越跟手 |
 | thickness | `number` | `1` | 十字线粗细（px） |
 | pulseOnEnter | `boolean` | `true` | 进入容器时触发一次抖动脉冲（CSS scale）；reduced-motion 下失效，跟随仍保留 |
-| className | `string` | — | 透传到根容器（须为定位上下文，组件内部 absolute inset-0 铺满父级） |
-| style | `CSSProperties` | — | 透传到根容器内联样式 |
+| className | `string` | - | 透传到根容器（须为定位上下文，组件内部 absolute inset-0 铺满父级） |
+| style | `CSSProperties` | - | 透传到根容器内联样式 |
 
 ## 示例
 ```tsx

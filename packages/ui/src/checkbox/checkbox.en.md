@@ -10,7 +10,7 @@ status: enriched
 
 # Checkbox
 
-> Checkbox · Checked, unchecked, and indeterminate states with Base UI · forms/basic
+> Toggles an independent boolean value with an indeterminate state. · forms/basic
 
 ## When to use
 
@@ -25,19 +25,19 @@ import { Checkbox } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| checked | `boolean` | — | Controlled checked state. |
-| defaultChecked | `boolean` | — | Initial checked state when uncontrolled. |
+| checked | `boolean` | - | Controlled checked state. |
+| defaultChecked | `boolean` | - | Initial checked state when uncontrolled. |
 | indeterminate | `boolean` | `false` | Third, partially checked state provided by Base UI. |
 | disabled | `boolean` | `false` | Disables the checkbox. |
 | required | `boolean` | `false` | Marks the checkbox as required. |
-| name | `string` | — | Form field name. |
-| value | `string` | — | Form value and the member key used by CheckboxGroup. |
-| id | `string` | — | ID associated with the label. |
+| name | `string` | - | Form field name. |
+| value | `string` | - | Form value and the member key used by CheckboxGroup. |
+| id | `string` | - | ID associated with the label. |
 | size | `"sm" \| "md"` | `"md"` | Size step; the box and its built-in check scale together. `md` is 20px/14px/`text-sm`, `sm` is 16px/12px/`text-xs`, matching `size="sm"` on Input and SelectTrigger. |
-| className | `string` | — | Additional class name for `Checkbox.Root` (the box); it cannot reach the label text. |
-| labelClassName | `string` | — | Applied to the label `<span>` for font size and color. |
-| tabIndex | `number` | — | Passed to `Checkbox.Root`. Set `-1` in a tree when a roving-focus container owns keyboard focus. |
-| aria-label | `string` | — | Accessible label when no visible label is provided. |
+| className | `string` | - | Additional class name for `Checkbox.Root` (the box); it cannot reach the label text. |
+| labelClassName | `string` | - | Applied to the label `<span>` for font size and color. |
+| tabIndex | `number` | - | Passed to `Checkbox.Root`. Set `-1` in a tree when a roving-focus container owns keyboard focus. |
+| aria-label | `string` | - | Accessible label when no visible label is provided. |
 
 ## Events
 
@@ -69,8 +69,8 @@ import { Checkbox } from "@hulianui/ui"
 
 - Inside [CheckboxGroup](../checkbox-group/checkbox-group.md), every Checkbox must provide `value`, not `name`. See [[base-ui-checkbox-group-matches-members-by-value-not-name]]: Base UI rc.0 matches group members by `value`; using `name` makes `defaultValue`, `value`, and `onValueChange` fail silently even though the boxes render.
 - `indeterminate` is an independent third state. After the user clicks, usually resolve it explicitly with `setIndeterminate(false)`.
-- Wrapping the Checkbox in your own `<label>` **does work**, so there is no need to forward `onClick` by hand. The Root renders as `<span role="checkbox">` — not a labelable element — so the DOM makes implicit association look broken, but Base UI keeps a visually hidden native input inside to carry activation, and clicking the text still toggles. Use this when the typography is too specific for `size` plus `labelClassName`.
-- Do not add `<label htmlFor>` pointing at the Root `id` while also wrapping: an explicit `htmlFor` **overrides** that implicit association, and having both means clicking the text does nothing at all. Wrap, or use `htmlFor` — not both.
+- Wrapping the Checkbox in your own `<label>` **does work**, so there is no need to forward `onClick` by hand. The Root renders as `<span role="checkbox">`, which is not a labelable element, so the DOM makes implicit association look broken, but Base UI keeps a visually hidden native input inside to carry activation, and clicking the text still toggles. Use this when the typography is too specific for `size` plus `labelClassName`.
+- Do not add `<label htmlFor>` pointing at the Root `id` while also wrapping: an explicit `htmlFor` **overrides** that implicit association, and having both means clicking the text does nothing at all. Wrap, or use `htmlFor`, but not both.
 
 ## Related
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

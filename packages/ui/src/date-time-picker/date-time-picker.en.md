@@ -10,7 +10,7 @@ status: enriched
 
 # DateTimePicker
 
-> Date and time picker · Calendar plus hour, minute, and optional second columns · Step controls and boundary-aware limits · forms/datetime
+> Combines calendar and time controls for a single date-time value. · forms/datetime
 
 ## When to use
 
@@ -30,23 +30,23 @@ import { DateTimePicker } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| null` | — | Controlled fixed-width value: `"YYYY-MM-DD HH:mm"`, or `"YYYY-MM-DD HH:mm:ss"` with seconds enabled. |
-| defaultValue | `string \| null` | — | Initial value when uncontrolled, using the same format as `value`. |
+| value | `string \| null` | - | Controlled fixed-width value: `"YYYY-MM-DD HH:mm"`, or `"YYYY-MM-DD HH:mm:ss"` with seconds enabled. |
+| defaultValue | `string \| null` | - | Initial value when uncontrolled, using the same format as `value`. |
 | withSeconds | `boolean` | `false` | Shows the seconds column and changes the value shape to include seconds. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px), so controls on one form row line up. |
 | minuteStep | `number` | `1` | Increment between minute options; common values are 5, 15, and 30. |
 | secondStep | `number` | `1` | Increment between second options. |
-| minDateTime | `string` | — | Earliest selectable date and time, inclusive. Its date limits the calendar; its time applies only on that boundary date. |
-| maxDateTime | `string` | — | Latest selectable date and time, inclusive, with the same boundary-date behavior. |
-| disabledDate | `(isoDate: string) => boolean` | — | Disables dates. The argument is always `"YYYY-MM-DD"`; this callback does not filter times. |
+| minDateTime | `string` | - | Earliest selectable date and time, inclusive. Its date limits the calendar; its time applies only on that boundary date. |
+| maxDateTime | `string` | - | Latest selectable date and time, inclusive, with the same boundary-date behavior. |
+| disabledDate | `(isoDate: string) => boolean` | - | Disables dates. The argument is always `"YYYY-MM-DD"`; this callback does not filter times. |
 | placeholder | `string` | From `ConfigProvider locale` | Trigger placeholder. An explicit value overrides the locale default. |
 | displayFormat | `string` | Display as is | Day.js format string used by the trigger. It affects presentation only; the external value format does not change. |
 | clearable | `boolean` | `true` | Shows a clear button when a value exists and the control is neither disabled nor read-only. |
 | showNow | `boolean` | `true` | Shows the locale-aware Now shortcut, rounded down to the configured step. |
 | disabled | `boolean` | `false` | Disables the trigger and prevents the panel from opening. |
 | readOnly | `boolean` | `false` | Allows the panel to open but prevents selection. |
-| aria-label | `string` | — | Accessible name for an unlabeled trigger. |
-| className | `string` | — | Additional class name for the outer trigger container. |
+| aria-label | `string` | - | Accessible name for an unlabeled trigger. |
+| className | `string` | - | Additional class name for the outer trigger container. |
 
 ## Events
 
@@ -90,7 +90,7 @@ const [dt, setDt] = useState<string | null>(null);
 - If the user chooses a time before a date, the date defaults to **today** so the action produces a usable value.
 - `disabledDate` filters whole dates only. Validate more granular rules, such as a blocked time window on certain weekdays, when the form is submitted.
 - `minuteStep` limits clickable minute options but does not validate an external `value`. With `"2026-06-08 09:07"` and `minuteStep={15}`, 07 is absent and the minute column appears unselected.
-- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container, which is the element that takes focus and that screen readers announce (#293).
 - Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
 - Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 

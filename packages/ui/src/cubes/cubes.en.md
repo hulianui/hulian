@@ -26,7 +26,7 @@ import { Cubes } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | gridSize | `number` | `8` | Grid side length (row = column), generate gridSize² cubes; DOM is square level, recommended ≤ 12 |
-| cubeSize | `number` | — | Single cube side length (px); when passed in, the container has a fixed size, otherwise the container will adapt (width 100%·1:1) |
+| cubeSize | `number` | - | Single cube side length (px); when passed in, the container has a fixed size, otherwise the container will adapt (width 100%·1:1) |
 | maxAngle | `number` | `45` | The maximum tilt angle of the cube at the pointer (degrees), the closer it is, the bigger it is and the farther it is, the closer it is to 0 |
 | radius | `number` | `3` | Tilt influence radius (in "grid"), participate in tilt within the range, and return to normal outside |
 | cellGap | `number \| { row?: number \| string; col?: number \| string }` | `"5%"` | Unit spacing, numbers in px, objects specify rows and columns respectively (percentage strings scale with the container) |
@@ -36,8 +36,8 @@ import { Cubes } from "@hulianui/ui"
 | rippleSpeed | `number` | `2` | Ripple diffusion speed multiplier, the bigger the faster |
 | autoAnimate | `boolean` | `true` | Whether to automatically wander and tilt when idle (automatically disabled to remain stationary under reduced-motion) |
 | rippleOnClick | `boolean` | `true` | Whether to enable click ripples |
-| className | `string` | — | Forward the additional class name of the root container |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Forward the additional class name of the root container |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Examples
 ```tsx

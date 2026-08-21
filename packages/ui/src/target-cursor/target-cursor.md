@@ -31,8 +31,8 @@ import { TargetCursor } from "@hulianui/ui"
 | fullScreen | `boolean` | `false` | 是否升级为整页全屏光标（fixed 铺满 viewport、监听挂 window）；默认容器作用域（absolute 锚父容器、离开即隐藏、多实例并存） |
 | color | `string` | `var(--color-foreground)` | 光标主色（dot 背景 + 四角描边），须带 `--color-` 前缀才解析 |
 | hoverDuration | `number` | `0.2` | 四角括号包裹目标的缓动跟随时长（秒），越大越「黏」 |
-| className | `string` | — | 透传根容器额外类名 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器额外类名 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## 示例
 ```tsx

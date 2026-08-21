@@ -10,7 +10,7 @@ status: enriched
 
 # Tree
 
-> 递归树 · 自研零依赖引擎 + WAI-ARIA tree(roving/方向键/typeahead) + checkable 父子级联半选 + 连接线 + 树内搜索 + grid-rows 高度过渡 · data-display/collection
+> 展示可展开的层级节点，支持选择和键盘操作 · data-display/collection
 
 ## 何时用
 
@@ -27,15 +27,15 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes* | `TreeNode[]` | — | 树数据(`{ key, label, icon?, children?, disabled?, searchText? }`) |
-| expandedKeys | `string[]` | — | 受控展开集 |
-| defaultExpandedKeys | `string[]` | — | 非受控初始展开集 |
+| nodes* | `TreeNode[]` | - | 树数据(`{ key, label, icon?, children?, disabled?, searchText? }`) |
+| expandedKeys | `string[]` | - | 受控展开集 |
+| defaultExpandedKeys | `string[]` | - | 非受控初始展开集 |
 | selectable | `boolean` | `true` | 单选高亮(非 checkable 模式) |
-| selectedKeys | `string[]` | — | 受控选中集 |
-| defaultSelectedKeys | `string[]` | — | 非受控初始选中集 |
+| selectedKeys | `string[]` | - | 受控选中集 |
+| defaultSelectedKeys | `string[]` | - | 非受控初始选中集 |
 | checkable | `boolean` | `false` | 复选模式(行前 checkbox) |
-| checkedKeys | `string[]` | — | 受控勾选集 |
-| defaultCheckedKeys | `string[]` | — | 非受控初始勾选集 |
+| checkedKeys | `string[]` | - | 受控勾选集 |
+| defaultCheckedKeys | `string[]` | - | 非受控初始勾选集 |
 | expandTrigger | `"row" ｜ "icon"` | `"row"` | 什么东西触发展开。`"row"` 点整行展开（父节点因此**选不中**）；`"icon"` 只有左侧箭头管展开，行归 select/check，父节点可选 |
 | draggable | `boolean` | `false` | 开启拖拽排序（原生 HTML5 拖放，不引 dnd-kit）。须同时传 `onDrop`，否则不生效 |
 | allowDropInside | `(target: TreeNode) => boolean` | 一律允许 | 该目标是否接受「放进内部」（改父级）。返回 false 时只接受 before/after |
@@ -43,7 +43,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | showLine | `boolean` | `false` | 显示连接线（`virtual` 开启时失效） |
 | searchable | `boolean` | `false` | 树内搜索框 |
 | searchPlaceholder | `string` | locale | 搜索框占位；显式传值优先于 locale。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 | aria-label | `string` | locale | 树的无障碍标签；显式传值优先于 locale。 |
 
 ## Events

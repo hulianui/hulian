@@ -27,22 +27,22 @@ import { AppLauncher, type AppLauncherItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `AppLauncherItem[]` | — | 见下表 |
-| categories | `{ key, label }[]` | — | 分类胶囊；不传则不渲染这一行 |
-| category / defaultCategory | `string` | — | 当前分类，受控 / 非受控（`undefined` = 全部） |
-| onCategoryChange | `(key?: string) => void` | — | 切分类回调 |
+| items* | `AppLauncherItem[]` | - | 见下表 |
+| categories | `{ key, label }[]` | - | 分类胶囊；不传则不渲染这一行 |
+| category / defaultCategory | `string` | - | 当前分类，受控 / 非受控（`undefined` = 全部） |
+| onCategoryChange | `(key?: string) => void` | - | 切分类回调 |
 | allLabel | `ReactNode` | `"全部"` | 「全部」胶囊文案 |
-| title | `ReactNode` | — | 左上标题；`searchable` 时同时是搜索框 placeholder（对齐 macOS 启动台） |
-| logo / actions | `ReactNode` | — | 标题左侧 logo 槽 / 右上操作槽 |
+| title | `ReactNode` | - | 左上标题；`searchable` 时同时是搜索框 placeholder（对齐 macOS 启动台） |
+| logo / actions | `ReactNode` | - | 标题左侧 logo 槽 / 右上操作槽 |
 | searchable | `boolean` | `true` | 是否出搜索框 |
 | search / defaultSearch | `string` | `""` | 搜索词，受控 / 非受控 |
-| onSearchChange | `(v: string) => void` | — | 搜索回调 |
+| onSearchChange | `(v: string) => void` | - | 搜索回调 |
 | columns | `number` | `7` | 列数 |
 | iconSize | `number` | `64` | 图标边长 px |
 | labelLines | `1 \| 2` | `1` | 应用名行数（超出省略号） |
 | variant | `"glass" \| "solid"` | `"glass"` | 毛玻璃（需身后有底图）/ 实底 |
 | emptyText | `ReactNode` | `"没有匹配的应用"` | 空结果文案 |
-| onItemClick / onItemContextMenu | `(item, event) => void` | — | 点击 / 右键 |
+| onItemClick / onItemContextMenu | `(item, event) => void` | - | 点击 / 右键 |
 
 ### AppLauncherItem
 

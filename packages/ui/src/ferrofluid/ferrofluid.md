@@ -35,13 +35,13 @@ import { Ferrofluid } from "@hulianui/ui"
 | shimmer | `number` | `1.5` | 微光扰动强度，制造金属闪烁 |
 | glow | `number` | `2` | 整体辉光增益，越大越发光 |
 | flowDirection | `"up" \| "down" \| "left" \| "right"` | `"down"` | 峰脊整体漂移方向 |
-| opacity | `number` | `1` | 整体不透明度，范围 0–1 |
+| opacity | `number` | `1` | 整体不透明度，范围 0-1 |
 | mouseInteraction | `boolean` | `true` | 指针处液面下凹/抑制亮带；无 WebGL 环境自动无效 |
 | mouseStrength | `number` | `1` | 鼠标影响强度，仅 mouseInteraction=true 生效 |
 | mouseRadius | `number` | `0.35` | 鼠标影响半径（归一化） |
 | mouseDampening | `number` | `0.15` | 鼠标跟随阻尼（秒），0=立即跟随 |
 | dpr | `number` | `min(dpr, 2)` | 设备像素比上限，调低省 GPU |
-| className | `string` | — | 透传根容器（或兜底 div） |
+| className | `string` | - | 透传根容器（或兜底 div） |
 
 ## Slots
 

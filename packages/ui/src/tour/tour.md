@@ -10,7 +10,7 @@ status: enriched
 
 # Tour
 
-> 漫游引导 · 自研零依赖 SVG mask 镂空高亮 + 自定位气泡卡(标题/描述/上一步/下一步/跳过/进度) + resize/scroll 重算 · feedback/guide
+> 带用户走一遍功能引导，高亮目标并逐步说明 · feedback/guide
 
 ## 何时用
 
@@ -25,9 +25,9 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| steps* | `TourStep[]` | — | 引导步骤列表（见下） |
-| open* | `boolean` | — | 是否打开（受控） |
-| current* | `number` | — | 当前步索引（受控，从 0 起） |
+| steps* | `TourStep[]` | - | 引导步骤列表（见下） |
+| open* | `boolean` | - | 是否打开（受控） |
+| current* | `number` | - | 当前步索引（受控，从 0 起） |
 | maskClosable | `boolean` | `false` | 点击遮罩是否关闭（默认不允许误触关闭） |
 | spotlightPadding | `number` | `8` | 高亮镂空在目标四周的留白 px |
 | spotlightRadius | `number` | `8` | 镂空圆角 px |
@@ -37,9 +37,9 @@ import { Tour, resolveTarget, computeSpotlight, computeCardPosition, type Rect }
 **TourStep**：
 | 字段 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| target | `(() => Element \| null) \| string \| null` | — | 高亮目标：函数（`() => ref.current`，DOM 动态时最稳）/ CSS 选择器字符串 / null 省略（气泡居中，适合开场收尾） |
-| title | `ReactNode` | — | 步骤标题 |
-| description | `ReactNode` | — | 步骤描述 |
+| target | `(() => Element \| null) \| string \| null` | - | 高亮目标：函数（`() => ref.current`，DOM 动态时最稳）/ CSS 选择器字符串 / null 省略（气泡居中，适合开场收尾） |
+| title | `ReactNode` | - | 步骤标题 |
+| description | `ReactNode` | - | 步骤描述 |
 | placement | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | 气泡方位（放不下自动翻到对侧）；无目标时忽略 |
 
 ## Events

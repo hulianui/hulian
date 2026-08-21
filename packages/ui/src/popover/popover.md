@@ -10,7 +10,7 @@ status: enriched
 
 # Popover
 
-> 气泡卡片 · click 触发 + 标题/描述/Close · feedback/overlay
+> 把可交互的内容锚在触发元素旁边 · feedback/overlay
 
 ## 何时用
 
@@ -30,10 +30,10 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
 | sideOffset | `number` | `8` | 与触发器的间距 |
-| anchor | `Element｜RefObject<Element>｜VirtualElement｜(() => Element｜VirtualElement｜null)` | — | 锚到别处而不是锚到 `PopoverTrigger`；传了就可以整个省掉触发器，见下 |
+| anchor | `Element｜RefObject<Element>｜VirtualElement｜(() => Element｜VirtualElement｜null)` | - | 锚到别处而不是锚到 `PopoverTrigger`；传了就可以整个省掉触发器，见下 |
 | plain | `boolean` | `false` | 不画皮：不渲染包住 children 的那层皮肤 div（间距 + `text-sm text-foreground`），children 直接进浮层 |
 | arrow | `boolean` | `true` | 是否渲染指向触发器的箭头 |
-| className | `string` | — | 额外类名 |
+| className | `string` | - | 额外类名 |
 
 ### plain / arrow：内容自带外观的贴边浮层
 

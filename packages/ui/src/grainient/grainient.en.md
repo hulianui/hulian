@@ -27,7 +27,7 @@ import { Grainient } from "@hulianui/ui"
 |------|------|------|------|
 | timeSpeed | `number` | `0.25` | Animation-speed multiplier; 0 produces a static gradient |
 | colorBalance | `number` | `0` | Three-color bias; negative values favor `color3` and positive values favor `color1` |
-| warpStrength | `number` | `1` | Inverse warp control: higher values restrain distortion; 0.3–3 is recommended |
+| warpStrength | `number` | `1` | Inverse warp control: higher values restrain distortion; 0.3-3 is recommended |
 | warpFrequency | `number` | `5` | Frequency of the sinusoidal domain warp, controlling wrinkle density |
 | warpSpeed | `number` | `2` | Domain distortion drift speed over time |
 | warpAmplitude | `number` | `50` | Base domain-warp amplitude, combined with `warpStrength` |
@@ -47,7 +47,7 @@ import { Grainient } from "@hulianui/ui"
 | color1 | `string` | `--color-chart-1` | Gradient first color (bright end), any CSS color |
 | color2 | `string` | `--color-chart-2` | Gradient second color (main color/middle section) |
 | color3 | `string` | `--color-chart-4` | Gradient third color (dark end) |
-| className | `string` | — | Root container, includes `absolute inset-0 z-0` |
+| className | `string` | - | Root container, includes `absolute inset-0 z-0` |
 
 ## Slots
 

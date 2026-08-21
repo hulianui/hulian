@@ -26,11 +26,11 @@ import { Aurora } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | colors | string[] | `["var(--color-chart-1)","var(--color-chart-2)","var(--color-chart-4)"]` | 极光色带，任意 CSS 颜色字符串（hex/oklch/var）。默认吃 chart token 自动明暗适配 |
-| blur | number | 30 | 极光层模糊半径（px），建议 10–80；过小边缘硬，过大效果消散 |
+| blur | number | 30 | 极光层模糊半径（px），建议 10-80；过小边缘硬，过大效果消散 |
 | speed | number | 20 | 完整一轮动画时长（秒），越大越慢越细腻 |
 | showRadialMask | boolean | true | 径向渐隐 mask（聚焦中部四角淡出），关闭则铺满容器无渐隐 |
-| className | string | — | 透传到极光层 div（可调透明度/混合模式） |
-| style | CSSProperties | — | 透传到根容器的内联样式 |
+| className | string | - | 透传到极光层 div（可调透明度/混合模式） |
+| style | CSSProperties | - | 透传到根容器的内联样式 |
 
 ## Slots
 

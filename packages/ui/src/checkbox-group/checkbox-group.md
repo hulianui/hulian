@@ -10,7 +10,7 @@ status: enriched
 
 # CheckboxGroup
 
-> 复选组 · Base UI 值数组协调 + 复用瑚琏 Checkbox · forms/basic
+> 让一组复选框共同维护一个值数组 · forms/basic
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { CheckboxGroup } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string[]` | — | 受控：已勾选项的 value 数组 |
-| defaultValue | `string[]` | — | 非受控初始勾选项 |
+| value | `string[]` | - | 受控：已勾选项的 value 数组 |
+| defaultValue | `string[]` | - | 非受控初始勾选项 |
 | disabled | `boolean` | `false` | 下发禁用到组内全部 Checkbox |
 | orientation | `"vertical" ｜ "horizontal"` | `"vertical"` | 排列方向 |
-| className | `string` | — | 透传根节点类名 |
-| aria-label | `string` | — | 组的无障碍标签 |
+| className | `string` | - | 透传根节点类名 |
+| aria-label | `string` | - | 组的无障碍标签 |
 
 ## Events
 

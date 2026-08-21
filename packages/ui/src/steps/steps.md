@@ -10,7 +10,7 @@ status: enriched
 
 # Steps
 
-> 步骤条(原生) · 零依赖数据驱动 items + 水平/垂直 + wait/process/finish/error 状态派生 + 可点击受控(分步表单/审批流) · navigation/inpage
+> 分步流程的完整步骤条，可横可竖、能派生状态也能点击跳转 · navigation/inpage
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { Steps } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `StepsItem[]` | — | 步骤数组，见下表。 |
+| items* | `StepsItem[]` | - | 步骤数组，见下表。 |
 | current | `number` | `0` | 当前步骤索引（从 0 起），用于派生各步状态。 |
 | status | `"process" \| "finish" \| "error"` | `"process"` | 当前步（index===current）的状态。 |
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | 排布方向。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 **StepsItem**
 

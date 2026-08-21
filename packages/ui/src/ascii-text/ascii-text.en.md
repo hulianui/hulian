@@ -26,14 +26,14 @@ import { ASCIIText } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | text | `string` | `"\u745a\u740f"` | Text to convert into ASCII art. The built-in Chinese copy means “Hulian”; it is rendered to an offscreen canvas, then mapped cell by cell from pixel brightness to characters. |
-| asciiFontSize | `number` | `8` | ASCII character size in pixels. Smaller values create a denser grid and require more computation; 6–14 is recommended. |
+| asciiFontSize | `number` | `8` | ASCII character size in pixels. Smaller values create a denser grid and require more computation; 6-14 is recommended. |
 | textFontSize | `number` | `160` | Source-text size on the offscreen canvas in pixels. Larger values increase sampling resolution; its ratio to `asciiFontSize` approximates the number of character columns. |
 | textColor | `string` | `var(--color-foreground)` | Fill color for the source text. It is assigned to Canvas `fillStyle` and must be a color Canvas can parse. |
 | enableWaves | `boolean` | `true` | Applies a row-by-row sine-wave phase offset. The animation is disabled when reduced motion is requested. |
 | enableHue | `boolean` | `true` | Uses the pointer angle relative to the center to drive `hue-rotate`. Disable it to keep a single hue. |
 | charset | `string` | Classic 70-level ramp | Brightness ramp from dark to light. Higher indices represent brighter pixels; provide a custom ramp for a different visual style. |
-| className | `string` | — | Additional class name for the root container. |
-| style | `CSSProperties` | — | Inline styles passed to the root container. |
+| className | `string` | - | Additional class name for the root container. |
+| style | `CSSProperties` | - | Inline styles passed to the root container. |
 
 ## Example
 ```tsx

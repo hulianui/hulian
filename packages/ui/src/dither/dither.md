@@ -32,7 +32,7 @@ import { Dither } from "@hulianui/ui"
 | colorNum | `number` | `4` | 量化色阶数，配合 Bayer 矩阵产生有序抖动；越小越 8-bit |
 | pixelSize | `number` | `2` | 抖动像素块大小；越大马赛克越粗 |
 | disableAnimation | `boolean` | `false` | 是否冻结波形为静帧（与 reduced-motion 等效，可显式控制） |
-| className | `string` | — | 透传到 canvas（或 fallback div） |
+| className | `string` | - | 透传到 canvas（或 fallback div） |
 
 ## Slots
 

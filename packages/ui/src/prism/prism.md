@@ -36,10 +36,10 @@ import { Prism } from "@hulianui/ui"
 | hueShift | `number` | 主题推导（`--color-chart-1`） | 色相旋转（弧度）；显式传值在自动推导基础上叠加偏移 |
 | colorFrequency | `number` | `1` | 分光色彩频率；越大彩虹条纹越密，越小色带越宽 |
 | hoverStrength | `number` | `2` | hover 模式下跟随强度；越大倾斜幅度越大 |
-| inertia | `number` | `0.05` | hover 模式惯性系数 0–1；越小越「黏滞」缓动越久 |
+| inertia | `number` | `0.05` | hover 模式惯性系数 0-1；越小越「黏滞」缓动越久 |
 | bloom | `number` | `1` | 泛光叠加；与 glow 相乘放大整体亮度 |
 | timeScale | `number` | `0.5` | 时间缩放（动画整体速度）；0=冻结为静态一帧 |
-| className | `string` | — | 透传到根容器（或 reduced-motion fallback div） |
+| className | `string` | - | 透传到根容器（或 reduced-motion fallback div） |
 
 ## Slots
 

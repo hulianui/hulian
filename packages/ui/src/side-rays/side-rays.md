@@ -33,10 +33,10 @@ import { SideRays } from "@hulianui/ui"
 | origin | `"top-left"｜"top-right"｜"bottom-left"｜"bottom-right"` | `"top-right"` | 光束发散的角落起点 |
 | tilt | `number` | `0` | 光束整体倾斜角度（度），绕光源点旋转扇面 |
 | saturation | `number` | `1.5` | 饱和度，1=原色 / >1 增艳 / 0=去色 |
-| blend | `number` | `0.75` | 两束混色比例（0–1），0=仅主色 / 1=仅辅色 |
+| blend | `number` | `0.75` | 两束混色比例（0-1），0=仅主色 / 1=仅辅色 |
 | falloff | `number` | `1.6` | 亮度随距离衰减指数，越大越集中光源附近 |
-| opacity | `number` | `1` | 整体不透明度（0–1），叠内容上常用 0.5–0.8 |
-| className | `string` | — | 透传根容器；组件自带 `absolute inset-0 z-0` |
+| opacity | `number` | `1` | 整体不透明度（0-1），叠内容上常用 0.5-0.8 |
+| className | `string` | - | 透传根容器；组件自带 `absolute inset-0 z-0` |
 
 ## Slots
 
@@ -65,7 +65,7 @@ import { SideRays } from "@hulianui/ui"
 
 - 须客户端渲染（WebGL/ogl），组件自带 `"use client"`；RSC 页里挂 client 子树或动态 import。
 - 组件自带 `absolute inset-0 z-0`，父容器须有定位 + 尺寸 + `overflow-hidden`，否则不可见。
-- `intensity` 过大光源处易过曝纯白；叠在内容上用 `opacity` 0.5–0.8 降干扰。
+- `intensity` 过大光源处易过曝纯白；叠在内容上用 `opacity` 0.5-0.8 降干扰。
 - reduced-motion / 无 WebGL 时降级为静态 `fallback`（保留方位感），别把摆动当关键信息。
 
 ## 相关

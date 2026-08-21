@@ -10,7 +10,7 @@ status: enriched
 
 # ToolCall
 
-> Tool-call card · Collapsible input and output with four status states, a tool icon, Dot status color, and Spinner while running · Reuses Collapsible · ai/agent
+> Shows an agent tool invocation, arguments, progress, result, and failure state. · ai/agent
 
 ## When to Use
 
@@ -26,9 +26,9 @@ import { ToolCall } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | status | `"pending" \| "running" \| "success" \| "error"` | `"success"` | Status label: `"\u7b49\u5f85"` (Waiting), `"\u8fd0\u884c\u4e2d"` (Running), `"\u5b8c\u6210"` (Complete), or `"\u5931\u8d25"` (Failed) |
-| defaultOpen | `boolean` | — | Uncontrolled initial expansion state |
-| open | `boolean` | — | Controlled expansion state |
-| className | `string` | — | Container class name |
+| defaultOpen | `boolean` | - | Uncontrolled initial expansion state |
+| open | `boolean` | - | Controlled expansion state |
+| className | `string` | - | Container class name |
 
 ## Events
 

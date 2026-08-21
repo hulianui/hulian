@@ -10,7 +10,7 @@ status: enriched
 
 # Viewport
 
-> Responsive preview container · container-query context + web/tablet/phone widths + optional Segmented device switcher + `@md`/`@5xl` variants based on container width · layout/container
+> Creates a container-query viewport with web, tablet, and phone width presets. · layout/container
 
 ## When to use
 
@@ -25,14 +25,14 @@ import { Viewport } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| device | `"web" \| "tablet" \| "phone"` | — | Controlled preset: responsive web width, 768 px tablet, or 390 px phone. |
+| device | `"web" \| "tablet" \| "phone"` | - | Controlled preset: responsive web width, 768 px tablet, or 390 px phone. |
 | defaultDevice | `"web" \| "tablet" \| "phone"` | `"web"` | Initial device preset when uncontrolled. |
 | controls | `boolean` | `false` | Whether to show the Segmented device switcher above the container. |
-| width | `number \| string` | — | Custom width that overrides the device preset; numbers are interpreted as pixels, and strings accept any CSS length. |
-| name | `string` | — | Container name for variants such as `@md/name:`. Omit it for an anonymous container targeted with `@md:`. |
+| width | `number \| string` | - | Custom width that overrides the device preset; numbers are interpreted as pixels, and strings accept any CSS length. |
+| name | `string` | - | Container name for variants such as `@md/name:`. Omit it for an anonymous container targeted with `@md:`. |
 | framed | `boolean` | `true` | Whether tablet and phone presets use device-like frames; the web preset always has a thin border. |
 | height | `number \| string` | With content | Fixed container height; numbers are interpreted as pixels, and strings accept CSS lengths. |
-| className | `string` | — | Additional class name for the root container. |
+| className | `string` | - | Additional class name for the root container. |
 
 ## Events
 

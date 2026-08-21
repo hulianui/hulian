@@ -10,7 +10,7 @@ status: enriched
 
 # Calendar
 
-> 日历面板 · 自研零依赖(日/月/年三层下钻·常驻不带浮层) + min-max/disabledDate/今天快捷 · 定宽字符串受控 · forms/datetime
+> 常驻的日历面板，可在日、月、年三层之间下钻 · forms/datetime
 
 ## 何时用
 
@@ -34,18 +34,18 @@ import { Calendar } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
-| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| value | `string \| null` | - | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
+| defaultValue | `string \| null` | - | 非受控初始值，形状同上 |
 | picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，同时决定值形状与面板起始层 |
 | defaultMonth | `string` | 随 `value` | 面板初始停留的月份（任意可解析日期串），与选中值无关。之后由内部导航接管 |
-| minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
-| maxDate | `string` | — | 最晚可选日期 |
-| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
+| minDate | `string` | - | 最早可选日期（任意可解析日期串，内部规范化） |
+| maxDate | `string` | - | 最晚可选日期 |
+| disabledDate | `(isoDate: string) => boolean` | - | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
 | showToday | `boolean` | `true` | 底部跟随 locale 的「今天 / 本月 / 今年」快捷 |
 | disabled | `boolean` | `false` | 整块置灰，连翻页都停掉 |
 | readOnly | `boolean` | `false` | 可翻页浏览，但选不动 |
 | aria-label | `string` | 来自 `ConfigProvider` | 面板无障碍名；显式值优先 |
-| className | `string` | — | 落在面板外层容器 |
+| className | `string` | - | 落在面板外层容器 |
 
 ## Events
 

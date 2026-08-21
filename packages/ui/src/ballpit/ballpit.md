@@ -28,11 +28,11 @@ import { Ballpit } from "@hulianui/ui"
 | count | `number` | `80` | 小球数量上限；实际随容器面积自适应缩减。碰撞 O(n²)，建议 ≤ 200 |
 | colors | `string[]` | chart token ×5 | 小球配色，按索引循环分配；可传任意 CSS 颜色字符串，默认吃明暗主题 |
 | gravity | `number` | `900` | 重力强度（px/s²）；0=失重漂浮，越大越快下沉 |
-| bounce | `number` | `0.86` | 墙壁/互撞能量保留系数（0–1）；1=完全弹性永不停 |
+| bounce | `number` | `0.86` | 墙壁/互撞能量保留系数（0-1）；1=完全弹性永不停 |
 | sizeRange | `[number, number]` | `[10, 26]` | 小球半径范围 [最小,最大]（px）；另受容器短边约束 |
 | followCursor | `boolean` | `true` | 是否跟随光标形成排斥球推开周围小球；关闭后光标无交互 |
-| className | `string` | — | 透传到根容器；组件自带 absolute inset-0 z-0 |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器；组件自带 absolute inset-0 z-0 |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Slots
 

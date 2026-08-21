@@ -10,7 +10,7 @@ status: enriched
 
 # Statistic
 
-> A formatted statistic with grouping, precision, affixes, optional NumberTicker animation, and an SSR-safe countdown compound.
+> Formats numeric values with precision, separators, prefixes, suffixes, optional animation, or a countdown.
 
 ## When to use
 
@@ -27,22 +27,22 @@ import { Statistic, formatStatistic, formatCountdown } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `number \| string` | — | Numbers receive grouping and precision; strings render unchanged. |
-| precision | `number` | — | Decimal places for numeric values. |
+| value* | `number \| string` | - | Numbers receive grouping and precision; strings render unchanged. |
+| precision | `number` | - | Decimal places for numeric values. |
 | groupSeparator | `boolean` | `true` | Enables thousands grouping. |
 | animate | `boolean` | `false` | Uses NumberTicker entrance animation for numbers; animated values always group. |
-| valueStyle | `CSSProperties` | — | Inline value color, size, or other styles. |
+| valueStyle | `CSSProperties` | - | Inline value color, size, or other styles. |
 | align | `"start" \| "center" \| "end"` | `"start"` | Horizontal value alignment. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ### Statistic.Countdown
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| deadline* | `number` | — | Millisecond deadline on the same basis as `Date.now()`. |
+| deadline* | `number` | - | Millisecond deadline on the same basis as `Date.now()`. |
 | format | `string` | `"HH:mm:ss"` | Template supporting D/H/HH/m/mm/s/ss/S/SS/SSS. |
-| valueStyle | `CSSProperties` | — | Inline value styles. |
-| className | `string` | — | Custom class name. |
+| valueStyle | `CSSProperties` | - | Inline value styles. |
+| className | `string` | - | Custom class name. |
 
 ## Events
 

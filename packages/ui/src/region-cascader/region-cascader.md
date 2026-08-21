@@ -10,7 +10,7 @@ status: enriched
 
 # RegionCascader
 
-> 中国省市区级联 · 内置全量行政区划(国家统计局口径·3级) + 浮层搜索直达 + onChange 同回码与名 · dogfood Cascader · forms/advanced
+> 逐级选出中国的省、市、区，内置行政区划数据 · forms/advanced
 
 ## 何时用
 
@@ -25,16 +25,16 @@ import { RegionCascader, sliceLevel, cnDivisions } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string[]` | — | 受控值：行政区划 code 路径，如 `["11","1101","110101"]` |
-| defaultValue | `string[]` | — | 非受控初值 |
+| value | `string[]` | - | 受控值：行政区划 code 路径，如 `["11","1101","110101"]` |
+| defaultValue | `string[]` | - | 非受控初值 |
 | level | `2 \| 3` | `3` | 联动层级：3=省/市/区县；2=省/市 |
 | showSearch | `boolean` | `true` | 浮层内搜索框，输"浦东"直达 |
-| changeOnSelect | `boolean` | — | 允许选到中间级即提交（不必到末级） |
-| placeholder | `string` | — | 触发器占位文案 |
+| changeOnSelect | `boolean` | - | 允许选到中间级即提交（不必到末级） |
+| placeholder | `string` | - | 触发器占位文案 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸 |
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 无效态 |
-| className | `string` | — | 透传到触发器 |
+| className | `string` | - | 透传到触发器 |
 
 ## Events
 

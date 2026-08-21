@@ -30,9 +30,9 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### Select
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | — | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
+| items | `ReadonlyArray<{ value: string ｜ null; label: ReactNode }>` | - | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
 | defaultValue | `string ｜ string[] ｜ null` | `null` | 非受控初值：单选 `string ｜ null`，`multiple` 时 `string[]` |
-| placeholder | `ReactNode` | — | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
+| placeholder | `ReactNode` | - | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
 | multiple | `boolean` | `false` | 多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开 |
 | clearable | `boolean` | `false` | 有值时 Trigger 右侧 hover/focus 浮出清除按钮，点击置空（单选回传 `null`，多选回传 `[]`） |
 | searchable | `boolean` | `false` | 切到 Combobox 搜索皮肤：浮层顶部搜索框 + Base UI 过滤（依赖 `items`） |
@@ -45,8 +45,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectGroup / SelectGroupLabel
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children* | `ReactNode` | — | `SelectGroup` 内放一个 `SelectGroupLabel` + 若干 `SelectItem` |
-| className | `string` | — | 透传类名 |
+| children* | `ReactNode` | - | `SelectGroup` 内放一个 `SelectGroupLabel` + 若干 `SelectItem` |
+| className | `string` | - | 透传类名 |
 
 ### SelectTrigger
 | 名称 | 类型 | 默认 | 说明 |
@@ -54,19 +54,19 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | size | `"xs" ｜ "sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸。`xs` 与 Input / Textarea 的 `xs` 等高（密集表格里同一行三种控件必须对齐） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | maxDisplay | `number` | `2` | 多选模式下最多平铺几个已选 label，超出折叠为 +N 计数 |
-| className | `string` | — | 透传类名 |
+| className | `string` | - | 透传类名 |
 
 ### SelectContent
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | side | `"top" ｜ "bottom"` | `"bottom"` | 弹出方向 |
-| align | `"start" ｜ "center" ｜ "end"` | — | 对齐 |
-| sideOffset | `number` | — | 偏移量 |
+| align | `"start" ｜ "center" ｜ "end"` | - | 对齐 |
+| sideOffset | `number` | - | 偏移量 |
 
 ### SelectItem
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `string` | — | 选项值（本批仅 string 值） |
+| value* | `string` | - | 选项值（本批仅 string 值） |
 | disabled | `boolean` | `false` | 禁用此项 |
 
 ## Events

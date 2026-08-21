@@ -27,7 +27,7 @@ import { GridScan } from "@hulianui/ui"
 |------|------|------|------|
 | linesColor | `string` | `var(--color-border)` | Grid-line color; accepts any CSS color and defaults to the theme-aware border token |
 | scanColor | `string` | `var(--color-primary)` | Color of the luminous scan band; accepts any CSS color and defaults to the primary token |
-| gridScale | `number` | `0.1` | Grid-cell scale; lower values create a denser grid, with 0.05–0.3 recommended |
+| gridScale | `number` | `0.1` | Grid-cell scale; lower values create a denser grid, with 0.05-0.3 recommended |
 | lineThickness | `number` | `1` | Grid-line thickness in screen pixels |
 | lineStyle | `"solid" \| "dashed" \| "dotted"` | `"solid"` | Pattern applied to both grid axes |
 | scanOpacity | `number` | `0.45` | Scan-band opacity from 0 to 1; 0 leaves only the grid |
@@ -37,7 +37,7 @@ import { GridScan } from "@hulianui/ui"
 | scanSoftness | `number` | `2` | Scan-band softness; higher values make the band wider and softer |
 | noiseIntensity | `number` | `0.01` | Fine screen-space grain; 0 produces a clean image |
 | parallax | `boolean` | `true` | Tilt the camera slightly toward pointer movement that reaches the root; ignored by the reduced-motion fallback |
-| className | `string` | — | Class name forwarded to the live or fallback root |
+| className | `string` | - | Class name forwarded to the live or fallback root |
 
 ## Slots
 

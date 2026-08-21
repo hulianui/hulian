@@ -31,10 +31,10 @@ import { BorderBeam } from "@hulianui/ui"
 | colorFrom | `string` | `var(--color-primary)` | Beam start color |
 | colorTo | `string` | `var(--color-chart-2)` | Beam stop color |
 | reverse | `boolean` | `false` | Move around the border in reverse |
-| initialOffset | `number` | `0` | Starting offset 0–100 |
+| initialOffset | `number` | `0` | Starting offset 0-100 |
 | borderWidth | `number` | `1` | border width px |
-| className | `string` | — | Class name forwarded to the overlay |
-| style | `CSSProperties` | — | Inline style forwarded to the overlay |
+| className | `string` | - | Class name forwarded to the overlay |
+| style | `CSSProperties` | - | Inline style forwarded to the overlay |
 
 ## Examples
 

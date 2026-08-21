@@ -29,17 +29,17 @@ import { InfiniteMenu } from "@hulianui/ui"
 | scale | `number` | `1` | 球体缩放系数，越大球越近、单卡越大 |
 | itemSize | `number` | `88` | 单张卡片直径（px） |
 | autoRotate | `number` | `6` | 自动旋转角速度（度/秒，绕 Y 轴），0 关闭；拖拽时暂停，松手惯性衰减后恢复；reduced-motion 下强制为 0 |
-| className | `string` | — | 透传到根容器的额外类名 |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器的额外类名 |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 `InfiniteMenuItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| image | `string` | — | 卡面图片 URL（铺满圆形卡片，object-cover 居中裁切）。省略时仅显示标题首字 |
-| title | `string` | — | 标题，激活时显示在覆盖层 |
-| description | `string` | — | 描述，激活时显示在覆盖层副文案 |
-| link | `string` | — | 点击动作箭头时跳转的链接；以 `http` 开头则新标签打开，否则交给 `onItemActivate` 回调处理 |
+| image | `string` | - | 卡面图片 URL（铺满圆形卡片，object-cover 居中裁切）。省略时仅显示标题首字 |
+| title | `string` | - | 标题，激活时显示在覆盖层 |
+| description | `string` | - | 描述，激活时显示在覆盖层副文案 |
+| link | `string` | - | 点击动作箭头时跳转的链接；以 `http` 开头则新标签打开，否则交给 `onItemActivate` 回调处理 |
 
 ## Events
 

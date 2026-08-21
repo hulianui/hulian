@@ -10,7 +10,7 @@ status: enriched
 
 # Modal
 
-> Imperative dialog · Functional confirm/info/success/error/warning API powered by Dialog · feedback/overlay
+> Opens imperative confirm, information, success, warning, or error dialogs through a shared API. · feedback/overlay
 
 ## When to use
 
@@ -29,7 +29,7 @@ Call `modal.confirm(opts)`, `modal.info`, `modal.success`, `modal.error`, or `mo
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | Tone, normally implied by the imperative method. **It does not reach the confirm button**; it only changes the leading icon and the icon color. |
+| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | - | Tone, normally implied by the imperative method. **It does not reach the confirm button**; it only changes the leading icon and the icon color. |
 | `danger` | `boolean` | `false` | Destructive action: the confirm button switches to `tone="danger"` and the leading icon turns `text-danger`. Same name and meaning as `danger` on [Popconfirm](../popconfirm/popconfirm.md). |
 
 `ModalOptions` Events:

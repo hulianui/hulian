@@ -25,20 +25,20 @@ import { LogoLoop } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| logos * | `LogoItem[]` | — | Image and node logo entries; the full sequence is duplicated for seamless motion. |
+| logos * | `LogoItem[]` | - | Image and node logo entries; the full sequence is duplicated for seamless motion. |
 | speed | `number` | `120` | Pixels per second; negative values reverse direction. |
 | direction | `"left" \| "right" \| "up" \| "down"` | `"left"` | Scroll direction. |
 | width | `number \| string` | `"100%"` | Container width; numbers are pixels and strings pass through. |
 | logoHeight | `number` | `28` | Logo height in pixels. |
 | gap | `number` | `32` | Gap in pixels. |
 | pauseOnHover | `boolean` | `undefined` (equivalent to true) | Stops on hover unless hoverSpeed is also provided. |
-| hoverSpeed | `number` | — | Target hover speed, taking precedence over pauseOnHover. |
+| hoverSpeed | `number` | - | Target hover speed, taking precedence over pauseOnHover. |
 | fadeOut | `boolean` | `false` | Adds token-aware fades at both ends. |
 | fadeOutColor | `string` | `var(--color-surface)` | Fade color. |
 | scaleOnHover | `boolean` | `false` | Scales the hovered logo to 1.2. |
 | ariaLabel | `string` | `"\u5408\u4f5c\u4f19\u4f34 logo"` | Accessible root label. The built-in Chinese copy means “Partner logos.” |
-| className | `string` | — | Root class name. |
-| style | `CSSProperties` | — | Root inline styles. |
+| className | `string` | - | Root class name. |
+| style | `CSSProperties` | - | Root inline styles. |
 
 > LogoItem is either `{ src, srcSet?, sizes?, width?, height?, alt?, title?, href? }` or `{ node, ariaLabel?, title?, href? }`. An entry with href is wrapped in a link.
 

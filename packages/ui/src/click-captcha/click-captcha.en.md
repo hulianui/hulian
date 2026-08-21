@@ -29,18 +29,18 @@ import { ClickCaptcha } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| backgroundSrc | `string` | — | Required background-image URL supplied by the application. |
-| hintSrc | `string` | — | Hint-image URL, such as the image accompanying "Click in order: book, mountain, water"; rendered at the right of the prompt row. |
+| backgroundSrc | `string` | - | Required background-image URL supplied by the application. |
+| hintSrc | `string` | - | Hint-image URL, such as the image accompanying "Click in order: book, mountain, water"; rendered at the right of the prompt row. |
 | hintText | `ReactNode` | `locale.clickCaptcha.hint` | Prompt content. |
 | maxPoints | `number` | `3` | Number of points to collect before calling `onComplete`. |
-| points | `CaptchaPoint[]` | — | Controlled points; omit to manage them internally. |
+| points | `CaptchaPoint[]` | - | Controlled points; omit to manage them internally. |
 | defaultPoints | `CaptchaPoint[]` | `[]` | Initial points when uncontrolled. |
 | loading | `boolean` | `false` | Covers the image and disables selection while the application loads a replacement image. |
 | status | `"idle" \| "verifying" \| "failed" \| "success"` | `"idle"` | Verification state. `failed` shakes and clears points; `verifying` and `success` lock interaction. |
 | disabled | `boolean` | `false` | Disables all interaction, including refresh. |
 | aspectRatio | `number` | `2` | Image area aspect ratio (310×155 is common in BuildAdmin click-select images) |
 | keyboardStep | `number` | `0.02` | Distance moved by each keyboard crosshair step, in relative coordinates. |
-| className | `string` | — | Additional class name for the root element. |
+| className | `string` | - | Additional class name for the root element. |
 
 ## Events
 

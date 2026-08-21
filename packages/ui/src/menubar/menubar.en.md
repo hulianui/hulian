@@ -10,7 +10,7 @@ status: enriched
 
 # Menubar
 
-> Menu bar · Thin Base UI menubar wrapper for top-level File/Edit/View menus, using the Menu skin with keyboard switching and arrow-key navigation · navigation/global
+> Organizes persistent application menus into a keyboard-accessible horizontal bar. · navigation/global
 
 ## When to use
 
@@ -23,7 +23,7 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
 
 ## Props
 
-The root `Menubar` forwards Base UI `Menubar` props and adds `className`. `MenubarMenu` and `MenubarTrigger` forward their corresponding Base UI Menu props. Dropdown parts—Item, Separator, Group, and GroupLabel—reuse [Menu](../menu/menu.md) styling and behavior; for example, `MenubarItem` supports `variant="danger"`.
+The root `Menubar` forwards Base UI `Menubar` props and adds `className`. `MenubarMenu` and `MenubarTrigger` forward their corresponding Base UI Menu props. Dropdown parts (Item, Separator, Group, and GroupLabel) reuse [Menu](../menu/menu.md) styling and behavior; for example, `MenubarItem` supports `variant="danger"`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
@@ -31,7 +31,7 @@ The root `Menubar` forwards Base UI `Menubar` props and adds `className`. `Menub
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Menu-bar orientation. |
 | loopFocus | `boolean` | `true` | Whether arrow-key focus wraps after the last item. |
 | disabled | `boolean` | `false` | Whether the entire bar is disabled. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 `MenubarMenu` forwards Base UI `Menu.Root` props such as `open`, `defaultOpen`, and `onOpenChange`; `MenubarTrigger` forwards `Menu.Trigger` props.
 

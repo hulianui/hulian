@@ -10,7 +10,7 @@ status: enriched
 
 # Popconfirm
 
-> Popover confirmation · Inline destructive confirmation with title, icon, confirm/cancel, async loading, and controlled state, built on Popover · feedback/message
+> Confirms a nearby action in a compact anchored popup. · feedback/message
 
 ## When to use
 
@@ -26,13 +26,13 @@ import { Popconfirm } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | danger | `boolean` | `false` | Uses danger tone for the confirm button and default icon. |
-| open | `boolean` | — | Controlled open state, paired with onOpenChange. |
+| open | `boolean` | - | Controlled open state, paired with onOpenChange. |
 | defaultOpen | `boolean` | `false` | Initial open state when uncontrolled. |
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"top"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Popup alignment. |
 | sideOffset | `number` | `8` | Distance from the trigger. |
-| disabled | `boolean` | `false` | Skips the confirmation: no popup opens, but a click still runs `onConfirm`. It means "no need to ask this time", not "this button is dead" — put `disabled` on the child element to make the button unclickable. |
-| className | `string` | — | Class name forwarded to Popup. |
+| disabled | `boolean` | `false` | Skips the confirmation: no popup opens, but a click still runs `onConfirm`. It means "no need to ask this time", not "this button is dead". Put `disabled` on the child element to make the button unclickable. |
+| className | `string` | - | Class name forwarded to Popup. |
 
 ## Events
 
@@ -51,7 +51,7 @@ import { Popconfirm } from "@hulianui/ui"
 | icon | `ReactNode` | `undefined` uses the warning triangle, `null` omits it, and a node replaces it. |
 | okText | `ReactNode` | Confirm copy. Defaults to built-in Chinese `"\u786e\u8ba4"`, meaning “Confirm.” |
 | cancelText | `ReactNode` | Cancel copy. Defaults to built-in Chinese `"\u53d6\u6d88"`, meaning “Cancel.” |
-| children* | `ReactElement` | Single trigger element used as the positioning anchor. **Its own `onClick` is dropped** — the action always belongs in `onConfirm`. |
+| children* | `ReactElement` | Single trigger element used as the positioning anchor. **Its own `onClick` is dropped**. The action always belongs in `onConfirm`. |
 
 ## Example
 ```tsx

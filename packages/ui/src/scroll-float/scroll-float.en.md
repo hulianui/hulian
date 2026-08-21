@@ -33,8 +33,8 @@ Accepts `h2` props except Motion-conflicting `onDrag*`, `onAnimationStart`, and 
 | yPercent | `number` | `120` | Initial sinking displacement percentage (relative word height), returns to 0 with progress |
 | scaleY | `number` | `2.3` | Initial longitudinal stretch ratio, returns to 1 with progress |
 | scaleX | `number` | `0.7` | Initial transverse flattening magnification, returns to 1 with progress |
-| containerClassName | `string` | — | Outer container class name (clipping overflow scrolling display) |
-| textClassName | `string` | — | Text layer class name (control font size/weight/alignment) |
+| containerClassName | `string` | - | Outer container class name (clipping overflow scrolling display) |
+| textClassName | `string` | - | Text layer class name (control font size/weight/alignment) |
 
 ## Slots
 

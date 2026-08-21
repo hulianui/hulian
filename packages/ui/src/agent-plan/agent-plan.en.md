@@ -10,7 +10,7 @@ status: enriched
 
 # AgentPlan
 
-> Execution plan · Data-driven tasks with pending, running, completed, and failed states · Optional trailing metadata and borderless inline mode · Reuses Spinner · Presentational RSC · ai/agent
+> Displays an ordered agent plan with pending, active, completed, and failed steps. · ai/agent
 
 ## When to Use
 
@@ -27,10 +27,10 @@ import { AgentPlan } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| tasks * | `AgentTask[]` | — | Task list (data-driven) |
+| tasks * | `AgentTask[]` | - | Task list (data-driven) |
 | bare | `boolean` | `false` | Remove the outer border, background, and padding, leaving only the list for inline composition such as TaskRunner |
 | strikeDone | `boolean` | `true` | Strike through completed tasks for plan semantics; set to `false` for an execution log that keeps completed entries solid |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 ## Slots
 
@@ -42,10 +42,10 @@ import { AgentPlan } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| title | `ReactNode` | — | Task title |
+| title | `ReactNode` | - | Task title |
 | status | `"pending" \| "running" \| "done" \| "error"` | `"pending"` | Task state: hollow ring for pending, spinner and highlighted row for running, check and optional strike-through for done, or X for error |
-| detail | `ReactNode` | — | Muted supporting text below the title |
-| meta | `ReactNode` | — | Muted, right-aligned trailing metadata such as `180ms` or a small badge |
+| detail | `ReactNode` | - | Muted supporting text below the title |
+| meta | `ReactNode` | - | Muted, right-aligned trailing metadata such as `180ms` or a small badge |
 
 ## Examples
 ```tsx

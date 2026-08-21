@@ -25,14 +25,14 @@ import { PixelTrail } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| gridSize | `number` | `40` | The number of horizontal pixel grids (vertically calculated automatically in proportion to maintain the square grid), recommended 16–120 |
-| trailSize | `number` | `0.1` | Trailing influence radius (ratio of the short side of the container 0–1), the larger the tail, the thicker the trailing |
+| gridSize | `number` | `40` | The number of horizontal pixel grids (vertically calculated automatically in proportion to maintain the square grid), recommended 16-120 |
+| trailSize | `number` | `0.1` | Trailing influence radius (ratio of the short side of the container 0-1), the larger the tail, the thicker the trailing |
 | maxAge | `number` | `320` | The survival time of a single cell after it is lit (ms), the larger the value, the longer the afterglow |
 | color | `string` | `var(--color-chart-1)` | Pixel color, token must be prefixed with `--color-` |
 | gooey | `boolean` | `false` | Enable slime filter: adjacent points merge into a liquid blob instead of a hard-edged square |
 | gooeyStrength | `number` | `8` | gooey fusion strength (Gaussian blur radius px), only effective when gooey=true |
-| className | `string` | — | Additional class name for the root container, which defaults to `block h-full w-full` |
-| style | `CSSProperties` | — | Passthrough to root container |
+| className | `string` | - | Additional class name for the root container, which defaults to `block h-full w-full` |
+| style | `CSSProperties` | - | Passthrough to root container |
 
 ## Examples
 ```tsx

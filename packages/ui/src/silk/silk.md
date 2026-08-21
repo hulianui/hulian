@@ -30,7 +30,7 @@ import { Silk, silkShowcase } from "@hulianui/ui"
 | color | string | `--color-chart-1` | 丝绸主色，CSS 颜色字符串（hex/oklch/rgb/var）。默认吃主题 token |
 | noiseIntensity | number | 1.5 | 颗粒噪声强度，0=无颗粒（纯色带） |
 | rotation | number | 0 | 纹理旋转角度（弧度），如 `Math.PI/4`=45° |
-| className | string | — | 透传到 canvas（或 fallback div） |
+| className | string | - | 透传到 canvas（或 fallback div） |
 
 ## Slots
 

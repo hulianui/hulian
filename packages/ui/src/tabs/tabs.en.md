@@ -10,7 +10,7 @@ status: enriched
 
 # Tabs
 
-> Tabs · Non-overlay Base UI tabs with underline or solid sliding indicators · navigation/inpage
+> Switches between labeled content panels with underline or solid indicators. · navigation/inpage
 
 ## When to use
 
@@ -28,8 +28,8 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 ### Tabs (root)
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `any` | — | Controlled active tab value. |
-| defaultValue | `any` | — | Initially active tab when uncontrolled. |
+| value | `any` | - | Controlled active tab value. |
+| defaultValue | `any` | - | Initially active tab when uncontrolled. |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Tab-list orientation. |
 
 ### TabsList
@@ -37,7 +37,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | Underline slider or solid pill styling. |
 | size | `"sm" \| "md"` | `"md"` | Size step, passed down to `TabsTab` so it never has to be repeated. `md` is page-level tab navigation; `sm` is for an inline switcher sitting on the same row as a heading or a search box. See Size. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 `TabsTab` accepts required `value`, plus `disabled` and `className`; `TabsPanel` accepts `value` and `className`.
 
@@ -64,7 +64,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 
 ## Size
 
-`md` (the default) is sized for **page-level tab navigation**. A tab bar is often not navigation though, but a switcher on the same row as a heading and a search box — and that row is already 28-32px tall, which `md` does not fit into:
+`md` (the default) is sized for **page-level tab navigation**. A tab bar is often not navigation though, but a switcher on the same row as a heading and a search box, and that row is already 28-32px tall, which `md` does not fit into:
 
 | | Track (solid) | Tab |
 |---|---|---|
@@ -87,7 +87,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 </div>
 ```
 
-A count `Tag` inside a `sm` tab **needs its own `size="sm"`**: `Tag` defaults to `md`, which is 24px, and a single one pushes the tab back to 32px. The component does not override a size the child declared explicitly — reaching in from the outside to restyle an inner component is exactly what product code is told not to do here.
+A count `Tag` inside a `sm` tab **needs its own `size="sm"`**: `Tag` defaults to `md`, which is 24px, and a single one pushes the tab back to 32px. The component does not override a size the child declared explicitly. Reaching in from the outside to restyle an inner component is exactly what product code is told not to do here.
 
 ## Usage guidelines
 

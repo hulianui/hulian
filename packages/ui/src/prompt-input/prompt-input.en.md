@@ -10,7 +10,7 @@ status: enriched
 
 # PromptInput
 
-> Prompt input · Auto-growing textarea + send/stop button + Enter submission + Shift+Enter newline + IME composition protection + controlled/uncontrolled modes + action slots · ai/conversation
+> Composes auto-growing prompts with submit, stop, keyboard, IME, and custom action controls. · ai/conversation
 
 ## When to Use
 
@@ -25,13 +25,13 @@ import { PromptInput } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | Controlled value (with onValueChange) |
+| value | `string` | - | Controlled value (with onValueChange) |
 | defaultValue | `string` | `""` | Uncontrolled initial value |
 | placeholder | `string` | `"\u53d1\u6d88\u606f\u2026"` ("Send a message...") | Placeholder prompt |
 | loading | `boolean` | `false` | Generating: Send key becomes stop key, block submission |
 | disabled | `boolean` | `false` | Disabled |
 | maxRows | `number` | `8` | Maximum rows before the textarea scrolls internally |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 ## Events
 

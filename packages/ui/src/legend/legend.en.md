@@ -27,12 +27,12 @@ import { Legend, type LegendItem } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `LegendItem[]` | — | `{ label, color?, value?, hidden?, id? }[]`. |
+| items* | `LegendItem[]` | - | `{ label, color?, value?, hidden?, id? }[]`. |
 | marker | `"dot" \| "square" \| "line"` | `"dot"` | Marker shape. |
 | layout | `"row" \| "column"` | `"row"` | Wrapping row or vertical column with right-aligned values. |
 | size | `"sm" \| "md"` | `"md"` | Component size. |
-| onItemClick | `(item, index) => void` | — | Makes each item a button when supplied. |
-| className | `string` | — | Custom class and forwarded native attributes. |
+| onItemClick | `(item, index) => void` | - | Makes each item a button when supplied. |
+| className | `string` | - | Custom class and forwarded native attributes. |
 
 ### LegendItem
 

@@ -37,8 +37,8 @@ import { BlobCursor } from "@hulianui/ui"
 | trailStiffness | `number` | `120` | Trailing water drop spring stiffness (the smaller the trail, the longer the trail) |
 | damping | `number` | `28` | Spring damping (the bigger it is, the less rebound it will be and the stickier it will be) |
 | zIndex | `number` | `50` | Container stacking level; the droplet layer uses `pointer-events:none` |
-| className | `string` | — | Class name forwarded to the relative root that fills its parent |
-| style | `CSSProperties` | — | Inline styles forwarded to the root container |
+| className | `string` | - | Class name forwarded to the relative root that fills its parent |
+| style | `CSSProperties` | - | Inline styles forwarded to the root container |
 
 ## Slots
 

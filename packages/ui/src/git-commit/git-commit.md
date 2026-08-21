@@ -10,7 +10,7 @@ status: enriched
 
 # GitCommit
 
-> git 提交引用 · 分支 chip(GitBranch) + 短哈希等宽(纯函数 shortSha 可测·可定制位数/href 跳链) + 提交信息单行截断 + 作者头像槽 · inline 单行/stacked 两行(表格单元格) · 部署列表/PR 列表/活动流「Source」列刚需(零依赖·RSC) · data-display/info
+> 展示一次提交的分支、短哈希、说明和作者 · data-display/info
 
 ## 何时用
 
@@ -25,15 +25,15 @@ import { GitCommit, shortSha, branchTone, type BranchTone } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| sha* | `string` | — | commit SHA，完整或短哈希均可，显示时按 `shaLength` 截短 |
-| branch | `string` | — | 分支名；提供则前置分支图标 chip |
-| author | `string` | — | 作者名 |
-| href | `string` | — | 短哈希跳转链接，去 commit 详情 |
+| sha* | `string` | - | commit SHA，完整或短哈希均可，显示时按 `shaLength` 截短 |
+| branch | `string` | - | 分支名；提供则前置分支图标 chip |
+| author | `string` | - | 作者名 |
+| href | `string` | - | 短哈希跳转链接，去 commit 详情 |
 | shaLength | `number` | `7` | 短哈希显示位数 |
 | colorBranch | `boolean` | `true` | 给分支名加色值标识（按分支名稳定取色的 soft badge），不同分支一眼可分 |
 | layout | `"inline" \| "stacked"` | `"inline"` | inline 单行 / stacked 两行（信息在上、引用在下，列表/表格单元格刚需） |
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
-| className | `string` | — | 透传类名 |
+| className | `string` | - | 透传类名 |
 
 ## Slots
 

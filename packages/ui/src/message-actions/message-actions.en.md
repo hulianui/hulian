@@ -10,11 +10,11 @@ status: enriched
 
 # MessageActions
 
-> Message action bar · On-demand copy, regenerate, like, and dislike controls with clipboard feedback · Designed for the `ChatMessage` actions slot · ai/assist
+> Groups copy, retry, rate, and related controls for a chat message. · ai/assist
 
 ## When to Use
 
-Place it beneath a generated assistant message to provide copy, regenerate, like, and dislike controls—typically through the `actions` slot of [ChatMessage](../chat-message/chat-message.md). Unlike [PromptSuggestions](../prompt-suggestions/prompt-suggestions.md), which guides the next question, MessageActions handles feedback and reuse for the current message. Each button appears only when its content or callback is provided.
+Place it beneath a generated assistant message to provide copy, regenerate, like, and dislike controls, typically through the `actions` slot of [ChatMessage](../chat-message/chat-message.md). Unlike [PromptSuggestions](../prompt-suggestions/prompt-suggestions.md), which guides the next question, MessageActions handles feedback and reuse for the current message. Each button appears only when its content or callback is provided.
 
 ## Import
 ```ts
@@ -27,7 +27,7 @@ Inherits `HTMLAttributes<HTMLDivElement>`, additionally:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| content | `string` | — | Text copied by the built-in clipboard action; providing it displays the copy button and 1.5-second success feedback |
+| content | `string` | - | Text copied by the built-in clipboard action; providing it displays the copy button and 1.5-second success feedback |
 
 ## Events
 

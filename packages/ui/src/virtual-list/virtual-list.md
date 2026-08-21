@@ -10,7 +10,7 @@ status: enriched
 
 # VirtualList
 
-> 虚拟滚动 · 包 @tanstack/react-virtual 仅渲染可见区 + 定高/变高(measureElement)双模 + initialRect 首帧可算 + 末行触发 onReachEnd(万行列表/长列表刚需) · data-display/collection
+> 只渲染可见行，让上万条列表也能流畅滚动 · data-display/collection
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { VirtualList } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `T[]` | — | 数据数组（泛型）。 |
-| itemHeight* | `number｜((index: number) => number)` | — | 定高 px，或返回估算高度的函数（变高，按实测校正）。 |
+| items* | `T[]` | - | 数据数组（泛型）。 |
+| itemHeight* | `number｜((index: number) => number)` | - | 定高 px，或返回估算高度的函数（变高，按实测校正）。 |
 | height | `number｜string` | `360` | 视口高度，px 或 CSS 长度。 |
 | overscan | `number` | `5` | 预渲染屏外条数。 |
 | getKey | `(item: T, index: number) => string｜number` | 用下标 | 行 key 提取。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ## Events
 

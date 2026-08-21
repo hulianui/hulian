@@ -33,8 +33,8 @@ import { ScrollFloat } from "@hulianui/ui"
 | yPercent | `number` | `120` | 初始下沉位移百分比(相对字高)，随进度回 0 |
 | scaleY | `number` | `2.3` | 初始纵向拉伸倍率，随进度回 1 |
 | scaleX | `number` | `0.7` | 初始横向压扁倍率，随进度回 1 |
-| containerClassName | `string` | — | 外层容器类名(裁切溢出的滚动浮现) |
-| textClassName | `string` | — | 文本层类名(控制字号/字重/对齐) |
+| containerClassName | `string` | - | 外层容器类名(裁切溢出的滚动浮现) |
+| textClassName | `string` | - | 文本层类名(控制字号/字重/对齐) |
 
 ## Slots
 

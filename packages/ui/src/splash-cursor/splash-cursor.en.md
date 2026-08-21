@@ -28,11 +28,11 @@ import { SplashCursor } from "@hulianui/ui"
 | rainbow | `boolean` | `true` | Cycles each splash through the HSV hue wheel; when false, uses `color` |
 | color | `string` | `var(--color-chart-1)` | Fixed sputtering color in non-rainbow mode, token must be prefixed with `--color-`; ignored for rainbow |
 | splatRadius | `number` | `56` | Sputtering radius reference (px), the larger the color spot, the fuller it will be |
-| splatForce | `number` | `1` | Sputtering intensity: the displacement and trailing length of the splash with the pointer speed, recommended 0.5–2 |
-| dissipation | `number` | `0.92` | Spot retention rate (attenuation per second, 0–1), the closer to 1 the more durable it is |
-| opacity | `number` | `1` | Overall opacity (0–1), can be dimmed when stacking content below |
-| className | `string` | — | Additional class name for the root container, which fills a relative parent |
-| style | `CSSProperties` | — | Inline styles forwarded to the root container |
+| splatForce | `number` | `1` | Sputtering intensity: the displacement and trailing length of the splash with the pointer speed, recommended 0.5-2 |
+| dissipation | `number` | `0.92` | Spot retention rate (attenuation per second, 0-1), the closer to 1 the more durable it is |
+| opacity | `number` | `1` | Overall opacity (0-1), can be dimmed when stacking content below |
+| className | `string` | - | Additional class name for the root container, which fills a relative parent |
+| style | `CSSProperties` | - | Inline styles forwarded to the root container |
 
 ## Examples
 ```tsx

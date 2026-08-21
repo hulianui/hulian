@@ -60,18 +60,18 @@ import { QuestionCard } from "@hulianui/ui/math"
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `stem` | `string` | — | 题干，支持 LaTeX 记号与填空槽 `____`，由 Formula 排版 |
-| `number` | `ReactNode` | — | 原书题号 |
-| `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | — | 题型，决定标签文案与语气色 |
-| `kindLabel` | `ReactNode` | — | 覆盖内置题型中文名 |
-| `difficulty` | `ReactNode` | — | 分层标签（A 组 / 基础 / 拔高） |
-| `options` | `{ label, text }[]` | — | 选择题选项，`text` 支持 LaTeX 记号 |
-| `parts` | `string[]` | — | 小问 (1)(2)(3) |
-| `figure` | `{ src, alt? }` | — | 附图 |
-| `chapter` / `source` | `ReactNode` | — | 章节归属 / 出处，落在页脚 |
-| `topics` | `string[]` | — | 知识点，渲染成 Chip |
-| `issues` | `{ label, tone? }[]` | — | 质量标记，非空时亮左侧警示边条 |
-| `actions` | `ReactNode` | — | 右上角操作区 |
+| `stem` | `string` | - | 题干，支持 LaTeX 记号与填空槽 `____`，由 Formula 排版 |
+| `number` | `ReactNode` | - | 原书题号 |
+| `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | - | 题型，决定标签文案与语气色 |
+| `kindLabel` | `ReactNode` | - | 覆盖内置题型中文名 |
+| `difficulty` | `ReactNode` | - | 分层标签（A 组 / 基础 / 拔高） |
+| `options` | `{ label, text }[]` | - | 选择题选项，`text` 支持 LaTeX 记号 |
+| `parts` | `string[]` | - | 小问 (1)(2)(3) |
+| `figure` | `{ src, alt? }` | - | 附图 |
+| `chapter` / `source` | `ReactNode` | - | 章节归属 / 出处，落在页脚 |
+| `topics` | `string[]` | - | 知识点，渲染成 Chip |
+| `issues` | `{ label, tone? }[]` | - | 质量标记，非空时亮左侧警示边条 |
+| `actions` | `ReactNode` | - | 右上角操作区 |
 | `compact` | `boolean` | `false` | 收起小问与页脚，用于长列表 |
 
 ## 禁忌 / 坑

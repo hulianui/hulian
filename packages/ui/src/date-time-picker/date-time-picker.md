@@ -10,7 +10,7 @@ status: enriched
 
 # DateTimePicker
 
-> 日期时间选择 · 自研零依赖(左日历 + 右时/分/秒列一体弹层) + 步进/秒/此刻 · 边界只在压着 min-max 那天生效 · 定宽 YYYY-MM-DD HH:mm 受控 · forms/datetime
+> 在一个浮层里同时选好日期和时间 · forms/datetime
 
 ## 何时用
 
@@ -33,23 +33,23 @@ import { DateTimePicker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | 受控值，`"YYYY-MM-DD HH:mm"`（`withSeconds` 时带秒），中间一个空格 |
-| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| value | `string \| null` | - | 受控值，`"YYYY-MM-DD HH:mm"`（`withSeconds` 时带秒），中间一个空格 |
+| defaultValue | `string \| null` | - | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒列，值形状随之带秒 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minuteStep | `number` | `1` | 分钟列步进（常用 5 / 15 / 30） |
 | secondStep | `number` | `1` | 秒列步进 |
-| minDateTime | `string` | — | 最早可选时刻（含），形状同 `value`。日期部分限制日历，时间部分只在边界那天生效 |
-| maxDateTime | `string` | — | 最晚可选时刻（含） |
-| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`，**只筛日期不筛时刻** |
+| minDateTime | `string` | - | 最早可选时刻（含），形状同 `value`。日期部分限制日历，时间部分只在边界那天生效 |
+| maxDateTime | `string` | - | 最晚可选时刻（含） |
+| disabledDate | `(isoDate: string) => boolean` | - | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`，**只筛日期不筛时刻** |
 | placeholder | `string` | `"选择日期时间"` | 触发器占位文本 |
 | displayFormat | `string` | 原样显示 | 触发器显示格式（dayjs format 串）。**只影响显示**，对外值形状不变 |
 | clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
 | showNow | `boolean` | `true` | 面板底部「此刻」快捷（按步进向下取整对齐） |
 | disabled | `boolean` | `false` | 整体置灰，面板打不开 |
 | readOnly | `boolean` | `false` | 面板可看，但选不动 |
-| aria-label | `string` | — | 触发器无障碍名（无可见 label 时给） |
-| className | `string` | — | 落在触发器外层容器 |
+| aria-label | `string` | - | 触发器无障碍名（无可见 label 时给） |
+| className | `string` | - | 落在触发器外层容器 |
 
 ## Events
 

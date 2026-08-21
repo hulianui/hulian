@@ -10,7 +10,7 @@ status: enriched
 
 # ModalForm / DrawerForm
 
-> 弹窗/抽屉表单 · 列表页新增/编辑编排件(复用 Dialog/Drawer + useForm + Button footer) · 提交前自动 validate · async onFinish 成功关闭/失败保持 · 文案接 i18n · forms/framework
+> 把带校验的表单装进弹窗或抽屉，管好提交与关闭 · forms/framework
 
 ## 何时用
 
@@ -27,13 +27,13 @@ import { ModalForm, DrawerForm } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title * | `string` | — | 标题（a11y label） |
-| open | `boolean` | — | 受控开关 |
-| defaultOpen | `boolean` | — | 非受控初始开关 |
-| form | `FormInstance` | — | useForm 实例：提供则提交前自动 `validate()`，校验不过保持打开 |
+| title * | `string` | - | 标题（a11y label） |
+| open | `boolean` | - | 受控开关 |
+| defaultOpen | `boolean` | - | 非受控初始开关 |
+| form | `FormInstance` | - | useForm 实例：提供则提交前自动 `validate()`，校验不过保持打开 |
 | submitText | `string` | `locale.modalForm.submit` | 提交按钮文案 |
 | cancelText | `string` | `locale.modalForm.cancel` | 取消按钮文案 |
-| className | `string` | — | 容器类名（控宽度等） |
+| className | `string` | - | 容器类名（控宽度等） |
 | side | `DrawerSide` | `"right"` | 仅 `DrawerForm`：抽屉贴边方向 |
 
 ## Events

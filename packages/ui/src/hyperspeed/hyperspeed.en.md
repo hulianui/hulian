@@ -25,14 +25,14 @@ import { Hyperspeed } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| speed | `number` | `1` | The overall propulsion speed multiplier, the larger it is, the faster it will rush. It is recommended to be 0.2–4 |
-| density | `number` | `40` | The density of light strips on both sides of the road is larger and denser. It is recommended that 10–120 |
-| distortion | `number` | `1` | Field of view distortion intensity (turbulence swing), 0=straight tunnel, recommended 0–2 |
-| fade | `number` | `0.4` | Fog fade intensity, the greater the distance, the faster the distance will be engulfed by darkness, recommended 0–1 |
+| speed | `number` | `1` | The overall propulsion speed multiplier, the larger it is, the faster it will rush. It is recommended to be 0.2-4 |
+| density | `number` | `40` | The density of light strips on both sides of the road is larger and denser. It is recommended that 10-120 |
+| distortion | `number` | `1` | Field of view distortion intensity (turbulence swing), 0=straight tunnel, recommended 0-2 |
+| fade | `number` | `0.4` | Fog fade intensity, the greater the distance, the faster the distance will be engulfed by darkness, recommended 0-1 |
 | leftColor | `string` | `var(--color-chart-4)` | Left (leaving) car light color, any CSS color |
 | rightColor | `string` | `var(--color-chart-2)` | Right (approaching) car light color, any CSS color |
-| className | `string` | — | Root container (itself block h-full w-full, the size is controlled by the container) |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Root container (itself block h-full w-full, the size is controlled by the container) |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

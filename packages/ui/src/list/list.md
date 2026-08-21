@@ -10,7 +10,7 @@ status: enriched
 
 # List
 
-> 数据列表 · 复合 List/ListItem/ListItem.Meta + actions/size/bordered/split/grid + 空态/分页/加载更多(零依赖·复用 Empty/Pagination/Avatar/User) · data-display/collection
+> 排列结构化列表项，带元信息、操作区、空态和分页 · data-display/collection
 
 ## 何时用
 
@@ -27,27 +27,27 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items | `T[]` | — | 数据数组(数据驱动模式，配合 `renderItem`) |
+| items | `T[]` | - | 数据数组(数据驱动模式，配合 `renderItem`) |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸(影响行内边距) |
 | bordered | `boolean` | `false` | 外层边框 + 圆角容器(栅格态下忽略) |
 | inset | `boolean` | 跟随 `bordered` | 行/头尾插槽水平内边距(与 bordered 解耦)；放进侧栏等已有容器时设 `inset` 让内容不贴边 |
 | split | `boolean` | `true` | 行分隔线(栅格态下忽略) |
-| grid | `boolean \| ListGridConfig` | — | 栅格卡片态(复用 Grid)；传 `true` 用默认配置(3 列) |
-| loadMore | `ListLoadMore` | — | 「加载更多」配置(底部按钮 + loading) |
+| grid | `boolean \| ListGridConfig` | - | 栅格卡片态(复用 Grid)；传 `true` 用默认配置(3 列) |
+| loadMore | `ListLoadMore` | - | 「加载更多」配置(底部按钮 + loading) |
 
 `ListItemProps`（复合用法里的 `<ListItem>`）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| actions | `ReactNode[]` | — | 行右侧操作区（按钮组），多个项之间自动加分隔线 |
+| actions | `ReactNode[]` | - | 行右侧操作区（按钮组），多个项之间自动加分隔线 |
 
 `ListItemMetaProps`（`<ListItemMeta>`，行左侧的头像 + 标题 + 描述三段式）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| avatar | `ReactNode` | — | 头像 / 图标（dogfood 复用 Avatar） |
-| title | `ReactNode` | — | 标题 |
-| description | `ReactNode` | — | 描述 |
+| avatar | `ReactNode` | - | 头像 / 图标（dogfood 复用 Avatar） |
+| title | `ReactNode` | - | 标题 |
+| description | `ReactNode` | - | 描述 |
 
 ## Slots
 

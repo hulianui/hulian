@@ -25,7 +25,7 @@ import { ProfileCard } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| avatarUrl | `string` | — | Avatar URL. Omission uses the first character of `name` without a remote asset. |
+| avatarUrl | `string` | - | Avatar URL. Omission uses the first character of `name` without a remote asset. |
 | name | `string` | `"\u745a\u740f"` | Main name; the built-in Chinese default means “Hulian.” |
 | title | `string` | `"\u524d\u7aef\u5de5\u7a0b\u5e08"` | Role; the built-in Chinese default means “Frontend engineer.” |
 | handle | `string` | `"hulianui"` | User handle in the lower information bar. |
@@ -35,8 +35,8 @@ import { ProfileCard } from "@hulianui/ui"
 | enableTilt | `boolean` | `true` | Enables pointer tilt and holographic sheen; reduced motion makes it static. |
 | glowColor | `string` | `var(--color-chart-1)` | Holographic highlight color. Use a real `--color-` token or any CSS color. |
 | aspectRatio | `number` | `0.74` | Card width-to-height ratio. |
-| className | `string` | — | Class name forwarded to the root. |
-| style | `CSSProperties` | — | Inline styles forwarded to the root. |
+| className | `string` | - | Class name forwarded to the root. |
+| style | `CSSProperties` | - | Inline styles forwarded to the root. |
 
 ## Events
 

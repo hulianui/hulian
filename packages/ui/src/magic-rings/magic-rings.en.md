@@ -28,10 +28,10 @@ import { MagicRings } from "@hulianui/ui"
 | color | `string` | `var(--color-chart-1)` | Inner circle starting color, light and dark theme; any CSS color string can be used |
 | colorTwo | `string` | `var(--color-chart-4)` | The outer ring termination color, the halo color is linearly interpolated according to the number of layers between color→colorTwo |
 | speed | `number` | `1` | Animation-speed multiplier; higher values expand the rings faster |
-| ringCount | `number` | `6` | Number of simultaneous rings, clamped to 1–10 |
+| ringCount | `number` | `6` | Number of simultaneous rings, clamped to 1-10 |
 | attenuation | `number` | `10` | Ring attenuation; higher values produce sharper, shorter-lived rings, while lower values are more diffuse |
 | lineThickness | `number` | `2` | Loop thickness magnification |
-| baseRadius | `number` | `0.35` | Innermost circle starting radius (normalized to approximately 0–1) |
+| baseRadius | `number` | `0.35` | Innermost circle starting radius (normalized to approximately 0-1) |
 | radiusStep | `number` | `0.1` | Increasing step size of the starting radius of two adjacent circles |
 | scaleRate | `number` | `0.1` | The expansion range of the inner ring radius in a single life cycle |
 | opacity | `number` | `1` | Overall opacity, overlaid on luminance-derived alpha |
@@ -46,7 +46,7 @@ import { MagicRings } from "@hulianui/ui"
 | hoverScale | `number` | `1.2` | Overall zoom target value on hover |
 | parallax | `number` | `0.05` | Parallax dislocation coefficient of each layer with mouse |
 | clickBurst | `boolean` | `false` | Click burst (shortly enlarge + brighten when clicked) |
-| className | `string` | — | Additional class name for the root container or fallback div |
+| className | `string` | - | Additional class name for the root container or fallback div |
 
 ## Examples
 ```tsx

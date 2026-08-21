@@ -10,7 +10,7 @@ status: enriched
 
 # ColorSwatchPicker
 
-> 预设色块单选 · base-ui RadioGroup 换皮(方向键 a11y) + 选中 ring + mix-blend 勾(零依赖) · forms/advanced
+> 从一组预设色块里挑一个颜色，方向键可达 · forms/advanced
 
 ## 何时用
 
@@ -25,19 +25,19 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| colors* | `(string \| { color: string; label?: string })[]` | — | 预设色块列表。字符串 = 任意 CSS 颜色串（hex / rgb / hsl / 具名色 / `var(--color-x)`）；对象可另给 `label` 作无障碍名与 hover 提示。两种形态可混写 |
-| value | `string` | — | 受控选中值（须与某个色块的 `color` 严格相等） |
-| defaultValue | `string` | — | 非受控初始选中值 |
+| colors* | `(string \| { color: string; label?: string })[]` | - | 预设色块列表。字符串 = 任意 CSS 颜色串（hex / rgb / hsl / 具名色 / `var(--color-x)`）；对象可另给 `label` 作无障碍名与 hover 提示。两种形态可混写 |
+| value | `string` | - | 受控选中值（须与某个色块的 `color` 严格相等） |
+| defaultValue | `string` | - | 非受控初始选中值 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 色块尺寸 |
 | disabled | `boolean` | `false` | 整组禁用 |
-| className | `string` | — | 透传到容器 |
-| aria-label | `string` | — | 无障碍标签 |
+| className | `string` | - | 透传到容器 |
+| aria-label | `string` | - | 无障碍标签 |
 
 `ColorSwatchItem`（`colors` 的对象形态）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| color * | `string` | — | 任意 CSS 颜色串，同时是该色块的选中值（与 `value` 严格相等比较） |
+| color * | `string` | - | 任意 CSS 颜色串，同时是该色块的选中值（与 `value` 严格相等比较） |
 | label | `string` | 回退到 `color` 本身 | 无障碍名与 hover 提示。喂 token 色（`var(--color-primary)`）时**务必**给，否则读屏会念出变量名 |
 
 ## Events

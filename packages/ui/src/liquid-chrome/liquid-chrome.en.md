@@ -31,7 +31,7 @@ import { LiquidChrome } from "@hulianui/ui"
 | frequencyX | `number` | `2.5` | X-direction spatial frequency |
 | frequencyY | `number` | `1.5` | Y direction spatial frequency |
 | interactive | `boolean` | `true` | Whether to respond to mouse/touch to push liquid surface ripples |
-| className | `string` | — | ClassName passed through to canvas (normal) or fallback div (fallback) |
+| className | `string` | - | ClassName passed through to canvas (normal) or fallback div (fallback) |
 
 ## Slots
 

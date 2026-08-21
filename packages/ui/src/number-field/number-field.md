@@ -10,7 +10,7 @@ status: enriched
 
 # NumberField
 
-> 数字步进 · Base UI ±按钮 + 键盘步进 + min/max · forms/basic
+> 编辑数字，带上下限、步进按钮和键盘步进 · forms/basic
 
 ## 何时用
 
@@ -25,18 +25,18 @@ import { NumberField } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `number｜null` | — | 受控值（null=空） |
-| defaultValue | `number｜null` | — | 非受控初始值（null=初始为空，与 `value` 同口径） |
-| min | `number` | — | 最小值 |
-| max | `number` | — | 最大值 |
+| value | `number｜null` | - | 受控值（null=空） |
+| defaultValue | `number｜null` | - | 非受控初始值（null=初始为空，与 `value` 同口径） |
+| min | `number` | - | 最小值 |
+| max | `number` | - | 最大值 |
 | step | `number` | `1` | 步进量 |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读 |
-| required | `boolean` | — | 表单必填 |
-| name | `string` | — | 原生表单 name |
-| id | `string` | — | — |
-| className | `string` | — | — |
-| aria-label | `string` | — | 无可见标题时提供 |
+| required | `boolean` | - | 表单必填 |
+| name | `string` | - | 原生表单 name |
+| id | `string` | - | - |
+| className | `string` | - | - |
+| aria-label | `string` | - | 无可见标题时提供 |
 
 ## Events
 

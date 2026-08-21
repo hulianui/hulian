@@ -27,7 +27,7 @@ import { RainbowButton } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
 | speed | `string` | `3s` | 彩虹流动一轮秒数 |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | - | 透传原生 button 属性 |
 
 ## Events
 

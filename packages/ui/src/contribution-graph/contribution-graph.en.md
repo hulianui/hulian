@@ -27,7 +27,7 @@ import { ContributionGraph, buildContributionCalendar } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| data* | `ContributionDay[]` | — | `{ date, count? }[]`; duplicate days add together and omitted count means one. |
+| data* | `ContributionDay[]` | - | `{ date, count? }[]`; duplicate days add together and omitted count means one. |
 | days | `number` | `365` | Inclusive range length. |
 | endDate | `string \| Date` | Today | Inclusive end date. |
 | weekStart | `0 \| 1` | `0` | Sunday or Monday week start. |
@@ -42,7 +42,7 @@ import { ContributionGraph, buildContributionCalendar } from "@hulianui/ui"
 | showLegend | `boolean` | `false` | Shows the low-to-high color legend. |
 | formatMonth | `(isoDate: string) => string` | `` `${month}\u6708` `` ("Month") | Formats month labels. |
 | formatTooltip | `(cell: ContributionCell) => string` | Date and count | Formats each native hover title. |
-| onDayClick | `(cell: ContributionCell) => void` | — | Enables focusable day buttons and drill-down. |
+| onDayClick | `(cell: ContributionCell) => void` | - | Enables focusable day buttons and drill-down. |
 
 ### buildContributionCalendar(data, options?)
 

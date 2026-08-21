@@ -27,7 +27,7 @@ import { TextPressure } from "@hulianui/ui"
 |------|------|------|------|
 | text | `string` | `"Compressa"` | Text to render as individually responsive characters. |
 | fontFamily | `string` | System sans serif stack | Font family. System fonts simulate the effect with `scaleX`, `font-weight`, and opacity; a true variable font enables `font-variation-settings`. |
-| fontUrl | `string` | — | URL for a custom `@font-face`. Omitting it or passing an empty string loads no external font; any nonempty URL is injected without origin validation. Project policy requires callers to use a local or self-hosted asset. |
+| fontUrl | `string` | - | URL for a custom `@font-face`. Omitting it or passing an empty string loads no external font; any nonempty URL is injected without origin validation. Project policy requires callers to use a local or self-hosted asset. |
 | width | `boolean` | `true` | Whether to animate the `wdth` axis and use `scaleX` as a fallback. |
 | weight | `boolean` | `true` | Whether to animate the `wght` axis or `font-weight` based on proximity. |
 | italic | `boolean` | `true` | Whether to animate the `ital` axis; effective only with a compatible variable font. |
@@ -38,7 +38,7 @@ import { TextPressure } from "@hulianui/ui"
 | textColor | `string` | `var(--color-foreground)` | Text color, using a theme-aware token by default. |
 | strokeColor | `string` | `var(--color-primary)` | Outline color when `stroke` is enabled. |
 | minFontSize | `number` | `24` | Minimum font size in pixels when the container narrows. |
-| className | `string` | — | Additional class name merged onto the root `div`. |
+| className | `string` | - | Additional class name merged onto the root `div`. |
 
 ## Example
 ```tsx

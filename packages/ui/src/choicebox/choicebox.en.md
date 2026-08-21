@@ -10,7 +10,7 @@ status: enriched
 
 # Choicebox
 
-> Card selector · ChoiceboxGroup and Choicebox cards with title, description, and icon; radio or checkbox semantics; controlled/uncontrolled state; and configurable grid columns · forms/advanced
+> Selects one rich option from cards containing titles, descriptions, and supporting content. · forms/advanced
 
 ## When to use
 
@@ -27,22 +27,22 @@ import { ChoiceboxGroup, Choicebox } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| string[]` | — | Controlled value: `string` for single selection and `string[]` for multiple selection. |
-| defaultValue | `string \| string[]` | — | Initial value when uncontrolled. |
+| value | `string \| string[]` | - | Controlled value: `string` for single selection and `string[]` for multiple selection. |
+| defaultValue | `string \| string[]` | - | Initial value when uncontrolled. |
 | multiple | `boolean` | `false` | Enables checkbox-style multiple selection; otherwise the group uses radio semantics. |
 | name | `string` | Automatically generated | Radio-group name in single-select mode. |
 | columns | `number` | `1` | Number of grid columns |
 | disabled | `boolean` | `false` | Disables the entire group. |
-| className | `string` | — | Additional class name for the container. |
-| aria-label | `string` | — | Accessible label. |
+| className | `string` | - | Additional class name for the container. |
+| aria-label | `string` | - | Accessible label. |
 
 ### Choicebox
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `string` | — | Option value, unique within the group. |
+| value* | `string` | - | Option value, unique within the group. |
 | disabled | `boolean` | `false` | Disables this option. |
-| className | `string` | — | Additional class name for the card. |
+| className | `string` | - | Additional class name for the card. |
 
 ## Events
 

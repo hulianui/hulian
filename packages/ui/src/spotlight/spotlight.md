@@ -10,7 +10,7 @@ status: enriched
 
 # Spotlight
 
-> 径向辉光背景 · token 驱动 radial-gradient + 明暗自适应 + RSC · decoration/backdrop
+> 在内容后面打一片跟随主题的径向辉光 · decoration/backdrop
 
 ## 何时用
 

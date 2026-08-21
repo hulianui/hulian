@@ -10,7 +10,7 @@ status: enriched
 
 # Listbox
 
-> 可选列表 · WAI-ARIA roving tabindex + 单/多/纯动作 + typeahead(零依赖) · forms/advanced
+> 用键盘可漫游的列表做单选、多选或纯动作项 · forms/advanced
 
 ## 何时用
 
@@ -25,14 +25,14 @@ import { Listbox } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `ListboxItemData[]` | — | 列表项；每项含 `key`/`label`，可带 `description`/`startContent`/`endContent`/`disabled` |
+| items* | `ListboxItemData[]` | - | 列表项；每项含 `key`/`label`，可带 `description`/`startContent`/`endContent`/`disabled` |
 | selectionMode | `"none" \| "single" \| "multiple"` | `"single"` | none=纯动作列表（不持有选中态）；single/multiple=可选 |
-| selectedKeys | `string[]` | — | 受控选中键 |
-| defaultSelectedKeys | `string[]` | — | 非受控初始选中键 |
-| disabledKeys | `string[]` | — | 额外禁用键（与 `item.disabled` 合并） |
-| className | `string` | — | 容器类名 |
-| style | `CSSProperties` | — | 行内样式，落在列表根元素。用于表达 Tailwind 类给不出的动态值（如运行时决定的 `maxHeight`） |
-| aria-label | `string` | — | 无可见标题时的无障碍标签 |
+| selectedKeys | `string[]` | - | 受控选中键 |
+| defaultSelectedKeys | `string[]` | - | 非受控初始选中键 |
+| disabledKeys | `string[]` | - | 额外禁用键（与 `item.disabled` 合并） |
+| className | `string` | - | 容器类名 |
+| style | `CSSProperties` | - | 行内样式，落在列表根元素。用于表达 Tailwind 类给不出的动态值（如运行时决定的 `maxHeight`） |
+| aria-label | `string` | - | 无可见标题时的无障碍标签 |
 
 ## Events
 

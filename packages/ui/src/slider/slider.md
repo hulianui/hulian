@@ -10,7 +10,7 @@ status: enriched
 
 # Slider
 
-> 滑块 · Base UI 单值/range + 键盘步进 · forms/basic
+> 沿轨道拖出一个数值或一段区间，支持键盘步进 · forms/basic
 
 ## 何时用
 
@@ -27,15 +27,15 @@ import { Slider } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `number｜readonly number[]` | — | 受控值（数组=range） |
-| defaultValue | `number｜readonly number[]` | — | 非受控初始值 |
+| value | `number｜readonly number[]` | - | 受控值（数组=range） |
+| defaultValue | `number｜readonly number[]` | - | 非受控初始值 |
 | min | `number` | `0` | 最小值 |
 | max | `number` | `100` | 最大值 |
 | step | `number` | `1` | 步进量 |
 | disabled | `boolean` | `false` | 禁用 |
 | showValue | `boolean` | `false` | 在轨道上方显示当前数值读出（Slider.Value） |
-| thumbAriaLabel | `string ｜ [string, string]` | — | 手柄的无障碍名。省略时自动取 Root 的 `aria-label`；range 传二元组分别命名两个手柄 |
-| className | `string` | — | Root wrapper className |
+| thumbAriaLabel | `string ｜ [string, string]` | - | 手柄的无障碍名。省略时自动取 Root 的 `aria-label`；range 传二元组分别命名两个手柄 |
+| className | `string` | - | Root wrapper className |
 
 > 其余 Base UI `Slider.Root` 的 prop（`name`、`orientation` 等）原样透传。
 

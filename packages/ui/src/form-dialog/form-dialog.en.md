@@ -10,7 +10,7 @@ status: enriched
 
 # ModalForm / DrawerForm
 
-> Modal and drawer forms · Shared add/edit layout using Dialog or Drawer, `useForm`, submit footer, pre-submit validation, async `onFinish`, and localized copy · forms/framework
+> Runs validated forms inside modal or drawer containers with submit lifecycle handling. · forms/framework
 
 ## When to use
 
@@ -27,13 +27,13 @@ Public (`ModalForm` = `FormDialogBaseProps`; `DrawerForm` plus `side` on this ba
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| title * | `string` | — | Title (a11y label) |
-| open | `boolean` | — | controlled switch |
-| defaultOpen | `boolean` | — | Uncontrolled initial switch |
-| form | `FormInstance` | — | useForm instance: If provided, it will automatically `validate()` before submission, but the verification will remain open. |
+| title * | `string` | - | Title (a11y label) |
+| open | `boolean` | - | controlled switch |
+| defaultOpen | `boolean` | - | Uncontrolled initial switch |
+| form | `FormInstance` | - | useForm instance: If provided, it will automatically `validate()` before submission, but the verification will remain open. |
 | submitText | `string` | `locale.modalForm.submit` | Submit button copy |
 | cancelText | `string` | `locale.modalForm.cancel` | Cancel button copy |
-| className | `string` | — | Container class name (control width, etc.) |
+| className | `string` | - | Container class name (control width, etc.) |
 | side | `DrawerSide` | `"right"` | `DrawerForm` only: drawer welt direction |
 
 ## Events

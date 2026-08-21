@@ -32,8 +32,8 @@ import { ClickSpark } from "@hulianui/ui"
 | duration | `number` | `400` | Spark animation duration in milliseconds; higher values leave a longer-lived trail |
 | easing | `"linear" \| "ease-in" \| "ease-out" \| "ease-in-out"` | `"ease-out"` | Sparks fly out of the easing curve |
 | extraScale | `number` | `1` | Radius extra scaling factor, >1 for amplified burst, <1 for convergence |
-| className | `string` | — | Transparent to the root container (relative DOM element) |
-| style | `CSSProperties` | — | Inline styles forwarded to the root container |
+| className | `string` | - | Transparent to the root container (relative DOM element) |
+| style | `CSSProperties` | - | Inline styles forwarded to the root container |
 
 ## Slots
 

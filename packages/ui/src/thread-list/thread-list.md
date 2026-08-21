@@ -10,7 +10,7 @@ status: enriched
 
 # ThreadList
 
-> 会话历史列表 · ChatGPT 式智能体侧栏：标题+meta 双行条目 + active 高亮 + 删除按钮(stopPropagation 不触发选中) + 头部动作槽(新对话) + 空态占位 + bare 内嵌 · ai/agent
+> 列出历史会话，可切换、删除和新建 · ai/agent
 
 ## 何时用
 
@@ -25,17 +25,17 @@ import { ThreadList } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `ThreadListItem[]` | — | 会话条目数组 |
+| items* | `ThreadListItem[]` | - | 会话条目数组 |
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
-| className | `string` | — | 容器附加类 |
+| className | `string` | - | 容器附加类 |
 
 `ThreadListItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| id * | `string` | — | 唯一键，也是 `onSelect` 的入参 |
-| title * | `ReactNode` | — | 会话标题 |
-| meta | `ReactNode` | — | 次行元信息（相对时间 / 摘要） |
+| id * | `string` | - | 唯一键，也是 `onSelect` 的入参 |
+| title * | `ReactNode` | - | 会话标题 |
+| meta | `ReactNode` | - | 次行元信息（相对时间 / 摘要） |
 | active | `boolean` | `false` | 当前打开的会话，高亮 |
 
 ## Events

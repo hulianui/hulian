@@ -25,7 +25,7 @@ import { BounceCards } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| images | `string[]` | — | 卡片图片地址数组，按下标对应 `transformStyles`；与 `children` 互斥 |
+| images | `string[]` | - | 卡片图片地址数组，按下标对应 `transformStyles`；与 `children` 互斥 |
 | containerWidth | `number` | `400` | 容器宽度（px） |
 | containerHeight | `number` | `400` | 容器高度（px） |
 | animationDelay | `number` | `0.5` | 入场起始延迟（秒），卡片从 scale 0 弹入前的整体等待 |
@@ -33,8 +33,8 @@ import { BounceCards } from "@hulianui/ui"
 | transformStyles | `string[]` | 五张牌的旋转+横移 | 每张卡片扇形铺开的 transform，按下标对齐；超出数组的卡片回退无变换。例 `'rotate(10deg) translate(-170px)'` |
 | enableHover | `boolean` | `true` | 是否开启 hover 推挤（悬停某张时它回正、两侧向外让位） |
 | pushDistance | `number` | `160` | hover 时两侧卡片向外让位的横向位移（px） |
-| className | `string` | — | 透传根容器类名 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器类名 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

@@ -32,14 +32,14 @@ import { ColorBends } from "@hulianui/ui"
 | scale | `number` | `1` | 流场缩放；越小色带越密，越大越舒展 |
 | frequency | `number` | `1` | 波纹频率；提升后正弦扰动更密集 |
 | warpStrength | `number` | `1` | 扭曲强度，控制色带被波场拉扯变形幅度 |
-| iterations | `number` | `1` | 折叠迭代次数（1–5）；越大结构越复杂 |
+| iterations | `number` | `1` | 折叠迭代次数（1-5）；越大结构越复杂 |
 | intensity | `number` | `1.5` | 整体亮度增益，放大最终颜色 |
 | bandWidth | `number` | `6` | 色带宽度软参；越大越窄越锐利 |
 | noise | `number` | `0.15` | 颗粒噪声强度，打破塑料感；0=纯净 |
 | parallax | `number` | `0.5` | 指针视差影响，营造景深 |
 | mouseInfluence | `number` | `1` | 指针牵引强度；0=不响应指针 |
 | transparent | `boolean` | `true` | 透明背景（仅渲染色带）；false 时填满黑底 |
-| className | `string` | — | 透传到根容器（自带 absolute inset-0 z-0） |
+| className | `string` | - | 透传到根容器（自带 absolute inset-0 z-0） |
 
 ## Slots
 

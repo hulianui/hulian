@@ -25,12 +25,12 @@ import { RelativeTime, formatRelative, formatAbsolute } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `Date \| string \| number` | — | 目标时间：Date / ISO 字符串 / 毫秒时间戳。 |
-| base | `Date \| string \| number` | — | 参照的「现在」。传则固定不走实时 tick（SSR 确定性 / 测试 / 列表统一基准）；省略则取实时 `new Date()` 并按 updateInterval 刷新。 |
+| value* | `Date \| string \| number` | - | 目标时间：Date / ISO 字符串 / 毫秒时间戳。 |
+| base | `Date \| string \| number` | - | 参照的「现在」。传则固定不走实时 tick（SSR 确定性 / 测试 / 列表统一基准）；省略则取实时 `new Date()` 并按 updateInterval 刷新。 |
 | updateInterval | `number` | `60000` | 自动刷新间隔(ms)，每分钟。设 0 关闭刷新。 |
 | locale | `"zh" \| "en"` | `"zh"` | 语言。 |
 | withTitle | `boolean` | `true` | 悬停 title 显示绝对时间。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ## 示例
 ```tsx

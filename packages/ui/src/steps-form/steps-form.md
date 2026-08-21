@@ -10,7 +10,7 @@ status: enriched
 
 # StepsForm
 
-> 分步表单 · 复用 Steps 指示器 + 上一步/下一步/提交导航 + onStepValidate 逐步校验 + 跨步保值(消费者 useForm 持有·文案接 i18n) · forms/framework
+> 把长表单拆成多步，逐步校验并保留已填内容 · forms/framework
 
 ## 何时用
 
@@ -25,11 +25,11 @@ import { StepsForm } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| steps* | `StepsFormStep[]` | — | 步骤数组，每项含 `title`/`description`/`content`/`nextDisabled`/`nextText`/`showNav` |
-| current | `number` | — | 受控当前步（0 起） |
-| defaultCurrent | `number` | — | 非受控初始步 |
-| direction | `"horizontal" \| "vertical"` | — | Steps 指示器方向 |
-| className | `string` | — | 根节点类名 |
+| steps* | `StepsFormStep[]` | - | 步骤数组，每项含 `title`/`description`/`content`/`nextDisabled`/`nextText`/`showNav` |
+| current | `number` | - | 受控当前步（0 起） |
+| defaultCurrent | `number` | - | 非受控初始步 |
+| direction | `"horizontal" \| "vertical"` | - | Steps 指示器方向 |
+| className | `string` | - | 根节点类名 |
 
 ## Events
 

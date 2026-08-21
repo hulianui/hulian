@@ -10,7 +10,7 @@ status: enriched
 
 # Dock
 
-> 放大坞 · macOS 式按鼠标距离放大图标(motion 弹簧 + context 下发 mouseX) · navigation/global
+> 一排会随鼠标靠近放大的图标快捷入口 · navigation/global
 
 ## 何时用
 
@@ -26,21 +26,21 @@ import { Dock, DockIcon } from "@hulianui/ui"
 ### Dock
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| magnification | `number` | — | 鼠标靠近时图标放大到的峰值尺寸(px) |
-| distance | `number` | — | 放大影响范围半径(px) |
-| iconSize | `number` | — | 静息图标尺寸(px) |
-| activeKey | `string` | — | 当前项 key，与 DockIcon 的 `itemKey` 比对 |
-| onSelect | `(key: string) => void` | — | 点击某项。**提供它才把 DockIcon 渲染成真正的 `<button>`**，底座同时升级为 `nav` 地标 |
-| aria-label | `string` | — | 渲染为 `<nav>` 时的地标名称 |
-| className | `string` | — | — |
+| magnification | `number` | - | 鼠标靠近时图标放大到的峰值尺寸(px) |
+| distance | `number` | - | 放大影响范围半径(px) |
+| iconSize | `number` | - | 静息图标尺寸(px) |
+| activeKey | `string` | - | 当前项 key，与 DockIcon 的 `itemKey` 比对 |
+| onSelect | `(key: string) => void` | - | 点击某项。**提供它才把 DockIcon 渲染成真正的 `<button>`**，底座同时升级为 `nav` 地标 |
+| aria-label | `string` | - | 渲染为 `<nav>` 时的地标名称 |
+| className | `string` | - | - |
 
 ### DockIcon
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| itemKey | `string` | — | 本项 key，配合 Dock 的 `activeKey` / `onSelect` |
-| active | `boolean` | — | 直接指定选中态，优先于 `activeKey` 比对结果 |
-| label | `string` | — | 可点击时的无障碍名（图标本身通常没有文字） |
-| className | `string` | — | — |
+| itemKey | `string` | - | 本项 key，配合 Dock 的 `activeKey` / `onSelect` |
+| active | `boolean` | - | 直接指定选中态，优先于 `activeKey` 比对结果 |
+| label | `string` | - | 可点击时的无障碍名（图标本身通常没有文字） |
+| className | `string` | - | - |
 
 ## Slots
 

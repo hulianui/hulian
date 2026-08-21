@@ -25,7 +25,7 @@ import { ProfileCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| avatarUrl | `string` | — | 头像地址，未提供时回退为姓名首字母占位块（不引外链） |
+| avatarUrl | `string` | - | 头像地址，未提供时回退为姓名首字母占位块（不引外链） |
 | name | `string` | `"瑚琏"` | 姓名，底部主标题；无头像时据此生成首字母占位 |
 | title | `string` | `"前端工程师"` | 职位/副标题，姓名下方 |
 | handle | `string` | `"hulianui"` | 用户 handle（@xxx），底部信息条左侧 |
@@ -35,8 +35,8 @@ import { ProfileCard } from "@hulianui/ui"
 | enableTilt | `boolean` | `true` | 是否开启指针倾斜 + 全息光泽；关闭后为静态卡；reduced-motion 自动降级静态 |
 | glowColor | `string` | `var(--color-chart-1)` | 全息高光主色，须用带 `--color-` 前缀的 token，也可传任意 CSS 颜色 |
 | aspectRatio | `number` | `0.74` | 卡片宽高比（width/height），默认接近实体卡 |
-| className | `string` | — | 透传到根容器的额外 className |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器的额外 className |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Events
 

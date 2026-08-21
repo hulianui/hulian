@@ -31,8 +31,8 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
 | isDisabled | `boolean` | `false` | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
-| className | `string` | — | — |
-| …HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | — | 透传 span 原生属性。状态标签常用 `title` 挂完整值做 hover 全文（表格里显示「Word」、title 是完整 MIME），以及 `data-testid` / `aria-*` |
+| className | `string` | - | - |
+| …HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | 透传 span 原生属性。状态标签常用 `title` 挂完整值做 hover 全文（表格里显示「Word」、title 是完整 MIME），以及 `data-testid` / `aria-*` |
 
 ## Events
 

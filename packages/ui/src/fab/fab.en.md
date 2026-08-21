@@ -10,7 +10,7 @@ status: enriched
 
 # Fab
 
-> Floating operation button · fixed welt + speed-dial sub-action staggered expansion/main button rotation 45° (zero dependence·reduced-motion) · mobile/nav
+> Places a prominent floating mobile action button above page content. · mobile/nav
 
 ## When to Use
 
@@ -25,13 +25,13 @@ import { Fab } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `label` | `string` | — | Main button text (extended capsule state); provides the rear main button to change to "icon + text" adaptive capsule, and defaults to aria-label |
-| `actions` | `FabAction[]` | — | speed-dial sub-action; if provided, click the main button to expand/collapse, otherwise directly trigger onClick |
+| `label` | `string` | - | Main button text (extended capsule state); provides the rear main button to change to "icon + text" adaptive capsule, and defaults to aria-label |
+| `actions` | `FabAction[]` | - | speed-dial sub-action; if provided, click the main button to expand/collapse, otherwise directly trigger onClick |
 | `position` | `"bottom-right" \| "bottom-left" \| "bottom-center"` | `"bottom-right"` | Welt position |
 | `size` | `"sm" \| "md"` | `"md"` | md=56px main button, sm=48px (compact scene) |
 | `draggable` | `boolean` | `false` | Press and drag to reposition (displacement >3px is regarded as dragging, onClick will not be triggered this time) |
 | `aria-label` | `string` | `"\u64cd\u4f5c"` ("Action") | Main Button Accessibility Label |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **FabAction**: `key: string` · `icon: ReactNode` · `label?: string` (displayed on the side of the icon as aria-label when expanded) · `onClick?: () => void`.
 

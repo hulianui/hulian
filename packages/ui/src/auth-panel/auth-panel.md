@@ -10,7 +10,7 @@ status: enriched
 
 # AuthPanel
 
-> 认证页宣传面板 · 分屏登录/注册页左侧那块（渐变底 + 品牌 + 标语 + 卖点 + 底部区）· 四档背景配方(radial/linear/mesh/none)由 token 混色写死在组件内 —— Tailwind 工具类给不出带 color-mix 的 radial-gradient，guard 又禁消费方传 style，两条一撞只剩裸 div + inline style · color 走 resolveTone 与 Brand/Dot 同路 · 配 LoginForm surface={false} 免卡中卡 · forms/framework
+> 搭出分屏登录页的品牌一侧，含渐变底、标语和卖点 · forms/framework
 
 ## 何时用
 
@@ -34,16 +34,16 @@ import { AuthPanel } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| brand | `ReactNode` | — | 品牌位，通常直接放 [Brand](../brand/brand.md) |
-| title | `ReactNode` | — | 主标语 |
-| titleLevel | `1..6` | `2` | 标题语义级别（只换 `h1`–`h6` 标签，视觉尺寸不变） |
-| description | `ReactNode` | — | 标语下的补充说明 |
-| highlights | `ReactNode[]` | — | 卖点列表，每条自动带一枚勾选标记（跟随 `color`） |
-| children | `ReactNode` | — | 中部自由内容（插画、统计数字、客户 logo 墙） |
-| footer | `ReactNode` | — | 底部区（版权、备案号、次要链接） |
+| brand | `ReactNode` | - | 品牌位，通常直接放 [Brand](../brand/brand.md) |
+| title | `ReactNode` | - | 主标语 |
+| titleLevel | `1..6` | `2` | 标题语义级别（只换 `h1`-`h6` 标签，视觉尺寸不变） |
+| description | `ReactNode` | - | 标语下的补充说明 |
+| highlights | `ReactNode[]` | - | 卖点列表，每条自动带一枚勾选标记（跟随 `color`） |
+| children | `ReactNode` | - | 中部自由内容（插画、统计数字、客户 logo 墙） |
+| footer | `ReactNode` | - | 底部区（版权、备案号、次要链接） |
 | color | `string` | `"primary"` | 品牌色：语义色名 / 任意 CSS 色 / 变量，走 `resolveTone`（同 [Brand](../brand/brand.md) `.color`、[Dot](../dot/dot.md) `.color`、`ChartSeries.color`） |
 | gradient | `"radial" \| "linear" \| "mesh" \| "none"` | `"radial"` | 背景配方，见下 |
-| className | `string` | — | 根节点类名 |
+| className | `string` | - | 根节点类名 |
 
 ### 背景配方
 

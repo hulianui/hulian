@@ -10,7 +10,7 @@ status: enriched
 
 # InputOTP
 
-> One-time code input · Fixed-length segmented fields with automatic advance, Backspace behavior, full-code paste, and zero dependencies · forms/advanced
+> Collects one-time codes across fixed-length slots with auto-advance, backspace, and full-code paste. · forms/advanced
 
 ## When to use
 
@@ -28,14 +28,14 @@ Inherits the native attributes of the root `role="group"` element, so `id`, `dat
 | Name | Type | Default | Description |
 |------|------|------|------|
 | length | `number` | `6` | number of segments |
-| value | `string` | — | controlled value |
+| value | `string` | - | controlled value |
 | defaultValue | `string` | `""` | Uncontrolled initial value. |
 | type | `"numeric" \| "text"` | `"numeric"` | Numbers only (default) or any characters |
 | disabled | `boolean` | `false` | Disables the control. |
 | invalid | `boolean` | `false` | Verification failed status |
-| groupGap | `boolean` | `false` | Inserts a separator in the middle for a 3–3 grouping such as XXX–XXX. |
-| name | `string` | — | Submission name. Renders an extra hidden input holding the complete value, because the segments each hold a single character and would otherwise submit N separate fields. |
-| className | `string` | — | Container class name |
+| groupGap | `boolean` | `false` | Inserts a separator in the middle for a 3-3 grouping such as XXX-XXX. |
+| name | `string` | - | Submission name. Renders an extra hidden input holding the complete value, because the segments each hold a single character and would otherwise submit N separate fields. |
+| className | `string` | - | Container class name |
 | aria-label | `string` | `"\u9a8c\u8bc1\u7801"` | Accessible name; the built-in Chinese copy means “Verification code.” |
 
 ## Events
@@ -67,7 +67,7 @@ const [otp, setOtp] = useState("");
 
 - `onComplete` fires once when the final segment is filled. Put verification there instead of repeatedly checking `value.length === length` in `onChange`.
 - Pair a controlled `value` with `onChange`; without the update, the segments cannot accept input.
-- With **react-hook-form**, the value is a single string rather than a native input, so it must go through `Controller` — and `field.onBlur` **must be passed in**. Without it `touchedFields` never updates and a form using `mode: "onBlur"` or `"onTouched"` fails silently: focusing and leaving the field never triggers validation, and errors only appear on submit.
+- With **react-hook-form**, the value is a single string rather than a native input, so it must go through `Controller`, and `field.onBlur` **must be passed in**. Without it `touchedFields` never updates and a form using `mode: "onBlur"` or `"onTouched"` fails silently: focusing and leaving the field never triggers validation, and errors only appear on submit.
 - `onBlur` has whole-group semantics: moving focus between segments does not fire it. Per-segment blur has to be handled separately.
 
 ## Related

@@ -28,13 +28,13 @@ import { LetterGlitch } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | glitchColors | `string[]` | `["var(--color-chart-2)", "var(--color-chart-1)", "var(--color-chart-4)"]` | Character flicker palette, any CSS color, internal off-screen canvas parsed to RGB interpolation |
-| glitchSpeed | `number` | `50` | Minimum interval between updates in milliseconds; lower values feel more frantic, with 20–200 recommended |
+| glitchSpeed | `number` | `50` | Minimum interval between updates in milliseconds; lower values feel more frantic, with 20-200 recommended |
 | smooth | `boolean` | `true` | Interpolate color changes frame by frame; false switches colors immediately for a harsher glitch |
 | outerVignette | `boolean` | `true` | Outer edge vignetting (radial fade around) |
 | centerVignette | `boolean` | `false` | Center vignetting (dark in the middle→transparent at the edge), used to contrast the embedded content |
 | characters | `string` | Uppercase letters + symbols + numbers | Character set that participates in flickering, internally split by code points, supports any Unicode |
-| className | `string` | — | Root container className |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Root container className |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Examples
 ```tsx

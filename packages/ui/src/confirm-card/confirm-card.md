@@ -10,7 +10,7 @@ status: enriched
 
 # ConfirmCard
 
-> 确认卡 · human-in-the-loop 标准件：结构化字段摘要(dl) + 确认/修正双动作 + acted 锁定态(已确认/修改中) · dogfood Button · ai/agent
+> 请用户确认智能体提出的操作，或要求修正 · ai/agent
 
 ## 何时用
 
@@ -25,16 +25,16 @@ import { ConfirmCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `ConfirmCardItem[]` | — | 字段摘要数组，每项 `{ label, value }`，渲染为 dl |
+| items* | `ConfirmCardItem[]` | - | 字段摘要数组，每项 `{ label, value }`，渲染为 dl |
 | acted | `"confirmed" \| "edited" \| null` | `null` | 已操作结果：锁定双钮并标记所选项 |
-| className | `string` | — | 容器附加类 |
+| className | `string` | - | 容器附加类 |
 
 `ConfirmCardItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label * | `ReactNode` | — | 字段名（渲染为 `<dt>`） |
-| value * | `ReactNode` | — | 字段值（渲染为 `<dd>`） |
+| label * | `ReactNode` | - | 字段名（渲染为 `<dt>`） |
+| value * | `ReactNode` | - | 字段值（渲染为 `<dd>`） |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # LiveProductCard
 
-> 小黄车讲解卡 · 序号链接角标 + 现价/划线原价 + 讲解中脉冲徽标 + 库存/已售 + 秒杀限量角标 + 抢购按钮插槽 + row 列表行/card 网格卡两布局(直播带货标配·只消费 token·区别通用 Card) · data-display/info
+> 展示直播带货商品，含价格、库存和抢购入口 · data-display/info
 
 ## 何时用
 
@@ -25,16 +25,16 @@ import { LiveProductCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| image* | `string` | — | 商品图 URL |
-| price* | `number` | — | 现价（秒杀价） |
-| index | `number` | — | 第 N 号链接徽标 |
-| originalPrice | `number` | — | 划线原价 |
-| explaining | `boolean` | — | 「讲解中」脉冲徽标 |
-| stock | `number` | — | 剩余库存 |
-| sold | `number` | — | 已售数 |
+| image* | `string` | - | 商品图 URL |
+| price* | `number` | - | 现价（秒杀价） |
+| index | `number` | - | 第 N 号链接徽标 |
+| originalPrice | `number` | - | 划线原价 |
+| explaining | `boolean` | - | 「讲解中」脉冲徽标 |
+| stock | `number` | - | 剩余库存 |
+| sold | `number` | - | 已售数 |
 | currency | `string` | `"¥"` | 货币符号 |
 | layout | `"row" \| "card"` | `"row"` | 布局：row=列表行（中控/弹层），card=网格卡 |
-| className | `string` | — | 自定义类 |
+| className | `string` | - | 自定义类 |
 
 ## Events
 

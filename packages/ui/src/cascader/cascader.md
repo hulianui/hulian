@@ -10,7 +10,7 @@ status: enriched
 
 # Cascader
 
-> 级联选择 · 触发器 + Popover 横向逐级面板列 + 路径数组受控 + click/hover 展开 + changeOnSelect · 复用树引擎核 · forms/advanced
+> 沿逐级展开的选项列选出一条路径 · forms/advanced
 
 ## 何时用
 
@@ -25,18 +25,18 @@ import { Cascader, flattenLeafPaths, filterLeafPaths, type CascaderLeafPath } fr
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes* | `TreeNode[]` | — | 层级数据（复用 tree-core 的 `TreeNode`，含 `key`/`label`/`children`/`disabled`） |
-| value | `string[]` | — | 受控路径（从根到所选节点的 key 数组） |
-| defaultValue | `string[]` | — | 非受控初始路径 |
+| nodes* | `TreeNode[]` | - | 层级数据（复用 tree-core 的 `TreeNode`，含 `key`/`label`/`children`/`disabled`） |
+| value | `string[]` | - | 受控路径（从根到所选节点的 key 数组） |
+| defaultValue | `string[]` | - | 非受控初始路径 |
 | expandTrigger | `"click" \| "hover"` | `"click"` | 逐级展开触发方式 |
 | changeOnSelect | `boolean` | `false` | 任意层节点都可提交（非仅叶子） |
-| showSearch | `boolean` | — | 浮层顶部出搜索框：扁平成叶子路径模糊匹配，命中行选中即提交全路径 |
-| searchPlaceholder | `string` | — | 搜索框占位符 |
-| placeholder | `string` | — | 触发器占位符 |
-| disabled | `boolean` | — | 禁用 |
-| invalid | `boolean` | — | 校验失败态 |
-| size | `"sm" \| "md" \| "lg"` | — | 触发器尺寸 |
-| className | `string` | — | 容器类名 |
+| showSearch | `boolean` | - | 浮层顶部出搜索框：扁平成叶子路径模糊匹配，命中行选中即提交全路径 |
+| searchPlaceholder | `string` | - | 搜索框占位符 |
+| placeholder | `string` | - | 触发器占位符 |
+| disabled | `boolean` | - | 禁用 |
+| invalid | `boolean` | - | 校验失败态 |
+| size | `"sm" \| "md" \| "lg"` | - | 触发器尺寸 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Dossier
 
-> 案卷面板 · 智能体槽位填充进度可视化：分域清单 + 三态(空心环/半填充/Check) + 当前采集域高亮 + 域内容摘要 + 自动进度(已归档 n/m·可选域不计分母) + bare 内嵌 · 纯皮肤RSC · ai/agent
+> 展示智能体各信息域的收集进度和内容摘要 · ai/agent
 
 ## 何时用
 
@@ -27,9 +27,9 @@ import { Dossier } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| sections * | `DossierSection[]` | — | 分域清单（数据驱动） |
+| sections * | `DossierSection[]` | - | 分域清单（数据驱动） |
 | bare | `boolean` | `false` | 去掉容器边框背景，内嵌用 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 | archivedLabel | `ReactNode` | 取自 locale | 自动进度前缀。服务端渲染场景可显式传入本地化文案 |
 | optionalLabel | `ReactNode` | 取自 locale | 可选域标记。服务端渲染场景可显式传入本地化文案 |
 
@@ -44,11 +44,11 @@ import { Dossier } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| key * | `string` | — | 域唯一标识 |
-| label * | `ReactNode` | — | 域名称 |
+| key * | `string` | - | 域唯一标识 |
+| label * | `ReactNode` | - | 域名称 |
 | status | `"empty" ｜ "partial" ｜ "done"` | `"empty"` | 空(空心环) / 半填充 / 完成(勾) |
 | optional | `boolean` | `false` | 可选域：不计入进度分母，empty 时弱化并标注「可选」 |
-| summary | `ReactNode` | — | 已归档内容摘要（一两行） |
+| summary | `ReactNode` | - | 已归档内容摘要（一两行） |
 | active | `boolean` | `false` | 当前正在采集的域，高亮 |
 
 ## 示例

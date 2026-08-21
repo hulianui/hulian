@@ -10,7 +10,7 @@ status: enriched
 
 # Chip
 
-> Chip · removable text entity with dot, avatar, content slots, tone, and variant · data-display/info
+> Shows a compact token with semantic styling, an optional dot, and removal action. · data-display/info
 
 ## When to use
 
@@ -28,9 +28,9 @@ import { Chip, chipVariants } from "@hulianui/ui"
 | variant | `"solid"\|"soft"\|"outline"` | `soft` | Visual style. |
 | tone | `"brand"\|"danger"\|"neutral"` | `brand` | Semantic tone. |
 | size | `"sm"\|"md"` | `md` | Size. |
-| dot | `boolean` | — | Leading status dot. |
-| isDisabled | `boolean` | — | Lowers opacity and disables pointer actions. |
-| className | `string` | — | Root class. |
+| dot | `boolean` | - | Leading status dot. |
+| isDisabled | `boolean` | - | Lowers opacity and disables pointer actions. |
+| className | `string` | - | Root class. |
 
 ## Events
 

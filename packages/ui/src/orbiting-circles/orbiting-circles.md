@@ -25,12 +25,12 @@ import { OrbitingCircles } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| radius | `number` | — | 轨道半径 px |
-| duration | `number` | — | 一圈时长 s |
+| radius | `number` | - | 轨道半径 px |
+| duration | `number` | - | 一圈时长 s |
 | reverse | `boolean` | `false` | 反向旋转 |
-| iconSize | `number` | — | 子元素方框尺寸 px |
-| showPath | `boolean` | — | 是否画出轨道虚线圆环 |
-| className | `string` | — | 透传 className |
+| iconSize | `number` | - | 子元素方框尺寸 px |
+| showPath | `boolean` | - | 是否画出轨道虚线圆环 |
+| className | `string` | - | 透传 className |
 
 ## Slots
 

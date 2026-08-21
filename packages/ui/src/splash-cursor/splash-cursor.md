@@ -28,11 +28,11 @@ import { SplashCursor } from "@hulianui/ui"
 | rainbow | `boolean` | `true` | 彩虹模式：每次溅射沿 HSV 色相轮循环。关闭后统一用 color |
 | color | `string` | `var(--color-chart-1)` | 非彩虹模式的固定溅射色，token 须带 `--color-` 前缀；rainbow 时忽略 |
 | splatRadius | `number` | `56` | 溅射半径基准（px），越大色斑越饱满 |
-| splatForce | `number` | `1` | 溅射力度：随指针速度抛洒的位移与拖尾长度，建议 0.5–2 |
-| dissipation | `number` | `0.92` | 色斑保留率（每秒衰减，0–1），越接近 1 越持久 |
-| opacity | `number` | `1` | 整体不透明度（0–1），叠内容下方时可调暗 |
-| className | `string` | — | 透传到根容器（占满父级 absolute inset-0）；父级需 relative |
-| style | `CSSProperties` | — | 透传到根容器 |
+| splatForce | `number` | `1` | 溅射力度：随指针速度抛洒的位移与拖尾长度，建议 0.5-2 |
+| dissipation | `number` | `0.92` | 色斑保留率（每秒衰减，0-1），越接近 1 越持久 |
+| opacity | `number` | `1` | 整体不透明度（0-1），叠内容下方时可调暗 |
+| className | `string` | - | 透传到根容器（占满父级 absolute inset-0）；父级需 relative |
+| style | `CSSProperties` | - | 透传到根容器 |
 
 ## 示例
 ```tsx

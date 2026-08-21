@@ -48,40 +48,40 @@ import {
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items * | ComponentPickerItem[] | — | 组件目录。空数组渲染「目录为空」空态（区别于「无匹配结果」） |
-| filter | ComponentPickerFilter | — | 受控筛选态 `{ category?, search? }`。传了必须接 `onFilterChange`，否则搜索框和分类树点了不动 |
+| items * | ComponentPickerItem[] | - | 组件目录。空数组渲染「目录为空」空态（区别于「无匹配结果」） |
+| filter | ComponentPickerFilter | - | 受控筛选态 `{ category?, search? }`。传了必须接 `onFilterChange`，否则搜索框和分类树点了不动 |
 | defaultFilter | ComponentPickerFilter | `{}` | 非受控初始筛选态 |
 | showTree | boolean | `true` | 是否显示左侧分类树 |
 | showPreview | boolean | `false` | 详情面板是否显示预览区 |
 | showProps | boolean | `true` | 详情面板是否显示 Props 表（复用 Table） |
 | showExamples | boolean | `true` | 详情面板是否显示示例代码（复用 CodeBlock） |
-| activeSlug | string ｜ null | — | 受控高亮项（详情面板展示的那个） |
+| activeSlug | string ｜ null | - | 受控高亮项（详情面板展示的那个） |
 | defaultActiveSlug | string ｜ null | `null` | 非受控初始高亮项 |
 | maxResults | number | `60` | 结果区最多渲染多少条 |
-| labels | Partial\<ComponentPickerLabels\> | — | 界面文案覆盖，可整体或逐条；不传则取 ConfigProvider 的 locale（内置兜底 zh-CN） |
-| className | string | — | 外层类名。**须给确定高度**（如 `h-[560px]`），组件内部按 flex 填满、各区独立滚动 |
+| labels | Partial\<ComponentPickerLabels\> | - | 界面文案覆盖，可整体或逐条；不传则取 ConfigProvider 的 locale（内置兜底 zh-CN） |
+| className | string | - | 外层类名。**须给确定高度**（如 `h-[560px]`），组件内部按 flex 填满、各区独立滚动 |
 
 `ComponentPickerItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| slug * | `string` | — | 唯一键，也是 `onSelect` 的第一个入参 |
-| name * | `string` | — | 展示名（PascalCase 导出名） |
-| description * | `string` | — | 一句话说明 |
-| category * | `string` | — | 一级分类（layout / forms / data-display…） |
-| group * | `string` | — | 二级分组（container / advanced / collection…）；无分组给空串 |
-| tags | `string[]` | — | 搜索用的补充关键词 |
-| props | `ComponentPickerProp[]` | — | 详情面板的 Props 表数据，每项 `{ name, type?, default?, description?, required? }` |
-| examples | `ComponentPickerExample[]` | — | 详情面板的示例代码，每项 `{ title?, lang?, code }` |
+| slug * | `string` | - | 唯一键，也是 `onSelect` 的第一个入参 |
+| name * | `string` | - | 展示名（PascalCase 导出名） |
+| description * | `string` | - | 一句话说明 |
+| category * | `string` | - | 一级分类（layout / forms / data-display…） |
+| group * | `string` | - | 二级分组（container / advanced / collection…）；无分组给空串 |
+| tags | `string[]` | - | 搜索用的补充关键词 |
+| props | `ComponentPickerProp[]` | - | 详情面板的 Props 表数据，每项 `{ name, type?, default?, description?, required? }` |
+| examples | `ComponentPickerExample[]` | - | 详情面板的示例代码，每项 `{ title?, lang?, code }` |
 
 `ComponentPickerCommandProps`（薄封装：把目录塞进 Command 面板）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items * | `ComponentPickerItem[]` | — | 同上 |
-| open * | `boolean` | — | 受控开关 |
-| onOpenChange * | `(open: boolean) => void` | — | 开合回调 |
-| onSelect | `(slug: string) => void` | — | 选中某项 |
+| items * | `ComponentPickerItem[]` | - | 同上 |
+| open * | `boolean` | - | 受控开关 |
+| onOpenChange * | `(open: boolean) => void` | - | 开合回调 |
+| onSelect | `(slug: string) => void` | - | 选中某项 |
 | placeholder | `string` | 取 locale | 搜索框占位 |
 | emptyMessage | `ReactNode` | 取 locale | 无匹配结果时的文案 |
 | maxResults | `number` | `30` | 最多渲染多少条（注意与 `ComponentPickerProps` 的 60 不同） |

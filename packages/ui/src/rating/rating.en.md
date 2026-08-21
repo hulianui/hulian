@@ -10,7 +10,7 @@ status: enriched
 
 # Rating
 
-> Dependency-free rating control · radio semantics + custom icons + hover preview + token-based color · forms/advanced
+> Captures a controlled rating with radio semantics, custom icons, and hover preview. · forms/advanced
 
 ## When to use
 
@@ -25,14 +25,14 @@ import { Rating } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `number` | — | Controlled current score. |
-| defaultValue | `number` | — | Initial score when uncontrolled. |
+| value | `number` | - | Controlled current score. |
+| defaultValue | `number` | - | Initial score when uncontrolled. |
 | max | `number` | `5` | Maximum number of rating icons. |
 | readOnly | `boolean` | `false` | Shows a noninteractive rating. |
-| disabled | `boolean` | — | Disables interaction. |
+| disabled | `boolean` | - | Disables interaction. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Icon size. |
 | color | `string` | `var(--color-primary)` | Icon color as any CSS color or token variable; hover color is derived automatically. |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 ## Events
 

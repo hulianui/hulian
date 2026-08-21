@@ -10,7 +10,7 @@ status: enriched
 
 # Descriptions
 
-> Description list · read-only detail-page key-value fields with horizontal or vertical layout, borders, column spans, skin-only rendering, and RSC support · data-display/collection
+> Displays labeled record fields in horizontal or vertical, bordered or unbordered layouts. · data-display/collection
 
 ## When to use
 
@@ -31,16 +31,16 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | layout | `"horizontal" \| "vertical"` | `"horizontal"` | Places labels beside or above values. |
 | bordered | `boolean` | `false` | Enables a bordered table-like layout. |
 | size | `"sm" \| "md"` | `"md"` | Density step. `sm` tightens cell padding only and leaves the font size alone. |
-| labelWidth | `number \| string` | — | Pins the label column (horizontal only). Left out, the widest label in the table sets it and every row lines up. Numbers are pixels. |
+| labelWidth | `number \| string` | - | Pins the label column (horizontal only). Left out, the widest label in the table sets it and every row lines up. Numbers are pixels. |
 | emptyText | `ReactNode` | `"—"` | Placeholder for empty values. Empty means `null`, `undefined`, `""` or `false`; the number `0` still renders. Pass `null` to switch it off. |
 | align | `"baseline" \| "start" \| "center"` | follows layout | Vertical alignment of label against value. Only needed when the value is taller than text (an image, a row of tags). |
-| items | `DescriptionsItemData[]` | — | Data-driven entries, taking precedence over child items. |
+| items | `DescriptionsItemData[]` | - | Data-driven entries, taking precedence over child items. |
 
 `DescriptionsItemProps` (the `<DescriptionsItem>` used in the compound form)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label | `ReactNode` | — | Key name. |
+| label | `ReactNode` | - | Key name. |
 | span | `number` | `1` | Number of columns to span. |
 
 ## Slots

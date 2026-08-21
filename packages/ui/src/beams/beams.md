@@ -25,14 +25,14 @@ import { Beams } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| beamNumber | `number` | `12` | 光束数量（纵向条带数），建议 4–24，过大低端设备糊成一片 |
+| beamNumber | `number` | `12` | 光束数量（纵向条带数），建议 4-24，过大低端设备糊成一片 |
 | beamWidth | `number` | `2` | 单束光的相对宽度，越大束间缝隙越窄 |
 | speed | `number` | `2` | 光束沿轴流动速度；0=静止（仍保留静态纹理） |
 | lightColor | `string` | `--color-chart-1` | 光束颜色，CSS 颜色字符串，默认取主题 token 明暗自适应 |
 | noiseIntensity | `number` | `1.75` | 颗粒噪声强度，模拟胶片质感；0=纯净无颗粒 |
 | scale | `number` | `0.2` | 噪声纹理缩放，越小波纹越舒展，越大越细碎 |
 | rotation | `number` | `30` | 整组光束旋转角度（度）；0=垂直，正值顺时针斜射 |
-| className | `string` | — | 透传到根容器（根自带 absolute inset-0 z-0） |
+| className | `string` | - | 透传到根容器（根自带 absolute inset-0 z-0） |
 
 ## Slots
 

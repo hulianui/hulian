@@ -10,7 +10,7 @@ status: enriched
 
 # Tablet
 
-> Tablet frame · iPad-family device shell with model-specific dimensions, themeable tokens, and server-component compatibility · mockups/device
+> Frames content inside a tablet device mockup. · mockups/device
 
 ## When to Use
 
@@ -27,9 +27,9 @@ Inherited from `ComponentPropsWithoutRef<"div">`. `TABLET_MODELS` export model�
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| model | `"ipad-pro-13" \| "ipad-pro-11" \| "ipad-air-11" \| "ipad-10" \| "ipad-mini"` | — | Optional model used to select a predefined width and aspect ratio; the showcase uses `"ipad-pro-11"` |
+| model | `"ipad-pro-13" \| "ipad-pro-11" \| "ipad-air-11" \| "ipad-10" \| "ipad-mini"` | - | Optional model used to select a predefined width and aspect ratio; the showcase uses `"ipad-pro-11"` |
 | width | `number` | Model width or `320` | Device width in pixels; an explicit value overrides the selected model's width |
-| imageSrc | `string` | — | Screen image URL; takes precedence over `children` |
+| imageSrc | `string` | - | Screen image URL; takes precedence over `children` |
 
 ## Slots
 
@@ -48,7 +48,7 @@ Inherited from `ComponentPropsWithoutRef<"div">`. `TABLET_MODELS` export model�
 
 - **Body height is derived from the screen ratio and the border, never a hard-coded `aspectRatio`.** The border is a fixed pixel value while the screen scales with the width, so the body ratio is not a constant: the same device drawn at 280px and at 360px has two different body ratios. A hard-coded ratio therefore skews the inner screen at some widths, and [PreviewSandbox](../preview-sandbox/preview-sandbox.md) `fit` scaling leaves a white band on the short edge (#117). The logical screen resolution and border width live in `lib/device-metrics`, and a unit test locks the invariant that the inner screen ratio always equals the declared `screen` ratio.
 
-- Unlike iPhone and Android frames, iPad generations really do differ in aspect ratio, so **when `model` is set explicitly** the body ratio comes from that model's `aspectRatio` and `width` only overrides the width. Without `model`, the default tier derives its height from the screen ratio and the border — and [PreviewSandbox](../preview-sandbox/preview-sandbox.md) never passes `model`, so that is the path it takes.
+- Unlike iPhone and Android frames, iPad generations really do differ in aspect ratio, so **when `model` is set explicitly** the body ratio comes from that model's `aspectRatio` and `width` only overrides the width. Without `model`, the default tier derives its height from the screen ratio and the border, and [PreviewSandbox](../preview-sandbox/preview-sandbox.md) never passes `model`, so that is the path it takes.
 - When both `imageSrc` and `children` are provided, `imageSrc` takes priority.
 
 ## Related

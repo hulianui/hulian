@@ -25,7 +25,7 @@ import { TypingAnimation } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text* | `string` | — | 要逐字打出的文本 |
+| text* | `string` | - | 要逐字打出的文本 |
 | duration | `number` | `80` | 每字毫秒 |
 | delay | `number` | `0` | 开始前延迟毫秒 |
 | startOnView | `boolean` | `true` | 进入视口才开始；设 `false` 立即开始 |

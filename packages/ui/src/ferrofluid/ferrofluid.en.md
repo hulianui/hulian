@@ -35,13 +35,13 @@ import { Ferrofluid } from "@hulianui/ui"
 | shimmer | `number` | `1.5` | Low-light variation that creates metallic flashes |
 | glow | `number` | `2` | Overall glow multiplier |
 | flowDirection | `"up" \| "down" \| "left" \| "right"` | `"down"` | Overall ridge-drift direction |
-| opacity | `number` | `1` | Overall opacity, range 0–1 |
+| opacity | `number` | `1` | Overall opacity, range 0-1 |
 | mouseInteraction | `boolean` | `true` | Lets the pointer depress the liquid field and suppress bright bands |
 | mouseStrength | `number` | `1` | Pointer influence intensity, only effective when `mouseInteraction=true` |
 | mouseRadius | `number` | `0.35` | Normalized pointer influence radius |
 | mouseDampening | `number` | `0.15` | Pointer-following damping in seconds; 0 follows immediately |
 | dpr | `number` | `min(dpr, 2)` | Upper limit of device pixel ratio, lower it to save GPU |
-| className | `string` | — | Root container (or div) |
+| className | `string` | - | Root container (or div) |
 
 ## Slots
 

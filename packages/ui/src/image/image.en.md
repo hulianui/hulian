@@ -10,7 +10,7 @@ status: enriched
 
 # Image
 
-> Image · load fade-in, failure fallback or placeholder, hover zoom, and radius variants · data-display/collection
+> Loads images with fade-in, fallback, radius, and optional hover zoom. · data-display/collection
 
 ## When to use
 
@@ -27,16 +27,16 @@ Inherits `Omit<ImgHTMLAttributes<HTMLImageElement>, "width" | "height">`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| src * | string | — | Image URL. |
+| src * | string | - | Image URL. |
 | alt | string | `""` | Alternative text; empty by default, so provide meaningful text unless the image is decorative. |
-| width | number \| string | — | Numeric width or CSS length. |
-| height | number \| string | — | Numeric height or CSS length. |
+| width | number \| string | - | Numeric width or CSS length. |
+| height | number \| string | - | Numeric height or CSS length. |
 | radius | `"none"\|"sm"\|"md"\|"lg"\|"full"` | `"md"` | Radius scale. |
 | isZoomed | boolean | false | Scales on hover within the clipped wrapper. |
-| fallbackSrc | string | — | Failure fallback URL; omission shows the placeholder surface. |
-| className | string | — | Wrapper class controlling dimensions and clipping. |
-| imgClassName | string | — | Inner `<img>` class. |
-| ...img | Omit\<ImgHTMLAttributes, "width"\|"height"\> | — | Remaining native image props. |
+| fallbackSrc | string | - | Failure fallback URL; omission shows the placeholder surface. |
+| className | string | - | Wrapper class controlling dimensions and clipping. |
+| imgClassName | string | - | Inner `<img>` class. |
+| ...img | Omit\<ImgHTMLAttributes, "width"\|"height"\> | - | Remaining native image props. |
 
 ## Examples
 ```tsx

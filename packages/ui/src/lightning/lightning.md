@@ -25,13 +25,13 @@ import { Lightning } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| hue | `number` | `230` | 闪电色相(0–360, HSV 色环)，仅未传 `color` 时生效。例 30 暖橙 / 120 青绿 / 280 品紫 |
+| hue | `number` | `230` | 闪电色相(0-360, HSV 色环)，仅未传 `color` 时生效。例 30 暖橙 / 120 青绿 / 280 品紫 |
 | color | `string` | `undefined` | 闪电主色，传入后覆盖 `hue` 路径，shader 直接吃；传 `var(--color-chart-1)` 可吃 token 明暗自适应 |
 | xOffset | `number` | `0` | 水平偏移(clip-space)，正值推向右、负值推向左 |
 | speed | `number` | `1` | 动画速度因子，越大闪烁/翻涌越快 |
 | intensity | `number` | `1` | 辉度强度，越大越亮越粗 |
 | size | `number` | `1` | 噪声尺度，越大分叉越细密、越小越宏观 |
-| className | `string` | — | 透传根容器(reduced / WebGL 失败时透传 fallback div) |
+| className | `string` | - | 透传根容器(reduced / WebGL 失败时透传 fallback div) |
 
 ## Slots
 

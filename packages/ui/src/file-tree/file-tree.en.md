@@ -10,7 +10,7 @@ status: enriched
 
 # FileTree
 
-> A recursive file and folder tree with expansion, selection, search, and Git-style A/M/D/U/R status markers.
+> Browses expandable files and folders with selection and version-control status badges.
 
 ## When to use
 
@@ -25,13 +25,13 @@ import { FileTree, fileStatusMeta, filterFileTree } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| nodes* | `FileNode[]` | — | Recursive file and folder data. |
-| selectedPath | `string` | — | Controlled selected path. |
-| expandedPaths | `string[]` | — | Controlled set of expanded folder paths. |
-| defaultExpandedPaths | `string[]` | — | Initial uncontrolled paths, merged with each folder's `defaultExpanded`. |
+| nodes* | `FileNode[]` | - | Recursive file and folder data. |
+| selectedPath | `string` | - | Controlled selected path. |
+| expandedPaths | `string[]` | - | Controlled set of expanded folder paths. |
+| defaultExpandedPaths | `string[]` | - | Initial uncontrolled paths, merged with each folder's `defaultExpanded`. |
 | searchable | `boolean` | `false` | Shows an in-tree search field that filters matches and expands their ancestors. |
 | searchPlaceholder | `string` | `"\u641c\u7d22\u6587\u4ef6"` ("Search files") | Search-field placeholder. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Events
 

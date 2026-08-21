@@ -10,7 +10,7 @@ status: enriched
 
 # EditableTable
 
-> Inline-editing table · row drafts, validation, save/cancel restoration, custom editors, row add/delete, column sizing and alignment, with consumer-owned copy · data-display/collection
+> Edits validated row and cell values directly within a data table. · data-display/collection
 
 ## When to use
 
@@ -27,14 +27,14 @@ import { EditableTable } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| columns* | `EditableColumn<T>[]` | — | Column definitions described below. |
-| data* | `T[]` | — | Controlled data array. |
-| rowKey* | `(row: T) => string` | — | Stable row key. |
+| columns* | `EditableColumn<T>[]` | - | Column definitions described below. |
+| data* | `T[]` | - | Controlled data array. |
+| rowKey* | `(row: T) => string` | - | Stable row key. |
 | addable | `boolean` | `false` | Shows the add-row action; requires `newRow`. |
-| newRow | `() => T` | — | Factory whose new row immediately enters edit mode. |
+| newRow | `() => T` | - | Factory whose new row immediately enters edit mode. |
 | deletable | `boolean` | `false` | Enables row deletion. |
-| validateRow | `(row: T) => boolean` | — | Blocks save on a falsy result; the consumer renders errors. |
-| className | `string` | — | Root class name. |
+| validateRow | `(row: T) => boolean` | - | Blocks save on a falsy result; the consumer renders errors. |
+| className | `string` | - | Root class name. |
 
 ## Events
 
@@ -52,12 +52,12 @@ import { EditableTable } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| key* | `keyof T & string` | — | Data key. |
-| title* | `ReactNode` | — | Column title. |
+| key* | `keyof T & string` | - | Data key. |
+| title* | `ReactNode` | - | Column title. |
 | editable | `boolean` | `false` | Makes the cell editable; false stays read-only during editing. |
-| render | `(value, row) => ReactNode` | — | Display renderer; defaults to the raw value. |
-| editor | `(value, onChange, row) => ReactNode` | — | Edit renderer; defaults to a text input writing into the draft. |
-| width | `number` | — | Width in pixels. |
+| render | `(value, row) => ReactNode` | - | Display renderer; defaults to the raw value. |
+| editor | `(value, onChange, row) => ReactNode` | - | Edit renderer; defaults to a text input writing into the draft. |
+| width | `number` | - | Width in pixels. |
 | align | `"left" \| "center" \| "right"` | `"left"` | Cell alignment. |
 
 ## Example

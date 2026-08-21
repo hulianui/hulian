@@ -48,40 +48,40 @@ import {
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items * | ComponentPickerItem[] | — | The catalog. An empty array renders the empty-catalog state, which differs from the no-result state. |
-| filter | ComponentPickerFilter | — | Controlled `{ category?, search? }`. Pair it with `onFilterChange`, otherwise the search box and the tree stop responding. |
+| items * | ComponentPickerItem[] | - | The catalog. An empty array renders the empty-catalog state, which differs from the no-result state. |
+| filter | ComponentPickerFilter | - | Controlled `{ category?, search? }`. Pair it with `onFilterChange`, otherwise the search box and the tree stop responding. |
 | defaultFilter | ComponentPickerFilter | `{}` | Uncontrolled initial filter. |
 | showTree | boolean | `true` | Shows the category tree on the left. |
 | showPreview | boolean | `false` | Shows the preview area inside the detail pane. |
 | showProps | boolean | `true` | Shows the props table (reuses Table). |
 | showExamples | boolean | `true` | Shows example code (reuses CodeBlock). |
-| activeSlug | string \| null | — | Controlled highlighted item, the one the detail pane describes. |
+| activeSlug | string \| null | - | Controlled highlighted item, the one the detail pane describes. |
 | defaultActiveSlug | string \| null | `null` | Uncontrolled initial highlighted item. |
 | maxResults | number | `60` | Maximum number of result cards rendered. |
-| labels | Partial\<ComponentPickerLabels\> | — | UI copy overrides, whole object or single keys. Omit it and the picker takes its copy from the ConfigProvider locale. |
-| className | string | — | Wrapper class. **It must establish a height** such as `h-[560px]`; the internal panes then fill it and scroll independently. |
+| labels | Partial\<ComponentPickerLabels\> | - | UI copy overrides, whole object or single keys. Omit it and the picker takes its copy from the ConfigProvider locale. |
+| className | string | - | Wrapper class. **It must establish a height** such as `h-[560px]`; the internal panes then fill it and scroll independently. |
 
 `ComponentPickerItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| slug * | `string` | — | Unique key, also the first argument of `onSelect`. |
-| name * | `string` | — | Display name (the PascalCase export name). |
-| description * | `string` | — | One-line summary. |
-| category * | `string` | — | Top-level category (layout / forms / data-display…). |
-| group * | `string` | — | Second-level group (container / advanced / collection…); pass an empty string when there is none. |
-| tags | `string[]` | — | Extra keywords used by search. |
-| props | `ComponentPickerProp[]` | — | Rows for the detail pane's props table, each `{ name, type?, default?, description?, required? }`. |
-| examples | `ComponentPickerExample[]` | — | Example code for the detail pane, each `{ title?, lang?, code }`. |
+| slug * | `string` | - | Unique key, also the first argument of `onSelect`. |
+| name * | `string` | - | Display name (the PascalCase export name). |
+| description * | `string` | - | One-line summary. |
+| category * | `string` | - | Top-level category (layout / forms / data-display…). |
+| group * | `string` | - | Second-level group (container / advanced / collection…); pass an empty string when there is none. |
+| tags | `string[]` | - | Extra keywords used by search. |
+| props | `ComponentPickerProp[]` | - | Rows for the detail pane's props table, each `{ name, type?, default?, description?, required? }`. |
+| examples | `ComponentPickerExample[]` | - | Example code for the detail pane, each `{ title?, lang?, code }`. |
 
 `ComponentPickerCommandProps` (thin wrapper that puts the catalog inside a Command panel)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items * | `ComponentPickerItem[]` | — | Same as above. |
-| open * | `boolean` | — | Controlled open state. |
-| onOpenChange * | `(open: boolean) => void` | — | Open-state callback. |
-| onSelect | `(slug: string) => void` | — | Fires when an entry is chosen. |
+| items * | `ComponentPickerItem[]` | - | Same as above. |
+| open * | `boolean` | - | Controlled open state. |
+| onOpenChange * | `(open: boolean) => void` | - | Open-state callback. |
+| onSelect | `(slug: string) => void` | - | Fires when an entry is chosen. |
 | placeholder | `string` | From the locale | Search box placeholder. |
 | emptyMessage | `ReactNode` | From the locale | Copy shown when nothing matches. |
 | maxResults | `number` | `30` | Maximum rendered entries (note this differs from the 60 used by `ComponentPickerProps`). |

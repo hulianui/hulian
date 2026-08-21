@@ -10,7 +10,7 @@ status: enriched
 
 # Collapsible
 
-> Collapsible · Thin Base UI wrapper with a height transition driven by `--collapsible-panel-height` · navigation/action
+> Toggles visibility of a single content region with a height transition. · navigation/action
 
 ## When to use
 
@@ -25,16 +25,16 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `Collapsible.open` | `boolean` | — | Controlled open state. |
+| `Collapsible.open` | `boolean` | - | Controlled open state. |
 | `Collapsible.defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled. |
 | `Collapsible.disabled` | `boolean` | `false` | Prevents expansion. |
-| `Collapsible.className` | `string` | — | Container class name. |
+| `Collapsible.className` | `string` | - | Container class name. |
 | `CollapsibleTrigger.disabled` | `boolean` | `false` | Disables the trigger independently. |
 | `CollapsiblePanel.plain` | `boolean` | `false` | No chrome: skip the inner padding-and-secondary-text wrapper so children land directly in the panel. |
 
 ### plain: when the panel holds a whole feature block
 
-`CollapsiblePanel` wraps its children in a `px-3 pb-3 pt-1 text-sm text-muted-foreground` skin element, which is designed for a short paragraph of explanatory text. Add `plain` when the disclosure holds a **whole feature block** — an integration settings form, a permission editor, or a list that already brings its own `border-t` and per-row padding:
+`CollapsiblePanel` wraps its children in a `px-3 pb-3 pt-1 text-sm text-muted-foreground` skin element, which is designed for a short paragraph of explanatory text. Add `plain` when the disclosure holds a **whole feature block**: an integration settings form, a permission editor, or a list that already brings its own `border-t` and per-row padding:
 
 ```tsx
 <CollapsiblePanel plain>
@@ -42,7 +42,7 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 </CollapsiblePanel>
 ```
 
-Without it, two things go wrong: `text-muted-foreground` inherits down into every unstyled piece of text in the panel, so the whole block reads as disabled, and the inner `px-3` stacks on top of the padding the content already has. `className` lands on the **outer** panel and cannot reach the inner element — an extra wrapper can win the color back, but never the padding.
+Without it, two things go wrong: `text-muted-foreground` inherits down into every unstyled piece of text in the panel, so the whole block reads as disabled, and the inner `px-3` stacks on top of the padding the content already has. `className` lands on the **outer** panel and cannot reach the inner element. An extra wrapper can win the color back, but never the padding.
 
 The same `plain` name means the same thing on the [Accordion](../accordion/accordion.md) panel and as [Card](../card/card.md)'s `variant="plain"`: **when the content brings its own appearance, the answer is no skin rather than a different skin**.
 

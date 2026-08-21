@@ -10,11 +10,11 @@ status: enriched
 
 # Text
 
-> 文本 · size/tone(6 语义色含 success/warning)/weight + 单行省略/多行截断 + as 多态(纯皮肤·零依赖·RSC) · typography/text
+> 统一正文的字号、字重、语义色和截断方式 · typography/text
 
 ## 何时用
 
-正文、辅助说明、行内文本——需要统一字号/语义色调/字重并支持单行省略或多行截断时用 Text。标题层级（h1–h6 语义 + 标题尺寸）用 [Heading](../heading/heading.md)；整段富文本/Markdown 排版用 [Prose](../prose/prose.md)。
+正文、辅助说明、行内文本——需要统一字号/语义色调/字重并支持单行省略或多行截断时用 Text。标题层级（h1-h6 语义 + 标题尺寸）用 [Heading](../heading/heading.md)；整段富文本/Markdown 排版用 [Prose](../prose/prose.md)。
 
 ## 导入
 ```ts
@@ -30,7 +30,7 @@ import { Text } from "@hulianui/ui"
 | tone | `"default" \| "muted" \| "primary" \| "success" \| "warning" \| "danger"` | `"default"` | 语义色调（明暗自适配） |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | 字重 |
 | truncate | `boolean` | `false` | 单行省略号截断 |
-| lineClamp | `number` | — | 多行截断（最多 n 行后省略号）；设置后优先于 truncate |
+| lineClamp | `number` | - | 多行截断（最多 n 行后省略号）；设置后优先于 truncate |
 
 继承 `HTMLAttributes<HTMLElement>`（已 Omit `color`，色调走 tone）。
 

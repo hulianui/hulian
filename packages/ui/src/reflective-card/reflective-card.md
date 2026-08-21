@@ -28,10 +28,10 @@ import { ReflectiveCard } from "@hulianui/ui"
 | sheenColor | `string` | `var(--color-foreground)` | 金属高光主色，喂反光层渐变，可传任意 CSS 颜色 |
 | baseColor | `string` | `var(--color-chart-1)` | 卡片底色基调，决定金属表面暗部色 |
 | speed | `number` | `6` | 高光横扫一轮时长（秒），越大越慢越细腻 |
-| roughness | `number` | `0.35` | 表面噪点强度 0–1，0=镜面无颗粒，1=重磨砂 |
-| metalness | `number` | `1` | 反光层整体不透明度 0–1，调低让卡面更内敛 |
-| className | `string` | — | 透传根容器 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| roughness | `number` | `0.35` | 表面噪点强度 0-1，0=镜面无颗粒，1=重磨砂 |
+| metalness | `number` | `1` | 反光层整体不透明度 0-1，调低让卡面更内敛 |
+| className | `string` | - | 透传根容器 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

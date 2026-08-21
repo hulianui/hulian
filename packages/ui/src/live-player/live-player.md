@@ -10,7 +10,7 @@ status: enriched
 
 # LivePlayer
 
-> 直播播放器壳 · 自带极简 muted/loop/autoPlay video(非 VOD scrubber chrome·与 Video 互补) 或 surface 自定义画面 + LIVE 呼吸徽标(ping 红点) + 在线人数(dogfood NumberTicker 跳数) + 清晰度切换菜单 + 主播条(头像/名/关注钮) + overlay 弹幕飘心层与 footer 互动栏插槽 + 竖/横屏(9:16 / 16:9) · data-display/collection
+> 直播画面外壳，带在线人数、清晰度切换和互动叠层 · data-display/collection
 
 ## 何时用
 
@@ -25,16 +25,16 @@ import { LivePlayer } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| src | `string` | — | 本地视频源（内部固定 muted/loop/autoPlay/playsInline） |
-| poster | `string` | — | 视频封面 |
+| src | `string` | - | 本地视频源（内部固定 muted/loop/autoPlay/playsInline） |
+| poster | `string` | - | 视频封面 |
 | live | `boolean` | `true` | 显示 LIVE 呼吸徽标 |
-| viewers | `number` | — | 在线人数（NumberTicker 跳数） |
-| qualities | `string[]` | — | 清晰度档位列表 |
-| quality | `string` | — | 当前清晰度（受控） |
-| host | `LivePlayerHost` | — | 顶部主播条 |
+| viewers | `number` | - | 在线人数（NumberTicker 跳数） |
+| qualities | `string[]` | - | 清晰度档位列表 |
+| quality | `string` | - | 当前清晰度（受控） |
+| host | `LivePlayerHost` | - | 顶部主播条 |
 | orientation | `"portrait" \| "landscape"` | `"landscape"` | 朝向 |
-| aspectRatio | `string` | — | CSS aspect-ratio；不传按 orientation（landscape=16/9，portrait=9/16），传 `"fill"` 则不锁比例铺满父容器 |
-| className | `string` | — | 容器自定义类 |
+| aspectRatio | `string` | - | CSS aspect-ratio；不传按 orientation（landscape=16/9，portrait=9/16），传 `"fill"` 则不锁比例铺满父容器 |
+| className | `string` | - | 容器自定义类 |
 
 ## Events
 

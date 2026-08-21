@@ -27,18 +27,18 @@ Extends `<div>` attributes, with the native `color` attribute omitted.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| className | `string` | — | Transparent root container className (merged into `.border-glow`) |
-| edgeSensitivity | `number` | `30` | Edge sensitivity 0–100, the smaller it is, the earlier the outer halo is triggered |
+| className | `string` | - | Transparent root container className (merged into `.border-glow`) |
+| edgeSensitivity | `number` | `30` | Edge sensitivity 0-100, the smaller it is, the earlier the outer halo is triggered |
 | glowColor | `string` | `var(--color-chart-1)` | Outer halo color (box-shadow), token must be prefixed with `--color-` |
 | backgroundColor | `string` | `oklch(0.16 0.02 280)` | Card background; the glow relies on dark contrast and is weaker on light surfaces |
 | borderRadius | `number` | `28` | corner radius px |
 | glowRadius | `number` | `40` | The outer halo overflows the inner margin px, the larger it is, the farther it spreads |
-| glowIntensity | `number` | `1` | Glow intensity magnification 0–2 |
-| coneSpread | `number` | `25` | Light cone angle width 0–50, the larger the width, the wider the highlight arc |
+| glowIntensity | `number` | `1` | Glow intensity magnification 0-2 |
+| coneSpread | `number` | `25` | Light cone angle width 0-50, the larger the width, the wider the highlight arc |
 | animated | `boolean` | `false` | Automatically play a circle of sweeping light when mounted; skip under reduced-motion |
 | colors | `string[]` | chart-1/3/4 | Color grid border selection, circularly mapped to 7 radial anchor points |
-| fillOpacity | `number` | `0.5` | Edge color fill layer transparency 0–1 |
-| style | `CSSProperties` | — | Inline styles forwarded to the root container |
+| fillOpacity | `number` | `0.5` | Edge color fill layer transparency 0-1 |
+| style | `CSSProperties` | - | Inline styles forwarded to the root container |
 
 ## Slots
 

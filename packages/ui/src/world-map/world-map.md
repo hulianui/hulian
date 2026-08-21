@@ -27,14 +27,14 @@ import { WorldMap } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| dots | `WorldMapDot[]` | — | 要画的连线对（经纬度）。不传/空数组则只显示点阵底图 |
-| flyingMarker | `"plane" \| "comet" \| "arrow"` | — | 沿每条飞线循环移动的标记。plane/arrow 自动转向贴合飞行方向，用各自连线色 |
-| points | `WorldMapNode[]` | — | 独立节点（节点分布）。与 dots 互不依赖，可单独使用。`value` 按当前 points 范围归一化映射半径 |
+| dots | `WorldMapDot[]` | - | 要画的连线对（经纬度）。不传/空数组则只显示点阵底图 |
+| flyingMarker | `"plane" \| "comet" \| "arrow"` | - | 沿每条飞线循环移动的标记。plane/arrow 自动转向贴合飞行方向，用各自连线色 |
+| points | `WorldMapNode[]` | - | 独立节点（节点分布）。与 dots 互不依赖，可单独使用。`value` 按当前 points 范围归一化映射半径 |
 | showLabels | `boolean` | `false` | 是否渲染节点标签文字 |
 | lineColor | `string` | chart token | 弧线颜色（CSS 颜色）。逐条可用 `dot.color` 覆盖 |
 | dotColor | `string` | border token | 点阵颜色（CSS 颜色） |
-| duration | `number` | — | 单条弧线画入时长（秒） |
-| className | `string` | — | 容器类名 |
+| duration | `number` | - | 单条弧线画入时长（秒） |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

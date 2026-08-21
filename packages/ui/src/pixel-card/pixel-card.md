@@ -26,12 +26,12 @@ import { PixelCard } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"default" \| "blue" \| "pink" \| "amber"` | `"default"` | 预设变体，决定默认 gap/speed/colors/noFocus 组合（default 中性灰白 / blue chart-2 / pink chart-5 默认关焦点 / amber chart-3 暖橙更密）。单独传下方 prop 可覆盖对应项 |
-| gap | `number` | 变体默认 | 像素网格间距（px），越小越密数量越多（性能开销越大），建议 3–12 |
-| speed | `number` | 变体默认 | 动画速度（0–100 整数标度），0 等价禁用动画 |
+| gap | `number` | 变体默认 | 像素网格间距（px），越小越密数量越多（性能开销越大），建议 3-12 |
+| speed | `number` | 变体默认 | 动画速度（0-100 整数标度），0 等价禁用动画 |
 | colors | `string[]` | 变体默认（token） | 像素配色数组，每像素随机取一；默认取瑚琏 token，可传任意 CSS 颜色 |
 | noFocus | `boolean` | 变体默认 | true 时仅鼠标悬停触发、根容器不可聚焦（禁键盘焦点触发） |
-| className | `string` | — | 透传到根容器的额外 className（控尺寸/圆角/边框） |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器的额外 className（控尺寸/圆角/边框） |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Slots
 

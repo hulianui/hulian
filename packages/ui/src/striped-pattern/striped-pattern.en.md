@@ -10,7 +10,7 @@ status: enriched
 
 # StripedPattern
 
-> Diagonal stripe background · Pure CSS gradient + currentColor · decoration/backdrop
+> Creates diagonal stripes as a lightweight CSS decorative surface. · decoration/backdrop
 
 ## When to Use
 

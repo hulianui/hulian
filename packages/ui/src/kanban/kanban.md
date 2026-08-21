@@ -10,7 +10,7 @@ status: enriched
 
 # Kanban
 
-> 看板 · @dnd-kit headless 多容器 + 跨列/列内拖拽 + 键盘可拖 + 列头统计槽 + 空列占位 · 受控 onMove(消费者改业务字段) · 商机看板/任务流转旗舰 · data-display/collection
+> 把卡片在多个状态列之间拖动流转 · data-display/collection
 
 ## 何时用
 
@@ -27,12 +27,12 @@ import { Kanban, resolveKanbanMove } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| columns * | KanbanColumn[] | — | 列定义（顺序即展示顺序）。每列 `{ id, title, header?, footer? }` |
-| items * | T[] | — | 受控卡片数组；组件按 getColumnId 分桶，列内顺序 = 数组原始顺序 |
-| getId * | (item: T) => string | — | 取卡片稳定 id（全局唯一且稳定） |
-| getColumnId * | (item: T) => string | — | 取卡片当前所属列 id |
-| className | string | — | 容器类名 |
-| columnClassName | string | — | 单列类名 |
+| columns * | KanbanColumn[] | - | 列定义（顺序即展示顺序）。每列 `{ id, title, header?, footer? }` |
+| items * | T[] | - | 受控卡片数组；组件按 getColumnId 分桶，列内顺序 = 数组原始顺序 |
+| getId * | (item: T) => string | - | 取卡片稳定 id（全局唯一且稳定） |
+| getColumnId * | (item: T) => string | - | 取卡片当前所属列 id |
+| className | string | - | 容器类名 |
+| columnClassName | string | - | 单列类名 |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Drawer
 
-> Drawer · Base UI Dialog engine with four slide-in directions · feedback/overlay
+> Slides contextual or task content from any screen edge with modal focus management and a localized optional close button. · feedback/overlay
 
 ## When to use
 
@@ -29,18 +29,18 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | Attached edge and corresponding slide direction. |
 | `DrawerContent.size` | `"sm" \| "md" \| "lg" \| "xl" \| "full"` | `"md"` | Main-axis size step. **The main axis follows `side`**: left and right drawers take a width, top and bottom drawers take a height, so one step is not the same value on both axes (see the table below). The cross axis is always 100% and does not follow this step. |
-| `DrawerContent.container` | `Element \| Ref` | — | Local portal target. The drawer uses absolute positioning inside it; the target needs `position:relative` and `overflow-hidden`. Useful for phone-frame previews. |
+| `DrawerContent.container` | `Element \| Ref` | - | Local portal target. The drawer uses absolute positioning inside it; the target needs `position:relative` and `overflow-hidden`. Useful for phone-frame previews. |
 | `DrawerContent.showClose` | `boolean` | `true` | Whether to render the built-in top-right close button. |
 | `DrawerContent.closeLabel` | `string` | Locale value | Accessible name for the built-in close button; defaults to `locale.drawer.close`. |
-| `DrawerContent.aria-label` | `string` | — | Accessible name for the drawer, applied directly to the popup. **The only way to name a drawer that has no `title`** — use it when the visible header is drawn by the consumer (see "Naming a drawer with a custom header"). |
-| `DrawerContent.aria-labelledby` | `string` | — | Id of the element that names the drawer. Use it to point at an existing visible heading; it wins over the id generated from `title`. Supply either this or `aria-label`. |
-| `DrawerContent.titleClassName` | `string` | — | Appended to the title (defaults to `text-lg font-semibold`), merged with twMerge. |
-| `DrawerContent.descriptionClassName` | `string` | — | Appended to the description (merged with twMerge). Pass `sr-only` for a screen-reader-only description. |
+| `DrawerContent.aria-label` | `string` | - | Accessible name for the drawer, applied directly to the popup. **The only way to name a drawer that has no `title`**. Use it when the visible header is drawn by the consumer (see "Naming a drawer with a custom header"). |
+| `DrawerContent.aria-labelledby` | `string` | - | Id of the element that names the drawer. Use it to point at an existing visible heading; it wins over the id generated from `title`. Supply either this or `aria-label`. |
+| `DrawerContent.titleClassName` | `string` | - | Appended to the title (defaults to `text-lg font-semibold`), merged with twMerge. |
+| `DrawerContent.descriptionClassName` | `string` | - | Appended to the description (merged with twMerge). Pass `sr-only` for a screen-reader-only description. |
 | `DrawerContent.backdrop` | `boolean` | `true` | Whether to render the backdrop. Setting it to `false` together with `modal={false}` on the root is what makes an overlay truly non-modal; turning off only one is not enough, because the `inset-0` backdrop swallows every click even when it is transparent. |
-| `DrawerContent.backdropClassName` | `string` | — | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge. |
+| `DrawerContent.backdropClassName` | `string` | - | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge. |
 | `DrawerContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children. |
-| `DrawerContent.bodyClassName` | `string` | — | Appended to the body container. |
-| `DrawerContent.className` | `string` | — | Content-container class name. |
+| `DrawerContent.bodyClassName` | `string` | - | Appended to the body container. |
+| `DrawerContent.className` | `string` | - | Content-container class name. |
 
 ### Size steps
 
@@ -116,10 +116,10 @@ The component ships only the edge-anchored form. The floating mobile sheet, inse
 
 A drawer is a modal surface and **must have a name**. Base UI derives `aria-labelledby` from `Dialog.Title` only: with no title it is `undefined` and falls back to nothing, so screen-reader users get an unnamed dialog. Supplying none of `title` / `aria-label` / `aria-labelledby` logs a development warning.
 
-Do not push a row of controls into `title`. `Dialog.Title` renders an `<h2>`, which accepts phrasing content only, so a `<div>` inside it is invalid nesting — and because `aria-labelledby` points at the whole `<h2>`, the name would become "Notifications 2 unread Mark all read", reading the buttons out loud as part of the name. Pick by header complexity:
+Do not push a row of controls into `title`. `Dialog.Title` renders an `<h2>`, which accepts phrasing content only, so a `<div>` inside it is invalid nesting, and because `aria-labelledby` points at the whole `<h2>`, the name would become "Notifications 2 unread Mark all read", reading the buttons out loud as part of the name. Pick by header complexity:
 
 ```tsx
-// 1) Title plus a few actions — use extra; the component lays out the row and yields the top-right corner
+// 1) Title plus a few actions: use extra; the component lays out the row and yields the top-right corner
 <DrawerContent
   title="Notifications"
   extra={
@@ -132,7 +132,7 @@ Do not push a row of controls into `title`. `Dialog.Title` renders an `<h2>`, wh
   {/* list */}
 </DrawerContent>
 
-// 2) Edge-to-edge — the header owns its own divider, padding, and env() safe area, so draw it yourself
+// 2) Edge-to-edge: the header owns its own divider, padding, and env() safe area, so draw it yourself
 //    and name the drawer with aria-label (no sr-only placeholder title needed)
 <DrawerContent
   aria-label="Notifications"
@@ -144,11 +144,11 @@ Do not push a row of controls into `title`. `Dialog.Title` renders an `<h2>`, wh
   <ScrollArea className="min-h-0 flex-1">{/* list */}</ScrollArea>
 </DrawerContent>
 
-// 3) A visible heading already exists on the page — point at it
+// 3) A visible heading already exists on the page: point at it
 <DrawerContent aria-labelledby="panel-heading">…</DrawerContent>
 ```
 
-`aria-label` wins when both it and `title` are supplied, but that usually means the two strings disagree — treat it as a bug to fix, not a feature.
+`aria-label` wins when both it and `title` are supplied, but that usually means the two strings disagree, so treat it as a bug to fix, not a feature.
 
 ### Close button
 

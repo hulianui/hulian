@@ -10,7 +10,7 @@ status: enriched
 
 # GridPattern
 
-> 网格背景 · 纯 SVG 线 + 虚线可配 + currentColor · decoration/backdrop
+> 铺一层线条网格作为区块背景，可换成虚线 · decoration/backdrop
 
 ## 何时用
 

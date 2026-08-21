@@ -25,21 +25,21 @@ import { Heatmap, buildMatrix, bucketize } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| data* | `HeatCell[]` | — | Sparse `{x, y, value}` points. |
+| data* | `HeatCell[]` | - | Sparse `{x, y, value}` points. |
 | xLabels | `(string\|number)[]` | Derived from data | Explicit column labels. |
 | yLabels | `(string\|number)[]` | Derived from data | Explicit row labels. |
 | colorScale | `number` | `5` | Number of color levels. |
 | max | `number` | Data maximum | Full-scale value; `domain` takes precedence when supplied. |
 | domain | `[number, number]` | `[0, max]` | Explicit value range used to bucket `(value-min)/(max-min)`; values at or below min use level zero. |
 | valueFormat | `(value: number) => string` | `String` | Formats tooltip and legend values and takes precedence over `unit`. |
-| unit | `string` | — | Suffix appended to raw values; use `valueFormat` for numeric conversion. |
-| emptyCellTone | `string` | — | CSS background for absent points. Without it, absent cells share the zero-level color. |
+| unit | `string` | - | Suffix appended to raw values; use `valueFormat` for numeric conversion. |
+| emptyCellTone | `string` | - | CSS background for absent points. Without it, absent cells share the zero-level color. |
 | showLegend | `boolean` | `false` | Shows range labels, color blocks, and an absent-data sample when `emptyCellTone` is set. |
 | cellSize | `number` | `14` | Cell side length in pixels. |
 | gap | `number` | `3` | Gap between cells in pixels. |
 | showLabels | `boolean` | `true` | Shows row and column labels. |
-| formatTooltip | `(cell: HeatmapCellInfo) => string` | — | Formats the native hover title. Check `cell.empty` before using its zero fallback value. |
-| className | `string` | — | Custom class name. |
+| formatTooltip | `(cell: HeatmapCellInfo) => string` | - | Formats the native hover title. Check `cell.empty` before using its zero fallback value. |
+| className | `string` | - | Custom class name. |
 
 `HeatmapCellInfo`, passed to `formatTooltip` and `onCellClick`:
 

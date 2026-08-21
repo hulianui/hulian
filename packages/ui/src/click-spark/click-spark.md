@@ -32,8 +32,8 @@ import { ClickSpark } from "@hulianui/ui"
 | duration | `number` | `400` | 单次火花动画时长（ms），越大越拖尾 |
 | easing | `"linear" \| "ease-in" \| "ease-out" \| "ease-in-out"` | `"ease-out"` | 火花飞出缓动曲线 |
 | extraScale | `number` | `1` | 半径额外缩放系数，>1 放大爆发、<1 收敛 |
-| className | `string` | — | 透传到根容器（relative DOM 元素） |
-| style | `CSSProperties` | — | 透传到根容器内联样式 |
+| className | `string` | - | 透传到根容器（relative DOM 元素） |
+| style | `CSSProperties` | - | 透传到根容器内联样式 |
 
 ## Slots
 

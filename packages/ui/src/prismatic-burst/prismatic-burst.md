@@ -29,12 +29,12 @@ import { PrismaticBurst } from "@hulianui/ui"
 | speed | `number` | `1` | 体积步进动画速度因子；越大翻涌越快 |
 | animationType | `"rotate" \| "rotate3d" \| "hover"` | `"rotate"` | rotate=单轴平面旋转（最克制）/ rotate3d=三维欧拉旋转 / hover=跟随指针倾斜 |
 | colors | `string[]` | `--color-chart-1..5` | 色带（烘焙成一维渐变纹理按 march 进度采样）；任意 CSS 颜色串，默认 chart token 明暗自适应 |
-| distort | `number` | `0` | 光线弯曲扭曲量 0–50（shader 内夹紧）；越大射线越像被引力透镜扭弯 |
-| noiseAmount | `number` | `0` | 颗粒抖动噪声量 0–1；弱化条带感 |
+| distort | `number` | `0` | 光线弯曲扭曲量 0-50（shader 内夹紧）；越大射线越像被引力透镜扭弯 |
+| noiseAmount | `number` | `0` | 颗粒抖动噪声量 0-1；弱化条带感 |
 | rayCount | `number` | `0` | 放射光束瓣数；0=连续光晕，>0 按角度梳理 N 条对称射线（6=六芒星） |
 | offset | `{ x?: number; y?: number }` | `{ x: 0, y: 0 }` | 爆发中心相对画面中心的偏移（CSS 像素），x 正向右、y 正向下 |
 | mixBlendMode | `string` | `"none"` | 透传到 canvas 的 `mix-blend-mode`；常用 "lighten" / "screen" 叠底更通透 |
-| className | `string` | — | 合并到 root 容器（或 reduced 降级 div） |
+| className | `string` | - | 合并到 root 容器（或 reduced 降级 div） |
 
 ## Slots
 

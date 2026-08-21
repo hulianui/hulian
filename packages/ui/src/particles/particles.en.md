@@ -32,8 +32,8 @@ import { Particles } from "@hulianui/ui"
 | color | string | `--color-foreground` | Particle color. When omitted, the component reads the theme token and responds to `data-theme`; explicit values accept `#rrggbb`, `#rgb`, or `rgb(r,g,b)` |
 | vx | number | 0 | X-axis constant drift speed (px/frame) |
 | vy | number | 0 | Y-axis constant drift speed (px/frame) |
-| refresh | boolean \| number \| string | — | Refresh signal - force redrawing of particles when the value changes (equivalent to MagicUI refresh) |
-| className | string | — | Additional class name for the container div |
+| refresh | boolean \| number \| string | - | Refresh signal - force redrawing of particles when the value changes (equivalent to MagicUI refresh) |
+| className | string | - | Additional class name for the container div |
 
 ## Examples
 ```tsx

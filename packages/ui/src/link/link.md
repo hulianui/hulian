@@ -10,7 +10,7 @@ status: enriched
 
 # Link
 
-> 链接 · tone×underline + external 自动 target/rel/图标 + RSC · navigation/action
+> 带样式的链接，外链自动加图标和安全属性 · navigation/action
 
 ## 何时用
 
@@ -30,8 +30,8 @@ import { Link, linkVariants } from "@hulianui/ui"
 | `tone` | `"primary" \| "foreground" \| "danger"` | `"primary"` | 文字语调色 |
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | 下划线显示策略 |
 | `external` | `boolean` | `false` | 外链：自动加 `target="_blank"` + `rel="noopener noreferrer"` + 尾随外链图标 |
-| `href` | `string` | — | 跳转地址（原生属性） |
-| `render` | `ReactElement` | — | 渲染为自定义元素，用来承载框架路由件（`next/link`、`react-router` 的 `Link`）。皮肤 class 与 Link 自身的 props 合并进该元素，`href` 由它自己带 |
+| `href` | `string` | - | 跳转地址（原生属性） |
+| `render` | `ReactElement` | - | 渲染为自定义元素，用来承载框架路由件（`next/link`、`react-router` 的 `Link`）。皮肤 class 与 Link 自身的 props 合并进该元素，`href` 由它自己带 |
 
 ## Events
 

@@ -26,13 +26,13 @@ import { OrbitImages } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | shape | `"ellipse"｜"circle"｜"square"｜"rectangle"｜"triangle"｜"star"｜"heart"｜"infinity"｜"wave"｜"custom"` | `"ellipse"` | 轨道形状预设，custom 走 customPath |
-| customPath | `string` | — | shape="custom" 时的 SVG path d（坐标基于 baseWidth 方形画布） |
+| customPath | `string` | - | shape="custom" 时的 SVG path d（坐标基于 baseWidth 方形画布） |
 | baseWidth | `number` | `1400` | 设计画布边长（px·方形 viewBox），只影响路径几何比例 |
 | radiusX | `number` | `700` | 椭圆/矩形/无穷/波浪 的横向半径（px·基于 baseWidth） |
 | radiusY | `number` | `170` | 椭圆/矩形/无穷/波浪 的纵向半径 |
 | radius | `number` | `300` | 圆/方/三角/星/心 的半径 |
 | starPoints | `number` | `5` | star 形状的角数 |
-| starInnerRatio | `number` | `0.5` | star 内外半径比（0–1），越小星芒越尖 |
+| starInnerRatio | `number` | `0.5` | star 内外半径比（0-1），越小星芒越尖 |
 | rotation | `number` | `-8` | 轨道倾斜角（deg），子项反向自转保持正立 |
 | duration | `number` | `40` | 跑完一圈时长（秒），越大越慢 |
 | itemSize | `number` | `64` | 单个子项边长（px·CSS 像素） |
@@ -41,8 +41,8 @@ import { OrbitImages } from "@hulianui/ui"
 | showPath | `boolean` | `false` | 描出轨道路径（调试/装饰） |
 | pathColor | `string` | `"var(--color-border)"` | 轨道描边颜色 |
 | pathWidth | `number` | `2` | 轨道描边宽度（px·基于 baseWidth） |
-| className | `string` | — | 透传到根容器 |
-| style | `CSSProperties` | — | 透传到根容器（默认 1:1 自适应铺满父宽） |
+| className | `string` | - | 透传到根容器 |
+| style | `CSSProperties` | - | 透传到根容器（默认 1:1 自适应铺满父宽） |
 
 ## Slots
 

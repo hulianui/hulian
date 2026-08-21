@@ -14,7 +14,7 @@ status: enriched
 
 ## When to Use
 
-Wrap a single interactive element—such as a button, icon, or CTA—when it should move toward a nearby pointer and return smoothly on leave. For an area-wide cursor or image trail, use [GhostCursor](../ghost-cursor/ghost-cursor.md) or [ImageTrail](../image-trail/image-trail.md). Magnet inherits `HTMLAttributes<HTMLDivElement>` except `children` and forwards the remaining div attributes.
+Wrap a single interactive element (a button, icon, or CTA) when it should move toward a nearby pointer and return smoothly on leave. For an area-wide cursor or image trail, use [GhostCursor](../ghost-cursor/ghost-cursor.md) or [ImageTrail](../image-trail/image-trail.md). Magnet inherits `HTMLAttributes<HTMLDivElement>` except `children` and forwards the remaining div attributes.
 
 ## Import
 ```ts
@@ -27,12 +27,12 @@ import { Magnet } from "@hulianui/ui"
 |------|------|------|------|
 | padding | `number` | `100` | Detection radius in pixels, extending beyond the element boundary |
 | disabled | `boolean` | `false` | Disables attraction and returns the element smoothly to its origin without changing the DOM structure |
-| magnetStrength | `number` | `2` | Attraction divisor: displacement = pointer-to-center distance / this value. Lower values are stronger; recommended range 1–6 |
+| magnetStrength | `number` | `2` | Attraction divisor: displacement = pointer-to-center distance / this value. Lower values are stronger; recommended range 1-6 |
 | activeTransition | `string` | `"transform 0.3s ease-out"` | Transition while the element follows the pointer |
 | inactiveTransition | `string` | `"transform 0.5s ease-in-out"` | Inactive state transition (when leaving homing) |
-| wrapperClassName | `string` | — | Additional class name for the outer wrapper div |
-| innerClassName | `string` | — | Forward the inner displacement div (carrying transform) additional className |
-| style | `CSSProperties` | — | Inline styles forwarded to the outer wrapper div |
+| wrapperClassName | `string` | - | Additional class name for the outer wrapper div |
+| innerClassName | `string` | - | Forward the inner displacement div (carrying transform) additional className |
+| style | `CSSProperties` | - | Inline styles forwarded to the outer wrapper div |
 
 > Also inherits all standard div properties of `Omit<HTMLAttributes<HTMLDivElement>, "children">`.
 

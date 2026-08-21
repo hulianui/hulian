@@ -10,7 +10,7 @@ status: enriched
 
 # Command
 
-> 命令面板 · ⌘K 模态(复用 Dialog 引擎) + 实时过滤 + 分组 + 键盘漫游(零依赖) · navigation/action
+> 用快捷键唤起面板，搜索并执行分好组的命令 · navigation/action
 
 ## 何时用
 
@@ -25,17 +25,17 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| open* | `boolean` | — | 受控开合。 |
-| groups* | `CommandGroupData[]` | — | 命令分组（每组可带 heading）。 |
-| placeholder | `string` | — | 搜索框占位符。 |
+| open* | `boolean` | - | 受控开合。 |
+| groups* | `CommandGroupData[]` | - | 命令分组（每组可带 heading）。 |
+| placeholder | `string` | - | 搜索框占位符。 |
 | filter | `(item: CommandItemData, query: string) => boolean` | 默认子串匹配 | 自定义过滤，返回 true 保留。默认大小写不敏感匹配 `keywords` + 字符串型 `label` + `value`。 |
 | closeOnSelect | `boolean` | `true` | 执行项后是否自动关闭面板。 |
 | autoHighlight | `boolean` | `true` | 打开面板与每次过滤后自动高亮首个可用项（跳过禁用项），于是「打字 → 回车」直接命中。关掉则必须先按方向键点亮某项，回车才有动作。 |
 | shortcut | `boolean` | `false` | 内置 ⌘K / Ctrl+K 全局快捷键切换开合。 |
 | surface | `"solid" \| "glass" \| "none"` | `"solid"` | 外壳表面皮肤（只管填充/描边/阴影，尺寸与定位始终由组件负责）。`glass` = 半透明 + 背景模糊（需身后有底图）；`none` = 一个皮肤类都不画，全交给 `className` |
-| className | `string` | — | 追加到面板外壳 |
-| backdropClassName | `string` | — | 追加到遮罩层（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
-| aria-label | `string` | — | — |
+| className | `string` | - | 追加到面板外壳 |
+| backdropClassName | `string` | - | 追加到遮罩层（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
+| aria-label | `string` | - | - |
 
 ## Events
 
@@ -84,7 +84,7 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | description | `ReactNode` | label 下方 muted 小字。 |
 | icon | `ReactNode` | 行首图标插槽。 |
 | shortcut | `ReactNode` | 行尾快捷键/标记插槽。 |
-| disabled | `boolean` | — |
+| disabled | `boolean` | - |
 | onSelect | `(value: string) => void` | 该项被执行（Enter / 点击）时回调。 |
 
 ## 示例

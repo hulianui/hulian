@@ -10,7 +10,7 @@ status: enriched
 
 # Resizable
 
-> Resizable split panels · compound PanelGroup/Panel/Handle + horizontal or vertical orientation + min/max constraints + keyboard adjustment · dependency-free `role="separator"` · layout/container
+> Builds keyboard-accessible horizontal or vertical split panes with size constraints. · layout/container
 
 ## When to use
 
@@ -27,7 +27,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle, applyResize, spli
 | Name | Type | Default | Description |
 |------|------|------|------|
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | `horizontal` places panels side by side with vertical separators; `vertical` stacks panels with horizontal separators. |
-| sizes | `number[]` | — | Controlled percentage sizes, one per panel. Pair with `onSizesChange`. |
+| sizes | `number[]` | - | Controlled percentage sizes, one per panel. Pair with `onSizesChange`. |
 | defaultSizes | `number[]` | Equal shares | Initial uncontrolled sizes; defaults to an even split across panels. |
 
 Inherited from `HTMLAttributes<HTMLDivElement>` (except onChange).
@@ -48,8 +48,8 @@ Inherited from `HTMLAttributes<HTMLDivElement>`.
 Inherited from `HTMLAttributes<HTMLDivElement>` (except aria-orientation).
 
 ### Helper functions
-- `splitEqually(n)` — returns an array of equal percentage sizes for `n` panels.
-- `applyResize(...)` — calculates a new size array from a drag delta, including min/max clamping.
+- `splitEqually(n)`: returns an array of equal percentage sizes for `n` panels.
+- `applyResize(...)`: calculates a new size array from a drag delta, including min/max clamping.
 
 ## Events
 

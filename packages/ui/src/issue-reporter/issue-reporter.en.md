@@ -31,27 +31,27 @@ import { BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, IssueReporter, IssueRep
 |------|------|------|------|
 | repo | string | "hulianui/hulian" | Target repository as `owner/name`; a full GitHub URL or a `.git` suffix also works and is normalized by `normalizeRepo`. |
 | templates | IssueTemplate[] | BUILTIN_ISSUE_TEMPLATES | Template set (`{ type, label, labels?, tone?, fields, toMarkdown }`), replaceable as a whole. |
-| type | string | — | Controlled current template type. |
+| type | string | - | Controlled current template type. |
 | defaultType | string | templates[0].type | Uncontrolled initial template type. |
-| components | IssueComponentOption[] | — | Related-component candidates (`{ slug, name? }`); the field is not rendered without it. **The component never fetches llms.txt or the registry** — you supply the list. |
-| relatedComponent | string | — | Controlled related-component value (slug). |
+| components | IssueComponentOption[] | - | Related-component candidates (`{ slug, name? }`); the field is not rendered without it. **The component never fetches llms.txt or the registry**. You supply the list. |
+| relatedComponent | string | - | Controlled related-component value (slug). |
 | defaultRelatedComponent | string | "" | Uncontrolled initial related component. |
 | defaultTitle | string | "" | Initial title. Named this way so it never collides with the HTML `title` attribute. |
-| defaultValues | IssueFieldValues | — | Initial template field values, keyed by field `name`. |
+| defaultValues | IssueFieldValues | - | Initial template field values, keyed by field `name`. |
 | showSubmit | boolean | true | Render the built-in submit button; `IssueReporterModal` always sets it to false. |
 | openInNewTab | boolean | true | Whether "Open on GitHub" calls `window.open`. |
 | preview | "source" \| "rendered" \| false | "source" | Preview mode: CodeBlock source, rendered Markdown, or off. |
 | urlLimit | number | 8000 | Prefill link length limit; above it the component degrades (see Pitfalls). |
-| text | Partial\<IssueReporterText\> | — | UI copy overrides; omit it and the reporter takes its copy from the ConfigProvider locale. Not the same thing as a template's `labels` (GitHub labels). |
-| actions | ReactNode | — | Extra buttons appended to the action row. |
-| apiRef | MutableRefObject\<IssueReporterApi \| null\> | — | Imperative handle: `submit()` / `getDraft()` / `getUrl()` / `reset()`. |
-| className | string | — | Class name on the form body. |
-| open / defaultOpen | boolean | — | Modal only: controlled / uncontrolled open state. |
-| onOpenChange | (open: boolean) => void | — | Modal only: open-state callback, required in controlled mode. |
-| trigger | ReactElement | — | Modal only: element that opens the dialog. |
+| text | Partial\<IssueReporterText\> | - | UI copy overrides; omit it and the reporter takes its copy from the ConfigProvider locale. Not the same thing as a template's `labels` (GitHub labels). |
+| actions | ReactNode | - | Extra buttons appended to the action row. |
+| apiRef | MutableRefObject\<IssueReporterApi \| null\> | - | Imperative handle: `submit()` / `getDraft()` / `getUrl()` / `reset()`. |
+| className | string | - | Class name on the form body. |
+| open / defaultOpen | boolean | - | Modal only: controlled / uncontrolled open state. |
+| onOpenChange | (open: boolean) => void | - | Modal only: open-state callback, required in controlled mode. |
+| trigger | ReactElement | - | Modal only: element that opens the dialog. |
 | modalTitle | string | From locale | Modal only: dialog title. Omit it and the modal follows the ConfigProvider locale. |
-| submitText / cancelText | string | — | Modal only: footer button labels. |
-| modalClassName | string | — | Modal only: dialog container class name (width and so on). |
+| submitText / cancelText | string | - | Modal only: footer button labels. |
+| modalClassName | string | - | Modal only: dialog container class name (width and so on). |
 
 ## Events
 
@@ -140,11 +140,11 @@ if (isUrlTooLong(url)) {
 
 ## Pitfalls
 
-- **It does not create the issue, and it must not receive a token.** The component only hands back a draft and builds a prefill link. That link opens GitHub's own "new issue" form; the issue exists only after the user confirms it there. If you want one-click submission, take the `draft` to your own server and call the GitHub API from there — **never ship a PAT to the browser**.
+- **It does not create the issue, and it must not receive a token.** The component only hands back a draft and builds a prefill link. That link opens GitHub's own "new issue" form; the issue exists only after the user confirms it there. If you want one-click submission, take the `draft` to your own server and call the GitHub API from there, and **never ship a PAT to the browser**.
 - **Prefill links have a length ceiling.** In practice a URL beyond roughly 8000 characters (`GITHUB_URL_MAX_LENGTH`) gets truncated by browsers, proxies, or mail clients, or is rejected outright. Past that the component **does not render** the "Open on GitHub" button and shows a notice plus "Copy Markdown" instead. The check measures the **whole URL, not the body**: percent-encoded CJK costs nine characters per glyph, so a long title alone can exhaust the budget.
-- **The related-component list must come from outside.** The component never fetches `llms.txt` or the registry — the data source and its caching belong to the consumer, the same boundary ComponentPicker draws. Omit `components` and the field disappears.
+- **The related-component list must come from outside.** The component never fetches `llms.txt` or the registry. The data source and its caching belong to the consumer, the same boundary ComponentPicker draws. Omit `components` and the field disappears.
 - **`control: "markdown"` pulls in tiptap.** MarkdownEditor depends on `@tiptap/*`, which is not small. All three built-in templates deliberately use `textarea`; opt a field into `markdown` yourself when you need rich text.
 - **Do not wrap it in a `<form>` expecting native submit.** The body deliberately renders no `<form>` element, because it has to nest inside ModalForm's form and nested forms are invalid HTML. Outside a dialog, use the built-in submit button or `apiRef.submit()`.
 - **A template's `labels` and the component's `text` are different things.** The former are GitHub labels (they land in `draft.labels` and the URL's `labels` parameter); the latter overrides UI copy.
-- **UI copy follows the locale by default.** Without `text`, every string comes from the ConfigProvider locale and falls back to the built-in Chinese when no provider is present; `modalTitle` on `IssueReporterModal` works the same way. Priority is the `text` prop, then the locale, then the fallback. Note that **the field `label` and `placeholder` of a template are not covered by the locale** — they live in the `templates` data, so an English surface needs its own templates too.
-- **Switching templates keeps values of same-named fields.** The value map is shared across templates, so if both `bug` and `feature` declare `summary`, its content survives the switch — intentional, so a mis-click does not destroy typed text. Call `apiRef.reset()` to clear.
+- **UI copy follows the locale by default.** Without `text`, every string comes from the ConfigProvider locale and falls back to the built-in Chinese when no provider is present; `modalTitle` on `IssueReporterModal` works the same way. Priority is the `text` prop, then the locale, then the fallback. Note that **the field `label` and `placeholder` of a template are not covered by the locale**: they live in the `templates` data, so an English surface needs its own templates too.
+- **Switching templates keeps values of same-named fields.** The value map is shared across templates, so if both `bug` and `feature` declare `summary`, its content survives the switch. That is intentional, so a mis-click does not destroy typed text. Call `apiRef.reset()` to clear.

@@ -10,7 +10,7 @@ status: enriched
 
 # Divider
 
-> Labeled divider · Left/center/right labels, solid or dashed lines, and inline vertical mode; dependency-free, RSC-compatible, and complementary to Separator · layout/arrange
+> Separates content with optional text, alignment, dashed styling, or vertical orientation. · layout/arrange
 
 ## When to use
 
@@ -29,7 +29,7 @@ import { Divider } from "@hulianui/ui"
 | orientation | `"left" \| "center" \| "right"` | `"center"` | Horizontal position of embedded text (only effective when horizontal + text is present) |
 | dashed | `boolean` | `false` | dotted line |
 | plain | `boolean` | `false` | Regular font weight for text (one bold step by default) |
-| className | `string` | — | Extra class name |
+| className | `string` | - | Extra class name |
 
 ## Slots
 

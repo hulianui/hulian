@@ -10,7 +10,7 @@ status: enriched
 
 # Pagination
 
-> Pagination · Controlled presentation with an ellipsis-aware page-range algorithm · navigation/inpage
+> Navigates controlled paged data with page ranges and ellipses. · navigation/inpage
 
 ## When to use
 
@@ -27,15 +27,15 @@ Pagination is controlled only: store `page` externally and update it from `onPag
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| page* | `number` | — | Controlled current page, starting at 1. |
-| total | `number` | — | **Total number of pages**, not items. Mutually exclusive with `totalItems`; this prop wins when both are supplied. |
-| totalItems | `number` | — | **Total number of items**, matching the common `data.total` API meaning. Used with `pageSize` to derive pages. |
+| page* | `number` | - | Controlled current page, starting at 1. |
+| total | `number` | - | **Total number of pages**, not items. Mutually exclusive with `totalItems`; this prop wins when both are supplied. |
+| totalItems | `number` | - | **Total number of items**, matching the common `data.total` API meaning. Used with `pageSize` to derive pages. |
 | pageSize | `number` | `10` | Items per page; used only with `totalItems`. |
 | siblingCount | `number` | `1` | Visible page numbers on each side of the current page. |
 | showFirstLast | `boolean` | `false` | Whether to show first-page and last-page buttons. |
 | showTotal | `boolean \| (totalItems, [from, to]) => ReactNode` | `false` | Total-items summary on the left. The built-in Chinese format means “N items total.” Requires `totalItems` and silently renders nothing when only `total` is provided. |
 | showQuickJumper | `boolean` | `false` | Whether to show the page-jump input. Enter and blur submit, clamped to the valid range. |
-| pageSizeOptions | `number[]` | — | Page-size choices, mirroring el-pagination's `page-sizes`. **The switcher renders only when `onPageSizeChange` is supplied as well**; supplying just one of the two renders nothing. |
+| pageSizeOptions | `number[]` | - | Page-size choices, mirroring el-pagination's `page-sizes`. **The switcher renders only when `onPageSizeChange` is supplied as well**; supplying just one of the two renders nothing. |
 | disabled | `boolean` | `false` | Whether all pagination controls are disabled. |
 
 ## Events

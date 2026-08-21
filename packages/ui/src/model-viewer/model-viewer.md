@@ -37,8 +37,8 @@ import { ModelViewer } from "@hulianui/ui"
 | autoRotateSpeed | `number` | `24` | 自转角速度（°/s），仅 `autoRotate` 时生效 |
 | showResetButton | `boolean` | `true` | 右上角「重置视角」工具按钮 |
 | showContactShadow | `boolean` | `true` | 底部柔和接触阴影 |
-| className | `string` | — | 透传根容器 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

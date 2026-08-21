@@ -10,7 +10,7 @@ status: enriched
 
 # Skeleton
 
-> Shimmering text, circle, and rectangle placeholders with borderless card, list, and table presets.
+> Reserves content geometry with an animated loading placeholder.
 
 ## When to use
 

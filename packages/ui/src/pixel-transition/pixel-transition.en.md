@@ -30,8 +30,8 @@ import { PixelTransition } from "@hulianui/ui"
 | animationStepDuration | `number` | `0.3` | The duration of a single transition (seconds), half of the scatter in + half of the scatter, switching at the midpoint |
 | once | `boolean` | `false` | Only advance but not retreat: stop at secondContent after activation, leave/out of focus and do not return |
 | aspectRatio | `string` | `"4 / 3"` | Container aspect ratio (CSS aspect-ratio writing, such as `"1 / 1"`, `"16 / 9"`) |
-| className | `string` | — | Additional class name merged onto the root element |
-| style | `CSSProperties` | — | Passthrough to root element |
+| className | `string` | - | Additional class name merged onto the root element |
+| style | `CSSProperties` | - | Passthrough to root element |
 
 ## Slots
 

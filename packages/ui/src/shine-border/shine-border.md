@@ -28,8 +28,8 @@ import { ShineBorder } from "@hulianui/ui"
 | borderWidth | `number` | `1` | 边框宽度 px |
 | duration | `number` | `14` | 流光一轮秒数 |
 | shineColor | `string \| string[]` | 瑚琏 chart token | 流光色，单色或多色数组 |
-| className | `string` | — | 透传 className |
-| style | `CSSProperties` | — | 透传内联样式 |
+| className | `string` | - | 透传 className |
+| style | `CSSProperties` | - | 透传内联样式 |
 
 ## 示例
 

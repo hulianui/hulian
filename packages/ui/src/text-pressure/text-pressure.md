@@ -27,7 +27,7 @@ import { TextPressure } from "@hulianui/ui"
 |------|------|------|------|
 | text | `string` | `"Compressa"` | 渲染文字（逐字符响应鼠标压力形变） |
 | fontFamily | `string` | 系统无衬线栈 | 字体族；系统字体下用 scaleX+font-weight+opacity 模拟压感，传入真可变字体则驱动 font-variation-settings |
-| fontUrl | `string` | — | 自定义 @font-face 字体 URL；默认不注入远程字体（遵守禁远程资源门禁），仅显式传本地/自托管地址时注入 |
+| fontUrl | `string` | - | 自定义 @font-face 字体 URL；默认不注入远程字体（遵守禁远程资源门禁），仅显式传本地/自托管地址时注入 |
 | width | `boolean` | `true` | 是否驱动 wdth 轴 + scaleX 模拟横向挤压 |
 | weight | `boolean` | `true` | 是否驱动 wght 轴 / font-weight 随接近度变粗 |
 | italic | `boolean` | `true` | 是否驱动 ital 轴（仅可变字体生效） |
@@ -38,7 +38,7 @@ import { TextPressure } from "@hulianui/ui"
 | textColor | `string` | `var(--color-foreground)` | 文字颜色（明暗自适配） |
 | strokeColor | `string` | `var(--color-primary)` | 描边颜色（stroke=true 时生效） |
 | minFontSize | `number` | `24` | 最小字号（px），容器较窄时下限 |
-| className | `string` | — | 透传到根 div（cn 合并） |
+| className | `string` | - | 透传到根 div（cn 合并） |
 
 ## 示例
 ```tsx

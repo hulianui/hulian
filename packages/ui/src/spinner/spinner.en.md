@@ -28,7 +28,7 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 | size | `"sm"\|"md"\|"lg"` | `"md"` | Spinner size. |
 | tone | `"primary"\|"current"\|"muted"` | `"primary"` | Color. `current` inherits `currentColor` for colored controls. |
 | label | `string` | From `ConfigProvider` | Screen-reader status copy. Explicit values take precedence over the locale. |
-| className | `string` | — | Container class name. |
+| className | `string` | - | Container class name. |
 
 ## Example
 ```tsx

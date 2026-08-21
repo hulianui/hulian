@@ -25,10 +25,10 @@ import { GiftFeed, applyGiftEvent } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| events* | `GiftEvent[]` | — | 受控礼物事件流（追加）。`GiftEvent` = `{id, user:{name,avatar?}, gift:{name,icon?,color?}, combo?}`，同 `id` 再次传入视为同一连击 |
+| events* | `GiftEvent[]` | - | 受控礼物事件流（追加）。`GiftEvent` = `{id, user:{name,avatar?}, gift:{name,icon?,color?}, combo?}`，同 `id` 再次传入视为同一连击 |
 | max | `number` | `3` | 同时显示横幅上限（超出挤掉最旧） |
 | duration | `number` | `4000` | 单条无新连击后停留 ms |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 `applyGiftEvent` 为纯函数：把一个 `GiftEvent` 归并进当前在屏横幅数组（同 id 合并、combo 递增、超 max 挤旧），可单独单元测试。
 

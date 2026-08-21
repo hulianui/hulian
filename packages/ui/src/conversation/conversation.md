@@ -10,7 +10,7 @@ status: enriched
 
 # Conversation
 
-> 消息流容器 · 纵向堆叠 ChatMessage + 内容增长自动贴底(新消息/流式 token)·消费侧给高度获独立滚动区 · ai/conversation
+> 纵向堆叠对话消息，新内容自动贴底 · ai/conversation
 
 ## 何时用
 

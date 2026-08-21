@@ -25,7 +25,7 @@ import { StickerPeel } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| imageSrc * | `string` | — | 贴纸图片地址，渲染两层：正面贴纸 + 翻起的背面卷边 |
+| imageSrc * | `string` | - | 贴纸图片地址，渲染两层：正面贴纸 + 翻起的背面卷边 |
 | alt | `string` | `""` | 图片可访问性描述（透传 img alt），装饰性贴纸可留空 |
 | width | `number` | `200` | 贴纸宽度（px），高度按图片原比例自适应 |
 | rotate | `number` | `30` | 内部图案旋转角（deg），制造随手贴的歪斜感 |

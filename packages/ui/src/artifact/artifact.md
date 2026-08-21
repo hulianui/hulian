@@ -10,7 +10,7 @@ status: enriched
 
 # Artifact
 
-> 工件卡 · 智能体产出物(文档/简历/代码)对话内承载：头部(图标+标题+版本Chip+操作槽) + 折叠限高+底部渐隐遮罩 + 展开/收起(受控/非受控) · dogfood Chip · ai/agent
+> 在对话里承载生成的文档或代码，可展开收起 · ai/agent
 
 ## 何时用
 
@@ -27,8 +27,8 @@ import { Artifact } from "@hulianui/ui"
 |------|------|------|------|
 | collapsedHeight | `number` | `240` | 折叠态内容限高 px；`<=0` 表示不折叠 |
 | defaultExpanded | `boolean` | `false` | 非受控初始展开态 |
-| expanded | `boolean` | — | 受控展开态（与 onExpandedChange 配对） |
-| className | `string` | — | 容器附加类 |
+| expanded | `boolean` | - | 受控展开态（与 onExpandedChange 配对） |
+| className | `string` | - | 容器附加类 |
 
 ## Events
 

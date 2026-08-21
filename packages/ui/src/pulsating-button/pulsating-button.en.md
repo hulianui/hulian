@@ -28,7 +28,7 @@ import { PulsatingButton } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Size step, on the same 32/40/48px scale as Button. |
 | pulseColor | `string` | 70% of `var(--color-primary)` | Halo color. |
 | duration | `string` | `1.5s` | Duration of one pulse cycle. |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | Native button props. |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | - | Native button props. |
 
 ## Events
 

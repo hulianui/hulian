@@ -25,11 +25,11 @@ import { Terminal } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| lines* | `TerminalLine[]` | — | Array of rows to be revealed row by row (see table below). |
+| lines* | `TerminalLine[]` | - | Array of rows to be revealed row by row (see table below). |
 | lineDelay | `number` | `0.4` | Delay between adjacent lines in seconds |
 | title | `string` | `"bash"` | Title-bar text |
 | highlight | `boolean` | `true` | Apply syntax colors to commands, flags, URLs, numbers, and quoted strings. This affects string-valued `command` and `muted` lines; ReactNode and `success` lines keep a single tone color. |
-| className | `string` | — | Additional class name for the root container |
+| className | `string` | - | Additional class name for the root container |
 
 `TerminalLine`:
 | Field | Type | Description |

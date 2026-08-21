@@ -33,17 +33,17 @@ import { LoginForm } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| loading | `boolean` | — | External loading override for consumers that own submission state. |
+| loading | `boolean` | - | External loading override for consumers that own submission state. |
 | showRemember | `boolean` | `true` | Whether to display "Remember Me" |
 | rememberLabel | `ReactNode` | From the locale | Label for the remember-me checkbox. That checkbox is not always convenience sugar: in some systems it is a **refresh-token capability switch** (a refresh token is only issued when it is checked), so the wording is deliberate and locking it into the locale makes it unusable (#64). |
-| rememberDescription | `ReactNode` | — | One line under the checkbox explaining what checking it actually means. |
+| rememberDescription | `ReactNode` | - | One line under the checkbox explaining what checking it actually means. |
 | rememberLabel | `ReactNode` | Locale value | Overrides the remember-me label. |
-| rememberDescription | `ReactNode` | — | Supporting text shown directly below the remember-me checkbox. |
-| rules | `{ username?: FormRule[]; password?: FormRule[] }` | — | Field-level validation appended after built-in required rules. `FormRule` matches [Form](../form/form.md): `pattern`/`min`/`max`/`validator`/`message`. |
-| values | `Partial<LoginValues>` | — | Controlled values. Pair with `onValuesChange`; omit to use internal state. |
-| fields | `{ username?: LoginFieldSlot; password?: LoginFieldSlot }` | — | Presentation slots for the two primary fields: `label`, `placeholder`, `prefix`, `suffix`, `description`, and `autoComplete`. Values and validation remain owned by the template. |
+| rememberDescription | `ReactNode` | - | Supporting text shown directly below the remember-me checkbox. |
+| rules | `{ username?: FormRule[]; password?: FormRule[] }` | - | Field-level validation appended after built-in required rules. `FormRule` matches [Form](../form/form.md): `pattern`/`min`/`max`/`validator`/`message`. |
+| values | `Partial<LoginValues>` | - | Controlled values. Pair with `onValuesChange`; omit to use internal state. |
+| fields | `{ username?: LoginFieldSlot; password?: LoginFieldSlot }` | - | Presentation slots for the two primary fields: `label`, `placeholder`, `prefix`, `suffix`, `description`, and `autoComplete`. Values and validation remain owned by the template. |
 | surface | `boolean` | `true` | Built-in card border, background, shadow, and padding. Set to `false` in a split login page or an existing card and let the parent own the surface. |
-| className | `string` | — | Root node class name |
+| className | `string` | - | Root node class name |
 
 ## Events
 
@@ -93,7 +93,7 @@ const ticket = useRef<string | null>(null);
   // 1. Field validation: built-in required rules run before these format rules.
   rules={{
     username: [{ pattern: /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/, message: "Enter a valid username" }],
-    password: [{ min: 6, max: 32, message: "Use 6–32 characters" }],
+    password: [{ min: 6, max: 32, message: "Use 6-32 characters" }],
   }}
   // 2. Controlled: hold live values externally.
   values={values}

@@ -10,7 +10,7 @@ status: enriched
 
 # Accordion
 
-> 手风琴 · Base UI 单/多开 + 高度过渡 · navigation/action
+> 折叠展开多段内容，可单开也可多开 · navigation/action
 
 ## 何时用
 
@@ -28,10 +28,10 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | `Accordion.multiple` | `boolean` | `false` | 是否允许同时展开多项；`false` 时为单开互斥 |
-| `Accordion.defaultValue` | `string[]` | — | 非受控初始展开的 item value 数组 |
-| `Accordion.value` | `string[]` | — | 受控展开态 |
-| `Accordion.className` | `string` | — | 容器类名 |
-| `AccordionItem.value` * | `string` | — | 该项唯一标识，与 `value`/`defaultValue` 对应 |
+| `Accordion.defaultValue` | `string[]` | - | 非受控初始展开的 item value 数组 |
+| `Accordion.value` | `string[]` | - | 受控展开态 |
+| `Accordion.className` | `string` | - | 容器类名 |
+| `AccordionItem.value` * | `string` | - | 该项唯一标识，与 `value`/`defaultValue` 对应 |
 | `AccordionItem.disabled` | `boolean` | `false` | 禁用该项（不可展开/收起） |
 | `AccordionPanel.plain` | `boolean` | `false` | 不画皮：不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Panel |
 

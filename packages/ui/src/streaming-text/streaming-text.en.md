@@ -27,8 +27,8 @@ Inherits `HTMLAttributes<HTMLElement>`, additionally:
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text* | `string` | — | Current accumulated text (increased by parent as token arrives) |
-| streaming | `boolean` | — | Streaming in progress: trailing flashing cursor; cursor removed after done |
+| text* | `string` | - | Current accumulated text (increased by parent as token arrives) |
+| streaming | `boolean` | - | Streaming in progress: trailing flashing cursor; cursor removed after done |
 | as | `ElementType` | `"span"` | Render Tag |
 
 ## Slots

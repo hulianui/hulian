@@ -55,4 +55,4 @@ import { ConfigProvider } from "@hulianui/ui";
 - Build a custom locale by spreading `zhCN` or `enUS` before overriding individual keys, so new or omitted keys retain a fallback.
 
 ## Related
-—
+None.

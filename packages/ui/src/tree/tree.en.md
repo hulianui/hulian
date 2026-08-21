@@ -10,7 +10,7 @@ status: enriched
 
 # Tree
 
-> Recursive tree · dependency-free engine with WAI-ARIA roving focus, arrow keys and typeahead, cascading checkboxes, half-check state, connector lines, search, drag-and-drop, virtualization, and height transitions · data-display/collection
+> Renders expandable hierarchical nodes with selection and keyboard navigation. · data-display/collection
 
 ## When to use
 
@@ -27,15 +27,15 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| nodes* | `TreeNode[]` | — | `{ key, label, icon?, children?, disabled?, searchText? }` hierarchy. |
-| expandedKeys | `string[]` | — | Controlled expanded keys. |
-| defaultExpandedKeys | `string[]` | — | Initial uncontrolled expanded keys. |
+| nodes* | `TreeNode[]` | - | `{ key, label, icon?, children?, disabled?, searchText? }` hierarchy. |
+| expandedKeys | `string[]` | - | Controlled expanded keys. |
+| defaultExpandedKeys | `string[]` | - | Initial uncontrolled expanded keys. |
 | selectable | `boolean` | `true` | Enables single selection outside checkable mode. |
-| selectedKeys | `string[]` | — | Controlled selected keys. |
-| defaultSelectedKeys | `string[]` | — | Initial uncontrolled selected keys. |
+| selectedKeys | `string[]` | - | Controlled selected keys. |
+| defaultSelectedKeys | `string[]` | - | Initial uncontrolled selected keys. |
 | checkable | `boolean` | `false` | Adds cascading checkboxes. |
-| checkedKeys | `string[]` | — | Controlled checked keys. |
-| defaultCheckedKeys | `string[]` | — | Initial uncontrolled checked keys. |
+| checkedKeys | `string[]` | - | Controlled checked keys. |
+| defaultCheckedKeys | `string[]` | - | Initial uncontrolled checked keys. |
 | expandTrigger | `"row" \| "icon"` | `"row"` | Row expands parents without selecting them; icon reserves row clicks for selection or checking. |
 | draggable | `boolean` | `false` | Enables native HTML drag sorting only when `onDrop` is supplied. |
 | allowDropInside | `(target: TreeNode) => boolean` | Always true | Controls whether a target accepts reparenting inside it. |
@@ -43,7 +43,7 @@ import { Tree, buildIndex, flattenVisible, getNodePath, toggleChecked, getCheckS
 | showLine | `boolean` | `false` | Shows connector lines; ignored by virtual rendering. |
 | searchable | `boolean` | `false` | Shows built-in tree search. |
 | searchPlaceholder | `string` | locale | Search input placeholder; an explicit value overrides the locale. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 | aria-label | `string` | locale | Accessible tree label; an explicit value overrides the locale. |
 
 ## Events

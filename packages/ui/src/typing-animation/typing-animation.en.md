@@ -25,7 +25,7 @@ import { TypingAnimation } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text* | `string` | — | Text to be typed verbatim |
+| text* | `string` | - | Text to be typed verbatim |
 | duration | `number` | `80` | milliseconds per word |
 | delay | `number` | `0` | Delay in milliseconds before start |
 | startOnView | `boolean` | `true` | Start after entering the viewport; set `false` to start immediately |
@@ -36,7 +36,7 @@ Inherit `ComponentPropsWithoutRef<"span">` (except `children`), such as `classNa
 ## Example
 ```tsx
 <TypingAnimation
-  text="HulianUI — a composable design system"
+  text="HulianUI, a composable design system"
   className="text-2xl font-semibold text-foreground"
 />
 ```
@@ -48,7 +48,7 @@ Start immediately (without entering the viewport, often used in the first screen
 
 ## Usage guidelines
 
-- `startOnView` defaults to true. If the component begins outside the viewport and the page never scrolls—such as a screenshot or headless check—it remains blank. Set `startOnView={false}` for immediate first-screen or test rendering.
+- `startOnView` defaults to true. If the component begins outside the viewport and the page never scrolls (a screenshot or a headless check, say), it remains blank. Set `startOnView={false}` for immediate first-screen or test rendering.
 - The `"use client"` component may be nested under a server component but is not itself a pure RSC.
 
 ## Related

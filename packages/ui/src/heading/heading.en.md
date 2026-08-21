@@ -10,11 +10,11 @@ status: enriched
 
 # Heading
 
-> Heading · Semantic levels 1–6 with independent visual size and weight, polymorphic `as`, zero dependencies, and RSC support · typography/text
+> Renders semantic heading levels with independently configurable visual size and weight. · typography/text
 
 ## When to use
 
-Use Heading for semantic h1–h6 structure with separately controlled visual size and weight. For example, keep h2 semantics while using an lg appearance, or use `as` to apply heading styles to another element. Use [Text](../text/text.md) for body copy and [Prose](../prose/prose.md) for complete rich-text typography.
+Use Heading for semantic h1-h6 structure with separately controlled visual size and weight. For example, keep h2 semantics while using an lg appearance, or use `as` to apply heading styles to another element. Use [Text](../text/text.md) for body copy and [Prose](../prose/prose.md) for complete rich-text typography.
 
 ## Import
 ```ts

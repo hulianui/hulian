@@ -10,7 +10,7 @@ status: enriched
 
 # Image
 
-> 图片 · 加载淡入 + 失败回退/占位 + isZoomed hover 放大 + radius · data-display/collection
+> 加载图片并处理淡入、失败回退和悬停放大 · data-display/collection
 
 ## 何时用
 
@@ -27,16 +27,16 @@ import { Image, imageVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| src * | string | — | 图片地址 |
-| alt | string | — | 替代文本 |
-| width | number ｜ string | — | 宽（数字或 CSS 长度） |
-| height | number ｜ string | — | 高（数字或 CSS 长度） |
+| src * | string | - | 图片地址 |
+| alt | string | - | 替代文本 |
+| width | number ｜ string | - | 宽（数字或 CSS 长度） |
+| height | number ｜ string | - | 高（数字或 CSS 长度） |
 | radius | `"none"｜"sm"｜"md"｜"lg"｜"full"` | `"md"` | 圆角刻度 |
 | isZoomed | boolean | false | hover 放大（外壳裁切溢出） |
-| fallbackSrc | string | — | 加载失败时回退图；缺省则显示占位底 |
-| className | string | — | 外壳 className（控制尺寸/圆角区域） |
-| imgClassName | string | — | `<img>` 自身 className |
-| ...img | Omit\<ImgHTMLAttributes, "width"｜"height"\> | — | 透传其余原生 img 属性 |
+| fallbackSrc | string | - | 加载失败时回退图；缺省则显示占位底 |
+| className | string | - | 外壳 className（控制尺寸/圆角区域） |
+| imgClassName | string | - | `<img>` 自身 className |
+| ...img | Omit\<ImgHTMLAttributes, "width"｜"height"\> | - | 透传其余原生 img 属性 |
 
 ## 示例
 ```tsx

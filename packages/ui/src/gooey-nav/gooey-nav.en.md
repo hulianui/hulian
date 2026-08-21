@@ -25,21 +25,21 @@ import { GooeyNav } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `GooeyNavItem[]` | — | At least one `{ label, href? }` entry; href defaults to `"#"`. |
+| items* | `GooeyNavItem[]` | - | At least one `{ label, href? }` entry; href defaults to `"#"`. |
 | initialActiveIndex | `number` | `0` | Initial selection in uncontrolled mode. |
-| activeIndex | `number` | — | Controlled selected index. |
+| activeIndex | `number` | - | Controlled selected index. |
 | animationTime | `number` | `600` | Particle burst duration in milliseconds. |
 | particleCount | `number` | `14` | Particles per switch; zero keeps only the pill. |
 | particleDistances | `[number, number]` | `[86, 12]` | Initial burst and return radii in pixels. |
 | colors | `number[]` | `[1, 2, 3, 1, 4]` | Chart-token indices from 1 through 5. |
-| className | `string` | — | Root class name. |
-| style | `CSSProperties` | — | Root inline styles. |
+| className | `string` | - | Root class name. |
+| style | `CSSProperties` | - | Root inline styles. |
 
 `GooeyNavItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label * | `string` | — | Displayed text. |
+| label * | `string` | - | Displayed text. |
 | href | `string` | `"#"` | Link destination. |
 
 ## Events

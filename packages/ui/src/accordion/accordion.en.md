@@ -10,7 +10,7 @@ status: enriched
 
 # Accordion
 
-> Accordion · Base UI single or multiple expansion with height transitions · navigation/action
+> Expands one or multiple stacked content sections with height transitions. · navigation/action
 
 ## When to use
 
@@ -28,10 +28,10 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 | Name | Type | Default | Description |
 |------|------|------|------|
 | `Accordion.multiple` | `boolean` | `false` | Whether multiple items can remain open. When false, opening one closes the previous item. |
-| `Accordion.defaultValue` | `string[]` | — | Initially expanded item values when uncontrolled. |
-| `Accordion.value` | `string[]` | — | Controlled expanded values. |
-| `Accordion.className` | `string` | — | Container class name. |
-| `AccordionItem.value` * | `string` | — | Unique item identifier used by `value` and `defaultValue`. |
+| `Accordion.defaultValue` | `string[]` | - | Initially expanded item values when uncontrolled. |
+| `Accordion.value` | `string[]` | - | Controlled expanded values. |
+| `Accordion.className` | `string` | - | Container class name. |
+| `AccordionItem.value` * | `string` | - | Unique item identifier used by `value` and `defaultValue`. |
 | `AccordionItem.disabled` | `boolean` | `false` | Whether the item cannot be expanded or collapsed. |
 | `AccordionPanel.plain` | `boolean` | `false` | No chrome: skip the inner padding-and-secondary-text wrapper so children land directly in the panel. |
 
@@ -39,7 +39,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 
 ### plain: when the panel holds a whole feature block
 
-`AccordionPanel` wraps its children in a `px-4 pb-4 pt-1 text-sm text-muted-foreground` skin element, which is designed for a short paragraph of explanatory text. Add `plain` when the panel holds a **whole feature block** — a permission editor, a configuration form, or a list that already brings its own `border-t` and per-row padding:
+`AccordionPanel` wraps its children in a `px-4 pb-4 pt-1 text-sm text-muted-foreground` skin element, which is designed for a short paragraph of explanatory text. Add `plain` when the panel holds a **whole feature block**: a permission editor, a configuration form, or a list that already brings its own `border-t` and per-row padding:
 
 ```tsx
 <AccordionPanel plain>
@@ -47,7 +47,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionPanel } from "@hul
 </AccordionPanel>
 ```
 
-Without it, two things go wrong: `text-muted-foreground` inherits down into every unstyled piece of text in the panel, so the whole block reads as disabled, and the inner `px-4` stacks on top of the padding the content already has, which also keeps separators from reaching the panel edges. `className` lands on the **outer** panel and cannot reach the inner element, so do not reach in with arbitrary variants such as `[&>div]:p-0` — that turns "the inner element is a div" into an external contract that breaks whenever the internal structure changes.
+Without it, two things go wrong: `text-muted-foreground` inherits down into every unstyled piece of text in the panel, so the whole block reads as disabled, and the inner `px-4` stacks on top of the padding the content already has, which also keeps separators from reaching the panel edges. `className` lands on the **outer** panel and cannot reach the inner element, so do not reach in with arbitrary variants such as `[&>div]:p-0`. That turns "the inner element is a div" into an external contract that breaks whenever the internal structure changes.
 
 The same `plain` name means the same thing on the [Collapsible](../collapsible/collapsible.md) panel and as [Card](../card/card.md)'s `variant="plain"`: **when the content brings its own appearance, the answer is no skin rather than a different skin**.
 

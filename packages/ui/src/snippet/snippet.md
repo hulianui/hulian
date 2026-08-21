@@ -10,7 +10,7 @@ status: enriched
 
 # Snippet
 
-> 代码片段 · 命令提示符 + 一键复制(剪贴板+反馈) · typography/code
+> 展示一行命令，带提示符和一键复制 · typography/code
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { Snippet } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text | `string` | — | 复制到剪贴板的文本；缺省时取 children（仅当为字符串时） |
+| text | `string` | - | 复制到剪贴板的文本；缺省时取 children（仅当为字符串时） |
 | symbol | `string ｜ null` | `"$"` | 命令提示符；传 `null` 不显示，适合非命令片段 |
-| lang | `string` | — | 语法着色语言（如 `"tsx"`/`"bash"`），仅 children 为字符串时生效 |
+| lang | `string` | - | 语法着色语言（如 `"tsx"`/`"bash"`），仅 children 为字符串时生效 |
 | highlight | `boolean` | `true` | 是否语法着色，仅 children 为字符串时生效 |
 | copyLabel | `string` | 跟随 locale | 复制按钮无障碍标签；显式传值优先 |
 | copiedLabel | `string` | 跟随 locale | 复制成功后的无障碍标签；显式传值优先 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Button
 
-> 按钮 · CVA 变体 + press 动效 · forms/button
+> 触发操作的按钮，提供实心、浅色、描边、幽灵和危险等变体 · forms/button
 
 ## 何时用
 
@@ -33,7 +33,7 @@ import { Button, buttonVariants } from "@hulianui/ui"
 | dashed | `boolean` | `false` | 笔形档：虚线描边，语义是「这块是空的，等你往里放东西」。**只对 `outline` / `soft` 有效**（见「dashed 笔形档」） |
 | loading | `boolean` | `false` | 加载态，显示 spinner 并自动禁用 |
 | type | `"button" ｜ "submit" ｜ "reset"` | `"button"` | **默认是 `button` 而不是原生 `<button>` 的 `submit`**——表单里的辅助按钮不写 `type` 时不会误提交。提交按钮请显式写 `type="submit"` |
-| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | — | 透传原生属性（disabled 等） |
+| ...ButtonHTMLAttributes | `ButtonHTMLAttributes<HTMLButtonElement>` | - | 透传原生属性（disabled 等） |
 
 ## Events
 
@@ -187,9 +187,9 @@ import { Button, buttonVariants } from "@hulianui/ui"
 |--------|------|------|-----------|--------|
 | `xs` | 高 24px | 12px | `icon24` | 中后台工具栏、表格行内、面板头部的文字按钮 |
 | `"28"` | 高 28px | 12px | `icon28`、[Chip](../chip/chip.md) 的 `md`、[Sidebar](../sidebar/sidebar.md) 菜单项的 `sm` | 28px 那条行刻度上的文字按钮：筛选胶囊行的触发器、信息卡片底部的次要操作 |
-| `iconXs` | 20px 见方 | — | 无（比任何文字档都矮） | 表格行内的纯图标微操作：树形展开箭头、拖拽手柄 |
-| `icon24` | 24px 见方 | — | `xs` 文字档、[Tag](../tag/tag.md) 的 `md`、[Chip](../chip/chip.md) 的 `sm` | 与 `xs` 文字按钮同排的图标按钮 |
-| `icon28` | 28px 见方 | — | `"28"` 文字档、[Chip](../chip/chip.md) 的 `md`、[Sidebar](../sidebar/sidebar.md) 菜单项的 `sm` | 28px 那条行刻度上的图标按钮（筛选胶囊行的清空键等） |
+| `iconXs` | 20px 见方 | - | 无（比任何文字档都矮） | 表格行内的纯图标微操作：树形展开箭头、拖拽手柄 |
+| `icon24` | 24px 见方 | - | `xs` 文字档、[Tag](../tag/tag.md) 的 `md`、[Chip](../chip/chip.md) 的 `sm` | 与 `xs` 文字按钮同排的图标按钮 |
+| `icon28` | 28px 见方 | - | `"28"` 文字档、[Chip](../chip/chip.md) 的 `md`、[Sidebar](../sidebar/sidebar.md) 菜单项的 `sm` | 28px 那条行刻度上的图标按钮（筛选胶囊行的清空键等） |
 
 `xs` 是密集界面的最小文字档：一屏十几个操作时 `sm`（32px/14px）是**大一档**而不是最小档，
 用它去接 24px 的工具栏，就得写一串覆盖类去撤销 `sm` 自己刚加的高度、内边距、字号和圆角。

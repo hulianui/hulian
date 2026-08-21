@@ -10,7 +10,7 @@ status: enriched
 
 # Badge
 
-> 计数角标 · count/max 溢出 + dot + 自定义内容 + 包裹叠加(四角/offset) · data-display/info
+> 在内容一角叠加计数或小红点，计数可封顶 · data-display/info
 
 ## 何时用
 
@@ -25,16 +25,16 @@ import { Badge } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| count | `number` | — | 数字计数；为 0 时默认隐藏（除非 showZero）。 |
+| count | `number` | - | 数字计数；为 0 时默认隐藏（除非 showZero）。 |
 | max | `number` | `99` | 超过则显示 `max+`。 |
 | dot | `boolean` | `false` | 仅显示小圆点不显示数字（优先级高于 count）。 |
 | showZero | `boolean` | `false` | count=0 仍显示。 |
-| invisible | `boolean` | — | 强制隐藏角标，保留被包裹子元素。 |
+| invisible | `boolean` | - | 强制隐藏角标，保留被包裹子元素。 |
 | tone | `"neutral"｜"brand"｜"success"｜"warning"｜"danger"` | `danger` | 语气色（默认通知红）。 |
 | variant | `"signal"｜"themed"` | `signal` | 配色口径（#295）。`signal` = 明暗两个主题下同一个实心色 + 白字（通知角标的通行样子）；`themed` = 跟随主题的语义面配色（`bg-danger text-danger-foreground` 那一套），角标当行内状态块用时选它。`neutral` 不受影响，两档都跟随主题 |
 | size | `"sm"｜"md"` | `md` | 尺寸。 |
 | placement | `"top-right"｜"top-left"｜"bottom-right"｜"bottom-left"` | `top-right` | 有 children 时角标叠加的角位。 |
-| offset | `[number, number]` | — | 角标位置微调 [x, y] px（正值=右/下），圆形宿主常用来外推贴边。 |
+| offset | `[number, number]` | - | 角标位置微调 [x, y] px（正值=右/下），圆形宿主常用来外推贴边。 |
 
 ## Slots
 

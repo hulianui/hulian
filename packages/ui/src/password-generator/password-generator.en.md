@@ -48,7 +48,7 @@ The security guarantees live in `core`, independently of the panel:
 - **The final result is shuffled.** Required category minima are filled first, then all characters are shuffled so positions do not reveal rules such as “uppercase first, lowercase second.”
 - **Every enabled category is represented.** If digits or symbols are enabled, the result contains at least one, preventing generated values from failing their own policy.
 
-Entropy is estimated as `length × log2(pool size)` for passwords and `word count × log2(word-list size)` for passphrases. This is an upper bound because constraints such as minimum digit and symbol counts slightly reduce the valid space—by less than one bit with the defaults.
+Entropy is estimated as `length × log2(pool size)` for passwords and `word count × log2(word-list size)` for passphrases. This is an upper bound because constraints such as minimum digit and symbol counts slightly reduce the valid space, by less than one bit with the defaults.
 
 ## Import
 
@@ -62,7 +62,7 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| mode | `"password"\|"passphrase"` | — | Controlled mode; omit for internal state. |
+| mode | `"password"\|"passphrase"` | - | Controlled mode; omit for internal state. |
 | defaultMode | `"password"\|"passphrase"` | `"password"` | Initial mode when uncontrolled. |
 | modes | `GeneratorMode[]` | Both modes | Allowed modes. Supplying one mode hides the top switcher. |
 | defaultPasswordOptions | `PasswordOptions` | See below | Initial password-mode options. |
@@ -70,12 +70,12 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 | copyable | `boolean` | `true` | Whether to show the copy button. |
 | showStrength | `boolean` | `true` | Whether to show the entropy value and strength meter. |
 | showOptions | `boolean` | `true` | Whether to show the options panel. Set to `false` for a compact result-and-regenerate view, such as inside a popover. |
-| labels | `Partial<PasswordGeneratorLabels>` | — | Per-label overrides with higher priority than the ConfigProvider locale. |
-| className | `string` | — | Additional class name for the panel root. |
+| labels | `Partial<PasswordGeneratorLabels>` | - | Per-label overrides with higher priority than the ConfigProvider locale. |
+| className | `string` | - | Additional class name for the panel root. |
 
-`PasswordOptions`: `length` defaults to 14 and is clamped to 5–128; `uppercase`, `lowercase`, `digits`, and `special` all default to `true`; `minDigits` and `minSpecial` default to 1 and are clamped to 1–9; `avoidAmbiguous` defaults to `false` and, when enabled, excludes `I l 1 O 0 o`.
+`PasswordOptions`: `length` defaults to 14 and is clamped to 5-128; `uppercase`, `lowercase`, `digits`, and `special` all default to `true`; `minDigits` and `minSpecial` default to 1 and are clamped to 1-9; `avoidAmbiguous` defaults to `false` and, when enabled, excludes `I l 1 O 0 o`.
 
-`PassphraseOptions`: `words` defaults to 6 and is clamped to 3–20; `separator` defaults to `"-"`; `capitalize` and `includeNumber` default to `false`; `wordlist` defaults to the built-in 1,747-word list.
+`PassphraseOptions`: `words` defaults to 6 and is clamped to 3-20; `separator` defaults to `"-"`; `capitalize` and `includeNumber` default to `false`; `wordlist` defaults to the built-in 1,747-word list.
 
 ## Events
 
@@ -152,7 +152,7 @@ generatePassword({ length: 8 }, () => 0); // fixed sequence → fixed result
 ## Accessibility
 
 - The result uses `<output aria-live="polite">`, so screen readers announce regenerated values.
-- The strength bar uses `role="meter"`, `aria-valuenow` (0–4), and `aria-valuetext` (strength label), conveying strength without relying on color.
+- The strength bar uses `role="meter"`, `aria-valuenow` (0-4), and `aria-valuetext` (strength label), conveying strength without relying on color.
 - All icon buttons, sliders, and numeric inputs have an `aria-label` from the current locale.
 
 ## i18n

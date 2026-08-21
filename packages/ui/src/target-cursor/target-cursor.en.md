@@ -31,8 +31,8 @@ import { TargetCursor } from "@hulianui/ui"
 | fullScreen | `boolean` | `false` | Uses a fixed viewport-wide cursor and window-level listeners; the default container scope is absolutely positioned, hides on leave, and supports multiple instances |
 | color | `string` | `var(--color-foreground)` | Cursor main color (dot background + four-corner stroke), must be parsed with `--color-` prefix |
 | hoverDuration | `number` | `0.2` | The easing follow time of the target wrapped in square brackets (seconds), the larger it is, the "stickier" it is |
-| className | `string` | — | Forward the additional class name of the root container |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Forward the additional class name of the root container |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Examples
 ```tsx

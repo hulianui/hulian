@@ -41,7 +41,7 @@ import { LaserFlow } from "@hulianui/ui"
 | decay | `number` | `1.1` | Width of the beam's attenuation phase |
 | falloffStart | `number` | `1.2` | Position at which beam luminance begins to fall off |
 | mouseTiltStrength | `number` | `0.01` | Amount of fog tilt driven by pointer input that reaches the canvas; 0 disables the response |
-| className | `string` | — | Class name forwarded to the live or fallback root |
+| className | `string` | - | Class name forwarded to the live or fallback root |
 
 ## Slots
 

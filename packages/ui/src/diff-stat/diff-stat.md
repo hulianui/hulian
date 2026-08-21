@@ -25,13 +25,13 @@ import { DiffStat, splitBlocks } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| additions* | `number` | — | 新增行数 |
-| deletions* | `number` | — | 删除行数 |
-| status | `"added" \| "modified" \| "deleted" \| "renamed"` | — | 文件状态徽标（可选） |
+| additions* | `number` | - | 新增行数 |
+| deletions* | `number` | - | 删除行数 |
+| status | `"added" \| "modified" \| "deleted" \| "renamed"` | - | 文件状态徽标（可选） |
 | blocks | `number` | `5` | 绿红格子条总格数 |
 | showCounts | `boolean` | `true` | 是否显示 +N −M 数字 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
-| className | `string` | — | 自定义类 |
+| className | `string` | - | 自定义类 |
 
 ## 示例
 ```tsx

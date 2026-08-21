@@ -10,11 +10,11 @@ status: enriched
 
 # Heading
 
-> 标题 · 1-6 级语义标签 + size/weight + as 多态(纯皮肤·零依赖·RSC) · typography/text
+> 输出各级标题，视觉大小与标题层级可以分开设定 · typography/text
 
 ## 何时用
 
-需要语义标题（自动渲染为 h1–h6）并控制视觉尺寸/字重时用 Heading；支持视觉与语义解耦（如语义是 h2、视觉用 lg），以及用 `as` 把标题样式套到非标题标签上。正文、说明文本用 [Text](../text/text.md)；整段富文本排版用 [Prose](../prose/prose.md)。
+需要语义标题（自动渲染为 h1-h6）并控制视觉尺寸/字重时用 Heading；支持视觉与语义解耦（如语义是 h2、视觉用 lg），以及用 `as` 把标题样式套到非标题标签上。正文、说明文本用 [Text](../text/text.md)；整段富文本排版用 [Prose](../prose/prose.md)。
 
 ## 导入
 ```ts

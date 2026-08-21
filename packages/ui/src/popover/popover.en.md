@@ -10,7 +10,7 @@ status: enriched
 
 # Popover
 
-> Popover card · Click trigger with title, description, and Close primitive · feedback/overlay
+> Anchors interactive contextual content to a trigger without leaving the page. · feedback/overlay
 
 ## When to use
 
@@ -30,14 +30,14 @@ import { Popover, PopoverTrigger, PopoverClose, PopoverContent } from "@hulianui
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | sideOffset | `number` | `8` | Distance from the trigger in pixels. |
-| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | — | Position against something other than PopoverTrigger; with it the trigger can be omitted entirely. See below. |
+| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | - | Position against something other than PopoverTrigger; with it the trigger can be omitted entirely. See below. |
 | plain | `boolean` | `false` | No chrome: skip the wrapper around children (spacing plus `text-sm text-foreground`) so children land directly in the popup. |
 | arrow | `boolean` | `true` | Whether to render the arrow pointing at the trigger. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ### plain and arrow: edge-to-edge popups whose content brings its own appearance
 
-`PopoverContent` wraps children in a `text-sm text-foreground` skin element, and adds `mt-2` to separate it from the header **only when a title or description is present**. When the popup holds one whole block that brings its own appearance and needs to reach the edges — a search row above a tag list, a `Calendar` panel, or a popup used as a flush menu — pair `className="p-0"` with `plain`:
+`PopoverContent` wraps children in a `text-sm text-foreground` skin element, and adds `mt-2` to separate it from the header **only when a title or description is present**. When the popup holds one whole block that brings its own appearance and needs to reach the edges (a search row above a tag list, a `Calendar` panel, or a popup used as a flush menu), pair `className="p-0"` with `plain`:
 
 ```tsx
 <PopoverContent plain arrow={false} align="start" className="w-auto p-0">
@@ -57,7 +57,7 @@ The same `plain` name means the same thing as [Card](../card/card.md)'s `variant
 
 ### anchor: when the trigger point is a coordinate rather than an element
 
-A marker computed on a DOCX preview or a canvas, a right-click position, a point on a map — such trigger points are only a rectangle, with no DOM node that could serve as a trigger, so `PopoverTrigger` cannot hold them. Pass `anchor` a **virtual element** that only has to implement `getBoundingClientRect()`, drop the trigger entirely, and drive `open` yourself:
+A marker computed on a DOCX preview or a canvas, a right-click position, a point on a map: such trigger points are only a rectangle, with no DOM node that could serve as a trigger, so `PopoverTrigger` cannot hold them. Pass `anchor` a **virtual element** that only has to implement `getBoundingClientRect()`, drop the trigger entirely, and drive `open` yourself:
 
 ```tsx
 const [marker, setMarker] = useState<DOMRect | null>(null);
@@ -71,7 +71,7 @@ const [marker, setMarker] = useState<DOMRect | null>(null);
 </Popover>
 ```
 
-Collision flipping, viewport clamping, focus management, Escape and outside-click dismissal, and `aria-expanded` all stay with the component — exactly the parts that should not be hand-rolled, since focus and ARIA are what a hand-rolled version drops first.
+Collision flipping, viewport clamping, focus management, Escape and outside-click dismissal, and `aria-expanded` all stay with the component, exactly the parts that should not be hand-rolled, since focus and ARIA are what a hand-rolled version drops first.
 
 When the coordinate changes, pass **a new object** (or switch to the `() => virtualEl` function form) instead of mutating fields on the same object: positioning recomputes on anchor identity change, so mutating fields leaves the popup where it was.
 

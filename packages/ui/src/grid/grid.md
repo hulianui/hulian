@@ -10,7 +10,7 @@ status: enriched
 
 # Grid
 
-> 栅格布局 · grid 原语 cols/gap + GridItem 跨列跨行(零依赖·RSC) · layout/arrange
+> 按栅格排列内容，子项可跨列跨行 · layout/arrange
 
 ## 何时用
 
@@ -28,10 +28,10 @@ import { Grid, GridItem } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | cols | `number \| ResponsiveCols` | `1` | 列数。数字=固定列数（任意值，走 inline style）；`{base,sm,md,lg,xl,2xl}`=响应式（静态类） |
-| rows | `number` | — | 行数（不填则按内容自动） |
+| rows | `number` | - | 行数（不填则按内容自动） |
 | gap | `number` | `0` | 行列间距（× 0.25rem） |
-| colGap | `number` | — | 列间距，覆盖 gap（× 0.25rem） |
-| rowGap | `number` | — | 行间距，覆盖 gap（× 0.25rem） |
+| colGap | `number` | - | 列间距，覆盖 gap（× 0.25rem） |
+| rowGap | `number` | - | 行间距，覆盖 gap（× 0.25rem） |
 | inline | `boolean` | `false` | 用 inline-grid 而非 grid |
 | as | `ElementType` | `"div"` | 渲染的元素标签 |
 
@@ -39,8 +39,8 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| colSpan | `number` | — | 跨列数 |
-| rowSpan | `number` | — | 跨行数 |
+| colSpan | `number` | - | 跨列数 |
+| rowSpan | `number` | - | 跨行数 |
 | as | `ElementType` | `"div"` | 渲染的元素标签 |
 
 两者其余 `HTMLAttributes<HTMLElement>` 属性透传。

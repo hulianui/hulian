@@ -25,7 +25,7 @@ import { SplitText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text * | `string` | — | 要逐段进场的文本 |
+| text * | `string` | - | 要逐段进场的文本 |
 | splitType | `"char" \| "word"` | `"char"` | 切分粒度：char 逐字（中文友好）/ word 逐词（按空白切） |
 | from | `"bottom" \| "top" \| "left" \| "right"` | `"bottom"` | 进场方向，每段从该方向位移入场 |
 | delay | `number` | `40` | 相邻段错峰毫秒，越大波浪推进越慢 |

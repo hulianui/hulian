@@ -28,7 +28,7 @@ import { Lightfall } from "@hulianui/ui"
 | colors | `string[]` | `["var(--color-chart-1)", "var(--color-chart-2)", "var(--color-chart-4)"]` | 光束色板（按高度循环），任意 CSS 颜色，最多取前 8 个 |
 | backgroundColor | `string` | `var(--color-primary)` | 背景中心辉光底色 |
 | speed | `number` | `0.5` | 坠落速度，0 近似静止（仍渲染） |
-| streakCount | `number` | `2` | 同时坠落的光束条数（1–16，四舍五入夹取） |
+| streakCount | `number` | `2` | 同时坠落的光束条数（1-16，四舍五入夹取） |
 | streakWidth | `number` | `1` | 单束横向宽度系数，越大越粗 |
 | streakLength | `number` | `1` | 单束拖尾长度系数，越大尾迹越长 |
 | glow | `number` | `1` | 整体辉光强度 |
@@ -40,7 +40,7 @@ import { Lightfall } from "@hulianui/ui"
 | mouseInteraction | `boolean` | `true` | 鼠标交互（指针增亮 + 牵引光团） |
 | mouseStrength | `number` | `0.5` | 鼠标增亮强度 |
 | mouseRadius | `number` | `1` | 鼠标影响半径 |
-| className | `string` | — | 透传根容器（组件自带 absolute inset-0 z-0） |
+| className | `string` | - | 透传根容器（组件自带 absolute inset-0 z-0） |
 
 ## Slots
 

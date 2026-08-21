@@ -32,7 +32,7 @@ import { TextReveal } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text * | `string ｜ string[]` | — | 要揭示的文字。传数组即多串轮换（配 `repeat`），容器宽度按最宽那串预留 |
+| text * | `string ｜ string[]` | - | 要揭示的文字。传数组即多串轮换（配 `repeat`），容器宽度按最宽那串预留 |
 | colors | `string[]` | chart-1..5 | 扫光带的颜色，吃主题。传单色即单色带 |
 | textColor | `string` | `var(--color-foreground)` | 已揭示部分的文字色。**不能传 `currentColor`**，见下 |
 | duration | `number` | `2` | 扫完一轮的秒数 |

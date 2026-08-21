@@ -10,7 +10,7 @@ status: enriched
 
 # StepsForm
 
-> Multistep form · Steps indicator + Previous/Next/Submit navigation + per-step `onStepValidate` + consumer-owned form state + localized copy · forms/framework
+> Splits a validated workflow across ordered steps with controlled navigation. · forms/framework
 
 ## When to use
 
@@ -25,11 +25,11 @@ import { StepsForm } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| steps* | `StepsFormStep[]` | — | Step definitions containing `title`, `description`, `content`, `nextDisabled`, `nextText`, and `showNav`. |
-| current | `number` | — | Zero-based current step in controlled mode. |
+| steps* | `StepsFormStep[]` | - | Step definitions containing `title`, `description`, `content`, `nextDisabled`, `nextText`, and `showNav`. |
+| current | `number` | - | Zero-based current step in controlled mode. |
 | defaultCurrent | `number` | `0` | Initial step when uncontrolled. |
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | Steps indicator direction. |
-| className | `string` | — | Additional class name for the root element. |
+| className | `string` | - | Additional class name for the root element. |
 
 ## Events
 

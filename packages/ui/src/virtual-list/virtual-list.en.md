@@ -10,7 +10,7 @@ status: enriched
 
 # VirtualList
 
-> A virtualized list powered by `@tanstack/react-virtual`, with fixed or measured row heights, overscan, and end-of-list loading.
+> Renders only visible rows from large lists while preserving scroll position.
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { VirtualList } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `T[]` | — | Generic data array. |
-| itemHeight* | `number\|((index: number) => number)` | — | Fixed height in pixels or an estimated-height function for measured variable rows. |
+| items* | `T[]` | - | Generic data array. |
+| itemHeight* | `number\|((index: number) => number)` | - | Fixed height in pixels or an estimated-height function for measured variable rows. |
 | height | `number\|string` | `360` | Viewport height in pixels or as a CSS length. |
 | overscan | `number` | `5` | Number of off-screen rows to pre-render. |
 | getKey | `(item: T, index: number) => string\|number` | Array index | Extracts a stable row key. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Events
 

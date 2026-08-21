@@ -14,7 +14,7 @@ status: enriched
 
 ## When to use
 
-Use DomeGallery for an immersive gallery that maps images to the inside of a 3D hemisphere, rotates by dragging, and opens images for closer viewing—for example, a brand mood wall or portfolio hero. For a curved horizontal track with wheel scrolling and seamless looping, use [CircularGallery](../circular-gallery/circular-gallery.md). For a card wall revealed by a cursor spotlight, use [ChromaGrid](../chroma-grid/chroma-grid.md). For structured tabular data, use [Table](../table/table.md). The component uses CSS 3D and native Pointer Events with no external runtime dependency.
+Use DomeGallery for an immersive gallery that maps images to the inside of a 3D hemisphere, rotates by dragging, and opens images for closer viewing, for example a brand mood wall or portfolio hero. For a curved horizontal track with wheel scrolling and seamless looping, use [CircularGallery](../circular-gallery/circular-gallery.md). For a card wall revealed by a cursor spotlight, use [ChromaGrid](../chroma-grid/chroma-grid.md). For structured tabular data, use [Table](../table/table.md). The component uses CSS 3D and native Pointer Events with no external runtime dependency.
 
 ## Import
 ```ts
@@ -39,8 +39,8 @@ import { DomeGallery } from "@hulianui/ui"
 | overlayColor | `string` | `"var(--color-background)"` | Base color for the edge fade and center mask. Pass a token matching the host background. |
 | enlargeTransitionMs | `number` | `320` | Duration in milliseconds for enlarged-view and auto-rotation transitions. |
 | autoRotate | `boolean` | `false` | Slowly rotates the dome when it is not being dragged, suitable for displays and ambient backgrounds. |
-| className | `string` | — | Class name forwarded to the root element. |
-| style | `CSSProperties` | — | Inline styles forwarded to the root element. |
+| className | `string` | - | Class name forwarded to the root element. |
+| style | `CSSProperties` | - | Inline styles forwarded to the root element. |
 
 `DomeGalleryImage` is either a `string` or `{ src: string; alt?: string }`.
 

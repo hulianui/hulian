@@ -27,15 +27,15 @@ import { EvilEye } from "@hulianui/ui"
 |------|------|------|------|
 | eyeColor | `string` | `--color-chart-3` | 主火焰色，任意 CSS 颜色（hex/oklch/rgb/`var(--…)`）。不传吃主题 token，随明暗换色 |
 | backgroundColor | `string` | 透明（回退黑） | 背景底色，一般留默认由容器深底衬托 |
-| intensity | `number` | `1.5` | 发光强度倍率，越大越亮，建议 0.8–2.5 |
-| pupilSize | `number` | `0.6` | 瞳孔大小，越大越饱满、越小越收成缝，建议 0.2–1.0 |
-| irisWidth | `number` | `0.25` | 虹膜（内环火焰）宽度，建议 0.1–0.4 |
-| glowIntensity | `number` | `0.35` | 外圈辉光浓度，建议 0.1–0.6 |
-| scale | `number` | `0.8` | 眼睛缩放，越大占画面越多，建议 0.5–1.2 |
-| noiseScale | `number` | `1.0` | 火焰噪声纹理缩放，越大纹路越细碎，建议 0.5–2.0 |
+| intensity | `number` | `1.5` | 发光强度倍率，越大越亮，建议 0.8-2.5 |
+| pupilSize | `number` | `0.6` | 瞳孔大小，越大越饱满、越小越收成缝，建议 0.2-1.0 |
+| irisWidth | `number` | `0.25` | 虹膜（内环火焰）宽度，建议 0.1-0.4 |
+| glowIntensity | `number` | `0.35` | 外圈辉光浓度，建议 0.1-0.6 |
+| scale | `number` | `0.8` | 眼睛缩放，越大占画面越多，建议 0.5-1.2 |
+| noiseScale | `number` | `1.0` | 火焰噪声纹理缩放，越大纹路越细碎，建议 0.5-2.0 |
 | pupilFollow | `number` | `1.0` | 瞳孔跟随光标幅度，0=不动；带惯性 lerp，松手缓缓回正 |
-| flameSpeed | `number` | `1.0` | 火焰流动速度，建议 0.3–2.0 |
-| className | `string` | — | 透传根容器，组件默认 `block h-full w-full`，尺寸由容器决定 |
+| flameSpeed | `number` | `1.0` | 火焰流动速度，建议 0.3-2.0 |
+| className | `string` | - | 透传根容器，组件默认 `block h-full w-full`，尺寸由容器决定 |
 
 ## Slots
 

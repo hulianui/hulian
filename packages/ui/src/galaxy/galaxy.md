@@ -29,7 +29,7 @@ import { Galaxy } from "@hulianui/ui"
 | rotation | `[number, number]` | `[1, 0]` | 取景旋转（cos/sin 向量），`[0.707,0.707]`≈45° |
 | starSpeed | `number` | `0.5` | 星点漂移速度因子 |
 | density | `number` | `1` | 星点密度，0.5 稀疏、2 繁星 |
-| hueShift | `number` | `140` | 色相偏移（0–360），默认偏青蓝 |
+| hueShift | `number` | `140` | 色相偏移（0-360），默认偏青蓝 |
 | speed | `number` | `1` | 总动画速度倍率（漂移+闪烁） |
 | mouseInteraction | `boolean` | `true` | 鼠标移动时星河偏移 / 斥力 |
 | glowIntensity | `number` | `0.3` | 星点辉光强度 |
@@ -40,7 +40,7 @@ import { Galaxy } from "@hulianui/ui"
 | rotationSpeed | `number` | `0.1` | 星河自动旋转速度，0=不自转 |
 | autoCenterRepulsion | `number` | `0` | 中心自动斥力，>0 形成空洞中心"星环" |
 | transparent | `boolean` | `true` | true=alpha 随亮度过渡可叠底色；false=纯黑底深空 |
-| className | `string` | — | 透传根容器（或兜底 div） |
+| className | `string` | - | 透传根容器（或兜底 div） |
 
 ## Slots
 

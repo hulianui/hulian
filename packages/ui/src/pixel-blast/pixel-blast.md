@@ -26,15 +26,15 @@ import { PixelBlast, pixelBlastShowcase } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"square" \| "circle" \| "triangle" \| "diamond"` | `"square"` | 像素单元形状：方块（锐利复古）/ 圆点（网点印刷感）/ 三角（织纹）/ 菱形（菱形网点） |
-| pixelSize | `number` | `4` | 单个像素方块边长（CSS px）；越小越密越细腻。建议 2–12 |
+| pixelSize | `number` | `4` | 单个像素方块边长（CSS px）；越小越密越细腻。建议 2-12 |
 | color | `string` | `--color-primary` | 像素主色，CSS 颜色串；默认取 primary token 明暗自适应 |
-| patternScale | `number` | `2` | 噪声纹理缩放；越大斑块越细碎闪烁越密。建议 0.5–6 |
-| patternDensity | `number` | `1` | 像素填充密度；越大亮起像素越多越「满」。建议 0.4–1.6 |
-| pixelSizeJitter | `number` | `0` | 每个方块尺寸的随机抖动幅度 0–1；越大越参差颗粒感越强 |
+| patternScale | `number` | `2` | 噪声纹理缩放；越大斑块越细碎闪烁越密。建议 0.5-6 |
+| patternDensity | `number` | `1` | 像素填充密度；越大亮起像素越多越「满」。建议 0.4-1.6 |
+| pixelSizeJitter | `number` | `0` | 每个方块尺寸的随机抖动幅度 0-1；越大越参差颗粒感越强 |
 | speed | `number` | `0.5` | 动画速度因子；0=静止画面（仍渲一帧静态点阵） |
-| edgeFade | `number` | `0.5` | 四周渐隐宽度 0–1（相对短边）；0=硬边铺满，越大四角越柔和 |
-| className | `string` | — | 透传到根容器 div（或 reduced-motion 兜底 div） |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| edgeFade | `number` | `0.5` | 四周渐隐宽度 0-1（相对短边）；0=硬边铺满，越大四角越柔和 |
+| className | `string` | - | 透传到根容器 div（或 reduced-motion 兜底 div） |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Slots
 

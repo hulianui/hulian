@@ -10,7 +10,7 @@ status: enriched
 
 # Dossier
 
-> Case panel · Visualization of agent slot filling progress: domain list + three states (hollow ring/half-filled/Check) + current collection domain highlighting + domain content summary + automatic progress (archived n/m·optional domain does not count in denominator) + bare embedded · presentational RSC · ai/agent
+> Tracks agent collection domains with empty, active, archived, optional, and summary states. · ai/agent
 
 ## When to Use
 
@@ -27,9 +27,9 @@ import { Dossier } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| sections * | `DossierSection[]` | — | Domain list (data driven) |
+| sections * | `DossierSection[]` | - | Domain list (data driven) |
 | bare | `boolean` | `false` | Remove the container border background and use it inline |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 | archivedLabel | `ReactNode` | From the locale | Prefix for the automatic progress readout. Pass localized copy explicitly when server rendering. |
 | optionalLabel | `ReactNode` | From the locale | Marker for optional domains. Pass localized copy explicitly when server rendering. |
 
@@ -44,11 +44,11 @@ import { Dossier } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| key * | `string` | — | Domain unique identifier |
-| label * | `ReactNode` | — | Domain name |
+| key * | `string` | - | Domain unique identifier |
+| label * | `ReactNode` | - | Domain name |
 | status | `"empty" \| "partial" \| "done"` | `"empty"` | Empty (hollow ring) / Half filled / Complete (tick) |
 | optional | `boolean` | `false` | Optional section: excluded from the progress denominator and, when empty, dimmed and marked `"\u53ef\u9009"` ("Optional") |
-| summary | `ReactNode` | — | Summary of archived content (one or two lines) |
+| summary | `ReactNode` | - | Summary of archived content (one or two lines) |
 | active | `boolean` | `false` | The domain currently being collected, highlighted |
 
 ## Examples

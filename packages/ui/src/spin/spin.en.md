@@ -10,7 +10,7 @@ status: enriched
 
 # Spin
 
-> Loading overlay · Covers a content region with optional tip, anti-flash delay, and fullscreen mode · feedback/loading
+> Overlays a loading indicator on existing content while preserving its layout. · feedback/loading
 
 ## When to use
 
@@ -29,7 +29,7 @@ import { Spin } from "@hulianui/ui"
 | delay | `number` | `0` | Milliseconds loading must persist before the overlay appears. |
 | size | `"sm"\|"md"\|"lg"` | `"md"` | Size forwarded to the internal Spinner. |
 | fullscreen | `boolean` | `false` | Uses a fixed viewport overlay and ignores children. |
-| className | `string` | — | Container class name. |
+| className | `string` | - | Container class name. |
 
 ## Slots
 

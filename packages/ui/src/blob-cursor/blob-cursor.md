@@ -37,8 +37,8 @@ import { BlobCursor } from "@hulianui/ui"
 | trailStiffness | `number` | `120` | 拖尾水滴弹簧刚度（越小拖尾越长） |
 | damping | `number` | `28` | 弹簧阻尼（越大越不回弹、越黏） |
 | zIndex | `number` | `50` | 容器层级；水滴层不拦截指针（pointer-events:none） |
-| className | `string` | — | 透传到根容器（relative，铺满父级） |
-| style | `CSSProperties` | — | 透传到根容器内联样式 |
+| className | `string` | - | 透传到根容器（relative，铺满父级） |
+| style | `CSSProperties` | - | 透传到根容器内联样式 |
 
 ## Slots
 

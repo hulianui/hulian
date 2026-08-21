@@ -25,13 +25,13 @@ import { GridDistortion } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| grid | `number` | `15` | Number of displacement cells per side; JavaScript updates `grid²` cells per frame, with 8–30 recommended |
+| grid | `number` | `15` | Number of displacement cells per side; JavaScript updates `grid²` cells per frame, with 8-30 recommended |
 | mouse | `number` | `0.1` | Pointer influence radius relative to the grid; range = `grid × mouse` |
 | strength | `number` | `0.15` | Displacement multiplier applied to pointer velocity; higher values produce stronger ripples |
 | relaxation | `number` | `0.9` | Per-frame decay from 0 to 1; values closer to 1 make ripples persist longer |
-| imageSrc | `string` | — | Image to distort. When omitted, a grid texture is generated from chart tokens (recommended). Supplied images must be same-origin or CORS-enabled. |
+| imageSrc | `string` | - | Image to distort. When omitted, a grid texture is generated from chart tokens (recommended). Supplied images must be same-origin or CORS-enabled. |
 | color | `string` | `--color-chart-1` | Main procedural-grid color used when `imageSrc` is omitted; accepts any CSS color |
-| className | `string` | — | Root container (or div) |
+| className | `string` | - | Root container (or div) |
 
 ## Slots
 

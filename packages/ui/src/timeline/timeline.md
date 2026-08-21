@@ -10,7 +10,7 @@ status: enriched
 
 # Timeline
 
-> 时间线 · 复合 Timeline/Item + items 数组 + 彩色节点/自定义 dot + left/right/alternate + pending 加载态(纯皮肤·零依赖·RSC) · data-display/stat
+> 把事件按时间排成一条线，节点样式可自定义 · data-display/stat
 
 ## 何时用
 
@@ -27,17 +27,17 @@ import { Timeline, TimelineItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items | `TimelineItemProps[]` | — | 数据驱动：等价于每项渲染 `<TimelineItem {...item} />`；与 children 二选一 |
+| items | `TimelineItemProps[]` | - | 数据驱动：等价于每项渲染 `<TimelineItem {...item} />`；与 children 二选一 |
 | mode | `"left" \| "right" \| "alternate"` | `"left"` | 布局方向：left=节点在左/内容在右，right=镜像，alternate=逐项左右交替（中轴） |
-| …HTMLAttributes | `Omit<HTMLAttributes<HTMLOListElement>, "children">` | — | 透传 ol 原生属性 |
+| …HTMLAttributes | `Omit<HTMLAttributes<HTMLOListElement>, "children">` | - | 透传 ol 原生属性 |
 
 ### TimelineItem
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | color | `"default" \| "primary" \| "success" \| "danger" \| "warning"` | `"default"` | 默认圆点的语气色；自定义 dot 时忽略 |
-| pending | `boolean` | — | 标记进行中：默认圆点变加载态（旋转环）；连入此项的竖线由 Timeline 自动转虚线 |
-| className | `string` | — | 透传类名 |
+| pending | `boolean` | - | 标记进行中：默认圆点变加载态（旋转环）；连入此项的竖线由 Timeline 自动转虚线 |
+| className | `string` | - | 透传类名 |
 
 ## Slots
 

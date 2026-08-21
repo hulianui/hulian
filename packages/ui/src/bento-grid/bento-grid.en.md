@@ -10,7 +10,7 @@ status: enriched
 
 # BentoGrid
 
-> Varied grid · composable BentoGrid and BentoCard with row and column spans, hover CTA, CSS-only rendering, and RSC support · data-display/collection
+> Arranges feature cards across configurable row and column spans with a hover action. · data-display/collection
 
 ## When to use
 
@@ -28,14 +28,14 @@ Inherits `HTMLAttributes<HTMLDivElement>` with no custom props; control columns 
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| ...div | HTMLAttributes\<HTMLDivElement\> | — | Forwarded props, including grid classes. |
+| ...div | HTMLAttributes\<HTMLDivElement\> | - | Forwarded props, including grid classes. |
 
 ### BentoCard
 Inherits `Omit<HTMLAttributes<HTMLDivElement>, "title">`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| ...div | Omit\<HTMLAttributes\<HTMLDivElement\>, "title"\> | — | Forwarded props; use `className` for spans. |
+| ...div | Omit\<HTMLAttributes\<HTMLDivElement\>, "title"\> | - | Forwarded props; use `className` for spans. |
 
 ## Slots
 

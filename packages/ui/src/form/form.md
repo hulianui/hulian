@@ -10,7 +10,7 @@ status: enriched
 
 # Form
 
-> 表单容器 · Base UI 结构化提交 + errors 按 name + 与 Field 协同 · forms/framework
+> 组织具名字段，统一收集提交和字段级错误 · forms/framework
 
 ## 何时用
 
@@ -28,8 +28,8 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | validationMode | `"onSubmit" \| "onBlur" \| "onChange"` | `"onSubmit"` | 校验时机 |
-| errors | `Record<string, string \| string[]>` | — | 外部/服务端校验错误，按 `<Field name>` 映射（展示需 Field 内有 Field.Error） |
-| className | `string` | — | 容器类名 |
+| errors | `Record<string, string \| string[]>` | - | 外部/服务端校验错误，按 `<Field name>` 映射（展示需 Field 内有 Field.Error） |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # ServiceMessage
 
-> Service notification card · WeChat-style in-conversation template message with source header, title, key/value fields or custom body, footer action, Avatar and icon reuse, and token-based themes · feedback/message
+> Displays a service-notification card with source header, structured fields or custom content, and footer actions. · feedback/message
 
 ## When to use
 
@@ -27,8 +27,8 @@ Inherits `Omit<HTMLAttributes<HTMLDivElement>, "title">`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| avatar | `AvatarProps` | — | Header avatar using HulianUI Avatar props such as `{src, fallback}`. |
-| fields | `ServiceMessageField[]` | — | Body key/value rows in the shape `{label, value}`. Ignored when children are provided. |
+| avatar | `AvatarProps` | - | Header avatar using HulianUI Avatar props such as `{src, fallback}`. |
+| fields | `ServiceMessageField[]` | - | Body key/value rows in the shape `{label, value}`. Ignored when children are provided. |
 | action | `ServiceMessageAction` | label `"\u5c0f\u7a0b\u5e8f"` | Right-side footer action in the shape `{label?, icon?}` plus a chevron. The built-in Chinese label means “Mini program.” |
 
 ## Events

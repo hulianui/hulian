@@ -32,8 +32,8 @@ import { MagnetLines } from "@hulianui/ui"
 | lineWidth | `string` | `"1vmin"` | Single line segment width (any CSS length) |
 | lineHeight | `string` | `"6vmin"` | Single line segment height (any CSS length) |
 | baseAngle | `number` | `-10` | Initial rest angle (degrees); maintain this angle when the pointer does not move or reduces-motion |
-| className | `string` | — | Additional class name for the root container |
-| style | `CSSProperties` | — | Inline styles for the root container, merged after the computed grid styles |
+| className | `string` | - | Additional class name for the root container |
+| style | `CSSProperties` | - | Inline styles for the root container, merged after the computed grid styles |
 
 ## Examples
 ```tsx

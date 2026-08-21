@@ -10,7 +10,7 @@ status: enriched
 
 # Separator
 
-> 分隔线 · Base UI role=separator + 横/竖几何 · layout/arrange
+> 画一条横向或竖向的分隔线，带正确的无障碍语义 · layout/arrange
 
 ## 何时用
 
@@ -26,7 +26,7 @@ import { Separator } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 水平（h-px 横线）/ 垂直（w-px 竖线，需父容器有高度） |
-| className | `string` | — | 额外类名 |
+| className | `string` | - | 额外类名 |
 
 ## 示例
 ```tsx

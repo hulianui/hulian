@@ -31,8 +31,8 @@ import { GridMotion } from "@hulianui/ui"
 | gradientColor | `string` | `var(--color-primary)` | Center radial halo color, fading outward from the center of the canvas |
 | maxMoveAmount | `number` | `300` | The maximum translation amplitude (px) of each line when the pointer moves horizontally. The larger the parallax, the more exaggerated it is |
 | rotate | `number` | `-15` | The overall rotation angle (deg) of the grid to create a perspective bevel |
-| className | `string` | — | Root container className |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Root container className |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Examples
 ```tsx

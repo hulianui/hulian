@@ -10,7 +10,7 @@ status: enriched
 
 # List
 
-> Data list · composable List, ListItem, and ListItem.Meta with actions, sizes, borders, separators, grid mode, empty state, pagination, and load-more integration · data-display/collection
+> Presents accessible named lists with structured items, metadata, actions, grid mode, empty states, and pagination or load-more controls. · data-display/collection
 
 ## When to use
 
@@ -27,27 +27,27 @@ import { List, ListItem, ListItemMeta } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items | `T[]` | — | Data-driven entries used with `renderItem`. |
+| items | `T[]` | - | Data-driven entries used with `renderItem`. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Row padding density. |
 | bordered | `boolean` | `false` | Adds an outer border and radius; ignored in grid mode. |
 | inset | `boolean` | Follows `bordered` | Horizontal padding for rows, header, and footer. |
 | split | `boolean` | `true` | Row separators; ignored in grid mode. |
-| grid | `boolean \| ListGridConfig` | — | Card-grid mode; true uses three columns. |
-| loadMore | `ListLoadMore` | — | Bottom load-more action and loading state. |
+| grid | `boolean \| ListGridConfig` | - | Card-grid mode; true uses three columns. |
+| loadMore | `ListLoadMore` | - | Bottom load-more action and loading state. |
 
 `ListItemProps` (the `<ListItem>` used in the compound form)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| actions | `ReactNode[]` | — | Action area on the right of the row; separators are inserted between entries automatically. |
+| actions | `ReactNode[]` | - | Action area on the right of the row; separators are inserted between entries automatically. |
 
 `ListItemMetaProps` (`<ListItemMeta>`, the avatar / title / description trio on the left)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| avatar | `ReactNode` | — | Avatar or icon (reuses Avatar). |
-| title | `ReactNode` | — | Title. |
-| description | `ReactNode` | — | Description. |
+| avatar | `ReactNode` | - | Avatar or icon (reuses Avatar). |
+| title | `ReactNode` | - | Title. |
+| description | `ReactNode` | - | Description. |
 
 ## Slots
 

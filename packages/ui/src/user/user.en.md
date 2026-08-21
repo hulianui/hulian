@@ -10,7 +10,7 @@ status: enriched
 
 # User
 
-> An Avatar paired with a primary name and secondary description.
+> Combines an avatar, display name, and supporting description into a compact user row.
 
 ## When to use
 
@@ -25,8 +25,8 @@ import { User } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| avatarProps | `AvatarProps` | — | Props forwarded to the built-in Avatar. |
-| className | `string` | — | Custom class name. |
+| avatarProps | `AvatarProps` | - | Props forwarded to the built-in Avatar. |
+| className | `string` | - | Custom class name. |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Calendar
 
-> Calendar panel · Dependency-free day/month/year drill-down, always-visible layout, date bounds, `disabledDate`, Today shortcut, and fixed-width string values · forms/datetime
+> Displays a navigable day, month, or year calendar with limits and disabled-date rules. · forms/datetime
 
 ## When to use
 
@@ -29,18 +29,18 @@ import { Calendar } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| null` | — | Controlled value. Its shape follows `picker`: `"YYYY-MM-DD"`, `"YYYY-MM"`, or `"YYYY"`. |
-| defaultValue | `string \| null` | — | Initial value when uncontrolled, with the same shape as `value`. |
+| value | `string \| null` | - | Controlled value. Its shape follows `picker`: `"YYYY-MM-DD"`, `"YYYY-MM"`, or `"YYYY"`. |
+| defaultValue | `string \| null` | - | Initial value when uncontrolled, with the same shape as `value`. |
 | picker | `"date" \| "month" \| "year"` | `"date"` | Selection granularity; also determines the value shape and initial panel level. |
 | defaultMonth | `string` | Follows `value` | Initial visible month as any parseable date string, independent of the selected value. Internal navigation takes over afterward. |
-| minDate | `string` | — | Earliest selectable date as any parseable date string; normalized internally. |
-| maxDate | `string` | — | Latest selectable date. |
-| disabledDate | `(isoDate: string) => boolean` | — | Determines whether a date is disabled. The argument is always `"YYYY-MM-DD"`; month/year pickers pass the first day of that month/year. |
+| minDate | `string` | - | Earliest selectable date as any parseable date string; normalized internally. |
+| maxDate | `string` | - | Latest selectable date. |
+| disabledDate | `(isoDate: string) => boolean` | - | Determines whether a date is disabled. The argument is always `"YYYY-MM-DD"`; month/year pickers pass the first day of that month/year. |
 | showToday | `boolean` | `true` | Shows the locale-aware Today, This month, or This year shortcut for the active `picker`. |
 | disabled | `boolean` | `false` | Disables the entire panel, including navigation. |
 | readOnly | `boolean` | `false` | Allows navigation but prevents selection. |
 | aria-label | `string` | From `ConfigProvider` | Accessible name for the panel. An explicit value takes precedence. |
-| className | `string` | — | Additional class name for the outer panel container. |
+| className | `string` | - | Additional class name for the outer panel container. |
 
 ## Events
 

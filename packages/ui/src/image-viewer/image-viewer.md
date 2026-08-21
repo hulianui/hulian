@@ -10,7 +10,7 @@ status: enriched
 
 # ImageViewer
 
-> 图片查看器 · 全屏 Lightbox(portal+锁滚复用 dialog) · 受控 index 翻页(箭头/← →/序号) + 滚轮指针锚定缩放/双击 1x↔2x/拖拽平移(切图重置) + 底部缩略图条 + role=dialog aria-modal/Esc 关闭(仅渲当前图·零依赖) · data-display/info
+> 全屏查看图片，可缩放、平移、翻页和看缩略图 · data-display/info
 
 ## 何时用
 
@@ -25,10 +25,10 @@ import { ImageViewer } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| open* | `boolean` | — | 受控开关 |
-| images* | `ImageViewerImage[]` | — | 图片数组。`{src, alt?, caption?}` |
-| index* | `number` | — | 受控当前页（组件不自管，翻页/点缩略图都回调出去） |
-| className | `string` | — | 面板类名 |
+| open* | `boolean` | - | 受控开关 |
+| images* | `ImageViewerImage[]` | - | 图片数组。`{src, alt?, caption?}` |
+| index* | `number` | - | 受控当前页（组件不自管，翻页/点缩略图都回调出去） |
+| className | `string` | - | 面板类名 |
 
 ## Events
 

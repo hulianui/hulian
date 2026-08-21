@@ -33,17 +33,17 @@ import { MagicBento } from "@hulianui/ui"
 | enableBorderGlow | `boolean` | `true` | 是否开启描边光（边框随光标接近点亮） |
 | enableTilt | `boolean` | `false` | 是否开启 3D 倾斜（卡片随光标轻微 tilt） |
 | disableAnimations | `boolean` | `false` | 强制关闭所有动画/交互（等价 reduced-motion）；组件也自动尊重系统 prefers-reduced-motion |
-| className | `string` | — | 透传到根网格容器的额外 className |
-| style | `CSSProperties` | — | 透传到根网格容器的内联样式 |
+| className | `string` | - | 透传到根网格容器的额外 className |
+| style | `CSSProperties` | - | 透传到根网格容器的内联样式 |
 
 `MagicBentoItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label | `ReactNode` | — | 卡片小标签（顶部弱化文案），如「Insights」 |
-| title | `ReactNode` | — | 卡片标题 |
-| description | `ReactNode` | — | 卡片描述（正文） |
-| children | `ReactNode` | — | 传了即覆盖 label/title/description 默认布局，自定义卡内结构 |
+| label | `ReactNode` | - | 卡片小标签（顶部弱化文案），如「Insights」 |
+| title | `ReactNode` | - | 卡片标题 |
+| description | `ReactNode` | - | 卡片描述（正文） |
+| children | `ReactNode` | - | 传了即覆盖 label/title/description 默认布局，自定义卡内结构 |
 | colSpan | `number` | `1` | 网格跨列数（CSS grid column span），用于拼出大小不一的 bento 布局 |
 | rowSpan | `number` | `1` | 网格跨行数（CSS grid row span） |
 

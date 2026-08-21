@@ -27,12 +27,12 @@ import { Legend, type LegendItem } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `LegendItem[]` | — | `{ label, color?, value?, hidden?, id? }[]` |
+| items* | `LegendItem[]` | - | `{ label, color?, value?, hidden?, id? }[]` |
 | marker | `"dot" \| "square" \| "line"` | `"dot"` | 标记形状；line 对齐折线图的线样 |
 | layout | `"row" \| "column"` | `"row"` | row 横排自动换行 / column 竖排（value 右对齐） |
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
-| onItemClick | `(item, index) => void` | — | 传了则每条可点，条目渲染成按钮 |
-| className | `string` | — | 透传类名；其余原生属性一并透传 |
+| onItemClick | `(item, index) => void` | - | 传了则每条可点，条目渲染成按钮 |
+| className | `string` | - | 透传类名；其余原生属性一并透传 |
 
 ### LegendItem
 

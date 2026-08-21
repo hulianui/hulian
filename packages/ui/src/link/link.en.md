@@ -10,7 +10,7 @@ status: enriched
 
 # Link
 
-> Link · Tone and underline variants, automatic safe external-link behavior and icon, with RSC support · navigation/action
+> Renders styled navigation with tone, underline, and external-link behavior. · navigation/action
 
 ## When to use
 
@@ -30,8 +30,8 @@ Inherits native `<a>` attributes such as `href`, `target`, and `onClick`, except
 | `tone` | `"primary" \| "foreground" \| "danger"` | `"primary"` | Text tone. |
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | Underline visibility policy. |
 | `external` | `boolean` | `false` | Adds `target="_blank"`, `rel="noopener noreferrer"`, and a trailing external-link icon. |
-| `href` | `string` | — | Native navigation destination. |
-| `render` | `ReactElement` | — | Custom element for framework routers such as `next/link` or React Router Link. Styling and Link props merge into this element; the custom element owns `href`. |
+| `href` | `string` | - | Native navigation destination. |
+| `render` | `ReactElement` | - | Custom element for framework routers such as `next/link` or React Router Link. Styling and Link props merge into this element; the custom element owns `href`. |
 
 ## Events
 

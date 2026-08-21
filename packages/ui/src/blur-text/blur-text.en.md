@@ -25,7 +25,7 @@ import { BlurText } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text * | `string` | — | Text to reveal one segment at a time. |
+| text * | `string` | - | Text to reveal one segment at a time. |
 | splitType | `"char" \| "word"` | `"word"` | Segmentation granularity: words split on whitespace, or individual characters. |
 | direction | `"top" \| "bottom"` | `"top"` | Entry direction, applied as a vertical offset with a slight midpoint overshoot. |
 | delay | `number` | `120` | Delay between adjacent segments in milliseconds; larger values slow the stagger. |

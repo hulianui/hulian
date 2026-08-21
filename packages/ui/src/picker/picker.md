@@ -10,7 +10,7 @@ status: enriched
 
 # Picker
 
-> 滚轮选择器 · 多列 CSS scroll-snap 吸附 + 即时高亮居中项 + 停稳防抖 emit + 受控滚定位(零依赖·H5 选时间/地区) · mobile/input
+> 用一到多列滚轮选值，松手吸附到居中项 · mobile/input
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { Picker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `columns` * | `PickerColumn[]` | — | 各列配置（见下） |
-| `value` | `string[]` | — | 各列选中值数组（受控） |
+| `columns` * | `PickerColumn[]` | - | 各列配置（见下） |
+| `value` | `string[]` | - | 各列选中值数组（受控） |
 | `defaultValue` | `string[]` | 各列首项 | 非受控初始值 |
 | `visibleCount` | `number` | `5` | 可见行数（建议奇数） |
 | `itemHeight` | `number` | `40` | 行高 px |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **PickerColumn**：`options: PickerOption[]` · `flex?: number`（列宽 flex 比重，默认 1）。
 **PickerOption**：`label: ReactNode` · `value: string`。

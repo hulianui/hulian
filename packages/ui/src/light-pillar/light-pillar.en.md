@@ -29,12 +29,12 @@ import { LightPillar } from "@hulianui/ui"
 | bottomColor | `string` | `var(--color-chart-1)` | Beam color at the bottom, blended with `topColor` along the Y axis |
 | intensity | `number` | `1` | Overall brightness multiplier |
 | rotationSpeed | `number` | `0.3` | Rotation and internal-wave speed multiplier; 0 freezes both at their initial state |
-| glowAmount | `number` | `0.005` | Gain applied to accumulated raymarch energy before compression; 0.001–0.02 is recommended |
+| glowAmount | `number` | `0.005` | Gain applied to accumulated raymarch energy before compression; 0.001-0.02 is recommended |
 | pillarWidth | `number` | `3` | Beam radius in world units; lower values create a thinner, laser-like column |
 | pillarHeight | `number` | `0.4` | Vertical texture scale; higher values pack the internal bands more closely |
 | noiseIntensity | `number` | `0.5` | Screen-space grain strength; 0 renders a clean beam |
 | pillarRotation | `number` | `0` | Beam tilt in degrees, applied by rotating the sampling plane |
-| className | `string` | — | Class name forwarded to the canvas container or fallback root |
+| className | `string` | - | Class name forwarded to the canvas container or fallback root |
 
 ## Slots
 

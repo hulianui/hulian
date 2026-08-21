@@ -10,7 +10,7 @@ status: enriched
 
 # Anchor
 
-> Anchor navigation · Dependency-free IntersectionObserver scrollspy, smooth scrolling, CSS-variable active indicator, top offset, and one nested level · navigation/inpage
+> Tracks and navigates headings within long-form page content. · navigation/inpage
 
 ## When to use
 
@@ -25,7 +25,7 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `AnchorItem[]` | — | Anchor entries with one optional child level. |
+| items* | `AnchorItem[]` | - | Anchor entries with one optional child level. |
 | offsetTop | `number` | `0` | Space reserved above the target in pixels, typically for a fixed header. Also moves the upper scrollspy boundary. |
 | getContainer | `() => HTMLElement \| null` | `undefined` (window) | Custom scroll container. Required when the actual scroller is not window. |
 
@@ -33,9 +33,9 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| href * | `string` | — | Target anchor such as `"#section-id"`; it must match an element id on the page. |
-| title * | `ReactNode` | — | Title shown in the table of contents. |
-| children | `AnchorItem[]` | — | Second-level entries (one level only). |
+| href * | `string` | - | Target anchor such as `"#section-id"`; it must match an element id on the page. |
+| title * | `ReactNode` | - | Title shown in the table of contents. |
+| children | `AnchorItem[]` | - | Second-level entries (one level only). |
 
 The inherited `aria-label` defaults to the built-in Chinese copy `"\u951a\u70b9\u5bfc\u822a"`, meaning “Anchor navigation.” Pass an English label for an English interface.
 

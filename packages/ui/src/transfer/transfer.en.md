@@ -10,7 +10,7 @@ status: enriched
 
 # Transfer
 
-> Transfer list · dual Listbox panels + selected/all move actions + optional search + empty states · dependency-free · forms/advanced
+> Moves selected records between available and chosen lists with search support. · forms/advanced
 
 ## When to use
 
@@ -25,8 +25,8 @@ import { Transfer } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| dataSource* | `TransferItem[]` | — | Full data source; each item `key`/`label`, can bring `description`/`disabled` |
-| targetKeys | `string[]` | — | Controlled: Set of keys for the right (target) panel |
+| dataSource* | `TransferItem[]` | - | Full data source; each item `key`/`label`, can bring `description`/`disabled` |
+| targetKeys | `string[]` | - | Controlled: Set of keys for the right (target) panel |
 | defaultTargetKeys | `string[]` | `[]` | Uncontrolled initial target keys. |
 | searchable | `boolean` | `false` | Show search box at top of each panel |
 | searchPlaceholder | `string` | `"\u641c\u7d22"` | Search input placeholder; the built-in Chinese copy means “Search.” |
@@ -34,15 +34,15 @@ import { Transfer } from "@hulianui/ui"
 | listHeight | `number` | `240` | The maximum height of the panel list area (px). If you have hundreds of node permissions/department data, increase it, otherwise the panel will be squeezed into a gap. |
 | showSelectAll | `boolean` | `false` | The panel title bar displays the Select All checkbox (only applies to **available items in the current filter results**) |
 | disabled | `boolean` | `false` | Disabled overall (lists and move buttons on both sides are disabled) |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 `TransferItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| key * | `string` | — | Unique key, also the value used by `targetKeys`. |
-| label * | `ReactNode` | — | Primary text of the entry. |
-| description | `ReactNode` | — | Secondary description shown under the label. |
+| key * | `string` | - | Unique key, also the value used by `targetKeys`. |
+| label * | `ReactNode` | - | Primary text of the entry. |
+| description | `ReactNode` | - | Secondary description shown under the label. |
 | disabled | `boolean` | `false` | The entry cannot be selected or moved. |
 
 ## Events

@@ -10,7 +10,7 @@ status: enriched
 
 # PullToRefresh
 
-> 下拉刷新 · 置顶下拉带阻尼 + 过阈进 armed + 松手触发并保持刷新态至 Promise 结束回弹(零依赖·Pointer Events) · mobile/gesture
+> 顶部下拉触发刷新，松手后保持到请求结束 · mobile/gesture
 
 ## 何时用
 
@@ -27,7 +27,7 @@ import { PullToRefresh } from "@hulianui/ui"
 |------|------|------|------|
 | `threshold` | `number` | `64` | 触发刷新的下拉阈值 px |
 | `resistance` | `number` | `0.5` | 下拉阻尼系数（0-1，越小越「沉」） |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 ## Events
 

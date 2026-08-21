@@ -27,14 +27,14 @@ import { WorldMap } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| dots | `WorldMapDot[]` | — | Geographic connection pairs; omission renders only the dotted base map. |
-| flyingMarker | `"plane" \| "comet" \| "arrow"` | — | Repeating marker along every arc; planes and arrows rotate with direction. |
-| points | `WorldMapNode[]` | — | Independent nodes whose values map to radius within the current point range. |
+| dots | `WorldMapDot[]` | - | Geographic connection pairs; omission renders only the dotted base map. |
+| flyingMarker | `"plane" \| "comet" \| "arrow"` | - | Repeating marker along every arc; planes and arrows rotate with direction. |
+| points | `WorldMapNode[]` | - | Independent nodes whose values map to radius within the current point range. |
 | showLabels | `boolean` | `false` | Shows node labels. |
 | lineColor | `string` | `"var(--color-chart-1)"` | Chart-token arc color, overridable per dot. |
 | dotColor | `string` | `"var(--color-border)"` | Border-token base-map dot color. |
 | duration | `number` | `1` | Arc entrance duration in seconds. |
-| className | `string` | — | Container class name. |
+| className | `string` | - | Container class name. |
 
 ## Events
 

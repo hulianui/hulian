@@ -31,7 +31,7 @@ import { Meteors } from "@hulianui/ui"
 | minDuration | number | 2 | Minimum fall duration (seconds) |
 | maxDuration | number | 10 | Maximum fall duration (seconds) |
 | angle | number | 215 | Falling angle (degrees) |
-| className | string | — | Extra class passed through to each meteor span (the meteor itself uses currentColor, which can be used to adjust the color) |
+| className | string | - | Extra class passed through to each meteor span (the meteor itself uses currentColor, which can be used to adjust the color) |
 
 ## Examples
 ```tsx

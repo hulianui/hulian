@@ -10,7 +10,7 @@ status: enriched
 
 # Stepper
 
-> Stepper · Dependency-free flex layout, drawn completion checkmarks, progress-aware connectors, and `aria-current` · navigation/inpage
+> Displays connected process steps with completed checks and an accessible current-step marker. · navigation/inpage
 
 ## When to use
 
@@ -25,15 +25,15 @@ import { Stepper } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| steps* | `StepItem[]` | — | Steps in the shape `{ label: ReactNode }`. |
-| activeStep* | `number` | — | Controlled zero-based current step. A value at least `steps.length` marks every step complete. |
-| className | `string` | — | Additional class name. |
+| steps* | `StepItem[]` | - | Steps in the shape `{ label: ReactNode }`. |
+| activeStep* | `number` | - | Controlled zero-based current step. A value at least `steps.length` marks every step complete. |
+| className | `string` | - | Additional class name. |
 
 `StepItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label * | `ReactNode` | — | Step text. |
+| label * | `ReactNode` | - | Step text. |
 
 The progress container has the built-in Chinese `aria-label` `"\u6b65\u9aa4\u8fdb\u5ea6"`, meaning “Step progress.”
 

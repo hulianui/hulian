@@ -30,9 +30,9 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### Select
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | — | Option data used by Base UI to resolve selected labels in the trigger. |
+| items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | - | Option data used by Base UI to resolve selected labels in the trigger. |
 | defaultValue | `string \| string[] \| null` | `null` | Uncontrolled initial value: `string \| null` for single select, `string[]` when `multiple`. |
-| placeholder | `ReactNode` | — | Content shown without a selection. Single mode injects a `value: null` item; multiple mode renders it through the trigger's functional Value. |
+| placeholder | `ReactNode` | - | Content shown without a selection. Single mode injects a `value: null` item; multiple mode renders it through the trigger's functional Value. |
 | multiple | `boolean` | `false` | Enables multiple selection: `value`, `defaultValue`, and `onValueChange` use `string[]`, and the popup stays open after selection. |
 | clearable | `boolean` | `false` | Shows a clear action on trigger hover/focus. Clearing emits `null` in single mode or `[]` in multiple mode. |
 | searchable | `boolean` | `false` | Uses the Combobox search UI and Base UI filtering; requires `items`. |
@@ -45,8 +45,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 ### SelectGroup / SelectGroupLabel
 | Name | Type | Default | Description |
 |------|------|------|------|
-| children* | `ReactNode` | — | One `SelectGroupLabel` followed by one or more `SelectItem` elements. |
-| className | `string` | — | Additional class name passed through to the element. |
+| children* | `ReactNode` | - | One `SelectGroupLabel` followed by one or more `SelectItem` elements. |
+| className | `string` | - | Additional class name passed through to the element. |
 
 ### SelectTrigger
 | Name | Type | Default | Description |
@@ -54,19 +54,19 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | Visual size. `xs` matches the `xs` height of Input and Textarea, so the three controls line up in a dense table row. |
 | invalid | `boolean` | `false` | Whether to show invalid styling when the trigger is used outside a Field. |
 | maxDisplay | `number` | `2` | Maximum visible selected labels in multiple mode; remaining selections collapse into `+N`. |
-| className | `string` | — | Additional class name passed through to the element. |
+| className | `string` | - | Additional class name passed through to the element. |
 
 ### SelectContent
 | Name | Type | Default | Description |
 |------|------|------|------|
 | side | `"top" \| "bottom"` | `"bottom"` | Side on which the popup opens. |
-| align | `"start" \| "center" \| "end"` | — | Popup alignment relative to the trigger. |
-| sideOffset | `number` | — | Distance between the popup and trigger. |
+| align | `"start" \| "center" \| "end"` | - | Popup alignment relative to the trigger. |
+| sideOffset | `number` | - | Distance between the popup and trigger. |
 
 ### SelectItem
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `string` | — | String value that identifies the option. |
+| value* | `string` | - | String value that identifies the option. |
 | disabled | `boolean` | `false` | Whether to disable this option. |
 
 ## Events
@@ -156,7 +156,7 @@ const { data, isLoading } = useFonts();
 
 ## Usage guidelines
 
-- Under `searchable`, **lists of 100 options or more are virtualized automatically** (the underlying Combobox decides): only visible options stay in the DOM, and row height is estimated at a fixed 32px without per-item measurement. The default `SelectItem` is exactly 32px tall, so most usage is unaffected. **If** your `SelectItem` is taller (two lines, an avatar, custom padding or font size), item placement drifts as the list grows — **nothing throws, and short lists never reproduce it**. Pass `virtualized={false}` for those rows. Likewise, `getAllByRole("option")` returns only the visible window once virtualization kicks in.
+- Under `searchable`, **lists of 100 options or more are virtualized automatically** (the underlying Combobox decides): only visible options stay in the DOM, and row height is estimated at a fixed 32px without per-item measurement. The default `SelectItem` is exactly 32px tall, so most usage is unaffected. **If** your `SelectItem` is taller (two lines, an avatar, custom padding or font size), item placement drifts as the list grows. **Nothing throws, and short lists never reproduce it**. Pass `virtualized={false}` for those rows. Likewise, `getAllByRole("option")` returns only the visible window once virtualization kicks in.
 - Pass placeholder content to Select's `placeholder` prop, **not** to `Select.Value`. See [[base-ui-select-rc0-no-value-placeholder-prop-inject-null-item]]: this project uses Base UI rc.0, whose `Select.Value` lacks the later placeholder prop. HulianUI implements single-mode placeholders by injecting an `items` entry with `value: null`. Keep `items` and SelectItem values aligned or the trigger falls back to raw values.
 - Under `multiple`, values must be arrays; `defaultValue="a"` is treated as no selection. Multiple mode renders its placeholder through the trigger's functional Value and relies on `items` for label resolution. Without `items`, selected raw values are displayed.
 - `SelectTrigger.maxDisplay`, not Select, controls the number of visible labels in multiple mode.
@@ -166,7 +166,7 @@ const { data, isLoading } = useFonts();
 - Search mode flattens options, so declarative SelectGroup structure does not apply. Use [Combobox](../combobox/combobox.md) for combined search and grouping.
 - Search matches string labels. For a JSX label such as icon plus text, it falls back to matching `value`. Use [Combobox](../combobox/combobox.md)'s `filter` for multi-field matching such as localized names, transliteration, and codes.
 - For remote completion or free-form entry, use [Combobox](../combobox/combobox.md) rather than extending Select's fixed-option contract.
-- During `loading`, the popup renders only loading content—never stale options—and hides the clear action while the current value may be refreshing. `loading` is a display state and never rewrites the value: unmounting the options while the popup is open makes Base UI treat the selected items as removed and emit a pruned value; the component swallows that internal callback while loading (controlled: no `onValueChange`; uncontrolled: the internal value stays), so the selection is intact once loading ends. This only covers the window bracketed by `loading`—swapping `items` while the popup is open with a list that omits the selected item still lets Base UI emit the pruned value. For remote search keep the selected items inside `items`, or use `searchable` (the Combobox skin has no such pruning).
+- During `loading`, the popup renders only loading content (never stale options) and hides the clear action while the current value may be refreshing. `loading` is a display state and never rewrites the value: unmounting the options while the popup is open makes Base UI treat the selected items as removed and emit a pruned value; the component swallows that internal callback while loading (controlled: no `onValueChange`; uncontrolled: the internal value stays), so the selection is intact once loading ends. This only covers the window bracketed by `loading`. Swapping `items` while the popup is open with a list that omits the selected item still lets Base UI emit the pruned value. For remote search keep the selected items inside `items`, or use `searchable` (the Combobox skin has no such pruning).
 
 ## Related
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

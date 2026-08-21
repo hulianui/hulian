@@ -10,7 +10,7 @@ status: enriched
 
 # LiveProductCard
 
-> Livestream product card · numbered link badge, sale and original price, active-explanation pulse, stock, sold count, promotion tag, action slot, and row or card layout · data-display/info
+> Shows live-commerce products with pricing, stock, sales, active state, and purchase action. · data-display/info
 
 ## When to use
 
@@ -25,16 +25,16 @@ import { LiveProductCard } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| image* | `string` | — | Product image. |
-| price* | `number` | — | Current price. |
-| index | `number` | — | Numbered link badge. |
-| originalPrice | `number` | — | Struck original price. |
-| explaining | `boolean` | — | Active-explanation pulse. |
-| stock | `number` | — | Remaining stock. |
-| sold | `number` | — | Sold count. |
+| image* | `string` | - | Product image. |
+| price* | `number` | - | Current price. |
+| index | `number` | - | Numbered link badge. |
+| originalPrice | `number` | - | Struck original price. |
+| explaining | `boolean` | - | Active-explanation pulse. |
+| stock | `number` | - | Remaining stock. |
+| sold | `number` | - | Sold count. |
 | currency | `string` | `"¥"` | Currency symbol. |
 | layout | `"row" \| "card"` | `"row"` | Control-panel row or storefront card. |
-| className | `string` | — | Root class. |
+| className | `string` | - | Root class. |
 
 ## Events
 

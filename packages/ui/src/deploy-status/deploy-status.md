@@ -25,11 +25,11 @@ import { DeployStatus } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| status* | `"queued" \| "building" \| "ready" \| "error" \| "canceled" \| "skipped"` | — | 生命周期状态 |
+| status* | `"queued" \| "building" \| "ready" \| "error" \| "canceled" \| "skipped"` | - | 生命周期状态 |
 | variant | `"badge" \| "dot" \| "icon"` | `"badge"` | 形态：badge 软填充徽标 / dot 圆点+文字 / icon 仅图标（紧凑表格单元格） |
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
 | spin | `boolean` | `true` | building 态图标是否旋转 |
-| className | `string` | — | 透传类名 |
+| className | `string` | - | 透传类名 |
 
 ## Slots
 

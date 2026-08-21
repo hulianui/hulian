@@ -25,18 +25,18 @@ import { CardNav } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items * | `CardNavItem[]` | — | 卡片数据，展开后渲染为一排（移动端一列），最多取前 3 张 |
+| items * | `CardNavItem[]` | - | 卡片数据，展开后渲染为一排（移动端一列），最多取前 3 张 |
 | duration | `number` | `0.4` | 展开/收起动画时长（秒），reduced-motion 下自动归零 |
-| open | `boolean` | — | 受控展开态，传入则由外部接管开合（配合 onOpenChange） |
-| className | `string` | — | 透传根容器额外类名 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| open | `boolean` | - | 受控展开态，传入则由外部接管开合（配合 onOpenChange） |
+| className | `string` | - | 透传根容器额外类名 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 `CardNavItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label * | `string` | — | 卡片大标题 |
-| links | `CardNavLink[]` | — | 卡片内的链接列表，每项 `{ label, href?, ariaLabel? }` |
+| label * | `string` | - | 卡片大标题 |
+| links | `CardNavLink[]` | - | 卡片内的链接列表，每项 `{ label, href?, ariaLabel? }` |
 | bgColor | `string` | `bg-surface` 令牌 | 卡片底色，任意 CSS 颜色串。建议用 `var(--color-chart-1)`~`var(--color-chart-5)` 做品牌色块 |
 | textColor | `string` | `text-foreground` 令牌 | 卡片文字色 |
 

@@ -25,21 +25,21 @@ import { QRCode } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `string` | — | 编码内容（URL/文本，UTF-8）。 |
+| value* | `string` | - | 编码内容（URL/文本，UTF-8）。 |
 | size | `number` | `160` | 边长 px。 |
 | level | `"L" \| "M" \| "Q" \| "H"` | `"M"` | 纠错级别（带 logo 建议 H）。 |
 | margin | `number` | `2` | 静默区模块数。 |
 | color | `string` | `currentColor` | 暗块颜色（默认继承 text-foreground）。 |
 | background | `string` | 透明 | 背景色。 |
-| logo | `QRCodeLogo` | — | 中心 logo，`{ src: string; size?: number }`；务必配 `level="H"` 留足纠错冗余。 |
+| logo | `QRCodeLogo` | - | 中心 logo，`{ src: string; size?: number }`；务必配 `level="H"` 留足纠错冗余。 |
 | aria-label | `string` | 取 value | 无障碍标签。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ### 新增能力（对标 qrcode.react 的缺口，2026-08-01）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| minVersion | `number` | — | 版本下限 1–40：内容变长会自动升版本→模块变密、观感尺寸跳变；钉住下限让一组码密度一致。内容装不下时自动用更大版本，不截断 |
+| minVersion | `number` | - | 版本下限 1-40：内容变长会自动升版本→模块变密、观感尺寸跳变；钉住下限让一组码密度一致。内容装不下时自动用更大版本，不截断 |
 | boostLevel | `boolean` | `true` | 在**不升版本**的前提下自动提升纠错级别（有余量就白拿鲁棒性） |
 | logo.excavate | `boolean` | `true` | 是否垫底色块把 logo 底下的模块抠空；`false` 用于半透明水印式 logo |
 | logo.opacity | `number` | `1` | logo 不透明度（做水印时配 `excavate={false}`） |

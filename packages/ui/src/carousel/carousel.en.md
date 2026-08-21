@@ -10,7 +10,7 @@ status: enriched
 
 # Carousel
 
-> Carousel · dependency-free scroll snap with arrows, dots, autoplay, looping, drag, keyboard support, and reduced-motion behavior · data-display/collection
+> Navigates scroll-snap slides with arrows, dots, autoplay, looping, dragging, and keyboard controls. · data-display/collection
 
 ## When to use
 
@@ -27,7 +27,7 @@ import { Carousel } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| current | `number` | — | Controlled slide index. |
+| current | `number` | - | Controlled slide index. |
 | defaultCurrent | `number` | `0` | Initial uncontrolled index. |
 | autoplay | `boolean` | `false` | Autoplay, forced off under reduced motion. |
 | autoplayInterval | `number` | `4000` | Autoplay interval in milliseconds. |
@@ -35,7 +35,7 @@ import { Carousel } from "@hulianui/ui"
 | showArrows | `boolean` | `true` | Shows previous and next controls. |
 | showDots | `boolean` | `true` | Shows dot indicators. |
 | aria-label | `string` | `"\u8f6e\u64ad"` | Region label; the built-in Chinese means “Carousel.” |
-| slideClassName | `string` | — | Class applied to every slide, useful for fixed height and radius. |
+| slideClassName | `string` | - | Class applied to every slide, useful for fixed height and radius. |
 
 ## Events
 

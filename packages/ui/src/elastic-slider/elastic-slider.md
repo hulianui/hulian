@@ -31,8 +31,8 @@ import { ElasticSlider } from "@hulianui/ui"
 | isStepped | `boolean` | `false` | 是否吸附到步长（拖动时按 stepSize 取整） |
 | stepSize | `number` | `1` | 吸附步长，仅 isStepped 为 true 时生效 |
 | showValue | `boolean` | `true` | 是否显示当前值数字指示（轨道上方居中） |
-| className | `string` | — | 透传到根容器的额外 className（merge via cn） |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器的额外 className（merge via cn） |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Events
 

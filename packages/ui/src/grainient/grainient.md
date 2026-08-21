@@ -27,7 +27,7 @@ import { Grainient } from "@hulianui/ui"
 |------|------|------|------|
 | timeSpeed | `number` | `0.25` | 时间流速倍率，0=静止 |
 | colorBalance | `number` | `0` | 三色偏置，负偏 color3 一侧、正偏 color1 一侧 |
-| warpStrength | `number` | `1` | 域扭曲强度（内部按反比，越大越克制），建议 0.3–3 |
+| warpStrength | `number` | `1` | 域扭曲强度（内部按反比，越大越克制），建议 0.3-3 |
 | warpFrequency | `number` | `5` | 域扭曲正弦频率（褶皱密度） |
 | warpSpeed | `number` | `2` | 域扭曲随时间漂移速度 |
 | warpAmplitude | `number` | `50` | 域扭曲基础振幅，与 warpStrength 共定褶皱幅度 |
@@ -47,7 +47,7 @@ import { Grainient } from "@hulianui/ui"
 | color1 | `string` | `--color-chart-1` | 渐变第一色（亮端），任意 CSS 颜色 |
 | color2 | `string` | `--color-chart-2` | 渐变第二色（主色/中段） |
 | color3 | `string` | `--color-chart-4` | 渐变第三色（暗端） |
-| className | `string` | — | 透传根容器，自带 `absolute inset-0 z-0` |
+| className | `string` | - | 透传根容器，自带 `absolute inset-0 z-0` |
 
 ## Slots
 

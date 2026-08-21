@@ -10,7 +10,7 @@ status: enriched
 
 # CreditCard
 
-> A display-only payment card with brand detection, grouped or masked numbers, themed gradients, chip, and controlled front or back face.
+> Displays a formatted or masked card number with detected brand and front or back card faces.
 
 ## When to use
 
@@ -27,14 +27,14 @@ import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from "@huli
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| number* | `string` | — | Card number with optional spaces; an empty string renders a placeholder card. |
-| holder | `string` | — | Cardholder name. |
-| expiry | `string` | — | Expiry in MM/YY form. |
+| number* | `string` | - | Card number with optional spaces; an empty string renders a placeholder card. |
+| holder | `string` | - | Cardholder name. |
+| expiry | `string` | - | Expiry in MM/YY form. |
 | brand | `"visa" \| "mastercard" \| "amex" \| "unionpay" \| "discover" \| "jcb" \| "unknown"` | Auto-detected | Explicit brand override. |
 | masked | `boolean` | `true` | Shows only the last four digits. |
 | flipped | `boolean` | `false` | Shows the back with magnetic stripe and CVC. |
-| cvc | `string` | — | Back-face CVC. |
-| className | `string` | — | Custom class name. |
+| cvc | `string` | - | Back-face CVC. |
+| className | `string` | - | Custom class name. |
 
 ## Examples
 ```tsx

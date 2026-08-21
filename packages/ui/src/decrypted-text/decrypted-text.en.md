@@ -25,7 +25,7 @@ import { DecryptedText } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text * | `string` | — | target plaintext |
+| text * | `string` | - | target plaintext |
 | speed | `number` | `55` | The interval between each garbled refresh is milliseconds |
 | animateOn | `"view" \| "hover"` | `"view"` | Trigger method: view scrolls into the viewport and decodes it once/hover decodes it and resets it when it moves out. |
 | characters | `string` | Uppercase and lowercase letters + numbers + symbols | Garbled sampling character set |

@@ -10,7 +10,7 @@ status: enriched
 
 # ScoreRing
 
-> A circular score gauge with value-to-grade mapping, configurable grade bands, and centered score and grade labels.
+> Displays a numeric score and grade inside a color-coded radial gauge.
 
 ## When to use
 
@@ -25,13 +25,13 @@ import { ScoreRing, resolveGrade, DEFAULT_GRADES } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `number` | — | Current score. |
+| value* | `number` | - | Current score. |
 | max | `number` | `100` | Maximum score. |
-| grades | `Grade[]` | — | Grade bands; omission uses `DEFAULT_GRADES` for A-F. |
+| grades | `Grade[]` | - | Grade bands; omission uses `DEFAULT_GRADES` for A-F. |
 | size | `number` | `96` | Diameter in pixels. |
 | thickness | `number` | `8` | Ring thickness in pixels. |
 | showGrade | `boolean` | `true` | Shows the grade letter. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # AspectRatio
 
-> 比例容器 · CSS aspect-ratio 锁宽高比 + 图片/视频自动铺满(零依赖·RSC) · layout/container
+> 把图片、视频或任意内容锁在固定的宽高比里 · layout/container
 
 ## 何时用
 

@@ -25,7 +25,7 @@ import { Shuffle } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text* | `string` | — | 最终呈现的文本（解析目标） |
+| text* | `string` | - | 最终呈现的文本（解析目标） |
 | duration | `number` | `0.6` | 整段洗牌时长（秒）；每字解析点 = 字索引/总字数 × duration |
 | shuffleDirection | `"left" \| "right"` | `"right"` | 字符解析顺序；left 从右往左定、right 从左往右定 |
 | scrambleCharset | `string` | 大写字母+数字+少量符号 | 解析前每字位随机取字闪烁的乱码字符集 |
@@ -36,8 +36,8 @@ import { Shuffle } from "@hulianui/ui"
 | triggerOnHover | `boolean` | `false` | 鼠标移入时重新洗牌（动画空闲才响应） |
 | tag | `"p" \| "span" \| "div" \| "h1" \| "h2" \| "h3" \| "h4"` | `"p"` | 渲染标签 |
 | textAlign | `CSSProperties["textAlign"]` | `"center"` | 文本对齐 |
-| className | `string` | — | 合并到根元素的类名 |
-| style | `CSSProperties` | — | 行内样式（与 textAlign 合并） |
+| className | `string` | - | 合并到根元素的类名 |
+| style | `CSSProperties` | - | 行内样式（与 textAlign 合并） |
 
 ## Events
 

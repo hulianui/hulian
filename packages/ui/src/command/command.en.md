@@ -10,7 +10,7 @@ status: enriched
 
 # Command
 
-> Command palette · Command/Ctrl+K modal built on Dialog with live filtering, groups, and dependency-free keyboard navigation · navigation/action
+> Searches and executes grouped commands through a keyboard-first palette. · navigation/action
 
 ## When to use
 
@@ -25,16 +25,16 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| open* | `boolean` | — | Controlled open state. |
-| groups* | `CommandGroupData[]` | — | Command groups, each with an optional heading. |
+| open* | `boolean` | - | Controlled open state. |
+| groups* | `CommandGroupData[]` | - | Command groups, each with an optional heading. |
 | placeholder | `string` | `"\u8f93\u5165\u547d\u4ee4\u6216\u641c\u7d22\u2026"` | Search-field placeholder. The built-in Chinese copy means “Type a command or search…”. |
 | filter | `(item: CommandItemData, query: string) => boolean` | Substring match | Custom predicate; return true to retain an item. The default case-insensitively searches `keywords`, string `label`, and `value`. |
 | closeOnSelect | `boolean` | `true` | Whether executing an item closes the palette. |
 | autoHighlight | `boolean` | `true` | Whether opening the palette and every filter pass highlight the first enabled item, so that typing and pressing Enter hits it directly. Turn it off and an arrow key must light an item up before Enter does anything. |
 | shortcut | `boolean` | `false` | Whether to install the global Command/Ctrl+K open-state shortcut. |
 | surface | `"solid" \| "glass" \| "none"` | `"solid"` | Surface skin of the panel shell, covering only fill, border, and shadow; size and position always stay with the component. `glass` is translucent with a backdrop blur and needs artwork behind it; `none` draws no skin classes at all and hands fill, border, and shadow to `className`. |
-| className | `string` | — | Additional class name for the panel shell. |
-| backdropClassName | `string` | — | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so the dimming and blur can follow your own design system. |
+| className | `string` | - | Additional class name for the panel shell. |
+| backdropClassName | `string` | - | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so the dimming and blur can follow your own design system. |
 | aria-label | `string` | `"\u547d\u4ee4\u9762\u677f"` | Accessible label. The built-in Chinese copy means “Command palette.” |
 
 ## Events
@@ -54,7 +54,7 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 
 ### footer: the pinned row at the bottom of the panel
 
-The palette is modal, so controls in the footer have nowhere else to go. A switch that decides **what this selection means** — link versus block, for example — turns into a step before the search once it moves to the trigger, and stays on the page even while the palette is closed once it moves to a section header. Put it in `footer` so the user can search first and decide after:
+The palette is modal, so controls in the footer have nowhere else to go. A switch that decides **what this selection means** (link versus block, for example) turns into a step before the search once it moves to the trigger, and stays on the page even while the palette is closed once it moves to a section header. Put it in `footer` so the user can search first and decide after:
 
 ```tsx
 <Command
@@ -111,7 +111,7 @@ const [open, setOpen] = useState(false);
 - Consider `autoHighlight={false}` when the commands are destructive, such as delete, reset, or publish: the default "highlight the first item on open" plus a stray Enter is a misfire. With it off, the user has to light an item up with an arrow key before Enter does anything.
 - Prefer `surface="none"` plus your own classes over using `className` to override the `solid` skin (`bg-surface`, `border-hairline`, `shadow-xl`): overrides fight future skin changes, and swapping a background color would otherwise force the layout classes through twMerge as well.
 - `surface="glass"` only reads as glass when there is artwork behind the panel; on a flat page it is just a translucent panel. Backdrop dimming is a separate knob, `backdropClassName`.
-- The highlight follows the item's **`value`**, not the array reference: an item that survives filtering keeps its highlight, so rebuilding `groups` on every render does not make the highlight jump. In return, `value` must be stable — never derive it from the array index, or every batch of results looks like a set of new items.
+- The highlight follows the item's **`value`**, not the array reference: an item that survives filtering keeps its highlight, so rebuilding `groups` on every render does not make the highlight jump. In return, `value` must be stable: never derive it from the array index, or every batch of results looks like a set of new items.
 
 ## Related
 [ContextMenu](../context-menu/context-menu.md) · [Toolbar](../toolbar/toolbar.md) · [Accordion](../accordion/accordion.md) · [Collapsible](../collapsible/collapsible.md) · [Link](../link/link.md) · [AnimatedThemeToggler](../animated-theme-toggler/animated-theme-toggler.md)

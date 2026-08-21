@@ -32,7 +32,7 @@ import { FloatingReactions } from "@hulianui/ui"
 | drift | `number` | `40` | 横向漂移幅度 px（左右随机） |
 | duration | `number` | `2200` | 单个动画时长 ms |
 | size | `number` | `24` | 字号 px |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## 示例
 ```tsx

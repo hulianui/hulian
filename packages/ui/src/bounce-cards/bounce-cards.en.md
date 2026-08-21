@@ -25,7 +25,7 @@ import { BounceCards } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| images | `string[]` | — | Image URLs aligned by index with transformStyles; mutually exclusive with children. |
+| images | `string[]` | - | Image URLs aligned by index with transformStyles; mutually exclusive with children. |
 | containerWidth | `number` | `400` | Container width in pixels. |
 | containerHeight | `number` | `400` | Container height in pixels. |
 | animationDelay | `number` | `0.5` | Delay in seconds before entrance begins. |
@@ -33,8 +33,8 @@ import { BounceCards } from "@hulianui/ui"
 | transformStyles | `string[]` | Five-card fan | Per-card transforms; entries beyond the array receive no transform. |
 | enableHover | `boolean` | `true` | Whether the hovered card straightens and neighbors move aside. |
 | pushDistance | `number` | `160` | Neighbor displacement in pixels. |
-| className | `string` | — | Root class name. |
-| style | `CSSProperties` | — | Root inline styles. |
+| className | `string` | - | Root class name. |
+| style | `CSSProperties` | - | Root inline styles. |
 
 ## Slots
 

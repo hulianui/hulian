@@ -29,11 +29,11 @@ import { FallingText } from "@hulianui/ui"
 | highlightWords | `string[]` | `[]` | 需高亮的词(前缀匹配：词 startsWith 任一即高亮) |
 | highlightClass | `string` | `"text-primary font-semibold"` | 高亮词额外 className(叠加在词块上) |
 | trigger | `"auto" \| "scroll" \| "click" \| "hover"` | `"auto"` | 掉落时机：挂载即播/滚入视口/点击容器/指针移入 |
-| gravity | `number` | `1` | 向下加速度系数，越大下落越快堆叠越急，建议 0.3–3 |
+| gravity | `number` | `1` | 向下加速度系数，越大下落越快堆叠越急，建议 0.3-3 |
 | bounce | `number` | `0.6` | 落地/撞墙反弹系数(0 不弹，1 全弹) |
 | fontSize | `string` | `"1.5rem"` | 文本字号(CSS 长度，传入根 fontSize) |
-| className | `string` | — | 透传根容器额外 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器额外 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## 示例
 ```tsx

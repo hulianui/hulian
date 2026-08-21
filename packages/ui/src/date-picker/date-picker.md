@@ -33,21 +33,21 @@ import { DatePicker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
-| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| value | `string \| null` | - | 受控值。形状随 `picker`：`"YYYY-MM-DD"` / `"YYYY-MM"` / `"YYYY"` |
+| defaultValue | `string \| null` | - | 非受控初始值，形状同上 |
 | picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，同时决定值形状与面板起始层 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
-| minDate | `string` | — | 最早可选日期（任意可解析日期串，内部规范化） |
-| maxDate | `string` | — | 最晚可选日期 |
-| disabledDate | `(isoDate: string) => boolean` | — | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
+| minDate | `string` | - | 最早可选日期（任意可解析日期串，内部规范化） |
+| maxDate | `string` | - | 最晚可选日期 |
+| disabledDate | `(isoDate: string) => boolean` | - | 逐日禁用判定，入参恒为 `"YYYY-MM-DD"`（月/年粒度传该月/该年首日） |
 | placeholder | `string` | 随 picker | 触发器占位文本 |
 | displayFormat | `string` | 随 picker | 触发器显示格式（dayjs format 串）。**只影响显示**，对外值形状不变 |
 | clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
 | showToday | `boolean` | `true` | 面板底部「今天 / 本月 / 今年」快捷 |
 | disabled | `boolean` | `false` | 整体置灰，面板打不开 |
 | readOnly | `boolean` | `false` | 面板可看，但选不动 |
-| aria-label | `string` | — | 触发器无障碍名（无可见 label 时给） |
-| className | `string` | — | 落在触发器外层容器 |
+| aria-label | `string` | - | 触发器无障碍名（无可见 label 时给） |
+| className | `string` | - | 落在触发器外层容器 |
 
 ## Events
 

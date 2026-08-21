@@ -29,17 +29,17 @@ import { IconPicker } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| sources* | `IconPickerSource[]` | — | Icon categories. Each item contains `{ key, label, tabIcon?, icons, renderIcon }`. |
-| value | `string \| null` | — | Controlled icon name. |
-| defaultValue | `string \| null` | — | Initial icon name when uncontrolled. |
+| sources* | `IconPickerSource[]` | - | Icon categories. Each item contains `{ key, label, tabIcon?, icons, renderIcon }`. |
+| value | `string \| null` | - | Controlled icon name. |
+| defaultValue | `string \| null` | - | Initial icon name when uncontrolled. |
 | columns | `number` | `8` | Number of grid columns. |
 | searchable | `boolean` | `true` | Shows the search field. |
 | searchPlaceholder | `string` | `"\u641c\u7d22\u56fe\u6807"` | Search placeholder; the built-in Chinese copy means “Search icons.” |
 | defaultSource | `string` | First source | Initial category key. |
-| recent | `string[]` | — | Controlled recent-history names. When omitted, the component stores up to 16 names internally, newest first. |
+| recent | `string[]` | - | Controlled recent-history names. When omitted, the component stores up to 16 names internally, newest first. |
 | clearable | `boolean` | `true` | Shows the selected value and a clear button when a value exists. |
 | emptyMessage | `ReactNode` | `"\u6ca1\u6709\u5339\u914d\u7684\u56fe\u6807"` | Empty-state content; the built-in Chinese copy means “No matching icons.” |
-| className | `string` | — | Additional class name for the picker panel, commonly used to set its width. |
+| className | `string` | - | Additional class name for the picker panel, commonly used to set its width. |
 
 `IconPickerSource`:
 

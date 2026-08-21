@@ -25,7 +25,7 @@ import { TiltedCard } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| imageSrc | `string` | — | Image URL filling the card; it can be combined with or replaced by `children`. |
+| imageSrc | `string` | - | Image URL filling the card; it can be combined with or replaced by `children`. |
 | altText | `string` | `"Tilted card"` | Accessible image alternative; replace the generic default with content-specific text. |
 | containerHeight | `CSSProperties["height"]` | `"300px"` | Perspective container height. |
 | containerWidth | `CSSProperties["width"]` | `"100%"` | Perspective container width. |
@@ -35,8 +35,8 @@ import { TiltedCard } from "@hulianui/ui"
 | rotateAmplitude | `number` | `14` | Maximum tilt in degrees. |
 | showTooltip | `boolean` | `true` | Shows the pointer-following caption when content exists. |
 | displayOverlayContent | `boolean` | `false` | Shows `overlayContent`. |
-| className | `string` | — | Class name merged into the outer `<figure>`. |
-| style | `CSSProperties` | — | Inline styles merged into the perspective container. |
+| className | `string` | - | Class name merged into the outer `<figure>`. |
+| style | `CSSProperties` | - | Inline styles merged into the perspective container. |
 
 ## Slots
 

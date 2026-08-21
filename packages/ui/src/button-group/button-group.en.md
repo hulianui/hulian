@@ -10,7 +10,7 @@ status: enriched
 
 # ButtonGroup
 
-> Button group · Attached or spaced horizontal/vertical controls for segmented toolbars, split buttons, and steppers · forms/button
+> Joins related buttons into a segmented horizontal or vertical control. · forms/button
 
 ## When to use
 
@@ -28,8 +28,8 @@ import { ButtonGroup } from "@hulianui/ui"
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. |
 | attached | `boolean` | `true` | Joins child controls by removing inner radii and merging adjacent borders. Pass `false` to keep the configured gap. |
 | gap | `"sm" \| "md"` | `"sm"` | Gap between children when `attached={false}`. |
-| className | `string` | — | Additional class name for the root element. |
-| aria-label | `string` | — | Accessible label for the group. |
+| className | `string` | - | Additional class name for the root element. |
+| aria-label | `string` | - | Accessible label for the group. |
 
 ## Slots
 
@@ -55,8 +55,8 @@ import { ButtonGroup } from "@hulianui/ui"
 
 ## Usage guidelines
 
-- **Members must share the same height**, especially in attached mode. Attaching works by pulling each neighbor over with `-ml-px` so their borders overlap, and that seam assumes every member is the same height; once heights differ, the shorter ones leave a visible step above and below. In [Button](../button/button.md)'s size scale, every icon size matches the text size of the same name (`iconSm`/`sm` 32, `icon`/`md` 40, `iconLg`/`lg` 48), so **pick the matching pair** when mixing icons and labels. Mixing across steps — a default `md` `<Button>` next to `size="iconSm"`, say — still leaves an 8px step. Before 0.26.0, `icon` was an isolated 36px that matched no text size (#97); after upgrading, existing markup of this shape lines up on its own.
-- **You cannot spot the above by reading the code**: all three buttons say `variant="outline"` and either omit `size` or set it on just one of them, which reads perfectly tidy — the middle one being 4px taller only shows up once rendered. The classic case is a `−/value/+` stepper.
+- **Members must share the same height**, especially in attached mode. Attaching works by pulling each neighbor over with `-ml-px` so their borders overlap, and that seam assumes every member is the same height; once heights differ, the shorter ones leave a visible step above and below. In [Button](../button/button.md)'s size scale, every icon size matches the text size of the same name (`iconSm`/`sm` 32, `icon`/`md` 40, `iconLg`/`lg` 48), so **pick the matching pair** when mixing icons and labels. Mixing across steps (a default `md` `<Button>` next to `size="iconSm"`, say) still leaves an 8px step. Before 0.26.0, `icon` was an isolated 36px that matched no text size (#97); after upgrading, existing markup of this shape lines up on its own.
+- **You cannot spot the above by reading the code**: all three buttons say `variant="outline"` and either omit `size` or set it on just one of them, which reads perfectly tidy. The middle one being 4px taller only shows up once rendered. The classic case is a `−/value/+` stepper.
 - `gap` only applies when `attached={false}`. In attached mode, the component joins corners and borders without adding margins between child controls.
 
 ## Related

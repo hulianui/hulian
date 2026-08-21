@@ -10,7 +10,7 @@ status: enriched
 
 # CreditCard
 
-> 银行卡展示 · 卡号前缀识别品牌(visa/mastercard/amex/银联/jcb/discover) + 分组格式化/打码(纯函数可测) + token 渐变卡面 + 芯片/品牌字标 + 正反面(磁条/CVC) · 结算确认/钱包(纯展示·RSC) · data-display/info
+> 展示银行卡卡面，自动识别品牌并可打码 · data-display/info
 
 ## 何时用
 
@@ -27,14 +27,14 @@ import { CreditCard, detectBrand, formatCardNumber, maskCardNumber } from "@huli
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| number* | `string` | — | 卡号，可含空格，内部归一；空串渲染占位卡 |
-| holder | `string` | — | 持卡人姓名 |
-| expiry | `string` | — | 有效期 MM/YY |
+| number* | `string` | - | 卡号，可含空格，内部归一；空串渲染占位卡 |
+| holder | `string` | - | 持卡人姓名 |
+| expiry | `string` | - | 有效期 MM/YY |
 | brand | `"visa" \| "mastercard" \| "amex" \| "unionpay" \| "discover" \| "jcb" \| "unknown"` | 自动识别 | 强制品牌；省略则由卡号前缀自动识别 |
 | masked | `boolean` | `true` | 仅显示后 4 位，其余打码 |
 | flipped | `boolean` | `false` | 翻到背面（磁条 + CVC） |
-| cvc | `string` | — | 背面 CVC |
-| className | `string` | — | 透传类名 |
+| cvc | `string` | - | 背面 CVC |
+| className | `string` | - | 透传类名 |
 
 ## 示例
 ```tsx

@@ -25,9 +25,9 @@ import { TreeSelect } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| nodes* | `TreeNode[]` | — | Hierarchical data with `key`, `label`, and optional `children`, using the shared Tree node model. |
-| value | `string \| string[]` | — | Controlled value: a string in single mode or `string[]` in multiple mode. |
-| defaultValue | `string \| string[]` | — | Initial value in uncontrolled mode. |
+| nodes* | `TreeNode[]` | - | Hierarchical data with `key`, `label`, and optional `children`, using the shared Tree node model. |
+| value | `string \| string[]` | - | Controlled value: a string in single mode or `string[]` in multiple mode. |
+| defaultValue | `string \| string[]` | - | Initial value in uncontrolled mode. |
 | multiple | `boolean` | `false` | Whether to enable checkbox-based multiple selection with parent-child cascading. |
 | placeholder | `string` | `"\u8bf7\u9009\u62e9"` | Trigger placeholder; the built-in Chinese copy means “Please select.” |
 | disabled | `boolean` | `false` | Whether to disable the selector. |
@@ -37,7 +37,7 @@ import { TreeSelect } from "@hulianui/ui"
 | searchable | `boolean` | `false` | Shows a search field in the popup and expands matching paths. |
 | expandTrigger | `"row" \| "icon"` | `"row"` | What toggles expand/collapse, forwarded to the inner [Tree](../tree/tree.md). **With the `"row"` default, single selection can only reach leaf nodes.** Pass `"icon"` to select an intermediate level (a department, a top-level category, one volume): the arrow expands, the rest of the row selects. |
 | showLine | `boolean` | `false` | Shows tree connection lines. |
-| className | `string` | — | Additional class name passed to the trigger. |
+| className | `string` | - | Additional class name passed to the trigger. |
 
 ## Events
 
@@ -64,9 +64,9 @@ const [dept, setDept] = useState<string | string[]>("");
 
 - Single selection is not clearable by default. Enable `clearable` for optional filters; otherwise users can narrow the filter but cannot return it to “no restriction.”
 - Switching `multiple` changes controlled `value` and `onChange` between `string` and `string[]`. Branch state by the active mode rather than storing both shapes together.
-- **Single selection only reaches leaves by default.** `expandTrigger` defaults to `"row"`, so clicking a row that has children only expands it and never fires `onChange` — no number of clicks will select it. Pass `expandTrigger="icon"` to submit any level (arrow expands, row selects), or use [Cascader](../cascader/cascader.md) with `changeOnSelect`. Multiple mode is unaffected because the checkbox is its own hit area.
+- **Single selection only reaches leaves by default.** `expandTrigger` defaults to `"row"`, so clicking a row that has children only expands it and never fires `onChange`. No number of clicks will select it. Pass `expandTrigger="icon"` to submit any level (arrow expands, row selects), or use [Cascader](../cascader/cascader.md) with `changeOnSelect`. Multiple mode is unaffected because the checkbox is its own hit area.
 - In multiple mode, pass selected leaf keys only. Half-checked parent state is derived from the tree; do not insert those parent keys manually.
-- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container, which is the element that takes focus and that screen readers announce (#293).
 - Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
 - Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 

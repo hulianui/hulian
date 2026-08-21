@@ -26,13 +26,13 @@ import { FloatingLines } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | colors | `string[]` | `--color-chart-1/2/4` | Line gradient color band, interpolation from beginning to end along the line, up to the first 5 segments; any CSS color |
-| lineCount | `number` | `6` | The number of lines in each of the three groups of waves, the more, the denser and the greater the cost, it is recommended 3–12 |
+| lineCount | `number` | `6` | The number of lines in each of the three groups of waves, the more, the denser and the greater the cost, it is recommended 3-12 |
 | lineDistance | `number` | `5` | Transverse phase spacing of adjacent lines (sense of dense stacking) |
 | animationSpeed | `number` | `1` | Animation speed magnification, 0=still |
 | interactive | `boolean` | `true` | When the pointer approaches, the line bends and pulls radially; reduced-motion / no WebGL automatically fails |
 | bendRadius | `number` | `5` | Pointer bending affects the radius coefficient, the larger the range, the smaller the focus |
 | bendStrength | `number` | `-0.5` | Pointer bending strength (with sign, negative value reverse pull) |
-| className | `string` | — | Forward the root container, the root includes `absolute inset-0 z-0` |
+| className | `string` | - | Forward the root container, the root includes `absolute inset-0 z-0` |
 
 ## Slots
 

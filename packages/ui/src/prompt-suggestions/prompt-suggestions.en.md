@@ -10,7 +10,7 @@ status: enriched
 
 # PromptSuggestions
 
-> Prompt suggestions · Clickable pill list + string or `{ label, value }` items + `onSelect` returns the value for composing or sending · ai/assist
+> Offers clickable starter prompts or follow-up suggestions. · ai/assist
 
 ## When to Use
 
@@ -27,7 +27,7 @@ Inherits `Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "title">`, additiona
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| suggestions* | `Suggestion[]` | — | Suggestion list |
+| suggestions* | `Suggestion[]` | - | Suggestion list |
 
 ## Events
 

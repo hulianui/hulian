@@ -26,7 +26,7 @@ import { ThemeProvider } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | defaultSetting | `"light" \| "dark" \| "system"` | `"system"` | Initial theme preference; if localStorage(`hulian-theme`) has a value during mount, it will be overwritten by it |
-| forcedTheme | `"light" \| "dark"` | — | Force the resolved theme, for example per route. `setTheme` and `toggle` still save preferences but do not change the displayed theme while this prop is set. |
+| forcedTheme | `"light" \| "dark"` | - | Force the resolved theme, for example per route. `setTheme` and `toggle` still save preferences but do not change the displayed theme while this prop is set. |
 
 ## Slots
 
@@ -67,4 +67,4 @@ export function ThemeToggle() {
 - `forcedTheme` locks the resolved visual theme but still allows `setTheme` and `toggle` to update the saved preference for later use.
 
 ## Related
-—
+None.

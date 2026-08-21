@@ -25,7 +25,7 @@ import { CircularText } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text * | `string` | — | Text to wrap around the ring. Add a trailing separator such as `✦` for a smoother join between the end and start. |
+| text * | `string` | - | Text to wrap around the ring. Add a trailing separator such as `✦` for a smoother join between the end and start. |
 | spinDuration | `number` | `20` | Seconds per full rotation. |
 | onHover | `"speedUp" \| "slow" \| "pause" \| "goBonkers"` | `"speedUp"` | Hover behavior: accelerate, slow down, pause, or spin rapidly. |
 | radius | `number` | `80` | Ring radius in pixels. |

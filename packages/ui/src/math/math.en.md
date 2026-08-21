@@ -14,19 +14,19 @@ status: enriched
 
 ## When to use
 
-**The test: does this text contain notation such as `\frac{}{}`, `x^{2}`, or `____`?** If it does, use Formula; if it does not, a plain `<p>` is enough. The typical setting is question stems, answer options, explanations, and formula captions, usually from question-bank content extracted out of PDF or Word — rendered as plain text, such a string shows the literal characters `\frac{3}{8}` on screen instead of a stacked fraction.
+**The test: does this text contain notation such as `\frac{}{}`, `x^{2}`, or `____`?** If it does, use Formula; if it does not, a plain `<p>` is enough. The typical setting is question stems, answer options, explanations, and formula captions, usually from question-bank content extracted out of PDF or Word. Rendered as plain text, such a string shows the literal characters `\frac{3}{8}` on screen instead of a stacked fraction.
 
-Do not use Formula for complete rich-text passages—use [Markdown](../markdown/markdown.md)—or for source code—use [Code](../code/code.md).
+Do not use Formula for complete rich-text passages (use [Markdown](../markdown/markdown.md)) or for source code (use [Code](../code/code.md)).
 
 ### Since 0.25.0 this is the library's only math rendering path
 
-There used to be a dependency-free `MathText` that assembled inline layout out of CSS (`inline-flex` for stacked fractions, `border-t` as the radical's vinculum). It was **retired and removed from the main barrel** in 0.25.0. The reason was not a capability boundary — **what it drew was wrong**:
+There used to be a dependency-free `MathText` that assembled inline layout out of CSS (`inline-flex` for stacked fractions, `border-t` as the radical's vinculum). It was **retired and removed from the main barrel** in 0.25.0. The reason was not a capability boundary. **What it drew was wrong**:
 
 - `√` was a fixed-height character while the vinculum was a sibling box's `border-t`. As soon as the radicand carried a superscript (`\sqrt{a^{2}+b^{2}}`) the content box grew and the rule no longer met the radical, leaving the trailing exponent hanging outside the line;
 - arcs and hats (`\overset{\frown}{AB}`, `\widehat{ABC}`) did not stretch to the content, so an arc that should span both letters was drawn as a hat sitting on the `A`;
-- these are inherent limits of CSS assembly — fraction rule weight, script baselines, delimiter heights: fix one and the next one surfaces.
+- these are inherent limits of CSS assembly: fraction rule weight, script baselines, delimiter heights. Fix one and the next one surfaces.
 
-And its original selling point — dependency-free layout that "does not disturb CJK line height" — **holds equally under KaTeX**, as measured: inline formulas do not open up the leading. That difference was never real, and the price paid for it was wrong typesetting everywhere.
+And its original selling point, dependency-free layout that "does not disturb CJK line height", **holds equally under KaTeX**, as measured: inline formulas do not open up the leading. That difference was never real, and the price paid for it was wrong typesetting everywhere.
 
 **Migrating from MathText:**
 
@@ -35,10 +35,10 @@ And its original selling point — dependency-free layout that "does not disturb
 | `import { MathText } from "@hulianui/ui"` | `import { Formula } from "@hulianui/ui/math"` |
 | `import { QuestionCard } from "@hulianui/ui"` | `import { QuestionCard } from "@hulianui/ui/math"` |
 | `<MathText>{stem}</MathText>` | `<Formula>{stem}</Formula>` |
-| `mathToPlain(src)` | `mathToPlain(src)` — same name, same meaning, imported from `@hulianui/ui/math` |
+| `mathToPlain(src)` | `mathToPlain(src)`, same name, same meaning, imported from `@hulianui/ui/math` |
 | `parseMath` / `parseMathDocument` | No longer exported: they existed for MathText's custom rendering, and KaTeX now owns layout |
 | `delimiters={true}` | No longer needed: `mixed` mode reads `$` by default and falls back to bare-notation splitting when there is none |
-| `scriptScale` | Gone — script sizing follows TeX's typesetting rules rather than a caller-supplied dial |
+| `scriptScale` | Gone. Script sizing follows TeX's typesetting rules rather than a caller-supplied dial |
 
 `blankWidth` is carried over unchanged. Two things look different, and both are **fixes rather than regressions**: variables render in italic as TeX prescribes, and formulas are about 1.21× the size of surrounding prose (see Pitfalls).
 
@@ -46,13 +46,13 @@ And its original selling point — dependency-free layout that "does not disturb
 
 ```ts
 import { Formula, formulaToPlain, splitMathSegments } from "@hulianui/ui/math"
-// QuestionCard lives on this path too — its stem and options are Formula internally
+// QuestionCard lives on this path too: its stem and options are Formula internally
 import { QuestionCard } from "@hulianui/ui/math"
 ```
 
-**The subpath is deliberate.** KaTeX is bundled only into pages that import this path; consumers of the `@hulianui/ui` main entry pay nothing. Do not add Formula to the main barrel. [QuestionCard](../question-card/question-card.md) lives here for the same reason — its stem and options are Formula internally, so leaving it in the main barrel would drag KaTeX into every consumer's bundle.
+**The subpath is deliberate.** KaTeX is bundled only into pages that import this path; consumers of the `@hulianui/ui` main entry pay nothing. Do not add Formula to the main barrel. [QuestionCard](../question-card/question-card.md) lives here for the same reason: its stem and options are Formula internally, so leaving it in the main barrel would drag KaTeX into every consumer's bundle.
 
-Styling needs no action from you — the component imports `katex/dist/katex.min.css` itself and your bundler picks up the fonts from there. There is no CSS to import in your app entry and no CDN `<link>` to add.
+Styling needs no action from you: the component imports `katex/dist/katex.min.css` itself and your bundler picks up the fonts from there. There is no CSS to import in your app entry and no CDN `<link>` to add.
 
 ## Examples
 
@@ -86,7 +86,7 @@ Three boundary rules:
 
 ### Why the rendering layer must understand `$`
 
-When prose and formulas are interleaved, *which span is a formula* is information the upstream data **already has**. If the rendering layer refuses to read it, the upstream is forced to strip `$` at ingest time to accommodate it — and stripping `$` is lossy:
+When prose and formulas are interleaved, *which span is a formula* is information the upstream data **already has**. If the rendering layer refuses to read it, the upstream is forced to strip `$` at ingest time to accommodate it, and stripping `$` is lossy:
 
 - `$\{a_n\}$` becomes `{a_n}`, after which nothing distinguishes a set from a LaTeX group;
 - fed to an LLM, formulas and prose fuse into one blob and the model can only guess where the expression starts;
@@ -98,9 +98,9 @@ Boundaries are information that must be carried explicitly. The rendering layer 
 
 **When the whole string contains no matched delimiter at all, Formula falls back to bare-notation splitting**: it carves out fragments such as `\frac{3}{8}`, `x^{2}`, and `\angle ABC`, hands those to KaTeX, and emits everything else as text. Question stems straight out of PDF, Word, or OCR look exactly like this, and a stem should not expose literal notation just because upstream has not wrapped it in `$` yet.
 
-The split applies exactly one test: **no `\`, `^`, or `_` trigger means it is not a formula.** So `P(2,3)`, the option label `A.`, and `(a+b)` all stay text — better to typeset too little than too much, because feeding Chinese prose to KaTeX yields a string of red errors, which is far worse than no typesetting at all.
+The split applies exactly one test: **no `\`, `^`, or `_` trigger means it is not a formula.** So `P(2,3)`, the option label `A.`, and `(a+b)` all stay text. Better to typeset too little than too much, because feeding Chinese prose to KaTeX yields a string of red errors, which is far worse than no typesetting at all.
 
-**This is a fallback, not the recommended path.** As soon as one matched delimiter appears, the whole string takes the exact route and stops guessing; if half a string is wrapped and half is not, the unwrapped half shows verbatim — deliberately, because inconsistent data should be visible. The right practice remains wrapping formulas in `$…$` upstream.
+**This is a fallback, not the recommended path.** As soon as one matched delimiter appears, the whole string takes the exact route and stops guessing; if half a string is wrapped and half is not, the unwrapped half shows verbatim. That is deliberate, because inconsistent data should be visible. The right practice remains wrapping formulas in `$…$` upstream.
 
 Use `splitBareMath(src)` when you need the segments yourself, and `hasBareMath(src)` to decide whether the expensive KaTeX path is warranted at all.
 
@@ -120,7 +120,7 @@ The second form is not optional: what needs filling in *is* the value of that ve
 **The two are implemented differently, so their accessibility behaviour differs**:
 
 - **Outside** the segment it is real DOM carrying an `aria-label`, so a screen reader announces "Blank" rather than a run of underscores.
-- **Inside** the segment KaTeX draws it (`\rule`), which keeps the formula structure intact — a blank works in a numerator or under a radical (`\frac{___}{2}`, `\sqrt{___}`) — but **KaTeX output has nowhere to hang an `aria-label`**, so a screen reader reads the MathML instead. Move the blank outside the `$` when you need it announced.
+- **Inside** the segment KaTeX draws it (`\rule`), which keeps the formula structure intact (a blank works in a numerator or under a radical, `\frac{___}{2}` or `\sqrt{___}`), but **KaTeX output has nowhere to hang an `aria-label`**, so a screen reader reads the MathML instead. Move the blank outside the `$` when you need it announced.
 
 The inside rule scales with the font size while the outside one is 1px; at body size the two look the same, but **above roughly 1.5em the inside one reads slightly heavier**.
 
@@ -128,12 +128,12 @@ The inside rule scales with the font size while the outside one is 1px; at body 
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `children` | `string` | — | LaTeX source, or prose containing LaTeX spans |
+| `children` | `string` | - | LaTeX source, or prose containing LaTeX spans |
 | `mode` | `"mixed" \| "math"` | `"mixed"` | `mixed` reads delimiters and typesets only what is inside them; `math` treats the whole string as LaTeX |
-| `display` | `boolean` | `false` | Block layout. **Only takes effect when `mode="math"`** — under `mixed` each span's own delimiters decide |
+| `display` | `boolean` | `false` | Block layout. **Only takes effect when `mode="math"`**. Under `mixed` each span's own delimiters decide |
 | `blankWidth` | `number` | `2.5` | Minimum width of an answer blank (`____`), in em |
-| `macros` | `Record<string, string>` | — | Custom macros, passed through to KaTeX |
-| `className` | `string` | — | — |
+| `macros` | `Record<string, string>` | - | Custom macros, passed through to KaTeX |
+| `className` | `string` | - | - |
 
 ## Pure helpers
 
@@ -143,7 +143,7 @@ The inside rule scales with the font size while the outside one is 1px; at body 
 - `formulaToPlain(src)` → `string`, converts to searchable plain text (`$\frac{3}{8}$` becomes `3/8`) with the delimiters removed.
 - `mathToPlain(src, { delimiters })` → `string`, the underlying implementation of the same downgrade; `delimiters` decides whether `$` is honoured.
 
-**Use `formulaToPlain` for search, export, and plain-text comparison.** Never hand the raw notation to a search box — someone searching for "3/8" should match it.
+**Use `formulaToPlain` for search, export, and plain-text comparison.** Never hand the raw notation to a search box: someone searching for "3/8" should match it.
 
 ## How broken data is displayed
 
@@ -156,20 +156,20 @@ The position is that **a corrupted formula must be visible**. Quietly rendering 
 
 ## Usage guidelines
 
-- **Do not add Formula to the `@hulianui/ui` main barrel.** The entire point of the subpath is to keep KaTeX in the pages that need it. Once it reaches the main barrel every consumer starts paying that 86KB — the `math` entry in the bundle-size gate exists to watch exactly this.
-- **With dozens of instances on screen, KaTeX layout is the most expensive work on the page.** The component is already memoised, but a parent passing fresh objects (especially `macros`) still re-typesets the whole screen. When you genuinely hit that wall, the way out is server pre-rendering (this component is RSC-safe, so layout can happen entirely on the server) or list virtualisation — **not** a lighter typesetting engine. That road has been travelled: what it saved in cost it paid for in wrong layout.
-- **Hoist `macros` to a module-level constant.** The component is memoised, so an inline object literal is a new object on every render and defeats the memo every time — and what it defeats is the most expensive step. (Internally the component shallow-copies `macros` before handing it to KaTeX: KaTeX treats it as a **mutable** macro table and writes `\def` definitions back into it, so without the copy a `\def` in one question would leak into every formula after it.)
+- **Do not add Formula to the `@hulianui/ui` main barrel.** The entire point of the subpath is to keep KaTeX in the pages that need it. Once it reaches the main barrel every consumer starts paying that 86KB, and the `math` entry in the bundle-size gate exists to watch exactly this.
+- **With dozens of instances on screen, KaTeX layout is the most expensive work on the page.** The component is already memoised, but a parent passing fresh objects (especially `macros`) still re-typesets the whole screen. When you genuinely hit that wall, the way out is server pre-rendering (this component is RSC-safe, so layout can happen entirely on the server) or list virtualisation, **not** a lighter typesetting engine. That road has been travelled: what it saved in cost it paid for in wrong layout.
+- **Hoist `macros` to a module-level constant.** The component is memoised, so an inline object literal is a new object on every render and defeats the memo every time, and what it defeats is the most expensive step. (Internally the component shallow-copies `macros` before handing it to KaTeX: KaTeX treats it as a **mutable** macro table and writes `\def` definitions back into it, so without the copy a `\def` in one question would leak into every formula after it.)
 - **`textContent` carries the original LaTeX.** KaTeX embeds the source verbatim in a MathML `<annotation>` element for screen readers and copy support, so `container.textContent` contains both the typeset result and the raw `\begin{cases}…`. Read from `.katex-html` when writing tests or extracting text, not from the whole container.
 - **Formulas render about 1.21 times larger than surrounding prose.** That is KaTeX's (and TeX's) standard optical size, not a bug. Override `.katex { font-size: 1em }` to flatten it, at the cost of symbols reading small next to the text.
 - **Do not drop a block formula into the middle of a `<p>`.** `$$…$$` produces a `display:block` box, which splits the line of prose around it into three pieces. Block formulas deserve their own paragraph.
-- **`display` only applies when `mode="math"`.** Passing it under `mixed` neither errors nor takes effect — each span's inline or block layout comes from its own delimiters, and **the layout will not reveal that you got it wrong** (the inline formula renders fine; the block you expected simply never appears). Write `$$…$$` when you want a block.
-- **Do not feed `formulaToPlain` output into an OMML export.** It runs on the dependency-free lightweight parser, which flattens `\begin{cases}` — and the row structure it flattens is exactly what the export pipeline needs. Use `splitMathSegments` on the original LaTeX instead.
-- **A blank inside a segment is not announced as "Blank."** Outside the segment it is real DOM with an `aria-label`; inside it is a KaTeX `\rule`, and KaTeX output has nowhere to hang aria — a screen reader reads the MathML. Put the blank outside the `$` when the stem has strict accessibility requirements.
+- **`display` only applies when `mode="math"`.** Passing it under `mixed` neither errors nor takes effect: each span's inline or block layout comes from its own delimiters, and **the layout will not reveal that you got it wrong** (the inline formula renders fine; the block you expected simply never appears). Write `$$…$$` when you want a block.
+- **Do not feed `formulaToPlain` output into an OMML export.** It runs on the dependency-free lightweight parser, which flattens `\begin{cases}`, and the row structure it flattens is exactly what the export pipeline needs. Use `splitMathSegments` on the original LaTeX instead.
+- **A blank inside a segment is not announced as "Blank."** Outside the segment it is real DOM with an `aria-label`; inside it is a KaTeX `\rule`, and KaTeX output has nowhere to hang aria, so a screen reader reads the MathML. Put the blank outside the `$` when the stem has strict accessibility requirements.
 - **`strict` is off.** KaTeX otherwise emits a console warning for bare CJK characters in math mode, which becomes hundreds of warnings on a screen of questions, so this component sets `strict: "ignore"`. Rendering is unaffected, but KaTeX will no longer remind you that a run of prose belongs inside `\text{}`.
 - The component returns a `<span>`. KaTeX emits both HTML and MathML; the HTML half is `aria-hidden` and screen readers read the MathML, so no extra ARIA wiring is required.
 
 ## Related
 
-- [QuestionCard](../question-card/question-card.md) — question card whose stem and options are this component; shipped on `@hulianui/ui/math` alongside it
-- [Prose](../prose/prose.md) — long-form typographic container
-- [Markdown](../markdown/markdown.md) — full rich-text passages
+- [QuestionCard](../question-card/question-card.md): question card whose stem and options are this component; shipped on `@hulianui/ui/math` alongside it
+- [Prose](../prose/prose.md): long-form typographic container
+- [Markdown](../markdown/markdown.md): full rich-text passages

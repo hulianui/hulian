@@ -35,7 +35,7 @@ import { Marquee } from "@hulianui/ui"
 | vertical | boolean | false | 竖向滚动；竖向时 `direction="left"` 视为向上、`"right"` 向下 |
 | fade | boolean | false | 两端渐隐遮罩（mask-image），适合 logo/图标墙 |
 | fadeWidth | string | `"15%"` | 渐隐区宽度（CSS 长度），仅 `fade` 为真时生效 |
-| ...div | ComponentPropsWithoutRef\<"div"\> | — | 透传（`className` 控宽/高） |
+| ...div | ComponentPropsWithoutRef\<"div"\> | - | 透传（`className` 控宽/高） |
 
 ## Slots
 

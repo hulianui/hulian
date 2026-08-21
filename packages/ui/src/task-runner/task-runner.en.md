@@ -10,11 +10,11 @@ status: enriched
 
 # TaskRunner
 
-> Task execution card · AgentPlan step list + progress bar + status badge · idle/running/success/error states + per-step timing + derived completion + extensible header/footer · presentational and RSC-safe · ai/agent
+> Summarizes agent task status, plan steps, completion progress, tags, and elapsed time. · ai/agent
 
 ## When to Use
 
-Use it to present sequential task execution—such as sandbox startup or a deployment pipeline—with overall status, progress, per-step timing, active-step highlighting, and an elapsed-time footer. Unlike [AgentPlan](../agent-plan/agent-plan.md), TaskRunner adds execution status and timing, but the consumer remains responsible for advancing state.
+Use it to present sequential task execution (sandbox startup, a deployment pipeline) with overall status, progress, per-step timing, active-step highlighting, and an elapsed-time footer. Unlike [AgentPlan](../agent-plan/agent-plan.md), TaskRunner adds execution status and timing, but the consumer remains responsible for advancing state.
 
 ## Import
 ```ts
@@ -25,10 +25,10 @@ import { TaskRunner, resolveProgress, statusMeta } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| steps* | `AgentTask[]` | — | Step list using `AgentTask`; use `meta` for per-step timing |
+| steps* | `AgentTask[]` | - | Step list using `AgentTask`; use `meta` for per-step timing |
 | status | `"idle" \| "running" \| "success" \| "error"` | `"idle"` | Overall running status: driver head logo color + progress bar tone |
-| progress | `number` | — | Top progress 0-100; if omitted, the steps completion (done) ratio will be automatically derived |
-| className | `string` | — | Container additional class |
+| progress | `number` | - | Top progress 0-100; if omitted, the steps completion (done) ratio will be automatically derived |
+| className | `string` | - | Container additional class |
 
 ## Slots
 

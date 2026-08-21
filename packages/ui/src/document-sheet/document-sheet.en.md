@@ -10,7 +10,7 @@ status: enriched
 
 # DocumentSheet
 
-> Printable document sheet · centered A4 surface, dark-theme paper, print isolation, optional print action, and composable header, section, footer, and signature pieces · data-display/collection
+> Frames business documents on an A4-style sheet with header, section, footer, and print controls. · data-display/collection
 
 ## When to use
 
@@ -29,7 +29,7 @@ DocumentSheet inherits `HTMLAttributes<HTMLDivElement>`:
 |------|------|------|------|
 | size | `"a4" \| "auto"` | `"a4"` | Fixed 210 mm sheet or responsive container width. |
 | printable | `boolean` | `true` | Shows the built-in print action. |
-| className | `string` | — | Sheet class name. |
+| className | `string` | - | Sheet class name. |
 
 ## Events
 

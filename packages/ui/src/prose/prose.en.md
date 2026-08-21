@@ -10,7 +10,7 @@ status: enriched
 
 # Prose
 
-> Typography container · semantic-token styling for rich-text descendants · dependency-free · RSC-safe · typography/text
+> Styles rich-text descendants with consistent semantic typography tokens. · typography/text
 
 ## When to use
 
@@ -72,7 +72,7 @@ Wide tables (the table scrolls inside itself instead of breaking out of the meas
 
 ## Usage guidelines
 
-- `scrollableTables` switches the `table` to `display: block` and adds `whitespace-nowrap` to headers. Non-wrapping headers are not decoration, they are what makes scrolling happen at all: with `overflow-x-auto` alone the browser squeezes every column down to its min-content width (CJK collapses to one glyph per line, rows grow several times taller), the content never exceeds the scroller, and nothing scrolls — it looks like a bad font size or breakpoint instead. Body cells keep wrapping: one long non-wrapping description would drag the table so wide that the other columns become unreachable.
+- `scrollableTables` switches the `table` to `display: block` and adds `whitespace-nowrap` to headers. Non-wrapping headers are not decoration, they are what makes scrolling happen at all: with `overflow-x-auto` alone the browser squeezes every column down to its min-content width (CJK collapses to one glyph per line, rows grow several times taller), the content never exceeds the scroller, and nothing scrolls. It looks like a bad font size or breakpoint instead. Body cells keep wrapping: one long non-wrapping description would drag the table so wide that the other columns become unreachable.
 - With `scrollableTables` on, the table sizes to its content and no longer always fills the measure (a narrow table shrinks to its content width). Turn it on only for tables that genuinely overflow.
 - The reason `scrollableTables` exists applies only to the **HTML string form**: when content arrives through `dangerouslySetInnerHTML`, Prose never sees the table node and cannot wrap it in a scroll container, so the only place left to act is the `table` itself. With **children (JSX nodes)**, prefer wrapping the wide table in your own `overflow-x-auto` container: it targets just the table that overflows and leaves every other table at full width.
 - See [[chat-bubble-max-w-prose-overflows-narrow-column]]: `max-w-prose` (65ch, approximately 398 px) is an absolute maximum that does not account for parent width. In a narrow flex column it can overflow or clip. Use `max-w-[min(65ch,100%)]` and add `min-w-0` to flex ancestors. Do not combine `max-w-prose max-w-full`; both set the same property, so stylesheet order decides which wins.

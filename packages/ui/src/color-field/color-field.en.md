@@ -29,7 +29,7 @@ Inherit native `<input>` properties (`size`/`prefix`/`value`/`defaultValue`/`onC
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | controlled value. Accept `#rgb` / `#rrggbb` / None `#` writing method, the internal unified standard is lowercase `#rrggbb` |
+| value | `string` | - | controlled value. Accept `#rgb` / `#rrggbb` / None `#` writing method, the internal unified standard is lowercase `#rrggbb` |
 | defaultValue | `string` | `"#3b82f6"` | uncontrolled initial value |
 | showSwatch | `boolean` | `true` | Click on the color block on the left to open the system color picker |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Size (same shell variant as Input, color blocks scale accordingly) |

@@ -26,22 +26,22 @@ import { BubbleMenu } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items | `BubbleMenuItem[]` | 内置示例项 | 菜单项列表，缺省用内置示例 |
-| menuAriaLabel | `string` | — | 切换按钮无障碍标签 |
+| menuAriaLabel | `string` | - | 切换按钮无障碍标签 |
 | useFixedPosition | `boolean` | `false` | true=fixed（贴视口），false=absolute（贴最近定位父级） |
 | animationDuration | `number` | `0.5` | 单个胶囊弹入动画时长（秒） |
 | staggerDelay | `number` | `0.12` | 相邻胶囊入场错峰延迟（秒） |
-| className | `string` | — | 透传根 nav 额外类名 |
-| style | `CSSProperties` | — | 透传根 nav 内联样式 |
+| className | `string` | - | 透传根 nav 额外类名 |
+| style | `CSSProperties` | - | 透传根 nav 内联样式 |
 
 `BubbleMenuItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label * | `string` | — | 链接文案 |
-| href * | `string` | — | 跳转地址 |
+| label * | `string` | - | 链接文案 |
+| href * | `string` | - | 跳转地址 |
 | ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
-| rotation | `number` | — | 桌面端胶囊的旋转角度（度），营造手作错落感；移动端自动归零 |
-| hoverStyles | `{ bgColor?: string; textColor?: string }` | — | 悬停反色配置 |
+| rotation | `number` | - | 桌面端胶囊的旋转角度（度），营造手作错落感；移动端自动归零 |
+| hoverStyles | `{ bgColor?: string; textColor?: string }` | - | 悬停反色配置 |
 
 ## Events
 

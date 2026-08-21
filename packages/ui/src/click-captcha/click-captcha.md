@@ -29,18 +29,18 @@ import { ClickCaptcha } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| backgroundSrc | `string` | — | 背景图 URL（必填，业务自己取） |
-| hintSrc | `string` | — | 提示图 URL（「请依次点击：书 山 水」那条），渲染在提示行右侧 |
+| backgroundSrc | `string` | - | 背景图 URL（必填，业务自己取） |
+| hintSrc | `string` | - | 提示图 URL（「请依次点击：书 山 水」那条），渲染在提示行右侧 |
 | hintText | `ReactNode` | `locale.clickCaptcha.hint` | 提示文案 |
 | maxPoints | `number` | `3` | 采集点位数，采满触发 `onComplete` |
-| points | `CaptchaPoint[]` | — | 受控点位；不传则内部自管 |
+| points | `CaptchaPoint[]` | - | 受控点位；不传则内部自管 |
 | defaultPoints | `CaptchaPoint[]` | `[]` | 非受控初始点位 |
 | loading | `boolean` | `false` | 盖遮罩 + 禁点选（等后端换图时用） |
 | status | `"idle" \| "verifying" \| "failed" \| "success"` | `"idle"` | 校验态；`failed` 抖动并清空点位，`verifying`/`success` 锁交互 |
 | disabled | `boolean` | `false` | 禁用（连「换一张」也禁） |
 | aspectRatio | `number` | `2` | 图片区宽高比（BuildAdmin 系点选图常见 310×155） |
 | keyboardStep | `number` | `0.02` | 键盘准星单次步进（相对坐标） |
-| className | `string` | — | 根节点类名 |
+| className | `string` | - | 根节点类名 |
 
 ## Events
 

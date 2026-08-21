@@ -10,7 +10,7 @@ status: enriched
 
 # Resizable
 
-> 拖拽分栏 · 复合 PanelGroup/Panel/Handle + 横竖向 + min/max + 键盘微调(零依赖·role=separator) · layout/container
+> 把区域切成可拖动的分栏，能限制大小也能用键盘微调 · layout/container
 
 ## 何时用
 
@@ -27,7 +27,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle, applyResize, spli
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | horizontal=面板横排(分隔符竖直)；vertical=面板竖排(分隔符水平)。 |
-| sizes | `number[]` | — | 受控尺寸（百分比数组，一项一面板），须配 onSizesChange。 |
+| sizes | `number[]` | - | 受控尺寸（百分比数组，一项一面板），须配 onSizesChange。 |
 | defaultSizes | `number[]` | 均分 | 非受控初始尺寸；缺省按面板数均分。 |
 
 继承 `HTMLAttributes<HTMLDivElement>`（除 onChange）。

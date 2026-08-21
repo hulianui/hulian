@@ -41,18 +41,18 @@ import {
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| target * | HTMLElement ｜ HTMLIFrameElement ｜ null | — | 目标区域：普通容器（在其内部选择）或**同源** iframe（在其文档内选择）。null 时不渲染也不监听 |
+| target * | HTMLElement ｜ HTMLIFrameElement ｜ null | - | 目标区域：普通容器（在其内部选择）或**同源** iframe（在其文档内选择）。null 时不渲染也不监听 |
 | enabled | boolean | true | 是否处于选择模式。false 停止拾取与点击拦截，**已选中的框仍然保留** |
-| highlightSelector | string | — | 可选中元素的选择器；落点会向上找最近的匹配祖先，匹配不到则不高亮（用来把粒度锁在组件级） |
-| ignoreSelector | string | — | 排除选择器；命中（含祖先命中）的元素不可 hover / 选中 |
+| highlightSelector | string | - | 可选中元素的选择器；落点会向上找最近的匹配祖先，匹配不到则不高亮（用来把粒度锁在组件级） |
+| ignoreSelector | string | - | 排除选择器；命中（含祖先命中）的元素不可 hover / 选中 |
 | showLabel | boolean | true | 是否显示标签。标签同一时刻只有一个，hover 优先于选中 |
 | pathAttribute | string | "data-hulian-path" | 标记路径的属性名 |
 | componentAttribute | string | "data-hulian-component" | 标记组件名的属性名（用于标签文案与 `detail.component`） |
 | anchorOnId | boolean | true | 结构化路径遇到带 id 的祖先就锚定，不再上溯到根 |
-| selectedPath | string ｜ null | — | 受控选中路径。传了（含 null）即视为受控，组件不再自管选中态 |
+| selectedPath | string ｜ null | - | 受控选中路径。传了（含 null）即视为受控，组件不再自管选中态 |
 | interceptClicks | boolean | true | 是否吞掉目标里的点击（阻止预览内的跳转 / 按钮触发） |
 | zIndex | number | 100 | 叠加层 z-index |
-| className | string | — | 叠加层容器类名 |
+| className | string | - | 叠加层容器类名 |
 
 ## Events
 

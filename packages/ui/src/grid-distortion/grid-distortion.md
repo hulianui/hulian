@@ -25,13 +25,13 @@ import { GridDistortion } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| grid | `number` | `15` | 位移网格边长（格子数），JS 每帧迭代 grid²，建议 8–30 |
+| grid | `number` | `15` | 位移网格边长（格子数），JS 每帧迭代 grid²，建议 8-30 |
 | mouse | `number` | `0.1` | 鼠标影响半径因子（相对网格比例），影响范围 = grid × mouse |
 | strength | `number` | `0.15` | 位移强度，鼠标速度 × 该系数写入位移场，越大涟漪越剧烈 |
-| relaxation | `number` | `0.9` | 弛豫系数（每帧衰减，0–1），越近 1 余韵越长 |
-| imageSrc | `string` | — | 被扭曲的图像；不传则程序化生成 chart token 网格底纹（推荐）；传入需同源或 CORS |
+| relaxation | `number` | `0.9` | 弛豫系数（每帧衰减，0-1），越近 1 余韵越长 |
+| imageSrc | `string` | - | 被扭曲的图像；不传则程序化生成 chart token 网格底纹（推荐）；传入需同源或 CORS |
 | color | `string` | `--color-chart-1` | 网格底纹主色（仅 imageSrc 未传时生效），任意 CSS 颜色 |
-| className | `string` | — | 透传根容器（或兜底 div） |
+| className | `string` | - | 透传根容器（或兜底 div） |
 
 ## Slots
 

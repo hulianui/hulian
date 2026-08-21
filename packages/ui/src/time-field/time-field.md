@@ -10,7 +10,7 @@ status: enriched
 
 # TimeField
 
-> 时间分段输入 · 自研零依赖(时/分/秒各一段 spinbutton·↑↓ 调值/←→ 切段/数字键两位覆写) + min-max 钳制 · 定宽 HH:mm[:ss] 受控 · forms/datetime
+> 用键盘直接编辑时、分、秒各段，不弹浮层 · forms/datetime
 
 ## 何时用
 
@@ -33,17 +33,17 @@ import { TimeField } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`）。24 小时制、定宽补零 |
-| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| value | `string \| null` | - | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`）。24 小时制、定宽补零 |
+| defaultValue | `string \| null` | - | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒段，值形状随之带秒 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 输入框尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
-| minTime | `string` | — | 最早可选时刻（含），形状同 `value` |
-| maxTime | `string` | — | 最晚可选时刻（含） |
+| minTime | `string` | - | 最早可选时刻（含），形状同 `value` |
+| maxTime | `string` | - | 最晚可选时刻（含） |
 | clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
 | disabled | `boolean` | `false` | 整体置灰，各段不可聚焦 |
 | readOnly | `boolean` | `false` | 改不动值，但还能切段浏览 |
 | aria-label | `string` | `"时间"` | 整个输入框的无障碍名（各段自带「小时/分钟/秒」标签） |
-| className | `string` | — | 落在外层容器 |
+| className | `string` | - | 落在外层容器 |
 
 ## Events
 
@@ -63,7 +63,7 @@ import { TimeField } from "@hulianui/ui"
 |------|------|
 | `↑` / `↓` | 当前段 ±1，段内循环（23 → 0）。空段起步：`↑` 给最小、`↓` 给最大 |
 | `←` / `→` | 切换段，两端不越界 |
-| `0`–`9` | 两位缓冲覆写：输满两位自动跳下一段；首位补零后已超范围（小时按 `3`）则一位定形 |
+| `0`-`9` | 两位缓冲覆写：输满两位自动跳下一段；首位补零后已超范围（小时按 `3`）则一位定形 |
 | `Backspace` / `Delete` | 清空当前段 |
 
 ## 示例

@@ -31,8 +31,8 @@ import { ElasticSlider } from "@hulianui/ui"
 | isStepped | `boolean` | `false` | Snaps dragged values to `stepSize` increments. |
 | stepSize | `number` | `1` | Snap increment when `isStepped` is true. |
 | showValue | `boolean` | `true` | Shows the current numeric value above the center of the track. |
-| className | `string` | — | Additional class name for the root container. |
-| style | `CSSProperties` | — | Inline styles for the root container. |
+| className | `string` | - | Additional class name for the root container. |
+| style | `CSSProperties` | - | Inline styles for the root container. |
 
 ## Events
 

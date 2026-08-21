@@ -27,7 +27,7 @@ import { RowActions } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| actions * | `RowActionItem[]` | — | The action list. `hidden` entries are dropped before collapsing is computed. |
+| actions * | `RowActionItem[]` | - | The action list. `hidden` entries are dropped before collapsing is computed. |
 | variant | `"text" \| "button" \| "icon"` | `"text"` | Three steps of prominence: borderless text, outlined buttons, icons only (the last requires an `icon` on every entry). |
 | max | `number` | `3` | How many actions stay **visible**. Past that, the first `max - 1` stay out and the rest move into an overflow menu. |
 | size | `"sm" \| "md"` | `"sm"` | Density step. |
@@ -39,16 +39,16 @@ import { RowActions } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| key * | `string` | — | React key. |
-| label * | `string` | — | Action name. **Must be a plain string**: it doubles as the accessible name, the tooltip, and the menu's type-ahead term. |
-| icon | `ReactNode` | — | A prefix in the text form; the entire button content in the icon form. |
+| key * | `string` | - | React key. |
+| label * | `string` | - | Action name. **Must be a plain string**: it doubles as the accessible name, the tooltip, and the menu's type-ahead term. |
+| icon | `ReactNode` | - | A prefix in the text form; the entire button content in the icon form. |
 | tone | `"neutral" \| "brand" \| "danger"` | `"neutral"` | Hierarchy. Mark the primary action `brand` and destructive ones `danger`. |
 | disabled | `boolean` | `false` | Unavailable. Still focusable, still announces its name. |
-| disabledReason | `ReactNode` | — | Why it is unavailable. **If you set `disabled`, set this too.** |
-| confirm | `RowActionConfirm` | — | Confirmation step: `{ title, description?, confirmText?, cancelText? }`. |
+| disabledReason | `ReactNode` | - | Why it is unavailable. **If you set `disabled`, set this too.** |
+| confirm | `RowActionConfirm` | - | Confirmation step: `{ title, description?, confirmText?, cancelText? }`. |
 | hidden | `boolean` | `false` | Hide by permission. |
-| onSelect | `() => void \| Promise<unknown>` | — | Click callback; with `confirm` it runs only after confirmation. **Returning a Promise turns on loading** (see below). |
-| render | `ReactElement` | — | Render as another element, typically a router `<Link>`. |
+| onSelect | `() => void \| Promise<unknown>` | - | Click callback; with `confirm` it runs only after confirmation. **Returning a Promise turns on loading** (see below). |
+| render | `ReactElement` | - | Render as another element, typically a router `<Link>`. |
 
 ## Examples
 

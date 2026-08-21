@@ -29,13 +29,13 @@ import { PlasmaWave } from "@hulianui/ui"
 | xOffset | `number` | `0` | 丝带水平偏移（设备像素），让波纹焦点离开正中 |
 | yOffset | `number` | `0` | 丝带垂直偏移（设备像素） |
 | rotationDeg | `number` | `0` | 整体旋转角度（度），把横向波带斜向铺排更有张力 |
-| focalLength | `number` | `0.8` | 焦距（视线收束）；越大越聚拢纵深越强，越小越铺展。建议 0.4–1.6 |
+| focalLength | `number` | `0.8` | 焦距（视线收束）；越大越聚拢纵深越强，越小越铺展。建议 0.4-1.6 |
 | speed1 | `number` | `0.05` | 第一条丝带流速；越大越快 |
 | speed2 | `number` | `0.05` | 第二条丝带流速 |
 | dir2 | `number` | `1` | 第二条丝带流向（+1 同向 / -1 反向），与第一条对冲产生交织感 |
 | bend1 | `number` | `1` | 第一条丝带弯曲幅度；越大起伏越夸张 |
 | bend2 | `number` | `0.5` | 第二条丝带弯曲幅度 |
-| className | `string` | — | 透传到 canvas 容器或 fallback div；常用于尺寸/圆角/opacity（如 `absolute inset-0 opacity-80`） |
+| className | `string` | - | 透传到 canvas 容器或 fallback div；常用于尺寸/圆角/opacity（如 `absolute inset-0 opacity-80`） |
 
 ## Slots
 

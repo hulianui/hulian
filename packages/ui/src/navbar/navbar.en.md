@@ -10,7 +10,7 @@ status: enriched
 
 # Navbar
 
-> Navigation bar · Compound Brand/Content/Item/MenuToggle API with sticky positioning and a mobile toggle · navigation/global
+> Builds a responsive top navigation bar with brand, links, actions, and mobile menu. · navigation/global
 
 ## When to use
 
@@ -36,7 +36,7 @@ Each subcomponent inherits the attributes of its underlying native element.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| grow | `boolean` | `true` | Whether the brand section shares space equally with the `NavbarContent` sections (`flex-1 basis-0`). Three equal columns are what makes `justify="center"` land on the **center of the navbar**; the brand content still hugs the left via `justify-start`, so nothing else moves. Pass `false` for a fixed-width brand (`shrink-0`) — only the two-section layout (brand plus a `justify="start"` section right next to it) needs that. |
+| grow | `boolean` | `true` | Whether the brand section shares space equally with the `NavbarContent` sections (`flex-1 basis-0`). Three equal columns are what makes `justify="center"` land on the **center of the navbar**; the brand content still hugs the left via `justify-start`, so nothing else moves. Pass `false` for a fixed-width brand (`shrink-0`). Only the two-section layout (brand plus a `justify="start"` section right next to it) needs that. |
 
 **NavbarContent** (`<ul>`)
 
@@ -48,7 +48,7 @@ Each subcomponent inherits the attributes of its underlying native element.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| isActive | `boolean` | — | Marks the current item with `aria-current` and active styling. |
+| isActive | `boolean` | - | Marks the current item with `aria-current` and active styling. |
 
 **NavbarMenuToggle**
 
@@ -56,7 +56,7 @@ Each subcomponent inherits the attributes of its underlying native element.
 |------|------|------|------|
 | isOpen | `boolean` | `false` | Controlled open state. |
 | aria-label | `string` | Locale value based on `isOpen` | Accessible label. An explicit value takes precedence over `ConfigProvider`. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ## Events
 
@@ -97,7 +97,7 @@ function Header() {
 - `NavbarMenuToggle` is controlled: maintain `isOpen` and `onToggle` in application state. The component does not render or manage a mobile menu panel, so conditionally render that panel from `open` yourself.
 - Without an explicit `aria-label`, the mobile toggle follows `ConfigProvider locale`: `enUS` provides “Open menu” and “Close menu”, while the no-provider fallback remains Chinese. An explicit `aria-label` always wins.
 - The three-section layout (brand + centered menu + trailing actions) is the default shape: `NavbarBrand` grows by default so all three sections are equal and the centered one truly sits at the navbar center. **A two-section layout (brand plus a `justify="start"` section next to it) must pass `grow={false}`**, otherwise that section is pushed to the one-third mark.
-- To let the brand truncate on narrow screens, add `min-w-0` to `NavbarBrand` alongside `truncate` — flex items default to `min-width: auto` and will not shrink without it.
+- To let the brand truncate on narrow screens, add `min-w-0` to `NavbarBrand` alongside `truncate`: flex items default to `min-width: auto` and will not shrink without it.
 
 ## Related
 [BeianFooter](../beian-footer/beian-footer.md) · [NavMenu](../nav-menu/nav-menu.md) · [NavigationMenu](../navigation-menu/navigation-menu.md) · [Menu](../menu/menu.md) · [Menubar](../menubar/menubar.md) · [Dock](../dock/dock.md)

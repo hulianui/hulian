@@ -10,7 +10,7 @@ status: enriched
 
 # Popconfirm
 
-> 气泡确认 · dogfood Popover 引擎 + 危险操作就地确认(标题/图标/确认取消) + async onConfirm loading + 受控开合 · feedback/message
+> 在操作按钮旁就地确认一次危险动作 · feedback/message
 
 ## 何时用
 
@@ -26,13 +26,13 @@ import { Popconfirm } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | danger | `boolean` | `false` | 危险操作：确认按钮 tone=danger + 默认图标转 text-danger |
-| open | `boolean` | — | 受控打开态，须配合 onOpenChange |
+| open | `boolean` | - | 受控打开态，须配合 onOpenChange |
 | defaultOpen | `boolean` | `false` | 非受控初始打开态 |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 浮层对齐 |
 | sideOffset | `number` | `8` | 浮层与触发器间距 |
 | disabled | `boolean` | `false` | 跳过确认：不弹浮层，但点了**照样执行 `onConfirm`**。语义是「这次不用问」，不是「按钮失效」——要让按钮不可点请在子元素上写 `disabled` |
-| className | `string` | — | 透传到浮层 Popup 的类名 |
+| className | `string` | - | 透传到浮层 Popup 的类名 |
 
 ## Events
 

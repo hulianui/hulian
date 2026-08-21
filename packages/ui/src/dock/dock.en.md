@@ -10,7 +10,7 @@ status: enriched
 
 # Dock
 
-> Magnifying dock · macOS-style icon scaling based on pointer distance, with Motion springs and shared `mouseX` context · navigation/global
+> Displays magnifying icon shortcuts along an animated application dock. · navigation/global
 
 ## When to use
 
@@ -29,18 +29,18 @@ import { Dock, DockIcon } from "@hulianui/ui"
 | magnification | `number` | `64` | Peak icon size in pixels when the pointer is closest. |
 | distance | `number` | `140` | Radius of the magnification influence in pixels. |
 | iconSize | `number` | `40` | Resting icon size in pixels. |
-| activeKey | `string` | — | Key of the current item, compared against each `DockIcon`'s `itemKey`. |
-| onSelect | `(key: string) => void` | — | Fired when an item is chosen. **Providing it turns each `DockIcon` into a real `<button>`** and upgrades the container to a `nav` landmark. |
-| aria-label | `string` | — | Landmark name when the container renders as `<nav>`. |
-| className | `string` | — | Additional class name. |
+| activeKey | `string` | - | Key of the current item, compared against each `DockIcon`'s `itemKey`. |
+| onSelect | `(key: string) => void` | - | Fired when an item is chosen. **Providing it turns each `DockIcon` into a real `<button>`** and upgrades the container to a `nav` landmark. |
+| aria-label | `string` | - | Landmark name when the container renders as `<nav>`. |
+| className | `string` | - | Additional class name. |
 
 ### DockIcon
 | Name | Type | Default | Description |
 |------|------|------|------|
-| itemKey | `string` | — | Key of this item, used with the Dock's `activeKey` and `onSelect`. |
-| active | `boolean` | — | Forces the selected state, taking precedence over the `activeKey` comparison. |
-| label | `string` | — | Accessible name when the icon is clickable, since icons rarely carry text. |
-| className | `string` | — | Additional class name. |
+| itemKey | `string` | - | Key of this item, used with the Dock's `activeKey` and `onSelect`. |
+| active | `boolean` | - | Forces the selected state, taking precedence over the `activeKey` comparison. |
+| label | `string` | - | Accessible name when the icon is clickable, since icons rarely carry text. |
+| className | `string` | - | Additional class name. |
 
 ## Slots
 
@@ -65,7 +65,7 @@ import { Dock, DockIcon } from "@hulianui/ui"
 
 ## Usage guidelines
 
-- **A current item is core information for a Dock, not decoration.** The macOS Dock itself highlights the active app and marks running ones; on the web a Dock is typically a persistent bottom navigation, which must answer "where am I". Express it with `activeKey` plus `itemKey` on `DockIcon`, and the component emits `aria-current="page"` together with an indicator dot under the icon — a shape cue, not colour alone.
+- **A current item is core information for a Dock, not decoration.** The macOS Dock itself highlights the active app and marks running ones; on the web a Dock is typically a persistent bottom navigation, which must answer "where am I". Express it with `activeKey` plus `itemKey` on `DockIcon`, and the component emits `aria-current="page"` together with an indicator dot under the icon, a shape cue rather than colour alone.
 - **`DockIcon` only becomes a real `<button>` when `onSelect` is provided** (focusable, activated by Enter), and the container then upgrades to a `nav` landmark. Without it the icon stays a non-semantic container, because many consumers put their own `<a>` in the children and an automatic button wrapper would nest interactive elements.
 
 - Native macOS and Tauri system-Dock caveats do not apply to this React component.

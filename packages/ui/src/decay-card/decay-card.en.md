@@ -34,8 +34,8 @@ import { DecayCard } from "@hulianui/ui"
 | seed | `number` | `4` | Random turbulence seed. |
 | maxDisplacement | `number` | `400` | Peak displacement-map scale. |
 | movementBound | `number` | `50` | Soft pointer-translation boundary in pixels. |
-| className | `string` | — | Class name forwarded to the root. |
-| style | `CSSProperties` | — | Inline styles forwarded to the root. |
+| className | `string` | - | Class name forwarded to the root. |
+| style | `CSSProperties` | - | Inline styles forwarded to the root. |
 
 ## Slots
 

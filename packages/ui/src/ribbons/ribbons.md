@@ -27,7 +27,7 @@ import { Ribbons } from "@hulianui/ui"
 |------|------|------|------|
 | colors | `string[]` | `["var(--color-chart-1)","--chart-2","--chart-3"]` | 飘带颜色数组，每色一条飘带；token 须带 `--color-` 前缀 |
 | baseSpring | `number` | `0.03` | 弹簧刚度基准，越大追随越紧（每条叠加随机量制造错落） |
-| baseFriction | `number` | `0.9` | 阻尼摩擦基准（0–1），越大越黏滞、过冲越少 |
+| baseFriction | `number` | `0.9` | 阻尼摩擦基准（0-1），越大越黏滞、过冲越少 |
 | baseThickness | `number` | `30` | 飘带基础粗细（px） |
 | offsetFactor | `number` | `0.05` | 多条飘带横向偏移因子，越大散得越开 |
 | maxAge | `number` | `500` | 拖尾衰减寿命（ms），越大尾巴越长；0 或 Infinity 退回固定 0.9 lerp |
@@ -36,7 +36,7 @@ import { Ribbons } from "@hulianui/ui"
 | enableFade | `boolean` | `false` | 沿飘带长度方向渐隐（尾部透明） |
 | enableShaderEffect | `boolean` | `false` | shader 波动特效（沿法线正弦抖动） |
 | effectAmplitude | `number` | `2` | shader 波动振幅，仅 enableShaderEffect=true 生效 |
-| className | `string` | — | 透传到容器（或 reduced-motion fallback div） |
+| className | `string` | - | 透传到容器（或 reduced-motion fallback div） |
 
 ## Slots
 

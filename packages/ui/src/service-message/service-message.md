@@ -10,7 +10,7 @@ status: enriched
 
 # ServiceMessage
 
-> 服务通知卡片 · 复刻微信「服务通知」会话内消息卡(模板/订阅消息) · 头部(头像+来源+⋯)/正文(标题+键值字段或自定义 children)/底部(引导文字+小程序入口) · 数据驱动 fields + onMore/onAction 交互 + footer/action 可定制 · 区别 Notification(命令式四角 toast) · 复用 Avatar/_icons·全吃 token 明暗自适配 · feedback/message
+> 展示服务通知卡片，含来源抬头、字段和底部入口 · feedback/message
 
 ## 何时用
 
@@ -27,8 +27,8 @@ import { ServiceMessage } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| avatar | `AvatarProps` | — | 头部头像（复用瑚琏 Avatar 的 props，如 `{src, fallback}`） |
-| fields | `ServiceMessageField[]` | — | 正文键值对字段（`{label, value}` 左标右值）；children 提供时被覆盖 |
+| avatar | `AvatarProps` | - | 头部头像（复用瑚琏 Avatar 的 props，如 `{src, fallback}`） |
+| fields | `ServiceMessageField[]` | - | 正文键值对字段（`{label, value}` 左标右值）；children 提供时被覆盖 |
 | action | `ServiceMessageAction` | label `"小程序"` | 底部右侧动作（`{label?, icon?}` + chevron） |
 
 ## Events

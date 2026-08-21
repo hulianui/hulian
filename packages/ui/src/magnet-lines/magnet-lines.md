@@ -32,8 +32,8 @@ import { MagnetLines } from "@hulianui/ui"
 | lineWidth | `string` | `"1vmin"` | 单条线段宽度（任意 CSS 长度） |
 | lineHeight | `string` | `"6vmin"` | 单条线段高度（任意 CSS 长度） |
 | baseAngle | `number` | `-10` | 初始静止角度（度）；指针未动或 reduced-motion 时保持该角 |
-| className | `string` | — | 透传根容器额外 className |
-| style | `CSSProperties` | — | 透传根容器内联样式（与内部计算的 grid 样式合并，后写覆盖） |
+| className | `string` | - | 透传根容器额外 className |
+| style | `CSSProperties` | - | 透传根容器内联样式（与内部计算的 grid 样式合并，后写覆盖） |
 
 ## 示例
 ```tsx

@@ -28,18 +28,18 @@ import { CircularGallery } from "@hulianui/ui"
 | items | `CircularGalleryItem[]` | 内置占位卡 | 画廊条目数组（图片+标题），不传/空数组用 chart token 程序化渐变占位（无远程资源） |
 | bend | `number` | `3` | 弧形弯曲强度；`0`=平直，正值向下凹、负值向上凸，建议 -6~6 |
 | textColor | `string` | `var(--color-foreground)` | 标题文字颜色，接受任意 CSS 颜色或 `var(--color-*)` token（运行时解析为实色喂 canvas） |
-| borderRadius | `number` | `0.05` | 卡片圆角（归一化 0–0.5），`0`=直角，`0.5`=胶囊/圆 |
+| borderRadius | `number` | `0.05` | 卡片圆角（归一化 0-0.5），`0`=直角，`0.5`=胶囊/圆 |
 | scrollSpeed | `number` | `2` | 滚动/拖拽灵敏度，越大单次跨度越大 |
-| scrollEase | `number` | `0.05` | 惯性 lerp 系数（0–1），越小越"重"越顺滑 |
+| scrollEase | `number` | `0.05` | 惯性 lerp 系数（0-1），越小越"重"越顺滑 |
 | font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，离线/RSC 安全 |
-| className | `string` | — | 透传根容器类名 |
+| className | `string` | - | 透传根容器类名 |
 
 `CircularGalleryItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | image | `string` | 程序化渐变占位图 | 卡片图片地址（远程 URL / data URI / 本地静态资源均可）。留空则用 chart token 程序化生成渐变占位图，离线可用且随明暗主题 |
-| text * | `string` | — | 卡片下方标题文字 |
+| text * | `string` | - | 卡片下方标题文字 |
 
 ## Slots
 

@@ -29,13 +29,13 @@ import { MetaBalls } from "@hulianui/ui"
 | cursorBallColor | `string` | `"var(--color-chart-4)"` | Cursor ball color, mixed with color at the junction |
 | speed | `number` | `0.3` | Revolution speed multiplier, the larger it is, the faster it will travel |
 | enableMouseInteraction | `boolean` | `true` | Enable mouse interaction; when turned off, the cursor ball will automatically travel around the ellipse |
-| hoverSmoothness | `number` | `0.05` | Cursor-ball interpolation coefficient (0–1); lower values produce more lag, while higher values follow more closely |
+| hoverSmoothness | `number` | `0.05` | Cursor-ball interpolation coefficient (0-1); lower values produce more lag, while higher values follow more closely |
 | animationSize | `number` | `30` | Observation scale, the larger the field of view, the smaller the balls and the more scattered they are |
-| ballCount | `number` | `15` | Number of main balls (1–50, beyond clamping to 50) |
+| ballCount | `number` | `15` | Number of main balls (1-50, beyond clamping to 50) |
 | clumpFactor | `number` | `1` | Clumping factor; higher values spread the orbit, while lower values keep the balls tighter |
 | cursorBallSize | `number` | `3` | Cursor ball radius (shader units) |
 | enableTransparency | `boolean` | `true` | Transparent background; fill in black background when false |
-| className | `string` | — | Passthrough to canvas / fallback container |
+| className | `string` | - | Passthrough to canvas / fallback container |
 
 ## Slots
 

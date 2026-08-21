@@ -10,7 +10,7 @@ status: enriched
 
 # Spotlight
 
-> Radial glow background · token driven radial-gradient + light and dark adaptive + RSC · decoration/backdrop
+> Adds a theme-aware radial glow behind foreground content. · decoration/backdrop
 
 ## When to Use
 

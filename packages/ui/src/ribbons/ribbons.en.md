@@ -25,9 +25,9 @@ import { Ribbons } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| colors | `string[]` | `--color-chart-1/2/3` | One ribbon per color; when omitted, the component resolves chart tokens 1–3 from the container |
+| colors | `string[]` | `--color-chart-1/2/3` | One ribbon per color; when omitted, the component resolves chart tokens 1-3 from the container |
 | baseSpring | `number` | `0.03` | Spring stiffness benchmark, the larger it is, the tighter the following (each superimposed random amount creates staggered) |
-| baseFriction | `number` | `0.9` | Damping friction reference (0–1), the larger the value, the more viscous and less overshoot |
+| baseFriction | `number` | `0.9` | Damping friction reference (0-1), the larger the value, the more viscous and less overshoot |
 | baseThickness | `number` | `30` | Streamer base thickness (px) |
 | offsetFactor | `number` | `0.05` | The horizontal offset factors of multiple streamers, the larger they are, the wider they spread out |
 | maxAge | `number` | `500` | Tail attenuation life (ms), the larger the value, the longer the tail; 0 or Infinity returns to fixed 0.9 lerp |
@@ -36,7 +36,7 @@ import { Ribbons } from "@hulianui/ui"
 | enableFade | `boolean` | `false` | Fade out along the length of the streamer (the tail is transparent) |
 | enableShaderEffect | `boolean` | `false` | shader fluctuation effect (sinusoidal jitter along the normal) |
 | effectAmplitude | `number` | `2` | shader fluctuation amplitude, only effective when enableShaderEffect=true |
-| className | `string` | — | Passthrough to container (or reduced-motion fallback div) |
+| className | `string` | - | Passthrough to container (or reduced-motion fallback div) |
 
 ## Slots
 

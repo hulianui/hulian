@@ -25,10 +25,10 @@ import { GiftFeed, applyGiftEvent } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| events* | `GiftEvent[]` | — | Append-only controlled stream. `GiftEvent` is `{id, user:{name,avatar?}, gift:{name,icon?,color?}, combo?}`; another event with the same id continues the streak. |
+| events* | `GiftEvent[]` | - | Append-only controlled stream. `GiftEvent` is `{id, user:{name,avatar?}, gift:{name,icon?,color?}, combo?}`; another event with the same id continues the streak. |
 | max | `number` | `3` | Maximum simultaneously visible banners; the oldest is removed first. |
 | duration | `number` | `4000` | Milliseconds a banner remains after its last event. |
-| className | `string` | — | Container class name. |
+| className | `string` | - | Container class name. |
 
 `applyGiftEvent` is an exported pure function that merges an event into visible banners, increments or applies combo, and enforces max for isolated tests.
 

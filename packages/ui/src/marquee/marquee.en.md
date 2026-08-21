@@ -35,7 +35,7 @@ Inherits `ComponentPropsWithoutRef<"div">`.
 | vertical | boolean | false | Uses vertical movement; left means up and right means down. |
 | fade | boolean | false | Adds edge fade masks. |
 | fadeWidth | string | `"15%"` | Fade-region CSS width. |
-| ...div | ComponentPropsWithoutRef\<"div"\> | — | Forwarded props; `className` controls the viewport. |
+| ...div | ComponentPropsWithoutRef\<"div"\> | - | Forwarded props; `className` controls the viewport. |
 
 ## Slots
 

@@ -25,8 +25,8 @@ import { StaggeredMenu } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items | `StaggeredMenuItem[]` | — | 主条目列表，空数组渲染占位「No items」 |
-| socialItems | `StaggeredMenuSocial[]` | — | 社交链接列表，配合 `displaySocials` 在面板底部展示 |
+| items | `StaggeredMenuItem[]` | - | 主条目列表，空数组渲染占位「No items」 |
+| socialItems | `StaggeredMenuSocial[]` | - | 社交链接列表，配合 `displaySocials` 在面板底部展示 |
 | position | `"left" \| "right"` | `"right"` | 面板与色层滑出方向 |
 | colors | `string[]` | chart-4 / chart-1 两层 | 面板背后多层色层颜色（错峰滑入），最多取前 4 个；建议喂 `var(--color-chart-*)` token |
 | displaySocials | `boolean` | `true` | 是否展示底部社交区（仅 `socialItems` 非空才实际渲染） |
@@ -34,15 +34,15 @@ import { StaggeredMenu } from "@hulianui/ui"
 | accentColor | `string` | `var(--color-primary)` | 强调色（序号 / 社交标题 / 条目 hover） |
 | isFixed | `boolean` | `false` | 是否 `fixed` 铺满视口（整页罩层）；否则相对父容器铺满 |
 | closeOnClickAway | `boolean` | `true` | 点击面板外区域是否关闭 |
-| className | `string` | — | 透传根容器类名 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器类名 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 `StaggeredMenuItem`（`StaggeredMenuSocial` 为 `{ label; link }`）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label * | `string` | — | 条目文案（大号标题） |
-| link | `string` | — | 跳转链接；缺省渲染为不可跳转的 `<span>` |
+| label * | `string` | - | 条目文案（大号标题） |
+| link | `string` | - | 跳转链接；缺省渲染为不可跳转的 `<span>` |
 | ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
 
 ## Events

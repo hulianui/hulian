@@ -10,7 +10,7 @@ status: enriched
 
 # Descriptions
 
-> 描述列表 · 详情页键值对 + horizontal/vertical + bordered + span 跨列(纯皮肤·RSC) · data-display/collection
+> 在详情页里成组展示只读的键值对字段 · data-display/collection
 
 ## 何时用
 
@@ -31,16 +31,16 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | layout | `"horizontal" \| "vertical"` | `"horizontal"` | horizontal=键左值右；vertical=键上值下 |
 | bordered | `boolean` | `false` | 带边框分隔的表格态 |
 | size | `"sm" \| "md"` | `"md"` | 密度档。sm 只收紧格内边距，不动字号 |
-| labelWidth | `number \| string` | — | 钉死键列宽度（horizontal 专用）。不传时由整表最长的键名决定并逐列对齐；数字按 px |
+| labelWidth | `number \| string` | - | 钉死键列宽度（horizontal 专用）。不传时由整表最长的键名决定并逐列对齐；数字按 px |
 | emptyText | `ReactNode` | `"—"` | 值为空时的占位。空=`null`/`undefined`/`""`/`false`，数字 `0` 照常渲染；传 `null` 关掉 |
 | align | `"baseline" \| "start" \| "center"` | 跟布局走 | 键与值的纵向对齐。值区放图片/标签组时才需要显式指定 |
-| items | `DescriptionsItemData[]` | — | 数据驱动备选；提供时优先于 `DescriptionsItem` 子节点 |
+| items | `DescriptionsItemData[]` | - | 数据驱动备选；提供时优先于 `DescriptionsItem` 子节点 |
 
 `DescriptionsItemProps`（复合用法里的 `<DescriptionsItem>`）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label | `ReactNode` | — | 键名 |
+| label | `ReactNode` | - | 键名 |
 | span | `number` | `1` | 跨列数 |
 
 ## Slots
@@ -86,8 +86,8 @@ import { Descriptions, DescriptionsItem } from "@hulianui/ui"
 | 容器宽度 | 实际列数 |
 |---|---|
 | < 32rem | 1 |
-| 32–48rem | 2 |
-| 48–64rem | 3 |
+| 32-48rem | 2 |
+| 48-64rem | 3 |
 | ≥ 64rem | `column` |
 
 跨列项在放不下的档位会**整项退成整行**（而不是按 `span` 去占并不存在的轨道，那会让栅格长出

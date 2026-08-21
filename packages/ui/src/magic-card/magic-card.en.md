@@ -30,7 +30,7 @@ Inherits `ComponentPropsWithoutRef<"div">`.
 | gradientSize | number | 200 | Highlight radius in pixels. |
 | gradientColor | string | `var(--color-primary)` | Highlight color. |
 | gradientOpacity | number | 0.15 | Highlight opacity. |
-| ...div | ComponentPropsWithoutRef\<"div"\> | — | Forwarded props; `className` controls size. |
+| ...div | ComponentPropsWithoutRef\<"div"\> | - | Forwarded props; `className` controls size. |
 
 ## Slots
 

@@ -30,10 +30,10 @@ import { WavyBackground, valueNoise2D } from "@hulianui/ui"
 | backgroundFill | string | `--color-background` / `--color-bg` | 背景填充色，每帧半透明绘制产生拖影 |
 | blur | number | 10 | canvas filter blur（px），0=不模糊 |
 | speed | `"slow" \| "fast"` | "fast" | 动画速度 |
-| waveOpacity | number | 0.5 | 每条波浪整体透明度（0–1） |
-| className | string | — | 内容容器类（覆盖在波浪上的 wrapper div） |
-| containerClassName | string | — | 外层根容器类 |
-| containerProps | `Omit<HTMLAttributes<HTMLDivElement>, "className"> & Record<\`data-${string}\`, …>` | — | 透传至外层根 div（含 data-* 自定义属性） |
+| waveOpacity | number | 0.5 | 每条波浪整体透明度（0-1） |
+| className | string | - | 内容容器类（覆盖在波浪上的 wrapper div） |
+| containerClassName | string | - | 外层根容器类 |
+| containerProps | `Omit<HTMLAttributes<HTMLDivElement>, "className"> & Record<\`data-${string}\`, …>` | - | 透传至外层根 div（含 data-* 自定义属性） |
 
 ## Slots
 

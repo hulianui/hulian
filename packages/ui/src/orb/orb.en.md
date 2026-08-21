@@ -26,10 +26,10 @@ import { Orb } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | hue | `number` | `0` | Hue rotation in degrees. 0 keeps the original blue-violet palette; positive values rotate the YIQ hue clockwise |
-| hoverIntensity | `number` | `0.2` | Hover distortion strength (0–1), the larger the value, the more obvious the deformation will be |
+| hoverIntensity | `number` | `0.2` | Hover distortion strength (0-1), the larger the value, the more obvious the deformation will be |
 | rotateOnHover | `boolean` | `true` | Whether to automatically rotate the light ball when hovering |
 | forceHoverState | `boolean` | `false` | Force to stay active on hover (for demonstration/screenshot scenes) |
-| className | `string` | — | ClassName passed through to canvas (normal) or fallback div (fallback) |
+| className | `string` | - | ClassName passed through to canvas (normal) or fallback div (fallback) |
 
 ## Slots
 

@@ -31,7 +31,7 @@ Inherited from `Omit<HTMLAttributes<HTMLDivElement>, "title">`.
 |------|------|------|------|
 | role * | `"user" \| "assistant" \| "system"` | `"assistant"` (showcase) | User messages are right-aligned on a primary background, assistant messages are left-aligned on a surface background, and system notices are centered and muted |
 | loading | `boolean` | `false` | Replaces the message body with TypingDots while the assistant response is being generated |
-| status | `"sending" \| "sent" \| "read"` | — | User-only receipt: spinner with `"\u53d1\u9001\u4e2d"` (Sending), one check with `"\u5df2\u9001\u8fbe"` (Delivered), or two blue checks with `"\u5df2\u8bfb"` (Read) as the built-in `aria-label` |
+| status | `"sending" \| "sent" \| "read"` | - | User-only receipt: spinner with `"\u53d1\u9001\u4e2d"` (Sending), one check with `"\u5df2\u9001\u8fbe"` (Delivered), or two blue checks with `"\u5df2\u8bfb"` (Read) as the built-in `aria-label` |
 
 ## Slots
 

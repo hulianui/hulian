@@ -29,8 +29,8 @@ import { StarBorder } from "@hulianui/ui"
 | color | `string` | `var(--color-primary)` | 流星光带颜色，喂进 radial-gradient；任意 CSS 颜色（hex/oklch/var(--…)）均可 |
 | speed | `number` | `6` | 单趟流星扫过时长（秒），越大越慢越克制 |
 | thickness | `number` | `1` | 边框光带厚度（px），撑开根容器上下内边距决定描边粗细 |
-| className | `string` | — | 透传根容器额外类名（合并，可覆盖圆角/间距） |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器额外类名（合并，可覆盖圆角/间距） |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

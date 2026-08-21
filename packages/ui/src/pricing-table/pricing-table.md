@@ -10,7 +10,7 @@ status: enriched
 
 # PricingTable
 
-> 定价对比矩阵 · 行列转置(列=被比项/模型·行=属性/价目) + 列高亮描边 + 角标(推荐/最佳性价比) + 表头吸顶 + 窄屏横滚(复用 ScrollArea·区别 Table 行=记录·模型市场定价对照刚需) · data-display/collection
+> 把多个方案按属性逐行对照，可高亮推荐列 · data-display/collection
 
 ## 何时用
 
@@ -25,10 +25,10 @@ import { PricingTable } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| columns* | `PricingColumn[]` | — | 被比项列定义 |
-| rows* | `PricingRow[]` | — | 属性/价目行定义 |
+| columns* | `PricingColumn[]` | - | 被比项列定义 |
+| rows* | `PricingRow[]` | - | 属性/价目行定义 |
 | stickyHeader | `boolean` | `true` | 表头吸顶 |
-| className | `string` | — | 根节点类名 |
+| className | `string` | - | 根节点类名 |
 
 `PricingColumn`：`key*`（与 row.values 的键对应）、`title*`（列标题）、`highlight?`（高亮列：描边 + 角标位）、`badge?`（高亮角标如「推荐」）、`header?`（列头富内容，提供则替换 title 区）。
 `PricingRow`：`key*`、`label*`（首列属性名）、`values: Record<string, ReactNode>`（各列单元格，键为 column.key）。

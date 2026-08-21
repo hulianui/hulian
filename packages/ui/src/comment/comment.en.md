@@ -10,7 +10,7 @@ status: enriched
 
 # Comment
 
-> Nested comments and system-log entries with optional connectors and action controls.
+> Displays nested comments with reply indentation, optional connectors, and action slots.
 
 ## When to use
 
@@ -29,10 +29,10 @@ import { Comment, CommentActions, CommentAction, commentActionVariants } from "@
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| avatar | `AvatarProps` | — | Props for Avatar; ignored by log entries in favor of a system marker. |
+| avatar | `AvatarProps` | - | Props for Avatar; ignored by log entries in favor of a system marker. |
 | type | `"comment" \| "log"` | `"comment"` | Entry presentation. |
 | connector | `boolean` | `false` | Draws a left connector beside nested comments. |
-| className | `string` | — | Remaining `HTMLAttributes<HTMLElement>` after omitting `content` and `title`. |
+| className | `string` | - | Remaining `HTMLAttributes<HTMLElement>` after omitting `content` and `title`. |
 
 **Slots**
 
@@ -50,7 +50,7 @@ import { Comment, CommentActions, CommentAction, commentActionVariants } from "@
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| href | `string` | — | Renders a Hulian Link when set, otherwise a `<button>`. |
+| href | `string` | - | Renders a Hulian Link when set, otherwise a `<button>`. |
 
 **Slots**
 

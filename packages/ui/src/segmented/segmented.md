@@ -10,11 +10,11 @@ status: enriched
 
 # Segmented
 
-> 分段控制器 · 自研 radio 语义(方向键漫游) + active-tab CSS 变量滑块(零依赖) · forms/basic
+> 在紧凑的分段控件里选一项，滑块跟着移动 · forms/basic
 
 ## 何时用
 
-横向一排互斥选项（约 2–5 段，如「日/周/月」「网格/列表/地图」「按月/按年付费」）需滑块高亮当前段时用，items 数组驱动、单值互斥。选项纵向排列或语义偏表单单选用 [Radio](../radio/radio.md)；切换页面级视图区块用 Tabs；选项多需收起用 [Select](../select/select.md)。
+横向一排互斥选项（约 2-5 段，如「日/周/月」「网格/列表/地图」「按月/按年付费」）需滑块高亮当前段时用，items 数组驱动、单值互斥。选项纵向排列或语义偏表单单选用 [Radio](../radio/radio.md)；切换页面级视图区块用 Tabs；选项多需收起用 [Select](../select/select.md)。
 
 ## 导入
 ```ts
@@ -27,20 +27,20 @@ import { Segmented } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items * | `SegmentedItem[]` | — | 段定义数组 |
-| value | `string` | — | 受控选中值 |
+| items * | `SegmentedItem[]` | - | 段定义数组 |
+| value | `string` | - | 受控选中值 |
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整体禁用 |
-| size | `"sm"｜"md"` | `"md"` | — |
-| className | `string` | — | — |
-| aria-label | `string` | — | 无可见标题时提供 |
+| size | `"sm"｜"md"` | `"md"` | - |
+| className | `string` | - | - |
+| aria-label | `string` | - | 无可见标题时提供 |
 
 `SegmentedItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value * | `string` | — | 该段唯一值（也是选中标识） |
-| ariaLabel | `string` | — | label 为富节点（图标/徽标）时必填，否则降级取 value |
+| value * | `string` | - | 该段唯一值（也是选中标识） |
+| ariaLabel | `string` | - | label 为富节点（图标/徽标）时必填，否则降级取 value |
 | disabled | `boolean` | `false` | 单段禁用 |
 
 ## Events

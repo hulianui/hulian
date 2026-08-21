@@ -10,7 +10,7 @@ status: enriched
 
 # FitScreen
 
-> Fixed-canvas scaling · Fit, cover, or stretch a design canvas within its parent · ResizeObserver and testable `computeFit` · layout/container
+> Scales a fixed design canvas to fit, cover, or stretch within its container. · layout/container
 
 ## When to use
 
@@ -28,7 +28,7 @@ import { FitScreen, computeFit } from "@hulianui/ui"
 | designWidth | `number` | `1920` | Design-canvas width. |
 | designHeight | `number` | `1080` | Design-canvas height. |
 | mode | `"fit" \| "cover" \| "stretch"` | `"fit"` | `fit` preserves the full canvas and may letterbox; `cover` fills the parent and may crop edges; `stretch` fills both axes and may distort content. |
-| className | `string` | — | The outer container class name. |
+| className | `string` | - | The outer container class name. |
 
 `computeFit(input: FitInput)` is the pure scaling function used after ResizeObserver measures the parent. It accepts `{ outerW, outerH, designW, designH, mode }` and can be tested independently.
 

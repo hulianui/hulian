@@ -10,7 +10,7 @@ status: enriched
 
 # Dot
 
-> 状态圆点 · 5 语气状态色 + sm/md/lg + 呼吸 pulse(在线/进行中) + a11y label(role=status)(Tag/Chip 内嵌点的独立原语·纯CSS·RSC) · data-display/info
+> 一个状态圆点，可带语义色、呼吸动效和无障碍名 · data-display/info
 
 ## 何时用
 
@@ -26,10 +26,10 @@ import { Dot } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | tone | `"neutral"｜"brand"｜"success"｜"warning"｜"danger"` | `neutral` | 语气色：neutral 默认 / brand 处理中 / success 在线/成功 / warning 警告 / danger 离线/错误。 |
-| color | `string` | — | 任意圆点色：语义色名（`chart-2`/`primary`…）、任意 CSS 色或变量，走 `resolveTone`。与 `tone` 同传时 **color 优先**。图例色点跟图表序列同色时用它。 |
+| color | `string` | - | 任意圆点色：语义色名（`chart-2`/`primary`…）、任意 CSS 色或变量，走 `resolveTone`。与 `tone` 同传时 **color 优先**。图例色点跟图表序列同色时用它。 |
 | size | `"sm"｜"md"｜"lg"` | `md` | 尺寸。 |
 | pulse | `boolean` | `false` | 呼吸扩散动画（在线/进行中等活跃态语义）。 |
-| label | `string` | — | 提供则 `role=status` + aria-label（表意圆点）；不提供则 aria-hidden（纯装饰）。 |
+| label | `string` | - | 提供则 `role=status` + aria-label（表意圆点）；不提供则 aria-hidden（纯装饰）。 |
 
 ## 示例
 ```tsx

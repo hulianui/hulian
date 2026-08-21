@@ -10,7 +10,7 @@ status: enriched
 
 # Funnel
 
-> 漏斗图 · 阶段宽度按 value 比例 + 级间转化率徽标(本级/上一级) · 纵/横双向 + per-stage tone + renderStage 自定义 · computeFunnel 纯函数(不除零)带单测 · 任务漏斗/转化漏斗/留存(零依赖) · data-display/collection
+> 按各阶段数量画漏斗，并标出级间转化率 · data-display/collection
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| stages* | `FunnelStage[]` | — | 阶段数组。`{id, label, value, tone?}`；漏斗宽/高按 value 比例缩放 |
+| stages* | `FunnelStage[]` | - | 阶段数组。`{id, label, value, tone?}`；漏斗宽/高按 value 比例缩放 |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | vertical 每级一行按宽度比 / horizontal 每列按高度比 |
 | showConversion | `boolean` | `true` | 是否显示级间转化率徽标 |
 | ariaLabel | `string` | `"漏斗图"` | 图表无障碍名称；非中文界面应显式传入本地化文案 |
 | conversionLabel | `string` | `"转化"` | 转化率徽标前缀；非中文界面应显式传入本地化文案 |
-| className | `string` | — | 外层类名 |
+| className | `string` | - | 外层类名 |
 
 FunnelStage.tone：`"neutral" \| "brand" \| "success" \| "warning" \| "danger"`，缺省 `brand`（同 Tag 的 tone 语义，吃 token）。
 

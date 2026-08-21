@@ -25,14 +25,14 @@ import { VariableProximity } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label* | `string` | — | Render text (split word by word, spaces retained as unbreakable word gaps); sr-only copy read in full |
-| fromFontVariationSettings* | `string` | — | Variable axis settings when the mouse is far away, such as `"'wght' 400, 'opsz' 9"` (variable fonts are required for visual changes) |
-| toFontVariationSettings* | `string` | — | The target axis setting when the mouse is close to it, interpolating towards this axis by axis; the default axis falls back to the from value |
-| containerRef | `RefObject<HTMLElement \| null>` | — | Reference container for calculating mouse relative coordinates; default falls back to viewport coordinates |
+| label* | `string` | - | Render text (split word by word, spaces retained as unbreakable word gaps); sr-only copy read in full |
+| fromFontVariationSettings* | `string` | - | Variable axis settings when the mouse is far away, such as `"'wght' 400, 'opsz' 9"` (variable fonts are required for visual changes) |
+| toFontVariationSettings* | `string` | - | The target axis setting when the mouse is close to it, interpolating towards this axis by axis; the default axis falls back to the from value |
+| containerRef | `RefObject<HTMLElement \| null>` | - | Reference container for calculating mouse relative coordinates; default falls back to viewport coordinates |
 | radius | `number` | `50` | Influence radius (px); if exceeded, the from setting will be restored |
 | falloff | `"linear" \| "exponential" \| "gaussian"` | `"linear"` | Decay curve; exponential is steeper, gaussian center is more concentrated and soft |
-| className | `string` | — | Extra class name merged into root span |
-| style | `CSSProperties` | — | Inline styles merged into the root span |
+| className | `string` | - | Extra class name merged into root span |
+| style | `CSSProperties` | - | Inline styles merged into the root span |
 
 > Note: The default demonstration controls of showcase controls are `radius={90}`, but the default value of the interface is `50`.
 

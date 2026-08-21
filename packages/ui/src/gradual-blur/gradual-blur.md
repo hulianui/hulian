@@ -26,19 +26,19 @@ import { GradualBlur } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | position | `"top"｜"bottom"｜"left"｜"right"` | `"bottom"` | 模糊条贴靠的边；top/bottom 为横条，left/right 为竖条 |
-| strength | `number` | `2` | 模糊强度基数，每层按曲线递增，建议 1–6 |
+| strength | `number` | `2` | 模糊强度基数，每层按曲线递增，建议 1-6 |
 | height | `string` | `"6rem"` | 横条厚度；竖条模式下若没传 width 则复用此值作竖条宽度 |
-| width | `string` | — | 竖条（left/right）宽度，缺省回落到 `height` |
-| divCount | `number` | `5` | 叠加模糊层数，越多过渡越细腻、越费性能，建议 3–10 |
+| width | `string` | - | 竖条（left/right）宽度，缺省回落到 `height` |
+| divCount | `number` | `5` | 叠加模糊层数，越多过渡越细腻、越费性能，建议 3-10 |
 | exponential | `boolean` | `false` | 指数级递增模糊量（近边缘急剧变糊），false=线性 |
 | curve | `"linear"｜"bezier"｜"ease-in"｜"ease-out"｜"ease-in-out"` | `"linear"` | 每层模糊量沿进度的爬升曲线 |
 | opacity | `number` | `1` | 整体不透明度 |
-| hoverIntensity | `number` | — | 悬停时模糊放大倍数；传入即启用并接管指针事件（pointer-events:auto），不传则容器穿透不挡交互 |
+| hoverIntensity | `number` | - | 悬停时模糊放大倍数；传入即启用并接管指针事件（pointer-events:auto），不传则容器穿透不挡交互 |
 | revealOnScroll | `boolean` | `false` | 进入视口时淡入（IntersectionObserver 驱动），开启后默认不可见 |
 | duration | `string` | `"0.3s"` | 淡入过渡时长，仅 `revealOnScroll` 时生效 |
 | zIndex | `number` | `10` | 叠加的 z-index |
-| className | `string` | — | 透传根容器额外 className |
-| style | `CSSProperties` | — | 透传根容器内联样式（与内部计算样式合并，同名以此为准） |
+| className | `string` | - | 透传根容器额外 className |
+| style | `CSSProperties` | - | 透传根容器内联样式（与内部计算样式合并，同名以此为准） |
 
 ## Slots
 
