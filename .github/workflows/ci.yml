@@ -68,6 +68,13 @@ jobs:
       - name: Check Tailwind scan candidates
         run: pnpm candidates:check
 
+      # 演示素材挂外链 = 断网 / 内网 / 被墙时碎图或空白弹层，组件的核心交互当场演示不出来。
+      # demos 那边早有这条铁律，但它的实现只扫 app/demos 管不到 packages/ui —— HeroVideoDialog
+      # 写死的 YouTube embed 就是这么活到 #305 的。本门禁把口径提到仓库级，两个根一起扫。
+      # 放在 static-checks：纯静态文本扫描，不需要 build 产物。
+      - name: Check for remote assets
+        run: pnpm check:remote-assets
+
       # registry.json / llms-props.json / llms*.txt 是**提交进仓库**的生成物，版本号来自生成
       # 那一刻的 packages/ui/package.json。而发版只动 package.json + CHANGELOG —— 两者靠
       # `version-packages` 里那句 `pnpm llms-registry` 手工串着，这条链断过（0.37.0 的产物
