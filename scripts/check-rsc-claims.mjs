@@ -31,6 +31,19 @@
 //
 // 刻意**不**匹配「RSC 页面」「RSC 树」这类中性提法：「放进 RSC 页时确保挂在 client 子树」
 // 说的是使用位置，没有断言组件自身是什么，本来就对。
+//
+// ── 扫描面：所有「会到达消费方」的文本 ──────────────────────────────────────
+//   a) `*.md` 全文 —— 随 npm 包发布（package.json 的 files 里有 src），MCP 直读那一份；
+//   b) `*.tsx` / `*.types.ts` 里的 **JSDoc 块** —— `/** ... */` 会编进 `.d.ts`，消费方在
+//      IDE 里悬浮一个 prop 或组件就能看到。
+//
+// `//` 行注释不扫：它们停在源码里，进不了 `.d.ts`。这条边界是踩出来的 —— 0.55.1 发布后从
+// npm 拉包复查，先在 `circular-gallery.types.ts` 的 font 说明里逮到 md 那侧已经改掉的同一句
+// 「离线 / RSC 安全」（当时门禁只扫 md）；跟着又发现 `sparkline.tsx` 顶部的 JSDoc 同样进了
+// `sparkline.d.ts`，所以「.tsx 一律不扫」也是错的，改成按 JSDoc 划线。
+//
+// 这条边界顺带保住了 `glass-surface.tsx:12` 那种把话说全了的写法（「RSC 安全：use client +
+// 所有 DOM 测量写在 effect 内」）—— 它是 `//` 注释，准确，且只给读源码的人看。
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -85,10 +98,29 @@ export function isClientComponent(dir, slug) {
     .some((f) => hasUseClient(join(dir, f)));
 }
 
-/** 在一份 md 文本里找出违规断言。纯函数，便于测试。 */
-export function findClaims(text) {
+/** 逐行标出哪些行落在 JSDoc 块里（单行 JSDoc 也算）。 */
+function jsdocLineFlags(lines) {
+  let inside = false;
+  return lines.map((line) => {
+    const opens = line.includes("/**");
+    const closes = line.includes("*/");
+    const flag = inside || opens;
+    if (opens && !closes) inside = true;
+    else if (closes) inside = false;
+    return flag;
+  });
+}
+
+/**
+ * 在一份文本里找出违规断言。纯函数，便于测试。
+ * `jsdocOnly` 给源码文件用：只看会编进 `.d.ts` 的 JSDoc，跳过留在源码里的 `//` 注释。
+ */
+export function findClaims(text, { jsdocOnly = false } = {}) {
   const findings = [];
-  text.split("\n").forEach((line, index) => {
+  const lines = text.split("\n");
+  const inJsdoc = jsdocOnly ? jsdocLineFlags(lines) : null;
+  lines.forEach((line, index) => {
+    if (inJsdoc && !inJsdoc[index]) return;
     if (ESCAPE_RE.test(line)) return;
     CLAIM_RE.lastIndex = 0;
     for (const match of line.matchAll(CLAIM_RE)) {
@@ -108,12 +140,18 @@ export function checkRscClaims({ repoRoot = REPO_ROOT } = {}) {
   for (const entry of readdirSync(root, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
     const dir = join(root, entry.name);
-    const docs = readdirSync(dir).filter((f) => f.endsWith(".md"));
+    const docs = readdirSync(dir).filter(
+      (f) =>
+        f.endsWith(".md") ||
+        f.endsWith(".types.ts") ||
+        (f.endsWith(".tsx") && !/\.(test|spec)\./.test(f)),
+    );
     if (docs.length === 0) continue;
     if (!isClientComponent(dir, entry.name)) continue;
     scanned += 1;
     for (const doc of docs) {
-      for (const found of findClaims(readFileSync(join(dir, doc), "utf8"))) {
+      const jsdocOnly = !doc.endsWith(".md");
+      for (const found of findClaims(readFileSync(join(dir, doc), "utf8"), { jsdocOnly })) {
         findings.push({ file: `${COMPONENT_ROOT}/${entry.name}/${doc}`, ...found });
       }
     }
@@ -136,6 +174,8 @@ if (invoked) {
     );
     process.exitCode = 1;
   } else {
-    console.log(`[rsc-claims] PASS · ${scanned} 个客户端组件的文档里没有「自称 RSC」的断言`);
+    console.log(
+      `[rsc-claims] PASS · ${scanned} 个客户端组件的 md 与 JSDoc 里没有「自称 RSC」的断言`,
+    );
   }
 }

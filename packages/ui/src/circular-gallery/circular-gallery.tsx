@@ -12,7 +12,7 @@ import type {
 // canvas 文字纹理挂在卡片下方。
 //
 // 瑚琏化要点：
-// 1. 去掉远程字体加载（原版默认拉 Google Fonts 的 Figtree）——改用系统字体栈，离线 / RSC 安全。
+// 1. 去掉远程字体加载（原版默认拉 Google Fonts 的 Figtree）——改用系统字体栈，不发网络请求、SSR 期也不会缺字。
 // 2. 默认卡片不再用 picsum.photos 远程图——改用 chart token 程序化生成渐变占位（无任何远程资源）。
 // 3. 颜色全吃 token：textColor 默认 `var(--color-foreground)`，运行时 getComputedStyle 解析实色喂 canvas。
 // 4. 复用 useGlCanvas：懒加载 ogl（代码分割）+ StrictMode 安全（每次挂载新建 canvas，规避 loseContext 毒化）+

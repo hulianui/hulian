@@ -41,7 +41,7 @@ export interface CircularGalleryProps {
   scrollEase?: number;
   /**
    * 标题字体（canvas font 简写串），默认 `bold 30px ui-sans-serif, system-ui, sans-serif`。
-   * 与原版不同：默认不再远程拉 Figtree，改用系统字体栈，离线 / RSC 安全。
+   * 与原版不同：默认不再远程拉 Figtree，改用系统字体栈，不发网络请求、SSR 期也不会缺字。
    */
   font?: string;
   /**
