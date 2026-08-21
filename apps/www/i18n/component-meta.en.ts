@@ -874,6 +874,11 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Displays a numeric score and grade inside a color-coded radial gauge.",
     keywords: ["score", "ring", "data-display", "info"],
   },
+  "score-scale": {
+    shortName: "ScoreScale",
+    description: "Shows which band a score falls into along a full-range color-coded bar.",
+    keywords: ["score", "scale", "grade", "data-display", "info"],
+  },
   heatmap: {
     shortName: "Heatmap",
     description:
