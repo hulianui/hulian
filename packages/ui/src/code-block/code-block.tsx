@@ -1,7 +1,8 @@
 "use client";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
+import { useCopiedFlag } from "../lib/use-copied-flag";
 import { HighlightedCode, NumberedCode } from "./highlighted-code";
 import type { CodeBlockProps } from "./code-block.types";
 import { useComponentLocale } from "../config/locale-context";
@@ -26,12 +27,11 @@ function CodeBlockImpl({
     copied: "已复制",
     region: (language) => (language ? `${language} 代码` : "代码"),
   };
-  const [copied, setCopied] = useState(false);
+  const [copied, markCopied] = useCopiedFlag();
 
   const onCopy = () => {
     void navigator.clipboard?.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    markCopied();
   };
 
   return (

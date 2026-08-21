@@ -9,6 +9,7 @@ import type { ComboboxItemData } from "../combobox/combobox.types";
 import { Field } from "../field/field";
 import { Input } from "../input/input";
 import { cn } from "../lib/cn";
+import { useCopiedFlag } from "../lib/use-copied-flag";
 import { zhCN } from "../config/locale";
 import { useComponentLocale } from "../config/locale-context";
 import { Markdown } from "../markdown/markdown";
@@ -124,7 +125,7 @@ function IssueReporterImpl({
   const [values, setValues] = useState<IssueFieldValues>(() => ({ ...defaultValues }));
   // 只有尝试过提交才展示必填错误——一进来满屏红字是最差的表单体验。
   const [attempted, setAttempted] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, markCopied] = useCopiedFlag();
 
   const draft = useMemo<IssueDraft>(() => {
     if (!template) {
@@ -218,8 +219,7 @@ function IssueReporterImpl({
   const copyMarkdown = () => {
     void navigator.clipboard?.writeText(draft.body);
     onCopy?.(draft.body);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    markCopied();
   };
 
   const typeItems = templates.map((item) => ({ value: item.type, label: item.label }));

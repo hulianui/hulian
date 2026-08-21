@@ -3,6 +3,7 @@ import { memo, useState } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
+import { useCopiedFlag } from "../lib/use-copied-flag";
 import { ChevronRight, Copy, Check } from "../_icons";
 import type { JsonValueType, JsonViewerProps } from "./json-viewer.types";
 
@@ -78,15 +79,14 @@ function JsonNode({
   const [expanded, setExpanded] = useState(
     isContainer && depth < defaultExpandedDepth && count <= maxAutoExpandKeys,
   );
-  const [copied, setCopied] = useState(false);
+  const [copied, markCopied] = useCopiedFlag(1200);
 
   const keyLabel = name != null ? <span className="text-foreground/80">{name}</span> : null;
 
   const copy = () => {
     void navigator.clipboard?.writeText(JSON.stringify(value, null, 2));
     onCopyPath?.(path);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1200);
+    markCopied();
   };
 
   const copyBtn = (

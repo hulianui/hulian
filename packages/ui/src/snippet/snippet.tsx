@@ -1,7 +1,8 @@
 "use client";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { Copy, Check } from "../_icons";
 import { cn } from "../lib/cn";
+import { useCopiedFlag } from "../lib/use-copied-flag";
 import { HighlightedCode } from "../code-block/highlighted-code";
 import type { SnippetProps } from "./snippet.types";
 import { useComponentLocale } from "../config/locale-context";
@@ -21,7 +22,7 @@ function SnippetImpl({
   const locale = useComponentLocale().snippet ?? { copy: "复制", copied: "已复制" };
   const resolvedCopyLabel = copyLabel ?? locale.copy;
   const resolvedCopiedLabel = copiedLabel ?? locale.copied;
-  const [copied, setCopied] = useState(false);
+  const [copied, markCopied] = useCopiedFlag();
   const copyText = text ?? (typeof children === "string" ? children : "");
   const colorable = highlight && typeof children === "string";
   // 带 `$`/`>` 等提示符的片段默认按 shell 着色（命令名+flag 上色）；symbol={null} 视作代码片段走默认(JS)。
@@ -29,8 +30,7 @@ function SnippetImpl({
 
   const onCopy = () => {
     void navigator.clipboard?.writeText(copyText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    markCopied();
   };
 
   return (
