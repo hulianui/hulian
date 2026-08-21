@@ -69,19 +69,19 @@ export default function TypographyPage() {
       </Section>
 
       <Section title={content.scoped} desc={content.scopedDescription}>
-        <Code>{`{/* 等宽：写变量就够，font-mono 的元素会在自己的作用域重新解析它 */}
+        <Code>{`{/* ${content.scopedMonoComment} */}
 <div style={{ "--hl-font-mono": '"IBM Plex Mono", monospace' }}>
   <Snippet>pnpm add @hulianui/ui</Snippet>
 </div>
 
-{/* 正文：变量之外还要一个 font-sans 类，否则文字仍继承根节点解析好的字体 */}
+{/* ${content.scopedSansComment} */}
 <div className="font-sans" style={{ "--hl-font-sans": "Georgia, serif" }}>
-  这一段用 Georgia
+  ${content.scopedSansSample}
 </div>`}</Code>
       </Section>
 
       <Section title={content.cjkNote} desc={content.cjkNoteDescription}>
-        <Code>{`/* 本站实际的栈：西文 Geist → 中文思源黑体 → 系统字体兜底生僻字 */
+        <Code>{`/* ${content.stackComment} */
 --hl-font-sans: Geist, "Noto Sans SC", ui-sans-serif, system-ui,
   "PingFang SC", "Microsoft YaHei", sans-serif;`}</Code>
       </Section>
