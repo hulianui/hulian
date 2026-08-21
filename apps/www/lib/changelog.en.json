@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.55.1",
+    "date": "2026-08-21",
+    "entries": [
+      {
+        "sha": "b35361f",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Copy-feedback timers no longer call setState on unmounted components, and client components stop describing themselves as RSC in their docs (#310 #307).\n\n- **Two defects in the copy feedback** (CodeBlock / IssueReporter / JsonViewer / PasswordGenerator / SecretField / Snippet). All six carried the same inline snippet with neither a ref nor a cleanup: copying scheduled a `setTimeout` that reset the \"copied\" label. First, if the user copies and then closes the dialog or leaves the page within 1.5 seconds, the timer still fires `setState` on an unmounted component; React 19 no longer warns about that, so it stays silent in the browser. Second, clicking copy twice in a row lets the first timer clear the second click's feedback early, so the label only shows for part of its intended time. All six now share the internal `useCopiedFlag`, which clears the timer on unmount and restarts it on every click. JsonViewer keeps its original 1200ms reset window and the rest keep 1500ms, so behaviour is unchanged. MessageActions already got this right and was folded into the same implementation.\n\n- **Client components stop describing themselves as RSC** (BeianFooter / CircularGallery / ClickSpark / ContributionGraph / GlassSurface / OrbitImages / SplashCursor / TypingDots). These eight had 14 claims such as \"RSC-safe\" or \"pure RSC\" in their docs while every one of them is a client component, and each `\"use client\"` directive was verified as necessary (BeianFooter and TypingDots have no hooks and no events of their own, but both read the Locale context). Component docs ship inside the package and the MCP `get_component_doc` local mode reads that copy straight out of `node_modules`, so an agent takes those claims as evidence that the component stays out of the client bundle. The wording is now \"client component (`\"use client\"`)\" throughout, and passages that meant \"does not throw during SSR\" say SSR instead. ReflectiveCard and Citation genuinely have no `\"use client\"`, their wording was accurate, and they were left alone."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.55.0",
     "date": "2026-08-21",
     "entries": [
