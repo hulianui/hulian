@@ -95,6 +95,7 @@ const SYNONYMS = new Map(
     // 与 #36 修掉的那类假阴性同源：模型一次 0 命中就断言「库里没有」。
     // 取值只映射到本库真实存在的件，不做泛化联想。
     科技感: ["aurora", "grid-pattern", "dot-pattern", "animated-beam", "border-beam", "particles"],
+    高级: ["aurora-text", "shine-border", "magic-card", "glass-surface", "bento-grid"],
     高级感: ["aurora-text", "shine-border", "magic-card", "glass-surface", "bento-grid"],
     质感: ["glass-surface", "magic-card", "dot-pattern", "shine-border"],
     氛围: ["aurora", "particles", "grid-pattern", "dot-pattern"],
