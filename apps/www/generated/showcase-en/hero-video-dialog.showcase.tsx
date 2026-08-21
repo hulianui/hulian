@@ -29,7 +29,7 @@ export const heroVideoDialogShowcase: ShowcaseSpec = {
         },
         {
             title: "Choosing the playback form (videoType)",
-            description: "Automatic resolution reads the extension and nothing else, so declare videoType when that is not enough: pass \"embed\" for a third-party platform address from YouTube or Bilibili, and \"video\" for a direct video link that carries no extension. The demo below deliberately mounts a local video file in the iframe form. The picture still appears, but the poster is gone and the controls are unstyled, which is what a wrong form looks like on the page.",
+            description: "Automatic resolution reads the extension and nothing else, so declare videoType when that is not enough: pass \"embed\" for a third-party platform embed address from YouTube or Bilibili, and \"video\" for a direct video link that carries no extension. The demo below deliberately mounts a local video file in the \"embed\" form, so it lands in an iframe. The picture still appears, but the poster is gone and the controls are unstyled, which is what a wrong form looks like on the page.",
             code: `<HeroVideoDialog
   thumbnailSrc="/cover.jpg"
   thumbnailAlt="Product Preview"

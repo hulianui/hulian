@@ -7190,7 +7190,7 @@
     "自动上传": "Automatic upload",
     "自动上传（useUpload）": "Automatic upload (useUpload)",
     "自动切换": "Automatic switching",
-    "自动判别只看扩展名，不够准时用 videoType 明确指定：第三方平台（YouTube / Bilibili 等）的 embed 地址传 \"embed\"，没有扩展名的视频直链传 \"video\"。下面刻意把本地视频文件按 \"embed\" 挂进 iframe——画面照样出来，但没有 poster、控件样式不受控，这就是形态选错时页面上的样子。": "Automatic resolution reads the extension and nothing else, so declare videoType when that is not enough: pass \"embed\" for a third-party platform address from YouTube or Bilibili, and \"video\" for a direct video link that carries no extension. The demo below deliberately mounts a local video file in the iframe form. The picture still appears, but the poster is gone and the controls are unstyled, which is what a wrong form looks like on the page.",
+    "自动判别只看扩展名，不够准时用 videoType 明确指定：第三方平台（YouTube / Bilibili 等）的 embed 地址传 \"embed\"，没有扩展名的视频直链传 \"video\"。下面刻意把本地视频文件按 \"embed\" 挂进 iframe——画面照样出来，但没有 poster、控件样式不受控，这就是形态选错时页面上的样子。": "Automatic resolution reads the extension and nothing else, so declare videoType when that is not enough: pass \"embed\" for a third-party platform embed address from YouTube or Bilibili, and \"video\" for a direct video link that carries no extension. The demo below deliberately mounts a local video file in the \"embed\" form, so it lands in an iframe. The picture still appears, but the poster is gone and the controls are unstyled, which is what a wrong form looks like on the page.",
     "自动化": "Automation",
     "自动化测试组": "Automated Testing Group",
     "自动卷动": "Automatic scrolling",
