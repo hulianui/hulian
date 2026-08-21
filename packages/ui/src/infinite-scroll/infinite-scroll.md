@@ -10,7 +10,7 @@ status: enriched
 
 # InfiniteScroll
 
-> 无限滚动 · IntersectionObserver 底部哨兵 + 自动定位可滚祖先作 root + 加载锁防重入 + hasMore 完结态(零依赖·分页加载) · data-display/collection
+> 滚到接近底部时自动加载下一批内容 · data-display/collection
 
 ## 何时用
 
@@ -25,9 +25,9 @@ import { InfiniteScroll } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| hasMore* | `boolean` | — | 是否还有更多；false 时停止观察并显示完结文案。 |
+| hasMore* | `boolean` | - | 是否还有更多；false 时停止观察并显示完结文案。 |
 | threshold | `number` | `100` | 距底多少 px 提前触发（IntersectionObserver rootMargin）。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ## Events
 

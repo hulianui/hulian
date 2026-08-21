@@ -35,14 +35,14 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 | baseScale | `number` | `0.85` | 首张（最底层）卡的基础缩放，后续卡按 itemScale 递增 |
 | rotationAmount | `number` | `0` | 每层堆叠旋转增量（deg），正值产生扑克牌式扇形错位 |
 | blurAmount | `number` | `0` | 被压下方卡片的模糊增量（px），>0 越靠下越模糊；reduced-motion 下自动关闭 |
-| className | `string` | — | 追加到滚动容器根节点的类名 |
-| style | `CSSProperties` | — | 透传到滚动容器根节点的内联样式 |
+| className | `string` | - | 追加到滚动容器根节点的类名 |
+| style | `CSSProperties` | - | 透传到滚动容器根节点的内联样式 |
 
 `ScrollStackItemProps`（`<ScrollStackItem>`，每张卡片）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| itemClassName | `string` | — | 追加到单张卡片外层的自定义类名 |
+| itemClassName | `string` | - | 追加到单张卡片外层的自定义类名 |
 
 ## Events
 

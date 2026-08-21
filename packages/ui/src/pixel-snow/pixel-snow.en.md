@@ -35,9 +35,9 @@ import { PixelSnow } from "@hulianui/ui"
 | farPlane | `number` | `20` | The furthest clipping distance of the light step; the larger the number, the more visible layers (the higher the performance cost) |
 | brightness | `number` | `1` | Overall brightness ratio |
 | gamma | `number` | `0.4545` | Gamma correction index (≈1/2.2 sRGB approximation) |
-| density | `number` | `0.3` | Snowflake density (snow probability threshold for each grid); the larger, the denser. Recommended 0.05–0.6 |
+| density | `number` | `0.3` | Snowflake density (snow probability threshold for each grid); the larger, the denser. Recommended 0.05-0.6 |
 | direction | `number` | `125` | Wind direction angle (degrees), determines the lateral drift direction |
-| className | `string` | — | Passthrough to root container (or reduced-motion fallback div) |
+| className | `string` | - | Passthrough to root container (or reduced-motion fallback div) |
 
 ## Slots
 

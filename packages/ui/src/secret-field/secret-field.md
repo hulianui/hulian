@@ -10,7 +10,7 @@ status: enriched
 
 # SecretField
 
-> 密钥掩码字段 · sk-abc…wxyz 掩码(full/prefix-suffix) + 眼睛 toggle 显形 + 一键复制原值(同 Snippet idiom·1.5s 反馈) + 尾部动作槽(重置/吊销) + 受控 revealed(API key 管理刚需·复用 _icons Eye/Copy) · forms/advanced
+> 掩码显示密钥，可一键显形和复制原值 · forms/advanced
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { SecretField, maskSecret } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value * | `string` | — | 密钥原值 |
-| revealed | `boolean` | — | 受控显形态；不传则组件自管 |
+| value * | `string` | - | 密钥原值 |
+| revealed | `boolean` | - | 受控显形态；不传则组件自管 |
 | maskStrategy | `"full"｜"prefix-suffix"` | `"prefix-suffix"` | full 全掩 / prefix-suffix 保留首尾 |
 | copyable | `boolean` | `true` | 是否显示复制按钮 |
 | readOnly | `boolean` | `false` | 只读外观（去掉交互态描边） |
-| size | `"sm"｜"md"` | `"md"` | — |
-| className | `string` | — | — |
+| size | `"sm"｜"md"` | `"md"` | - |
+| className | `string` | - | - |
 
 ## Events
 

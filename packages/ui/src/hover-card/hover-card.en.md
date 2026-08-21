@@ -10,7 +10,7 @@ status: enriched
 
 # HoverCard
 
-> Hover card · Popover-based hover opening and delayed closing, following the Tooltip delay model, with rich content · feedback/overlay
+> Shows rich content after pointer hover and closes it after a leave delay. · feedback/overlay
 
 ## When to use
 
@@ -37,8 +37,8 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | sideOffset | `number` | `8` | Distance from the trigger in pixels. |
-| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | — | Position the card against something other than the trigger, with the same contract as [Popover](../popover/popover.md)'s `anchor`. One difference: **the trigger stays mandatory**, because the card opens on hover, so `anchor` only changes where it sits, not what opens it. |
-| className | `string` | — | Additional class name. |
+| anchor | `Element\|RefObject<Element>\|VirtualElement\|(() => Element\|VirtualElement\|null)` | - | Position the card against something other than the trigger, with the same contract as [Popover](../popover/popover.md)'s `anchor`. One difference: **the trigger stays mandatory**, because the card opens on hover, so `anchor` only changes where it sits, not what opens it. |
+| className | `string` | - | Additional class name. |
 
 ## Slots
 
@@ -69,7 +69,7 @@ Use `render` on HoverCardTrigger to supply an inline link or button.
 
 - The component disables managed initial and final focus as described in [[hovercard-on-focus-managing-popover-flickers-set-initial-final-focus-false]]. This prevents hover and focus from repeatedly opening and closing a focus-managing popover. Preserve that behavior in forks.
 - Tune accidental activation with `openDelay` and `closeDelay`. A zero close delay can flash closed while the pointer crosses the gap from trigger to card.
-- `HoverCardContent` extends the native div attributes, so `data-testid`, `role`, `aria-*`, and `onClick` all attach directly. The card is portaled out, but synthetic events still bubble along the **React tree** back to the parent that holds the trigger — inside a fully clickable row or card, add `onClick={(e) => e.stopPropagation()}` or clicking the card content also fires the row `onClick`. A forwarded `onMouseEnter` or `onMouseLeave` is **merged** with the internal timers rather than replacing them, so it cannot accidentally close the card.
+- `HoverCardContent` extends the native div attributes, so `data-testid`, `role`, `aria-*`, and `onClick` all attach directly. The card is portaled out, but synthetic events still bubble along the **React tree** back to the parent that holds the trigger. Inside a fully clickable row or card, add `onClick={(e) => e.stopPropagation()}` or clicking the card content also fires the row `onClick`. A forwarded `onMouseEnter` or `onMouseLeave` is **merged** with the internal timers rather than replacing them, so it cannot accidentally close the card.
 
 ## Related
 [Dialog](../dialog/dialog.md) · [Modal](../modal/modal.md) · [AlertDialog](../alert-dialog/alert-dialog.md) · [Drawer](../drawer/drawer.md) · [Popover](../popover/popover.md) · [Tooltip](../tooltip/tooltip.md)

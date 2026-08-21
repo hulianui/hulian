@@ -33,7 +33,7 @@ import { ShapeBlur } from "@hulianui/ui"
 | circleEdge | `number` | `0.5` | Soft light round edge feathering, the bigger the softer it is |
 | color | `string` | `var(--color-foreground)` | Shape main color, CSS color or token prefixed with `--color-` |
 | damping | `number` | `8` | Mouse following damping, the larger it is, the faster it follows, and the smaller it is, the lazier it is |
-| className | `string` | — | Additional class name for the root container div |
+| className | `string` | - | Additional class name for the root container div |
 
 ## Slots
 

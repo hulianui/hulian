@@ -35,12 +35,12 @@ import { Radar } from "@hulianui/ui"
 | sweepWidth | `number` | `2` | Scanning arm width (power sharpness), the larger, narrower and sharper |
 | sweepLobes | `number` | `1` | Number of scanning arm flaps, 1 = single beam / 2 = symmetrical double beam |
 | color | `string` | `var(--color-chart-1)` | Radar main color (ring/spoke/scan arm), any CSS color string |
-| backgroundColor | `string` | — | Radar background color (resident base color), default transparent to reveal the host background |
+| backgroundColor | `string` | - | Radar background color (resident base color), default transparent to reveal the host background |
 | falloff | `number` | `2` | Edge-attenuation exponent; higher values keep the center focused and fade the edge faster |
 | brightness | `number` | `1` | Overall brightness ratio |
 | enableMouseInteraction | `boolean` | `true` | Whether to turn on mouse parallax (the disk moves smoothly with the pointer) |
 | mouseInfluence | `number` | `0.1` | Mouse parallax influence coefficient |
-| className | `string` | — | Passthrough to the root container (or fallback div) |
+| className | `string` | - | Passthrough to the root container (or fallback div) |
 
 ## Slots
 

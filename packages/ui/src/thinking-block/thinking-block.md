@@ -27,8 +27,8 @@ import { ThinkingBlock } from "@hulianui/ui"
 |------|------|------|------|
 | thinking | `boolean` | `false` | 进行态：标题转圈 + 高光流动，且默认展开（agent 正在推理） |
 | defaultOpen | `boolean` | 随 thinking | 非受控初始展开态 |
-| open | `boolean` | — | 受控展开态 |
-| className | `string` | — | 容器类名 |
+| open | `boolean` | - | 受控展开态 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

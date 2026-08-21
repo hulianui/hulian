@@ -10,7 +10,7 @@ status: enriched
 
 # Spacer
 
-> Directional spacing primitive · `x`/`y` × 0.25rem + `aria-hidden` + RSC-safe · layout/arrange
+> Inserts token-scaled horizontal or vertical layout space without semantic content. · layout/arrange
 
 ## When to use
 
@@ -26,8 +26,8 @@ import { Spacer } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | x | `number` | `1` | Horizontal spacing (× 0.25rem, same as Tailwind spacing scale) |
-| y | `number` | — | Vertical spacing (× 0.25rem) |
-| className | `string` | — | Extra class name |
+| y | `number` | - | Vertical spacing (× 0.25rem) |
+| className | `string` | - | Extra class name |
 
 ## Example
 ```tsx

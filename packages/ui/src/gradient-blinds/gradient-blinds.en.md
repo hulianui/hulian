@@ -27,7 +27,7 @@ import { GradientBlinds } from "@hulianui/ui"
 |------|------|------|------|
 | gradientColors | `string[]` | `--color-chart-1/3` | Gradient color station, horizontal interpolation, up to the first 8; any CSS color |
 | angle | `number` | `0` | Ribbon rotation angle (degrees), only converts gradients and louver textures but not containers |
-| noise | `number` | `0.3` | Particle noise intensity, 0=pure, recommended 0–1 |
+| noise | `number` | `0.3` | Particle noise intensity, 0=pure, recommended 0-1 |
 | blindCount | `number` | `16` | The number of vertical blinds, whichever is smaller than blindMinWidth |
 | blindMinWidth | `number` | `60` | The minimum width of a single bar (px), narrow containers will converge to the number of bars according to this; pass 0/negative value to close the constraint |
 | mouseDampening | `number` | `0.15` | Spotlight-following damping in seconds; 0 follows immediately |
@@ -38,8 +38,8 @@ import { GradientBlinds } from "@hulianui/ui"
 | distortAmount | `number` | `0` | Gradient distortion amplitude, the larger the ribbon, the more wavy it is |
 | shineDirection | `"left" \| "right"` | `"left"` | Highlight scanning direction, "right" flips the light and dark tendency of each louver |
 | dpr | `number` | `min(dpr, 2)` | Device pixel ratio upper limit |
-| className | `string` | — | Root container div |
-| style | `CSSProperties` | — | Root container inline style, such as `mixBlendMode` |
+| className | `string` | - | Root container div |
+| style | `CSSProperties` | - | Root container inline style, such as `mixBlendMode` |
 
 ## Slots
 

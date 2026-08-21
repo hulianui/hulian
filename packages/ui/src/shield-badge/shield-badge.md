@@ -31,18 +31,18 @@ import { ShieldBadge, ShieldBadgeGroup, compactCount } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `ReactNode` | — | 右段（彩底），如 `MIT` / `1.5k/month` / `failing` |
-| label | `ReactNode` | — | 左段（灰底），如 `license` / `downloads`；省略则退化为单段徽章 |
-| icon | `ReactNode` | — | 前置 logo 槽：有 label 时在左段最前，否则在右段最前（自动 `aria-hidden`） |
+| value* | `ReactNode` | - | 右段（彩底），如 `MIT` / `1.5k/month` / `failing` |
+| label | `ReactNode` | - | 左段（灰底），如 `license` / `downloads`；省略则退化为单段徽章 |
+| icon | `ReactNode` | - | 前置 logo 槽：有 label 时在左段最前，否则在右段最前（自动 `aria-hidden`） |
 | tone | `"neutral" \| "brand" \| "success" \| "warning" \| "danger"` | `"brand"` | 右段语气 |
-| color | `string` | — | 逃生舱：任意 CSS 色 / 语义色名（`chart-1`..`chart-6`），覆盖 tone |
+| color | `string` | - | 逃生舱：任意 CSS 色 / 语义色名（`chart-1`..`chart-6`），覆盖 tone |
 | variant | `"solid" \| "soft" \| "outline"` | `"solid"` | solid 贴纸感 / soft 柔和（嵌进正文不抢戏）/ outline 描边 |
 | shape | `"rounded" \| "square" \| "pill"` | `"rounded"` | 外形 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸 |
-| href | `string` | — | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
-| target | `string` | — | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"`（显式传 rel 优先） |
-| rel | `string` | — | 显式覆盖上面那条自动补的 `rel` |
-| className | `string` | — | 透传类名；其余原生属性（title / data-* / onClick）一并透传 |
+| href | `string` | - | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
+| target | `string` | - | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"`（显式传 rel 优先） |
+| rel | `string` | - | 显式覆盖上面那条自动补的 `rel` |
+| className | `string` | - | 透传类名；其余原生属性（title / data-* / onClick）一并透传 |
 
 ### ShieldBadgeGroup
 

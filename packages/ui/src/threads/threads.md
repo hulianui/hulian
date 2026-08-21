@@ -25,11 +25,11 @@ import { Threads } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| color | `[number, number, number] \| string` | `--color-chart-1` | 丝线颜色。RGB 数组每分量 0–1（react-bits 原版格式），或任意 CSS 颜色字符串（hex/oklch/rgb/var）。不传则读主题 token |
-| amplitude | number | 1 | 波动幅度，越大摆幅越剧烈，建议 0.3–3 |
-| distance | number | 0 | 各丝线纵向间距缩放，正值拉开负值压缩，建议 -1–2 |
+| color | `[number, number, number] \| string` | `--color-chart-1` | 丝线颜色。RGB 数组每分量 0-1（react-bits 原版格式），或任意 CSS 颜色字符串（hex/oklch/rgb/var）。不传则读主题 token |
+| amplitude | number | 1 | 波动幅度，越大摆幅越剧烈，建议 0.3-3 |
+| distance | number | 0 | 各丝线纵向间距缩放，正值拉开负值压缩，建议 -1-2 |
 | enableMouseInteraction | boolean | true | 鼠标跟随：X 影响时间流速、Y 影响振幅，带 0.05 平滑插值 |
-| className | string | — | 透传到 canvas（或 fallback div） |
+| className | string | - | 透传到 canvas（或 fallback div） |
 
 ## Slots
 
@@ -51,7 +51,7 @@ import { Threads } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- WebGL 组件，须客户端渲染；`color` 既收 0–1 的 `[r,g,b]` 数组也收 CSS 字符串（含 `var(--color-chart-3)`/oklch/hex）。
+- WebGL 组件，须客户端渲染；`color` 既收 0-1 的 `[r,g,b]` 数组也收 CSS 字符串（含 `var(--color-chart-3)`/oklch/hex）。
 - ogl/WebGL 在 StrictMode 双挂载或 cleanup 时易踩 context 复用毒化坑——改源码时勿 cleanup 调 `loseContext` 后复用同一 canvas（参见 [[webgl-canvas-loseContext-poisons-strictmode-remount]]）；headless 无 WebGL 时走 fallback，视觉验证用真实浏览器。
 - 透明底，需自行放在有底色的容器内才看得清；父容器须 `relative` + `overflow-hidden`。
 

@@ -10,11 +10,11 @@ status: enriched
 
 # QueueLane
 
-> Priority queue board · read-only ordered lanes with aggregated headers, preserved FIFO order, visible-item limits, item drill-down, and an exported stable grouping helper · data-display/collection
+> Shows prioritized queue items in read-only lanes with depth, average-wait, and throughput metrics. · data-display/collection
 
 ## When to use
 
-Use QueueLane to monitor ordered queues grouped by priority or category, such as a task bus or P0–P3 scheduler. The scheduler owns FIFO order and users cannot drag it. Use Kanban for manual workflow movement.
+Use QueueLane to monitor ordered queues grouped by priority or category, such as a task bus or P0-P3 scheduler. The scheduler owns FIFO order and users cannot drag it. Use Kanban for manual workflow movement.
 
 ## Import
 ```ts
@@ -25,18 +25,18 @@ import { QueueLane, groupByLane } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| lanes* | `QueueLaneDef[]` | — | Ordered `{id, label, tone?, meta?}` lanes; tone is written directly as a CSS color. |
-| items* | `T[]` | — | Controlled `{id, laneId}` items grouped by lane while preserving input order; unmatched items are omitted. |
-| maxVisible | `number` | — | Maximum directly visible items per lane; omission shows all. |
+| lanes* | `QueueLaneDef[]` | - | Ordered `{id, label, tone?, meta?}` lanes; tone is written directly as a CSS color. |
+| items* | `T[]` | - | Controlled `{id, laneId}` items grouped by lane while preserving input order; unmatched items are omitted. |
+| maxVisible | `number` | - | Maximum directly visible items per lane; omission shows all. |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Lane layout direction. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
 `QueueItem` (the constraint on `items`; your own row data extends it freely)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| id * | `string` | — | Unique key. |
-| laneId * | `string` | — | Owning lane id. It must match one of `lanes[].id`, otherwise the entry is dropped. |
+| id * | `string` | - | Unique key. |
+| laneId * | `string` | - | Owning lane id. It must match one of `lanes[].id`, otherwise the entry is dropped. |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # ContextMenu
 
-> Context menu · Thin Base UI context-menu wrapper anchored to the pointer, reusing Menu styling, `data-highlighted`, submenus, and a danger variant · navigation/action
+> Opens contextual action items at the pointer with a danger treatment. · navigation/action
 
 ## When to use
 
@@ -27,43 +27,43 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| disabled | `boolean` | — | Whether the item is unavailable. |
+| disabled | `boolean` | - | Whether the item is unavailable. |
 | closeOnClick | `boolean` | `true` | Whether selecting the item closes the menu. |
-| label | `string` | — | Text override for keyboard type-ahead, needed when children are not plain text. |
+| label | `string` | - | Text override for keyboard type-ahead, needed when children are not plain text. |
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use danger for destructive actions. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
-**ContextMenuCheckboxItem** — a setting that can be toggled on or off. Renders `role="menuitemcheckbox"` plus `aria-checked`.
+**ContextMenuCheckboxItem**: a setting that can be toggled on or off. Renders `role="menuitemcheckbox"` plus `aria-checked`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| checked | `boolean` | — | Whether the item is ticked (controlled). For an uncontrolled item use `defaultChecked` instead. |
+| checked | `boolean` | - | Whether the item is ticked (controlled). For an uncontrolled item use `defaultChecked` instead. |
 | defaultChecked | `boolean` | `false` | Whether the item is initially ticked (uncontrolled). |
 | disabled | `boolean` | `false` | Whether the item is unavailable. |
 | closeOnClick | `boolean` | `false` | Whether selecting the item closes the menu. Checkbox items keep the menu open by default so several can be toggled in a row. |
-| label | `string` | — | Text override for keyboard type-ahead. |
+| label | `string` | - | Text override for keyboard type-ahead. |
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use danger for destructive actions. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
-**ContextMenuRadioGroup** — container for a set of mutually exclusive options. Every `ContextMenuRadioItem` must be nested inside one.
+**ContextMenuRadioGroup**: container for a set of mutually exclusive options. Every `ContextMenuRadioItem` must be nested inside one.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | Value of the currently selected item (controlled). For an uncontrolled group use `defaultValue` instead. |
-| defaultValue | `string` | — | Value of the initially selected item (uncontrolled). |
+| value | `string` | - | Value of the currently selected item (controlled). For an uncontrolled group use `defaultValue` instead. |
+| defaultValue | `string` | - | Value of the initially selected item (uncontrolled). |
 | disabled | `boolean` | `false` | Whether the whole group is unavailable. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
-**ContextMenuRadioItem** — one option in a mutually exclusive set. Renders `role="menuitemradio"` plus `aria-checked`.
+**ContextMenuRadioItem**: one option in a mutually exclusive set. Renders `role="menuitemradio"` plus `aria-checked`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `string` | — | Value of this item; it is selected when it equals the value of its `ContextMenuRadioGroup`. |
+| value* | `string` | - | Value of this item; it is selected when it equals the value of its `ContextMenuRadioGroup`. |
 | disabled | `boolean` | `false` | Whether the item is unavailable. |
 | closeOnClick | `boolean` | `false` | Whether selecting the item closes the menu. Radio items keep the menu open by default, so pass `true` if picking a value should dismiss it. |
-| label | `string` | — | Text override for keyboard type-ahead. |
+| label | `string` | - | Text override for keyboard type-ahead. |
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use danger for destructive actions. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 **ContextMenuSubTrigger**: props `disabled` / `label` / `variant?: "default" \| "danger"` / `className`; slot `children`.
 **ContextMenuContent / ContextMenuSubContent**: prop `className`; slot `children`.

@@ -1,5 +1,50 @@
 # @hulianui/ui
 
+## 0.55.0
+
+### Minor Changes
+
+- d659e7f: `HeroVideoDialog` can play self-hosted video files, and its demo asset no longer points off-site (#305).
+
+  - New `videoType` (`"auto"` by default, plus `"embed"` and `"video"`). With `"video"` the dialog mounts a native `<video>` (the thumbnail doubles as its poster, with controls, autoPlay and playsInline); `"embed"` keeps the iframe. `"auto"` decides from the `videoSrc` extension: `.mp4` / `.webm` / `.ogv` / `.ogg` / `.mov` / `.m4v` resolve to `"video"`, everything else to `"embed"`. Existing call sites that pass a platform embed address behave exactly as before. HLS (`.m3u8`) is deliberately excluded from the automatic path, because most browsers cannot play it natively; reach for the Video player component instead.
+  - The showcase now plays a local file from the docs site (`demoAsset("/demo/sample-video.mp4")`) instead of a hard-coded YouTube embed, so the dialog is no longer blank on a restricted network, an intranet, or offline.
+
+  The reason this could not be fixed inside the showcase alone: an mp4 dropped into an iframe still produces a picture, because the browser falls back to its built-in media viewer. It simply loses the poster, gives up control over the controls, and in some browsers triggers a download instead. That "half broken but looks fine" state is exactly what a consumer passing `/hero.mp4` would have hit.
+
+- 4e2692b: `Markdown` gains `headingIds`: switch it on and rendered headings carry anchor ids, so long documents can have a table of contents and `#fragment` deep links (#303). Pass a string to switch it on and use that string as the id prefix (`headingIds="doc-"` produces `doc-props`), which keeps the generated ids in their own namespace and away from ids the host page already has.
+
+  Two pure functions ship alongside it, `slugifyHeading` and `extractHeadings(src, prefix?)`. Table-of-contents entries are extracted from the **same source text** the renderer receives and share one slug rule with it (strip inline marks, lowercase, fold whitespace into hyphens, keep only Unicode letters, digits, `-` and `_`, which is why Chinese headings survive intact; duplicate headings get `-1` / `-2`; symbol-only and empty headings fall back to `section`). Because both sides run the same rule, an href can never drift from the id in the DOM.
+
+  Every `extractHeadings` item is `{ level, text, plainText, id }`. Use `plainText` for the label, since inline marks are already stripped there.
+
+  `headingIds` stays off by default: ids live in a global namespace, and generating them by default would hand every existing call site a fresh batch of ids that may collide with the page.
+
+  Inline parsing now understands multi-backtick fences (CommonMark code spans). It used to recognise single backticks only, so a `` `x` `` span (the idiom for putting a backtick inside code) was cut at its first backtick, and once the fence was misaligned every remaining mark on the line went with it. Measured on this library's own docs, the sentence listing inline marks (`` `code` `` / `**bold**` / `[label](url)`) rendered `**bold**` as a real `<strong>` and `[label](url)` as a real link, when both were supposed to sit untouched inside code. Any document that explains Markdown syntax in Markdown hits this. Fence contents follow CommonMark for surrounding spaces: one space is dropped from each side when both ends have one and the content is not all spaces.
+
+### Patch Changes
+
+- 10df580: Component docs use one dash convention (#304): every em-dash (`—`) is gone from the English docs, and both languages now use a plain hyphen for table placeholders and numeric ranges.
+
+  - **284 English prose passages rewritten sentence by sentence.** An English em-dash usually introduces a parenthetical, so swapping in a hyphen would read as a compound word or split the sentence. Replacements were chosen per context: parentheses for paired asides, a full stop when the second half is an independent clause, a colon when it expands or defines, and otherwise a comma with the connective word written back in.
+  - **Table "no default" placeholders became `-`**: 1336 in English, 1445 in Chinese. Both used to be em-dashes; this now matches the convention used by Ant Design and similar docs.
+  - **Numeric-range en-dashes (`–`) became hyphens**: 277 across both languages, such as `0-1`, `h1-h6` and `0.3-3`. Every occurrence was a range, with no other meaning; the surrounding context of all 277 was listed and de-duplicated before the mechanical replacement.
+
+  This is a house-style change rather than a grammar fix. The `design-taste-frontend` rules treat the em-dash as the primary tell of LLM prose and forbid it outright, and an en-dash used as a separator is on the same list. The Chinese full-width dash is correct punctuation in Chinese and was left completely alone.
+
+  Component docs ship inside the package, and MCP `get_component_doc` reads this very copy from the consumer's `node_modules`, so this text is also what an AI assistant is fed. It is worth reading well.
+
+  `Descriptions.emptyText` keeps its `"—"` default: that is the empty-value placeholder of a data display component, a UI convention rather than prose styling, so the docs table keeps printing the real literal.
+
+- 4b33dce: `VoiceRecord` docs now state the full release contract for `pressAndHold`: releasing the pointer, moving it off the target, and the `pointercancel` iOS fires when the system interrupts a gesture all end the recording through `onRelease` (#302).
+
+  The behaviour has always been this way; it just lived in a source comment. For a consumer this is load-bearing information, because wiring up only one of those paths leaves a hold stuck in the recording state. Since component docs ship with the package and MCP `get_component_doc` reads them from the consumer's `node_modules`, anything missing here is invisible to an AI assistant.
+
+  The same batch rewrote the 391 Chinese component descriptions in the docs site's `apps/www/lib/manifest.ts` from implementation shorthand into plain sentences. That file is not published, so it is not part of this package's changes.
+
+- d8b74a7: Showcase demo assets now resolve against the docs site base path. A new internal `lib/demo-asset.ts` supplies the prefix, and the `/demo/*` values in nine showcases (`Avatar`, `AvatarCircles`, `User`, `Image`, `Lens`, `QRCode`, `HeroVideoDialog`, `Video`, `LivePlayer`) go through `demoAsset()`.
+
+  They used to hard-code site-absolute paths, but the docs site is built twice for two languages: English sits at the root and Chinese under `/zh`, and assets in `public/` follow the base path. A request for `/demo/avatar-1.jpg` from the Chinese site therefore landed in the English site's namespace. With both languages served from one domain it still happened to resolve, because English occupies the root, but that was luck rather than design: `next dev` serving the Chinese site alone returns 404 for every one of these images, and a Chinese-only deployment (a desktop shell, or a mirror carrying a single language) breaks the same way. Paths inside the example code blocks stay as `/demo/...`, because those are illustrative values for the reader and should not carry this site's prefix.
+
 ## 0.54.2
 
 ### Patch Changes

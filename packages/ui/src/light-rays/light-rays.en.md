@@ -28,17 +28,17 @@ import { LightRays } from "@hulianui/ui"
 | raysOrigin | `"top-center" \| "top-left" \| "top-right" \| "left" \| "right" \| "bottom-left" \| "bottom-center" \| "bottom-right"` | `"top-center"` | Beam emission origin, determines anchor point and propagation direction (four corners/four sides midpoint) |
 | raysColor | `string` | `var(--color-chart-1)` | Beam color, any CSS color, off-screen canvas parsed to RGB |
 | raysSpeed | `number` | `1` | Blink/rhythm speed multiplier, 0 is almost static (still renders one frame) |
-| lightSpread | `number` | `1` | Beam diffusion angle, the larger it is, the more scattered it is, the smaller it is, the more it is gathered together, it is recommended to be 0.3–3 |
+| lightSpread | `number` | `1` | Beam diffusion angle, the larger it is, the more scattered it is, the smaller it is, the more it is gathered together, it is recommended to be 0.3-3 |
 | rayLength | `number` | `2` | Beam length (multiple of relative viewport width) |
 | pulsating | `boolean` | `false` | Overall brightness sinusoidal breathing over time |
 | fadeDistance | `number` | `1` | The fade distance along the way (relative to the multiple of the viewport width), the smaller it is, the faster it fades out |
 | saturation | `number` | `1` | Saturation, <1 to remove color and tend to gray, 0=pure gray scale |
 | followMouse | `boolean` | `true` | Lets the beam direction follow the pointer; `mouseInfluence > 0` is required for visible deflection |
-| mouseInfluence | `number` | `0.1` | Pointer influence on beam direction from 0–1; 0 disables deflection |
-| noiseAmount | `number` | `0` | Particle noise intensity (0–1) |
-| distortion | `number` | `0` | Angle distortion strength, making the beam sway rather than straight, recommended 0–1 |
-| className | `string` | — | Root container (comes with pointer-events-none absolute inset-0 z-0) |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| mouseInfluence | `number` | `0.1` | Pointer influence on beam direction from 0-1; 0 disables deflection |
+| noiseAmount | `number` | `0` | Particle noise intensity (0-1) |
+| distortion | `number` | `0` | Angle distortion strength, making the beam sway rather than straight, recommended 0-1 |
+| className | `string` | - | Root container (comes with pointer-events-none absolute inset-0 z-0) |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

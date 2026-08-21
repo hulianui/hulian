@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { Prose } from "../prose";
 import { CodeBlock } from "../code-block";
 import { parseBlocks, type MdBlock } from "./parse";
+import { createHeadingSlugger } from "./headings";
 import type { MarkdownProps } from "./markdown.types";
 import { useComponentLocale } from "../config/locale-context";
 
@@ -12,7 +13,29 @@ import { useComponentLocale } from "../config/locale-context";
 // 与 StreamingText 配合：流式中用 StreamingText 逐字、done 后切 Markdown 出完整富文本。
 
 // 行内标记：代码优先（其内不再解析），其次粗体、斜体、链接。
-const INLINE = /(`[^`]+`)|(\*\*[^*]+\*\*)|(\*[^*]+\*)|(\[[^\]]+\]\([^)]+\))/g;
+//
+// 多反引号围栏（CommonMark 的 code span）必须排在单反引号之前 —— 正则交替是左优先，
+// 反过来写的话 `` `x` `` 会先被单反引号分支从第一个反引号切开，围栏错位，后面整行的
+// 标记全部跟着错位：实测「剥掉行内标记（`` `代码` `` / `**粗**` / `[文字](链接)`）」
+// 里的 `**粗**` 被解析成了 <strong>、`[文字](链接)` 被解析成了 <a href="链接">，
+// 而它们本该原样躺在行内代码里。「用 Markdown 讲 Markdown 语法」的文档必然踩这条
+// （本库的 markdown.md 就踩了，静态导出后被 bilingual-links 判成悬空链接才暴露）。
+const INLINE =
+  /(```[^\n]*?```|``[^\n]*?``|`[^`\n]+`)|(\*\*[^*]+\*\*)|(\*[^*]+\*)|(\[[^\]]+\]\([^)]+\))/g;
+
+/**
+ * 取行内代码的内容：剥掉两侧的反引号围栏。
+ *
+ * 按 CommonMark，围栏内首尾各有一个空格且内容不全为空格时，两侧各去掉一个 ——
+ * 这正是 `` `x` `` 这种写法能把反引号本身放进代码里的机制，去早了就会多出两个空格。
+ */
+function codeContent(raw: string): string {
+  const fence = /^`+/.exec(raw)?.[0].length ?? 1;
+  const inner = raw.slice(fence, -fence);
+  return inner.length > 2 && inner.startsWith(" ") && inner.endsWith(" ") && inner.trim() !== ""
+    ? inner.slice(1, -1)
+    : inner;
+}
 
 function renderInline(text: string): ReactNode[] {
   const out: ReactNode[] = [];
@@ -22,7 +45,7 @@ function renderInline(text: string): ReactNode[] {
     if (m.index > last) out.push(<Fragment key={key++}>{text.slice(last, m.index)}</Fragment>);
     const tok = m[0];
     if (tok.startsWith("`")) {
-      out.push(<code key={key++}>{tok.slice(1, -1)}</code>);
+      out.push(<code key={key++}>{codeContent(tok)}</code>);
     } else if (tok.startsWith("**")) {
       out.push(<strong key={key++}>{tok.slice(2, -2)}</strong>);
     } else if (tok.startsWith("*")) {
@@ -58,11 +81,16 @@ function renderText(text: string): ReactNode[] {
 type ProseBlock = Exclude<MdBlock, { type: "code" }>;
 
 // 渲染单个非代码块（在 Prose 排版作用域内，吃 Prose 的标题/段落/列表/引用样式）。
-function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
+// id 只在 headingIds 开启时有值，undefined 即不落 id 属性（默认行为逐字不变）。
+function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string, id?: string) {
   switch (b.type) {
     case "heading": {
       const H = `h${b.level}` as "h1" | "h2" | "h3";
-      return <H key={key}>{renderInline(b.text)}</H>;
+      return (
+        <H key={key} id={id}>
+          {renderInline(b.text)}
+        </H>
+      );
     }
     case "list":
       return b.ordered ? (
@@ -118,9 +146,16 @@ function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string) {
   }
 }
 
-function MarkdownImpl({ children = "", size = "base", className }: MarkdownProps) {
+function MarkdownImpl({ children = "", size = "base", headingIds = false, className }: MarkdownProps) {
   const labels = useComponentLocale().markdown ?? { dataTable: "数据表格" };
   const blocks = parseBlocks(children);
+  // 锚点 id 必须在切 Prose 段之前、按文档顺序一次算完：去重后缀依赖标题的先后，
+  // 而下面的分组会把标题打散进多个 Prose，届时顺序已不可靠。
+  const ids = new Map<MdBlock, string>();
+  if (headingIds !== false) {
+    const slug = createHeadingSlugger(typeof headingIds === "string" ? headingIds : "");
+    for (const b of blocks) if (b.type === "heading") ids.set(b, slug(b.text));
+  }
   // 连续文本块分组进 Prose，围栏代码块作为独立 CodeBlock 夹在中间 ——
   // 关键：CodeBlock 不能当 Prose 的后代 pre，否则 Prose 的 [&_pre] 样式(p-4/border/bg)会覆盖
   // CodeBlock 自己的 pt-8 避让与边框，导致语言标签/复制钮压住首行 + 双重边框。
@@ -132,7 +167,7 @@ function MarkdownImpl({ children = "", size = "base", className }: MarkdownProps
     const items = run;
     out.push(
       <Prose key={`p${key++}`} size={size}>
-        {items.map((b, j) => renderProseBlock(b, j, labels.dataTable))}
+        {items.map((b, j) => renderProseBlock(b, j, labels.dataTable, ids.get(b)))}
       </Prose>,
     );
     run = [];

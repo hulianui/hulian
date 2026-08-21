@@ -28,13 +28,13 @@ import { Brand } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | mark | `ReactNode` | First character of `name` | Badge content such as an icon, image, or initial. |
-| name | `ReactNode` | — | Brand name. Omit it to render only the badge in a collapsed sidebar. |
-| description | `ReactNode` | — | One-line subtitle below the brand name, such as a version or positioning statement. |
+| name | `ReactNode` | - | Brand name. Omit it to render only the badge in a collapsed sidebar. |
+| description | `ReactNode` | - | One-line subtitle below the brand name, such as a version or positioning statement. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | `sm` is a 28px navigation badge, `md` is a 36px sidebar badge, and `lg` is for authentication-page branding. |
 | color | `string` | `"primary"` | Badge background. Accepts a semantic tone such as `chart-3` or any CSS color. |
-| href | `string` | — | Native link target, normally the home page. |
-| render | `ReactElement` | — | Renders through a framework router element such as `<Link to="/" />`, following the Button, Link, and NavMenuItem render contract. |
-| className | `string` | — | Class name for the root; remaining native attributes are forwarded. |
+| href | `string` | - | Native link target, normally the home page. |
+| render | `ReactElement` | - | Renders through a framework router element such as `<Link to="/" />`, following the Button, Link, and NavMenuItem render contract. |
+| className | `string` | - | Class name for the root; remaining native attributes are forwarded. |
 
 ## Example
 ```tsx

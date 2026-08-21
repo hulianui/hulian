@@ -10,7 +10,7 @@ status: enriched
 
 # Separator
 
-> Separator · Base UI role=separator + horizontal/vertical geometry · layout/arrange
+> Renders an accessible horizontal or vertical separator with correct geometry. · layout/arrange
 
 ## When to use
 
@@ -26,7 +26,7 @@ import { Separator } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Horizontal renders an `h-px` rule; vertical renders `w-px` and requires parent height. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ## Example
 ```tsx

@@ -34,8 +34,8 @@ import { FlyingPosters } from "@hulianui/ui"
 | cameraZ | `number` | `20` | Camera distance on the Z axis. Larger values reveal more posters. |
 | autoScroll | `boolean` | `true` | Slowly scrolls without input; forced off under reduced motion. |
 | autoScrollSpeed | `number` | `0.6` | Auto-scroll speed in world units per second. |
-| className | `string` | — | Class name forwarded to the root. |
-| style | `CSSProperties` | — | Inline styles forwarded to the root. |
+| className | `string` | - | Class name forwarded to the root. |
+| style | `CSSProperties` | - | Inline styles forwarded to the root. |
 
 ## Slots
 

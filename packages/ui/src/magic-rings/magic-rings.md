@@ -28,10 +28,10 @@ import { MagicRings } from "@hulianui/ui"
 | color | `string` | `var(--color-chart-1)` | 内圈起始色，吃明暗主题；任意 CSS 颜色串均可 |
 | colorTwo | `string` | `var(--color-chart-4)` | 外圈终止色，光环色在 color→colorTwo 间按层数线性插值 |
 | speed | `number` | `1` | 动画速度倍率，越大波纹扩散越快 |
-| ringCount | `number` | `6` | 同时存在的光环层数（1–10，超出截断） |
+| ringCount | `number` | `6` | 同时存在的光环层数（1-10，超出截断） |
 | attenuation | `number` | `10` | 光晕衰减系数，越大环线越锐利短促，越小越弥散 |
 | lineThickness | `number` | `2` | 环线粗细倍率 |
-| baseRadius | `number` | `0.35` | 最内圈起始半径（归一化约 0–1） |
+| baseRadius | `number` | `0.35` | 最内圈起始半径（归一化约 0-1） |
 | radiusStep | `number` | `0.1` | 相邻两圈起始半径的递增步长 |
 | scaleRate | `number` | `0.1` | 单生命周期内环半径的扩张幅度 |
 | opacity | `number` | `1` | 整体不透明度，叠加在按亮度派生的 alpha 之上 |
@@ -46,7 +46,7 @@ import { MagicRings } from "@hulianui/ui"
 | hoverScale | `number` | `1.2` | 悬停时整体缩放目标值 |
 | parallax | `number` | `0.05` | 各层随鼠标的视差错位系数 |
 | clickBurst | `boolean` | `false` | 点击爆发（点击时短暂放大+提亮） |
-| className | `string` | — | 透传根容器（或 fallback div）额外 className |
+| className | `string` | - | 透传根容器（或 fallback div）额外 className |
 
 ## 示例
 ```tsx

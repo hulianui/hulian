@@ -10,7 +10,7 @@ status: enriched
 
 # LogViewer
 
-> A data-driven log viewer with structured lines, level colors, sticky auto-scroll, optional timestamps, and wrapping or horizontal scrolling.
+> Displays leveled log lines with timestamps, sources, wrapping, and auto-scroll.
 
 ## When to use
 
@@ -25,13 +25,13 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| lines* | `LogLine[]` | — | Data-driven log lines. |
+| lines* | `LogLine[]` | - | Data-driven log lines. |
 | showTimestamp | `boolean` | `false` | Shows each timestamp before its line. |
 | autoScroll | `boolean` | `true` | Follows new lines only while the user is already at the bottom; scrolling up pauses following until they return. |
-| maxLines | `number` | — | Renders only the last N lines; `0` or omission keeps all lines. The input array is unchanged. |
+| maxLines | `number` | - | Renders only the last N lines; `0` or omission keeps all lines. The input array is unchanged. |
 | wrap | `boolean` | `false` | Wraps long lines; otherwise they scroll horizontally. |
 | height | `number \| string` | `320` | Scroll-region height. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 `LogLine` is `{ level?: LogLevel; message: ReactNode; timestamp?: string; source?: string }`.
 `LogLevel` is `"info"\|"warn"\|"error"\|"debug"\|"success"\|"command"` (`info` by default; `command` highlights executed commands or prompt lines, while `source`, such as `"[build]"`, is muted before the message).

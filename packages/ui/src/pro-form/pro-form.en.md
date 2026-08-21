@@ -10,7 +10,7 @@ status: enriched
 
 # ProForm
 
-> Inline form orchestration · useForm + automatic submit/reset footer + async `onFinish` loading + custom footer + localized copy · forms/framework
+> Coordinates form state with submit-reset footers, async loading, and custom footer content. · forms/framework
 
 ## When to use
 
@@ -25,13 +25,13 @@ import { ProForm } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| form | `FormInstance` | — | useForm instance. When provided, submission calls `validate()` first and reset calls `form.resetFields()`. |
+| form | `FormInstance` | - | useForm instance. When provided, submission calls `validate()` first and reset calls `form.resetFields()`. |
 | submitText | `string` | `locale.proForm.submit` | Submit button label. |
 | resetText | `string` | `locale.proForm.reset` | Reset button label. |
 | showReset | `boolean` | `true` | Shows the reset button; meaningful only when `form` is provided. |
 | columns | `1 \| 2 \| 3` | `1` | Field-grid columns. Counts ≥2 respond to container width and collapse to one column when narrow. Use `<Field colSpan="full">` for a full row. |
 | footerAlign | `"left" \| "right"` | `"left"` | Footer action alignment. |
-| className | `string` | — | Container class name |
+| className | `string` | - | Container class name |
 
 ## Events
 

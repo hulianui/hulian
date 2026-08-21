@@ -10,7 +10,7 @@ status: enriched
 
 # Code
 
-> 行内代码 · <code> 等宽皮肤 + tone(default/primary/danger) + RSC · typography/code
+> 给行内代码片段套上等宽皮肤，可选语义色调 · typography/code
 
 ## 何时用
 

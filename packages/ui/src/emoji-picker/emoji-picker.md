@@ -10,7 +10,7 @@ status: enriched
 
 # EmojiPicker
 
-> 表情选择器 · 内联 emoji 数据集(7 分类·中英关键词) + 关键词搜索 + 分类页签 + 最近使用(受控/内部) · 搜索框 dogfood Input · onSelect 回传 emoji(零依赖·聊天/评论) · forms/advanced
+> 按分类浏览或关键词搜索表情，带最近使用 · forms/advanced
 
 ## 何时用
 
@@ -30,9 +30,9 @@ import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from "@hulianui/ui"
 | columns | `number` | `8` | 网格列数 |
 | searchable | `boolean` | `true` | 是否显示搜索框 |
 | defaultCategory | `string` | 第一个分类 | 初始分类 key |
-| recent | `string[]` | — | 受控「最近使用」列表；省略则组件内部维护 |
-| searchPlaceholder | `string` | — | 搜索框 placeholder |
-| className | `string` | — | 透传到容器 |
+| recent | `string[]` | - | 受控「最近使用」列表；省略则组件内部维护 |
+| searchPlaceholder | `string` | - | 搜索框 placeholder |
+| className | `string` | - | 透传到容器 |
 
 ## Events
 

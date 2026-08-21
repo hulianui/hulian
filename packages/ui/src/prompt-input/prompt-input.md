@@ -10,7 +10,7 @@ status: enriched
 
 # PromptInput
 
-> 提示输入 · 自增高Textarea + 发送/停止键 + Enter提交/Shift+Enter换行/IME合成保护 + 受控非受控两用 + 左侧操作槽 · ai/conversation
+> 输入并发送提示词，支持停止、换行和输入法保护 · ai/conversation
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { PromptInput } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string` | — | 受控值（配 onValueChange） |
+| value | `string` | - | 受控值（配 onValueChange） |
 | defaultValue | `string` | `""` | 非受控初值 |
 | placeholder | `string` | `"发消息…"` | 占位提示 |
 | loading | `boolean` | `false` | 生成中：发送键变停止键、屏蔽提交 |
 | disabled | `boolean` | `false` | 禁用 |
 | maxRows | `number` | `8` | 自增高最大行数（超出滚动） |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

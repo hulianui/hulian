@@ -25,8 +25,8 @@ import { DotField } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| dotRadius | `number` | `1.5` | Drawing radius of a single point (px), recommended 1–3 |
-| dotSpacing | `number` | `14` | Distance between adjacent dots in pixels; higher values create a sparser field, with 8–24 recommended |
+| dotRadius | `number` | `1.5` | Drawing radius of a single point (px), recommended 1-3 |
+| dotSpacing | `number` | `14` | Distance between adjacent dots in pixels; higher values create a sparser field, with 8-24 recommended |
 | cursorRadius | `number` | `220` | Cursor influence radius (px), how many points around the pointer are pushed |
 | bulgeStrength | `number` | `56` | Maximum dot displacement in pixels; 0 keeps the glow but disables displacement |
 | color | `string` | `--color-chart-1` | Dot matrix base color, CSS color string; token must be prefixed with `--color-` |
@@ -34,8 +34,8 @@ import { DotField } from "@hulianui/ui"
 | glowRadius | `number` | `160` | Glow radius in pixels; 0 disables the glow |
 | waveAmplitude | `number` | `0` | Global sinusoidal-wave amplitude in pixels; 0 disables the wave |
 | sparkle | `boolean` | `false` | Occasionally enlarge a small number of dots to create a twinkling effect |
-| className | `string` | — | Additional className passed through to the root container |
-| style | `CSSProperties` | — | Inline styles passed through to the root container |
+| className | `string` | - | Additional className passed through to the root container |
+| style | `CSSProperties` | - | Inline styles passed through to the root container |
 
 ## Examples
 ```tsx

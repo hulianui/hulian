@@ -10,7 +10,7 @@ status: enriched
 
 # FileTree
 
-> 文件树 · 递归 nodes(file/folder) + 文件夹展开折叠(defaultExpanded) + 改动状态角标 A/M/D/U/R 着色(纯函数 statusMeta 可测·git status 语义) + selectedPath 受控高亮 + onSelect 回传 node+path · 复用 _icons Folder/File(新补)·devtools 左栏 · data-display/collection
+> 浏览文件和目录，带展开、选中和改动状态标记 · data-display/collection
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { FileTree, fileStatusMeta, filterFileTree } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes* | `FileNode[]` | — | 树数据（递归 file/folder） |
-| selectedPath | `string` | — | 受控高亮当前选中（按拼接 path 匹配） |
-| expandedPaths | `string[]` | — | 受控展开的 folder path 集合（传入即受控） |
-| defaultExpandedPaths | `string[]` | — | 非受控初始展开（与各 folder 的 defaultExpanded 合并） |
+| nodes* | `FileNode[]` | - | 树数据（递归 file/folder） |
+| selectedPath | `string` | - | 受控高亮当前选中（按拼接 path 匹配） |
+| expandedPaths | `string[]` | - | 受控展开的 folder path 集合（传入即受控） |
+| defaultExpandedPaths | `string[]` | - | 非受控初始展开（与各 folder 的 defaultExpanded 合并） |
 | searchable | `boolean` | `false` | 树内搜索框（过滤 + 命中祖先自动展开） |
 | searchPlaceholder | `string` | `"搜索文件"` | 搜索框占位符 |
-| className | `string` | — | 自定义类 |
+| className | `string` | - | 自定义类 |
 
 ## Events
 

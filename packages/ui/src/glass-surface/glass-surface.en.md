@@ -42,8 +42,8 @@ import { GlassSurface } from "@hulianui/ui"
 | xChannel | `GlassChannel` | `"R"` | X-direction offset access channel (`"R"\|"G"\|"B"\|"A"`) |
 | yChannel | `GlassChannel` | `"G"` | Y-direction offset access channel |
 | mixBlendMode | `CSSProperties["mixBlendMode"]` | `"difference"` | Red/blue gradient overlay blending mode in the displacement map (determines the refraction texture shape) |
-| className | `string` | — | Root container className |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Root container className |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Video
 
-> 视频播放器 · Vidstack 引擎 + 瑚琏 token 自搓皮肤(播放/进度/音量/倍速/PiP/全屏) + 文件/HLS + 章节标记/续播/结束屏 · data-display/collection
+> 播放本地或 HLS 视频，带自定义控件、章节和续播 · data-display/collection
 
 ## 何时用
 
@@ -27,18 +27,18 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| src* | `string \| { src: string; type? }[]` | — | 文件 URL / HLS `.m3u8` / 多源数组 |
-| poster | `string` | — | 海报图 |
-| title | `string` | — | 无障碍标题，也用于内部 aria |
-| autoPlay | `boolean` | — | 自动播放 |
-| muted | `boolean` | — | 静音 |
-| loop | `boolean` | — | 循环 |
-| crossOrigin | `boolean \| string` | — | 透传给底层 media 的 crossorigin |
+| src* | `string \| { src: string; type? }[]` | - | 文件 URL / HLS `.m3u8` / 多源数组 |
+| poster | `string` | - | 海报图 |
+| title | `string` | - | 无障碍标题，也用于内部 aria |
+| autoPlay | `boolean` | - | 自动播放 |
+| muted | `boolean` | - | 静音 |
+| loop | `boolean` | - | 循环 |
+| crossOrigin | `boolean \| string` | - | 透传给底层 media 的 crossorigin |
 | aspectRatio | `string` | `"16/9"` | CSS aspect-ratio |
-| playbackRates | `number[]` | `DEFAULT_PLAYBACK_RATES`(0.5–2) | 倍速档位 |
-| chapters | `VideoChapter[]` | — | 章节分段(`{ time, title }`)：进度条按 time/duration 渲染 tick，hover 显示标题 |
-| startTime | `number` | — | 续播：可播放后 seek 到此秒(仅初始一次，>0 才生效) |
-| className | `string` | — | — |
+| playbackRates | `number[]` | `DEFAULT_PLAYBACK_RATES`(0.5-2) | 倍速档位 |
+| chapters | `VideoChapter[]` | - | 章节分段(`{ time, title }`)：进度条按 time/duration 渲染 tick，hover 显示标题 |
+| startTime | `number` | - | 续播：可播放后 seek 到此秒(仅初始一次，>0 才生效) |
+| className | `string` | - | - |
 
 ## Events
 

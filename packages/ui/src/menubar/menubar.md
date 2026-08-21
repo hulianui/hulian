@@ -10,7 +10,7 @@ status: enriched
 
 # Menubar
 
-> 菜单条 · Base UI menubar 薄包(File/Edit/View 顶层项+下拉) + dogfood Menu 皮肤 + 键盘切换/方向键漫游 · navigation/global
+> 把常驻的应用菜单排成一条键盘可达的菜单栏 · navigation/global
 
 ## 何时用
 
@@ -31,7 +31,7 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 菜单条方向 |
 | loopFocus | `boolean` | `true` | 方向键漫游到末项后回环 |
 | disabled | `boolean` | `false` | 禁用整条 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 `MenubarMenu` 透传 Base UI Menu.Root（`open`/`defaultOpen`/`onOpenChange` 等）；`MenubarTrigger` 透传 Menu.Trigger。
 

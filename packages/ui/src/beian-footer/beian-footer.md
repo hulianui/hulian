@@ -10,7 +10,7 @@ status: enriched
 
 # BeianFooter
 
-> 备案页脚 · ICP 备案号(可多个·默认链 miit) + 公网安备(警徽 icon·默认链 mps) + 版权行 · 中国大陆合规底栏(发丝边卡片·语义 token·外链新窗·RSC) · navigation/global
+> 在页脚展示 ICP 备案与公安备案信息并链到官网 · navigation/global
 
 ## 何时用
 
@@ -27,9 +27,9 @@ import { BeianFooter } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| icp | `IcpRecord[]` | — | ICP 备案号，可多个（如主体下多站 -1/-2）。默认链 beian.miit.gov.cn |
-| police | `PoliceRecord` | — | 公网安备号，带警徽图标。默认链 beian.mps.gov.cn |
-| className | `string` | — | 类名 |
+| icp | `IcpRecord[]` | - | ICP 备案号，可多个（如主体下多站 -1/-2）。默认链 beian.miit.gov.cn |
+| police | `PoliceRecord` | - | 公网安备号，带警徽图标。默认链 beian.mps.gov.cn |
+| className | `string` | - | 类名 |
 
 ## Slots
 

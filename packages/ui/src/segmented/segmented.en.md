@@ -10,7 +10,7 @@ status: enriched
 
 # Segmented
 
-> Segmented control with radio semantics, arrow-key navigation, and a CSS-variable sliding indicator · dependency-free · forms/basic
+> Selects one option from a compact segmented control with a moving indicator. · forms/basic
 
 ## When to use
 
@@ -27,20 +27,20 @@ import { Segmented } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items * | `SegmentedItem[]` | — | Definitions for the available segments. |
-| value | `string` | — | Selected value in controlled mode. |
+| items * | `SegmentedItem[]` | - | Definitions for the available segments. |
+| value | `string` | - | Selected value in controlled mode. |
 | defaultValue | `string` | First non-disabled segment | Initial selected value in uncontrolled mode. |
 | disabled | `boolean` | `false` | Whether to disable the entire control. |
 | size | `"sm"\|"md"` | `"md"` | Visual size. |
-| className | `string` | — | Additional class name for the root element. |
-| aria-label | `string` | — | Accessible label for the control when no visible title is present. |
+| className | `string` | - | Additional class name for the root element. |
+| aria-label | `string` | - | Accessible label for the control when no visible title is present. |
 
 `SegmentedItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value * | `string` | — | Unique value that identifies the segment and its selected state. |
-| ariaLabel | `string` | — | Accessible label for non-text content such as an icon or logo; otherwise screen readers fall back to `value`. |
+| value * | `string` | - | Unique value that identifies the segment and its selected state. |
+| ariaLabel | `string` | - | Accessible label for non-text content such as an icon or logo; otherwise screen readers fall back to `value`. |
 | disabled | `boolean` | `false` | Whether to disable this segment. |
 
 ## Events
@@ -86,7 +86,7 @@ Icon-only segments, each with its own `ariaLabel`:
 
 ## Usage guidelines
 
-- **When space runs out, segments shrink and truncate; they never disappear.** Each segment is `min-w-0 flex-1 truncate`, so every option stays visible and clickable at any width. Before 0.27.0 the missing `min-w-0` combined with `whitespace-nowrap` made segments incompressible, the root grew to the sum of all segment labels, and the overflow was clipped by the parent — leaving **options that exist but cannot be reached** (#114).
+- **When space runs out, segments shrink and truncate; they never disappear.** Each segment is `min-w-0 flex-1 truncate`, so every option stays visible and clickable at any width. Before 0.27.0 the missing `min-w-0` combined with `whitespace-nowrap` made segments incompressible, the root grew to the sum of all segment labels, and the overflow was clipped by the parent, leaving **options that exist but cannot be reached** (#114).
 - Compressible is not the same as usable: four CJK segments in 150px are all ellipsis. In narrow containers use [Select](../select/select.md), or degrade by container width the way [InspectorPanel](../inspector-panel/inspector-panel.md) does.
 
 - When `label` is an icon, logo, or other non-text node, provide `ariaLabel`; otherwise screen readers fall back to the raw `value`.

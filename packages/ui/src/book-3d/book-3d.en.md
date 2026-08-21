@@ -25,16 +25,16 @@ import { Book3D } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| cover | `string` | — | Cover image URL, taking precedence over `coverColor`. |
-| logo | `string` | — | Product logo or app icon centered on the cover. |
+| cover | `string` | - | Cover image URL, taking precedence over `coverColor`. |
+| logo | `string` | - | Product logo or app icon centered on the cover. |
 | coverColor | `{ from: string; to: string }` | Brand gradient | Cover gradient. |
 | spineColor | `string` | `"#efe9dd"` | Light paper color used for the spine and page block. |
 | thickness | `string` | `"2.25rem"` | Spine thickness as a CSS length. |
-| ribbon | `string` | — | Corner ribbon such as `"NEW"` or `"N°1"`. |
+| ribbon | `string` | - | Corner ribbon such as `"NEW"` or `"N°1"`. |
 | ribbonTone | `"brand" \| "danger" \| "success"` | `"danger"` | Ribbon tone. |
-| href | `string` | — | Makes the whole book a link. |
-| target | `string` | — | Link target when `href` is present. |
-| className | `string` | — | Root class name. |
+| href | `string` | - | Makes the whole book a link. |
+| target | `string` | - | Link target when `href` is present. |
+| className | `string` | - | Root class name. |
 
 ## Events
 

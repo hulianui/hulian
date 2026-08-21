@@ -25,13 +25,13 @@ import { ImageTrail } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| images* | `string[]` | — | A list of image URLs that appear in sequence (recycled); at least 1 image, 6–12 images recommended |
+| images* | `string[]` | - | A list of image URLs that appear in sequence (recycled); at least 1 image, 6-12 images recommended |
 | threshold | `number` | `80` | The threshold (px) of the cursor cumulative displacement to trigger the next picture, the smaller, the denser and more frequent |
 | imageWidth | `number` | `190` | Single picture width (px), height is automatically derived according to the aspect ratio of 1.1 |
-| followStrength | `number` | `0.5` | Following interpolation coefficient 0–1, the larger it is, the tighter it is, and the smaller it is, the stickier it is |
+| followStrength | `number` | `0.5` | Following interpolation coefficient 0-1, the larger it is, the tighter it is, and the smaller it is, the stickier it is |
 | fadeDuration | `number` | `0.8` | The duration of a single picture from appearing to fading out (seconds) |
-| className | `string` | — | Root container (relative+overflow-hidden capture layer) additional className |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Root container (relative+overflow-hidden capture layer) additional className |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

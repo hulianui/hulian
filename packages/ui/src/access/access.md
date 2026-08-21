@@ -25,9 +25,9 @@ import { Access } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| permission | `string ｜ string[]` | — | 需要的权限；与 accessible 二选一，accessible 优先 |
+| permission | `string ｜ string[]` | - | 需要的权限；与 accessible 二选一，accessible 优先 |
 | mode | `"all" ｜ "any"` | `"all"` | 数组权限匹配模式：all=全部具备 / any=任一具备（单字符串无效） |
-| accessible | `boolean ｜ ((access: AccessContextValue) => boolean)` | — | 自定义判定（优先于 permission） |
+| accessible | `boolean ｜ ((access: AccessContextValue) => boolean)` | - | 自定义判定（优先于 permission） |
 
 ## Slots
 

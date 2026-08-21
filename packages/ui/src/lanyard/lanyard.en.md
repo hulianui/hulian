@@ -27,12 +27,12 @@ import { Lanyard } from "@hulianui/ui"
 |------|------|------|------|
 | ropeLength | `number` | `120` | Lanyard length px (the resting distance from the top anchor point to the industrial plate hook), the larger the swing, the more stretch and the slower the rebound |
 | ropeColor | `string` | `var(--color-primary)` | Lanyard color, the token of the SVG stroke must be prefixed with `--color-` |
-| stiffness | `number` | `0.045` | Rebound stiffness (spring constant), the larger, the faster and harder it will return to normal, it is recommended to be 0.02–0.12 |
-| damping | `number` | `0.92` | Damping (speed attenuation per frame), the closer it is to 1, the longer the swing, it is recommended to be 0.85–0.97 |
+| stiffness | `number` | `0.045` | Rebound stiffness (spring constant), the larger, the faster and harder it will return to normal, it is recommended to be 0.02-0.12 |
+| damping | `number` | `0.92` | Damping (speed attenuation per frame), the closer it is to 1, the longer the swing, it is recommended to be 0.85-0.97 |
 | title | `string` | `"\u745a\u740f \u00b7 HULIAN"` ("Hulian · HULIAN") | Placeholder badge title (only displayed when children are not passed) |
 | subtitle | `string` | `"\u62d6\u52a8\u6446\u4e00\u6446"` ("Drag to swing") | Placeholder badge subtitle (only displayed when children are not passed) |
-| className | `string` | — | Root container className |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Root container className |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

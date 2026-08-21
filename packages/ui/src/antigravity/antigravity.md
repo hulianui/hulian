@@ -31,13 +31,13 @@ import { Antigravity } from "@hulianui/ui"
 | waveSpeed | `number` | `0.4` | 环上波动速度（轨道半径随角度/时间起伏快慢） |
 | waveAmplitude | `number` | `10` | 环上波动幅度（px），越大轨道越毛糙有机 |
 | particleSize | `number` | `4` | 粒子基础尺寸（px）；dot=直径 / square=边长 / bar=长度 |
-| lerpSpeed | `number` | `0.12` | 粒子追踪目标的缓动系数（0–1），越大越紧跟 |
+| lerpSpeed | `number` | `0.12` | 粒子追踪目标的缓动系数（0-1），越大越紧跟 |
 | color | `string` | `var(--color-chart-1)` | 粒子颜色（自动明暗适配），可传任意 CSS 颜色 |
 | autoAnimate | `boolean` | `false` | 光标静止 2s 后是否自动巡游（无人操作也动） |
 | rotationSpeed | `number` | `0` | 整环随时间旋转角速度（rad/s），0=不自转 |
 | pulseSpeed | `number` | `3` | 粒子脉冲缩放速度（被吸住时大小呼吸快慢） |
 | shape | `"dot" \| "square" \| "bar"` | `"bar"` | 粒子形状 |
-| className | `string` | — | 透传到根容器（canvas 包裹层 / fallback） |
+| className | `string` | - | 透传到根容器（canvas 包裹层 / fallback） |
 
 ## Slots
 

@@ -30,8 +30,8 @@ import { PixelCard } from "@hulianui/ui"
 | speed | `number` | Variant default | Animation speed from 0 to 100; zero disables animation. |
 | colors | `string[]` | Variant token colors | Colors sampled by pixels. Accepts CSS colors and real Hulian tokens. |
 | noFocus | `boolean` | Variant default | If true, only pointer hover triggers and the root is not keyboard-focusable. |
-| className | `string` | — | Root classes controlling size, radius, and border. |
-| style | `CSSProperties` | — | Inline styles forwarded to the root. |
+| className | `string` | - | Root classes controlling size, radius, and border. |
+| style | `CSSProperties` | - | Inline styles forwarded to the root. |
 
 ## Slots
 

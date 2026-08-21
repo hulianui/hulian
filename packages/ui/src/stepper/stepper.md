@@ -10,7 +10,7 @@ status: enriched
 
 # Stepper
 
-> 步骤条 · 零依赖 flex 布局 + 自绘完成对勾 + 连接线随进度点亮 + aria-current · navigation/inpage
+> 只标当前进度的极简横向步骤条，一条线走到底 · navigation/inpage
 
 ## 何时用
 
@@ -25,15 +25,15 @@ import { Stepper } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| steps* | `StepItem[]` | — | 步骤数组，每项 `{ label: ReactNode }`。 |
-| activeStep* | `number` | — | 受控当前步（0-based）。值 ≥ steps.length 表示全部完成。 |
-| className | `string` | — | — |
+| steps* | `StepItem[]` | - | 步骤数组，每项 `{ label: ReactNode }`。 |
+| activeStep* | `number` | - | 受控当前步（0-based）。值 ≥ steps.length 表示全部完成。 |
+| className | `string` | - | - |
 
 `StepItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| label * | `ReactNode` | — | 步骤文案 |
+| label * | `ReactNode` | - | 步骤文案 |
 
 ## 示例
 ```tsx

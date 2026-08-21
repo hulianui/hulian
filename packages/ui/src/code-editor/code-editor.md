@@ -29,18 +29,18 @@ import { CodeEditor, applyEdit, autoPairEdit, backspacePairEdit, getLanguageRule
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value * | string | — | 受控代码文本。**必须配合 onChange 回写**，否则每次编辑都会被 React 回滚 |
+| value * | string | - | 受控代码文本。**必须配合 onChange 回写**，否则每次编辑都会被 React 回滚 |
 | language | CodeEditorLanguage | "tsx" | 决定着色器、注释符与成对符号规则。`typescript` ｜ `tsx` ｜ `javascript` ｜ `jsx` ｜ `json` ｜ `css` ｜ `bash` ｜ 任意字符串（未知按 JS 家族处理） |
 | readOnly | boolean | false | 只读。仍可聚焦/选中/复制，只是不接受输入与键盘增强 |
 | lineNumbers | boolean | true | 是否显示行号槽（横向滚动时钉在左侧，纵向跟随） |
 | highlightActiveLine | boolean | true | 是否高亮光标所在行（仅聚焦时显示） |
 | lineHeight | number | 1.6 | 行高倍数（无单位），同时作用于行号槽与代码区 |
 | tabSize | number | 2 | 一级缩进宽度（空格数），同时作为 `tab-size` |
-| placeholder | string | — | 无内容时的占位文案 |
+| placeholder | string | - | 无内容时的占位文案 |
 | rows | number | 12 | 默认可见行数；外层 `className` 给了确定高度时以外层为准 |
-| theme | "light" ｜ "dark" | — | 强制主题（逃生口）。不传时跟随全局 `[data-theme]`，这是推荐用法 |
+| theme | "light" ｜ "dark" | - | 强制主题（逃生口）。不传时跟随全局 `[data-theme]`，这是推荐用法 |
 | ariaLabel | string | 取自 locale | 无障碍名称；不传时取 ConfigProvider 的 locale（内置中文兜底为「代码编辑器（语言）」） |
-| className | string | — | 外层类名（给宽度/高度/最大高度） |
+| className | string | - | 外层类名（给宽度/高度/最大高度） |
 
 ## Events
 
@@ -124,7 +124,7 @@ const [code, setCode] = useState(source);
 
 - **必须受控**：`onChange` 里不回写 `value`，编辑会被 React 立刻回滚（表现为「打不进字」）。这是设计如此，不是 bug。
 - **不要绕开组件直接改 value 再指望 undo**：所有键盘增强都走 `document.execCommand("insertText" | "delete")` 落笔，为的是把改动压进 textarea 的**原生 undo 栈**。如果你 fork 出去改成 `setState` 整篇覆盖，Cmd+Z 会当场失效——这是 textarea 方案最容易做错的一点。`execCommand` 不可用的环境（jsdom、极老浏览器）自动降级为整篇回吐，功能仍在，只是丢原生 undo。
-- **不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60–80px。需要缩略图请外接 Monaco。
+- **不提供 `minimap`**。issue 里提到过这个 prop，这里明确不做：真实缩略图要把整篇文档按 sub-pixel 重绘一遍并同步视口与拖拽刷选，零依赖做不出真的；而用「按行长度画灰条」冒名顶替叫 `minimap` 会给消费方错误的心理模型。本组件的主场景是三栏工作台右侧检查器，横向空间是最稀缺的一维，缩略图要吃掉 60-80px。需要缩略图请外接 Monaco。
 - **不做**：代码折叠、自动补全 / 智能提示、多光标 / 列选择、语义诊断与波浪线、查找替换面板、括号配对高亮。要这些请外接 CodeMirror 6 / Monaco。
 - 文本不换行（`wrap="off"`，长行横向滚动）。这是刻意的：一旦软换行，行号槽就无法与视觉行对齐，`lineNumbers` 会立刻说谎。要换行请改用 [Textarea](../textarea/textarea.md)。
 - **改样式必须三层同改**：透明 `<textarea>`、染色 `<pre>`、行号槽三层的字体族 / 字号 / 行高 / 内边距 / `white-space` / `tab-size` 逐项相等才不错位。只改其中一层的 padding 或字号，表现是「光标和字差半格」，且只在长行/深缩进时才看得出来。

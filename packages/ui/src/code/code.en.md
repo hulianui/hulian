@@ -10,7 +10,7 @@ status: enriched
 
 # Code
 
-> Inline code · Monospace `<code>` styling with default, primary, and danger tones + RSC · typography/code
+> Styles short inline code fragments with a token-aware monospace surface. · typography/code
 
 ## When to use
 

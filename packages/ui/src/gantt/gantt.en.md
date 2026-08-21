@@ -10,7 +10,7 @@ status: enriched
 
 # Gantt
 
-> Read-only Gantt chart · grouped fixed name column, day/week/month timeline, proportional task bars, progress fill, today marker, UTC date arithmetic, and horizontal scrolling · data-display/collection
+> Plots grouped tasks and progress on scrollable day, week, or month timelines with a today marker. · data-display/collection
 
 ## When to use
 
@@ -27,15 +27,15 @@ Inherits `HTMLAttributes<HTMLDivElement>` except children.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| tasks* | `GanttTask[]` | — | Read-only task list. |
-| rangeStart | `string` | — | `"YYYY-MM-DD"` axis start; omission pads before the earliest task. |
-| rangeEnd | `string` | — | `"YYYY-MM-DD"` axis end; omission pads after the latest task. |
+| tasks* | `GanttTask[]` | - | Read-only task list. |
+| rangeStart | `string` | - | `"YYYY-MM-DD"` axis start; omission pads before the earliest task. |
+| rangeEnd | `string` | - | `"YYYY-MM-DD"` axis end; omission pads after the latest task. |
 | unit | `"day" \| "week" \| "month"` | `"day"` | Header tick density; weeks start Monday and bars keep the same geometry. |
-| today | `string` | — | `"YYYY-MM-DD"` today marker, rendered only within range. |
+| today | `string` | - | `"YYYY-MM-DD"` today marker, rendered only within range. |
 | rowHeight | `number` | `36` | Row height in pixels. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
-`GanttTask` is `{id, name, start, end, progress?, group?, color?}`. Dates are inclusive `"YYYY-MM-DD"` values, progress is 0–100, matching groups receive headings, and color accepts CSS colors or tokens.
+`GanttTask` is `{id, name, start, end, progress?, group?, color?}`. Dates are inclusive `"YYYY-MM-DD"` values, progress is 0-100, matching groups receive headings, and color accepts CSS colors or tokens.
 
 ## Example
 ```tsx

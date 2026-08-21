@@ -10,7 +10,7 @@ status: enriched
 
 # TaskRunner
 
-> 任务运行卡 · dogfood AgentPlan(bare)步骤列表 + Progress顶部进度 + Tag标签 + Dot状态徽标 · idle/running/success/error四态派生 + 每步耗时(meta)/running行高亮/pending空心环 + progress省略按完成比派生 + 累计耗时footer + headerExtra/footerExtra送掣 · 纯展示RSC(计时驱动留消费侧) · ai/agent
+> 汇总一次任务运行的状态、步骤、进度和耗时 · ai/agent
 
 ## 何时用
 
@@ -25,10 +25,10 @@ import { TaskRunner, resolveProgress, statusMeta } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| steps* | `AgentTask[]` | — | 步骤清单（复用 AgentTask：title/status/detail/meta，耗时放 meta） |
+| steps* | `AgentTask[]` | - | 步骤清单（复用 AgentTask：title/status/detail/meta，耗时放 meta） |
 | status | `"idle" \| "running" \| "success" \| "error"` | `"idle"` | 整体运行状态：驱动头部徽标色 + 进度条 tone |
-| progress | `number` | — | 顶部进度 0-100；省略则按 steps 完成(done)比自动派生 |
-| className | `string` | — | 容器附加类 |
+| progress | `number` | - | 顶部进度 0-100；省略则按 steps 完成(done)比自动派生 |
+| className | `string` | - | 容器附加类 |
 
 ## Slots
 

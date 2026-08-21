@@ -25,13 +25,13 @@ import { DiffStat, splitBlocks } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| additions* | `number` | — | Number of added lines. |
-| deletions* | `number` | — | Number of deleted lines. |
-| status | `"added" \| "modified" \| "deleted" \| "renamed"` | — | Optional file-status badge. |
+| additions* | `number` | - | Number of added lines. |
+| deletions* | `number` | - | Number of deleted lines. |
+| status | `"added" \| "modified" \| "deleted" \| "renamed"` | - | Optional file-status badge. |
 | blocks | `number` | `5` | Total number of proportional blocks. |
 | showCounts | `boolean` | `true` | Shows the addition and deletion counts. |
 | size | `"sm" \| "md"` | `"md"` | Component size. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Examples
 ```tsx

@@ -25,14 +25,14 @@ import { DarkVeil } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| hueShift | `number` | `0` | Hue shift (0–360 degrees), YIQ hue rotation to create cool blue/warm purple/turquoise tone |
-| noiseIntensity | `number` | `0` | Grain noise intensity, CRT/film texture; recommended 0–0.1, excessive snowflakes |
-| scanlineIntensity | `number` | `0` | Scan line intensity, retro display look and feel; recommended 0–0.5, need to match the frequency |
+| hueShift | `number` | `0` | Hue shift (0-360 degrees), YIQ hue rotation to create cool blue/warm purple/turquoise tone |
+| noiseIntensity | `number` | `0` | Grain noise intensity, CRT/film texture; recommended 0-0.1, excessive snowflakes |
+| scanlineIntensity | `number` | `0` | Scan line intensity, retro display look and feel; recommended 0-0.5, need to match the frequency |
 | speed | `number` | `0.5` | Animation speed factor; 0=still (still renders a static frame) |
 | scanlineFrequency | `number` | `0` | Scan line frequency (density); scanlineIntensity > 0 is required to be visible |
-| warpAmount | `number` | `0` | Space distortion amount, UV sine and cosine perturbation produces fluctuations/refraction; recommended 0–0.2 |
+| warpAmount | `number` | `0` | Space distortion amount, UV sine and cosine perturbation produces fluctuations/refraction; recommended 0-0.2 |
 | resolutionScale | `number` | `1` | Rendering resolution scaling; <1 downsampling to save power, >1 oversampling for clarity |
-| className | `string` | — | Forwarded to the root container (or fallback div), comes with absolute inset-0 z-0 |
+| className | `string` | - | Forwarded to the root container (or fallback div), comes with absolute inset-0 z-0 |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Skeleton
 
-> 骨架屏 · shimmer 高光占位(text/circle/rect) + 无边框组合预设 CardSkeleton/ListSkeleton/TableSkeleton · data-display/placeholder
+> 用占位骨架预留内容位置，等待数据到达 · data-display/placeholder
 
 ## 何时用
 

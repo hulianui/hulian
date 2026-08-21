@@ -28,13 +28,13 @@ import { Brand } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | mark | `ReactNode` | 取 `name` 首字 | 徽章内容：图标 / 图片 / 首字 |
-| name | `ReactNode` | — | 品牌名；省略则只出徽章（侧栏收起态） |
-| description | `ReactNode` | — | 品牌名下方一行副标题（版本号 / 一句话定位） |
+| name | `ReactNode` | - | 品牌名；省略则只出徽章（侧栏收起态） |
+| description | `ReactNode` | - | 品牌名下方一行副标题（版本号 / 一句话定位） |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | sm 导航栏 28px / md 侧栏 36px / lg 登录页品牌区 |
 | color | `string` | `"primary"` | 徽章底色：语义色名（`chart-3` 等）或任意 CSS 色 |
-| href | `string` | — | 普通链接（链回首页） |
-| render | `ReactElement` | — | 渲染成框架路由件（`<Link to="/" />`），避免 SPA 整页刷新；与 Button/Link/NavMenuItem 的 `render` 约定一致 |
-| className | `string` | — | 透传类名；其余原生属性一并透传 |
+| href | `string` | - | 普通链接（链回首页） |
+| render | `ReactElement` | - | 渲染成框架路由件（`<Link to="/" />`），避免 SPA 整页刷新；与 Button/Link/NavMenuItem 的 `render` 约定一致 |
+| className | `string` | - | 透传类名；其余原生属性一并透传 |
 
 ## 示例
 ```tsx

@@ -30,7 +30,7 @@ import { Silk, silkShowcase } from "@hulianui/ui"
 | color | string | `--color-chart-1` | Silk main color, CSS color string (hex/oklch/rgb/var). Default theme token |
 | noiseIntensity | number | 1.5 | Particle noise intensity, 0 = no particles (pure color band) |
 | rotation | number | 0 | Texture rotation angle (radians), such as `Math.PI/4`=45° |
-| className | string | — | Additional class name for the canvas or fallback div |
+| className | string | - | Additional class name for the canvas or fallback div |
 
 ## Slots
 

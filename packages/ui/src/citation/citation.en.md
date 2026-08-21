@@ -10,7 +10,7 @@ status: enriched
 
 # Citation
 
-> Citation source · Number marker + title/source + external link · Inline provenance for agent answers · presentational and RSC-safe · ai/assist
+> Renders an inline numbered source link with a title and source label. · ai/assist
 
 ## When to Use
 
@@ -28,7 +28,7 @@ Inherits `Omit<HTMLAttributes<HTMLElement>, "title">`, additionally:
 | Name | Type | Default | Description |
 |------|------|------|------|
 | index | `number` | `1`(showcase) | Reference number (such as 1 → `[1]` index) |
-| href | `string` | — | External link URL; if provided, it will be rendered as a new tab link |
+| href | `string` | - | External link URL; if provided, it will be rendered as a new tab link |
 
 ## Slots
 

@@ -26,7 +26,7 @@ import { Cubes } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | gridSize | `number` | `8` | 网格边长（行=列），生成 gridSize² 个立方体；DOM 为平方级，建议 ≤ 12 |
-| cubeSize | `number` | — | 单个立方体边长（px）；传入时容器固定尺寸，不传则容器自适应（width 100%·1:1） |
+| cubeSize | `number` | - | 单个立方体边长（px）；传入时容器固定尺寸，不传则容器自适应（width 100%·1:1） |
 | maxAngle | `number` | `45` | 指针处立方体最大倾斜角（度），越近越大越远越接近 0 |
 | radius | `number` | `3` | 倾斜影响半径（以「格」为单位），范围内参与倾斜、之外回正 |
 | cellGap | `number \| { row?: number \| string; col?: number \| string }` | `"5%"` | 单元间距，数字按 px，对象分别指定行列（百分比字符串随容器缩放） |
@@ -36,8 +36,8 @@ import { Cubes } from "@hulianui/ui"
 | rippleSpeed | `number` | `2` | 涟漪扩散速度倍率，越大越快 |
 | autoAnimate | `boolean` | `true` | 空闲时是否自动游走倾斜（reduced-motion 下自动禁用保持静止） |
 | rippleOnClick | `boolean` | `true` | 是否启用点击涟漪 |
-| className | `string` | — | 透传根容器额外类名 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器额外类名 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## 示例
 ```tsx

@@ -14,7 +14,7 @@ status: enriched
 
 ## When to use
 
-Use CircularGallery when you need a WebGL image track that bends along an arc, responds to wheel and drag gestures with inertia, and loops seamlessly—for example, in portfolio browsers or brand showcases. For a draggable 3D gallery mapped to the inside of a hemisphere, use [DomeGallery](../dome-gallery/dome-gallery.md). For a card wall revealed by a cursor spotlight, use [ChromaGrid](../chroma-grid/chroma-grid.md). For structured tabular data, use [Table](../table/table.md). This client component is built on ogl. When an item has no image, it generates an offline placeholder from chart tokens.
+Use CircularGallery when you need a WebGL image track that bends along an arc, responds to wheel and drag gestures with inertia, and loops seamlessly, for example in portfolio browsers or brand showcases. For a draggable 3D gallery mapped to the inside of a hemisphere, use [DomeGallery](../dome-gallery/dome-gallery.md). For a card wall revealed by a cursor spotlight, use [ChromaGrid](../chroma-grid/chroma-grid.md). For structured tabular data, use [Table](../table/table.md). This client component is built on ogl. When an item has no image, it generates an offline placeholder from chart tokens.
 
 ## Import
 ```ts
@@ -32,14 +32,14 @@ import { CircularGallery } from "@hulianui/ui"
 | scrollSpeed | `number` | `2` | Wheel and drag sensitivity. Larger values move farther per gesture. |
 | scrollEase | `number` | `0.05` | Inertial lerp factor from 0 to 1. Smaller values feel heavier and smoother. |
 | font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | Canvas font shorthand for titles. The default system font stack is offline- and RSC-safe. |
-| className | `string` | — | Class name forwarded to the root container. |
+| className | `string` | - | Class name forwarded to the root container. |
 
 `CircularGalleryItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
 | image | `string` | Programmatic gradient placeholder | Card image URL (remote URL, data URI, or local static asset). When omitted, the component generates a gradient placeholder from chart tokens that works offline and follows the light or dark theme. |
-| text * | `string` | — | Title shown below the card. |
+| text * | `string` | - | Title shown below the card. |
 
 ## Slots
 

@@ -27,12 +27,12 @@ import { Magnet } from "@hulianui/ui"
 |------|------|------|------|
 | padding | `number` | `100` | 感应半径（px），自元素边界向外扩展，越大越远距离感应 |
 | disabled | `boolean` | `false` | 禁用磁吸：停止牵引并平滑归位原点，DOM 结构不变 |
-| magnetStrength | `number` | `2` | 吸力除数，位移=指针到中心距离/此值，越小吸力越强；建议 1–6 |
+| magnetStrength | `number` | `2` | 吸力除数，位移=指针到中心距离/此值，越小吸力越强；建议 1-6 |
 | activeTransition | `string` | `"transform 0.3s ease-out"` | 吸附激活态过渡（跟随指针时） |
 | inactiveTransition | `string` | `"transform 0.5s ease-in-out"` | 失活态过渡（离开归位时） |
-| wrapperClassName | `string` | — | 透传外层包裹 div（定位/尺寸）额外 className |
-| innerClassName | `string` | — | 透传内层位移 div（承载 transform）额外 className |
-| style | `CSSProperties` | — | 透传外层包裹 div 内联样式 |
+| wrapperClassName | `string` | - | 透传外层包裹 div（定位/尺寸）额外 className |
+| innerClassName | `string` | - | 透传内层位移 div（承载 transform）额外 className |
+| style | `CSSProperties` | - | 透传外层包裹 div 内联样式 |
 
 > 另继承 `Omit<HTMLAttributes<HTMLDivElement>, "children">` 的所有标准 div 属性。
 

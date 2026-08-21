@@ -32,12 +32,12 @@ Inherit `CanvasHTMLAttributes<HTMLCanvasElement>` (go to `color`/`children`/`sty
 | fontFamily | `string` | `"inherit"` | Font family, inherit reads canvas computed font-family |
 | color | `string` | `var(--color-foreground)` | Fill color, according to the light and dark theme; any CSS color can be passed (including var()/currentColor, internally analyzed by computed style); style.color has higher priority |
 | enableHover | `boolean` | `true` | Pointer jitter increases when within text range |
-| baseIntensity | `number` | `0.18` | Resting state noise intensity (0–1), the larger the value, the “hairier” it is |
-| hoverIntensity | `number` | `0.5` | Hover state noise intensity (0–1) |
+| baseIntensity | `number` | `0.18` | Resting state noise intensity (0-1), the larger the value, the “hairier” it is |
+| hoverIntensity | `number` | `0.5` | Hover state noise intensity (0-1) |
 | fuzzRange | `number` | `30` | The maximum pixel displacement amplitude of each row/column determines the noise dispersion range |
 | direction | `"horizontal" \| "vertical" \| "both"` | `"horizontal"` | Dithering direction: left and right by row/up and down by column/overlay of both |
-| className | `string` | — | supports canvas extra className |
-| style | `CSSProperties` | — | supports canvas inline styles |
+| className | `string` | - | supports canvas extra className |
+| style | `CSSProperties` | - | supports canvas inline styles |
 
 ## Slots
 

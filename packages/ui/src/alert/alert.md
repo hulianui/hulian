@@ -10,7 +10,7 @@ status: enriched
 
 # Alert
 
-> 提示条 · tone×variant 皮肤 + a11y role · feedback/message
+> 在页面里常驻一条信息、成功、警告或危险提示 · feedback/message
 
 ## 何时用
 

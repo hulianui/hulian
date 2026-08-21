@@ -10,7 +10,7 @@ status: enriched
 
 # Layout
 
-> Full-page layout · Composable Header/Sider/Content/Footer regions + controlled, breakpoint-aware Sider collapse + animated width transitions · dependency-free · RSC-friendly · reuses ScrollArea · layout/container
+> Composes full-page header, sider, content, and footer regions with a collapsible sider. · layout/container
 
 ## When to use
 
@@ -41,9 +41,9 @@ Inherited from `HTMLAttributes<HTMLDivElement>`.
 | width | `number` | `240` | Expanded state width (px). |
 | collapsedWidth | `number` | `64` | Width in the collapsed state (px), typically for an icon-only menu. |
 | collapsible | `boolean` | `false` | Enables collapsing and displays the bottom trigger. |
-| collapsed | `boolean` | — | Controlled collapsed state. Pair it with `onCollapse` to update the value. |
+| collapsed | `boolean` | - | Controlled collapsed state. Pair it with `onCollapse` to update the value. |
 | defaultCollapsed | `boolean` | `false` | Initial collapsed state when uncontrolled. |
-| breakpoint | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| number` | — | Responsive breakpoint: the viewport automatically collapses when ≤ the width, and expands when >. |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| number` | - | Responsive breakpoint: the viewport automatically collapses when ≤ the width, and expands when >. |
 
 ### LayoutContent / LayoutFooter
 Accept standard `HTMLAttributes<HTMLElement>` and define no component-specific props.
@@ -97,7 +97,7 @@ function Shell() {
 ## Usage guidelines
 
 - **`Layout.Sider` owns the width, not the content.** Whether the brand block shows a full name or a single glyph, and whether `NavMenu` runs in `inline` or `collapsed` mode, is up to you. So keep `collapsed` in your own state (controlled prop plus an `onCollapse` write-back) rather than passing a one-shot `defaultCollapsed`. With only an initial value, clicking the trigger still narrows the sider to 64px while its content stays expanded, and a multi-character label shrinks to min-content, stacking one glyph per line and inflating the header (#120). You can also read `data-collapsed` on the Sider root and drive it from CSS.
-- **Header height comes from `--hl-layout-header-h` (4rem).** To line up a sidebar logo block with the header — which nearly every app needs — use `h-[var(--hl-layout-header-h)]` on both instead of copying the number out of the source; getting it wrong leaves a divider that never lines up.
+- **Header height comes from `--hl-layout-header-h` (4rem).** To line up a sidebar logo block with the header (which nearly every app needs), use `h-[var(--hl-layout-header-h)]` on both instead of copying the number out of the source; getting it wrong leaves a divider that never lines up.
 
 - **Choose controlled or uncontrolled state.** Passing `collapsed` makes `Layout.Sider` controlled, so `onCollapse` must write changes back or the trigger and breakpoint cannot update it. Use `defaultCollapsed` only for uncontrolled state.
 - **Layout direction is inferred from direct children.** A direct `Layout.Sider` makes the parent horizontal. Detection cannot see a Sider rendered asynchronously, conditionally, or inside a wrapper such as `<AppSider />`; set `hasSider` explicitly in those cases.

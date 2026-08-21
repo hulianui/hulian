@@ -247,7 +247,7 @@ export const appLauncherShowcase: ShowcaseSpec = {
         },
         {
             title: "Custom icons: icon accepts any ReactNode",
-            description: "The examples above use line icons because an internal application centre has semantics they can express. For a real third-party App launcher, pass a brand bitmap or custom SVG through icon \u2014 those belong to the caller, not to a general-purpose icon set.",
+            description: "The examples above use line icons because an internal application centre has semantics they can express. For a real third-party App launcher, pass a brand bitmap or custom SVG through icon. Those belong to the caller, not to a general-purpose icon set.",
             code: `<AppLauncher
   items={[
     { id: "brand", label: "In-house app", icon: <img src="/logo.png" alt="" className="size-full object-cover" /> },

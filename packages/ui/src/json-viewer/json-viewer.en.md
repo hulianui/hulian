@@ -10,7 +10,7 @@ status: enriched
 
 # JsonViewer
 
-> Read-only JSON tree · recursive syntax coloring, row-level expansion, collapsed key/item counts, depth-limited initial expansion, large-object protection, value and path copying, plus exported helpers · data-display/collection
+> Inspects collapsible JSON values with syntax coloring, copying, and depth controls. · data-display/collection
 
 ## When to use
 
@@ -25,11 +25,11 @@ import { JsonViewer, valueType, jsonPath } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| data* | `unknown` | — | Any JSON-compatible value. |
-| rootName | `string` | — | Optional root label such as `"response"`. |
+| data* | `unknown` | - | Any JSON-compatible value. |
+| rootName | `string` | - | Optional root label such as `"response"`. |
 | defaultExpandedDepth | `number` | `1` | Nodes expand initially when `depth < defaultExpandedDepth`; direct root children have depth 1. |
 | maxAutoExpandKeys | `number` | `50` | Child-count threshold above which an object or array starts collapsed. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
 ## Events
 

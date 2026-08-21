@@ -26,10 +26,10 @@ import { Orb } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | hue | `number` | `0` | 色相旋转（度）。0 = 原始蓝紫；正值顺时针旋转 YIQ 色相 |
-| hoverIntensity | `number` | `0.2` | 悬停扭曲强度（0–1），越大变形越明显 |
+| hoverIntensity | `number` | `0.2` | 悬停扭曲强度（0-1），越大变形越明显 |
 | rotateOnHover | `boolean` | `true` | 悬停时是否自动旋转光球 |
 | forceHoverState | `boolean` | `false` | 强制保持悬停激活态（演示 / 截图场景用） |
-| className | `string` | — | 透传到 canvas（正常）或 fallback div（降级）的 className |
+| className | `string` | - | 透传到 canvas（正常）或 fallback div（降级）的 className |
 
 ## Slots
 

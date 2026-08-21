@@ -18,7 +18,7 @@ afterEach(() => {
 const base = {
   slug: "button",
   name: "Button",
-  description: "按钮 · CVA 变体 + press 动效",
+  description: "触发操作的按钮，提供实心、浅色、描边、幽灵和危险等变体",
   categoryKey: "forms",
 };
 

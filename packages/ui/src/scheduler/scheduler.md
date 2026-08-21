@@ -10,7 +10,7 @@ status: enriched
 
 # Scheduler
 
-> 事件日历/排班 · 库首个事件日历件 · 月/周/日/资源四视图(横轴资源·纵轴时间) + 时间轴网格事件块 + 重叠并排 + 当前时间红线 · 零依赖原生 PointerEvents 拖空白建预约/拖事件改期/拖下缘改时长(全 snap 到 slot) · 受控 events/view/date(onEventsChange/onSlotDragCreate/onEventClick) + 内置 toolbar(前/今/后 + Segmented 视图) + renderEvent 自定义事件块 · 几何抽纯函数带单测 · 预约/排班旗舰 · data-display/collection
+> 在月、周、日和资源视图里排事件，可拖拽建单改期 · data-display/collection
 
 ## 何时用
 
@@ -25,17 +25,17 @@ import { Scheduler, dateOf, dayColumns, eventRect, hourLines, layoutColumns, min
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| events* | `SchedulerEvent[]` | — | 受控事件数组。`{id, title, start, end, resourceId?, tone?, subtitle?}`；start/end 为 ISO datetime（含时分，本地时区） |
-| view* | `"month" \| "week" \| "day" \| "resource"` | — | 受控视图 |
-| date* | `string` | — | 受控焦点日（ISO），决定哪周/哪天/哪月 |
+| events* | `SchedulerEvent[]` | - | 受控事件数组。`{id, title, start, end, resourceId?, tone?, subtitle?}`；start/end 为 ISO datetime（含时分，本地时区） |
+| view* | `"month" \| "week" \| "day" \| "resource"` | - | 受控视图 |
+| date* | `string` | - | 受控焦点日（ISO），决定哪周/哪天/哪月 |
 | now | `string ｜ Date` | 挂载后取浏览器时钟 | 「今天 / 此刻」的判定基准。**渲染期不读系统时钟**，所以首帧没有今天高亮与当前时刻线，挂载后补上（#181）。传了它就完全由你决定：截图回归要可复现、或「今天」该按服务端业务时钟而非用户本机时钟时用 |
-| resources | `SchedulerResource[]` | — | resource 视图必填。`{id, title, subtitle?}` |
+| resources | `SchedulerResource[]` | - | resource 视图必填。`{id, title, subtitle?}` |
 | dayStartHour | `number` | `8` | 时间轴起始小时 |
 | dayEndHour | `number` | `20` | 时间轴结束小时 |
 | slotMinutes | `number` | `30` | 吸附粒度（分钟） |
 | hourHeight | `number` | `56` | 每小时像素高 |
 | toolbar | `boolean` | `true` | 内置头部工具条（标题 + 前/今/后 + Segmented 视图） |
-| className | `string` | — | 外层类名（须有确定高度，组件填满时间轴可滚） |
+| className | `string` | - | 外层类名（须有确定高度，组件填满时间轴可滚） |
 
 SchedulerEvent.tone：`"primary" \| "success" \| "warning" \| "danger" \| "neutral"`，默认 primary（仅用已定义语义 token）。
 

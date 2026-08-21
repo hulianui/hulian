@@ -30,8 +30,8 @@ import { ElectricBorder } from "@hulianui/ui"
 | chaos | `number` | `1` | The degree of disorder (turbulence displacement intensity), the larger the stroke, the more violent it will be torn, mapping the scale of `feDisplacementMap` |
 | thickness | `number` | `2` | The thickness of the soft edge of the frame (px) |
 | borderRadius | `number` | `16` | Corner radius (px), applied to both container and current stroke |
-| className | `string` | — | Root container additional className |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Root container additional className |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

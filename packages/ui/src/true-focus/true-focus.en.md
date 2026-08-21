@@ -49,7 +49,7 @@ The remaining `<div>` native attributes are transparently transmitted.
 
 ## Usage guidelines
 
-- The corner frame is positioned from each word's measured rectangle. Provide enough layout space—preferably a fixed-height container—to avoid wrapping or compression that misaligns the frame.
+- The corner frame is positioned from each word's measured rectangle. Provide enough layout space, preferably a fixed-height container, to avoid wrapping or compression that misaligns the frame.
 - `borderColor` must be prefixed with `--color-` or a legal CSS color; bare `var(--primary)` will not be parsed under this Tailwind v4 setting.
 - Under `prefers-reduced-motion`, every word remains clear and focus does not cycle.
 

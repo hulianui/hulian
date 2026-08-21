@@ -27,19 +27,19 @@ import { PillNav } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `PillNavItem[]` | — | 导航项列表，每项 `{ href, label, ariaLabel? }`，每项渲染为一颗胶囊 |
-| activeHref | `string` | — | 当前激活项的 href，命中后胶囊常驻反相态 + 底部点亮指示圆点 |
+| items* | `PillNavItem[]` | - | 导航项列表，每项 `{ href, label, ariaLabel? }`，每项渲染为一颗胶囊 |
+| activeHref | `string` | - | 当前激活项的 href，命中后胶囊常驻反相态 + 底部点亮指示圆点 |
 | logoHref | `string` | `items[0].href` → `"#"` | logo 区链接地址 |
 | logoAriaLabel | `string` | `"Home"` | logo 区无障碍标签 |
 | initialLoadAnimation | `boolean` | `true` | 首次加载入场动画（logo 弹入 + 胶囊展开），reduced-motion 下自动跳过 |
-| className | `string` | — | 合并到根 `<nav>` 的类名 |
+| className | `string` | - | 合并到根 `<nav>` 的类名 |
 
 `PillNavItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| href * | `string` | — | 链接地址（http/https/mailto/tel/# 外链或站内路由皆可，组件只渲染 `<a>`） |
-| label * | `string` | — | 显示文案 |
+| href * | `string` | - | 链接地址（http/https/mailto/tel/# 外链或站内路由皆可，组件只渲染 `<a>`） |
+| label * | `string` | - | 显示文案 |
 | ariaLabel | `string` | 回退到 `label` | 无障碍标签 |
 
 ## Slots

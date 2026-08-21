@@ -26,15 +26,15 @@ import { PixelBlast, pixelBlastShowcase } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | variant | `"square" \| "circle" \| "triangle" \| "diamond"` | `"square"` | Pixel unit shape: square (sharp retro) / dot (dot printing feel) / triangle (texture) / diamond (diamond dot) |
-| pixelSize | `number` | `4` | Pixel size in CSS pixels; lower values are denser and finer. Recommended range 2–12 |
+| pixelSize | `number` | `4` | Pixel size in CSS pixels; lower values are denser and finer. Recommended range 2-12 |
 | color | `string` | `--color-primary` | Pixel main color, CSS color string; default is primary token light and dark adaptive |
-| patternScale | `number` | `2` | Noise texture scaling; the larger the patches, the finer and denser the flashes. Recommendation 0.5–6 |
-| patternDensity | `number` | `1` | Pixel filling density; the larger it is, the more pixels will be lit and the more "full" it will be. Recommendation 0.4–1.6 |
-| pixelSizeJitter | `number` | `0` | Random jitter amplitude for each square size 0–1; the larger, the more jagged, the stronger the graininess |
+| patternScale | `number` | `2` | Noise texture scaling; the larger the patches, the finer and denser the flashes. Recommendation 0.5-6 |
+| patternDensity | `number` | `1` | Pixel filling density; the larger it is, the more pixels will be lit and the more "full" it will be. Recommendation 0.4-1.6 |
+| pixelSizeJitter | `number` | `0` | Random jitter amplitude for each square size 0-1; the larger, the more jagged, the stronger the graininess |
 | speed | `number` | `0.5` | Animation speed factor; 0 = still picture (still renders one frame of static lattice) |
-| edgeFade | `number` | `0.5` | Edge-fade width from 0–1 relative to the shorter side; 0 keeps hard edges, while higher values soften the corners |
-| className | `string` | — | Additional class name for the root container or reduced-motion fallback div |
-| style | `CSSProperties` | — | Inline styles passed through to the root container |
+| edgeFade | `number` | `0.5` | Edge-fade width from 0-1 relative to the shorter side; 0 keeps hard edges, while higher values soften the corners |
+| className | `string` | - | Additional class name for the root container or reduced-motion fallback div |
+| style | `CSSProperties` | - | Inline styles passed through to the root container |
 
 ## Slots
 

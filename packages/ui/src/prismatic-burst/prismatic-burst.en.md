@@ -29,12 +29,12 @@ import { PrismaticBurst } from "@hulianui/ui"
 | speed | `number` | `1` | Volume step animation speed factor; the larger it is, the faster it surges |
 | animationType | `"rotate" \| "rotate3d" \| "hover"` | `"rotate"` | rotate=single-axis plane rotation (most restrained)/rotate3d=three-dimensional Euler rotation/hover=tilt following the pointer |
 | colors | `string[]` | `--color-chart-1..5` | Color strip (baked into a one-dimensional gradient texture and sampled according to march progress); any CSS color string, default chart token light and dark adaptive |
-| distort | `number` | `0` | Light bending and distortion amount 0–50 (clamped within the shader); the larger the ray, the more likely it is to be twisted by a gravitational lens |
-| noiseAmount | `number` | `0` | Grain jitter noise amount 0–1; weaken the sense of banding |
+| distort | `number` | `0` | Light bending and distortion amount 0-50 (clamped within the shader); the larger the ray, the more likely it is to be twisted by a gravitational lens |
+| noiseAmount | `number` | `0` | Grain jitter noise amount 0-1; weaken the sense of banding |
 | rayCount | `number` | `0` | Number of radiation beam lobes; 0=continuous halo, >0 comb N symmetrical rays according to angle (6=hexagram) |
 | offset | `{ x?: number; y?: number }` | `{ x: 0, y: 0 }` | The offset of the burst center relative to the center of the screen (CSS pixels), x is positive to the right, y is positive downward |
 | mixBlendMode | `string` | `"none"` | `mix-blend-mode` forwarded to the canvas; `lighten` and `screen` are useful for overlay compositions |
-| className | `string` | — | Merge into root container (or reduced div) |
+| className | `string` | - | Merge into root container (or reduced div) |
 
 ## Slots
 

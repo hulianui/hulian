@@ -46,16 +46,16 @@ import { InterceptCard } from "@hulianui/ui";
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `severity` | `"block" \| "confirm" \| "notice"` | — | 拦截强度 |
-| `title` | `ReactNode` | — | 规则名或事由 |
-| `message` | `ReactNode` | — | 规则原文或说明 |
-| `source` | `ReactNode` | — | 溯源。强烈建议给 |
-| `violation` | `ReactNode` | — | 具体违反了什么（等宽渲染） |
-| `suggestion` | `ReactNode` | — | 建议的合规改法 |
-| `onOverride` | `(reason: string) => void \| Promise<void>` | — | 给了才渲染放行入口 |
+| `severity` | `"block" \| "confirm" \| "notice"` | - | 拦截强度 |
+| `title` | `ReactNode` | - | 规则名或事由 |
+| `message` | `ReactNode` | - | 规则原文或说明 |
+| `source` | `ReactNode` | - | 溯源。强烈建议给 |
+| `violation` | `ReactNode` | - | 具体违反了什么（等宽渲染） |
+| `suggestion` | `ReactNode` | - | 建议的合规改法 |
+| `onOverride` | `(reason: string) => void \| Promise<void>` | - | 给了才渲染放行入口 |
 | `overrideLabel` | `ReactNode` | `"放行本次"` | 放行按钮文案 |
 | `overridePlaceholder` | `string` | 见默认值 | 理由输入占位符 |
-| `overridden` | `{ reason, at? }` | — | 已放行，展示既有理由 |
+| `overridden` | `{ reason, at? }` | - | 已放行，展示既有理由 |
 
 ## 设计取舍
 

@@ -114,7 +114,7 @@ export const taskRunnerShowcase: ShowcaseSpec = {
   status="error"
   steps={[
     { title: "Build image", status: "done", meta: "31s" },
-    { title: "Push registry", status: "error", detail: "registry timeout", meta: "\u2014" },
+    { title: "Push registry", status: "error", detail: "registry timeout", meta: "-" },
     { title: "Rolling update", status: "pending" },
   ]}
   elapsed="46s"

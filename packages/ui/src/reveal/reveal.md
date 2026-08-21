@@ -37,7 +37,7 @@ import { Reveal, Stagger, StaggerItem } from "@hulianui/ui"
 | y | `number` | `24` | 起始下移距离 px(自下浮起) |
 | blur | `number` | `8` | 起始模糊 px(焦点拉入，GPU 合成) |
 | scale | `number` | `1` | 起始缩放(<1 像「放上书架」落位) |
-| delay | `number` | — | 延迟秒数(独立块错峰用；Stagger 内由容器编排无需 delay) |
+| delay | `number` | - | 延迟秒数(独立块错峰用；Stagger 内由容器编排无需 delay) |
 
 **Stagger**（额外）：
 

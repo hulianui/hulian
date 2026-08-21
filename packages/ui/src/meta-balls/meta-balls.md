@@ -29,13 +29,13 @@ import { MetaBalls } from "@hulianui/ui"
 | cursorBallColor | `string` | `"var(--color-chart-4)"` | 光标球颜色，与 color 在交界处混合 |
 | speed | `number` | `0.3` | 公转速度倍率，越大游走越快 |
 | enableMouseInteraction | `boolean` | `true` | 启用鼠标交互；关闭后光标球自动椭圆巡游 |
-| hoverSmoothness | `number` | `0.05` | 光标球插值平滑系数（0–1），越小越拖尾、越大越跟手 |
+| hoverSmoothness | `number` | `0.05` | 光标球插值平滑系数（0-1），越小越拖尾、越大越跟手 |
 | animationSize | `number` | `30` | 观察尺度，越大视野越广、小球越小越散 |
-| ballCount | `number` | `15` | 主体小球数量（1–50，超出夹取到 50） |
+| ballCount | `number` | `15` | 主体小球数量（1-50，超出夹取到 50） |
 | clumpFactor | `number` | `1` | 聚拢因子，越大轨道越外扩松散，越小越抱团 |
 | cursorBallSize | `number` | `3` | 光标球半径（着色器单位） |
 | enableTransparency | `boolean` | `true` | 透明背景；false 时填黑底 |
-| className | `string` | — | 透传到 canvas / fallback 容器 |
+| className | `string` | - | 透传到 canvas / fallback 容器 |
 
 ## Slots
 

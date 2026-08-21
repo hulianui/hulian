@@ -29,17 +29,17 @@ import { InfiniteMenu } from "@hulianui/ui"
 | scale | `number` | `1` | Sphere scale. Larger values bring larger cards closer. |
 | itemSize | `number` | `88` | Item diameter in pixels. |
 | autoRotate | `number` | `6` | Y-axis rotation in degrees per second. Zero disables it; reduced motion forces zero. |
-| className | `string` | — | Class name forwarded to the root. |
-| style | `CSSProperties` | — | Inline styles forwarded to the root. |
+| className | `string` | - | Class name forwarded to the root. |
+| style | `CSSProperties` | - | Inline styles forwarded to the root. |
 
 `InfiniteMenuItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| image | `string` | — | Card image URL, cropped to fill the circular card. Without it only the title's first character shows. |
-| title | `string` | — | Title shown in the overlay while the item is active. |
-| description | `string` | — | Secondary copy shown in the overlay while the item is active. |
-| link | `string` | — | Destination for the action arrow. Values starting with `http` open in a new tab; anything else is handed to the `onItemActivate` callback. |
+| image | `string` | - | Card image URL, cropped to fill the circular card. Without it only the title's first character shows. |
+| title | `string` | - | Title shown in the overlay while the item is active. |
+| description | `string` | - | Secondary copy shown in the overlay while the item is active. |
+| link | `string` | - | Destination for the action arrow. Values starting with `http` open in a new tab; anything else is handed to the `onItemActivate` callback. |
 
 ## Events
 

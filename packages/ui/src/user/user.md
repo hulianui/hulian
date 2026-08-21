@@ -10,7 +10,7 @@ status: enriched
 
 # User
 
-> 用户卡 · Avatar + 名称/描述组合(复用瑚琏 Avatar) + RSC · data-display/info
+> 把头像、姓名和描述组合成一行用户信息 · data-display/info
 
 ## 何时用
 
@@ -25,8 +25,8 @@ import { User } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| avatarProps | `AvatarProps` | — | 透传给内置 Avatar（src/alt/fallback/size）。 |
-| className | `string` | — | — |
+| avatarProps | `AvatarProps` | - | 透传给内置 Avatar（src/alt/fallback/size）。 |
+| className | `string` | - | - |
 
 ## Slots
 

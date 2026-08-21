@@ -33,11 +33,11 @@ import { RippleGrid } from "@hulianui/ui"
 | fadeDistance | `number` | `1.5` | 中心向四周的距离淡出指数，越大越聚焦中心 |
 | vignetteStrength | `number` | `2` | 暗角强度，0 = 无暗角 |
 | glowIntensity | `number` | `0.1` | 网格线发光强度，0 = 无辉光 |
-| opacity | `number` | `1` | 整体不透明度（0–1） |
+| opacity | `number` | `1` | 整体不透明度（0-1） |
 | gridRotation | `number` | `0` | 网格旋转角度（度），45 = 菱形网格 |
 | mouseInteraction | `boolean` | `true` | 指针处额外激起一圈涟漪 |
 | mouseInteractionRadius | `number` | `1` | 鼠标涟漪影响半径 |
-| className | `string` | — | 透传到根容器（或 fallback div） |
+| className | `string` | - | 透传到根容器（或 fallback div） |
 
 ## Slots
 

@@ -25,14 +25,14 @@ import { FluidGlass } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `number` | `0.26` | 透镜半径占容器短边比例 0–1，越大折射区越广，建议 0.15–0.4 |
-| refraction | `number` | `0.5` | 折射强度（IOR 映射），越大中心放大/扭曲越强，0=几乎透明，建议 0–1 |
-| dispersion | `number` | `0.3` | 色散强度，模拟边缘 RGB 分光彩边，0=关闭，建议 0–1 |
+| size | `number` | `0.26` | 透镜半径占容器短边比例 0-1，越大折射区越广，建议 0.15-0.4 |
+| refraction | `number` | `0.5` | 折射强度（IOR 映射），越大中心放大/扭曲越强，0=几乎透明，建议 0-1 |
+| dispersion | `number` | `0.3` | 色散强度，模拟边缘 RGB 分光彩边，0=关闭，建议 0-1 |
 | speed | `number` | `1` | 背景流动速度倍率，0=背景静止（透镜仍跟随指针） |
 | colors | `string[]` | chart-1/2/4 | 背景渐变色组，取前 3 个，可传任意 CSS 颜色 |
 | followPointer | `boolean` | `true` | 透镜跟随指针；关闭时停在中心缓慢漂移 |
-| className | `string` | — | 透传根容器 className（根为 `relative overflow-hidden`，canvas 自带 `absolute inset-0`） |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器 className（根为 `relative overflow-hidden`，canvas 自带 `absolute inset-0`） |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

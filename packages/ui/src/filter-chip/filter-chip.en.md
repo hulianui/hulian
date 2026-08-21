@@ -29,13 +29,13 @@ import { FilterChip, FilterChipGroup } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| subject * | `ReactNode` | — | The filtered field name. First segment, heaviest weight. |
-| operator | `ReactNode` | — | The operator, such as "is any of" or "before". **Omitting it drops that segment** instead of leaving an empty slot. |
-| value * | `ReactNode` | — | The value. Takes a node rather than a string, see "Rich value nodes" below. |
+| subject * | `ReactNode` | - | The filtered field name. First segment, heaviest weight. |
+| operator | `ReactNode` | - | The operator, such as "is any of" or "before". **Omitting it drops that segment** instead of leaving an empty slot. |
+| value * | `ReactNode` | - | The value. Takes a node rather than a string, see "Rich value nodes" below. |
 | size | `"sm"\|"md"` | `md` | Changes height, font size, and segment padding only; the structure stays the same. |
-| subjectLabel | `string` | — | Plain-text subject used in the remove button name. Taken from `subject` automatically when it is a string; required when `subject` is a node, otherwise the name falls back to a generic "Remove filter". |
-| isDisabled | `boolean` | — | Lowers opacity, blocks pointer events, and disables both buttons. |
-| className | `string` | — | Root class. |
+| subjectLabel | `string` | - | Plain-text subject used in the remove button name. Taken from `subject` automatically when it is a string; required when `subject` is a node, otherwise the name falls back to a generic "Remove filter". |
+| isDisabled | `boolean` | - | Lowers opacity, blocks pointer events, and disables both buttons. |
+| className | `string` | - | Root class. |
 
 ### FilterChipGroup
 
@@ -43,8 +43,8 @@ import { FilterChip, FilterChipGroup } from "@hulianui/ui"
 |------|------|------|------|
 | clearAllLabel | `ReactNode` | locale "Clear all" | Overrides the trailing button copy. |
 | aria-label | `string` | locale "Applied filters" | Overrides the accessible name of the group. |
-| className | `string` | — | Root class. |
-| children | `ReactNode` | — | The FilterChip list. **The whole row renders nothing when there are none**, including the clear-all button. |
+| className | `string` | - | Root class. |
+| children | `ReactNode` | - | The FilterChip list. **The whole row renders nothing when there are none**, including the clear-all button. |
 
 ## Events
 

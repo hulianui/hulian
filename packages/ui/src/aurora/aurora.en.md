@@ -26,11 +26,11 @@ import { Aurora } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | colors | string[] | `["var(--color-chart-1)","var(--color-chart-2)","var(--color-chart-4)"]` | Ribbon colors; accepts any CSS color and defaults to theme-aware chart tokens |
-| blur | number | 30 | Layer blur radius in pixels; 10–80 is recommended, since low values create hard edges and high values diffuse the effect |
+| blur | number | 30 | Layer blur radius in pixels; 10-80 is recommended, since low values create hard edges and high values diffuse the effect |
 | speed | number | 20 | Duration of one animation cycle in seconds; higher values move more slowly |
 | showRadialMask | boolean | true | Fade the effect radially toward the corners; disable it to fill the container uniformly |
-| className | string | — | Class name forwarded to the Aurora layer for opacity or blend-mode adjustments |
-| style | CSSProperties | — | Inline styles passed through to the root container |
+| className | string | - | Class name forwarded to the Aurora layer for opacity or blend-mode adjustments |
+| style | CSSProperties | - | Inline styles passed through to the root container |
 
 ## Slots
 

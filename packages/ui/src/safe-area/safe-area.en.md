@@ -10,7 +10,7 @@ status: enriched
 
 # SafeArea
 
-> Safe-area layout · Applies `env(safe-area-inset-*)` as padding or margin on selected edges + minimum inset + polymorphic root (zero dependencies · RSC-safe · notch/home indicator) · mobile/layout
+> Applies device inset padding to keep mobile content outside obstructed regions. · mobile/layout
 
 ## When to Use
 

@@ -25,21 +25,21 @@ import { Danmaku, allocateTrack, densityGap, estimateWidth, leastBusyTrack, scro
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `DanmakuItem[]` | — | 受控弹幕流，只增不改既有项；新增项自动入场（内部按 `item.id` 去重，仅对未上屏的入场） |
+| items* | `DanmakuItem[]` | - | 受控弹幕流，只增不改既有项；新增项自动入场（内部按 `item.id` 去重，仅对未上屏的入场） |
 | tracks | `number` | `4` | 滚动轨道数 |
 | speed | `number` | `100` | 滚动速度 px/s |
 | density | `"low" \| "normal" \| "high"` | `"normal"` | 密度：决定轨道安全间隙 + 无空闲轨道时是否强挤 |
-| area | `number` | `1` | 弹幕占用容器高度比 0–1，1=满屏 |
+| area | `number` | `1` | 弹幕占用容器高度比 0-1，1=满屏 |
 | opacity | `number` | `1` | 整体不透明度 |
 | paused | `boolean` | `false` | 暂停所有动画 |
-| className | `string` | — | 容器自定义类 |
+| className | `string` | - | 容器自定义类 |
 
 `DanmakuItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| id * | `string` | — | 去重键：内部按它判断该条是否已上屏，只对未上屏的做入场 |
-| text * | `ReactNode` | — | 弹幕内容 |
+| id * | `string` | - | 去重键：内部按它判断该条是否已上屏，只对未上屏的做入场 |
+| text * | `ReactNode` | - | 弹幕内容 |
 | mode | `"scroll" ｜ "top" ｜ "bottom"` | `"scroll"` | 滚动 / 顶部悬停 / 底部悬停 |
 | color | `string` | 继承前景 token | 文字色 |
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 字号档 |

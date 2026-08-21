@@ -10,7 +10,7 @@ status: enriched
 
 # Fab
 
-> 悬浮操作钮 · fixed 贴边 + speed-dial 子动作错峰展开/主钮旋 45°(零依赖·reduced-motion) · mobile/nav
+> 在页面上方浮一个主操作按钮，可展开子动作 · mobile/nav
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { Fab } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `label` | `string` | — | 主按钮文字（extended 胶囊态）；提供后主钮变「图标+文字」自适应胶囊，并默认作 aria-label |
-| `actions` | `FabAction[]` | — | speed-dial 子动作；提供则点击主钮展开/收起，否则直接触发 onClick |
+| `label` | `string` | - | 主按钮文字（extended 胶囊态）；提供后主钮变「图标+文字」自适应胶囊，并默认作 aria-label |
+| `actions` | `FabAction[]` | - | speed-dial 子动作；提供则点击主钮展开/收起，否则直接触发 onClick |
 | `position` | `"bottom-right" \| "bottom-left" \| "bottom-center"` | `"bottom-right"` | 贴边位置 |
 | `size` | `"sm" \| "md"` | `"md"` | md=56px 主钮，sm=48px（紧凑场景） |
 | `draggable` | `boolean` | `false` | 按住拖动重定位（位移 >3px 视为拖拽，该次不触发 onClick） |
 | `aria-label` | `string` | `"操作"` | 主按钮无障碍标签 |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **FabAction**：`key: string` · `icon: ReactNode` · `label?: string`（展开时显示在图标侧并作 aria-label）· `onClick?: () => void`。
 

@@ -27,19 +27,19 @@ import { AwardBadge, laurelLeaves, laurelStemPath } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| title* | `ReactNode` | — | Primary award title, such as `#1 Repository Of The Day`. |
-| kicker | `ReactNode` | — | Uppercase, tracked secondary line such as `GitHub Trending`. |
-| rank | `ReactNode` | — | Content centered in the laurel, such as `1` or `A+`. |
-| emblem | `ReactNode` | — | Replaces the laurel and rank with a trophy or platform mark. |
+| title* | `ReactNode` | - | Primary award title, such as `#1 Repository Of The Day`. |
+| kicker | `ReactNode` | - | Uppercase, tracked secondary line such as `GitHub Trending`. |
+| rank | `ReactNode` | - | Content centered in the laurel, such as `1` or `A+`. |
+| emblem | `ReactNode` | - | Replaces the laurel and rank with a trophy or platform mark. |
 | wreath | `boolean` | `true` | Shows the laurel. |
 | variant | `"outline" \| "solid" \| "soft"` | `"outline"` | Outlined, filled, or quiet skin. |
 | tone | `"brand" \| "neutral" \| "success" \| "warning" \| "danger"` | `"brand"` | Border, laurel, and text tone. |
-| color | `string` | — | CSS color or semantic name such as `chart-5`, overriding tone. |
+| color | `string` | - | CSS color or semantic name such as `chart-5`, overriding tone. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Component size. |
-| href | `string` | — | Makes the whole award a focusable link. |
-| target | `string` | — | Link target; `_blank` adds safe `rel` values. |
-| rel | `string` | — | Explicitly overrides the `rel` added above (for example when only `noopener` is wanted). |
-| className | `string` | — | Custom class plus forwarded native attributes. |
+| href | `string` | - | Makes the whole award a focusable link. |
+| target | `string` | - | Link target; `_blank` adds safe `rel` values. |
+| rel | `string` | - | Explicitly overrides the `rel` added above (for example when only `noopener` is wanted). |
+| className | `string` | - | Custom class plus forwarded native attributes. |
 
 ### laurelLeaves(options?) / laurelStemPath(options?)
 

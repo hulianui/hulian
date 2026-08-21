@@ -10,7 +10,7 @@ status: enriched
 
 # Result
 
-> 结果页 · 7 状态(success/error/info/warning/403/404/500)内置图标+语义色 + 标题/副标题/详情/操作槽(零依赖·RSC) · feedback/message
+> 展示操作结果或错误页，含图标、说明和后续操作 · feedback/message
 
 ## 何时用
 

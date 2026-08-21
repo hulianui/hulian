@@ -10,7 +10,7 @@ status: enriched
 
 # Transfer
 
-> 穿梭框 · 左右双 listbox 面板 + 移动按钮(选中/全部) + 可选搜索 + 空态(零依赖·复用 Listbox/Empty) · forms/advanced
+> 在待选和已选两个列表之间搬运条目 · forms/advanced
 
 ## 何时用
 
@@ -25,24 +25,24 @@ import { Transfer } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| dataSource* | `TransferItem[]` | — | 全量数据源；每项 `key`/`label`，可带 `description`/`disabled` |
-| targetKeys | `string[]` | — | 受控：右侧（目标）面板的键集合 |
-| defaultTargetKeys | `string[]` | — | 非受控初始目标键 |
+| dataSource* | `TransferItem[]` | - | 全量数据源；每项 `key`/`label`，可带 `description`/`disabled` |
+| targetKeys | `string[]` | - | 受控：右侧（目标）面板的键集合 |
+| defaultTargetKeys | `string[]` | - | 非受控初始目标键 |
 | searchable | `boolean` | `false` | 每个面板顶部显示搜索框 |
 | searchPlaceholder | `string` | `"搜索"` | 搜索框占位符 |
 | filterOption | `(input: string, item: TransferItem) => boolean` | label 包含匹配 | 自定义过滤（默认大小写不敏感子串） |
 | listHeight | `number` | `240` | 面板列表区最大高度（px）。几百节点的权限/部门数据下把它调大，否则面板挤成一条缝 |
 | showSelectAll | `boolean` | `false` | 面板标题栏显示全选复选框（只作用于**当前过滤结果里的可用项**） |
 | disabled | `boolean` | `false` | 整体禁用（两侧列表与移动按钮全失效） |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 `TransferItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| key * | `string` | — | 唯一键，也是 `targetKeys` 的取值 |
-| label * | `ReactNode` | — | 条目主文案 |
-| description | `ReactNode` | — | 次级描述（label 下方弱化小字） |
+| key * | `string` | - | 唯一键，也是 `targetKeys` 的取值 |
+| label * | `ReactNode` | - | 条目主文案 |
+| description | `ReactNode` | - | 次级描述（label 下方弱化小字） |
 | disabled | `boolean` | `false` | 该条不可选、不可移动 |
 
 ## Events

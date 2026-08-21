@@ -25,7 +25,7 @@ import { FlowingMenu } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items * | `FlowingMenuItem[]` | — | Menu entries. |
+| items * | `FlowingMenuItem[]` | - | Menu entries. |
 | speed | `number` | `18` | Seconds for the marquee to travel one viewport; larger is slower. |
 | repeat | `number` | `4` | Text repetitions per block for continuous coverage. |
 
@@ -35,9 +35,9 @@ The component also inherits `ComponentPropsWithoutRef<"nav">` except `children`,
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| link * | `string` | — | Link destination. |
-| text * | `string` | — | Copy used as both the main title and the marquee text. |
-| image | `string` | — | Image repeated inside the marquee. Without it only text repeats and no image block renders. |
+| link * | `string` | - | Link destination. |
+| text * | `string` | - | Copy used as both the main title and the marquee text. |
+| image | `string` | - | Image repeated inside the marquee. Without it only text repeats and no image block renders. |
 
 ## Example
 ```tsx

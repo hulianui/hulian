@@ -10,7 +10,7 @@ status: enriched
 
 # ButtonGroup
 
-> 按钮组 · 把若干 Button 连排成一体(抹内侧圆角/合并相邻边框/hover 项抬层) 或分离编组 + 横竖向 · 工具栏分段/拆分按钮/步进器(纯布局壳·不接管子按钮变体) · forms/button
+> 把相关按钮连成一体或分组排列，做成分段控件 · forms/button
 
 ## 何时用
 
@@ -28,8 +28,8 @@ import { ButtonGroup } from "@hulianui/ui"
 | orientation | `"horizontal" ｜ "vertical"` | `"horizontal"` | 主轴方向 |
 | attached | `boolean` | `true` | true=子按钮贴合成一体（抹内侧圆角/合并边框/hover 抬层）；false=留 gap 仅作语义分组 |
 | gap | `"sm" ｜ "md"` | `"sm"` | 子项间距档（仅 `attached={false}` 生效） |
-| className | `string` | — | 透传根节点类名 |
-| aria-label | `string` | — | 组的无障碍标签 |
+| className | `string` | - | 透传根节点类名 |
+| aria-label | `string` | - | 组的无障碍标签 |
 
 ## Slots
 

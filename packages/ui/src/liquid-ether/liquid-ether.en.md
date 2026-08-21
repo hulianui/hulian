@@ -26,13 +26,13 @@ import { LiquidEther } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | colors | `string[]` | `["var(--color-chart-1)","var(--color-chart-2)","var(--color-chart-4)"]` | Palette of CSS colors. One value is repeated across the three shader stops; two values reuse the second for the final stop. Theme variables update with light and dark modes. |
-| speed | `number` | `0.5` | Animation-speed multiplier; 0.2–1.5 is recommended |
-| scale | `number` | `1` | Liquid-blob scale; lower values create smaller separated forms and higher values merge them, with 0.6–2 recommended |
-| mouseForce | `number` | `1` | Strength of the real or automatic pointer force; 0 removes pointer-driven force while time-based metaball motion continues, with 0–2 recommended |
+| speed | `number` | `0.5` | Animation-speed multiplier; 0.2-1.5 is recommended |
+| scale | `number` | `1` | Liquid-blob scale; lower values create smaller separated forms and higher values merge them, with 0.6-2 recommended |
+| mouseForce | `number` | `1` | Strength of the real or automatic pointer force; 0 removes pointer-driven force while time-based metaball motion continues, with 0-2 recommended |
 | autoDemo | `boolean` | `true` | Drive the force point along a virtual path until a real pointer enters; false leaves the force at rest until real input arrives |
-| opacity | `number` | `1` | Root opacity from 0 to 1; 0.6–0.85 often works behind foreground content |
-| className | `string` | — | Class name forwarded to the canvas wrapper or fallback root |
-| style | `CSSProperties` | — | Inline styles forwarded to the root |
+| opacity | `number` | `1` | Root opacity from 0 to 1; 0.6-0.85 often works behind foreground content |
+| className | `string` | - | Class name forwarded to the canvas wrapper or fallback root |
+| style | `CSSProperties` | - | Inline styles forwarded to the root |
 
 ## Slots
 

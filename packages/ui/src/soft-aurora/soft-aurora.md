@@ -27,20 +27,20 @@ import { SoftAurora } from "@hulianui/ui"
 |------|------|------|------|
 | color1 | `string` | `var(--color-chart-1)` | 主极光色带颜色（第 1 层），任意 CSS 颜色串（离屏 canvas 解析） |
 | color2 | `string` | `var(--color-chart-4)` | 辅助极光色带颜色（第 2 层），错位叠加产生混色干涉 |
-| speed | `number` | `0.6` | 极光流动速度倍率，建议 0.2–2 |
-| scale | `number` | `1.5` | 噪声采样缩放，越大纹理越细碎，建议 0.8–3 |
+| speed | `number` | `0.6` | 极光流动速度倍率，建议 0.2-2 |
+| scale | `number` | `1.5` | 噪声采样缩放，越大纹理越细碎，建议 0.8-3 |
 | brightness | `number` | `1` | 整体亮度倍率 |
 | noiseFrequency | `number` | `2.5` | 噪声基频，影响褶皱密度 |
 | noiseAmplitude | `number` | `1` | 噪声基振幅，影响起伏幅度 |
-| bandHeight | `number` | `0.5` | 极光带垂直位置（0–1），越小越靠下 |
+| bandHeight | `number` | `0.5` | 极光带垂直位置（0-1），越小越靠下 |
 | bandSpread | `number` | `1` | 极光带辉光扩散强度 |
 | octaveDecay | `number` | `0.1` | 多倍频噪声衰减系数，控制高频细节占比 |
 | layerOffset | `number` | `0` | 两层极光的时间相位偏移，非 0 时错峰流动 |
 | colorSpeed | `number` | `1` | 色相循环流动速度（cosine 渐变水平滚动快慢） |
 | enableMouseInteraction | `boolean` | `true` | 鼠标视差（极光随指针轻微平移） |
 | mouseInfluence | `number` | `0.25` | 鼠标视差强度 |
-| className | `string` | — | 透传到根容器 |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器 |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Slots
 

@@ -35,7 +35,7 @@ export const dockShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Persistent bottom navigation (with a current item)",
-            description: "activeKey plus onSelect is the same controlled pattern as NavMenu and RouteTabs. The current item gets aria-current=\"page\" and an indicator dot under the icon \u2014 a shape cue, not colour alone. Once onSelect is provided, DockIcon renders as a real <button> (focusable, activated by Enter) and the container becomes a nav landmark.",
+            description: "activeKey plus onSelect is the same controlled pattern as NavMenu and RouteTabs. The current item gets aria-current=\"page\" and an indicator dot under the icon, a shape cue rather than colour alone. Once onSelect is provided, DockIcon renders as a real <button> (focusable, activated by Enter) and the container becomes a nav landmark.",
             code: `const [active, setActive] = useState("home")
 
 <Dock aria-label="Main navigation" activeKey={active} onSelect={setActive}>

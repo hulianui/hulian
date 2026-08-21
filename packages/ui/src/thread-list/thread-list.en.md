@@ -10,7 +10,7 @@ status: enriched
 
 # ThreadList
 
-> Conversation history list · ChatGPT-style agent sidebar with two-line title and metadata, active highlighting, a delete button that does not trigger selection, a header action slot for new conversations, an empty state, and a bare inline variant · ai/agent
+> Lists conversation threads with active state, metadata, deletion, a header action, and an empty state. · ai/agent
 
 ## When to Use
 
@@ -25,17 +25,17 @@ import { ThreadList } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `ThreadListItem[]` | — | array of session entries |
+| items* | `ThreadListItem[]` | - | array of session entries |
 | bare | `boolean` | `false` | Remove the container border background and use it inline |
-| className | `string` | — | Container additional class |
+| className | `string` | - | Container additional class |
 
 `ThreadListItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| id * | `string` | — | Unique key, also the argument passed to `onSelect`. |
-| title * | `ReactNode` | — | Thread title. |
-| meta | `ReactNode` | — | Secondary line (relative time or excerpt). |
+| id * | `string` | - | Unique key, also the argument passed to `onSelect`. |
+| title * | `ReactNode` | - | Thread title. |
+| meta | `ReactNode` | - | Secondary line (relative time or excerpt). |
 | active | `boolean` | `false` | Marks the currently open thread and highlights it. |
 
 ## Events

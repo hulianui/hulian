@@ -10,7 +10,7 @@ status: enriched
 
 # CodeBlock
 
-> Code block · Multiline `<pre>` with syntax highlighting, language label, and one-click copy feedback · typography/code
+> Displays multiline code with an optional language label and copy action. · typography/code
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| code* | `string` | — | Code text; use `\n` for multiple lines. |
-| lang | `string` | — | Language label shown in the upper-right corner, such as `"tsx"`. It also selects JavaScript-family, shell, or Python highlighting rules. |
+| code* | `string` | - | Code text; use `\n` for multiple lines. |
+| lang | `string` | - | Language label shown in the upper-right corner, such as `"tsx"`. It also selects JavaScript-family, shell, or Python highlighting rules. |
 | copyable | `boolean` | `true` | Whether to show the copy button. |
 | highlight | `boolean` | `true` | Whether to apply syntax coloring; disable it for plain text. |
 | lineNumbers | `boolean \| { start?: number }` | `false` | Whether to show a line-number gutter. Pass `{ start: 120 }` so a snippet is numbered from a given line; the gutter width follows the digits of the largest line number. |
-| className | `string` | — | Additional class name for the container. |
+| className | `string` | - | Additional class name for the container. |
 
 ## Highlighted languages
 
@@ -62,7 +62,7 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 - **A `lang` without a dedicated branch is approximated, not supported.** Every language outside the table above is scanned with the JavaScript-family rules: the `#` comments of `yaml` / `toml` / `ini` / `dockerfile` and the `--` comments of SQL are not recognized, so comment bodies are scanned as code and words inside them may even be colored as JavaScript keywords. Either accept that, or pass `highlight={false}` so nothing is colored wrongly; open an issue if you need a real branch for your language.
 - **Line numbers are decoration, not content.** The gutter is `aria-hidden` and cannot be selected: screen readers skip it, and selecting the whole block never drags `1 2 3` into the clipboard. The copy button always copies the original `code`. Conversely, do not treat the gutter as a source of copyable data.
-- **The gutter stays pinned to the left** (`sticky left-0` plus an opaque background). Line numbers survive horizontal scrolling of long lines; the cost is that the scrolled code is hidden under a narrow strip. That trade is deliberate — on a long line, seeing the line number matters more than that strip of code.
+- **The gutter stays pinned to the left** (`sticky left-0` plus an opaque background). Line numbers survive horizontal scrolling of long lines; the cost is that the scrolled code is hidden under a narrow strip. That trade is deliberate: on a long line, seeing the line number matters more than that strip of code.
 - The copy button uses `navigator.clipboard`, which only exists in a secure context (HTTPS or localhost); on a plain HTTP page in a local network, clicking it copies nothing.
 
 ## Related

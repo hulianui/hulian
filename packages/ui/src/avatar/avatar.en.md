@@ -10,7 +10,7 @@ status: enriched
 
 # Avatar
 
-> A Base UI avatar with an image and fallback content.
+> Displays a user image with fallback content.
 
 ## When to use
 
@@ -26,9 +26,9 @@ import { Avatar } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | size | `"sm" \| "md" \| "lg" \| "xl" \| "2xl"` | `"md"` | Preset circular diameter: 32 / 40 / 48 / 64 / 96px. |
-| src | `string` | — | Image URL; failures reveal `fallback`. |
-| alt | `string` | — | Alternative image text. |
-| className | `string` | — | Custom class name. |
+| src | `string` | - | Image URL; failures reveal `fallback`. |
+| alt | `string` | - | Alternative image text. |
+| className | `string` | - | Custom class name. |
 
 ## Slots
 

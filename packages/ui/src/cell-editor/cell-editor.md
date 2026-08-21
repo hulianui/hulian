@@ -10,7 +10,7 @@ status: enriched
 
 # CellEditor
 
-> 单元格内联编辑器 · 逐格常驻编辑原语(静止态与纯文本同形/失焦或 Enter 即提交/值没变不发/Esc 回滚/missing 灰斜体/field-sizing 自增高/onCommit 返 Promise 自带 pending) · forms/basic
+> 在表格单元格里就地编辑，静止时看起来和纯文本一样 · forms/basic
 
 ## 何时用
 
@@ -38,8 +38,8 @@ import { CellEditor } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `string` | — | 已提交值（受控数据源）。提交成功后把新值写回这里，组件据此重置内部草稿与判等基准 |
-| validate | `(next: string) => string \| undefined` | — | 提交前校验：返回字符串＝错误消息，拦住 `onCommit` 并把该串显示在格子下方；返回 `undefined`（或空串）放行。见下 |
+| value* | `string` | - | 已提交值（受控数据源）。提交成功后把新值写回这里，组件据此重置内部草稿与判等基准 |
+| validate | `(next: string) => string \| undefined` | - | 提交前校验：返回字符串＝错误消息，拦住 `onCommit` 并把该串显示在格子下方；返回 `undefined`（或空串）放行。见下 |
 | missing | `boolean` | `false` | 「这个字段还没填」：降成 muted + italic，让「空」和「填了空格」一眼可分 |
 | multiline | `boolean` | `false` | 多行档（textarea + CSS `field-sizing: content` 自增高）；默认单行 input。要按运行时变量切换多行，请分支渲染两个 `CellEditor`，见「禁忌 / 坑」 |
 | revertOnError | `boolean` | `false` | `onCommit` 的 Promise reject 时把草稿一并退回上一次提交值。判等基准无论开关都会退，见下 |
@@ -48,8 +48,8 @@ import { CellEditor } from "@hulianui/ui"
 | variant | `"default" \| "cell"` | `"cell"` | 外观档，透传给内层 [Input](../input/input.md) / [Textarea](../textarea/textarea.md)。`"cell"` 无边框透明底；同一行里其余列是普通输入框时用 `"default"`，见下 |
 | size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | 字号档，透传给内层 Input / Textarea |
 | disabled | `boolean` | `false` | 禁用。`onCommit` 返回 Promise 时组件在 pending 期间自己追加禁用，不必再传 |
-| placeholder | `string` | — | 占位文案（核对表里一般写「未填写」） |
-| className | `string` | — | 落在最外层节点上 |
+| placeholder | `string` | - | 占位文案（核对表里一般写「未填写」） |
+| className | `string` | - | 落在最外层节点上 |
 
 其余属性按档透传到编辑控件本身：单行档收 `<input>` 的原生属性（`name` / `type` / `maxLength` / `autoComplete` …），多行档收 `<textarea>` 的（`name` / `rows` / `wrap` …）。`rows` 在多行档里是「最少几行」的下限，`cell` 档下默认 1 行。
 

@@ -29,12 +29,12 @@ import { LightPillar } from "@hulianui/ui"
 | bottomColor | `string` | `var(--color-chart-1)` | 光柱底部颜色，与顶色沿 y 轴渐变混合 |
 | intensity | `number` | `1` | 整体亮度系数，越大越亮 |
 | rotationSpeed | `number` | `0.3` | 自转速度因子，同时驱动时间推进，0=几乎静止 |
-| glowAmount | `number` | `0.005` | 辉光强度（raymarch 累积增益），建议 0.001–0.02 |
+| glowAmount | `number` | `0.005` | 辉光强度（raymarch 累积增益），建议 0.001-0.02 |
 | pillarWidth | `number` | `3` | 光柱粗细（世界半径），越小越细如激光 |
 | pillarHeight | `number` | `0.4` | 光柱高度系数，越大纵向条纹越密 |
 | noiseIntensity | `number` | `0.5` | 颗粒噪声强度，0=纯净无颗粒 |
 | pillarRotation | `number` | `0` | 光柱整体倾斜角度(度)，例 30=向一侧斜射 |
-| className | `string` | — | 透传 canvas 容器(或 fallback div) |
+| className | `string` | - | 透传 canvas 容器(或 fallback div) |
 
 ## Slots
 

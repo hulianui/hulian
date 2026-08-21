@@ -10,7 +10,7 @@ status: enriched
 
 # Anchor
 
-> 锚点导航 · 自研零依赖 scrollspy(IntersectionObserver) + 平滑滚动 + active CSS 变量滑动指示条 + offsetTop/二级项 · navigation/inpage
+> 在长文里跟踪当前标题并平滑跳转到各节 · navigation/inpage
 
 ## 何时用
 
@@ -25,7 +25,7 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `AnchorItem[]` | — | 锚点项数组，支持一层 children 形成二级 |
+| items* | `AnchorItem[]` | - | 锚点项数组，支持一层 children 形成二级 |
 | offsetTop | `number` | `0` | 滚动定位时目标顶部预留的偏移(px)，避开固定页头；同时收缩 scrollspy 观测区上沿 |
 | getContainer | `() => HTMLElement \| null` | `undefined`(window) | 自定义滚动容器；页面真正的滚动体不是 window 时**必须传** |
 
@@ -33,9 +33,9 @@ import { Anchor, flattenAnchorItems } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| href * | `string` | — | 目标锚点，形如 `"#section-id"`，与页面元素 id 一一对应 |
-| title * | `ReactNode` | — | 目录里显示的标题 |
-| children | `AnchorItem[]` | — | 二级子项（仅一层） |
+| href * | `string` | - | 目标锚点，形如 `"#section-id"`，与页面元素 id 一一对应 |
+| title * | `ReactNode` | - | 目录里显示的标题 |
+| children | `AnchorItem[]` | - | 二级子项（仅一层） |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # AvatarCircles
 
-> 堆叠头像组 · 重叠 + ring + +N 计数(扩 Avatar·RSC) · data-display/info
+> 把多个头像叠成一排，末尾带溢出计数 · data-display/info
 
 ## 何时用
 
@@ -25,17 +25,17 @@ import { AvatarCircles, avatarCirclesItemVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| avatars* | `AvatarCirclesItem[]` | — | 头像列表（按序堆叠，后者压前者），见下表。 |
-| extraCount | `number` | — | 额外人数，渲染为末尾 "+N" 圆。 |
+| avatars* | `AvatarCirclesItem[]` | - | 头像列表（按序堆叠，后者压前者），见下表。 |
+| extraCount | `number` | - | 额外人数，渲染为末尾 "+N" 圆。 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 圆直径档位。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 `AvatarCirclesItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| src * | `string` | — | 头像图片地址。这里没有 fallback 槽（与单个 Avatar 不同），缺图会留一个空圆 |
-| alt | `string` | — | 图片替代文本 |
+| src * | `string` | - | 头像图片地址。这里没有 fallback 槽（与单个 Avatar 不同），缺图会留一个空圆 |
+| alt | `string` | - | 图片替代文本 |
 
 ## 示例
 ```tsx

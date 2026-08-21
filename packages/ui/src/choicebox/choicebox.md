@@ -10,7 +10,7 @@ status: enriched
 
 # Choicebox
 
-> 卡片选择 · 复合 ChoiceboxGroup/Choicebox(标题/描述/图标卡片) · 单选(radio)/多选(checkbox)对称 + 受控非受控 + 网格列数 · 隐藏原生 input 承载键盘与 a11y(单选方向键漫游/多选空格切换) · 套餐/支付方式/订阅档位 · forms/advanced
+> 用带标题和描述的卡片做单选或多选 · forms/advanced
 
 ## 何时用
 
@@ -27,22 +27,22 @@ import { ChoiceboxGroup, Choicebox } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| string[]` | — | 受控值。单选为 string，多选为 string[] |
-| defaultValue | `string \| string[]` | — | 非受控初值 |
+| value | `string \| string[]` | - | 受控值。单选为 string，多选为 string[] |
+| defaultValue | `string \| string[]` | - | 非受控初值 |
 | multiple | `boolean` | `false` | true=多选(checkbox 语义) / false=单选(radio 语义) |
 | name | `string` | 自动生成 | radio 分组 name（单选用） |
 | columns | `number` | `1` | 网格列数 |
 | disabled | `boolean` | `false` | 整组禁用 |
-| className | `string` | — | 透传到容器 |
-| aria-label | `string` | — | 无障碍标签 |
+| className | `string` | - | 透传到容器 |
+| aria-label | `string` | - | 无障碍标签 |
 
 ### Choicebox
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `string` | — | 选项值（组内唯一） |
+| value* | `string` | - | 选项值（组内唯一） |
 | disabled | `boolean` | `false` | 单项禁用 |
-| className | `string` | — | 透传到卡片 |
+| className | `string` | - | 透传到卡片 |
 
 ## Events
 

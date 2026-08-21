@@ -10,7 +10,7 @@ status: enriched
 
 # Stack
 
-> 弹性布局 · flex 原语 direction/gap/align/justify/wrap + as 多态(零依赖·RSC) · layout/arrange
+> 按一个方向排列子元素，统一控制间距、对齐和换行 · layout/arrange
 
 ## 何时用
 
@@ -27,8 +27,8 @@ import { Stack } from "@hulianui/ui"
 |------|------|------|------|
 | direction | `StackDirection \| ResponsiveDirection` | `"column"` | 主轴方向。传字符串=固定；传 `{base,sm,md,lg,xl,2xl}`=按断点响应式 |
 | gap | `number` | `0` | 子项间距（× 0.25rem，同 Tailwind spacing 刻度） |
-| align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | — | 交叉轴对齐 |
-| justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | — | 主轴对齐 |
+| align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | - | 交叉轴对齐 |
+| justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | - | 主轴对齐 |
 | wrap | `boolean` | `false` | 是否换行（仅 row 有意义） |
 | inline | `boolean` | `false` | 用 inline-flex 而非 flex（随内容收缩、可与文字基线排列） |
 | as | `ElementType` | `"div"` | 渲染的元素标签 |

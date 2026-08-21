@@ -31,27 +31,27 @@ import { BUILTIN_ISSUE_TEMPLATES, GITHUB_URL_MAX_LENGTH, IssueReporter, IssueRep
 |------|------|------|------|
 | repo | string | "hulianui/hulian" | 目标仓库 `owner/name`；也接受完整 GitHub URL / 带 `.git`，内部经 `normalizeRepo` 规范化 |
 | templates | IssueTemplate[] | BUILTIN_ISSUE_TEMPLATES | 模板集合（`{ type, label, labels?, tone?, fields, toMarkdown }`），整套替换 |
-| type | string | — | 受控当前模板 type |
+| type | string | - | 受控当前模板 type |
 | defaultType | string | templates[0].type | 非受控初始模板 type |
-| components | IssueComponentOption[] | — | 相关组件候选（`{ slug, name? }`）；不传就不渲染该字段。**组件不会自己去取 llms.txt / registry**，候选由你喂 |
-| relatedComponent | string | — | 相关组件受控值（slug） |
+| components | IssueComponentOption[] | - | 相关组件候选（`{ slug, name? }`）；不传就不渲染该字段。**组件不会自己去取 llms.txt / registry**，候选由你喂 |
+| relatedComponent | string | - | 相关组件受控值（slug） |
 | defaultRelatedComponent | string | "" | 相关组件非受控初值 |
 | defaultTitle | string | "" | 标题初值（issue 里写的 `title` prop 落到这里，避免与 HTML `title` 撞名） |
-| defaultValues | IssueFieldValues | — | 模板字段初值，按字段 `name`（issue 里写的 `body` prop 落到这里） |
+| defaultValues | IssueFieldValues | - | 模板字段初值，按字段 `name`（issue 里写的 `body` prop 落到这里） |
 | showSubmit | boolean | true | 是否渲染内置提交按钮；`IssueReporterModal` 内部固定置 false |
 | openInNewTab | boolean | true | 点「在 GitHub 上打开」时是否 `window.open` 新标签页 |
 | preview | "source" ｜ "rendered" ｜ false | "source" | 预览形态：CodeBlock 源码 / Markdown 渲染后 / 关闭 |
 | urlLimit | number | 8000 | 预填链接长度上限，超过即降级（见「禁忌 / 坑」） |
-| text | Partial\<IssueReporterText\> | — | 界面文案覆盖；不传则取 ConfigProvider 的 locale。注意与模板上的 `labels`（GitHub 标签）不是一回事 |
-| actions | ReactNode | — | 动作区追加的自定义按钮 |
-| apiRef | MutableRefObject\<IssueReporterApi ｜ null\> | — | 命令式句柄：`submit()` / `getDraft()` / `getUrl()` / `reset()` |
-| className | string | — | 表单本体外层类名 |
-| open / defaultOpen | boolean | — | 仅 Modal：受控 / 非受控开关 |
-| onOpenChange | (open: boolean) => void | — | 仅 Modal：开合回调（受控时必接） |
-| trigger | ReactElement | — | 仅 Modal：触发元素 |
+| text | Partial\<IssueReporterText\> | - | 界面文案覆盖；不传则取 ConfigProvider 的 locale。注意与模板上的 `labels`（GitHub 标签）不是一回事 |
+| actions | ReactNode | - | 动作区追加的自定义按钮 |
+| apiRef | MutableRefObject\<IssueReporterApi ｜ null\> | - | 命令式句柄：`submit()` / `getDraft()` / `getUrl()` / `reset()` |
+| className | string | - | 表单本体外层类名 |
+| open / defaultOpen | boolean | - | 仅 Modal：受控 / 非受控开关 |
+| onOpenChange | (open: boolean) => void | - | 仅 Modal：开合回调（受控时必接） |
+| trigger | ReactElement | - | 仅 Modal：触发元素 |
 | modalTitle | string | 取自 locale | 仅 Modal：弹层标题；不传则跟随 ConfigProvider（内置中文兜底「反馈 issue」） |
-| submitText / cancelText | string | — | 仅 Modal：页脚按钮文案 |
-| modalClassName | string | — | 仅 Modal：弹层容器类名（宽度等） |
+| submitText / cancelText | string | - | 仅 Modal：页脚按钮文案 |
+| modalClassName | string | - | 仅 Modal：弹层容器类名（宽度等） |
 
 ## Events
 

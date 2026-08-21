@@ -10,7 +10,7 @@ status: enriched
 
 # ContextMenu
 
-> 右键菜单 · Base UI context-menu 原语薄包(锚到光标) + 复用 Menu 皮肤/data-highlighted + danger · navigation/action
+> 在右键落点弹出上下文操作菜单，可标危险项 · navigation/action
 
 ## 何时用
 
@@ -27,43 +27,43 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| disabled | `boolean` | — | — |
+| disabled | `boolean` | - | - |
 | closeOnClick | `boolean` | `true` | 点击后是否关闭菜单。 |
-| label | `string` | — | 键盘 type-ahead 用文案覆盖（children 非纯文本时补）。 |
+| label | `string` | - | 键盘 type-ahead 用文案覆盖（children 非纯文本时补）。 |
 | variant | `"default" \| "danger"` | `"default"` | danger 用危险色（删除等）。 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 **ContextMenuCheckboxItem** —— 可开关的设置项，渲染 `role="menuitemcheckbox"` + `aria-checked`。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| checked | `boolean` | — | 是否勾选（受控）。要非受控请改用 `defaultChecked` |
+| checked | `boolean` | - | 是否勾选（受控）。要非受控请改用 `defaultChecked` |
 | defaultChecked | `boolean` | `false` | 初始是否勾选（非受控） |
 | disabled | `boolean` | `false` | 禁用 |
 | closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。勾选项默认**不关**，便于连续勾选 |
-| label | `string` | — | 键盘 type-ahead 用文案覆盖 |
+| label | `string` | - | 键盘 type-ahead 用文案覆盖 |
 | variant | `"default" \| "danger"` | `"default"` | danger 用危险色 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 **ContextMenuRadioGroup** —— 一组互斥选项的容器；`ContextMenuRadioItem` 必须放在它内部。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string` | — | 当前选中项的值（受控）。要非受控请改用 `defaultValue` |
-| defaultValue | `string` | — | 初始选中项的值（非受控） |
+| value | `string` | - | 当前选中项的值（受控）。要非受控请改用 `defaultValue` |
+| defaultValue | `string` | - | 初始选中项的值（非受控） |
 | disabled | `boolean` | `false` | 整组禁用 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 **ContextMenuRadioItem** —— 互斥选项中的一项，渲染 `role="menuitemradio"` + `aria-checked`。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `string` | — | 本项的值；与所在 `ContextMenuRadioGroup` 的 value 相等即为选中态 |
+| value* | `string` | - | 本项的值；与所在 `ContextMenuRadioGroup` 的 value 相等即为选中态 |
 | disabled | `boolean` | `false` | 禁用 |
 | closeOnClick | `boolean` | `false` | 点击后是否关闭菜单。单选项默认**不关**，选完想收起菜单要显式传 `true` |
-| label | `string` | — | 键盘 type-ahead 用文案覆盖 |
+| label | `string` | - | 键盘 type-ahead 用文案覆盖 |
 | variant | `"default" \| "danger"` | `"default"` | danger 用危险色 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 **ContextMenuSubTrigger**：Props `disabled` / `label` / `variant?: "default" \| "danger"` / `className`；Slots `children`。
 **ContextMenuContent / ContextMenuSubContent**：Props `className`；Slots `children`。

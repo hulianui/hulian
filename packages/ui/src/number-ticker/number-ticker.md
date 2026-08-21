@@ -27,7 +27,7 @@ import { NumberTicker, formatTicker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `number` | — | 目标值。进入视口后从 `startValue` 滚到此值 |
+| value* | `number` | - | 目标值。进入视口后从 `startValue` 滚到此值 |
 | startValue | `number` | `0` | 起始值。`startValue > value` 即自然向下滚（无需单独 direction prop） |
 | decimalPlaces | `number` | `0` | 小数位，驱动 `Intl.NumberFormat` 的 min/maxFractionDigits |
 | duration | `number` | `1.2` | 滚动时长（秒），曲线固定复用 `motionEase.out`（瑚琏签名） |

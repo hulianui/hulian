@@ -2,13 +2,15 @@
 import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { LivePlayer } from "../../../../packages/ui/src/live-player/live-player";
+import { demoAsset } from "../../../../packages/ui/src/lib/demo-asset";
+const SRC = demoAsset("/demo/sample-video.mp4");
 function LivePlayerDemo({ orientation = "landscape" }: {
     orientation?: "portrait" | "landscape";
 }) {
     const [followed, setFollowed] = useState(false);
     const [quality, setQuality] = useState("Ultra HD");
     return (<div className={orientation === "portrait" ? "w-56" : "w-full max-w-xl"}>
-      <LivePlayer src="/demo/sample-video.mp4" orientation={orientation} viewers={12840} qualities={["Blu-ray", "Ultra HD", "HD", "SD"]} quality={quality} onQualityChange={setQuality} host={{
+      <LivePlayer src={SRC} orientation={orientation} viewers={12840} qualities={["Blu-ray", "Ultra HD", "HD", "SD"]} quality={quality} onQualityChange={setQuality} host={{
             name: "Hanxuan Premium\u00B7Anchor A Nan",
             meta: "Followers 28.6w",
             followed,
@@ -28,7 +30,7 @@ export const livePlayerShowcase: ShowcaseSpec = {
   <LivePlayer src="/stream.mp4" viewers={12840} />
 </div>`,
             render: () => (<div className="w-full max-w-xl">
-          <LivePlayer src="/demo/sample-video.mp4" viewers={12840}/>
+          <LivePlayer src={SRC} viewers={12840}/>
         </div>),
         },
         {
@@ -44,7 +46,7 @@ export const livePlayerShowcase: ShowcaseSpec = {
   }}
 />`,
             render: () => (<div className="w-full max-w-xl">
-          <LivePlayer src="/demo/sample-video.mp4" viewers={12840} host={{ name: "Hanxuan Premium\u00B7Anchor A Nan", meta: "Followers 28.6w", onFollow: () => { } }}/>
+          <LivePlayer src={SRC} viewers={12840} host={{ name: "Hanxuan Premium\u00B7Anchor A Nan", meta: "Followers 28.6w", onFollow: () => { } }}/>
         </div>),
         },
         {

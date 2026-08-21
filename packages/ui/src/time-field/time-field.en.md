@@ -10,7 +10,7 @@ status: enriched
 
 # TimeField
 
-> Segmented time input · dependency-free hour/minute/second spinbuttons + arrow navigation + two-digit overwrite + min/max clamping · fixed-width `HH:mm[:ss]` values · forms/datetime
+> Edits hour, minute, and optional second segments directly from the keyboard. · forms/datetime
 
 ## When to use
 
@@ -30,17 +30,17 @@ import { TimeField } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| null` | — | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
-| defaultValue | `string \| null` | — | Initial value in uncontrolled mode, with the same shape as `value`. |
+| value | `string \| null` | - | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
+| defaultValue | `string \| null` | - | Initial value in uncontrolled mode, with the same shape as `value`. |
 | withSeconds | `boolean` | `false` | Whether to show the seconds segment and include seconds in the value. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Field size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px), so controls on one form row line up. |
-| minTime | `string` | — | Earliest allowed time, inclusive, with the same shape as `value`. |
-| maxTime | `string` | — | Latest allowed time, inclusive. |
+| minTime | `string` | - | Earliest allowed time, inclusive, with the same shape as `value`. |
+| maxTime | `string` | - | Latest allowed time, inclusive. |
 | clearable | `boolean` | `true` | Whether to show a clear button when the field has a value and is neither disabled nor read-only. |
 | disabled | `boolean` | `false` | Disables the field and prevents its segments from receiving focus. |
 | readOnly | `boolean` | `false` | Prevents value changes while preserving segment navigation. |
 | aria-label | `string` | From `ConfigProvider locale` | Accessible group name. An explicit value overrides the locale default; segment labels also follow the locale. |
-| className | `string` | — | Additional class name for the outer container. |
+| className | `string` | - | Additional class name for the outer container. |
 
 ## Events
 
@@ -61,7 +61,7 @@ retains the original Chinese compatibility labels.
 |------|------|
 | `↑` / `↓` | Increment or decrement the active segment, wrapping within its range (23 → 0). In an empty segment, `↑` starts at the minimum and `↓` at the maximum. |
 | `←` / `→` | Move between segments without wrapping past either end. |
-| `0`–`9` | Replaces the current segment through a two-digit buffer and advances after two digits. If the first digit cannot begin a valid two-digit value (for example `3` for hours), it commits that one digit immediately. |
+| `0`-`9` | Replaces the current segment through a two-digit buffer and advances after two digits. If the first digit cannot begin a valid two-digit value (for example `3` for hours), it commits that one digit immediately. |
 | `Backspace` / `Delete` | Clear the active segment. |
 
 ## Example

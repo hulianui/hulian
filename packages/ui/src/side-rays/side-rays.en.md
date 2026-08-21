@@ -33,10 +33,10 @@ import { SideRays } from "@hulianui/ui"
 | origin | `"top-left"\|"top-right"\|"bottom-left"\|"bottom-right"` | `"top-right"` | Beam divergence corner starting point |
 | tilt | `number` | `0` | Overall tilt angle of the beam (degrees), rotating sector around the light source point |
 | saturation | `number` | `1.5` | Saturation, 1=primary color / >1 enhance color / 0=remove color |
-| blend | `number` | `0.75` | Two-bundle color mixing ratio (0–1), 0=primary color only / 1=secondary color only |
+| blend | `number` | `0.75` | Two-bundle color mixing ratio (0-1), 0=primary color only / 1=secondary color only |
 | falloff | `number` | `1.6` | The brightness attenuation index with distance, the larger it is, the more concentrated it is near the light source |
-| opacity | `number` | `1` | Overall opacity (0–1), commonly used for overlay content 0.5–0.8 |
-| className | `string` | — | Additional class name for the root container; the component includes `absolute inset-0 z-0` |
+| opacity | `number` | `1` | Overall opacity (0-1), commonly used for overlay content 0.5-0.8 |
+| className | `string` | - | Additional class name for the root container; the component includes `absolute inset-0 z-0` |
 
 ## Slots
 
@@ -65,7 +65,7 @@ import { SideRays } from "@hulianui/ui"
 
 - WebGL requires client rendering; the component already declares `"use client"` and can be placed beneath a server-rendered page boundary.
 - The component comes with `absolute inset-0 z-0`, and the parent container must have positioning + size + `overflow-hidden`, otherwise it will not be visible.
-- High `intensity` can clip to white. Use `opacity` around 0.5–0.8 when rays sit beneath content.
+- High `intensity` can clip to white. Use `opacity` around 0.5-0.8 when rays sit beneath content.
 - Under reduced motion or without WebGL, the component renders a directional static fallback. Do not rely on the swing to convey information.
 
 ## Related

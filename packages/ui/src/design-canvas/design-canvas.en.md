@@ -32,11 +32,11 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | Name | Type | Default | Description |
 |------|------|------|------|
 | items | DesignCanvasItem[] | [] | Controlled `{ id, x, y, width, height, locked?, label? }` elements whose geometry the canvas owns. |
-| zoom | number | — | Controlled zoom. When present the canvas only reports `onZoomChange`. |
+| zoom | number | - | Controlled zoom. When present the canvas only reports `onZoomChange`. |
 | defaultZoom | number | 1 | Initial zoom when uncontrolled. |
-| pan | { x, y } | — | Controlled pan: the screen-pixel offset of the canvas origin inside the container. |
+| pan | { x, y } | - | Controlled pan: the screen-pixel offset of the canvas origin inside the container. |
 | defaultPan | { x, y } | { x: 0, y: 0 } | Initial pan when uncontrolled. |
-| selectedElement | string \| null | — | Controlled selection (element id or path). |
+| selectedElement | string \| null | - | Controlled selection (element id or path). |
 | defaultSelectedElement | string \| null | null | Initial selection when uncontrolled. |
 | minZoom | number | 0.1 | Lower zoom bound. |
 | maxZoom | number | 4 | Upper zoom bound. |
@@ -46,17 +46,17 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | wheelBehavior | "zoom" \| "pan" | "pan" | Wheel action when no modifier is held. Ctrl (including trackpad pinch) always zooms and ignores this prop. |
 | controls | boolean | true | Show the zoom toolbar in the bottom-right corner. |
 | readOnly | boolean | false | Disable dragging, resizing, and deletion while keeping selection, panning, and zooming. |
-| className | string | — | Outer class name. It must have a definite height; the canvas fills it. |
-| labels | Partial\<DesignCanvasLabels\> | — | Overrides the copy taken from the locale (canvas, item, zoomIn, zoomOut, fitView, resetView). Omit it and the canvas follows ConfigProvider. |
-| apiRef | MutableRefObject\<DesignCanvasApi \| null\> | — | Imperative handle (zoomIn, zoomOut, reset, fitView, screenToCanvas). |
+| className | string | - | Outer class name. It must have a definite height; the canvas fills it. |
+| labels | Partial\<DesignCanvasLabels\> | - | Overrides the copy taken from the locale (canvas, item, zoomIn, zoomOut, fitView, resetView). Omit it and the canvas follows ConfigProvider. |
+| apiRef | MutableRefObject\<DesignCanvasApi \| null\> | - | Imperative handle (zoomIn, zoomOut, reset, fitView, screenToCanvas). |
 
 `DesignCanvasItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| id * | `string` | — | Unique key, also the value used by `selectedElement`. |
-| x * / y * | `number` | — | Top-left position in canvas coordinates. |
-| width * / height * | `number` | — | Size in canvas units. |
+| id * | `string` | - | Unique key, also the value used by `selectedElement`. |
+| x * / y * | `number` | - | Top-left position in canvas coordinates. |
+| width * / height * | `number` | - | Size in canvas units. |
 | locked | `boolean` | `false` | Locked: no dragging and no resize handles, while selection and tab focus still work. |
 | label | `string` | Falls back to `id` | Accessible name. |
 

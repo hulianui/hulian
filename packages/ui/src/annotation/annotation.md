@@ -27,7 +27,7 @@ import { Annotation } from "@hulianui/ui/annotation"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| note | `ReactNode` | — | 手写旁注的内容。省略或传空时只留荧光笔底色，不画箭头也不画标签。 |
+| note | `ReactNode` | - | 手写旁注的内容。省略或传空时只留荧光笔底色，不画箭头也不画标签。 |
 | side | `"n"｜"ne"｜"e"｜"se"｜"s"｜"sw"｜"w"｜"nw"` | `ne` | **标签所在的方位**（与 Tooltip/Popover 的 side 同义），箭头自动从标签指回目标。 |
 | tone | `"neutral"｜"primary"｜"success"｜"warning"｜"danger"｜"rainbow"` | `neutral` | 语气色。只染标注自身，被标注的正文保持原色。rainbow 为循环色相，纯装饰。 |
 | mark | `boolean` | `true` | 荧光笔底色。外扩量见下方 `--hl-ann-spread`。 |
@@ -35,11 +35,11 @@ import { Annotation } from "@hulianui/ui/annotation"
 | labelWidth | `number` | `150` | 标签折行前的最大宽度（px）。 |
 | gap | `number` | `5` | 目标与箭头之间的留白（px）。 |
 | labelGap | `number` | `6` | 箭头与标签之间的留白（px）。 |
-| offset | `{ x?: number; y?: number }` | — | 微调。side 占据的那根轴上正值 = 远离目标（左右两侧对称）；另一根轴上正值 = 向右 / 向下。 |
+| offset | `{ x?: number; y?: number }` | - | 微调。side 占据的那根轴上正值 = 远离目标（左右两侧对称）；另一根轴上正值 = 向右 / 向下。 |
 | handwritten | `boolean` | `true` | 标签是否套手写字体栈（见下方「中文手写体」）。 |
 | as | `ElementType` | `span` | 宿主标签。需要语义高亮时可传 `mark`。 |
-| className | `string` | — | 落在宿主（被标注的内容）上。 |
-| labelClassName | `string` | — | 落在标签上，用来改字号 / 字重。 |
+| className | `string` | - | 落在宿主（被标注的内容）上。 |
+| labelClassName | `string` | - | 落在标签上，用来改字号 / 字重。 |
 
 ### CSS 变量
 

@@ -28,7 +28,7 @@ import { PulsatingButton } from "@hulianui/ui"
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸档，与 Button 同刻度（32/40/48px 高） |
 | pulseColor | `string` | `var(--color-primary)` 的 70% | 脉冲光环色 |
 | duration | `string` | `1.5s` | 一轮脉冲秒数 |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | 透传原生 button 属性 |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | - | 透传原生 button 属性 |
 
 ## Events
 

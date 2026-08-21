@@ -10,7 +10,7 @@ status: enriched
 
 # QueueLane
 
-> 优先级队列板 · 优先级泳道队列板 · 横向泳道 + 道头聚合队列指标(深度/平均等待/吞吐) · 只读队列监视器(区别 Kanban 拖拽工作流·FIFO+aging) + maxVisible 折叠「还有 N 条」 + onItemClick · groupByLane 保序分组纯函数带单测 · 任务总线/优先级队列(零依赖) · data-display/collection
+> 按优先级泳道展示队列积压，道头给出深度与等待 · data-display/collection
 
 ## 何时用
 
@@ -25,18 +25,18 @@ import { QueueLane, groupByLane } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| lanes* | `QueueLaneDef[]` | — | 泳道定义，顺序即展示顺序。`{id, label, tone?, meta?}`；tone 为 CSS 颜色/token 变量，原样写入 inline style 不做枚举映射 |
-| items* | `T[]` | — | 受控队列项数组，按 laneId 分组，道内顺序 = 数组原始顺序（FIFO）。每项须含 `{id, laneId}`；laneId 未命中任一 lane 则该项被丢弃 |
-| maxVisible | `number` | — | 每道最多直显条数，超出折叠为「还有 N 条」。缺省不折叠（全显） |
+| lanes* | `QueueLaneDef[]` | - | 泳道定义，顺序即展示顺序。`{id, label, tone?, meta?}`；tone 为 CSS 颜色/token 变量，原样写入 inline style 不做枚举映射 |
+| items* | `T[]` | - | 受控队列项数组，按 laneId 分组，道内顺序 = 数组原始顺序（FIFO）。每项须含 `{id, laneId}`；laneId 未命中任一 lane 则该项被丢弃 |
+| maxVisible | `number` | - | 每道最多直显条数，超出折叠为「还有 N 条」。缺省不折叠（全显） |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 泳道排布方向。horizontal：泳道横向并列，每道竖向排队 |
-| className | `string` | — | 外层类名 |
+| className | `string` | - | 外层类名 |
 
 `QueueItem`（`items` 的元素约束，你的行数据在此之上自由扩展）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| id * | `string` | — | 唯一键 |
-| laneId * | `string` | — | 所属泳道 id。须命中某个 `lanes[].id`，否则该项被丢弃 |
+| id * | `string` | - | 唯一键 |
+| laneId * | `string` | - | 所属泳道 id。须命中某个 `lanes[].id`，否则该项被丢弃 |
 
 ## Events
 

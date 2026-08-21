@@ -25,21 +25,21 @@ import { QRCode, buildQRCode, qrCodeSvgString, qrCodeToPngDataUrl } from "@hulia
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `string` | — | UTF-8 URL or text to encode. |
+| value* | `string` | - | UTF-8 URL or text to encode. |
 | size | `number` | `160` | Side length in pixels. |
 | level | `"L" \| "M" \| "Q" \| "H"` | `"M"` | Error-correction level; prefer H with a logo. |
 | margin | `number` | `2` | Quiet-zone width in modules. |
 | color | `string` | `currentColor` | Dark-module color inherited from text color by default. |
 | background | `string` | Transparent | Background color. |
-| logo | `QRCodeLogo` | — | Center `{ src: string; size?: number }` logo; pair with `level="H"`. |
+| logo | `QRCodeLogo` | - | Center `{ src: string; size?: number }` logo; pair with `level="H"`. |
 | aria-label | `string` | The value | Accessibility label. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ### Additional capabilities
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| minVersion | `number` | — | Minimum QR version from 1 to 40. Longer content can still increase the version rather than being truncated; setting a floor keeps a group of codes visually consistent in density. |
+| minVersion | `number` | - | Minimum QR version from 1 to 40. Longer content can still increase the version rather than being truncated; setting a floor keeps a group of codes visually consistent in density. |
 | boostLevel | `boolean` | `true` | Raises the error-correction level when spare capacity allows, without increasing the QR version. |
 | logo.excavate | `boolean` | `true` | Places a background patch under the logo to clear covered modules. Set to `false` for a translucent watermark-style logo. |
 | logo.opacity | `number` | `1` | Logo opacity, commonly combined with `excavate={false}` for a watermark. |

@@ -10,7 +10,7 @@ status: enriched
 
 # Container
 
-> 内容容器 · 限制最大宽度(sm/md/lg/xl/full) + 居中 + 左右安全内距 + as 多态(收口全站 mx-auto max-w-Nxl px-6 样板·零依赖·RSC) · layout/container
+> 给页面内容限定最大宽度并居中，留出左右安全边距 · layout/container
 
 ## 何时用
 

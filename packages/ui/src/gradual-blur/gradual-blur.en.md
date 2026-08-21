@@ -26,19 +26,19 @@ import { GradualBlur } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | position | `"top"\|"bottom"\|"left"\|"right"` | `"bottom"` | The side where the fuzzy bar abuts; top/bottom are horizontal bars, left/right are vertical bars |
-| strength | `number` | `2` | Blur strength base, each layer increases according to the curve, recommended 1–6 |
+| strength | `number` | `2` | Blur strength base, each layer increases according to the curve, recommended 1-6 |
 | height | `string` | `"6rem"` | Horizontal bar thickness; if width is not passed in vertical bar mode, this value will be reused as vertical bar width |
-| width | `string` | — | Vertical bar (left/right) width, the default falls back to `height` |
-| divCount | `number` | `5` | The more blur layers you add, the more delicate the transition will be and the more performance you will need. It is recommended 3–10 |
+| width | `string` | - | Vertical bar (left/right) width, the default falls back to `height` |
+| divCount | `number` | `5` | The more blur layers you add, the more delicate the transition will be and the more performance you will need. It is recommended 3-10 |
 | exponential | `boolean` | `false` | Exponentially increasing blur amount (near edges become blurry sharply), false=linear |
 | curve | `"linear"\|"bezier"\|"ease-in"\|"ease-out"\|"ease-in-out"` | `"linear"` | The climbing curve of the blur amount of each layer along the progress |
 | opacity | `number` | `1` | Overall opacity |
-| hoverIntensity | `number` | — | Blur multiplier on hover. Providing it enables pointer events; when omitted, the overlay does not block interaction |
+| hoverIntensity | `number` | - | Blur multiplier on hover. Providing it enables pointer events; when omitted, the overlay does not block interaction |
 | revealOnScroll | `boolean` | `false` | Fade in when entering the viewport (IntersectionObserver driver), invisible by default when turned on |
 | duration | `string` | `"0.3s"` | Fade-in transition duration, only valid for `revealOnScroll` |
 | zIndex | `number` | `10` | Overlaid z-index |
-| className | `string` | — | Root container additional className |
-| style | `CSSProperties` | — | Forward the root container inline style (merged with the internal calculation style, the same name shall prevail) |
+| className | `string` | - | Root container additional className |
+| style | `CSSProperties` | - | Forward the root container inline style (merged with the internal calculation style, the same name shall prevail) |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Drawer
 
-> 抽屉 · Base UI Dialog 引擎 + 四向侧滑 · feedback/overlay
+> 从屏幕任意一边滑出抽屉，承载内容或任务 · feedback/overlay
 
 ## 何时用
 
@@ -29,18 +29,18 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 |------|------|------|------|
 | `DrawerContent.side` | `"left" \| "right" \| "top" \| "bottom"` | `"right"` | 贴边方向 + 对应滑入方向 |
 | `DrawerContent.size` | `"sm" \| "md" \| "lg" \| "xl" \| "full"` | `"md"` | 主轴尺寸档。**主轴随 `side` 换手**：左右抽屉吃宽度、上下抽屉吃高度，故同一档在两轴上不是同一个值（见下表）。交叉轴恒 100%，不随此档变 |
-| `DrawerContent.container` | `Element \| Ref` | — | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
+| `DrawerContent.container` | `Element \| Ref` | - | 就地挂载目标；提供后 portal 进该容器并改用 absolute 贴其边（容器须 `position:relative` + `overflow-hidden`），用于手机框预览等局部容器 |
 | `DrawerContent.showClose` | `boolean` | `true` | 是否渲染右上角内置关闭按钮 |
 | `DrawerContent.closeLabel` | `string` | 取自 locale | 内置关闭按钮的无障碍名（默认取 `locale.drawer.close`） |
-| `DrawerContent.aria-label` | `string` | — | 抽屉的无障碍名，直接落到 popup 上。**不传 `title` 时唯一的命名手段**（铺满型抽屉的可见 header 由消费方自己画时用它，见下方「自己画 header 的抽屉怎么命名」） |
-| `DrawerContent.aria-labelledby` | `string` | — | 无障碍名的来源元素 id；指向页面上已有的可见标题时用它，优先于 `title` 自动生成的 id。与 `aria-label` 二选一 |
-| `DrawerContent.titleClassName` | `string` | — | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
-| `DrawerContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」 |
+| `DrawerContent.aria-label` | `string` | - | 抽屉的无障碍名，直接落到 popup 上。**不传 `title` 时唯一的命名手段**（铺满型抽屉的可见 header 由消费方自己画时用它，见下方「自己画 header 的抽屉怎么命名」） |
+| `DrawerContent.aria-labelledby` | `string` | - | 无障碍名的来源元素 id；指向页面上已有的可见标题时用它，优先于 `title` 自动生成的 id。与 `aria-label` 二选一 |
+| `DrawerContent.titleClassName` | `string` | - | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
+| `DrawerContent.descriptionClassName` | `string` | - | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」 |
 | `DrawerContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
-| `DrawerContent.backdropClassName` | `string` | — | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
+| `DrawerContent.backdropClassName` | `string` | - | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
 | `DrawerContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children |
-| `DrawerContent.bodyClassName` | `string` | — | 追加到正文区容器 |
-| `DrawerContent.className` | `string` | — | 内容容器类名 |
+| `DrawerContent.bodyClassName` | `string` | - | 追加到正文区容器 |
+| `DrawerContent.className` | `string` | - | 内容容器类名 |
 
 ### 尺寸档对照
 

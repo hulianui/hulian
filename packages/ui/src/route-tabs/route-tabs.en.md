@@ -10,7 +10,7 @@ status: enriched
 
 # RouteTabs
 
-> Route workspace tabs · controlled admin-page tabs with close-other/left/right/all, refresh, pinned tabs, drag reordering, active-item scrolling, and overflow controls · navigation/inpage
+> Renders controlled workspace tabs with pinning, reordering, overflow, refresh, and contextual close actions. · navigation/inpage
 
 ## When to use
 
@@ -27,21 +27,21 @@ import { RouteTabs } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `RouteTabItem[]` | — | Controlled tab list. The component never mutates it. |
-| activeKey | `string` | — | Active tab key. |
+| items* | `RouteTabItem[]` | - | Controlled tab list. The component never mutates it. |
+| activeKey | `string` | - | Active tab key. |
 | actions | `RouteTabsAction[]` | All | Built-in context-menu actions to expose. |
-| extraMenuItems | `{ key, label, disabled? }[]` | — | Custom entries appended after built-in actions. |
+| extraMenuItems | `{ key, label, disabled? }[]` | - | Custom entries appended after built-in actions. |
 | sortable | `boolean` | `false` | Enables drag reordering; pair with `onReorder`. |
 | disableAutoScroll | `boolean` | `false` | Disables scrolling the active tab into view. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
 `RouteTabItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| key * | `string` | — | Unique key, also the value used by `activeKey`. |
-| label * | `ReactNode` | — | Tab text. |
-| icon | `ReactNode` | — | Small icon before the label. |
+| key * | `string` | - | Unique key, also the value used by `activeKey`. |
+| label * | `ReactNode` | - | Tab text. |
+| icon | `ReactNode` | - | Small icon before the label. |
 | closable | `boolean` | See description | Whether the tab can be closed. By default pinned tabs are never closable, and other tabs stay closable only while more than one closable tab exists (closing down to one stops, so the content area never goes blank). |
 | pinned | `boolean` | `false` | Pinned tab: never closable, sorted first, and unaffected by "close others" or "close all". |
 
@@ -49,8 +49,8 @@ import { RouteTabs } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| key * | `string` | — | Menu-item key used to tell entries apart in the callback. |
-| label * | `ReactNode` | — | Menu-item text. |
+| key * | `string` | - | Menu-item key used to tell entries apart in the callback. |
+| label * | `ReactNode` | - | Menu-item text. |
 | disabled | `boolean` | `false` | Greyed out and not clickable. |
 
 `RouteTabsAction` is `"close" | "closeOthers" | "closeLeft" | "closeRight" | "closeAll" | "refresh"`.

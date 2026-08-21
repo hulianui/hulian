@@ -10,7 +10,7 @@ status: enriched
 
 # CodeDiff
 
-> 代码对比 · 零依赖行级 LCS diff(纯函数 diffLines 可测) + unified 单栏/split 双栏 + 增绿删红行底色 + 双行号槽 + filename 头条与 +/− 摘要 · agent 改动/PR 评审 · typography/code
+> 按行展示代码增删，可单栏也可左右双栏对照 · typography/code
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { CodeDiff, diffLines, diffStat } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| oldText* | `string` | — | 旧文本 |
-| newText* | `string` | — | 新文本 |
+| oldText* | `string` | - | 旧文本 |
+| newText* | `string` | - | 新文本 |
 | mode | `"unified" ｜ "split"` | `"unified"` | unified 单栏 / split 双栏对照 |
-| filename | `string` | — | 头部文件名条；省略则不渲染头部 |
+| filename | `string` | - | 头部文件名条；省略则不渲染头部 |
 | showLineNumbers | `boolean` | `true` | 显示行号槽 |
-| annotations | `CodeDiffAnnotation[]` | — | 行锚定批注：在匹配行渲染 gutter 标记 + 行下方插入整宽 content 槽（仅 unified 模式插 content） |
-| className | `string` | — | 容器类名 |
+| annotations | `CodeDiffAnnotation[]` | - | 行锚定批注：在匹配行渲染 gutter 标记 + 行下方插入整宽 content 槽（仅 unified 模式插 content） |
+| className | `string` | - | 容器类名 |
 
 `CodeDiffAnnotation`：`{ side?: "old"｜"new"（默认 "new"）; line: number（1-based）; gutter?: ReactNode; content?: ReactNode }`。
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Progress
 
-> 进度条 · linear/circular + 不定态 · 几何自有(reduced-motion) · feedback/loading
+> 展示确定或不确定的进度，可线形可环形 · feedback/loading
 
 ## 何时用
 
@@ -25,7 +25,7 @@ import { Progress, progressPercent, dashOffset } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `number` | — | 当前值；省略/undefined → indeterminate 不定态 |
+| value | `number` | - | 当前值；省略/undefined → indeterminate 不定态 |
 | max | `number` | `100` | 最大值 |
 | variant | `"linear" \| "circular"` | `"linear"` | 形态 |
 | tone | `"primary" \| "danger" \| "success" \| "warning"` | `"primary"` | 进度色调 |

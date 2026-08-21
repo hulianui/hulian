@@ -10,7 +10,7 @@ status: enriched
 
 # Affix
 
-> Affix · Dependency-free scroll pinning with top or bottom offset, layout-preserving placeholder, and custom scroll containers · navigation/inpage
+> Pins content after a scroll threshold while preserving its layout position. · navigation/inpage
 
 ## When to use
 
@@ -26,9 +26,9 @@ import { Affix } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | offsetTop | `number` | `0` | Distance in pixels from the container top at which the content becomes fixed. |
-| offsetBottom | `number` | — | Distance from the container bottom. Used only when `offsetTop` is absent; top takes precedence when both are provided. |
+| offsetBottom | `number` | - | Distance from the container bottom. Used only when `offsetTop` is absent; top takes precedence when both are provided. |
 | target | `HTMLElement \| Window \| null \| (() => HTMLElement \| Window \| null)` | `window` | Scroll event target, provided directly or through a getter. |
-| affixedClassName | `string` | — | Class name added while fixed, such as `shadow-lg`. |
+| affixedClassName | `string` | - | Class name added while fixed, such as `shadow-lg`. |
 
 > Also inherits `HTMLAttributes<HTMLDivElement>` except `children` and `onChange`.
 

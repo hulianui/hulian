@@ -10,7 +10,7 @@ status: enriched
 
 # LiveChat
 
-> Livestream chat · high-frequency auto-scrolling messages with five message skins, user levels and badges, pinned content, new-message recovery, bounded window, custom rendering, and video-overlay mode · data-display/collection
+> Displays live message types, sender levels, pinned items, auto-scroll, and new-message recovery. · data-display/collection
 
 ## When to use
 
@@ -25,23 +25,23 @@ import { LiveChat } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `LiveChatItem[]` | — | Controlled appended messages. |
-| pinned | `LiveChatItem[]` | — | Pinned notices above the stream. |
+| items* | `LiveChatItem[]` | - | Controlled appended messages. |
+| pinned | `LiveChatItem[]` | - | Pinned notices above the stream. |
 | autoScroll | `boolean` | `true` | Sticks to bottom until the user scrolls up. |
 | maxItems | `number` | `200` | Render-window limit. |
 | overlay | `boolean` | `false` | Light text and shadow over dark video. |
-| className | `string` | — | Container class. |
+| className | `string` | - | Container class. |
 
 `LiveChatItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| id * | `string` | — | Deduplication key. |
-| type * | `"message" \| "gift" \| "system" \| "enter"` | — | Entry type, which decides how the row renders. |
-| user | `LiveChatUser` | — | Sender `{ name, avatar?, badge?, level? }`; the `system` type may omit it. |
-| text | `ReactNode` | — | Body of a `message` entry. |
-| gift | `{ name: string; icon?: ReactNode; combo?: number }` | — | Gift details for a `gift` entry. |
-| at | `string` | — | Timestamp text, shown as-is without formatting. |
+| id * | `string` | - | Deduplication key. |
+| type * | `"message" \| "gift" \| "system" \| "enter"` | - | Entry type, which decides how the row renders. |
+| user | `LiveChatUser` | - | Sender `{ name, avatar?, badge?, level? }`; the `system` type may omit it. |
+| text | `ReactNode` | - | Body of a `message` entry. |
+| gift | `{ name: string; icon?: ReactNode; combo?: number }` | - | Gift details for a `gift` entry. |
+| at | `string` | - | Timestamp text, shown as-is without formatting. |
 
 ## Slots
 
@@ -54,7 +54,7 @@ import { LiveChat } from "@hulianui/ui"
 ## Examples
 ```tsx
 <LiveChat items={items}
-  pinned={[{ id: "p1", type: "system", text: "Giveaway at 8 PM—follow for updates" }]}
+  pinned={[{ id: "p1", type: "system", text: "Giveaway at 8 PM, follow for updates" }]}
   className="h-full" />
 ```
 

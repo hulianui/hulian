@@ -30,17 +30,17 @@ import { IconPicker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| sources* | `IconPickerSource[]` | — | 图标来源分类。每项 `{ key, label, tabIcon?, icons, renderIcon }` |
-| value | `string \| null` | — | 受控值（图标名） |
-| defaultValue | `string \| null` | — | 非受控初始值 |
+| sources* | `IconPickerSource[]` | - | 图标来源分类。每项 `{ key, label, tabIcon?, icons, renderIcon }` |
+| value | `string \| null` | - | 受控值（图标名） |
+| defaultValue | `string \| null` | - | 非受控初始值 |
 | columns | `number` | `8` | 网格列数 |
 | searchable | `boolean` | `true` | 显示搜索框 |
 | searchPlaceholder | `string` | `"搜索图标"` | 搜索框占位 |
 | defaultSource | `string` | 第一个 | 初始分类 key |
-| recent | `string[]` | — | 受控「最近使用」；省略则内部维护（最多 16 个，最新在前） |
+| recent | `string[]` | - | 受控「最近使用」；省略则内部维护（最多 16 个，最新在前） |
 | clearable | `boolean` | `true` | 有值时显示当前值行与清除按钮 |
 | emptyMessage | `ReactNode` | `"没有匹配的图标"` | 搜索无结果文案 |
-| className | `string` | — | 面板类名（调宽度用） |
+| className | `string` | - | 面板类名（调宽度用） |
 
 `IconPickerSource`：
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Collapsible
 
-> 折叠区 · Base UI collapsible 薄包 + 高度过渡(复用 Accordion --collapsible-panel-height) · navigation/action
+> 折叠或展开一块内容，带高度过渡 · navigation/action
 
 ## 何时用
 
@@ -25,10 +25,10 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `Collapsible.open` | `boolean` | — | 受控展开态 |
+| `Collapsible.open` | `boolean` | - | 受控展开态 |
 | `Collapsible.defaultOpen` | `boolean` | `false` | 非受控初始展开态 |
 | `Collapsible.disabled` | `boolean` | `false` | 禁用，不可展开 |
-| `Collapsible.className` | `string` | — | 容器类名 |
+| `Collapsible.className` | `string` | - | 容器类名 |
 | `CollapsibleTrigger.disabled` | `boolean` | `false` | 单独禁用触发器 |
 | `CollapsiblePanel.plain` | `boolean` | `false` | 不画皮：不渲染内层那层内边距 + 次要文字色的皮肤 div，children 直接进 Panel |
 

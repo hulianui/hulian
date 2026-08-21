@@ -24,7 +24,7 @@ How to choose among the three neighbours:
 | A **finished full-page** admin shell (sidebar, header, route tabs, and content from a single `menuItems`) | [AdminLayout](../admin-layout/admin-layout.md) |
 | Only the shell and the state machine, with fully custom contents | **Sidebar** |
 
-They do not compete. Sidebar owns the shell only, so anything can live inside it — including a `<NavMenu>` placed in `<SidebarContent>` when you do want a data-driven menu. AdminLayout is the pre-wired product built from shell plus NavMenu plus header plus tabs; its shape is fixed and cannot host the custom parts listed above, so drop down to Sidebar when you need them.
+They do not compete. Sidebar owns the shell only, so anything can live inside it, including a `<NavMenu>` placed in `<SidebarContent>` when you do want a data-driven menu. AdminLayout is the pre-wired product built from shell plus NavMenu plus header plus tabs; its shape is fixed and cannot host the custom parts listed above, so drop down to Sidebar when you need them.
 
 ## Import
 ```ts
@@ -47,8 +47,8 @@ The state machine and the layout root. It renders a horizontal flex container wh
 | Name | Type | Default | Description |
 |------|------|------|------|
 | `defaultOpen` | `boolean` | `true` | Uncontrolled initial value. |
-| `open` | `boolean` | — | Controlled expanded state; pair it with `onOpenChange`. |
-| `onOpenChange` | `(open: boolean) => void` | — | Fires in both controlled and uncontrolled mode. Wire persistence (cookie or localStorage) here. |
+| `open` | `boolean` | - | Controlled expanded state; pair it with `onOpenChange`. |
+| `onOpenChange` | `(open: boolean) => void` | - | Fires in both controlled and uncontrolled mode. Wire persistence (cookie or localStorage) here. |
 | `mobileBreakpoint` | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| number` | `"md"` | Viewports narrower than this switch to the mobile drawer. |
 | `shortcutKey` | `string \| false` | `"b"` | Key combined with Cmd/Ctrl for the built-in shortcut. `false` disables it. |
 | `width` | `string` | `"16rem"` | Expanded width, written to `--hl-sidebar-width`. |
@@ -66,7 +66,7 @@ The same breakpoint name `"md"` carries **two coexisting meanings** in this libr
 
 Both are deliberate, but they answer different questions. The first reads the breakpoint value as the collapse threshold itself; that is its established meaning and a test pins it down. The second matches **Tailwind's `md:` = `min-width: 768px`**, so that "the page starts laying out as desktop" and "Sidebar starts rendering as desktop" happen at the same instant. Aligning it with the first would tear exactly at 768px: the page would already be in its desktop layout while the sidebar was still a drawer. **An iPad in portrait is exactly 768px wide**, so this is not a theoretical edge.
 
-Keep the one-pixel gap in mind when you use both components together. If you need them to line up exactly, pass numbers on both sides — `breakpoint={768}` equals `mobileBreakpoint={769}`, or the other way round — instead of assuming the shared name means the same thing.
+Keep the one-pixel gap in mind when you use both components together. If you need them to line up exactly, pass numbers on both sides (`breakpoint={768}` equals `mobileBreakpoint={769}`, or the other way round) instead of assuming the shared name means the same thing.
 
 ### Sidebar
 
@@ -78,7 +78,7 @@ Keep the one-pixel gap in mind when you use both components together. If you nee
 | `mobileTitle` | `ReactNode` | Locale value | Accessible title of the mobile drawer (visually hidden). |
 | `mobileDescription` | `ReactNode` | Locale value | Accessible description of the mobile drawer (visually hidden). |
 | `mobileShowClose` | `boolean` | `false` | Whether the mobile drawer renders its built-in top-right close button. Off by default so it cannot cover the first navigation row. |
-| `mobileClassName` | `string` | — | Appended to the mobile drawer panel (merged with twMerge). |
+| `mobileClassName` | `string` | - | Appended to the mobile drawer panel (merged with twMerge). |
 
 ### SidebarMenuButton
 
@@ -86,29 +86,29 @@ Keep the one-pixel gap in mind when you use both components together. If you nee
 |------|------|------|------|
 | `isActive` | `boolean` | `false` | Highlights the current row and sets `aria-current="page"`. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Row height. `SidebarMenuSubButton` only offers `"sm" \| "md"`. |
-| `tooltip` | `ReactNode` | — | Label shown when collapsed to the icon rail. Enabled only while `state === "collapsed" && !isMobile`. |
+| `tooltip` | `ReactNode` | - | Label shown when collapsed to the icon rail. Enabled only while `state === "collapsed" && !isMobile`. |
 | `tooltipSide` | `"top" \| "right" \| "bottom" \| "left"` | `"right"` | Tooltip direction. Pass `"left"` for a right-hand sidebar. |
-| `render` | `ReactElement` | — | Renders as a custom element such as an `<a>` or a router `<Link>`, keeping real link semantics plus client-side routing. `SidebarTrigger`, `SidebarGroupAction`, `SidebarMenuAction`, and `SidebarMenuSubButton` accept the same prop. |
+| `render` | `ReactElement` | - | Renders as a custom element such as an `<a>` or a router `<Link>`, keeping real link semantics plus client-side routing. `SidebarTrigger`, `SidebarGroupAction`, `SidebarMenuAction`, and `SidebarMenuSubButton` accept the same prop. |
 
 ### Remaining structural parts
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `SidebarInset` | `<main>` | — | Sibling content region that fills the remaining width and scrolls itself. |
-| `SidebarTrigger` | `<button>` | — | Toggle button with built-in `aria-label`, `aria-expanded`, and `aria-controls`. |
+| `SidebarInset` | `<main>` | - | Sibling content region that fills the remaining width and scrolls itself. |
+| `SidebarTrigger` | `<button>` | - | Toggle button with built-in `aria-label`, `aria-expanded`, and `aria-controls`. |
 | `SidebarRail.label` | `string` | Locale value | Accessible name of the edge rail. Defaults to `locale.components.sidebar.rail` and is **deliberately different** from the trigger's name. |
-| `SidebarHeader` / `SidebarFooter` | `<div>` | — | Pinned top and bottom regions that do not scroll with the content. |
-| `SidebarContent` | `<div>` | — | The scrollable middle region. |
-| `SidebarSeparator` | `<div role="separator">` | — | Divider. |
-| `SidebarInput` | `Input` | — | Search field inside the sidebar; forwards every [Input](../input/input.md) prop. |
-| `SidebarGroup` / `SidebarGroupLabel` / `SidebarGroupContent` | `<div>` | — | One section: container, small caption (hidden in icon mode), and body. |
-| `SidebarGroupAction` | `<button>` | — | Action pinned to the top-right corner of a group, such as "New". |
-| `SidebarMenu` / `SidebarMenuItem` | `<ul role="list">` / `<li>` | — | Menu list and row container. |
+| `SidebarHeader` / `SidebarFooter` | `<div>` | - | Pinned top and bottom regions that do not scroll with the content. |
+| `SidebarContent` | `<div>` | - | The scrollable middle region. |
+| `SidebarSeparator` | `<div role="separator">` | - | Divider. |
+| `SidebarInput` | `Input` | - | Search field inside the sidebar; forwards every [Input](../input/input.md) prop. |
+| `SidebarGroup` / `SidebarGroupLabel` / `SidebarGroupContent` | `<div>` | - | One section: container, small caption (hidden in icon mode), and body. |
+| `SidebarGroupAction` | `<button>` | - | Action pinned to the top-right corner of a group, such as "New". |
+| `SidebarMenu` / `SidebarMenuItem` | `<ul role="list">` / `<li>` | - | Menu list and row container. |
 | `SidebarMenuAction.showOnHover` | `boolean` | `false` | Whether the trailing secondary action appears only on hover or focus. |
-| `SidebarMenuBadge` | `<div>` | — | Trailing count badge; `pointer-events-none` so it never swallows clicks. |
+| `SidebarMenuBadge` | `<div>` | - | Trailing count badge; `pointer-events-none` so it never swallows clicks. |
 | `SidebarMenuSkeleton.showIcon` | `boolean` | `true` | Whether the loading row shows a leading icon placeholder. |
 | `SidebarMenuSkeleton.width` | `string` | `"70%"` | Width of the loading text bar. **Must be deterministic.** |
-| `SidebarMenuSub` / `SidebarMenuSubItem` / `SidebarMenuSubButton` | `<ul>` / `<li>` / `<button>` | — | Second-level menu trio, hidden in icon mode. |
+| `SidebarMenuSub` / `SidebarMenuSubItem` / `SidebarMenuSubButton` | `<ul>` / `<li>` / `<button>` | - | Second-level menu trio, hidden in icon mode. |
 
 ## Events
 
@@ -121,7 +121,7 @@ Keep the one-pixel gap in mind when you use both components together. If you nee
 | Slot | Type | Description |
 |------|------|------|
 | `SidebarTrigger.children` | `ReactNode` | Custom icon; defaults to the `Menu` icon. |
-| `SidebarMenuButton.children` | `ReactNode` | Icon plus label. **Wrap the label in a `<span>`** — icon mode hides it through `[&>span:last-child]`. |
+| `SidebarMenuButton.children` | `ReactNode` | Icon plus label. **Wrap the label in a `<span>`**: icon mode hides it through `[&>span:last-child]`. |
 
 ## useSidebar()
 
@@ -207,7 +207,7 @@ const [open, setOpen] = useState(readCookie("sidebar") !== "0");
 
 ### Depth: sidebar surface and inset
 
-By default the sidebar shares `--color-surface` with [Card](../card/card.md) and [Popover](../popover/popover.md). **If your bridge layer maps `surface` and `bg` to the same color** (both pure white is the common light-mode case), the sidebar, the page background and the content area all end up the same color with only a 1px border between them — whereas a shadcn-lineage application sidebar usually carries one step of contrast there: **the navigation plane sits behind, the content sits in front** (#224).
+By default the sidebar shares `--color-surface` with [Card](../card/card.md) and [Popover](../popover/popover.md). **If your bridge layer maps `surface` and `bg` to the same color** (both pure white is the common light-mode case), the sidebar, the page background and the content area all end up the same color with only a 1px border between them, whereas a shadcn-lineage application sidebar usually carries one step of contrast there: **the navigation plane sits behind, the content sits in front** (#224).
 
 Two independent escape hatches; use either or both:
 
@@ -220,16 +220,16 @@ Two independent escape hatches; use either or both:
 <SidebarInset>…</SidebarInset>
 ```
 
-- `--hl-sidebar-surface` **falls back to `--color-surface`**, so leaving it unset changes nothing. It only covers the sidebar (including the copy inside the mobile drawer) and touches no other component — which is exactly why editing `--color-surface` is the wrong lever: that one is the shared surface color of the whole library.
+- `--hl-sidebar-surface` **falls back to `--color-surface`**, so leaving it unset changes nothing. It only covers the sidebar (including the copy inside the mobile drawer) and touches no other component, which is exactly why editing `--color-surface` is the wrong lever: that one is the shared surface color of the whole library.
 - `variant="inset"` requires `SidebarInset` to be the **next sibling** of `Sidebar` (same level, no `div` in between): the island styling reads the preceding sibling through `peer-data-*`. That is the same structural requirement as "Why in-flow rather than fixed" below, so correct markup already satisfies it.
 - On mobile the sidebar becomes a drawer and leaves the flow, so `inset` does not apply there (same as shadcn).
-- Under `inset` the sidebar draws **no divider** (the gutter already separates them), and with `collapsible="offcanvas"` that 8px gutter collapses to zero as well — otherwise a `width: 0` sidebar would still occupy 16px of padding and look like it never closed. That is also why this step cannot be reproduced with `className="p-2"` at the call site: collapsing would always leave a strip behind.
+- Under `inset` the sidebar draws **no divider** (the gutter already separates them), and with `collapsible="offcanvas"` that 8px gutter collapses to zero as well. Otherwise a `width: 0` sidebar would still occupy 16px of padding and look like it never closed. That is also why this step cannot be reproduced with `className="p-2"` at the call site: collapsing would always leave a strip behind.
 
 ### Reduced motion is the library's job
 
 Opening and closing the sidebar is a page-level container transform, so under `prefers-reduced-motion: reduce` **the component drops the width transition by itself** (#225). Consumers need to do nothing.
 
-The width transition lives in an inline `style` (duration and easing come from the motion tokens; utility classes are avoided so that projects importing only `preset-core.css` still get the same curve), and an inline style outranks every ordinary CSS rule — overriding it takes `!important` plus a selector that guesses the library's internal DOM structure, which fails silently the moment that structure changes, and what fails is an accessibility preference with no error to show for it. So the component owns it: **if any component still moves under reduced motion, file it as a bug** rather than stacking `!important` on the consumer side.
+The width transition lives in an inline `style` (duration and easing come from the motion tokens; utility classes are avoided so that projects importing only `preset-core.css` still get the same curve), and an inline style outranks every ordinary CSS rule: overriding it takes `!important` plus a selector that guesses the library's internal DOM structure, which fails silently the moment that structure changes, and what fails is an accessibility preference with no error to show for it. So the component owns it: **if any component still moves under reduced motion, file it as a bug** rather than stacking `!important` on the consumer side.
 
 When your own hand-rolled motion needs the same signal, use the exported hook instead of writing another `matchMedia`:
 
@@ -249,7 +249,7 @@ Pass `shortcutKey={false}` to drop the shortcut, or `shortcutKey="k"` to rebind 
 
 ## Layout: in-flow rather than fixed
 
-The comparable implementation in shadcn/ui lays out a `fixed` panel next to an equally wide spacer div. This component instead transitions its width in flow, because a `fixed` panel escapes any container that is not full screen — a documentation preview frame, a [Viewport](../viewport/viewport.md) device frame, a split workspace — and pins itself to the viewport. The in-flow approach matches [LayoutSider](../layout/layout.md) and [AdminLayout](../admin-layout/admin-layout.md) and needs no measurement.
+The comparable implementation in shadcn/ui lays out a `fixed` panel next to an equally wide spacer div. This component instead transitions its width in flow, because a `fixed` panel escapes any container that is not full screen (a documentation preview frame, a [Viewport](../viewport/viewport.md) device frame, a split workspace) and pins itself to the viewport. The in-flow approach matches [LayoutSider](../layout/layout.md) and [AdminLayout](../admin-layout/admin-layout.md) and needs no measurement.
 
 The trade-off: `SidebarProvider` must be the horizontal flex container, and `Sidebar` and `SidebarInset` must be its direct children. An extra wrapper `div` between them breaks the flex relationship.
 

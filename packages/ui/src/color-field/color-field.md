@@ -29,7 +29,7 @@ import { ColorField, normalizeHex, isHexColor } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string` | — | 受控值。接受 `#rgb` / `#rrggbb` / 无 `#` 写法，内部统一规范为小写 `#rrggbb` |
+| value | `string` | - | 受控值。接受 `#rgb` / `#rrggbb` / 无 `#` 写法，内部统一规范为小写 `#rrggbb` |
 | defaultValue | `string` | `"#3b82f6"` | 非受控初值 |
 | showSwatch | `boolean` | `true` | 左侧色块，点开调起系统取色器 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸（与 Input 同一套外壳变体，色块随之缩放） |

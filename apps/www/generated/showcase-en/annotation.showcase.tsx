@@ -52,7 +52,7 @@ export const annotationShowcase: ShowcaseSpec = {
         },
         {
             title: "Eight directions",
-            description: "side is the location of the label. The four positive orientation anchors are centered on corresponding sides, and the four diagonal orientation anchors are aligned toward the outside at the target corners\u2014the label will only grow away from the target as it lengthens.",
+            description: "side is the location of the label. The four positive orientation anchors are centered on corresponding sides, and the four diagonal orientation anchors are aligned toward the outside at the target corners, so the label only grows away from the target as it lengthens.",
             code: `{["n", "ne", "e", "se", "s", "sw", "w", "nw"].map((side) => (
   <Annotation key={side} note={side} side={side}>Target</Annotation>
 ))}`,

@@ -27,7 +27,7 @@ import { RowActions } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| actions * | `RowActionItem[]` | — | 动作表。`hidden` 的项先剔掉，再算折叠 |
+| actions * | `RowActionItem[]` | - | 动作表。`hidden` 的项先剔掉，再算折叠 |
 | variant | `"text" \| "button" \| "icon"` | `"text"` | 三档只差「有多明显」：文字档无边框、按钮档描边、图标档只有图标（要求每项都给 `icon`） |
 | max | `number` | `3` | 最多**露出**几个。超出时露出前 `max - 1` 个，其余进溢出菜单 |
 | size | `"sm" \| "md"` | `"sm"` | 密度档 |
@@ -39,16 +39,16 @@ import { RowActions } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| key * | `string` | — | React key |
-| label * | `string` | — | 动作名。**必须是纯字符串**：它同时当无障碍名、悬浮提示、菜单 type-ahead 检索词 |
-| icon | `ReactNode` | — | 文字档作前缀，图标档是按钮的全部内容 |
+| key * | `string` | - | React key |
+| label * | `string` | - | 动作名。**必须是纯字符串**：它同时当无障碍名、悬浮提示、菜单 type-ahead 检索词 |
+| icon | `ReactNode` | - | 文字档作前缀，图标档是按钮的全部内容 |
 | tone | `"neutral" \| "brand" \| "danger"` | `"neutral"` | 层级。主操作 `brand`、破坏性 `danger` |
 | disabled | `boolean` | `false` | 不可用。仍可聚焦、仍能读到名字 |
-| disabledReason | `ReactNode` | — | 为什么不可用。**给了 `disabled` 就该给它** |
-| confirm | `RowActionConfirm` | — | 二次确认：`{ title, description?, confirmText?, cancelText? }` |
+| disabledReason | `ReactNode` | - | 为什么不可用。**给了 `disabled` 就该给它** |
+| confirm | `RowActionConfirm` | - | 二次确认：`{ title, description?, confirmText?, cancelText? }` |
 | hidden | `boolean` | `false` | 按权限藏起来 |
-| onSelect | `() => void \| Promise<unknown>` | — | 点击回调；有 `confirm` 时在确认之后才调。**返回 Promise 时自动进 loading**（见下） |
-| render | `ReactElement` | — | 换元素渲染，典型是路由 `<Link>` |
+| onSelect | `() => void \| Promise<unknown>` | - | 点击回调；有 `confirm` 时在确认之后才调。**返回 Promise 时自动进 loading**（见下） |
+| render | `ReactElement` | - | 换元素渲染，典型是路由 `<Link>` |
 
 ## 示例
 

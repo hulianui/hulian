@@ -28,14 +28,14 @@ import { FlyingPosters } from "@hulianui/ui"
 | items | `string[]` | `[]` | 海报图片地址数组，按顺序首尾相接无限循环。建议同比例图，shader 内 cover 裁切不变形；空数组只渲空画布不抛错 |
 | planeWidth | `number` | `320` | 单张海报平面宽度（世界单位），与 planeHeight 共定比例与密度 |
 | planeHeight | `number` | `320` | 单张海报平面高度（世界单位） |
-| distortion | `number` | `3` | 卷动时弯折扭曲强度，越大翻折越夸张；建议 1–6，0 近似平移 |
-| scrollEase | `number` | `0.01` | 卷动缓动系数（0–1），越小越"重"惯性越长（showcase 默认演示用 0.05） |
+| distortion | `number` | `3` | 卷动时弯折扭曲强度，越大翻折越夸张；建议 1-6，0 近似平移 |
+| scrollEase | `number` | `0.01` | 卷动缓动系数（0-1），越小越"重"惯性越长（showcase 默认演示用 0.05） |
 | cameraFov | `number` | `45` | 透视相机视场角（度），越大透视越强、飞入飞出弧度越明显 |
 | cameraZ | `number` | `20` | 相机 Z 轴距离，越大画面越远、可见海报越多 |
 | autoScroll | `boolean` | `true` | 无交互时是否自动缓慢卷动；reduced-motion 下强制关闭 |
 | autoScrollSpeed | `number` | `0.6` | 自动卷动速度（世界单位/秒），autoScroll 为真时生效 |
-| className | `string` | — | 透传到根容器的额外 className |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器的额外 className |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Slots
 

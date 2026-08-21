@@ -25,16 +25,16 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | — | supports `<kbd>` native attributes (className, style, etc.) |
+| ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | - | supports `<kbd>` native attributes (className, style, etc.) |
 
 ### KbdGroup Props
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| keys | `ReactNode[]` | — | Key names, each wrapped in a Kbd. The usual way to write a combination |
+| keys | `ReactNode[]` | - | Key names, each wrapped in a Kbd. The usual way to write a combination |
 | separator | `ReactNode` | `"+"` | Separator between keys. Decorative only (`aria-hidden`, never announced). Pass `null` to keep the spacing without drawing a symbol |
-| label | `string` | — | Accessible name for the whole combination, such as "Open command palette". `role="group"` is added only when it is present |
-| ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | — | supports native attributes of the wrapping `<span>`. The rest spread comes first, so the `role` and `aria-label` the component computes win (see Usage guidelines) |
+| label | `string` | - | Accessible name for the whole combination, such as "Open command palette". `role="group"` is added only when it is present |
+| ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | supports native attributes of the wrapping `<span>`. The rest spread comes first, so the `role` and `aria-label` the component computes win (see Usage guidelines) |
 
 ## Slots
 
@@ -65,7 +65,7 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 - One Kbd renders one keycap and never adds a `+`. Reach for `KbdGroup` instead of hand-rolling `inline-flex + gap + separator` at every call site, otherwise the spacing and separator styling drift apart across the app.
 - Without `label`, KbdGroup adds no `role="group"` and a screen reader announces the keycaps as unrelated fragments. Nothing about the rendered output looks different, which is exactly why this step gets skipped: whenever the combination stands for a concrete action, put that action name in `label`.
 - When both `children` and `keys` are present only `children` is rendered; `keys` is ignored, because honouring both has no sensible meaning.
-- **A `role` you pass cannot override the component's own `role="group"`** — the rest spread comes first on the root node, see [consuming.md §7](https://github.com/hulianui/hulian/blob/master/docs/consuming.md). Without `label` the component claims no role, so whatever you pass is what you get.
+- **A `role` you pass cannot override the component's own `role="group"`**. The rest spread comes first on the root node, see [consuming.md §7](https://github.com/hulianui/hulian/blob/master/docs/consuming.md). Without `label` the component claims no role, so whatever you pass is what you get.
 - No symbol mapping is built in (`Meta → ⌘`, `Ctrl → ⌃`, and so on). How a key should read depends on the platform detection and wording rules of the consuming app, so a built-in table would guess wrong in any cross-platform product.
 
 ## Related

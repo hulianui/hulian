@@ -10,7 +10,7 @@ status: enriched
 
 # BeianFooter
 
-> Regulatory footer · One or more ICP records linked to MIIT + public-security record with badge icon linked to MPS + copyright row · Hairline card, semantic tokens, new-window external links, and RSC support · navigation/global
+> Renders Chinese filing and public-security registration links in a compliant footer. · navigation/global
 
 ## When to use
 
@@ -27,9 +27,9 @@ import { BeianFooter } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| icp | `IcpRecord[]` | — | One or more ICP registration numbers, including multiple sites such as `-1` and `-2` under one entity. Links to beian.miit.gov.cn by default. |
-| police | `PoliceRecord` | — | Public-security registration number shown with a police badge icon. Links to beian.mps.gov.cn by default. |
-| className | `string` | — | Additional class name. |
+| icp | `IcpRecord[]` | - | One or more ICP registration numbers, including multiple sites such as `-1` and `-2` under one entity. Links to beian.miit.gov.cn by default. |
+| police | `PoliceRecord` | - | Public-security registration number shown with a police badge icon. Links to beian.mps.gov.cn by default. |
+| className | `string` | - | Additional class name. |
 
 ## Slots
 

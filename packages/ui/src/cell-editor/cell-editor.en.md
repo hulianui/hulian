@@ -10,11 +10,11 @@ status: enriched
 
 # CellEditor
 
-> Inline cell editor · always-on per-cell editing primitive: looks like plain text at rest, commits on blur or Enter, skips unchanged values, rolls back on Esc, dims missing values, grows with `field-sizing`, and handles its own pending state when `onCommit` returns a promise · forms/basic
+> Edits one table cell in place: plain-text appearance at rest, commit on blur or Enter, no write when unchanged, Esc rollback, muted missing values, CSS field-sizing growth, and self-managed pending state. · forms/basic
 
 ## When to use
 
-Use CellEditor for review and backfill tables — the ones where a user scans a screen of existing data and fixes a single word in place. Every cell carries an editor that looks like text, there is no edit or save button, and losing focus commits that one cell.
+Use CellEditor for review and backfill tables, the ones where a user scans a screen of existing data and fixes a single word in place. Every cell carries an editor that looks like text, there is no edit or save button, and losing focus commits that one cell.
 
 It is not a reskin of [EditableTable](../editable-table/editable-table.md); the two are different interaction contracts:
 
@@ -38,8 +38,8 @@ import { CellEditor } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `string` | — | The committed value (controlled source). Write the new value back after a successful commit; the component resets its draft and its equality baseline from it. |
-| validate | `(next: string) => string \| undefined` | — | Pre-commit check: returning a string means that string is the error message, which blocks `onCommit` and renders below the cell; returning `undefined` (or an empty string) lets the value through. See below. |
+| value* | `string` | - | The committed value (controlled source). Write the new value back after a successful commit; the component resets its draft and its equality baseline from it. |
+| validate | `(next: string) => string \| undefined` | - | Pre-commit check: returning a string means that string is the error message, which blocks `onCommit` and renders below the cell; returning `undefined` (or an empty string) lets the value through. See below. |
 | missing | `boolean` | `false` | Marks the field as not filled in yet: renders muted and italic so that "empty" and "filled with spaces" stay distinguishable at a glance. |
 | multiline | `boolean` | `false` | Switches to a textarea that grows through CSS `field-sizing: content`; the default is a single-line input. To switch on a runtime variable, render two branches; see "Pitfalls". |
 | revertOnError | `boolean` | `false` | Rolls the draft back to the last committed value when the `onCommit` promise rejects. The equality baseline rolls back either way; see below. |
@@ -48,8 +48,8 @@ import { CellEditor } from "@hulianui/ui"
 | variant | `"default" \| "cell"` | `"cell"` | Appearance, forwarded to the inner [Input](../input/input.md) / [Textarea](../textarea/textarea.md). `"cell"` is borderless and transparent; use `"default"` when the other editable columns in the same row are ordinary fields. See below. |
 | size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | Type scale, forwarded to the inner Input / Textarea. |
 | disabled | `boolean` | `false` | Disables the editor. When `onCommit` returns a promise the component disables itself for the pending window, so no extra flag is needed. |
-| placeholder | `string` | — | Placeholder copy, usually a "not filled in" string in review tables. |
-| className | `string` | — | Applied to the outermost node. |
+| placeholder | `string` | - | Placeholder copy, usually a "not filled in" string in review tables. |
+| className | `string` | - | Applied to the outermost node. |
 
 Remaining attributes reach the editing control itself, per mode: single-line mode accepts the native `<input>` attributes (`name`, `type`, `maxLength`, `autoComplete`, …) and multiline mode accepts the `<textarea>` ones (`name`, `rows`, `wrap`, …). In multiline mode `rows` is a minimum height, and it defaults to 1 in the `cell` variant.
 
@@ -60,7 +60,7 @@ The native `size` attribute cannot be passed: it is the character width of an `<
 | Event | Type | Description |
 |------|------|------|
 | onCommit | `(next: string) => void \| Promise<void>` | Fires on blur and on Enter. **It is not called when the value equals the previously committed one**; returning a promise disables the editor while it is pending. It is also **not called** when `validate` returns an error string. |
-| onDraftChange | `(draft: string) => void` | A **read-only echo** of the draft, once per keystroke, leaving equality checks, validation, and the pending state exactly as they were. It exists for UI derived from what is being typed: filled-in counters, live previews, per-keystroke `localStorage` writes. **It only reflects typing** — an Esc rollback and an external write into `value` do not broadcast. |
+| onDraftChange | `(draft: string) => void` | A **read-only echo** of the draft, once per keystroke, leaving equality checks, validation, and the pending state exactly as they were. It exists for UI derived from what is being typed: filled-in counters, live previews, per-keystroke `localStorage` writes. **It only reflects typing**: an Esc rollback and an external write into `value` do not broadcast. |
 
 The order is equality check, then `validate`, then `onCommit`: an unchanged value is never validated, because it already passed last time, and a value that fails validation never leaves the component.
 
@@ -89,7 +89,7 @@ Multiline, for long text such as billing addresses and remarks:
 
 ### validate: an illegal value must not be written first and rolled back afterwards
 
-Commit-on-blur means that without a validation layer an illegal value is handed over first and rolled back by the consumer — and by then the caret is already in the next cell, so what the user sees is their own edit reverting itself. `validate` moves that layer earlier: return a string and `onCommit` is blocked, the value never leaves, and the error shows up in place.
+Commit-on-blur means that without a validation layer an illegal value is handed over first and rolled back by the consumer, and by then the caret is already in the next cell, so what the user sees is their own edit reverting itself. `validate` moves that layer earlier: return a string and `onCommit` is blocked, the value never leaves, and the error shows up in place.
 
 ```tsx
 <CellEditor
@@ -103,7 +103,7 @@ Commit-on-blur means that without a validation layer an illegal value is handed 
 />
 ```
 
-While blocked the draft is **not** rolled back, so the user keeps looking at the string they got wrong, and the equality baseline does not advance either — the same illegal value is blocked again on the next blur, and only a corrected value commits. The red indicator reuses the inset underline already present in the `cell` variant of `Input` and `Textarea` (an `inset` shadow, so there is zero layout shift), and the error string is linked to the control through `aria-describedby`.
+While blocked the draft is **not** rolled back, so the user keeps looking at the string they got wrong, and the equality baseline does not advance either, so the same illegal value is blocked again on the next blur, and only a corrected value commits. The red indicator reuses the inset underline already present in the `cell` variant of `Input` and `Textarea` (an `inset` shadow, so there is zero layout shift), and the error string is linked to the control through `aria-describedby`.
 
 Typing again, pressing Esc, or restoring the previously committed value all clear the error, because all three mean the message on screen no longer describes what is in the cell.
 
@@ -121,9 +121,9 @@ If the other editable columns of the same row are ordinary [Input](../input/inpu
 
 ### onCommit failures: the baseline rolls itself back, rolling back the draft is opt-in
 
-When the promise returned by `onCommit` rejects, the component moves the equality baseline back to the previously committed value. A rejection is exactly the proof that the value never got through, and a baseline that records it as committed makes the next blur short-circuit — which means the user cannot even retry after a failed save.
+When the promise returned by `onCommit` rejects, the component moves the equality baseline back to the previously committed value. A rejection is exactly the proof that the value never got through, and a baseline that records it as committed makes the next blur short-circuit, which means the user cannot even retry after a failed save.
 
-The draft stays put by default: what the user typed is still there, so editing it and blurring again is the retry. If `value` for this cell comes from a server cache (SWR, React Query, a Redux selector), a failure leaves the cache untouched and `value` unchanged, so the consumer has nothing to roll back with — turn on `revertOnError` and the display returns to its pre-failure state as well:
+The draft stays put by default: what the user typed is still there, so editing it and blurring again is the retry. If `value` for this cell comes from a server cache (SWR, React Query, a Redux selector), a failure leaves the cache untouched and `value` unchanged, so the consumer has nothing to roll back with. Turn on `revertOnError` and the display returns to its pre-failure state as well:
 
 ```tsx
 <CellEditor
@@ -141,13 +141,13 @@ The draft stays put by default: what the user typed is still there, so editing i
 />
 ```
 
-Error copy is still the consumer's call; the component only walks its own internal state back to the truth. A new value written into `value` while the request is in flight is not rolled back — that is the more recent truth, and a stale failure must not overwrite it.
+Error copy is still the consumer's call; the component only walks its own internal state back to the truth. A new value written into `value` while the request is in flight is not rolled back: that is the more recent truth, and a stale failure must not overwrite it.
 
 ### blurOnCommit / blurOnEscape: done with this cell, move on
 
-Both default to `false`, so focus stays inside the cell. When an operator works through a wide review table, pressing Enter means "this cell is done", and a caret still blinking in it reads as "nothing happened", so they press it again — that is what `blurOnCommit` is for, and `blurOnEscape` does the same for walking away after Esc. They are separate flags because Enter and Esc mean opposite things here ("I am done editing" versus "I am not editing this"), and usually only one of them is wanted.
+Both default to `false`, so focus stays inside the cell. When an operator works through a wide review table, pressing Enter means "this cell is done", and a caret still blinking in it reads as "nothing happened", so they press it again. That is what `blurOnCommit` is for, and `blurOnEscape` does the same for walking away after Esc. They are separate flags because Enter and Esc mean opposite things here ("I am done editing" versus "I am not editing this"), and usually only one of them is wanted.
 
-**Do not add your own `blur()` inside `onKeyDown`.** `blur()` is synchronous: it triggers the commit before the draft update has reached the next render, so the commit reads the stale draft — which turns Esc into a save.
+**Do not add your own `blur()` inside `onKeyDown`.** `blur()` is synchronous: it triggers the commit before the draft update has reached the next render, so the commit reads the stale draft, which turns Esc into a save.
 
 ## Pitfalls
 
@@ -161,7 +161,7 @@ Both default to `false`, so focus stays inside the cell. When an operator works 
 - **Returning an empty string from `validate` lets the value through.** An invisible error that still blocks the commit is worse than no check at all: the user only sees that the cell will not save, with nothing on screen. If you want to block, give them a sentence they can read.
 - **Do not swallow `onCommit` failures.** A rejected promise is how the component learns the value never got saved, which is what lets it move the equality baseline back so the user can retry. If your `catch` shows a toast and stops there, the component sees a successful commit. Error copy and whether the draft rolls back (`revertOnError`) are still yours to decide.
 - **The parent must write the new value back into `value`.** Without the write-back the editor keeps showing its own draft, and the next external refresh snaps the display back to the old value.
-- **Memoize `columns` when using it inside [Table](../table/table.md).** Cell functions are rendered as component types by the TanStack `flexRender`, so a changed identity unmounts and remounts the whole cell — and a remount fires the blur that commits.
+- **Memoize `columns` when using it inside [Table](../table/table.md).** Cell functions are rendered as component types by the TanStack `flexRender`, so a changed identity unmounts and remounts the whole cell, and a remount fires the blur that commits.
 
 ## Related
 [EditableTable](../editable-table/editable-table.md) · [Table](../table/table.md) · [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [ProTable](../pro-table/pro-table.md)

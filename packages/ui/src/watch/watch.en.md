@@ -10,7 +10,7 @@ status: enriched
 
 # Watch
 
-> Watch case · Apple Watch series squircle case + digital crown (model default size) + RSC · mockups/device
+> Frames compact content inside a smartwatch device mockup. · mockups/device
 
 ## When to Use
 
@@ -25,9 +25,9 @@ import { Watch, WATCH_MODELS } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `model` | `"ultra-49" \| "series-45" \| "se-44" \| "series-41"` | — | Optional model used to resolve the case width; the component itself has no model default |
+| `model` | `"ultra-49" \| "series-45" \| "se-44" \| "series-41"` | - | Optional model used to resolve the case width; the component itself has no model default |
 | `width` | `number` | Model width, or `184` without a model | Case width in pixels; an explicit value takes precedence over `model` |
-| `imageSrc` | `string` | — | The image address of the dial content, taking precedence over children |
+| `imageSrc` | `string` | - | The image address of the dial content, taking precedence over children |
 
 > Extends `ComponentPropsWithoutRef<"div">`, forwarding `className`, `style`, and other native attributes. `WATCH_MODELS` exports widths for `ultra-49` (210), `series-45` (190), `se-44` (184), and `series-41` (172).
 

@@ -4,6 +4,8 @@ import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { QRCode } from "../../../../packages/ui/src/qrcode/qrcode";
 import { qrCodeSvgString } from "../../../../packages/ui/src/qrcode/qrcode-core";
 import { qrCodeToPngDataUrl } from "../../../../packages/ui/src/qrcode/qrcode-png";
+import { demoAsset } from "../../../../packages/ui/src/lib/demo-asset";
+const LOGO = demoAsset("/demo/avatar-12.jpg");
 const EXPORT_VALUE = "https://hulian.dev/components/qrcode";
 function ExportDemo() {
     const [png, setPng] = useState<string | null>(null);
@@ -67,7 +69,7 @@ export const qrcodeShowcase: ShowcaseSpec = {
   level="H"
   logo={{ src: "/logo.png", size: 36 }}
 />`,
-            render: () => (<QRCode value="https://hulian.dev" size={160} level="H" logo={{ src: "/demo/avatar-12.jpg", size: 36 }}/>),
+            render: () => (<QRCode value="https://hulian.dev" size={160} level="H" logo={{ src: LOGO, size: 36 }}/>),
         },
         {
             title: "Watermark type Logo",
@@ -77,7 +79,7 @@ export const qrcodeShowcase: ShowcaseSpec = {
   level="H"
   logo={{ src: "/logo.png", size: 60, excavate: false, opacity: 0.25 }}
 />`,
-            render: () => (<QRCode value="https://hulian.dev" size={160} level="H" logo={{ src: "/demo/avatar-12.jpg", size: 60, excavate: false, opacity: 0.25 }}/>),
+            render: () => (<QRCode value="https://hulian.dev" size={160} level="H" logo={{ src: LOGO, size: 60, excavate: false, opacity: 0.25 }}/>),
         },
         {
             title: "Stable density \u00B7 Automatic upgrade",

@@ -10,7 +10,7 @@ status: enriched
 
 # CheckboxGroup
 
-> Checkbox group · Base UI value-array coordination with HulianUI Checkbox · forms/basic
+> Coordinates an array of values across a group of checkboxes. · forms/basic
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { CheckboxGroup } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string[]` | — | Controlled array of checked values. |
-| defaultValue | `string[]` | — | Initial checked values when uncontrolled. |
+| value | `string[]` | - | Controlled array of checked values. |
+| defaultValue | `string[]` | - | Initial checked values when uncontrolled. |
 | disabled | `boolean` | `false` | Disables every checkbox in the group. |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction. |
-| className | `string` | — | Additional class name for the root element. |
-| aria-label | `string` | — | Accessible label for the group. |
+| className | `string` | - | Additional class name for the root element. |
+| aria-label | `string` | - | Accessible label for the group. |
 
 ## Events
 

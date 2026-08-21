@@ -32,12 +32,12 @@ import { FuzzyText } from "@hulianui/ui"
 | fontFamily | `string` | `"inherit"` | 字体族，inherit 读 canvas computed font-family |
 | color | `string` | `var(--color-foreground)` | 填充色，随明暗主题；可传任意 CSS 颜色(含 var()/currentColor，内部经 computed style 解析)；style.color 优先级更高 |
 | enableHover | `boolean` | `true` | 指针在文字范围内时抖动加剧 |
-| baseIntensity | `number` | `0.18` | 静息态噪点强度(0–1)，越大越「毛」 |
-| hoverIntensity | `number` | `0.5` | 悬停态噪点强度(0–1) |
+| baseIntensity | `number` | `0.18` | 静息态噪点强度(0-1)，越大越「毛」 |
+| hoverIntensity | `number` | `0.5` | 悬停态噪点强度(0-1) |
 | fuzzRange | `number` | `30` | 每行/列最大像素位移幅度，决定噪点散开范围 |
 | direction | `"horizontal" \| "vertical" \| "both"` | `"horizontal"` | 抖动方向：按行左右/按列上下/两者叠加 |
-| className | `string` | — | 透传 canvas 额外 className |
-| style | `CSSProperties` | — | 透传 canvas 内联样式 |
+| className | `string` | - | 透传 canvas 额外 className |
+| style | `CSSProperties` | - | 透传 canvas 内联样式 |
 
 ## Slots
 

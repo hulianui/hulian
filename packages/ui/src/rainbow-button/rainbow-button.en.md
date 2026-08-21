@@ -27,7 +27,7 @@ import { RainbowButton } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Size step, on the same 32/40/48px scale as Button. |
 | speed | `string` | `3s` | Duration of one rainbow animation cycle. |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | Native button props. |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | - | Native button props. |
 
 ## Events
 

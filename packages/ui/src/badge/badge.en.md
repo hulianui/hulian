@@ -10,7 +10,7 @@ status: enriched
 
 # Badge
 
-> A count, dot, or custom-content badge that can stand alone or overlay any corner of a host element.
+> Overlays a count, capped count, custom value, or dot on wrapped content.
 
 ## When to use
 
@@ -25,16 +25,16 @@ import { Badge } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| count | `number` | — | Numeric count; zero is hidden unless `showZero` is true. |
+| count | `number` | - | Numeric count; zero is hidden unless `showZero` is true. |
 | max | `number` | `99` | Values above this limit render as `max+`. |
 | dot | `boolean` | `false` | Renders only a dot and takes precedence over `count`. |
 | showZero | `boolean` | `false` | Keeps a zero count visible. |
-| invisible | `boolean` | — | Hides the badge while retaining its wrapped child. |
+| invisible | `boolean` | - | Hides the badge while retaining its wrapped child. |
 | tone | `"neutral"\|"brand"\|"success"\|"warning"\|"danger"` | `danger` | Semantic color. |
-| variant | `"signal"\|"themed"` | `signal` | Color policy (#295). `signal` uses one solid color plus white text in both themes — how notification badges normally look. `themed` follows the theme like any other semantic surface (`bg-danger text-danger-foreground`); pick it when the badge is an inline status chip. `neutral` is unaffected and always follows the theme. |
+| variant | `"signal"\|"themed"` | `signal` | Color policy (#295). `signal` uses one solid color plus white text in both themes, which is how notification badges normally look. `themed` follows the theme like any other semantic surface (`bg-danger text-danger-foreground`); pick it when the badge is an inline status chip. `neutral` is unaffected and always follows the theme. |
 | size | `"sm"\|"md"` | `md` | Badge size. |
 | placement | `"top-right"\|"top-left"\|"bottom-right"\|"bottom-left"` | `top-right` | Overlay corner when `children` is supplied. |
-| offset | `[number, number]` | — | `[x, y]` pixel adjustment, where positive values move right and down. |
+| offset | `[number, number]` | - | `[x, y]` pixel adjustment, where positive values move right and down. |
 
 ## Slots
 

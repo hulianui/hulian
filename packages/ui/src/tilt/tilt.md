@@ -32,9 +32,9 @@ import { Tilt } from "@hulianui/ui"
 | tiltEnable | `boolean` | `true` | 总开关 |
 | maxAngleX / maxAngleY | `number` | `12` | 两轴最大角（度） |
 | reverse | `boolean` | `false` | 反向倾斜 |
-| axis | `"x" \| "y"` | — | 只绕单轴 |
+| axis | `"x" \| "y"` | - | 只绕单轴 |
 | initialAngleX / initialAngleY | `number` | `0` | 静息角（不交互时的初始倾斜） |
-| manualAngleX / manualAngleY | `number \| null` | — | 手动角度，给了就接管该轴（滑杆/摇杆/滚动进度驱动） |
+| manualAngleX / manualAngleY | `number \| null` | - | 手动角度，给了就接管该轴（滑杆/摇杆/滚动进度驱动） |
 | scale | `number` | `1` | 悬停放大倍数 |
 | perspective | `number` | `1000` | 透视距离 px，越小越夸张 |
 | transitionSpeed | `number` | `300` | 过渡时长 ms |
@@ -46,8 +46,8 @@ import { Tilt } from "@hulianui/ui"
 | glareMaxOpacity | `number` | `0.35` | 反光最大不透明度 |
 | glareColor | `string` | `"#ffffff"` | 反光颜色 |
 | glareReverse | `boolean` | `false` | 反光方向取反 |
-| glareBorderRadius | `string` | — | 反光层圆角 |
-| onTiltMove / onTiltEnter / onTiltLeave | `fn` | — | 每帧角度与反光 / 进入 / 离开 |
+| glareBorderRadius | `string` | - | 反光层圆角 |
+| onTiltMove / onTiltEnter / onTiltLeave | `fn` | - | 每帧角度与反光 / 进入 / 离开 |
 
 ### 纯函数（已导出）
 

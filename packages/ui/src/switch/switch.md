@@ -10,7 +10,7 @@ status: enriched
 
 # Switch
 
-> 开关 · Base UI 受控 + ARIA · forms/basic
+> 用一个开关切换二元设置，语义是改完即刻生效 · forms/basic
 
 ## 何时用
 
@@ -25,12 +25,12 @@ import { Switch } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| checked | `boolean` | — | 受控开关态 |
+| checked | `boolean` | - | 受控开关态 |
 | defaultChecked | `boolean` | `false` | 非受控初始态 |
 | disabled | `boolean` | `false` | 禁用 |
-| id | `string` | — | — |
-| className | `string` | — | — |
-| aria-label | `string` | — | 无可见标题时提供 |
+| id | `string` | - | - |
+| className | `string` | - | - |
+| aria-label | `string` | - | 无可见标题时提供 |
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 视觉尺寸（轨道 36×20 / 40×24 / 48×28）。`md` 与加这个 prop 之前逐像素一致 |
 | touchTarget | `boolean` | `false` | 扩出一块不可见的 ≥44px 命中区（只影响命中，不占布局、不改视觉）。移动端建议开 |
 

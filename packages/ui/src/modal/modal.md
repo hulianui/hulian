@@ -10,7 +10,7 @@ status: enriched
 
 # Modal
 
-> 命令式对话框 · confirm/info/success/error/warning 函数式 API + Dialog 引擎 · feedback/overlay
+> 用函数调用直接弹出确认、成功、警告等对话框 · feedback/overlay
 
 ## 何时用
 
@@ -29,7 +29,7 @@ import { modal, ModalProvider, hulianModalManager } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | — | 语调；命令式入口已隐含，一般无需显式传。**注意它管不到确定键**：只换左侧图标与图标色 |
+| `type` | `"confirm" \| "info" \| "success" \| "error" \| "warning"` | - | 语调；命令式入口已隐含，一般无需显式传。**注意它管不到确定键**：只换左侧图标与图标色 |
 | `danger` | `boolean` | `false` | 危险操作：确定键走 `tone="danger"`，左侧图标同步转 `text-danger`。与 [Popconfirm](../popconfirm/popconfirm.md) 的 `danger` 同名同义 |
 
 `ModalOptions` Events：

@@ -10,7 +10,7 @@ status: enriched
 
 # ColorSwatchPicker
 
-> Preset color selector · Base UI RadioGroup swatches with arrow-key navigation, selection ring, and blend-mode checkmark · forms/advanced
+> Chooses a color from a labeled, keyboard-accessible swatch collection. · forms/advanced
 
 ## When to use
 
@@ -25,19 +25,19 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| colors* | `(string \| { color: string; label?: string })[]` | — | Preset swatch list. A string is any CSS color (hex / rgb / hsl / named color / `var(--color-x)`); an object may add a `label` used as the accessible name and hover hint. Both forms can be mixed |
-| value | `string` | — | Controlled selection value (must be strictly equal to a swatch `color`) |
-| defaultValue | `string` | — | Uncontrolled initial selection value |
+| colors* | `(string \| { color: string; label?: string })[]` | - | Preset swatch list. A string is any CSS color (hex / rgb / hsl / named color / `var(--color-x)`); an object may add a `label` used as the accessible name and hover hint. Both forms can be mixed |
+| value | `string` | - | Controlled selection value (must be strictly equal to a swatch `color`) |
+| defaultValue | `string` | - | Uncontrolled initial selection value |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Color block size |
 | disabled | `boolean` | `false` | Disable entire group |
-| className | `string` | — | Additional class name for the container. |
+| className | `string` | - | Additional class name for the container. |
 | aria-label | `string` | Locale default | Accessible name; `enUS` provides “Color swatches”, and an explicit value takes precedence. |
 
 `ColorSwatchItem` (the object form of `colors`)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| color * | `string` | — | Any CSS color string. It is also the selection value compared strictly against `value`. |
+| color * | `string` | - | Any CSS color string. It is also the selection value compared strictly against `value`. |
 | label | `string` | Falls back to `color` itself | Accessible name and hover hint. Always provide it for token colors such as `var(--color-primary)`, otherwise a screen reader announces the variable name. |
 
 ## Events

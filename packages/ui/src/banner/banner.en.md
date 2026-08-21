@@ -10,7 +10,7 @@ status: enriched
 
 # Banner
 
-> Announcement bar · Full-width maintenance, promotion, or release message with six tones, soft/solid variants, icon, action, dismissal, alignment, and optional Marquee scrolling · feedback/message
+> Displays a full-width announcement with tone, action, and dismissal support. · feedback/message
 
 ## When to use
 
@@ -30,7 +30,7 @@ import { Banner } from "@hulianui/ui"
 | align | `"start"\|"center"` | `"center"` | Content alignment. |
 | scrollable | `boolean` | `false` | Scrolls long copy on one continuous CSS marquee line and pauses on hover. |
 | closeLabel | `string` | `"\u5173\u95ed"` | Close-button accessible label. The built-in Chinese copy means “Close.” |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # StripedPattern
 
-> 斜条纹背景 · 纯 CSS 渐变 + currentColor · decoration/backdrop
+> 用轻量的斜条纹给区块打底，颜色跟随文字色 · decoration/backdrop
 
 ## 何时用
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Input
 
-> 输入框 · Base UI Field + 前后缀 + invalid · forms/basic
+> 收单行文本输入，可加前后缀和错误态 · forms/basic
 
 ## 何时用
 
@@ -29,10 +29,10 @@ import { Input, inputShellVariants } from "@hulianui/ui"
 |------|------|------|------|
 | size | `"xs" ｜ "sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸（CVA 变体，覆盖原生 size）。`xs` = 28px 高 / 12px 字，给存量密集数据表的行内编辑器（仍带边框，区别于无边框的 `variant="cell"`）。`variant="cell"` 下只影响字号，不再有高度与内距 |
 | variant | `"default" ｜ "cell"` | `"default"` | 外壳形态。`cell` = 表格单元格里的就地编辑器：无边框、透明底、零内距、不占固定行高，焦点态用浅底 + 内嵌下划线代替焦点环 |
-| value | `string ｜ number ｜ readonly string[] ｜ null` | — | 受控值。除原生类型外**还收 `null`，按空串渲染**（#220）：[`useForm`](../form/form.md) 的 `register().value` 会把「显式清空」的 `null` 原样给出来，而原生 `<input value={null}>` 会被 React 判成非受控并打告警，故在本组件收口。不传（`undefined`）仍是非受控 |
+| value | `string ｜ number ｜ readonly string[] ｜ null` | - | 受控值。除原生类型外**还收 `null`，按空串渲染**（#220）：[`useForm`](../form/form.md) 的 `register().value` 会把「显式清空」的 `null` 原样给出来，而原生 `<input value={null}>` 会被 React 判成非受控并打告警，故在本组件收口。不传（`undefined`）仍是非受控 |
 | invalid | `boolean` | `false` | 独立使用时标红；在 hulian Field 内由 Field.Root invalid 自动驱动，无需重复传 |
 | disabled | `boolean` | `false` | 禁用 |
-| ref | `Ref<HTMLInputElement>` | — | 转发到**内层原生 `<input>`**（不是外壳 span）。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它 |
+| ref | `Ref<HTMLInputElement>` | - | 转发到**内层原生 `<input>`**（不是外壳 span）。`focus()` / `select()` / 取 `.value` / react-hook-form 的 `register()` 都靠它 |
 
 ## Events
 

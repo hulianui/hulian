@@ -32,7 +32,7 @@ import { ShimmerButton } from "@hulianui/ui"
 | shimmerDuration | `string` | `3s` | Duration of one shimmer cycle. |
 | background | `string` | `var(--color-primary)` | Button background color. |
 | foreground | `string` | `var(--color-primary-foreground)` | Text color (#288), paired with `background`: by default both follow the theme; when you pass a **fixed** background (a brand gradient that ignores the theme) pair it with a fixed foreground, or dark mode renders near-black text on the gradient. Lands in `--hulian-shimmer-fg`; the shimmer color reads it by default. |
-| ...buttonProps | `ComponentPropsWithoutRef<"button">` | — | Native button attributes passed to the rendered element. |
+| ...buttonProps | `ComponentPropsWithoutRef<"button">` | - | Native button attributes passed to the rendered element. |
 
 ## Events
 

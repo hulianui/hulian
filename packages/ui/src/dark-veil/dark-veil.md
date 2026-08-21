@@ -25,14 +25,14 @@ import { DarkVeil } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| hueShift | `number` | `0` | 色相偏移（0–360 度），YIQ 色相旋转调出冷蓝/暖紫/青绿基调 |
-| noiseIntensity | `number` | `0` | 颗粒噪声强度，CRT/胶片质感；建议 0–0.1，过大发雪花 |
-| scanlineIntensity | `number` | `0` | 扫描线强度，复古显示器观感；建议 0–0.5，需配合频率 |
+| hueShift | `number` | `0` | 色相偏移（0-360 度），YIQ 色相旋转调出冷蓝/暖紫/青绿基调 |
+| noiseIntensity | `number` | `0` | 颗粒噪声强度，CRT/胶片质感；建议 0-0.1，过大发雪花 |
+| scanlineIntensity | `number` | `0` | 扫描线强度，复古显示器观感；建议 0-0.5，需配合频率 |
 | speed | `number` | `0.5` | 动画速度因子；0=静止（仍渲染一帧静态画面） |
 | scanlineFrequency | `number` | `0` | 扫描线频率（疏密）；需 scanlineIntensity > 0 才可见 |
-| warpAmount | `number` | `0` | 空间扭曲量，UV 正余弦扰动产生波动/折射；建议 0–0.2 |
+| warpAmount | `number` | `0` | 空间扭曲量，UV 正余弦扰动产生波动/折射；建议 0-0.2 |
 | resolutionScale | `number` | `1` | 渲染分辨率缩放；<1 降采样省电，>1 超采样换清晰度 |
-| className | `string` | — | 透传到根容器（或 fallback div），自带 absolute inset-0 z-0 |
+| className | `string` | - | 透传到根容器（或 fallback div），自带 absolute inset-0 z-0 |
 
 ## Slots
 

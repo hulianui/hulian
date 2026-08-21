@@ -10,7 +10,7 @@ status: enriched
 
 # MarkdownEditor
 
-> WYSIWYG Markdown editor powered by TipTap · Markdown string input/output + hidden-input Field bridge + standard toolbar · forms/advanced
+> Edits Markdown through a WYSIWYG TipTap surface with Markdown input and output. · forms/advanced
 
 ## When to use
 
@@ -25,14 +25,14 @@ import { MarkdownEditor } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | Controlled markdown string |
-| defaultValue | `string` | — | Initial value when uncontrolled. |
-| name | `string` | — | Name of the hidden input used to bridge native forms and Field. |
-| placeholder | `string` | — | Placeholder shown when the editor is empty. |
+| value | `string` | - | Controlled markdown string |
+| defaultValue | `string` | - | Initial value when uncontrolled. |
+| name | `string` | - | Name of the hidden input used to bridge native forms and Field. |
+| placeholder | `string` | - | Placeholder shown when the editor is empty. |
 | invalid | `boolean` | `false` | Applies the danger style; an enclosing Field may also drive this through `data-invalid`. |
 | disabled | `boolean` | `false` | Disables editing. |
 | minRows | `number` | `6` | Content area minimum height (rows) |
-| className | `string` | — | Additional class name for the editor shell. |
+| className | `string` | - | Additional class name for the editor shell. |
 | aria-label | `string` | ConfigProvider locale | Accessible name for the editor. An explicit value takes precedence over the locale. |
 
 ## Events

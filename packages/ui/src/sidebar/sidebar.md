@@ -47,8 +47,8 @@ import {
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | `defaultOpen` | `boolean` | `true` | 非受控初值 |
-| `open` | `boolean` | — | 受控展开态。传了就必须配 `onOpenChange` |
-| `onOpenChange` | `(open: boolean) => void` | — | 展开态变化回调。受控与非受控都会触发，持久化（cookie / localStorage）接在这里 |
+| `open` | `boolean` | - | 受控展开态。传了就必须配 `onOpenChange` |
+| `onOpenChange` | `(open: boolean) => void` | - | 展开态变化回调。受控与非受控都会触发，持久化（cookie / localStorage）接在这里 |
 | `mobileBreakpoint` | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| number` | `"md"` | 视口宽度**小于**它即视为移动端并切抽屉 |
 | `shortcutKey` | `string \| false` | `"b"` | 与 Cmd/Ctrl 组合的内置快捷键按键。`false` 关掉 |
 | `width` | `string` | `"16rem"` | 展开宽度，写进 `--hl-sidebar-width` |
@@ -78,7 +78,7 @@ import {
 | `mobileTitle` | `ReactNode` | 取自 locale | 移动端抽屉的无障碍标题（视觉隐藏） |
 | `mobileDescription` | `ReactNode` | 取自 locale | 移动端抽屉的无障碍说明（视觉隐藏） |
 | `mobileShowClose` | `boolean` | `false` | 移动端是否渲染抽屉自带的右上角关闭按钮。默认关掉，避免压住导航首项 |
-| `mobileClassName` | `string` | — | 追加到移动端抽屉面板（走 twMerge） |
+| `mobileClassName` | `string` | - | 追加到移动端抽屉面板（走 twMerge） |
 
 ### SidebarMenuButton
 
@@ -86,29 +86,29 @@ import {
 |------|------|------|------|
 | `isActive` | `boolean` | `false` | 当前项高亮，同时置 `aria-current="page"` |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | 行高档位（`SidebarMenuSubButton` 只有 `"sm" \| "md"`） |
-| `tooltip` | `ReactNode` | — | 折叠到 icon 档时补的文字说明。只在 `state === "collapsed" && !isMobile` 时启用 |
+| `tooltip` | `ReactNode` | - | 折叠到 icon 档时补的文字说明。只在 `state === "collapsed" && !isMobile` 时启用 |
 | `tooltipSide` | `"top" \| "right" \| "bottom" \| "left"` | `"right"` | Tooltip 出现方向。右侧栏应传 `"left"` |
-| `render` | `ReactElement` | — | 渲染成自定义元素（`<a>` / 路由 `<Link>`），拿到真链接语义 + 客户端路由。`SidebarTrigger` / `SidebarGroupAction` / `SidebarMenuAction` / `SidebarMenuSubButton` 同款 |
+| `render` | `ReactElement` | - | 渲染成自定义元素（`<a>` / 路由 `<Link>`），拿到真链接语义 + 客户端路由。`SidebarTrigger` / `SidebarGroupAction` / `SidebarMenuAction` / `SidebarMenuSubButton` 同款 |
 
 ### 其余结构件
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `SidebarInset` | `<main>` | — | 侧栏的兄弟内容区，占满剩余宽度并自己滚动 |
-| `SidebarTrigger` | `<button>` | — | 开合按钮。自带 `aria-label` / `aria-expanded` / `aria-controls` |
+| `SidebarInset` | `<main>` | - | 侧栏的兄弟内容区，占满剩余宽度并自己滚动 |
+| `SidebarTrigger` | `<button>` | - | 开合按钮。自带 `aria-label` / `aria-expanded` / `aria-controls` |
 | `SidebarRail.label` | `string` | 取自 locale | 贴边热区的无障碍名。默认取 `locale.components.sidebar.rail`，**刻意与 `SidebarTrigger` 不同字** |
-| `SidebarHeader` / `SidebarFooter` | `<div>` | — | 顶部 / 底部固定区（不随内容滚动） |
-| `SidebarContent` | `<div>` | — | 中间可滚动区 |
-| `SidebarSeparator` | `<div role="separator">` | — | 分隔线 |
-| `SidebarInput` | `Input` | — | 侧栏内搜索框，透传 [Input](../input/input.md) 全部属性 |
-| `SidebarGroup` / `SidebarGroupLabel` / `SidebarGroupContent` | `<div>` | — | 一段分组：容器 / 小标题（icon 档自动隐藏）/ 内容 |
-| `SidebarGroupAction` | `<button>` | — | 贴在分组右上角的动作（「新建」之类） |
-| `SidebarMenu` / `SidebarMenuItem` | `<ul role="list">` / `<li>` | — | 菜单列表与行容器 |
+| `SidebarHeader` / `SidebarFooter` | `<div>` | - | 顶部 / 底部固定区（不随内容滚动） |
+| `SidebarContent` | `<div>` | - | 中间可滚动区 |
+| `SidebarSeparator` | `<div role="separator">` | - | 分隔线 |
+| `SidebarInput` | `Input` | - | 侧栏内搜索框，透传 [Input](../input/input.md) 全部属性 |
+| `SidebarGroup` / `SidebarGroupLabel` / `SidebarGroupContent` | `<div>` | - | 一段分组：容器 / 小标题（icon 档自动隐藏）/ 内容 |
+| `SidebarGroupAction` | `<button>` | - | 贴在分组右上角的动作（「新建」之类） |
+| `SidebarMenu` / `SidebarMenuItem` | `<ul role="list">` / `<li>` | - | 菜单列表与行容器 |
 | `SidebarMenuAction.showOnHover` | `boolean` | `false` | 行尾次级动作是否悬停 / 聚焦才显形 |
-| `SidebarMenuBadge` | `<div>` | — | 行尾计数徽标，`pointer-events-none` 不吃点击 |
+| `SidebarMenuBadge` | `<div>` | - | 行尾计数徽标，`pointer-events-none` 不吃点击 |
 | `SidebarMenuSkeleton.showIcon` | `boolean` | `true` | 加载态是否显示行首图标占位方块 |
 | `SidebarMenuSkeleton.width` | `string` | `"70%"` | 加载态文字条宽度。**必须是确定值** |
-| `SidebarMenuSub` / `SidebarMenuSubItem` / `SidebarMenuSubButton` | `<ul>` / `<li>` / `<button>` | — | 二级菜单三件套（icon 档自动隐藏） |
+| `SidebarMenuSub` / `SidebarMenuSubItem` / `SidebarMenuSubButton` | `<ul>` / `<li>` / `<button>` | - | 二级菜单三件套（icon 档自动隐藏） |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # EditableTable
 
-> 行内编辑表格 · 行级编辑(草稿副本/保存校验/取消还原) + 自定义编辑器(editor 逃生舱) + 增删行 + 列对齐/宽度(企业录入场景·文案接 i18n) · data-display/collection
+> 在表格里直接编辑整行，带校验、取消和增删行 · data-display/collection
 
 ## 何时用
 
@@ -27,14 +27,14 @@ import { EditableTable } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| columns* | `EditableColumn<T>[]` | — | 列定义(见下表) |
-| data* | `T[]` | — | 数据数组(受控数据源) |
-| rowKey* | `(row: T) => string` | — | 行稳定 key |
+| columns* | `EditableColumn<T>[]` | - | 列定义(见下表) |
+| data* | `T[]` | - | 数据数组(受控数据源) |
+| rowKey* | `(row: T) => string` | - | 行稳定 key |
 | addable | `boolean` | `false` | 显示「新增一行」按钮(需配合 `newRow`) |
-| newRow | `() => T` | — | 新行工厂(返回新行数据)；新增后该行自动进入编辑态 |
+| newRow | `() => T` | - | 新行工厂(返回新行数据)；新增后该行自动进入编辑态 |
 | deletable | `boolean` | `false` | 每行可删除 |
-| validateRow | `(row: T) => boolean` | — | 保存前校验整行，返回错误(falsy)则拦截保存(行内提示由消费者自理) |
-| className | `string` | — | — |
+| validateRow | `(row: T) => boolean` | - | 保存前校验整行，返回错误(falsy)则拦截保存(行内提示由消费者自理) |
+| className | `string` | - | - |
 
 ## Events
 
@@ -52,12 +52,12 @@ import { EditableTable } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| key* | `keyof T & string` | — | 数据键 |
-| title* | `ReactNode` | — | 列标题 |
+| key* | `keyof T & string` | - | 数据键 |
+| title* | `ReactNode` | - | 列标题 |
 | editable | `boolean` | `false` | 是否可编辑(false=只读列，编辑态也展示原值) |
-| render | `(value, row) => ReactNode` | — | 展示态渲染(默认直接渲染该键的值) |
-| editor | `(value, onChange, row) => ReactNode` | — | 编辑态编辑器(默认文本 Input)，`onChange` 写回草稿对应键 |
-| width | `number` | — | 列宽(px) |
+| render | `(value, row) => ReactNode` | - | 展示态渲染(默认直接渲染该键的值) |
+| editor | `(value, onChange, row) => ReactNode` | - | 编辑态编辑器(默认文本 Input)，`onChange` 写回草稿对应键 |
+| width | `number` | - | 列宽(px) |
 | align | `"left" \| "center" \| "right"` | `"left"` | 单元格对齐 |
 
 ## 示例

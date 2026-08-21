@@ -27,12 +27,12 @@ import { CurvedLoop } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text | `string` | — | 跑马灯文案，内部去尾部空白并补不间断空格作词间隔，首尾无缝拼接铺满曲线 |
+| text | `string` | - | 跑马灯文案，内部去尾部空白并补不间断空格作词间隔，首尾无缝拼接铺满曲线 |
 | speed | `number` | `2` | 滚动速度(px/帧，约 60fps)，越大越快 |
 | curveAmount | `number` | `320` | 弯曲量(二次贝塞尔控制点垂直偏移，viewBox 像素)，正值向下弯/负值向上弯/0 近直线 |
 | direction | `"left" \| "right"` | `"left"` | 自动滚动方向 |
 | interactive | `boolean` | `true` | 是否允许鼠标/触控拖拽拨动文字(松手后沿拖拽方向续滚) |
-| className | `string` | — | 文字颜色 token 类名(如 text-primary)；默认 fill 走 currentColor，可由父级 text-* 控制 |
+| className | `string` | - | 文字颜色 token 类名(如 text-primary)；默认 fill 走 currentColor，可由父级 text-* 控制 |
 
 ## 示例
 ```tsx

@@ -10,11 +10,11 @@ status: enriched
 
 # RichTextEditor
 
-> Rich text editor whose value is an HTML string, with a trimmable toolbar, injected image uploads, and paste sanitizing · forms/advanced
+> Edits HTML through a WYSIWYG TipTap surface, with a trimmable toolbar, injected image uploads, and paste sanitizing. · forms/advanced
 
 ## When to use
 
-Long-form content that operators lay out themselves and the front end renders verbatim: campaign rules, brand stories, product descriptions, newsletter articles. There is a single test — **the value going in and out is an HTML string** (the database stores HTML, and the front end feeds it straight into `v-html` or a mini-program `rich-text`).
+Long-form content that operators lay out themselves and the front end renders verbatim: campaign rules, brand stories, product descriptions, newsletter articles. There is a single test: **the value going in and out is an HTML string** (the database stores HTML, and the front end feeds it straight into `v-html` or a mini-program `rich-text`).
 
 Use [MarkdownEditor](../markdown-editor/markdown-editor.md) when the value is Markdown, and [Textarea](../textarea/textarea.md) for plain multiline text. Do not mount an editor merely to display existing HTML: opening the content normalizes it against the editor schema.
 
@@ -29,20 +29,20 @@ import { RichTextEditor } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | Controlled **HTML fragment string**. |
-| defaultValue | `string` | — | Uncontrolled initial HTML string. |
-| name | `string` | — | Name of the hidden input that bridges to a native form or Field; its value is the HTML string. |
-| placeholder | `string` | — | Empty-state prompt. |
+| value | `string` | - | Controlled **HTML fragment string**. |
+| defaultValue | `string` | - | Uncontrolled initial HTML string. |
+| name | `string` | - | Name of the hidden input that bridges to a native form or Field; its value is the HTML string. |
+| placeholder | `string` | - | Empty-state prompt. |
 | invalid | `boolean` | `false` | Invalid state, which switches the shell to the danger color. An enclosing Field can also drive it through `data-invalid`. |
 | disabled | `boolean` | `false` | Disables editing and hides the toolbar. |
 | minRows | `number` | `8` | Minimum height of the content area, in rows. |
-| maxRows | `number` | — | **Maximum** height of the content area, in the same rows unit as `minRows`. Past that the body scrolls internally and the toolbar stays outside the scroll area. See "Height cap". |
-| maxHeight | `number \| string` | — | The same cap expressed as a length (numbers are pixels, strings are any CSS length such as `"60vh"`). **It wins over `maxRows`** when both are given, and the component warns in development. |
-| toolbar | `RichTextToolbarItem[]` | Full set | Toolbar entries and their order; `[]` renders no toolbar at all. **Trimming an entry also disables its extension** — see the usage guidelines. |
+| maxRows | `number` | - | **Maximum** height of the content area, in the same rows unit as `minRows`. Past that the body scrolls internally and the toolbar stays outside the scroll area. See "Height cap". |
+| maxHeight | `number \| string` | - | The same cap expressed as a length (numbers are pixels, strings are any CSS length such as `"60vh"`). **It wins over `maxRows`** when both are given, and the component warns in development. |
+| toolbar | `RichTextToolbarItem[]` | Full set | Toolbar entries and their order; `[]` renders no toolbar at all. **Trimming an entry also disables its extension** (see the usage guidelines). |
 | sanitizePaste | `boolean` | `true` | Sanitizes pasted content: removes `class`, `on*` handlers, and `<style>`, filters `href` / `src` through a URL-scheme allowlist, and filters inline `style` through a property allowlist. |
 | legacyHtml | `boolean \| LegacyHtmlOptions` | `false` | Compatibility with legacy HTML from the WeChat editor, Word, or an old UEditor. Off by default; `true` enables all three tiers, and an object enables only the tiers you name. See "Legacy HTML compatibility". |
-| extensions | `AnyExtension[]` | — | Extra TipTap extensions, for example a node type for `<iframe>` videos that already exist in legacy content. |
-| className | `string` | — | Additional class name for the shell. |
+| extensions | `AnyExtension[]` | - | Extra TipTap extensions, for example a node type for `<iframe>` videos that already exist in legacy content. |
+| className | `string` | - | Additional class name for the shell. |
 | aria-label | `string` | locale | Accessible name of the content area. |
 
 `RichTextToolbarItem` is `"bold" | "italic" | "underline" | "strike" | "heading" | "fontSize" | "color" | "backgroundColor" | "align" | "bulletList" | "orderedList" | "blockquote" | "link" | "image" | "table" | "clear" | "divider"`.
@@ -168,11 +168,11 @@ The editor schema decides which tags survive, and it decides **at load time**. T
 | `<section style="text-align">` | **Lost**, along with the tag it was attached to | Pushed down to `<p style="text-align">` |
 | `align="center"` attribute / `<center>` | **Lost** | Translated to `text-align` on the child block |
 | `<table>` | Needs `toolbar` to include `table`, otherwise lost | Same; not part of this feature |
-| `<iframe>` / `<video>` / custom tags | Lost | Lost — add a node through `extensions` |
+| `<iframe>` / `<video>` / custom tags | Lost | Lost. Add a node through `extensions` |
 
 Two entry points, chosen by which side does the translating:
 
-- **The `legacyHtml` prop** covers all three tiers. `imgStyle` and the `font-family` half of `font` are **only** available here: an attribute that is not in the schema is gone the moment the content is parsed, so no pure function can bring it back. While it is on, the matching extensions ignore `toolbar` trimming — nobody should have to enable a color picker they do not want just to stop losing red text.
+- **The `legacyHtml` prop** covers all three tiers. `imgStyle` and the `font-family` half of `font` are **only** available here: an attribute that is not in the schema is gone the moment the content is parsed, so no pure function can bring it back. While it is on, the matching extensions ignore `toolbar` trimming, because nobody should have to enable a color picker they do not want just to stop losing red text.
 - **The `normalizeLegacyHtml(html)` pure function** covers the `font` and `align` tiers only, both of which are pre-parse markup translation. Use it to convert before feeding the editor, to clean a table in bulk, to write a migration script, or to share one mapping with another editor.
 
 ```ts
@@ -182,16 +182,16 @@ import { normalizeLegacyHtml } from "@hulianui/ui"
 const html = normalizeLegacyHtml(row.content)
 ```
 
-`normalizeLegacyHtml` needs `DOMParser`, so under plain Node you have to supply one (jsdom or linkedom); without it the input is returned unchanged rather than throwing. It **translates, it does not disinfect** — sanitizing still belongs to `sanitizePastedHtml` and to your server.
+`normalizeLegacyHtml` needs `DOMParser`, so under plain Node you have to supply one (jsdom or linkedom); without it the input is returned unchanged rather than throwing. It **translates, it does not disinfect**: sanitizing still belongs to `sanitizePastedHtml` and to your server.
 
 ## Usage guidelines
 
-- **The editor schema decides which tags survive, and it decides at load time.** A tag outside the extension set — `<iframe>`, `<video>`, or a custom tag — is dropped the moment the content opens, so saving it back loses data. Not touching the content does not protect it. Add the matching node through `extensions` before going live with legacy content.
+- **The editor schema decides which tags survive, and it decides at load time.** A tag outside the extension set (`<iframe>`, `<video>`, or a custom tag) is dropped the moment the content opens, so saving it back loses data. Not touching the content does not protect it. Add the matching node through `extensions` before going live with legacy content.
 - For the same reason, **trimming `toolbar` does more than remove buttons**: dropping `"table"` also drops the table extension, so a legacy `<table>` disappears. `"color"`, `"fontSize"`, and `"backgroundColor"` back `<span style="color|font-size|background-color">`, and `"align"` backs `style="text-align"`. Confirm the legacy content does not use that formatting before trimming.
 - **Before shipping, run a batch of real legacy content through "open, edit nothing, read `getHTML`" and diff it.** This matters more than any unit test, because what gets lost is years of layout work. One trap while diffing: reading `innerHTML` off `.ProseMirror` adds a `<br class="ProseMirror-trailingBreak">` that never reaches `getHTML`; leave it in and every `<br>` count looks doubled.
 - `legacyHtml` **preserves formatting, not structure**: `<section>` is still flattened into `<p>`, only the alignment that hung on it is pushed down to the child block. Multi-column or card layouts built out of nested `<section>` elements are not recoverable this way; those need your own nodes through `extensions`.
-- **A centering wrapper around a lone image cannot be preserved.** In `<section style="text-align:center"><img></section>` the image is a block node, so wrapping it in a `<p>` only makes ProseMirror lift it out and leave an empty paragraph behind. That shape is deliberately left alone — center images with front-end styling (`img { display:block; margin:0 auto }`) rather than through the stored string.
-- While `legacyHtml` is on, **none of the removal rules relax** (`class`, `on*`, `<style>`, and `javascript:` are still stripped); the inline `style` allowlist merely gains `font-family` and `max-width`. Values from `<font color>` go through a shape allowlist (named color, `#hex`, `rgb()`) so they cannot smuggle in a second declaration — body content is a user-writable field.
+- **A centering wrapper around a lone image cannot be preserved.** In `<section style="text-align:center"><img></section>` the image is a block node, so wrapping it in a `<p>` only makes ProseMirror lift it out and leave an empty paragraph behind. That shape is deliberately left alone. Center images with front-end styling (`img { display:block; margin:0 auto }`) rather than through the stored string.
+- While `legacyHtml` is on, **none of the removal rules relax** (`class`, `on*`, `<style>`, and `javascript:` are still stripped); the inline `style` allowlist merely gains `font-family` and `max-width`. Values from `<font color>` go through a shape allowlist (named color, `#hex`, `rgb()`) so they cannot smuggle in a second declaration, because body content is a user-writable field.
 - **Neither swatch picker offers a `var(--…)` color.** The body text is stored in your database and rendered elsewhere (`v-html`, a mini-program `rich-text`, an email), where the library CSS variables do not exist: `color: var(--color-foreground)` resolves to nothing there and silently falls back to the inherited color, which means an editor-only style was written into permanent content. "Default color" and "No highlight" therefore run `unsetColor()` / `unsetBackgroundColor()` - they remove the declaration rather than writing some "default" color.
 - Images are **never inlined as base64**, and that now holds on the paste path too (it did not before 0.36.0 - see #213: pasting from Word wrote the base64 straight into the column). Transport concerns - auth headers, direct upload, progress, retries - stay with the consumer.
 - **`blob:` and `file:` image URLs are stripped by the paste sanitizer.** The first is valid only for the lifetime of the current page and the second only on that one machine, so storing either leaves a broken image the next time the content is opened - and unlike base64 the column size looks perfectly normal, which makes it harder to notice.

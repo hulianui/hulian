@@ -29,8 +29,8 @@ import { StarBorder } from "@hulianui/ui"
 | color | `string` | `var(--color-primary)` | Meteor light band color, fed into radial-gradient; any CSS color (hex/oklch/var(--…)) can be used |
 | speed | `number` | `6` | The duration of a single meteor sweep (seconds), the bigger, the slower, the more restrained |
 | thickness | `number` | `1` | Border light strip thickness (px), open the top and bottom padding of the root container to determine the stroke thickness |
-| className | `string` | — | Forward the additional class name of the root container (merged, can cover rounded corners/spacing) |
-| style | `CSSProperties` | — | Forward the root container inline style |
+| className | `string` | - | Forward the additional class name of the root container (merged, can cover rounded corners/spacing) |
+| style | `CSSProperties` | - | Forward the root container inline style |
 
 ## Slots
 

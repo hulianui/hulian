@@ -25,11 +25,11 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `theme` | `"light" ｜ "dark"` | — | 受控主题：传了即受控，显示与切换目标都由它决定，忽略 `ThemeProvider` / 自持态的值；点击只回调 `onThemeChange` |
-| `onThemeChange` | `(next: "light" ｜ "dark") => void` | — | 主题即将切换时回调下一个值；受控与非受控都触发，受控时是唯一的落值出口 |
+| `theme` | `"light" ｜ "dark"` | - | 受控主题：传了即受控，显示与切换目标都由它决定，忽略 `ThemeProvider` / 自持态的值；点击只回调 `onThemeChange` |
+| `onThemeChange` | `(next: "light" ｜ "dark") => void` | - | 主题即将切换时回调下一个值；受控与非受控都触发，受控时是唯一的落值出口 |
 | `duration` | `number` | `500` | 圆形揭示动画时长(ms) |
-| `className` | `string` | — | 按钮类名 |
-| `aria-label` | `string` | — | 无障碍标签 |
+| `className` | `string` | - | 按钮类名 |
+| `aria-label` | `string` | - | 无障碍标签 |
 
 ## 示例
 ```tsx

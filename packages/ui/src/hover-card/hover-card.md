@@ -10,7 +10,7 @@ status: enriched
 
 # HoverCard
 
-> 悬停卡片 · Popover 引擎自研 hover 开/移出延迟关(复刻 Tooltip delay 范式) + 富内容 · feedback/overlay
+> 悬停后浮出富内容卡片，移开延时关闭 · feedback/overlay
 
 ## 何时用
 
@@ -36,9 +36,9 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@hulianui/ui"
 |------|------|------|------|
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
-| sideOffset | `number` | — | 与触发器的间距 |
-| anchor | `Element｜RefObject<Element>｜VirtualElement｜(() => Element｜VirtualElement｜null)` | — | 把卡片锚到别处而不是触发器，口径同 [Popover](../popover/popover.md) 的 `anchor`。差别只有一条：**触发器不可省**，卡片是 hover 打开的，`anchor` 只改「贴在哪」不改「谁把它打开」 |
-| className | `string` | — | 额外类名 |
+| sideOffset | `number` | - | 与触发器的间距 |
+| anchor | `Element｜RefObject<Element>｜VirtualElement｜(() => Element｜VirtualElement｜null)` | - | 把卡片锚到别处而不是触发器，口径同 [Popover](../popover/popover.md) 的 `anchor`。差别只有一条：**触发器不可省**，卡片是 hover 打开的，`anchor` 只改「贴在哪」不改「谁把它打开」 |
+| className | `string` | - | 额外类名 |
 
 ## Slots
 

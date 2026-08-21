@@ -10,7 +10,7 @@ status: enriched
 
 # SearchForm
 
-> Declarative filter form for admin list pages · fixed-column grid + single-row collapse + Search/Reset actions · built from HulianUI primitives · forms/framework
+> Builds collapsible query filters with reset and submit actions for data lists. · forms/framework
 
 ## When to use
 
@@ -25,14 +25,14 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| fields* | `SearchField[]` | — | Definitions for the filter fields. |
-| values | `Record<string, unknown>` | — | Controlled values; omit for internal state. |
+| fields* | `SearchField[]` | - | Definitions for the filter fields. |
+| values | `Record<string, unknown>` | - | Controlled values; omit for internal state. |
 | columns | `number` | `3` | Number of columns at desktop widths. |
 | gap | `number` | `4` | Row and column gap (× 0.25rem). |
 | collapsible | `boolean` | `true` | Enables one-row collapse when fields exceed one row; has no effect otherwise. |
 | defaultCollapsed | `boolean` | `true` | Initial collapsed state. |
 | loading | `boolean` | `false` | Whether the Search button is in a loading state. |
-| className | `string` | — | Additional class name for the root element. |
+| className | `string` | - | Additional class name for the root element. |
 
 ## Events
 
@@ -62,7 +62,7 @@ import { SearchForm, planLayout, canCollapse, totalSpan } from "@hulianui/ui"
 - `type: "datetime"`/`type: "datetime-range"` (native `datetime-local`)
 
 **The field type determines the value shape**: every `*-range` value is a two-item tuple `[start, end]`, with `""` for an unfilled endpoint; `multi-select` and a multiple `remote-select` use `string[]`; `cascader` and `region` use a root-to-leaf path array, which is `[]` while nothing is selected; all other built-in fields use `string`.
-After reset, each field returns to its `defaultValue` or its type-specific empty shape—do not assume every field resets to an empty string.
+After reset, each field returns to its `defaultValue` or its type-specific empty shape. Do not assume every field resets to an empty string.
 - `render: (ctx: { name; value; onChange }) => ReactNode` (escape hatch for a custom control)
 
 ## Example

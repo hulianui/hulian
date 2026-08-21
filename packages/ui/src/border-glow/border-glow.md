@@ -27,18 +27,18 @@ import { BorderGlow } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| className | `string` | — | 透传根容器 className（合并进 `.border-glow`） |
-| edgeSensitivity | `number` | `30` | 边缘灵敏度 0–100，越小越早触发外层光晕 |
+| className | `string` | - | 透传根容器 className（合并进 `.border-glow`） |
+| edgeSensitivity | `number` | `30` | 边缘灵敏度 0-100，越小越早触发外层光晕 |
 | glowColor | `string` | `var(--color-chart-1)` | 外层光晕色（box-shadow），token 须带 `--color-` 前缀 |
 | backgroundColor | `string` | 深色(surface 暗调) | 卡片底色，发光依赖深底对比，浅底下变弱 |
 | borderRadius | `number` | `28` | 圆角半径 px |
 | glowRadius | `number` | `40` | 外层光晕溢出内边距 px，越大扩散越远 |
-| glowIntensity | `number` | `1` | 光晕强度倍率 0–2 |
-| coneSpread | `number` | `25` | 光锥角度宽度 0–50，越大高亮弧越宽 |
+| glowIntensity | `number` | `1` | 光晕强度倍率 0-2 |
+| coneSpread | `number` | `25` | 光锥角度宽度 0-50，越大高亮弧越宽 |
 | animated | `boolean` | `false` | 挂载时自动播一圈扫光；reduced-motion 下跳过 |
 | colors | `string[]` | chart-1/3/4 | 彩色网格边框取色，循环映射到 7 个 radial 锚点 |
-| fillOpacity | `number` | `0.5` | 边缘彩色填充层透明度 0–1 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| fillOpacity | `number` | `0.5` | 边缘彩色填充层透明度 0-1 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

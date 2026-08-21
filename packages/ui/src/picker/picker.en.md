@@ -10,7 +10,7 @@ status: enriched
 
 # Picker
 
-> Wheel picker · Multi-column CSS scroll snapping + immediate centered-item highlight + debounced change events + controlled positioning (zero dependencies · mobile time/region selection) · mobile/input
+> Selects values through one or more scroll-snap wheel columns. · mobile/input
 
 ## When to Use
 
@@ -25,12 +25,12 @@ import { Picker } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `columns` * | `PickerColumn[]` | — | Configuration of each column (see below) |
-| `value` | `string[]` | — | Array of selected values in each column (controlled) |
+| `columns` * | `PickerColumn[]` | - | Configuration of each column (see below) |
+| `value` | `string[]` | - | Array of selected values in each column (controlled) |
 | `defaultValue` | `string[]` | First item in each column | Initial value in uncontrolled mode |
 | `visibleCount` | `number` | `5` | Number of visible lines (odd number recommended) |
 | `itemHeight` | `number` | `40` | row height px |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **PickerColumn**: `options: PickerOption[]` · `flex?: number` (column flex ratio, default 1).
 **PickerOption**: `label: ReactNode` · `value: string`.

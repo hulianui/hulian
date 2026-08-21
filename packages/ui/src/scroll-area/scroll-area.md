@@ -10,7 +10,7 @@ status: enriched
 
 # ScrollArea
 
-> 滚动区 · Base UI 自定义细滚动条 + 竖/横/双向 · layout/container
+> 给溢出内容换上更细的自定义滚动条，可竖可横 · layout/container
 
 ## 何时用
 
@@ -26,7 +26,7 @@ import { ScrollArea } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | orientation | `"vertical" \| "horizontal" \| "both"` | `"vertical"` | 滚动方向；`both` 时双向滚动条 + corner。 |
-| className | `string` | — | 限高/限宽由消费者经此给 Root（如 `h-48` / `w-64`），否则不会出现滚动。 |
+| className | `string` | - | 限高/限宽由消费者经此给 Root（如 `h-48` / `w-64`），否则不会出现滚动。 |
 
 ## Slots
 

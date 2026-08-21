@@ -25,16 +25,16 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | — | 透传 `<kbd>` 原生属性（className、style 等） |
+| ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | - | 透传 `<kbd>` 原生属性（className、style 等） |
 
 ### KbdGroup Props
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| keys | `ReactNode[]` | — | 键名数组，逐个包成 Kbd。组合键的常规写法 |
+| keys | `ReactNode[]` | - | 键名数组，逐个包成 Kbd。组合键的常规写法 |
 | separator | `ReactNode` | `"+"` | 键之间的分隔符，装饰性（带 `aria-hidden`，不进无障碍树）。传 `null` 只留间距不画符号 |
-| label | `string` | — | 整组的无障碍名，如「打开命令面板」。给了才会加 `role="group"` |
-| ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | — | 透传外层 `<span>` 原生属性。rest 展开在最前，组件自己算出的 `role` / `aria-label` 赢（见「禁忌 / 坑」） |
+| label | `string` | - | 整组的无障碍名，如「打开命令面板」。给了才会加 `role="group"` |
+| ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | 透传外层 `<span>` 原生属性。rest 展开在最前，组件自己算出的 `role` / `aria-label` 赢（见「禁忌 / 坑」） |
 
 ## Slots
 

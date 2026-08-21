@@ -10,7 +10,7 @@ status: enriched
 
 # Avatar
 
-> 头像 · Base UI 图片+fallback · data-display/info
+> 展示用户头像，加载失败时回退到备用内容 · data-display/info
 
 ## 何时用
 
@@ -26,9 +26,9 @@ import { Avatar } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm" \| "md" \| "lg" \| "xl" \| "2xl"` | `"md"` | 圆直径档位（CVA 变体）：32 / 40 / 48 / 64 / 96px。 |
-| src | `string` | — | 头像图片 URL；加载失败回退到 fallback。 |
-| alt | `string` | — | 图片替代文本。 |
-| className | `string` | — | — |
+| src | `string` | - | 头像图片 URL；加载失败回退到 fallback。 |
+| alt | `string` | - | 图片替代文本。 |
+| className | `string` | - | - |
 
 ## Slots
 

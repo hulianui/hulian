@@ -10,7 +10,7 @@ status: enriched
 
 # StatusDot
 
-> 健康状态点 · 在线/降级/离线/维护四语义态(→success/warning/danger/neutral 映射) + 默认仅在线脉冲 + 状态文字 + 尾部数值槽(延迟/成功率)(封装 Dot·网关渠道健康墙刚需·纯CSS·RSC) · data-display/info
+> 用圆点加文字表示服务在线、降级、离线还是维护 · data-display/info
 
 ## 何时用
 
@@ -25,7 +25,7 @@ import { StatusDot } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| status* | `"online"｜"degraded"｜"offline"｜"maintenance"` | — | 健康态：在线/降级/离线/维护（内部映射 success/warning/danger/neutral）。 |
+| status* | `"online"｜"degraded"｜"offline"｜"maintenance"` | - | 健康态：在线/降级/离线/维护（内部映射 success/warning/danger/neutral）。 |
 | pulse | `boolean` | 仅 online 自动脉冲 | 呼吸脉冲；可显式覆盖默认。 |
 | size | `"sm"｜"md"｜"lg"` | `md` | 尺寸。 |
 

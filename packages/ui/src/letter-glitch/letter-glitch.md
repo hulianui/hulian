@@ -28,13 +28,13 @@ import { LetterGlitch } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | glitchColors | `string[]` | `["var(--color-chart-2)", "var(--color-chart-1)", "var(--color-chart-4)"]` | 字符闪变调色板，任意 CSS 颜色，内部离屏 canvas 解析为 RGB 插值 |
-| glitchSpeed | `number` | `50` | 相邻刷新最小间隔(ms)，越小越躁动，建议 20–200 |
+| glitchSpeed | `number` | `50` | 相邻刷新最小间隔(ms)，越小越躁动，建议 20-200 |
 | smooth | `boolean` | `true` | 颜色平滑过渡（逐帧插值）；关闭后硬切，更生硬故障感 |
 | outerVignette | `boolean` | `true` | 外缘暗角（四周径向渐隐） |
 | centerVignette | `boolean` | `false` | 中心暗角（中部压暗→边缘透亮），用于反衬置入内容 |
 | characters | `string` | 大写字母+符号+数字 | 参与闪变的字符集，内部按码点拆分，支持任意 Unicode |
-| className | `string` | — | 透传根容器 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## 示例
 ```tsx

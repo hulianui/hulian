@@ -10,7 +10,7 @@ status: enriched
 
 # Gantt
 
-> 甘特图(只读) · 项目排期可视化 · 左固定列(按 group 分组小标题) + 右时间轴(day/week/month 刻度) · CSS grid + 百分比定位条形 + progress 深色填充层 + today 竖线 · 自带 UTC 日期数学(零依赖) · 横向滚动 · data-display/collection
+> 把任务排到时间轴上，展示分组、进度和今天的位置 · data-display/collection
 
 ## 何时用
 
@@ -27,13 +27,13 @@ import { Gantt } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tasks* | `GanttTask[]` | — | 任务列表（只读，不可拖拽改期） |
-| rangeStart | `string` | — | 时间轴起点 `"YYYY-MM-DD"`；省略自动取最早 start 并向前留 padding |
-| rangeEnd | `string` | — | 时间轴终点 `"YYYY-MM-DD"`；省略自动取最晚 end 并向后留 padding |
+| tasks* | `GanttTask[]` | - | 任务列表（只读，不可拖拽改期） |
+| rangeStart | `string` | - | 时间轴起点 `"YYYY-MM-DD"`；省略自动取最早 start 并向前留 padding |
+| rangeEnd | `string` | - | 时间轴终点 `"YYYY-MM-DD"`；省略自动取最晚 end 并向后留 padding |
 | unit | `"day" \| "week" \| "month"` | `"day"` | 表头刻度密度（week 周一起）；仅影响刻度，不改条形定位 |
-| today | `string` | — | 今日竖线日期 `"YYYY-MM-DD"`；落在范围内才绘制 |
+| today | `string` | - | 今日竖线日期 `"YYYY-MM-DD"`；落在范围内才绘制 |
 | rowHeight | `number` | `36` | 每行高度（px） |
-| className | `string` | — | 外层类名 |
+| className | `string` | - | 外层类名 |
 
 GanttTask：`{id, name, start, end, progress?, group?, color?}`。start/end 为 `"YYYY-MM-DD"` 闭区间（含首尾两端）；progress 0-100 驱动条内深色填充层；相同 group 在左列以小标题聚拢；color 为 CSS 颜色（token var() 或 hex），省略走主题 primary。
 

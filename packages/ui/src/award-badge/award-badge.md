@@ -29,19 +29,19 @@ import { AwardBadge, laurelLeaves, laurelStemPath } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title* | `ReactNode` | — | 主标题，如 `#1 Repository Of The Day` |
-| kicker | `ReactNode` | — | 上行小字，自动大写 + 字距，如 `GitHub Trending` |
-| rank | `ReactNode` | — | 桂冠中央的名次，如 `1` / `A+`；省略则花环留空 |
-| emblem | `ReactNode` | — | 整枚徽记槽：传了就替换「桂冠 + 名次」（奖杯图标 / 平台 logo） |
+| title* | `ReactNode` | - | 主标题，如 `#1 Repository Of The Day` |
+| kicker | `ReactNode` | - | 上行小字，自动大写 + 字距，如 `GitHub Trending` |
+| rank | `ReactNode` | - | 桂冠中央的名次，如 `1` / `A+`；省略则花环留空 |
+| emblem | `ReactNode` | - | 整枚徽记槽：传了就替换「桂冠 + 名次」（奖杯图标 / 平台 logo） |
 | wreath | `boolean` | `true` | 是否画桂冠 |
 | variant | `"outline" \| "solid" \| "soft"` | `"outline"` | outline 描边（对齐 GitHub Trending / Product Hunt 观感）/ solid 实底 / soft 柔和 |
 | tone | `"brand" \| "neutral" \| "success" \| "warning" \| "danger"` | `"brand"` | 语气，决定描边 / 桂冠 / 文字色 |
-| color | `string` | — | 逃生舱：任意 CSS 色 / 语义色名（`chart-1`..`chart-6`），覆盖 tone |
+| color | `string` | - | 逃生舱：任意 CSS 色 / 语义色名（`chart-1`..`chart-6`），覆盖 tone |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
-| href | `string` | — | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
-| target | `string` | — | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"` |
-| rel | `string` | — | 显式覆盖上面那条自动补的 `rel`（如只想要 `noopener`） |
-| className | `string` | — | 透传类名；其余原生属性一并透传 |
+| href | `string` | - | 整枚可点，渲染为 `<a>`，带 hover/按压/焦点环 |
+| target | `string` | - | 配合 href；`_blank` 时自动补 `rel="noreferrer noopener"` |
+| rel | `string` | - | 显式覆盖上面那条自动补的 `rel`（如只想要 `noopener`） |
+| className | `string` | - | 透传类名；其余原生属性一并透传 |
 
 ### laurelLeaves(options?) / laurelStemPath(options?)
 

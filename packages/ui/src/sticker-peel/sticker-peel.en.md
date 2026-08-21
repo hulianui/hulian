@@ -25,7 +25,7 @@ import { StickerPeel } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| imageSrc * | `string` | — | Image URL used for both the sticker face and its vertically flipped peel-back layer |
+| imageSrc * | `string` | - | Image URL used for both the sticker face and its vertically flipped peel-back layer |
 | alt | `string` | `""` | Native image alternative text; leave empty only when the sticker is decorative |
 | width | `number` | `200` | Sticker width in pixels; the image preserves its intrinsic aspect ratio |
 | rotate | `number` | `30` | Rotation applied to the printed image, in degrees |

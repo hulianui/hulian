@@ -28,7 +28,7 @@ import { Spinner, spinnerVariants } from "@hulianui/ui"
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
 | tone | `"primary"｜"current"｜"muted"` | `"primary"` | 配色（`current`=继承 currentColor，适合放进彩色按钮内） |
 | label | `string` | 跟随 `ConfigProvider` | a11y 文案（role=status 读屏播报）；显式传值优先 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## 示例
 ```tsx

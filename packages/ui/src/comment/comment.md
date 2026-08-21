@@ -10,7 +10,7 @@ status: enriched
 
 # Comment
 
-> 评论 · 嵌套回复缩进 + 可选连接线 + 操作区 + comment/log 类型(复用 Avatar/Link·RSC) · data-display/info
+> 展示可嵌套的评论回复，带缩进和操作区 · data-display/info
 
 ## 何时用
 
@@ -29,10 +29,10 @@ import { Comment, CommentActions, CommentAction, commentActionVariants } from "@
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| avatar | `AvatarProps` | — | 透传瑚琏 Avatar（src/alt/fallback/size）；type=log 时忽略，改渲系统点标记。 |
+| avatar | `AvatarProps` | - | 透传瑚琏 Avatar（src/alt/fallback/size）；type=log 时忽略，改渲系统点标记。 |
 | type | `"comment" \| "log"` | `"comment"` | 评论类型。 |
 | connector | `boolean` | `false` | 子评论区是否画左侧连接线（默认仅缩进）。 |
-| className | `string` | — | 其余 `HTMLAttributes<HTMLElement>`（已 Omit `content`/`title`）。 |
+| className | `string` | - | 其余 `HTMLAttributes<HTMLElement>`（已 Omit `content`/`title`）。 |
 
 **Slots**
 
@@ -50,7 +50,7 @@ import { Comment, CommentActions, CommentAction, commentActionVariants } from "@
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| href | `string` | — | 传则渲为瑚琏 Link（链接型操作，如「回复」跳锚点）；否则 `<button>`。 |
+| href | `string` | - | 传则渲为瑚琏 Link（链接型操作，如「回复」跳锚点）；否则 `<button>`。 |
 
 **Slots**
 

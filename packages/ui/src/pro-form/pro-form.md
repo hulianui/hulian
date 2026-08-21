@@ -10,7 +10,7 @@ status: enriched
 
 # ProForm
 
-> 内联表单编排 · useForm + 自动 footer(提交/重置) + async onFinish loading + 自定义 footer(ModalForm 的内联姊妹件·文案接 i18n) · forms/framework
+> 内联表单编排，自动配好提交与重置底栏 · forms/framework
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { ProForm } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| form | `FormInstance` | — | useForm 实例：提供则提交前自动 `validate()`，重置走 `form.resetFields()` |
+| form | `FormInstance` | - | useForm 实例：提供则提交前自动 `validate()`，重置走 `form.resetFields()` |
 | submitText | `string` | `locale.proForm.submit` | 提交按钮文案 |
 | resetText | `string` | `locale.proForm.reset` | 重置按钮文案 |
 | showReset | `boolean` | `true` | 是否显示重置按钮（需 form 才有意义） |
 | columns | `1 \| 2 \| 3` | `1` | 字段栅格列数；≥2 时按容器宽度自适应（窄塌单列），跨整行用 `<Field colSpan="full">` |
 | footerAlign | `"left" \| "right"` | `"left"` | 底部操作区对齐 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

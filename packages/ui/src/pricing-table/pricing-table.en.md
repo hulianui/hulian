@@ -10,7 +10,7 @@ status: enriched
 
 # PricingTable
 
-> Pricing comparison matrix · subjects as columns and attributes as rows, with highlighted columns, recommendation badges, sticky headers, and narrow-screen scrolling · data-display/collection
+> Compares priced items in transposed feature rows with highlights, badges, and sticky headers. · data-display/collection
 
 ## When to use
 
@@ -25,10 +25,10 @@ import { PricingTable } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| columns* | `PricingColumn[]` | — | Compared subject columns. |
-| rows* | `PricingRow[]` | — | Attribute and price rows. |
+| columns* | `PricingColumn[]` | - | Compared subject columns. |
+| rows* | `PricingRow[]` | - | Attribute and price rows. |
 | stickyHeader | `boolean` | `true` | Keeps the header visible while scrolling. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
 `PricingColumn` has `key*`, `title*`, `highlight?`, `badge?`, and `header?`; a custom header replaces the title region. `PricingRow` has `key*`, `label*`, and `values: Record<string, ReactNode>`, keyed by column key.
 

@@ -27,19 +27,19 @@ import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } 
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| onChange * | (path: string, value: InspectorValue) => void | — | 单 path 变更回吐，`path` 就是字段声明的 `key` |
-| props | Record\<string, unknown\> | — | 属性值表；先按扁平键命中，未命中再按 `a.b.c` 点号下钻 |
-| selectedElement | string ｜ null | — | 选中元素标识；显式传 `null` 进空态，不传则不判空 |
-| sections | InspectorSection[] | — | 完整分类 schema；传了它 `categories` 失效 |
-| categories | readonly string[] | — | 只取内置预设的这几类，且**按传入顺序**排列（`layout` / `color` / `typography` / `border` / `effects`） |
-| tokenSource | readonly InspectorToken[] | — | 色值控件可选的主题 token；形状与文档站 `SEMANTIC_GROUPS` 的色卡一致 |
+| onChange * | (path: string, value: InspectorValue) => void | - | 单 path 变更回吐，`path` 就是字段声明的 `key` |
+| props | Record\<string, unknown\> | - | 属性值表；先按扁平键命中，未命中再按 `a.b.c` 点号下钻 |
+| selectedElement | string ｜ null | - | 选中元素标识；显式传 `null` 进空态，不传则不判空 |
+| sections | InspectorSection[] | - | 完整分类 schema；传了它 `categories` 失效 |
+| categories | readonly string[] | - | 只取内置预设的这几类，且**按传入顺序**排列（`layout` / `color` / `typography` / `border` / `effects`） |
+| tokenSource | readonly InspectorToken[] | - | 色值控件可选的主题 token；形状与文档站 `SEMANTIC_GROUPS` 的色卡一致 |
 | commitMode | "change" ｜ "commit" | "change" | `change` 拖动/按键即回吐；`commit` 松手/失焦/回车才回吐 |
 | density | "comfortable" ｜ "compact" | "comfortable" | 行高与内边距密度；`compact` 收紧到接近 Sketch 检查器的量级 |
-| onBatchChange | (changes: InspectorChange[]) => void | — | 一次交互改多个 path 时的批量回吐（见下方 Events） |
+| onBatchChange | (changes: InspectorChange[]) => void | - | 一次交互改多个 path 时的批量回吐（见下方 Events） |
 | title | ReactNode | 取自 locale | 面板标题；传 `null` 不渲染标题栏 |
 | emptyText | ReactNode | 取自 locale | 空态文案 |
-| labels | Partial\<InspectorPanelLabels\> | — | 覆盖取自 locale 的文案（`mixed` / `linkSides` / 四边名 等） |
-| className | string | — | 面板外层类名 |
+| labels | Partial\<InspectorPanelLabels\> | - | 覆盖取自 locale 的文案（`mixed` / `linkSides` / 四边名 等） |
+| className | string | - | 面板外层类名 |
 
 字段类型（`InspectorField` 判别联合，按 `kind` 收窄）：
 
@@ -50,7 +50,7 @@ import { InspectorPanel, MIXED, inspectorSections, layoutFields, spacingSides } 
 | length | 滑杆 + 数字框 | `min` / `max` / `step` / `unit` |
 | number | 数字框 | `min` / `max` / `step` / `unit` |
 | enum | ≤4 项 Segmented，更多 Select | `options` * · `display?: "segmented" ｜ "select"` |
-| toggle | Switch | — |
+| toggle | Switch | - |
 | text | 文本框 | `placeholder?` |
 
 公共字段：`key` *（属性路径，同时是回吐的 path）· `label` *（可见标签 + 控件 `aria-label`）· `hint?` · `disabled?`。

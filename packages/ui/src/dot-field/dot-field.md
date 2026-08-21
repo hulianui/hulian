@@ -25,8 +25,8 @@ import { DotField } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| dotRadius | `number` | `1.5` | 单个点的绘制半径（px），建议 1–3 |
-| dotSpacing | `number` | `14` | 相邻点间距（px），越大越稀疏，建议 8–24 |
+| dotRadius | `number` | `1.5` | 单个点的绘制半径（px），建议 1-3 |
+| dotSpacing | `number` | `14` | 相邻点间距（px），越大越稀疏，建议 8-24 |
 | cursorRadius | `number` | `220` | 光标影响半径（px），鼠标周围多大范围内的点被推挤 |
 | bulgeStrength | `number` | `56` | 鼓胀强度（px），点被推离原位的最大位移；0=仅随光标发光 |
 | color | `string` | `--color-chart-1` | 点阵基色，CSS 颜色字符串；token 须带 `--color-` 前缀 |
@@ -34,8 +34,8 @@ import { DotField } from "@hulianui/ui"
 | glowRadius | `number` | `160` | 辉光半径（px）；0=关闭辉光 |
 | waveAmplitude | `number` | `0` | 波浪振幅（px），全局正弦起伏的「呼吸」感；0=无波浪 |
 | sparkle | `boolean` | `false` | 是否开启随机闪烁（少量点偶尔放大成星点） |
-| className | `string` | — | 透传到根容器的额外 className |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| className | `string` | - | 透传到根容器的额外 className |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## 示例
 ```tsx

@@ -10,7 +10,7 @@ status: enriched
 
 # JsonViewer
 
-> 只读 JSON 树 · 折叠 JSON 树(只读) · 递归零依赖 + 语法着色(key/string/number/bool/null) + 行级展开折叠 + 折叠态 {…} N keys/[…] N items + depth<阈值初始展开/大对象懒展开 + hover 复制节点值与 JSON path(网关请求/响应日志检查器刚需·导出 valueType/jsonPath 纯函数) · data-display/collection
+> 折叠查看 JSON，带语法着色、复制和层级控制 · data-display/collection
 
 ## 何时用
 
@@ -25,11 +25,11 @@ import { JsonViewer, valueType, jsonPath } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| data* | `unknown` | — | 任意 JSON 值 |
-| rootName | `string` | — | 根节点标签(如 `"response"`) |
+| data* | `unknown` | - | 任意 JSON 值 |
+| rootName | `string` | - | 根节点标签(如 `"response"`) |
 | defaultExpandedDepth | `number` | `1` | 初始展开深度：嵌套节点 `depth < defaultExpandedDepth` 时初始展开(根的直接子节点 depth=1) |
 | maxAutoExpandKeys | `number` | `50` | 大对象/数组懒展开阈值：子项数超过则初始折叠保护 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 ## Events
 

@@ -10,11 +10,11 @@ status: enriched
 
 # Radio
 
-> 单选 · RadioGroup 单选组 + 键盘方向键 · forms/basic
+> 从一组互斥选项里选一个，支持方向键操作 · forms/basic
 
 ## 何时用
 
-一组互斥选项里选且只选一个、且选项数少（约 2–6 个）需全部直接可见时用。选项多需收起或搜索改用 [Select](../select/select.md)；多选共存改用 [CheckboxGroup](../checkbox-group/checkbox-group.md)；横向二三段且要滑块视觉用 [Segmented](../segmented/segmented.md)。
+一组互斥选项里选且只选一个、且选项数少（约 2-6 个）需全部直接可见时用。选项多需收起或搜索改用 [Select](../select/select.md)；多选共存改用 [CheckboxGroup](../checkbox-group/checkbox-group.md)；横向二三段且要滑块视觉用 [Segmented](../segmented/segmented.md)。
 
 ## 导入
 ```ts
@@ -27,28 +27,28 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string` | — | 受控选中值 |
-| defaultValue | `string` | — | 非受控初始选中值 |
+| value | `string` | - | 受控选中值 |
+| defaultValue | `string` | - | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整组禁用 |
-| required | `boolean` | — | 表单必选 |
-| name | `string` | — | 原生表单 name |
+| required | `boolean` | - | 表单必选 |
+| name | `string` | - | 原生表单 name |
 | orientation | `"vertical"｜"horizontal"` | `"vertical"` | 仅控布局 |
-| className | `string` | — | — |
-| aria-label | `string` | — | 无可见标题时提供 |
+| className | `string` | - | - |
+| aria-label | `string` | - | 无可见标题时提供 |
 
 `Radio`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value * | `string` | — | 必填，标识该选项 |
+| value * | `string` | - | 必填，标识该选项 |
 | disabled | `boolean` | `false` | 单项禁用 |
-| id | `string` | — | — |
+| id | `string` | - | - |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，圈与内点一起缩放。`md` = 20px/10px/`text-sm`，`sm` = 16px/8px/`text-xs` |
-| className | `string` | — | 落在 Radio.Root（圈），够不到文字 |
-| labelClassName | `string` | — | 落在文字 `<span>`，用来改字号 / 颜色 |
-| aria-label | `string` | — | 无障碍名。**不给 `label`、或 `label` 是图标/纯视觉内容时必须给** |
-| aria-labelledby | `string` | — | 用页面上已有元素充当名字（填其 id），与 `aria-label` 二选一 |
-| aria-describedby | `string` | — | 补充描述（填元素 id），如该选项的说明文字 |
+| className | `string` | - | 落在 Radio.Root（圈），够不到文字 |
+| labelClassName | `string` | - | 落在文字 `<span>`，用来改字号 / 颜色 |
+| aria-label | `string` | - | 无障碍名。**不给 `label`、或 `label` 是图标/纯视觉内容时必须给** |
+| aria-labelledby | `string` | - | 用页面上已有元素充当名字（填其 id），与 `aria-label` 二选一 |
+| aria-describedby | `string` | - | 补充描述（填元素 id），如该选项的说明文字 |
 
 ## Events
 

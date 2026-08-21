@@ -10,7 +10,7 @@ status: enriched
 
 # Tooltip
 
-> 提示浮层 · Base UI Positioner + 箭头 + hover 触发 · feedback/overlay
+> 悬停时在旁边浮出一句简短说明，带指向箭头 · feedback/overlay
 
 ## 何时用
 
@@ -29,8 +29,8 @@ import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@hulia
 |------|------|------|------|
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"top"` | 浮层方位 |
 | align | `"start"｜"center"｜"end"` | `"center"` | 对齐 |
-| sideOffset | `number` | — | 与触发器的间距 |
-| className | `string` | — | 额外类名 |
+| sideOffset | `number` | - | 与触发器的间距 |
+| className | `string` | - | 额外类名 |
 
 `TooltipProvider` 接 `delay` / `closeDelay`（ms）控制开合延迟。
 

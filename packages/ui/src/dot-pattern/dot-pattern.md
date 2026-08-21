@@ -10,7 +10,7 @@ status: enriched
 
 # DotPattern
 
-> 点阵背景 · 纯 SVG pattern + currentColor token + RSC · decoration/backdrop
+> 铺一层跟随主题配色的点阵背景，点距可调 · decoration/backdrop
 
 ## 何时用
 

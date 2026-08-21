@@ -10,7 +10,7 @@ status: enriched
 
 # Progress
 
-> Progress · Linear or circular determinate and indeterminate geometry with reduced-motion support · feedback/loading
+> Displays determinate or indeterminate progress in linear or circular form. · feedback/loading
 
 ## When to use
 
@@ -25,7 +25,7 @@ import { Progress, progressPercent, dashOffset } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `number` | — | Current value. Omit or pass undefined for indeterminate mode. |
+| value | `number` | - | Current value. Omit or pass undefined for indeterminate mode. |
 | max | `number` | `100` | Maximum value. |
 | variant | `"linear" \| "circular"` | `"linear"` | Geometry. |
 | tone | `"primary" \| "danger" \| "success" \| "warning"` | `"primary"` | Progress tone. |

@@ -10,7 +10,7 @@ status: enriched
 
 # SecretField
 
-> Secret display field · full or prefix/suffix masking + reveal toggle + one-click copy with feedback + trailing reset/revoke actions + controlled reveal state · forms/advanced
+> Masks sensitive values while supporting reveal and copy actions. · forms/advanced
 
 ## When to use
 
@@ -27,13 +27,13 @@ import { SecretField, maskSecret } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value * | `string` | — | Original unmasked secret. |
-| revealed | `boolean` | — | Controlled reveal state; omit for internal state. |
+| value * | `string` | - | Original unmasked secret. |
+| revealed | `boolean` | - | Controlled reveal state; omit for internal state. |
 | maskStrategy | `"full"\|"prefix-suffix"` | `"prefix-suffix"` | `full` masks everything; `prefix-suffix` retains the beginning and end. |
 | copyable | `boolean` | `true` | Whether to display the copy button |
 | readOnly | `boolean` | `false` | Read-only appearance (remove interactive strokes) |
-| size | `"sm"\|"md"` | `"md"` | — |
-| className | `string` | — | — |
+| size | `"sm"\|"md"` | `"md"` | - |
+| className | `string` | - | - |
 
 ## Events
 

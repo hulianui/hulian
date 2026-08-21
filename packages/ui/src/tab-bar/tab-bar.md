@@ -10,7 +10,7 @@ status: enriched
 
 # TabBar
 
-> 底部导航栏 · items 驱动受控/非受控 + 激活 text-primary/aria-current + 角标/红点 + 吃底部安全区(零依赖·H5 主导航) · mobile/nav
+> 移动端底部导航栏，带角标并避开底部安全区 · mobile/nav
 
 ## 何时用
 
@@ -25,24 +25,24 @@ import { TabBar } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `items` * | `TabBarItem[]` | — | 页签数据（见下） |
-| `value` | `string` | — | 受控激活 key |
+| `items` * | `TabBarItem[]` | - | 页签数据（见下） |
+| `value` | `string` | - | 受控激活 key |
 | `defaultValue` | `string` | 首项 key | 非受控初始 key |
 | `safeArea` | `boolean` | `true` | 吃底部安全区 inset |
 | `fixed` | `boolean` | `true` | fixed 贴底；false 则随文档流 |
 | `aria-label` | `string` | 跟随 locale | 导航区无障碍标签；显式传值优先 |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **TabBarItem**
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| key * | `string` | — | 唯一键，也是 `value` 的取值 |
-| label * | `ReactNode` | — | 页签文案 |
-| icon | `ReactNode` | — | 默认态图标 |
+| key * | `string` | - | 唯一键，也是 `value` 的取值 |
+| label * | `ReactNode` | - | 页签文案 |
+| icon | `ReactNode` | - | 默认态图标 |
 | activeIcon | `ReactNode` | 复用 `icon` | 激活态图标 |
 | dot | `boolean` | `false` | 红点提示 |
-| badge | `ReactNode` | — | 角标内容（数字 / 文本），优先于 `dot` |
+| badge | `ReactNode` | - | 角标内容（数字 / 文本），优先于 `dot` |
 | disabled | `boolean` | `false` | 禁用该页签 |
 
 ## Events

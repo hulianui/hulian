@@ -10,7 +10,7 @@ status: enriched
 
 # Artifact
 
-> Artifact card · Presents an agent-produced document, resume, or code result with an icon, title, version chip, actions, and controlled or uncontrolled height expansion · Reuses Chip · ai/agent
+> Presents generated content with a title, version chip, action slot, and controlled or uncontrolled expansion. · ai/agent
 
 ## When to Use
 
@@ -27,8 +27,8 @@ import { Artifact } from "@hulianui/ui"
 |------|------|------|------|
 | collapsedHeight | `number` | `240` | Maximum collapsed content height in pixels; `<=0` disables collapsing |
 | defaultExpanded | `boolean` | `false` | Uncontrolled initial expansion state |
-| expanded | `boolean` | — | Controlled expanded state; pair with `onExpandedChange` |
-| className | `string` | — | Additional container class name |
+| expanded | `boolean` | - | Controlled expanded state; pair with `onExpandedChange` |
+| className | `string` | - | Additional container class name |
 
 ## Events
 

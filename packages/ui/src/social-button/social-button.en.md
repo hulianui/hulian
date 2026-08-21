@@ -14,7 +14,7 @@ status: enriched
 
 ## When to use
 
-Use SocialButton for third-party account sign-in or linking. Brand logos, default labels, and colors are built in, so consumers do not need to wire simple-icons directly. For providers outside the built-in list — self-hosted OIDC, Keycloak, Authentik, Okta, enterprise SSO, or any brand that is not bundled — pass an object to `provider`; see "Custom providers" below. Use [Button](../button/button.md) for ordinary actions, and [ButtonGroup](../button-group/button-group.md) when several sign-in providers should be presented together.
+Use SocialButton for third-party account sign-in or linking. Brand logos, default labels, and colors are built in, so consumers do not need to wire simple-icons directly. For providers outside the built-in list (self-hosted OIDC, Keycloak, Authentik, Okta, enterprise SSO, or any brand that is not bundled), pass an object to `provider`; see "Custom providers" below. Use [Button](../button/button.md) for ordinary actions, and [ButtonGroup](../button-group/button-group.md) when several sign-in providers should be presented together.
 
 ## Import
 ```ts
@@ -27,12 +27,12 @@ Inherit native `<button>` properties (except `children` controlled override).
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| provider* | `"wechat" \| "alipay" \| "qq" \| "weibo" \| "github" \| "google" \| "apple" \| "x" \| "discord" \| "gitlab" \| SocialBrand` | — | Determines the logo, default label, and brand color. Pass a `SocialBrand` object to use a provider outside the built-in list; its fields are listed below. |
+| provider* | `"wechat" \| "alipay" \| "qq" \| "weibo" \| "github" \| "google" \| "apple" \| "x" \| "discord" \| "gitlab" \| SocialBrand` | - | Determines the logo, default label, and brand color. Pass a `SocialBrand` object to use a provider outside the built-in list; its fields are listed below. |
 | variant | `"solid" \| "outline"` | `"outline"` | `solid` uses a brand fill; monochrome brands use theme foreground. `outline` uses a neutral border and brand-color logo. |
 | shape | `"button" \| "icon"` | `"button"` | `button` includes a label; `icon` renders a square logo-only button. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | size |
 | loading | `boolean` | `false` | Submitting: Replace the logo with a spinning circle and disable it |
-| className | `string` | — | Transparently transmit the root node class name |
+| className | `string` | - | Transparently transmit the root node class name |
 
 ### SocialBrand (custom providers)
 
@@ -40,9 +40,9 @@ Fields accepted when `provider` is an object. Sizing, shape, loading, press feed
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| icon* | `ReactNode` | — | Brand logo. An inline `<svg>`, an `<img>`, or an icon component; it is constrained to the icon size of the current `size`. |
-| label* | `string` | — | Brand name. Used for the default label and for the `aria-label` when `shape="icon"`. |
-| brandColor | `string` | — | Brand color. Tints the logo in outline mode and fills the button in solid mode. Omitting it selects the monochrome treatment used by the built-in GitHub, X, and Apple buttons. |
+| icon* | `ReactNode` | - | Brand logo. An inline `<svg>`, an `<img>`, or an icon component; it is constrained to the icon size of the current `size`. |
+| label* | `string` | - | Brand name. Used for the default label and for the `aria-label` when `shape="icon"`. |
+| brandColor | `string` | - | Brand color. Tints the logo in outline mode and fills the button in solid mode. Omitting it selects the monochrome treatment used by the built-in GitHub, X, and Apple buttons. |
 
 ## Events
 

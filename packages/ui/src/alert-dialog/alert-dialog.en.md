@@ -10,7 +10,7 @@ status: enriched
 
 # AlertDialog
 
-> Confirmation dialog · Base UI forced decision without overlay or Escape dismissal, powered by Dialog · feedback/overlay
+> Requests confirmation for consequential actions in a blocking accessible dialog. · feedback/overlay
 
 ## When to use
 
@@ -27,7 +27,7 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogClose, AlertDialogContent }
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `AlertDialogContent.className` | `string` | — | Content-container class name. |
+| `AlertDialogContent.className` | `string` | - | Content-container class name. |
 
 ## Events
 
@@ -80,9 +80,9 @@ With body content and a status icon:
 ## Usage guidelines
 
 - **`description` accepts phrasing content only** (text, `<span>`, `<strong>`, `<a>`). It renders through `AlertDialog.Description` as a `<p>`, so a `<div>`, `<ul>`, or card inside it is invalid nesting: the browser closes the `<p>` early and React reports a hydration mismatch. **Put block-level content in `body`** instead of working around it with `<span className="block">`.
-- `children` is the **bottom action area** — a `justify-end` row of buttons — not the main content. Content placed there is squeezed in beside the buttons. [Dialog](../dialog/dialog.md) is the other way round, where `children` is the content and `footer` holds the actions, so the two are not interchangeable.
+- `children` is the **bottom action area** (a `justify-end` row of buttons), not the main content. Content placed there is squeezed in beside the buttons. [Dialog](../dialog/dialog.md) is the other way round, where `children` is the content and `footer` holds the actions, so the two are not interchangeable.
 - `icon` only handles alignment with the title and description and carries **no color**. Pass `text-danger` for destructive actions or `text-warning` for warnings; otherwise it inherits the normal foreground color.
-- The popup has no internal scroll area, unlike Dialog with its `max-h` and scrolling content, so long `body` content pushes the popup past the viewport. Needing long content means the interaction is no longer a forced decision — use Dialog instead.
+- The popup has no internal scroll area, unlike Dialog with its `max-h` and scrolling content, so long `body` content pushes the popup past the viewport. Needing long content means the interaction is no longer a forced decision, so use Dialog instead.
 - Ignoring overlay clicks and Escape is intentional forced-decision behavior. Use Dialog when lightweight dismissal is appropriate.
 - A cancel button must use `AlertDialogClose` to close the dialog. Confirmation commonly uses it as well and performs the operation from `onClick`.
 

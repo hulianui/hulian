@@ -10,7 +10,7 @@ status: enriched
 
 # Menu
 
-> Dropdown menu · Base UI command menu with items, separators, groups, and a danger variant · navigation/global
+> Presents action items, groups, separators, and a danger treatment in a dropdown. · navigation/global
 
 ## When to use
 
@@ -29,52 +29,52 @@ import { Menu, MenuTrigger, MenuContent, MenuItem, MenuCheckboxItem, MenuRadioGr
 | side | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Preferred side of the trigger on which to place the popup. |
 | align | `"start" \| "center" \| "end"` | `"start"` | Alignment along the trigger. |
 | sideOffset | `number` | `6` | Distance from the trigger in pixels. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ### MenuItem
 | Name | Type | Default | Description |
 |------|------|------|------|
-| render | `ReactElement` | — | Render as another element (a Next `<Link>` or an `<a>`); the item's props, `role="menuitem"`, and keyboard roving all merge into it. **Use this for navigation items instead of `onClick` + `router.push`** — see "Navigation menu items". |
+| render | `ReactElement` | - | Render as another element (a Next `<Link>` or an `<a>`); the item's props, `role="menuitem"`, and keyboard roving all merge into it. **Use this for navigation items instead of `onClick` + `router.push`** (see "Navigation menu items"). |
 | disabled | `boolean` | `false` | Whether the item is unavailable. |
 | closeOnClick | `boolean` | `true` | Whether selecting the item closes the menu. |
-| label | `string` | — | Text override used by keyboard type-ahead. |
+| label | `string` | - | Text override used by keyboard type-ahead. |
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use `danger` for destructive actions. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ### MenuCheckboxItem
 A setting that can be toggled on or off. Renders `role="menuitemcheckbox"` plus `aria-checked`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| checked | `boolean` | — | Whether the item is ticked (controlled). For an uncontrolled item use `defaultChecked` instead. |
+| checked | `boolean` | - | Whether the item is ticked (controlled). For an uncontrolled item use `defaultChecked` instead. |
 | defaultChecked | `boolean` | `false` | Whether the item is initially ticked (uncontrolled). |
 | disabled | `boolean` | `false` | Whether the item is unavailable. |
 | closeOnClick | `boolean` | `false` | Whether selecting the item closes the menu. Checkbox items keep the menu open by default so several can be toggled in a row. |
-| label | `string` | — | Text override used by keyboard type-ahead. |
+| label | `string` | - | Text override used by keyboard type-ahead. |
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use `danger` for destructive actions. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ### MenuRadioGroup
 Container for a set of mutually exclusive options. It owns the selected value, so every `MenuRadioItem` must be nested inside one.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | Value of the currently selected item (controlled). For an uncontrolled group use `defaultValue` instead. |
-| defaultValue | `string` | — | Value of the initially selected item (uncontrolled). |
+| value | `string` | - | Value of the currently selected item (controlled). For an uncontrolled group use `defaultValue` instead. |
+| defaultValue | `string` | - | Value of the initially selected item (uncontrolled). |
 | disabled | `boolean` | `false` | Whether the whole group is unavailable. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ### MenuRadioItem
 One option in a mutually exclusive set. Renders `role="menuitemradio"` plus `aria-checked`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `string` | — | Value of this item; it is selected when it equals the value of its `MenuRadioGroup`. |
+| value* | `string` | - | Value of this item; it is selected when it equals the value of its `MenuRadioGroup`. |
 | disabled | `boolean` | `false` | Whether the item is unavailable. |
 | closeOnClick | `boolean` | `false` | Whether selecting the item closes the menu. Radio items keep the menu open by default, so pass `true` if picking a value should dismiss it. |
-| label | `string` | — | Text override used by keyboard type-ahead. |
+| label | `string` | - | Text override used by keyboard type-ahead. |
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use `danger` for destructive actions. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 ### MenuSubTrigger
 A menu item that opens a cascading submenu, marked with a trailing chevron. It must sit inside a `MenuSub` alongside a `MenuSubContent`.
@@ -82,9 +82,9 @@ A menu item that opens a cascading submenu, marked with a trailing chevron. It m
 | Name | Type | Default | Description |
 |------|------|------|------|
 | disabled | `boolean` | `false` | Whether the item is unavailable, so its submenu cannot be opened. |
-| label | `string` | — | Text override used by keyboard type-ahead. |
+| label | `string` | - | Text override used by keyboard type-ahead. |
 | variant | `"default" \| "danger"` | `"default"` | Visual treatment; use `danger` for destructive actions. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 There is no `closeOnClick`: clicking the item opens the next level rather than performing an action.
 
@@ -93,7 +93,7 @@ The submenu panel, expanded from the right side of its parent item. Its placemen
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 Use `render={<Button />}` on `MenuTrigger` to turn an arbitrary element into the trigger. `MenuSub` is a purely structural part that binds one `MenuSubTrigger` to one `MenuSubContent`.
 
@@ -222,7 +222,7 @@ A cascading submenu, which groups options by dimension and suits filter menus ho
 - [[base-ui-menu-group-label-requires-menu-group-wrapper]]: placing `MenuGroupLabel` directly in `MenuContent` throws `MenuGroupRootContext is missing` as soon as the menu opens. Always wrap a group label in `MenuGroup`.
 - `MenuSubTrigger` and `MenuSubContent` must share one `MenuSub`, and that `MenuSub` must sit inside a `MenuContent`. Replacing `MenuSubTrigger` with a `MenuItem` plus a hand-drawn arrow is an invisible mistake: it looks the same, but without `aria-haspopup` and `aria-expanded` screen reader users cannot tell the entry leads to another level.
 - Do not use `MenuContent side="right"` as a submenu panel. Inside a `MenuSub` it does render as one, because both are the same Portal/Positioner/Popup underneath, but the chevron, the `sideOffset`, and the parent item staying highlighted while expanded all become your job, and missing any one of them makes the submenu inconsistent with the rest of the library. `MenuSubContent` is the layer that pins those three down.
-- The menu ships with `max-h-[min(24rem,var(--available-height))] overflow-y-auto`: no visual difference when everything fits, internal scrolling once it does not. This is a library-level guarantee rather than something every consumer must remember, because the popup is fixed-positioned — whatever overflows the viewport is neither clickable nor reachable by page scroll, and it only shows up once the data grows (three items in development, forty in production). Override `max-h-*` through `className` for a different ceiling. `ContextMenu` behaves the same.
+- The menu ships with `max-h-[min(24rem,var(--available-height))] overflow-y-auto`: no visual difference when everything fits, internal scrolling once it does not. This is a library-level guarantee rather than something every consumer must remember, because the popup is fixed-positioned: whatever overflows the viewport is neither clickable nor reachable by page scroll, and it only shows up once the data grows (three items in development, forty in production). Override `max-h-*` through `className` for a different ceiling. `ContextMenu` behaves the same.
 
 ### Navigation menu items
 

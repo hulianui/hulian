@@ -47,7 +47,7 @@ export function HeroTerminalBlock({ ctaHref = "#" }: {
 
 
         <div className="md:justify-self-end">
-          <Terminal title="bash — hulian deploy" lines={LINES} className="max-w-full shadow-xl md:max-w-lg"/>
+          <Terminal title="bash · hulian deploy" lines={LINES} className="max-w-full shadow-xl md:max-w-lg"/>
         </div>
       </div>
     </section>);

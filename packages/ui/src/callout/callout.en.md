@@ -26,7 +26,7 @@ import { Callout } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | tone | `"tip"\|"info"\|"warning"\|"success"\|"danger"` | `"tip"` | `tip` uses the primary colour (a suggestion), `info` uses the info colour (background explanation); warning, success, and danger use their semantic tones. `tip` and `info` were the same colour before 0.8.0. |
-| className | `string` | — | Forwarded to the root container. |
+| className | `string` | - | Forwarded to the root container. |
 
 ## Slots
 
@@ -53,4 +53,4 @@ import { Callout } from "@hulianui/ui"
 - When both `title` and `icon` are absent, only the body renders, which suits a single understated note.
 
 ## Related
-—
+None.

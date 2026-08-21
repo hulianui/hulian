@@ -1,9 +1,10 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Video } from "../../../../packages/ui/src/video/video";
-const MP4 = "/demo/sample-video.mp4";
-const HLS = "/demo/hls/stream.m3u8";
-const POSTER = "/demo/sample-poster.jpg";
+import { demoAsset } from "../../../../packages/ui/src/lib/demo-asset";
+const MP4 = demoAsset("/demo/sample-video.mp4");
+const HLS = demoAsset("/demo/hls/stream.m3u8");
+const POSTER = demoAsset("/demo/sample-poster.jpg");
 const W = "w-full max-w-2xl";
 export const videoShowcase: ShowcaseSpec = {
     examples: [

@@ -25,7 +25,7 @@ import { SplitText } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| text * | `string` | — | Text to animate. |
+| text * | `string` | - | Text to animate. |
 | splitType | `"char" \| "word"` | `"char"` | Splits into characters or whitespace-delimited words. |
 | from | `"bottom" \| "top" \| "left" \| "right"` | `"bottom"` | Direction from which each segment enters. |
 | delay | `number` | `40` | Delay between adjacent segments in milliseconds. Larger values create a slower wave. |

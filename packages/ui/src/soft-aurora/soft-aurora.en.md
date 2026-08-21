@@ -27,8 +27,8 @@ import { SoftAurora } from "@hulianui/ui"
 |------|------|------|------|
 | color1 | `string` | `var(--color-chart-1)` | Primary band color for the first layer; accepts any CSS color resolved through an off-screen canvas |
 | color2 | `string` | `var(--color-chart-4)` | Secondary color for the offset layer; overlap between the layers creates mixed hues |
-| speed | `number` | `0.6` | Animation-speed multiplier; 0.2–2 is recommended |
-| scale | `number` | `1.5` | Noise-sampling scale; higher values create finer texture, with 0.8–3 recommended |
+| speed | `number` | `0.6` | Animation-speed multiplier; 0.2-2 is recommended |
+| scale | `number` | `1.5` | Noise-sampling scale; higher values create finer texture, with 0.8-3 recommended |
 | brightness | `number` | `1` | Overall brightness multiplier |
 | noiseFrequency | `number` | `2.5` | Base noise frequency, controlling fold density |
 | noiseAmplitude | `number` | `1` | Base noise amplitude, controlling vertical variation |
@@ -39,8 +39,8 @@ import { SoftAurora } from "@hulianui/ui"
 | colorSpeed | `number` | `1` | Horizontal travel speed of the cosine color cycle |
 | enableMouseInteraction | `boolean` | `true` | Enable subtle pointer-driven parallax |
 | mouseInfluence | `number` | `0.25` | Distance the aurora shifts in response to the pointer |
-| className | `string` | — | Class name forwarded to the root |
-| style | `CSSProperties` | — | Inline styles forwarded to the root |
+| className | `string` | - | Class name forwarded to the root |
+| style | `CSSProperties` | - | Inline styles forwarded to the root |
 
 ## Slots
 

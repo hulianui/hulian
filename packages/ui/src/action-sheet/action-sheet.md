@@ -10,7 +10,7 @@ status: enriched
 
 # ActionSheet
 
-> 动作面板 · 建在 Base UI Dialog 底滑(同 Drawer 范式·motion token CSS 镜像) + 动作即 Close + 危险态 + 独立取消块 + 安全区 · mobile/overlay
+> 从屏幕底部滑出一组适合触屏的操作项 · mobile/overlay
 
 ## 何时用
 
@@ -29,9 +29,9 @@ import { ActionSheet, ActionSheetTrigger, ActionSheetClose, ActionSheetContent }
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `actions` * | `ActionSheetAction[]` | — | 动作列表（见下）；点击任一动作即关闭面板 |
+| `actions` * | `ActionSheetAction[]` | - | 动作列表（见下）；点击任一动作即关闭面板 |
 | `container` | `HTMLElement \| null` | `document.body` | portal 挂载容器；传某祖先（如手机框，且其 transform/overflow-hidden）可把遮罩+面板约束在容器内 |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **ActionSheetAction**：`key: string` · `label: ReactNode` · `description?: ReactNode`（小字说明）· `danger?: boolean`（红色危险动作）· `disabled?: boolean` · `onClick?: () => void`。
 

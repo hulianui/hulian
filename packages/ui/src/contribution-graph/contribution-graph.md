@@ -27,7 +27,7 @@ import { ContributionGraph, buildContributionCalendar } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| data* | `ContributionDay[]` | — | `{ date, count? }[]`；同日多条累加，`count` 缺省按 1 计（可直接喂一串「事件发生日」） |
+| data* | `ContributionDay[]` | - | `{ date, count? }[]`；同日多条累加，`count` 缺省按 1 计（可直接喂一串「事件发生日」） |
 | days | `number` | `365` | 区间天数（含结束日） |
 | endDate | `string \| Date` | 今天 | 区间结束日（含） |
 | weekStart | `0 \| 1` | `0` | 0=周日（GitHub 口径）/ 1=周一 |
@@ -42,7 +42,7 @@ import { ContributionGraph, buildContributionCalendar } from "@hulianui/ui"
 | showLegend | `boolean` | `false` | 「少 ▢▢▢▢ 多」色阶图例 |
 | formatMonth | `(isoDate: string) => string` | `` `${月}月` `` | 月份标签文案 |
 | formatTooltip | `(cell: ContributionCell) => string` | `日期 · N 次` | 格子原生 hover 提示 |
-| onDayClick | `(cell: ContributionCell) => void` | — | 点击某天下钻；传了之后格子变可聚焦按钮 |
+| onDayClick | `(cell: ContributionCell) => void` | - | 点击某天下钻；传了之后格子变可聚焦按钮 |
 
 ### buildContributionCalendar(data, options?)
 

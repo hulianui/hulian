@@ -10,7 +10,7 @@ status: enriched
 
 # Dialog
 
-> Dialog · Base UI Portal and focus trap · feedback/overlay
+> Presents modal content in a portal with focus trapping. · feedback/overlay
 
 ## When to use
 
@@ -27,20 +27,20 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `DialogContent.title` | `ReactNode` | — | Visible title and the usual source of the accessible name. Accepts a node, so an icon plus text works. The host element is an `<h2>` and **accepts phrasing content only**; put button rows in `extra`. Optional since 0.47.0 (see "A dialog must have a name"). |
-| `DialogContent.extra` | `ReactNode` | — | Actions to the right of the title, right-aligned on the title row. **Never contributes to the accessible name.** |
-| `DialogContent.description` | `ReactNode` | — | Supporting copy. Rendered inside a `<p>`, so **phrasing content only** — put block-level content in children. |
-| `DialogContent.aria-label` | `string` | — | Accessible name for the dialog, applied directly to the popup. Use it instead of `title` when the visible header is drawn by the consumer. |
-| `DialogContent.aria-labelledby` | `string` | — | Id of the element that names the dialog; wins over the id generated from `title`. Supply either this or `aria-label`. |
+| `DialogContent.title` | `ReactNode` | - | Visible title and the usual source of the accessible name. Accepts a node, so an icon plus text works. The host element is an `<h2>` and **accepts phrasing content only**; put button rows in `extra`. Optional since 0.47.0 (see "A dialog must have a name"). |
+| `DialogContent.extra` | `ReactNode` | - | Actions to the right of the title, right-aligned on the title row. **Never contributes to the accessible name.** |
+| `DialogContent.description` | `ReactNode` | - | Supporting copy. Rendered inside a `<p>`, so **phrasing content only**. Put block-level content in children. |
+| `DialogContent.aria-label` | `string` | - | Accessible name for the dialog, applied directly to the popup. Use it instead of `title` when the visible header is drawn by the consumer. |
+| `DialogContent.aria-labelledby` | `string` | - | Id of the element that names the dialog; wins over the id generated from `title`. Supply either this or `aria-label`. |
 | `DialogContent.showClose` | `boolean` | `true` | Top-right close button (#279; shape and default match DrawerContent). Read-only detail dialogs (no footer) previously had no visible exit besides the backdrop, keyboard users only Esc, and screen readers found no reachable "Close" element. When on, the title/`extra` row reserves the top-right 40px. Pass `false` for layers with their own close affordance, such as a global search box. |
 | `DialogContent.closeLabel` | `string` | locale `dialog.close` | Accessible name of the close button; falls back to the ConfigProvider locale (`dialog.close`, "Close" in enUS). |
-| `DialogContent.titleClassName` | `string` | — | Appended to the title (defaults to `text-lg font-semibold`), merged with twMerge. |
-| `DialogContent.descriptionClassName` | `string` | — | Appended to the description (merged with twMerge). Pass `sr-only` for a screen-reader-only description, which keeps the visible header to the title alone while assistive technology still reads the sentence. |
+| `DialogContent.titleClassName` | `string` | - | Appended to the title (defaults to `text-lg font-semibold`), merged with twMerge. |
+| `DialogContent.descriptionClassName` | `string` | - | Appended to the description (merged with twMerge). Pass `sr-only` for a screen-reader-only description, which keeps the visible header to the title alone while assistive technology still reads the sentence. |
 | `DialogContent.backdrop` | `boolean` | `true` | Whether to render the backdrop. Setting it to `false` together with `modal={false}` on the root is what makes an overlay truly non-modal; turning off only one is not enough, because the `inset-0` backdrop swallows every click even when it is transparent. |
-| `DialogContent.backdropClassName` | `string` | — | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so dimming and blur can follow your design system. |
+| `DialogContent.backdropClassName` | `string` | - | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so dimming and blur can follow your design system. |
 | `DialogContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children, so a two-pane layout only needs `flex-1 min-h-0` instead of a hand-tuned `h-[58vh]`. |
-| `DialogContent.bodyClassName` | `string` | — | Appended to the body container. |
-| `DialogContent.className` | `string` | — | Content-container class name. |
+| `DialogContent.bodyClassName` | `string` | - | Appended to the body container. |
+| `DialogContent.className` | `string` | - | Content-container class name. |
 
 ## Events
 
@@ -78,7 +78,7 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 ### A dialog must have a name
 
-`title` was required before 0.47.0, but that never actually guaranteed a name: `title={null}` type-checks and renders an empty `<h2>`. It is now optional, and the guarantee moved to a runtime warning — supplying **none** of `title` / `aria-label` / `aria-labelledby` logs a development warning.
+`title` was required before 0.47.0, but that never actually guaranteed a name: `title={null}` type-checks and renders an empty `<h2>`. It is now optional, and the guarantee moved to a runtime warning: supplying **none** of `title` / `aria-label` / `aria-labelledby` logs a development warning.
 
 So an edge-to-edge dialog whose visible header is a row of controls no longer needs an `sr-only` placeholder title:
 

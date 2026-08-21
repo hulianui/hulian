@@ -10,7 +10,7 @@ status: enriched
 
 # Glimpse
 
-> 链接预览 · dogfood HoverCard 引擎换皮成「封面图+标题+描述+域名」预览卡(维基式 hover preview) · 触发器随 href 渲染外链 a 或纯 span 保持行内排版 · 描述多行截断 · feedback/overlay
+> 悬停链接时预览目标的封面、标题和摘要 · feedback/overlay
 
 ## 何时用
 
@@ -25,14 +25,14 @@ import { Glimpse } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| image | `string` | — | 预览图 URL（顶部封面） |
-| href | `string` | — | 链接地址；传入则触发器渲染为新标签页外链，卡底显示域名 |
+| image | `string` | - | 预览图 URL（顶部封面） |
+| href | `string` | - | 链接地址；传入则触发器渲染为新标签页外链，卡底显示域名 |
 | side | `"top"｜"right"｜"bottom"｜"left"` | `"bottom"` | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | — | 对齐 |
+| align | `"start"｜"center"｜"end"` | - | 对齐 |
 | openDelay | `number` | `300` | 悬停打开延迟(ms) |
 | closeDelay | `number` | `150` | 移出关闭延迟(ms) |
-| className | `string` | — | 触发器额外类名 |
-| contentClassName | `string` | — | 预览卡片额外类名 |
+| className | `string` | - | 触发器额外类名 |
+| contentClassName | `string` | - | 预览卡片额外类名 |
 
 ## Slots
 

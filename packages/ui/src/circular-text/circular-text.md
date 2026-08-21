@@ -25,7 +25,7 @@ import { CircularText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text * | `string` | — | 环绕排布的文本，建议尾部加分隔符（如 `✦`）让首尾衔接更顺 |
+| text * | `string` | - | 环绕排布的文本，建议尾部加分隔符（如 `✦`）让首尾衔接更顺 |
 | spinDuration | `number` | `20` | 转一圈秒数 |
 | onHover | `"speedUp" \| "slow" \| "pause" \| "goBonkers"` | `"speedUp"` | 悬停行为：加速 / 减速 / 暂停 / 抓狂 |
 | radius | `number` | `80` | 文字所在圆半径像素 |

@@ -47,10 +47,10 @@ import { EventStream } from "@hulianui/ui";
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `items` | `EventStreamItem[]` | — | Displayed in input order; the component does not sort. |
-| `maxHeight` | `number \| string` | — | Enables internal scrolling when supplied. |
+| `items` | `EventStreamItem[]` | - | Displayed in input order; the component does not sort. |
+| `maxHeight` | `number \| string` | - | Enables internal scrolling when supplied. |
 | `emptyText` | `ReactNode` | `"\u6682\u65e0\u4e8b\u4ef6"` | Empty text; the built-in Chinese means “No events.” |
-| `onItemClick` | `(item) => void` | — | Enables clickable and keyboard-accessible items. |
+| `onItemClick` | `(item) => void` | - | Enables clickable and keyboard-accessible items. |
 | `live` | `boolean` | `false` | Fades newly appended items in once. |
 | `side` | `"left" \| "right"` | `"left"` | Timeline side. |
 | `defaultExpanded` | `boolean` | `false` | Initially expands detail content. |

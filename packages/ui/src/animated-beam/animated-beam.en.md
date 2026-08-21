@@ -25,9 +25,9 @@ import { AnimatedBeam } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| containerRef* | `RefObject<HTMLElement \| null>` | — | Positioning reference container, must be `position:relative` |
-| fromRef* | `RefObject<HTMLElement \| null>` | — | starting element ref |
-| toRef* | `RefObject<HTMLElement \| null>` | — | end element ref |
+| containerRef* | `RefObject<HTMLElement \| null>` | - | Positioning reference container, must be `position:relative` |
+| fromRef* | `RefObject<HTMLElement \| null>` | - | starting element ref |
+| toRef* | `RefObject<HTMLElement \| null>` | - | end element ref |
 | curvature | `number` | `0` | Curvature (>0 convex) |
 | reverse | `boolean` | `false` | Beam reverse flow |
 | duration | `number` | `4` | Duration of one pass in seconds |
@@ -39,7 +39,7 @@ import { AnimatedBeam } from "@hulianui/ui"
 | gradientStopColor | `string` | `var(--color-chart-2)` | Beam-gradient end color |
 | startXOffset / startYOffset | `number` | `0` | Start-point offset |
 | endXOffset / endYOffset | `number` | `0` | End-point offset |
-| className | `string` | — | Class name forwarded to the SVG |
+| className | `string` | - | Class name forwarded to the SVG |
 
 ## Examples
 

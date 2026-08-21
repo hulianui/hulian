@@ -49,10 +49,6 @@ const COMPONENT_IDENTITY_ALIASES: Readonly<
   "form-dialog": ["ModalForm", "DrawerForm"],
 };
 
-function canonicalChineseShortName(item: ComponentMeta): string {
-  return item.description.split(" · ")[0].trim();
-}
-
 export const TYPE_LABEL: Record<DocType, string> =
   DOCS_LOCALE === "en"
     ? { page: "Page", block: "Block", component: "Component", demo: "Template", guide: "Guide" }
@@ -85,10 +81,7 @@ function componentDocs(): SearchDoc[] {
       description: localized.description,
       category: m.category,
       categoryLabel: localized.categoryLabel,
-      identityAliases: [
-        canonicalChineseShortName(m),
-        ...(COMPONENT_IDENTITY_ALIASES[m.slug] ?? []),
-      ],
+      identityAliases: [m.shortName, ...(COMPONENT_IDENTITY_ALIASES[m.slug] ?? [])],
       keywords: [m.slug, localized.groupLabel, ...localized.tags, ...localized.keywords].filter(
         Boolean,
       ),

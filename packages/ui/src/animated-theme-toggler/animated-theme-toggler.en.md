@@ -25,11 +25,11 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `theme` | `"light" \| "dark"` | — | Controlled theme. When set, the button's state and target are driven by this value, ignoring `ThemeProvider` / the standalone fallback; clicks only call `onThemeChange`. |
-| `onThemeChange` | `(next: "light" \| "dark") => void` | — | Called with the next theme when a switch is requested. Fires in both modes; in controlled mode it is the only place the value lands. |
+| `theme` | `"light" \| "dark"` | - | Controlled theme. When set, the button's state and target are driven by this value, ignoring `ThemeProvider` / the standalone fallback; clicks only call `onThemeChange`. |
+| `onThemeChange` | `(next: "light" \| "dark") => void` | - | Called with the next theme when a switch is requested. Fires in both modes; in controlled mode it is the only place the value lands. |
 | `duration` | `number` | `500` | Circular reveal duration in milliseconds. |
-| `className` | `string` | — | Button class name. |
-| `aria-label` | `string` | — | Accessible label. |
+| `className` | `string` | - | Button class name. |
+| `aria-label` | `string` | - | Accessible label. |
 
 Without `aria-label`, the button uses built-in Chinese state-dependent copy: `"\u5207\u6362\u5230\u4eae\u8272"` (“Switch to light”) in dark mode and `"\u5207\u6362\u5230\u6697\u8272"` (“Switch to dark”) otherwise.
 

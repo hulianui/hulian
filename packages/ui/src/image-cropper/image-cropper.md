@@ -10,7 +10,7 @@ status: enriched
 
 # ImageCropper
 
-> 图片裁剪 · 固定比例框(默认证件照 5:7) + 触屏双指捏合/拖拽对位 + 缩放滑杆 + canvas 出 Blob(尺寸/质量/字节上限可配·react-easy-crop MIT) · forms/advanced
+> 让用户拖动缩放图片，按固定比例裁出成品 · forms/advanced
 
 ## 何时用
 
@@ -25,15 +25,15 @@ import { ImageCropper, cropImageToBlob } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| image* | `string` | — | 图片源：object URL / data URL / 同源地址 |
+| image* | `string` | - | 图片源：object URL / data URL / 同源地址 |
 | aspect | `number` | `5/7` | 裁剪框宽高比（证件照 1 寸/2 寸同比例） |
 | outputWidth | `number` | `413` | 输出位图宽（px），高按 aspect 推导取整（2 寸 @300DPI） |
 | outputType | `string` | `"image/jpeg"` | 输出 mime |
-| quality | `number` | `0.9` | 编码质量 0–1 |
-| maxBytes | `number` | — | 输出字节上限（如 `200*1024`）：超限降质重试一次 |
+| quality | `number` | `0.9` | 编码质量 0-1 |
+| maxBytes | `number` | - | 输出字节上限（如 `200*1024`）：超限降质重试一次 |
 | maxZoom | `number` | `3` | 最大缩放倍数 |
 | cropAreaClassName | `string` | `h-64 sm:h-80` | 裁剪画布区高度 class |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

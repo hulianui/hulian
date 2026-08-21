@@ -29,9 +29,9 @@ import { Plasma } from "@hulianui/ui"
 | speed | `number` | `1` | Flow speed factor (internally multiplied by 0.4 to feed the shader to align with the original); the larger, the faster |
 | direction | `"forward" \| "reverse" \| "pingpong"` | `"forward"` | Flow direction: upward surge / reverse sinking / forward and reverse smooth reciprocation (smoothstep) |
 | scale | `number` | `1` | Field of view zoom; the larger the screen, the closer the texture is, and the smaller the texture is, the denser it is |
-| opacity | `number` | `1` | Overall opacity 0–1 (overlayed on shader alpha); used to darken soft backgrounds |
+| opacity | `number` | `1` | Overall opacity 0-1 (overlayed on shader alpha); used to darken soft backgrounds |
 | mouseInteractive | `boolean` | `true` | Lets the pointer distort the flow; when false, motion is automatic and no pointer listener is attached |
-| className | `string` | — | Passthrough to root (canvas container or fallback div) |
+| className | `string` | - | Passthrough to root (canvas container or fallback div) |
 
 ## Slots
 

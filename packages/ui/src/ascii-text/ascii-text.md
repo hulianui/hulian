@@ -26,14 +26,14 @@ import { ASCIIText } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | text | `string` | `"瑚琏"` | 要转成字符画的文本，先渲染到离屏 canvas 再按像素亮度逐格映射字符 |
-| asciiFontSize | `number` | `8` | 字符画字号(px)，决定网格密度；越小越密越费算力，建议 6–14 |
+| asciiFontSize | `number` | `8` | 字符画字号(px)，决定网格密度；越小越密越费算力，建议 6-14 |
 | textFontSize | `number` | `160` | 离屏源文本字号(px)，越大采样分辨率越高；与 asciiFontSize 比值≈字符列数 |
 | textColor | `string` | `var(--color-foreground)` | 源文本填充色，喂给 canvas fillStyle，须可被 canvas 解析 |
 | enableWaves | `boolean` | `true` | 字符网格按行做正弦相位偏移营造飘动；reduced-motion 下强制静止 |
 | enableHue | `boolean` | `true` | 指针相对中心的角度驱动 hue-rotate 色相旋转；关闭则保持单一色相 |
 | charset | `string` | 经典 70 级 ramp | 字符亮度坡道(暗→亮)，索引越大代表越亮的像素，可传自定义风格化 |
-| className | `string` | — | 透传根容器额外 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器额外 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## 示例
 ```tsx

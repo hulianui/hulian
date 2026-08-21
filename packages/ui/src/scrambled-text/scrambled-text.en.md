@@ -27,10 +27,10 @@ import { ScrambledText } from "@hulianui/ui"
 |------|------|------|------|
 | radius | `number` | `100` | Pointer radius in px. A character scrambles only when its center falls within this radius. |
 | duration | `number` | `1.2` | Maximum scramble duration per character in seconds; characters nearer the pointer approach this value. |
-| speed | `number` | `0.5` | Replacement speed from 0–1; higher values change glyphs more frequently and resolve faster. |
+| speed | `number` | `0.5` | Replacement speed from 0-1; higher values change glyphs more frequently and resolve faster. |
 | scrambleChars | `string` | `".:"` | Characters sampled as temporary replacements. |
-| className | `string` | — | Additional root class name, merged with `cn`. |
-| style | `CSSProperties` | — | Inline styles for the root element. |
+| className | `string` | - | Additional root class name, merged with `cn`. |
+| style | `CSSProperties` | - | Inline styles for the root element. |
 
 ## Slots
 
@@ -41,7 +41,7 @@ import { ScrambledText } from "@hulianui/ui"
 ## Example
 ```tsx
 // Default: .: character set
-<ScrambledText>Move the pointer over this text — Hover scrambles the glyphs.</ScrambledText>
+<ScrambledText>Move the pointer over this text. Hover scrambles the glyphs.</ScrambledText>
 
 // Large radius + full width symbol set
 <ScrambledText radius={160} scrambleChars="█▓▒░">

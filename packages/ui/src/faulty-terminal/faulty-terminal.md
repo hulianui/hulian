@@ -34,7 +34,7 @@ import { FaultyTerminal } from "@hulianui/ui"
 | glitchAmount | `number` | `1` | 横向撕裂量，>1 更夸张，1=原始位移 |
 | flickerAmount | `number` | `1` | 整屏忽明忽暗闪烁量，0=无 |
 | noiseAmp | `number` | `0` | 背景有机噪声振幅，增大叠加流动雾噪 |
-| chromaticAberration | `number` | `0` | 色散（RGB 分离）像素量，建议 0–6 |
+| chromaticAberration | `number` | `0` | 色散（RGB 分离）像素量，建议 0-6 |
 | dither | `number \| boolean` | `0` | 抖动颗粒强度，boolean 时 true=1/false=0 |
 | curvature | `number` | `0.2` | 桶形畸变（CRT 球面弯曲），0=平面 |
 | tint | `string` | `--color-chart-2` | 字符着色，任意 CSS 颜色，不传吃主题 token |
@@ -42,8 +42,8 @@ import { FaultyTerminal } from "@hulianui/ui"
 | mouseStrength | `number` | `0.2` | 鼠标影响强度，仅 mouseReact=true 生效 |
 | pageLoadAnimation | `boolean` | `true` | 加载时逐格淡入动画 |
 | brightness | `number` | `1` | 整体亮度倍率 |
-| className | `string` | — | 透传根容器（或兜底层） |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器（或兜底层） |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

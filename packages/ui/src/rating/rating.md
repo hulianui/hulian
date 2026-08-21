@@ -10,7 +10,7 @@ status: enriched
 
 # Rating
 
-> 评分 · 零依赖受控星级(radio 语义) + 自定义图标 + hover 预览 + token 星色 · forms/advanced
+> 用星级打分，可换图标并带悬停预览 · forms/advanced
 
 ## 何时用
 
@@ -25,14 +25,14 @@ import { Rating } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `number` | — | 受控当前分值 |
-| defaultValue | `number` | — | 非受控初始分值 |
-| max | `number` | — | 星数上限 |
+| value | `number` | - | 受控当前分值 |
+| defaultValue | `number` | - | 非受控初始分值 |
+| max | `number` | - | 星数上限 |
 | readOnly | `boolean` | `false` | 只读（不可交互） |
-| disabled | `boolean` | — | 禁用 |
+| disabled | `boolean` | - | 禁用 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸 |
 | color | `string` | `var(--color-primary)` | 星色（任意 CSS 颜色或 token var()）；hover 自动派生 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

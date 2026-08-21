@@ -30,8 +30,8 @@ import { ReflectiveCard } from "@hulianui/ui"
 | speed | `number` | `6` | Duration of one sheen pass in seconds. |
 | roughness | `number` | `0.35` | Surface noise from 0 for mirror-smooth to 1 for heavily frosted. |
 | metalness | `number` | `1` | Overall sheen opacity from 0 to 1. |
-| className | `string` | — | Class name forwarded to the root. |
-| style | `CSSProperties` | — | Inline styles forwarded to the root. |
+| className | `string` | - | Class name forwarded to the root. |
+| style | `CSSProperties` | - | Inline styles forwarded to the root. |
 
 ## Slots
 

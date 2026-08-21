@@ -10,7 +10,7 @@ status: enriched
 
 # Watermark
 
-> 水印 · 自研 canvas 平铺 + MutationObserver 防篡改 + 高清 DPR(零依赖·防截图泄密) · data-display/placeholder
+> 给页面铺上防篡改的水印，支持高清屏 · data-display/placeholder
 
 ## 何时用
 
@@ -27,8 +27,8 @@ import { Watermark } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| content | `string \| string[]` | — | 水印文字，传数组渲染多行。与 `image` 二选一（同传 image 优先） |
-| image | `string` | — | 图片水印源（dataURL/链接）。设置后忽略 content |
+| content | `string \| string[]` | - | 水印文字，传数组渲染多行。与 `image` 二选一（同传 image 优先） |
+| image | `string` | - | 图片水印源（dataURL/链接）。设置后忽略 content |
 | width | `number` | `120` | 图片宽度（px），仅 image 模式生效 |
 | height | `number` | 按原始宽高比 | 图片高度（px），仅 image 模式生效 |
 | rotate | `number` | `-22` | 旋转角度（度） |

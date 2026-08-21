@@ -39,7 +39,7 @@ import { ColorBends } from "@hulianui/ui"
 | parallax | `number` | `0.5` | Pointer-parallax strength used to create depth |
 | mouseInfluence | `number` | `1` | Pointer pulling strength; 0=no response to pointer |
 | transparent | `boolean` | `true` | Render only the ribbons over a transparent background; false adds a black background |
-| className | `string` | — | Class name forwarded to the root, which includes `absolute inset-0 z-0` |
+| className | `string` | - | Class name forwarded to the root, which includes `absolute inset-0 z-0` |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Form
 
-> Form container and controller · Structured submission, validation rules, field dependencies, server errors, and dynamic lists · forms/framework
+> Coordinates named fields with structured submission and field errors. · forms/framework
 
 ## When to use
 
@@ -28,8 +28,8 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | validationMode | `"onSubmit" \| "onBlur" \| "onChange"` | `"onSubmit"` | Point at which validation runs. |
-| errors | `Record<string, string \| string[]>` | — | External or server errors keyed by `<Field name>`. The matching Field must render `Field.Error`. |
-| className | `string` | — | Additional class name for the form container. |
+| errors | `Record<string, string \| string[]>` | - | External or server errors keyed by `<Field name>`. The matching Field must render `Field.Error`. |
+| className | `string` | - | Additional class name for the form container. |
 
 ## Events
 

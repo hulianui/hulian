@@ -10,7 +10,7 @@ status: enriched
 
 # Mentions
 
-> @提及输入 · 复用 Textarea 皮肤 + 触发符唤起候选(镜像 div 测光标像素坐标) + aria-activedescendant 虚拟焦点(零依赖) · forms/advanced
+> 输入触发符后弹出候选，把提及插进文本 · forms/advanced
 
 ## 何时用
 
@@ -25,18 +25,18 @@ import { Mentions, MentionText, type MentionTextProps, findTrigger, insertMentio
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| options* | `MentionOption[]` | — | 候选清单；每项 `value`/`label`，可带 `description`/`startContent`/`disabled` |
-| value | `string` | — | 受控文本值（与 onChange 配套） |
-| defaultValue | `string` | — | 非受控初始值（不传 value 时生效） |
+| options* | `MentionOption[]` | - | 候选清单；每项 `value`/`label`，可带 `description`/`startContent`/`disabled` |
+| value | `string` | - | 受控文本值（与 onChange 配套） |
+| defaultValue | `string` | - | 非受控初始值（不传 value 时生效） |
 | prefix | `string` | `"@"` | 触发符，可配多字符如 `"@@"`/`"#"`；其前为行首或空白时唤起候选 |
 | filter | `false \| ((option, query) => boolean)` | 内置子串匹配 | `false`=关闭本地过滤交给 onSearch；函数=自定义；缺省=大小写不敏感子串（label/value） |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 文本域皮肤尺寸（复用 Textarea 的 size 变体） |
 | invalid | `boolean` | `false` | 独立使用时标红 |
-| placeholder | `string` | — | 占位符（透传 textarea） |
-| rows | `number` | — | 文本域行数（透传 textarea） |
+| placeholder | `string` | - | 占位符（透传 textarea） |
+| rows | `number` | - | 文本域行数（透传 textarea） |
 | disabled | `boolean` | `false` | 禁用 |
-| className | `string` | — | 容器类名 |
-| popupClassName | `string` | — | 候选浮层额外类名 |
+| className | `string` | - | 容器类名 |
+| popupClassName | `string` | - | 候选浮层额外类名 |
 
 > 还透传 `Textarea` 的原生属性（除被 Omit 的 `size`/`value`/`defaultValue`/`onChange`/`onSelect`/`prefix`）。
 

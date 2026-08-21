@@ -10,7 +10,7 @@ status: enriched
 
 # Grid
 
-> CSS Grid primitive · Fixed or responsive columns, configurable gaps, and spanning items · RSC-safe · layout/arrange
+> Defines type-safe polymorphic grid columns through the 2xl breakpoint with gaps and child row or column spans. · layout/arrange
 
 ## When to use
 
@@ -28,10 +28,10 @@ import { Grid, GridItem } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | cols | `number \| ResponsiveCols` | `1` | Column count. A number creates any fixed count through inline styles; `{ base, sm, md, lg, xl, 2xl }` uses static responsive classes. |
-| rows | `number` | — | Explicit row count; omit it to let content create rows automatically. |
+| rows | `number` | - | Explicit row count; omit it to let content create rows automatically. |
 | gap | `number` | `0` | Row and column gap (× 0.25rem). |
-| colGap | `number` | — | Column gap, overriding the column component of `gap` (× 0.25rem). |
-| rowGap | `number` | — | Row gap, overriding the row component of `gap` (× 0.25rem). |
+| colGap | `number` | - | Column gap, overriding the column component of `gap` (× 0.25rem). |
+| rowGap | `number` | - | Row gap, overriding the row component of `gap` (× 0.25rem). |
 | inline | `boolean` | `false` | Uses `inline-grid` instead of `grid`. |
 | as | `ElementType` | `"div"` | Element type rendered by Grid. |
 
@@ -39,8 +39,8 @@ import { Grid, GridItem } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| colSpan | `number` | — | Number of columns spanned. |
-| rowSpan | `number` | — | Number of rows spanned. |
+| colSpan | `number` | - | Number of columns spanned. |
+| rowSpan | `number` | - | Number of rows spanned. |
 | as | `ElementType` | `"div"` | Element type rendered by GridItem. |
 
 Both components forward the remaining `HTMLAttributes<HTMLElement>` to their rendered element.

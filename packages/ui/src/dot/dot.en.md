@@ -10,7 +10,7 @@ status: enriched
 
 # Dot
 
-> Status dot · five semantic tones or any CSS color, three sizes, optional pulse, and accessible status labeling · data-display/info
+> Renders a semantic or arbitrary-color status indicator with optional pulse and accessible labeling. · data-display/info
 
 ## When to use
 
@@ -26,10 +26,10 @@ import { Dot } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | tone | `"neutral"\|"brand"\|"success"\|"warning"\|"danger"` | `neutral` | Semantic color. |
-| color | `string` | — | Any dot color: a semantic color name such as `chart-2` or `primary`, any CSS color, or a CSS variable resolved through `resolveTone`. Takes precedence over `tone`, and keeps custom chart legends in sync with their series. |
+| color | `string` | - | Any dot color: a semantic color name such as `chart-2` or `primary`, any CSS color, or a CSS variable resolved through `resolveTone`. Takes precedence over `tone`, and keeps custom chart legends in sync with their series. |
 | size | `"sm"\|"md"\|"lg"` | `md` | Dot size. |
 | pulse | `boolean` | `false` | Breathing animation for active states. |
-| label | `string` | — | Adds `role=status` and an accessible label; omission makes it decorative. |
+| label | `string` | - | Adds `role=status` and an accessible label; omission makes it decorative. |
 
 ## Examples
 ```tsx

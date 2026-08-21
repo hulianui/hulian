@@ -32,8 +32,8 @@ Inherits `HTMLAttributes<HTMLDivElement>`, additionally:
 | flickerChance | number | 0.3 | Flash probability per frame per frame (multiplied by deltaTime). 0=static mesh, 1=high frequency flashing |
 | maxOpacity | number | 0.3 | Maximum opacity of the grid (0~1), the higher the value, the more obvious |
 | color | string | `--color-foreground` | Square color; accepts any CSS color. When omitted, RGB is derived from the container's `color` value or token and follows the active theme. |
-| width | number | — | Fixed width (px). Do not pass ResizeObserver to follow the container width |
-| height | number | — | Fixed height (px). Do not pass ResizeObserver to follow the height of the container |
+| width | number | - | Fixed width (px). Do not pass ResizeObserver to follow the container width |
+| height | number | - | Fixed height (px). Do not pass ResizeObserver to follow the height of the container |
 
 ## Examples
 ```tsx

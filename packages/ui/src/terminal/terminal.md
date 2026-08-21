@@ -25,11 +25,11 @@ import { Terminal } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| lines* | `TerminalLine[]` | — | 要逐行揭示的行数组（见下表）。 |
-| lineDelay | `number` | — | 相邻行揭示间隔(s)。 |
-| title | `string` | — | 标题栏文字。 |
+| lines* | `TerminalLine[]` | - | 要逐行揭示的行数组（见下表）。 |
+| lineDelay | `number` | - | 相邻行揭示间隔(s)。 |
+| title | `string` | - | 标题栏文字。 |
 | highlight | `boolean` | `true` | 命令行/输出行语法着色（命令名/--flag/URL/数字/引号串走 --code-* token）；仅对 text 为字符串的 command/muted 行生效，success 等整行 tone 色不拆。 |
-| className | `string` | — | 透传到根容器。 |
+| className | `string` | - | 透传到根容器。 |
 
 `TerminalLine`：
 | 字段 | 类型 | 说明 |

@@ -10,11 +10,11 @@ status: enriched
 
 # Text
 
-> Text primitive · size, semantic tone, and weight + single- or multiline truncation + polymorphic `as` · dependency-free · RSC-safe · typography/text
+> Applies semantic size, tone, weight, truncation, and polymorphic element choices to text. · typography/text
 
 ## When to use
 
-Use Text for body copy, supporting guidance, or inline content that needs consistent size, semantic tone, weight, and truncation. Use [Heading](../heading/heading.md) for h1–h6 semantics and heading scales, or [Prose](../prose/prose.md) for a complete rich-text passage.
+Use Text for body copy, supporting guidance, or inline content that needs consistent size, semantic tone, weight, and truncation. Use [Heading](../heading/heading.md) for h1-h6 semantics and heading scales, or [Prose](../prose/prose.md) for a complete rich-text passage.
 
 ## Import
 ```ts
@@ -30,7 +30,7 @@ import { Text } from "@hulianui/ui"
 | tone | `"default" \| "muted" \| "primary" \| "success" \| "warning" \| "danger"` | `"default"` | Semantic hue (self-adaptation of light and dark) |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | Font weight |
 | truncate | `boolean` | `false` | Single line ellipsis truncation |
-| lineClamp | `number` | — | Multi-line truncation (up to n lines following ellipses); takes precedence over truncate when set |
+| lineClamp | `number` | - | Multi-line truncation (up to n lines following ellipses); takes precedence over truncate when set |
 
 Inherited `HTMLAttributes<HTMLElement>` (Omit `color`, the tone is changed to tone).
 

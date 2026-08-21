@@ -10,7 +10,7 @@ status: enriched
 
 # PromptSuggestions
 
-> 建议提示 · 可点击 pill 列表 + string/{label,value} 两式 + onSelect 回传 value 填充输入或发起对话 · ai/assist
+> 给出可点击的起始提问或追问建议 · ai/assist
 
 ## 何时用
 
@@ -27,7 +27,7 @@ import { PromptSuggestions } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| suggestions* | `Suggestion[]` | — | 建议列表 |
+| suggestions* | `Suggestion[]` | - | 建议列表 |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # ProgressiveBlur
 
-> Progressive blur · Layered backdrop-blur + mask gradient (pure CSS·RSC) · decoration/overlay-fx
+> Applies a directional multi-step blur gradient at a content edge. · decoration/overlay-fx
 
 ## When to Use
 
@@ -28,7 +28,7 @@ import { ProgressiveBlur } from "@hulianui/ui"
 | side | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | The direction of blur enhancement, this side is the most blurry. |
 | layers | `number` | `5` | Number of layers; more layers produce a smoother transition |
 | blur | `number` | `1` | Base blur in pixels, doubled for each successive layer |
-| className | `string` | — | Passthrough to the root overlay. |
+| className | `string` | - | Passthrough to the root overlay. |
 
 ## Examples
 ```tsx

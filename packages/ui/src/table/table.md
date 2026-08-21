@@ -30,45 +30,45 @@ import {
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| columns* | `ColumnDef<TData, any>[]` | — | TanStack 列定义（accessorKey/header/cell/meta.sticky/meta.filterable…） |
-| data* | `TData[]` | — | 行数据 |
+| columns* | `ColumnDef<TData, any>[]` | - | TanStack 列定义（accessorKey/header/cell/meta.sticky/meta.filterable…） |
+| data* | `TData[]` | - | 行数据 |
 | enableSorting | `boolean` | `true` | false 则表头不可点、无排序箭头、不写 aria-sort |
-| sorting | `SortingState` | — | 受控排序态；不传走内部非受控 |
+| sorting | `SortingState` | - | 受控排序态；不传走内部非受控 |
 | striped | `boolean` | `true` | 偶数行斑马纹 |
 | bordered | `boolean` | `true` | 外层描边 + 圆角；被 ProTable 卡片包裹时置 false 避免双框 |
 | density | `"default" \| "middle" \| "compact"` | `"default"` | 行密度（仅调单元格内边距） |
 | getRowId | `(row: TData, index: number) => string` | 按 index | 行稳定 key |
-| rowClassName | `(row: TData, index: number) => string \| undefined` | — | 行级附加 className（与斑马/选中类合并，不覆盖） |
-| cellClassName | `(ctx) => string \| undefined` | — | **单元格级**附加 className，落在 `<td>` 本体上（对标 el-table `cell-class-name`、antd `column.onCell`）。`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，与 `cellSpan` 同形。用于「按值着色」——同一列不同行不同底色；走 `ColumnDef.cell` 在格子里套色块顶不上（内边距那圈会露出 td 自己的斑马/固定列底色）。与既有单元格类合并，不覆盖 |
+| rowClassName | `(row: TData, index: number) => string \| undefined` | - | 行级附加 className（与斑马/选中类合并，不覆盖） |
+| cellClassName | `(ctx) => string \| undefined` | - | **单元格级**附加 className，落在 `<td>` 本体上（对标 el-table `cell-class-name`、antd `column.onCell`）。`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，与 `cellSpan` 同形。用于「按值着色」——同一列不同行不同底色；走 `ColumnDef.cell` 在格子里套色块顶不上（内边距那圈会露出 td 自己的斑马/固定列底色）。与既有单元格类合并，不覆盖 |
 | layout | `"auto" \| "fixed"` | `"auto"` | 列宽布局：auto 只让显式写了 size/minSize/maxSize 的列出宽度，其余按内容自适应；fixed 每列都按 `getSize()` 出实宽、表宽 = 各列之和 |
 | resizable | `boolean` | `false` | 列宽拖拽（表头右缘手柄，双击复位）。开启即强制 `layout="fixed"`；单列可用 `ColumnDef.enableResizing=false` 关掉，内建选择/展开器/拖拽列恒不可调宽 |
-| columnSizing | `ColumnSizingState` | — | 受控列宽态（列 id → 像素宽）；不传走内部非受控 |
+| columnSizing | `ColumnSizingState` | - | 受控列宽态（列 id → 像素宽）；不传走内部非受控 |
 | onRowClick | `(row: TData, index: number) => void` | 关 | 行点击：整行 cursor-pointer + tabIndex=0 + 键盘 Enter/Space 可达（保持 row 语义）；行内交互元素冒泡隔离 |
 | rowHref | `(row: TData, index: number) => string \| undefined` | 关 | 声明式整行导航：返回 href 该行点击/Enter 整页跳转（cmd/ctrl+点击新开 tab），返回 undefined 该行不可点 |
 | onRowDoubleClick | `(row: TData, index: number) => void` | 关 | 行双击（后台列表「双击进编辑」的老习惯）。与 `onRowClick` 相互独立、可同传；行内交互元素同样冒泡隔离 |
 | enableRowSelection | `boolean \| ((row: Row<TData>) => boolean)` | 关 | 开行选择，自动前插复选框列（含全选）；函数可限定可选行 |
-| rowSelection | `RowSelectionState` | — | 受控选择态 |
-| getRowCanExpand | `(row: Row<TData>) => boolean` | — | 限定可展开行 |
-| getSubRows | `(row: TData) => TData[] \| undefined` | — | 提供则启用树形（按 row.depth 缩进） |
+| rowSelection | `RowSelectionState` | - | 受控选择态 |
+| getRowCanExpand | `(row: Row<TData>) => boolean` | - | 限定可展开行 |
+| getSubRows | `(row: TData) => TData[] \| undefined` | - | 提供则启用树形（按 row.depth 缩进） |
 | indent | `number` | `16` | 树形/明细每级缩进像素 |
-| expanded | `ExpandedState` | — | 受控展开态（树形 + 明细共用） |
-| columnFilters | `ColumnFiltersState` | — | 受控列筛选态 |
+| expanded | `ExpandedState` | - | 受控展开态（树形 + 明细共用） |
+| columnFilters | `ColumnFiltersState` | - | 受控列筛选态 |
 | filterPlacement | `"header" \| "row"` | `"header"` | 筛选控件放哪。`header` 控件长在表头格里（与列名、排序按钮同格）；`row` 挪到表头行**之下**独立的一整行 `<tr>`，表头恢复单行高度，多级表头下与叶子列一一对齐。一列都不可筛选时该行不渲染 |
 | rowDraggable | `boolean` | `false` | 开行拖拽排序（@dnd-kit，useSortable 挂在 `<tr>`）；组件不改 data，顺序由 onRowDragEnd 交还消费方 |
 | dragHandle | `"row" \| "cell"` | `"cell"` | `cell` 前插手柄列只有手柄可抓；`row` 整行可抓（行内交互元素已做手势隔离） |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | 全可拖 | 返回 false 该行手柄禁用，既抓不起也不能当落点；树形子行（depth>0）恒不可拖 |
-| cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | — | 单元格合并（对标 el-table `:span-method`）。逐格回调，**被合掉的格子不再回调**；`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，`rowIndex` 是渲染顺序（排序/筛选之后）、`rows` 与之同序。与 `virtual` / `renderExpandedRow` 不能同开（会静默不合并 + dev 告警） |
+| cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | - | 单元格合并（对标 el-table `:span-method`）。逐格回调，**被合掉的格子不再回调**；`ctx = { row, rowIndex, rows, columnId, columnIndex, value }`，`rowIndex` 是渲染顺序（排序/筛选之后）、`rows` 与之同序。与 `virtual` / `renderExpandedRow` 不能同开（会静默不合并 + dev 告警） |
 | stickyHeader | `boolean ｜ "self" ｜ "scrollParent"` | `false` | 表头吸顶（与 `virtual` 正交）。`true` / `"self"` 吸在**表格自己的滚动区**上，**必须同时给 `maxHeight`**（否则外壳没有高度约束、永远不滚，sticky 没有可锚的滚动祖先，组件在 dev 下告警）；`"scrollParent"` 吸在**外部滚动容器**（页面 / 内容区）上，表格自身不滚，但外壳也就**不再有 `overflow-x-auto`**（见「禁忌 / 坑」） |
 | stickyHeaderOffset | `number ｜ string` | `0` | 吸顶表头的偏移（数值按 px），落成 `<thead>` 的 `top`，用来避开自家固定页头（`stickyHeaderOffset={56}`）。两档都生效 |
-| maxHeight | `number ｜ string` | — | 滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准 |
-| minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来 |
-| cellAlign | `"left" ｜ "center" ｜ "right"` | — | 单元格水平对齐的**表级默认**（#292）；列 `meta.align` 覆盖。不写维持历史默认（左）。对齐是整表口径——逐列写 `meta.align` 表达不了「这张表统一居中」，漏写的那列就是视觉裂缝 |
-| headerAlign | `"left" ｜ "center" ｜ "right"` | — | 表头水平对齐的**表级默认**（#292）；不写则跟随 `cellAlign`，列 `meta.headerAlign` / `meta.align` 仍优先。显式写了它，跨列组名那条「恒居中」的兜底也让位 |
+| maxHeight | `number ｜ string` | - | 滚动区最大高度（数值按 px）。给了它外壳才纵向滚动；`virtual` 开启时以 `virtual.height` 为准 |
+| minWidth | `number ｜ string` | - | `<table>` **本体**的宽度下限。写进 `className` 的 `min-w-*` 钉的是滚动外壳，会让横滚条永不出现、超出视口的列被裁掉且滚不出来 |
+| cellAlign | `"left" ｜ "center" ｜ "right"` | - | 单元格水平对齐的**表级默认**（#292）；列 `meta.align` 覆盖。不写维持历史默认（左）。对齐是整表口径——逐列写 `meta.align` 表达不了「这张表统一居中」，漏写的那列就是视觉裂缝 |
+| headerAlign | `"left" ｜ "center" ｜ "right"` | - | 表头水平对齐的**表级默认**（#292）；不写则跟随 `cellAlign`，列 `meta.headerAlign` / `meta.align` 仍优先。显式写了它，跨列组名那条「恒居中」的兜底也让位 |
 | cellVerticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | 单元格垂直对齐的表级默认；列 `meta.verticalAlign` 覆盖 |
-| cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | 换行策略的表级默认；列 `meta.whitespace` 覆盖。典型形状是「表级 nowrap + 少数几列 normal」 |
+| cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | - | 换行策略的表级默认；列 `meta.whitespace` 覆盖。典型形状是「表级 nowrap + 少数几列 normal」 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
 | stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 或 `maxHeight` 开启时无效**（外壳自己就是定高滚动容器，真滚动条一直看得见，再挂一条会上下两条并排）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
-| className | `string` | — | 根节点类名 |
+| className | `string` | - | 根节点类名 |
 
 ## Events
 
@@ -96,14 +96,14 @@ import {
 | meta | 类型 | 说明 | Element Plus 对应 |
 |------|------|------|------|
 | sticky | `"left" \| "right"` | 固定列贴左/右 | `fixed` |
-| filterable | `boolean` | 表头渲染内置文本筛选框 | — |
+| filterable | `boolean` | 表头渲染内置文本筛选框 | - |
 | filterRender | `(ctx) => ReactNode` | 换掉该列的筛选控件（枚举列给下拉、日期列给日期控件、数字列给区间）。`ctx = { value, setValue, column }`，`setValue(undefined)` 清除该列筛选。**写了它就等于该列可筛选**，不必再写 `filterable`；控件的无障碍名字归你 | `filters` / 自绘表头（antd 为 `filterDropdown`） |
 | align | `"left" \| "center" \| "right"` | 单元格内容水平对齐 | `align` |
 | headerAlign | `"left" \| "center" \| "right"` | 表头对齐；不写则跟随 `align` | `header-align` |
 | ellipsis | `boolean` | 溢出截断 + 悬停 Tooltip 显示全文 | `show-overflow-tooltip` |
-| verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | 单元格垂直对齐（表头不跟随，恒 middle）。允许换行的列几乎必然要 `top` | — |
-| whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | 换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行） | — |
-| lockVisible | `boolean` | 锁定显隐：该列不允许在 [ProTable](../pro-table/pro-table.md) 的「列设置」里被关掉（置灰 + 恒选中），受控的 `columnVisibility` 对它写 `false` 也不生效。身份列与操作列典型 | — |
+| verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | 单元格垂直对齐（表头不跟随，恒 middle）。允许换行的列几乎必然要 `top` | - |
+| whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | 换行策略。`pre-wrap` 保留原文换行与空格并自动带 `break-words`。与 `ellipsis` 互斥（截断本身要求单行） | - |
+| lockVisible | `boolean` | 锁定显隐：该列不允许在 [ProTable](../pro-table/pro-table.md) 的「列设置」里被关掉（置灰 + 恒选中），受控的 `columnVisibility` 对它写 `false` 也不生效。身份列与操作列典型 | - |
 
 列宽走 TanStack 原生的 `ColumnDef.size / minSize / maxSize`（不另发明 `width` / `min-width`）：
 `size` → `width`、`minSize` → `min-width`、`maxSize` → `max-width`，`th` 与 `td` 用同一口径的内联 style（不使用 `<colgroup>`）。
@@ -124,12 +124,12 @@ import {
 | striped | `boolean` | `false` | 偶数行斑马纹（只作用于 `TableBody` 里的行）。默认与高层 `Table` **相反**：手写结构常有整宽附属行 / 跨行合并，「第几行」与视觉上的第几条记录对不上 |
 | bordered | `boolean` | `true` | 外层描边 + 圆角；嵌进卡片时置 `false` 避免双框 |
 | layout | `"auto" ｜ "fixed"` | `"auto"` | `table-layout` |
-| minWidth | `number ｜ string` | — | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
-| tableClassName | `string` | — | `<table>` 本体的类名 |
-| cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | 表级换行策略（#285），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellWhitespace` 同名同义。不写为浏览器默认（换行）。典型形状是「表级 `nowrap` + 少数几列 `TableCell whitespace="normal"`」；`TableHead` 不受影响，恒不换行 |
-| cellAlign | `"left" ｜ "center" ｜ "right"` | — | 表级单元格水平对齐（#292），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellAlign` 同名同义。不写为 `left`，按格 `TableCell align` 优先 |
-| headerAlign | `"left" ｜ "center" ｜ "right"` | — | 表级表头水平对齐（#292），下发给 `TableHead`；不写则跟随 `cellAlign`，按格 `TableHead align` 优先 |
-| ref | `Ref<HTMLDivElement>` | — | **外层滚动容器**（`overflow-x-auto` 那层）的引用。横向滚动态只存在于那一层 |
+| minWidth | `number ｜ string` | - | `<table>` **本体**的宽度下限（`className` 落在滚动外壳上，`min-w-*` 写那儿会让横滚条永不出现） |
+| tableClassName | `string` | - | `<table>` 本体的类名 |
+| cellWhitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | - | 表级换行策略（#285），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellWhitespace` 同名同义。不写为浏览器默认（换行）。典型形状是「表级 `nowrap` + 少数几列 `TableCell whitespace="normal"`」；`TableHead` 不受影响，恒不换行 |
+| cellAlign | `"left" ｜ "center" ｜ "right"` | - | 表级单元格水平对齐（#292），经 context 下发给 `TableCell`；与高层 `Table` 的 `cellAlign` 同名同义。不写为 `left`，按格 `TableCell align` 优先 |
+| headerAlign | `"left" ｜ "center" ｜ "right"` | - | 表级表头水平对齐（#292），下发给 `TableHead`；不写则跟随 `cellAlign`，按格 `TableHead align` 优先 |
+| ref | `Ref<HTMLDivElement>` | - | **外层滚动容器**（`overflow-x-auto` 那层）的引用。横向滚动态只存在于那一层 |
 
 `TableHeader` / `TableBody` / `TableFooter` 只接原生 `<thead>` / `<tbody>` / `<tfoot>` 属性，外加一个 `ref`。
 
@@ -148,11 +148,11 @@ const scroller = useRef<HTMLDivElement>(null)
 | selected | `boolean` | `false` | `TableRow`：选中态（主色底 + `data-selected`，同高层 `Table` 的选中行皮肤） |
 | align | `"left" ｜ "center" ｜ "right"` | `"left"` | `TableHead` / `TableCell`：水平对齐。走 class，不是 HTML 的废弃 `align` 属性。不写则跟随 `TableRoot` 的 `headerAlign` / `cellAlign`（#292） |
 | verticalAlign | `"top" ｜ "middle" ｜ "bottom"` | `"middle"` | `TableCell`：垂直对齐 |
-| whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | — | `TableCell`：按格换行策略（#285），覆盖 `TableRoot` 的 `cellWhitespace`；同高层 `Table` 的列级 `meta.whitespace`。`pre-wrap` / `normal` 连带 `break-words` |
-| width | `number ｜ string` | — | `TableHead` / `TableCell`：宽度，落 `style.width`（数字按 px，字符串原样）（#286）。列宽是**数据**（来自字段配置、用户可改）时用它，别在业务里写 `style`——那会被 `@hulianui/guard` 的 no-style-override 拦下；`w-[${px}px]` 动态类 Tailwind 不编译；`<col>` 只在 `layout="fixed"` 下可靠且给不了 `maxWidth` |
-| minWidth | `number ｜ string` | — | `TableHead` / `TableCell`：宽度下限，落 `style.minWidth` |
-| maxWidth | `number ｜ string` | — | `TableHead` / `TableCell`：宽度上限，落 `style.maxWidth`。`truncate` 要生效必须有它收口，否则 auto 布局下列被内容撑开、省略号永不触发。三者语义同高层 `Table` 的 `size` / `minSize` / `maxSize`；消费方明写的 `style` 仍透传且优先 |
-| ref | `Ref<HTMLTableRowElement ｜ HTMLTableCellElement>` | — | 落在 `tr` / `th` / `td` 本体上（「滚到某一行」「量某个格子的宽」） |
+| whitespace | `"nowrap" ｜ "normal" ｜ "pre-wrap"` | - | `TableCell`：按格换行策略（#285），覆盖 `TableRoot` 的 `cellWhitespace`；同高层 `Table` 的列级 `meta.whitespace`。`pre-wrap` / `normal` 连带 `break-words` |
+| width | `number ｜ string` | - | `TableHead` / `TableCell`：宽度，落 `style.width`（数字按 px，字符串原样）（#286）。列宽是**数据**（来自字段配置、用户可改）时用它，别在业务里写 `style`——那会被 `@hulianui/guard` 的 no-style-override 拦下；`w-[${px}px]` 动态类 Tailwind 不编译；`<col>` 只在 `layout="fixed"` 下可靠且给不了 `maxWidth` |
+| minWidth | `number ｜ string` | - | `TableHead` / `TableCell`：宽度下限，落 `style.minWidth` |
+| maxWidth | `number ｜ string` | - | `TableHead` / `TableCell`：宽度上限，落 `style.maxWidth`。`truncate` 要生效必须有它收口，否则 auto 布局下列被内容撑开、省略号永不触发。三者语义同高层 `Table` 的 `size` / `minSize` / `maxSize`；消费方明写的 `style` 仍透传且优先 |
+| ref | `Ref<HTMLTableRowElement ｜ HTMLTableCellElement>` | - | 落在 `tr` / `th` / `td` 本体上（「滚到某一行」「量某个格子的宽」） |
 
 `TableRow` 的分隔线 / 悬停 / 斑马纹按所在段自动区分（表头行不 hover、不斑马纹，也不吃 `last:border-0`
 —— 单行表头就是最后一行，那条规则会把表头底边线抹掉），消费方不用自己记这个差别。

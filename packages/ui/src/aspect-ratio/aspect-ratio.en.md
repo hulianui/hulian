@@ -10,7 +10,7 @@ status: enriched
 
 # AspectRatio
 
-> Aspect-ratio container · CSS `aspect-ratio` sizing with automatic image and video fill, zero dependencies, and RSC support · layout/container
+> Keeps media or content inside a fixed width-to-height ratio. · layout/container
 
 ## When to use
 

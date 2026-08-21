@@ -25,8 +25,8 @@ import { Stat } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| delta | `number` | — | Percentage change; nonnegative is primary and negative is danger. Omission hides the trend. |
-| …HTMLAttributes | `HTMLAttributes<HTMLDivElement>` | — | Forwarded div attributes including className. |
+| delta | `number` | - | Percentage change; nonnegative is primary and negative is danger. Omission hides the trend. |
+| …HTMLAttributes | `HTMLAttributes<HTMLDivElement>` | - | Forwarded div attributes including className. |
 
 ## Slots
 

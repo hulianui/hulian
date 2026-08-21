@@ -10,7 +10,7 @@ status: enriched
 
 # Flow
 
-> Node-canvas editor · dependency-free Pointer Events and SVG Bézier edges with node dragging, handle connections, pan, zoom, fit view, controlled data, custom nodes, and exported geometry helpers · data-display/collection
+> Edits controlled node-and-edge canvases with node dragging, edge connection, panning, zooming, and fit view. · data-display/collection
 
 ## When to use
 
@@ -27,17 +27,17 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| nodes * | FlowNode\<T\>[] | — | Controlled `{ id, position, data, width? }` nodes. |
-| edges * | FlowEdge[] | — | Controlled `{ id, source, target, sourceHandle?, targetHandle? }` edges. |
-| getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | — | Declares left target and right source handles, distributed vertically in return order. |
-| selectedId | string \| null | — | Controlled selected node id. |
+| nodes * | FlowNode\<T\>[] | - | Controlled `{ id, position, data, width? }` nodes. |
+| edges * | FlowEdge[] | - | Controlled `{ id, source, target, sourceHandle?, targetHandle? }` edges. |
+| getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | - | Declares left target and right source handles, distributed vertically in return order. |
+| selectedId | string \| null | - | Controlled selected node id. |
 | defaultNodeWidth | number | 240 | Default node width in canvas pixels. |
 | minZoom | number | 0.35 | Minimum zoom. |
 | maxZoom | number | 2 | Maximum zoom. |
 | controls | boolean | true | Shows zoom and fit controls. |
-| isEdgeAnimated | (edge: FlowEdge) => boolean | — | Enables flow animation for selected edges. |
-| className | string | — | Canvas wrapper class; it must establish a height. |
-| apiRef | MutableRefObject\<FlowApi \| null\> | — | Exposes fitView, zoomIn, zoomOut, reset, and autoLayout. |
+| isEdgeAnimated | (edge: FlowEdge) => boolean | - | Enables flow animation for selected edges. |
+| className | string | - | Canvas wrapper class; it must establish a height. |
+| apiRef | MutableRefObject\<FlowApi \| null\> | - | Exposes fitView, zoomIn, zoomOut, reset, and autoLayout. |
 
 ## Events
 

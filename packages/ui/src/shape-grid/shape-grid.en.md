@@ -32,8 +32,8 @@ import { ShapeGrid } from "@hulianui/ui"
 | hoverFillColor | `string` | `var(--color-primary)` | Cell fill color on hover, fade in/out easing |
 | shape | `"square"\|"circle"\|"triangle"\|"hexagon"` | `"square"` | Element shape |
 | hoverTrailAmount | `number` | `0` | Hover trailing length (how many historical units are retained to fade out), 0 = no trailing |
-| className | `string` | — | Passthrough to root canvas |
-| style | `CSSProperties` | — | Inline styles passed through to the root canvas |
+| className | `string` | - | Passthrough to root canvas |
+| style | `CSSProperties` | - | Inline styles passed through to the root canvas |
 
 ## Examples
 ```tsx

@@ -10,7 +10,7 @@ status: enriched
 
 # CodeReviewThread
 
-> A code-review discussion thread with severity, AI or human authors, adoptable inline diffs, replies, resolution states, and collapsing.
+> Presents review comments, replies, severity, suggested diffs, and resolution or false-positive actions.
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { CodeReviewThread, severityStyle, SEVERITY } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| comments* | `ReviewComment[]` | — | Thread comments with author kind, severity, body, and optional suggestion. |
+| comments* | `ReviewComment[]` | - | Thread comments with author kind, severity, body, and optional suggestion. |
 | status | `"open"\|"resolved"\|"wontfix"` | `open` (internally managed) | Controlled thread status when supplied. |
 | replyable | `boolean` | `true` | Shows the reply field. |
 | defaultCollapsed | `boolean` | `false` | Initial uncontrolled collapsed state. |
-| collapsed | `boolean` | — | Controlled collapsed state, taking precedence over `defaultCollapsed`. |
-| className | `string` | — | Custom class name. |
+| collapsed | `boolean` | - | Controlled collapsed state, taking precedence over `defaultCollapsed`. |
+| className | `string` | - | Custom class name. |
 
 ## Events
 

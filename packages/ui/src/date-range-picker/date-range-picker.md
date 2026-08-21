@@ -25,19 +25,19 @@ import { DateRangePicker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `[string, string] \| null` | — | 受控值 `[start, end]`，形状随 `picker`（`YYYY-MM-DD` / `YYYY-MM` / `YYYY`）；`null` = 已清空；传入即受控 |
-| defaultValue | `[string, string] \| null` | — | 非受控初始值 |
+| value | `[string, string] \| null` | - | 受控值 `[start, end]`，形状随 `picker`（`YYYY-MM-DD` / `YYYY-MM` / `YYYY`）；`null` = 已清空；传入即受控 |
+| defaultValue | `[string, string] \| null` | - | 非受控初始值 |
 | picker | `"date" \| "month" \| "year"` | `"date"` | 选择粒度，与 [DatePicker](../date-picker/date-picker.md) 的同名 prop 同义。面板形态随之变化：两个月历 / 两个年份页（各 12 个月）/ 两个 12 年段 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px）；面板里日期格的几何不随之变化 |
-| minDate | `string` | — | 最早可选日，**恒为 ISO `YYYY-MM-DD`，不随 `picker` 变**；月/年粒度下按「整段都超界才禁」判定 |
-| maxDate | `string` | — | 最晚可选日，口径同 `minDate` |
-| disabledDate | `(isoDate: string) => boolean` | — | 自定义禁用，入参恒为 ISO `YYYY-MM-DD`；月/年粒度下只按该段**首日**问一次 |
+| minDate | `string` | - | 最早可选日，**恒为 ISO `YYYY-MM-DD`，不随 `picker` 变**；月/年粒度下按「整段都超界才禁」判定 |
+| maxDate | `string` | - | 最晚可选日，口径同 `minDate` |
+| disabledDate | `(isoDate: string) => boolean` | - | 自定义禁用，入参恒为 ISO `YYYY-MM-DD`；月/年粒度下只按该段**首日**问一次 |
 | presets | `boolean \| DateRangePreset[]` | `true` | 快捷预设：`true`/省略 = 该粒度的默认档（日：今天/最近 7 天/最近 30 天/本月；月：本月/最近 3 个月/最近 6 个月/今年；年：今年/最近 3 年/最近 5 年）；数组 = 自定义；`false` = 隐藏 |
 | placeholder | `[string, string]` | 随 `picker` | 占位文案 [开始, 结束]，默认「开始日期 / 开始月份 / 开始年份」 |
 | displayFormat | `string` | 随 `picker` | 展示格式（dayjs format），默认 `YYYY-MM-DD` / `YYYY-MM` / `YYYY`；对外受控值的形状不受它影响 |
 | disabled | `boolean` | `false` | 禁用 |
 | readOnly | `boolean` | `false` | 只读：可打开查看，无端点选择/无预设/无清除 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 

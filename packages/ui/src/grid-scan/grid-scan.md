@@ -27,17 +27,17 @@ import { GridScan } from "@hulianui/ui"
 |------|------|------|------|
 | linesColor | `string` | `var(--color-border)` | 网格线颜色，CSS 颜色字符串，默认取 token 明暗自适应 |
 | scanColor | `string` | `var(--color-primary)` | 扫描带发光颜色，默认取品牌主色 |
-| gridScale | `number` | `0.1` | 网格密度（格子缩放），越小越密，建议 0.05–0.3 |
+| gridScale | `number` | `0.1` | 网格密度（格子缩放），越小越密，建议 0.05-0.3 |
 | lineThickness | `number` | `1` | 网格线粗细（屏幕像素） |
 | lineStyle | `"solid" \| "dashed" \| "dotted"` | `"solid"` | 线条样式：实线 / 虚线 / 点线 |
-| scanOpacity | `number` | `0.45` | 扫描带发光不透明度(0–1)，0=纯网格无脉冲 |
+| scanOpacity | `number` | `0.45` | 扫描带发光不透明度(0-1)，0=纯网格无脉冲 |
 | scanDirection | `"forward" \| "backward" \| "pingpong"` | `"pingpong"` | 扫描方向：由远及近 / 由近及远 / 往返循环 |
 | scanDuration | `number` | `2` | 单趟扫描时长(秒)，越大越慢 |
 | scanDelay | `number` | `2` | 两趟扫描间停顿(秒)，pingpong 时仅影响起步延迟 |
 | scanSoftness | `number` | `2` | 扫描带柔化程度，越大光带越宽越柔 |
 | noiseIntensity | `number` | `0.01` | 颗粒噪声强度，0=干净无噪点 |
 | parallax | `boolean` | `true` | 随鼠标轻微透视偏摆；reduced-motion / 无 WebGL 自动失效 |
-| className | `string` | — | 透传根容器(或 fallback div) |
+| className | `string` | - | 透传根容器(或 fallback div) |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Toast
 
-> Imperative lightweight feedback · Automatic dismissal, queue stacking, and manual close · feedback/message
+> Queues brief transient feedback that can close automatically or manually. · feedback/message
 
 ## When to use
 

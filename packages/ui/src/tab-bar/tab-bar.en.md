@@ -10,7 +10,7 @@ status: enriched
 
 # TabBar
 
-> Bottom navigation · Controlled or uncontrolled items + active `aria-current` state + badge/dot + bottom safe area (zero dependencies · mobile primary navigation) · mobile/nav
+> Provides safe-area-aware bottom navigation for mobile application sections. · mobile/nav
 
 ## When to Use
 
@@ -25,24 +25,24 @@ import { TabBar } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `items` * | `TabBarItem[]` | — | Page tag data (see below) |
-| `value` | `string` | — | Controlled activation key |
+| `items` * | `TabBarItem[]` | - | Page tag data (see below) |
+| `value` | `string` | - | Controlled activation key |
 | `defaultValue` | `string` | First key | Uncontrolled initial key |
 | `safeArea` | `boolean` | `true` | Adds the bottom safe-area inset |
 | `fixed` | `boolean` | `true` | fixed to the bottom; false to follow the document flow |
 | `aria-label` | `string` | Locale value | Accessible navigation landmark label; an explicit value takes precedence. |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 **TabBarItem**
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| key * | `string` | — | Unique key, also the value used by `value`. |
-| label * | `ReactNode` | — | Tab text. |
-| icon | `ReactNode` | — | Default-state icon. |
+| key * | `string` | - | Unique key, also the value used by `value`. |
+| label * | `ReactNode` | - | Tab text. |
+| icon | `ReactNode` | - | Default-state icon. |
 | activeIcon | `ReactNode` | Reuses `icon` | Active-state icon. |
 | dot | `boolean` | `false` | Red-dot indicator. |
-| badge | `ReactNode` | — | Corner-mark content (number or text); takes precedence over `dot`. |
+| badge | `ReactNode` | - | Corner-mark content (number or text); takes precedence over `dot`. |
 | disabled | `boolean` | `false` | Disables the tab. |
 
 ## Events

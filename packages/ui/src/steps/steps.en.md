@@ -10,7 +10,7 @@ status: enriched
 
 # Steps
 
-> Steps · Dependency-free data-driven steps with horizontal or vertical layout, derived wait/process/finish/error states, optional controlled navigation, descriptions, and icons · navigation/inpage
+> Communicates progress and status across an ordered multi-step process. · navigation/inpage
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { Steps } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `StepsItem[]` | — | Step data described below. |
+| items* | `StepsItem[]` | - | Step data described below. |
 | current | `number` | `0` | Zero-based current step used to derive each item's state. |
 | status | `"process" \| "finish" \| "error"` | `"process"` | State assigned to the item whose index equals `current`. |
 | direction | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. |
 | size | `"sm" \| "md"` | `"md"` | Component size. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 The list uses the built-in Chinese `aria-label` `"\u6b65\u9aa4"`, meaning “Steps.”
 

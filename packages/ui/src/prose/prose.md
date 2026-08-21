@@ -10,7 +10,7 @@ status: enriched
 
 # Prose
 
-> 排版容器 · 富文本/markdown 后代选择器统一吃语义 token(纯皮肤·零依赖·RSC) · typography/text
+> 给富文本或 Markdown 内容套上统一的排版样式 · typography/text
 
 ## 何时用
 

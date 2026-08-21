@@ -25,19 +25,19 @@ import { TreeSelect } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes* | `TreeNode[]` | — | 树数据源（含 key/label/children），从 `../tree/tree-core` 复用 |
-| value | `string \| string[]` | — | 受控值；单选为 string，多选为 string[] |
-| defaultValue | `string \| string[]` | — | 非受控初值 |
+| nodes* | `TreeNode[]` | - | 树数据源（含 key/label/children），从 `../tree/tree-core` 复用 |
+| value | `string \| string[]` | - | 受控值；单选为 string，多选为 string[] |
+| defaultValue | `string \| string[]` | - | 非受控初值 |
 | multiple | `boolean` | `false` | 多选（checkable，父子级联勾选） |
-| placeholder | `string` | — | 触发器占位文案 |
+| placeholder | `string` | - | 触发器占位文案 |
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 无效态（外壳变 danger） |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸 |
 | clearable | `boolean` | `false` | 可清除：有值且未禁用时触发器右侧 hover/聚焦浮出清除按钮，点击回到未选态（单选回传 `""`，多选回传 `[]`）。与 [Select](../select/select.md) 的 `clearable` 语义一致 |
 | searchable | `boolean` | `false` | 浮层内树搜索框，多层命中跳转 |
 | expandTrigger | `"row" \| "icon"` | `"row"` | 什么东西触发展开/收起，透传给内部 [Tree](../tree/tree.md)。**默认 `"row"` 下单选只有叶子选得中**；要「选到中间层」（某个部门 / 某个大类 / 某一册）传 `"icon"`：箭头管展开、行管选中 |
-| showLine | `boolean` | — | 显示树连接线 |
-| className | `string` | — | 透传到触发器 |
+| showLine | `boolean` | - | 显示树连接线 |
+| className | `string` | - | 透传到触发器 |
 
 ## Events
 

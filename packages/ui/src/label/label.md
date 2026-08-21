@@ -29,9 +29,9 @@ import { Label } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| htmlFor | `string` | — | 关联控件的 id，渲染为原生 `for`；点标签即聚焦控件，读屏也据此念标签 |
-| className | `string` | — | 追加到 `<label>`（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
-| children | `ReactNode` | — | 标签文字 |
+| htmlFor | `string` | - | 关联控件的 id，渲染为原生 `for`；点标签即聚焦控件，读屏也据此念标签 |
+| className | `string` | - | 追加到 `<label>`（默认 `text-sm font-medium text-foreground`）；走 twMerge，传 `text-xs` 会顶掉默认字号 |
+| children | `ReactNode` | - | 标签文字 |
 
 其余 `<label>` 原生属性（`id` / `title` / `data-*` / `aria-*` / `onClick` …）原样透传到根节点。
 

@@ -29,9 +29,9 @@ import { Plasma } from "@hulianui/ui"
 | speed | `number` | `1` | 流动速度因子（内部乘 0.4 喂 shader 与原版对齐）；越大越快 |
 | direction | `"forward" \| "reverse" \| "pingpong"` | `"forward"` | 流动方向：向上涌 / 反向下沉 / 正反平滑往复（smoothstep 缓动） |
 | scale | `number` | `1` | 视场缩放；越大画面越「拉近」纹理越大，越小越密 |
-| opacity | `number` | `1` | 整体不透明度 0–1（叠在 shader alpha 上）；作柔和背景时压暗用 |
+| opacity | `number` | `1` | 整体不透明度 0-1（叠在 shader alpha 上）；作柔和背景时压暗用 |
 | mouseInteractive | `boolean` | `true` | 指针轻微扭曲等离子流场；关闭后纯自动且不挂 mousemove 监听 |
-| className | `string` | — | 透传到 root（canvas 容器或 fallback div） |
+| className | `string` | - | 透传到 root（canvas 容器或 fallback div） |
 
 ## Slots
 

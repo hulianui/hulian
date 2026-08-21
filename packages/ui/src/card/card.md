@@ -10,7 +10,7 @@ status: enriched
 
 # Card
 
-> 卡片 · Header/Body/Footer 插槽 · data-display/collection
+> 把相关内容装进带页头、正文和页脚的卡片 · data-display/collection
 
 ## 何时用
 
@@ -36,9 +36,9 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | `ReactNode` | — | 主标题。标题有自己的元素（`data-slot="card-title"`），因此有独立的字号 / 行高 / 字重 |
-| description | `ReactNode` | — | 副标题 / 说明，排在标题下方，次要文字色 |
-| extra | `ReactNode` | — | 右侧操作区（按钮、开关、计数），与标题群**恒同行**垂直居中：换行判据不看内容长度，`description` 再长也不会把它挤到第二行 |
+| title | `ReactNode` | - | 主标题。标题有自己的元素（`data-slot="card-title"`），因此有独立的字号 / 行高 / 字重 |
+| description | `ReactNode` | - | 副标题 / 说明，排在标题下方，次要文字色 |
+| extra | `ReactNode` | - | 右侧操作区（按钮、开关、计数），与标题群**恒同行**垂直居中：换行判据不看内容长度，`description` 再长也不会把它挤到第二行 |
 
 「有值」的口径与 `PageHeader` 的 `meta` 一致：`null` / `undefined` / `false` / `""` 都算没传，所以 `title={isEditing && "编辑中"}` 在假值时不会切进结构态。
 

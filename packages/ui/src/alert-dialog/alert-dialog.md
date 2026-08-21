@@ -10,7 +10,7 @@ status: enriched
 
 # AlertDialog
 
-> 确认对话框 · Base UI 强制决策(不点遮罩/Esc 关) + Dialog 引擎 · feedback/overlay
+> 对高风险操作要求明确确认，不能随手关掉 · feedback/overlay
 
 ## 何时用
 
@@ -27,7 +27,7 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogClose, AlertDialogContent }
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `AlertDialogContent.className` | `string` | — | 内容容器类名 |
+| `AlertDialogContent.className` | `string` | - | 内容容器类名 |
 
 ## Events
 

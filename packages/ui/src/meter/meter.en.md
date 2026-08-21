@@ -10,7 +10,7 @@ status: enriched
 
 # Meter
 
-> A semantic Base UI meter for a static quantity within a bounded range.
+> Displays a value within a known range using a semantic gauge bar.
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { Meter } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value* | `number` | — | Current value. |
+| value* | `number` | - | Current value. |
 | min | `number` | `0` | Lower bound. |
 | max | `number` | `100` | Upper bound. |
 | showValue | `boolean` | `false` | Shows the value text. It reads `(value - min) / (max - min)` as a percentage, matching the indicator, with at most one decimal. |
-| formatValue | `(info: { value, min, max, percent }) => string` | — | Custom value text. The returned string drives both the visible text and `aria-valuetext`, so the two can never disagree. `percent` is already normalized and clamped to 0–100 (not rounded). Use it for absolute wording: `({ value, max }) => \`${value} / ${max} questions\``. |
-| className | `string` | — | Custom class, commonly used for width. |
+| formatValue | `(info: { value, min, max, percent }) => string` | - | Custom value text. The returned string drives both the visible text and `aria-valuetext`, so the two can never disagree. `percent` is already normalized and clamped to 0-100 (not rounded). Use it for absolute wording: `({ value, max }) => \`${value} / ${max} questions\``. |
+| className | `string` | - | Custom class, commonly used for width. |
 
 ## Slots
 
@@ -67,7 +67,7 @@ Use Progress for an advancing task, not Meter. The parent determines bar width, 
 
 - **Only `label` provides the accessible name.** `role="meter"` is wired to it through `aria-labelledby`, so a heading rendered outside the component is never associated.
 - **Asserting on `textContent` picks up a stray `x`.** Base UI's Meter.Root always appends a visually hidden `<span role="presentation">x</span>`; a screen reader ignores it and it never joins the accessible name. Query the specific node instead of reading the whole tree.
-- **A `value` outside `[min, max]` clamps the text to 0–100%**, while `aria-valuenow` still reports the raw value — out-of-range data is yours to fix, the component does not paper over it.
+- **A `value` outside `[min, max]` clamps the text to 0-100%**, while `aria-valuenow` still reports the raw value. Out-of-range data is yours to fix; the component does not paper over it.
 
 ## Related
 [Stat](../stat/stat.md) · [Statistic](../statistic/statistic.md) · [Chart](../chart/chart.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)

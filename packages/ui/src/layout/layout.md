@@ -10,7 +10,7 @@ status: enriched
 
 # Layout
 
-> 整页布局 · 复合 Header/Sider/Content/Footer + Sider 可折叠(受控/断点/trigger) + 宽度过渡(零依赖·尽量 RSC·复用 ScrollArea) · layout/container
+> 把页面拆成页头、侧栏、内容和页脚四块，侧栏可折叠 · layout/container
 
 ## 何时用
 
@@ -41,9 +41,9 @@ import { Layout, LayoutHeader, LayoutSider, LayoutContent, LayoutFooter } from "
 | width | `number` | `240` | 展开态宽度（px）。 |
 | collapsedWidth | `number` | `64` | 收起态宽度（px），留出 icon-only 菜单。 |
 | collapsible | `boolean` | `false` | 是否可折叠（显示底部 trigger 折叠按钮）。 |
-| collapsed | `boolean` | — | 受控收起态。传入即受控，须配合 onCollapse 回写。 |
+| collapsed | `boolean` | - | 受控收起态。传入即受控，须配合 onCollapse 回写。 |
 | defaultCollapsed | `boolean` | `false` | 非受控初始收起态。 |
-| breakpoint | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| number` | — | 响应式断点：视口 ≤ 该宽度自动收起，> 时展开。 |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| number` | - | 响应式断点：视口 ≤ 该宽度自动收起，> 时展开。 |
 
 ### LayoutContent / LayoutFooter
 纯 `HTMLAttributes<HTMLElement>`，无专属 prop。

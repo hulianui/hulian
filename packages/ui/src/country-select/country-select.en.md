@@ -10,7 +10,7 @@ status: enriched
 
 # CountrySelect
 
-> Country and region selector · 250 built-in entries with flags, localized names, dialing codes, single/multiple selection, and multilingual search, built with Combobox · forms/advanced
+> Searches and selects countries with codes, flags, and optional calling prefixes. · forms/advanced
 
 ## When to use
 
@@ -25,8 +25,8 @@ import { CountrySelect, getCountry, flagEmoji, countrySearchText, filterCountrie
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| string[]` | — | Controlled value: single selection is ISO2 code string; multiple selection is code array |
-| defaultValue | `string \| string[]` | — | uncontrolled initial value |
+| value | `string \| string[]` | - | Controlled value: single selection is ISO2 code string; multiple selection is code array |
+| defaultValue | `string \| string[]` | - | uncontrolled initial value |
 | multiple | `boolean` | `false` | Multiple selection (chips) |
 | showEnglish | `boolean` | `true` | Whether to display the English name in the option line |
 | showDialCode | `boolean` | `false` | Whether the item line displays the international area code |
@@ -35,7 +35,7 @@ import { CountrySelect, getCountry, flagEmoji, countrySearchText, filterCountrie
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size |
 | disabled | `boolean` | `false` | Disable |
 | invalid | `boolean` | `false` | Invalid state |
-| className | `string` | — | Additional class name for the trigger. |
+| className | `string` | - | Additional class name for the trigger. |
 
 ## Events
 
@@ -58,7 +58,7 @@ const [codes, setCodes] = useState<string[]>([]);
 
 - `value` and `onChange` use `string` in single-select mode and `string[]` in multi-select mode. The callback exposes the union type, so narrow it from `multiple` or with an `as` type assertion before treating it as an array.
 - Stored values are ISO 3166-1 alpha-2 codes such as `"CN"`, not display names. Resolve display data with `getCountry(code)`.
-- Native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, …) land on the **trigger** — the input inside the chips shell in multiple mode — not on the outer container, because that is the element which takes focus and is announced. The `aria-required` injected by `<Field required>` travels the same way (#293).
+- Native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, …) land on the **trigger** (the input inside the chips shell in multiple mode) rather than on the outer container, because that is the element which takes focus and is announced. The `aria-required` injected by `<Field required>` travels the same way (#293).
 
 ## Related
 [SecretField](../secret-field/secret-field.md) · [Combobox](../combobox/combobox.md) · [Listbox](../listbox/listbox.md) · [Mentions](../mentions/mentions.md) · [InputOTP](../input-otp/input-otp.md) · [Rating](../rating/rating.md)

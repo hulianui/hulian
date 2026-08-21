@@ -33,17 +33,17 @@ import { MagicBento } from "@hulianui/ui"
 | enableBorderGlow | `boolean` | `true` | Brightens borders near the pointer. |
 | enableTilt | `boolean` | `false` | Enables subtle 3D pointer tilt. |
 | disableAnimations | `boolean` | `false` | Disables all animation and interaction, equivalent to reduced motion. |
-| className | `string` | — | Class name forwarded to the grid root. |
-| style | `CSSProperties` | — | Inline styles forwarded to the grid root. |
+| className | `string` | - | Class name forwarded to the grid root. |
+| style | `CSSProperties` | - | Inline styles forwarded to the grid root. |
 
 `MagicBentoItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label | `ReactNode` | — | Small card label at the top, such as "Insights". |
-| title | `ReactNode` | — | Card title. |
-| description | `ReactNode` | — | Card body copy. |
-| children | `ReactNode` | — | Replaces the default label, title, and description layout with custom card content. |
+| label | `ReactNode` | - | Small card label at the top, such as "Insights". |
+| title | `ReactNode` | - | Card title. |
+| description | `ReactNode` | - | Card body copy. |
+| children | `ReactNode` | - | Replaces the default label, title, and description layout with custom card content. |
 | colSpan | `number` | `1` | Grid column span, used to build bento layouts of mixed sizes. |
 | rowSpan | `number` | `1` | Grid row span. |
 

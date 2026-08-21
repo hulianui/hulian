@@ -10,7 +10,7 @@ status: enriched
 
 # Divider
 
-> 带文字分隔 · orientation 左/中/右 + dashed/plain + 行内垂直(纯皮肤·零依赖·RSC·与 Separator 互补) · layout/arrange
+> 用一条分隔线把内容切开，线上可以带文字 · layout/arrange
 
 ## 何时用
 
@@ -29,7 +29,7 @@ import { Divider } from "@hulianui/ui"
 | orientation | `"left" \| "center" \| "right"` | `"center"` | 嵌入文字的水平位置（仅 horizontal + 有文字时生效） |
 | dashed | `boolean` | `false` | 虚线 |
 | plain | `boolean` | `false` | 文字常规字重（默认加粗一档） |
-| className | `string` | — | 额外类名 |
+| className | `string` | - | 额外类名 |
 
 ## Slots
 

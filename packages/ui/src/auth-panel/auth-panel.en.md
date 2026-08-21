@@ -10,7 +10,7 @@ status: enriched
 
 # AuthPanel
 
-> Authentication-page promotional panel · The branded half of a split sign-in or registration page, with a gradient, brand, headline, highlights, free-form content, and footer · Four token-based background recipes keep complex color-mix gradients inside the component instead of consumer inline styles · Shares resolveTone colors with Brand and Dot · Pairs with LoginForm surface={false} · forms/framework
+> Builds the branded half of a split authentication page with token-based gradients, highlights, content, and a footer. · forms/framework
 
 ## When to use
 
@@ -32,16 +32,16 @@ import { AuthPanel } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| brand | `ReactNode` | — | Brand slot, normally a [Brand](../brand/brand.md). |
-| title | `ReactNode` | — | Main headline. |
+| brand | `ReactNode` | - | Brand slot, normally a [Brand](../brand/brand.md). |
+| title | `ReactNode` | - | Main headline. |
 | titleLevel | `1..6` | `2` | Semantic heading level. It changes only the `h1`-`h6` element, not its visual size. |
-| description | `ReactNode` | — | Supporting copy below the headline. |
-| highlights | `ReactNode[]` | — | Benefit list. Each item receives a check mark that follows `color`. |
-| children | `ReactNode` | — | Free-form middle content such as artwork, metrics, or a customer-logo wall. |
-| footer | `ReactNode` | — | Footer content such as copyright, registration details, or secondary links. |
+| description | `ReactNode` | - | Supporting copy below the headline. |
+| highlights | `ReactNode[]` | - | Benefit list. Each item receives a check mark that follows `color`. |
+| children | `ReactNode` | - | Free-form middle content such as artwork, metrics, or a customer-logo wall. |
+| footer | `ReactNode` | - | Footer content such as copyright, registration details, or secondary links. |
 | color | `string` | `"primary"` | Brand color. Accepts a semantic tone, arbitrary CSS color, or variable through `resolveTone`, like [Brand](../brand/brand.md) `.color`, [Dot](../dot/dot.md) `.color`, and `ChartSeries.color`. |
 | gradient | `"radial" \| "linear" \| "mesh" \| "none"` | `"radial"` | Background recipe described below. |
-| className | `string` | — | Class name for the root element. |
+| className | `string` | - | Class name for the root element. |
 
 ### Background recipes
 

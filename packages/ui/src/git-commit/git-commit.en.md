@@ -10,7 +10,7 @@ status: enriched
 
 # GitCommit
 
-> A standardized Git commit reference with branch chip, short SHA link, truncated message, author avatar, and inline or stacked layout.
+> Shows a branch, short hash, commit message, and author in inline or stacked form.
 
 ## When to use
 
@@ -25,15 +25,15 @@ import { GitCommit, shortSha, branchTone, type BranchTone } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| sha* | `string` | — | Full or short commit SHA, truncated to `shaLength`. |
-| branch | `string` | — | Branch name shown in a leading chip. |
-| author | `string` | — | Author name. |
-| href | `string` | — | Link destination for the short SHA. |
+| sha* | `string` | - | Full or short commit SHA, truncated to `shaLength`. |
+| branch | `string` | - | Branch name shown in a leading chip. |
+| author | `string` | - | Author name. |
+| href | `string` | - | Link destination for the short SHA. |
 | shaLength | `number` | `7` | Displayed SHA length. |
 | colorBranch | `boolean` | `true` | Assigns a stable soft color by branch name. |
 | layout | `"inline" \| "stacked"` | `"inline"` | Single-line or two-line layout for lists and table cells. |
 | size | `"sm" \| "md"` | `"md"` | Component size. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Slots
 

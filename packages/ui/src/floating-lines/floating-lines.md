@@ -26,13 +26,13 @@ import { FloatingLines } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | colors | `string[]` | `--color-chart-1/2/4` | 线条渐变色带，沿线序首→尾插值，最多取前 5 段；任意 CSS 颜色 |
-| lineCount | `number` | `6` | 三组波各自的线条数量，越多越密、开销越大，建议 3–12 |
+| lineCount | `number` | `6` | 三组波各自的线条数量，越多越密、开销越大，建议 3-12 |
 | lineDistance | `number` | `5` | 相邻线条横向相位间距（疏密层叠感） |
 | animationSpeed | `number` | `1` | 动画速度倍率，0=静止 |
 | interactive | `boolean` | `true` | 指针靠近时线条径向弯曲牵引；reduced-motion / 无 WebGL 自动失效 |
 | bendRadius | `number` | `5` | 指针弯曲影响半径系数，越大范围越小越聚焦 |
 | bendStrength | `number` | `-0.5` | 指针弯曲强度（带符号，负值反向牵引） |
-| className | `string` | — | 透传根容器，根自带 `absolute inset-0 z-0` |
+| className | `string` | - | 透传根容器，根自带 `absolute inset-0 z-0` |
 
 ## Slots
 

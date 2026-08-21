@@ -86,6 +86,10 @@ function isCovered(comp, used) {
 //   a) 已知占位/外链资源服务域名（pravatar/picsum/unsplash/...）
 //   b) 任意带图片/媒体扩展名的 http(s) URL（.jpg/.png/.webp/.gif/.svg/.avif/.mp4/.webm）
 // 刻意放行：非资源类业务 URL（如 https://pay.hulian.demo 支付占位串、纯站点链接）。
+//
+// 注：这条门禁只扫 app/demos。仓库级（含 packages/ui/src）的同名口径在
+// scripts/check-remote-assets.mjs（`pnpm check:remote-assets`），那份还认视频平台域名与
+// RFC 保留域名。两边同时命中不冲突；新增规则请改那一份，这里保留是为了 demo 覆盖率报告自成一体。
 const REMOTE_HOSTS = [
   "pravatar.cc",
   "picsum.photos",

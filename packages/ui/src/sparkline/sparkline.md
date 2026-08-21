@@ -10,7 +10,7 @@ status: enriched
 
 # Sparkline
 
-> 内联趋势迷你图 · 无轴无网格的极简趋势 · line/area/bar 三态 + highlightLast 末点圆点 + 原生 SVG <title> tooltip(RSC 安全零 JS) · 几何抽纯函数(归一化/path/柱矩形)带单测 · 表格内联/KPI 卡/负载趋势(零依赖) · data-display/info
+> 在一行里画出极简趋势，不带坐标轴和网格 · data-display/info
 
 ## 何时用
 
@@ -25,18 +25,18 @@ import { Sparkline, normalize, linePath, areaPath, barRects } from "@hulianui/ui
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| data* | `SparkDatum[]` | — | 纯数字序列或 `{x,y}` 点（取 y） |
+| data* | `SparkDatum[]` | - | 纯数字序列或 `{x,y}` 点（取 y） |
 | variant | `"line" \| "area" \| "bar"` | `"line"` | 渲染形态：折线 / 面积 / 柱 |
 | width | `number` | `80` | 视口宽 |
 | height | `number` | `24` | 视口高 |
 | tone | `string` | `var(--color-primary)` | 描边/填充色。可传语义色名（`"primary"`/`"success"`/`"danger"`/`"chart-2"`，经 resolveTone 解析为 `var(--color-*)`）、任意 CSS 颜色或变量 |
 | highlightLast | `boolean` | `false` | 在末点画强调圆点 |
-| min | `number` | — | 归一化下界，不传从数据推 |
-| max | `number` | — | 归一化上界，不传从数据推 |
-| baseline | `number` | — | 基准线：在该数值处画一条横向虚线，让序列有个「对比的参照」而不只是形状。典型用法是上期均值 / 目标值 / 及格线。不传 `min`/`max` 时会把基准值一并纳入归一化域，保证它落在视口内而不是被裁到外面 |
+| min | `number` | - | 归一化下界，不传从数据推 |
+| max | `number` | - | 归一化上界，不传从数据推 |
+| baseline | `number` | - | 基准线：在该数值处画一条横向虚线，让序列有个「对比的参照」而不只是形状。典型用法是上期均值 / 目标值 / 及格线。不传 `min`/`max` 时会把基准值一并纳入归一化域，保证它落在视口内而不是被裁到外面 |
 | baselineTone | `string` | `var(--color-muted-foreground)` | 基准线颜色。取值同 `tone`（语义色名 / 任意 CSS 颜色 / 变量） |
-| baselineLabel | `string` | — | 基准线的原生 tooltip 文案（渲染为 SVG `<title>`） |
-| className | `string` | — | 外层类名 |
+| baselineLabel | `string` | - | 基准线的原生 tooltip 文案（渲染为 SVG `<title>`） |
+| className | `string` | - | 外层类名 |
 
 继承 `SVGProps<SVGSVGElement>`（除 `data`）。
 

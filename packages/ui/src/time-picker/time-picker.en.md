@@ -10,7 +10,7 @@ status: enriched
 
 # TimePicker
 
-> Time picker · dependency-free hour/minute/second popup columns + step and range-aware disabling · fixed-width `HH:mm[:ss]` values · forms/datetime
+> Selects a time from hour and minute option controls. · forms/datetime
 
 ## When to use
 
@@ -27,21 +27,21 @@ import { TimePicker } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string \| null` | — | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
-| defaultValue | `string \| null` | — | Initial value in uncontrolled mode, with the same shape as `value`. |
+| value | `string \| null` | - | Controlled value in zero-padded 24-hour `"HH:mm"` or `"HH:mm:ss"` format, depending on `withSeconds`. |
+| defaultValue | `string \| null` | - | Initial value in uncontrolled mode, with the same shape as `value`. |
 | withSeconds | `boolean` | `false` | Whether to show the seconds column and include seconds in the value. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size, on the same scale as [Input](../input/input.md) (32 / 40 / 48px), so controls on one form row line up. |
 | minuteStep | `number` | `1` | Increment between minute options; 5, 15, and 30 are common choices. |
 | secondStep | `number` | `1` | Increment between second options. |
-| minTime | `string` | — | Earliest selectable time, inclusive, with the same shape as `value`. |
-| maxTime | `string` | — | Latest selectable time, inclusive. |
+| minTime | `string` | - | Earliest selectable time, inclusive, with the same shape as `value`. |
+| maxTime | `string` | - | Latest selectable time, inclusive. |
 | placeholder | `string` | `"\u9009\u62e9\u65f6\u95f4"` | Trigger placeholder; the built-in Chinese copy means “Select time.” |
 | clearable | `boolean` | `true` | Whether to show a clear button when the picker has a value and is neither disabled nor read-only. |
 | showNow | `boolean` | `true` | Shows a shortcut with built-in Chinese copy `"\u6b64\u523b"` (Now), rounded down to the configured step. |
 | disabled | `boolean` | `false` | Disables the trigger and prevents the panel from opening. |
 | readOnly | `boolean` | `false` | Allows the panel to open but prevents selection. |
-| aria-label | `string` | — | Accessible name for an unlabeled trigger. |
-| className | `string` | — | Additional class name for the outer trigger container. |
+| aria-label | `string` | - | Accessible name for an unlabeled trigger. |
+| className | `string` | - | Additional class name for the outer trigger container. |
 
 ## Events
 
@@ -79,7 +79,7 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 ## Usage guidelines
 
 - **Values are fixed-width strings, not `Date` objects.** Lexical order of `"HH:mm[:ss]"` matches time order, so bounds compare directly without timezone effects. Add a date explicitly if the application needs a `Date`.
-- **A column option is disabled only when its entire interval falls outside the range.** With `minTime="09:30"`, hour 09 remains available because 09:30–09:59 is valid, while minute values before 30 are disabled when hour 09 is active.
+- **A column option is disabled only when its entire interval falls outside the range.** With `minTime="09:30"`, hour 09 remains available because 09:30-09:59 is valid, while minute values before 30 are disabled when hour 09 is active.
 - **An empty picker uses `clamp(00:00:00, [min,max])` as its working base.** With `minTime="09:30"`, this keeps the minute column usable even before the user selects an hour.
 - `minuteStep` changes only the **candidate list**; it does not validate external values. With `minuteStep={15}`, `value="09:37"` has no matching minute item and is not highlighted. Call `snapToStep` first when alignment is required.
 - Switching `withSeconds` changes the external value shape (`"09:30"` ↔ `"09:30:15"`). Normalize stored values when switching modes.

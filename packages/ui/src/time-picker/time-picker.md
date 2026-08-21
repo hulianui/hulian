@@ -10,7 +10,7 @@ status: enriched
 
 # TimePicker
 
-> 时间选择 · 自研零依赖(时/分/秒三列浮层) + 步进/minTime-maxTime 逐列禁用 · 定宽 HH:mm[:ss] 受控 · forms/datetime
+> 从时、分、秒三列浮层里选一个时间 · forms/datetime
 
 ## 何时用
 
@@ -30,21 +30,21 @@ import { TimePicker } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| null` | — | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`），24 小时制定宽补零 |
-| defaultValue | `string \| null` | — | 非受控初始值，形状同上 |
+| value | `string \| null` | - | 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`），24 小时制定宽补零 |
+| defaultValue | `string \| null` | - | 非受控初始值，形状同上 |
 | withSeconds | `boolean` | `false` | 显示秒列，值形状随之变成 `"HH:mm:ss"` |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸档，刻度与 [Input](../input/input.md) 一致（32 / 40 / 48px），同一行表单里高度天然对齐 |
 | minuteStep | `number` | `1` | 分钟列步进（5 / 15 / 30 常用） |
 | secondStep | `number` | `1` | 秒列步进 |
-| minTime | `string` | — | 最早可选时刻（含），形状同 `value` |
-| maxTime | `string` | — | 最晚可选时刻（含） |
+| minTime | `string` | - | 最早可选时刻（含），形状同 `value` |
+| maxTime | `string` | - | 最晚可选时刻（含） |
 | placeholder | `string` | `"选择时间"` | 触发器占位文本 |
 | clearable | `boolean` | `true` | 有值且非 disabled/readOnly 时显示清除按钮 |
 | showNow | `boolean` | `true` | 面板底部「此刻」快捷（按步进向下取整对齐） |
 | disabled | `boolean` | `false` | 整体置灰，面板打不开 |
 | readOnly | `boolean` | `false` | 面板可看，但选不动 |
-| aria-label | `string` | — | 触发器无障碍名（无可见 label 时给） |
-| className | `string` | — | 落在触发器外层容器 |
+| aria-label | `string` | - | 触发器无障碍名（无可见 label 时给） |
+| className | `string` | - | 落在触发器外层容器 |
 
 ## Events
 

@@ -26,13 +26,13 @@ import { LiquidEther } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | colors | `string[]` | `["var(--color-chart-1)","var(--color-chart-2)","var(--color-chart-4)"]` | 调色板，至少 1 色（少于 2 会自动复制两端）；任意 CSS 颜色串，随明暗主题切换 |
-| speed | `number` | `0.5` | 流动速度因子；建议 0.2–1.5 |
-| scale | `number` | `1` | 液态团块尺度；越小越细碎越多团，越大越融合。建议 0.6–2 |
-| mouseForce | `number` | `1` | 指针扰动强度；0=无视指针纯漂流。建议 0–2 |
+| speed | `number` | `0.5` | 流动速度因子；建议 0.2-1.5 |
+| scale | `number` | `1` | 液态团块尺度；越小越细碎越多团，越大越融合。建议 0.6-2 |
+| mouseForce | `number` | `1` | 指针扰动强度；0=无视指针纯漂流。建议 0-2 |
 | autoDemo | `boolean` | `true` | 无人交互时虚拟光标自动巡游搅动；关闭则静止待真实指针 |
-| opacity | `number` | `1` | 整体不透明度 0–1；叠内容上常用 0.6–0.85 降视觉重量 |
-| className | `string` | — | 透传到根容器（canvas 包裹层或 reduced fallback） |
-| style | `CSSProperties` | — | 透传到根容器的内联样式 |
+| opacity | `number` | `1` | 整体不透明度 0-1；叠内容上常用 0.6-0.85 降视觉重量 |
+| className | `string` | - | 透传到根容器（canvas 包裹层或 reduced fallback） |
+| style | `CSSProperties` | - | 透传到根容器的内联样式 |
 
 ## Slots
 

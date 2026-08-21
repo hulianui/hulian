@@ -32,13 +32,13 @@ import { LineWaves } from "@hulianui/ui"
 | rotation | `number` | `-45` | Overall texture rotation angle (degrees); -45° makes the ripples diagonal |
 | edgeFadeWidth | `number` | `0` | The starting width of the upper and lower edge fades; increasing it will narrow the center line area |
 | colorCycleSpeed | `number` | `1` | Color cycle speed; three-channel hue drifts over time, 0 = constant color |
-| brightness | `number` | `0.2` | Overall brightness coefficient; because alpha=color length, it also affects transparency. Recommendation 0.1–0.6 |
+| brightness | `number` | `0.2` | Overall brightness coefficient; because alpha=color length, it also affects transparency. Recommendation 0.1-0.6 |
 | color1 | `string` | `--color-chart-1` | The first channel color, CSS color string; the default is chart token light and dark adaptive |
 | color2 | `string` | `--color-chart-2` | Second channel color |
 | color3 | `string` | `--color-chart-4` | The third channel color; all three colors pass the same value (such as #ffffff) to restore the original white line |
 | enableMouseInteraction | `boolean` | `true` | Turn on the local distortion extrapolation of the pointer; turn it off for pure automatic flow |
 | mouseInfluence | `number` | `2` | Pointer influence strength; only effective when enableMouseInteraction=true |
-| className | `string` | — | Additional class name for the root container or reduced-motion fallback div |
+| className | `string` | - | Additional class name for the root container or reduced-motion fallback div |
 
 ## Slots
 

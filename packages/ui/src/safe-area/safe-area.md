@@ -10,7 +10,7 @@ status: enriched
 
 # SafeArea
 
-> 安全区适配 · env(safe-area-inset-*) 作 padding/margin 应用到指定边 + min 兜底 + as 多态(零依赖·RSC·刘海/底部横条) · mobile/layout
+> 给指定边加上设备安全区内距，避开刘海和横条 · mobile/layout
 
 ## 何时用
 

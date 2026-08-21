@@ -29,11 +29,11 @@ import { FallingText } from "@hulianui/ui"
 | highlightWords | `string[]` | `[]` | Words to be highlighted (prefix matching: word startsWith, any one will be highlighted) |
 | highlightClass | `string` | `"text-primary font-semibold"` | Highlighted word additional className (superimposed on the word chunk) |
 | trigger | `"auto" \| "scroll" \| "click" \| "hover"` | `"auto"` | Drop timing: play when mounted/scroll into the viewport/click the container/move the pointer in |
-| gravity | `number` | `1` | Downward acceleration coefficient, the larger it is, the faster it falls and the faster it stacks. It is recommended to be 0.3–3. |
+| gravity | `number` | `1` | Downward acceleration coefficient, the larger it is, the faster it falls and the faster it stacks. It is recommended to be 0.3-3. |
 | bounce | `number` | `0.6` | Rebound coefficient after landing/hitting wall (0 means no bounce, 1 means full bounce) |
 | fontSize | `string` | `"1.5rem"` | Text font size (CSS length, passed in root fontSize) |
-| className | `string` | — | supports root container extra className |
-| style | `CSSProperties` | — | supports root container inline styles |
+| className | `string` | - | supports root container extra className |
+| style | `CSSProperties` | - | supports root container inline styles |
 
 ## Examples
 ```tsx

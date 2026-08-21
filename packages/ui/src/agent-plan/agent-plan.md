@@ -10,7 +10,7 @@ status: enriched
 
 # AgentPlan
 
-> 执行计划 · 数据驱动任务清单 + 状态图标(空心环待办/Spinner进行·行高亮/Check完成删除线/X失败) + 每步右侧 meta 槽(耗时) + bare 内嵌 · 复用 Spinner·纯皮肤RSC · ai/agent
+> 列出智能体的执行计划，逐条标出进行和完成 · ai/agent
 
 ## 何时用
 
@@ -27,10 +27,10 @@ import { AgentPlan } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| tasks * | `AgentTask[]` | — | 任务清单（数据驱动） |
+| tasks * | `AgentTask[]` | - | 任务清单（数据驱动） |
 | bare | `boolean` | `false` | 去掉外层边框/底色/内边距，仅渲染列表，供内嵌复用（如 TaskRunner） |
 | strikeDone | `boolean` | `true` | done 任务是否加删除线：计划清单语义=true；执行日志语义=false 保留实色 |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Slots
 
@@ -42,10 +42,10 @@ import { AgentPlan } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| title | `ReactNode` | — | 任务标题 |
+| title | `ReactNode` | - | 任务标题 |
 | status | `"pending" ｜ "running" ｜ "done" ｜ "error"` | `"pending"` | pending 待办(空心环) / running 进行中(转圈·行高亮) / done 完成(勾·删除线) / error 失败(叉) |
-| detail | `ReactNode` | — | 次要描述（标题下方弱化） |
-| meta | `ReactNode` | — | 行右侧 trailing 槽（右对齐弱化）：放耗时(如 180ms)/小标记 |
+| detail | `ReactNode` | - | 次要描述（标题下方弱化） |
+| meta | `ReactNode` | - | 行右侧 trailing 槽（右对齐弱化）：放耗时(如 180ms)/小标记 |
 
 ## 示例
 ```tsx

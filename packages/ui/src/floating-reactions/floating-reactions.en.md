@@ -32,7 +32,7 @@ Access `FloatingReactionsHandle` through a ref and call `emit(content?, opts?: {
 | drift | `number` | `40` | Random horizontal travel in pixels. |
 | duration | `number` | `2200` | Animation duration in milliseconds. |
 | size | `number` | `24` | Font size in pixels. |
-| className | `string` | — | Container class name. |
+| className | `string` | - | Container class name. |
 
 ## Example
 ```tsx

@@ -10,7 +10,7 @@ status: enriched
 
 # Spacer
 
-> 间距 · x/y × 0.25rem 布局留白 + aria-hidden + RSC · layout/arrange
+> 在布局中插入一段纯粹的空白间距 · layout/arrange
 
 ## 何时用
 
@@ -25,9 +25,9 @@ import { Spacer } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| x | `number` | — | 水平间距（× 0.25rem，同 Tailwind spacing 刻度） |
-| y | `number` | — | 垂直间距（× 0.25rem） |
-| className | `string` | — | 额外类名 |
+| x | `number` | - | 水平间距（× 0.25rem，同 Tailwind spacing 刻度） |
+| y | `number` | - | 垂直间距（× 0.25rem） |
+| className | `string` | - | 额外类名 |
 
 ## 示例
 ```tsx

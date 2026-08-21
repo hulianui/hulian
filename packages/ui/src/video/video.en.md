@@ -10,7 +10,7 @@ status: enriched
 
 # Video
 
-> Video player · Vidstack engine with Hulian-token controls for playback, seek, volume, speed, PiP, and fullscreen, plus files, HLS, chapters, resume, and end screen · data-display/collection
+> Plays file or HLS video with custom controls, chapters, resume, picture-in-picture, and fullscreen. · data-display/collection
 
 ## When to use
 
@@ -27,18 +27,18 @@ import { Video, formatTime, normalizeSrc, chapterMarkers, DEFAULT_PLAYBACK_RATES
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| src* | `string \| { src: string; type? }[]` | — | File URL, HLS `.m3u8`, or multiple sources. |
-| poster | `string` | — | Poster image. |
-| title | `string` | — | Accessible title used by internal controls. |
-| autoPlay | `boolean` | — | Starts playback automatically. |
-| muted | `boolean` | — | Starts muted. |
-| loop | `boolean` | — | Repeats playback. |
-| crossOrigin | `boolean \| string` | — | Forwarded media crossorigin setting. |
+| src* | `string \| { src: string; type? }[]` | - | File URL, HLS `.m3u8`, or multiple sources. |
+| poster | `string` | - | Poster image. |
+| title | `string` | - | Accessible title used by internal controls. |
+| autoPlay | `boolean` | - | Starts playback automatically. |
+| muted | `boolean` | - | Starts muted. |
+| loop | `boolean` | - | Repeats playback. |
+| crossOrigin | `boolean \| string` | - | Forwarded media crossorigin setting. |
 | aspectRatio | `string` | `"16/9"` | CSS aspect ratio. |
-| playbackRates | `number[]` | `DEFAULT_PLAYBACK_RATES`(0.5–2) | Available playback speeds. |
-| chapters | `VideoChapter[]` | — | `{ time, title }` segments rendered as progress ticks and hover titles. |
-| startTime | `number` | — | One-time initial seek in seconds after media becomes playable. |
-| className | `string` | — | Root class name. |
+| playbackRates | `number[]` | `DEFAULT_PLAYBACK_RATES`(0.5-2) | Available playback speeds. |
+| chapters | `VideoChapter[]` | - | `{ time, title }` segments rendered as progress ticks and hover titles. |
+| startTime | `number` | - | One-time initial seek in seconds after media becomes playable. |
+| className | `string` | - | Root class name. |
 
 ## Events
 

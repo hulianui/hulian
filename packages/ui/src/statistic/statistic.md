@@ -10,7 +10,7 @@ status: enriched
 
 # Statistic
 
-> 统计数值 · 千分位/precision/前后缀/valueStyle + 可选 NumberTicker 入场滚动 + Statistic.Countdown 倒计时(SSR 安全·零依赖·与 Stat 互补) · data-display/stat
+> 格式化统计数值，可带前后缀、滚动入场或倒计时 · data-display/stat
 
 ## 何时用
 
@@ -27,22 +27,22 @@ import { Statistic, formatStatistic, formatCountdown } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value* | `number \| string` | — | string 原样输出，number 走千分位 + precision 格式化 |
-| precision | `number` | — | 小数位数（仅 value 为 number 时生效） |
+| value* | `number \| string` | - | string 原样输出，number 走千分位 + precision 格式化 |
+| precision | `number` | - | 小数位数（仅 value 为 number 时生效） |
 | groupSeparator | `boolean` | `true` | 千分位分组 |
 | animate | `boolean` | `false` | 接 NumberTicker 入场滚动（仅 number；动效路径恒带千分位） |
-| valueStyle | `CSSProperties` | — | 数值行内联样式（自定义颜色/字号） |
+| valueStyle | `CSSProperties` | - | 数值行内联样式（自定义颜色/字号） |
 | align | `"start" \| "center" \| "end"` | `"start"` | 水平对齐；数值行是 flex，className text-center 无效，须用此 prop |
-| className | `string` | — | 透传类名 |
+| className | `string` | - | 透传类名 |
 
 ### Statistic.Countdown
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| deadline* | `number` | — | 截止时间戳（毫秒，与 Date.now() 同基准） |
+| deadline* | `number` | - | 截止时间戳（毫秒，与 Date.now() 同基准） |
 | format | `string` | `"HH:mm:ss"` | 格式化模板，支持 D/H/HH/m/mm/s/ss/S/SS/SSS |
-| valueStyle | `CSSProperties` | — | 数值行内联样式 |
-| className | `string` | — | 透传类名 |
+| valueStyle | `CSSProperties` | - | 数值行内联样式 |
+| className | `string` | - | 透传类名 |
 
 ## Events
 

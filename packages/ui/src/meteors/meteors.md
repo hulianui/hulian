@@ -31,7 +31,7 @@ import { Meteors } from "@hulianui/ui"
 | minDuration | number | 2 | 单颗下落最短时长（秒） |
 | maxDuration | number | 10 | 单颗下落最长时长（秒） |
 | angle | number | 215 | 下落角度（度） |
-| className | string | — | 透传到每颗流星 span 的额外类（流星本身用 currentColor，可借此调色） |
+| className | string | - | 透传到每颗流星 span 的额外类（流星本身用 currentColor，可借此调色） |
 
 ## 示例
 ```tsx

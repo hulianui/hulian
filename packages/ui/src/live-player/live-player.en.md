@@ -10,7 +10,7 @@ status: enriched
 
 # LivePlayer
 
-> Livestream player shell · minimal autoplay video or custom surface with LIVE badge, viewer count, quality menu, host row, overlays, footer, and portrait or landscape layout · data-display/collection
+> Presents a live video surface with status, viewer count, controls, and overlays. · data-display/collection
 
 ## When to use
 
@@ -25,16 +25,16 @@ import { LivePlayer } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| src | `string` | — | Video source played muted, looping, autoplay, and inline. |
-| poster | `string` | — | Poster image. |
+| src | `string` | - | Video source played muted, looping, autoplay, and inline. |
+| poster | `string` | - | Poster image. |
 | live | `boolean` | `true` | Shows the LIVE badge. |
-| viewers | `number` | — | Animated viewer count. |
-| qualities | `string[]` | — | Quality options. |
-| quality | `string` | — | Controlled current quality. |
-| host | `LivePlayerHost` | — | Host row. |
+| viewers | `number` | - | Animated viewer count. |
+| qualities | `string[]` | - | Quality options. |
+| quality | `string` | - | Controlled current quality. |
+| host | `LivePlayerHost` | - | Host row. |
 | orientation | `"portrait" \| "landscape"` | `"landscape"` | Layout orientation. |
-| aspectRatio | `string` | — | CSS ratio; defaults to 16/9 or 9/16, while `"fill"` fills the parent. |
-| className | `string` | — | Container class. |
+| aspectRatio | `string` | - | CSS ratio; defaults to 16/9 or 9/16, while `"fill"` fills the parent. |
+| className | `string` | - | Container class. |
 
 ## Events
 

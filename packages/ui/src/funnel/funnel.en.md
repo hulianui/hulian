@@ -10,7 +10,7 @@ status: enriched
 
 # Funnel
 
-> Funnel · stage size proportional to value, inter-stage conversion badges, vertical or horizontal layout, semantic tones, custom rendering, and a zero-safe geometry helper · data-display/collection
+> Visualizes stage-by-stage quantities as a proportional conversion funnel. · data-display/collection
 
 ## When to use
 
@@ -25,12 +25,12 @@ import { Funnel, computeFunnel } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| stages* | `FunnelStage[]` | — | `{id, label, value, tone?}` stages sized proportionally to value. |
+| stages* | `FunnelStage[]` | - | `{id, label, value, tone?}` stages sized proportionally to value. |
 | orientation | `"vertical" \| "horizontal"` | `"vertical"` | Rows sized by width or columns sized by height. |
 | showConversion | `boolean` | `true` | Shows conversion between adjacent stages. |
 | ariaLabel | `string` | `"Funnel chart"` with `enUS` | Accessible chart name. Pass a localized value for other interfaces. |
 | conversionLabel | `string` | `"Conversion"` with `enUS` | Conversion badge prefix. Pass a localized value for other interfaces. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
 `FunnelStage.tone` is `"neutral" | "brand" | "success" | "warning" | "danger"`, defaulting to brand.
 

@@ -32,7 +32,7 @@ Inherits `SVGProps<SVGSVGElement>` (removes `ref`), commonly used as follows:
 | curveAmount | `number` | `320` | Vertical offset of the quadratic Bézier control point in viewBox pixels. Positive values curve down, negative values curve up, and 0 is nearly straight. |
 | direction | `"left" \| "right"` | `"left"` | Automatic scrolling direction. |
 | interactive | `boolean` | `true` | Enables mouse and touch dragging; after release, scrolling continues in the drag direction. |
-| className | `string` | — | Text-color class such as `text-primary`; the default fill uses `currentColor` from this class or the parent. |
+| className | `string` | - | Text-color class such as `text-primary`; the default fill uses `currentColor` from this class or the parent. |
 
 ## Examples
 ```tsx

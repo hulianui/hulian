@@ -10,7 +10,7 @@ status: enriched
 
 # ProTable
 
-> Advanced table · full list-page orchestration around Table, SearchForm, and Pagination, with search, density, column settings, refresh, fullscreen, row selection, and managed requests · data-display/collection
+> Combines business-table columns, querying, sorting, selection, pagination, and toolbar actions. · data-display/collection
 
 ## When to use
 
@@ -35,20 +35,20 @@ Inherits `Omit<TableProps<TData>, "data">`, including columns, sorting, selectio
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| data | `TData[]` | — | Required in display mode; ignored when `request` enables managed mode. |
-| request | `(params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>` | — | Enables managed data, paging, sorting, filters, loading, and selection. Held in a ref, so function identity is not a request dependency. |
-| params | `Record<string, unknown>` | — | Fixed managed-mode parameters. Shallow changes reset to page one and re-request; values remain separate from filters. |
+| data | `TData[]` | - | Required in display mode; ignored when `request` enables managed mode. |
+| request | `(params: ProTableRequestParams) => Promise<ProTableRequestResult<TData>>` | - | Enables managed data, paging, sorting, filters, loading, and selection. Held in a ref, so function identity is not a request dependency. |
+| params | `Record<string, unknown>` | - | Fixed managed-mode parameters. Shallow changes reset to page one and re-request; values remain separate from filters. |
 | paginationMode | `"page" \| "cursor"` | `"page"` | Page mode returns `{data,total}`; cursor mode receives a cursor and returns `{data,nextCursor,hasMore}`. |
 | defaultPageSize | `number` | `10` | Initial managed page size. |
 | defaultSorting | `SortingState` | `[]` | Initial managed sorting, read only on first mount and sent with the first request. |
-| pageSizeOptions | `number[]` | — | Renders a page-size selector when supplied. |
-| pagination | `ProTablePagination` | — | Display-mode footer pagination: `{page,pageSize,total,onPageChange,showFirstLast?,onPageSizeChange?}`. |
-| search | `Omit<SearchFormProps,"onSearch"> & { onSearch? }` | — | Integrated SearchForm; `onSearch` is optional in managed mode. |
+| pageSizeOptions | `number[]` | - | Renders a page-size selector when supplied. |
+| pagination | `ProTablePagination` | - | Display-mode footer pagination: `{page,pageSize,total,onPageChange,showFirstLast?,onPageSizeChange?}`. |
+| search | `Omit<SearchFormProps,"onSearch"> & { onSearch? }` | - | Integrated SearchForm; `onSearch` is optional in managed mode. |
 | toolbar | `boolean \| ProTableToolbarFeatures` | `true` | True enables all tools, false hides the toolbar, or configure reload, density, column settings, and fullscreen individually. |
-| loading | `boolean` | — | Display-mode loading state, including the rotating refresh icon. |
-| actionRef | `Ref<ProTableActions>` | — | Exposes `reload()` and `clearSelection()`. |
-| columnVisibility | `Record<string, boolean>` | — | Controlled column visibility, mapping column id to visibility, where **a missing key means visible**. It follows the `rowSelection` and `sorting` contract: supplying it takes control and requires `onColumnVisibilityChange`, omitting it keeps internal state. Column ids come from `ColumnDef.id`, falling back to `accessorKey`. Columns carrying `meta.lockVisible` stay visible, so writing `false` for them has no effect. |
-| rootClassName | `string` | — | Outer container class, distinct from the Table `className`. |
+| loading | `boolean` | - | Display-mode loading state, including the rotating refresh icon. |
+| actionRef | `Ref<ProTableActions>` | - | Exposes `reload()` and `clearSelection()`. |
+| columnVisibility | `Record<string, boolean>` | - | Controlled column visibility, mapping column id to visibility, where **a missing key means visible**. It follows the `rowSelection` and `sorting` contract: supplying it takes control and requires `onColumnVisibilityChange`, omitting it keeps internal state. Column ids come from `ColumnDef.id`, falling back to `accessorKey`. Columns carrying `meta.lockVisible` stay visible, so writing `false` for them has no effect. |
+| rootClassName | `string` | - | Outer container class, distinct from the Table `className`. |
 
 ## Events
 
@@ -113,7 +113,7 @@ Inherited Table events include sorting, selection, expansion, and column-filter 
 
 - In managed mode, `data`, `pagination`, and `loading` are ignored. Cursor mode has no total or random page jump; changing filters, sorting, or page size resets to page one.
 - Supply `getRowId` in managed mode so selection remains stable across pages. `batchActions` also requires enabled selection and at least one selected row.
-- **Row selection is controlled by whether you pass `rowSelection`, not by whether the table is managed.** Passing it makes selection controlled, so pass `onRowSelectionChange` too — without it nothing can be selected and only a dev warning says why. Omit both and the component holds selection internally. Through 0.29.0 managed mode always held selection and silently discarded these two props: the table looked completely normal, checkboxes toggled and the header box went indeterminate, yet the consumer state stayed `{}` until submit produced an empty array (#202).
+- **Row selection is controlled by whether you pass `rowSelection`, not by whether the table is managed.** Passing it makes selection controlled, so pass `onRowSelectionChange` too. Without it nothing can be selected and only a dev warning says why. Omit both and the component holds selection internally. Through 0.29.0 managed mode always held selection and silently discarded these two props: the table looked completely normal, checkboxes toggled and the header box went indeterminate, yet the consumer state stayed `{}` until submit produced an empty array (#202).
 - **Column visibility follows the same controlled contract** as selection: supplying `columnVisibility` means you own it and must also supply `onColumnVisibilityChange`, otherwise the column-setting popover does nothing and only warns in development. Without it the preference lives in internal state only, so the toolbar works but a refresh throws it away, and "the same operator switches machines and keeps their columns" cannot be written at all from outside the component. The map means **missing equals visible**, so persistence only has to record the columns that were switched off.
 - **Mark identity and action columns with `meta.lockVisible`.** A blanket on/off list cannot express "these two may not be switched off", and a row without its identity column or its action column has neither a name nor an exit. Locked columns are checked and disabled in the toolbar, and a controlled `false` does not apply to them either, otherwise one stale persisted preference could close the exit with no way to reopen it from the UI.
 - The guard against hiding the last visible column (which would leave an empty header) is still in place; in controlled mode it shows up as **the change handler simply not firing**.

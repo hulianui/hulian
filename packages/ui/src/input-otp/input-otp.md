@@ -10,7 +10,7 @@ status: enriched
 
 # InputOTP
 
-> 验证码输入 · 分段自动跳格/退格回退/整段粘贴(零依赖) · forms/advanced
+> 分格输入验证码，自动跳格并支持整段粘贴 · forms/advanced
 
 ## 何时用
 
@@ -28,15 +28,15 @@ import { InputOTP } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | length | `number` | `6` | 分段数量 |
-| value | `string` | — | 受控值 |
-| defaultValue | `string` | — | 非受控初始值 |
+| value | `string` | - | 受控值 |
+| defaultValue | `string` | - | 非受控初始值 |
 | type | `"numeric" \| "text"` | `"numeric"` | 仅数字（默认）或任意字符 |
-| disabled | `boolean` | — | 禁用 |
+| disabled | `boolean` | - | 禁用 |
 | invalid | `boolean` | `false` | 校验失败态 |
-| groupGap | `boolean` | — | 中间插入横线分隔符（3-3 分组视觉，如 XXX–XXX） |
-| name | `string` | — | 提交标识。额外渲染一个持有**完整值**的隐藏 input（槽位各持一位，同名会提交出 N 个字段） |
-| className | `string` | — | 容器类名 |
-| aria-label | `string` | — | 无障碍标签 |
+| groupGap | `boolean` | - | 中间插入横线分隔符（3-3 分组视觉，如 XXX-XXX） |
+| name | `string` | - | 提交标识。额外渲染一个持有**完整值**的隐藏 input（槽位各持一位，同名会提交出 N 个字段） |
+| className | `string` | - | 容器类名 |
+| aria-label | `string` | - | 无障碍标签 |
 
 ## Events
 

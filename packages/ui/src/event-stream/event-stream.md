@@ -47,10 +47,10 @@ import { EventStream } from "@hulianui/ui";
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `items` | `EventStreamItem[]` | — | 顺序即展示顺序，组件不排序 |
-| `maxHeight` | `number \| string` | — | 给了才出现内部滚动 |
+| `items` | `EventStreamItem[]` | - | 顺序即展示顺序，组件不排序 |
+| `maxHeight` | `number \| string` | - | 给了才出现内部滚动 |
 | `emptyText` | `ReactNode` | `"暂无事件"` | 空态文案 |
-| `onItemClick` | `(item) => void` | — | 给了才有可点击态与键盘可达 |
+| `onItemClick` | `(item) => void` | - | 给了才有可点击态与键盘可达 |
 | `live` | `boolean` | `false` | 新条目淡入一次 |
 | `side` | `"left" \| "right"` | `"left"` | 时间轴所在侧 |
 | `defaultExpanded` | `boolean` | `false` | 是否默认展开 `detail` |

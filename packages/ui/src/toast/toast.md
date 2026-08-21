@@ -10,7 +10,7 @@ status: enriched
 
 # Toast
 
-> 命令式轻提示 · 自动消失 + 队列堆叠 + 手动关闭 · feedback/message
+> 用命令式调用弹出会自动消失的轻提示 · feedback/message
 
 ## 何时用
 

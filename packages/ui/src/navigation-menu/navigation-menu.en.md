@@ -10,7 +10,7 @@ status: enriched
 
 # NavigationMenu
 
-> Navigation menu · Thin Base UI wrapper with mega panels, shared Viewport size transitions, triggers, content, links, and a rotating chevron · navigation/global
+> Provides triggers, links, and rich navigation panels through a shared animated viewport. · navigation/global
 
 ## When to use
 
@@ -27,12 +27,12 @@ The root `NavigationMenu` forwards Base UI `NavigationMenu.Root` props. Each sub
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `any` | — | Controlled value of the currently open item. |
-| defaultValue | `any` | — | Initially open item when uncontrolled. |
+| value | `any` | - | Controlled value of the currently open item. |
+| defaultValue | `any` | - | Initially open item when uncontrolled. |
 | delay | `number` | `100` | Delay before opening on hover, in milliseconds. Use `0` to open immediately. |
-| closeDelay | `number` | — | Delay before closing after the pointer leaves, in milliseconds. |
+| closeDelay | `number` | - | Delay before closing after the pointer leaves, in milliseconds. |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Menu-bar orientation. |
-| className | `string` | — | Additional root class name. |
+| className | `string` | - | Additional root class name. |
 
 Subcomponents accept `className` and forward their matching Base UI props. `NavigationMenuItem` requires `value`; `NavigationMenuLink` forwards anchor attributes such as `href`.
 

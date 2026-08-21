@@ -29,13 +29,13 @@ import { FilterChip, FilterChipGroup } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| subject * | `ReactNode` | — | 主语：被筛选的字段名（「状态」「负责人」）。第一段，字重最重。 |
-| operator | `ReactNode` | — | 操作符（「属于以下任一项」「早于」）。**省略时胶囊自动少一栏**，不会留空栏。 |
-| value * | `ReactNode` | — | 值。收节点而非字符串，见下方「值是富节点」。 |
+| subject * | `ReactNode` | - | 主语：被筛选的字段名（「状态」「负责人」）。第一段，字重最重。 |
+| operator | `ReactNode` | - | 操作符（「属于以下任一项」「早于」）。**省略时胶囊自动少一栏**，不会留空栏。 |
+| value * | `ReactNode` | - | 值。收节点而非字符串，见下方「值是富节点」。 |
 | size | `"sm"｜"md"` | `md` | 只换高度、字号与段内边距，不改结构。 |
-| subjectLabel | `string` | — | 移除按钮无障碍名里用的主语纯文本。`subject` 是字符串时自动取用；是节点时必须给，否则退回不带主语的「移除筛选条件」。 |
-| isDisabled | `boolean` | — | 禁用：降透明度、屏蔽指针事件，本体与移除按钮均不可点。 |
-| className | `string` | — | — |
+| subjectLabel | `string` | - | 移除按钮无障碍名里用的主语纯文本。`subject` 是字符串时自动取用；是节点时必须给，否则退回不带主语的「移除筛选条件」。 |
+| isDisabled | `boolean` | - | 禁用：降透明度、屏蔽指针事件，本体与移除按钮均不可点。 |
+| className | `string` | - | - |
 
 ### FilterChipGroup
 
@@ -43,8 +43,8 @@ import { FilterChip, FilterChipGroup } from "@hulianui/ui"
 |------|------|------|------|
 | clearAllLabel | `ReactNode` | locale 的「清除全部」 | 覆盖行尾按钮文案。 |
 | aria-label | `string` | locale 的「已应用的筛选条件」 | 覆盖分组的无障碍名。 |
-| className | `string` | — | — |
-| children | `ReactNode` | — | FilterChip 列表。**一个都没有时整行不渲染**（含「清除全部」）。 |
+| className | `string` | - | - |
+| children | `ReactNode` | - | FilterChip 列表。**一个都没有时整行不渲染**（含「清除全部」）。 |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # RemoteSelect
 
-> Remote search select · debounced queries + AbortSignal cancellation + infinite pagination + `resolveValue` label hydration + multi-select chips · forms/advanced
+> Loads debounced remote options with request cancellation, pagination, initial-value resolution, and multiple selection. · forms/advanced
 
 ## When to use
 
@@ -27,15 +27,15 @@ import { RemoteSelect } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| fetcher * | `(query, { page, pageSize, signal }) => Promise<{ options, total? }>` | — | Remote search source. `options` contains raw API rows; when supplied, `total` determines whether another page exists. |
-| resolveValue | `(values: string[]) => Promise<Row[]>` | — | Batch-resolves labels for existing values. **Required in edit forms**; see Usage guidelines. |
+| fetcher * | `(query, { page, pageSize, signal }) => Promise<{ options, total? }>` | - | Remote search source. `options` contains raw API rows; when supplied, `total` determines whether another page exists. |
+| resolveValue | `(values: string[]) => Promise<Row[]>` | - | Batch-resolves labels for existing values. **Required in edit forms**; see Usage guidelines. |
 | labelKey | `string` | `"name"` | Field in each raw row used as its visible label. |
 | valueKey | `string` | `"id"` | Field in each raw row used as its value. |
 | debounce | `number` | `300` | Search debounce in milliseconds. |
 | pageSize | `number` | `10` | Page size passed to `fetcher`. |
 | multiple | `boolean` | `false` | Enables chip-based multiple selection and changes `value`/`onChange` to arrays. |
-| value | `string\|number\|null` (array when multiple) | — | Controlled value. Array order determines chip order. |
-| defaultValue | Same as above | — | Initial value when uncontrolled. |
+| value | `string\|number\|null` (array when multiple) | - | Controlled value. Array order determines chip order. |
+| defaultValue | Same as above | - | Initial value when uncontrolled. |
 | placeholder | `string` | `"\u8bf7\u9009\u62e9"` | Field placeholder; the built-in Chinese copy means “Please select.” |
 | emptyMessage | `ReactNode` | `"\u65e0\u5339\u914d\u6570\u636e"` | Empty-state content; the built-in Chinese copy means “No matching data.” |
 | loadingMessage | `ReactNode` | `"\u52a0\u8f7d\u4e2d\u2026"` | Loading-state content; the built-in Chinese copy means “Loading…”. |
@@ -44,10 +44,10 @@ import { RemoteSelect } from "@hulianui/ui"
 | disabled | `boolean` | `false` | Disables interaction. |
 | invalid | `boolean` | `false` | Applies invalid styling when used outside Field. |
 | defaultOpen | `boolean` | `false` | Opens the popup initially when uncontrolled, primarily for debugging and documentation. |
-| renderOption | `(option) => ReactNode` | — | Custom option row; `option.raw` is the original API row. |
-| virtualized | `boolean` | `true` once 100 options have accumulated | Virtualizes the candidate list. Turn it off explicitly when `renderOption` draws multi-line rows — see Usage guidelines. |
-| className | `string` | — | Class name for the field shell containing the input or chips. |
-| popupClassName | `string` | — | Additional popup class name. |
+| renderOption | `(option) => ReactNode` | - | Custom option row; `option.raw` is the original API row. |
+| virtualized | `boolean` | `true` once 100 options have accumulated | Virtualizes the candidate list. Turn it off explicitly when `renderOption` draws multi-line rows (see Usage guidelines). |
+| className | `string` | - | Class name for the field shell containing the input or chips. |
+| popupClassName | `string` | - | Additional popup class name. |
 
 ## Events
 
@@ -99,14 +99,14 @@ Multiple selection:
 
 ## Usage guidelines
 
-- **The list virtualizes automatically once 100 candidates have accumulated** — remote paging appends page by page, so this switches on after enough pages. Only visible options stay in the DOM, and row height is estimated at a fixed 32px without per-item measurement. The default single-line label is exactly 32px, so nothing changes for it. **If** `renderOption` draws multi-line rows or avatars, placement starts drifting somewhere past the tenth page — **nothing throws, and the first pages never reproduce it**. Pass `virtualized={false}` for that usage.
+- **The list virtualizes automatically once 100 candidates have accumulated**. Remote paging appends page by page, so this switches on after enough pages. Only visible options stay in the DOM, and row height is estimated at a fixed 32px without per-item measurement. The default single-line label is exactly 32px, so nothing changes for it. **If** `renderOption` draws multi-line rows or avatars, placement starts drifting somewhere past the tenth page. **Nothing throws, and the first pages never reproduce it**. Pass `virtualized={false}` for that usage.
 - **`resolveValue` is required in edit forms.** An existing `value` may be on a later page or excluded by the current query. Only `resolveValue` can obtain its label; without it, the field displays the raw ID. Keep it separate from `fetcher`: one batch-fetches rows by primary key, while the other searches pages by keyword.
 - **Forward `signal` from `fetcher` to fetch or Axios.** The component discards stale responses by request sequence even without cancellation, but uncancelled requests still occupy connections during rapid typing.
 - **Render multiple-selection chips in `value` order.** `ComboboxChipRemove` associates each chip with `selectedValue[index]`; reordering custom output can **remove the wrong item**. The built-in rendering already preserves value order.
 - There is no second local filter because the underlying Combobox uses `filter={null}`. Results are entirely server-defined; if `fetcher` ignores `query`, typing does not search.
 - Closing the popup ends the search session: the query is cleared and the first page loads again on the next open, matching remote `el-select` behavior. Keep `fetcher` free of side effects beyond idempotent caching for identical parameters.
 - Pagination works without `total` by assuming a page with at least `pageSize` rows may have a successor. This can cause one final empty request, so return `total` when the API provides it.
-- Native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, …) land on the **input** — the one inside the chips shell in multiple mode — not on the outer container, because that is the element which takes focus and is announced. The `aria-required` injected by `<Field required>` travels the same way (#293); it used to be swallowed by the closed props interface, leaving the required state visual-only.
+- Native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, …) land on the **input** (the one inside the chips shell in multiple mode) rather than on the outer container, because that is the element which takes focus and is announced. The `aria-required` injected by `<Field required>` travels the same way (#293); it used to be swallowed by the closed props interface, leaving the required state visual-only.
 
 ## Related
 [Combobox](../combobox/combobox.md) · [Select](../select/select.md) · [CountrySelect](../country-select/country-select.md) · [Cascader](../cascader/cascader.md) · [ProTable](../pro-table/pro-table.md)

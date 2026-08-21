@@ -46,16 +46,16 @@ import { InterceptCard } from "@hulianui/ui";
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `severity` | `"block" \| "confirm" \| "notice"` | — | Interception severity. Built-in Chinese badges are `"\u5df2\u62e6\u622a"` (“Blocked”), `"\u5f85\u786e\u8ba4"` (“Confirmation required”), and `"\u63d0\u9192"` (“Notice”). |
-| `title` | `ReactNode` | — | Rule name or reason. |
-| `message` | `ReactNode` | — | Original rule text or explanation. |
-| `source` | `ReactNode` | — | Provenance; strongly recommended. |
-| `violation` | `ReactNode` | — | Specific violation, rendered in monospace. |
-| `suggestion` | `ReactNode` | — | Recommended compliant alternative. |
-| `onOverride` | `(reason: string) => void \| Promise<void>` | — | Renders the override flow when provided. |
+| `severity` | `"block" \| "confirm" \| "notice"` | - | Interception severity. Built-in Chinese badges are `"\u5df2\u62e6\u622a"` (“Blocked”), `"\u5f85\u786e\u8ba4"` (“Confirmation required”), and `"\u63d0\u9192"` (“Notice”). |
+| `title` | `ReactNode` | - | Rule name or reason. |
+| `message` | `ReactNode` | - | Original rule text or explanation. |
+| `source` | `ReactNode` | - | Provenance; strongly recommended. |
+| `violation` | `ReactNode` | - | Specific violation, rendered in monospace. |
+| `suggestion` | `ReactNode` | - | Recommended compliant alternative. |
+| `onOverride` | `(reason: string) => void \| Promise<void>` | - | Renders the override flow when provided. |
 | `overrideLabel` | `ReactNode` | `"\u653e\u884c\u672c\u6b21"` | Override-button copy. The built-in Chinese text means “Override this time.” |
 | `overridePlaceholder` | `string` | `"\u4e3a\u4ec0\u4e48\u8fd9\u6b21\u53ef\u4ee5\u653e\u884c\uff1f\uff08\u5fc5\u586b\uff0c\u4f1a\u8fdb\u5165\u5ba1\u8ba1\u8bb0\u5f55\uff09"` | Required-reason placeholder. The built-in Chinese copy asks why this override is permitted and notes that the answer enters the audit record. |
-| `overridden` | `{ reason, at? }` | — | Existing override reason and optional time. |
+| `overridden` | `{ reason, at? }` | - | Existing override reason and optional time. |
 
 ## Design decisions
 

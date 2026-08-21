@@ -35,7 +35,7 @@ import { InteractiveHoverButton } from "@hulianui/ui"
 | dotColor | `string` | 跟随 `background` | 静息态那颗小圆点的颜色 |
 | duration | `string` | `"0.4s"` | 展开动画时长 |
 | icon | `ReactNode` | 右箭头 | 悬停层右侧的尾随图标；传 `null` 去掉 |
-| render | `ReactElement` | — | 渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「落地页主 CTA 是个链接」。样式与内部两层结构会合并进该元素，文案仍取 `children` |
+| render | `ReactElement` | - | 渲染为自定义元素（如 `<a>` / Next `<Link>`）而非 `<button>`，用于「落地页主 CTA 是个链接」。样式与内部两层结构会合并进该元素，文案仍取 `children` |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Flow
 
-> 节点画布编排器 · 零依赖原生 Pointer Events + SVG 贝塞尔连线 · 拖节点/拖桩连线/平移缩放/适配视图 + 受控 nodes/edges(onNodesChange/onConnect/删点删线) + renderNode 自定义节点内容 · 几何抽纯函数带单测 · AI 工作流/流程编排旗舰 · data-display/collection
+> 编排节点和连线，可拖节点、连桩、平移和缩放 · data-display/collection
 
 ## 何时用
 
@@ -27,17 +27,17 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| nodes * | FlowNode\<T\>[] | — | 受控节点数组（`{ id, position, data, width? }`） |
-| edges * | FlowEdge[] | — | 受控连线数组（`{ id, source, target, sourceHandle?, targetHandle? }`） |
-| getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | — | 声明每节点连接桩（左 target/右 source，按返回顺序在该侧均分纵向位置） |
-| selectedId | string ｜ null | — | 单选受控：当前选中节点 id |
+| nodes * | FlowNode\<T\>[] | - | 受控节点数组（`{ id, position, data, width? }`） |
+| edges * | FlowEdge[] | - | 受控连线数组（`{ id, source, target, sourceHandle?, targetHandle? }`） |
+| getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | - | 声明每节点连接桩（左 target/右 source，按返回顺序在该侧均分纵向位置） |
+| selectedId | string ｜ null | - | 单选受控：当前选中节点 id |
 | defaultNodeWidth | number | 240 | 默认节点宽度（px，画布坐标） |
 | minZoom | number | 0.35 | 缩放下限 |
 | maxZoom | number | 2 | 缩放上限 |
 | controls | boolean | true | 是否显示右下角缩放/适配工具条 |
-| isEdgeAnimated | (edge: FlowEdge) => boolean | — | 某条连线是否走流光动画（如运行中链路） |
-| className | string | — | 画布外层类名（须有确定高度，组件填满） |
-| apiRef | MutableRefObject\<FlowApi ｜ null\> | — | 命令式句柄（fitView / zoomIn / zoomOut / reset / autoLayout） |
+| isEdgeAnimated | (edge: FlowEdge) => boolean | - | 某条连线是否走流光动画（如运行中链路） |
+| className | string | - | 画布外层类名（须有确定高度，组件填满） |
+| apiRef | MutableRefObject\<FlowApi ｜ null\> | - | 命令式句柄（fitView / zoomIn / zoomOut / reset / autoLayout） |
 
 ## Events
 

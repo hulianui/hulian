@@ -63,7 +63,7 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| mode | `"password"｜"passphrase"` | — | 受控模式；不传则组件自管 |
+| mode | `"password"｜"passphrase"` | - | 受控模式；不传则组件自管 |
 | defaultMode | `"password"｜"passphrase"` | `"password"` | 非受控初始模式 |
 | modes | `GeneratorMode[]` | 两种全开 | 允许的模式。只给一种时隐藏顶部切换器 |
 | defaultPasswordOptions | `PasswordOptions` | 见下 | 密码模式初始参数 |
@@ -71,12 +71,12 @@ import { generatePassword, generatePassphrase, passwordEntropy } from "@hulianui
 | copyable | `boolean` | `true` | 显示复制按钮 |
 | showStrength | `boolean` | `true` | 显示熵值与强度条 |
 | showOptions | `boolean` | `true` | 显示参数区。关掉只剩结果 + 重新生成，适合塞进 Popover |
-| labels | `Partial<PasswordGeneratorLabels>` | — | 逐条覆盖文案（优先级高于 ConfigProvider locale） |
-| className | `string` | — | 落在面板根节点 |
+| labels | `Partial<PasswordGeneratorLabels>` | - | 逐条覆盖文案（优先级高于 ConfigProvider locale） |
+| className | `string` | - | 落在面板根节点 |
 
-`PasswordOptions`：`length` 14（clamp 5–128）、`uppercase`/`lowercase`/`digits`/`special` 均 true、`minDigits`/`minSpecial` 1（clamp 1–9）、`avoidAmbiguous` false（排除 `I l 1 O 0 o`）。
+`PasswordOptions`：`length` 14（clamp 5-128）、`uppercase`/`lowercase`/`digits`/`special` 均 true、`minDigits`/`minSpecial` 1（clamp 1-9）、`avoidAmbiguous` false（排除 `I l 1 O 0 o`）。
 
-`PassphraseOptions`：`words` 6（clamp 3–20）、`separator` `"-"`、`capitalize` false、`includeNumber` false、`wordlist` 内置 1747 词表。
+`PassphraseOptions`：`words` 6（clamp 3-20）、`separator` `"-"`、`capitalize` false、`includeNumber` false、`wordlist` 内置 1747 词表。
 
 ## Events
 
@@ -153,7 +153,7 @@ generatePassword({ length: 8 }, () => 0); // 固定序列 → 固定结果
 ## 无障碍
 
 - 结果区是 `<output aria-live="polite">`，重新生成后读屏会播报新值。
-- 强度条是 `role="meter"`，带 `aria-valuenow`（0–4）与 `aria-valuetext`（档位名），不依赖颜色单独传达强弱。
+- 强度条是 `role="meter"`，带 `aria-valuenow`（0-4）与 `aria-valuetext`（档位名），不依赖颜色单独传达强弱。
 - 所有图标按钮、滑块、数字输入都有 `aria-label`，取自当前 locale。
 
 ## i18n

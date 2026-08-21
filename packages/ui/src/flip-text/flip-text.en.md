@@ -51,7 +51,7 @@ All other native attributes of the rendered tag (`className`, `id`, `data-*`, `r
 
 ## Example
 ```tsx
-// The heading is the h1 — no wrapper
+// The heading is the h1, with no wrapper
 <FlipText as="h1" className="text-lg font-semibold tracking-tight">System status</FlipText>
 
 // Variables and expressions go straight in (this is why it takes children, not text: string)
@@ -69,13 +69,13 @@ All other native attributes of the rendered tag (`className`, `id`, `data-*`, `r
 
 ## Usage guidelines
 
-- **Do not wrap it in an `<h1>`; use `as`.** `<h1><FlipText/></h1>` is a redundant nesting and makes a screen reader announce two headings — one from the `h1`, one from this component's `aria-label`. Because `as` participates in type inference, `as="h1"` also makes the event and attribute types follow `h1`.
+- **Do not wrap it in an `<h1>`; use `as`.** `<h1><FlipText/></h1>` is a redundant nesting and makes a screen reader announce two headings: one from the `h1`, one from this component's `aria-label`. Because `as` participates in type inference, `as="h1"` also makes the event and attribute types follow `h1`.
 - **Nested markup in `children` is flattened.** Plain text is extracted recursively and then split per character, so `<em>` and friends do not survive. A heading that genuinely needs rich text should not be flipping character by character.
 - **One full round; it does not follow hover state.** Moving the pointer away mid-flight would leave characters frozen on an angle, which is visible. Entering plays a complete round, and re-entering while it plays does not restart it.
 - **The flip is orthographic, without perspective.** It reads as a flip board rather than a cube. Add `[perspective:800px]` through `className` if you want depth; the back face is already offset by `translateZ(0.5lh)`, half a line box.
 - **The back-face character never enters the DOM text.** It is rendered by `[data-hulian-flip-back]::after { content: attr(…) }`, a rule shipped in `preset-core.css`, so the heading's `textContent` is exactly the heading. A real node would make it read "SSyysstteemm", polluting copy-paste and anything a crawler reads. It also means the library preset CSS **must** be loaded, otherwise the second half of the flip is blank.
 - Screen readers get the whole sentence rather than loose characters: the root carries an `aria-label` taken from the children text, and every character span is `aria-hidden`. Passing your own `aria-label` overrides it.
-- Under `prefers-reduced-motion: reduce` nothing flips and the front face stays put — both faces render the same character, so the resting state is already the complete heading.
+- Under `prefers-reduced-motion: reduce` nothing flips and the front face stays put. Both faces render the same character, so the resting state is already the complete heading.
 
 ## Related
 [SplitText](../split-text/split-text.md) · [BlurText](../blur-text/blur-text.md) · [TextReveal](../text-reveal/text-reveal.md) · [ScrollReveal](../scroll-reveal/scroll-reveal.md) · [WordRotate](../word-rotate/word-rotate.md) · [PageHeader](../page-header/page-header.md) · [Heading](../heading/heading.md)

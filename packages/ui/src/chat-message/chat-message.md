@@ -31,7 +31,7 @@ import { ChatMessage } from "@hulianui/ui"
 |------|------|------|------|
 | role * | `"user" ｜ "assistant" ｜ "system"` | `"assistant"`(showcase) | user 右对齐(primary 底) / assistant 左对齐(surface 底) / system 居中弱化通告 |
 | loading | `boolean` | `false` | 加载态：正文位置显示 TypingDots（agent 生成中） |
-| status | `"sending" ｜ "sent" ｜ "read"` | — | 已读回执：仅 role=user 渲染。sending 转圈 / sent 单勾 / read 双蓝勾 |
+| status | `"sending" ｜ "sent" ｜ "read"` | - | 已读回执：仅 role=user 渲染。sending 转圈 / sent 单勾 / read 双蓝勾 |
 
 ## Slots
 

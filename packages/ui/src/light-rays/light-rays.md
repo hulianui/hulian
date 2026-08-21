@@ -28,17 +28,17 @@ import { LightRays } from "@hulianui/ui"
 | raysOrigin | `"top-center" \| "top-left" \| "top-right" \| "left" \| "right" \| "bottom-left" \| "bottom-center" \| "bottom-right"` | `"top-center"` | 光束发射原点，决定锚点与传播方向（四角 / 四边中点） |
 | raysColor | `string` | `var(--color-chart-1)` | 光束颜色，任意 CSS 颜色，离屏 canvas 解析为 RGB |
 | raysSpeed | `number` | `1` | 闪烁/律动速度倍率，0 近乎静止（仍渲染一帧） |
-| lightSpread | `number` | `1` | 光束扩散角度，越大越散、越小越聚拢，建议 0.3–3 |
+| lightSpread | `number` | `1` | 光束扩散角度，越大越散、越小越聚拢，建议 0.3-3 |
 | rayLength | `number` | `2` | 光束长度（相对视口宽倍数） |
 | pulsating | `boolean` | `false` | 整体亮度随时间正弦呼吸 |
 | fadeDistance | `number` | `1` | 沿程渐隐距离（相对视口宽倍数），越小越快淡出 |
 | saturation | `number` | `1` | 饱和度，<1 去色趋灰，0=纯灰阶 |
 | followMouse | `boolean` | `true` | 光束方向跟随鼠标（需 mouseInfluence>0 才有可见偏转） |
-| mouseInfluence | `number` | `0.1` | 鼠标对方向的影响权重(0–1)，0=不偏转 |
-| noiseAmount | `number` | `0` | 颗粒噪声强度(0–1) |
-| distortion | `number` | `0` | 角度扭曲强度，让光束摇曳而非笔直，建议 0–1 |
-| className | `string` | — | 透传根容器（自带 pointer-events-none absolute inset-0 z-0） |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| mouseInfluence | `number` | `0.1` | 鼠标对方向的影响权重(0-1)，0=不偏转 |
+| noiseAmount | `number` | `0` | 颗粒噪声强度(0-1) |
+| distortion | `number` | `0` | 角度扭曲强度，让光束摇曳而非笔直，建议 0-1 |
+| className | `string` | - | 透传根容器（自带 pointer-events-none absolute inset-0 z-0） |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

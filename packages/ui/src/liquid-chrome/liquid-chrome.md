@@ -31,7 +31,7 @@ import { LiquidChrome } from "@hulianui/ui"
 | frequencyX | `number` | `2.5` | X 方向空间频率 |
 | frequencyY | `number` | `1.5` | Y 方向空间频率 |
 | interactive | `boolean` | `true` | 是否响应鼠标 / 触摸推动液面涟漪 |
-| className | `string` | — | 透传到 canvas（正常）或 fallback div（降级）的 className |
+| className | `string` | - | 透传到 canvas（正常）或 fallback div（降级）的 className |
 
 ## Slots
 

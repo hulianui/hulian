@@ -10,7 +10,7 @@ status: enriched
 
 # Toolbar
 
-> 工具栏 · Base UI role=toolbar + 键盘漫游 + Button/Group/Separator · navigation/action
+> 把一组操作控件排成工具栏，焦点可键盘漫游 · navigation/action
 
 ## 何时用
 
@@ -28,28 +28,28 @@ import { Toolbar, ToolbarButton, ToolbarToggle, ToolbarGroup, ToolbarSeparator }
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 排布方向。 |
-| disabled | `boolean` | — | 整条禁用。 |
+| disabled | `boolean` | - | 整条禁用。 |
 | loopFocus | `boolean` | `true` | 键盘导航到末端时是否回环。 |
-| aria-label | `string` | — | 工具栏无障碍标签。 |
-| className | `string` | — | — |
+| aria-label | `string` | - | 工具栏无障碍标签。 |
+| className | `string` | - | - |
 
 **ToolbarButton**
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| disabled | `boolean` | — | — |
-| aria-label | `string` | — | 图标按钮需补无障碍标签。 |
-| className | `string` | — | — |
+| disabled | `boolean` | - | - |
+| aria-label | `string` | - | 图标按钮需补无障碍标签。 |
+| className | `string` | - | - |
 
 **ToolbarToggle**
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| pressed | `boolean` | — | 受控选中态（按下=开）。 |
+| pressed | `boolean` | - | 受控选中态（按下=开）。 |
 | defaultPressed | `boolean` | `false` | 非受控初始选中态。 |
-| disabled | `boolean` | — | — |
-| aria-label | `string` | — | — |
-| className | `string` | — | — |
+| disabled | `boolean` | - | - |
+| aria-label | `string` | - | - |
+| className | `string` | - | - |
 
 **ToolbarGroup**：Props `disabled` / `aria-label` / `className`；Slots `children`。
 **ToolbarSeparator**：Props `orientation?: "horizontal" \| "vertical"` / `className`。

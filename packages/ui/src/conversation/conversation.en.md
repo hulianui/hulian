@@ -10,7 +10,7 @@ status: enriched
 
 # Conversation
 
-> Message-flow container · Vertically stacks ChatMessage and follows new messages or streaming content at the bottom · Consumer-sized scrolling region · ai/conversation
+> Stacks chat messages in a scrollable timeline that follows new messages and streamed growth. · ai/conversation
 
 ## When to Use
 

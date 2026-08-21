@@ -10,7 +10,7 @@ status: enriched
 
 # Stack
 
-> Flex layout primitive · direction, gap, align, justify, wrap + polymorphic `as` · dependency-free · RSC-safe · layout/arrange
+> Arranges type-safe polymorphic flex content with gap, alignment, wrapping, and responsive direction through 2xl. · layout/arrange
 
 ## When to use
 
@@ -27,8 +27,8 @@ import { Stack } from "@hulianui/ui"
 |------|------|------|------|
 | direction | `StackDirection \| ResponsiveDirection` | `"column"` | Main-axis direction. A string is fixed; `{base,sm,md,lg,xl,2xl}` responds by breakpoint. |
 | gap | `number` | `0` | Child spacing (× 0.25rem, same as Tailwind spacing scale) |
-| align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | — | Cross-axis alignment. |
-| justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | — | Main-axis distribution. |
+| align | `"start" \| "center" \| "end" \| "stretch" \| "baseline"` | - | Cross-axis alignment. |
+| justify | `"start" \| "center" \| "end" \| "between" \| "around" \| "evenly"` | - | Main-axis distribution. |
 | wrap | `boolean` | `false` | Whether to wrap (only row is meaningful) |
 | inline | `boolean` | `false` | Use inline-flex instead of flex (shrinks with content and can be aligned with the text baseline) |
 | as | `ElementType` | `"div"` | Rendered element tag |

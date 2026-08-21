@@ -29,9 +29,9 @@ import { Label } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| htmlFor | `string` | — | Id of the associated control, rendered as the native `for` attribute. Clicking the label focuses the control, and screen readers announce it as the control name. |
-| className | `string` | — | Appended to the `<label>`, whose default is `text-sm font-medium text-foreground`. Classes are merged with twMerge, so passing `text-xs` overrides the default size. |
-| children | `ReactNode` | — | Label text. |
+| htmlFor | `string` | - | Id of the associated control, rendered as the native `for` attribute. Clicking the label focuses the control, and screen readers announce it as the control name. |
+| className | `string` | - | Appended to the `<label>`, whose default is `text-sm font-medium text-foreground`. Classes are merged with twMerge, so passing `text-xs` overrides the default size. |
+| children | `ReactNode` | - | Label text. |
 
 Every other native `<label>` attribute (`id`, `title`, `data-*`, `aria-*`, `onClick`, and so on) is forwarded to the root element unchanged.
 

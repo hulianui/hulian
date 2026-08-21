@@ -26,13 +26,13 @@ import { OrbitImages } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | shape | `"ellipse"\|"circle"\|"square"\|"rectangle"\|"triangle"\|"star"\|"heart"\|"infinity"\|"wave"\|"custom"` | `"ellipse"` | Track preset; set `customPath` when using `"custom"` |
-| customPath | `string` | — | SVG path d with shape="custom" (coordinates based on baseWidth square canvas) |
+| customPath | `string` | - | SVG path d with shape="custom" (coordinates based on baseWidth square canvas) |
 | baseWidth | `number` | `1400` | Design canvas side length (px·square viewBox), only affects path geometric proportions |
 | radiusX | `number` | `700` | Horizontal radius of ellipse/rectangle/infinity/wave (px·based on baseWidth) |
 | radiusY | `number` | `170` | Vertical radius of ellipse/rectangle/infinity/wave |
 | radius | `number` | `300` | Radius of circle/square/triangle/star/center |
 | starPoints | `number` | `5` | Number of points in the star track |
-| starInnerRatio | `number` | `0.5` | Star inner-to-outer radius ratio (0–1); lower values create sharper points |
+| starInnerRatio | `number` | `0.5` | Star inner-to-outer radius ratio (0-1); lower values create sharper points |
 | rotation | `number` | `-8` | Orbital inclination angle (deg), the child rotates in the opposite direction to maintain uprightness |
 | duration | `number` | `40` | The time it takes to complete a lap (seconds), the larger it is, the slower it is |
 | itemSize | `number` | `64` | Single child side length (px·CSS pixels) |
@@ -41,8 +41,8 @@ import { OrbitImages } from "@hulianui/ui"
 | showPath | `boolean` | `false` | Trace track path (debug/decoration) |
 | pathColor | `string` | `"var(--color-border)"` | Track stroke color |
 | pathWidth | `number` | `2` | Track stroke width (px·based on baseWidth) |
-| className | `string` | — | Passthrough to root container |
-| style | `CSSProperties` | — | Inline styles forwarded to the root container, which defaults to a 1:1 aspect ratio and fills the parent width |
+| className | `string` | - | Passthrough to root container |
+| style | `CSSProperties` | - | Inline styles forwarded to the root container, which defaults to a 1:1 aspect ratio and fills the parent width |
 
 ## Slots
 

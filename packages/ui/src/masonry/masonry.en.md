@@ -10,11 +10,11 @@ status: enriched
 
 # Masonry
 
-> Masonry layout · deterministic round-robin columns for SSR-safe, stable ordering + responsive `base`/`sm`/`md`/`lg` column counts + consistent row and column gaps · layout/container
+> Distributes items deterministically across responsive columns without hydration-order changes. · layout/container
 
 ## When to use
 
-Use Masonry to arrange unequal-height cards—such as photos, activity items, or generated assets—into staggered columns while preserving SSR safety and source order. It distributes items deterministically rather than using native CSS columns, avoiding hydration mismatches and visual reordering. Use [AspectRatio](../aspect-ratio/aspect-ratio.md) for one fixed-ratio item, or CSS Grid for a regular equal-height layout.
+Use Masonry to arrange unequal-height cards (photos, activity items, generated assets) into staggered columns while preserving SSR safety and source order. It distributes items deterministically rather than using native CSS columns, avoiding hydration mismatches and visual reordering. Use [AspectRatio](../aspect-ratio/aspect-ratio.md) for one fixed-ratio item, or CSS Grid for a regular equal-height layout.
 
 ## Import
 ```ts
@@ -27,10 +27,10 @@ import { Masonry } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `T[]` | — | Source items, distributed round-robin in source order. |
+| items* | `T[]` | - | Source items, distributed round-robin in source order. |
 | columns | `number \| { base?: number; sm?: number; md?: number; lg?: number }` | `3` | Fixed count when numeric, or responsive counts by breakpoint. `base` is used for SSR and the first client frame; `matchMedia` selects a breakpoint after mount. |
 | gap | `number` | `16` | Gap between columns and between items within each column (px). |
-| className | `string` | — | The root container class name. |
+| className | `string` | - | The root container class name. |
 
 ## Slots
 

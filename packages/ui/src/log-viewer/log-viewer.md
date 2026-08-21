@@ -10,7 +10,7 @@ status: enriched
 
 # LogViewer
 
-> 日志查看器 · 数据驱动行 lines(level/message/timestamp/source) + info/warn/error/debug/success 级别着色(纯函数 levelClass 可测) + autoScroll 新行贴底(复用 Conversation 法) + showTimestamp + wrap 折行/横滚 · 区别 Terminal mockup·真·流式输出 · data-display/collection
+> 按级别着色展示日志行，新行自动贴底 · data-display/collection
 
 ## 何时用
 
@@ -25,13 +25,13 @@ import { LogViewer, levelClass } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| lines* | `LogLine[]` | — | 日志行（数据驱动） |
+| lines* | `LogLine[]` | - | 日志行（数据驱动） |
 | showTimestamp | `boolean` | `false` | 显示每行时间戳（渲染在行首） |
 | autoScroll | `boolean` | `true` | 新行**黏底**跟随：只在用户本就停在底部时才滚。上滚看历史即暂停跟随，滚回底部自动恢复 |
-| maxLines | `number` | — | 只渲染最后 N 行（0 / 不传 = 不截）。长流护栏，截断只发生在渲染层，`lines` 原数组不动 |
+| maxLines | `number` | - | 只渲染最后 N 行（0 / 不传 = 不截）。长流护栏，截断只发生在渲染层，`lines` 原数组不动 |
 | wrap | `boolean` | `false` | 长行折行；false 时长行横向滚动 |
 | height | `number \| string` | `320` | 滚动区高度 |
-| className | `string` | — | 自定义类 |
+| className | `string` | - | 自定义类 |
 
 `LogLine`：`{ level?: LogLevel; message: ReactNode; timestamp?: string; source?: string }`。
 `LogLevel`：`"info"｜"warn"｜"error"｜"debug"｜"success"｜"command"`（默认 `info`；`command` 高亮被执行的命令/提示符行；`source` 如 `"[build]"` 弱化渲染在 message 前）。

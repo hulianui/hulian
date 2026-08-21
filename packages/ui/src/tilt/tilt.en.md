@@ -32,9 +32,9 @@ import { Tilt } from "@hulianui/ui"
 | tiltEnable | `boolean` | `true` | Master enable switch. |
 | maxAngleX / maxAngleY | `number` | `12` | Maximum rotation around each axis, in degrees. |
 | reverse | `boolean` | `false` | Reverses the tilt direction. |
-| axis | `"x" \| "y"` | — | Restricts tilt to one axis. |
+| axis | `"x" \| "y"` | - | Restricts tilt to one axis. |
 | initialAngleX / initialAngleY | `number` | `0` | Resting angles used while the component is not being driven. |
-| manualAngleX / manualAngleY | `number \| null` | — | Manually controls an axis from a slider, joystick, or scroll position. `null` or omission leaves that axis under pointer control. |
+| manualAngleX / manualAngleY | `number \| null` | - | Manually controls an axis from a slider, joystick, or scroll position. `null` or omission leaves that axis under pointer control. |
 | scale | `number` | `1` | Hover scale multiplier. |
 | perspective | `number` | `1000` | Perspective distance in pixels. Smaller values produce a stronger effect. |
 | transitionSpeed | `number` | `300` | Transition duration in milliseconds. |
@@ -46,8 +46,8 @@ import { Tilt } from "@hulianui/ui"
 | glareMaxOpacity | `number` | `0.35` | Maximum glare opacity. |
 | glareColor | `string` | `"#ffffff"` | Glare color. |
 | glareReverse | `boolean` | `false` | Reverses the glare direction. |
-| glareBorderRadius | `string` | — | Border radius for the glare layer. Match the wrapped content. |
-| onTiltMove / onTiltEnter / onTiltLeave | callbacks | — | Reports per-frame angles and glare, pointer entry, and pointer leave. |
+| glareBorderRadius | `string` | - | Border radius for the glare layer. Match the wrapped content. |
+| onTiltMove / onTiltEnter / onTiltLeave | callbacks | - | Reports per-frame angles and glare, pointer entry, and pointer leave. |
 
 ### Exported pure functions
 

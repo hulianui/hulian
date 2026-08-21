@@ -10,7 +10,7 @@ status: enriched
 
 # ColorPicker
 
-> 颜色选择 · react-colorful 内核 + HEX/RGB/HSL 多格式输出与切换器(零依赖派生) + 瑚琏 token 皮肤 · forms/advanced
+> 拖取饱和度与色相选颜色，可输出 HEX、RGB 或 HSL · forms/advanced
 
 ## 何时用
 
@@ -25,14 +25,14 @@ import { ColorPicker, parseColor, rgbToHex, rgbToHsl, formatColor } from "@hulia
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string` | — | 受控颜色值。接受 hex / rgb() / hsl() 串，内部统一规范为 hex 作单一真源 |
+| value | `string` | - | 受控颜色值。接受 hex / rgb() / hsl() 串，内部统一规范为 hex 作单一真源 |
 | defaultValue | `string` | `"#3b82f6"` | 非受控初值 |
-| format | `"hex" \| "rgb" \| "hsl"` | — | 受控的输出/展示格式，传入即进入格式受控模式 |
+| format | `"hex" \| "rgb" \| "hsl"` | - | 受控的输出/展示格式，传入即进入格式受控模式 |
 | defaultFormat | `"hex" \| "rgb" \| "hsl"` | `"hex"` | 非受控初始格式 |
 | disabled | `boolean` | `false` | 禁用：罩层 + 屏蔽交互 |
 | showInput | `boolean` | `true` | 是否显示文本输入 |
 | showFormatSwitcher | `boolean` | `true` | 是否显示 HEX/RGB/HSL 格式切换器 |
-| className | `string` | — | 透传到外壳 |
+| className | `string` | - | 透传到外壳 |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # RouteTabs
 
-> 路由页签条 · 中后台多标签工作区(右键关闭其他/左侧/右侧/全部/刷新 + 固定页签 + 拖拽调序 + 激活项滚入视口 + 溢出滚动) · 完全受控 · navigation/inpage
+> 把打开过的页面排成一条页签，支持固定、调序和批量关闭 · navigation/inpage
 
 ## 何时用
 
@@ -29,21 +29,21 @@ import { RouteTabs } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items* | `RouteTabItem[]` | — | 页签列表。**组件不持有它**，增删由你在回调里做 |
-| activeKey | `string` | — | 当前激活页签 |
+| items* | `RouteTabItem[]` | - | 页签列表。**组件不持有它**，增删由你在回调里做 |
+| activeKey | `string` | - | 当前激活页签 |
 | actions | `RouteTabsAction[]` | 全部 | 右键菜单开放哪些动作 |
-| extraMenuItems | `{ key, label, disabled? }[]` | — | 追加的自定义菜单项（排在内置动作之后） |
+| extraMenuItems | `{ key, label, disabled? }[]` | - | 追加的自定义菜单项（排在内置动作之后） |
 | sortable | `boolean` | `false` | 允许拖拽调序，须配 `onReorder` |
 | disableAutoScroll | `boolean` | `false` | 关掉「激活页签自动滚入视口」 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 `RouteTabItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| key * | `string` | — | 唯一键，也是 `activeKey` 的取值 |
-| label * | `ReactNode` | — | 页签文案 |
-| icon | `ReactNode` | — | 标签前的小图标 |
+| key * | `string` | - | 唯一键，也是 `activeKey` 的取值 |
+| label * | `ReactNode` | - | 页签文案 |
+| icon | `ReactNode` | - | 标签前的小图标 |
 | closable | `boolean` | 见下 | 是否可关闭。默认规则：`pinned` 的恒不可关；其余在「可关闭页签数 > 1」时可关（关到只剩一个就停手，免得内容区空白） |
 | pinned | `boolean` | `false` | 固定页签：恒不可关、排在最前，且不受「关闭其他 / 全部」影响 |
 
@@ -51,8 +51,8 @@ import { RouteTabs } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| key * | `string` | — | 菜单项键，回调里据此分辨 |
-| label * | `ReactNode` | — | 菜单项文案 |
+| key * | `string` | - | 菜单项键，回调里据此分辨 |
+| label * | `ReactNode` | - | 菜单项文案 |
 | disabled | `boolean` | `false` | 置灰不可点 |
 
 `RouteTabsAction`：`"close" | "closeOthers" | "closeLeft" | "closeRight" | "closeAll" | "refresh"`。

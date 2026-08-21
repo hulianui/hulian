@@ -32,8 +32,8 @@ import { ShapeGrid } from "@hulianui/ui"
 | hoverFillColor | `string` | `var(--color-primary)` | 悬停时单元填充色，淡入/淡出缓动 |
 | shape | `"square"｜"circle"｜"triangle"｜"hexagon"` | `"square"` | 单元形状 |
 | hoverTrailAmount | `number` | `0` | 悬停拖尾长度（保留多少历史单元渐隐），0 = 无拖尾 |
-| className | `string` | — | 透传到根 canvas |
-| style | `CSSProperties` | — | 透传到根 canvas 的内联样式 |
+| className | `string` | - | 透传到根 canvas |
+| style | `CSSProperties` | - | 透传到根 canvas 的内联样式 |
 
 ## 示例
 ```tsx

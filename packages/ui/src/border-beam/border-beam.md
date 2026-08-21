@@ -31,10 +31,10 @@ import { BorderBeam } from "@hulianui/ui"
 | colorFrom | `string` | `var(--color-primary)` | 光束起色 |
 | colorTo | `string` | `var(--color-chart-2)` | 光束止色 |
 | reverse | `boolean` | `false` | 反向绕行 |
-| initialOffset | `number` | `0` | 起始偏移 0–100 |
+| initialOffset | `number` | `0` | 起始偏移 0-100 |
 | borderWidth | `number` | `1` | 边框宽度 px |
-| className | `string` | — | 透传 className |
-| style | `CSSProperties` | — | 透传内联样式 |
+| className | `string` | - | 透传 className |
+| style | `CSSProperties` | - | 透传内联样式 |
 
 ## 示例
 

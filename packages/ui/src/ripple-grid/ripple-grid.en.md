@@ -33,11 +33,11 @@ import { RippleGrid } from "@hulianui/ui"
 | fadeDistance | `number` | `1.5` | The distance from the center to the surroundings fades out exponentially. The larger the distance, the more focused the center is. |
 | vignetteStrength | `number` | `2` | Vignette strength, 0 = no vignetting |
 | glowIntensity | `number` | `0.1` | Grid line luminous intensity, 0 = no glow |
-| opacity | `number` | `1` | Overall opacity (0–1) |
+| opacity | `number` | `1` | Overall opacity (0-1) |
 | gridRotation | `number` | `0` | Grid rotation angle (degrees), 45 = diamond grid |
 | mouseInteraction | `boolean` | `true` | An extra circle of ripples is caused at the pointer |
 | mouseInteractionRadius | `number` | `1` | Mouse ripple influence radius |
-| className | `string` | — | Passthrough to the root container (or fallback div) |
+| className | `string` | - | Passthrough to the root container (or fallback div) |
 
 ## Slots
 

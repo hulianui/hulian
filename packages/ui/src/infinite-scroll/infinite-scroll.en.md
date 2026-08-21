@@ -10,7 +10,7 @@ status: enriched
 
 # InfiniteScroll
 
-> IntersectionObserver-based incremental loading with scroll-ancestor detection, a re-entry lock, and a completed state.
+> Loads additional content near the viewport boundary with pending and terminal states.
 
 ## When to use
 
@@ -25,9 +25,9 @@ import { InfiniteScroll } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| hasMore* | `boolean` | — | Whether more data exists; false stops observation and shows the finished content. |
+| hasMore* | `boolean` | - | Whether more data exists; false stops observation and shows the finished content. |
 | threshold | `number` | `100` | Distance in pixels before the bottom that triggers loading through `rootMargin`. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Events
 

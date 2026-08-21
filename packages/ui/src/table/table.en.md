@@ -30,45 +30,45 @@ import {
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| columns* | `ColumnDef<TData, any>[]` | — | TanStack column definitions, including accessor, header, cell, and metadata. |
-| data* | `TData[]` | — | Row data. |
+| columns* | `ColumnDef<TData, any>[]` | - | TanStack column definitions, including accessor, header, cell, and metadata. |
+| data* | `TData[]` | - | Row data. |
 | enableSorting | `boolean` | `true` | Disables sortable headers, arrows, and `aria-sort` when false. |
-| sorting | `SortingState` | — | Controlled sorting; omission uses internal state. |
+| sorting | `SortingState` | - | Controlled sorting; omission uses internal state. |
 | striped | `boolean` | `true` | Applies alternating row backgrounds. |
 | bordered | `boolean` | `true` | Adds outer border and radius; disable inside ProTable to avoid a double border. |
 | density | `"default" \| "middle" \| "compact"` | `"default"` | Cell padding density. |
 | getRowId | `(row: TData, index: number) => string` | By index | Stable row key. |
-| rowClassName | `(row: TData, index: number) => string \| undefined` | — | Additional row class merged with stripe and selection classes. |
-| cellClassName | `(ctx) => string \| undefined` | — | Additional **cell** class landing on the `<td>` itself, the equivalent of the el-table `cell-class-name` and the antd `column.onCell`. `ctx` is `{ row, rowIndex, rows, columnId, columnIndex, value }`, the same shape as `cellSpan`. Use it to colour cells by value, where one column paints a different background per row. Wrapping a coloured box inside `ColumnDef.cell` cannot do this: the cell padding still shows the stripe or pinned-column background underneath. Merged with the existing cell classes, never replacing them. |
+| rowClassName | `(row: TData, index: number) => string \| undefined` | - | Additional row class merged with stripe and selection classes. |
+| cellClassName | `(ctx) => string \| undefined` | - | Additional **cell** class landing on the `<td>` itself, the equivalent of the el-table `cell-class-name` and the antd `column.onCell`. `ctx` is `{ row, rowIndex, rows, columnId, columnIndex, value }`, the same shape as `cellSpan`. Use it to colour cells by value, where one column paints a different background per row. Wrapping a coloured box inside `ColumnDef.cell` cannot do this: the cell padding still shows the stripe or pinned-column background underneath. Merged with the existing cell classes, never replacing them. |
 | layout | `"auto" \| "fixed"` | `"auto"` | Auto sizes only explicitly constrained columns; fixed emits every TanStack width and sums table width. |
 | resizable | `boolean` | `false` | Enables header-edge resizing and double-click reset, forcing fixed layout. |
-| columnSizing | `ColumnSizingState` | — | Controlled column widths by column id. |
+| columnSizing | `ColumnSizingState` | - | Controlled column widths by column id. |
 | onRowClick | `(row: TData, index: number) => void` | Off | Makes rows pointer- and keyboard-activatable while isolating embedded controls. |
 | rowHref | `(row: TData, index: number) => string \| undefined` | Off | Declarative full-page row navigation, with modifier-click opening a new tab. |
 | onRowDoubleClick | `(row: TData, index: number) => void` | Off | Independent double-click action with embedded-control isolation. |
 | enableRowSelection | `boolean \| ((row: Row<TData>) => boolean)` | Off | Adds a checkbox column and optional per-row eligibility. |
-| rowSelection | `RowSelectionState` | — | Controlled selection state. |
-| getRowCanExpand | `(row: Row<TData>) => boolean` | — | Limits expandable rows. |
-| getSubRows | `(row: TData) => TData[] \| undefined` | — | Enables a tree with indentation by depth. |
+| rowSelection | `RowSelectionState` | - | Controlled selection state. |
+| getRowCanExpand | `(row: Row<TData>) => boolean` | - | Limits expandable rows. |
+| getSubRows | `(row: TData) => TData[] \| undefined` | - | Enables a tree with indentation by depth. |
 | indent | `number` | `16` | Tree and detail indentation per level in pixels. |
-| expanded | `ExpandedState` | — | Controlled state shared by tree and detail expansion. |
-| columnFilters | `ColumnFiltersState` | — | Controlled column filters. |
+| expanded | `ExpandedState` | - | Controlled state shared by tree and detail expansion. |
+| columnFilters | `ColumnFiltersState` | - | Controlled column filters. |
 | filterPlacement | `"header" \| "row"` | `"header"` | Where filter controls live. `header` keeps them inside the header cell, next to the column name and the sort button; `row` moves them to a dedicated `<tr>` below the header row, so the header keeps its single-row height and the controls line up with the leaf columns even under grouped headers. The row is not rendered when no column is filterable. |
 | rowDraggable | `boolean` | `false` | Enables dnd-kit row sorting; data remains controlled and the result is returned by `onRowDragEnd`. |
 | dragHandle | `"row" \| "cell"` | `"cell"` | Uses the entire row or a prepended handle cell. |
 | getRowCanDrag | `(row: TData, index: number) => boolean` | All rows | Disables dragging and drop targeting per row; nested rows are always disabled. |
-| cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | — | Cell merging, the equivalent of the el-table `:span-method`. The callback runs per cell and is **not called for cells covered by an earlier span**. `ctx` is `{ row, rowIndex, rows, columnId, columnIndex, value }`, where `rowIndex` follows render order (after sorting and filtering) and `rows` is ordered the same way. It cannot be combined with `virtual` or `renderExpandedRow`; those combinations skip merging and warn in development. |
+| cellSpan | `(ctx) => { rowSpan?, colSpan? } \| void` | - | Cell merging, the equivalent of the el-table `:span-method`. The callback runs per cell and is **not called for cells covered by an earlier span**. `ctx` is `{ row, rowIndex, rows, columnId, columnIndex, value }`, where `rowIndex` follows render order (after sorting and filtering) and `rows` is ordered the same way. It cannot be combined with `virtual` or `renderExpandedRow`; those combinations skip merging and warn in development. |
 | stickyHeader | `boolean \| "self" \| "scrollParent"` | `false` | Pins the header row, independently of `virtual`. `true` / `"self"` pins it against **the table's own scroll area** and therefore **requires `maxHeight`**: without a height constraint the shell never scrolls, so a sticky header has no scrolling ancestor to anchor to, and the component warns in development. `"scrollParent"` pins it against **an outer scroll container** (the page or a layout content area); the table itself no longer scrolls, and the shell consequently **loses `overflow-x-auto`** (see Usage notes). |
 | stickyHeaderOffset | `number \| string` | `0` | Offset of the pinned header (numbers are pixels), emitted as the `top` of `<thead>`, so it can clear a fixed page header: `stickyHeaderOffset={56}`. Applies to both modes. |
-| maxHeight | `number \| string` | — | Maximum height of the scroll area (numbers are pixels). It is what makes the shell scroll vertically; when `virtual` is enabled, `virtual.height` wins. |
-| minWidth | `number \| string` | — | Minimum width of the `<table>` element itself. A `min-w-*` class in `className` pins the scroll shell instead, which stops the horizontal scrollbar from ever appearing and leaves off-screen columns clipped and unreachable. |
-| cellAlign | `"left" \| "center" \| "right"` | — | **Table-level default** for horizontal cell alignment (#292); `meta.align` overrides it per column. Unset keeps the historical default (left). Alignment is a whole-table decision — per-column `meta.align` cannot express "this table is centered", and the column you forget is the visual crack. |
-| headerAlign | `"left" \| "center" \| "right"` | — | **Table-level default** for header alignment (#292); unset follows `cellAlign`, while `meta.headerAlign` / `meta.align` still win per column. Setting it explicitly also overrides the "group headers are always centered" fallback for columns spanning several leaves. |
+| maxHeight | `number \| string` | - | Maximum height of the scroll area (numbers are pixels). It is what makes the shell scroll vertically; when `virtual` is enabled, `virtual.height` wins. |
+| minWidth | `number \| string` | - | Minimum width of the `<table>` element itself. A `min-w-*` class in `className` pins the scroll shell instead, which stops the horizontal scrollbar from ever appearing and leaves off-screen columns clipped and unreachable. |
+| cellAlign | `"left" \| "center" \| "right"` | - | **Table-level default** for horizontal cell alignment (#292); `meta.align` overrides it per column. Unset keeps the historical default (left). Alignment is a whole-table decision: per-column `meta.align` cannot express "this table is centered", and the column you forget is the visual crack. |
+| headerAlign | `"left" \| "center" \| "right"` | - | **Table-level default** for header alignment (#292); unset follows `cellAlign`, while `meta.headerAlign` / `meta.align` still win per column. Setting it explicitly also overrides the "group headers are always centered" fallback for columns spanning several leaves. |
 | cellVerticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | Table-level default for cell vertical alignment; `meta.verticalAlign` overrides it per column. |
-| cellWhitespace | `"nowrap" \| "normal" \| "pre-wrap"` | — | Table-level default wrapping strategy; `meta.whitespace` overrides it per column. The usual shape is table-level `nowrap` plus a few `normal` columns. |
+| cellWhitespace | `"nowrap" \| "normal" \| "pre-wrap"` | - | Table-level default wrapping strategy; `meta.whitespace` overrides it per column. The usual shape is table-level `nowrap` plus a few `normal` columns. |
 | virtual | `VirtualOptions` | Off | Optional virtualization: `{ enabled; rowHeight?=44; height?=480; overscan?=8 }`. |
 | stickyScrollbar | `boolean` | `false` | Floating horizontal scrollbar. When a wide table is taller than the viewport, a proxy scrollbar stays pinned to the bottom of the viewport so the table can be scrolled sideways without first scrolling to its last row. It appears only while the content actually overflows and the bottom edge of the table is below the fold, and it hides again once the real scrollbar comes into view. Works alongside pinned columns; **it has no effect when `virtual` or `maxHeight` is set**, because the shell is then a fixed-height scroll container that already shows its own horizontal scrollbar. ⚠️ Enabling it wraps the table in one extra `div`, because a `position: sticky` proxy has to be a sibling of the scroll container. `className` still lands on the inner scroll container, so in a flex or grid parent the wrapper is the item, not the container. |
-| className | `string` | — | Root class name. |
+| className | `string` | - | Root class name. |
 
 ## Events
 
@@ -96,14 +96,14 @@ Additional `ColumnDef.meta` fields:
 | meta | Type | Description | Element Plus equivalent |
 |------|------|------|------|
 | sticky | `"left" \| "right"` | Pins a column and computes its offset. | `fixed` |
-| filterable | `boolean` | Renders a built-in text filter in the header. | — |
+| filterable | `boolean` | Renders a built-in text filter in the header. | - |
 | filterRender | `(ctx) => ReactNode` | Replaces the filter control for this column, so enum columns get a select, date columns get a date control and numeric columns get a range. `ctx` is `{ value, setValue, column }`; call `setValue(undefined)` to clear this column's filter. **Setting it already makes the column filterable**, so `filterable` is not needed as well. The accessible name of your control is yours to provide. | `filters` or a custom header (antd calls this `filterDropdown`) |
 | align | `"left" \| "center" \| "right"` | Horizontal cell alignment. | `align` |
 | headerAlign | `"left" \| "center" \| "right"` | Header alignment, otherwise following `align`. | `header-align` |
 | ellipsis | `boolean` | Truncates overflow and shows the full raw value in a tooltip. | `show-overflow-tooltip` |
-| verticalAlign | `"top" \| "middle" \| "bottom"` | Vertical alignment of the cell; header cells stay `middle`. A column that wraps almost always wants `top`. | — |
-| whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | Wrapping strategy. `pre-wrap` keeps the author's line breaks and spaces and adds `break-words`. Mutually exclusive with `ellipsis`, which requires a single line. | — |
-| lockVisible | `boolean` | Locks visibility: the column cannot be switched off from the [ProTable](../pro-table/pro-table.md) column-setting popover (its checkbox is checked and disabled), and a controlled `columnVisibility` entry of `false` does not apply to it either. Identity and action columns are the typical case. | — |
+| verticalAlign | `"top" \| "middle" \| "bottom"` | Vertical alignment of the cell; header cells stay `middle`. A column that wraps almost always wants `top`. | - |
+| whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | Wrapping strategy. `pre-wrap` keeps the author's line breaks and spaces and adds `break-words`. Mutually exclusive with `ellipsis`, which requires a single line. | - |
+| lockVisible | `boolean` | Locks visibility: the column cannot be switched off from the [ProTable](../pro-table/pro-table.md) column-setting popover (its checkbox is checked and disabled), and a controlled `columnVisibility` entry of `false` does not apply to it either. Identity and action columns are the typical case. | - |
 
 Column geometry uses TanStack `ColumnDef.size`, `minSize`, and `maxSize` directly. Headers and cells receive matching inline width styles without a `<colgroup>`.
 
@@ -127,12 +127,12 @@ so this is not a second look-alike system.
 | striped | `boolean` | `false` | Alternating backgrounds on `TableBody` rows only. The default is **the opposite** of the high-level `Table`: hand-written structures often contain full-width attached rows or merged cells, so "every other `<tr>`" no longer matches "every other record". |
 | bordered | `boolean` | `true` | Outer border and radius; disable it inside a card to avoid a double border. |
 | layout | `"auto" \| "fixed"` | `"auto"` | `table-layout`. |
-| minWidth | `number \| string` | — | Minimum width of the `<table>` element itself. `className` lands on the scroll shell, where `min-w-*` would stop the horizontal scrollbar from ever appearing. |
-| tableClassName | `string` | — | Class name for the `<table>` element. |
-| cellWhitespace | `"nowrap" \| "normal" \| "pre-wrap"` | — | Table-level wrapping policy (#285), passed down to `TableCell` through context; same name and meaning as `cellWhitespace` on the high-level `Table`. Unset means the browser default (wrap). The typical shape is "table-level `nowrap` plus a few `TableCell whitespace="normal"`"; `TableHead` is unaffected and never wraps. |
-| cellAlign | `"left" \| "center" \| "right"` | — | Table-level horizontal cell alignment (#292), passed down to `TableCell` through context; same name and meaning as `cellAlign` on the high-level `Table`. Unset means `left`; a per-cell `TableCell align` still wins. |
-| headerAlign | `"left" \| "center" \| "right"` | — | Table-level header alignment (#292), passed down to `TableHead`; unset follows `cellAlign`, and a per-cell `TableHead align` still wins. |
-| ref | `Ref<HTMLDivElement>` | — | The **outer scroll container** (the `overflow-x-auto` layer). Horizontal scroll state exists only there. |
+| minWidth | `number \| string` | - | Minimum width of the `<table>` element itself. `className` lands on the scroll shell, where `min-w-*` would stop the horizontal scrollbar from ever appearing. |
+| tableClassName | `string` | - | Class name for the `<table>` element. |
+| cellWhitespace | `"nowrap" \| "normal" \| "pre-wrap"` | - | Table-level wrapping policy (#285), passed down to `TableCell` through context; same name and meaning as `cellWhitespace` on the high-level `Table`. Unset means the browser default (wrap). The typical shape is "table-level `nowrap` plus a few `TableCell whitespace="normal"`"; `TableHead` is unaffected and never wraps. |
+| cellAlign | `"left" \| "center" \| "right"` | - | Table-level horizontal cell alignment (#292), passed down to `TableCell` through context; same name and meaning as `cellAlign` on the high-level `Table`. Unset means `left`; a per-cell `TableCell align` still wins. |
+| headerAlign | `"left" \| "center" \| "right"` | - | Table-level header alignment (#292), passed down to `TableHead`; unset follows `cellAlign`, and a per-cell `TableHead align` still wins. |
+| ref | `Ref<HTMLDivElement>` | - | The **outer scroll container** (the `overflow-x-auto` layer). Horizontal scroll state exists only there. |
 
 `TableHeader`, `TableBody`, and `TableFooter` accept the native `<thead>`, `<tbody>`, and `<tfoot>` attributes, plus a `ref`.
 
@@ -151,14 +151,14 @@ const scroller = useRef<HTMLDivElement>(null)
 | selected | `boolean` | `false` | `TableRow`: selected state (accent background plus `data-selected`, the same skin as a selected row in the high-level `Table`). |
 | align | `"left" \| "center" \| "right"` | `"left"` | `TableHead` and `TableCell`: horizontal alignment, applied as a class rather than the deprecated HTML `align` attribute. Unset follows `TableRoot`'s `headerAlign` / `cellAlign` (#292). |
 | verticalAlign | `"top" \| "middle" \| "bottom"` | `"middle"` | `TableCell`: vertical alignment. |
-| whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | — | `TableCell`: per-cell wrapping policy (#285) that overrides `TableRoot`'s `cellWhitespace`; same as the column-level `meta.whitespace` on the high-level `Table`. `pre-wrap` / `normal` also apply `break-words`. |
-| width | `number \| string` | — | `TableHead` / `TableCell`: width, applied as `style.width` (numbers are px, strings are passed through) (#286). Use it when the column width is **data** (field configuration, user-editable) instead of writing `style` in product code — `@hulianui/guard`'s no-style-override rejects that, dynamic `w-[${px}px]` classes are never compiled by Tailwind, and `<col>` is only reliable under `layout="fixed"` and cannot express `maxWidth`. |
-| minWidth | `number \| string` | — | `TableHead` / `TableCell`: lower bound, applied as `style.minWidth`. |
-| maxWidth | `number \| string` | — | `TableHead` / `TableCell`: upper bound, applied as `style.maxWidth`. `truncate` needs it to cap the column; otherwise auto layout lets content widen the column and the ellipsis never appears. The three mirror `size` / `minSize` / `maxSize` on the high-level `Table`; an explicit `style` on the element still passes through and wins. |
-| ref | `Ref<HTMLTableRowElement \| HTMLTableCellElement>` | — | Lands on the `tr` / `th` / `td` itself ("scroll to this row", "measure this cell"). |
+| whitespace | `"nowrap" \| "normal" \| "pre-wrap"` | - | `TableCell`: per-cell wrapping policy (#285) that overrides `TableRoot`'s `cellWhitespace`; same as the column-level `meta.whitespace` on the high-level `Table`. `pre-wrap` / `normal` also apply `break-words`. |
+| width | `number \| string` | - | `TableHead` / `TableCell`: width, applied as `style.width` (numbers are px, strings are passed through) (#286). Use it when the column width is **data** (field configuration, user-editable) instead of writing `style` in product code. `@hulianui/guard`'s no-style-override rejects that, dynamic `w-[${px}px]` classes are never compiled by Tailwind, and `<col>` is only reliable under `layout="fixed"` and cannot express `maxWidth`. |
+| minWidth | `number \| string` | - | `TableHead` / `TableCell`: lower bound, applied as `style.minWidth`. |
+| maxWidth | `number \| string` | - | `TableHead` / `TableCell`: upper bound, applied as `style.maxWidth`. `truncate` needs it to cap the column; otherwise auto layout lets content widen the column and the ellipsis never appears. The three mirror `size` / `minSize` / `maxSize` on the high-level `Table`; an explicit `style` on the element still passes through and wins. |
+| ref | `Ref<HTMLTableRowElement \| HTMLTableCellElement>` | - | Lands on the `tr` / `th` / `td` itself ("scroll to this row", "measure this cell"). |
 
 `TableRow` derives its separator, hover, and stripe treatment from the section it sits in. Header rows
-do not hover, do not stripe, and do not take `last:border-0` — a single header row is also the last
+do not hover, do not stripe, and do not take `last:border-0`, because a single header row is also the last
 row, and that rule would erase the bottom border of the header. Product code never has to remember
 this difference.
 
@@ -295,7 +295,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 
 ## Usage notes
 
-- **Memoize `columns`.** TanStack's `flexRender` renders a function `cell` **as a component type**, so a changed identity **unmounts and remounts** the whole cell rather than re-rendering it. On a display-only table that merely burns time; with an input inside the cell it breaks behavior: a controlled input loses focus on every keystroke and the caret jumps to the end, an `onBlur` submit fires on the remount blur and **commits a half-typed value**, and an uncontrolled input snaps back to its `defaultValue` and loses characters. None of those symptoms point at the columns array, so debugging usually starts by blaming the input component. For the same reason, never put a per-keystroke value in the `useMemo` dependencies — that is the same as no memo. Prefer uncontrolled inputs for inline editing.
+- **Memoize `columns`.** TanStack's `flexRender` renders a function `cell` **as a component type**, so a changed identity **unmounts and remounts** the whole cell rather than re-rendering it. On a display-only table that merely burns time; with an input inside the cell it breaks behavior: a controlled input loses focus on every keystroke and the caret jumps to the end, an `onBlur` submit fires on the remount blur and **commits a half-typed value**, and an uncontrolled input snaps back to its `defaultValue` and loses characters. None of those symptoms point at the columns array, so debugging usually starts by blaming the input component. For the same reason, never put a per-keystroke value in the `useMemo` dependencies, since that is the same as no memo. Prefer uncontrolled inputs for inline editing.
 - When forwarding primitive props through a thin wrapper, `Omit` the `align` from `TableHeadProps` and `TableCellProps` the same way they do: those interfaces replace the native `align` (a wider union that includes `justify` and `char`) with `"left" | "center" | "right"`, so extending `ThHTMLAttributes<…>` directly is not assignable.
 - A sticky header needs `stickyHeader` **and** `maxHeight`: sticky positioning requires an ancestor that actually scrolls vertically, and the shell only has `overflow-x-auto` with no height constraint by default. Applying `[&_thead]:sticky` from product code cannot reach it either, because that overflow container sits in between.
 - **"Horizontal scrolling inside the table plus a header pinned to the page" is not an available combination**, and that is a CSS constraint rather than an implementation trade-off: `overflow-x: auto` makes `visible` on the other axis compute to `auto`, so that shell becomes a scrollport itself and anchors the header to it. Measured in Chromium, the header slides straight off as the page scrolls, while the same table under an `overflow: visible` shell stops cleanly at `top: 0`. `stickyHeader="scrollParent"` therefore **drops `overflow-x-auto` from the shell** and leaves horizontal overflow to the outer scroll container; `stickyScrollbar` has nothing to mirror in that mode and is ignored with a warning. Keep `"self"` plus `maxHeight` when the horizontal scroll has to stay inside the table.
@@ -303,17 +303,17 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 - `renderRowExtra` and `footer` return **bare `<tr>` elements**; the component does not wrap them in `<tr><td>`, because wrapping would make "one attached row split into three cells" inexpressible. Always take the `colSpan` of a full-width row from the callback context: `ctx.colSpan` includes the automatically prepended selection, expander, and drag-handle columns, so a value computed from `columns.length` is one to three columns short and leaves a gap on the right.
 - `renderRowExtra` cannot be combined with `cellSpan`, for the same reason as `renderExpandedRow`: attached rows sit between data rows and a vertical span would cross them. The combination skips merging and warns in development.
 - `renderRowExtra` with `virtual` throws off the virtualizer's height estimate, which assumes one `rowHeight` per record when sizing its spacer rows; the symptom is drifting scroll position and blank space at the bottom. The component only warns instead of disabling the slot, because silently dropping the attached rows would be harder to diagnose than the misalignment. When the number of attached rows is fixed, set `virtual.rowHeight` to the combined height of the data row and its attached rows.
-- The primitives have no sorting, pagination, pinned columns, or virtualization — they are only a skin. Go back to the high-level `Table` for those instead of rebuilding them by hand.
+- The primitives have no sorting, pagination, pinned columns, or virtualization. They are only a skin. Go back to the high-level `Table` for those instead of rebuilding them by hand.
 - The primitives default `striped` to `false`, the opposite of the high-level `Table`. Stripes count `<tr>` elements, and hand-written structures with attached or merged rows make that count disagree with the visual grouping of a record. Enable it explicitly once rows really are one record each.
 - Set the minimum width of a wide table through `minWidth`, **never through `className`**: `className` lands on the scroll shell, so `min-w-*` stops the container from shrinking, `scrollWidth` equals `clientWidth`, the horizontal scrollbar never appears, and off-screen columns are clipped and unreachable. A wide browser window hides the problem entirely.
-- `meta.whitespace` and `meta.ellipsis` are two mutually exclusive routes, because truncation requires a single line. For a review-style table that must wrap rather than truncate, combine `whitespace: "normal"`, `maxSize` for the width cap, and `verticalAlign: "top"` — without top alignment the short cells in the row float on the middle line and no longer line up with the first line of the long ones.
+- `meta.whitespace` and `meta.ellipsis` are two mutually exclusive routes, because truncation requires a single line. For a review-style table that must wrap rather than truncate, combine `whitespace: "normal"`, `maxSize` for the width cap, and `verticalAlign: "top"`. Without top alignment the short cells in the row float on the middle line and no longer line up with the first line of the long ones.
 - Width styles are emitted only for explicit `size`, `minSize`, or `maxSize`; this avoids TanStack's default size turning every auto-layout column into equal 150 px widths.
 - Ellipsis needs a definite `size`, `maxSize`, or fixed layout. Its tooltip uses the raw string or number, not arbitrary custom-cell content.
 - Sticky offsets sum `getSize()`, so pinned columns are forced to that width; set `size` explicitly and ensure content is wide enough to scroll.
 - Resizing forces fixed layout. If summed widths are narrower than the container, `min-w-full` lets the browser stretch them and no horizontal scroll occurs.
 - The `cellSpan` callback runs **only for cells that are not already covered**, so the "merge while the store matches the previous row" pattern is to return the whole run length at the start of the run (`while (rows[i + n]?.store === rows[i].store) n++`); the following rows are never asked. The el-table `[0, 0]` style is also honored: returning `rowSpan: 0` hides that cell.
 - `cellSpan` receives a `rowIndex` in **render order** (after sorting and filtering), and `rows` is ordered the same way. That is what avoids the classic el-table trap where enabling column sorting shifts the whole merge map: base the decision on the data, never on the original index.
-- `cellClassName` lands on the `<td>` itself and sits **last** in the class string, so a background or text colour it returns wins over the stripe and pinned-column colours — which is exactly what full-cell colouring needs. Do not return a `bg-*` class on a pinned column unless you mean to replace its opaque background. The callback also runs for the built-in leading columns (`__select__`, `__expander__`, `__drag__`); skip them via `ctx.columnId`.
+- `cellClassName` lands on the `<td>` itself and sits **last** in the class string, so a background or text colour it returns wins over the stripe and pinned-column colours, which is exactly what full-cell colouring needs. Do not return a `bg-*` class on a pinned column unless you mean to replace its opaque background. The callback also runs for the built-in leading columns (`__select__`, `__expander__`, `__drag__`); skip them via `ctx.columnId`.
 - `meta.filterRender` is a **callback, not a component** (the same contract as `ColumnDef.cell`): do not call hooks inside its body, keep state in your own control component. Clear a column filter with `setValue(undefined)`, not with an empty string, which is a valid value meaning "filter by the empty string".
 - `filterPlacement="row"` renders that row as `<td>` cells inside `<thead>` rather than `<th>`: it holds controls, not column names, and header cells would be announced as a second level of column names. The row is not rendered when no column is filterable.
 - `cellSpan` **cannot be combined** with `virtual` or `renderExpandedRow`. Virtualization renders only the visible window, so a vertical span has nowhere to land, and an expanded panel inserts a `<tr>` between data rows that a vertical span would cross. In both cases the component skips merging and warns in development rather than rendering a misaligned table.

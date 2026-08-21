@@ -10,7 +10,7 @@ status: enriched
 
 # EmojiPicker
 
-> Emoji picker · Built-in seven-category dataset with Chinese/English keywords, search, category tabs, controlled or internal recents, and `onSelect` · forms/advanced
+> Searches and selects emoji by category, including a recent-use section. · forms/advanced
 
 ## When to use
 
@@ -30,9 +30,9 @@ import { EmojiPicker, EMOJI_CATEGORIES, ALL_EMOJI } from "@hulianui/ui"
 | columns | `number` | `8` | Number of grid columns |
 | searchable | `boolean` | `true` | Whether to display the search box |
 | defaultCategory | `string` | first category | Initial classification key |
-| recent | `string[]` | — | Controlled "recently used" list; if omitted, the component is maintained internally |
+| recent | `string[]` | - | Controlled "recently used" list; if omitted, the component is maintained internally |
 | searchPlaceholder | `string` | `"\u641c\u7d22\u8868\u60c5"` | Search placeholder; the built-in Chinese copy means “Search emoji.” |
-| className | `string` | — | supports to container |
+| className | `string` | - | supports to container |
 
 ## Events
 

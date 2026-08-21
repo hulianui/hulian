@@ -25,8 +25,8 @@ import { AnimatedList } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| stagger | number | — | 相邻子项入场间隔（秒） |
-| className | string | — | 容器类名 |
+| stagger | number | - | 相邻子项入场间隔（秒） |
+| className | string | - | 容器类名 |
 
 ## Slots
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Android
 
-> Android shell · Hole camera body wraps the screen + RSC · mockups/device
+> Frames content inside an Android phone device mockup. · mockups/device
 
 ## When to Use
 
@@ -27,9 +27,9 @@ Extends `ComponentPropsWithoutRef<"div">`. `ANDROID_MODELS` exports the model-to
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| model | `"pixel-9-pro-xl" \| "pixel-9-pro" \| "pixel-9" \| "galaxy-s24-ultra" \| "galaxy-s24"` | — (`"pixel-9-pro"` in the showcase) | Optional model used to resolve the width; the component itself has no model default |
+| model | `"pixel-9-pro-xl" \| "pixel-9-pro" \| "pixel-9" \| "galaxy-s24-ultra" \| "galaxy-s24"` | - (`"pixel-9-pro"` in the showcase) | Optional model used to resolve the width; the component itself has no model default |
 | width | `number` | Model width, or `280` without a model | Device width in pixels; an explicit value takes precedence over `model` |
-| imageSrc | `string` | — | Screen image URL; takes precedence over `children` |
+| imageSrc | `string` | - | Screen image URL; takes precedence over `children` |
 
 ## Slots
 

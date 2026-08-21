@@ -10,7 +10,7 @@ status: enriched
 
 # Safari
 
-> 浏览器外壳 · 顶栏红绿灯+地址栏包裹截图 + RSC · mockups/window
+> 用 Safari 风格的浏览器窗口包住截图 · mockups/window
 
 ## 何时用
 
@@ -28,8 +28,8 @@ import { Safari } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | url | `string` | `"hulian.design"` | 地址栏文本。 |
-| imageSrc | `string` | — | 内容区图片地址，优先于 children。 |
-| headerExtra | `ReactNode` | — | 顶栏右端的工具入口（分享/下载这类）。不传时该格是让地址胶囊居中的 `w-12` 占位，尺寸逐字节不变；传了就让出该格，宽度下限锁在占位宽。见下方「活内容」 |
+| imageSrc | `string` | - | 内容区图片地址，优先于 children。 |
+| headerExtra | `ReactNode` | - | 顶栏右端的工具入口（分享/下载这类）。不传时该格是让地址胶囊居中的 `w-12` 占位，尺寸逐字节不变；传了就让出该格，宽度下限锁在占位宽。见下方「活内容」 |
 
 ## Slots
 

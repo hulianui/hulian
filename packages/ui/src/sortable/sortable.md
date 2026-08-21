@@ -27,11 +27,11 @@ import { Sortable } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items * | T[] | — | 受控数据数组；拖拽后由你据 onChange 写回 state |
+| items * | T[] | - | 受控数据数组；拖拽后由你据 onChange 写回 state |
 | getId | (item: T) => UniqueIdentifier | 读 `item.id` | 取每项稳定 id，须列表内唯一且稳定 |
 | orientation | `"vertical"｜"horizontal"` | `"vertical"` | 排列方向 |
 | handle | boolean | false | true=仅左侧手柄可拖（触屏体验更稳、抓手更明确）；false=整项可拖。行内交互元素已由组件守卫，两种模式都不会劫持 |
-| className | string | — | 容器类名 |
+| className | string | - | 容器类名 |
 
 ## Events
 

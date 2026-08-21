@@ -10,7 +10,7 @@ status: enriched
 
 # Result
 
-> Result page · Seven states with built-in semantic icons plus title, subtitle, details, and actions, with zero dependencies and RSC support · feedback/message
+> Presents success, error, information, warning, permission, or server outcomes with detail and action slots. · feedback/message
 
 ## When to use
 

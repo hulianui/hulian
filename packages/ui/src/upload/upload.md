@@ -34,22 +34,22 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| accept | `string` | — | 原生 accept（如 `"image/*,.pdf"`）；同时用于落区校验 |
+| accept | `string` | - | 原生 accept（如 `"image/*,.pdf"`）；同时用于落区校验 |
 | multiple | `boolean` | `false` | 是否允许多选 |
 | disabled | `boolean` | `false` | 禁用 |
-| maxSize | `number` | — | 单文件字节上限；超限进 `onReject(reason="size")` |
-| limit | `number` | — | 文件数量上限（按 `files.length` 计）；达标后触发器自动禁用并显示「已选 n/limit」，超额进 `onReject(reason="limit")` |
+| maxSize | `number` | - | 单文件字节上限；超限进 `onReject(reason="size")` |
+| limit | `number` | - | 文件数量上限（按 `files.length` 计）；达标后触发器自动禁用并显示「已选 n/limit」，超额进 `onReject(reason="limit")` |
 | variant | `"dropzone" \| "button"` | `"dropzone"` | 形态：拖拽落区 / 单按钮 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 尺寸档：落区高度 / button 形态的按钮高度（button 形态与 `<Button>` 同名档等高） |
-| name | `string` | — | 内层 `<input type="file">` 的 name。**给了它才是真表单控件**：原生 `<form>` + `new FormData(form)` 读得到文件，`required` 才会被浏览器校验 |
-| required | `boolean` | — | 原生必填校验，透传到内层 input（**需同时给 `name`**）；同时给触发器挂上 sr-only 的「必填」说明 |
-| aria-required | `boolean \| "true" \| "false"` | — | 必填的**语义标记**，通常由 `<Field required>` 自动注入，不用自己传。只开无障碍那一半（触发器上的 sr-only「必填」说明），**不**打开原生 `required` 校验 |
-| inputRef | `Ref<HTMLInputElement>` | — | 拿到内层 input 的引用（自定义校验、手动清空、第三方表单库注册） |
+| name | `string` | - | 内层 `<input type="file">` 的 name。**给了它才是真表单控件**：原生 `<form>` + `new FormData(form)` 读得到文件，`required` 才会被浏览器校验 |
+| required | `boolean` | - | 原生必填校验，透传到内层 input（**需同时给 `name`**）；同时给触发器挂上 sr-only 的「必填」说明 |
+| aria-required | `boolean \| "true" \| "false"` | - | 必填的**语义标记**，通常由 `<Field required>` 自动注入，不用自己传。只开无障碍那一半（触发器上的 sr-only「必填」说明），**不**打开原生 `required` 校验 |
+| inputRef | `Ref<HTMLInputElement>` | - | 拿到内层 input 的引用（自定义校验、手动清空、第三方表单库注册） |
 | resetInputAfterSelect | `boolean` | 无 `name` 时 `true`；有 `name` 时 `false` | 选完是否清空 `input.value`。清了才能重复选同一个文件，清了 FormData 就读不到 |
-| files | `UploadFile[]` | — | 受控展示的文件列表（含状态/进度/url）；不传则不渲染列表 |
-| renderPreview | `(file: UploadFile) => ReactNode` | — | 缩略图渲染钩子；返回节点时列表项左侧变 40px 预览位（状态点降级为角标），返回 `null` 回落默认圆点 |
+| files | `UploadFile[]` | - | 受控展示的文件列表（含状态/进度/url）；不传则不渲染列表 |
+| renderPreview | `(file: UploadFile) => ReactNode` | - | 缩略图渲染钩子；返回节点时列表项左侧变 40px 预览位（状态点降级为角标），返回 `null` 回落默认圆点 |
 | sortable | `boolean` | `false` | 列表可拖拽调序（**需同时传 `onSort` 才生效**） |
-| className | `string` | — | 容器类名 |
+| className | `string` | - | 容器类名 |
 
 ## Events
 
@@ -71,7 +71,7 @@ import { Upload, useUpload, matchesAccept, moveUploadFile } from "@hulianui/ui"
 | children | `ReactNode` | 自定义落区内容（覆盖 label/hint） |
 
 > `UploadFile`：`{ id; name; size?; status?: "ready"\|"uploading"\|"success"\|"error"; progress?; error?; url?; raw? }`
-> · `progress` 仅 `status="uploading"` 时展示进度条 + 百分比（内部 clamp 到 0–100）
+> · `progress` 仅 `status="uploading"` 时展示进度条 + 百分比（内部 clamp 到 0-100）
 > · `url` / `raw` 都是**纯附加字段**，不参与组件内部逻辑，只供 `renderPreview` 与你自己回读；`onSelect` 仍然给 `File[]`，File 语义没被替换
 
 ## useUpload（传输层）
@@ -83,10 +83,10 @@ const up = useUpload({ request, concurrency?, onChange?, onSuccess?, onError? })
 
 | 选项 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| request | `(file, { onProgress, signal }) => Promise<{ url }>` | — | 必填。怎么发由你定；`signal` 请透传给 fetch/XHR |
+| request | `(file, { onProgress, signal }) => Promise<{ url }>` | - | 必填。怎么发由你定；`signal` 请透传给 fetch/XHR |
 | concurrency | `number` | `3` | 并发上限，超出的排队（`0` 会兜到 `1`，不会死锁） |
-| onChange | `(files: UploadFile[]) => void` | — | 任一次 files 变化后回调 |
-| onSuccess / onError | `(file, result \| error) => void` | — | 单个文件落定回调（被 abort 的取消不触发 onError） |
+| onChange | `(files: UploadFile[]) => void` | - | 任一次 files 变化后回调 |
+| onSuccess / onError | `(file, result \| error) => void` | - | 单个文件落定回调（被 abort 的取消不触发 onError） |
 
 | 返回 | 说明 |
 |------|------|

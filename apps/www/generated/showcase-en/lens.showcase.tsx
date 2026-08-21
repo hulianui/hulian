@@ -1,7 +1,8 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Lens } from "../../../../packages/ui/src/lens/lens";
-const IMG = "/demo/photo-lens.jpg";
+import { demoAsset } from "../../../../packages/ui/src/lib/demo-asset";
+const IMG = demoAsset("/demo/photo-lens.jpg");
 function Demo({ zoom = 1.8 }: {
     zoom?: number;
 }) {

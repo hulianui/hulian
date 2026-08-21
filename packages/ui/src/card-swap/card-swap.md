@@ -34,8 +34,8 @@ import { CardSwap } from "@hulianui/ui"
 | skewAmount | `number` | `5` | 卡片倾斜角（deg, skewY）制造纵深；`0` 即正视 |
 | easing | `"elastic" \| "smooth"` | `"elastic"` | 缓动风格；`smooth` 顺滑无回弹更克制 |
 | placement | `"bottom-right" \| "center"` | `"bottom-right"` | 堆叠定位；`bottom-right` 右下锚定外溢（贴边营销），`center` 整摞居中完整可见（画廊/普通容器） |
-| className | `string` | — | 透传根容器类名 |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器类名 |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Events
 

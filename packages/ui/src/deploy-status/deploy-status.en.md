@@ -25,11 +25,11 @@ import { DeployStatus } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| status* | `"queued" \| "building" \| "ready" \| "error" \| "canceled" \| "skipped"` | — | Deployment lifecycle state. |
+| status* | `"queued" \| "building" \| "ready" \| "error" \| "canceled" \| "skipped"` | - | Deployment lifecycle state. |
 | variant | `"badge" \| "dot" \| "icon"` | `"badge"` | Soft badge, dot with text, or icon-only presentation. |
 | size | `"sm" \| "md"` | `"md"` | Component size. |
 | spin | `boolean` | `true` | Spins the building icon. |
-| className | `string` | — | Custom class name. |
+| className | `string` | - | Custom class name. |
 
 ## Slots
 

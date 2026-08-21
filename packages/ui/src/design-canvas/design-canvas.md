@@ -32,11 +32,11 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | items | DesignCanvasItem[] | [] | 受控元素数组（`{ id, x, y, width, height, locked?, label? }`）。画布**托管**这些元素的几何 |
-| zoom | number | — | 缩放受控。传了就以它为准，组件只回吐 `onZoomChange` |
+| zoom | number | - | 缩放受控。传了就以它为准，组件只回吐 `onZoomChange` |
 | defaultZoom | number | 1 | 非受控初始缩放 |
-| pan | { x, y } | — | 平移受控（画布原点在容器内的屏幕像素偏移） |
+| pan | { x, y } | - | 平移受控（画布原点在容器内的屏幕像素偏移） |
 | defaultPan | { x, y } | { x: 0, y: 0 } | 非受控初始平移 |
-| selectedElement | string ｜ null | — | 选中受控（元素 id / 路径） |
+| selectedElement | string ｜ null | - | 选中受控（元素 id / 路径） |
 | defaultSelectedElement | string ｜ null | null | 非受控初始选中 |
 | minZoom | number | 0.1 | 缩放下限 |
 | maxZoom | number | 4 | 缩放上限 |
@@ -46,17 +46,17 @@ import { DesignCanvas, canvasToScreen, itemsBounds, moveRect, normalizeRect, res
 | wheelBehavior | "zoom" ｜ "pan" | "pan" | 无修饰键时的滚轮行为。Ctrl（含触控板捏合）恒为缩放，不受此项影响 |
 | controls | boolean | true | 是否显示右下角缩放工具条 |
 | readOnly | boolean | false | 禁用拖动 / resize / 删除，仍可选中、平移、缩放 |
-| className | string | — | 画布外层类名（须有确定高度，组件填满） |
-| labels | Partial\<DesignCanvasLabels\> | — | 覆盖取自 locale 的文案（canvas / item / zoomIn / zoomOut / fitView / resetView）；不传则跟随 ConfigProvider |
-| apiRef | MutableRefObject\<DesignCanvasApi ｜ null\> | — | 命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas） |
+| className | string | - | 画布外层类名（须有确定高度，组件填满） |
+| labels | Partial\<DesignCanvasLabels\> | - | 覆盖取自 locale 的文案（canvas / item / zoomIn / zoomOut / fitView / resetView）；不传则跟随 ConfigProvider |
+| apiRef | MutableRefObject\<DesignCanvasApi ｜ null\> | - | 命令式句柄（zoomIn / zoomOut / reset / fitView / screenToCanvas） |
 
 `DesignCanvasItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| id * | `string` | — | 唯一键，也是 `selectedElement` 的取值 |
-| x * / y * | `number` | — | 左上角在世界坐标里的位置 |
-| width * / height * | `number` | — | 宽高（世界单位） |
+| id * | `string` | - | 唯一键，也是 `selectedElement` 的取值 |
+| x * / y * | `number` | - | 左上角在世界坐标里的位置 |
+| width * / height * | `number` | - | 宽高（世界单位） |
 | locked | `boolean` | `false` | 锁定：不可拖动、不出 resize 手柄（仍可选中、仍可 Tab 到） |
 | label | `string` | 回退到 `id` | 无障碍名 |
 

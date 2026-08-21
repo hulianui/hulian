@@ -25,8 +25,8 @@ import { Stat } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| delta | `number` | — | 环比百分比，>=0 升(text-primary) / <0 降(text-danger)；不传则不渲染趋势 |
-| …HTMLAttributes | `HTMLAttributes<HTMLDivElement>` | — | 透传 div 原生属性（含 className） |
+| delta | `number` | - | 环比百分比，>=0 升(text-primary) / <0 降(text-danger)；不传则不渲染趋势 |
+| …HTMLAttributes | `HTMLAttributes<HTMLDivElement>` | - | 透传 div 原生属性（含 className） |
 
 ## Slots
 

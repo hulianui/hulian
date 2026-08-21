@@ -32,10 +32,10 @@ import { ScrollVelocity } from "@hulianui/ui"
 | numCopies | `number` | `6` | Copies per row for seamless looping; shorter text requires more copies. |
 | velocityMapping | `{ input: [number, number]; output: [number, number] }` | `{ input: [0,1000], output: [0,5] }` | Scroll speed → acceleration factor mapping (clamp:false allows extrapolation) |
 | scrollContainerRef | `RefObject<HTMLElement \| null>` | window | Custom scroll container; do not pass monitoring window scrolling |
-| className | `string` | — | Transparently transmit the className (font size/color/weight) of each line of text span |
-| containerClassName | `string` | — | Transparently transmit the className of the root section |
-| parallaxStyle | `CSSProperties` | — | Transparently transmit the inline style of the outer (parallax) container of each row |
-| scrollerStyle | `CSSProperties` | — | Transparently transmit the scroll rail (scroller) inline style of each row |
+| className | `string` | - | Transparently transmit the className (font size/color/weight) of each line of text span |
+| containerClassName | `string` | - | Transparently transmit the className of the root section |
+| parallaxStyle | `CSSProperties` | - | Transparently transmit the inline style of the outer (parallax) container of each row |
+| scrollerStyle | `CSSProperties` | - | Transparently transmit the scroll rail (scroller) inline style of each row |
 
 ## Example
 ```tsx

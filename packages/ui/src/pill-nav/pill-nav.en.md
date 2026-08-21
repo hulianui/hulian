@@ -27,19 +27,19 @@ Inherits `Omit<HTMLAttributes<HTMLElement>, "children">` on the root nav.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `PillNavItem[]` | — | `{ href, label, ariaLabel? }` entries rendered as pills. |
-| activeHref | `string` | — | Exact href receiving persistent inversion and the active dot. |
+| items* | `PillNavItem[]` | - | `{ href, label, ariaLabel? }` entries rendered as pills. |
+| activeHref | `string` | - | Exact href receiving persistent inversion and the active dot. |
 | logoHref | `string` | `items[0].href` → `"#"` | Logo destination. |
 | logoAriaLabel | `string` | `"Home"` | Logo accessible label. |
 | initialLoadAnimation | `boolean` | `true` | Initial logo and pill entrance, skipped under reduced motion. |
-| className | `string` | — | Root nav class name. |
+| className | `string` | - | Root nav class name. |
 
 `PillNavItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| href * | `string` | — | Link destination (external http/https/mailto/tel/# or an in-app route; the component only renders an `<a>`). |
-| label * | `string` | — | Displayed text. |
+| href * | `string` | - | Link destination (external http/https/mailto/tel/# or an in-app route; the component only renders an `<a>`). |
+| label * | `string` | - | Displayed text. |
 | ariaLabel | `string` | Falls back to `label` | Accessible label. |
 
 ## Slots

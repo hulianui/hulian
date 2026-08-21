@@ -25,21 +25,21 @@ import { Danmaku, allocateTrack, densityGap, estimateWidth, leastBusyTrack, scro
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `DanmakuItem[]` | — | Controlled append-only stream; unseen ids enter once. |
+| items* | `DanmakuItem[]` | - | Controlled append-only stream; unseen ids enter once. |
 | tracks | `number` | `4` | Scrolling tracks. |
 | speed | `number` | `100` | Speed in pixels per second. |
 | density | `"low" \| "normal" \| "high"` | `"normal"` | Safety gap and overflow pressure. |
 | area | `number` | `1` | Used height ratio from 0 to 1. |
 | opacity | `number` | `1` | Overall opacity. |
 | paused | `boolean` | `false` | Pauses all animations. |
-| className | `string` | — | Container class. |
+| className | `string` | - | Container class. |
 
 `DanmakuItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| id * | `string` | — | Deduplication key: it decides whether an item has already entered, so only unseen ids animate in. |
-| text * | `ReactNode` | — | Comment content. |
+| id * | `string` | - | Deduplication key: it decides whether an item has already entered, so only unseen ids animate in. |
+| text * | `ReactNode` | - | Comment content. |
 | mode | `"scroll" \| "top" \| "bottom"` | `"scroll"` | Scrolling, pinned to the top, or pinned to the bottom. |
 | color | `string` | Inherits the foreground token | Text color. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Font size preset. |

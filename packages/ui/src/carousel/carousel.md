@@ -10,7 +10,7 @@ status: enriched
 
 # Carousel
 
-> 轮播 · 自研零依赖 scroll-snap + 箭头/圆点/autoplay/loop + 拖拽/键盘(reduced-motion) · data-display/collection
+> 轮播多张幻灯片，带箭头、圆点、自动播放和拖拽 · data-display/collection
 
 ## 何时用
 
@@ -27,7 +27,7 @@ import { Carousel } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| current | `number` | — | 受控当前索引(传入即受控) |
+| current | `number` | - | 受控当前索引(传入即受控) |
 | defaultCurrent | `number` | `0` | 非受控初始索引 |
 | autoplay | `boolean` | `false` | 自动播放(reduced-motion 下强制关闭) |
 | autoplayInterval | `number` | `4000` | 自动播放间隔(毫秒) |
@@ -35,7 +35,7 @@ import { Carousel } from "@hulianui/ui"
 | showArrows | `boolean` | `true` | 显示左右切换箭头 |
 | showDots | `boolean` | `true` | 显示圆点指示器 |
 | aria-label | `string` | `"轮播"` | region 无障碍标签 |
-| slideClassName | `string` | — | 每张幻灯片容器的额外类名(如固定高度/圆角) |
+| slideClassName | `string` | - | 每张幻灯片容器的额外类名(如固定高度/圆角) |
 
 ## Events
 

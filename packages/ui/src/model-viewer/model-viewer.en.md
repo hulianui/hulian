@@ -14,7 +14,7 @@ status: enriched
 
 ## When to Use
 
-Use it to place any React node—a product image, card, SVG, or emoji—on a 3D stage with inertial drag rotation, parallax, hover tilt, and a contact shadow. It uses CSS 3D instead of three.js and does not load GLTF or FBX assets. For magnification, use [Lens](../lens/lens.md); for a glare-only hover effect, use [GlareHover](../glare-hover/glare-hover.md).
+Use it to place any React node (a product image, card, SVG, or emoji) on a 3D stage with inertial drag rotation, parallax, hover tilt, and a contact shadow. It uses CSS 3D instead of three.js and does not load GLTF or FBX assets. For magnification, use [Lens](../lens/lens.md); for a glare-only hover effect, use [GlareHover](../glare-hover/glare-hover.md).
 
 ## Import
 ```ts
@@ -37,8 +37,8 @@ import { ModelViewer } from "@hulianui/ui"
 | autoRotateSpeed | `number` | `24` | Rotation angular speed (°/s), only valid for `autoRotate` |
 | showResetButton | `boolean` | `true` | Shows the "Reset Perspective" button in the upper-right corner |
 | showContactShadow | `boolean` | `true` | Shows a soft contact shadow beneath the content |
-| className | `string` | — | Additional class name for the root container |
-| style | `CSSProperties` | — | Inline styles forwarded to the root container |
+| className | `string` | - | Additional class name for the root container |
+| style | `CSSProperties` | - | Inline styles forwarded to the root container |
 
 ## Slots
 

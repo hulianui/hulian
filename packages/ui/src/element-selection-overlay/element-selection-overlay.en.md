@@ -41,18 +41,18 @@ import {
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| target * | HTMLElement \| HTMLIFrameElement \| null | — | Target area: a plain container, or a **same-origin** iframe whose document is taken over. Nothing renders or listens while null. |
+| target * | HTMLElement \| HTMLIFrameElement \| null | - | Target area: a plain container, or a **same-origin** iframe whose document is taken over. Nothing renders or listens while null. |
 | enabled | boolean | true | Selection mode. When false, picking and click interception stop, but an existing selection box stays visible. |
-| highlightSelector | string | — | Selector for selectable elements; the pointer target walks up to its closest match, and nothing highlights without a match. Use it to lock granularity to component level. |
-| ignoreSelector | string | — | Elements matching it (or having a matching ancestor) can be neither hovered nor selected. |
+| highlightSelector | string | - | Selector for selectable elements; the pointer target walks up to its closest match, and nothing highlights without a match. Use it to lock granularity to component level. |
+| ignoreSelector | string | - | Elements matching it (or having a matching ancestor) can be neither hovered nor selected. |
 | showLabel | boolean | true | Shows the label. Only one label exists at a time; hover wins over selection. |
 | pathAttribute | string | "data-hulian-path" | Attribute holding the marked path. |
 | componentAttribute | string | "data-hulian-component" | Attribute holding the component name, used for the label and `detail.component`. |
 | anchorOnId | boolean | true | A structural path stops at the first ancestor carrying an id instead of walking up to the root. |
-| selectedPath | string \| null | — | Controlled selection. Passing it (including null) makes the component controlled and it stops tracking selection itself. |
+| selectedPath | string \| null | - | Controlled selection. Passing it (including null) makes the component controlled and it stops tracking selection itself. |
 | interceptClicks | boolean | true | Swallows clicks inside the target so preview links and buttons do not fire. |
 | zIndex | number | 100 | Overlay z-index. |
-| className | string | — | Class name of the overlay container. |
+| className | string | - | Class name of the overlay container. |
 
 ## Events
 

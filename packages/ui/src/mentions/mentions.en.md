@@ -10,7 +10,7 @@ status: enriched
 
 # Mentions
 
-> Inline mentions · Trigger-aware suggestions for multiline text · Mirrored-caret positioning and `aria-activedescendant` focus · forms/advanced
+> Suggests and inserts mention tokens while the user types structured text. · forms/advanced
 
 ## When to use
 
@@ -25,18 +25,18 @@ import { Mentions, MentionText, type MentionTextProps, findTrigger, insertMentio
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| options* | `MentionOption[]` | — | Suggestions containing `value` and `label`, with optional `description`, `startContent`, and `disabled`. |
-| value | `string` | — | Controlled text value; pair with `onChange`. |
-| defaultValue | `string` | — | Initial text when uncontrolled. |
+| options* | `MentionOption[]` | - | Suggestions containing `value` and `label`, with optional `description`, `startContent`, and `disabled`. |
+| value | `string` | - | Controlled text value; pair with `onChange`. |
+| defaultValue | `string` | - | Initial text when uncontrolled. |
 | prefix | `string` | `"@"` | Trigger, including multi-character values such as `"@@"` or `"#"`. Suggestions open only at the start of a line or after whitespace. |
 | filter | `false \| ((option, query) => boolean)` | Built-in substring match | Pass `false` to disable local filtering and use `onSearch`, or pass a function for custom filtering. The default matches `label` and `value` case-insensitively. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Textarea visual size. |
 | invalid | `boolean` | `false` | Applies invalid styling when used outside Field. |
-| placeholder | `string` | — | Placeholder passed to the textarea. |
+| placeholder | `string` | - | Placeholder passed to the textarea. |
 | rows | `number` | `3` | Row count passed to the textarea. |
 | disabled | `boolean` | `false` | Disables the input. |
-| className | `string` | — | Additional class name for the field container. |
-| popupClassName | `string` | — | Additional class name for the suggestion popup. |
+| className | `string` | - | Additional class name for the field container. |
+| popupClassName | `string` | - | Additional class name for the suggestion popup. |
 
 > Also accepts native Textarea attributes except `size`, `value`, `defaultValue`, `onChange`, `onSelect`, and `prefix`, which use the component-specific contracts above.
 

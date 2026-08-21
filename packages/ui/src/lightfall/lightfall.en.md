@@ -40,7 +40,7 @@ import { Lightfall } from "@hulianui/ui"
 | mouseInteraction | `boolean` | `true` | Enable pointer-local brightening and attraction when pointer input reaches the canvas |
 | mouseStrength | `number` | `0.5` | Strength of the pointer highlight and attraction |
 | mouseRadius | `number` | `1` | Radius of pointer influence in shader space |
-| className | `string` | — | Class name forwarded to the `absolute inset-0 z-0` live or fallback root |
+| className | `string` | - | Class name forwarded to the `absolute inset-0 z-0` live or fallback root |
 
 ## Slots
 

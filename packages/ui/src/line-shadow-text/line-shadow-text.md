@@ -10,11 +10,11 @@ status: enriched
 
 # LineShadowText
 
-> 斜线投影文字 · 硬边条纹偏移层 + 默认静态 + RSC · typography/text
+> 在标题文字背后错开一层硬边条纹投影 · typography/text
 
 ## 何时用
 
-给 2–4 字的品牌词 / 首屏大标题加一层斜向的硬边投影。它是文字特效族里**最克制的一档**：默认不动、无 RAF、纯 CSS，所以打印页、企业官网、`prefers-reduced-motion` 环境都能放心用。
+给 2-4 字的品牌词 / 首屏大标题加一层斜向的硬边投影。它是文字特效族里**最克制的一档**：默认不动、无 RAF、纯 CSS，所以打印页、企业官网、`prefers-reduced-motion` 环境都能放心用。
 
 要流动渐变用 [AuroraText](../aurora-text/aurora-text.md)；要扫光徽标用 [AnimatedShinyText](../animated-shiny-text/animated-shiny-text.md)；要逐字入场用 [SplitText](../split-text/split-text.md)。普通正文用 [Text](../text/text.md)。
 
@@ -29,7 +29,7 @@ import { LineShadowText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| children * | `string` | — | 要加投影的文字。**只接受字符串**：投影层是同一段文字的副本，非文本节点没法复刻 |
+| children * | `string` | - | 要加投影的文字。**只接受字符串**：投影层是同一段文字的副本，非文本节点没法复刻 |
 | shadowColor | `string` | `var(--color-foreground)` | 投影色。喂 token 必须带 `--color-` 前缀，裸 `var(--primary)` 在 Tailwind v4 的 `@theme` 里不解析 |
 | offset | `string` | `"0.04em"` | 投影相对本体的偏移量。用 `em` 所以随字号成比例 |
 | lineWidth | `string` | `"0.06em"` | 斜线的粗细 / 间距。调大变粗条纹，调小接近实心影 |

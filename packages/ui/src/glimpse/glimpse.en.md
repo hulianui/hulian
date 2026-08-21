@@ -10,7 +10,7 @@ status: enriched
 
 # Glimpse
 
-> Link preview · HoverCard restyled as a cover, title, description, and domain preview; renders an external anchor with `href` or an inline span without it · feedback/overlay
+> Displays a compact delayed preview of referenced content near its trigger. · feedback/overlay
 
 ## When to use
 
@@ -25,14 +25,14 @@ import { Glimpse } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| image | `string` | — | Cover image URL. |
-| href | `string` | — | Destination. When present, renders an external-link trigger and shows the domain. |
+| image | `string` | - | Cover image URL. |
+| href | `string` | - | Destination. When present, renders an external-link trigger and shows the domain. |
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"bottom"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | openDelay | `number` | `300` | Opening delay in milliseconds. |
 | closeDelay | `number` | `150` | Closing delay in milliseconds. |
-| className | `string` | — | Trigger class name. |
-| contentClassName | `string` | — | Preview-card class name. |
+| className | `string` | - | Trigger class name. |
+| contentClassName | `string` | - | Preview-card class name. |
 
 ## Slots
 

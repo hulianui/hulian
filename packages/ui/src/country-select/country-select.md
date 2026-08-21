@@ -10,7 +10,7 @@ status: enriched
 
 # CountrySelect
 
-> 国家/地区选择 · 内置 250 国(旗+中英文名+区号) + 单/多选 chips + 中英文/码/区号搜索 · dogfood Combobox(新增多选) · forms/advanced
+> 搜索并选择国家和地区，带旗帜与区号 · forms/advanced
 
 ## 何时用
 
@@ -25,17 +25,17 @@ import { CountrySelect, getCountry, flagEmoji, countrySearchText, filterCountrie
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string \| string[]` | — | 受控值：单选为 ISO2 码字符串；多选为码数组 |
-| defaultValue | `string \| string[]` | — | 非受控初值 |
+| value | `string \| string[]` | - | 受控值：单选为 ISO2 码字符串；多选为码数组 |
+| defaultValue | `string \| string[]` | - | 非受控初值 |
 | multiple | `boolean` | `false` | 多选（chips） |
 | showEnglish | `boolean` | `true` | 选项行是否显示英文名 |
 | showDialCode | `boolean` | `false` | 选项行是否显示国际区号 |
-| placeholder | `string` | — | 触发器占位文案 |
-| searchPlaceholder | `string` | — | 搜索框占位文案 |
+| placeholder | `string` | - | 触发器占位文案 |
+| searchPlaceholder | `string` | - | 搜索框占位文案 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 触发器尺寸 |
 | disabled | `boolean` | `false` | 禁用 |
 | invalid | `boolean` | `false` | 无效态 |
-| className | `string` | — | 透传到触发器 |
+| className | `string` | - | 透传到触发器 |
 
 ## Events
 

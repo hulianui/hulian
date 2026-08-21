@@ -116,12 +116,12 @@ status: enriched
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
-| `children` | `string` | — | LaTeX 源，或含 LaTeX 段落的正文 |
+| `children` | `string` | - | LaTeX 源，或含 LaTeX 段落的正文 |
 | `mode` | `"mixed" \| "math"` | `"mixed"` | `mixed` 认分隔符、只排版分隔符内；`math` 整串都是 LaTeX |
 | `display` | `boolean` | `false` | 块级排版。**仅 `mode="math"` 生效** —— `mixed` 下由各段自己的分隔符决定 |
 | `blankWidth` | `number` | `2.5` | 填空槽（`____`）最小宽度，单位 em |
-| `macros` | `Record<string, string>` | — | 自定义宏，透传给 KaTeX |
-| `className` | `string` | — | — |
+| `macros` | `Record<string, string>` | - | 自定义宏，透传给 KaTeX |
+| `className` | `string` | - | - |
 
 ## 配套纯函数
 

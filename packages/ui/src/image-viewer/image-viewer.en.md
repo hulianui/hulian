@@ -10,7 +10,7 @@ status: enriched
 
 # ImageViewer
 
-> Image viewer · fullscreen controlled lightbox with paging, pointer-anchored wheel zoom, double-click zoom, drag pan, thumbnails, dialog semantics, and scroll locking · data-display/info
+> Opens images in a full-screen viewer with anchored zoom, panning, navigation, and thumbnails. · data-display/info
 
 ## When to use
 
@@ -25,10 +25,10 @@ import { ImageViewer } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| open* | `boolean` | — | Controlled visibility. |
-| images* | `ImageViewerImage[]` | — | `{src, alt?, caption?}` images. |
-| index* | `number` | — | Controlled current image index. |
-| className | `string` | — | Panel class name. |
+| open* | `boolean` | - | Controlled visibility. |
+| images* | `ImageViewerImage[]` | - | `{src, alt?, caption?}` images. |
+| index* | `number` | - | Controlled current image index. |
+| className | `string` | - | Panel class name. |
 
 ## Events
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Treemap
 
-> 矩形树图 · 一组扁平数据按 value 占面积铺满矩形，「谁占大头」一眼可见 · recharts squarify 引擎 + chart token 皮肤 · 格内文字按格子尺寸自动取舍(放不下就不画·treemapLabelFit 纯函数带单测) + onItemClick 钻取 + valueFormat 统管格内与 tooltip · 单层不下钻 · data-display/collection
+> 按数值把矩形铺满，一眼看出谁占大头 · data-display/collection
 
 ## 何时用
 
@@ -27,19 +27,19 @@ import { Treemap } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| data* | `TreemapDatum[]` | — | 扁平数据（单层）`{ name, value, color? }`；面积按 `value` 占总量的比例分配 |
+| data* | `TreemapDatum[]` | - | 扁平数据（单层）`{ name, value, color? }`；面积按 `value` 占总量的比例分配 |
 | height | `number` | `280` | 组件总高（SSR 安全：宽走 ResponsiveContainer，高需显式值） |
 | showValue | `boolean` | `false` | 格子里是否在名字下面加一行数值 |
 | valueFormat | `(value: number) => string` | `String` | 数值显示格式，**同时作用于格内文字与 tooltip**（避免两处各写一套） |
-| onItemClick | `(info: { datum, index }) => void` | — | 点中某一格时回调（钻取：点门店进该店会员列表）。只在格子上触发，点留白不触发 |
-| className | `string` | — | 透传类名（宽度在此设） |
+| onItemClick | `(info: { datum, index }) => void` | - | 点中某一格时回调（钻取：点门店进该店会员列表）。只在格子上触发，点留白不触发 |
+| className | `string` | - | 透传类名（宽度在此设） |
 
 ### TreemapDatum
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| name* | `string` | — | 格内显示的名字，也是 tooltip 的标题 |
-| value* | `number` | — | 决定面积的值 |
+| name* | `string` | - | 格内显示的名字，也是 tooltip 的标题 |
+| value* | `number` | - | 决定面积的值 |
 | color | `string` | 按 index 取 `chart-N` | 格子色；可传语义色名（`"success"` 等）或任意 CSS 颜色 |
 
 ## 示例

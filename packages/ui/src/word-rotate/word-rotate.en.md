@@ -25,7 +25,7 @@ import { WordRotate } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| words* | `string[]` | — | rotated word array |
+| words* | `string[]` | - | rotated word array |
 | duration | `number` | `2500` | milliseconds per word |
 
 Inherit `ComponentPropsWithoutRef<"span">` (except `children` and motion conflict `onDrag`/`onDragStart`/`onDragEnd`/`onAnimationStart`), such as `className` / `style`.

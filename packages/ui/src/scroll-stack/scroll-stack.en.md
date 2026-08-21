@@ -35,14 +35,14 @@ import { ScrollStack, ScrollStackItem } from "@hulianui/ui"
 | baseScale | `number` | `0.85` | Base scale of the first, lowest card. |
 | rotationAmount | `number` | `0` | Rotation increment per stacked layer in degrees. |
 | blurAmount | `number` | `0` | Blur increment for lower cards in pixels; disabled under reduced motion. |
-| className | `string` | — | Class name added to the scroll root. |
-| style | `CSSProperties` | — | Inline styles forwarded to the scroll root. |
+| className | `string` | - | Class name added to the scroll root. |
+| style | `CSSProperties` | - | Inline styles forwarded to the scroll root. |
 
 `ScrollStackItemProps` (`<ScrollStackItem>`, a single card)
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| itemClassName | `string` | — | Custom class name added to the outer element of a single card. |
+| itemClassName | `string` | - | Custom class name added to the outer element of a single card. |
 
 ## Events
 

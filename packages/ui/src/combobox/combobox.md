@@ -10,7 +10,7 @@ status: enriched
 
 # Combobox
 
-> 自动补全 · 触发按钮 + 弹层内搜索(图4 范式)，亦支持内联输入；浮层锚到字段等宽 · forms/advanced
+> 边输入边过滤候选项，可用触发按钮也可内联输入 · forms/advanced
 
 ## 何时用
 
@@ -27,13 +27,13 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| items | `ComboboxItemData[]` | — | 选项数据 `{value,label}`，自动以 label 显示、value 提交 |
-| value | `ComboboxItemData｜ComboboxItemData[]` | — | 受控选中（multiple 时为数组） |
-| defaultValue | 同上 | — | 非受控初始选中 |
+| items | `ComboboxItemData[]` | - | 选项数据 `{value,label}`，自动以 label 显示、value 提交 |
+| value | `ComboboxItemData｜ComboboxItemData[]` | - | 受控选中（multiple 时为数组） |
+| defaultValue | 同上 | - | 非受控初始选中 |
 | multiple | `boolean` | `false` | true 时 value/onValueChange 自动变数组 |
 | virtualized | `boolean` | `items` 长度 ≥ 100 时为 `true` | 列表虚拟化（只渲染视口内的项）。不传时按选项数自动决定，见「禁忌 / 坑」 |
 | creatable | `boolean` | `false` | 自由输入创建新值：当前输入串在候选里没有完全相同的一项时，列表首位多出一条「使用 “xxx”」。见下 |
-| onCreate | `(value: string) => void` | — | 创建项被选中时触发（与 `onValueChange` 同时发生，不是二选一）。见下 |
+| onCreate | `(value: string) => void` | - | 创建项被选中时触发（与 `onValueChange` 同时发生，不是二选一）。见下 |
 | createLabel | `(value: string) => ReactNode` | 全局 locale 的 `combobox.create` | 创建项那一行的文案，单点覆盖。同一个应用里两个 creatable 说的常常不是同一件事 |
 | disabled | `boolean` | `false` | 禁用 |
 
@@ -42,43 +42,43 @@ import { Combobox, ComboboxInput, ComboboxTrigger, ComboboxContent, ComboboxItem
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
-| placeholder | `string` | — | 未选中时占位文案（按钮没有原生 placeholder，这是瑚琏语义） |
+| placeholder | `string` | - | 未选中时占位文案（按钮没有原生 placeholder，这是瑚琏语义） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | showChevron | `boolean` | `true` | 右侧展开箭头。退化成图标钮时传 `false` |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 `ComboboxInput`（内联自动补全：输入框本身即可见字段）。继承原生 `<input>` 属性，剩余属性落到**内层 `<input>`**（不是外壳 span），见「禁忌 / 坑」。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | size | `"sm"｜"md"｜"lg"` | `"md"` | 尺寸 |
-| placeholder | `string` | — | 占位（原生属性，透传到内层 input） |
+| placeholder | `string` | - | 占位（原生属性，透传到内层 input） |
 | invalid | `boolean` | `false` | 手动置无效态皮肤 |
 | clearable | `boolean` | `false` | 有值时渲染清除按钮 |
-| prefix | `ReactNode` | — | 字段左侧图标槽（对齐 `Input.prefix`），搜索框放放大镜 |
+| prefix | `ReactNode` | - | 字段左侧图标槽（对齐 `Input.prefix`），搜索框放放大镜 |
 | showChevron | `boolean` | `true` | 右侧展开箭头；搜索框形态传 `false` |
-| className | `string` | — | 外壳类名（皮肤在外壳上，不随 rest 落到 input） |
+| className | `string` | - | 外壳类名（皮肤在外壳上，不随 rest 落到 input） |
 
 `ComboboxContent`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| searchPlaceholder | `string` | — | 设置后在浮层顶部渲染搜索框（图4 范式，配合 Trigger）；不设则为内联补全态 |
-| side | `"top"｜"bottom"` | — | 浮层方位 |
-| align | `"start"｜"center"｜"end"` | — | 浮层对齐 |
-| sideOffset | `number` | — | 偏移 |
-| onListScroll | `UIEventHandler<HTMLDivElement>` | — | 列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](../remote-select/remote-select.md)） |
-| header | `ReactNode` | — | 列表**上方**常驻表头（用法提示、分组说明、批量操作），不随列表滚动。与 `emptyMessage` 不同：后者只在零结果时出现 |
-| footer | `ReactNode` | — | 列表下方常驻页脚（加载中 / 计数 / 到底提示），不随列表滚动 |
-| className | `string` | — | — |
+| searchPlaceholder | `string` | - | 设置后在浮层顶部渲染搜索框（图4 范式，配合 Trigger）；不设则为内联补全态 |
+| side | `"top"｜"bottom"` | - | 浮层方位 |
+| align | `"start"｜"center"｜"end"` | - | 浮层对齐 |
+| sideOffset | `number` | - | 偏移 |
+| onListScroll | `UIEventHandler<HTMLDivElement>` | - | 列表滚动回调，`e.currentTarget` 即滚动容器（远程分页「滚到底加载更多」用，见 [RemoteSelect](../remote-select/remote-select.md)） |
+| header | `ReactNode` | - | 列表**上方**常驻表头（用法提示、分组说明、批量操作），不随列表滚动。与 `emptyMessage` 不同：后者只在零结果时出现 |
+| footer | `ReactNode` | - | 列表下方常驻页脚（加载中 / 计数 / 到底提示），不随列表滚动 |
+| className | `string` | - | - |
 
 `ComboboxItem`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value * | `ComboboxItemData` | — | 选项 `{value,label}` 对象 |
+| value * | `ComboboxItemData` | - | 选项 `{value,label}` 对象 |
 | disabled | `boolean` | `false` | 禁用该项 |
-| className | `string` | — | — |
+| className | `string` | - | - |
 
 `ComboboxChips`（多选 chips 外壳）：`size`、`invalid`、`placeholder`、`className`（外加 `children` 插槽，见 Slots）。继承原生 `<input>` 属性，剩余属性落到**内层 `<input>`**（chips 容器只是皮肤壳）。
 `ComboboxChip`（单个已选 chip）：`className`（外加 `children` 插槽，见 Slots）。

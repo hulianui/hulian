@@ -10,7 +10,7 @@ status: enriched
 
 # Container
 
-> Content container · Centered max-width presets, horizontal safe padding, polymorphic `as`, zero dependencies, and RSC support · layout/container
+> Constrains type-safe polymorphic content through 3xl widths with independent centering and horizontal padding controls. · layout/container
 
 ## When to use
 

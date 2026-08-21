@@ -10,7 +10,7 @@ function BackTopBox({ children }: {
       <div ref={ref} className="h-44 overflow-y-auto rounded-[var(--radius)] border border-border p-4">
         <div className="space-y-3">
           {Array.from({ length: 24 }).map((_, i) => (<p key={i} className="text-sm text-muted-foreground">
-              Scroll content row {i + 1} —— After scrolling down to 80px, a back-to-top button appears in the lower right corner.
+              Scroll content row {i + 1} - scroll down 80px and a back-to-top button appears in the lower right corner.
             </p>))}
         </div>
       </div>

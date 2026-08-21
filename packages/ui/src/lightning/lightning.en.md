@@ -25,13 +25,13 @@ import { Lightning } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| hue | `number` | `230` | Lightning hue (0–360, HSV color wheel), only effective when `color` is not passed. Example 30 warm orange / 120 turquoise / 280 magenta |
+| hue | `number` | `230` | Lightning hue (0-360, HSV color wheel), only effective when `color` is not passed. Example 30 warm orange / 120 turquoise / 280 magenta |
 | color | `string` | `undefined` | Explicit lightning color. When set, it overrides `hue`; use `var(--color-chart-1)` for theme-aware token color |
 | xOffset | `number` | `0` | Horizontal offset (clip-space), positive values push to the right, negative values push to the left |
 | speed | `number` | `1` | Animation speed factor, the larger the factor, the faster the flashing/surging |
 | intensity | `number` | `1` | Brightness intensity, the larger, the brighter and the thicker |
 | size | `number` | `1` | Noise scale, the larger the bifurcation, the finer the bifurcation, the smaller the more macroscopic |
-| className | `string` | — | Additional class name for the root container or fallback div |
+| className | `string` | - | Additional class name for the root container or fallback div |
 
 ## Slots
 

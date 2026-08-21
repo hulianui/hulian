@@ -35,9 +35,9 @@ import { PixelSnow } from "@hulianui/ui"
 | farPlane | `number` | `20` | 光线步进最远裁剪距离；越大可见层数越多（性能成本越高） |
 | brightness | `number` | `1` | 整体亮度倍率 |
 | gamma | `number` | `0.4545` | 伽马校正指数（≈1/2.2 sRGB 近似） |
-| density | `number` | `0.3` | 雪花密度（每格出雪概率阈值）；越大越密。建议 0.05–0.6 |
+| density | `number` | `0.3` | 雪花密度（每格出雪概率阈值）；越大越密。建议 0.05-0.6 |
 | direction | `number` | `125` | 风向角度（度），决定横向漂移方向 |
-| className | `string` | — | 透传到根容器（或 reduced-motion fallback div） |
+| className | `string` | - | 透传到根容器（或 reduced-motion fallback div） |
 
 ## Slots
 

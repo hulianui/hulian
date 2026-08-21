@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.54.2",
+  "version": "0.55.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -1040,6 +1040,8 @@
     "LineShadowText": "line-shadow-text",
     "Markdown": "markdown",
     "parseBlocks": "markdown",
+    "slugifyHeading": "markdown",
+    "extractHeadings": "markdown",
     "Prose": "prose",
     "ScrambledText": "scrambled-text",
     "ScrollFloat": "scroll-float",
@@ -3361,7 +3363,7 @@
           "kind": "number",
           "type": "number",
           "default": "8",
-          "description": "字符画字号(px)，决定网格密度；越小越密越费算力，建议 6–14"
+          "description": "字符画字号(px)，决定网格密度；越小越密越费算力，建议 6-14"
         },
         {
           "name": "textFontSize",
@@ -4000,7 +4002,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "向下加速度系数，越大下落越快堆叠越急，建议 0.3–3"
+          "description": "向下加速度系数，越大下落越快堆叠越急，建议 0.3-3"
         },
         {
           "name": "bounce",
@@ -4205,7 +4207,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [],
@@ -4272,7 +4274,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.18",
-          "description": "静息态噪点强度(0–1)，越大越「毛」"
+          "description": "静息态噪点强度(0-1)，越大越「毛」"
         },
         {
           "name": "hoverIntensity",
@@ -4280,7 +4282,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "悬停态噪点强度(0–1)"
+          "description": "悬停态噪点强度(0-1)"
         },
         {
           "name": "fuzzRange",
@@ -4611,13 +4613,16 @@
       "category": "typography",
       "group": "text",
       "status": "enriched",
-      "import": "import { Markdown, parseBlocks } from \"@hulianui/ui\"",
+      "import": "import { Markdown, parseBlocks, slugifyHeading, extractHeadings } from \"@hulianui/ui\"",
       "exports": [
         "Markdown",
-        "parseBlocks"
+        "parseBlocks",
+        "slugifyHeading",
+        "extractHeadings"
       ],
       "types": [
         "MdBlock",
+        "MarkdownHeading",
         "MarkdownProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown/markdown.md",
@@ -4634,6 +4639,14 @@
           "valueType": "string",
           "default": "\"base\"",
           "description": "排版尺寸基准，透传给内部 Prose"
+        },
+        {
+          "name": "headingIds",
+          "required": false,
+          "kind": "other",
+          "type": "boolean | string",
+          "default": "false",
+          "description": "给渲染出的标题挂锚点 id（slug 规则见「标题锚点与目录」），使长文可做目录与 `#片段` 深链。默认关闭：id 是全局命名空间，默认生成会让存量调用点凭空多出一批可能与页面已有 id 撞车的锚点。传字符串则同时开启并把它当 id 前缀（`headingIds=\"doc-\"` → `doc-props`），用于把这批 id 关进自己的命名空间"
         },
         {
           "name": "className",
@@ -6082,7 +6095,7 @@
           "kind": "other",
           "type": "1..6",
           "default": "2",
-          "description": "标题语义级别（只换 `h1`–`h6` 标签，视觉尺寸不变）"
+          "description": "标题语义级别（只换 `h1`-`h6` 标签，视觉尺寸不变）"
         },
         {
           "name": "description",
@@ -8006,7 +8019,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "size",
@@ -8143,7 +8156,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "value",
@@ -8167,7 +8180,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -9440,7 +9453,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.9",
-          "description": "编码质量 0–1"
+          "description": "编码质量 0-1"
         },
         {
           "name": "maxBytes",
@@ -9688,7 +9701,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": null,
-          "description": "中间插入横线分隔符（3-3 分组视觉，如 XXX–XXX）"
+          "description": "中间插入横线分隔符（3-3 分组视觉，如 XXX-XXX）"
         },
         {
           "name": "name",
@@ -9951,7 +9964,7 @@
           "kind": "other",
           "type": "Switch",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "text",
@@ -11122,7 +11135,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -11130,7 +11143,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -11594,7 +11607,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -11626,7 +11639,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "size",
@@ -12986,7 +12999,7 @@
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -12994,7 +13007,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -13082,7 +13095,7 @@
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -13090,7 +13103,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -13919,7 +13932,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -13927,7 +13940,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -14448,7 +14461,7 @@
           ],
           "valueType": "string",
           "default": "\"md\"",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -14456,7 +14469,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -14509,7 +14522,7 @@
           ],
           "valueType": "string",
           "default": "\"horizontal\"",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -14517,7 +14530,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -15167,7 +15180,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "false",
-          "description": "按住说话模式（GPT-Live 风格）：按下开始、松开结束，走 `onPress` / `onRelease`；`false` 时是点击切换，走 `onToggle`"
+          "description": "按住说话模式（GPT-Live 风格）：按下开始、松开结束，走 `onPress` / `onRelease`；`false` 时是点击切换，走 `onToggle`。松手、指针移出、以及 iOS 上手势被系统打断派发的 `pointercancel`，三条路径都会走 `onRelease`——少接一条就会卡在录音态下不来"
         },
         {
           "name": "onPress",
@@ -15456,7 +15469,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [],
@@ -15521,7 +15534,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "src",
@@ -16570,7 +16583,7 @@
           "kind": "number",
           "type": "number",
           "default": "自适应",
-          "description": "**BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48–160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传"
+          "description": "**BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48-160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传"
         },
         {
           "name": "radiusAxis",
@@ -16874,7 +16887,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -17102,7 +17115,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.05",
-          "description": "卡片圆角（归一化 0–0.5），`0`=直角，`0.5`=胶囊/圆"
+          "description": "卡片圆角（归一化 0-0.5），`0`=直角，`0.5`=胶囊/圆"
         },
         {
           "name": "scrollSpeed",
@@ -17118,7 +17131,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.05",
-          "description": "惯性 lerp 系数（0–1），越小越\"重\"越顺滑"
+          "description": "惯性 lerp 系数（0-1），越小越\"重\"越顺滑"
         },
         {
           "name": "font",
@@ -17235,7 +17248,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -18007,7 +18020,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -18219,7 +18232,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "弹幕占用容器高度比 0–1，1=满屏"
+          "description": "弹幕占用容器高度比 0-1，1=满屏"
         },
         {
           "name": "opacity",
@@ -18362,7 +18375,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.015",
-          "description": "feTurbulence 基础频率，越大噪声越密、溶解颗粒越细，建议 0.005–0.05"
+          "description": "feTurbulence 基础频率，越大噪声越密、溶解颗粒越细，建议 0.005-0.05"
         },
         {
           "name": "numOctaves",
@@ -19376,7 +19389,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -19398,12 +19411,12 @@
         {
           "name": "key",
           "type": "keyof T & string",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "title",
           "type": "ReactNode",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "editable",
@@ -19413,17 +19426,17 @@
         {
           "name": "render",
           "type": "(value, row) => ReactNode",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "editor",
           "type": "(value, onChange, row) => ReactNode",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "width",
           "type": "number",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "align",
@@ -19833,7 +19846,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "clearAllLabel",
@@ -19860,7 +19873,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "children",
@@ -20137,7 +20150,7 @@
           "kind": "number",
           "type": "number",
           "default": "3",
-          "description": "卷动时弯折扭曲强度，越大翻折越夸张；建议 1–6，0 近似平移"
+          "description": "卷动时弯折扭曲强度，越大翻折越夸张；建议 1-6，0 近似平移"
         },
         {
           "name": "scrollEase",
@@ -20145,7 +20158,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.01",
-          "description": "卷动缓动系数（0–1），越小越\"重\"惯性越长（showcase 默认演示用 0.05）"
+          "description": "卷动缓动系数（0-1），越小越\"重\"惯性越长（showcase 默认演示用 0.05）"
         },
         {
           "name": "cameraFov",
@@ -20715,7 +20728,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "x / y",
@@ -21085,7 +21098,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -21172,7 +21185,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -22531,7 +22544,7 @@
           "kind": "function",
           "type": "(info: { value, min, max, percent }) => string",
           "default": null,
-          "description": "自定义数值文案。返回值同时用于可见文字与 `aria-valuetext`，两者不会不一致。`percent` 已归一并夹到 0–100（未取整）。用于绝对数表述：`({ value, max }) => `${value} / ${max} 道题``"
+          "description": "自定义数值文案。返回值同时用于可见文字与 `aria-valuetext`，两者不会不一致。`percent` 已归一并夹到 0-100（未取整）。用于绝对数表述：`({ value, max }) => `${value} / ${max} 道题``"
         },
         {
           "name": "className",
@@ -22647,7 +22660,7 @@
           "kind": "number",
           "type": "number",
           "default": "变体默认",
-          "description": "像素网格间距（px），越小越密数量越多（性能开销越大），建议 3–12"
+          "description": "像素网格间距（px），越小越密数量越多（性能开销越大），建议 3-12"
         },
         {
           "name": "speed",
@@ -22655,7 +22668,7 @@
           "kind": "number",
           "type": "number",
           "default": "变体默认",
-          "description": "动画速度（0–100 整数标度），0 等价禁用动画"
+          "description": "动画速度（0-100 整数标度），0 等价禁用动画"
         },
         {
           "name": "colors",
@@ -23167,7 +23180,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "minVersion",
@@ -23176,7 +23189,7 @@
           "kind": "number",
           "type": "number",
           "default": null,
-          "description": "版本下限 1–40：内容变长会自动升版本→模块变密、观感尺寸跳变；钉住下限让一组码密度一致。内容装不下时自动用更大版本，不截断"
+          "description": "版本下限 1-40：内容变长会自动升版本→模块变密、观感尺寸跳变；钉住下限让一组码密度一致。内容装不下时自动用更大版本，不截断"
         },
         {
           "name": "boostLevel",
@@ -23491,7 +23504,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.35",
-          "description": "表面噪点强度 0–1，0=镜面无颗粒，1=重磨砂"
+          "description": "表面噪点强度 0-1，0=镜面无颗粒，1=重磨砂"
         },
         {
           "name": "metalness",
@@ -23499,7 +23512,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "反光层整体不透明度 0–1，调低让卡面更内敛"
+          "description": "反光层整体不透明度 0-1，调低让卡面更内敛"
         },
         {
           "name": "className",
@@ -23621,7 +23634,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [],
@@ -25685,7 +25698,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "…HTMLAttributes",
@@ -26145,7 +26158,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -26318,7 +26331,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [],
@@ -26425,7 +26438,7 @@
           "required": false,
           "kind": "array",
           "type": "number[]",
-          "default": "`DEFAULT_PLAYBACK_RATES`(0.5–2)",
+          "default": "`DEFAULT_PLAYBACK_RATES`(0.5-2)",
           "description": "倍速档位"
         },
         {
@@ -26450,7 +26463,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -26561,7 +26574,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -28111,7 +28124,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -28191,7 +28204,7 @@
           "name": "disabled",
           "owner": "footer：面板底部那条常驻控件",
           "type": "boolean",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "onSelect",
@@ -28240,7 +28253,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "closeOnClick",
@@ -28277,7 +28290,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "checked",
@@ -28338,7 +28351,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "value",
@@ -28370,7 +28383,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "value",
@@ -28423,7 +28436,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -28538,7 +28551,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "itemKey",
@@ -28574,7 +28587,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [],
@@ -28944,7 +28957,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "render",
@@ -29003,7 +29016,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "checked",
@@ -29071,7 +29084,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "value",
@@ -29107,7 +29120,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "value",
@@ -29166,7 +29179,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "disabled",
@@ -29207,7 +29220,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -29216,7 +29229,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -29372,7 +29385,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -30158,7 +30171,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "key",
@@ -30918,7 +30931,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "label",
@@ -31011,7 +31024,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "title",
@@ -31162,7 +31175,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -31244,7 +31257,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "disabled",
@@ -31252,7 +31265,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -31268,7 +31281,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "pressed",
@@ -31292,7 +31305,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "aria-label",
@@ -31300,7 +31313,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "className",
@@ -31308,7 +31321,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -32528,7 +32541,21 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "视频嵌入地址（iframe src，如 youtube/bilibili embed）"
+          "description": "视频地址：embed 形态是 iframe 的 src（如 youtube/bilibili embed），video 形态是视频文件地址（`.mp4`/`.webm` 等）"
+        },
+        {
+          "name": "videoType",
+          "required": false,
+          "kind": "enum",
+          "type": "\"auto\" | \"embed\" | \"video\"",
+          "values": [
+            "auto",
+            "embed",
+            "video"
+          ],
+          "valueType": "string",
+          "default": "\"auto\"",
+          "description": "弹层里用什么播。`\"embed\"` 挂 iframe，`\"video\"` 挂原生 `<video>`；`\"auto\"` 按 `videoSrc` 扩展名判别（`.mp4`/`.webm`/`.ogv`/`.ogg`/`.mov`/`.m4v` 走 `\"video\"`，其余走 `\"embed\"`）"
         },
         {
           "name": "className",
@@ -33892,7 +33919,7 @@
         {
           "name": "title",
           "type": "ReactNode",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "status",
@@ -33902,12 +33929,12 @@
         {
           "name": "detail",
           "type": "ReactNode",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "meta",
           "type": "ReactNode",
-          "description": "—"
+          "description": "-"
         }
       ]
     },
@@ -34341,12 +34368,12 @@
         {
           "name": "key",
           "type": "string",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "label",
           "type": "ReactNode",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "status",
@@ -34361,7 +34388,7 @@
         {
           "name": "summary",
           "type": "ReactNode",
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "active",
@@ -35250,7 +35277,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.12",
-          "description": "粒子追踪目标的缓动系数（0–1），越大越紧跟"
+          "description": "粒子追踪目标的缓动系数（0-1），越大越紧跟"
         },
         {
           "name": "color",
@@ -35345,7 +35372,7 @@
           "kind": "number",
           "type": "number",
           "default": "30",
-          "description": "极光层模糊半径（px），建议 10–80；过小边缘硬，过大效果消散"
+          "description": "极光层模糊半径（px），建议 10-80；过小边缘硬，过大效果消散"
         },
         {
           "name": "speed",
@@ -35571,7 +35598,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.86",
-          "description": "墙壁/互撞能量保留系数（0–1）；1=完全弹性永不停"
+          "description": "墙壁/互撞能量保留系数（0-1）；1=完全弹性永不停"
         },
         {
           "name": "sizeRange",
@@ -35636,7 +35663,7 @@
           "kind": "number",
           "type": "number",
           "default": "12",
-          "description": "光束数量（纵向条带数），建议 4–24，过大低端设备糊成一片"
+          "description": "光束数量（纵向条带数），建议 4-24，过大低端设备糊成一片"
         },
         {
           "name": "beamWidth",
@@ -35910,7 +35937,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "起始偏移 0–100"
+          "description": "起始偏移 0-100"
         },
         {
           "name": "borderWidth",
@@ -35969,7 +35996,7 @@
           "kind": "number",
           "type": "number",
           "default": "30",
-          "description": "边缘灵敏度 0–100，越小越早触发外层光晕"
+          "description": "边缘灵敏度 0-100，越小越早触发外层光晕"
         },
         {
           "name": "glowColor",
@@ -36009,7 +36036,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "光晕强度倍率 0–2"
+          "description": "光晕强度倍率 0-2"
         },
         {
           "name": "coneSpread",
@@ -36017,7 +36044,7 @@
           "kind": "number",
           "type": "number",
           "default": "25",
-          "description": "光锥角度宽度 0–50，越大高亮弧越宽"
+          "description": "光锥角度宽度 0-50，越大高亮弧越宽"
         },
         {
           "name": "animated",
@@ -36041,7 +36068,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "边缘彩色填充层透明度 0–1"
+          "description": "边缘彩色填充层透明度 0-1"
         },
         {
           "name": "style",
@@ -36283,7 +36310,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "折叠迭代次数（1–5）；越大结构越复杂"
+          "description": "折叠迭代次数（1-5）；越大结构越复杂"
         },
         {
           "name": "intensity",
@@ -36380,7 +36407,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.15",
-          "description": "跟随平滑系数（0–1），越小越黏越拖尾，越大越跟手"
+          "description": "跟随平滑系数（0-1），越小越黏越拖尾，越大越跟手"
         },
         {
           "name": "thickness",
@@ -36562,7 +36589,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "色相偏移（0–360 度），YIQ 色相旋转调出冷蓝/暖紫/青绿基调"
+          "description": "色相偏移（0-360 度），YIQ 色相旋转调出冷蓝/暖紫/青绿基调"
         },
         {
           "name": "noiseIntensity",
@@ -36570,7 +36597,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "颗粒噪声强度，CRT/胶片质感；建议 0–0.1，过大发雪花"
+          "description": "颗粒噪声强度，CRT/胶片质感；建议 0-0.1，过大发雪花"
         },
         {
           "name": "scanlineIntensity",
@@ -36578,7 +36605,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "扫描线强度，复古显示器观感；建议 0–0.5，需配合频率"
+          "description": "扫描线强度，复古显示器观感；建议 0-0.5，需配合频率"
         },
         {
           "name": "speed",
@@ -36602,7 +36629,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "空间扭曲量，UV 正余弦扰动产生波动/折射；建议 0–0.2"
+          "description": "空间扭曲量，UV 正余弦扰动产生波动/折射；建议 0-0.2"
         },
         {
           "name": "resolutionScale",
@@ -36740,7 +36767,7 @@
           "kind": "number",
           "type": "number",
           "default": "1.5",
-          "description": "单个点的绘制半径（px），建议 1–3"
+          "description": "单个点的绘制半径（px），建议 1-3"
         },
         {
           "name": "dotSpacing",
@@ -36748,7 +36775,7 @@
           "kind": "number",
           "type": "number",
           "default": "14",
-          "description": "相邻点间距（px），越大越稀疏，建议 8–24"
+          "description": "相邻点间距（px），越大越稀疏，建议 8-24"
         },
         {
           "name": "cursorRadius",
@@ -37019,7 +37046,7 @@
           "kind": "number",
           "type": "number",
           "default": "1.5",
-          "description": "发光强度倍率，越大越亮，建议 0.8–2.5"
+          "description": "发光强度倍率，越大越亮，建议 0.8-2.5"
         },
         {
           "name": "pupilSize",
@@ -37027,7 +37054,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.6",
-          "description": "瞳孔大小，越大越饱满、越小越收成缝，建议 0.2–1.0"
+          "description": "瞳孔大小，越大越饱满、越小越收成缝，建议 0.2-1.0"
         },
         {
           "name": "irisWidth",
@@ -37035,7 +37062,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.25",
-          "description": "虹膜（内环火焰）宽度，建议 0.1–0.4"
+          "description": "虹膜（内环火焰）宽度，建议 0.1-0.4"
         },
         {
           "name": "glowIntensity",
@@ -37043,7 +37070,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.35",
-          "description": "外圈辉光浓度，建议 0.1–0.6"
+          "description": "外圈辉光浓度，建议 0.1-0.6"
         },
         {
           "name": "scale",
@@ -37051,7 +37078,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.8",
-          "description": "眼睛缩放，越大占画面越多，建议 0.5–1.2"
+          "description": "眼睛缩放，越大占画面越多，建议 0.5-1.2"
         },
         {
           "name": "noiseScale",
@@ -37059,7 +37086,7 @@
           "kind": "number",
           "type": "number",
           "default": "1.0",
-          "description": "火焰噪声纹理缩放，越大纹路越细碎，建议 0.5–2.0"
+          "description": "火焰噪声纹理缩放，越大纹路越细碎，建议 0.5-2.0"
         },
         {
           "name": "pupilFollow",
@@ -37075,7 +37102,7 @@
           "kind": "number",
           "type": "number",
           "default": "1.0",
-          "description": "火焰流动速度，建议 0.3–2.0"
+          "description": "火焰流动速度，建议 0.3-2.0"
         },
         {
           "name": "className",
@@ -37188,7 +37215,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "色散（RGB 分离）像素量，建议 0–6"
+          "description": "色散（RGB 分离）像素量，建议 0-6"
         },
         {
           "name": "dither",
@@ -37380,7 +37407,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "整体不透明度，范围 0–1"
+          "description": "整体不透明度，范围 0-1"
         },
         {
           "name": "mouseInteraction",
@@ -37544,7 +37571,7 @@
           "kind": "number",
           "type": "number",
           "default": "6",
-          "description": "三组波各自的线条数量，越多越密、开销越大，建议 3–12"
+          "description": "三组波各自的线条数量，越多越密、开销越大，建议 3-12"
         },
         {
           "name": "lineDistance",
@@ -37625,7 +37652,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.26",
-          "description": "透镜半径占容器短边比例 0–1，越大折射区越广，建议 0.15–0.4"
+          "description": "透镜半径占容器短边比例 0-1，越大折射区越广，建议 0.15-0.4"
         },
         {
           "name": "refraction",
@@ -37633,7 +37660,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "折射强度（IOR 映射），越大中心放大/扭曲越强，0=几乎透明，建议 0–1"
+          "description": "折射强度（IOR 映射），越大中心放大/扭曲越强，0=几乎透明，建议 0-1"
         },
         {
           "name": "dispersion",
@@ -37641,7 +37668,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.3",
-          "description": "色散强度，模拟边缘 RGB 分光彩边，0=关闭，建议 0–1"
+          "description": "色散强度，模拟边缘 RGB 分光彩边，0=关闭，建议 0-1"
         },
         {
           "name": "speed",
@@ -37746,7 +37773,7 @@
           "kind": "number",
           "type": "number",
           "default": "140",
-          "description": "色相偏移（0–360），默认偏青蓝"
+          "description": "色相偏移（0-360），默认偏青蓝"
         },
         {
           "name": "speed",
@@ -37867,7 +37894,7 @@
           "kind": "number",
           "type": "number",
           "default": "32",
-          "description": "拖尾保留的历史帧数，越大尾迹越长，片元开销线性增长，建议 16–64"
+          "description": "拖尾保留的历史帧数，越大尾迹越长，片元开销线性增长，建议 16-64"
         },
         {
           "name": "inertia",
@@ -37875,7 +37902,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "惯性系数 0–1，越接近 1 越「飘」（拖远），越接近 0 越跟手"
+          "description": "惯性系数 0-1，越接近 1 越「飘」（拖远），越接近 0 越跟手"
         },
         {
           "name": "grainIntensity",
@@ -37883,7 +37910,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.05",
-          "description": "胶片颗粒强度 0–0.3，叠加噪点；0 = 关闭"
+          "description": "胶片颗粒强度 0-0.3，叠加噪点；0 = 关闭"
         },
         {
           "name": "brightness",
@@ -37891,7 +37918,7 @@
           "kind": "number",
           "type": "number",
           "default": "1.2",
-          "description": "整体亮度增益，补偿去掉 Bloom 后的亮度损失，建议 0.8–2.0"
+          "description": "整体亮度增益，补偿去掉 Bloom 后的亮度损失，建议 0.8-2.0"
         },
         {
           "name": "color",
@@ -38308,7 +38335,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.3",
-          "description": "颗粒噪声强度，0=纯净，建议 0–1"
+          "description": "颗粒噪声强度，0=纯净，建议 0-1"
         },
         {
           "name": "blindCount",
@@ -38457,7 +38484,7 @@
           "kind": "number",
           "type": "number",
           "default": "2",
-          "description": "模糊强度基数，每层按曲线递增，建议 1–6"
+          "description": "模糊强度基数，每层按曲线递增，建议 1-6"
         },
         {
           "name": "height",
@@ -38481,7 +38508,7 @@
           "kind": "number",
           "type": "number",
           "default": "5",
-          "description": "叠加模糊层数，越多过渡越细腻、越费性能，建议 3–10"
+          "description": "叠加模糊层数，越多过渡越细腻、越费性能，建议 3-10"
         },
         {
           "name": "exponential",
@@ -38610,7 +38637,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "域扭曲强度（内部按反比，越大越克制），建议 0.3–3"
+          "description": "域扭曲强度（内部按反比，越大越克制），建议 0.3-3"
         },
         {
           "name": "warpFrequency",
@@ -38803,7 +38830,7 @@
           "kind": "number",
           "type": "number",
           "default": "15",
-          "description": "位移网格边长（格子数），JS 每帧迭代 grid²，建议 8–30"
+          "description": "位移网格边长（格子数），JS 每帧迭代 grid²，建议 8-30"
         },
         {
           "name": "mouse",
@@ -38827,7 +38854,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.9",
-          "description": "弛豫系数（每帧衰减，0–1），越近 1 余韵越长"
+          "description": "弛豫系数（每帧衰减，0-1），越近 1 余韵越长"
         },
         {
           "name": "imageSrc",
@@ -39042,7 +39069,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.1",
-          "description": "网格密度（格子缩放），越小越密，建议 0.05–0.3"
+          "description": "网格密度（格子缩放），越小越密，建议 0.05-0.3"
         },
         {
           "name": "lineThickness",
@@ -39072,7 +39099,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.45",
-          "description": "扫描带发光不透明度(0–1)，0=纯网格无脉冲"
+          "description": "扫描带发光不透明度(0-1)，0=纯网格无脉冲"
         },
         {
           "name": "scanDirection",
@@ -39172,7 +39199,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "整体推进速度倍率，越大冲来越快，建议 0.2–4"
+          "description": "整体推进速度倍率，越大冲来越快，建议 0.2-4"
         },
         {
           "name": "density",
@@ -39180,7 +39207,7 @@
           "kind": "number",
           "type": "number",
           "default": "40",
-          "description": "道路两侧光带密度，越大越密集，建议 10–120"
+          "description": "道路两侧光带密度，越大越密集，建议 10-120"
         },
         {
           "name": "distortion",
@@ -39188,7 +39215,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "视野扭曲强度（湍流摆动），0=笔直隧道，建议 0–2"
+          "description": "视野扭曲强度（湍流摆动），0=笔直隧道，建议 0-2"
         },
         {
           "name": "fade",
@@ -39196,7 +39223,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.4",
-          "description": "雾化淡出强度，越大远处越快被黑暗吞没，建议 0–1"
+          "description": "雾化淡出强度，越大远处越快被黑暗吞没，建议 0-1"
         },
         {
           "name": "leftColor",
@@ -39261,7 +39288,7 @@
           "kind": "array",
           "type": "string[]",
           "default": null,
-          "description": "拖尾依次出现的图片 URL 列表（循环复用）；至少 1 张，建议 6–12 张"
+          "description": "拖尾依次出现的图片 URL 列表（循环复用）；至少 1 张，建议 6-12 张"
         },
         {
           "name": "threshold",
@@ -39285,7 +39312,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "跟随插值系数 0–1，越大跟手越紧，越小越黏滞"
+          "description": "跟随插值系数 0-1，越大跟手越紧，越小越黏滞"
         },
         {
           "name": "fadeDuration",
@@ -39350,7 +39377,7 @@
           "kind": "number",
           "type": "number",
           "default": "1.0",
-          "description": "动画速度倍率，建议 0.1–5"
+          "description": "动画速度倍率，建议 0.1-5"
         },
         {
           "name": "amplitude",
@@ -39358,7 +39385,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.1",
-          "description": "鼠标偏移幅度（扰动强度），建议 0.01–0.5"
+          "description": "鼠标偏移幅度（扰动强度），建议 0.01-0.5"
         },
         {
           "name": "mouseReact",
@@ -39423,7 +39450,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.045",
-          "description": "回弹刚度（弹簧常数），越大回正越快越硬，建议 0.02–0.12"
+          "description": "回弹刚度（弹簧常数），越大回正越快越硬，建议 0.02-0.12"
         },
         {
           "name": "damping",
@@ -39431,7 +39458,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.92",
-          "description": "阻尼（每帧速度衰减），越接近 1 余摆越久，建议 0.85–0.97"
+          "description": "阻尼（每帧速度衰减），越接近 1 余摆越久，建议 0.85-0.97"
         },
         {
           "name": "title",
@@ -39568,7 +39595,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "微流光密度 0–2（→ uWispDensity）"
+          "description": "微流光密度 0-2（→ uWispDensity）"
         },
         {
           "name": "wispSpeed",
@@ -39592,7 +39619,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.25",
-          "description": "光流明暗脉冲强度 0–1（→ uFlowStrength）"
+          "description": "光流明暗脉冲强度 0-1（→ uFlowStrength）"
         },
         {
           "name": "decay",
@@ -39714,7 +39741,7 @@
           "kind": "number",
           "type": "number",
           "default": "50",
-          "description": "相邻刷新最小间隔(ms)，越小越躁动，建议 20–200"
+          "description": "相邻刷新最小间隔(ms)，越小越躁动，建议 20-200"
         },
         {
           "name": "smooth",
@@ -39813,7 +39840,7 @@
           "kind": "number",
           "type": "number",
           "default": "2",
-          "description": "同时坠落的光束条数（1–16，四舍五入夹取）"
+          "description": "同时坠落的光束条数（1-16，四舍五入夹取）"
         },
         {
           "name": "streakWidth",
@@ -39942,7 +39969,7 @@
           "kind": "number",
           "type": "number",
           "default": "230",
-          "description": "闪电色相(0–360, HSV 色环)，仅未传 `color` 时生效。例 30 暖橙 / 120 青绿 / 280 品紫"
+          "description": "闪电色相(0-360, HSV 色环)，仅未传 `color` 时生效。例 30 暖橙 / 120 青绿 / 280 品紫"
         },
         {
           "name": "color",
@@ -40055,7 +40082,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.005",
-          "description": "辉光强度（raymarch 累积增益），建议 0.001–0.02"
+          "description": "辉光强度（raymarch 累积增益），建议 0.001-0.02"
         },
         {
           "name": "pillarWidth",
@@ -40163,7 +40190,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "光束扩散角度，越大越散、越小越聚拢，建议 0.3–3"
+          "description": "光束扩散角度，越大越散、越小越聚拢，建议 0.3-3"
         },
         {
           "name": "rayLength",
@@ -40211,7 +40238,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.1",
-          "description": "鼠标对方向的影响权重(0–1)，0=不偏转"
+          "description": "鼠标对方向的影响权重(0-1)，0=不偏转"
         },
         {
           "name": "noiseAmount",
@@ -40219,7 +40246,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "颗粒噪声强度(0–1)"
+          "description": "颗粒噪声强度(0-1)"
         },
         {
           "name": "distortion",
@@ -40227,7 +40254,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "角度扭曲强度，让光束摇曳而非笔直，建议 0–1"
+          "description": "角度扭曲强度，让光束摇曳而非笔直，建议 0-1"
         },
         {
           "name": "className",
@@ -40337,7 +40364,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.2",
-          "description": "整体亮度系数；因 alpha=颜色长度，同时影响透明度。建议 0.1–0.6"
+          "description": "整体亮度系数；因 alpha=颜色长度，同时影响透明度。建议 0.1-0.6"
         },
         {
           "name": "color1",
@@ -40507,7 +40534,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "流动速度因子；建议 0.2–1.5"
+          "description": "流动速度因子；建议 0.2-1.5"
         },
         {
           "name": "scale",
@@ -40515,7 +40542,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "液态团块尺度；越小越细碎越多团，越大越融合。建议 0.6–2"
+          "description": "液态团块尺度；越小越细碎越多团，越大越融合。建议 0.6-2"
         },
         {
           "name": "mouseForce",
@@ -40523,7 +40550,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "指针扰动强度；0=无视指针纯漂流。建议 0–2"
+          "description": "指针扰动强度；0=无视指针纯漂流。建议 0-2"
         },
         {
           "name": "autoDemo",
@@ -40539,7 +40566,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "整体不透明度 0–1；叠内容上常用 0.6–0.85 降视觉重量"
+          "description": "整体不透明度 0-1；叠内容上常用 0.6-0.85 降视觉重量"
         },
         {
           "name": "className",
@@ -40612,7 +40639,7 @@
           "kind": "number",
           "type": "number",
           "default": "6",
-          "description": "同时存在的光环层数（1–10，超出截断）"
+          "description": "同时存在的光环层数（1-10，超出截断）"
         },
         {
           "name": "attenuation",
@@ -40636,7 +40663,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.35",
-          "description": "最内圈起始半径（归一化约 0–1）"
+          "description": "最内圈起始半径（归一化约 0-1）"
         },
         {
           "name": "radiusStep",
@@ -40799,7 +40826,7 @@
           "kind": "number",
           "type": "number",
           "default": "2",
-          "description": "吸力除数，位移=指针到中心距离/此值，越小吸力越强；建议 1–6"
+          "description": "吸力除数，位移=指针到中心距离/此值，越小吸力越强；建议 1-6"
         },
         {
           "name": "activeTransition",
@@ -40995,7 +41022,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.05",
-          "description": "光标球插值平滑系数（0–1），越小越拖尾、越大越跟手"
+          "description": "光标球插值平滑系数（0-1），越小越拖尾、越大越跟手"
         },
         {
           "name": "animationSize",
@@ -41011,7 +41038,7 @@
           "kind": "number",
           "type": "number",
           "default": "15",
-          "description": "主体小球数量（1–50，超出夹取到 50）"
+          "description": "主体小球数量（1-50，超出夹取到 50）"
         },
         {
           "name": "clumpFactor",
@@ -41124,7 +41151,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.6",
-          "description": "色带边缘模糊，建议 0.2–1.5；过小条纹生硬、过大金属感消散"
+          "description": "色带边缘模糊，建议 0.2-1.5；过小条纹生硬、过大金属感消散"
         },
         {
           "name": "angle",
@@ -41393,7 +41420,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.2",
-          "description": "悬停扭曲强度（0–1），越大变形越明显"
+          "description": "悬停扭曲强度（0-1），越大变形越明显"
         },
         {
           "name": "rotateOnHover",
@@ -41519,7 +41546,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "star 内外半径比（0–1），越小星芒越尖"
+          "description": "star 内外半径比（0-1），越小星芒越尖"
         },
         {
           "name": "rotation",
@@ -41822,7 +41849,7 @@
           "kind": "number",
           "type": "number",
           "default": "4",
-          "description": "单个像素方块边长（CSS px）；越小越密越细腻。建议 2–12"
+          "description": "单个像素方块边长（CSS px）；越小越密越细腻。建议 2-12"
         },
         {
           "name": "color",
@@ -41838,7 +41865,7 @@
           "kind": "number",
           "type": "number",
           "default": "2",
-          "description": "噪声纹理缩放；越大斑块越细碎闪烁越密。建议 0.5–6"
+          "description": "噪声纹理缩放；越大斑块越细碎闪烁越密。建议 0.5-6"
         },
         {
           "name": "patternDensity",
@@ -41846,7 +41873,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "像素填充密度；越大亮起像素越多越「满」。建议 0.4–1.6"
+          "description": "像素填充密度；越大亮起像素越多越「满」。建议 0.4-1.6"
         },
         {
           "name": "pixelSizeJitter",
@@ -41854,7 +41881,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "每个方块尺寸的随机抖动幅度 0–1；越大越参差颗粒感越强"
+          "description": "每个方块尺寸的随机抖动幅度 0-1；越大越参差颗粒感越强"
         },
         {
           "name": "speed",
@@ -41870,7 +41897,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "四周渐隐宽度 0–1（相对短边）；0=硬边铺满，越大四角越柔和"
+          "description": "四周渐隐宽度 0-1（相对短边）；0=硬边铺满，越大四角越柔和"
         },
         {
           "name": "className",
@@ -42005,7 +42032,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.3",
-          "description": "雪花密度（每格出雪概率阈值）；越大越密。建议 0.05–0.6"
+          "description": "雪花密度（每格出雪概率阈值）；越大越密。建议 0.05-0.6"
         },
         {
           "name": "direction",
@@ -42054,7 +42081,7 @@
           "kind": "number",
           "type": "number",
           "default": "40",
-          "description": "横向像素格子数（纵向按比例自动推算保持方格），建议 16–120"
+          "description": "横向像素格子数（纵向按比例自动推算保持方格），建议 16-120"
         },
         {
           "name": "trailSize",
@@ -42062,7 +42089,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.1",
-          "description": "拖尾影响半径（占容器短边比例 0–1），越大拖尾越粗"
+          "description": "拖尾影响半径（占容器短边比例 0-1），越大拖尾越粗"
         },
         {
           "name": "maxAge",
@@ -42261,7 +42288,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "整体不透明度 0–1（叠在 shader alpha 上）；作柔和背景时压暗用"
+          "description": "整体不透明度 0-1（叠在 shader alpha 上）；作柔和背景时压暗用"
         },
         {
           "name": "mouseInteractive",
@@ -42342,7 +42369,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.8",
-          "description": "焦距（视线收束）；越大越聚拢纵深越强，越小越铺展。建议 0.4–1.6"
+          "description": "焦距（视线收束）；越大越聚拢纵深越强，越小越铺展。建议 0.4-1.6"
         },
         {
           "name": "speed1",
@@ -42517,7 +42544,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.05",
-          "description": "hover 模式惯性系数 0–1；越小越「黏滞」缓动越久"
+          "description": "hover 模式惯性系数 0-1；越小越「黏滞」缓动越久"
         },
         {
           "name": "bloom",
@@ -42612,7 +42639,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "光线弯曲扭曲量 0–50（shader 内夹紧）；越大射线越像被引力透镜扭弯"
+          "description": "光线弯曲扭曲量 0-50（shader 内夹紧）；越大射线越像被引力透镜扭弯"
         },
         {
           "name": "noiseAmount",
@@ -42620,7 +42647,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "颗粒抖动噪声量 0–1；弱化条带感"
+          "description": "颗粒抖动噪声量 0-1；弱化条带感"
         },
         {
           "name": "rayCount",
@@ -43079,7 +43106,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.9",
-          "description": "阻尼摩擦基准（0–1），越大越黏滞、过冲越少"
+          "description": "阻尼摩擦基准（0-1），越大越黏滞、过冲越少"
         },
         {
           "name": "baseThickness",
@@ -43291,7 +43318,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "整体不透明度（0–1）"
+          "description": "整体不透明度（0-1）"
         },
         {
           "name": "gridRotation",
@@ -43696,7 +43723,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.75",
-          "description": "两束混色比例（0–1），0=仅主色 / 1=仅辅色"
+          "description": "两束混色比例（0-1），0=仅主色 / 1=仅辅色"
         },
         {
           "name": "falloff",
@@ -43712,7 +43739,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "整体不透明度（0–1），叠内容上常用 0.5–0.8"
+          "description": "整体不透明度（0-1），叠内容上常用 0.5-0.8"
         },
         {
           "name": "className",
@@ -43843,7 +43870,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.6",
-          "description": "极光流动速度倍率，建议 0.2–2"
+          "description": "极光流动速度倍率，建议 0.2-2"
         },
         {
           "name": "scale",
@@ -43851,7 +43878,7 @@
           "kind": "number",
           "type": "number",
           "default": "1.5",
-          "description": "噪声采样缩放，越大纹理越细碎，建议 0.8–3"
+          "description": "噪声采样缩放，越大纹理越细碎，建议 0.8-3"
         },
         {
           "name": "brightness",
@@ -43883,7 +43910,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "极光带垂直位置（0–1），越小越靠下"
+          "description": "极光带垂直位置（0-1），越小越靠下"
         },
         {
           "name": "bandSpread",
@@ -44004,7 +44031,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "溅射力度：随指针速度抛洒的位移与拖尾长度，建议 0.5–2"
+          "description": "溅射力度：随指针速度抛洒的位移与拖尾长度，建议 0.5-2"
         },
         {
           "name": "dissipation",
@@ -44012,7 +44039,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.92",
-          "description": "色斑保留率（每秒衰减，0–1），越接近 1 越持久"
+          "description": "色斑保留率（每秒衰减，0-1），越接近 1 越持久"
         },
         {
           "name": "opacity",
@@ -44020,7 +44047,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "整体不透明度（0–1），叠内容下方时可调暗"
+          "description": "整体不透明度（0-1），叠内容下方时可调暗"
         },
         {
           "name": "className",
@@ -44432,7 +44459,7 @@
           "kind": "other",
           "type": "[number, number, number] | string",
           "default": "--color-chart-1",
-          "description": "丝线颜色。RGB 数组每分量 0–1（react-bits 原版格式），或任意 CSS 颜色字符串（hex/oklch/rgb/var）。不传则读主题 token"
+          "description": "丝线颜色。RGB 数组每分量 0-1（react-bits 原版格式），或任意 CSS 颜色字符串（hex/oklch/rgb/var）。不传则读主题 token"
         },
         {
           "name": "amplitude",
@@ -44440,7 +44467,7 @@
           "kind": "number",
           "type": "number",
           "default": "1",
-          "description": "波动幅度，越大摆幅越剧烈，建议 0.3–3"
+          "description": "波动幅度，越大摆幅越剧烈，建议 0.3-3"
         },
         {
           "name": "distance",
@@ -44448,7 +44475,7 @@
           "kind": "number",
           "type": "number",
           "default": "0",
-          "description": "各丝线纵向间距缩放，正值拉开负值压缩，建议 -1–2"
+          "description": "各丝线纵向间距缩放，正值拉开负值压缩，建议 -1-2"
         },
         {
           "name": "enableMouseInteraction",
@@ -44728,7 +44755,7 @@
           "kind": "number",
           "type": "number",
           "default": "0.5",
-          "description": "每条波浪整体透明度（0–1）"
+          "description": "每条波浪整体透明度（0-1）"
         },
         {
           "name": "className",
@@ -45238,7 +45265,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -45351,7 +45378,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -45435,7 +45462,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -45487,7 +45514,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -45638,7 +45665,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         }
       ],
       "events": [
@@ -45729,7 +45756,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "—"
+          "description": "-"
         },
         {
           "name": "key",

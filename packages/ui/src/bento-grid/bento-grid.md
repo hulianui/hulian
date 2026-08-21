@@ -10,7 +10,7 @@ status: enriched
 
 # BentoGrid
 
-> 错落栅格 · BentoGrid/BentoCard 复合 + 跨列跨行 + hover CTA(纯 CSS·RSC) · data-display/collection
+> 用跨行跨列的卡片拼出错落有致的功能墙 · data-display/collection
 
 ## 何时用
 
@@ -28,14 +28,14 @@ import { BentoGrid, BentoCard } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| ...div | HTMLAttributes\<HTMLDivElement\> | — | 透传（`className` 控列数等） |
+| ...div | HTMLAttributes\<HTMLDivElement\> | - | 透传（`className` 控列数等） |
 
 ### BentoCard
 继承 `Omit<HTMLAttributes<HTMLDivElement>, "title">`。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| ...div | Omit\<HTMLAttributes\<HTMLDivElement\>, "title"\> | — | 透传（用 `className="sm:col-span-2"` 跨列） |
+| ...div | Omit\<HTMLAttributes\<HTMLDivElement\>, "title"\> | - | 透传（用 `className="sm:col-span-2"` 跨列） |
 
 ## Slots
 

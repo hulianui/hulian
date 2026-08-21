@@ -32,10 +32,10 @@ import { ScrollVelocity } from "@hulianui/ui"
 | numCopies | `number` | `6` | 每行复制份数(无缝循环铺满)；文本越短需越多份 |
 | velocityMapping | `{ input: [number, number]; output: [number, number] }` | `{ input: [0,1000], output: [0,5] }` | 滚动速度→加速因子映射(clamp:false 允许外推) |
 | scrollContainerRef | `RefObject<HTMLElement \| null>` | window | 自定义滚动容器；不传监听 window 滚动 |
-| className | `string` | — | 透传每行文本 span 的 className(字号/字色/字重) |
-| containerClassName | `string` | — | 透传根 section 的 className |
-| parallaxStyle | `CSSProperties` | — | 透传每行外层(parallax)容器内联样式 |
-| scrollerStyle | `CSSProperties` | — | 透传每行滚动轨(scroller)内联样式 |
+| className | `string` | - | 透传每行文本 span 的 className(字号/字色/字重) |
+| containerClassName | `string` | - | 透传根 section 的 className |
+| parallaxStyle | `CSSProperties` | - | 透传每行外层(parallax)容器内联样式 |
+| scrollerStyle | `CSSProperties` | - | 透传每行滚动轨(scroller)内联样式 |
 
 ## 示例
 ```tsx

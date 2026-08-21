@@ -10,7 +10,7 @@ status: enriched
 
 # Navbar
 
-> 导航栏 · 复合 Brand/Content/Item/MenuToggle + sticky + 移动端切换 · navigation/global
+> 搭出响应式顶部导航，含品牌、链接和移动端菜单 · navigation/global
 
 ## 何时用
 
@@ -29,8 +29,8 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| sticky | `boolean` | — | 是否 sticky 吸顶 |
-| bordered | `boolean` | — | 是否显示底部分隔边框 |
+| sticky | `boolean` | - | 是否 sticky 吸顶 |
+| bordered | `boolean` | - | 是否显示底部分隔边框 |
 
 **NavbarBrand**（`<div>`）
 
@@ -48,15 +48,15 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| isActive | `boolean` | — | 当前激活项（aria-current + 高亮） |
+| isActive | `boolean` | - | 当前激活项（aria-current + 高亮） |
 
 **NavbarMenuToggle**
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| isOpen | `boolean` | — | 受控展开态 |
+| isOpen | `boolean` | - | 受控展开态 |
 | aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
-| className | `string` | — | 类名 |
+| className | `string` | - | 类名 |
 
 ## Events
 

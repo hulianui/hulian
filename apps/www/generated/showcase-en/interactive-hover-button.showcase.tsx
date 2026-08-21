@@ -30,7 +30,7 @@ export const interactiveHoverButtonShowcase: ShowcaseSpec = {
         },
         {
             title: "Long labels are still covered",
-            description: "The expansion uses a clip-path circle at 150%, whose percentage resolves against the reference box's diagonal, so any button width is covered \u2014 unlike a scale magic number derived from one particular width.",
+            description: "The expansion uses a clip-path circle at 150%, whose percentage resolves against the reference box's diagonal, so any button width is covered, unlike a scale magic number derived from one particular width.",
             code: `<InteractiveHoverButton size="lg">Download the desktop client (macOS / Windows)</InteractiveHoverButton>`,
             render: () => (<InteractiveHoverButton size="lg">Download the desktop client (macOS / Windows)</InteractiveHoverButton>),
         },

@@ -42,8 +42,8 @@ import { GlassSurface } from "@hulianui/ui"
 | xChannel | `GlassChannel` | `"R"` | X 方向偏移取用通道（`"R"｜"G"｜"B"｜"A"`） |
 | yChannel | `GlassChannel` | `"G"` | Y 方向偏移取用通道 |
 | mixBlendMode | `CSSProperties["mixBlendMode"]` | `"difference"` | 位移图内红/蓝渐变叠加混合模式（决定折射纹理形态） |
-| className | `string` | — | 透传根容器 className |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器 className |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

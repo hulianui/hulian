@@ -27,8 +27,8 @@ import { StreamingText } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| text* | `string` | — | 当前累积文本（随 token 到达由父级增长） |
-| streaming | `boolean` | — | 流式进行中：尾随闪烁光标；done 后去除光标 |
+| text* | `string` | - | 当前累积文本（随 token 到达由父级增长） |
+| streaming | `boolean` | - | 流式进行中：尾随闪烁光标；done 后去除光标 |
 | as | `ElementType` | `"span"` | 渲染标签 |
 
 ## Slots

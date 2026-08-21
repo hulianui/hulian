@@ -10,7 +10,7 @@ status: enriched
 
 # RegionCascader
 
-> China administrative-region cascader · built-in three-level National Bureau of Statistics data + searchable popup + code and name paths from `onChange` · built on Cascader · forms/advanced
+> Selects province, city, and district values through linked regional levels. · forms/advanced
 
 ## When to use
 
@@ -25,8 +25,8 @@ import { RegionCascader, sliceLevel, cnDivisions } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string[]` | — | Controlled administrative-code path, such as `["11","1101","110101"]`. |
-| defaultValue | `string[]` | — | Initial code path when uncontrolled. |
+| value | `string[]` | - | Controlled administrative-code path, such as `["11","1101","110101"]`. |
+| defaultValue | `string[]` | - | Initial code path when uncontrolled. |
 | level | `2 \| 3` | `3` | Depth: 3 = province/city/district or county; 2 = province/city. |
 | showSearch | `boolean` | `true` | Shows popup search, allowing direct matches such as “Pudong.” |
 | changeOnSelect | `boolean` | `false` | Allows an intermediate level to be submitted without selecting the final level. |
@@ -34,7 +34,7 @@ import { RegionCascader, sliceLevel, cnDivisions } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Trigger size |
 | disabled | `boolean` | `false` | Disable |
 | invalid | `boolean` | `false` | Invalid state |
-| className | `string` | — | Passthrough to trigger |
+| className | `string` | - | Passthrough to trigger |
 
 ## Events
 
@@ -58,9 +58,9 @@ const [names, setNames] = useState<string[]>([]);
 
 ## Usage guidelines
 
-- `onChange` returns code and name paths in that order. Use the second argument when persisting names, but pass the **code path**—the first argument—back as controlled `value`.
+- `onChange` returns code and name paths in that order. Use the second argument when persisting names, but pass the **code path** (the first argument) back as controlled `value`.
 - `value` must be a valid ancestry path in which every code belongs to its preceding parent; otherwise the popup cannot locate and display the selection.
-- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container — it is the element that takes focus and that screen readers announce (#293).
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, …) land on **it** rather than on the outer container, which is the element that takes focus and that screen readers announce (#293).
 - Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken before 0.54.0** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
 - Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore.
 

@@ -10,7 +10,7 @@ status: enriched
 
 # Tooltip
 
-> Tooltip · Base UI Positioner and arrow with hover and focus triggers · feedback/overlay
+> Shows brief guidance in an arrowed positioned layer on hover. · feedback/overlay
 
 ## When to use
 
@@ -30,7 +30,7 @@ import { Tooltip, TooltipTrigger, TooltipProvider, TooltipContent } from "@hulia
 | side | `"top"\|"right"\|"bottom"\|"left"` | `"top"` | Preferred popup side. |
 | align | `"start"\|"center"\|"end"` | `"center"` | Alignment along the trigger. |
 | sideOffset | `number` | `8` | Distance from the trigger in pixels. |
-| className | `string` | — | Additional class name. |
+| className | `string` | - | Additional class name. |
 
 `TooltipProvider` accepts `delay` and `closeDelay` in milliseconds.
 

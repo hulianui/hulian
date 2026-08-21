@@ -37,7 +37,7 @@ import { Antigravity } from "@hulianui/ui"
 | rotationSpeed | `number` | `0` | Angular speed of the entire ring in radians per second; 0 disables rotation |
 | pulseSpeed | `number` | `3` | Scale-pulse speed while particles are attracted |
 | shape | `"dot" \| "square" \| "bar"` | `"bar"` | Particle shape |
-| className | `string` | — | Class name forwarded to the root canvas wrapper or fallback |
+| className | `string` | - | Class name forwarded to the root canvas wrapper or fallback |
 
 ## Slots
 

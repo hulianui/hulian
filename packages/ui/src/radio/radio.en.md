@@ -10,11 +10,11 @@ status: enriched
 
 # Radio
 
-> Mutually exclusive selection · RadioGroup + arrow-key navigation · forms/basic
+> Selects one mutually exclusive value from an accessible radio group. · forms/basic
 
 ## When to use
 
-Use Radio when exactly one choice must be selected from a small set—typically two to six—and every option should remain visible. Use [Select](../select/select.md) when a larger set should collapse or support search, [CheckboxGroup](../checkbox-group/checkbox-group.md) when several choices may coexist, or [Segmented](../segmented/segmented.md) for two or three compact horizontal choices with a sliding indicator.
+Use Radio when exactly one choice must be selected from a small set (typically two to six) and every option should remain visible. Use [Select](../select/select.md) when a larger set should collapse or support search, [CheckboxGroup](../checkbox-group/checkbox-group.md) when several choices may coexist, or [Segmented](../segmented/segmented.md) for two or three compact horizontal choices with a sliding indicator.
 
 ## Import
 ```ts
@@ -27,28 +27,28 @@ import { RadioGroup, Radio } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value | `string` | — | Controlled selected value. |
-| defaultValue | `string` | — | Initial selected value when uncontrolled. |
+| value | `string` | - | Controlled selected value. |
+| defaultValue | `string` | - | Initial selected value when uncontrolled. |
 | disabled | `boolean` | `false` | Disables the entire group. |
-| required | `boolean` | — | Marks the native form control as required. |
-| name | `string` | — | Native form name |
+| required | `boolean` | - | Marks the native form control as required. |
+| name | `string` | - | Native form name |
 | orientation | `"vertical"\|"horizontal"` | `"vertical"` | Controls layout only. |
-| className | `string` | — | — |
-| aria-label | `string` | — | Provided when no title is visible |
+| className | `string` | - | - |
+| aria-label | `string` | - | Provided when no title is visible |
 
 `Radio`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| value * | `string` | — | Required value identifying the option. |
+| value * | `string` | - | Required value identifying the option. |
 | disabled | `boolean` | `false` | Disables this option. |
-| id | `string` | — | — |
+| id | `string` | - | - |
 | size | `"sm" \| "md"` | `"md"` | Size step; the ring and its inner dot scale together. `md` is 20px/10px/`text-sm`, `sm` is 16px/8px/`text-xs`. |
-| className | `string` | — | Applied to `Radio.Root` (the ring); it cannot reach the label text. |
-| labelClassName | `string` | — | Applied to the label `<span>` for font size and color. |
-| aria-label | `string` | — | Accessible name. **Required when `label` is omitted or contains only visual content such as an icon.** |
-| aria-labelledby | `string` | — | ID of an existing element used as the accessible name; use instead of `aria-label`. |
-| aria-describedby | `string` | — | ID of supplementary descriptive text for the option. |
+| className | `string` | - | Applied to `Radio.Root` (the ring); it cannot reach the label text. |
+| labelClassName | `string` | - | Applied to the label `<span>` for font size and color. |
+| aria-label | `string` | - | Accessible name. **Required when `label` is omitted or contains only visual content such as an icon.** |
+| aria-labelledby | `string` | - | ID of an existing element used as the accessible name; use instead of `aria-label`. |
+| aria-describedby | `string` | - | ID of supplementary descriptive text for the option. |
 
 ## Events
 
@@ -97,7 +97,7 @@ const [value, setValue] = useState("standard");
 - Controlled usage requires `value` and `onValueChange`. Use `defaultValue` only for uncontrolled initial state; do not mix the two patterns.
 - Give a group without a visible heading an `aria-label` so screen readers can identify its purpose.
 - **A Radio without a textual `label` must provide `aria-label` or `aria-labelledby`.** This includes icon cards and custom layouts; otherwise assistive technology announces only “radio button” without identifying the choice.
-- Wrapping the Radio in your own `<label>` **does work**, so there is no need to forward `onClick` by hand. The Root renders as `<span role="radio">` — not a labelable element — so the DOM makes implicit association look broken, but Base UI keeps a visually hidden native input inside to carry activation. Use this when the typography is too specific for `size` plus `labelClassName`.
+- Wrapping the Radio in your own `<label>` **does work**, so there is no need to forward `onClick` by hand. The Root renders as `<span role="radio">`, which is not a labelable element, so the DOM makes implicit association look broken, but Base UI keeps a visually hidden native input inside to carry activation. Use this when the typography is too specific for `size` plus `labelClassName`.
 - Do not add `<label htmlFor>` pointing at the Root `id` while also wrapping: an explicit `htmlFor` **overrides** the implicit association, and having both means clicking the text does nothing at all.
 
 ## Related

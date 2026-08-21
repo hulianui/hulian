@@ -10,7 +10,7 @@ status: enriched
 
 # Citation
 
-> 引用来源 · 序号角标 + 标题/来源 + href 新标签页外链 · 内联标注 agent 回答信息出处 · 纯皮肤RSC · ai/assist
+> 在正文里内联标注一条来源，可点开原文 · ai/assist
 
 ## 何时用
 
@@ -28,7 +28,7 @@ import { Citation } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | index | `number` | `1`(showcase) | 引用序号（如 1 → `[1]` 角标） |
-| href | `string` | — | 外链 URL；提供则渲染为新标签页链接 |
+| href | `string` | - | 外链 URL；提供则渲染为新标签页链接 |
 
 ## Slots
 

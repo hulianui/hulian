@@ -31,9 +31,9 @@ import { MetallicPaint } from "@hulianui/ui"
 | scale | `number` | `1` | Texture scale; higher values produce denser detail |
 | refraction | `number` | `1` | Refraction intensity; higher values make RGB separation and iridescence more visible |
 | liquid | `number` | `0.6` | Liquid disturbance intensity, the larger it is, the more like flowing mercury, 0 = flat mirror surface |
-| blur | `number` | `0.6` | The edge of the ribbon is blurred, 0.2–1.5 is recommended; if it is too small, the stripes will be stiff, and if it is too large, the metallic feeling will disappear |
+| blur | `number` | `0.6` | The edge of the ribbon is blurred, 0.2-1.5 is recommended; if it is too small, the stripes will be stiff, and if it is too large, the metallic feeling will disappear |
 | angle | `number` | `-45` | Overall rotation angle (degrees), changing the incident direction of light |
-| className | `string` | — | Passthrough to container (or fallback div) |
+| className | `string` | - | Passthrough to container (or fallback div) |
 
 ## Slots
 

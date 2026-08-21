@@ -27,12 +27,12 @@ import { SocialButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| provider* | `"wechat" ｜ "alipay" ｜ "qq" ｜ "weibo" ｜ "github" ｜ "google" ｜ "apple" ｜ "x" ｜ "discord" ｜ "gitlab" ｜ SocialBrand` | — | 第三方平台，决定 logo、默认文案与品牌色。传对象即接入枚举外的平台，字段见下表 |
+| provider* | `"wechat" ｜ "alipay" ｜ "qq" ｜ "weibo" ｜ "github" ｜ "google" ｜ "apple" ｜ "x" ｜ "discord" ｜ "gitlab" ｜ SocialBrand` | - | 第三方平台，决定 logo、默认文案与品牌色。传对象即接入枚举外的平台，字段见下表 |
 | variant | `"solid" ｜ "outline"` | `"outline"` | solid=品牌色填充（黑白品牌随主题前景）；outline=描边中性底 + 品牌色 logo（推荐） |
 | shape | `"button" ｜ "icon"` | `"button"` | button=带文案；icon=纯 logo 方钮 |
 | size | `"sm" ｜ "md" ｜ "lg"` | `"md"` | 尺寸 |
 | loading | `boolean` | `false` | 提交中：logo 替换为转圈并禁用 |
-| className | `string` | — | 透传根节点类名 |
+| className | `string` | - | 透传根节点类名 |
 
 ### SocialBrand（自定义平台）
 
@@ -40,9 +40,9 @@ import { SocialButton } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| icon* | `ReactNode` | — | 品牌 logo。内联 `<svg>` / `<img>` / 图标组件皆可，会被约束到当前 `size` 的图标尺寸 |
-| label* | `string` | — | 品牌名。用于默认文案（「{label}登录」）与 `shape="icon"` 时的 `aria-label` |
-| brandColor | `string` | — | 品牌主色。outline 时给 logo 着色、solid 时作按钮底色；**不传即黑白档**，与内置 GitHub/X/Apple 同处方 |
+| icon* | `ReactNode` | - | 品牌 logo。内联 `<svg>` / `<img>` / 图标组件皆可，会被约束到当前 `size` 的图标尺寸 |
+| label* | `string` | - | 品牌名。用于默认文案（「{label}登录」）与 `shape="icon"` 时的 `aria-label` |
+| brandColor | `string` | - | 品牌主色。outline 时给 logo 着色、solid 时作按钮底色；**不传即黑白档**，与内置 GitHub/X/Apple 同处方 |
 
 ## Events
 

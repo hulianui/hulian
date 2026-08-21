@@ -32,8 +32,8 @@ import { FlickeringGrid } from "@hulianui/ui"
 | flickerChance | number | 0.3 | 每帧每格闪烁概率（乘 deltaTime）。0=静态网格，1=高频闪烁 |
 | maxOpacity | number | 0.3 | 方格最大不透明度（0~1），越高越明显 |
 | color | string | `--color-foreground` | 方格颜色，任意 CSS 颜色字符串。不传则从容器 `color`/token 解析 RGB 随主题切换 |
-| width | number | — | 固定宽度（px）。不传用 ResizeObserver 跟随容器宽 |
-| height | number | — | 固定高度（px）。不传用 ResizeObserver 跟随容器高 |
+| width | number | - | 固定宽度（px）。不传用 ResizeObserver 跟随容器宽 |
+| height | number | - | 固定高度（px）。不传用 ResizeObserver 跟随容器高 |
 
 ## 示例
 ```tsx

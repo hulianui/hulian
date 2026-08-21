@@ -25,14 +25,14 @@ import { PixelTrail } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| gridSize | `number` | `40` | 横向像素格子数（纵向按比例自动推算保持方格），建议 16–120 |
-| trailSize | `number` | `0.1` | 拖尾影响半径（占容器短边比例 0–1），越大拖尾越粗 |
+| gridSize | `number` | `40` | 横向像素格子数（纵向按比例自动推算保持方格），建议 16-120 |
+| trailSize | `number` | `0.1` | 拖尾影响半径（占容器短边比例 0-1），越大拖尾越粗 |
 | maxAge | `number` | `320` | 单格点亮后存活时长（ms），越大余晖越久 |
 | color | `string` | `var(--color-chart-1)` | 像素点颜色，token 必须带 `--color-` 前缀 |
 | gooey | `boolean` | `false` | 启用黏液滤镜：相邻点融合成液态团块而非硬边方格 |
 | gooeyStrength | `number` | `8` | gooey 融合强度（高斯模糊半径 px），仅 gooey=true 生效 |
-| className | `string` | — | 透传到根容器（默认 block h-full w-full，由外层控尺寸） |
-| style | `CSSProperties` | — | 透传到根容器 |
+| className | `string` | - | 透传到根容器（默认 block h-full w-full，由外层控尺寸） |
+| style | `CSSProperties` | - | 透传到根容器 |
 
 ## 示例
 ```tsx

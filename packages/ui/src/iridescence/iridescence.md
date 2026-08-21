@@ -26,10 +26,10 @@ import { Iridescence } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | color | `[number, number, number] \| string` | `--color-chart-3` | 基础色调。RGB 数组每分量 0..1，或任意 CSS 颜色字符串（hex/oklch/hsl/var）。不传则读主题 token 随明暗切换 |
-| speed | number | 1.0 | 动画速度倍率，建议 0.1–5 |
-| amplitude | number | 0.1 | 鼠标偏移幅度（扰动强度），建议 0.01–0.5 |
+| speed | number | 1.0 | 动画速度倍率，建议 0.1-5 |
+| amplitude | number | 0.1 | 鼠标偏移幅度（扰动强度），建议 0.01-0.5 |
 | mouseReact | boolean | true | 是否响应鼠标/触摸（驱动 uMouse）。关闭后固定 (0.5,0.5)，效果保持但不随指针 |
-| className | string | — | 透传到 canvas 或 fallback 容器 |
+| className | string | - | 透传到 canvas 或 fallback 容器 |
 
 ## Slots
 

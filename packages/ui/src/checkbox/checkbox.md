@@ -10,7 +10,7 @@ status: enriched
 
 # Checkbox
 
-> 复选框 · 三态(含半选) + Base UI · forms/basic
+> 切换一个独立的布尔值，支持半选态 · forms/basic
 
 ## 何时用
 
@@ -25,19 +25,19 @@ import { Checkbox } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| checked | `boolean` | — | 受控勾选态 |
-| defaultChecked | `boolean` | — | 非受控初始勾选态 |
+| checked | `boolean` | - | 受控勾选态 |
+| defaultChecked | `boolean` | - | 非受控初始勾选态 |
 | indeterminate | `boolean` | `false` | 第三态：半选（Base UI 原生 indeterminate） |
 | disabled | `boolean` | `false` | 禁用 |
 | required | `boolean` | `false` | 必填 |
-| name | `string` | — | 表单字段名 |
-| value | `string` | — | 表单值；放进 CheckboxGroup 时按此 value 匹配成员 |
-| id | `string` | — | 关联 label 的 id |
+| name | `string` | - | 表单字段名 |
+| value | `string` | - | 表单值；放进 CheckboxGroup 时按此 value 匹配成员 |
+| id | `string` | - | 关联 label 的 id |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，方盒与内置勾号一起缩放。`md` = 20px/14px/`text-sm`，`sm` = 16px/12px/`text-xs`（对齐 Input、SelectTrigger 的 `size="sm"`） |
-| className | `string` | — | 落在 Checkbox.Root（方盒），够不到文字 |
-| labelClassName | `string` | — | 落在文字 `<span>`，用来改字号 / 颜色 |
-| tabIndex | `number` | — | 透传到 Checkbox.Root（树场景置 -1 退出 Tab 序，焦点由容器 roving 接管） |
-| aria-label | `string` | — | 无 label 时的无障碍标签 |
+| className | `string` | - | 落在 Checkbox.Root（方盒），够不到文字 |
+| labelClassName | `string` | - | 落在文字 `<span>`，用来改字号 / 颜色 |
+| tabIndex | `number` | - | 透传到 Checkbox.Root（树场景置 -1 退出 Tab 序，焦点由容器 roving 接管） |
+| aria-label | `string` | - | 无 label 时的无障碍标签 |
 
 ## Events
 

@@ -27,21 +27,21 @@ import { RegionSelect, type RegionBox } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| src* | `string` | — | 底图地址 |
-| value | `RegionBox \| null` | — | 当前框（原图像素 `[x1,y1,x2,y2]`），受控 |
-| onChange | `(box: RegionBox) => void` | — | 拖完一次给一个**规范化**且**已取整**的框（反向拖也成立） |
-| onDrafting | `(box: RegionBox \| null) => void` | — | 拖拽过程中的实时框（**浮点**，不受 `round` 影响），结束回 `null` |
+| src* | `string` | - | 底图地址 |
+| value | `RegionBox \| null` | - | 当前框（原图像素 `[x1,y1,x2,y2]`），受控 |
+| onChange | `(box: RegionBox) => void` | - | 拖完一次给一个**规范化**且**已取整**的框（反向拖也成立） |
+| onDrafting | `(box: RegionBox \| null) => void` | - | 拖拽过程中的实时框（**浮点**，不受 `round` 影响），结束回 `null` |
 | round | `"expand" \| "nearest" \| "none"` | `"expand"` | 出口取整方式：`expand` 左上 floor、右下 ceil（不缩小框）；`nearest` 四舍五入；`none` 保留浮点 |
 | minSide | `number` | `8` | 误点阈值：框短边小于它（原图像素）不触发 onChange。判定在取整**之后** |
-| boxes | `{ box, color?, label?, id? }[]` | — | 只读的其它框（虚线 + 标注），同页多图时一并显示 |
-| aspect | `number` | — | 固定宽高比（宽/高）；不传则自由框选 |
-| naturalSize | `{ width, height }` | — | 已知的原图尺寸；不传则组件用 `new Image()` 自己量 |
+| boxes | `{ box, color?, label?, id? }[]` | - | 只读的其它框（虚线 + 标注），同页多图时一并显示 |
+| aspect | `number` | - | 固定宽高比（宽/高）；不传则自由框选 |
+| naturalSize | `{ width, height }` | - | 已知的原图尺寸；不传则组件用 `new Image()` 自己量 |
 | maxHeight | `string \| number` | `"60vh"` | 超高图的内部滚动上限 |
 | color | `string` | `"primary"` | 主框描边色（语义色名 / 任意 CSS 色） |
 | readOnly | `boolean` | `false` | 不响应拖拽，仍显示已有框 |
 | placeholder | `ReactNode` | `"载入图片…"` | 量到自然尺寸前的占位 |
 | errorPlaceholder | `ReactNode` | `"图片加载失败"` | 底图取不到（404/403/跨域/网络）时的占位 |
-| onError | `(event: unknown) => void` | — | 底图加载失败回调（预读与画布 `<image>` 共用同一出口） |
+| onError | `(event: unknown) => void` | - | 底图加载失败回调（预读与画布 `<image>` 共用同一出口） |
 | alt | `string` | `""` | 画布的无障碍名 |
 
 ### 纯函数（已导出）

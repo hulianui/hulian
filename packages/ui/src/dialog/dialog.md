@@ -10,7 +10,7 @@ status: enriched
 
 # Dialog
 
-> 对话框 · Base UI Portal + focus trap · feedback/overlay
+> 在模态浮层里承载内容，并锁住键盘焦点 · feedback/overlay
 
 ## 何时用
 
@@ -27,20 +27,20 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `DialogContent.title` | `ReactNode` | — | 标题（a11y 名字的常规来源）。收 ReactNode，「图标 + 文案」直接写。承载元素是 `<h2>`，**只收 phrasing content**，按钮组放 `extra`。0.47.0 起由必填改为可选（见下方「对话框必须有名字」） |
-| `DialogContent.extra` | `ReactNode` | — | 标题右侧的操作区，与标题同排右对齐，**不参与无障碍名** |
-| `DialogContent.description` | `ReactNode` | — | 说明文案。渲染成 `<p>`，**只能放 phrasing content**（块级内容放 children） |
-| `DialogContent.aria-label` | `string` | — | 对话框的无障碍名，直接落到 popup 上。不传 `title` 时用它（铺满型对话框的可见 header 由消费方自己画） |
-| `DialogContent.aria-labelledby` | `string` | — | 无障碍名的来源元素 id，优先于 `title` 自动生成的 id。与 `aria-label` 二选一 |
+| `DialogContent.title` | `ReactNode` | - | 标题（a11y 名字的常规来源）。收 ReactNode，「图标 + 文案」直接写。承载元素是 `<h2>`，**只收 phrasing content**，按钮组放 `extra`。0.47.0 起由必填改为可选（见下方「对话框必须有名字」） |
+| `DialogContent.extra` | `ReactNode` | - | 标题右侧的操作区，与标题同排右对齐，**不参与无障碍名** |
+| `DialogContent.description` | `ReactNode` | - | 说明文案。渲染成 `<p>`，**只能放 phrasing content**（块级内容放 children） |
+| `DialogContent.aria-label` | `string` | - | 对话框的无障碍名，直接落到 popup 上。不传 `title` 时用它（铺满型对话框的可见 header 由消费方自己画） |
+| `DialogContent.aria-labelledby` | `string` | - | 无障碍名的来源元素 id，优先于 `title` 自动生成的 id。与 `aria-label` 二选一 |
 | `DialogContent.showClose` | `boolean` | `true` | 右上角关闭按钮（#279，形状与默认值对齐 DrawerContent）。只读详情型对话框（没有 footer）此前唯一可见退路是点遮罩，键盘只剩 Esc，读屏没有「关闭」可达元素。开着时标题/`extra` 行自动让出右上角 40px。全局搜索框这类自带关闭手段的弹层传 `false` |
 | `DialogContent.closeLabel` | `string` | locale `dialog.close` | 关闭按钮的无障碍名，缺省吃 ConfigProvider locale（zh「关闭」/ en "Close"） |
-| `DialogContent.titleClassName` | `string` | — | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
-| `DialogContent.descriptionClassName` | `string` | — | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」——面包屑式标题的弹窗里可见区只留标题，读屏仍拿得到那句话 |
+| `DialogContent.titleClassName` | `string` | - | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
+| `DialogContent.descriptionClassName` | `string` | - | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」——面包屑式标题的弹窗里可见区只留标题，读屏仍拿得到那句话 |
 | `DialogContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
-| `DialogContent.backdropClassName` | `string` | — | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
+| `DialogContent.backdropClassName` | `string` | - | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
 | `DialogContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children（双栏各自滚动即写 `flex-1 min-h-0`，不必拍 `h-[58vh]`） |
-| `DialogContent.bodyClassName` | `string` | — | 追加到正文区容器 |
-| `DialogContent.className` | `string` | — | 内容容器类名 |
+| `DialogContent.bodyClassName` | `string` | - | 追加到正文区容器 |
+| `DialogContent.className` | `string` | - | 内容容器类名 |
 
 ## Events
 

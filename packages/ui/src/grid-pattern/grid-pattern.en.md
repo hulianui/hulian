@@ -10,7 +10,7 @@ status: enriched
 
 # GridPattern
 
-> Grid background · Pure SVG line + dotted line optional + currentColor · decoration/backdrop
+> Draws a scalable line grid for decorative section backgrounds. · decoration/backdrop
 
 ## When to Use
 

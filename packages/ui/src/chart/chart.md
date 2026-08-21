@@ -27,44 +27,44 @@ import { AreaChart, BarChart, ComposedChart, LineChart, PieChart, RadarChart, Ra
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| data* | `TDatum[]` | — | 行数据数组 |
-| series* | `ChartSeries[]` | — | 序列定义 `{ key, label?, color? }`；color 缺省按 index 取 `var(--color-chart-N)`，可传语义色名/CSS 颜色覆盖 |
-| xKey* | `string` | — | 横轴字段名 |
+| data* | `TDatum[]` | - | 行数据数组 |
+| series* | `ChartSeries[]` | - | 序列定义 `{ key, label?, color? }`；color 缺省按 index 取 `var(--color-chart-N)`，可传语义色名/CSS 颜色覆盖 |
+| xKey* | `string` | - | 横轴字段名 |
 | height | `number` | `280` | 高度（SSR 安全：宽走 ResponsiveContainer，高需显式值） |
 | stacked | `boolean` | `false` | 多序列堆叠（Area/Bar 生效） |
 | legend | `boolean \| "top" \| "bottom"` | `false`（Radar 为 `true`） | 序列图例（色点 + `label`）。`true` 等价 `"bottom"`，`false` 关掉。色点走 [Dot](../dot/dot.md) 的 `color`，与序列色同源。**默认值按图种分两档**：笛卡尔三件默认关，Radar 默认开（历来自带图例，保持零改动） |
 | legendScroll | `boolean` | `false` | 图例恒为单行 + 横向滚动（对齐 echarts `legend.type: "scroll"`）。缺省是换行居中，序列一多就堆成多行挤扁画布；序列 >8 条开这个 |
 | horizontal | `boolean` | `false` | **BarChart 专属**：横向柱状 |
-| yAxisWidth | `number` | 自适应 | **BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48–160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传 |
+| yAxisWidth | `number` | 自适应 | **BarChart 专属**：horizontal 类目轴宽 px；默认按最长标签自适应（CJK 全角估宽·48-160，纯函数 `categoryAxisWidth` 可测），超长标签或精确控制时显式传 |
 | radiusAxis | `boolean` | `true` | **RadarChart 专属**：半径轴的刻度数字（`0 15 30 …`）。传 `false` 只留环线与角轴名，即 echarts radar 的默认形态（它的 `axisLabel.show` 默认就是 `false`）。**如果**你的雷达图序列较多或数据填得满，建议关掉——见下方注意事项 |
-| onPointClick | `(info: { datum, index, seriesKey? }) => void` | — | 数据点点击（对标 echarts 的 `chart.on('click')`，用于钻取）。命中判据与 tooltip 同源：**tooltip 亮了点下去就一定有回调**，不必精确点中 2px 的折线；点在画布空白或坐标轴上不触发。`seriesKey` **不保证有值**（共享 tooltip 时 recharts 不认为某一条序列被单独命中）。**RadarChart 没有这个 prop** |
-| referenceLines | `ChartReferenceLine[]` | — | 值轴参考线（对标 echarts 的 `markLine`）：帕累托的 80/95 线、均值线、目标线。见下方 `ChartReferenceLine` 表。**RadarChart 没有这个 prop** |
+| onPointClick | `(info: { datum, index, seriesKey? }) => void` | - | 数据点点击（对标 echarts 的 `chart.on('click')`，用于钻取）。命中判据与 tooltip 同源：**tooltip 亮了点下去就一定有回调**，不必精确点中 2px 的折线；点在画布空白或坐标轴上不触发。`seriesKey` **不保证有值**（共享 tooltip 时 recharts 不认为某一条序列被单独命中）。**RadarChart 没有这个 prop** |
+| referenceLines | `ChartReferenceLine[]` | - | 值轴参考线（对标 echarts 的 `markLine`）：帕累托的 80/95 线、均值线、目标线。见下方 `ChartReferenceLine` 表。**RadarChart 没有这个 prop** |
 | yAxisDomain | `[number \| "auto", number \| "auto"]` | 自适应 | 值轴显示范围 `[min, max]`，`"auto"` 表示该端仍按数据自适应（对标 echarts 的 `yAxis.min/max`）。典型场景是百分比轴锁 `[0, 100]`：auto 会把「82%」画到顶格读成快满，且越界的 `referenceLines` 会被静默丢弃不画。数据超出锁定范围时轴会扩大容纳（不裁剪路径）。`horizontal` 柱图的值轴是横轴，同样由它管。**ComposedChart 用 `leftAxisDomain`/`rightAxisDomain` 代替；RadarChart 没有这个 prop** |
 | series[].type | `"bar" \| "line" \| "area"` | `"bar"` | **ComposedChart 专属**：该序列画成什么 |
 | series[].axis | `"left" \| "right"` | `"left"` | **ComposedChart 专属**：该序列吃哪根值轴 |
-| leftAxisLabel / rightAxisLabel | `string` | — | **ComposedChart 专属**：轴标题。左右各画各的量纲时不标名字，读者分不出哪条线读哪根轴 |
+| leftAxisLabel / rightAxisLabel | `string` | - | **ComposedChart 专属**：轴标题。左右各画各的量纲时不标名字，读者分不出哪条线读哪根轴 |
 | leftAxisDomain / rightAxisDomain | `[number \| "auto", number \| "auto"]` | 自适应 | **ComposedChart 专属**：逐轴 domain，语义同 `yAxisDomain`。右轴的第一大用户是百分比轴（帕累托累计占比、退货率、达成率），锁 `rightAxisDomain={[0, 100]}` 满量程后，`referenceLines={[{ y: 95, axis: "right" }]}` 不再因越界被丢弃 |
-| axisMax | `Record<string, number>` | — | **RadarChart 专属**：每根角轴各自的满量程，键是角轴维度值。见下方「量纲差很多的雷达图」 |
-| className | `string` | — | 透传类名（宽度在此设，如 `w-[32rem]`） |
+| axisMax | `Record<string, number>` | - | **RadarChart 专属**：每根角轴各自的满量程，键是角轴维度值。见下方「量纲差很多的雷达图」 |
+| className | `string` | - | 透传类名（宽度在此设，如 `w-[32rem]`） |
 
 ### PieChart / RadialChart（扁平数据类）
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| data* | `ChartDatum[]` | — | 扁平数据点 `{ name, value, color? }` |
+| data* | `ChartDatum[]` | - | 扁平数据点 `{ name, value, color? }` |
 | donut | `boolean` | `false` | **PieChart**：环形图（中心挖空） |
 | height | `number` | `280` | 高度 |
 | legend | `boolean \| "top" \| "bottom"` | `true` | 图例（色点 + `data[].name`），语义同上但**默认开**（这两件历来自带图例）。传 `false` 关掉——自绘图例时必须关，否则两份图例并排 |
 | legendScroll | `boolean` | `false` | 同上：图例恒为单行 + 横向滚动 |
-| onPointClick | `(info: { datum, index }) => void` | — | 点中某一片时回调（钻取用）。扇区级命中，点在留白处不触发 |
-| className | `string` | — | 透传类名 |
+| onPointClick | `(info: { datum, index }) => void` | - | 点中某一片时回调（钻取用）。扇区级命中，点在留白处不触发 |
+| className | `string` | - | 透传类名 |
 
 ### ChartReferenceLine
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| y* | `number` | — | 值轴上的位置 |
-| label | `string` | — | 线上文案（如「80%」「目标」） |
+| y* | `number` | - | 值轴上的位置 |
+| label | `string` | - | 线上文案（如「80%」「目标」） |
 | axis | `"left" \| "right"` | `"left"` | 挂在哪根值轴上，仅 ComposedChart 有意义 |
 | color | `string` | `--color-muted-foreground` | 线色。缺省刻意不取 `chart-N`：它不是一条数据，抢了序列的色相会被读成「第 N 条序列」 |
 | dash | `string` | `"4 4"` | 虚线段样式，传空串即实线 |
@@ -146,7 +146,7 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 
 ### 量纲差很多的雷达图
 
-五根轴分别是销售额（十万级）/ 订单数（百级）/ 退货率（0–100）时，单一刻度会把量纲小的轴全压成靠近圆心的一个点——图还在，形状对比没了。给 `axisMax` 逐轴配满量程：
+五根轴分别是销售额（十万级）/ 订单数（百级）/ 退货率（0-100）时，单一刻度会把量纲小的轴全压成靠近圆心的一个点——图还在，形状对比没了。给 `axisMax` 逐轴配满量程：
 
 ```tsx
 <RadarChart
@@ -159,7 +159,7 @@ const data = [{ month: "1月", revenue: 42, orders: 168 }, { month: "2月", reve
 
 **tooltip 仍显示原始值**——自己在业务侧先归一再喂进来也能得到同样的形状，但 tooltip 里就只剩归一值，运营得自己换算回去。
 
-某个维度没在 `axisMax` 里给出时退回「该维度在当前数据里的最大值」并在开发期告警：混着归一和不归一才是最糟的，那根轴会莫名其妙地贴着圆心或顶满外环。开启 `axisMax` 后半径轴刻度默认关闭（0–100 的归一刻度没有意义），需要的话显式传 `radiusAxis`。
+某个维度没在 `axisMax` 里给出时退回「该维度在当前数据里的最大值」并在开发期告警：混着归一和不归一才是最糟的，那根轴会莫名其妙地贴着圆心或顶满外环。开启 `axisMax` 后半径轴刻度默认关闭（0-100 的归一刻度没有意义），需要的话显式传 `radiusAxis`。
 
 ## 禁忌 / 坑
 - 宽度交给父容器 / className，**高度必须显式**（`height` 默认 280）——宽走 ResponsiveContainer 但高拿不到会塌成 0。

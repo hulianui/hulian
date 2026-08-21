@@ -10,7 +10,7 @@ status: enriched
 
 # DotPattern
 
-> Dot matrix background · Pure SVG pattern + currentColor token + RSC · decoration/backdrop
+> Draws a token-colored repeating dot background with an SVG pattern. · decoration/backdrop
 
 ## When to Use
 

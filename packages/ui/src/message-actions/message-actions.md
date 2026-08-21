@@ -10,7 +10,7 @@ status: enriched
 
 # MessageActions
 
-> 消息操作条 · 复制(剪贴板+Check反馈)/重新生成/赞/踩 · 各键按需渲染 · 复用内联图标 · 挂 ChatMessage actions 槽 · ai/assist
+> 给一条消息配上复制、重试和点赞点踩 · ai/assist
 
 ## 何时用
 
@@ -27,7 +27,7 @@ import { MessageActions } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| content | `string` | — | 复制目标文本；提供则显示复制键（点后 Check 反馈 1.5s） |
+| content | `string` | - | 复制目标文本；提供则显示复制键（点后 Check 反馈 1.5s） |
 
 ## Events
 

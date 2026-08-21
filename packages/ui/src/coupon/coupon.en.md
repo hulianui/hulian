@@ -10,7 +10,7 @@ status: enriched
 
 # Coupon
 
-> Coupon · CSS ticket shape with amount, discount, or shipping kind, four lifecycle states, optional shine, and checkout selection · data-display/info
+> Displays discount value, conditions, validity, and claim or used state. · data-display/info
 
 ## When to use
 
@@ -26,16 +26,16 @@ import { Coupon } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | kind | `"amount" \| "discount" \| "shipping"` | `"amount"` | Amount-off, percentage discount, or free shipping. |
-| amount | `number` | — | Amount value for amount coupons. |
-| discount | `number` | — | Discount such as 8.5 for discount coupons. |
-| threshold | `number` | — | Minimum spend; zero or omission means no threshold. |
+| amount | `number` | - | Amount value for amount coupons. |
+| discount | `number` | - | Discount such as 8.5 for discount coupons. |
+| threshold | `number` | - | Minimum spend; zero or omission means no threshold. |
 | status | `"available" \| "claimed" \| "used" \| "expired"` | `"available"` | Lifecycle state controlling action and disabled styling. |
 | tone | `"brand" \| "danger" \| "neutral"` | `"brand"` | Color tone. |
 | size | `"sm" \| "md"` | `"md"` | Size. |
 | shine | `boolean` | `false` | Animated claim highlight, automatically off after use or expiry. |
-| selected | `boolean` | — | Checkout selection ring. |
-| actionLabel | `string` | — | Overrides action text. |
-| className | `string` | — | Root class. |
+| selected | `boolean` | - | Checkout selection ring. |
+| actionLabel | `string` | - | Overrides action text. |
+| className | `string` | - | Root class. |
 
 ## Events
 

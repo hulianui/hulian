@@ -10,7 +10,7 @@ status: enriched
 
 # Toggle
 
-> 切换按钮 · Base UI pressed 态 + ToggleGroup 单/多选 · forms/basic
+> 让单个按钮在按下与未按下之间切换 · forms/basic
 
 ## 何时用
 
@@ -27,25 +27,25 @@ import { Toggle, ToggleGroup, toggleVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| pressed | `boolean` | — | 受控按下态 |
+| pressed | `boolean` | - | 受控按下态 |
 | defaultPressed | `boolean` | `false` | 非受控初始按下态 |
 | disabled | `boolean` | `false` | 禁用 |
-| value | `string` | — | 在 ToggleGroup 内标识该项 |
+| value | `string` | - | 在 ToggleGroup 内标识该项 |
 | variant | `"default"｜"outline"｜"pill"` | `"default"` | default=灰底软选中 / outline=主色实心 / pill=圆角描边 + soft 主色选中（AI 工具栏开关风） |
-| size | `"sm"｜"md"` | `"md"` | — |
-| className | `string` | — | — |
-| aria-label | `string` | — | 仅图标时必填 |
+| size | `"sm"｜"md"` | `"md"` | - |
+| className | `string` | - | - |
+| aria-label | `string` | - | 仅图标时必填 |
 
 `ToggleGroup`
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| value | `string[]` | — | 受控：已按下项 value 数组 |
-| defaultValue | `string[]` | — | 非受控初始按下项数组 |
+| value | `string[]` | - | 受控：已按下项 value 数组 |
+| defaultValue | `string[]` | - | 非受控初始按下项数组 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | multiple | `boolean` | `false` | true=多选共存；false=单选互斥 |
-| orientation | `"horizontal"｜"vertical"` | `"horizontal"` | — |
-| className | `string` | — | — |
+| orientation | `"horizontal"｜"vertical"` | `"horizontal"` | - |
+| className | `string` | - | - |
 
 ## Events
 

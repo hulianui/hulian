@@ -10,7 +10,7 @@ status: enriched
 
 # PullToRefresh
 
-> Pull to refresh · Damped top-edge pull + armed threshold + release trigger + refresh state held until the returned promise settles (zero dependencies · Pointer Events) · mobile/gesture
+> Tracks a resisted downward pull, arms at a threshold, and holds until refresh completes. · mobile/gesture
 
 ## When to Use
 
@@ -27,7 +27,7 @@ import { PullToRefresh } from "@hulianui/ui"
 |------|------|------|------|
 | `threshold` | `number` | `64` | Pull-down threshold px to trigger refresh |
 | `resistance` | `number` | `0.5` | Pull-down damping coefficient (0-1, the smaller it is, the "heavy" it is) |
-| `className` | `string` | — | — |
+| `className` | `string` | - | - |
 
 ## Events
 

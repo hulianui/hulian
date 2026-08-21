@@ -25,14 +25,14 @@ import { Hyperspeed } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| speed | `number` | `1` | 整体推进速度倍率，越大冲来越快，建议 0.2–4 |
-| density | `number` | `40` | 道路两侧光带密度，越大越密集，建议 10–120 |
-| distortion | `number` | `1` | 视野扭曲强度（湍流摆动），0=笔直隧道，建议 0–2 |
-| fade | `number` | `0.4` | 雾化淡出强度，越大远处越快被黑暗吞没，建议 0–1 |
+| speed | `number` | `1` | 整体推进速度倍率，越大冲来越快，建议 0.2-4 |
+| density | `number` | `40` | 道路两侧光带密度，越大越密集，建议 10-120 |
+| distortion | `number` | `1` | 视野扭曲强度（湍流摆动），0=笔直隧道，建议 0-2 |
+| fade | `number` | `0.4` | 雾化淡出强度，越大远处越快被黑暗吞没，建议 0-1 |
 | leftColor | `string` | `var(--color-chart-4)` | 左侧（驶离）车灯色，任意 CSS 颜色 |
 | rightColor | `string` | `var(--color-chart-2)` | 右侧（驶近）车灯色，任意 CSS 颜色 |
-| className | `string` | — | 透传根容器（本身 block h-full w-full，由容器控尺寸） |
-| style | `CSSProperties` | — | 透传根容器内联样式 |
+| className | `string` | - | 透传根容器（本身 block h-full w-full，由容器控尺寸） |
+| style | `CSSProperties` | - | 透传根容器内联样式 |
 
 ## Slots
 

@@ -25,21 +25,21 @@ import { AdminLayout } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| menuItems* | `NavMenuNode[]` | — | Sidebar menu data rendered with NavMenu. |
-| selectedKey | `string` | — | Controlled selected menu item key. |
-| defaultSelectedKey | `string` | — | Initial selected menu item key when uncontrolled. |
-| openKeys | `string[]` | — | Controlled keys for expanded submenus. |
-| defaultOpenKeys | `string[]` | — | Initial expanded submenu keys when uncontrolled. |
-| collapsed | `boolean` | — | Controlled sidebar collapse state. |
+| menuItems* | `NavMenuNode[]` | - | Sidebar menu data rendered with NavMenu. |
+| selectedKey | `string` | - | Controlled selected menu item key. |
+| defaultSelectedKey | `string` | - | Initial selected menu item key when uncontrolled. |
+| openKeys | `string[]` | - | Controlled keys for expanded submenus. |
+| defaultOpenKeys | `string[]` | - | Initial expanded submenu keys when uncontrolled. |
+| collapsed | `boolean` | - | Controlled sidebar collapse state. |
 | defaultCollapsed | `boolean` | `false` | Initial sidebar collapse state when uncontrolled. |
-| breakpoint | `"sm"\|"md"\|"lg"\|"xl"\|"2xl"\|number` | — | Responsive breakpoint with the same semantics as LayoutSider. The sidebar collapses when the viewport is at or below this width and expands above it. In uncontrolled mode, the component updates its own state. When `collapsed` is passed, it only calls `onCollapsedChange`; the consumer decides whether to apply the new state. Omit this prop to disable automatic collapsing. |
+| breakpoint | `"sm"\|"md"\|"lg"\|"xl"\|"2xl"\|number` | - | Responsive breakpoint with the same semantics as LayoutSider. The sidebar collapses when the viewport is at or below this width and expands above it. In uncontrolled mode, the component updates its own state. When `collapsed` is passed, it only calls `onCollapsedChange`; the consumer decides whether to apply the new state. Omit this prop to disable automatic collapsing. |
 | showTabs | `boolean` | `true` | Whether to show the tab bar. |
-| tabs | `AdminTab[]` | — | Controlled tab list. When omitted, menu selections maintain the list automatically. |
-| activeKey | `string` | — | Controlled active tab key. |
-| defaultActiveKey | `string` | — | Initial active tab key when uncontrolled; it also determines which tab opens on first render. |
+| tabs | `AdminTab[]` | - | Controlled tab list. When omitted, menu selections maintain the list automatically. |
+| activeKey | `string` | - | Controlled active tab key. |
+| defaultActiveKey | `string` | - | Initial active tab key when uncontrolled; it also determines which tab opens on first render. |
 | fitViewport | `boolean` | `true` | Whether the shell fills the viewport. Keep `true` for a full-page application: the shell uses a fixed 100dvh height and scrolls inside the content area. Pass `false` inside a fixed-height preview or container and use `h-full` to follow the parent height. |
-| className | `string` | — | Additional class name for the root container. |
-| contentClassName | `string` | — | Additional class name for the content area. |
+| className | `string` | - | Additional class name for the root container. |
+| contentClassName | `string` | - | Additional class name for the content area. |
 
 `AdminTab` has the shape `{ key: string; label: ReactNode; closable?: boolean }`. By default, `closable` allows a tab to close when more than one tab is open; the final tab cannot be closed.
 

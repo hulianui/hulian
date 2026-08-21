@@ -10,7 +10,7 @@ status: enriched
 
 # Scheduler
 
-> Event calendar and scheduling workspace · month, week, day, and resource views with overlapping event layout, current-time line, native drag-create, move, resize, slot snapping, controlled state, toolbar, and exported geometry helpers · data-display/collection
+> Manages events across month, week, day, and resource views with drag-based editing. · data-display/collection
 
 ## When to use
 
@@ -25,17 +25,17 @@ import { Scheduler, dateOf, dayColumns, eventRect, hourLines, layoutColumns, min
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| events* | `SchedulerEvent[]` | — | Controlled `{id, title, start, end, resourceId?, tone?, subtitle?}` events using local ISO datetimes. |
-| view* | `"month" \| "week" \| "day" \| "resource"` | — | Controlled view. |
-| date* | `string` | — | Controlled ISO focus date. |
+| events* | `SchedulerEvent[]` | - | Controlled `{id, title, start, end, resourceId?, tone?, subtitle?}` events using local ISO datetimes. |
+| view* | `"month" \| "week" \| "day" \| "resource"` | - | Controlled view. |
+| date* | `string` | - | Controlled ISO focus date. |
 | now | `string \| Date` | Browser clock, read after mount | Reference point for "today" and the current-time line. The component **never reads the system clock during render**, so the first frame has no today highlight and no current-time line; both appear after mount. Passing a value takes over completely, which is what makes screenshot regressions reproducible and lets "today" follow a server business clock instead of the user's machine. |
-| resources | `SchedulerResource[]` | — | Required in resource view: `{id, title, subtitle?}`. |
+| resources | `SchedulerResource[]` | - | Required in resource view: `{id, title, subtitle?}`. |
 | dayStartHour | `number` | `8` | Timeline start hour. |
 | dayEndHour | `number` | `20` | Timeline end hour. |
 | slotMinutes | `number` | `30` | Drag and create snap interval in minutes. |
 | hourHeight | `number` | `56` | Pixels per hour. |
 | toolbar | `boolean` | `true` | Shows title, previous/today/next controls, and view selector. |
-| className | `string` | — | Root class; establish a definite height for scrolling. |
+| className | `string` | - | Root class; establish a definite height for scrolling. |
 
 `SchedulerEvent.tone` is `"primary" | "success" | "warning" | "danger" | "neutral"`, defaulting to primary.
 
@@ -84,7 +84,7 @@ const [date, setDate] = useState("2026-06-15");
 
 ## Usage notes
 
-- **The clock is never read during render.** Under SSR or static export the server render happens at build time and the first client render happens at visit time; once they cross a day boundary they compute a different "today" and hydration fails (React #418). The component therefore defers "now" to after mount, so the first frame has no today highlight and no current-time line. When copying the examples, do not move `dayjs()` back to module scope or into the render body — `useMemo(fn, [])` does not help, because it only stabilizes a single render tree. Pass `now` when you need determinism.
+- **The clock is never read during render.** Under SSR or static export the server render happens at build time and the first client render happens at visit time; once they cross a day boundary they compute a different "today" and hydration fails (React #418). The component therefore defers "now" to after mount, so the first frame has no today highlight and no current-time line. When copying the examples, do not move `dayjs()` back to module scope or into the render body. `useMemo(fn, [])` does not help, because it only stabilizes a single render tree. Pass `now` when you need determinism.
 
 - Events, view, and date are fully controlled. Write `onEventsChange` back to state or dragged changes snap back.
 - The host needs a definite height so the time grid can fill it and scroll internally.

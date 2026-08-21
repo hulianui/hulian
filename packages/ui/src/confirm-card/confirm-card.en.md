@@ -10,7 +10,7 @@ status: enriched
 
 # ConfirmCard
 
-> Confirmation card · Human-in-the-loop field summary with confirm and correction actions, plus a locked result state · Reuses Button · ai/agent
+> Requests explicit user approval for an agent-proposed operation. · ai/agent
 
 ## When to Use
 
@@ -25,16 +25,16 @@ import { ConfirmCard } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| items* | `ConfirmCardItem[]` | — | Field summaries rendered as a description list; each item is `{ label, value }` |
+| items* | `ConfirmCardItem[]` | - | Field summaries rendered as a description list; each item is `{ label, value }` |
 | acted | `"confirmed" \| "edited" \| null` | `null` | Controlled result that locks both actions and marks the selected outcome; renders `"\u5df2\u786e\u8ba4"` (Confirmed) or `"\u4fee\u6539\u4e2d"` (Editing) |
-| className | `string` | — | Container additional classes |
+| className | `string` | - | Container additional classes |
 
 `ConfirmCardItem`
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| label * | `ReactNode` | — | Field name, rendered as `<dt>`. |
-| value * | `ReactNode` | — | Field value, rendered as `<dd>`. |
+| label * | `ReactNode` | - | Field name, rendered as `<dt>`. |
+| value * | `ReactNode` | - | Field value, rendered as `<dd>`. |
 
 ## Events
 
