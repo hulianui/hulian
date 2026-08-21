@@ -1,6 +1,7 @@
 "use client";
 import { memo, useState } from "react";
 import { cn } from "../lib/cn";
+import { useCopiedFlag } from "../lib/use-copied-flag";
 import { Eye, EyeOff, Copy, Check } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
 import type { MaskStrategy, SecretFieldProps } from "./secret-field.types";
@@ -36,7 +37,7 @@ function SecretFieldImpl({
 }: SecretFieldProps) {
   const [revealedState, setRevealedState] = useState(false);
   const revealed = revealedProp ?? revealedState;
-  const [copied, setCopied] = useState(false);
+  const [copied, markCopied] = useCopiedFlag();
   const locale = useComponentLocale().secretField ?? {
     show: "显示",
     hide: "隐藏",
@@ -53,8 +54,7 @@ function SecretFieldImpl({
   const handleCopy = () => {
     void navigator.clipboard?.writeText(value);
     onCopy?.(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    markCopied();
   };
 
   return (

@@ -5,6 +5,7 @@ import { Checkbox } from "../checkbox/checkbox";
 import { useLocaleValue } from "../config/locale-context";
 import { Input } from "../input/input";
 import { cn } from "../lib/cn";
+import { useCopiedFlag } from "../lib/use-copied-flag";
 import { NumberField } from "../number-field/number-field";
 import { Segmented } from "../segmented/segmented";
 import { Slider } from "../slider/slider";
@@ -131,7 +132,7 @@ export function PasswordGenerator({
 
   const [secret, setSecret] = useState<GeneratedSecret | null>(null);
   const [failed, setFailed] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, markCopied] = useCopiedFlag();
 
   // 回调放 ref：它们通常是内联箭头函数，直接进 effect 依赖会每次渲染都重新生成一遍密码。
   const onGenerateRef = useRef(onGenerate);
@@ -207,8 +208,7 @@ export function PasswordGenerator({
     if (!secret) return;
     void navigator.clipboard?.writeText(secret.value);
     onCopy?.(secret.value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    markCopied();
   };
 
   const view = STRENGTH_VIEW[secret?.strength ?? "weak"];
