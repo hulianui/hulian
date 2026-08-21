@@ -1,10 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { ConfigProvider, enUS } from "../config";
+import { Field } from "../field";
 import { TimePicker } from "./time-picker";
 import { inputShellVariants } from "../input/input";
 
-const openPanel = () => fireEvent.click(screen.getByRole("button", { name: "选择时间" }));
+// 触发器是 role="combobox" 而非 button（#315）：按 button 取会同时命中「清除」那颗。
+const openPanel = () => fireEvent.click(screen.getByRole("combobox", { name: "选择时间" }));
 
 describe("TimePicker", () => {
   it("默认渲染占位文本，无清除按钮", () => {
@@ -149,7 +151,8 @@ describe("TimePicker", () => {
       </ConfigProvider>,
     );
     expect(screen.getByRole("button", { name: "Clear" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "09:30" }));
+    // combobox 不是「名字取自内容」的角色，所以这里按角色取而不带 name（与 DatePicker 一致）
+    fireEvent.click(screen.getByRole("combobox"));
     expect(screen.getByRole("listbox", { name: "Hour" })).toBeTruthy();
     expect(screen.getByRole("listbox", { name: "Minute" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Now" })).toBeTruthy();
@@ -170,5 +173,57 @@ describe("TimePicker", () => {
   it("不传 size 时按 md（40px）渲染", () => {
     const { container } = render(<TimePicker aria-label="选择时间" />);
     expect(container.querySelector("button")!.className).toContain("h-10");
+  });
+
+  // #315：与 DatePicker 在 #293 里补的是同一条链 —— TimePicker 当时漏在名单外。
+  describe("Field a11y 链（#315）", () => {
+    it("触发器是 combobox 而非隐含的 button", () => {
+      render(<TimePicker aria-label="选择时间" />);
+      expect(screen.getByRole("combobox", { name: "选择时间" })).toBeTruthy();
+    });
+
+    it("Field required 注入的 aria-required 落到触发器上", () => {
+      const { container } = render(
+        <Field label="上班时间" required>
+          <TimePicker />
+        </Field>,
+      );
+      const trigger = container.querySelector('[role="combobox"]')!;
+      expect(trigger.getAttribute("aria-required")).toBe("true");
+      // label 的 htmlFor 此前指向一个不存在的 id，读屏念不出字段名
+      expect(trigger.id).toBeTruthy();
+      expect(container.querySelector("label")!.getAttribute("for")).toBe(trigger.id);
+    });
+
+    it("Field 的 description / error 经 aria-describedby 串到触发器，error 隐含 invalid", () => {
+      const { container, getByText } = render(
+        <Field label="上班时间" description="按班次同步" error="不能为空">
+          <TimePicker />
+        </Field>,
+      );
+      const trigger = container.querySelector('[role="combobox"]')!;
+      const describedBy = trigger.getAttribute("aria-describedby") ?? "";
+      expect(describedBy).toContain(getByText("按班次同步").id);
+      expect(describedBy).toContain(getByText("不能为空").id);
+      expect(trigger.getAttribute("aria-invalid")).toBe("true");
+    });
+
+    it("未列出的原生属性透传到触发器，而不是外层容器", () => {
+      const { container } = render(<TimePicker data-testid="probe" title="选一个时刻" />);
+      const probe = container.querySelector('[data-testid="probe"]')!;
+      expect(probe.tagName).toBe("BUTTON");
+      expect(probe.getAttribute("role")).toBe("combobox");
+      expect(probe.getAttribute("title")).toBe("选一个时刻");
+    });
+
+    it("组件自身的 role 赢过外部传入的（rest 展开在最前，a11y 语义顶不掉）", () => {
+      const { container } = render(
+        // @ts-expect-error role 已被 Omit 掉，这里只钉运行时行为
+        <TimePicker role="button" data-testid="probe" aria-label="选择时间" />,
+      );
+      expect(container.querySelector('[data-testid="probe"]')!.getAttribute("role")).toBe(
+        "combobox",
+      );
+    });
   });
 });

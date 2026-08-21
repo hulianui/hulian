@@ -93,6 +93,9 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 - `withSeconds` 切换会改变对外值形状（`"09:30"` ↔ `"09:30:15"`）。切换时请一并处理存量值。
 - 与 [TimeField](../time-field/time-field.md) **共享同一套值格式**（都是定宽 `"HH:mm[:ss]"`），
   两者可以直接互换，甚至同一个字段按屏幕宽度切换用哪个都行 —— 区别只在交互方式（列选 vs 键盘录入）。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#315）。
+- 放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**#315 修好之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。`combobox` 不是「名字取自内容」的角色，所以按角色 + 名字取时名字来自 `aria-label` 或 `Field` 的 label，不是触发器上显示的时间文本。
 
 ## 相关
 [TimeField](../time-field/time-field.md) · [DatePicker](../date-picker/date-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [DateRangePicker](../date-range-picker/date-range-picker.md) · [Calendar](../calendar/calendar.md) · [Scheduler](../scheduler/scheduler.md)
