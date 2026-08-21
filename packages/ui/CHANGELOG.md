@@ -1,5 +1,52 @@
 # @hulianui/ui
 
+## 0.55.0
+
+### Minor Changes
+
+- d659e7f: HeroVideoDialog 支持自托管视频文件，演示素材去外链（#305）
+
+  - 新增 `videoType`（`"auto"`（默认）/ `"embed"` / `"video"`）：`"video"` 时弹层里挂原生 `<video>`（缩略图自动当 poster、带 controls / autoPlay / playsInline），`"embed"` 仍走 iframe；`"auto"` 按 `videoSrc` 扩展名判别（`.mp4` / `.webm` / `.ogv` / `.ogg` / `.mov` / `.m4v` 判为 `"video"`，其余判为 `"embed"`）。既有只传 embed 地址的用法行为不变。HLS（`.m3u8`）刻意不参与自动判别 —— 多数浏览器原生放不动，要放 HLS 请用 Video 播放器组件。
+  - showcase 的演示视频从写死的 YouTube embed 换成文档站本地素材（`demoAsset("/demo/sample-video.mp4")`），墙内 / 断网 / 内网打开文档站时弹层不再是空白。
+
+- 4e2692b: Markdown 新增 `headingIds`：开启后给渲染出的标题挂锚点 id，长文可做目录与 `#片段` 深链（#303）。传字符串则同时开启并把它当 id 前缀（`headingIds="doc-"` → `doc-props`），把这批 id 关进自己的命名空间，免与宿主页面已有 id 撞。
+
+  同时导出 `slugifyHeading` / `extractHeadings(src, prefix?)` 两个纯函数：目录项从**同一份源文本**抽，与渲染共用一套 slug 规则（剥行内标记 → 转小写 → 空白折连字符 → 只留 Unicode 字母数字与 `-` `_`，故中文标题原样保留；同名标题追加 `-1` / `-2`；纯符号与空标题回落 `section`），href 与 DOM 里的 id 不会错位。
+
+  `extractHeadings` 每项给 `{ level, text, plainText, id }`，目录标签用 `plainText`（行内标记已剥掉）。
+
+  `headingIds` 默认关闭：id 是全局命名空间，默认生成会让存量调用点凭空多出一批可能与页面已有 id 撞车的锚点。
+
+  `Markdown` 的行内解析支持多反引号围栏（CommonMark 的 code span）：此前只认单反引号，
+  于是 `` `x` `` 这种「把反引号本身放进代码里」的写法会被从第一个反引号切开，围栏错位后
+  整行剩下的标记跟着错 —— 实测「剥掉行内标记（`` `代码` `` / `**粗**` / `[label](url)`）」
+  里的 `**粗**` 渲染成了 <strong>、`[label](url)` 渲染成了真链接。凡是「用 Markdown 讲
+  Markdown 语法」的文档都会踩（本库自己的 markdown.md 就踩了，静态导出后被链接门禁判成
+  悬空链接才暴露）。围栏内容按 CommonMark 处理首尾空格：两端各有一个且内容不全为空格时
+  各去掉一个。
+
+### Patch Changes
+
+- 10df580: 组件文档统一 dash 写法（#304）：清掉英文文档里的全部 em-dash（`—`），中英文档的表格占位与数值区间统一成普通连字符。
+
+  - **英文散文 284 处逐句改写**。英文 em-dash 多是插入语，直接换连字符会读成复合词或把句子劈断，所以按语境挑替代：成对插入语用括号、后半是独立句的拆句号、展开与定义用冒号、其余用逗号并补回连接词。
+  - **表格「无默认值」占位改成 `-`**：英文 1336 处、中文 1445 处。此前中英都写 em-dash，现在与 Ant Design 一类文档同款写法。
+  - **数值区间的 en-dash（`–`）改成连字符**：中英合计 277 处，如 `0–1` / `h1–h6` / `0.3–3`，全部是区间用法，无其它语义。
+
+  清的是站点风格而不是语法错误 —— `design-taste-frontend` 9.G 把 em-dash 列为 LLM 文风的头号 Tell，零容忍，en-dash 作分隔符同样在禁列。中文散文里的「——」是正确标点，一处未动。
+
+  组件 md 随包发布、MCP `get_component_doc` 直读本地 `node_modules` 里的这份，所以这些文本同时也是发给 AI 消费方的输入，值得读顺。
+
+  `Descriptions.emptyText` 的默认值 `"—"` 保持原样：那是数据展示组件的空值占位符，属 UI 惯例而非文风修辞，文档表格照旧写真实字面量。
+
+- 4b33dce: VoiceRecord 文档补上 `pressAndHold` 的收尾契约：松手、指针移出、以及 iOS 上手势被系统打断派发的 `pointercancel`，三条路径都会走 `onRelease`（#302）。
+
+  行为一直是这样的，只是过去只写在组件源码的注释里。这条对消费方是硬信息——少接一条路径就会卡在录音态下不来，而组件 md 随包发布、MCP `get_component_doc` 直读本地 `node_modules` 里的这份，写不进去等于 AI 消费方看不见。
+
+  同批把文档站 `apps/www/lib/manifest.ts` 的 391 条中文组件描述从实现备忘体改写成一句人话，那部分不发布，故不在本包变更内。
+
+- d8b74a7: showcase 的演示素材路径接上文档站 basePath：新增内部 `lib/demo-asset.ts`，`Avatar` / `AvatarCircles` / `User` / `Image` / `Lens` / `QRCode` / `HeroVideoDialog` / `Video` / `LivePlayer` 九个 showcase 里的 `/demo/*` 改经 `demoAsset()` 取值。此前它们硬写站点绝对路径，而文档站是双语双构建 —— 英文站挂根路径、中文站挂 `/zh`，public 下的素材跟着 basePath 走，于是中文站请求的 `/demo/avatar-1.jpg` 落进了英文站的命名空间。两语言同域部署时它恰好还能取到（英文站占根），但那是巧合：`next dev` 起中文站单站时这些图全 404，中文站若单独部署（桌面壳 / 只发一个语言的镜像）同样全断。示例代码块里的路径保持 `/demo/...` 原样，那是给消费方看的示意值，不该带上本站前缀。
+
 ## 0.54.2
 
 ### Patch Changes
