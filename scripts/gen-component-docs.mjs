@@ -68,7 +68,7 @@ function parseManifest(src) {
 
   const entries = [];
   for (const m of src.matchAll(
-    /\{\s*slug:\s*"([^"]+)",\s*name:\s*"([^"]+)",\s*description:\s*"((?:[^"\\]|\\.)*)",\s*category:\s*"([^"]+)",\s*group:\s*"([^"]+)",(?:\s*tags:\s*\[([^\]]*)\],)?\s*status:\s*"([^"]+)"\s*,?\s*\}/g,
+    /\{\s*slug:\s*"([^"]+)",\s*name:\s*"([^"]+)",(?:\s*shortName:\s*"(?:[^"\\]|\\.)*",)?\s*description:\s*"((?:[^"\\]|\\.)*)",\s*category:\s*"([^"]+)",\s*group:\s*"([^"]+)",(?:\s*tags:\s*\[([^\]]*)\],)?\s*status:\s*"([^"]+)"\s*,?\s*\}/g,
   )) {
     entries.push({
       slug: m[1],
