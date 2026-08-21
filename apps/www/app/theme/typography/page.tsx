@@ -55,11 +55,35 @@ export default function TypographyPage() {
         </div>
       </Section>
 
-      <Section title={content.stack}>
-        <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          font-family: ui-sans-serif, system-ui, -apple-system,{"\n"}
-          {"  "}"PingFang SC", "Microsoft YaHei", sans-serif;
-        </pre>
+      <Section title={content.stack} desc={content.stackDescription}>
+        <Code>{`--hl-font-sans: Geist, ui-sans-serif, system-ui,
+  "PingFang SC", "Microsoft YaHei", sans-serif;
+--hl-font-mono: "Geist Mono", ui-monospace, Menlo, monospace;`}</Code>
+      </Section>
+
+      <Section title={content.customize} desc={content.customizeDescription}>
+        <Code>{`:root {
+  --hl-font-sans: "Your Sans", ui-sans-serif, system-ui, sans-serif;
+  --hl-font-mono: "Your Mono", ui-monospace, monospace;
+}`}</Code>
+      </Section>
+
+      <Section title={content.scoped} desc={content.scopedDescription}>
+        <Code>{`{/* 等宽：写变量就够，font-mono 的元素会在自己的作用域重新解析它 */}
+<div style={{ "--hl-font-mono": '"IBM Plex Mono", monospace' }}>
+  <Snippet>pnpm add @hulianui/ui</Snippet>
+</div>
+
+{/* 正文：变量之外还要一个 font-sans 类，否则文字仍继承根节点解析好的字体 */}
+<div className="font-sans" style={{ "--hl-font-sans": "Georgia, serif" }}>
+  这一段用 Georgia
+</div>`}</Code>
+      </Section>
+
+      <Section title={content.cjkNote} desc={content.cjkNoteDescription}>
+        <Code>{`:root {
+  --hl-font-sans: Geist, "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+}`}</Code>
       </Section>
     </div>
   );

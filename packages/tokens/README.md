@@ -112,6 +112,40 @@ pnpm add @hulianui/tokens
 - **`--color-hairline` 只能用于 `border-*`**：它在浅色主题就是 `transparent`，用作 `text-` / `bg-` / `fill-` 会静默隐形。
 - **浅档走 `-subtle` / `-border`**：提示条底、选中行、Tag 浅底用 `bg-primary-subtle` + `border-primary-border`（`danger` / `success` / `warning` / `info` 同构）。别自己拿主色 `mix()` 到白色派生 —— 暗色主题下「浅底」的方向是变深不是变浅，对白 mix 必错。
 
+## 换字体
+
+字体走 `--hl-font-sans` / `--hl-font-mono` 两个运行时变量，库里没有任何组件写死字族。
+默认值等价于 Tailwind v4 的默认栈 —— 不设它们的项目，渲染与接这层令牌之前逐字一致。
+
+```css
+:root {
+  --hl-font-sans: "Your Sans", ui-sans-serif, system-ui, sans-serif;
+  --hl-font-mono: "Your Mono", ui-monospace, monospace;
+}
+```
+
+这一行同时改掉三处：`font-sans` / `font-mono` 工具类、Tailwind preflight 给 `<html>` 的默认字体
+（v4 的 `--default-font-family` 解析的就是 `--font-sans`），以及 `@hulianui/ui` 里 **48 个用
+`font-mono` 的组件**（Kbd / CodeEditor / JsonViewer / LogViewer / Snippet …）。后者是靠覆盖
+`body { font-family }` 换字体时**换不掉**的那一批 —— 它们吃的是 Tailwind 的 `--font-mono`，
+不在 body 的继承链上。
+
+**只换某一块**时，正文与等宽的写法不对称（实测，容易踩）：
+
+```html
+<!-- 等宽：写变量就够。用 font-mono 的元素各自声明了 font-family: var(--hl-font-mono)，
+     会在自己所处的作用域重新解析它 -->
+<div style="--hl-font-mono: 'IBM Plex Mono', monospace">…</div>
+
+<!-- 正文：变量之外还要一个 font-sans 类。自定义属性会继承，但 font-family: var(…) 只在
+     声明了这条属性的元素上重新解析 —— 普通文字继承的是根节点那里已经解析完的字体名，
+     不会回头读变量 -->
+<div class="font-sans" style="--hl-font-sans: Georgia, serif">…</div>
+```
+
+CJK 直接写进同一个变量即可（`Geist, "Noto Sans SC", …`）。西文放前面、中文放后面，
+让英文和数字命中西文字体 —— 中文字体自带的西文通常很难看，顺序反了整站英文都会被拖下水。
+
 ## 不用 Tailwind 也能只吃令牌
 
 `tailwindcss` 是**可选**对等依赖：四个入口里只有 `preset.css` 需要 Tailwind v4，

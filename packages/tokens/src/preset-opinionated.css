@@ -1,7 +1,8 @@
-/* 瑚琏 Tailwind v4 preset · 主张层 —— 这三样都是「接管」既有行为，不是加法：
+/* 瑚琏 Tailwind v4 preset · 主张层 —— 这四样都是「接管」既有行为，不是加法：
      ① @custom-variant dark  重绑 dark variant（会覆盖消费方自己的定义）
      ② @theme inline 阴影    重绑 --shadow-sm..2xl（所有 shadow-* 外观随之改变）
      ③ @theme 缓动           重绑 ease-out / ease-in-out / 默认过渡曲线（所有裸 transition 重新计时）
+     ④ @theme inline 字型    重绑 --font-sans / --font-mono（font-* 工具类与 preflight 的 html 字体改由变量驱动）
    这份不 @import "tailwindcss"，因为它总是跟在 preset-core.css（或消费方自己那份 Tailwind 引入）之后。
 
    ⚠️ 最需要注意的是 ①：如果你的项目用 `<html class="dark">` 驱动暗色（shadcn 的默认形态，
@@ -44,6 +45,22 @@
   /* 冻结列水平分隔影 → shadow-pin-left / shadow-pin-right 工具类 */
   --shadow-pin-left: var(--hl-shadow-pin-left);
   --shadow-pin-right: var(--hl-shadow-pin-right);
+}
+
+@theme inline {
+  /* 字型：映射到 semantic.css 的运行时 --hl-font-*（默认值等价于 Tailwind 默认栈，见那里的注释）。
+     放主张层而不是核心层，是因为它同样「接管」既有行为 —— 覆盖 Tailwind 同名 token 之后，
+     消费方的 font-sans / font-mono 工具类、以及 preflight 给 html 的默认字体
+     （v4 的 --default-font-family 解析的就是 --font-sans）都改由变量驱动。
+     默认值不变观感，但控制权确实换了手，所以它属于这一层。
+
+     inline 是关键：让工具类直接吐 var(--hl-font-*) 而不是把栈的字面量烘进产物 ——
+     只有这样，运行时改 --hl-font-sans（全局或某个容器上）才能立刻生效，
+     库内 48 个用 font-mono 的组件也才跟得上。这与阴影那组是同一个理由。
+
+     刻意不给 --font-serif：库里没有任何组件用衬线，加了就是一档没人验的行为（#319）。 */
+  --font-sans: var(--hl-font-sans);
+  --font-mono: var(--hl-font-mono);
 }
 
 /* 缓动曲线 SSOT —— 覆盖 Tailwind 内置的弱曲线，让 ease-out / ease-in-out 工具类与

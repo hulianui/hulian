@@ -19,14 +19,29 @@
 @source not "../public/r/**/*.json";
 @source not "../public/registry.json";
 @source not "../public/llms*.txt";
+/* 字体二进制：Tailwind v4 会自动扫描项目里所有未被 gitignore 的文件做候选提取，
+   woff2 是二进制，扫它只会产出垃圾候选，没有任何收益。 */
+@source not "./fonts/**";
 
 html,
 body {
   background: var(--color-bg);
   color: var(--color-foreground);
 }
+/* 文档站选用 Geist + Geist Mono（OFL-1.1，自托管，见 app/fonts.ts）。
+   改的是 tokens 的运行时变量而不是 body 的 font-family —— 后者只能靠继承往下渗，
+   盖不住库里 48 个用 font-mono 的组件（Kbd / CodeEditor / JsonViewer …），
+   那些吃的是 Tailwind 的 --font-mono，与 body 的继承链无关（#319）。
+   走变量则两条路一起走：preflight 给 html 的默认字体与所有 font-* 工具类同时改口。 */
+:root {
+  /* var() 的兜底不是装饰：next/font 的变量若因任何原因没挂上（比如有人改了 layout 的
+     className），没有兜底时整条 font-family 解析失败会掉到浏览器默认衬线体 —— 比回退到
+     系统无衬线难看得多，而且看起来像"字体加载中"，不像 bug。 */
+  --hl-font-sans: var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif);
+  --hl-font-mono: var(--font-geist-mono, ui-monospace, Menlo, monospace);
+}
+
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 

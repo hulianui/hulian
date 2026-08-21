@@ -1,5 +1,35 @@
 /* 瑚琏 语义层 — 组件只消费这一层；明暗在此切，只换值不换结构 */
 
+/* ===== 字型 · 与主题无关（hulianui/hulian#319）=====
+   刻意不写进下面的明暗两块：字体不随 [data-theme] 切值，放进亮色块会让「换主题」与
+   「换字体」这两件事挤在同一个选择器里，暗色块还得把同样的值再抄一遍。
+
+   默认值等价于 Tailwind v4 的默认字体栈（tailwindcss/theme.css 的 @theme default，
+   仅把单引号统一成双引号）—— 只引 tokens 而不设 --hl-font-* 的项目，渲染与接入这层
+   token 之前完全一致：这一层是纯能力，不是主张。
+
+   **全局**换字体改这两个变量即可（写在 :root）。**局部**换字体要看换的是哪一档，
+   这里有一个反直觉的不对称，实测过：
+     · 等宽：只在容器上写 --hl-font-mono 就生效 —— 用 font-mono 的元素各自都声明了
+       `font-family: var(--hl-font-mono)`，会在自己所处的作用域重新解析变量；
+     · 正文：容器上光写 --hl-font-sans **不生效**，还要给容器加一个 `font-sans` 类。
+       原因是自定义属性会继承，但 `font-family: var(…)` 只在**声明了这条属性的元素**上
+       重新解析 —— 普通文字继承的是 <html> 那里已经解析完的字体名，不会再回头读变量。
+       加 font-sans 就是给容器补上那条声明（它本身正是 font-family: var(--hl-font-sans)）。
+   与主题岛的「最近祖先胜出」是同一套机制，差别只在正文这一档需要多一个类。
+   经 preset-opinionated.css 的 @theme inline 映射给 --font-sans / --font-mono，
+   于是 font-sans / font-mono 工具类
+   与 preflight 给 html 的默认字体（v4 的 --default-font-family 就是 --theme(--font-sans)）
+   一起跟着走。库里 48 个组件写的是 font-mono，改 --hl-font-mono 一处就全部换掉。 */
+:root {
+  --hl-font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --hl-font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+}
+
 /* 亮色既是根默认值，也必须是一个**可选择的**主题：只挂 :root 的话，
    「亮页里嵌暗块」能做（暗块自己匹配到 [data-theme="dark"]），
    「暗页里嵌亮块」做不到（没有规则可匹配，子树继续继承祖先的暗色值）——
