@@ -6,9 +6,32 @@ import { definePerformanceScenario } from "@hulianui/hulian-scan/browser";
 import type { GeneratedScenarioMetadata } from "../contract";
 import { invoke, nextPaint, rootFor, wait, type ScenarioController } from "./shared";
 
-export const animationParameters = { frames: 120, unmountObserveMs: 500 } as const;
+// frames 是采样窗口的**主**判据，maxSampleMs 是它的兜底：
+// 60Hz 下 120 帧 ≈ 2s，所以 4s 的墙钟上限在任何正常渲染路径下都不会触发。
+// 它只在渲染退化到「一帧一秒」的环境里咬合 —— CI runner 没有硬件 GPU，
+// Chromium 回落到 ANGLE SwiftShader，实测 faulty-terminal 的最长帧中位数
+// 1083ms（2026-08-19 weekly sweep 证据），120 帧要 25~30s，正好撞上 window-api
+// 给 animation 类场景的 30s 单轮超时，于是这个场景随机超时。
+//
+// 为什么截断不会放跑真回归：一旦触发上限，说明帧耗时已经烂到 droppedFrameRatio
+// 逼近 1、longestFrameMs 爆表，animation 类的 maxDroppedFrameRatio(0.1) 照样判失败；
+// 而在 CI 上这些帧指标本来就因为软件 GPU 被 budgets.ts 标记为不可信、整体丢弃 ——
+// 也就是说撞墙那 25 秒采的数据没有任何人会读。
+export const animationParameters = {
+  frames: 120,
+  maxSampleMs: 4_000,
+  unmountObserveMs: 500,
+} as const;
 const id = "animation/frame-budget";
 const controller: ScenarioController = {};
+
+export async function sampleFrames(): Promise<void> {
+  const deadline = performance.now() + animationParameters.maxSampleMs;
+  for (let index = 0; index < animationParameters.frames; index += 1) {
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    if (performance.now() >= deadline) return;
+  }
+}
 
 function Fixture() {
   const [running, setRunning] = useState(false);
@@ -30,11 +53,7 @@ function Fixture() {
   }, [running]);
 
   controller["start"] = () => setRunning(true);
-  controller["sample"] = async () => {
-    for (let index = 0; index < animationParameters.frames; index += 1) {
-      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-    }
-  };
+  controller["sample"] = sampleFrames;
   controller["stop"] = () => setRunning(false);
   controller["unmount"] = async () => {
     setVisible(false);
@@ -104,11 +123,7 @@ export async function createAnimationScenario(
       const root = rootFor(metadata.scenarioId);
       if (!root.hasChildNodes()) throw new Error(`${metadata.id} rendered no animation DOM`);
     };
-    localController["sample"] = async () => {
-      for (let index = 0; index < animationParameters.frames; index += 1) {
-        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-      }
-    };
+    localController["sample"] = sampleFrames;
     localController["stop"] = () => setVisible(false);
     localController["unmount"] = async () => {
       await wait(animationParameters.unmountObserveMs);

@@ -50,6 +50,7 @@ describe("performance baseline", () => {
           evidence: ["hard violation"],
         },
       ],
+      failures: [],
     };
 
     expect(baselineFromReport(report).scenarios).toEqual({
@@ -74,6 +75,7 @@ describe("performance baseline", () => {
         },
       ],
       findings: [],
+      failures: [],
     };
 
     expect(baselineFromReport(report).scenarios).toEqual({});

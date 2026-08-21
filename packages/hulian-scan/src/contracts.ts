@@ -99,11 +99,32 @@ export interface Finding {
   evidence: string[];
 }
 
+/**
+ * 一个场景没能产出可用读数。**不是** finding —— finding 说的是「组件有问题」，
+ * 这里说的是「这个场景这次没量成」（挂载超时、没抓到 React commit、样本不够、
+ * 采样出了非有限值）。两者混在一起会让人把基础设施抖动读成组件回归。
+ */
+export interface ScenarioFailure {
+  scenarioId: string;
+  stage: ScanStage;
+  reason: string;
+}
+
 export interface ScanReport {
   schemaVersion: 1;
   environment: ScanEnvironment;
   runs: ScenarioRun[];
   findings: Finding[];
+  /**
+   * 量不成的场景被隔离到这里，而不是抛异常终止整轮。
+   *
+   * 起因见 2026-08-19 的 weekly sweep（runs/32294199543）：391 个场景全部跑完并写进了
+   * checkpoint，只有 faulty-terminal/frame-budget 一个挂载超时 —— 然后这一个把另外 390 个
+   * 的报告连同 77 分钟机时一起带走了，产物里只剩一份没人会去读的 checkpoint.json。
+   * 全量扫描的价值恰恰在于「一次看完所有组件」，让它变成全有或全无，等于把这份价值
+   * 判给了最不稳的那个场景。
+   */
+  failures: ScenarioFailure[];
   inventory?: Array<Record<string, unknown>>;
 }
 
