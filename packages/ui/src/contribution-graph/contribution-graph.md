@@ -10,7 +10,7 @@ status: enriched
 
 # ContributionGraph
 
-> 贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星期标签只标奇数行 · 色阶复用 Heatmap 的 bucketize(同一口径) + tone 换色系 + 少→多图例 · 无点击时整块 role=img 播报总数·onDayClick 后格子成可聚焦按钮 · 日期算术是纯函数 buildContributionCalendar 可测(零新依赖·RSC) · data-display/collection
+> 贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星期标签只标奇数行 · 色阶复用 Heatmap 的 bucketize(同一口径) + tone 换色系 + 少→多图例 · 无点击时整块 role=img 播报总数·onDayClick 后格子成可聚焦按钮 · 日期算术是纯函数 buildContributionCalendar 可测(零新依赖·客户端组件) · data-display/collection
 
 ## 何时用
 

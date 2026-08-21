@@ -10,7 +10,7 @@ status: enriched
 
 # GlassSurface
 
-> 液态玻璃折射面 · SVG feDisplacementMap 三通道色散 + RGB 色差边缘(零依赖·token 磨砂底/发丝边/焦点环·RSC client·非 SVG 浏览器回落 backdrop-blur·reduced-motion 关过渡) · decoration/overlay-fx · #animated
+> 液态玻璃折射面 · SVG feDisplacementMap 三通道色散 + RGB 色差边缘(零依赖·token 磨砂底/发丝边/焦点环·客户端组件·非 SVG 浏览器回落 backdrop-blur·reduced-motion 关过渡) · decoration/overlay-fx · #animated
 
 ## 何时用
 

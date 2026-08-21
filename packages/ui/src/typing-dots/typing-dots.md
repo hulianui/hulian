@@ -10,7 +10,7 @@ status: enriched
 
 # TypingDots
 
-> 打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
+> 打字指示 · 三点交错弹跳(纯CSS·客户端组件) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
 
 ## 何时用
 

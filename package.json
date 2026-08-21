@@ -36,6 +36,7 @@
     "candidates:check": "node scripts/check-tailwind-candidates.mjs",
     "deps:family": "node scripts/check-dep-family.mjs",
     "check:remote-assets": "node scripts/check-remote-assets.mjs",
+    "check:rsc-claims": "node scripts/check-rsc-claims.mjs",
     "docs:check:props": "node scripts/check-component-doc-props.mjs",
     "guard": "node packages/guard/src/cli.mjs",
     "changelog": "node scripts/gen-changelog.mjs",

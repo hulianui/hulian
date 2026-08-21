@@ -10442,7 +10442,7 @@ import { CircularGallery } from "@hulianui/ui"
 | borderRadius | `number` | `0.05` | 卡片圆角（归一化 0-0.5），`0`=直角，`0.5`=胶囊/圆 |
 | scrollSpeed | `number` | `2` | 滚动/拖拽灵敏度，越大单次跨度越大 |
 | scrollEase | `number` | `0.05` | 惯性 lerp 系数（0-1），越小越"重"越顺滑 |
-| font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，离线/RSC 安全 |
+| font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，不发网络请求、SSR 期也不会缺字 |
 | className | `string` | - | 透传根容器类名 |
 
 `CircularGalleryItem`
@@ -10812,7 +10812,7 @@ const [open, setOpen] = useState(false);
 
 **导出**：`ContributionGraph` · `buildContributionCalendar`
 
-> 贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星期标签只标奇数行 · 色阶复用 Heatmap 的 bucketize(同一口径) + tone 换色系 + 少→多图例 · 无点击时整块 role=img 播报总数·onDayClick 后格子成可聚焦按钮 · 日期算术是纯函数 buildContributionCalendar 可测(零新依赖·RSC) · data-display/collection
+> 贡献活动墙 · 日期驱动的格子图(GitHub 那面绿墙) · calendar 周列×星期行 / strip 单行最近 N 天(卡片右侧活动条) · 补齐区间每一天 + 月份标签落列 + 周起始 0/1 可切 + 星期标签只标奇数行 · 色阶复用 Heatmap 的 bucketize(同一口径) + tone 换色系 + 少→多图例 · 无点击时整块 role=img 播报总数·onDayClick 后格子成可聚焦按钮 · 日期算术是纯函数 buildContributionCalendar 可测(零新依赖·客户端组件) · data-display/collection
 
 ## 何时用
 
@@ -16813,7 +16813,9 @@ import { BeianFooter } from "@hulianui/ui"
 ## 禁忌 / 坑
 
 - 备案号文本须与工信部/公安备案系统登记的完全一致（含「号-N」后缀），否则外链查询页对不上。
-- 暂无其他已知坑（纯 RSC，外链统一新窗打开）。
+- 客户端组件（`"use client"`）—— 「ICP备案」这类文案取自 Locale context，读它就得在客户端。
+  可以嵌进 server 页当子组件用，但它本身会进 client bundle。
+- 外链统一新窗打开（`target="_blank"` + `rel="noreferrer"`）。
 
 ## 相关
 [Navbar](https://hulianui.haloritual.com/zh/components/navbar) · [NavMenu](https://hulianui.haloritual.com/zh/components/nav-menu) · [NavigationMenu](https://hulianui.haloritual.com/zh/components/navigation-menu) · [Menu](https://hulianui.haloritual.com/zh/components/menu) · [Menubar](https://hulianui.haloritual.com/zh/components/menubar) · [Dock](https://hulianui.haloritual.com/zh/components/dock)
@@ -22129,7 +22131,7 @@ import { ToolCall } from "@hulianui/ui"
 
 **导出**：`TypingDots`
 
-> 打字指示 · 三点交错弹跳(纯CSS·RSC) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
+> 打字指示 · 三点交错弹跳(纯CSS·客户端组件) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
 
 ## 何时用
 
@@ -22804,7 +22806,7 @@ import { CardSpotlight } from "@hulianui/ui"
 
 **导出**：`ClickSpark`
 
-> 点击火花 · 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·RSC 安全·jsdom 安全） · decoration/overlay-fx · #animated
+> 点击火花 · 点击迸发火花的交互背景包裹器 · 点击点放射一圈短线段沿角度缓动飞散 + 数量/半径/长度/时长/缓动全可调（canvas2d+RAF 零依赖·token 取色·reduced-motion 静默·客户端组件·jsdom 安全） · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -22854,7 +22856,8 @@ import { ClickSpark } from "@hulianui/ui"
 
 - `sparkColor` 用 token 必须带 `--color-` 前缀（`var(--color-foreground)`），canvas strokeStyle 喂裸 `var(--foreground)` 不解析。见 [[hulian-token-color-var-needs-color-prefix]]。
 - 是包裹器：火花只在包住的 `children` 区域内点击触发；根容器须为定位上下文（relative）。
-- reduced-motion 下静默不放火花；RSC/jsdom 环境安全（不报错），但实际火花需浏览器运行时。
+- reduced-motion 下静默不放火花。
+- 客户端组件（`"use client"`）：canvas 取不到时静默跳过，SSR 与 jsdom 下都不报错，但实际火花需浏览器运行时。
 
 ## 相关
 [BorderBeam](https://hulianui.haloritual.com/zh/components/border-beam) · [ShineBorder](https://hulianui.haloritual.com/zh/components/shine-border) · [GlareHover](https://hulianui.haloritual.com/zh/components/glare-hover) · [Lens](https://hulianui.haloritual.com/zh/components/lens) · [AnimatedBeam](https://hulianui.haloritual.com/zh/components/animated-beam) · [OrbitingCircles](https://hulianui.haloritual.com/zh/components/orbiting-circles)
@@ -23966,7 +23969,7 @@ import { Heart, Star, Bell } from "lucide-react";
 
 **导出**：`GlassSurface`
 
-> 液态玻璃折射面 · SVG feDisplacementMap 三通道色散 + RGB 色差边缘(零依赖·token 磨砂底/发丝边/焦点环·RSC client·非 SVG 浏览器回落 backdrop-blur·reduced-motion 关过渡) · decoration/overlay-fx · #animated
+> 液态玻璃折射面 · SVG feDisplacementMap 三通道色散 + RGB 色差边缘(零依赖·token 磨砂底/发丝边/焦点环·客户端组件·非 SVG 浏览器回落 backdrop-blur·reduced-motion 关过渡) · decoration/overlay-fx · #animated
 
 ## 何时用
 
@@ -25802,11 +25805,11 @@ import { Orb } from "@hulianui/ui"
 
 **导出**：`OrbitImages`
 
-> 轨道环绕 · 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·RSC 安全·reduced-motion) · decoration/overlay-fx · #animated
+> 轨道环绕 · 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·客户端组件·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
-需要把一组头像/图标/Logo 沿某种形状轨道环绕流转（生态墙、合作伙伴、技术栈展示），且要任意形状（星/心/无穷）和中心叠层。要的是简单同心圆轨道的图标公转选 [OrbitingCircles](https://hulianui.haloritual.com/zh/components/orbiting-circles)；OrbitImages 形状更丰富（offset-path 驱动）、可承载任意 ReactNode 子项、零依赖 RSC 安全。
+需要把一组头像/图标/Logo 沿某种形状轨道环绕流转（生态墙、合作伙伴、技术栈展示），且要任意形状（星/心/无穷）和中心叠层。要的是简单同心圆轨道的图标公转选 [OrbitingCircles](https://hulianui.haloritual.com/zh/components/orbiting-circles)；OrbitImages 形状更丰富（offset-path 驱动）、可承载任意 ReactNode 子项、零依赖。
 
 ## 导入
 ```ts
@@ -25862,7 +25865,8 @@ import { OrbitImages } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 纯 CSS `offset-path` 驱动，零依赖 RSC 安全；但 `offset-path` 在老浏览器/部分 WebKit 上有兼容差异，关键场景需验真机。
+- 纯 CSS `offset-path` 驱动，零依赖；但 `offset-path` 在老浏览器/部分 WebKit 上有兼容差异，关键场景需验真机。
+- 客户端组件（`"use client"`）：要在 layout effect 里量容器尺寸算缩放。SSR 期不量、不报错，首帧按未缩放渲染。
 - `radiusX/Y/radius/baseWidth` 都是 baseWidth 坐标系内的设计像素，不是最终屏幕像素——容器靠 CSS 缩放铺满父宽，调几何比例改这些、调实际大小改父容器尺寸。
 - `pathColor` 给 token 时用 `var(--color-border)` 这类带 `--color-` 前缀的语义色，避免裸 var 不解析。见 [[hulian-token-color-var-needs-color-prefix]]。
 
@@ -27236,11 +27240,11 @@ import { SoftAurora } from "@hulianui/ui"
 
 **导出**：`SplashCursor`
 
-> 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decoration/overlay-fx · #animated
+> 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·客户端组件) · decoration/overlay-fx · #animated
 
 ## 何时用
 
-想给一块区域（或整页）加「鼠标移动溅彩、点击爆斑」的流体光标特效（hero、玩味落地页）。它是 canvas2d 零依赖 RSC 安全的纯特效层，`pointer-events-none` 不拦交互。要连续丝带拖尾选 [Ribbons](https://hulianui.haloritual.com/zh/components/ribbons)，要像素颗粒余晖选 [PixelTrail](https://hulianui.haloritual.com/zh/components/pixel-trail)；SplashCursor 是离散彩色染料溅射。
+想给一块区域（或整页）加「鼠标移动溅彩、点击爆斑」的流体光标特效（hero、玩味落地页）。它是 canvas2d 零依赖的纯特效层，`pointer-events-none` 不拦交互。要连续丝带拖尾选 [Ribbons](https://hulianui.haloritual.com/zh/components/ribbons)，要像素颗粒余晖选 [PixelTrail](https://hulianui.haloritual.com/zh/components/pixel-trail)；SplashCursor 是离散彩色染料溅射。
 
 ## 导入
 ```ts
@@ -27277,7 +27281,8 @@ import { SplashCursor } from "@hulianui/ui"
 
 - 注意 `dissipation` 是「保留率」语义（与原版 DENSITY_DISSIPATION 反向）：越大越持久，不是越大越快消散。
 - 非彩虹模式 `color` 给 token 用带 `--color-` 前缀的变量；彩虹开启时此值被忽略。见 [[hulian-token-color-var-needs-color-prefix]]。
-- canvas2d 零依赖、RSC 安全、自带 `pointer-events-none` 不拦下层交互；父级必须 `relative` 它才能 `absolute inset-0` 铺满。reduced-motion 下降级不溅射。
+- canvas2d 零依赖、自带 `pointer-events-none` 不拦下层交互；父级必须 `relative` 它才能 `absolute inset-0` 铺满。reduced-motion 下降级不溅射。
+- 客户端组件（`"use client"`）：canvas 与指针监听全在 effect 内，SSR 期不碰 DOM、不报错，但要浏览器运行时才有溅射。
 
 ## 相关
 [BorderBeam](https://hulianui.haloritual.com/zh/components/border-beam) · [ShineBorder](https://hulianui.haloritual.com/zh/components/shine-border) · [GlareHover](https://hulianui.haloritual.com/zh/components/glare-hover) · [Lens](https://hulianui.haloritual.com/zh/components/lens) · [AnimatedBeam](https://hulianui.haloritual.com/zh/components/animated-beam) · [OrbitingCircles](https://hulianui.haloritual.com/zh/components/orbiting-circles)

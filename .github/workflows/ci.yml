@@ -75,6 +75,13 @@ jobs:
       - name: Check for remote assets
         run: pnpm check:remote-assets
 
+      # 组件 md 随 npm 包一起发布（files 里有 src），MCP 的 get_component_doc 本地模式直读
+      # node_modules 里那一份 —— 文档里一句「纯 RSC」，到 agent 消费方那里就是运行时判断
+      # 依据。#307 抓到 9 个组件 14 处这种断言，而它们的 `"use client"` 全是必要的。
+      # 判据只认「断言自己是 RSC」的固定短语，「放进 RSC 页时挂 client 子树」这类中性提法照常放行。
+      - name: Check RSC claims in component docs
+        run: pnpm check:rsc-claims
+
       # registry.json / llms-props.json / llms*.txt 是**提交进仓库**的生成物，版本号来自生成
       # 那一刻的 packages/ui/package.json。而发版只动 package.json + CHANGELOG —— 两者靠
       # `version-packages` 里那句 `pnpm llms-registry` 手工串着，这条链断过（0.37.0 的产物

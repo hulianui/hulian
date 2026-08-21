@@ -31,7 +31,7 @@ import { CircularGallery } from "@hulianui/ui"
 | borderRadius | `number` | `0.05` | 卡片圆角（归一化 0-0.5），`0`=直角，`0.5`=胶囊/圆 |
 | scrollSpeed | `number` | `2` | 滚动/拖拽灵敏度，越大单次跨度越大 |
 | scrollEase | `number` | `0.05` | 惯性 lerp 系数（0-1），越小越"重"越顺滑 |
-| font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，离线/RSC 安全 |
+| font | `string` | `bold 30px ui-sans-serif, system-ui, sans-serif` | 标题字体（canvas font 简写）；默认用系统字体栈，不发网络请求、SSR 期也不会缺字 |
 | className | `string` | - | 透传根容器类名 |
 
 `CircularGalleryItem`

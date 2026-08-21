@@ -10,11 +10,11 @@ status: enriched
 
 # OrbitImages
 
-> 轨道环绕 · 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·RSC 安全·reduced-motion) · decoration/overlay-fx · #animated
+> 轨道环绕 · 沿轨道环绕流转的子项编排组件 · 9 种形状预设(椭圆/圆/方/三角/星/心/无穷/波浪+custom path)+等距铺满/鱼贯出发+可倾斜+中心叠层(纯 CSS offset-path·零依赖·客户端组件·reduced-motion) · decoration/overlay-fx · #animated
 
 ## 何时用
 
-需要把一组头像/图标/Logo 沿某种形状轨道环绕流转（生态墙、合作伙伴、技术栈展示），且要任意形状（星/心/无穷）和中心叠层。要的是简单同心圆轨道的图标公转选 [OrbitingCircles](../orbiting-circles/orbiting-circles.md)；OrbitImages 形状更丰富（offset-path 驱动）、可承载任意 ReactNode 子项、零依赖 RSC 安全。
+需要把一组头像/图标/Logo 沿某种形状轨道环绕流转（生态墙、合作伙伴、技术栈展示），且要任意形状（星/心/无穷）和中心叠层。要的是简单同心圆轨道的图标公转选 [OrbitingCircles](../orbiting-circles/orbiting-circles.md)；OrbitImages 形状更丰富（offset-path 驱动）、可承载任意 ReactNode 子项、零依赖。
 
 ## 导入
 ```ts
@@ -70,7 +70,8 @@ import { OrbitImages } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 纯 CSS `offset-path` 驱动，零依赖 RSC 安全；但 `offset-path` 在老浏览器/部分 WebKit 上有兼容差异，关键场景需验真机。
+- 纯 CSS `offset-path` 驱动，零依赖；但 `offset-path` 在老浏览器/部分 WebKit 上有兼容差异，关键场景需验真机。
+- 客户端组件（`"use client"`）：要在 layout effect 里量容器尺寸算缩放。SSR 期不量、不报错，首帧按未缩放渲染。
 - `radiusX/Y/radius/baseWidth` 都是 baseWidth 坐标系内的设计像素，不是最终屏幕像素——容器靠 CSS 缩放铺满父宽，调几何比例改这些、调实际大小改父容器尺寸。
 - `pathColor` 给 token 时用 `var(--color-border)` 这类带 `--color-` 前缀的语义色，避免裸 var 不解析。见 [[hulian-token-color-var-needs-color-prefix]]。
 

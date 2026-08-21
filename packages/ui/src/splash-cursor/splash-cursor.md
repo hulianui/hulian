@@ -10,11 +10,11 @@ status: enriched
 
 # SplashCursor
 
-> 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·RSC 安全) · decoration/overlay-fx · #animated
+> 流体溅射光标 · 指针流体溅射光标特效 · 移动溅彩+点击爆斑+拖尾消散 · 彩虹色相轮/固定 chart token 双模(canvas2d 零依赖·reduced-motion·客户端组件) · decoration/overlay-fx · #animated
 
 ## 何时用
 
-想给一块区域（或整页）加「鼠标移动溅彩、点击爆斑」的流体光标特效（hero、玩味落地页）。它是 canvas2d 零依赖 RSC 安全的纯特效层，`pointer-events-none` 不拦交互。要连续丝带拖尾选 [Ribbons](../ribbons/ribbons.md)，要像素颗粒余晖选 [PixelTrail](../pixel-trail/pixel-trail.md)；SplashCursor 是离散彩色染料溅射。
+想给一块区域（或整页）加「鼠标移动溅彩、点击爆斑」的流体光标特效（hero、玩味落地页）。它是 canvas2d 零依赖的纯特效层，`pointer-events-none` 不拦交互。要连续丝带拖尾选 [Ribbons](../ribbons/ribbons.md)，要像素颗粒余晖选 [PixelTrail](../pixel-trail/pixel-trail.md)；SplashCursor 是离散彩色染料溅射。
 
 ## 导入
 ```ts
@@ -51,7 +51,8 @@ import { SplashCursor } from "@hulianui/ui"
 
 - 注意 `dissipation` 是「保留率」语义（与原版 DENSITY_DISSIPATION 反向）：越大越持久，不是越大越快消散。
 - 非彩虹模式 `color` 给 token 用带 `--color-` 前缀的变量；彩虹开启时此值被忽略。见 [[hulian-token-color-var-needs-color-prefix]]。
-- canvas2d 零依赖、RSC 安全、自带 `pointer-events-none` 不拦下层交互；父级必须 `relative` 它才能 `absolute inset-0` 铺满。reduced-motion 下降级不溅射。
+- canvas2d 零依赖、自带 `pointer-events-none` 不拦下层交互；父级必须 `relative` 它才能 `absolute inset-0` 铺满。reduced-motion 下降级不溅射。
+- 客户端组件（`"use client"`）：canvas 与指针监听全在 effect 内，SSR 期不碰 DOM、不报错，但要浏览器运行时才有溅射。
 
 ## 相关
 [BorderBeam](../border-beam/border-beam.md) · [ShineBorder](../shine-border/shine-border.md) · [GlareHover](../glare-hover/glare-hover.md) · [Lens](../lens/lens.md) · [AnimatedBeam](../animated-beam/animated-beam.md) · [OrbitingCircles](../orbiting-circles/orbiting-circles.md)
