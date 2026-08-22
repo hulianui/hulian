@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.55.1",
+  "version": "0.56.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [

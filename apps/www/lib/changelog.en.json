@@ -1,5 +1,31 @@
 [
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.11.0",
+    "date": "2026-08-22",
+    "entries": [
+      {
+        "sha": "1d83645",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Adds the typography tokens `--hl-font-sans` / `--hl-font-mono` (#319).\n\nUntil now the token layer held no font variable at all: color, shadow, radius and easing each had two layers of tokens and could be swapped at runtime, while typography was simply missing. The only way to change fonts was to override `body { font-family }` and let it inherit downward, and the 48 components in `@hulianui/ui` that use `font-mono` (Kbd / CodeEditor / JsonViewer / LogViewer / Snippet and more) read Tailwind's `--font-mono`, which is not on that inheritance chain: after swapping fonts a page still carried a batch of components on a different monospace stack, out of reach.\n\n`preset-opinionated.css` now maps `--font-sans` / `--font-mono` onto these two runtime variables with `@theme inline`. One line on `:root` changes all three at once: the `font-sans` / `font-mono` utilities, the default font that Tailwind preflight gives `<html>`, and those 48 components.\n\n**The defaults are equivalent to the Tailwind v4 default stack**, so a project that never sets the variables renders exactly as before.\n\nScoping a font to one region is asymmetric between body text and monospace, which is worth knowing before you try it: monospace needs only `--hl-font-mono` on the container, because elements using `font-mono` each declare `font-family: var(...)` and re-resolve it in their own scope. Body text needs the variable plus a `font-sans` class on the container: custom properties inherit, but a font-family that reads a variable is re-resolved only on elements that declare it, and ordinary text inherits the family already resolved at the root. See the font section of `packages/tokens/README.md`."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.56.0",
+    "date": "2026-08-22",
+    "entries": [
+      {
+        "sha": "1d83645",
+        "bump": "minor",
+        "breaking": true,
+        "body": "Adds `ScoreScale` (a linear graded score bar), adds a semantic `tone` to `TabsList` / `Segmented`, and wires `TimePicker` into the `Field` accessibility chain.\n\n**`ScoreScale` (#317)** - the whole range is tinted band by band and the cursor stops where the value lands, so what it says is \"which band this score falls into\". The library had no such shape: `Meter` draws a fill length (\"how much is used / done\"), and using it for a score of 36 tells the reader \"in progress, still some way to go\", when the green stretch to the left of 36 does not belong to that value at all and is only the scale. The grade model reuses `ScoreRing`'s `Grade` / `resolveGrade` / `DEFAULT_GRADES`, so one set of grades feeds the ring and the bar and draws the same bands. It ships `markers` reference lines, `segmentGap`, `showRange`, and always sets `aria-valuetext`: if the band information lives only in color, screen reader users cannot hear it and color-blind users cannot separate green from amber from red.\n\n**`tone` (#316)** - the selected state of `TabsList` and `Segmented` can now carry a semantic color. Previously the solid skin separated selected from unselected by nothing but a white pill and a step in lightness, with the color channel carrying no information at all, while the `underline` indicator had long been hard-coded to the brand color: one component, two skins, two attitudes toward color. The values are a subset of the semantic tone SSOT that `Button` defines (`brand` / `success` / `warning` / `danger` / `neutral`) and are handed down through context, so tabs do not take it one by one. **The `neutral` default keeps the existing rendering to the letter**, so a page that passes no tone does not move by a pixel.\n\n**`TimePicker` (#315)** - when 0.54.0 wired six popup controls into the `Field` accessibility chain, `TimePicker` was left off the list. Its trigger now goes through `Field.Control` and carries `role=\"combobox\"`, and the props interface changed from closed to open (`...rest` lands on the trigger). **BREAKING for tests**: query the trigger with `getByRole(\"combobox\")` instead of `getByRole(\"button\")` in tests, matching the `DatePicker` group."
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.55.1",
     "date": "2026-08-21",

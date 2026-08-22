@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.56.0
+
+### Minor Changes
+
+- 1d83645: Adds `ScoreScale` (a linear graded score bar), adds a semantic `tone` to `TabsList` / `Segmented`, and wires `TimePicker` into the `Field` accessibility chain.
+
+  **`ScoreScale` (#317)** - the whole range is tinted band by band and the cursor stops where the value lands, so what it says is "which band this score falls into". The library had no such shape: `Meter` draws a fill length ("how much is used / done"), and using it for a score of 36 tells the reader "in progress, still some way to go", when the green stretch to the left of 36 does not belong to that value at all and is only the scale. The grade model reuses `ScoreRing`'s `Grade` / `resolveGrade` / `DEFAULT_GRADES`, so one set of grades feeds the ring and the bar and draws the same bands. It ships `markers` reference lines, `segmentGap`, `showRange`, and always sets `aria-valuetext`: if the band information lives only in color, screen reader users cannot hear it and color-blind users cannot separate green from amber from red.
+
+  **`tone` (#316)** - the selected state of `TabsList` and `Segmented` can now carry a semantic color. Previously the solid skin separated selected from unselected by nothing but a white pill and a step in lightness, with the color channel carrying no information at all, while the `underline` indicator had long been hard-coded to the brand color: one component, two skins, two attitudes toward color. The values are a subset of the semantic tone SSOT that `Button` defines (`brand` / `success` / `warning` / `danger` / `neutral`) and are handed down through context, so tabs do not take it one by one. **The `neutral` default keeps the existing rendering to the letter**, so a page that passes no tone does not move by a pixel.
+
+  **`TimePicker` (#315)** - when 0.54.0 wired six popup controls into the `Field` accessibility chain, `TimePicker` was left off the list. Its trigger now goes through `Field.Control` and carries `role="combobox"`, and the props interface changed from closed to open (`...rest` lands on the trigger). **BREAKING for tests**: query the trigger with `getByRole("combobox")` instead of `getByRole("button")` in tests, matching the `DatePicker` group.
+
 ## 0.55.1
 
 ### Patch Changes

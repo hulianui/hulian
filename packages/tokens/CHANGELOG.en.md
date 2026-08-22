@@ -1,5 +1,19 @@
 # @hulianui/tokens
 
+## 0.11.0
+
+### Minor Changes
+
+- 1d83645: Adds the typography tokens `--hl-font-sans` / `--hl-font-mono` (#319).
+
+  Until now the token layer held no font variable at all: color, shadow, radius and easing each had two layers of tokens and could be swapped at runtime, while typography was simply missing. The only way to change fonts was to override `body { font-family }` and let it inherit downward, and the 48 components in `@hulianui/ui` that use `font-mono` (Kbd / CodeEditor / JsonViewer / LogViewer / Snippet and more) read Tailwind's `--font-mono`, which is not on that inheritance chain: after swapping fonts a page still carried a batch of components on a different monospace stack, out of reach.
+
+  `preset-opinionated.css` now maps `--font-sans` / `--font-mono` onto these two runtime variables with `@theme inline`. One line on `:root` changes all three at once: the `font-sans` / `font-mono` utilities, the default font that Tailwind preflight gives `<html>`, and those 48 components.
+
+  **The defaults are equivalent to the Tailwind v4 default stack**, so a project that never sets the variables renders exactly as before.
+
+  Scoping a font to one region is asymmetric between body text and monospace, which is worth knowing before you try it: monospace needs only `--hl-font-mono` on the container, because elements using `font-mono` each declare `font-family: var(...)` and re-resolve it in their own scope. Body text needs the variable plus a `font-sans` class on the container: custom properties inherit, but a font-family that reads a variable is re-resolved only on elements that declare it, and ordinary text inherits the family already resolved at the root. See the font section of `packages/tokens/README.md`.
+
 ## 0.10.0
 
 ### Minor Changes

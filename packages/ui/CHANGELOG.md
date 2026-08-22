@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.56.0
+
+### Minor Changes
+
+- 1d83645: 新增 `ScoreScale`（线性分档评分尺），`TabsList` / `Segmented` 新增语义档 `tone`，`TimePicker` 补齐 `Field` 无障碍链。
+
+  **`ScoreScale`（#317）** —— 整条量程按等级带着色、游标停在 value 所在位置，表达的是「分数落在哪一档」。这是库里此前缺的一档：`Meter` 画的是填充长度（占了多少 / 完成了多少），用它画 36 分，读者接收到的是「进行中、还差一截」，而评分尺里 36 分左边那截绿色根本不属于这个值、只是量程刻度。等级模型直接复用 `ScoreRing` 的 `Grade` / `resolveGrade` / `DEFAULT_GRADES`，同一份 grades 喂给环和尺画出同一套档。带 `markers` 参照线、`segmentGap`、`showRange`，并且必须有 `aria-valuetext` —— 分档信息只活在颜色里的话，读屏听不到、色觉障碍分不出绿橙红。
+
+  **`tone`（#316）** —— `TabsList` 与 `Segmented` 的选中态可以带语义色了。此前 solid 皮肤下选中与未选中只差一层白药丸加灰度深浅，颜色通道不承载任何信息；而 `underline` 的下划线早已写死品牌色，同一个组件的两个皮肤对色的态度并不一致。取值是 `Button` 那份语义 tone SSOT 的子集（`brand` / `success` / `warning` / `danger` / `neutral`），经 context 下发，不必逐个 tab 传。**默认 `neutral` 逐字保持库既有的渲染**，不传 tone 的存量页面一个像素都不动。
+
+  **`TimePicker`（#315）** —— 0.54.0 给六个浮层控件接上 `Field` a11y 链时，`TimePicker` 漏在名单外。现在触发器同样过 `Field.Control` 并标 `role="combobox"`，props 接口从封闭改为开放（`...rest` 落到触发器上）。**破坏性提示**：测试里按角色取触发器要从 `getByRole("button")` 改成 `getByRole("combobox")`，与 `DatePicker` 那批一致。
+
 ## 0.55.1
 
 ### Patch Changes
