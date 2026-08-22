@@ -8065,6 +8065,27 @@
       "source": "packages/ui/src/scheduler/scheduler.md"
     },
     {
+      "id": "component/score-ring/pitfall/1",
+      "scope": "score-ring",
+      "title": "ScoreRing",
+      "rule": "**等级颜色由 `resolveGrade(value, grades)` 纯函数映射**，两个参数，**没有 `max`**。 `max` 是本组件用来画弧长的 prop，不是这个函数的参数（0.56.1 之前本节把它误写成三个参数， 照着写 `resolveGrade(score, 100, myGrades)` 会把 `100` 当 grades 传进去）。",
+      "source": "packages/ui/src/score-ring/score-ring.md"
+    },
+    {
+      "id": "component/score-ring/pitfall/2",
+      "scope": "score-ring",
+      "title": "ScoreRing",
+      "rule": "**默认 `DEFAULT_GRADES` 的 5 档只有 3 种颜色**（A/B 同为 success、C/D 同为 warning）， 要五档五色请传自定义 `grades`。",
+      "source": "packages/ui/src/score-ring/score-ring.md"
+    },
+    {
+      "id": "component/score-ring/pitfall/3",
+      "scope": "score-ring",
+      "title": "ScoreRing",
+      "rule": "**`tone` 留空的档用组件默认色**，不是透明；想让某一档不着色请显式给它一个颜色值。",
+      "source": "packages/ui/src/score-ring/score-ring.md"
+    },
+    {
       "id": "component/score-scale/pitfall/1",
       "scope": "score-scale",
       "title": "ScoreScale",
@@ -10757,7 +10778,7 @@
   ],
   "stats": {
     "componentDocs": 395,
-    "componentAdvisories": 1500,
-    "totalAdvisories": 1510
+    "componentAdvisories": 1503,
+    "totalAdvisories": 1513
   }
 }

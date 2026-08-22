@@ -68,7 +68,6 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   result: [2, 3],
   sankey: [2, 3],
   "scope-matrix": [0, 1],
-  "score-ring": [0, 1],
   select: [10, 11],
   separator: [0, 1],
   "service-message": [3, 4],
@@ -369,7 +368,7 @@ test("English advisories keep complete natural rules without repeated entries in
   );
 });
 
-test("all 71 reviewed locale-specific convention count differences stay explicit", () => {
+test("all 70 reviewed locale-specific convention count differences stay explicit", () => {
   assert.equal(typeof conventionsGenerator.extractPitfalls, "function");
   const uiRoot = join(ROOT, "packages", "ui", "src");
   const actual = {};
@@ -385,7 +384,7 @@ test("all 71 reviewed locale-specific convention count differences stay explicit
     if (counts[0] !== counts[1]) actual[slug] = counts;
   }
 
-  assert.equal(Object.keys(actual).length, 71);
+  assert.equal(Object.keys(actual).length, 70);
   assert.deepEqual(actual, EXPECTED_CONVENTION_COUNT_MISMATCHES);
 });
 

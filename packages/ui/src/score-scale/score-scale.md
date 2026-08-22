@@ -21,9 +21,15 @@ status: enriched
 ## 导入
 ```ts
 import { ScoreScale } from "@hulianui/ui"
+// 自定义等级带时一并引类型（与 ScoreRing 同一个 Grade）
+import type { Grade } from "@hulianui/ui"
 ```
 
 ## Props
+
+`Grade` = `{ min: number; label: string; tone?: string }` —— 与 [ScoreRing](../score-ring/score-ring.md)
+**同一个类型**（从 `@hulianui/ui` 直接引），`min` 是命中该等级的最低分（含），`tone` 收语义色名或
+任意 CSS 颜色值。判等级用的也是同一个 `resolveGrade(value, grades)`（两个参数，没有 `max`）。
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
@@ -69,7 +75,7 @@ import { ScoreScale } from "@hulianui/ui"
 <ScoreScale value={73} label="质量分" />
 
 // 自定义等级带：相邻两档 min 之差就是该段的宽度
-const CREDIT_GRADES = [
+const CREDIT_GRADES: Grade[] = [
   { min: 80, label: "优秀", tone: "success" },
   { min: 60, label: "良好", tone: "chart-2" },
   { min: 30, label: "一般", tone: "warning" },

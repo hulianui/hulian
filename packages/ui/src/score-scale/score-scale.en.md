@@ -21,9 +21,17 @@ Use [Meter](../meter/meter.md) for "how much of the total is filled", [Progress]
 ## Import
 ```ts
 import { ScoreScale } from "@hulianui/ui"
+// Import the type as well when you define your own bands (the same Grade ScoreRing uses)
+import type { Grade } from "@hulianui/ui"
 ```
 
 ## Props
+
+`Grade` = `{ min: number; label: string; tone?: string }`, the **same type**
+[ScoreRing](../score-ring/score-ring.md) uses (import it from `@hulianui/ui`). `min` is the lowest
+score that lands in the band, inclusive, and `tone` takes a semantic color name or any CSS color
+value. Both components resolve a band with the same `resolveGrade(value, grades)`, which takes two
+arguments and no `max`.
 
 | Name | Type | Default | Description |
 |------|------|------|------|
@@ -69,7 +77,7 @@ import { ScoreScale } from "@hulianui/ui"
 <ScoreScale value={73} label="Quality score" />
 
 // Custom bands: the distance between two adjacent min values is that band's width
-const CREDIT_GRADES = [
+const CREDIT_GRADES: Grade[] = [
   { min: 80, label: "Excellent", tone: "success" },
   { min: 60, label: "Good", tone: "chart-2" },
   { min: 30, label: "Fair", tone: "warning" },
