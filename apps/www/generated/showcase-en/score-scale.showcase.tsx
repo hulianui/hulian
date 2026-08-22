@@ -58,7 +58,7 @@ export const scoreScaleShowcase: ShowcaseSpec = {
         },
         {
             title: "Gaps between bands",
-            description: "By default the bands sit flush and are told apart by hue alone; when neighbouring bands share one color (A and B are both green in the default A-F set), only segmentGap tells them apart.",
+            description: "By default the bands sit flush and are told apart by hue alone; when neighbouring bands share one color (A/B are both green in the default A-F set), only segmentGap tells them apart.",
             code: `<ScoreScale value={73} label="Quality score" segmentGap />`,
             render: () => (<div className="flex w-80 flex-col gap-4">
           <ScoreScale value={73} label="Quality points"/>
