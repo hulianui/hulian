@@ -14,6 +14,19 @@
   },
   {
     "pkg": "@hulianui/ui",
+    "version": "0.56.1",
+    "date": "2026-08-22",
+    "entries": [
+      {
+        "sha": "e3905bf",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fixes the `resolveGrade` signature in the `ScoreRing` docs and documents the shape of `Grade` (#318).\n\nThe pitfalls section claimed `resolveGrade(value, max, grades)` while the source takes two arguments: `resolveGrade(value, grades)`. `max` is a prop `ScoreRing` uses to draw the arc, not a parameter of the function, and following the docs with `resolveGrade(score, 100, myGrades)` passes `100` where `grades` belongs, which then throws inside `[...grades].sort()`.\n\nThe shape of `Grade` was never spelled out: the props table only said the type was `Grade[]`, and no example passed `grades` at all, so the reporter worked around the prop entirely with `showGrade={false}` plus an external `Tag`. Following the `WorldMap` convention, the structure `{ min; label; tone? }` now sits above the props table, with a note that `tone` accepts both a semantic color name and a raw CSS color value (both are typed `string`, so the type alone gives nothing away). A full custom rating model was added to the examples.\n\n`ScoreScale` shares the same `Grade` and the same `resolveGrade`, so its docs get the cross-reference and the `import type { Grade }` line in the same pass.\n\nComponent docs ship inside the package and the MCP `get_component_doc` local mode reads that copy straight out of `node_modules`, which makes this class of documentation error a runtime defect for agent consumers. Hence a patch release."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.56.0",
     "date": "2026-08-22",
     "entries": [
