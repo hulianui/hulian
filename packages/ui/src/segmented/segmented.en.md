@@ -32,6 +32,7 @@ import { Segmented } from "@hulianui/ui"
 | defaultValue | `string` | First non-disabled segment | Initial selected value in uncontrolled mode. |
 | disabled | `boolean` | `false` | Whether to disable the entire control. |
 | size | `"sm"\|"md"` | `"md"` | Visual size. |
+| tone | `"brand"\|"success"\|"warning"\|"danger"\|"neutral"` | `"neutral"` | Semantic colour of the selected segment. Only the label is coloured; the slider stays a white pill. The `neutral` default keeps the existing neutral selected state (`text-foreground`) byte for byte rather than turning the brand colour grey, and the values match `tone` on `TabsList` in [Tabs](../tabs/tabs.md). |
 | className | `string` | - | Additional class name for the root element. |
 | aria-label | `string` | - | Accessible label for the control when no visible title is present. |
 

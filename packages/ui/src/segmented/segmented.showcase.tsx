@@ -4,7 +4,7 @@ import { LayoutGrid, List, Map } from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Tag } from "../tag/tag";
 import { Segmented } from "./segmented";
-import type { SegmentedItem } from "./segmented.types";
+import type { SegmentedItem, SegmentedTone } from "./segmented.types";
 
 const periodItems: SegmentedItem[] = [
   { value: "day", label: "日" },
@@ -20,6 +20,7 @@ function Demo(p: Record<string, unknown>) {
       value={v}
       onValueChange={setV}
       size={(p.size as "sm" | "md") ?? "md"}
+      tone={(p.tone as SegmentedTone) ?? "neutral"}
       disabled={p.disabled as boolean}
       aria-label="周期"
     />
@@ -109,6 +110,24 @@ export const segmentedShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "语义色档（tone）",
+      description:
+        "tone 与 TabsList 同名同取值，选中段的文字带上语义色，滑块仍是白药丸。默认 neutral 保持库既有的中性选中态，不传就不变。",
+      code: `<Segmented
+  items={[
+    { value: "day", label: "日" },
+    { value: "week", label: "周" },
+    { value: "month", label: "月" },
+  ]}
+  defaultValue="week"
+  tone="brand"
+  aria-label="周期"
+/>`,
+      render: () => (
+        <Segmented items={periodItems} defaultValue="week" tone="brand" aria-label="周期" />
+      ),
+    },
+    {
       title: "尺寸",
       description: "size=\"sm\" 用于工具栏等紧凑场景。",
       code: `<>
@@ -155,6 +174,12 @@ export const segmentedShowcase: ShowcaseSpec = {
   ],
   controls: [
     { prop: "size", type: "select", options: ["sm", "md"], defaultValue: "md" },
+    {
+      prop: "tone",
+      type: "select",
+      options: ["neutral", "brand", "success", "warning", "danger"],
+      defaultValue: "neutral",
+    },
     { prop: "disabled", type: "boolean", defaultValue: false },
   ],
   states: [
@@ -214,6 +239,12 @@ export const segmentedShowcase: ShowcaseSpec = {
       ),
     },
     {
+      name: "tone-brand",
+      render: () => (
+        <Segmented items={periodItems} defaultValue="week" tone="brand" aria-label="周期" />
+      ),
+    },
+    {
       name: "size-sm",
       render: () => <Segmented size="sm" items={periodItems} defaultValue="day" aria-label="周期" />,
     },
@@ -240,5 +271,7 @@ export const segmentedShowcase: ShowcaseSpec = {
   ],
   renderWithProps: (p) => <Demo {...p} />,
   toCode: (p) =>
-    `<Segmented\n  items={[{ value: "day", label: "日" }, { value: "week", label: "周" }, { value: "month", label: "月" }]}\n  defaultValue="week"${p.size && p.size !== "md" ? `\n  size="${p.size}"` : ""}${p.disabled ? "\n  disabled" : ""}\n/>`,
+    `<Segmented\n  items={[{ value: "day", label: "日" }, { value: "week", label: "周" }, { value: "month", label: "月" }]}\n  defaultValue="week"${p.size && p.size !== "md" ? `\n  size="${p.size}"` : ""}${
+      p.tone && p.tone !== "neutral" ? `\n  tone="${p.tone}"` : ""
+    }${p.disabled ? "\n  disabled" : ""}\n/>`,
 };

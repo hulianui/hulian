@@ -55,11 +55,35 @@ export default function TypographyPage() {
         </div>
       </Section>
 
-      <Section title={content.stack}>
-        <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-surface p-4 font-mono text-[0.8rem] leading-relaxed text-foreground">
-          font-family: ui-sans-serif, system-ui, -apple-system,{"\n"}
-          {"  "}"PingFang SC", "Microsoft YaHei", sans-serif;
-        </pre>
+      <Section title={content.stack} desc={content.stackDescription}>
+        <Code>{`--hl-font-sans: Geist, ui-sans-serif, system-ui,
+  "PingFang SC", "Microsoft YaHei", sans-serif;
+--hl-font-mono: "Geist Mono", ui-monospace, Menlo, monospace;`}</Code>
+      </Section>
+
+      <Section title={content.customize} desc={content.customizeDescription}>
+        <Code>{`:root {
+  --hl-font-sans: "Your Sans", ui-sans-serif, system-ui, sans-serif;
+  --hl-font-mono: "Your Mono", ui-monospace, monospace;
+}`}</Code>
+      </Section>
+
+      <Section title={content.scoped} desc={content.scopedDescription}>
+        <Code>{`{/* ${content.scopedMonoComment} */}
+<div style={{ "--hl-font-mono": '"IBM Plex Mono", monospace' }}>
+  <Snippet>pnpm add @hulianui/ui</Snippet>
+</div>
+
+{/* ${content.scopedSansComment} */}
+<div className="font-sans" style={{ "--hl-font-sans": "Georgia, serif" }}>
+  ${content.scopedSansSample}
+</div>`}</Code>
+      </Section>
+
+      <Section title={content.cjkNote} desc={content.cjkNoteDescription}>
+        <Code>{`/* ${content.stackComment} */
+--hl-font-sans: Geist, "Noto Sans SC", ui-sans-serif, system-ui,
+  "PingFang SC", "Microsoft YaHei", sans-serif;`}</Code>
       </Section>
     </div>
   );

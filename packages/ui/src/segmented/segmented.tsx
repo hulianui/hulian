@@ -10,12 +10,26 @@ import {
 } from "react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss, pressableClass } from "../motion";
-import type { SegmentedProps } from "./segmented.types";
+import type { SegmentedProps, SegmentedTone } from "./segmented.types";
 
 // 尺寸：root 高度 + 段内边距。
 const sizeClasses: Record<"sm" | "md", { root: string; item: string }> = {
   sm: { root: "h-8 text-sm", item: "px-2.5" },
   md: { root: "h-10 text-sm", item: "px-3.5" },
+};
+
+/**
+ * 选中段的文字色。`neutral` 那格就是改动前写死的那一个类，位置也没挪 —— 不传 tone 时
+ * class 字符串逐字不变（这也是默认取 neutral 而非 brand 的原因：tone 是纯增量）。
+ * 滑块不参与：白药丸 + 语义字是 Tabs solid 定下的形态，两件组件必须一致（#316）。
+ * 未选中段不受 tone 影响（tone 只回答"选中意味着什么"）。
+ */
+const selectedTextByTone: Record<SegmentedTone, string> = {
+  neutral: "text-foreground",
+  brand: "text-primary",
+  success: "text-success",
+  warning: "text-warning",
+  danger: "text-danger",
 };
 
 // SSR/jsdom 安全：浏览器用 layout effect 测量（避闪），服务端降级为普通 effect（不执行）。
@@ -32,6 +46,7 @@ export function Segmented({
   onValueChange,
   disabled,
   size = "md",
+  tone = "neutral",
   className,
   "aria-label": ariaLabel,
   ...rest
@@ -185,7 +200,7 @@ export function Segmented({
               `relative z-10 inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 truncate whitespace-nowrap rounded-[calc(var(--radius)-0.25rem)] font-medium outline-none ${pressableClass}`,
               sizeClasses[size].item,
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-              isSelected ? "text-foreground" : "hover:text-foreground",
+              isSelected ? selectedTextByTone[tone] : "hover:text-foreground",
               "disabled:pointer-events-none disabled:opacity-50",
             )}
           >

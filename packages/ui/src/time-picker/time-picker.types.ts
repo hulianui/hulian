@@ -1,4 +1,15 @@
-export interface TimePickerProps {
+import type { ComponentPropsWithoutRef } from "react";
+
+/**
+ * 未列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**触发器按钮**上 ——
+ * 读屏念的、能聚焦的都是它。`Field required` 注进来的 `aria-required` 也走这条路（#315，
+ * 与 #293 同一条链：TimePicker 当时漏在名单外）。
+ */
+export interface TimePickerProps
+  extends Omit<
+    ComponentPropsWithoutRef<"button">,
+    "value" | "defaultValue" | "onChange" | "disabled" | "className" | "children" | "role"
+  > {
   /**
    * 受控值，`"HH:mm"` 或 `"HH:mm:ss"`（随 `withSeconds`）。24 小时制、定宽补零。
    * 定宽 → 字典序即时间序，`minTime`/`maxTime` 的比较可以直接比字符串。

@@ -1011,6 +1011,9 @@ export const scenarioLoaders = {
   "score-ring": async () =>
     (await import("@hulianui/ui-internal/score-ring/score-ring.showcase"))
       .scoreRingShowcase,
+  "score-scale": async () =>
+    (await import("@hulianui/ui-internal/score-scale/score-scale.showcase"))
+      .scoreScaleShowcase,
   "scrambled-text": async () =>
     (
       await import(
@@ -4571,6 +4574,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/score-ring/index.ts",
+  },
+  "score-scale": {
+    id: "score-scale",
+    scenarioId: "score-scale/basic",
+    component: "ScoreScale",
+    entry: "@hulianui/ui/score-scale",
+    category: "standard",
+    categories: ["data-display", "info"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/score-scale/index.ts",
   },
   "scrambled-text": {
     id: "scrambled-text",

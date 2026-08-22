@@ -4,7 +4,7 @@ import { LayoutGrid, List, Map } from "lucide-react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Tag } from "../../../../packages/ui/src/tag/tag";
 import { Segmented } from "../../../../packages/ui/src/segmented/segmented";
-import type { SegmentedItem } from "../../../../packages/ui/src/segmented/segmented.types";
+import type { SegmentedItem, SegmentedTone } from "../../../../packages/ui/src/segmented/segmented.types";
 const periodItems: SegmentedItem[] = [
     { value: "day", label: "Day" },
     { value: "week", label: "Week" },
@@ -12,7 +12,7 @@ const periodItems: SegmentedItem[] = [
 ];
 function Demo(p: Record<string, unknown>) {
     const [v, setV] = useState("week");
-    return (<Segmented items={periodItems} value={v} onValueChange={setV} size={(p.size as "sm" | "md") ?? "md"} disabled={p.disabled as boolean} aria-label="Cycle"/>);
+    return (<Segmented items={periodItems} value={v} onValueChange={setV} size={(p.size as "sm" | "md") ?? "md"} tone={(p.tone as SegmentedTone) ?? "neutral"} disabled={p.disabled as boolean} aria-label="Cycle"/>);
 }
 export const segmentedShowcase: ShowcaseSpec = {
     examples: [
@@ -83,6 +83,21 @@ export const segmentedShowcase: ShowcaseSpec = {
                 ]} defaultValue="monthly" aria-label="Billing cycle"/>),
         },
         {
+            title: "Semantic tone",
+            description: "tone takes the same name and the same values as on TabsList: the label of the selected segment picks up a semantic colour while the slider stays a white pill. The neutral default keeps the existing neutral selected state, so passing nothing changes nothing.",
+            code: `<Segmented
+  items={[
+    { value: "day", label: "Day" },
+    { value: "week", label: "week" },
+    { value: "month", label: "month" },
+  ]}
+  defaultValue="week"
+  tone="brand"
+  aria-label="Period"
+/>`,
+            render: () => (<Segmented items={periodItems} defaultValue="week" tone="brand" aria-label="Cycle"/>),
+        },
+        {
             title: "Size",
             description: "size=\"sm\" is used for compact scenes such as toolbars.",
             code: `<>
@@ -121,6 +136,12 @@ export const segmentedShowcase: ShowcaseSpec = {
     ],
     controls: [
         { prop: "size", type: "select", options: ["sm", "md"], defaultValue: "md" },
+        {
+            prop: "tone",
+            type: "select",
+            options: ["neutral", "brand", "success", "warning", "danger"],
+            defaultValue: "neutral",
+        },
         { prop: "disabled", type: "boolean", defaultValue: false },
     ],
     states: [
@@ -160,6 +181,10 @@ export const segmentedShowcase: ShowcaseSpec = {
                 ]} defaultValue="monthly" aria-label="Billing cycle"/>),
         },
         {
+            name: "tone-brand",
+            render: () => (<Segmented items={periodItems} defaultValue="week" tone="brand" aria-label="Cycle"/>),
+        },
+        {
             name: "size-sm",
             render: () => <Segmented size="sm" items={periodItems} defaultValue="day" aria-label="Cycle"/>,
         },
@@ -180,6 +205,7 @@ export const segmentedShowcase: ShowcaseSpec = {
     toCode: (p) => `<Segmented
   items={[{ value: "day", label: "Day" }, { value: "week", label: "Week" }, { value: "month", label: "month" }]}
   defaultValue="week"${p.size && p.size !== "md" ? `
-  size="${p.size}"` : ""}${p.disabled ? "\n  disabled" : ""}
+  size="${p.size}"` : ""}${p.tone && p.tone !== "neutral" ? `
+  tone="${p.tone}"` : ""}${p.disabled ? "\n  disabled" : ""}
 />`,
 };

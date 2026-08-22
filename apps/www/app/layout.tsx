@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
+import { geistSans, geistMono } from "./fonts";
 import { themeScript } from "./theme-script";
 import { DocsProviders } from "../components/docs-providers";
 import { MswProvider } from "../components/msw-provider";
@@ -69,7 +70,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang={DOCS_LOCALE} suppressHydrationWarning>
+    // 字体变量挂在 <html> 上：globals.css 里 --hl-font-sans / --hl-font-mono 读的就是它们，
+    // 挂 <body> 的话 preflight 给 html 的默认字体读不到（#319）。
+    <html
+      lang={DOCS_LOCALE}
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: languageInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

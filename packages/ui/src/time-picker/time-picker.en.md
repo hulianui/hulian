@@ -84,6 +84,9 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 - `minuteStep` changes only the **candidate list**; it does not validate external values. With `minuteStep={15}`, `value="09:37"` has no matching minute item and is not highlighted. Call `snapToStep` first when alignment is required.
 - Switching `withSeconds` changes the external value shape (`"09:30"` ↔ `"09:30:15"`). Normalize stored values when switching modes.
 - TimePicker and [TimeField](../time-field/time-field.md) share the same fixed-width `"HH:mm[:ss]"` format, so applications can switch between popup and keyboard interactions without converting values.
+- The trigger is a `role="combobox"` button, and native attributes that are not listed in Props (`aria-*`, `data-*`, `id`, `title`, `onBlur`, ...) land on **it** rather than on the outer container, which is the element that takes focus and that screen readers announce (#315).
+- Inside [Field](../field/field.md) the label's `htmlFor`, `aria-describedby`, `invalid`, and `disabled` are wired to the trigger automatically, and so is the `aria-required` injected by `<Field required>`. **That chain was broken until #315** (the label pointed at an id that did not exist, so screen readers never announced the field name); upgrading needs no call-site change.
+- Query the trigger by role with `getByRole("combobox")` in tests, not `"button"` anymore. `combobox` is not a name-from-content role, so the accessible name comes from `aria-label` or the `Field` label rather than from the time text shown on the trigger.
 
 ## Related
 [TimeField](../time-field/time-field.md) · [DatePicker](../date-picker/date-picker.md) · [DateTimePicker](../date-time-picker/date-time-picker.md) · [DateRangePicker](../date-range-picker/date-range-picker.md) · [Calendar](../calendar/calendar.md) · [Scheduler](../scheduler/scheduler.md)

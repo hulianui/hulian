@@ -313,6 +313,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "file-tree", name: "FileTree", shortName: "文件树", description: "浏览文件和目录，带展开、选中和改动状态标记", category: "data-display", group: "collection", status: "new" },
   { slug: "diff-stat", name: "DiffStat", shortName: "改动统计条", description: "用绿红格子条概括增删行数，并标出文件状态", category: "data-display", group: "info", status: "new" },
   { slug: "score-ring", name: "ScoreRing", shortName: "评分环", description: "用彩色环形仪表盘展示分值和对应等级", category: "data-display", group: "info", status: "new" },
+  { slug: "score-scale", name: "ScoreScale", shortName: "分档评分尺", description: "用整条按档着色的横带展示分值落在哪一档", category: "data-display", group: "info", status: "new" },
   { slug: "heatmap", name: "Heatmap", shortName: "热力图", description: "把矩阵数值映射成色阶网格，可看图例也可下钻", category: "data-display", group: "collection", status: "new" },
   { slug: "code-review-thread", name: "CodeReviewThread", shortName: "代码评审线程", description: "展示代码评审线程，带严重度、建议改动和解决状态", category: "data-display", group: "collection", status: "new" },
   { slug: "virtual-list", name: "VirtualList", shortName: "虚拟滚动", description: "只渲染可见行，让上万条列表也能流畅滚动", category: "data-display", group: "collection", status: "new" },

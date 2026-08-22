@@ -10619,6 +10619,64 @@
       ]
     },
     {
+      "name": "score-scale",
+      "type": "registry:ui",
+      "title": "ScoreScale",
+      "description": "用整条按档着色的横带展示分值落在哪一档",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/score-ring.json"
+      ],
+      "meta": {
+        "import": "import { ScoreScale, toSegments, toPercent } from \"@hulianui/ui\"",
+        "exports": [
+          "ScoreScale",
+          "toSegments",
+          "toPercent"
+        ],
+        "types": [
+          "ScaleSegment",
+          "ScoreScaleProps",
+          "ScoreScaleMarker",
+          "ScoreScaleValueTextInfo"
+        ],
+        "group": "info",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-scale/score-scale.md",
+        "docLocal": "packages/ui/src/score-scale/score-scale.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/score-scale/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/score-scale/index.ts"
+        },
+        {
+          "path": "components/hulianui/score-scale/score-scale.geometry.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/score-scale/score-scale.geometry.ts"
+        },
+        {
+          "path": "components/hulianui/score-scale/score-scale.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/score-scale/score-scale.tsx"
+        },
+        {
+          "path": "components/hulianui/score-scale/score-scale.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/score-scale/score-scale.types.ts"
+        }
+      ]
+    },
+    {
       "name": "scroll-stack",
       "type": "registry:ui",
       "title": "ScrollStack",

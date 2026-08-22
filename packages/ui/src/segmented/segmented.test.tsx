@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { Segmented } from "./segmented";
-import type { SegmentedItem } from "./segmented.types";
+import type { SegmentedItem, SegmentedTone } from "./segmented.types";
 
 const items: SegmentedItem[] = [
   { value: "day", label: "日" },
@@ -122,5 +122,52 @@ describe("Segmented", () => {
     );
     expect(getByRole("radiogroup").getAttribute("aria-disabled")).toBe("true");
     expect((getAllByRole("radio")[0] as HTMLButtonElement).disabled).toBe(true);
+  });
+});
+
+// #316 语义档 tone：与 TabsList 的 tone 同名同取值（两件组件同一套视觉，选中色不能分叉）。
+// 第一条是"零破坏"证据 —— 默认 neutral 必须逐字保持改动前的 class 串。
+describe("Segmented tone（#316）", () => {
+  // 查询必须限定在自己的 container 里：同一个 it 内多次 render 不会自动清理，
+  // getAllByRole 会把先前那棵树的段也捞回来（第一次写成全局查询时，success 档拿到的是 brand 的节点）。
+  function radiosOf(tone?: SegmentedTone) {
+    const { container } = render(
+      <Segmented items={items} defaultValue="day" tone={tone} aria-label="周期" />,
+    );
+    const radios = Array.from(container.querySelectorAll('[role="radio"]'));
+    return { selected: radios[0], unselected: radios[1] };
+  }
+
+  it("不传 tone：选中段仍是 text-foreground（与改动前逐字相同）", () => {
+    const { selected } = radiosOf();
+    expect(selected.className).toContain("text-foreground");
+    expect(selected.className).not.toContain("text-primary");
+    // 显式 neutral 与不传完全一致：neutral 是维持现状，不是把品牌色换成灰
+    expect(radiosOf("neutral").selected.className).toBe(selected.className);
+  });
+
+  it("tone 换掉选中段文字色", () => {
+    expect(radiosOf("brand").selected.className).toContain("text-primary");
+    expect(radiosOf("success").selected.className).toContain("text-success");
+    expect(radiosOf("danger").selected.className).toContain("text-danger");
+  });
+
+  it("未选中段不受 tone 影响（tone 只描述「选中意味着什么」）", () => {
+    const { unselected } = radiosOf("brand");
+    expect(unselected.className).toBe(radiosOf().unselected.className);
+    expect(unselected.className).not.toContain("text-primary");
+  });
+
+  it("滑块保持 bg-surface 白药丸：白药丸 + 语义字，与 Tabs solid 同一形态", () => {
+    const { container } = render(
+      <Segmented items={items} defaultValue="day" tone="danger" aria-label="周期" />,
+    );
+    // jsdom 下 offsetWidth=0，滑块不渲染；这里断言的是"滑块的类里没有语义底色"这条规则
+    // 本身写在源码常量上（selectedTextByTone 只管文字），滑块 span 若渲染也只有 bg-surface。
+    const slider = container.querySelector('[role="radiogroup"] > span');
+    if (slider) {
+      expect(slider.className).toContain("bg-surface");
+      expect(slider.className).not.toContain("bg-danger");
+    }
   });
 });

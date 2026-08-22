@@ -294,6 +294,7 @@ export * from "./sankey.showcase";
 export * from "./scheduler.showcase";
 export * from "./scope-matrix.showcase";
 export * from "./score-ring.showcase";
+export * from "./score-scale.showcase";
 export * from "./scrambled-text.showcase";
 export * from "./scroll-area.showcase";
 export * from "./scroll-float.showcase";

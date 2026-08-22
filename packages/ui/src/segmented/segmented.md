@@ -32,6 +32,7 @@ import { Segmented } from "@hulianui/ui"
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整体禁用 |
 | size | `"sm"｜"md"` | `"md"` | - |
+| tone | `"brand"｜"success"｜"warning"｜"danger"｜"neutral"` | `"neutral"` | 选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `neutral` 逐字保持库既有的中性选中态（`text-foreground`），不是「把品牌色换成灰」；与 [Tabs](../tabs/tabs.md) 的 `TabsList` 同名同取值 |
 | className | `string` | - | - |
 | aria-label | `string` | - | 无可见标题时提供 |
 

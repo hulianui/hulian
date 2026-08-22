@@ -264,6 +264,7 @@ export { logViewerShowcase } from "./log-viewer/log-viewer.showcase";
 export { codeDiffShowcase } from "./code-diff/code-diff.showcase";
 export { diffStatShowcase } from "./diff-stat/diff-stat.showcase";
 export { scoreRingShowcase } from "./score-ring/score-ring.showcase";
+export { scoreScaleShowcase } from "./score-scale/score-scale.showcase";
 export { heatmapShowcase } from "./heatmap/heatmap.showcase";
 export { codeReviewThreadShowcase } from "./code-review-thread/code-review-thread.showcase";
 // 智能体任务调度可视化批（瀚舵 HanHelm demo dogfood）

@@ -1,13 +1,15 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "../../../../packages/ui/src/tabs/tabs";
+import type { TabsTone } from "../../../../packages/ui/src/tabs/tabs.types";
 import { Tag } from "../../../../packages/ui/src/tag";
-function Demo({ variant, size }: {
+function Demo({ variant, size, tone, }: {
     variant: "underline" | "solid";
     size?: "sm" | "md";
+    tone?: TabsTone;
 }) {
     return (<Tabs defaultValue="account" className="w-80">
-      <TabsList variant={variant} size={size}>
+      <TabsList variant={variant} size={size} tone={tone}>
         <TabsTab value="account">Account</TabsTab>
         <TabsTab value="password">Password</TabsTab>
         <TabsTab value="team" disabled>
@@ -64,6 +66,42 @@ export const tabsShowcase: ShowcaseSpec = {
           <TabsPanel value="password">Password panel.</TabsPanel>
           <TabsPanel value="team">Team Panel.</TabsPanel>
         </Tabs>),
+        },
+        {
+            title: "Semantic tone",
+            description: "Adding tone to TabsList gives the selected state a semantic colour: solid keeps a white pill with a semantic label, and the underline indicator follows along. The neutral default keeps the existing neutral selected state, so passing nothing changes nothing.",
+            code: `<Tabs defaultValue="account" className="w-80">
+  <TabsList variant="solid" tone="brand">
+    <TabsTab value="account">Account</TabsTab>
+    <TabsTab value="password">Password</TabsTab>
+    <TabsTab value="team">Team</TabsTab>
+  </TabsList>
+  <TabsPanel value="account">Account panel. </TabsPanel>
+  <TabsPanel value="password">Password panel. </TabsPanel>
+  <TabsPanel value="team">Team Panel. </TabsPanel>
+</Tabs>`,
+            render: () => (<div className="flex flex-col gap-4">
+          <Tabs defaultValue="account" className="w-80">
+            <TabsList variant="solid" tone="brand">
+              <TabsTab value="account">Account</TabsTab>
+              <TabsTab value="password">Password</TabsTab>
+              <TabsTab value="team">Team</TabsTab>
+            </TabsList>
+            <TabsPanel value="account">Account Panel.</TabsPanel>
+            <TabsPanel value="password">Password panel.</TabsPanel>
+            <TabsPanel value="team">Team Panel.</TabsPanel>
+          </Tabs>
+          <Tabs defaultValue="account" className="w-80">
+            <TabsList tone="brand">
+              <TabsTab value="account">Account</TabsTab>
+              <TabsTab value="password">Password</TabsTab>
+              <TabsTab value="team">Team</TabsTab>
+            </TabsList>
+            <TabsPanel value="account">Account Panel.</TabsPanel>
+            <TabsPanel value="password">Password panel.</TabsPanel>
+            <TabsPanel value="team">Team Panel.</TabsPanel>
+          </Tabs>
+        </div>),
         },
         {
             title: "Inline switcher (size=sm)",
@@ -171,11 +209,20 @@ export const tabsShowcase: ShowcaseSpec = {
             defaultValue: "md",
             label: "Size",
         },
+        {
+            prop: "tone",
+            type: "select",
+            options: ["neutral", "brand", "success", "warning", "danger"],
+            defaultValue: "neutral",
+            label: "Semantic tones",
+        },
     ],
     states: [
         { name: "underline", render: () => <Demo variant="underline"/> },
         { name: "solid", render: () => <Demo variant="solid"/> },
         { name: "solid \u00B7 size=sm", render: () => <Demo variant="solid" size="sm"/> },
+        { name: "solid \u00B7 tone=brand", render: () => <Demo variant="solid" tone="brand"/> },
+        { name: "underline \u00B7 tone=danger", render: () => <Demo variant="underline" tone="danger"/> },
         {
             name: "disabled tab",
             render: () => (<Tabs defaultValue="a" className="w-80">
@@ -192,9 +239,9 @@ export const tabsShowcase: ShowcaseSpec = {
         </Tabs>),
         },
     ],
-    renderWithProps: (p) => (<Demo variant={(p.variant as "underline" | "solid") ?? "underline"} size={(p.size as "sm" | "md") ?? "md"}/>),
+    renderWithProps: (p) => (<Demo variant={(p.variant as "underline" | "solid") ?? "underline"} size={(p.size as "sm" | "md") ?? "md"} tone={(p.tone as TabsTone) ?? "neutral"}/>),
     toCode: (p) => `<Tabs defaultValue="account">
-  <TabsList variant="${p.variant ?? "underline"}" size="${p.size ?? "md"}">
+  <TabsList variant="${p.variant ?? "underline"}" size="${p.size ?? "md"}"${p.tone && p.tone !== "neutral" ? ` tone="${p.tone}"` : ""}>
     <TabsTab value="account">Account</TabsTab>
     <TabsTab value="password">Password</TabsTab>
   </TabsList>

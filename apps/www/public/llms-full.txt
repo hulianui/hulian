@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.55.1 · 394 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.55.1 · 395 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -8034,6 +8034,7 @@ import { Segmented } from "@hulianui/ui"
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整体禁用 |
 | size | `"sm"\|"md"` | `"md"` | - |
+| tone | `"brand"\|"success"\|"warning"\|"danger"\|"neutral"` | `"neutral"` | 选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `neutral` 逐字保持库既有的中性选中态（`text-foreground`），不是「把品牌色换成灰」；与 [Tabs](https://hulianui.haloritual.com/zh/components/tabs) 的 `TabsList` 同名同取值 |
 | className | `string` | - | - |
 | aria-label | `string` | - | 无可见标题时提供 |
 
@@ -8844,6 +8845,9 @@ snapToStep({h:9,m:37,s:0}, 15)            // { h: 9, m: 30, s: 0 }
 - `withSeconds` 切换会改变对外值形状（`"09:30"` ↔ `"09:30:15"`）。切换时请一并处理存量值。
 - 与 [TimeField](https://hulianui.haloritual.com/zh/components/time-field) **共享同一套值格式**（都是定宽 `"HH:mm[:ss]"`），
   两者可以直接互换，甚至同一个字段按屏幕宽度切换用哪个都行 —— 区别只在交互方式（列选 vs 键盘录入）。
+- 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#315）。
+- 放进 [Field](https://hulianui.haloritual.com/zh/components/field) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**#315 修好之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
+- 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。`combobox` 不是「名字取自内容」的角色，所以按角色 + 名字取时名字来自 `aria-label` 或 `Field` 的 label，不是触发器上显示的时间文本。
 
 ## 相关
 [TimeField](https://hulianui.haloritual.com/zh/components/time-field) · [DatePicker](https://hulianui.haloritual.com/zh/components/date-picker) · [DateTimePicker](https://hulianui.haloritual.com/zh/components/date-time-picker) · [DateRangePicker](https://hulianui.haloritual.com/zh/components/date-range-picker) · [Calendar](https://hulianui.haloritual.com/zh/components/calendar) · [Scheduler](https://hulianui.haloritual.com/zh/components/scheduler)
@@ -14767,6 +14771,114 @@ import { ScoreRing, resolveGrade, DEFAULT_GRADES } from "@hulianui/ui"
 [Sparkline](https://hulianui.haloritual.com/zh/components/sparkline) · [ImageViewer](https://hulianui.haloritual.com/zh/components/image-viewer) · [LiveProductCard](https://hulianui.haloritual.com/zh/components/live-product-card) · [DiffStat](https://hulianui.haloritual.com/zh/components/diff-stat) · [Badge](https://hulianui.haloritual.com/zh/components/badge) · [Dot](https://hulianui.haloritual.com/zh/components/dot)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# ScoreScale
+
+**导出**：`ScoreScale` · `toSegments` · `toPercent`
+
+> 用整条按档着色的横带展示分值落在哪一档 · data-display/info
+
+## 何时用
+
+一个分值本身不重要、重要的是它掉进了哪一档时用它：风控/信用评分、健康度、体检指标（偏低/正常/偏高）、SEO 或质量得分、水位分档告警。它与 [ScoreRing](https://hulianui.haloritual.com/zh/components/score-ring) 共用同一套等级模型（`Grade[]`），一个画圆、一个画线。
+
+要「这个量占满量的多少」用 [Meter](https://hulianui.haloritual.com/zh/components/meter)；要「任务推进到哪了」用 [Progress](https://hulianui.haloritual.com/zh/components/progress)；要「分值 + 等级」但不关心它在量程上的位置，用 [ScoreRing](https://hulianui.haloritual.com/zh/components/score-ring)。可 RSC（无 hook、无事件，几何全是渲染期算术）。
+
+## 导入
+```ts
+import { ScoreScale } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value* | `number` | - | 当前分值。越界时游标夹到端点，`aria-valuetext` 仍念原始值 |
+| min | `number` | `0` | 量程下限 |
+| max | `number` | `100` | 量程上限 |
+| grades | `Grade[]` | `DEFAULT_GRADES` | 等级带，与 ScoreRing 同一套。**相邻两档 min 之差 = 该段在条上的宽度** |
+| size | `"sm" \| "md"` | `"md"` | 尺寸档：sm 表格行内、md 评分卡主角 |
+| showGrade | `boolean` | `true` | 右上角显示命中档的 label，用该档的 tone 着色 |
+| showRange | `boolean` | `false` | 条下方标出量程端点（`0` / `100`） |
+| segmentGap | `boolean` | `false` | 段与段之间留 2px 缝 |
+| markers | `ScoreScaleMarker[]` | - | 参照线（可多根），如「行业均值 62」 |
+| formatValueText | `(info: ScoreScaleValueTextInfo) => string` | - | 自定义 `aria-valuetext` |
+| className | `string` | - | 自定义类 |
+| …HTMLAttributes | `Omit<HTMLAttributes<HTMLDivElement>, "children">` | - | 透传 div 原生属性（`aria-label` / `aria-labelledby` 走这里） |
+
+### ScoreScaleMarker
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| value* | `number` | - | 参照值，与主值同量程；越界同样夹到端点 |
+| label | `ReactNode` | - | 线下方的说明文字。任一 marker 带 label 就会多出一行标注行 |
+| tone | `string` | 前景色 | 线的颜色，经 `resolveTone` 解析（语义色名 / `var(--color-*)` / 任意 CSS 色） |
+
+### ScoreScaleValueTextInfo
+
+| 名称 | 类型 | 说明 |
+|------|------|------|
+| value | `number` | 调用方传进来的原始值（**未夹紧**） |
+| min / max | `number` | 量程两端 |
+| percent | `number` | 已夹进 0–100 的位置百分比 |
+| grade | `Grade \| undefined` | 命中的等级；`grades` 为空时没有等级可言 |
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| label | `ReactNode` | 条上方的标题。传**字符串**时同时用作 `role="meter"` 的无障碍名 |
+
+## 示例
+```tsx
+// 基础：默认 A-F 等级带
+<ScoreScale value={73} label="质量分" />
+
+// 自定义等级带：相邻两档 min 之差就是该段的宽度
+const CREDIT_GRADES = [
+  { min: 80, label: "优秀", tone: "success" },
+  { min: 60, label: "良好", tone: "chart-2" },
+  { min: 30, label: "一般", tone: "warning" },
+  { min: 0, label: "差", tone: "danger" },
+]
+<ScoreScale value={36} label="信誉评分" grades={CREDIT_GRADES} showRange />
+
+// 参照线：游标不是条上唯一的标记物
+<ScoreScale value={36} grades={CREDIT_GRADES} markers={[{ value: 62, label: "行业均值 62" }]} />
+
+// 中文量词的读屏文案（默认是不含语言词的 "36 / 100, 一般"）
+<ScoreScale value={36} grades={CREDIT_GRADES} formatValueText={({ value, grade }) => `${value} 分，${grade?.label ?? ""}`} />
+```
+
+### Stat + ScoreScale 拼出整张评分卡
+
+外壳不必新造：[Stat](https://hulianui.haloritual.com/zh/components/stat) 的四个槽正好对上这张卡 —— `label` 标题、`value` 分值、`chart` 这条尺、`hint` 底部释义。
+
+```tsx
+<Stat
+  className="w-80"
+  label="信誉评分"
+  // Stat 的 value 钉死 text-2xl，超大分值靠 value 节点自带字号盖住（见下方「坑」）
+  value={<span className="text-6xl font-bold tabular-nums">36</span>}
+  chart={<ScoreScale value={36} grades={CREDIT_GRADES} showRange showGrade={false} />}
+  hint="信誉一般，建议先补齐资质材料后再申请提额。"
+/>
+```
+
+## 禁忌 / 坑
+
+- **别拿 Meter 顶这件事**。Meter 画的是填充长度（"占了多少 / 完成了多少"，越长越满）；评分尺里 36 分左边那截绿色不属于这个值，它是量程刻度。用填充条画 36 分，读者接收到的是"进行中、还差一截"，说的是相反的话。
+- **`Stat` 的 `value` 钉死 `text-2xl font-semibold`**（`stat.tsx:31`），而评分卡的主角就是那个超大数字。直接传 `value={36}` 只会得到一个 24px 的数字；要放大必须让 value 节点自带字号 —— `value={<span className="text-6xl font-bold tabular-nums">36</span>}`（子元素自带字号胜过父级继承）。库里没有现成的「超大数值」档。
+- **等级字别去借 `Stat` 的 `icon` 槽**：`icon` 在标题行右上、语义是角标，`delta` 只收数字。等级字由 `ScoreScale` 自己带（`showGrade`）。
+- **默认 `DEFAULT_GRADES` 的 5 档只画得出 3 种颜色**（A/B 同为 success、C/D 同为 warning），条上看起来是 3 段。要让 5 档都分得出来，开 `segmentGap`，或传自定义 `grades` 给每档不同 `tone`。
+- **`grades` 只声明每档下界**，最低档会被向下补到量程起点 —— 否则轨道左端会露出一截无主空白。整档落在量程外的会被丢掉，不留 0 宽空段。
+- **`showGrade` 显示的是等级字，不是分值**。分值不在这件组件里渲染（它归 `Stat` 的 `value` 或你自己的标题），只进 `aria-valuetext`。
+- **不传字符串 `label` 时读屏念到的是一条无名的 meter**。`label` 传节点时无障碍名不会自动生成，请另外透传 `aria-label` 或 `aria-labelledby`。
+- **颜色一律走 token**：`tone` 传语义色名（`"success"` / `"warning"` / `"chart-2"`）或带 `--color-` 前缀的变量。裸 `var(--warning)` 在 style/SVG 里解析不到 —— `resolveTone` 会为已知 token 兜底补前缀，但别依赖它。
+
+## 相关
+[ScoreRing](https://hulianui.haloritual.com/zh/components/score-ring) · [Meter](https://hulianui.haloritual.com/zh/components/meter) · [Progress](https://hulianui.haloritual.com/zh/components/progress) · [Stat](https://hulianui.haloritual.com/zh/components/stat) · [Sparkline](https://hulianui.haloritual.com/zh/components/sparkline) · [Legend](https://hulianui.haloritual.com/zh/components/legend)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # ScrollStack
 
 **导出**：`ScrollStack` · `ScrollStackItem`
@@ -19153,6 +19265,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
+| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"neutral"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
 | className | `string` | - | - |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
@@ -19177,6 +19290,24 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
   <TabsPanel value="team">邀请成员、分配角色。</TabsPanel>
 </Tabs>
 ```
+
+## 语义色档
+
+`TabsList` 的 `tone` 描述**选中意味着什么**，取值是「语义 tone SSOT」（见 [Button](https://hulianui.haloritual.com/zh/components/button) 的 `tone`）的子集：`brand` / `success` / `warning` / `danger` / `neutral`。不收 `current` —— 那一档是「别设色、跟随容器继承」，tab 条不长在彩色容器里，没有这个场景。
+
+| 皮肤 | 选中文字 | 滑块 |
+|---|---|---|
+| `solid` | 该 tone 的文字色 | 药丸底保持 `bg-surface`（白药丸 + 语义字） |
+| `underline` | 该 tone 的文字色 | 下划线跟 tone |
+
+```tsx
+<TabsList variant="solid" tone="brand">…</TabsList>
+```
+
+- **默认 `neutral` 是「维持现状」，不是「把品牌色换成灰」**：选中文字仍是 `text-foreground`、`underline` 的下划线仍是 `bg-primary`，与加这个 prop 之前逐字相同。存量页面不传 `tone` 就一个像素都不动；想要「白药丸 + 品牌蓝字」得显式传 `tone="brand"`。
+- **只染选中态**：未选中态不受 `tone` 影响，仍是 `text-muted-foreground` → hover `text-foreground`。
+- **solid 的药丸底不跟 `tone`**：语义色铺满药丸会盖掉 tab 文字自身的语义。「浅语义底」（对齐 Button 的 `soft`）是留给后续的一档。
+- `Segmented` 有同名同取值的 `tone`：它与 solid tab 条是同一套视觉，选中色必须一致。
 
 ## 尺寸
 

@@ -331,6 +331,7 @@ export * from "./code-diff";
 // 代码审查质检批（瀚审 HanReview demo dogfood）
 export * from "./diff-stat";
 export * from "./score-ring";
+export * from "./score-scale";
 export * from "./heatmap";
 export * from "./code-review-thread";
 // 智能体任务调度可视化批（瀚舵 HanHelm demo dogfood）

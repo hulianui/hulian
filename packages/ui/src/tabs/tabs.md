@@ -37,6 +37,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
+| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"neutral"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
 | className | `string` | - | - |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
@@ -61,6 +62,24 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
   <TabsPanel value="team">邀请成员、分配角色。</TabsPanel>
 </Tabs>
 ```
+
+## 语义色档
+
+`TabsList` 的 `tone` 描述**选中意味着什么**，取值是「语义 tone SSOT」（见 [Button](../button/button.md) 的 `tone`）的子集：`brand` / `success` / `warning` / `danger` / `neutral`。不收 `current` —— 那一档是「别设色、跟随容器继承」，tab 条不长在彩色容器里，没有这个场景。
+
+| 皮肤 | 选中文字 | 滑块 |
+|---|---|---|
+| `solid` | 该 tone 的文字色 | 药丸底保持 `bg-surface`（白药丸 + 语义字） |
+| `underline` | 该 tone 的文字色 | 下划线跟 tone |
+
+```tsx
+<TabsList variant="solid" tone="brand">…</TabsList>
+```
+
+- **默认 `neutral` 是「维持现状」，不是「把品牌色换成灰」**：选中文字仍是 `text-foreground`、`underline` 的下划线仍是 `bg-primary`，与加这个 prop 之前逐字相同。存量页面不传 `tone` 就一个像素都不动；想要「白药丸 + 品牌蓝字」得显式传 `tone="brand"`。
+- **只染选中态**：未选中态不受 `tone` 影响，仍是 `text-muted-foreground` → hover `text-foreground`。
+- **solid 的药丸底不跟 `tone`**：语义色铺满药丸会盖掉 tab 文字自身的语义。「浅语义底」（对齐 Button 的 `soft`）是留给后续的一档。
+- `Segmented` 有同名同取值的 `tone`：它与 solid tab 条是同一套视觉，选中色必须一致。
 
 ## 尺寸
 
