@@ -8457,7 +8457,15 @@
     "运行指标": "Runtime metrics",
     "    <CardHeader title=\"运行指标\" />": "    <CardHeader title=\"Runtime metrics\" />",
     "最近 5 分钟": "Last 5 minutes",
-    "    <CardFooter>最近 5 分钟</CardFooter>": "    <CardFooter>Last 5 minutes</CardFooter>"
+    "    <CardFooter>最近 5 分钟</CardFooter>": "    <CardFooter>Last 5 minutes</CardFooter>",
+    "chips 多选与单项删除": "Chip multi-select and item removal",
+    "display=chips 用标签回显已选值；removable 让每项可单独删除，+N 仍提示折叠数量。": "display=chips renders selected values as tags; removable lets each value be removed individually, while +N still indicates the collapsed count.",
+    "搜索字体": "Search fonts",
+    "搜索后已选项置顶": "Selected matches first after search",
+    "selectedFirst 只用于多选：先过滤，再将仍命中的已选项按 value 顺序置顶。": "selectedFirst is for multiple mode only: filter first, then move matching selected values to the front in value order.",
+    "120 项自动虚拟化": "Automatic virtualization at 120 items",
+    "searchable 候选达到 100 项时自动虚拟化；selectedFirst 在虚拟窗口计算前完成排序。": "Searchable candidates virtualize automatically at 100 items; selectedFirst finishes sorting before the virtual window is calculated.",
+    "选择字体": "Select a font"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

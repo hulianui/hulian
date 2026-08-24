@@ -32,8 +32,9 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 |------|------|------|------|
 | items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | - | Option data used by Base UI to resolve selected labels in the trigger. |
 | defaultValue | `string \| string[] \| null` | `null` | Uncontrolled initial value: `string \| null` for single select, `string[]` when `multiple`. |
-| placeholder | `ReactNode` | - | Content shown without a selection. Single mode injects a `value: null` item; multiple mode renders it through the trigger's functional Value. |
+| placeholder | `ReactNode` | - | Content shown without a selection. Single mode injects a `value: null` item; empty chips mount it once in the real Trigger Value and stably link it as the SSR accessible name. |
 | multiple | `boolean` | `false` | Enables multiple selection: `value`, `defaultValue`, and `onValueChange` use `string[]`, and the popup stays open after selection. |
+| selectedFirst | `boolean` | `false` | In multiple mode only, moves selected options to the front in current value-array order while preserving the order of unselected options. |
 | clearable | `boolean` | `false` | Shows a clear action on trigger hover/focus. Clearing emits `null` in single mode or `[]` in multiple mode. |
 | searchable | `boolean` | `false` | Uses the Combobox search UI and Base UI filtering; requires `items`. |
 | searchPlaceholder | `string` | `"\u641c\u7d22"` | Search input placeholder; the built-in Chinese copy means “Search.” |
@@ -54,6 +55,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | Visual size. `xs` matches the `xs` height of Input and Textarea, so the three controls line up in a dense table row. |
 | invalid | `boolean` | `false` | Whether to show invalid styling when the trigger is used outside a Field. |
 | maxDisplay | `number` | `2` | Maximum visible selected labels in multiple mode; remaining selections collapse into `+N`. |
+| display | `"text" \| "chips"` | `"text"` | How multiple values are displayed; `chips` renders visual tags. |
+| removable | `boolean` | `false` | Shows a control to remove one value when `display="chips"`. |
 | className | `string` | - | Additional class name passed through to the element. |
 
 ### SelectContent
@@ -115,6 +118,28 @@ const [points, setPoints] = useState<string[]>([]);
   </SelectContent>
 </Select>
 
+// Searchable chips with selected values first and individual removal
+const cities = [
+  { value: "shanghai", label: "Shanghai" },
+  { value: "beijing", label: "Beijing" },
+  { value: "shenzhen", label: "Shenzhen" },
+];
+
+<Select
+  items={cities}
+  multiple
+  searchable
+  selectedFirst
+  defaultValue={["shanghai", "beijing"]}
+>
+  <SelectTrigger display="chips" removable maxDisplay={3} />
+  <SelectContent>
+    {cities.map((city) => (
+      <SelectItem key={city.value} value={city.value}>{city.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
 // Clearable and searchable, corresponding to el-select's clearable and filterable options
 <Select items={FONTS} placeholder="Please select a font" clearable searchable searchPlaceholder="Search font">
   <SelectTrigger />
@@ -160,7 +185,9 @@ const { data, isLoading } = useFonts();
 - Pass placeholder content to Select's `placeholder` prop, **not** to `Select.Value`. See [[base-ui-select-rc0-no-value-placeholder-prop-inject-null-item]]: this project uses Base UI rc.0, whose `Select.Value` lacks the later placeholder prop. HulianUI implements single-mode placeholders by injecting an `items` entry with `value: null`. Keep `items` and SelectItem values aligned or the trigger falls back to raw values.
 - Under `multiple`, values must be arrays; `defaultValue="a"` is treated as no selection. Multiple mode renders its placeholder through the trigger's functional Value and relies on `items` for label resolution. Without `items`, selected raw values are displayed.
 - `SelectTrigger.maxDisplay`, not Select, controls the number of visible labels in multiple mode.
-- `clearable` adds internal state only for uncontrolled usage. **Controlled semantics do not change:** clearing calls `onValueChange`, but the visible value changes only when the consumer writes it back.
+- `selectedFirst` affects **multiple mode only**. Under `searchable`, filtering happens first, then matching selected values move to the front in value-array order; selected values that do not match are never forced back into results. Standard-skin `SelectGroup`s retain their group order and reorder only within each group.
+- `display="chips"` changes only the multiple-trigger visual presentation. With an empty value, `placeholder` (including a ReactNode) is mounted **exactly once in the real Trigger Value**: it is directly visible with muted styling and receives a stable id, rather than being copied into the chip overlay. This avoids duplicate consumer ids and duplicate component lifecycles. When the consumer has not supplied an explicit `aria-label` or `aria-labelledby`, server markup immediately references that one node as an `aria-labelledby` fallback, so component placeholders name the control during SSR; explicit ARIA props always win immediately. A child cannot discover an ancestor native label during SSR, so a `Field` or native `<label>` may be temporarily superseded by the placeholder in server markup; after hydration, Select detects the real label and removes the fallback so the external label regains priority. With selected values, the visual chip overlay remains `aria-hidden` and the real Trigger is named from the complete selected labels. `removable` requires `display="chips"`; each remove button is a sibling of the Trigger. `clearable` still clears all values and can be used alongside individual removal.
+- Value ownership: `clearable` needs an internal mirror to clear values, and `multiple` always drives Base UI through that same mirror for individual chip removal, **even when `clearable={false}`**. Controlled semantics do not change: an external `value` remains authoritative, so clearing or removing only emits `onValueChange` until the consumer writes the new value back; an uncontrolled mirror updates after an uncancelled change.
 - The clear button is a **sibling** of Trigger, positioned over the arrow area, because nesting `<button>` inside `<button>` is invalid and would also reopen the popup through bubbling. It is normally hidden and appears through `group-hover` and `group-focus-within`.
 - `searchable` requires `items`. Search results are driven by that array; matching consumer-provided SelectItem content is reused by value, while items without a corresponding SelectItem render their labels. Without `items`, the popup has no candidates.
 - Search mode flattens options, so declarative SelectGroup structure does not apply. Use [Combobox](../combobox/combobox.md) for combined search and grouping.

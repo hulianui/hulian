@@ -438,7 +438,15 @@ export interface ComponentLocale {
     loadMore: string;
     noMore: string;
   };
-  select?: { search: string; empty: string; loading: string; separator: string; clear: string };
+  select?: {
+    search: string;
+    empty: string;
+    loading: string;
+    separator: string;
+    clear: string;
+    /** Optional so existing custom locale dictionaries remain source-compatible. */
+    remove?: (label: string) => string;
+  };
   viewport?: { devicePresets: string; tablet: string; phone: string };
   artifact?: { expand: string; collapse: string };
   banner?: { close: string };
@@ -1188,7 +1196,14 @@ const zhComponents: ComponentLocale = {
     loadMore: "滚动加载更多",
     noMore: "没有更多了",
   },
-  select: { search: "搜索", empty: "无匹配项", loading: "加载中", separator: "、", clear: "清除" },
+  select: {
+    search: "搜索",
+    empty: "无匹配项",
+    loading: "加载中",
+    separator: "、",
+    clear: "清除",
+    remove: (label) => `移除 ${label}`,
+  },
   viewport: { devicePresets: "设备预设", tablet: "平板", phone: "手机" },
   artifact: { expand: "展开全文", collapse: "收起" },
   banner: { close: "关闭" },
@@ -2003,6 +2018,7 @@ const enComponents: ComponentLocale = {
     loading: "Loading",
     separator: ", ",
     clear: "Clear",
+    remove: (label) => `Remove ${label}`,
   },
   viewport: { devicePresets: "Device presets", tablet: "Tablet", phone: "Phone" },
   artifact: { expand: "Show all", collapse: "Collapse" },
