@@ -55,7 +55,7 @@ export const textShowcase: ShowcaseSpec = {
         },
         {
             title: "Font family and numerals",
-            description: "family switches between sans and mono; numeric aligns changing-width numerals. Omit family to inherit the surrounding font.",
+            description: "family switches between sans/mono; numeric aligns changing-width numerals. Omit family to inherit the surrounding font.",
             code: `<Text family="sans">Sans body label</Text>
 <Text family="mono">Mono code label</Text>
 <Text>Changing widths: 11,111.11 \u2192 88,888.88</Text>

@@ -92,9 +92,13 @@ test("committed showcase copy covers repository AST literals with no duplicate k
   // 只查 exact 会把「仅存在于某个组件 files 块里的词条」误判成缺译 —— 而那正是同一个词在
   // 不同组件里必须分别翻译时的唯一出路（math-text 的「分数」是 Fraction，别处是 Score）。
   // showcaseAstValues() 不带文件归属，按文件的严格校验由 `pnpm showcase:check` 负责。
-  const fileKeys = new Set(Object.values(copy.files ?? {}).flatMap((entries) => Object.keys(entries)));
+  const normalizeKey = (key) => key.trim().replace(/\s+/gu, " ");
+  const exactKeys = new Set(Object.keys(copy.exact).map(normalizeKey));
+  const fileKeys = new Set(
+    Object.values(copy.files ?? {}).flatMap((entries) => Object.keys(entries).map(normalizeKey)),
+  );
   const missing = expected.filter(
-    (key) => !Object.hasOwn(copy.exact, key) && !fileKeys.has(key),
+    (key) => !exactKeys.has(key) && !fileKeys.has(key),
   );
   assert.deepEqual(
     missing,

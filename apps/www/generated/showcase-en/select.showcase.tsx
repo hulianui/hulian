@@ -148,7 +148,7 @@ export const selectShowcase: ShowcaseSpec = {
             render: () => <MultiDemo defaultValue={["sans", "serif", "mono"]} maxDisplay={2}/>,
         },
         {
-            title: "Chip multi-select and item removal",
+            title: "chips multi-select and item removal",
             description: "display=chips renders selected values as tags; removable lets each value be removed individually, while +N still indicates the collapsed count.",
             code: `const [value, setValue] = useState(["sans", "serif", "mono"]);
 
@@ -169,7 +169,7 @@ export const selectShowcase: ShowcaseSpec = {
         },
         {
             title: "Automatic virtualization at 120 items",
-            description: "Searchable candidates virtualize automatically at 100 items; selectedFirst finishes sorting before the virtual window is calculated.",
+            description: "searchable candidates virtualize automatically at 100 items; selectedFirst finishes sorting before the virtual window is calculated.",
             code: `<Select items={manyFonts} multiple searchable selectedFirst defaultValue={["font-119"]}>
   <SelectTrigger maxDisplay={1} />
   <SelectContent>{/* SelectItem\u2026 */}</SelectContent>
@@ -261,7 +261,7 @@ export const selectShowcase: ShowcaseSpec = {
         { name: "Loading", render: () => <Demo loading/> },
         { name: "Grouping", render: () => <GroupDemo /> },
         { name: "Multiple selection (out of fold +N)", render: () => <MultiDemo defaultValue={["sans", "serif", "mono"]}/> },
-        { name: "Chip multi-select and item removal", render: () => <ChipsDemo /> },
+        { name: "chips multi-select and item removal", render: () => <ChipsDemo /> },
         { name: "Selected matches first after search", render: () => <SearchSelectedFirstDemo /> },
         { name: "Automatic virtualization at 120 items", render: () => <VirtualizedDemo /> },
         { name: "Disabled", render: () => <Demo disabled defaultValue="sans"/> },
