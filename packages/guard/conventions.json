@@ -1394,6 +1394,13 @@
       "source": "packages/ui/src/card/card.md"
     },
     {
+      "id": "component/card/pitfall/7",
+      "scope": "card",
+      "title": "Card",
+      "rule": "`size=\"sm\"` 由 Card 根节点提供密度变量；嵌套的 Card 会重设自己的默认 `md` 值，想紧凑要显式传 `size=\"sm\"`。分区的 `className`（例如 `p-0` / `pt-0`）仍可按原有契约覆盖对应内边距。",
+      "source": "packages/ui/src/card/card.md"
+    },
+    {
       "id": "component/card-nav/pitfall/1",
       "scope": "card-nav",
       "title": "CardNav",
@@ -3189,7 +3196,7 @@
       "id": "component/dot-field/pitfall/3",
       "scope": "dot-field",
       "title": "DotField",
-      "rule": "父容器须 `relative` + `overflow-hidden`（组件自带 absolute 铺满逻辑）。",
+      "rule": "**定位上下文**：父容器必须用 `relative` 或其他非 `static` 的定位方式建立定位上下文，并建议配合 `overflow-hidden`；DotField 自带 `absolute inset-0` 铺满父容器。前景内容使用 `relative z-10` 叠在点阵上方，容器高度可以完全由带 padding 的正文决定。",
       "source": "packages/ui/src/dot-field/dot-field.md"
     },
     {
@@ -8425,46 +8432,60 @@
       "id": "component/select/pitfall/4",
       "scope": "select",
       "title": "Select",
-      "rule": "`clearable` 会让组件接管 value（非受控时内部起受控镜像）——**受控用法不变**：外部不改 `value` 时点清除只回调不落值，符合受控语义。未开 `clearable` 时 value 归属与 DOM 结构与旧版逐字节一致（不加包裹层）。",
+      "rule": "`selectedFirst` **只影响多选**。`searchable` 时先过滤、再把仍命中的已选项按 value 数组顺序置顶；未命中的已选值不会被强插回结果。标准皮肤的 `SelectGroup` 保持组顺序，只在各组内部重排。",
       "source": "packages/ui/src/select/select.md"
     },
     {
       "id": "component/select/pitfall/5",
       "scope": "select",
       "title": "Select",
-      "rule": "清除按钮是 `Trigger` 的**兄弟**节点（绝对定位盖在箭头位上），不是子节点——`<button>` 里嵌 `<button>` 是非法 HTML，且嵌套后点击会冒泡到 Trigger 顺手把浮层打开。常态 `hidden`，靠外层 `group-hover` / `group-focus-within` 浮出。",
+      "rule": "`display=\"chips\"` 只改变多选 Trigger 的视觉回显。空数组时，`placeholder`（支持 ReactNode）**只在真实 Trigger Value 中挂载一次**：它以 muted 样式直接可见，并带稳定 id；不会再复制到 chips overlay，也不会产生重复 consumer id 或双生命周期。没有消费方显式 `aria-label`/`aria-labelledby` 时，服务端首帧即以 `aria-labelledby` 关联这份唯一内容，组件型 placeholder 因而在 SSR 中也能命名控件；显式 aria 属性始终立即优先。子组件在 SSR 时无法检查祖先原生标签，因此带 `Field` 或原生 `<label>` 的服务端标记可能暂由 placeholder 命名；hydration 检出真实标签后会撤销 fallback，让外部标签恢复优先。已有选中值时，视觉 chip overlay 仍保持 `aria-hidden`，真实 Trigger 使用完整选中 label 命名。`removable` 需要同时开启 `display=\"chips\"`，每个删除按钮都是 Trigger 的兄弟节点。`clearable` 仍清空所有值，和单项删除可同时使用。",
       "source": "packages/ui/src/select/select.md"
     },
     {
       "id": "component/select/pitfall/6",
       "scope": "select",
       "title": "Select",
-      "rule": "`searchable` 依赖 `items`：该皮肤下列表由 `items` 过滤结果驱动渲染（消费者写的 `SelectItem` 按 value 建索引后复用，自定义内容不丢；`items` 有而 `SelectItem` 没写的项兜底用 label 渲染）。**不传 `items` 就没有候选，浮层恒为空态。**",
+      "rule": "值归属：`clearable` 需要内部 mirror 执行清空；`multiple` 为 chips 单项删除也始终由该 mirror 驱动 Base UI，**即使 `clearable=false`**。这不改变受控语义：外部传 `value` 时仍以外部值为准，外部不回写时清空或单删只回调、不乐观改显示；非受控时 mirror 在未取消的变更后同步更新。",
       "source": "packages/ui/src/select/select.md"
     },
     {
       "id": "component/select/pitfall/7",
       "scope": "select",
       "title": "Select",
-      "rule": "`searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要\"搜索 + 分组\"直接用 [Combobox](../combobox/combobox.md)。",
+      "rule": "清除按钮是 `Trigger` 的**兄弟**节点（绝对定位盖在箭头位上），不是子节点——`<button>` 里嵌 `<button>` 是非法 HTML，且嵌套后点击会冒泡到 Trigger 顺手把浮层打开。常态 `hidden`，靠外层 `group-hover` / `group-focus-within` 浮出。",
       "source": "packages/ui/src/select/select.md"
     },
     {
       "id": "component/select/pitfall/8",
       "scope": "select",
       "title": "Select",
-      "rule": "`searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](../combobox/combobox.md) 自带 `filter`。",
+      "rule": "`searchable` 依赖 `items`：该皮肤下列表由 `items` 过滤结果驱动渲染（消费者写的 `SelectItem` 按 value 建索引后复用，自定义内容不丢；`items` 有而 `SelectItem` 没写的项兜底用 label 渲染）。**不传 `items` 就没有候选，浮层恒为空态。**",
       "source": "packages/ui/src/select/select.md"
     },
     {
       "id": "component/select/pitfall/9",
       "scope": "select",
       "title": "Select",
-      "rule": "`searchable` 下 `items` **给到 100 项及以上时列表自动虚拟化**（底层 Combobox 的策略）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认 `SelectItem` 恰好 32px，通常无感。**如果**你的 `SelectItem` 高度不是 32px（两行文案、带头像、自定义 padding/字号），那么在 ≥100 项时滚动落位会逐渐偏移——**不报错、短列表也复现不出来**，请显式传 `virtualized={false}`。同理，测试里 `getAllByRole(\"option\")` 在虚拟化后只拿得到视口内那几条。",
+      "rule": "`searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要\"搜索 + 分组\"直接用 [Combobox](../combobox/combobox.md)。",
       "source": "packages/ui/src/select/select.md"
     },
     {
       "id": "component/select/pitfall/10",
+      "scope": "select",
+      "title": "Select",
+      "rule": "`searchable` 的过滤匹配 label 的**字符串**形态；label 传 ReactNode（如带图标的 JSX）时退回按 `value` 匹配。要按中文/拼音/编码多字段搜，走 [Combobox](../combobox/combobox.md) 自带 `filter`。",
+      "source": "packages/ui/src/select/select.md"
+    },
+    {
+      "id": "component/select/pitfall/11",
+      "scope": "select",
+      "title": "Select",
+      "rule": "`searchable` 下 `items` **给到 100 项及以上时列表自动虚拟化**（底层 Combobox 的策略）：只有视口内的选项在 DOM 里，行高按 32px 固定估算、不逐项测量。默认 `SelectItem` 恰好 32px，通常无感。**如果**你的 `SelectItem` 高度不是 32px（两行文案、带头像、自定义 padding/字号），那么在 ≥100 项时滚动落位会逐渐偏移——**不报错、短列表也复现不出来**，请显式传 `virtualized={false}`。同理，测试里 `getAllByRole(\"option\")` 在虚拟化后只拿得到视口内那几条。",
+      "source": "packages/ui/src/select/select.md"
+    },
+    {
+      "id": "component/select/pitfall/12",
       "scope": "select",
       "title": "Select",
       "rule": "`loading` 期间浮层只出占位、**不渲染任何选项**（避免展示上一轮的陈旧数据），且不给清除按钮（值可能正在刷新）。`loading` 是展示态，**不改值**：浮层开着时把选项卸掉，Base UI 会把「已卸载」的选中项当成被移除而回调剔除后的值，本组件在加载期间把这类内部回调吞掉（受控不触发 `onValueChange`，非受控内部值也保留），加载结束后已选项照常显示。注意这只覆盖 `loading` 括住的窗口：浮层开着时直接换掉 `items` 且新列表不含已选项，Base UI 仍会回调剔除后的值——远程搜索请让已选项留在 `items` 里，或改用 `searchable`（Combobox 皮肤没有这条剔除逻辑）。",
@@ -10785,7 +10806,7 @@
   ],
   "stats": {
     "componentDocs": 395,
-    "componentAdvisories": 1504,
-    "totalAdvisories": 1514
+    "componentAdvisories": 1507,
+    "totalAdvisories": 1517
   }
 }

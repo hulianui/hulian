@@ -2354,6 +2354,7 @@
           "Text"
         ],
         "types": [
+          "TextFamily",
           "TextProps",
           "TextSize",
           "TextTone",
@@ -5832,6 +5833,11 @@
           "target": "components/hulianui/select/index.ts"
         },
         {
+          "path": "components/hulianui/select/select-order.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/select/select-order.ts"
+        },
+        {
           "path": "components/hulianui/select/select.tsx",
           "type": "registry:ui",
           "target": "components/hulianui/select/select.tsx"
@@ -7052,7 +7058,8 @@
         ],
         "types": [
           "CardProps",
-          "CardHeaderProps"
+          "CardHeaderProps",
+          "CardSize"
         ],
         "group": "collection",
         "tags": [],
