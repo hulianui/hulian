@@ -543,6 +543,13 @@
       "id": "component/animated-shiny-text/pitfall/2",
       "scope": "animated-shiny-text",
       "title": "AnimatedShinyText",
+      "rule": "组件不内置宽度或居中布局；需要限宽、居中时由父布局控制，或通过 `className` 显式指定。",
+      "source": "packages/ui/src/animated-shiny-text/animated-shiny-text.md"
+    },
+    {
+      "id": "component/animated-shiny-text/pitfall/3",
+      "scope": "animated-shiny-text",
+      "title": "AnimatedShinyText",
       "rule": "渲染为 `<span>`，无字号/无内容时无可见效果。",
       "source": "packages/ui/src/animated-shiny-text/animated-shiny-text.md"
     },
@@ -10778,7 +10785,7 @@
   ],
   "stats": {
     "componentDocs": 395,
-    "componentAdvisories": 1503,
-    "totalAdvisories": 1513
+    "componentAdvisories": 1504,
+    "totalAdvisories": 1514
   }
 }
