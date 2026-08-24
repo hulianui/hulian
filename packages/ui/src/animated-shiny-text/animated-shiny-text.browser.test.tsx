@@ -18,6 +18,6 @@ describe("AnimatedShinyText flex item layout (#322)", () => {
     const sibling = screen.getByTestId("sibling").getBoundingClientRect();
     const shiny = screen.getByTestId("shiny").getBoundingClientRect();
     expect(shiny.left).toBe(sibling.left);
-    expect(shiny.width).toBeGreaterThan(448);
+    expect(shiny.width).toBe(sibling.width);
   });
 });
