@@ -39,6 +39,7 @@ Inherits `ComponentPropsWithoutRef<"span">` (`children` / `className` / `style`,
 ## Usage guidelines
 
 - The effect uses a mask that sweeps across the text, so the text must have a visible foreground color. The highlight can disappear against an extremely light or dark background; a badge container with `border` and `bg-surface` usually provides enough contrast.
+- The component does not impose a width or centering layout. Control those through the parent layout or opt in explicitly with `className`.
 - The component renders a `<span>`. Empty content has no visible effect, and the text inherits its font size from the surrounding layout.
 
 ## Related

@@ -17,7 +17,7 @@ export function AnimatedShinyText({
       {...props}
       style={{ "--hulian-shiny-width": `${shimmerWidth}px`, ...style } as CSSProperties}
       className={cn(
-        "mx-auto max-w-md text-muted-foreground",
+        "text-muted-foreground",
         "bg-clip-text [background-size:var(--hulian-shiny-width)_100%] bg-no-repeat [background-position:0_0]",
         "[animation:hulian-shiny-text_5s_linear_infinite] motion-reduce:[animation:none]",
         "bg-gradient-to-r from-transparent via-foreground/80 to-transparent",
