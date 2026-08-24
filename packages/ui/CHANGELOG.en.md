@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.57.0
+
+### Minor Changes
+
+- 400d29b: Adds StackItem flex sizing semantics, compact Card density, Text font-family and tabular-number controls, and fixes DotField overlay positioning. Select multiple mode now supports selected-first ordering and removable chips.
+
+  Migration note: CardBody content now inherits the consumer's font size. Consumers that relied on CardBody's implicit `text-sm` must declare the font size on their content layer.
+
+### Patch Changes
+
+- 50fe54e: Fixes AnimatedShinyText being centered by default and capped at 448px inside flex containers, returning width and alignment control to consumers.
+
 ## 0.56.1
 
 ### Patch Changes
