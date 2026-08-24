@@ -51,6 +51,7 @@ cat > "$APP_DIR/package.json" <<JSON
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@8.15.5",
   "dependencies": {
     "@hulianui/tokens": "file:$TOKENS_TGZ",
     "@hulianui/ui": "file:$UI_TGZ",
