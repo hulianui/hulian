@@ -8428,7 +8428,12 @@
     "🐱 Hello Kitty 联名款": "🐱 Hello Kitty joint model",
     "👍 赞": "👍 Like",
     "👍 赞 12": "👍 Like 12",
-    "📝 重写文案": "📝 Rewrite the copy"
+    "📝 重写文案": "📝 Rewrite the copy",
+    "StackItem 尺寸控制": "StackItem sizing",
+    "grow 让标题占用剩余空间，minWidth={0} 允许长文本收缩，shrink={false} 保持右侧操作宽度。": "grow lets the title take the remaining space, minWidth={0} lets long text shrink, and shrink={false} keeps the action width.",
+    "一段需要为右侧操作让出空间的长标题": "A long title that leaves room for the action on the right",
+    "<span className=\"block truncate\">一段需要为右侧操作让出空间的长标题</span>": "<span className=\"block truncate\">A long title that leaves room for the action on the right</span>",
+    "<Box>操作</Box>": "<Box>Actions</Box>"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

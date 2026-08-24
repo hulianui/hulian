@@ -4,7 +4,7 @@ name: Stack
 category: layout
 group: arrange
 tags: []
-exports: [Stack]
+exports: [Stack, StackItem]
 status: enriched
 ---
 
@@ -18,10 +18,12 @@ Use Stack to arrange children along one horizontal or vertical axis with consist
 
 ## Import
 ```ts
-import { Stack } from "@hulianui/ui"
+import { Stack, StackItem } from "@hulianui/ui"
 ```
 
 ## Props
+
+### Stack
 
 | Name | Type | Default | Description |
 |------|------|------|------|
@@ -34,6 +36,19 @@ import { Stack } from "@hulianui/ui"
 | as | `ElementType` | `"div"` | Rendered element tag |
 
 `StackDirection = "row" \| "column"`; the remaining `HTMLAttributes<HTMLElement>` attributes (className/style/event, etc.) are transparently transmitted.
+
+### StackItem
+
+`StackItem` is the flex-child primitive for Stack. Use its fixed utility classes to control main-axis sizing. It renders a `div` by default and supports the same polymorphic `as` prop and attribute forwarding as Stack.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| grow | `boolean` | `false` | `true` adds `flex-1` and takes the remaining main-axis space |
+| shrink | `boolean` | `undefined` | `false` adds `shrink-0`; `true`/unset keeps the browser default |
+| minWidth | `0` | `undefined` | `0` adds `min-w-0`, allowing flex-child content to shrink |
+| as | `ElementType` | `"div"` | Rendered element tag |
+
+`StackItem` also forwards `children`, `className`, and other HTML attributes for the selected element.
 
 ## Slots
 
@@ -56,6 +71,16 @@ Responsive values cover every Tailwind breakpoint: `base / sm / md / lg / xl / 2
 <Stack direction="row" justify="between" className="w-64">
   <Box>Left</Box>
   <Box>Right</Box>
+</Stack>
+
+// Let a long title shrink while reserving room for a right-side action
+<Stack direction="row" align="center" gap={3}>
+  <StackItem grow minWidth={0}>
+    <Text truncate>A long title that leaves room for the action on the right</Text>
+  </StackItem>
+  <StackItem shrink={false}>
+    <Button>Action</Button>
+  </StackItem>
 </Stack>
 ```
 

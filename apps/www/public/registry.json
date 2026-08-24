@@ -707,12 +707,15 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { Stack } from \"@hulianui/ui\"",
+        "import": "import { Stack, StackItem } from \"@hulianui/ui\"",
         "exports": [
-          "Stack"
+          "Stack",
+          "StackItem"
         ],
         "types": [
           "StackProps",
+          "StackItemProps",
+          "StackItemOwnProps",
           "StackAlign",
           "StackJustify"
         ],

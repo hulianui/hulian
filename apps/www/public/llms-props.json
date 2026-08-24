@@ -1020,6 +1020,7 @@
     "Separator": "separator",
     "Spacer": "spacer",
     "Stack": "stack",
+    "StackItem": "stack",
     "Viewport": "viewport",
     "AnimatedGradientText": "animated-gradient-text",
     "AnimatedShinyText": "animated-shiny-text",
@@ -3072,12 +3073,15 @@
       "category": "layout",
       "group": "arrange",
       "status": "enriched",
-      "import": "import { Stack } from \"@hulianui/ui\"",
+      "import": "import { Stack, StackItem } from \"@hulianui/ui\"",
       "exports": [
-        "Stack"
+        "Stack",
+        "StackItem"
       ],
       "types": [
         "StackProps",
+        "StackItemProps",
+        "StackItemOwnProps",
         "StackAlign",
         "StackJustify"
       ],
@@ -3085,6 +3089,7 @@
       "props": [
         {
           "name": "direction",
+          "owner": "Stack",
           "required": false,
           "kind": "union",
           "type": "StackDirection | ResponsiveDirection",
@@ -3099,6 +3104,7 @@
         },
         {
           "name": "gap",
+          "owner": "Stack",
           "required": false,
           "kind": "number",
           "type": "number",
@@ -3107,6 +3113,7 @@
         },
         {
           "name": "align",
+          "owner": "Stack",
           "required": false,
           "kind": "enum",
           "type": "\"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\"",
@@ -3123,6 +3130,7 @@
         },
         {
           "name": "justify",
+          "owner": "Stack",
           "required": false,
           "kind": "enum",
           "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\"",
@@ -3140,6 +3148,7 @@
         },
         {
           "name": "wrap",
+          "owner": "Stack",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -3148,6 +3157,7 @@
         },
         {
           "name": "inline",
+          "owner": "Stack",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -3156,6 +3166,47 @@
         },
         {
           "name": "as",
+          "owner": "Stack",
+          "required": false,
+          "kind": "other",
+          "type": "ElementType",
+          "default": "\"div\"",
+          "description": "渲染的元素标签"
+        },
+        {
+          "name": "grow",
+          "owner": "StackItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "`true` 添加 `flex-1`，占用主轴剩余空间"
+        },
+        {
+          "name": "shrink",
+          "owner": "StackItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "undefined",
+          "description": "`false` 添加 `shrink-0`；`true`/未设置保持浏览器默认"
+        },
+        {
+          "name": "minWidth",
+          "owner": "StackItem",
+          "required": false,
+          "kind": "enum",
+          "type": "0",
+          "values": [
+            "0"
+          ],
+          "valueType": "number",
+          "default": "undefined",
+          "description": "`0` 添加 `min-w-0`，允许 flex 子项内容收缩"
+        },
+        {
+          "name": "as",
+          "owner": "StackItem",
           "required": false,
           "kind": "other",
           "type": "ElementType",

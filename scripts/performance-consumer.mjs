@@ -143,7 +143,14 @@ async function transformScenarioLoaders(appRoot) {
   return uniquePaths.map((sourcePath) => sourcePath.split("/")[0]);
 }
 
-async function writeExternalLab({ appRoot, repositoryRoot, consumerRoot, tarballs, reactVersion }) {
+async function writeExternalLab({
+  appRoot,
+  repositoryRoot,
+  consumerRoot,
+  tarballs,
+  reactVersion,
+  ignoreInstallScripts,
+}) {
   const uiManifest = JSON.parse(
     await readFile(join(repositoryRoot, "packages/ui/package.json"), "utf8"),
   );
@@ -187,12 +194,16 @@ async function writeExternalLab({ appRoot, repositoryRoot, consumerRoot, tarball
           "@types/react": reactVersion.startsWith("18") ? "18.3.28" : "19.2.18",
           "@types/react-dom": reactVersion.startsWith("18") ? "18.3.7" : "19.2.4",
           "@vitejs/plugin-react": "4.7.0",
+          ...(reactVersion.startsWith("18") ? { jsdom: "25.0.1" } : {}),
           "lucide-react": "1.28.0",
           motion: "12.43.0",
           react: reactVersion,
           "react-dom": reactVersion,
           tailwindcss: "4.3.3",
           typescript: "7.0.2",
+          ...(reactVersion.startsWith("18")
+            ? { "typescript-api": "npm:typescript@5.9.3" }
+            : {}),
           vite: "7.3.6",
         },
       },
@@ -283,11 +294,94 @@ export default defineConfig({
 `,
     "utf8",
   );
-  run(
-    "pnpm",
-    ["install", "--store-dir", join(consumerRoot, "store"), "--config.node-linker=isolated"],
-    { cwd: appRoot },
+  const installArgs = [
+    "install",
+    "--store-dir",
+    join(consumerRoot, "store"),
+    "--config.node-linker=isolated",
+  ];
+  if (ignoreInstallScripts) installArgs.push("--ignore-scripts");
+  run("pnpm", installArgs, { cwd: appRoot });
+}
+
+async function verifyReact18StackItemRef(appRoot) {
+  await writeFile(
+    join(appRoot, "stack-item-ref-loader.mjs"),
+    `import { existsSync, readFileSync } from "node:fs";
+import { registerHooks } from "node:module";
+import { fileURLToPath } from "node:url";
+import ts from "typescript-api";
+
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier.startsWith(".") && !/\\.[cm]?[jt]sx?$/.test(specifier)) {
+      for (const suffix of [".ts", ".tsx", "/index.ts", "/index.tsx"]) {
+        const candidate = new URL(specifier + suffix, context.parentURL);
+        if (existsSync(fileURLToPath(candidate))) {
+          return { shortCircuit: true, url: candidate.href };
+        }
+      }
+    }
+    return nextResolve(specifier, context);
+  },
+  load(url, context, nextLoad) {
+    if (!/\\.tsx?$/.test(new URL(url).pathname)) return nextLoad(url, context);
+    const source = readFileSync(new URL(url), "utf8");
+    return {
+      format: "module",
+      shortCircuit: true,
+      source: ts.transpileModule(source, {
+        compilerOptions: {
+          jsx: ts.JsxEmit.ReactJSX,
+          module: ts.ModuleKind.ESNext,
+          target: ts.ScriptTarget.ES2022,
+          verbatimModuleSyntax: true,
+        },
+      }).outputText,
+    };
+  },
+});
+`,
+    "utf8",
   );
+  await writeFile(
+    join(appRoot, "stack-item-ref-runtime.ts"),
+    `import assert from "node:assert/strict";
+import { JSDOM } from "jsdom";
+
+const dom = new JSDOM('<div id="root"></div>');
+for (const [key, value] of Object.entries({
+  window: dom.window,
+  document: dom.window.document,
+  navigator: dom.window.navigator,
+  HTMLElement: dom.window.HTMLElement,
+  HTMLButtonElement: dom.window.HTMLButtonElement,
+  IS_REACT_ACT_ENVIRONMENT: true,
+})) {
+  Object.defineProperty(globalThis, key, { configurable: true, value, writable: true });
+}
+
+const [{ act, createElement, createRef }, { createRoot }, { StackItem }] = await Promise.all([
+  import("react"),
+  import("react-dom/client"),
+  import("@hulianui/ui/stack"),
+]);
+const ref = createRef<HTMLButtonElement>();
+const root = createRoot(document.querySelector("#root")!);
+
+await act(async () => {
+  root.render(createElement(StackItem, { as: "button", ref, type: "button" }, "Action"));
+});
+
+assert.equal(ref.current?.tagName, "BUTTON", "StackItem did not attach its ref to the real button");
+await act(async () => root.unmount());
+dom.window.close();
+`,
+    "utf8",
+  );
+  run("node", ["--import", "./stack-item-ref-loader.mjs", "stack-item-ref-runtime.ts"], {
+    cwd: appRoot,
+  });
 }
 
 function selectedSlugs(args, allSlugs) {
@@ -427,9 +521,11 @@ async function runPackedConsumer(args) {
     consumerRoot,
     tarballs: { tokens, ui, scanner },
     reactVersion,
+    ignoreInstallScripts: args.includes("--typecheck-only"),
   });
   const allSlugs = await transformScenarioLoaders(appRoot);
   run("pnpm", ["exec", "tsc", "--noEmit"], { cwd: appRoot });
+  if (reactVersion.startsWith("18")) await verifyReact18StackItemRef(appRoot);
   // --typecheck-only：只买上面这一条信息，然后立刻停。
   //
   // 为什么值得单独开一个出口：上面这次 tsc 是全流水线**唯一**用 React 18 类型编译库源码

@@ -1,6 +1,13 @@
-import type { ElementType } from "react";
+import { forwardRef, type ElementType, type ForwardedRef, type ReactElement } from "react";
 import { cn } from "../lib/cn";
-import type { ResponsiveDirection, StackAlign, StackDirection, StackJustify, StackProps } from "./stack.types";
+import type {
+  ResponsiveDirection,
+  StackAlign,
+  StackDirection,
+  StackItemProps,
+  StackJustify,
+  StackProps,
+} from "./stack.types";
 
 // 纯皮肤 flex 布局原语（可 RSC）。direction/align/justify 走静态类，gap 走 inline style（对齐 Tailwind spacing 刻度）。
 // 断点表铺满 Tailwind 的 sm/md/lg/xl/2xl —— 中后台宽屏（≥1280）恰恰最需要在 xl 档换方向/加列，
@@ -72,3 +79,23 @@ export function Stack<E extends ElementType = "div">({
     />
   );
 }
+
+type StackItemComponent = <E extends ElementType = "div">(
+  props: StackItemProps<E>,
+) => ReactElement | null;
+
+function StackItemRender(
+  { grow, shrink, minWidth, as, className, ...props }: Omit<StackItemProps<ElementType>, "ref">,
+  ref: ForwardedRef<unknown>,
+) {
+  const Comp = (as ?? "div") as ElementType;
+  return (
+    <Comp
+      ref={ref}
+      className={cn(grow && "flex-1", shrink === false && "shrink-0", minWidth === 0 && "min-w-0", className)}
+      {...props}
+    />
+  );
+}
+
+export const StackItem = forwardRef(StackItemRender) as StackItemComponent;

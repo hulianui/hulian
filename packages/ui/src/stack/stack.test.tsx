@@ -1,6 +1,7 @@
+import { createRef, type ComponentPropsWithRef } from "react";
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
-import { Stack } from "./stack";
+import { Stack, StackItem } from "./stack";
 
 describe("Stack", () => {
   it("默认 column flex", () => {
@@ -102,3 +103,99 @@ describe("Stack · null 回落", () => {
     expect(el.className).toBe((withoutProp.firstElementChild as HTMLElement).className);
   });
 });
+
+describe("StackItem (#324)", () => {
+  it("默认只渲染 div，不添加 flex 子项尺寸类", () => {
+    const { container } = render(<StackItem>正文</StackItem>);
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.tagName).toBe("DIV");
+    expect(el.className).not.toContain("flex-1");
+    expect(el.className).not.toContain("shrink-0");
+    expect(el.className).not.toContain("min-w-0");
+  });
+
+  it("把 grow / shrink=false / minWidth=0 映射为固定类", () => {
+    const { container } = render(<StackItem grow shrink={false} minWidth={0} />);
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.className).toContain("flex-1");
+    expect(el.className).toContain("shrink-0");
+    expect(el.className).toContain("min-w-0");
+  });
+
+  it("显式默认值不添加尺寸类，且 className 透传", () => {
+    const { container } = render(<StackItem grow={false} shrink className="consumer-item" />);
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.className).toBe("consumer-item");
+  });
+
+  it("as 透传渲染标签", () => {
+    const { container } = render(<StackItem as="section" />);
+    expect(container.firstElementChild?.tagName).toBe("SECTION");
+  });
+
+  it("把 ref 转发到 as 选中的 button", () => {
+    const ref = createRef<HTMLButtonElement>();
+
+    render(
+      <StackItem as="button" ref={ref} type="button">
+        操作
+      </StackItem>,
+    );
+
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+    expect(ref.current?.tagName).toBe("BUTTON");
+  });
+});
+
+function _typeCheckStackItemAsButton() {
+  const ref = createRef<HTMLButtonElement>();
+
+  return (
+    <StackItem
+      as="button"
+      ref={ref}
+      type="button"
+      onClick={(event) => {
+        const button: HTMLButtonElement = event.currentTarget;
+        void button.form;
+      }}
+    />
+  );
+}
+void _typeCheckStackItemAsButton;
+
+function _PlainStackItemTarget({ label }: { label: string }) {
+  return <span>{label}</span>;
+}
+
+function _typeCheckStackItemRejectsRefForPlainComponent() {
+  const ref = createRef<HTMLSpanElement>();
+
+  // @ts-expect-error A function component that does not declare ref cannot receive one.
+  return <StackItem as={_PlainStackItemTarget} label="plain" ref={ref} />;
+}
+void _typeCheckStackItemRejectsRefForPlainComponent;
+
+function _typeCheckStackItemRejectsWrongIntrinsicRef() {
+  const ref = createRef<HTMLAnchorElement>();
+
+  // @ts-expect-error as="button" requires a button ref, not an anchor ref.
+  return <StackItem as="button" ref={ref} />;
+}
+void _typeCheckStackItemRejectsWrongIntrinsicRef;
+
+function _RefCapableStackItemTarget({
+  label,
+  ref,
+}: {
+  label: string;
+  ref?: ComponentPropsWithRef<"a">["ref"];
+}) {
+  return <a ref={ref}>{label}</a>;
+}
+
+function _typeCheckStackItemAcceptsDeclaredCustomRef() {
+  const ref = createRef<HTMLAnchorElement>();
+  return <StackItem as={_RefCapableStackItemTarget} label="link" ref={ref} />;
+}
+void _typeCheckStackItemAcceptsDeclaredCustomRef;
