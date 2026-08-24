@@ -4,7 +4,7 @@ name: Stack
 category: layout
 group: arrange
 tags: []
-exports: [Stack]
+exports: [Stack, StackItem]
 status: enriched
 ---
 
@@ -18,10 +18,12 @@ status: enriched
 
 ## 导入
 ```ts
-import { Stack } from "@hulianui/ui"
+import { Stack, StackItem } from "@hulianui/ui"
 ```
 
 ## Props
+
+### Stack
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
@@ -34,6 +36,19 @@ import { Stack } from "@hulianui/ui"
 | as | `ElementType` | `"div"` | 渲染的元素标签 |
 
 `StackDirection = "row" \| "column"`；其余 `HTMLAttributes<HTMLElement>` 属性（className/style/事件等）透传。
+
+### StackItem
+
+`StackItem` 是 Stack 的 flex 子项原语，用固定 utility class 控制主轴尺寸。它默认渲染 `div`，并支持与 Stack 相同的 `as` 多态属性透传。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| grow | `boolean` | `false` | `true` 添加 `flex-1`，占用主轴剩余空间 |
+| shrink | `boolean` | `undefined` | `false` 添加 `shrink-0`；`true`/未设置保持浏览器默认 |
+| minWidth | `0` | `undefined` | `0` 添加 `min-w-0`，允许 flex 子项内容收缩 |
+| as | `ElementType` | `"div"` | 渲染的元素标签 |
+
+`StackItem` 也透传 `children`、`className` 以及目标元素的其他 HTML 属性。
 
 ## Slots
 
@@ -56,6 +71,16 @@ import { Stack } from "@hulianui/ui"
 <Stack direction="row" justify="between" className="w-64">
   <Box>左</Box>
   <Box>右</Box>
+</Stack>
+
+// 让长标题收缩，为右侧操作保留空间
+<Stack direction="row" align="center" gap={3}>
+  <StackItem grow minWidth={0}>
+    <Text truncate>一段需要为右侧操作让出空间的长标题</Text>
+  </StackItem>
+  <StackItem shrink={false}>
+    <Button>操作</Button>
+  </StackItem>
 </Stack>
 ```
 

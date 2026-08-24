@@ -28,14 +28,22 @@ export interface SelectProps
   onValueChange?: (value: any, eventDetails?: unknown) => void;
   /** 选项数据（{value,label}）；Base UI 据此让 Trigger 显示选中项 label 而非 raw value。 */
   items?: ReadonlyArray<SelectItemData>;
-  /** 无选中值时的占位文本（瑚琏注入 value:null 项实现，rc.0 无 Value.placeholder prop）。 */
+  /**
+   * 无选中值时的占位文本（瑚琏注入 value:null 项实现，rc.0 无 Value.placeholder prop）。
+   * 多选 chips 为空时，ReactNode 只在真实 Trigger Value 中挂载一次，同时作为可见占位和
+   * 稳定 aria-labelledby 的 SSR fallback；显式 aria-label/aria-labelledby 立即优先，
+   * hydration 检出 Field 或原生 label 后会撤销 fallback，让外部标签继续命名控件。
+   */
   placeholder?: ReactNode;
   /** 多选模式：受控值为 `string[]`（value/defaultValue/onValueChange 均为数组）；选中后浮层保持打开。 */
   multiple?: boolean;
+  /** 多选时将当前已选项排在未选项之前。@default false */
+  selectedFirst?: boolean;
   /**
    * 可清除（对标 el-select `clearable`）：有值时 Trigger 右侧 hover/focus 浮出清除按钮，
    * 点击置空并触发 `onValueChange`（单选回传 `null`，多选回传 `[]`）。
-   * 开启后组件会接管 value（内部受控镜像），未开启时 value 归属与旧版完全一致。
+   * `clearable` 会由内部 mirror 驱动 Base UI；multiple 为支持 chips 单项删除也始终使用该 mirror，
+   * 即使 `clearable=false`。外部传入 `value` 时仍以外部值为准，不会乐观改写受控显示。
    */
   clearable?: boolean;
   /**
@@ -68,6 +76,10 @@ export interface SelectTriggerProps
   invalid?: boolean;
   /** 多选模式下 Trigger 最多平铺几个已选 label，超出折叠为 +N 计数。@default 2 */
   maxDisplay?: number;
+  /** 多选值展示方式。@default "text" */
+  display?: "text" | "chips";
+  /** chips 模式下是否显示单项删除按钮。@default false */
+  removable?: boolean;
   className?: string;
 }
 

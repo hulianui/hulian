@@ -39,10 +39,11 @@ import { DotField } from "@hulianui/ui"
 
 ## Examples
 ```tsx
-// Default matrix: move pointer to push + glow
-<div className="relative h-56 overflow-hidden rounded-xl"
+// Content-driven height: move pointer to push + glow
+<div className="relative overflow-hidden rounded-xl p-8"
      style={{ background: "oklch(0.14 0.02 280)" }}>
   <DotField />
+  <div className="relative z-10">Foreground content determines the container height</div>
 </div>
 ```
 ```tsx
@@ -60,7 +61,7 @@ import { DotField } from "@hulianui/ui"
 
 - **Token colors require the `--color-` prefix**: pass values such as `var(--color-chart-1)`. Canvas cannot resolve bare names such as `var(--chart-1)`, which can make dots black or remove the glow. See [[hulian-token-color-var-needs-color-prefix]].
 - **Client rendering**: the live effect uses Canvas 2D and `requestAnimationFrame`. SSR and reduced-motion environments render the static lattice fallback.
-- Give the parent `position: relative`, `overflow: hidden`, and an explicit height so the absolutely positioned canvas has stable bounds.
+- **Positioning context**: the host must establish a non-static positioning context with `relative` or another non-static `position`, and should use `overflow-hidden`; DotField fills that host with `absolute inset-0`. Layer foreground content above it with `relative z-10`; padded foreground content can determine the host height without a fixed height.
 
 ## Related
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)

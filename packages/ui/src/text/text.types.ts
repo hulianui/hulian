@@ -4,6 +4,7 @@ import type { PolymorphicProps } from "../lib/polymorphic";
 export type TextSize = "xs" | "sm" | "base" | "lg" | "xl";
 export type TextTone = "default" | "muted" | "primary" | "success" | "warning" | "danger";
 export type TextWeight = "normal" | "medium" | "semibold" | "bold";
+export type TextFamily = "sans" | "mono";
 
 export interface TextOwnProps {
   className?: string;
@@ -13,6 +14,10 @@ export interface TextOwnProps {
   tone?: TextTone;
   /** 字重。@default "normal" */
   weight?: TextWeight;
+  /** 字族；不传时继承。 */
+  family?: TextFamily;
+  /** 使用等宽数字。@default false */
+  numeric?: boolean;
   /** 单行省略号截断。 */
   truncate?: boolean;
   /** 多行截断（最多 n 行后省略号）；设置后优先于 truncate。 */

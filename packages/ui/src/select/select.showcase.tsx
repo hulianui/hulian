@@ -25,6 +25,11 @@ const GROUPED = [
   { group: "代码 / 手写", items: [FONTS[2]!, FONTS[3]!] },
 ];
 
+const MANY_FONTS = Array.from({ length: 120 }, (_, index) => ({
+  value: `font-${index}`,
+  label: `Item ${index + 1}`,
+}));
+
 function Demo({
   placeholder = "请选择字体",
   size = "md",
@@ -110,6 +115,76 @@ function MultiDemo({ defaultValue = [] as string[], maxDisplay }: { defaultValue
   );
 }
 
+function ChipsDemo() {
+  const [value, setValue] = useState(["sans", "serif", "mono"]);
+  return (
+    <div className="w-72">
+      <Select items={FONTS} placeholder="选择多个字体" multiple value={value} onValueChange={setValue}>
+        <SelectTrigger display="chips" removable maxDisplay={2} />
+        <SelectContent>
+          {FONTS.map((f) => (
+            <SelectItem key={f.value} value={f.value}>
+              {f.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function SearchSelectedFirstDemo() {
+  const [value, setValue] = useState(["mono", "sans"]);
+  return (
+    <div className="w-72">
+      <Select
+        items={FONTS}
+        placeholder="搜索字体"
+        multiple
+        searchable
+        selectedFirst
+        value={value}
+        onValueChange={setValue}
+      >
+        <SelectTrigger maxDisplay={2} />
+        <SelectContent>
+          {FONTS.map((f) => (
+            <SelectItem key={f.value} value={f.value}>
+              {f.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function VirtualizedDemo() {
+  const [value, setValue] = useState(["font-119"]);
+  return (
+    <div className="w-72">
+      <Select
+        items={MANY_FONTS}
+        placeholder="选择字体"
+        multiple
+        searchable
+        selectedFirst
+        value={value}
+        onValueChange={setValue}
+      >
+        <SelectTrigger maxDisplay={1} />
+        <SelectContent>
+          {MANY_FONTS.map((font) => (
+            <SelectItem key={font.value} value={font.value}>
+              {font.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
 export const selectShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -146,6 +221,35 @@ export const selectShowcase: ShowcaseSpec = {
   <SelectContent>{/* SelectItem… */}</SelectContent>
 </Select>`,
       render: () => <MultiDemo defaultValue={["sans", "serif", "mono"]} maxDisplay={2} />,
+    },
+    {
+      title: "chips 多选与单项删除",
+      description: "display=chips 用标签回显已选值；removable 让每项可单独删除，+N 仍提示折叠数量。",
+      code: `const [value, setValue] = useState(["sans", "serif", "mono"]);
+
+<Select items={fonts} multiple value={value} onValueChange={setValue}>
+  <SelectTrigger display="chips" removable maxDisplay={2} />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <ChipsDemo />,
+    },
+    {
+      title: "搜索后已选项置顶",
+      description: "selectedFirst 只用于多选：先过滤，再将仍命中的已选项按 value 顺序置顶。",
+      code: `<Select items={fonts} multiple searchable selectedFirst defaultValue={["mono", "sans"]}>
+  <SelectTrigger maxDisplay={2} />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <SearchSelectedFirstDemo />,
+    },
+    {
+      title: "120 项自动虚拟化",
+      description: "searchable 候选达到 100 项时自动虚拟化；selectedFirst 在虚拟窗口计算前完成排序。",
+      code: `<Select items={manyFonts} multiple searchable selectedFirst defaultValue={["font-119"]}>
+  <SelectTrigger maxDisplay={1} />
+  <SelectContent>{/* SelectItem… */}</SelectContent>
+</Select>`,
+      render: () => <VirtualizedDemo />,
     },
     {
       title: "可清除",
@@ -232,6 +336,9 @@ export const selectShowcase: ShowcaseSpec = {
     { name: "加载中", render: () => <Demo loading /> },
     { name: "分组", render: () => <GroupDemo /> },
     { name: "多选（超出折叠 +N）", render: () => <MultiDemo defaultValue={["sans", "serif", "mono"]} /> },
+    { name: "chips 多选与单项删除", render: () => <ChipsDemo /> },
+    { name: "搜索后已选项置顶", render: () => <SearchSelectedFirstDemo /> },
+    { name: "120 项自动虚拟化", render: () => <VirtualizedDemo /> },
     { name: "禁用", render: () => <Demo disabled defaultValue="sans" /> },
     { name: "无效态", render: () => <Demo invalid /> },
     { name: "向上弹", render: () => <Demo side="top" placeholder="向上展开" /> },

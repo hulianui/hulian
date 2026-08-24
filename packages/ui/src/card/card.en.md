@@ -18,7 +18,7 @@ Use Card to group related content in a bordered or elevated container. Use [List
 
 ## Import
 ```ts
-import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
+import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
 ```
 
 ## Props
@@ -28,9 +28,10 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | Border, raised shadow, emphasized, or no chrome at all. |
+| size | `"sm" \| "md"` | `"md"` | Whole-card density. `sm` tightens the Header, Body, and Footer padding together. |
 | divided | `boolean` | `true` | Whether a rule separates `CardHeader` / `CardFooter` from the body. Setting `false` removes both rules and tightens the padding they used to hold open. |
 
-`CardBody` and `CardFooter` accept native div properties and `children`.
+`CardBody` and `CardFooter` accept native div properties and `children`. `CardBody` no longer assigns a font size: its content owns typography, whether you use plain text or an explicit `Text size`.
 
 `CardHeaderProps` (also inherits `HTMLAttributes<HTMLDivElement>` except `title`, whose type is widened to ReactNode)
 
@@ -51,7 +52,18 @@ With **none** of the three passed, `CardHeader` stays the bare slot it is today:
 <Card variant="elevated" className="w-64">
   <CardHeader>Hulian Card</CardHeader>
   <CardBody>Designed for beauty and practical use.</CardBody>
-  <CardFooter>Footer</CardFooter>
+<CardFooter>Footer</CardFooter>
+</Card>
+```
+
+`md` is the default density. Use `sm` for denser information; all three regions tighten together while the body typography remains owned by its content:
+```tsx
+<Card size="sm">
+  <CardHeader title="Runtime metrics" />
+  <CardBody>
+    <Text size="lg">98.7%</Text>
+  </CardBody>
+  <CardFooter>Last 5 minutes</CardFooter>
 </Card>
 ```
 
@@ -75,6 +87,7 @@ The "icon + heading + status tag + trailing action" row, the most common admin c
 - `CardHeader`'s `title` is a `ReactNode` and collides with the native `HTMLAttributes.title?: string`, so the type omits `title`. Put a native tooltip on an inner element instead.
 - `extra` **never drops to a second row because `title` or `description` grew** (#263). The left column is `flex: 1 1 0`, so wrapping is decoupled from content length and long text truncates or clamps as written. **The flip side is that `extra` keeps its slot even in a narrow card**, squeezing the heading -- so give the heading an overflow treatment. Card width comes from the layout (a three-column grid, a sidebar) and has nothing to do with the viewport, which is why there is deliberately no "wrap on narrow screens" step here. [PageHeader](../page-header/page-header.md) has one, because a page header is always full width and a narrow viewport does mean a narrow header.
 - `divided={false}` applies only to the **direct children** `CardHeader` and `CardFooter`, so a nested card does not inherit the outer value and must opt out itself. It is not delivered through context either: Card still has no `"use client"` and works inside a server component.
+- `size="sm"` is supplied by density variables on the Card root. A nested Card resets its own default `md` values and must explicitly receive `size="sm"` when it should be compact. Section `className` values such as `p-0` and `pt-0` still override the corresponding padding as before.
 
 ## Related
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

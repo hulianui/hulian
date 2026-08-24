@@ -16,24 +16,57 @@ export const cardVariants = cva("rounded-[var(--radius)] text-foreground transit
       // 不画皮：外皮（边框/底色/阴影）由页面自己的 CSS 提供时用它，只留圆角 + 文字色 + 三段插槽语义。
       plain: "",
     },
+    size: {
+      md:
+        "[--card-header-px:1.25rem] [--card-body-px:1.25rem] " +
+        "[--card-body-py:1rem] [--card-footer-px:1.25rem]",
+      sm:
+        "[--card-header-px:1rem] [--card-body-px:1rem] " +
+        "[--card-body-py:0.75rem] [--card-footer-px:1rem]",
+    },
+    divided: {
+      true: "",
+      false:
+        "[&>:where([data-slot=card-header])]:border-b-0 " +
+        "[&>:where([data-slot=card-footer])]:border-t-0",
+    },
   },
-  defaultVariants: { variant: "outline" },
+  compoundVariants: [
+    {
+      size: "md",
+      divided: true,
+      class:
+        "[--card-header-pt:0.75rem] [--card-header-pb:0.75rem] " +
+        "[--card-footer-pt:0.75rem] [--card-footer-pb:0.75rem]",
+    },
+    {
+      size: "md",
+      divided: false,
+      class:
+        "[--card-header-pt:0.75rem] [--card-header-pb:0.5rem] " +
+        "[--card-footer-pt:0.5rem] [--card-footer-pb:0.75rem]",
+    },
+    {
+      size: "sm",
+      divided: true,
+      class:
+        "[--card-header-pt:0.625rem] [--card-header-pb:0.625rem] " +
+        "[--card-footer-pt:0.625rem] [--card-footer-pb:0.625rem]",
+    },
+    {
+      size: "sm",
+      divided: false,
+      class:
+        "[--card-header-pt:0.625rem] [--card-header-pb:0.5rem] " +
+        "[--card-footer-pt:0.5rem] [--card-footer-pb:0.625rem]",
+    },
+  ],
+  defaultVariants: { variant: "outline", size: "md", divided: true },
 });
 
-// 分隔线同样是皮肤而不是结构，所以 divided=false 要能整卡关掉（#203 —— #159 那条原则延伸到分区）。
-// 走「Card 上的直接子选择器」而不是 context 下发：Card 至今没有 "use client"，为一个布尔值把整张卡
-// 拖进 client 边界不划算；限定直接子（>）则卡里套卡时外层的取值不会传染给内层。
-// 关线的同时收内边距：那段呼吸本来是分隔线撑着的，只去线会剩下一道无来由的留白。
-const undividedSlots =
-  "[&>[data-slot=card-header]]:border-b-0 [&>[data-slot=card-header]]:pb-2 " +
-  "[&>[data-slot=card-footer]]:border-t-0 [&>[data-slot=card-footer]]:pt-2";
-
-export function Card({ className, variant, divided, ...props }: CardProps) {
+export function Card({ className, variant, size, divided, ...props }: CardProps) {
   return (
-    <div
-      className={cn(cardVariants({ variant }), divided === false && undividedSlots, className)}
-      {...props}
-    />
+    <div className={cn(cardVariants({ variant, size, divided }), className)} {...props} />
   );
 }
 
@@ -57,7 +90,7 @@ export function CardHeader({
     <div
       data-slot="card-header"
       className={cn(
-        "border-b border-border px-5 py-3",
+        "border-b border-border px-[var(--card-header-px,1.25rem)] pt-[var(--card-header-pt,0.75rem)] pb-[var(--card-header-pb,0.75rem)]",
         structured
           ? "flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
           : "font-medium",
@@ -111,14 +144,23 @@ export function CardHeader({
 }
 
 export function CardBody({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div data-slot="card-body" className={cn("px-5 py-4 text-sm", className)} {...props} />;
+  return (
+    <div
+      data-slot="card-body"
+      className={cn("px-[var(--card-body-px,1.25rem)] py-[var(--card-body-py,1rem)]", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("border-t border-border px-5 py-3 text-sm text-muted-foreground", className)}
+      className={cn(
+        "border-t border-border px-[var(--card-footer-px,1.25rem)] pt-[var(--card-footer-pt,0.75rem)] pb-[var(--card-footer-pb,0.75rem)] text-sm text-muted-foreground",
+        className,
+      )}
       {...props}
     />
   );

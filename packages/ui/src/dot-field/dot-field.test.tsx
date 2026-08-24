@@ -38,12 +38,17 @@ describe("DotField", () => {
     expect(canvasOf(container)).not.toBeNull();
   });
 
-  it("根容器为装饰层：aria-hidden + overflow-hidden + relative", () => {
+  it("根容器是绝对覆盖装饰层，且保留指针交互", () => {
     const { container } = render(<DotField />);
     const root = container.firstElementChild as HTMLElement;
     expect(root.getAttribute("aria-hidden")).toBe("true");
+    expect(root.className).toContain("absolute");
+    expect(root.className).toContain("inset-0");
     expect(root.className).toContain("overflow-hidden");
-    expect(root.className).toContain("relative");
+    expect(root.className).toContain("pointer-events-auto");
+    expect(root.className).not.toContain("relative");
+    expect(root.className).not.toContain("h-full");
+    expect(root.className).not.toContain("w-full");
   });
 
   it("canvas 绝对铺满容器（absolute inset-0 block）", () => {

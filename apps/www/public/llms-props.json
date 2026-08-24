@@ -105,6 +105,10 @@
       "success",
       "danger"
     ],
+    "CardSize": [
+      "sm",
+      "md"
+    ],
     "CardSwapEasing": [
       "elastic",
       "smooth"
@@ -910,6 +914,10 @@
       "semibold",
       "bold"
     ],
+    "TextFamily": [
+      "sans",
+      "mono"
+    ],
     "TiltGlarePosition": [
       "top",
       "right",
@@ -1020,6 +1028,7 @@
     "Separator": "separator",
     "Spacer": "spacer",
     "Stack": "stack",
+    "StackItem": "stack",
     "Viewport": "viewport",
     "AnimatedGradientText": "animated-gradient-text",
     "AnimatedShinyText": "animated-shiny-text",
@@ -3072,12 +3081,15 @@
       "category": "layout",
       "group": "arrange",
       "status": "enriched",
-      "import": "import { Stack } from \"@hulianui/ui\"",
+      "import": "import { Stack, StackItem } from \"@hulianui/ui\"",
       "exports": [
-        "Stack"
+        "Stack",
+        "StackItem"
       ],
       "types": [
         "StackProps",
+        "StackItemProps",
+        "StackItemOwnProps",
         "StackAlign",
         "StackJustify"
       ],
@@ -3085,6 +3097,7 @@
       "props": [
         {
           "name": "direction",
+          "owner": "Stack",
           "required": false,
           "kind": "union",
           "type": "StackDirection | ResponsiveDirection",
@@ -3099,6 +3112,7 @@
         },
         {
           "name": "gap",
+          "owner": "Stack",
           "required": false,
           "kind": "number",
           "type": "number",
@@ -3107,6 +3121,7 @@
         },
         {
           "name": "align",
+          "owner": "Stack",
           "required": false,
           "kind": "enum",
           "type": "\"start\" | \"center\" | \"end\" | \"stretch\" | \"baseline\"",
@@ -3123,6 +3138,7 @@
         },
         {
           "name": "justify",
+          "owner": "Stack",
           "required": false,
           "kind": "enum",
           "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\"",
@@ -3140,6 +3156,7 @@
         },
         {
           "name": "wrap",
+          "owner": "Stack",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -3148,6 +3165,7 @@
         },
         {
           "name": "inline",
+          "owner": "Stack",
           "required": false,
           "kind": "boolean",
           "type": "boolean",
@@ -3156,6 +3174,47 @@
         },
         {
           "name": "as",
+          "owner": "Stack",
+          "required": false,
+          "kind": "other",
+          "type": "ElementType",
+          "default": "\"div\"",
+          "description": "渲染的元素标签"
+        },
+        {
+          "name": "grow",
+          "owner": "StackItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "`true` 添加 `flex-1`，占用主轴剩余空间"
+        },
+        {
+          "name": "shrink",
+          "owner": "StackItem",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "undefined",
+          "description": "`false` 添加 `shrink-0`；`true`/未设置保持浏览器默认"
+        },
+        {
+          "name": "minWidth",
+          "owner": "StackItem",
+          "required": false,
+          "kind": "enum",
+          "type": "0",
+          "values": [
+            "0"
+          ],
+          "valueType": "number",
+          "default": "undefined",
+          "description": "`0` 添加 `min-w-0`，允许 flex 子项内容收缩"
+        },
+        {
+          "name": "as",
+          "owner": "StackItem",
           "required": false,
           "kind": "other",
           "type": "ElementType",
@@ -5423,6 +5482,7 @@
         "Text"
       ],
       "types": [
+        "TextFamily",
         "TextProps",
         "TextSize",
         "TextTone",
@@ -5485,6 +5545,27 @@
           "valueType": "string",
           "default": "\"normal\"",
           "description": "字重"
+        },
+        {
+          "name": "family",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sans\" | \"mono\"",
+          "values": [
+            "sans",
+            "mono"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "字族；不传时继承周围字体"
+        },
+        {
+          "name": "numeric",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "使用等宽数字"
         },
         {
           "name": "truncate",
@@ -13241,7 +13322,7 @@
           "kind": "node",
           "type": "ReactNode",
           "default": null,
-          "description": "无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染）"
+          "description": "无选中值时的占位文本（单选注入 value:null 项实现；空 chips 只在真实 Trigger Value 挂载一次，并以稳定关联提供 SSR 可访问名称）"
         },
         {
           "name": "multiple",
@@ -13251,6 +13332,15 @@
           "type": "boolean",
           "default": "false",
           "description": "多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开"
+        },
+        {
+          "name": "selectedFirst",
+          "owner": "Select",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "仅多选：按当前 value 数组顺序将已选项置顶，未选项保持原顺序"
         },
         {
           "name": "clearable",
@@ -13366,6 +13456,29 @@
           "type": "number",
           "default": "2",
           "description": "多选模式下最多平铺几个已选 label，超出折叠为 +N 计数"
+        },
+        {
+          "name": "display",
+          "owner": "SelectTrigger",
+          "required": false,
+          "kind": "enum",
+          "type": "\"text\" | \"chips\"",
+          "values": [
+            "text",
+            "chips"
+          ],
+          "valueType": "string",
+          "default": "\"text\"",
+          "description": "多选值的展示方式；`chips` 用标签视觉回显"
+        },
+        {
+          "name": "removable",
+          "owner": "SelectTrigger",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "`display=\"chips\"` 时显示单项删除按钮"
         },
         {
           "name": "className",
@@ -16202,7 +16315,8 @@
       ],
       "types": [
         "CardProps",
-        "CardHeaderProps"
+        "CardHeaderProps",
+        "CardSize"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/card/card.md",
       "props": [
@@ -16220,6 +16334,19 @@
           "valueType": "string",
           "default": "\"outline\"",
           "description": "外观：描边 / 投影抬升 / 强调 / 不画皮"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\"",
+          "values": [
+            "sm",
+            "md"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "整卡密度：`sm` 同时收紧 Header / Body / Footer 的内边距"
         },
         {
           "name": "divided",

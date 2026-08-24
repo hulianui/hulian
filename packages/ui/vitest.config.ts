@@ -49,6 +49,8 @@ export default defineConfig({
       "@base-ui/react/field",
       "@base-ui/react/checkbox",
       "@base-ui/react/menu",
+      "@base-ui/react/select",
+      "@base-ui/react/combobox",
       "recharts",
       "class-variance-authority",
     ],

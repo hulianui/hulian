@@ -29,6 +29,8 @@ import { Text } from "@hulianui/ui"
 | size | `"xs" \| "sm" \| "base" \| "lg" \| "xl"` | `"base"` | Font size |
 | tone | `"default" \| "muted" \| "primary" \| "success" \| "warning" \| "danger"` | `"default"` | Semantic hue (self-adaptation of light and dark) |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | Font weight |
+| family | `"sans" \| "mono"` | - | Font family; omitting it inherits the surrounding font |
+| numeric | `boolean` | `false` | Uses tabular numerals |
 | truncate | `boolean` | `false` | Single line ellipsis truncation |
 | lineClamp | `number` | - | Multi-line truncation (up to n lines following ellipses); takes precedence over truncate when set |
 
@@ -47,6 +49,11 @@ Inherited `HTMLAttributes<HTMLElement>` (Omit `color`, the tone is changed to to
 <Text tone="success">3/3 points · Correct</Text>
 <Text tone="warning">Low mastery rate</Text>
 <Text tone="danger">Danger warning</Text>
+
+// Font family and tabular numerals; omit family to inherit the surrounding font
+<Text family="mono">pnpm add @hulianui/ui</Text>
+<Text numeric>12,345.67</Text>
+<Text family="mono" numeric>2026-08-24 09:30</Text>
 
 // Multi-line truncation
 <div className="max-w-xs">

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -179,4 +180,21 @@ test("代码围栏里的管道行不被当成表格", () => {
     parsed.props.some((p) => p.name.includes("这行在代码围栏里")),
     false,
   );
+});
+
+test("真实 Stack 中英文档的子组件 props 归属 StackItem", () => {
+  const aliases = collectTypeAliases("packages/ui/src");
+  const docs = [
+    new URL("../packages/ui/src/stack/stack.md", import.meta.url),
+    new URL("../packages/ui/src/stack/stack.en.md", import.meta.url),
+  ];
+
+  for (const doc of docs) {
+    const parsed = parseComponentDoc(readFileSync(doc, "utf8"), aliases);
+    const ownership = new Map(parsed.props.map((prop) => [prop.name, prop.owner]));
+
+    assert.equal(ownership.get("grow"), "StackItem", doc.pathname);
+    assert.equal(ownership.get("shrink"), "StackItem", doc.pathname);
+    assert.equal(ownership.get("minWidth"), "StackItem", doc.pathname);
+  }
 });

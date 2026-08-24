@@ -39,10 +39,11 @@ import { DotField } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-// 默认点阵：移动鼠标推挤 + 辉光
-<div className="relative h-56 overflow-hidden rounded-xl"
+// 正文决定高度：移动鼠标推挤点阵 + 辉光
+<div className="relative overflow-hidden rounded-xl p-8"
      style={{ background: "oklch(0.14 0.02 280)" }}>
   <DotField />
+  <div className="relative z-10">由正文决定容器高度的前景内容</div>
 </div>
 ```
 ```tsx
@@ -60,7 +61,7 @@ import { DotField } from "@hulianui/ui"
 
 - **token 颜色须带 `--color-` 前缀**：喂给 canvas 的 `color`/`glowColor` 传 CSS 变量必须写完整名（如 `var(--color-chart-1)`），裸 `var(--chart-1)` canvas 不解析 → 点画成黑色/辉光消失。见 [[hulian-token-color-var-needs-color-prefix]]。
 - **客户端渲染**：依赖 canvas2d + `requestAnimationFrame`，SSR/reduced-motion 下降级静态点阵；勿在 server component 直接挂载实时逻辑。
-- 父容器须 `relative` + `overflow-hidden`（组件自带 absolute 铺满逻辑）。
+- **定位上下文**：父容器必须用 `relative` 或其他非 `static` 的定位方式建立定位上下文，并建议配合 `overflow-hidden`；DotField 自带 `absolute inset-0` 铺满父容器。前景内容使用 `relative z-10` 叠在点阵上方，容器高度可以完全由带 padding 的正文决定。
 
 ## 相关
 [DotPattern](../dot-pattern/dot-pattern.md) · [GridPattern](../grid-pattern/grid-pattern.md) · [StripedPattern](../striped-pattern/striped-pattern.md) · [Spotlight](../spotlight/spotlight.md) · [RetroGrid](../retro-grid/retro-grid.md) · [Ripple](../ripple/ripple.md)

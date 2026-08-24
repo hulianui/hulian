@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button";
 import { Tag } from "../../../../packages/ui/src/tag";
+import { Text } from "../../../../packages/ui/src/text";
 import { ChevronRight } from "../../../../packages/ui/src/_icons";
 import { Card, CardHeader, CardBody, CardFooter } from "../../../../packages/ui/src/card/card";
 type CardVariant = "outline" | "elevated" | "featured" | "plain";
@@ -36,6 +37,38 @@ export const cardShowcase: ShowcaseSpec = {
   <CardFooter>footer District</CardFooter>
 </Card>`,
             render: () => <Demo variant="elevated" withFooter/>,
+        },
+        {
+            title: "Default and compact density",
+            description: "md is the default; sm tightens all three regions together. CardBody no longer assigns a font size, so its content owns typography.",
+            code: `<div className="flex flex-wrap gap-4">
+  <Card className="w-64">
+    <CardHeader title="Runtime metrics" />
+    <CardBody><Text size="lg">98.7%</Text></CardBody>
+    <CardFooter>Last 5 minutes</CardFooter>
+  </Card>
+  <Card size="sm" className="w-64">
+    <CardHeader title="Runtime metrics" />
+    <CardBody><Text size="lg">98.7%</Text></CardBody>
+    <CardFooter>Last 5 minutes</CardFooter>
+  </Card>
+</div>`,
+            render: () => (<div className="flex flex-wrap gap-4">
+          <Card className="w-64">
+            <CardHeader title="Runtime metrics"/>
+            <CardBody>
+              <Text size="lg">98.7%</Text>
+            </CardBody>
+            <CardFooter>Last 5 minutes</CardFooter>
+          </Card>
+          <Card size="sm" className="w-64">
+            <CardHeader title="Runtime metrics"/>
+            <CardBody>
+              <Text size="lg">98.7%</Text>
+            </CardBody>
+            <CardFooter>Last 5 minutes</CardFooter>
+          </Card>
+        </div>),
         },
         {
             title: "Highlight Card",

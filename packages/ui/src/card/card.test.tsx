@@ -51,14 +51,14 @@ describe("divided（#203）", () => {
     expect(slotOf(container, "card-footer")).not.toBeNull();
   });
 
-  it("默认仍画分隔线：Card 上不挂任何关线类", () => {
+  it("默认仍画分隔线：Card 上不挂关线类", () => {
     const { container } = render(
       <Card>
         <CardHeader>标题</CardHeader>
       </Card>,
     );
     const root = container.firstElementChild as HTMLElement;
-    expect(root.className).not.toContain("card-header");
+    expect(root.className).not.toContain("border-b-0");
     expect(slotOf(container, "card-header").className).toContain("border-b");
   });
 
@@ -70,10 +70,10 @@ describe("divided（#203）", () => {
       </Card>,
     );
     const cls = (container.firstElementChild as HTMLElement).className;
-    expect(cls).toContain("[&>[data-slot=card-header]]:border-b-0");
-    expect(cls).toContain("[&>[data-slot=card-header]]:pb-2");
-    expect(cls).toContain("[&>[data-slot=card-footer]]:border-t-0");
-    expect(cls).toContain("[&>[data-slot=card-footer]]:pt-2");
+    expect(cls).toContain("[&>:where([data-slot=card-header])]:border-b-0");
+    expect(cls).toContain("[--card-header-pb:0.5rem]");
+    expect(cls).toContain("[&>:where([data-slot=card-footer])]:border-t-0");
+    expect(cls).toContain("[--card-footer-pt:0.5rem]");
   });
 
   it("divided={true} 与省略等价（显式为真不额外挂类）", () => {
@@ -88,6 +88,53 @@ describe("divided（#203）", () => {
   it("divided 不落到 DOM 属性上（是样式开关，不是透传的 div 属性）", () => {
     const { container } = render(<Card divided={false} />);
     expect((container.firstElementChild as HTMLElement).hasAttribute("divided")).toBe(false);
+  });
+});
+
+describe("Card size (#325)", () => {
+  const renderCard = (size?: "sm" | "md") =>
+    render(
+      <Card size={size}>
+        <CardHeader>标题</CardHeader>
+        <CardBody>正文</CardBody>
+        <CardFooter>页脚</CardFooter>
+      </Card>,
+    );
+
+  it("默认 md 保持三个分区现有 padding", () => {
+    const { container } = renderCard();
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).toContain("[--card-header-px:1.25rem]");
+    expect(root.className).toContain("[--card-body-py:1rem]");
+    expect(root.className).toContain("[--card-footer-px:1.25rem]");
+  });
+
+  it("sm 同时收紧 header/body/footer", () => {
+    const { container } = renderCard("sm");
+    const cls = (container.firstElementChild as HTMLElement).className;
+    expect(cls).toContain("[--card-header-px:1rem]");
+    expect(cls).toContain("[--card-header-pt:0.625rem]");
+    expect(cls).toContain("[--card-body-px:1rem]");
+    expect(cls).toContain("[--card-body-py:0.75rem]");
+    expect(cls).toContain("[--card-footer-px:1rem]");
+    expect(cls).toContain("[--card-footer-pt:0.625rem]");
+  });
+
+  it("CardBody 不再强制 text-sm", () => {
+    const { container } = render(<CardBody className="text-lg">正文</CardBody>);
+    const body = container.firstElementChild as HTMLElement;
+    expect(body.className).not.toContain("text-sm");
+    expect(body.className).toContain("text-lg");
+  });
+
+  it("CardBody 默认不强制字号", () => {
+    const { container } = render(<CardBody>正文</CardBody>);
+    expect((container.firstElementChild as HTMLElement).className).not.toContain("text-sm");
+  });
+
+  it("size 不透传为 DOM attribute", () => {
+    const { container } = render(<Card size="sm" />);
+    expect((container.firstElementChild as HTMLElement).hasAttribute("size")).toBe(false);
   });
 });
 
@@ -180,11 +227,16 @@ describe("CardHeader 的标题词汇（#226）", () => {
     expect(headerOf(container).hasAttribute("title")).toBe(false);
   });
 
-  it("className 与分隔线口径不受影响（结构态下 border-b 与内边距照旧）", () => {
-    const { container } = render(<CardHeader title="标题" className="my-header" />);
+  it("className 与分隔线口径不受影响（结构态下 border-b 与根节点内边距照旧）", () => {
+    const { container } = render(
+      <Card>
+        <CardHeader title="标题" className="my-header" />
+      </Card>,
+    );
     const header = headerOf(container);
+    const root = container.firstElementChild as HTMLElement;
     expect(header.className).toContain("border-b");
-    expect(header.className).toContain("px-5");
     expect(header.classList.contains("my-header")).toBe(true);
+    expect(root.className).toContain("[--card-header-px:1.25rem]");
   });
 });

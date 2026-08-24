@@ -18,7 +18,7 @@ status: enriched
 
 ## 导入
 ```ts
-import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
+import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
 ```
 
 ## Props
@@ -28,9 +28,10 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
+| size | `"sm" \| "md"` | `"md"` | 整卡密度：`sm` 同时收紧 Header / Body / Footer 的内边距 |
 | divided | `boolean` | `true` | 是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档 |
 
-`CardBody` / `CardFooter` 为插槽容器，接收原生 div 属性 + `children`。
+`CardBody` / `CardFooter` 为插槽容器，接收原生 div 属性 + `children`。`CardBody` 不再指定字号；正文排版由内容自己拥有，直接放文本或显式使用 `Text size` 都可以。
 
 `CardHeaderProps`（另继承 `HTMLAttributes<HTMLDivElement>`，除 `title`，因其类型被改为 ReactNode）
 
@@ -51,7 +52,18 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 <Card variant="elevated" className="w-64">
   <CardHeader>瑚琏卡片</CardHeader>
   <CardBody>宗庙玉器，至美又大用。</CardBody>
-  <CardFooter>footer 区</CardFooter>
+<CardFooter>footer 区</CardFooter>
+</Card>
+```
+
+默认是 `md` 密度；信息更密集时用 `sm`，三个分区会一起收紧，而正文的字号仍由内容自己决定：
+```tsx
+<Card size="sm">
+  <CardHeader title="运行指标" />
+  <CardBody>
+    <Text size="lg">98.7%</Text>
+  </CardBody>
+  <CardFooter>最近 5 分钟</CardFooter>
 </Card>
 ```
 
@@ -75,6 +87,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 - `CardHeader` 的 `title` 是 `ReactNode`，与原生 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——需要原生 tooltip 请挂在内层元素上。
 - `extra` **不会因为 `title` / `description` 变长而掉到第二行**（#263）：左列是 `flex: 1 1 0`，换行判据与内容长度脱钩，长文本该 `truncate` / `line-clamp` 就截断。**这也意味着窄容器里 `extra` 会一直占着位置**——想让它挤压标题就得给标题写溢出处理。卡片宽度由布局给（三列网格、侧栏），与视口无关，所以这里刻意没有「窄屏换行」那一档；页面级的 [PageHeader](../page-header/page-header.md) 才有，那边页头总是全宽、视口窄等于页头窄。
 - `divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `"use client"`，能直接放进 server component 里用。
+- `size="sm"` 由 Card 根节点提供密度变量；嵌套的 Card 会重设自己的默认 `md` 值，想紧凑要显式传 `size="sm"`。分区的 `className`（例如 `p-0` / `pt-0`）仍可按原有契约覆盖对应内边距。
 
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)

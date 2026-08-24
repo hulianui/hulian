@@ -955,7 +955,7 @@ import { Spacer } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Stack
 
-**导出**：`Stack`
+**导出**：`Stack` · `StackItem`
 
 > 按一个方向排列子元素，统一控制间距、对齐和换行 · layout/arrange
 
@@ -965,10 +965,12 @@ import { Spacer } from "@hulianui/ui"
 
 ## 导入
 ```ts
-import { Stack } from "@hulianui/ui"
+import { Stack, StackItem } from "@hulianui/ui"
 ```
 
 ## Props
+
+### Stack
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
@@ -981,6 +983,19 @@ import { Stack } from "@hulianui/ui"
 | as | `ElementType` | `"div"` | 渲染的元素标签 |
 
 `StackDirection = "row" \| "column"`；其余 `HTMLAttributes<HTMLElement>` 属性（className/style/事件等）透传。
+
+### StackItem
+
+`StackItem` 是 Stack 的 flex 子项原语，用固定 utility class 控制主轴尺寸。它默认渲染 `div`，并支持与 Stack 相同的 `as` 多态属性透传。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| grow | `boolean` | `false` | `true` 添加 `flex-1`，占用主轴剩余空间 |
+| shrink | `boolean` | `undefined` | `false` 添加 `shrink-0`；`true`/未设置保持浏览器默认 |
+| minWidth | `0` | `undefined` | `0` 添加 `min-w-0`，允许 flex 子项内容收缩 |
+| as | `ElementType` | `"div"` | 渲染的元素标签 |
+
+`StackItem` 也透传 `children`、`className` 以及目标元素的其他 HTML 属性。
 
 ## Slots
 
@@ -1003,6 +1018,16 @@ import { Stack } from "@hulianui/ui"
 <Stack direction="row" justify="between" className="w-64">
   <Box>左</Box>
   <Box>右</Box>
+</Stack>
+
+// 让长标题收缩，为右侧操作保留空间
+<Stack direction="row" align="center" gap={3}>
+  <StackItem grow minWidth={0}>
+    <Text truncate>一段需要为右侧操作让出空间的长标题</Text>
+  </StackItem>
+  <StackItem shrink={false}>
+    <Button>操作</Button>
+  </StackItem>
 </Stack>
 ```
 
@@ -2810,6 +2835,8 @@ import { Text } from "@hulianui/ui"
 | size | `"xs" \| "sm" \| "base" \| "lg" \| "xl"` | `"base"` | 字号 |
 | tone | `"default" \| "muted" \| "primary" \| "success" \| "warning" \| "danger"` | `"default"` | 语义色调（明暗自适配） |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | 字重 |
+| family | `"sans" \| "mono"` | - | 字族；不传时继承周围字体 |
+| numeric | `boolean` | `false` | 使用等宽数字 |
 | truncate | `boolean` | `false` | 单行省略号截断 |
 | lineClamp | `number` | - | 多行截断（最多 n 行后省略号）；设置后优先于 truncate |
 
@@ -2828,6 +2855,11 @@ import { Text } from "@hulianui/ui"
 <Text tone="success">3/3 分 · 判分正确</Text>
 <Text tone="warning">掌握率偏低</Text>
 <Text tone="danger">危险提示</Text>
+
+// 字族与等宽数字；省略 family 时继承周围字体
+<Text family="mono">pnpm add @hulianui/ui</Text>
+<Text numeric>12,345.67</Text>
+<Text family="mono" numeric>2026-08-24 09:30</Text>
 
 // 多行截断
 <div className="max-w-xs">
@@ -8127,8 +8159,9 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 |------|------|------|------|
 | items | `ReadonlyArray<{ value: string \| null; label: ReactNode }>` | - | 选项数据；Base UI 据此让 Trigger 显示选中项 label |
 | defaultValue | `string \| string[] \| null` | `null` | 非受控初值：单选 `string \| null`，`multiple` 时 `string[]` |
-| placeholder | `ReactNode` | - | 无选中值时的占位文本（单选注入 value:null 项实现；多选由 Trigger 函数式 Value 渲染） |
+| placeholder | `ReactNode` | - | 无选中值时的占位文本（单选注入 value:null 项实现；空 chips 只在真实 Trigger Value 挂载一次，并以稳定关联提供 SSR 可访问名称） |
 | multiple | `boolean` | `false` | 多选模式：value/defaultValue/onValueChange 均为 `string[]`；选中后浮层保持打开 |
+| selectedFirst | `boolean` | `false` | 仅多选：按当前 value 数组顺序将已选项置顶，未选项保持原顺序 |
 | clearable | `boolean` | `false` | 有值时 Trigger 右侧 hover/focus 浮出清除按钮，点击置空（单选回传 `null`，多选回传 `[]`） |
 | searchable | `boolean` | `false` | 切到 Combobox 搜索皮肤：浮层顶部搜索框 + Base UI 过滤（依赖 `items`） |
 | searchPlaceholder | `string` | `"搜索"` | searchable 时搜索框占位 |
@@ -8149,6 +8182,8 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectGroup, SelectGr
 | size | `"xs" \| "sm" \| "md" \| "lg"` | `"md"` | 尺寸。`xs` 与 Input / Textarea 的 `xs` 等高（密集表格里同一行三种控件必须对齐） |
 | invalid | `boolean` | `false` | 独立使用（非 Field 内）时手动置无效态皮肤 |
 | maxDisplay | `number` | `2` | 多选模式下最多平铺几个已选 label，超出折叠为 +N 计数 |
+| display | `"text" \| "chips"` | `"text"` | 多选值的展示方式；`chips` 用标签视觉回显 |
+| removable | `boolean` | `false` | `display="chips"` 时显示单项删除按钮 |
 | className | `string` | - | 透传类名 |
 
 ### SelectContent
@@ -8210,6 +8245,28 @@ const [points, setPoints] = useState<string[]>([]);
   </SelectContent>
 </Select>
 
+// chips 多选：已选值置顶、可搜索、单项删除
+const cities = [
+  { value: "shanghai", label: "上海" },
+  { value: "beijing", label: "北京" },
+  { value: "shenzhen", label: "深圳" },
+];
+
+<Select
+  items={cities}
+  multiple
+  searchable
+  selectedFirst
+  defaultValue={["shanghai", "beijing"]}
+>
+  <SelectTrigger display="chips" removable maxDisplay={3} />
+  <SelectContent>
+    {cities.map((city) => (
+      <SelectItem key={city.value} value={city.value}>{city.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
 // 可清除 + 可搜索：对标 el-select 的 clearable / filterable
 <Select items={FONTS} placeholder="请选择字体" clearable searchable searchPlaceholder="搜索字体">
   <SelectTrigger />
@@ -8254,7 +8311,9 @@ const { data, isLoading } = useFonts();
 - 占位文本通过 `Select` 的 `placeholder` prop 传，**不要**给 `Select.Value` 传 placeholder——见 [[base-ui-select-rc0-no-value-placeholder-prop-inject-null-item]]：本项目锁 Base UI rc.0，其 `Select.Value` 没有 placeholder prop（那是 v1.2+），瑚琏靠注入一个 `value:null` 的 items 项实现占位 label。`items` 与 `SelectItem` 的 value 要对应，否则 Trigger 显示 raw value 而非 label。
 - `multiple` 下 value 必须是数组：给 `defaultValue="a"`（字符串）会被当成无选中处理。多选模式不注入 null 占位项（数组值命不中 null 项），占位由 Trigger 内函数式 Value 渲染，因此**多选的 placeholder/label 解析依赖 `items` prop**——不传 items 时 Trigger 只能显示 raw value。
 - 多选 Trigger 的平铺条数由 `SelectTrigger` 的 `maxDisplay` 控制（默认 2），不在 `Select` 上。
-- `clearable` 会让组件接管 value（非受控时内部起受控镜像）——**受控用法不变**：外部不改 `value` 时点清除只回调不落值，符合受控语义。未开 `clearable` 时 value 归属与 DOM 结构与旧版逐字节一致（不加包裹层）。
+- `selectedFirst` **只影响多选**。`searchable` 时先过滤、再把仍命中的已选项按 value 数组顺序置顶；未命中的已选值不会被强插回结果。标准皮肤的 `SelectGroup` 保持组顺序，只在各组内部重排。
+- `display="chips"` 只改变多选 Trigger 的视觉回显。空数组时，`placeholder`（支持 ReactNode）**只在真实 Trigger Value 中挂载一次**：它以 muted 样式直接可见，并带稳定 id；不会再复制到 chips overlay，也不会产生重复 consumer id 或双生命周期。没有消费方显式 `aria-label`/`aria-labelledby` 时，服务端首帧即以 `aria-labelledby` 关联这份唯一内容，组件型 placeholder 因而在 SSR 中也能命名控件；显式 aria 属性始终立即优先。子组件在 SSR 时无法检查祖先原生标签，因此带 `Field` 或原生 `<label>` 的服务端标记可能暂由 placeholder 命名；hydration 检出真实标签后会撤销 fallback，让外部标签恢复优先。已有选中值时，视觉 chip overlay 仍保持 `aria-hidden`，真实 Trigger 使用完整选中 label 命名。`removable` 需要同时开启 `display="chips"`，每个删除按钮都是 Trigger 的兄弟节点。`clearable` 仍清空所有值，和单项删除可同时使用。
+- 值归属：`clearable` 需要内部 mirror 执行清空；`multiple` 为 chips 单项删除也始终由该 mirror 驱动 Base UI，**即使 `clearable=false`**。这不改变受控语义：外部传 `value` 时仍以外部值为准，外部不回写时清空或单删只回调、不乐观改显示；非受控时 mirror 在未取消的变更后同步更新。
 - 清除按钮是 `Trigger` 的**兄弟**节点（绝对定位盖在箭头位上），不是子节点——`<button>` 里嵌 `<button>` 是非法 HTML，且嵌套后点击会冒泡到 Trigger 顺手把浮层打开。常态 `hidden`，靠外层 `group-hover` / `group-focus-within` 浮出。
 - `searchable` 依赖 `items`：该皮肤下列表由 `items` 过滤结果驱动渲染（消费者写的 `SelectItem` 按 value 建索引后复用，自定义内容不丢；`items` 有而 `SelectItem` 没写的项兜底用 label 渲染）。**不传 `items` 就没有候选，浮层恒为空态。**
 - `searchable` 下选项会被**拍平**，`SelectGroup` 不生效（Base UI Combobox 的分组要求 `items` 本身是分组结构，与 Select 的声明式分组不是一套）。需要"搜索 + 分组"直接用 [Combobox](https://hulianui.haloritual.com/zh/components/combobox)。
@@ -9905,7 +9964,7 @@ import { BounceCards } from "@hulianui/ui"
 
 ## 导入
 ```ts
-import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
+import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
 ```
 
 ## Props
@@ -9915,9 +9974,10 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
+| size | `"sm" \| "md"` | `"md"` | 整卡密度：`sm` 同时收紧 Header / Body / Footer 的内边距 |
 | divided | `boolean` | `true` | 是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档 |
 
-`CardBody` / `CardFooter` 为插槽容器，接收原生 div 属性 + `children`。
+`CardBody` / `CardFooter` 为插槽容器，接收原生 div 属性 + `children`。`CardBody` 不再指定字号；正文排版由内容自己拥有，直接放文本或显式使用 `Text size` 都可以。
 
 `CardHeaderProps`（另继承 `HTMLAttributes<HTMLDivElement>`，除 `title`，因其类型被改为 ReactNode）
 
@@ -9938,7 +9998,18 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 <Card variant="elevated" className="w-64">
   <CardHeader>瑚琏卡片</CardHeader>
   <CardBody>宗庙玉器，至美又大用。</CardBody>
-  <CardFooter>footer 区</CardFooter>
+<CardFooter>footer 区</CardFooter>
+</Card>
+```
+
+默认是 `md` 密度；信息更密集时用 `sm`，三个分区会一起收紧，而正文的字号仍由内容自己决定：
+```tsx
+<Card size="sm">
+  <CardHeader title="运行指标" />
+  <CardBody>
+    <Text size="lg">98.7%</Text>
+  </CardBody>
+  <CardFooter>最近 5 分钟</CardFooter>
 </Card>
 ```
 
@@ -9962,6 +10033,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@hulianui/ui"
 - `CardHeader` 的 `title` 是 `ReactNode`，与原生 `HTMLAttributes.title?: string` 冲突，类型已 `Omit<"title">`——需要原生 tooltip 请挂在内层元素上。
 - `extra` **不会因为 `title` / `description` 变长而掉到第二行**（#263）：左列是 `flex: 1 1 0`，换行判据与内容长度脱钩，长文本该 `truncate` / `line-clamp` 就截断。**这也意味着窄容器里 `extra` 会一直占着位置**——想让它挤压标题就得给标题写溢出处理。卡片宽度由布局给（三列网格、侧栏），与视口无关，所以这里刻意没有「窄屏换行」那一档；页面级的 [PageHeader](https://hulianui.haloritual.com/zh/components/page-header) 才有，那边页头总是全宽、视口窄等于页头窄。
 - `divided={false}` 只作用于 Card 的**直接子** `CardHeader` / `CardFooter`，卡里套卡时外层的取值不会传染给内层（内层要关线自己传）。它也不是 context 下发——Card 至今没有 `"use client"`，能直接放进 server component 里用。
+- `size="sm"` 由 Card 根节点提供密度变量；嵌套的 Card 会重设自己的默认 `md` 值，想紧凑要显式传 `size="sm"`。分区的 `className`（例如 `p-0` / `pt-0`）仍可按原有契约覆盖对应内边距。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)
@@ -23364,10 +23436,11 @@ import { DotField } from "@hulianui/ui"
 
 ## 示例
 ```tsx
-// 默认点阵：移动鼠标推挤 + 辉光
-<div className="relative h-56 overflow-hidden rounded-xl"
+// 正文决定高度：移动鼠标推挤点阵 + 辉光
+<div className="relative overflow-hidden rounded-xl p-8"
      style={{ background: "oklch(0.14 0.02 280)" }}>
   <DotField />
+  <div className="relative z-10">由正文决定容器高度的前景内容</div>
 </div>
 ```
 ```tsx
@@ -23385,7 +23458,7 @@ import { DotField } from "@hulianui/ui"
 
 - **token 颜色须带 `--color-` 前缀**：喂给 canvas 的 `color`/`glowColor` 传 CSS 变量必须写完整名（如 `var(--color-chart-1)`），裸 `var(--chart-1)` canvas 不解析 → 点画成黑色/辉光消失。见 [[hulian-token-color-var-needs-color-prefix]]。
 - **客户端渲染**：依赖 canvas2d + `requestAnimationFrame`，SSR/reduced-motion 下降级静态点阵；勿在 server component 直接挂载实时逻辑。
-- 父容器须 `relative` + `overflow-hidden`（组件自带 absolute 铺满逻辑）。
+- **定位上下文**：父容器必须用 `relative` 或其他非 `static` 的定位方式建立定位上下文，并建议配合 `overflow-hidden`；DotField 自带 `absolute inset-0` 铺满父容器。前景内容使用 `relative z-10` 叠在点阵上方，容器高度可以完全由带 padding 的正文决定。
 
 ## 相关
 [DotPattern](https://hulianui.haloritual.com/zh/components/dot-pattern) · [GridPattern](https://hulianui.haloritual.com/zh/components/grid-pattern) · [StripedPattern](https://hulianui.haloritual.com/zh/components/striped-pattern) · [Spotlight](https://hulianui.haloritual.com/zh/components/spotlight) · [RetroGrid](https://hulianui.haloritual.com/zh/components/retro-grid) · [Ripple](https://hulianui.haloritual.com/zh/components/ripple)

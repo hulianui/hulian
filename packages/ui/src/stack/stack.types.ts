@@ -1,4 +1,4 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithRef, ElementType, ReactNode } from "react";
 import type { PolymorphicProps } from "../lib/polymorphic";
 
 export type StackAlign = "start" | "center" | "end" | "stretch" | "baseline";
@@ -34,3 +34,25 @@ export interface StackOwnProps {
 
 /** `as` 参与类型推导：`as="form"` 时 onSubmit 拿到 FormEvent<HTMLFormElement>。 */
 export type StackProps<E extends ElementType = "div"> = PolymorphicProps<E, StackOwnProps>;
+
+export interface StackItemOwnProps {
+  /** 占用主轴剩余空间。true -> flex-1。 */
+  grow?: boolean;
+  /** 是否允许收缩。false -> shrink-0；true/undefined 保持浏览器默认。 */
+  shrink?: boolean;
+  /** 允许 flex 子项内容收缩。0 -> min-w-0。 */
+  minWidth?: 0;
+  children?: ReactNode;
+  className?: string;
+}
+
+type StackItemRef<E extends ElementType> = ComponentPropsWithRef<E> extends {
+  ref?: infer Ref;
+}
+  ? Ref
+  : never;
+
+export type StackItemProps<E extends ElementType = "div"> = PolymorphicProps<E, StackItemOwnProps> & {
+  /** React 19 下作为普通 prop 透传到 `as` 指定的元素；只补 StackItem，不扩大共享多态底座。 */
+  ref?: StackItemRef<E>;
+};

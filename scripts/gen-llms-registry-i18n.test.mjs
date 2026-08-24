@@ -68,7 +68,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   result: [2, 3],
   sankey: [2, 3],
   "scope-matrix": [0, 1],
-  select: [10, 11],
+  select: [12, 13],
   separator: [0, 1],
   "service-message": [3, 4],
   skeleton: [3, 4],

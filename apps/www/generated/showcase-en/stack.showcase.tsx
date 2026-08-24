@@ -1,6 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { Stack } from "../../../../packages/ui/src/stack/stack";
+import { Stack, StackItem } from "../../../../packages/ui/src/stack/stack";
 const Box = ({ children }: {
     children?: string;
 }) => (<span className="inline-flex items-center justify-center rounded-[min(var(--radius),0.375rem)] bg-surface-hover px-3 py-2 text-xs text-foreground">
@@ -80,6 +80,26 @@ export const stackShowcase: ShowcaseSpec = {
           <Box>4</Box>
           <Box>5</Box>
           <Box>6</Box>
+        </Stack>),
+        },
+        {
+            title: "StackItem sizing",
+            description: "grow lets the title take the remaining space, minWidth={0} lets long text shrink, and shrink={false} keeps the action width.",
+            code: `<Stack direction="row" align="center" gap={3} className="w-80">
+  <StackItem grow minWidth={0}>
+    <span className="block truncate">A long title that leaves room for the action on the right</span>
+  </StackItem>
+  <StackItem shrink={false}>
+    <Box>Actions</Box>
+  </StackItem>
+</Stack>`,
+            render: () => (<Stack direction="row" align="center" gap={3} className="w-80">
+          <StackItem grow minWidth={0}>
+            <span className="block truncate">A long title that leaves room for the action on the right</span>
+          </StackItem>
+          <StackItem shrink={false}>
+            <Box>Actions</Box>
+          </StackItem>
         </Stack>),
         },
     ],

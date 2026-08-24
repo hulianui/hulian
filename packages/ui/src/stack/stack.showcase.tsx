@@ -1,6 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
-import { Stack } from "./stack";
+import { Stack, StackItem } from "./stack";
 
 const Box = ({ children }: { children?: string }) => (
   <span className="inline-flex items-center justify-center rounded-[min(var(--radius),0.375rem)] bg-surface-hover px-3 py-2 text-xs text-foreground">
@@ -91,6 +91,28 @@ export const stackShowcase: ShowcaseSpec = {
           <Box>4</Box>
           <Box>5</Box>
           <Box>6</Box>
+        </Stack>
+      ),
+    },
+    {
+      title: "StackItem 尺寸控制",
+      description: "grow 让标题占用剩余空间，minWidth={0} 允许长文本收缩，shrink={false} 保持右侧操作宽度。",
+      code: `<Stack direction="row" align="center" gap={3} className="w-80">
+  <StackItem grow minWidth={0}>
+    <span className="block truncate">一段需要为右侧操作让出空间的长标题</span>
+  </StackItem>
+  <StackItem shrink={false}>
+    <Box>操作</Box>
+  </StackItem>
+</Stack>`,
+      render: () => (
+        <Stack direction="row" align="center" gap={3} className="w-80">
+          <StackItem grow minWidth={0}>
+            <span className="block truncate">一段需要为右侧操作让出空间的长标题</span>
+          </StackItem>
+          <StackItem shrink={false}>
+            <Box>操作</Box>
+          </StackItem>
         </Stack>
       ),
     },

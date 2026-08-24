@@ -2,11 +2,15 @@
 import {
   Children,
   Fragment,
+  cloneElement,
   createContext,
   isValidElement,
   useCallback,
   useContext,
+  useEffect,
+  useId,
   useMemo,
+  useRef,
   useState,
   type ReactElement,
   type ReactNode,
@@ -35,6 +39,7 @@ import type {
   SelectProps,
   SelectTriggerProps,
 } from "./select.types";
+import { orderSelectedFirst } from "./select-order";
 
 // overlay 自管 mount/unmount；用瑚琏 motion token 驱动 Base UI 原生过渡（同 Dialog/Tooltip/Popover）。
 // 用 transition 简写(而非长写)：Base UI 在过渡生命周期会往内联 style 注入 transition 简写，与长写
@@ -102,28 +107,49 @@ interface SelectMeta {
   items?: SelectProps["items"];
   placeholder?: ReactNode;
   multiple?: boolean;
+  selectedFirst?: boolean;
+  currentValue?: string | string[] | null;
   clearable?: boolean;
   searchable?: boolean;
   searchPlaceholder?: string;
   emptyMessage?: ReactNode;
-  loading?: boolean;
-  loadingText?: ReactNode;
-  /** searchable 皮肤下喂给 Combobox 的候选（已剔除 null 占位项）。 */
-  searchItems?: ReadonlyArray<ComboboxItemData>;
+  loadingNode?: ReactNode;
+  disabled?: boolean;
+  readOnly?: boolean;
   searchItemByValue?: ReadonlyMap<string, ComboboxItemData>;
   /** 当前是否有选中值（单选非空、多选数组非空）——决定清除按钮是否渲染。 */
   hasValue?: boolean;
   onClear?: () => void;
+  onRemoveValue?: (value: string, eventDetails?: unknown) => void;
 }
 const SelectMetaContext = createContext<SelectMeta>({});
 
 const EMPTY_ITEMS: ReadonlyArray<ComboboxItemData> = [];
+const EMPTY_SELECTED_VALUES: readonly string[] = [];
+const chipLayerClass =
+  "absolute inset-y-0 left-0 right-8 flex items-center gap-1 overflow-hidden px-3";
+const chipVisualClass =
+  "inline-flex min-w-0 shrink-0 items-center gap-1 rounded bg-surface-raised px-1.5 py-0.5 text-xs";
+const chipLabelClass = "max-w-28 truncate";
+
+function isChipRemoveControl(target: EventTarget | null) {
+  return target instanceof Element && target.closest("[data-hulian-select-chip-remove]") != null;
+}
 
 // Combobox 是泛型函数组件，spread 动态构造的 props 推断不稳 → 在边界放宽签名
 // （同 combobox.tsx 内对 BaseCombobox.Root 的处理），对外类型仍由 SelectProps 保证。
 const SearchRoot = Combobox as unknown as (
   props: Record<string, unknown> & { children?: ReactNode },
 ) => ReactElement;
+
+const DEFAULT_SELECT_COPY = {
+  search: "搜索",
+  empty: "无匹配项",
+  loading: "加载中",
+  separator: "、",
+  clear: "清除",
+  remove: (label: string) => `移除 ${label}`,
+};
 
 // placeholder 经注入一个 value:null 的 items 项实现（rc.0 Select.Value 无 placeholder prop）。
 // 无值时 Base UI 自动显示该 null 项 label（占位）；有值时显示选中项 label。Value 因此不写 children。
@@ -132,6 +158,7 @@ export function Select({
   items,
   placeholder,
   multiple,
+  selectedFirst,
   clearable,
   searchable,
   searchPlaceholder,
@@ -139,30 +166,31 @@ export function Select({
   virtualized,
   loading,
   loadingText,
+  disabled,
+  readOnly,
   value: valueProp,
   defaultValue,
   onValueChange,
+  onOpenChange,
   children,
   ...props
 }: SelectProps) {
-  const copy = useComponentLocale().select ?? {
-    search: "搜索",
-    empty: "无匹配项",
-    loading: "加载中",
-    separator: "、",
-    clear: "清除",
-  };
+  const copy = useComponentLocale().select ?? DEFAULT_SELECT_COPY;
   const resolvedSearchPlaceholder = searchPlaceholder ?? copy.search;
   const resolvedEmptyMessage = emptyMessage ?? copy.empty;
   const resolvedLoadingText = loadingText ?? copy.loading;
-  // 值镜像：clearable/searchable 需要「读当前值」与「程序化置空」，Base UI 的 store 不对外暴露。
-  // 受控时以 valueProp 为准；非受控时镜像跟着 onValueChange 走（此时仍把 defaultValue 交给 Base UI，
-  // 除非开了 clearable —— 清除必须能反写，那一档才由瑚琏接管为受控）。
-  const controlled = valueProp !== undefined;
+  // 值镜像：clearable 需要程序化置空，multiple 需要 chips 单项删除；Base UI 的 store 不对外暴露。
+  // 受控时以 valueProp 为准；非受控时镜像跟着 onValueChange 走。两种皮肤都把 current
+  // 交给 Base UI Root，保证切换皮肤、触发器和程序化删除使用同一份值。
+  const uncontrolled = valueProp === undefined;
   const [mirror, setMirror] = useState<string | string[] | null>(
     () => defaultValue ?? (multiple ? [] : null),
   );
-  const current = controlled ? valueProp : mirror;
+  const current = uncontrolled ? mirror : valueProp;
+  const selectedValues = useMemo<readonly string[]>(
+    () => (multiple && Array.isArray(current) ? current : EMPTY_SELECTED_VALUES),
+    [current, multiple],
+  );
 
   const handleValueChange = useCallback(
     (next: unknown, eventDetails?: unknown) => {
@@ -174,19 +202,53 @@ export function Select({
         (eventDetails as { cancel?: () => void } | undefined)?.cancel?.();
         return;
       }
-      if (!controlled) setMirror(next as string | string[] | null);
       onValueChange?.(next, eventDetails);
+      // Base UI invokes the consumer before committing its own uncontrolled state. Mirror that
+      // contract: a consumer's eventDetails.cancel() must leave both representations unchanged.
+      if ((eventDetails as { isCanceled?: boolean } | undefined)?.isCanceled) return;
+      if (uncontrolled) {
+        setMirror(next as string | string[] | null);
+      }
     },
-    [controlled, loading, onValueChange],
+    [uncontrolled, loading, onValueChange],
   );
 
-  const hasValue = multiple
-    ? Array.isArray(current) && current.length > 0
-    : current != null && current !== "";
+  const hasValue = multiple ? selectedValues.length > 0 : current != null && current !== "";
 
   const handleClear = useCallback(() => {
     handleValueChange(multiple ? [] : null);
   }, [handleValueChange, multiple]);
+  const handleRemoveValue = useCallback(
+    (value: string, eventDetails?: unknown) => {
+      if (!multiple || disabled || readOnly || !Array.isArray(current)) return;
+      handleValueChange(
+        current.filter((item) => item !== value),
+        eventDetails,
+      );
+    },
+    [current, disabled, handleValueChange, multiple, readOnly],
+  );
+  const handleOpenChange = useCallback(
+    (...[nextOpen, eventDetails]: Parameters<NonNullable<SelectProps["onOpenChange"]>>) => {
+      const target = eventDetails.event.target;
+      const relatedTarget =
+        "relatedTarget" in eventDetails.event
+          ? (eventDetails.event as FocusEvent).relatedTarget
+          : null;
+      // Remove controls intentionally live next to (not inside) the real trigger to avoid nested
+      // buttons. A pointer press is outside the popup, and the subsequent focus-out targets the
+      // same marked control; cancel both without changing all other outside-click semantics.
+      if (
+        !nextOpen &&
+        ((eventDetails.reason === "outside-press" && isChipRemoveControl(target)) ||
+          (eventDetails.reason === "focus-out" && isChipRemoveControl(relatedTarget)))
+      ) {
+        eventDetails.cancel();
+      }
+      onOpenChange?.(nextOpen, eventDetails);
+    },
+    [onOpenChange],
+  );
 
   // 加载态占位：两种皮肤共用（标准皮肤放进 List，搜索皮肤复用 Combobox 的空态槽位）。
   const loadingNode = (
@@ -199,10 +261,11 @@ export function Select({
   // 搜索皮肤的候选：剔除 value 为 null 的占位项（Combobox 无 null 占位机制，占位走 Trigger 自身）。
   const searchItems = useMemo<ReadonlyArray<ComboboxItemData>>(() => {
     if (!searchable || loading || items == null) return EMPTY_ITEMS;
-    return items
+    const mapped = items
       .filter((it): it is { value: string; label: ReactNode } => it.value != null)
       .map((it) => ({ value: it.value, label: it.label }));
-  }, [searchable, loading, items]);
+    return selectedFirst && multiple ? orderSelectedFirst(mapped, selectedValues) : mapped;
+  }, [searchable, loading, items, selectedFirst, multiple, selectedValues]);
   const searchItemByValue = useMemo(
     () => new Map(searchItems.map((item) => [item.value, item])),
     [searchItems],
@@ -213,16 +276,19 @@ export function Select({
       items,
       placeholder,
       multiple,
+      selectedFirst,
+      currentValue: current,
       clearable,
       searchable,
       searchPlaceholder: resolvedSearchPlaceholder,
       emptyMessage: loading ? loadingNode : resolvedEmptyMessage,
-      loading,
-      loadingText: resolvedLoadingText,
-      searchItems,
+      loadingNode: loading ? loadingNode : undefined,
+      disabled,
+      readOnly,
       searchItemByValue,
       hasValue,
       onClear: handleClear,
+      onRemoveValue: handleRemoveValue,
     }),
     // loadingNode 每渲染新建，但只在 loading 时进入 meta，且它只作展示节点 → 用 loading/loadingText 做依赖即可。
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -230,18 +296,31 @@ export function Select({
       items,
       placeholder,
       multiple,
+      selectedFirst,
+      current,
       clearable,
       searchable,
       resolvedSearchPlaceholder,
       resolvedEmptyMessage,
       loading,
       resolvedLoadingText,
-      searchItems,
+      disabled,
+      readOnly,
       searchItemByValue,
       hasValue,
       handleClear,
+      handleRemoveValue,
     ],
   );
+
+  const standardContentChildren = useMemo(() => findSelectContentChildren(children), [children]);
+  const standardItemValueOrder = useMemo(() => {
+    if (!multiple || !selectedFirst || standardContentChildren == null)
+      return selectedValues;
+    const values: string[] = [];
+    orderStandardChildren(standardContentChildren, selectedValues, values);
+    return values;
+  }, [multiple, selectedFirst, standardContentChildren, selectedValues]);
 
   if (searchable) {
     // 搜索/过滤全部交给 Base UI Combobox：瑚琏只做 string ⇄ {value,label} 的值形状搬运。
@@ -256,9 +335,12 @@ export function Select({
       ...props,
       items: searchItems,
       multiple,
+      disabled,
+      readOnly,
       // 不传时交给 Combobox 按候选数自动决定（≥100 开）；显式传 false 可关掉（自定义行高时用）。
       ...(virtualized !== undefined && { virtualized }),
       value: searchValue,
+      onOpenChange: handleOpenChange,
       onValueChange: (next: unknown, eventDetails?: unknown) =>
         handleValueChange(
           multiple
@@ -271,7 +353,7 @@ export function Select({
         a?.value === b?.value,
       // label 允许是 ReactNode；过滤/键盘检索只认字符串，非字符串 label 退回 value 参与匹配。
       itemToStringLabel: (item: ComboboxItemData | null) =>
-        typeof item?.label === "string" ? item.label : String(item?.value ?? ""),
+        typeof item?.label === "string" ? item.label : item?.value ?? "",
     };
     return (
       <SelectMetaContext.Provider value={meta}>
@@ -281,16 +363,20 @@ export function Select({
   }
 
   const finalItems =
-    !multiple && placeholder != null && items != null
+    multiple && selectedFirst && items != null
+      ? orderSelectedFirst(items, standardItemValueOrder)
+      : !multiple && placeholder != null && items != null
       ? [{ value: null, label: placeholder }, ...items]
       : items;
   const rootProps: Record<string, unknown> = {
     ...props,
     items: finalItems,
     multiple,
+    disabled,
+    readOnly,
+    onOpenChange: handleOpenChange,
     onValueChange: handleValueChange,
-    // clearable 需要程序化置空 → 该档接管为受控；否则保持旧版的 value/defaultValue 归属不变。
-    ...(clearable ? { value: current } : { value: valueProp, defaultValue }),
+    value: current,
   };
   return (
     <SelectMetaContext.Provider value={meta}>
@@ -310,13 +396,12 @@ function renderMultipleValue(
 ) {
   const values = Array.isArray(value) ? value : value == null ? [] : [value];
   if (values.length === 0) return placeholder ?? null;
-  const labels = values.map((v) => {
+  const shown = values.slice(0, maxDisplay).map((v) => {
     // 搜索皮肤下 Combobox 的值是 {value,label} 对象，标准皮肤下是原始 string。
     const raw =
       v != null && typeof v === "object" && "value" in v ? (v as ComboboxItemData).value : v;
     return items?.find((it) => it.value === raw)?.label ?? String(raw);
   });
-  const shown = labels.slice(0, maxDisplay);
   const extra = values.length - shown.length;
   return (
     <>
@@ -331,41 +416,133 @@ function renderMultipleValue(
   );
 }
 
-function setRef<T>(ref: Ref<T> | undefined, value: T | null) {
-  if (typeof ref === "function") ref(value);
-  else if (ref) (ref as { current: T | null }).current = value;
+interface SelectChipModel {
+  value: string;
+  label: ReactNode;
+  accessibleLabel: string;
+}
+
+function getChipModels(
+  value: SelectMeta["currentValue"],
+  items: SelectProps["items"],
+): SelectChipModel[] {
+  const values = Array.isArray(value) ? value : EMPTY_SELECTED_VALUES;
+  return values.map((raw) => {
+    const label = items?.find((item) => item.value === raw)?.label ?? raw;
+    return {
+      value: raw,
+      label,
+      accessibleLabel: typeof label === "string" ? label : raw,
+    };
+  });
 }
 
 function mergeRefs<T>(...refs: Array<Ref<T> | undefined>): Ref<T> {
-  return (value) => refs.forEach((ref) => setRef(ref, value));
+  return (value) =>
+    refs.forEach((ref) => {
+      if (typeof ref === "function") ref(value);
+      else if (ref) (ref as { current: T | null }).current = value;
+    });
 }
 
 export function SelectTrigger({
   size,
   invalid,
   maxDisplay = 2,
+  display = "text",
+  removable,
   className,
   ref: forwardedRef,
   ...triggerProps
 }: SelectTriggerProps) {
-  const copy = useComponentLocale().select ?? {
-    search: "搜索",
-    empty: "无匹配项",
-    loading: "加载中",
-    separator: "、",
-    clear: "清除",
-  };
-  const { items, placeholder, multiple, searchable, clearable, loading, hasValue, onClear } =
-    useContext(SelectMetaContext);
+  const copy = useComponentLocale().select ?? DEFAULT_SELECT_COPY;
+  const {
+    items,
+    placeholder,
+    multiple,
+    searchable,
+    clearable,
+    loadingNode,
+    disabled,
+    readOnly,
+    currentValue,
+    hasValue,
+    onClear,
+    onRemoveValue,
+  } = useContext(SelectMetaContext);
   const anchorRef = useContext(ComboboxAnchorContext);
+  const chipAccessibleValueId = useId();
+  const observedTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const [hasExternalLabel, setHasExternalLabel] = useState(false);
+  const observeTrigger = useCallback((element: HTMLButtonElement | null) => {
+    observedTriggerRef.current = element;
+  }, []);
+  const triggerRef = useMemo(
+    () => mergeRefs(forwardedRef, observeTrigger),
+    [forwardedRef, observeTrigger],
+  );
   const searchableRef = useMemo(
-    () => mergeRefs(anchorRef as Ref<HTMLButtonElement> | undefined, forwardedRef),
-    [anchorRef, forwardedRef],
+    () => mergeRefs(anchorRef as Ref<HTMLButtonElement> | undefined, forwardedRef, observeTrigger),
+    [anchorRef, forwardedRef, observeTrigger],
   );
   // 清除按钮只在「开了 clearable + 当前有值 + 非加载态」时进 DOM；可见性再由 hover/focus 控制。
-  const showClear = Boolean(clearable && hasValue && !loading);
+  const showClear = clearable && hasValue && !loadingNode;
+  const removeLabel = copy.remove ?? ((label: string) => `${copy.clear}: ${label}`);
+  const chipModels = useMemo(() => getChipModels(currentValue, items), [currentValue, items]);
+  const visibleChips = chipModels.slice(0, Math.max(0, maxDisplay));
+  const extra = chipModels.length - visibleChips.length;
+  const hasChipPlaceholder = chipModels.length === 0 && placeholder != null;
+  const accessibleValue = chipModels.map((chip) => chip.accessibleLabel).join(copy.separator);
+  // Keep the actual ReactNode in the real Value instead of trying to derive text from element
+  // props: function components only produce their text at render. When empty, this one Value node
+  // is both the visible placeholder and the stable fallback naming target; never mount a visual copy.
+  const chipAccessibleContent = chipModels.length > 0 ? accessibleValue : placeholder;
+  const hasConsumerAccessibleName =
+    triggerProps["aria-label"] != null || triggerProps["aria-labelledby"] != null;
+  const shouldLinkChipPlaceholder =
+    multiple &&
+    display === "chips" &&
+    chipModels.length === 0 &&
+    placeholder != null &&
+    !hasConsumerAccessibleName &&
+    !hasExternalLabel;
+  useEffect(() => {
+    const triggerElement = observedTriggerRef.current;
+    if (triggerElement == null) return;
 
-  const tail = loading ? (
+    const labelledBy = triggerElement.getAttribute("aria-labelledby");
+    const hasLinkedExternalLabel = labelledBy
+      ?.split(/\s+/)
+      .some((id) => id.length > 0 && id !== chipAccessibleValueId);
+    const hasNativeLabel =
+      (triggerElement.labels?.length ?? 0) > 0 || triggerElement.closest("label") != null;
+    const nextHasExternalLabel = hasLinkedExternalLabel || hasNativeLabel;
+    setHasExternalLabel((current) =>
+      current === nextHasExternalLabel ? current : nextHasExternalLabel,
+    );
+  });
+  const chipAriaLabel =
+    multiple && display === "chips" && chipModels.length > 0 && !hasConsumerAccessibleName
+      ? accessibleValue
+      : undefined;
+  const chipTriggerA11y = shouldLinkChipPlaceholder
+    ? { "aria-labelledby": chipAccessibleValueId }
+    : chipAriaLabel !== undefined
+    ? { "aria-label": chipAriaLabel }
+    : undefined;
+  const chipValue = (
+    <span
+      {...(hasChipPlaceholder && {
+        id: chipAccessibleValueId,
+        "data-slot": "select-chip-placeholder",
+      })}
+      className={hasChipPlaceholder ? "min-w-0 truncate text-muted-foreground" : "sr-only"}
+    >
+      {chipAccessibleContent}
+    </span>
+  );
+
+  const tail = loadingNode ? (
     <span className="flex shrink-0 items-center text-muted-foreground">
       <Spinner size="sm" tone="current" />
     </span>
@@ -380,15 +557,20 @@ export function SelectTrigger({
     <BaseCombobox.Trigger
       {...triggerProps}
       ref={searchableRef}
+      {...chipTriggerA11y}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
     >
       <BaseCombobox.Value>
         {(value: unknown) =>
           multiple ? (
-            <span className="truncate">
-              {renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)}
-            </span>
+            display === "chips" ? (
+              chipValue
+            ) : (
+              <span className="truncate">
+                {renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)}
+              </span>
+            )
           ) : (
             <span className={cn("truncate", value == null && "text-muted-foreground")}>
               {(value as ComboboxItemData | null)?.label ?? placeholder}
@@ -405,7 +587,8 @@ export function SelectTrigger({
   ) : (
     <BaseSelect.Trigger
       {...triggerProps}
-      ref={forwardedRef}
+      ref={triggerRef}
+      {...chipTriggerA11y}
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(selectTriggerVariants({ size }), className)}
     >
@@ -413,8 +596,10 @@ export function SelectTrigger({
           多选走函数式 children 平铺已选 label + 超出 +N。data-placeholder 态置 muted。 */}
       <BaseSelect.Value className="truncate data-[placeholder]:text-muted-foreground">
         {multiple
-          ? (value: unknown) =>
-              renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)
+          ? display === "chips"
+            ? () => chipValue
+            : (value: unknown) =>
+                renderMultipleValue(value, items, placeholder, maxDisplay, copy.separator)
           : undefined}
       </BaseSelect.Value>
       {tail ?? (
@@ -425,32 +610,114 @@ export function SelectTrigger({
     </BaseSelect.Trigger>
   );
 
-  // 未开 clearable：DOM 与旧版逐字节一致（不加包裹层），保证既有布局/选择器不被动到。
-  if (!clearable) return trigger;
-  // 清除按钮做成 Trigger 的兄弟而非子节点——button 内嵌 button 是非法 HTML，
-  // 且嵌套后点击会冒泡到 Trigger 把浮层打开。绝对定位盖在箭头位置上。
-  return (
-    <span className="group relative block w-full">
-      {trigger}
-      {showClear && (
-        <button
-          type="button"
-          aria-label={copy.clear}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            onClear?.();
-          }}
-          className={cn(
-            "absolute top-1/2 hidden -translate-y-1/2 cursor-pointer items-center text-muted-foreground transition-colors",
-            "hover:text-foreground focus-visible:outline-none focus-visible:text-foreground",
-            "group-hover:flex group-focus-within:flex",
-            size === "lg" ? "right-3.5" : size === "sm" ? "right-2.5" : "right-3",
-          )}
-        >
-          <ClearIcon />
-        </button>
+  const clearAllButton = showClear ? (
+    <button
+      type="button"
+      aria-label={copy.clear}
+      onPointerDown={(event) => event.stopPropagation()}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClear?.();
+      }}
+      className={cn(
+        "absolute top-1/2 hidden -translate-y-1/2 cursor-pointer items-center text-muted-foreground transition-colors",
+        "hover:text-foreground focus-visible:outline-none focus-visible:text-foreground",
+        "group-hover:flex group-focus-within:flex",
+        size === "lg" ? "right-3.5" : size === "sm" ? "right-2.5" : "right-3",
       )}
+    >
+      <ClearIcon />
+    </button>
+  ) : null;
+
+  // 未开 clearable 的 text 分支保持旧版逐字节结构；chips 需要外层承载可交互同级节点。
+  if (!clearable && !(multiple && display === "chips")) return trigger;
+
+  return (
+    <span data-hulian-select-trigger-wrapper="" className="group relative block w-full">
+      {trigger}
+      {multiple && display === "chips" && (
+        <span
+          data-slot="select-chip-layer"
+          aria-hidden="true"
+          className={cn("pointer-events-none", chipLayerClass)}
+        >
+          {visibleChips.map((chip) => (
+            <span
+              key={chip.value}
+              data-slot="select-chip"
+              className={cn("pointer-events-none", chipVisualClass)}
+            >
+              <span className={chipLabelClass}>{chip.label}</span>
+            </span>
+          ))}
+          {extra > 0 && <span className="shrink-0 text-xs text-muted-foreground">+{extra}</span>}
+        </span>
+      )}
+      {multiple && display === "chips" && removable && !disabled && !readOnly && !loadingNode && (
+        <span
+          data-hulian-select-chip-controls=""
+          className={cn("pointer-events-none", chipLayerClass)}
+        >
+          {visibleChips.map((chip) => (
+            <span
+              key={chip.value}
+              className="pointer-events-none inline-flex shrink-0 items-center"
+            >
+              <span className={cn("invisible px-1.5 py-0.5 text-xs", chipLabelClass)}>
+                {chip.label}
+              </span>
+              <button
+                type="button"
+                data-hulian-select-chip-remove=""
+                data-hulian-select-chip-remove-value={chip.value}
+                aria-label={removeLabel(chip.accessibleLabel)}
+                className="pointer-events-auto -ml-5 inline-flex size-4 items-center justify-center rounded hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onPointerDown={(event) => event.stopPropagation()}
+                onKeyDown={(event) => {
+                  if (event.key === " " || event.key === "Enter") event.stopPropagation();
+                }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const index = chipModels.findIndex((candidate) => candidate.value === chip.value);
+                  const nextValue = chipModels[index + 1]?.value ?? chipModels[index - 1]?.value;
+                  const currentButton = event.currentTarget;
+                  const wrapper = currentButton.closest("[data-hulian-select-trigger-wrapper]");
+                  const focusSurvivor = () => {
+                    // maxDisplay can mount the chosen successor only after this deletion. Query
+                    // the current DOM rather than the stale visible controls, then fall back to
+                    // the trigger when the final chip disappears.
+                    const removeButtons = Array.from(
+                      wrapper?.querySelectorAll<HTMLButtonElement>(
+                        "[data-hulian-select-chip-remove]",
+                      ) ?? [],
+                    );
+                    const target =
+                      (nextValue == null
+                        ? null
+                        : removeButtons.find(
+                            (button) => button.dataset.hulianSelectChipRemoveValue === nextValue,
+                          )) ??
+                      removeButtons.find((button) => button !== currentButton) ??
+                      removeButtons[0] ??
+                      wrapper?.querySelector<HTMLButtonElement>("button[role='combobox']") ??
+                      null;
+                    target?.focus();
+                  };
+                  onRemoveValue?.(chip.value, event);
+                  // Base UI's native focus-out listener can run after React commits. Re-query in
+                  // both queues so focus follows the rendered successor (or the real Trigger).
+                  queueMicrotask(focusSurvivor);
+                  setTimeout(focusSurvivor, 0);
+                }}
+              >
+                <ClearIcon />
+              </button>
+            </span>
+          ))}
+        </span>
+      )}
+      {clearAllButton}
     </span>
   );
 }
@@ -471,6 +738,67 @@ function indexItemChildren(children: ReactNode, map: Map<string, ReactNode>) {
   });
 }
 
+function isSelectItemNode(node: ReactNode): node is ReactElement<SelectItemProps> {
+  return (
+    isValidElement<SelectItemProps>(node) &&
+    node.type === SelectItem &&
+    typeof node.props.value === "string"
+  );
+}
+
+function orderStandardChildren(
+  children: ReactNode,
+  selectedValues: readonly string[],
+  values?: string[],
+): ReactNode[] {
+  const nodes = Children.toArray(
+    Children.map(children, (node) =>
+      isValidElement<{ children?: ReactNode }>(node) && node.type === Fragment
+        ? orderStandardChildren(node.props.children, EMPTY_SELECTED_VALUES)
+        : node,
+    ),
+  );
+  const orderedItems = orderSelectedFirst(
+    nodes.filter(isSelectItemNode).map((node) => ({ value: node.props.value, node })),
+    selectedValues,
+  ).map((entry) => entry.node);
+  let itemIndex = 0;
+
+  return nodes.map((node) => {
+    if (isSelectItemNode(node)) {
+      const item = orderedItems[itemIndex++]!;
+      values?.push(item.props.value);
+      return item;
+    }
+    if (
+      isValidElement<{ children?: ReactNode }>(node) &&
+      node.type === SelectGroup
+    ) {
+      return cloneElement(
+        node,
+        undefined,
+        orderStandardChildren(node.props.children, selectedValues, values),
+      );
+    }
+    return node;
+  });
+}
+
+function findSelectContentChildren(children: ReactNode): ReactNode | undefined {
+  let contentChildren: ReactNode | undefined;
+  Children.forEach(children, (node) => {
+    if (contentChildren !== undefined || !isValidElement<{ children?: ReactNode }>(node)) return;
+    if (node.type === SelectContent) {
+      contentChildren = node.props.children;
+      return;
+    }
+    if (node.type === Fragment && node.props.children != null) {
+      contentChildren = findSelectContentChildren(node.props.children);
+    }
+  });
+  return contentChildren;
+}
+
 export function SelectContent({
   children,
   side = "bottom",
@@ -478,8 +806,15 @@ export function SelectContent({
   sideOffset = 6,
   className,
 }: SelectContentProps) {
-  const { searchable, searchPlaceholder, emptyMessage, loading, loadingText } =
-    useContext(SelectMetaContext);
+  const {
+    searchable,
+    selectedFirst,
+    currentValue,
+    multiple,
+    searchPlaceholder,
+    emptyMessage,
+    loadingNode,
+  } = useContext(SelectMetaContext);
 
   const childByValue = useMemo(() => {
     const map = new Map<string, ReactNode>();
@@ -508,6 +843,14 @@ export function SelectContent({
     );
   }
 
+  const standardChildren =
+    multiple && selectedFirst
+      ? orderStandardChildren(
+          children,
+          Array.isArray(currentValue) ? currentValue : EMPTY_SELECTED_VALUES,
+        )
+      : children;
+
   return (
     <BaseSelect.Portal>
       <BaseSelect.Positioner
@@ -526,15 +869,7 @@ export function SelectContent({
           style={overlayTransition}
         >
           <BaseSelect.List>
-            {loading ? (
-              // 加载态只出占位，不渲染选项（避免展示上一轮的陈旧数据）。
-              <div className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted-foreground">
-                <Spinner size="sm" tone="current" />
-                {loadingText}
-              </div>
-            ) : (
-              children
-            )}
+            {loadingNode ?? standardChildren}
           </BaseSelect.List>
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
@@ -586,7 +921,9 @@ export function SelectGroup({ children, className }: SelectGroupProps) {
 /** 分组标题：Base UI 自动与父 SelectGroup 建立 aria-labelledby 关联。 */
 export function SelectGroupLabel({ children, className }: SelectGroupLabelProps) {
   return (
-    <BaseSelect.GroupLabel className={cn("px-2 py-1.5 text-xs font-medium text-muted-foreground", className)}>
+    <BaseSelect.GroupLabel
+      className={cn("px-2 py-1.5 text-xs font-medium text-muted-foreground", className)}
+    >
       {children}
     </BaseSelect.GroupLabel>
   );
