@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { render, cleanup, screen } from "@testing-library/react";
 import { page } from "@vitest/browser/context";
-import { Card, CardHeader } from "./card";
+import { Card, CardBody, CardFooter, CardHeader } from "./card";
 import { PageHeader } from "../page-header";
 
 /**
@@ -87,6 +87,70 @@ describe("CardHeader 的换行判据（#263）", () => {
     );
     const header = document.querySelector<HTMLElement>('[data-slot="card-header"]')!;
     expect(getComputedStyle(header).display).toBe("block");
+  });
+});
+
+describe("Card size (#325)", () => {
+  it("外层 sm 的 direct-child selector 不改变内层 md Card 的正文 padding", () => {
+    render(
+      <Card size="sm">
+        <CardBody>
+          <Card>
+            <CardBody data-testid="inner-body">内层</CardBody>
+          </Card>
+        </CardBody>
+      </Card>,
+    );
+    const inner = screen.getByTestId("inner-body");
+    expect(getComputedStyle(inner).paddingLeft).toBe("20px");
+    expect(getComputedStyle(inner).paddingTop).toBe("16px");
+  });
+
+  it("sm + divided=false 保留紧凑外侧 padding，只收分隔线相邻侧", () => {
+    render(
+      <Card size="sm" divided={false}>
+        <CardHeader data-testid="header">标题</CardHeader>
+        <CardBody>正文</CardBody>
+        <CardFooter data-testid="footer">页脚</CardFooter>
+      </Card>,
+    );
+    const header = getComputedStyle(screen.getByTestId("header"));
+    const footer = getComputedStyle(screen.getByTestId("footer"));
+    expect(header.paddingTop).toBe("10px");
+    expect(header.paddingBottom).toBe("8px");
+    expect(footer.paddingTop).toBe("8px");
+    expect(footer.paddingBottom).toBe("10px");
+  });
+
+  it("分区自定义 padding 在默认和 sm 密度下都覆盖整卡默认值", () => {
+    render(
+      <>
+        <Card data-testid="md-card">
+          <CardHeader data-testid="md-header" className="p-0">标题</CardHeader>
+          <CardBody data-testid="md-body" className="pt-0">正文</CardBody>
+          <CardFooter data-testid="md-footer" className="p-0">页脚</CardFooter>
+        </Card>
+        <Card size="sm" data-testid="sm-card">
+          <CardHeader data-testid="sm-header" className="p-0">标题</CardHeader>
+          <CardBody data-testid="sm-body" className="pt-0">正文</CardBody>
+          <CardFooter data-testid="sm-footer" className="p-0">页脚</CardFooter>
+        </Card>
+      </>,
+    );
+
+    for (const id of ["md-header", "md-footer", "sm-header", "sm-footer"]) {
+      const styles = getComputedStyle(screen.getByTestId(id));
+      expect(styles.paddingLeft).toBe("0px");
+      expect(styles.paddingTop).toBe("0px");
+    }
+
+    const mdBody = getComputedStyle(screen.getByTestId("md-body"));
+    expect(mdBody.paddingLeft).toBe("20px");
+    expect(mdBody.paddingTop).toBe("0px");
+
+    const smBody = getComputedStyle(screen.getByTestId("sm-body"));
+    expect(smBody.paddingLeft).toBe("16px");
+    expect(smBody.paddingTop).toBe("0px");
   });
 });
 

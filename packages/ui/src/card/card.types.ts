@@ -2,9 +2,13 @@ import type { HTMLAttributes, ReactNode } from "react";
 import type { VariantProps } from "class-variance-authority";
 import type { cardVariants } from "./card";
 
+export type CardSize = "sm" | "md";
+
 export interface CardProps
   extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof cardVariants> {
+  /** 整卡密度。@default "md" */
+  size?: CardSize;
   /**
    * 是否用分隔线把 CardHeader / CardFooter 与正文切开。
    *

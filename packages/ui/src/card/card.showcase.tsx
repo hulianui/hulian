@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button";
 import { Tag } from "../tag";
+import { Text } from "../text";
 import { ChevronRight } from "../_icons";
 import { Card, CardHeader, CardBody, CardFooter } from "./card";
 
@@ -38,6 +39,41 @@ export const cardShowcase: ShowcaseSpec = {
   <CardFooter>footer 区</CardFooter>
 </Card>`,
       render: () => <Demo variant="elevated" withFooter />,
+    },
+    {
+      title: "默认与紧凑密度",
+      description:
+        "md 默认；sm 同时收紧三个分区的间距。CardBody 不再指定字号，文本由内容自己决定。",
+      code: `<div className="flex flex-wrap gap-4">
+  <Card className="w-64">
+    <CardHeader title="运行指标" />
+    <CardBody><Text size="lg">98.7%</Text></CardBody>
+    <CardFooter>最近 5 分钟</CardFooter>
+  </Card>
+  <Card size="sm" className="w-64">
+    <CardHeader title="运行指标" />
+    <CardBody><Text size="lg">98.7%</Text></CardBody>
+    <CardFooter>最近 5 分钟</CardFooter>
+  </Card>
+</div>`,
+      render: () => (
+        <div className="flex flex-wrap gap-4">
+          <Card className="w-64">
+            <CardHeader title="运行指标" />
+            <CardBody>
+              <Text size="lg">98.7%</Text>
+            </CardBody>
+            <CardFooter>最近 5 分钟</CardFooter>
+          </Card>
+          <Card size="sm" className="w-64">
+            <CardHeader title="运行指标" />
+            <CardBody>
+              <Text size="lg">98.7%</Text>
+            </CardBody>
+            <CardFooter>最近 5 分钟</CardFooter>
+          </Card>
+        </div>
+      ),
     },
     {
       title: "高亮卡片",
