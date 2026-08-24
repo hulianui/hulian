@@ -6,10 +6,13 @@ import { DotField } from "./dot-field";
 function Stage({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="relative h-56 w-full max-w-xl overflow-hidden rounded-xl border border-border"
+      className="relative w-full max-w-xl overflow-hidden rounded-xl border border-border p-8"
       style={{ background: "oklch(0.14 0.02 280)" }}
     >
       {children}
+      <div className="pointer-events-none relative z-10 max-w-sm text-sm font-medium text-white/70">
+        由正文决定容器高度，前景内容叠在可交互的点阵背景上方。
+      </div>
     </div>
   );
 }
@@ -19,15 +22,13 @@ export const dotFieldShowcase: ShowcaseSpec = {
     {
       title: "基础用法",
       description: "点阵背景，移动鼠标推挤点阵并在下方泛起辉光；颜色默认吃 chart / primary token。",
-      code: `<div className="relative h-56 overflow-hidden rounded-xl bg-neutral-950">
+      code: `<div className="relative overflow-hidden rounded-xl bg-neutral-950 p-8">
   <DotField />
+  <div className="relative z-10">由正文决定容器高度的前景内容</div>
 </div>`,
       render: () => (
         <Stage>
           <DotField />
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-medium text-white/70">
-            DotField
-          </div>
         </Stage>
       ),
     },
@@ -78,9 +79,6 @@ export const dotFieldShowcase: ShowcaseSpec = {
       render: () => (
         <Stage>
           <DotField />
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-medium text-white/70">
-            DotField
-          </div>
         </Stage>
       ),
     },
@@ -125,7 +123,7 @@ export const dotFieldShowcase: ShowcaseSpec = {
 
   toCode: (p) =>
     [
-      `<div className="relative h-56 overflow-hidden rounded-xl"`,
+      `<div className="relative overflow-hidden rounded-xl p-8"`,
       `     style={{ background: "oklch(0.14 0.02 280)" }}>`,
       `  <DotField`,
       `    dotSpacing={${p.dotSpacing}}`,
@@ -135,6 +133,7 @@ export const dotFieldShowcase: ShowcaseSpec = {
       `    waveAmplitude={${p.waveAmplitude}}`,
       `    sparkle={${p.sparkle}}`,
       `  />`,
+      `  <div className="relative z-10">由正文决定容器高度的前景内容</div>`,
       `</div>`,
     ].join("\n"),
 };

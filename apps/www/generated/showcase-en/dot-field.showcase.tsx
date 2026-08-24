@@ -4,8 +4,11 @@ import { DotField } from "../../../../packages/ui/src/dot-field/dot-field";
 function Stage({ children }: {
     children: React.ReactNode;
 }) {
-    return (<div className="relative h-56 w-full max-w-xl overflow-hidden rounded-xl border border-border" style={{ background: "oklch(0.14 0.02 280)" }}>
+    return (<div className="relative w-full max-w-xl overflow-hidden rounded-xl border border-border p-8" style={{ background: "oklch(0.14 0.02 280)" }}>
       {children}
+      <div className="pointer-events-none relative z-10 max-w-sm text-sm font-medium text-white/70">
+        Padded content determines the container height and layers above the interactive dot-field backdrop.
+      </div>
     </div>);
 }
 export const dotFieldShowcase: ShowcaseSpec = {
@@ -13,14 +16,12 @@ export const dotFieldShowcase: ShowcaseSpec = {
         {
             title: "Basic usage",
             description: "Dot matrix background, move the mouse to push the lattice and glow below; the default color is chart / primary token.",
-            code: `<div className="relative h-56 overflow-hidden rounded-xl bg-neutral-950">
+            code: `<div className="relative overflow-hidden rounded-xl bg-neutral-950 p-8">
   <DotField />
+  <div className="relative z-10">Foreground content determines the container height</div>
 </div>`,
             render: () => (<Stage>
           <DotField />
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-medium text-white/70">
-            DotField
-          </div>
         </Stage>),
         },
         {
@@ -61,9 +62,6 @@ export const dotFieldShowcase: ShowcaseSpec = {
             name: "default (move the mouse to push the dot matrix + glow)",
             render: () => (<Stage>
           <DotField />
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-medium text-white/70">
-            DotField
-          </div>
         </Stage>),
         },
         {
@@ -89,7 +87,7 @@ export const dotFieldShowcase: ShowcaseSpec = {
       <DotField dotSpacing={p.dotSpacing as number} dotRadius={p.dotRadius as number} bulgeStrength={p.bulgeStrength as number} cursorRadius={p.cursorRadius as number} waveAmplitude={p.waveAmplitude as number} sparkle={p.sparkle as boolean}/>
     </Stage>),
     toCode: (p) => [
-        `<div className="relative h-56 overflow-hidden rounded-xl"`,
+        `<div className="relative overflow-hidden rounded-xl p-8"`,
         `     style={{ background: "oklch(0.14 0.02 280)" }}>`,
         `  <DotField`,
         `    dotSpacing={${p.dotSpacing}}`,
@@ -99,6 +97,7 @@ export const dotFieldShowcase: ShowcaseSpec = {
         `    waveAmplitude={${p.waveAmplitude}}`,
         `    sparkle={${p.sparkle}}`,
         `  />`,
+        `  <div className="relative z-10">Foreground content determines the container height</div>`,
         `</div>`,
     ].join("\n"),
 };

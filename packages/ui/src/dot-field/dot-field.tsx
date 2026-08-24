@@ -276,7 +276,7 @@ export function DotField({
     <div
       {...props}
       aria-hidden
-      className={cn("pointer-events-auto relative h-full w-full overflow-hidden", className)}
+      className={cn("pointer-events-auto absolute inset-0 overflow-hidden", className)}
       style={style}
     >
       <canvas

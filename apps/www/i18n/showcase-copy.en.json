@@ -6594,6 +6594,8 @@
     "点遮罩可关闭": "Point mask can be turned off",
     "点间距 px": "Point pitch px",
     "点阵背景，移动鼠标推挤点阵并在下方泛起辉光；颜色默认吃 chart / primary token。": "Dot matrix background, move the mouse to push the lattice and glow below; the default color is chart / primary token.",
+    "由正文决定容器高度，前景内容叠在可交互的点阵背景上方。": "Padded content determines the container height and layers above the interactive dot-field backdrop.",
+    "  <div className=\"relative z-10\">由正文决定容器高度的前景内容</div>": "  <div className=\"relative z-10\">Foreground content determines the container height</div>",
     "点预览里的按钮让脚本抛错 → 注入的引导脚本把错误回传给宿主 → 错误态盖在预览上，点重试重新载入文档。": "Click the button in the preview to make the script throw: the injected bootstrap posts the error back to the host, the error state covers the preview, and Retry reloads the document.",
     "烟团尺度": "Smoke mass size",
     "烟团更聚拢": "The smoke balls are gathering more",
