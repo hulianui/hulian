@@ -1,7 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Text } from "../../../../packages/ui/src/text/text";
-import type { TextSize, TextTone, TextWeight } from "../../../../packages/ui/src/text/text.types";
+import type { TextFamily, TextSize, TextTone, TextWeight } from "../../../../packages/ui/src/text/text.types";
 const longLine = "The Text component of Hulian Design System supports single-line ellipsis and multi-line truncation. This text is long enough to trigger the truncation effect and observe the ellipsis position.";
 export const textShowcase: ShowcaseSpec = {
     examples: [
@@ -54,6 +54,20 @@ export const textShowcase: ShowcaseSpec = {
         </div>),
         },
         {
+            title: "Font family and numerals",
+            description: "family switches between sans and mono; numeric aligns changing-width numerals. Omit family to inherit the surrounding font.",
+            code: `<Text family="sans">Sans body label</Text>
+<Text family="mono">Mono code label</Text>
+<Text>Changing widths: 11,111.11 \u2192 88,888.88</Text>
+<Text numeric>Changing widths: 11,111.11 \u2192 88,888.88</Text>`,
+            render: () => (<div className="flex flex-col gap-1.5">
+          <Text family="sans">Sans body label</Text>
+          <Text family="mono">Mono code label</Text>
+          <Text>Changing widths: 11,111.11 → 88,888.88</Text>
+          <Text numeric>Changing widths: 11,111.11 → 88,888.88</Text>
+        </div>),
+        },
+        {
             title: "Single line ellipsis",
             description: "truncate Single lines are truncated and ellipses are displayed when the container is narrowed.",
             code: `<div className="max-w-xs">
@@ -99,6 +113,14 @@ export const textShowcase: ShowcaseSpec = {
             defaultValue: "normal",
             label: "Font weight",
         },
+        {
+            prop: "family",
+            type: "select",
+            options: ["inherit", "sans", "mono"],
+            defaultValue: "inherit",
+            label: "Font family",
+        },
+        { prop: "numeric", type: "boolean", defaultValue: false, label: "Tabular numerals" },
         { prop: "truncate", type: "boolean", defaultValue: false, label: "Single line omitted" },
     ],
     states: [
@@ -124,6 +146,15 @@ export const textShowcase: ShowcaseSpec = {
         </div>),
         },
         {
+            name: "Font family and tabular numerals",
+            render: () => (<div className="flex flex-col gap-1.5">
+          <Text family="sans">sans · body label</Text>
+          <Text family="mono">mono · code label</Text>
+          <Text>11,111.11 → 88,888.88 (proportional numerals)</Text>
+          <Text numeric>11,111.11 → 88,888.88 (tabular numerals)</Text>
+        </div>),
+        },
+        {
             name: "Single line ellipsis (container narrowing)",
             render: () => (<div className="max-w-xs">
           <Text truncate>{longLine}</Text>
@@ -139,7 +170,7 @@ export const textShowcase: ShowcaseSpec = {
         </div>),
         },
     ],
-    renderWithProps: (p) => (<Text tone={p.tone as TextTone} size={p.size as TextSize} weight={p.weight as TextWeight} truncate={Boolean(p.truncate)} className={p.truncate ? "max-w-xs" : undefined}>
+    renderWithProps: (p) => (<Text tone={p.tone as TextTone} size={p.size as TextSize} weight={p.weight as TextWeight} family={p.family === "inherit" ? undefined : (p.family as TextFamily)} numeric={Boolean(p.numeric)} truncate={Boolean(p.truncate)} className={p.truncate ? "max-w-xs" : undefined}>
       {p.truncate ? longLine : "Hulian Text Polymorphic text primitive"}
     </Text>),
     toCode: (p) => {
@@ -147,6 +178,8 @@ export const textShowcase: ShowcaseSpec = {
             p.tone !== "default" ? ` tone="${p.tone}"` : "",
             p.size !== "base" ? ` size="${p.size}"` : "",
             p.weight !== "normal" ? ` weight="${p.weight}"` : "",
+            p.family && p.family !== "inherit" ? ` family="${p.family}"` : "",
+            p.numeric ? " numeric" : "",
             p.truncate ? " truncate" : "",
         ].join("");
         return `<Text${attrs}>Hulian Text Polymorphic text primitive</Text>`;

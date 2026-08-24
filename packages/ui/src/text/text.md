@@ -29,6 +29,8 @@ import { Text } from "@hulianui/ui"
 | size | `"xs" \| "sm" \| "base" \| "lg" \| "xl"` | `"base"` | 字号 |
 | tone | `"default" \| "muted" \| "primary" \| "success" \| "warning" \| "danger"` | `"default"` | 语义色调（明暗自适配） |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"normal"` | 字重 |
+| family | `"sans" \| "mono"` | - | 字族；不传时继承周围字体 |
+| numeric | `boolean` | `false` | 使用等宽数字 |
 | truncate | `boolean` | `false` | 单行省略号截断 |
 | lineClamp | `number` | - | 多行截断（最多 n 行后省略号）；设置后优先于 truncate |
 
@@ -47,6 +49,11 @@ import { Text } from "@hulianui/ui"
 <Text tone="success">3/3 分 · 判分正确</Text>
 <Text tone="warning">掌握率偏低</Text>
 <Text tone="danger">危险提示</Text>
+
+// 字族与等宽数字；省略 family 时继承周围字体
+<Text family="mono">pnpm add @hulianui/ui</Text>
+<Text numeric>12,345.67</Text>
+<Text family="mono" numeric>2026-08-24 09:30</Text>
 
 // 多行截断
 <div className="max-w-xs">

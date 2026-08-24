@@ -1,2 +1,2 @@
 export { Text } from "./text";
-export type { TextProps, TextSize, TextTone, TextWeight } from "./text.types";
+export type { TextFamily, TextProps, TextSize, TextTone, TextWeight } from "./text.types";

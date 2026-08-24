@@ -1,7 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Text } from "./text";
-import type { TextSize, TextTone, TextWeight } from "./text.types";
+import type { TextFamily, TextSize, TextTone, TextWeight } from "./text.types";
 
 const longLine =
   "瑚琏设计系统的 Text 组件支持单行省略号与多行截断，这段文本足够长以触发截断效果观察省略号位置。";
@@ -63,6 +63,22 @@ export const textShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "字族与数字",
+      description: "family 可切换 sans/mono；numeric 让变化宽度的数字对齐。未设置 family 时继承周围字体。",
+      code: `<Text family="sans">Sans 正文标签</Text>
+<Text family="mono">Mono 代码标签</Text>
+<Text>变化宽度：11,111.11 → 88,888.88</Text>
+<Text numeric>变化宽度：11,111.11 → 88,888.88</Text>`,
+      render: () => (
+        <div className="flex flex-col gap-1.5">
+          <Text family="sans">Sans 正文标签</Text>
+          <Text family="mono">Mono 代码标签</Text>
+          <Text>变化宽度：11,111.11 → 88,888.88</Text>
+          <Text numeric>变化宽度：11,111.11 → 88,888.88</Text>
+        </div>
+      ),
+    },
+    {
       title: "单行省略号",
       description: "truncate 在容器收窄时单行截断并显示省略号。",
       code: `<div className="max-w-xs">
@@ -112,6 +128,14 @@ export const textShowcase: ShowcaseSpec = {
       defaultValue: "normal",
       label: "字重",
     },
+    {
+      prop: "family",
+      type: "select",
+      options: ["inherit", "sans", "mono"],
+      defaultValue: "inherit",
+      label: "字族",
+    },
+    { prop: "numeric", type: "boolean", defaultValue: false, label: "等宽数字" },
     { prop: "truncate", type: "boolean", defaultValue: false, label: "单行省略" },
   ],
   states: [
@@ -141,6 +165,17 @@ export const textShowcase: ShowcaseSpec = {
       ),
     },
     {
+      name: "字族与等宽数字",
+      render: () => (
+        <div className="flex flex-col gap-1.5">
+          <Text family="sans">sans · 正文标签</Text>
+          <Text family="mono">mono · 代码标签</Text>
+          <Text>11,111.11 → 88,888.88（默认数字宽度）</Text>
+          <Text numeric>11,111.11 → 88,888.88（等宽数字）</Text>
+        </div>
+      ),
+    },
+    {
       name: "单行省略号（容器收窄）",
       render: () => (
         <div className="max-w-xs">
@@ -165,6 +200,8 @@ export const textShowcase: ShowcaseSpec = {
       tone={p.tone as TextTone}
       size={p.size as TextSize}
       weight={p.weight as TextWeight}
+      family={p.family === "inherit" ? undefined : (p.family as TextFamily)}
+      numeric={Boolean(p.numeric)}
       truncate={Boolean(p.truncate)}
       className={p.truncate ? "max-w-xs" : undefined}
     >
@@ -176,6 +213,8 @@ export const textShowcase: ShowcaseSpec = {
       p.tone !== "default" ? ` tone="${p.tone}"` : "",
       p.size !== "base" ? ` size="${p.size}"` : "",
       p.weight !== "normal" ? ` weight="${p.weight}"` : "",
+      p.family && p.family !== "inherit" ? ` family="${p.family}"` : "",
+      p.numeric ? " numeric" : "",
       p.truncate ? " truncate" : "",
     ].join("");
     return `<Text${attrs}>瑚琏 Text 多态文本原语</Text>`;

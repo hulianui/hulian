@@ -1,7 +1,7 @@
 import { memo } from "react";
 import type { CSSProperties, ElementType } from "react";
 import { cn } from "../lib/cn";
-import type { TextProps, TextSize, TextTone, TextWeight } from "./text.types";
+import type { TextFamily, TextProps, TextSize, TextTone, TextWeight } from "./text.types";
 
 // 纯皮肤多态文本（可 RSC，本体不加 "use client"）。
 // size/tone/weight 走静态类映射，全消费语义 token（明暗自适配）；
@@ -30,11 +30,18 @@ const WEIGHT: Record<TextWeight, string> = {
   bold: "font-bold",
 };
 
+const FAMILY: Record<TextFamily, string> = {
+  sans: "font-sans",
+  mono: "font-mono",
+};
+
 function TextImpl<E extends ElementType = "div">({
   as,
   size = "base",
   tone = "default",
   weight = "normal",
+  family,
+  numeric = false,
   truncate = false,
   lineClamp,
   className,
@@ -56,6 +63,8 @@ function TextImpl<E extends ElementType = "div">({
         SIZE[size],
         TONE[tone],
         WEIGHT[weight],
+        family && FAMILY[family],
+        numeric && "tabular-nums",
         truncate && !lineClamp && "truncate",
         className,
       )}
