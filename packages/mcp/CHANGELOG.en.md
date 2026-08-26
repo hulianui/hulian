@@ -1,5 +1,25 @@
 # @hulianui/mcp
 
+## 0.11.0
+
+### Minor Changes
+
+- 3d0dde9: `source.artifactDigests`: every response now carries the sha256 of the artifacts **this one call actually read** (#332)
+
+  A version number can prove "same release"; it cannot prove "same content". Within a single version an artifact gets regenerated (run `pnpm llms-registry` after editing a component and the version is unchanged while the content is not), and the hosted artifact is rewritten by every docs-site build -- this server's own staleness warnings already concede the point. That is harmless for a caller who only reads. For a caller that drives **constrained generation** from `llms-props.json` and later has to answer "which copy of those props was I working from?", the version number has no answer; only a digest does.
+
+  ```json
+  { "source": { "artifactDigests": { "llms-props.json": "sha256:9b7022c6..." } } }
+  ```
+
+  Three rules:
+
+  - The digest is taken over the **bytes read or received**, so `shasum -a 256 <file>` matches it exactly. It is not computed by re-serializing the parsed value -- that changes key order and whitespace, so it would never match the file in the repository, which is worse than having no digest at all because it still looks usable.
+  - Only artifacts **this call actually read** are listed: `list_components` reports `registry.json` only, `get_component_doc({format:"json"})` reports `llms-props.json` only, and a tool that reads no artifact reports an empty object. The scope is an `AsyncLocalStorage`, so concurrent in-flight tool calls never bill each other.
+  - Source markdown and generated markdown use different names (`src/<slug>/<slug>.md` vs `d/<slug>.md`), because they really are two different files (see `docComesFromSource`).
+
+  Purely additive; the existing response shape is unchanged.
+
 ## 0.10.1
 
 ### Patch Changes
