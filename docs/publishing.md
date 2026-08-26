@@ -3,13 +3,16 @@
 本仓库用 **changesets** 管版本，发布到公共 **npmjs**（scope `@hulianui`，`access: public`）——消费方**零配置、零 token** 即可安装。
 发布形态是 **源码包（发 `src/`，不编译 dist）** —— 下游必须能转译 TSX（Next/Vite 可以）。
 
-会发布的包（其余 `private` 包自动跳过）：
+会发布的包（`packages/` 下未标 `private` 的全部；`@hulianui/mocks`、`@hulianui/hulian-scan` 已设 `private`，`changeset publish` 自动跳过）：
 
 | 包 | 作用 | 下游是否必装 |
 |----|------|--------------|
-| `@hulianui/ui` | 组件库（TSX 源码） | ✅ |
-| `@hulianui/tokens` | 设计 token CSS（`--primary` 等变量、换肤） | ✅（`@hulianui/ui` 的样式依赖它） |
-| `@hulianui/mocks` | 测试用 MSW mock | ❌ 已设 private |
+| `@hulianui/ui` | 组件库（TSX 源码） | ✅ 必装 |
+| `@hulianui/tokens` | 设计 token CSS（`--primary` 等变量、换肤） | ✅ 必装（`@hulianui/ui` 的样式依赖它） |
+| `@hulianui/mcp` | MCP server，让 AI 按需查组件/区块/约束（`bin: hulianui-mcp`） | ⬜ 可选，**不进 `dependencies`**：在 AI 客户端里配 `npx -y @hulianui/mcp` 即可 |
+| `@hulianui/guard` | 约定检查 CLI（`bin: hulian-check`），AST 查可执行规则 | ⬜ 可选，装成 `devDependency` 或直接 `npx hulian-check src`；CI 想做棘轮才需要装 |
+
+> 这三种"必装 / 按需跑 / 开发期检查"的区别决定了版本号不同步是正常的：`@hulianui/ui` 与 `@hulianui/tokens` 跟组件走，`@hulianui/mcp` 跟文档产物契约走，`@hulianui/guard` 跟 `conventions.json` 走。
 
 ---
 
@@ -118,5 +121,5 @@ export default () => <Button>你好</Button>;
 
 ## 五、已知后续优化（非阻塞）
 
-- **重依赖**：`@hulianui/ui` 现把 MUI/recharts/tiptap/vidstack/ogl 全捆在 `dependencies`，下游装一个拖一坨。后续可拆子包或降级为 optional/peer。
+- **重依赖**：`@hulianui/ui` 现把 recharts/tiptap/vidstack/ogl/katex 全捆在 `dependencies`，下游装一个拖一坨。后续可拆子包或降级为 optional/peer。
 - **发 dist**：若将来要给不能转译 node_modules 的环境用，再加 tsup/rollup 构建产物（与本管道正交，不影响版本/发布流程）。
