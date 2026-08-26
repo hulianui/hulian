@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.57.1
+
+### Patch Changes
+
+- d311ad3: Two pitfalls added to the `Card` docs (#336): the root carries no padding of its own and
+  content must go inside `CardBody` (which this library names `CardBody`, not shadcn/ui's
+  `CardContent`); and when padding is gone card-wide, suspect a missing `@source` in the
+  consumer first - the test is `grep card-body-px` in the built CSS.
+
+  Component markdown ships with the npm package and MCP's `get_component_doc` reads the copy in
+  `node_modules` directly, so a documentation gap like this is a runtime gap for agent consumers.
+
 ## 0.57.0
 
 ### Minor Changes

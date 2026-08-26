@@ -1,5 +1,31 @@
 [
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.12.0",
+    "date": "2026-08-26",
+    "entries": [
+      {
+        "sha": "d311ad3",
+        "bump": "minor",
+        "breaking": false,
+        "body": "preset 新增容器内边距兜底 safelist，堵住一种极难归因的接入失效（#336）。\n\nCard / Dialog / Drawer / DocumentSheet 的内边距是全库唯一一族用 arbitrary value 写的间距\n（`px-[var(--card-body-px,1.25rem)]` 这种），400 个组件里只有这 4 个这么写，因为密度要靠\nCSS 变量随 `size` 变体下发，同时还要能被 `className=\"p-0\"` 经 tailwind-merge 盖掉。\n\n代价是消费方漏配 `@source` 时，症状**不是**「组件没样式」：`px-4` / `gap-2` / `rounded-xl`\n这些常规类消费方自己代码里也写、Tailwind 照样生成，库组件等于蹭到了；精准消失的只有那族\n唯瑚琏独有的字面量。净效果是「边框圆角颜色全对，唯独容器内边距整片塌掉」，看着像组件 bug，\n于是根因被绕开、业务代码里补一句 `className=\"p-4\"` 了事。\n\n`preset-core.css` 现在用 `@source inline()` 把这 30 个类钉住，无论消费方扫没扫到组件源码\n都必定生成，实测代价 386 字节。它**不是** `@source` 的替代品：其余 390 个组件的类名照旧\n只能靠蹭，该配还得配。清单与组件源码的一致性由新门禁 `pnpm check:container-padding` 双向\n机械保证（缺失与陈旧都拦）。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.57.1",
+    "date": "2026-08-26",
+    "entries": [
+      {
+        "sha": "d311ad3",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Card` 文档补两条坑（#336）：根节点自己不带任何内边距、内容必须放进 `CardBody`（且本库叫\n`CardBody` 不是 shadcn/ui 的 `CardContent`）；以及整卡内边距都塌了时先怀疑消费方漏配\n`@source`，判据是构建产物 CSS 里 `grep card-body-px`。\n\n组件 md 随 npm 包发布、MCP 的 `get_component_doc` 直读 `node_modules` 里那一份，所以这类\n文档缺口对 agent 消费方就是运行时缺口。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.57.0",
     "date": "2026-08-24",

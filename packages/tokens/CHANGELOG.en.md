@@ -1,5 +1,30 @@
 # @hulianui/tokens
 
+## 0.12.0
+
+### Minor Changes
+
+- d311ad3: The preset now ships a safelist that covers container padding, closing an integration failure
+  that is very hard to attribute (#336).
+
+  The paddings of Card / Dialog / Drawer / DocumentSheet are the only family in the library
+  written as arbitrary values (`px-[var(--card-body-px,1.25rem)]` and friends). Only 4 of the
+  400 components do this, because density has to flow from the `size` variant through CSS
+  variables while still being overridable by `className="p-0"` via tailwind-merge.
+
+  The cost shows up when a consumer forgets `@source`. The symptom is **not** "components have
+  no styling": ordinary classes such as `px-4`, `gap-2` and `rounded-xl` appear in consumer code
+  too, so Tailwind emits them anyway and the components get them for free. What vanishes is only
+  the family of literals unique to Hulian's source. The net effect is "borders, radii and colors
+  are all correct, yet every container lost its padding" - which reads like a component bug, so
+  the real cause gets bypassed and a `className="p-4"` patch lands in product code instead.
+
+  `preset-core.css` now pins those 30 classes with `@source inline()`, so they are emitted
+  whether or not the consumer scans the component source. Measured cost: 386 bytes. This is
+  **not** a replacement for `@source`: the other 390 components still depend on it, so it must
+  still be configured. A new gate, `pnpm check:container-padding`, keeps the list and the
+  component source in sync in both directions (missing entries and stale ones both fail).
+
 ## 0.11.0
 
 ### Minor Changes

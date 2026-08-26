@@ -1,5 +1,18 @@
 # @hulianui/mcp
 
+## 0.11.1
+
+### Patch Changes
+
+- d311ad3: Correct how `get_setup_guide` and `inspect_project` describe a missing `@source` (#336)
+
+  The old wording was "components render but have no styling at all". In a project that already uses Tailwind that almost never happens: classes like `px-4`, `gap-2` and `rounded-xl` appear in the consumer's own code too, so Tailwind emits them anyway and the library components get them for free. What actually vanishes is the family of literals unique to Hulian's source -- the paddings of Card / Dialog / Drawer.
+
+  That wrong description is itself why the real cause kept getting bypassed: both humans and agents saw colors and borders on the page and ruled `@source` out immediately. The wording is now "borders, radii and colors are all correct, yet every container lost its padding", together with one executable test: `grep card-body-px` in the built CSS.
+
+- Updated dependencies [d311ad3]
+  - @hulianui/guard@0.6.0
+
 ## 0.11.0
 
 ### Minor Changes
