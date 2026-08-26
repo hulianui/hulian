@@ -38,6 +38,7 @@ test("conventions v2 的 matcher 种类都在 guard 里有对应分派", () => {
       "forbidden-call",
       "forbidden-import",
       "forbidden-jsx-prop",
+      "unslotted-children",
     ],
   );
 });

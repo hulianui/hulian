@@ -98,7 +98,7 @@ return <ConfigProvider locale={locale}>{children}</ConfigProvider>
 \`\`\``,
   },
   tailwind: {
-    title: "token CSS 与 Tailwind 扫描（漏了就没有颜色）",
+    title: "token CSS 与 Tailwind 扫描（漏了不是「没样式」，是容器内边距塌掉）",
     body: `全局 CSS 里三行，缺一不可：
 
 \`\`\`css
@@ -109,8 +109,21 @@ return <ConfigProvider locale={locale}>{children}</ConfigProvider>
 
 - \`tokens.css\`：两层 OKLCH 变量（原始层 + 语义层），组件全部吃语义 token。
 - \`preset.css\`：\`@theme\` 映射 + 库自带关键帧（\`hulian-*\`），动效与阴影靠它。
-- \`@source\`：Tailwind v4 默认不扫 node_modules，漏了这行组件类名全被 purge 掉，
-  表现为「组件渲染出来了但完全没样式」。路径按你的 CSS 文件位置改。
+- \`@source\`：Tailwind v4 默认不扫 node_modules，漏了这行组件类名会被 purge。路径按你的
+  CSS 文件位置改（是 CSS 文件自身所在目录，不是项目根）。
+
+  **别指望症状是「完全没样式」**。在一个已经有 Tailwind 的项目里几乎不会那样，因为
+  \`px-4\` / \`gap-2\` / \`rounded-xl\` / \`text-sm\` 这些类你自己的代码里也写，Tailwind 照样
+  生成，库组件等于蹭到了。真正精准消失的是只有瑚琏源码里才有的字面量 ——
+  Card / Dialog / Drawer 的内边距（\`px-[var(--card-body-px,1.25rem)]\` 这一族）。
+
+  所以典型症状是「**边框、圆角、颜色、字号全对，唯独容器内边距整片塌掉，布局被压扁**」。
+  这看着完全不像配置问题，像组件 bug，于是根因被绕开、业务代码里补一句 \`className="p-4"\`
+  了事（hulianui/hulian#336 就是这么来的）。
+
+  一条命令分辨：在构建产物 CSS 里 \`grep card-body-px\`。搜不到就是这行漏了。
+  （\`@hulianui/tokens\` 0.12.0 起 preset 里有一份 safelist 给这一族兜底，但那只兜容器，
+  其余 390 个组件照旧只能靠蹭 —— \`@source\` 该配还得配。）
 
 暗色由 \`[data-theme="dark"]\` 驱动，\`ThemeProvider\` 负责写这个属性。`,
   },

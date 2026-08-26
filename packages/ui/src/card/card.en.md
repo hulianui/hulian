@@ -81,6 +81,23 @@ The "icon + heading + status tag + trailing action" row, the most common admin c
 
 ## Usage notes
 
+- **The `Card` root carries no padding of its own; content must go inside `CardBody`.** The
+  root only sets the radius, the text color, and the density variables (`[--card-body-px:1.25rem]`
+  and friends); the three sections `CardHeader` / `CardBody` / `CardFooter` are what actually
+  consume those variables. So `<Card><div>content</div></Card>` has **zero padding** and sits
+  flush against the border. That is by design, not a bug. Note also that this library calls it
+  **`CardBody`, not `CardContent`** (shadcn/ui uses the latter, so muscle memory misfires here;
+  when it errors, reach for the right name rather than falling back to a bare `div`).
+- **If padding is gone card-wide, even with `CardBody` in place, suspect a missing `@source`
+  in the consumer first** (#336). Those density variables and `px-[var(--card-body-px,1.25rem)]`
+  are the only family in the library that writes spacing as an arbitrary value, and such
+  literals exist nowhere but Hulian's own source. Ordinary classes like `px-4`, `gap-2` and
+  `rounded-xl` appear in consumer code too, so Tailwind emits them regardless. The result is
+  that a missing `@source` does not look like "no styles at all" but like "**borders, radii and
+  colors are all correct, yet every container lost its padding**" - which reads as a component
+  bug. The test: `grep card-body-px` in the built CSS; no match means `@source` is missing (see
+  [consuming.md §8](https://github.com/hulianui/hulian/blob/master/docs/consuming.md)). Since `@hulianui/tokens` 0.12.0 the
+  preset ships a safelist that covers this family.
 - Do not wrap loading skeletons in Card. [[loading-skeletons-are-chromeless-dont-wrap-in-card]] explains why shimmer placeholders conventionally avoid borders and shadows.
 - A fixed outer minimum height combined with flex stretching can push a final metadata row outside the card background; see [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]].
 - When the heading contains an icon or a `Tag`, pass `title` instead of packing the whole row into `children`: inside `children`, the header's `font-medium` paints the icon, the tag, and the count with heading weight, while the heading itself gets no size or leading of its own.

@@ -303,6 +303,29 @@ const EXECUTABLE_RULES = [
     message: "SVG 或内联 style 中的颜色变量必须使用 --color- 前缀。",
     instead: "例如 var(--color-primary)。",
   },
+  {
+    // 唯一一条 warning。它拦的是那种**静默地对**的写法：能编译、能渲染，只是内容紧贴边框
+    // —— Card 根只落密度变量，内边距住在三个插槽里（#336）。从 shadcn/ui 迁过来的代码最容易
+    // 中招：那边叫 CardContent，名字打错报错之后退回裸 div 是最省事的一条路。
+    //
+    // 判据问的是「这张卡的内边距**有没有人负责**」，不是「有没有用 CardBody」。后者过窄：
+    // 全出血卡片（顶部整张图贴边 + 下方内容区自己给 p-5）完全正当，库自己的 blog-list /
+    // product-grid / agent-card 三个区块就都这么写。判成 error 也不合适 —— 放行路径已经够多，
+    // 剩下的残余误报不该逼人写豁免注释。
+    id: "card-content-needs-cardbody",
+    severity: "warning",
+    matcher: {
+      kind: "unslotted-children",
+      source: "@hulianui/ui",
+      importedName: "Card",
+      slots: ["CardHeader", "CardBody", "CardFooter"],
+      // 根节点或任一直接子写了内边距类 = 有人接管了这件事，整张卡放行。
+      selfHandledPattern: "(?:^|\\s)-?[pm][xytblrse]?-",
+    },
+    message: "这张 Card 里没有任何一处提供内边距，内容会紧贴边框。",
+    instead:
+      "把内容放进 CardBody（本库叫 CardBody，不是 shadcn/ui 的 CardContent）；全出血卡片则由贴边元素之外的兄弟节点自己给内距。",
+  },
 ];
 
 const EXECUTABLE_COPY_EN = {
@@ -333,6 +356,11 @@ const EXECUTABLE_COPY_EN = {
   "color-token-prefix": {
     message: "Color variables in SVG attributes and inline styles must use the --color- prefix.",
     instead: "For example, use var(--color-primary).",
+  },
+  "card-content-needs-cardbody": {
+    message: "Nothing inside this Card supplies padding, so the content sits flush against the border.",
+    instead:
+      "Put the content in CardBody (this library names it CardBody, not shadcn/ui's CardContent). For a full-bleed card, let the siblings of the bleeding element carry their own padding.",
   },
 };
 

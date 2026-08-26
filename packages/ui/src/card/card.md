@@ -81,6 +81,18 @@ import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
+- **`Card` 根节点自己不带任何内边距，内容必须放进 `CardBody`。** 根上只有圆角、文字色与
+  密度变量（`[--card-body-px:1.25rem]` 这类），真正吃这些变量的是 `CardHeader` / `CardBody`
+  / `CardFooter` 三个分区。所以 `<Card><div>内容</div></Card>` 是**零内边距**，紧贴边框 ——
+  这是设计如此，不是 bug。顺带一提本库叫 **`CardBody`，不叫 `CardContent`**（shadcn/ui 是
+  后者，写惯了容易顺手打错，报错后别退回裸 `div`）。
+- **整卡内边距都塌了、连 `CardBody` 也没救回来时，先怀疑消费方漏配 `@source`**（#336）。
+  上面那些密度变量与 `px-[var(--card-body-px,1.25rem)]` 是全库唯一一族 arbitrary value 间距，
+  只有瑚琏源码里才有这种字面量；而 `px-4` / `gap-2` / `rounded-xl` 这些常规类消费方自己代码
+  里也写、照样生成。于是漏配 `@source` 的症状不是「组件没样式」，而是「**边框圆角颜色全对，
+  唯独容器内边距塌掉**」，看着像组件 bug。判据：构建产物 CSS 里 `grep card-body-px`，搜不到
+  就是 `@source` 漏了（见 [consuming.md §8](https://github.com/hulianui/hulian/blob/master/docs/consuming.md)）。
+  `@hulianui/tokens` 0.12.0 起 preset 带 safelist 兜住了这一族。
 - 别用 Card 包 loading 骨架屏——参见 [[loading-skeletons-are-chromeless-dont-wrap-in-card]]：骨架按惯例是无边框无阴影的纯 shimmer 块，套 Card 会显得过重。
 - 列表/侧栏里 Card 末行(时间戳/meta 行)若设了外层 `min-height` 又用 flex 撑高，meta 行可能漏到卡片背景外——参见 [[grid-card-button-tail-row-leaks-outside-when-outer-min-height]]。
 - 标题里放图标 / `Tag` 时用 `title` 而不是把整行塞进 `children`：塞进 `children` 时 header 的 `font-medium` 会连图标、标签、计数一起染成标题字重，而标题自己反而没有字号与行高的表达。

@@ -609,8 +609,39 @@ react-hook-form 的 `Controller`，缺一个 `title` 就没法挂 tooltip，于�
 - **接客户端路由用 `render` 口子**：`<Link render={<NextLink href="/a" />}>`、
   `<Button render={<NextLink href="/a" />}>`。`href` 要写在被 render 的那个元素上，
   写在瑚琏这层传不下去。
-- **Tailwind v4**：瑚琏的类名在你的项目里要能被扫到，`@source` 需覆盖 `@hulianui/ui` 的源码路径。
-  详见 [README](../README.md) 的接入段。
+- **Tailwind v4 漏了 `@source` 时，症状不是「没样式」而是「容器内边距塌掉」**（#336）。
+  这是本文档里最值得先记住的一条，因为它是**最难自查**的那种坏法。
+
+  `@source` 要覆盖 `@hulianui/ui` 的源码路径，路径按**样式表自身所在目录**数（不是项目根）。
+  漏了之后，直觉会告诉你「组件应该完全没样式」，但实际几乎不会：
+
+  | 类 | 漏配 `@source` 后 | 为什么 |
+  |---|---|---|
+  | `px-4` `gap-2` `rounded-xl` `text-sm` `shadow-sm` | **照常生成** | 你自己的代码里也写这些类，Tailwind 本来就会生成，库组件等于蹭到了 |
+  | `px-[var(--card-body-px,1.25rem)]` 及同族 | **精准消失** | 这种字面量只有瑚琏源码里有，你的代码不可能碰巧写出一模一样的 |
+
+  而这一族恰好就是 Card / Dialog / Drawer / DocumentSheet 的内边距 —— 全库 400 个组件里
+  只有这 4 个用 arbitrary value 写间距（密度要随 `size` 变体经 CSS 变量下发，同时还要能被
+  `className="p-0"` 经 tailwind-merge 盖掉）。
+
+  于是你看到的是「**边框、圆角、颜色、字号全对，唯独容器内边距整片塌掉，布局被压扁**」。
+  这看着完全不像配置问题，像组件 bug。真实后果是根因被绕开，业务代码里补一句
+  `className="p-4"` 打补丁，下一个页面再犯一次。
+
+  **判据（一条命令）**：在构建产物 CSS 里搜 `card-body-px`。
+
+  ```sh
+  grep -r "card-body-px" <你的产物目录>
+  ```
+
+  搜不到就是 `@source` 漏了或路径不对；搜得到说明扫描是好的，内边距问题另有原因
+  （最常见的是内容没放进 `CardBody` —— `Card` 根节点本身不带任何内边距）。
+  dev 模式下没有产物，就在 DevTools 里选中卡片内容区看 computed padding 是不是 0。
+
+  `@hulianui/tokens` 0.12.0 起 preset 里带了一份 safelist，用 `@source inline()` 给这一族
+  兜底，所以升上去之后就算漏配 `@source`，容器内边距也不会塌。但那**只兜容器**：其余 390 个
+  组件的类名照旧只能靠蹭，`@source` 该配还得配。也可以直接用 MCP 的 `inspect_project`，
+  它会把 `@source` 解析出来看目标存不存在（写了 ≠ 指对了，#66）。
 
 ---
 
