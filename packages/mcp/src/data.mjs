@@ -20,6 +20,8 @@
 //   · 版本戳以 packages/ui/package.json 为准，不用生成物里的（生成物必然落后一版，#47）
 //   · 每次响应都比一遍新鲜度（版本号 + mtime），陈旧就把重生成命令直接甩到响应里
 
+import { AsyncLocalStorage } from "node:async_hooks";
+import { createHash } from "node:crypto";
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
@@ -72,21 +74,34 @@ function cacheGet(key) {
 
 async function fetchRemote(url, { json = true } = {}) {
   const hit = cacheGet(url);
-  if (hit) return hit;
+  if (hit) {
+    // 缓存命中也要登记溯源：这次回答确实用的就是这份字节，不能因为没走网络就不作声。
+    noteArtifact(remoteArtifactName(url), hit.digest);
+    return hit;
+  }
   const res = await fetch(url);
   if (!res.ok) throw new Error(`拉取失败 ${url}：HTTP ${res.status}`);
-  const value = json ? await res.json() : await res.text();
-  const entry = { value, at: Date.now(), generatedAt: res.headers.get("last-modified") || null };
+  // 先拿原文再解析：摘要必须算在**收到的字节**上。res.json() 把字节吃掉后，
+  // 拿解析结果重新序列化算出来的是另一样东西（键序、空白都变了）。
+  const body = await res.text();
+  const value = json ? JSON.parse(body) : body;
+  const entry = {
+    value,
+    at: Date.now(),
+    generatedAt: res.headers.get("last-modified") || null,
+    digest: sha256(body),
+  };
   if (TTL_MS > 0) cache.set(url, entry);
+  noteArtifact(remoteArtifactName(url), entry.digest);
   return entry;
 }
 
 function readLocalJson(file) {
   if (!localPublic) return null;
   const path = join(localPublic, file);
-  return existsSync(path)
-    ? { value: JSON.parse(readFileSync(path, "utf8")), path, generatedAt: mtime(path) }
-    : null;
+  if (!existsSync(path)) return null;
+  const raw = readLocalText(file.replace(/\\/g, "/"), path);
+  return { value: JSON.parse(raw), path, generatedAt: mtime(path) };
 }
 
 function mtime(path) {
@@ -107,6 +122,64 @@ function missingLocal(what, hint) {
   }
   fallbacks.add(what);
   return null;
+}
+
+// --------------------------------------------------------- 产物字节身份 --
+
+/**
+ * 「本次回答依据的产物**就是这一份字节**」—— 版本号说不出这句话。
+ *
+ * 版本只能证明「同一次发版」，证明不了「同一份内容」。本文件上面那套新鲜度判据自己就
+ * 承认：同一个版本号内产物可以被重新生成（改完组件跑 `pnpm llms-registry`，版本不变而
+ * 内容全变），线上产物也随文档站每次构建重写。对只是读一读的调用方这无所谓；对拿
+ * llms-props.json 做**受约束生成**、事后还要复核「我当时照着的那份 props 到底是哪一份」
+ * 的调用方，版本号给不出答案（#332）。
+ *
+ * 所以每条响应的 source 里带上这次真正读到的产物的 sha256。三条纪律：
+ *   · 算在**读到/收到的字节**上，不是解析后重新序列化的结果 —— 后者键序与空白都变了，
+ *     拿去跟仓库里的文件比对会永远对不上，那种摘要还不如没有。
+ *   · 只登记**这一次调用真的读过**的产物，不让别的请求加载的东西冒充这次回答的依据。
+ *     作用域用 AsyncLocalStorage 而不是"每次调用开头清空一个模块级 Map"：MCP 允许多个
+ *     tool 调用同时在飞，清空式方案会让后到的请求把前一个在飞请求的记录抹掉 —— 那种
+ *     错法不会报错，只会让溯源静默缺项，正是这个功能最不能出的错。
+ *   · 源码 md 与产物 md 用不同的名字（`src/x/x.md` vs `d/x.md`）—— 它们本来就是两份
+ *     不同的文件，共用一个名字等于假装它们可以互换（对照 docComesFromSource）。
+ */
+const digestMemo = new Map();
+const artifactScope = new AsyncLocalStorage();
+
+/** 把一次 tool 调用跑在自己的溯源作用域里。作用域外加载产物不登记，也不会报错。 */
+export function withArtifactScope(fn) {
+  return artifactScope.run(new Map(), fn);
+}
+
+const sha256 = (text) => `sha256:${createHash("sha256").update(text, "utf8").digest("hex")}`;
+
+function noteArtifact(name, digest) {
+  if (name && digest) artifactScope.getStore()?.set(name, digest);
+}
+
+/** 远程 URL → 产物名（去掉站点前缀），好让两种数据源用同一套名字。 */
+function remoteArtifactName(url) {
+  return url.startsWith(`${REMOTE_BASE}/`) ? url.slice(REMOTE_BASE.length + 1) : url;
+}
+
+/**
+ * 读一份本地产物并登记它的字节摘要。
+ *
+ * 摘要按 (mtimeMs, size) memo：本地模式每次请求都重读 1.4M 的 llms-props.json，没必要
+ * 每次再哈希一遍；产物一被重新生成这两个数就变，memo 自然失效。它是**缓存键不是证明** ——
+ * 要骗过它得做到毫秒级 mtime 与字节数都不变而内容变了，现实里不会发生。
+ */
+function readLocalText(name, path) {
+  const raw = readFileSync(path, "utf8");
+  const stat = statSync(path);
+  const memo = digestMemo.get(path);
+  const digest =
+    memo && memo.mtimeMs === stat.mtimeMs && memo.size === stat.size ? memo.digest : sha256(raw);
+  digestMemo.set(path, { mtimeMs: stat.mtimeMs, size: stat.size, digest });
+  noteArtifact(name, digest);
+  return raw;
 }
 
 // ------------------------------------------------------------------- 产物 --
@@ -157,9 +230,9 @@ export async function loadItem(name) {
 export async function loadDoc(slug) {
   if (LOCAL_ROOT) {
     const path = join(LOCAL_ROOT, "src", slug, `${slug}.md`);
-    if (existsSync(path)) return readFileSync(path, "utf8");
+    if (existsSync(path)) return readLocalText(`src/${slug}/${slug}.md`, path);
     const generated = localPublic ? join(localPublic, "d", `${slug}.md`) : null;
-    if (generated && existsSync(generated)) return readFileSync(generated, "utf8");
+    if (generated && existsSync(generated)) return readLocalText(`d/${slug}.md`, generated);
     missingLocal(`src/${slug}/${slug}.md`, "组件目录下应有同名 md（真源）");
   }
   // 远程：文档站为每个组件单独出一份 /d/<slug>.md。
@@ -216,7 +289,7 @@ function noteArtifactVersion(payload) {
 export async function loadConventions() {
   if (LOCAL_ROOT) {
     const path = join(LOCAL_ROOT, "conventions.json");
-    if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
+    if (existsSync(path)) return JSON.parse(readLocalText("conventions.json", path));
     const local = readLocalJson("conventions.json");
     if (local) return local.value;
     missingLocal("conventions.json", "先跑 `pnpm conventions` 生成");
@@ -434,6 +507,11 @@ export function sourceInfo() {
     versionSkew: versionSkew(),
     generatedAt: registryMeta.generatedAt,
     cacheTtlMs: TTL_MS,
+    // 本次调用真正读到的产物的字节摘要（见上面「产物字节身份」）。一个产物都没读就是空
+    // 对象 —— 那句话本身也是信息：这条回答不来自任何带版本的产物。
+    artifactDigests: Object.fromEntries(
+      [...(artifactScope.getStore() ?? [])].sort((a, b) => (a[0] < b[0] ? -1 : 1)),
+    ),
     fallbacks: [...fallbacks],
     stale: localStaleness(),
   };
