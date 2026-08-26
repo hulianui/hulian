@@ -46,6 +46,7 @@ import {
   sourceLine,
   staleBanner,
   versionSkew,
+  withArtifactScope,
 } from "./data.mjs";
 import { auditAdoption, renderAudit } from "./audit.mjs";
 import {
@@ -1477,8 +1478,10 @@ server.setRequestHandler(GetPromptRequestSchema, async (req) => {
 server.setRequestHandler(CallToolRequestSchema, async (req) => {
   const fn = HANDLERS[req.params.name];
   if (!fn) return fail(`未知 tool：${req.params.name}`);
+  // 每次调用一个独立的产物溯源作用域，响应里的 source.artifactDigests 才只包含
+  // **这一次**真正读过的产物（多个 tool 调用可以同时在飞，见 data.mjs「产物字节身份」）。
   try {
-    return await fn(req.params.arguments || {}, server);
+    return await withArtifactScope(() => fn(req.params.arguments || {}, server));
   } catch (e) {
     return fail(`${req.params.name} 执行失败（数据源 ${source}）：${e.message}`);
   }

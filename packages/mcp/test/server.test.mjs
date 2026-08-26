@@ -4,6 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { createServer } from "node:http";
 import {
   mkdirSync,
@@ -473,6 +474,32 @@ test("每个响应都带数据源与 registry 版本，漂移可见", async () =
   assert.match(body, /registry v\d+\.\d+\.\d+/, "应带 registry 版本");
   assert.equal(dataOf(res).source.mode, "local");
   assert.ok(dataOf(res).source.version, "structuredContent 里也要有版本");
+});
+
+test("响应带上本次读到的产物的字节摘要，且并发调用互不串账（#332）", async () => {
+  // 两条请求是**一次性发出、同时在飞**的（见 rpc）。这正是要验的场景：谁都不该把对方
+  // 读的产物记到自己账上 —— 拿一个模块级 Map「每次调用开头清空」就会犯这个错，而且
+  // 不报错，只是静默缺项。
+  const [props, list] = await rpc([
+    call(70, "get_component_doc", { name: "button", format: "json" }),
+    call(71, "list_components", { limit: 1 }),
+  ]);
+
+  const propsPath = join(UI_ROOT, "..", "..", "apps", "www", "public", "llms-props.json");
+  const expected = `sha256:${createHash("sha256")
+    .update(readFileSync(propsPath, "utf8"), "utf8")
+    .digest("hex")}`;
+
+  // 摘要必须算在产物的**真实字节**上：拿解析后重新序列化的结果算，键序与空白都变了，
+  // 消费方拿去跟仓库里的文件比对会永远对不上，那样的摘要还不如没有。
+  const fromProps = dataOf(props).source.artifactDigests;
+  assert.deepEqual(Object.keys(fromProps), ["llms-props.json"]);
+  assert.equal(fromProps["llms-props.json"], expected);
+
+  // list_components 走的是 registry.json，不碰 llms-props.json。
+  const fromList = dataOf(list).source.artifactDigests;
+  assert.deepEqual(Object.keys(fromList), ["registry.json"]);
+  assert.match(fromList["registry.json"], /^sha256:[0-9a-f]{64}$/);
 });
 
 // ------------------------------------------------------------ 项目与验证 --

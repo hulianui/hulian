@@ -192,6 +192,22 @@ npx -y @hulianui/guard src/components/pages src/components/blocks
      产物落后意味着新增的组件与 prop 在 MCP 里整个查不到，而这是静默的，比缺产物更危险。
 2. **远程**（默认）：读 `https://hulianui.haloritual.com` 的 `registry.json` / `r/<name>.json` / `d/<slug>.md` / `conventions.json`。
 
+### 产物的字节身份（`source.artifactDigests`）
+
+带 `structuredContent` 的响应里，`source.artifactDigests` 给出**这一次调用真正读到的**产物的 sha256：
+
+```json
+{ "source": { "artifactDigests": { "llms-props.json": "sha256:9b7022c6…" } } }
+```
+
+版本号只能证明「同一次发版」，证明不了「同一份内容」：同一个版本号内产物会被重新生成（改完组件跑 `pnpm llms-registry`，版本不变而内容全变），线上产物也随文档站每次构建重写。拿 `llms-props.json` 做**受约束生成**、事后还要复核「当时照着的那份 props 到底是哪一份」的调用方，需要的是摘要而不是版本号。
+
+三条口径：
+
+- 摘要算在**读到 / 收到的字节**上，`shasum -a 256 <文件>` 能逐字对上；不是解析后重新序列化的结果。
+- 只列**这次调用真的读过**的产物 —— `list_components` 只有 `registry.json`，`get_component_doc({format:"json"})` 只有 `llms-props.json`。多个 tool 调用同时在飞也不会互相串账。
+- 源码 md 与产物 md 用不同的名字（`src/<slug>/<slug>.md` vs `d/<slug>.md`），因为它们本来就是两份不同的文件。
+
 | 环境变量 | 作用 |
 |---|---|
 | `HULIAN_UI_ROOT` | 指向 `packages/ui`，切到本地模式 |
