@@ -55,6 +55,19 @@ pnpm add @hulianui/ui @hulianui/tokens
 @source "../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";
 ```
 
+> The `@source` path is relative to **this CSS file**, not to the project root.
+>
+> If you miss it, the symptom is **not** "components render with no styling at all". In a
+> project that already uses Tailwind that almost never happens: classes like `px-4`, `gap-2`
+> and `rounded-xl` appear in your own code too, so Tailwind emits them anyway and the library
+> components get them for free. What disappears is the handful of literals only Hulian's
+> source contains, namely the paddings of Card / Dialog / Drawer.
+>
+> So what you actually see is "**borders, radii, colors and type are all correct, but every
+> container has lost its padding and the layout is squashed**" - which reads like a component
+> bug rather than a missing config line. One command tells them apart: `grep card-body-px` in
+> your built CSS. No match means this line is missing.
+
 **3. Wrap with `ThemeProvider` and use**
 
 ```tsx

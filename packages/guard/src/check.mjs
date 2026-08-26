@@ -340,6 +340,70 @@ export function checkSource(source, options = {}) {
       }
     }
 
+    // ── unslotted-children：容器组件的内边距住在插槽里，不在根节点上 ──────────────
+    //
+    // Card 根只落密度变量（[--card-body-px:1.25rem] 这类），真正消费它们的是
+    // CardHeader / CardBody / CardFooter。所以 <Card><div>x</div></Card> 是**零内边距**，
+    // 内容紧贴边框。这在 shadcn/ui 迁过来的代码里尤其常见：那边叫 CardContent，名字打错
+    // 报错之后，退回裸 div 是最省事的一条路，而它恰好静默地对（能编译、能渲染、只是难看）。
+    //
+    // 判据问的是「这张卡的内边距**有没有人负责**」，不是「有没有用 CardBody」。后者过窄：
+    // 全出血卡片（顶部整张图贴边 + 下方内容区自己给 p-5）是完全正当的写法，库自己的
+    // blog-list / product-grid / agent-card 区块就都这么写，按「必须用 CardBody」判会当场
+    // 误报三处。所以只要直接子里出现**任何一个**插槽组件或带内边距类的元素，就算有人管了，
+    // 整张卡放行。
+    //
+    // 另外三处刻意放行：
+    //   · 根节点自己写了内边距类（className="p-4"）—— 消费方在根层接管
+    //   · 表达式子节点（{items.map(...)}、{children}）—— 静态判断不了里面是什么
+    //   · 纯文本子节点（<Card>文字</Card>）—— 短标签式用法确实有人这么写，且一眼能看出来
+    if (ts.isJsxElement(node)) {
+      for (const rule of rules.filter(
+        (candidate) => candidate.matcher.kind === "unslotted-children",
+      )) {
+        const matcher = rule.matcher;
+        const opening = node.openingElement;
+        const binding = jsxBinding(opening.tagName, bindings, checker);
+        if (
+          !binding ||
+          binding.source !== matcher.source ||
+          binding.importedName !== matcher.importedName
+        )
+          continue;
+
+        const padded = new RegExp(matcher.selfHandledPattern);
+        const hasPaddingClass = (element) =>
+          element.attributes.properties.some(
+            (property) =>
+              ts.isJsxAttribute(property) &&
+              property.name.getText(sourceFile) === "className" &&
+              padded.test(staticClassText(property.initializer)),
+          );
+
+        if (hasPaddingClass(opening)) continue;
+
+        const elementChildren = node.children.filter(
+          (child) => ts.isJsxElement(child) || ts.isJsxSelfClosingElement(child),
+        );
+        const openingOf = (child) => (ts.isJsxElement(child) ? child.openingElement : child);
+        const isSlot = (child) => {
+          const childBinding = jsxBinding(openingOf(child).tagName, bindings, checker);
+          return (
+            childBinding !== null &&
+            childBinding.source === matcher.source &&
+            matcher.slots.includes(childBinding.importedName)
+          );
+        };
+
+        const handled = elementChildren.some(
+          (child) => isSlot(child) || hasPaddingClass(openingOf(child)),
+        );
+        if (handled) continue;
+
+        if (elementChildren.length > 0) report(rule, elementChildren[0]);
+      }
+    }
+
     if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)) {
       const target = node.expression.expression;
       if (ts.isIdentifier(target)) {

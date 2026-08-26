@@ -58,6 +58,14 @@ pnpm add @hulianui/ui @hulianui/tokens
 @source "../node_modules/@hulianui/ui/src/**/*.{ts,tsx}";
 ```
 
+> `@source` 的路径是**这份 CSS 文件自身**到 node_modules 的相对深度，不是项目根。
+>
+> 漏了它，症状**不是**「组件完全没样式」—— 在一个已有 Tailwind 的项目里几乎不会那样，
+> 因为 `px-4` / `gap-2` / `rounded-xl` 这些类你自己的代码里也写、照样生成，库组件蹭得到。
+> 精准消失的是只有瑚琏源码里才有的字面量，也就是 Card / Dialog / Drawer 的内边距。
+> 你看到的会是「**边框圆角颜色全对，唯独容器内边距整片塌掉**」，像组件 bug 而不像配置漏了。
+> 分辨只要一条命令：在构建产物 CSS 里 `grep card-body-px`，搜不到就是这行漏了。
+
 **3. 包一层 `ThemeProvider` 即可用**
 
 ```tsx

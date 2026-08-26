@@ -200,3 +200,74 @@ test("读不到实装包时退回烤进包里的清单（纯文本检查仍然�
   );
   rmSync(dir, { recursive: true, force: true });
 });
+
+// Card 根只落密度变量，内边距住在三个插槽里 —— 内容直接塞进 Card 是零内边距（#336）。
+// 判据按零误报设计，下面把三条刻意放行的路径一起钉住，免得后来人「顺手收严」把它变成噪声源。
+test("内容直接塞进 Card 时提示改用 CardBody", () => {
+  const bad = checkSource(
+    'import { Card } from "@hulianui/ui"; export const X = () => <Card><div>内容</div></Card>;',
+  );
+  assert.deepEqual(ruleIds(bad), ["card-content-needs-cardbody"]);
+  assert.equal(bad.diagnostics[0].severity, "warning");
+
+  const slotted = checkSource(
+    'import { Card, CardHeader, CardBody } from "@hulianui/ui";' +
+      "export const X = () => <Card><CardHeader title=\"标题\" /><CardBody>内容</CardBody></Card>;",
+  );
+  assert.deepEqual(slotted.diagnostics, []);
+});
+
+// 全出血卡片：顶部整张图必须贴边，内距由它的兄弟节点给。按「必须用 CardBody」判会误报，
+// 库自己的 blog-list / product-grid / agent-card 三个区块就都是这个形状。
+test("全出血卡片不误报：内距在兄弟节点上也算有人管", () => {
+  const bleed = checkSource(
+    'import { Card } from "@hulianui/ui"; export const X = () => (' +
+      '<Card><div className="aspect-video bg-black" /><div className="p-5">内容</div></Card>);',
+  );
+  assert.deepEqual(bleed.diagnostics, []);
+
+  // 插槽也算「有人管」，哪怕它前面还有一个贴边的裸元素。
+  const bleedWithSlot = checkSource(
+    'import { Card, CardBody } from "@hulianui/ui"; export const X = () => (' +
+      '<Card><div className="aspect-video bg-black" /><CardBody>内容</CardBody></Card>);',
+  );
+  assert.deepEqual(bleedWithSlot.diagnostics, []);
+
+  // 但两个子都没内距、也没插槽，就是真的没人管。
+  const nobody = checkSource(
+    'import { Card } from "@hulianui/ui"; export const X = () => (' +
+      '<Card><div className="aspect-video bg-black" /><div className="font-medium">内容</div></Card>);',
+  );
+  assert.deepEqual(ruleIds(nobody), ["card-content-needs-cardbody"]);
+});
+
+test("card-content-needs-cardbody 的三条放行路径", () => {
+  // 1. 根节点自己写了内边距 = 消费方接管，放行。
+  const selfHandled = checkSource(
+    'import { Card } from "@hulianui/ui"; export const X = () => <Card className="p-4"><div>内容</div></Card>;',
+  );
+  assert.deepEqual(selfHandled.diagnostics, []);
+
+  // 2. 表达式子节点静态判断不了里面是什么，放行。
+  const dynamic = checkSource(
+    'import { Card } from "@hulianui/ui"; export const X = ({ children }) => <Card>{children}</Card>;',
+  );
+  assert.deepEqual(dynamic.diagnostics, []);
+
+  // 3. 纯文本子节点是短标签式用法，一眼能看出来，放行。
+  const text = checkSource(
+    'import { Card } from "@hulianui/ui"; export const X = () => <Card>一段文字</Card>;',
+  );
+  assert.deepEqual(text.diagnostics, []);
+});
+
+test("只认绑定到瑚琏的 Card，同名本地组件不误报", () => {
+  const local = checkSource("function Card(props) { return <section {...props} />; }" +
+    "export const X = () => <Card><div>内容</div></Card>;");
+  assert.deepEqual(local.diagnostics, []);
+
+  const aliased = checkSource(
+    'import { Card as Panel } from "@hulianui/ui"; export const X = () => <Panel><div>内容</div></Panel>;',
+  );
+  assert.deepEqual(ruleIds(aliased), ["card-content-needs-cardbody"]);
+});

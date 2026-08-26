@@ -559,7 +559,10 @@ export function inspectProject({ explicit, roots, cwd } = {}) {
   if (usesHulian && tailwindSource.status === "not-found") {
     warnings.push(
       "扫过的样式表里没有 @source 指向 @hulianui/ui/src —— Tailwind v4 默认不扫 node_modules，" +
-        "漏了会把组件类名 purge 掉",
+        "漏了会把组件类名 purge 掉。症状**不是**「完全没样式」：px-4 / gap-2 这些常规类你自己" +
+        "代码里也写、照样生成，库组件蹭得到；精准消失的是 Card / Dialog / Drawer 的内边距" +
+        "（px-[var(--card-body-px,1.25rem)] 这一族只有瑚琏源码里有）。所以你会看到「颜色边框" +
+        "全对、唯独容器内边距塌掉」，像组件 bug 而不像配置漏了（#336）",
     );
   }
   if (usesHulian && themeProvider.status === "not-found") {

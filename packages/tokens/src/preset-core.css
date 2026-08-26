@@ -708,3 +708,52 @@
     --hl-ann-hue: 710deg;
   }
 }
+
+/* ───────────────────────────────────────────────────────────────────────────
+   容器内边距兜底 safelist（hulianui/hulian#336）
+
+   为什么需要它：Card / Dialog / Drawer / DocumentSheet 的内边距是全库唯一一族
+   用 arbitrary value 写的间距（`px-[var(--card-body-px,1.25rem)]` 这种）。400 个
+   组件里只有这 4 个这么写，因为密度要靠 CSS 变量随 `size` 变体下发，同时还要让
+   消费方能用 `className="p-0"` 经 tailwind-merge 盖掉。
+
+   代价是一种极难归因的失效模式。消费方漏配 `@source` 时：
+
+     px-4 / gap-2 / rounded-xl / text-sm / shadow-sm   照常生成
+       （消费方自己的代码里也写这些类，库组件等于蹭到了）
+     px-[var(--card-body-px,1.25rem)] 及同族           精准消失
+       （这种字面量只有瑚琏源码里有，消费方不可能碰巧写出一模一样的）
+
+   净效果不是「组件没样式」，而是「边框圆角颜色全对，唯独容器内边距整片塌掉」。
+   看着完全不像配置问题，像组件 bug，于是人和 AI 都绕开根因，直接往业务代码里
+   补 `className="p-4"`。这条路走过好几轮。
+
+   `@source inline()` 让这一族无论消费方扫没扫到组件源码都必定生成，实测代价
+   386 字节。注意它的字符串**不能跨行**，所以下面按分区拆成多条而不是一大段。
+
+   这不是 `@source` 的替代品：漏配时其余 390 个组件的类名照样只能靠蹭，该配还得
+   配（docs/consuming.md）。这里兜的只是**归因难度最高的那一族**。想加新条目先
+   问一句「它丢了会不会被误判成组件 bug」，答案是否就别加，否则 safelist 会滑向
+   「用兜底替代接入步骤」。
+
+   清单与组件源码的一致性由 `pnpm check:container-padding` 机械保证，别手工对。
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Card 根节点：按 size / divided 落密度变量。 */
+@source inline("[--card-body-px:1.25rem] [--card-body-px:1rem] [--card-body-py:1rem] [--card-body-py:0.75rem]");
+@source inline("[--card-header-px:1.25rem] [--card-header-px:1rem] [--card-header-pt:0.75rem] [--card-header-pt:0.625rem]");
+@source inline("[--card-header-pb:0.75rem] [--card-header-pb:0.625rem] [--card-header-pb:0.5rem]");
+@source inline("[--card-footer-px:1.25rem] [--card-footer-px:1rem] [--card-footer-pt:0.75rem] [--card-footer-pt:0.625rem]");
+@source inline("[--card-footer-pt:0.5rem] [--card-footer-pb:0.75rem] [--card-footer-pb:0.625rem]");
+
+/* Card 三个分区：消费上面的变量，fallback 是 md 档的值。 */
+@source inline("px-[var(--card-body-px,1.25rem)] py-[var(--card-body-py,1rem)]");
+@source inline("px-[var(--card-header-px,1.25rem)] pt-[var(--card-header-pt,0.75rem)] pb-[var(--card-header-pb,0.75rem)]");
+@source inline("px-[var(--card-footer-px,1.25rem)] pt-[var(--card-footer-pt,0.75rem)] pb-[var(--card-footer-pb,0.75rem)]");
+
+/* Dialog / Drawer：正文滚动区靠负边距补偿抵消 Popup 的内边距，两条必须成对存在，
+   只丢一条正文就会溢出到 Popup 外。 */
+@source inline("[--hl-overlay-pad:1.5rem] px-[var(--hl-overlay-pad,1.5rem)] mx-[calc(var(--hl-overlay-pad,1.5rem)*-1)]");
+
+/* DocumentSheet：A4 纸张内边距，打印布局的基准。 */
+@source inline("p-[16mm]");

@@ -99,6 +99,15 @@ jobs:
       - name: Check for remote assets
         run: pnpm check:remote-assets
 
+      # Card / Dialog / Drawer / DocumentSheet 的内边距是全库唯一一族 arbitrary value 间距。
+      # 消费方漏配 @source 时它们**精准**消失，而 px-4 / gap-2 这些常规类照样生成（消费方自己
+      # 代码里也写这些类，库组件等于蹭到了）—— 症状是「颜色边框全对、唯独容器内边距塌掉」，
+      # 看着像组件 bug，根因被绕开好几轮（#336）。preset-core.css 用 @source inline() 兜了底，
+      # 而那份清单是手写的：改了密度值忘了同步，消费方那边就悄悄退回 fallback 档。
+      # typecheck / 单测 / guard 都看不见这种漂移，只能靠这个机械判据。
+      - name: Check container padding safelist
+        run: pnpm check:container-padding
+
       # 组件 md 随 npm 包一起发布（files 里有 src），MCP 的 get_component_doc 本地模式直读
       # node_modules 里那一份 —— 文档里一句「纯 RSC」，到 agent 消费方那里就是运行时判断
       # 依据。#307 抓到 9 个组件 14 处这种断言，而它们的 `"use client"` 全是必要的。
