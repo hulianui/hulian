@@ -30,6 +30,11 @@ export function repositoryInventoryPaths(): InventoryPaths {
         reason: "Motion primitives and provider infrastructure have no standalone showcase",
       },
       {
+        entry: "@hulianui/ui/question",
+        reason:
+          "Question-domain types and pure functions (shape, wire, grading) with no React render surface; re-exported from @hulianui/ui/math",
+      },
+      {
         entry: "@hulianui/ui/showcase",
         reason: "Showcase metadata barrel, not a component entry",
       },
