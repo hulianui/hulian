@@ -30,14 +30,14 @@ import { QuestionCard } from "@hulianui/ui/math"
 ```tsx
 <QuestionCard
   number="3"
-  kind="choice"
+  type="single"
   difficulty="Group A"
   stem="As shown, figures 1 and 2 use identical squares. If figure 1 has side length 4, what is the area of figure 2?"
   options={[
-    { label: "A", text: "\\frac{1}{9}" },
-    { label: "B", text: "\\frac{5}{9}" },
-    { label: "C", text: "\\frac{16}{9}" },
-    { label: "D", text: "\\frac{80}{9}" },
+    { key: "A", text: "\\frac{1}{9}" },
+    { key: "B", text: "\\frac{5}{9}" },
+    { key: "C", text: "\\frac{16}{9}" },
+    { key: "D", text: "\\frac{80}{9}" },
   ]}
   figure={{ src: "/figures/q3.png" }}
   chapter="Chapter 1 · Rational numbers"
@@ -62,19 +62,24 @@ An uncertain automatically extracted item:
 |---|---|---|---|
 | `stem` | `string` | - | Prompt using LaTeX notation and `____` answer blanks, typeset by Formula. |
 | `number` | `ReactNode` | - | Original book question number. |
-| `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | - | Question type controlling built-in label and tone. |
-| `kindLabel` | `ReactNode` | - | Overrides the built-in Chinese type label. |
+| `type` | `"single" \| "multiple" \| "judge" \| "blank" \| "short_answer" \| "calculation" \| "essay"` | - | Question type (closed enum). Drives the tag copy and tone; copy comes from the `question.types` locale table. |
+| `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | - | **Deprecated**, use `type`. Maps choice→single, fill→blank, solution→essay; removed in the next minor. |
+| `typeLabel` | `ReactNode` | - | Overrides the type tag copy. |
+| `kindLabel` | `ReactNode` | - | **Deprecated**, use `typeLabel`. |
 | `difficulty` | `ReactNode` | - | Level label, such as Group A, Foundation, or Advanced. |
-| `options` | `{ label, text }[]` | - | Choices whose text supports LaTeX notation. |
+| `options` | `{ key, text }[]` | - | Choices whose text supports LaTeX notation. The legacy `{ label, text }` shape is still accepted for one minor. |
 | `parts` | `string[]` | - | Subquestions such as (1), (2), and (3). |
 | `figure` | `{ src, alt? }` | - | Supporting image. |
+| `answer` | `QuestionAnswer` | - | Answer key; see `QuestionAnswer` in `@hulianui/ui/math`. Rendered only when `showAnswer` is true. |
+| `analysis` | `string` | - | Explanation, accepts LaTeX. Rendered only when `showAnswer` is true. |
+| `showAnswer` | `boolean` | `false` | Renders the answer and explanation block. Keep it off before a student has answered. |
 | `chapter` / `source` | `ReactNode` | - | Chapter and provenance shown in the footer. |
 | `topics` | `string[]` | - | Topic names rendered as chips. |
 | `issues` | `{ label, tone? }[]` | - | Quality flags; non-empty values activate the warning edge. |
 | `actions` | `ReactNode` | - | Upper-right actions. |
 | `compact` | `boolean` | `false` | Hides subparts and footer for long lists. |
 
-Built-in `kind` labels are `"\u9009\u62e9\u9898"` (“Multiple choice”), `"\u586b\u7a7a\u9898"` (“Fill in the blank”), `"\u89e3\u7b54\u9898"` (“Written solution”), and `"\u5224\u65ad\u9898"` (“True or false”). The figure alt falls back to `"\u9898\u76ee\u9644\u56fe"` (“Question figure”).
+Type tag copy comes from the `question.types` locale table (Chinese by default; `enUS` ships English). The figure alt falls back to the locale's question figure label.
 
 ## Pitfalls
 
@@ -82,6 +87,8 @@ Built-in `kind` labels are `"\u9009\u62e9\u9898"` (“Multiple choice”), `"\u5
 - `issues` communicates uncertain machine extraction and is not decoration. Always pass known issues so untrusted items remain visibly distinct.
 - The warning uses a left edge instead of tinting the whole card, preserving prompt contrast.
 - `compact` never truncates the prompt or choices; it only hides subparts and footer context.
+- **`showAnswer` defaults to off; never turn it on in the student view.** Rendering the key with the card leaks the answer; practice and homework pages only enable it after the server has returned the grading result.
+- **`type` is a closed seven-value enum, not free text.** Short answer, calculation, and extended response are three different types (short, step-scored, comprehensive proof); do not collapse them into `essay`. The old four-value `kind` is kept for one more minor only.
 
 ## Related
 

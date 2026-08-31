@@ -133,6 +133,21 @@ status: enriched
 
 **检索、导出、纯文本比对一律用 `formulaToPlain`**，别把带记号的原串直接甩给搜索框 —— 用户搜「3/8」应该能命中。
 
+### 题目域（与 QuestionCard 同住此路径）
+
+```ts
+import {
+  gradeObjective, validateQuestion, defaultShape, normalizeOptions, blankCount,
+  splitStemFigures, toWireAnswer, fromWire, answerText,
+  type Question, type QuestionType, type QuestionAnswer,
+} from "@hulianui/ui/math"
+```
+
+- `validateQuestion` / `defaultShape` / `normalizeOptions` / `blankCount`：题型驱动的形状规则，与消费方后端 `_check_type_shape` 同构。
+- `splitStemFigures`：题干先切 `![](key)` 图再排公式，判据在 `stem-figures.contract.json`。
+- `gradeObjective`：客观题判分，默认档与服务端逐字同口径；归一 / 容差 / 等价比较器均 opt-in。**服务端才是判分 SSOT**。
+- `answerText`：答案 JSON → 人读文本，按形状分派。
+
 ## 坏数据怎么显示
 
 KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都不抛异常拆掉整棵树**：

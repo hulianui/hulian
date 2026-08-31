@@ -2041,8 +2041,6 @@
     "key: \"salary\", title: \"月薪\", editable: true, align: \"right\",": "key: \"salary\", title: \"Monthly salary\", editable: true, align: \"right\",",
     "keywords: \"dashboard 首页\", icon: <LayoutDashboard /> },": "keywords: \"dashboard Home\", icon: <LayoutDashboard /> },",
     "kind 决定面额区主视觉：amount 满减 / discount 折扣 / shipping 包邮。": "kind defines the offer: amount for money off, discount for a percentage discount, and shipping for free delivery.",
-    "kindLabel=\"填空题\"": "kindLabel=\"Fill in the blanks\"",
-    "kindLabel=\"选择题\"": "kindLabel=\"Multiple choice\"",
     "label 与 showValue 在轨道上方显示说明与格式化数值。": "label and showValue display descriptions and formatted values ​​above the track.",
     "label 串 Field.Label，children 为控件（Input / Textarea）。": "label string Field.Label, children is the control (Input / Textarea).",
     "label 可放富节点，如计费周期里嵌一枚优惠 Tag。": "label can be placed in rich nodes, such as embedding a discount Tag in the billing cycle.",
@@ -3934,7 +3932,6 @@
     "删除项目": "Delete item",
     "删除项目？": "Delete project?",
     "删除：": "Delete:",
-    "判断题": "True or false",
     "刷新": "Refresh",
     "刷新间隔 ms": "Refresh interval ms",
     "刷新页面": "Refresh the page",
@@ -8465,7 +8462,13 @@
     "selectedFirst 只用于多选：先过滤，再将仍命中的已选项按 value 顺序置顶。": "selectedFirst is for multiple mode only: filter first, then move matching selected values to the front in value order.",
     "120 项自动虚拟化": "Automatic virtualization at 120 items",
     "searchable 候选达到 100 项时自动虚拟化；selectedFirst 在虚拟窗口计算前完成排序。": "searchable candidates virtualize automatically at 100 items; selectedFirst finishes sorting before the virtual window is calculated.",
-    "选择字体": "Select a font"
+    "选择字体": "Select a font",
+    "动图徽章": "Animated badge",
+    "GIF / APNG / 动图 WebP 直接塞进 mark 就会动；包一层 <picture> 给开了「减弱动效」的用户一张静态图，两种写法都按铺满徽章处理。": "Drop a GIF / APNG / animated WebP into mark and it plays; wrap it in <picture> to give users with reduced motion enabled a static image. Both forms fill the badge.",
+    "// 动图直接当 img 传；<picture> 给「减弱动效」用户一张静态回退": "// Pass the animation as an img; <picture> gives reduced-motion users a static fallback",
+    "name=\"瑚琏后台\"": "name=\"Hulian Admin\"",
+    "<Brand mark={<img src=\"/brand-motion.gif\" alt=\"瑚琏后台\" />} />   {/* 收起态 */}": "<Brand mark={<img src=\"/brand-motion.gif\" alt=\"Hulian Admin\" />} />   {/* Collapsed */}",
+    "picture 减弱动效回退": "picture reduced-motion fallback"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

@@ -1486,6 +1486,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/question.json",
         "https://hulianui.haloritual.com/zh/r/question-card.json"
       ],
       "meta": {
@@ -1505,8 +1506,7 @@
           "MathSegment",
           "QuestionCardProps",
           "QuestionKind",
-          "QuestionOption",
-          "QuestionIssue"
+          "LegacyQuestionOption"
         ],
         "group": "text",
         "tags": [],
@@ -10167,9 +10167,11 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/card.json",
         "https://hulianui.haloritual.com/zh/r/chip.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/image.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/math.json",
+        "https://hulianui.haloritual.com/zh/r/question.json",
         "https://hulianui.haloritual.com/zh/r/tag.json",
         "https://hulianui.haloritual.com/zh/r/text.json"
       ],
@@ -10198,6 +10200,11 @@
           "path": "components/hulianui/question-card/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/question-card/index.ts"
+        },
+        {
+          "path": "components/hulianui/question-card/question-card.client.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-card/question-card.client.tsx"
         },
         {
           "path": "components/hulianui/question-card/question-card.tsx",
@@ -12156,7 +12163,7 @@
       "name": "brand",
       "type": "registry:ui",
       "title": "Brand",
-      "description": "品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · 三档尺寸(sm 导航栏 28px / md 侧栏 36px / lg 登录页) + color 换徽章底…",
+      "description": "品牌标识 · 方角徽章 + 站点名(+ 副标题) · mark 缺省自动取品牌名首字(中文一字/英文首字母) · mark 接图标/图片/动图/视频(picture 减弱动效回退与 video 都已给铺满规则) · 三…",
       "categories": [
         "navigation"
       ],
@@ -21176,6 +21183,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/question.json",
         "https://hulianui.haloritual.com/zh/r/social-button.json"
       ],
       "meta": {

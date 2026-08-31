@@ -1,13 +1,8 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button";
+import type { QuestionType } from "../../../../packages/ui/src/question/question.types";
 import { QuestionCard } from "../../../../packages/ui/src/question-card/question-card";
-const kindLabels = {
-    choice: "Multiple choice questions",
-    fill: "Fill in the blanks",
-    solution: "Answer the question",
-    judge: "True or false",
-} as const;
 export const questionCardShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -15,26 +10,25 @@ export const questionCardShowcase: ShowcaseSpec = {
             description: "Fractions in the stem and the options are typeset by Formula (KaTeX); source and knowledge points sit in the footer.",
             code: `<QuestionCard
   number="3"
-  kind="choice"
-  kindLabel="Multiple choice"
+  type="single"
   difficulty="A group"
   stem="As shown in the picture, figures \u2460 and 2 are made up of exactly the same small squares. If the side length of figure \u2460 is 4, then the area of figure \u2461 is expressed as a fraction ( )."
   options={[
-    { label: "A", text: "\\\\frac{1}{9}" },
-    { label: "B", text: "\\\\frac{5}{9}" },
-    { label: "C", text: "\\\\frac{16}{9}" },
-    { label: "D", text: "\\\\frac{80}{9}" },
+    { key: "A", text: "\\\\frac{1}{9}" },
+    { key: "B", text: "\\\\frac{5}{9}" },
+    { key: "C", text: "\\\\frac{16}{9}" },
+    { key: "D", text: "\\\\frac{80}{9}" },
   ]}
   chapter="Chapter 1 Rational Numbers \u00B7 1.1.1 Natural Numbers, Fractions and Decimals"
   topics={["rational numbers", "fraction"]}
   source="Academic Ability Assessment Part 7 \u00B7 Page 3 \u00B7 Question 3"
 />`,
             render: () => (<div className="w-full max-w-2xl">
-          <QuestionCard number="3" kind="choice" kindLabel={kindLabels.choice} difficulty="A Group" stem="As shown in the picture, figures ① and ② are made up of exactly the same small squares. If the side length of graph ① is 4, then the area of ​​graph ② is expressed as a fraction ( )." options={[
-                    { label: "A", text: "\\frac{1}{9}" },
-                    { label: "B", text: "\\frac{5}{9}" },
-                    { label: "C", text: "\\frac{16}{9}" },
-                    { label: "D", text: "\\frac{80}{9}" },
+          <QuestionCard number="3" type="single" difficulty="A Group" stem="As shown in the picture, figures ① and ② are made up of exactly the same small squares. If the side length of graph ① is 4, then the area of ​​graph ② is expressed as a fraction ( )." options={[
+                    { key: "A", text: "\\frac{1}{9}" },
+                    { key: "B", text: "\\frac{5}{9}" },
+                    { key: "C", text: "\\frac{16}{9}" },
+                    { key: "D", text: "\\frac{80}{9}" },
                 ]} chapter="Chapter 1 Rational Numbers · 1.1.1 Natural Numbers, Fractions and Decimals" topics={["Rational numbers", "Fraction"]} source="Academic Ability Assessment Part 7 · Page 3 · Question 3"/>
         </div>),
         },
@@ -43,13 +37,12 @@ export const questionCardShowcase: ShowcaseSpec = {
             description: "Fill-in-the-blank slots are write-in spaces; questions are listed one by one.",
             code: `<QuestionCard
   number="11"
-  kind="fill"
-  kindLabel="Fill in the blanks"
+  type="blank"
   stem="The profit requirement is positive. A company lost 30,000 yuan last year, which can be recorded as ____ million yuan."
   parts={["(1) The number b represented by point B on the number axis is ____.", "(2) The number represented by point P is ____."]}
 />`,
             render: () => (<div className="w-full max-w-2xl">
-          <QuestionCard number="11" kind="fill" kindLabel={kindLabels.fill} stem="Profit is stipulated to be positive. A company lost 30,000 yuan last year, which can be recorded as ____ million yuan." parts={["(1) The number b represented by the point B on the number axis is ____.", "(2) The number represented by point P is ____."]} chapter="Chapter 1 Rational Numbers"/>
+          <QuestionCard number="11" type="blank" stem="Profit is stipulated to be positive. A company lost 30,000 yuan last year, which can be recorded as ____ million yuan." parts={["(1) The number b represented by the point B on the number axis is ____.", "(2) The number represented by point P is ____."]} chapter="Chapter 1 Rational Numbers"/>
         </div>),
         },
         {
@@ -57,15 +50,14 @@ export const questionCardShowcase: ShowcaseSpec = {
             description: "The items that cannot be determined automatically will have a warning bar on the left and will never be mixed into the normal questions.",
             code: `<QuestionCard
   number="7"
-  kind="choice"
-  kindLabel="Multiple choice"
+  type="single"
   stem="Among the following formulas, the correct one is ( )."
   issues={[{ label: "Less than 4 options" }, { label: "Question numbers are not consecutive" }]}
 When
   actions={<Button size="sm" variant="ghost">Go to proofreading</Button>}
 />`,
             render: () => (<div className="w-full max-w-2xl">
-          <QuestionCard number="7" kind="choice" kindLabel={kindLabels.choice} stem="Among the following formulas, the correct one is ( )." options={[{ label: "A", text: "-|-16|>0" }]} issues={[{ label: "Less than 4 options" }, { label: "Question numbers are not consecutive" }]} actions={<Button size="sm" variant="ghost">
+          <QuestionCard number="7" type="single" stem="Among the following formulas, the correct one is ( )." options={[{ key: "A", text: "-|-16|>0" }]} issues={[{ label: "Less than 4 options" }, { label: "Question numbers are not consecutive" }]} actions={<Button size="sm" variant="ghost">
                 Go to proofreading
               </Button>}/>
         </div>),
@@ -74,10 +66,10 @@ When
     controls: [
         { prop: "number", type: "text", defaultValue: "3", label: "Question number" },
         {
-            prop: "kind",
+            prop: "type",
             type: "select",
-            options: ["choice", "fill", "solution", "judge"],
-            defaultValue: "choice",
+            options: ["single", "multiple", "judge", "blank", "short_answer", "calculation", "essay"],
+            defaultValue: "single",
             label: "Question type",
         },
         { prop: "stem", type: "text", defaultValue: "Convert \\frac{3}{8} into a decimal ( ).", label: "Question stem" },
@@ -87,30 +79,30 @@ When
     states: [
         {
             name: "Multiple choice questions",
-            render: () => (<QuestionCard number="2" kind="choice" kindLabel={kindLabels.choice} stem="Convert \\frac{3}{8} into a decimal ( )." options={[
-                    { label: "A", text: "0.125" },
-                    { label: "B", text: "0.250" },
-                    { label: "C", text: "0.375" },
-                    { label: "D", text: "0.625" },
+            render: () => (<QuestionCard number="2" type="single" stem="Convert \\frac{3}{8} into a decimal ( )." options={[
+                    { key: "A", text: "0.125" },
+                    { key: "B", text: "0.250" },
+                    { key: "C", text: "0.375" },
+                    { key: "D", text: "0.625" },
                 ]}/>),
         },
         {
             name: "Fill in the blanks",
-            render: () => <QuestionCard number="11" kind="fill" kindLabel={kindLabels.fill} stem="A loss of 30,000 yuan last year can be recorded as ____ million yuan."/>,
+            render: () => <QuestionCard number="11" type="blank" stem="A loss of 30,000 yuan last year can be recorded as ____ million yuan."/>,
         },
         {
             name: "Answer the question",
-            render: () => (<QuestionCard number="17" kind="solution" kindLabel={kindLabels.solution} stem="Fill in the following numbers into the corresponding collection circles:" parts={["(1) Positive number set", "(2) Negative integer set"]}/>),
+            render: () => (<QuestionCard number="17" type="essay" stem="Fill in the following numbers into the corresponding collection circles:" parts={["(1) Positive number set", "(2) Negative integer set"]}/>),
         },
         {
             name: "Pending review",
-            render: () => (<QuestionCard number="7" kind="choice" kindLabel={kindLabels.choice} stem="Among the following formulas, the correct one is ( )." issues={[{ label: "Less than 4 options" }]}/>),
+            render: () => (<QuestionCard number="7" type="single" stem="Among the following formulas, the correct one is ( )." issues={[{ label: "Less than 4 options" }]}/>),
         },
         {
             name: "Compact",
-            render: () => <QuestionCard number="5" kind="fill" kindLabel={kindLabels.fill} stem="When m<0, |-3m|=____." compact/>,
+            render: () => <QuestionCard number="5" type="blank" stem="When m<0, |-3m|=____." compact/>,
         },
     ],
-    renderWithProps: (p) => (<QuestionCard number={String(p.number ?? "")} kind={p.kind as "choice" | "fill" | "solution" | "judge"} kindLabel={kindLabels[(p.kind as keyof typeof kindLabels) ?? "choice"]} difficulty={String(p.difficulty ?? "")} stem={String(p.stem ?? "")} compact={Boolean(p.compact)}/>),
-    toCode: (p) => `<QuestionCard number="${String(p.number ?? "")}" kind="${String(p.kind ?? "choice")}" kindLabel="${kindLabels[(p.kind as keyof typeof kindLabels) ?? "choice"]}" stem={${JSON.stringify(String(p.stem ?? ""))}} />`,
+    renderWithProps: (p) => (<QuestionCard number={String(p.number ?? "")} type={(p.type as QuestionType) ?? "single"} difficulty={String(p.difficulty ?? "")} stem={String(p.stem ?? "")} compact={Boolean(p.compact)}/>),
+    toCode: (p) => `<QuestionCard number="${String(p.number ?? "")}" type="${String(p.type ?? "single")}" stem={${JSON.stringify(String(p.stem ?? ""))}} />`,
 };

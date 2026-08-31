@@ -30,14 +30,14 @@ import { QuestionCard } from "@hulianui/ui/math"
 ```tsx
 <QuestionCard
   number="3"
-  kind="choice"
+  type="single"
   difficulty="A 组"
   stem="如图,图形①②都由完全相同的小正方形拼成。若图形①的边长为 4,则图形②的面积用分数表示为( )。"
   options={[
-    { label: "A", text: "\\frac{1}{9}" },
-    { label: "B", text: "\\frac{5}{9}" },
-    { label: "C", text: "\\frac{16}{9}" },
-    { label: "D", text: "\\frac{80}{9}" },
+    { key: "A", text: "\\frac{1}{9}" },
+    { key: "B", text: "\\frac{5}{9}" },
+    { key: "C", text: "\\frac{16}{9}" },
+    { key: "D", text: "\\frac{80}{9}" },
   ]}
   figure={{ src: "/figures/q3.png" }}
   chapter="第1章 有理数 · 1.1.1 自然数、分数和小数"
@@ -62,12 +62,17 @@ import { QuestionCard } from "@hulianui/ui/math"
 |---|---|---|---|
 | `stem` | `string` | - | 题干，支持 LaTeX 记号与填空槽 `____`，由 Formula 排版 |
 | `number` | `ReactNode` | - | 原书题号 |
-| `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | - | 题型，决定标签文案与语气色 |
-| `kindLabel` | `ReactNode` | - | 覆盖内置题型中文名 |
+| `type` | `"single" \| "multiple" \| "judge" \| "blank" \| "short_answer" \| "calculation" \| "essay"` | - | 题型（七型枚举），决定标签文案与语气色；文案走 Locale `question.types` |
+| `kind` | `"choice" \| "fill" \| "solution" \| "judge"` | - | **已弃用**，改用 `type`。映射 choice→single / fill→blank / solution→essay；下一个 minor 移除 |
+| `typeLabel` | `ReactNode` | - | 覆盖题型标签文案 |
+| `kindLabel` | `ReactNode` | - | **已弃用**，改用 `typeLabel` |
 | `difficulty` | `ReactNode` | - | 分层标签（A 组 / 基础 / 拔高） |
-| `options` | `{ label, text }[]` | - | 选择题选项，`text` 支持 LaTeX 记号 |
+| `options` | `{ key, text }[]` | - | 选择题选项，`text` 支持 LaTeX 记号；旧形状 `{ label, text }` 仍接受一个 minor |
 | `parts` | `string[]` | - | 小问 (1)(2)(3) |
 | `figure` | `{ src, alt? }` | - | 附图 |
+| `answer` | `QuestionAnswer` | - | 答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswer`。只有 `showAnswer` 为真才渲染 |
+| `analysis` | `string` | - | 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染 |
+| `showAnswer` | `boolean` | `false` | 渲染答案与解析区。学生作答前必须关 |
 | `chapter` / `source` | `ReactNode` | - | 章节归属 / 出处，落在页脚 |
 | `topics` | `string[]` | - | 知识点，渲染成 Chip |
 | `issues` | `{ label, tone? }[]` | - | 质量标记，非空时亮左侧警示边条 |
@@ -80,6 +85,8 @@ import { QuestionCard } from "@hulianui/ui/math"
 - **`issues` 不是装饰**。它存在的意义是让「机器拆出来但没把握」的题一眼可辨。把待复核的题和正常题渲染成一个样子，等于拿不可信的数据骗验收 —— 有 `issues` 就一定要传。
 - 警示用**左侧边条**而非整卡染色：整卡染色会压低题干对比度，题反而看不清。
 - `compact` 只影响小问与页脚，题干和选项始终完整渲染 —— 题面截断会让人误判题目内容。
+- **`showAnswer` 默认关，学生端不要开**。答案与解析一旦随卡片渲染就等于泄题；练习 / 作业页只在服务端回了判分结果之后再开。
+- **`type` 是七型枚举不是自由字符串**。简答 / 计算 / 解答是三个不同题型（简答短、计算可分步给分、解答是综合证明），别把它们都塞进 `essay`；旧的四型 `kind` 只保留到下一个 minor。
 
 ## 相关
 

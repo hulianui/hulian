@@ -289,7 +289,9 @@ function main() {
   if (entries.length < 100) throw new Error(`manifest parse suspiciously small: ${entries.length}`);
 
   // include uncatalogued real components (Access/Callout/Config/Theme …)
-  const SKIP_DIRS = new Set(["_icons", "lib", "motion", "showcase"]);
+  // question/ 是题目域的纯函数目录（类型 / 校验 / 判分 / 契约 fixture），不是组件；
+  // 它的文档挂在 math.md 的「配套纯函数」一节，后续的 QuestionEditor / QuestionAnswer 各自开目录。
+  const SKIP_DIRS = new Set(["_icons", "lib", "motion", "showcase", "question"]);
   const known = new Set(entries.map((e) => e.slug));
   const all = [...entries];
   for (const d of readdirSync(UI_SRC).sort()) {

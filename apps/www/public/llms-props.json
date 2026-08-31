@@ -586,6 +586,30 @@
       "Q",
       "H"
     ],
+    "QuestionType": [
+      "single",
+      "multiple",
+      "judge",
+      "blank",
+      "short_answer",
+      "calculation",
+      "essay"
+    ],
+    "QuestionValidationCode": [
+      "stem_empty",
+      "options_too_few",
+      "options_too_many",
+      "option_empty",
+      "options_forbidden",
+      "answer_out_of_range",
+      "multiple_answer_too_few",
+      "judge_not_boolean",
+      "blank_empty",
+      "blank_count_mismatch",
+      "subjective_answer_shape",
+      "difficulty_range",
+      "score_negative"
+    ],
     "QuestionKind": [
       "choice",
       "fill",
@@ -4227,8 +4251,7 @@
         "MathSegment",
         "QuestionCardProps",
         "QuestionKind",
-        "QuestionOption",
-        "QuestionIssue"
+        "LegacyQuestionOption"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/math/math.md",
       "props": [
@@ -23417,6 +23440,24 @@
           "description": "原书题号"
         },
         {
+          "name": "type",
+          "required": false,
+          "kind": "enum",
+          "type": "\"single\" | \"multiple\" | \"judge\" | \"blank\" | \"short_answer\" | \"calculation\" | \"essay\"",
+          "values": [
+            "single",
+            "multiple",
+            "judge",
+            "blank",
+            "short_answer",
+            "calculation",
+            "essay"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "题型（七型枚举），决定标签文案与语气色；文案走 Locale `question.types`"
+        },
+        {
           "name": "kind",
           "required": false,
           "kind": "enum",
@@ -23429,7 +23470,15 @@
           ],
           "valueType": "string",
           "default": null,
-          "description": "题型，决定标签文案与语气色"
+          "description": "**已弃用**，改用 `type`。映射 choice→single / fill→blank / solution→essay；下一个 minor 移除"
+        },
+        {
+          "name": "typeLabel",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "覆盖题型标签文案"
         },
         {
           "name": "kindLabel",
@@ -23437,7 +23486,7 @@
           "kind": "node",
           "type": "ReactNode",
           "default": null,
-          "description": "覆盖内置题型中文名"
+          "description": "**已弃用**，改用 `typeLabel`"
         },
         {
           "name": "difficulty",
@@ -23451,9 +23500,9 @@
           "name": "options",
           "required": false,
           "kind": "array",
-          "type": "{ label, text }[]",
+          "type": "{ key, text }[]",
           "default": null,
-          "description": "选择题选项，`text` 支持 LaTeX 记号"
+          "description": "选择题选项，`text` 支持 LaTeX 记号；旧形状 `{ label, text }` 仍接受一个 minor"
         },
         {
           "name": "parts",
@@ -23470,6 +23519,30 @@
           "type": "{ src, alt? }",
           "default": null,
           "description": "附图"
+        },
+        {
+          "name": "answer",
+          "required": false,
+          "kind": "other",
+          "type": "QuestionAnswer",
+          "default": null,
+          "description": "答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswer`。只有 `showAnswer` 为真才渲染"
+        },
+        {
+          "name": "analysis",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染"
+        },
+        {
+          "name": "showAnswer",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "渲染答案与解析区。学生作答前必须关"
         },
         {
           "name": "chapter` / `source",
@@ -27879,7 +27952,7 @@
           "kind": "node",
           "type": "ReactNode",
           "default": "取 `name` 首字",
-          "description": "徽章内容：图标 / 图片 / 首字"
+          "description": "徽章内容：图标 / 图片 / 动图 / 视频 / 首字"
         },
         {
           "name": "name",

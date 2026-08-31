@@ -145,6 +145,21 @@ The inside rule scales with the font size while the outside one is 1px; at body 
 
 **Use `formulaToPlain` for search, export, and plain-text comparison.** Never hand the raw notation to a search box: someone searching for "3/8" should match it.
 
+### Question domain (ships on this path alongside QuestionCard)
+
+```ts
+import {
+  gradeObjective, validateQuestion, defaultShape, normalizeOptions, blankCount,
+  splitStemFigures, toWireAnswer, fromWire, answerText,
+  type Question, type QuestionType, type QuestionAnswer,
+} from "@hulianui/ui/math"
+```
+
+- `validateQuestion` / `defaultShape` / `normalizeOptions` / `blankCount`: type-driven shape rules, isomorphic to the consumer backend's `_check_type_shape`.
+- `splitStemFigures`: lifts `![](key)` figures out of the stem before math parsing; the contract lives in `stem-figures.contract.json`.
+- `gradeObjective`: objective grading whose default tier matches the server word for word; normalisation, tolerance, and an injected equivalence comparator are opt-in. **The server remains the grading source of truth.**
+- `answerText`: answer JSON to human-readable text, dispatched by shape.
+
 ## How broken data is displayed
 
 KaTeX runs with `throwOnError: false`. Failures fall into two tiers, and **neither one swallows content silently nor throws an exception that tears down the tree**:
