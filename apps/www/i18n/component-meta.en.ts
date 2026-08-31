@@ -194,6 +194,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Displays textbook questions with type, stem, options, subquestions, media, source, and review status.",
     keywords: ["question", "card", "data-display", "collection"],
   },
+  "math-textarea": {
+    shortName: "MathTextarea",
+    description:
+      "LaTeX input with formula templates, live KaTeX preview, syntax checks with line and column, and an injectable visual editor tab.",
+    keywords: ["math", "latex", "formula", "textarea", "forms", "katex"],
+  },
   math: {
     shortName: "Formula",
     description:

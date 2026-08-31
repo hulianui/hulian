@@ -117,6 +117,7 @@ export { markdownShowcase } from "./markdown/markdown.showcase";
 // 塞进每个消费者的包。showcase.ts 只有文档站用，展示它本来就要付这份体积。
 export { mathShowcase } from "./math/math.showcase";
 export { questionCardShowcase } from "./question-card/question-card.showcase";
+export { mathTextareaShowcase } from "./math-textarea/math-textarea.showcase";
 export { marqueeShowcase } from "./marquee/marquee.showcase";
 export { mentionsShowcase } from "./mentions/mentions.showcase";
 export { menubarShowcase } from "./menubar/menubar.showcase";

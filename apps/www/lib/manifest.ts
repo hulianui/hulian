@@ -181,6 +181,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "prose", name: "Prose", shortName: "排版容器", description: "给富文本或 Markdown 内容套上统一的排版样式", category: "typography", group: "text", status: "new" },
   { slug: "markdown", name: "Markdown", shortName: "Markdown 渲染", description: "把 Markdown 字符串渲染成只读的富文本内容", category: "typography", group: "text", status: "new" },
   { slug: "question-card", name: "QuestionCard", shortName: "题目卡片", description: "完整展示一道题：题干、选项、小问、配图和出处", category: "data-display", group: "collection", status: "new" },
+  { slug: "math-textarea", name: "MathTextarea", shortName: "公式输入框", description: "带公式模板与实时预览的 LaTeX 输入框，产出仍是含 $…$ 的普通字符串", category: "forms", group: "advanced", status: "new" },
   { slug: "math", name: "Formula", shortName: "数学公式排版", description: "排版数学公式，分式、矩阵、求和积分都按真正的二维版式呈现", category: "typography", group: "text", status: "new" },
   { slug: "aurora-text", name: "AuroraText", shortName: "极光文字", description: "让一层多彩极光渐变在文字内部持续流动", category: "typography", group: "text", tags: ["animated"], status: "new" },
   { slug: "line-shadow-text", name: "LineShadowText", shortName: "斜线投影文字", description: "在标题文字背后错开一层硬边条纹投影", category: "typography", group: "text", status: "new" },
