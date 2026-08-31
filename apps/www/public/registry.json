@@ -1486,6 +1486,7 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/math-textarea.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
         "https://hulianui.haloritual.com/zh/r/question-card.json"
       ],
@@ -4719,6 +4720,100 @@
           "path": "components/hulianui/markdown-editor/markdown-editor.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/markdown-editor/markdown-editor.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "math-textarea",
+      "type": "registry:ui",
+      "title": "MathTextarea",
+      "description": "公式输入框 · 录题用的 LaTeX 输入框：模板插到光标处、选区一键包成 $…$、提交前自检报行列、KaTeX 解析错误定位、实时预览与消费端同一套排版 · 可注入可视化公式编辑器（MathField）出第二个页签 …",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [
+        "katex"
+      ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/math.json",
+        "https://hulianui.haloritual.com/zh/r/popover.json",
+        "https://hulianui.haloritual.com/zh/r/tabs.json",
+        "https://hulianui.haloritual.com/zh/r/text.json",
+        "https://hulianui.haloritual.com/zh/r/textarea.json"
+      ],
+      "meta": {
+        "import": "import { MathTextarea, FORMULA_TEMPLATE_GROUPS, applyFormulaTemplate, wrapSelectionInMath, isInsideMath, mathSpans, validateFormulaSyntax, textPosition, katexErrorAt, MATH_TEXTAREA_LOCALE_ZH, MATH_TEXTAREA_LOCALE_EN } from \"@hulianui/ui\"",
+        "exports": [
+          "MathTextarea",
+          "FORMULA_TEMPLATE_GROUPS",
+          "applyFormulaTemplate",
+          "wrapSelectionInMath",
+          "isInsideMath",
+          "mathSpans",
+          "validateFormulaSyntax",
+          "textPosition",
+          "katexErrorAt",
+          "MATH_TEXTAREA_LOCALE_ZH",
+          "MATH_TEXTAREA_LOCALE_EN"
+        ],
+        "types": [
+          "MathTextareaProps",
+          "MathFieldLikeProps",
+          "FormulaTemplate",
+          "FormulaTemplateGroup",
+          "BuiltinTemplateGroupId",
+          "BuiltinTemplateId",
+          "TemplateInsertion",
+          "FormulaSyntaxCode",
+          "FormulaSyntaxIssue",
+          "MathSpan",
+          "KatexParseIssue",
+          "MathTextareaLocale"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-textarea/math-textarea.md",
+        "docLocal": "packages/ui/src/math-textarea/math-textarea.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/math-textarea/formula-editing.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math-textarea/formula-editing.ts"
+        },
+        {
+          "path": "components/hulianui/math-textarea/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math-textarea/index.ts"
+        },
+        {
+          "path": "components/hulianui/math-textarea/katex-error.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math-textarea/katex-error.ts"
+        },
+        {
+          "path": "components/hulianui/math-textarea/math-textarea.locale.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math-textarea/math-textarea.locale.ts"
+        },
+        {
+          "path": "components/hulianui/math-textarea/math-textarea.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/math-textarea/math-textarea.tsx"
+        },
+        {
+          "path": "components/hulianui/math-textarea/math-textarea.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/math-textarea/math-textarea.types.ts"
         }
       ]
     },
@@ -21183,6 +21278,7 @@
       "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/math-textarea.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
         "https://hulianui.haloritual.com/zh/r/social-button.json"
       ],

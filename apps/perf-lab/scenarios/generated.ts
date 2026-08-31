@@ -740,6 +740,9 @@ export const scenarioLoaders = {
       .masonryShowcase,
   math: async () =>
     (await import("@hulianui/ui-internal/math/math.showcase")).mathShowcase,
+  "math-textarea": async () =>
+    (await import("@hulianui/ui-internal/math-textarea/math-textarea.showcase"))
+      .mathTextareaShowcase,
   mentions: async () =>
     (await import("@hulianui/ui-internal/mentions/mentions.showcase"))
       .mentionsShowcase,
@@ -3727,6 +3730,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/math/index.ts",
+  },
+  "math-textarea": {
+    id: "math-textarea",
+    scenarioId: "math-textarea/basic",
+    component: "MathTextarea",
+    entry: "@hulianui/ui/math-textarea",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/math-textarea/index.ts",
   },
   mentions: {
     id: "mentions",

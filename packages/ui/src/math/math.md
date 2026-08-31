@@ -147,6 +147,7 @@ import {
 - `splitStemFigures`：题干先切 `![](key)` 图再排公式，判据在 `stem-figures.contract.json`。
 - `gradeObjective`：客观题判分，默认档与服务端逐字同口径；归一 / 容差 / 等价比较器均 opt-in。**服务端才是判分 SSOT**。
 - `answerText`：答案 JSON → 人读文本，按形状分派。
+- `MathTextarea`：录题用的公式输入框（模板 / 自检 / 预览），见 [MathTextarea](../math-textarea/math-textarea.md)。
 
 ## 坏数据怎么显示
 
@@ -173,6 +174,7 @@ KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都�
 
 ## 相关
 
+- [MathTextarea](../math-textarea/math-textarea.md) —— 公式输入框，预览内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionCard](../question-card/question-card.md) —— 题目卡片，题干/选项内部就是本组件；同住 `@hulianui/ui/math`
 - [Prose](../prose/prose.md) —— 长文排版容器
 - [Markdown](../markdown/markdown.md) —— 整段富文本

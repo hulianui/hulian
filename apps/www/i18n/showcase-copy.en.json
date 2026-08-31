@@ -8495,8 +8495,8 @@
     "自定义预览": "Custom preview",
     "renderPreview 换掉默认的 Formula 预览：这里直接预览成题目卡片。": "renderPreview replaces the default Formula preview; here the value previews as a question card.",
     "将 $\\frac{3}{8}$ 化成小数为____。": "Write $\\frac{3}{8}$ as a decimal: ____.",
-    "已知 $x^{2}-5x+6=0$，求 $x$ 的值。": "Given $x^{2}-5x+6=0$, find $x$.",
-    "\" aria-label=\"题干\" value={value} onChange={setValue} />": "\" aria-label=\"Stem\" value={value} onChange={setValue} />"
+    "\" aria-label=\"题干\" value={value} onChange={setValue} />": "\" aria-label=\"Stem\" value={value} onChange={setValue} />",
+    "已知 $\\triangle ABC$ 中 $\\angle C=90^{\\circ}$，求 $\\sin A$ 的值。": "In $\\triangle ABC$ with $\\angle C=90^{\\circ}$, find $\\sin A$."
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

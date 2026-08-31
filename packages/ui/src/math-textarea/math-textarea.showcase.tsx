@@ -7,7 +7,7 @@ import { FORMULA_TEMPLATE_GROUPS } from "./formula-editing";
 import { MathTextarea } from "./math-textarea";
 import type { MathFieldLikeProps, MathTextareaProps } from "./math-textarea.types";
 
-const STEM = "已知 $x^{2}-5x+6=0$，求 $x$ 的值。";
+const STEM = "已知 $\\triangle ABC$ 中 $\\angle C=90^{\\circ}$，求 $\\sin A$ 的值。";
 
 function Demo({
   initial,

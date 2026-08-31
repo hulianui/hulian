@@ -1208,6 +1208,17 @@
     "Listbox": "listbox",
     "LoginForm": "login-form",
     "MarkdownEditor": "markdown-editor",
+    "MathTextarea": "math-textarea",
+    "FORMULA_TEMPLATE_GROUPS": "math-textarea",
+    "applyFormulaTemplate": "math-textarea",
+    "wrapSelectionInMath": "math-textarea",
+    "isInsideMath": "math-textarea",
+    "mathSpans": "math-textarea",
+    "validateFormulaSyntax": "math-textarea",
+    "textPosition": "math-textarea",
+    "katexErrorAt": "math-textarea",
+    "MATH_TEXTAREA_LOCALE_ZH": "math-textarea",
+    "MATH_TEXTAREA_LOCALE_EN": "math-textarea",
     "Mentions": "mentions",
     "MentionText": "mentions",
     "findTrigger": "mentions",
@@ -10883,6 +10894,258 @@
           "type": "(markdown: string) => void",
           "default": null,
           "description": "内容变化回调，参数为 markdown 字符串"
+        }
+      ],
+      "slots": []
+    },
+    {
+      "slug": "math-textarea",
+      "name": "MathTextarea",
+      "category": "forms",
+      "group": "advanced",
+      "status": "enriched",
+      "import": "import { MathTextarea, FORMULA_TEMPLATE_GROUPS, applyFormulaTemplate, wrapSelectionInMath, isInsideMath, mathSpans, validateFormulaSyntax, textPosition, katexErrorAt, MATH_TEXTAREA_LOCALE_ZH, MATH_TEXTAREA_LOCALE_EN } from \"@hulianui/ui\"",
+      "exports": [
+        "MathTextarea",
+        "FORMULA_TEMPLATE_GROUPS",
+        "applyFormulaTemplate",
+        "wrapSelectionInMath",
+        "isInsideMath",
+        "mathSpans",
+        "validateFormulaSyntax",
+        "textPosition",
+        "katexErrorAt",
+        "MATH_TEXTAREA_LOCALE_ZH",
+        "MATH_TEXTAREA_LOCALE_EN"
+      ],
+      "types": [
+        "MathTextareaProps",
+        "MathFieldLikeProps",
+        "FormulaTemplate",
+        "FormulaTemplateGroup",
+        "BuiltinTemplateGroupId",
+        "BuiltinTemplateId",
+        "TemplateInsertion",
+        "FormulaSyntaxCode",
+        "FormulaSyntaxIssue",
+        "MathSpan",
+        "KatexParseIssue",
+        "MathTextareaLocale"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-textarea/math-textarea.md",
+      "props": [
+        {
+          "name": "value",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "受控值：含 `$…$` 的普通字符串，与题干 / 选项 / 解析的存储格式一致"
+        },
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "function",
+          "type": "(next: string) => void",
+          "default": null,
+          "description": "值变化（键入、插入模板、包选区、可视化插入都走它）"
+        },
+        {
+          "name": "multiline",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "多行（题干 / 解析 / 参考答案）用 Textarea；单行（选项 / 每空答案）用 Input"
+        },
+        {
+          "name": "rows",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "3",
+          "description": "多行时的初始行数；随内容自动长高"
+        },
+        {
+          "name": "placeholder",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "占位"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁用输入与工具栏"
+        },
+        {
+          "name": "compact",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "紧凑形态：预览只占一行、不带说明文字。给选项与每空答案用"
+        },
+        {
+          "name": "templates",
+          "required": false,
+          "kind": "array",
+          "type": "readonly FormulaTemplateGroup[]",
+          "default": "FORMULA_TEMPLATE_GROUPS",
+          "description": "覆盖默认模板组。自定义模板给 `label` / 分组给 `title`，内置模板的名字从 Locale 取"
+        },
+        {
+          "name": "renderPreview",
+          "required": false,
+          "kind": "function",
+          "type": "(value: string) => ReactNode",
+          "default": null,
+          "description": "自定义预览渲染；默认 `<Formula>`。题干带图时由 QuestionEditor 传带图渲染"
+        },
+        {
+          "name": "visualEditor",
+          "required": false,
+          "kind": "other",
+          "type": "ComponentType<MathFieldLikeProps>",
+          "default": null,
+          "description": "注入可视化公式编辑器；**给了才出「可视化输入」页签**。`@hulianui/ui/math-field` 的 MathField 满足此契约"
+        },
+        {
+          "name": "macros",
+          "required": false,
+          "kind": "other",
+          "type": "Record<string, string>",
+          "default": null,
+          "description": "透传给默认预览与 KaTeX 探针的宏表；自定义宏不该被报成「未定义命令」"
+        },
+        {
+          "name": "aria-label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "无障碍名。单行控件必给：选项那一栏靠它区分「选项 A」和「选项 B」"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "透传到根节点"
+        },
+        {
+          "name": "value",
+          "owner": "MathFieldLikeProps（`visualEditor` 的契约）",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "LaTeX（不带 `$`）"
+        },
+        {
+          "name": "onChange",
+          "owner": "MathFieldLikeProps（`visualEditor` 的契约）",
+          "required": false,
+          "kind": "function",
+          "type": "(latex: string) => void",
+          "default": null,
+          "description": "编辑中回写"
+        },
+        {
+          "name": "onSubmit",
+          "owner": "MathFieldLikeProps（`visualEditor` 的契约）",
+          "required": false,
+          "kind": "function",
+          "type": "(latex: string) => void",
+          "default": null,
+          "description": "回车 / 确认；MathTextarea 把它接到「插入到光标处」同一条路径"
+        },
+        {
+          "name": "aria-label",
+          "owner": "MathFieldLikeProps（`visualEditor` 的契约）",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "由 MathTextarea 传入（页签名）"
+        },
+        {
+          "name": "className",
+          "owner": "MathFieldLikeProps（`visualEditor` 的契约）",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "样式透传"
+        },
+        {
+          "name": "id",
+          "owner": "FormulaTemplate / FormulaTemplateGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "稳定标识。内置模板 / 分组的显示名从 Locale 的 `templates[id]` / `templateGroups[id]` 取"
+        },
+        {
+          "name": "latex",
+          "owner": "FormulaTemplate / FormulaTemplateGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "插入的片段。**第一个空 `{}` / `[]` 是光标落点**；有选中文本时选中内容进第一个槽、光标跳到下一个槽"
+        },
+        {
+          "name": "sample",
+          "owner": "FormulaTemplate / FormulaTemplateGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "面板上的示例渲染，`$` 包好直接喂 Formula"
+        },
+        {
+          "name": "label",
+          "owner": "FormulaTemplate / FormulaTemplateGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "模板显示名；自定义模板给它，内置模板不给（走 Locale）"
+        },
+        {
+          "name": "title",
+          "owner": "FormulaTemplate / FormulaTemplateGroup",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "分组标题；自定义分组给它"
+        },
+        {
+          "name": "items",
+          "owner": "FormulaTemplate / FormulaTemplateGroup",
+          "required": false,
+          "kind": "array",
+          "type": "readonly FormulaTemplate[]",
+          "default": null,
+          "description": "分组里的模板"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "other",
+          "type": "(next: string)",
+          "default": null,
+          "description": "值变化。插入类动作会在下一帧把光标放回插入点（受控重渲染会把光标推到末尾，不还原连点两次模板第二次就插到了末尾）"
         }
       ],
       "slots": []

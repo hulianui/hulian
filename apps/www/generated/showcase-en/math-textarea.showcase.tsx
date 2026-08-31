@@ -6,7 +6,7 @@ import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { FORMULA_TEMPLATE_GROUPS } from "../../../../packages/ui/src/math-textarea/formula-editing";
 import { MathTextarea } from "../../../../packages/ui/src/math-textarea/math-textarea";
 import type { MathFieldLikeProps, MathTextareaProps } from "../../../../packages/ui/src/math-textarea/math-textarea.types";
-const STEM = "Given $x^{2}-5x+6=0$, find $x$.";
+const STEM = "In $\\triangle ABC$ with $\\angle C=90^{\\circ}$, find $\\sin A$.";
 function Demo({ initial, ...rest }: {
     initial: string;
 } & Omit<MathTextareaProps, "value" | "onChange">) {

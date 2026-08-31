@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 395 个组件 · v0.58.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 396 个组件 · v0.58.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -63,7 +63,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 …
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（66）
+## 表单 forms（67）
 - [AuthPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md): 搭出分屏登录页的品牌一侧，含渐变底、标语和卖点
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 触发操作的按钮，提供实心、浅色、描边、幽灵和危险等变体
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 把相关按钮连成一体或分组排列，做成分段控件
@@ -98,6 +98,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Listbox](https://github.com/hulianui/hulian/blob/master/packages/ui/src/listbox/listbox.md): 用键盘可漫游的列表做单选、多选或纯动作项
 - [LoginForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/login-form/login-form.md): 登录模板 · 自管 useForm(账号/密码必填+记住我) + rules 字段校验 + values 受控逃生口 + beforeSubmit 异步拦截 + extra/logo/footer 插槽 + field…
 - [MarkdownEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/markdown-editor/markdown-editor.md): 所见即所得地编辑内容，值进出都是 Markdown
+- [MathTextarea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-textarea/math-textarea.md): 公式输入框 · 录题用的 LaTeX 输入框：模板插到光标处、选区一键包成 $…$、提交前自检报行列、KaTeX 解析错误定位、实时预览与消费端同一套排版 · 可注入可视化公式编辑器（MathField）出第二个页签 …
 - [Mentions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/mentions/mentions.md): 输入触发符后弹出候选，把提及插进文本
 - [ModalForm / DrawerForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form-dialog/form-dialog.md): 把带校验的表单装进弹窗或抽屉，管好提交与关闭
 - [NumberField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-field/number-field.md): 编辑数字，带上下限、步进按钮和键盘步进
