@@ -2,14 +2,11 @@
 // （导入 / AI 拆题产出的数据没有这个保证），按形状分派不会因一条脏数据就印出 JSON 字面量。
 // 题型只在「同一形状对应多种语义」时用得上：一维数组既可能是多选的 key 集，也可能是填空
 // 的逐空答案——拿不到题型时按内层是否还是数组兜底（二维 = 逐空，一维 = 多选）。
-import { zhCN, type ComponentLocale } from "../config/locale";
+import { QUESTION_LOCALE_ZH, type QuestionLocale } from "./question.locale";
 import type { QuestionType } from "./question.types";
 
-export type QuestionLocale = NonNullable<ComponentLocale["question"]>;
-
-/** 纯函数的默认文案。组件里请用 useComponentLocale().question 覆盖。 */
-// `Locale.components` 在类型上可选（消费方可只传部分字典），但内置 zhCN 预设一定带全量词条。
-export const QUESTION_LOCALE_ZH: QuestionLocale = zhCN.components!.question!;
+export { QUESTION_LOCALE_ZH };
+export type { QuestionLocale };
 
 function blankText(blanks: unknown[], L: QuestionLocale): string {
   return blanks

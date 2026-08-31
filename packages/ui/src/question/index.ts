@@ -27,7 +27,8 @@ export {
 export { splitStemFigures, stemFigureKeys, stripStemFigures } from "./question-stem";
 export type { SplitStem } from "./question-stem";
 export { encodeBlanks, decodeBlanks, toWireAnswer, fromWire } from "./question-wire";
-export { answerLines, answerText, QUESTION_LOCALE_ZH } from "./answer-format";
-export type { QuestionLocale } from "./answer-format";
+export { answerLines, answerText } from "./answer-format";
+export { QUESTION_LOCALE_ZH, QUESTION_LOCALE_EN } from "./question.locale";
+export type { QuestionLocale } from "./question.locale";
 export { gradeObjective, canonicalAnswer, parseNumeric, JUDGE_TRUE, JUDGE_FALSE } from "./grade";
 export type { GradeOptions, GradeResult } from "./grade";

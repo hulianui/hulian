@@ -1,5 +1,6 @@
 "use client";
 import { useLocaleContext, warnMissingLocaleProvider } from "./locale-context";
+import { QUESTION_LOCALE_EN, QUESTION_LOCALE_ZH, type QuestionLocale } from "../question/question.locale";
 // 仅类型引用（编译期擦除，无运行时依赖，故不构成 config ↔ social-button 的循环）。
 import type { SocialProvider } from "../social-button/social-button.types";
 
@@ -719,39 +720,8 @@ export interface ComponentLocale {
   stepper?: { progress: string };
   documentSheet?: { print: string };
   mathText?: { blank: string; rowSeparator: string };
-  /** 题目域（QuestionCard / QuestionEditor / QuestionAnswer 与 answer-format 共用）。 */
-  question?: {
-    /** 七型中文名，键必须齐（Record，不许 Partial）。 */
-    types: {
-      single: string;
-      multiple: string;
-      judge: string;
-      blank: string;
-      short_answer: string;
-      calculation: string;
-      essay: string;
-    };
-    answer: string;
-    analysis: string;
-    /** 判断题两个值的展示名。 */
-    judgeTrue: string;
-    judgeFalse: string;
-    /** 多空答案的空号，如 (1) → "第1空："。单空不标。 */
-    blankLabel: (index: number) => string;
-    /** 多空之间的分隔，如 "；"。 */
-    blankSeparator: string;
-    /** 一空多种等价写法之间的分隔，如 " / "。 */
-    alternativeSeparator: string;
-    /** 多选 key 之间的分隔，如 "、"。 */
-    choiceSeparator: string;
-    /** 没有答案时的占位，如 "—"。 */
-    empty: string;
-    /** 分步给分：没有参考答案文本时的占位。 */
-    seeRubric: string;
-    rubricHeading: string;
-    /** 得分点后缀，如 (2) → "（2 分）"。 */
-    points: (score: number) => string;
-  };
+  /** 题目域词条，SSOT 在 question/question.locale.ts（math 入口不能拖进整份字典）。 */
+  question?: QuestionLocale;
   modelViewer?: { reset: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   coupon?: {
@@ -1527,29 +1497,7 @@ const zhComponents: ComponentLocale = {
   stepper: { progress: "步骤进度" },
   documentSheet: { print: "打印" },
   mathText: { blank: "填空", rowSeparator: "；" },
-  question: {
-    types: {
-      single: "单选",
-      multiple: "多选",
-      judge: "判断",
-      blank: "填空",
-      short_answer: "简答",
-      calculation: "计算",
-      essay: "解答",
-    },
-    answer: "答案",
-    analysis: "解析",
-    judgeTrue: "正确",
-    judgeFalse: "错误",
-    blankLabel: (index) => `第${index}空：`,
-    blankSeparator: "；",
-    alternativeSeparator: " / ",
-    choiceSeparator: "、",
-    empty: "—",
-    seeRubric: "见分步给分",
-    rubricHeading: "分步给分：",
-    points: (score) => `（${score} 分）`,
-  },
+  question: QUESTION_LOCALE_ZH,
   modelViewer: { reset: "重置视角" },
   coupon: {
     available: "立即领取",
@@ -2442,29 +2390,7 @@ const enComponents: ComponentLocale = {
   stepper: { progress: "Step progress" },
   documentSheet: { print: "Print" },
   mathText: { blank: "Blank", rowSeparator: ";" },
-  question: {
-    types: {
-      single: "Single choice",
-      multiple: "Multiple choice",
-      judge: "True / false",
-      blank: "Fill in the blank",
-      short_answer: "Short answer",
-      calculation: "Calculation",
-      essay: "Extended response",
-    },
-    answer: "Answer",
-    analysis: "Explanation",
-    judgeTrue: "True",
-    judgeFalse: "False",
-    blankLabel: (index) => `Blank ${index}: `,
-    blankSeparator: "; ",
-    alternativeSeparator: " / ",
-    choiceSeparator: ", ",
-    empty: "—",
-    seeRubric: "See rubric",
-    rubricHeading: "Rubric:",
-    points: (score) => ` (${score} pts)`,
-  },
+  question: QUESTION_LOCALE_EN,
   modelViewer: { reset: "Reset view" },
   coupon: {
     available: "Claim now",
