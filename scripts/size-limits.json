@@ -64,7 +64,7 @@
     {
       "name": "math",
       "entry": "@hulianui/ui/math",
-      "limitKB": 99.5
+      "limitKB": 178
     },
     {
       "name": "date-picker",

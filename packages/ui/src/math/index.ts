@@ -18,3 +18,6 @@ export type { QuestionCardProps, QuestionKind, LegacyQuestionOption } from "../q
 // 题目域（类型 / 形状 / 切图 / wire 互转 / 答案文本 / 判分）。与 QuestionCard 同住此路径，
 // 阶段 2–5 的 MathTextarea / QuestionEditor / QuestionAnswer 也从这里导出。
 export * from "../question";
+
+// 公式输入框（阶段 2）。预览内部就是 Formula，所以同住此路径。
+export * from "../math-textarea";
