@@ -73,8 +73,10 @@ interface Segment {
  * （读屏读「填空」）行为不同，这条差异写在 math.md 的「禁忌 / 坑」里。
  *
  * `(?<!\\)` 放过 `\_`：那是字面下划线，不是填空槽。
+ *
+ * 导出给 math-textarea 的 `katexErrorAt`：探针必须走同一条替换，否则 `$a=___$` 会被误报成解析错误。
  */
-function blanksToLatex(src: string, blankWidth: number): string {
+export function blanksToLatex(src: string, blankWidth: number): string {
   // `\rule` 而不是 `\underline{\hspace{}}`：后者的线紧贴内容底部，填空落在分数分子上时
   // （`\frac{___}{2}`）会与分数线叠在一起。`\rule` 的垂直位置可控，-0.2em 实测能拉开。
   // 厚度用 em 而不是 pt —— 跟着字号缩放，才与段外那条 1px border 的观感一致。
