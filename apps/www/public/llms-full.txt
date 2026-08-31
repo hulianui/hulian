@@ -15280,6 +15280,8 @@ const [items, setItems] = useState(fields);
 - 拖拽手柄的无障碍名称跟随 `ConfigProvider locale`；`enUS` 提供 “Reorder item N”，未包 Provider 时保持中文。
 - 守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。
 - 展示序号别用 `items.findIndex(...)` 反查（O(n²)），直接取 `renderItem` 第二参的 `state.index`。
+- 拖拽中的那一项吃 primary 语义色（主色描边 + 主色淡底）。若 `renderItem` 里自绘了不透明底色，会把这层提示盖掉——那就用第二参的 `state.dragging` 自己表达选中态。
+- 指针拖拽期间组件会把 `document.body.style.cursor` 钉成 `grabbing`（拖拽结束或卸载即还原原值）。抓握态**不能**交给 `:active`：指针底下的元素每帧都在换，`:active` 随之通断，抓手图标会持续闪烁。键盘拖拽（Space 抓起）不动 body 光标。
 
 ## 相关
 [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)
@@ -15403,6 +15405,9 @@ import { Stat } from "@hulianui/ui"
 - **`deltaLabel` 依附于 `delta`，单独传会被静默吞掉**：不传 `delta` 时整块趋势不渲染，`deltaLabel` 一起消失——TS 能过、控制台干净、页面只是少一行字。要「数值 + 一行与趋势无关的注脚」请用 `hint`（开发态现在也会 `console.warn` 点名这种误用）。
 - `delta` 不传则整块趋势不渲染；正负号由数值符号决定颜色，无需自己加箭头。
 - `value` 不做格式化，需自己传格式化后的内容（要自动千分位/前后缀走 [Statistic](https://hulianui.haloritual.com/zh/components/statistic)）。
+- 卡片自带 `shadow-sm` + `border-hairline`（亮色无描边只有投影、暗色有 1px 描边），是库内「有阴影的容器」统一档位。要回到无阴影的纯平面，用 `className="shadow-none border-border"` 覆盖。
+- `value` 字号是 30px 且 `truncate`。**比早期版本大一档**，窄卡（< 200px）里长数值更容易被截断——给卡片留够宽度，或把长数值改走 `Statistic` 的紧凑排版。
+- 卡片**不带 hover 抬升**，因为 Stat 本身不可点。把它包成链接/按钮时，hover 反馈请加在外层包裹元素上。
 
 ## 相关
 [Statistic](https://hulianui.haloritual.com/zh/components/statistic) · [Chart](https://hulianui.haloritual.com/zh/components/chart) · [Meter](https://hulianui.haloritual.com/zh/components/meter) · [Timeline](https://hulianui.haloritual.com/zh/components/timeline) · [NumberTicker](https://hulianui.haloritual.com/zh/components/number-ticker) · [WorldMap](https://hulianui.haloritual.com/zh/components/world-map)
@@ -25812,7 +25817,8 @@ import { MetaBalls } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 喂 token 色给 `color` / `cursorBallColor` 必须带 `--color-` 前缀（`var(--color-chart-1)`），裸 `var(--primary)` 在本 Tailwind v4 体系下 shader 解析不到会变黑。见 [[hulian-token-color-var-needs-color-prefix]]。
+- 喂 token 色给 `color` / `cursorBallColor` 必须带 `--color-` 前缀（`var(--color-chart-1)`）：本 Tailwind v4 体系下裸 `var(--primary)` 不是已定义的变量，组件会回中性灰兜底色（不是你配的色，也不是黑）。见 [[hulian-token-color-var-needs-color-prefix]]。
+- 颜色只在**挂载时**解析一次并写进 shader uniform。运行时切主题（`[data-theme]`）不会重算——需要跟随主题就给组件一个随主题变的 `key` 强制重挂。
 - WebGL/ogl 组件，仅客户端渲染；放在 RSC 页面里注意它是 `"use client"`。StrictMode 双挂载下 canvas context 复用可能毒化，参考 [[webgl-canvas-loseContext-poisons-strictmode-remount]]。
 - 父容器需 `relative` + `overflow-hidden`，组件用 `absolute inset-0` 铺满；底色建议深色才看得清发光黏球。
 

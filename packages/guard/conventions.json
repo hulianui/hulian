@@ -6055,18 +6055,25 @@
       "id": "component/meta-balls/pitfall/1",
       "scope": "meta-balls",
       "title": "MetaBalls",
-      "rule": "喂 token 色给 `color` / `cursorBallColor` 必须带 `--color-` 前缀（`var(--color-chart-1)`），裸 `var(--primary)` 在本 Tailwind v4 体系下 shader 解析不到会变黑。见 hulian-token-color-var-needs-color-prefix。",
+      "rule": "喂 token 色给 `color` / `cursorBallColor` 必须带 `--color-` 前缀（`var(--color-chart-1)`）：本 Tailwind v4 体系下裸 `var(--primary)` 不是已定义的变量，组件会回中性灰兜底色（不是你配的色，也不是黑）。见 hulian-token-color-var-needs-color-prefix。",
       "source": "packages/ui/src/meta-balls/meta-balls.md"
     },
     {
       "id": "component/meta-balls/pitfall/2",
       "scope": "meta-balls",
       "title": "MetaBalls",
-      "rule": "WebGL/ogl 组件，仅客户端渲染；放在 RSC 页面里注意它是 `\"use client\"`。StrictMode 双挂载下 canvas context 复用可能毒化，参考 webgl-canvas-loseContext-poisons-strictmode-remount。",
+      "rule": "颜色只在**挂载时**解析一次并写进 shader uniform。运行时切主题（`[data-theme]`）不会重算——需要跟随主题就给组件一个随主题变的 `key` 强制重挂。",
       "source": "packages/ui/src/meta-balls/meta-balls.md"
     },
     {
       "id": "component/meta-balls/pitfall/3",
+      "scope": "meta-balls",
+      "title": "MetaBalls",
+      "rule": "WebGL/ogl 组件，仅客户端渲染；放在 RSC 页面里注意它是 `\"use client\"`。StrictMode 双挂载下 canvas context 复用可能毒化，参考 webgl-canvas-loseContext-poisons-strictmode-remount。",
+      "source": "packages/ui/src/meta-balls/meta-balls.md"
+    },
+    {
+      "id": "component/meta-balls/pitfall/4",
       "scope": "meta-balls",
       "title": "MetaBalls",
       "rule": "父容器需 `relative` + `overflow-hidden`，组件用 `absolute inset-0` 铺满；底色建议深色才看得清发光黏球。",
@@ -8957,6 +8964,20 @@
       "source": "packages/ui/src/sortable/sortable.md"
     },
     {
+      "id": "component/sortable/pitfall/7",
+      "scope": "sortable",
+      "title": "Sortable",
+      "rule": "拖拽中的那一项吃 primary 语义色（主色描边 + 主色淡底）。若 `renderItem` 里自绘了不透明底色，会把这层提示盖掉——那就用第二参的 `state.dragging` 自己表达选中态。",
+      "source": "packages/ui/src/sortable/sortable.md"
+    },
+    {
+      "id": "component/sortable/pitfall/8",
+      "scope": "sortable",
+      "title": "Sortable",
+      "rule": "指针拖拽期间组件会把 `document.body.style.cursor` 钉成 `grabbing`（拖拽结束或卸载即还原原值）。抓握态**不能**交给 `:active`：指针底下的元素每帧都在换，`:active` 随之通断，抓手图标会持续闪烁。键盘拖拽（Space 抓起）不动 body 光标。",
+      "source": "packages/ui/src/sortable/sortable.md"
+    },
+    {
       "id": "component/sparkles-text/pitfall/1",
       "scope": "sparkles-text",
       "title": "SparklesText",
@@ -9150,6 +9171,27 @@
       "scope": "stat",
       "title": "Stat",
       "rule": "`value` 不做格式化，需自己传格式化后的内容（要自动千分位/前后缀走 [Statistic](../statistic/statistic.md)）。",
+      "source": "packages/ui/src/stat/stat.md"
+    },
+    {
+      "id": "component/stat/pitfall/4",
+      "scope": "stat",
+      "title": "Stat",
+      "rule": "卡片自带 `shadow-sm` + `border-hairline`（亮色无描边只有投影、暗色有 1px 描边），是库内「有阴影的容器」统一档位。要回到无阴影的纯平面，用 `className=\"shadow-none border-border\"` 覆盖。",
+      "source": "packages/ui/src/stat/stat.md"
+    },
+    {
+      "id": "component/stat/pitfall/5",
+      "scope": "stat",
+      "title": "Stat",
+      "rule": "`value` 字号是 30px 且 `truncate`。**比早期版本大一档**，窄卡（< 200px）里长数值更容易被截断——给卡片留够宽度，或把长数值改走 `Statistic` 的紧凑排版。",
+      "source": "packages/ui/src/stat/stat.md"
+    },
+    {
+      "id": "component/stat/pitfall/6",
+      "scope": "stat",
+      "title": "Stat",
+      "rule": "卡片**不带 hover 抬升**，因为 Stat 本身不可点。把它包成链接/按钮时，hover 反馈请加在外层包裹元素上。",
       "source": "packages/ui/src/stat/stat.md"
     },
     {
@@ -10837,7 +10879,7 @@
   ],
   "stats": {
     "componentDocs": 395,
-    "componentAdvisories": 1509,
-    "totalAdvisories": 1519
+    "componentAdvisories": 1515,
+    "totalAdvisories": 1525
   }
 }

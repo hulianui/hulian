@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { Empty, Input } from "@hulianui/ui";
+import { HulianMascot } from "./hulian-mascot";
 import { useIntlayer } from "next-intlayer";
 import { categoriesOf, searchAll, type DocType } from "../lib/search-index";
 
@@ -96,6 +97,9 @@ export function GalleryBrowser({
       {visible.length === 0 ? (
         <div className="py-10">
           <Empty
+            // 空器：瑚琏之器的本义就是「盛东西的器皿」，筛不出东西时它正好是空的。
+            // 不覆盖 Empty 给的 muted 色阶与尺寸 —— 空态是被动状态，不该比正文更响。
+            icon={<HulianMascot mood="idle" tight />}
             title={content.emptyTitle.replace("{query}", q.trim())}
             description={content.emptyDescription}
           />

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { useIntlayer } from "next-intlayer";
 import { Card, Empty, Heading, Input, Tag, Text } from "@hulianui/ui";
+import { HulianMascot } from "../../components/hulian-mascot";
 import {
   TYPE_LABEL,
   TYPE_ORDER,
@@ -119,6 +120,8 @@ export function SearchClient() {
       {hits.length === 0 ? (
         <div className="mt-10">
           <Empty
+            // 同画廊：空器等着被装。沿用 Empty 的 muted 色阶，不抢正文注意力。
+            icon={<HulianMascot mood="idle" tight />}
             title={
               q.trim() ? content.emptyQueryMatch.replace("{query}", q.trim()) : content.emptyQuery
             }

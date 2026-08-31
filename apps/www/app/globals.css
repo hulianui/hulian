@@ -88,3 +88,88 @@ body {
   height: 1px;
   background: var(--color-border);
 }
+
+/* ── 瑚琏器灵（HulianMascot）动效 ──────────────────────────────────────────────
+   全部走 transform/opacity（合成器属性），不动布局；每条都在 reduced-motion 下停在静止帧。
+   刻意不做「减速版」：器灵是装饰性角色，用户说了不要动效就该真不动，而不是慢慢动。 */
+
+/* 呼吸般的上下浮。3% 是 viewBox 单位的 3%，与尺寸无关，所以 24px 图标和 240px 插画同款手感。 */
+@keyframes hl-mascot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5%);
+  }
+}
+.hl-mascot-float {
+  animation: hl-mascot-float 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+}
+
+/* 睡眠态的 zZ：飘起来 + 淡出。transform-box/origin 让 % 位移相对自身包围盒而不是整张 svg。 */
+@keyframes hl-mascot-zzz {
+  0% {
+    opacity: 0;
+    transform: translate(0, 12%) scale(0.85);
+  }
+  35% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(6%, -34%) scale(1.05);
+  }
+}
+.hl-mascot-zzz {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hl-mascot-zzz 2.8s ease-in-out infinite;
+}
+
+/* 「上菜」态：三块积木错峰上浮，读作「器皿正在把组件端出来」。 */
+@keyframes hl-mascot-block {
+  0% {
+    opacity: 0;
+    transform: translateY(45%) scale(0.6);
+  }
+  30%,
+  60% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-45%) scale(0.6);
+  }
+}
+.hl-mascot-block {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hl-mascot-block 1.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.hl-mascot-block-1 {
+  animation-delay: 0s;
+}
+.hl-mascot-block-2 {
+  animation-delay: 0.18s;
+}
+.hl-mascot-block-3 {
+  animation-delay: 0.36s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hl-mascot-float,
+  .hl-mascot-zzz,
+  .hl-mascot-block {
+    animation: none;
+  }
+  /* 动效关掉后，配件必须停在「看得见」的那一帧 —— 否则 zZ / 积木停在 opacity:0，
+     用户看到的是一只没有任何配件的器，睡眠态与空闲态再也分不出来。 */
+  .hl-mascot-zzz,
+  .hl-mascot-block {
+    opacity: 1;
+    transform: none;
+  }
+}
