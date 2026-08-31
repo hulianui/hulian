@@ -154,3 +154,121 @@ describe("Sortable 拖拽排序（真实浏览器）", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * 起一次拖拽但**不松手**，停在中途 —— 光标与拖拽态样式只在这一段里存在。
+ * 返回 finish() 收尾，避免测试之间留下按住的指针和被改过的 body 光标。
+ */
+async function startDrag(from: Element, to: Element) {
+  const start = centerOf(from);
+  const end = centerOf(to);
+  await actPointer(from, "pointerdown", start.x, start.y);
+  const STEPS = 4;
+  for (let i = 1; i <= STEPS; i++) {
+    const t = i / STEPS;
+    await actPointer(
+      document,
+      "pointermove",
+      start.x + (end.x - start.x) * t,
+      start.y + (end.y - start.y) * t,
+    );
+  }
+  return async () => {
+    await actPointer(document, "pointerup", end.x, end.y);
+  };
+}
+
+const cursorOf = (el: Element) => getComputedStyle(el).cursor;
+
+describe("Sortable 拖拽中的光标（真实浏览器）", () => {
+  /**
+   * 回归：原实现把抓握态写成 `active:cursor-grabbing`，即「光标取决于指针**此刻压着谁**」。
+   * 拖拽期间指针底下的元素每帧都在换（被拖项的 transform 落后一帧、行间空隙归 ul、
+   * 让位动画中的其他行、消费方行内的 input(cursor:text)/button），`:active` 随之通断，
+   * 浏览器每个输入事件重算一次光标 —— 表现就是抓手图标持续闪烁。
+   * 所以断言的不是「某个元素是 grabbing」，而是「指针可能压到的每一处都是同一个 grabbing」。
+   */
+  it("拖拽期间：被拖行 / 其他行 / 行间空隙 / 行内按钮 的光标全都是 grabbing", async () => {
+    renderSortable(() => {});
+    const dragged = rowOf("第一项");
+    const other = rowOf("第三项");
+    const list = dragged.parentElement!;
+    const innerButton = screen.getAllByText("编辑")[0]!;
+
+    const finish = await startDrag(dragged, other);
+    try {
+      expect(cursorOf(dragged)).toBe("grabbing");
+      expect(cursorOf(other)).toBe("grabbing");
+      expect(cursorOf(list)).toBe("grabbing");
+      expect(cursorOf(innerButton)).toBe("grabbing");
+    } finally {
+      await finish();
+    }
+  });
+
+  it("拖拽期间 body 也钉成 grabbing（指针会被拖到列表外），松手后还原", async () => {
+    renderSortable(() => {});
+    const before = document.body.style.cursor;
+
+    const finish = await startDrag(rowOf("第一项"), rowOf("第三项"));
+    try {
+      expect(document.body.style.cursor).toBe("grabbing");
+    } finally {
+      await finish();
+    }
+    expect(document.body.style.cursor).toBe(before);
+  });
+
+  it("静止态回到 grab（不能把 grabbing 焊死）", async () => {
+    renderSortable(() => {});
+    const row = rowOf("第一项");
+    expect(cursorOf(row)).toBe("grab");
+
+    const finish = await startDrag(row, rowOf("第三项"));
+    await finish();
+
+    expect(cursorOf(rowOf("第一项"))).toBe("grab");
+    expect(cursorOf(rowOf("第一项").parentElement!)).not.toBe("grabbing");
+  });
+});
+
+describe("Sortable 拖拽中的语义色（真实浏览器）", () => {
+  it("被拖那一行吃 primary 语义色，其余行保持中性面", async () => {
+    renderSortable(() => {});
+    const dragged = rowOf("第一项");
+    const other = rowOf("第三项");
+    const idleBorder = getComputedStyle(other).borderTopColor;
+
+    const finish = await startDrag(dragged, other);
+    try {
+      const activeBorder = getComputedStyle(dragged).borderTopColor;
+      expect(activeBorder).not.toBe(idleBorder);
+      // 就是 --color-primary 本尊，不是随手挑的另一个灰
+      const primary = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-primary")
+        .trim();
+      const probe = document.createElement("span");
+      probe.style.color = primary;
+      document.body.appendChild(probe);
+      const primaryComputed = getComputedStyle(probe).color;
+      probe.remove();
+      expect(activeBorder).toBe(primaryComputed);
+      // 没被拖的行不许跟着变色
+      expect(getComputedStyle(other).borderTopColor).toBe(idleBorder);
+    } finally {
+      await finish();
+    }
+  });
+
+  it("松手后语义色收回", async () => {
+    renderSortable(() => {});
+    const idleBorder = getComputedStyle(rowOf("第三项")).borderTopColor;
+
+    const finish = await startDrag(rowOf("第一项"), rowOf("第三项"));
+    await finish();
+
+    for (const label of ["第一项", "第二项", "第三项"]) {
+      expect(getComputedStyle(rowOf(label)).borderTopColor).toBe(idleBorder);
+    }
+  });
+});

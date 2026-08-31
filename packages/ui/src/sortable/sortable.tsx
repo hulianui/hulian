@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { GripVertical } from "lucide-react";
 import {
@@ -81,6 +82,7 @@ function SortableRow<T>({
   renderItem,
   handle,
   handleLabel,
+  sorting,
 }: {
   id: UniqueIdentifier;
   item: T;
@@ -88,6 +90,8 @@ function SortableRow<T>({
   renderItem: SortableProps<T>["renderItem"];
   handle: boolean;
   handleLabel: (index: number) => string;
+  /** 列表里**任意一项**正在被拖（不只是本项）——光标不能靠 :active 表达，见下方注释。 */
+  sorting: boolean;
 }) {
   const {
     attributes,
@@ -119,9 +123,18 @@ function SortableRow<T>({
       // 整项可拖时，activator(attributes+listeners)落在 li 自身；触屏须 touch-none 防滚动劫持
       {...(handle ? {} : { ...attributes, ...listeners })}
       className={cn(
-        "flex select-none items-center gap-3 rounded-[var(--radius)] border border-border bg-surface px-3 py-2.5 text-sm",
-        !handle && "cursor-grab touch-none active:cursor-grabbing",
-        isDragging && "relative z-10 shadow-lg ring-1 ring-border",
+        "flex select-none items-center gap-3 rounded-[var(--radius)] border px-3 py-2.5 text-sm",
+        // 拖拽中的那一项吃语义主色（primary = "你正在动的就是它"），静止态回中性面：
+        // 只靠 shadow + 中性 ring 在长列表里认不出被抓起的是哪一行。
+        isDragging
+          ? "relative z-10 border-primary bg-primary-subtle shadow-lg ring-1 ring-primary"
+          : "border-border bg-surface",
+        // 光标：拖拽期间**不能**用 `active:` 表达抓握态。指针底下的元素每帧都在变
+        // （被拖项的 transform 落后一帧、行间空隙、让位中的其他行），`:active` 随之通断，
+        // 浏览器每来一个输入事件就重算一次光标 → 抓手图标持续闪烁。
+        // 拖拽期间改为「与位置无关」的常量：本行、ul 与 body 三层同时钉成 grabbing。
+        !handle &&
+          (sorting ? "touch-none cursor-grabbing" : "cursor-grab touch-none active:cursor-grabbing"),
       )}
     >
       {handle && (
@@ -133,7 +146,11 @@ function SortableRow<T>({
           // 手柄自身是 <button>，会被交互元素守卫误伤；打标记让守卫无条件放行
           data-sortable-handle=""
           aria-label={handleLabel(index + 1)}
-          className="-ml-1 shrink-0 cursor-grab touch-none rounded text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
+          className={cn(
+            "-ml-1 shrink-0 touch-none rounded outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            isDragging ? "text-primary" : "text-muted-foreground hover:text-foreground",
+            sorting ? "cursor-grabbing" : "cursor-grab active:cursor-grabbing",
+          )}
         >
           <GripVertical className="size-4" aria-hidden />
         </button>
@@ -162,7 +179,27 @@ export function Sortable<T>({
 
   const ids = items.map(getId);
 
+  // 拖拽中标志：只服务于「光标不许闪」这一件事（见 SortableRow 里的长注释）。
+  // 顺序状态仍然完全受控，这里不缓存任何顺序。
+  // 只对**指针拖拽**置真：键盘拖拽（Space 抓起 + 方向键）根本没有按下的鼠标，
+  // 那时把整页光标钉成 grabbing 是在说谎。
+  const [sorting, setSorting] = useState(false);
+
+  // 指针可以被拖到列表外（往上越过第一项、往下越过最后一项、甚至甩到页面别处）。
+  // 列表内的三层 grabbing 管不到那些像素，那里会翻回默认箭头 —— 于是「列表边缘来回蹭」
+  // 又是一轮闪烁。拖拽期间把 body 的光标也钉住，收口整页；结束/卸载还原原值。
+  useEffect(() => {
+    if (!sorting) return;
+    const { body } = document;
+    const previous = body.style.cursor;
+    body.style.cursor = "grabbing";
+    return () => {
+      body.style.cursor = previous;
+    };
+  }, [sorting]);
+
   function handleDragEnd(e: DragEndEvent) {
+    setSorting(false);
     const { active, over } = e;
     if (!over || active.id === over.id) return;
     const from = ids.indexOf(active.id);
@@ -172,7 +209,13 @@ export function Sortable<T>({
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={(e) => setSorting(e.activatorEvent instanceof MouseEvent)}
+      onDragCancel={() => setSorting(false)}
+      onDragEnd={handleDragEnd}
+    >
       <SortableContext
         items={ids}
         strategy={
@@ -182,6 +225,9 @@ export function Sortable<T>({
         <ul
           className={cn(
             orientation === "horizontal" ? "flex flex-wrap gap-2" : "space-y-2",
+            // 行间空隙属于 ul；`[&_*]` 连消费方 renderItem 里的输入框（cursor:text）、
+            // 按钮一起盖住 —— 让位动画会把它们送到指针底下，漏一个就闪一下。
+            sorting && "cursor-grabbing [&_*]:cursor-grabbing",
             className,
           )}
         >
@@ -194,6 +240,7 @@ export function Sortable<T>({
               renderItem={renderItem}
               handle={handle}
               handleLabel={labels.handle}
+              sorting={sorting}
             />
           ))}
         </ul>

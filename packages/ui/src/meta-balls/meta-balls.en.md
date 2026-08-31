@@ -64,7 +64,8 @@ import { MetaBalls } from "@hulianui/ui"
 
 ## Usage Guidelines
 
-- The token color given to `color` / `cursorBallColor` must be prefixed with `--color-` (`var(--color-chart-1)`). In this Tailwind v4 system, the bare `var(--primary)` cannot be parsed by the shader and will turn black. See [[hulian-token-color-var-needs-color-prefix]].
+- The token color given to `color` / `cursorBallColor` must be prefixed with `--color-` (`var(--color-chart-1)`). In this Tailwind v4 system the bare `var(--primary)` is not a defined variable, so the component falls back to a neutral grey — neither the color you asked for nor black. See [[hulian-token-color-var-needs-color-prefix]].
+- Colors are resolved once at mount and written into a shader uniform. Switching theme (`[data-theme]`) at runtime does not recompute them — pass a theme-derived `key` to force a remount if you need them to follow the theme.
 - WebGL/ogl component, client-side rendering only; when placed in the RSC page, note that it is `"use client"`. Canvas context reuse under StrictMode dual mounting may be poisoned, refer to [[webgl-canvas-loseContext-poisons-strictmode-remount]].
 - The parent container needs `relative` + `overflow-hidden`, and the component should be filled with `absolute inset-0`; it is recommended that the background color be dark to see the glowing sticky ball clearly.
 

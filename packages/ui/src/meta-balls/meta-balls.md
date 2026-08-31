@@ -64,7 +64,8 @@ import { MetaBalls } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-- 喂 token 色给 `color` / `cursorBallColor` 必须带 `--color-` 前缀（`var(--color-chart-1)`），裸 `var(--primary)` 在本 Tailwind v4 体系下 shader 解析不到会变黑。见 [[hulian-token-color-var-needs-color-prefix]]。
+- 喂 token 色给 `color` / `cursorBallColor` 必须带 `--color-` 前缀（`var(--color-chart-1)`）：本 Tailwind v4 体系下裸 `var(--primary)` 不是已定义的变量，组件会回中性灰兜底色（不是你配的色，也不是黑）。见 [[hulian-token-color-var-needs-color-prefix]]。
+- 颜色只在**挂载时**解析一次并写进 shader uniform。运行时切主题（`[data-theme]`）不会重算——需要跟随主题就给组件一个随主题变的 `key` 强制重挂。
 - WebGL/ogl 组件，仅客户端渲染；放在 RSC 页面里注意它是 `"use client"`。StrictMode 双挂载下 canvas context 复用可能毒化，参考 [[webgl-canvas-loseContext-poisons-strictmode-remount]]。
 - 父容器需 `relative` + `overflow-hidden`，组件用 `absolute inset-0` 铺满；底色建议深色才看得清发光黏球。
 

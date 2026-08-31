@@ -81,6 +81,8 @@ const [items, setItems] = useState(fields);
 - Inputs, controls, links, and contenteditable descendants are guarded from pointer dragging even when `handle={false}`; see [[dnd-kit-draggable-container-guard-interactive-children]]. Add `data-no-drag` to custom interactive canvases.
 - The guard stops at the item element and will not lock the list because an outer anchor or label exists.
 - Use `state.index` instead of repeatedly calling `items.findIndex`.
+- The item being dragged takes the primary semantic color (primary border plus a subtle primary fill). An opaque background painted inside `renderItem` hides that cue — express the state yourself via `state.dragging` in that case.
+- During a pointer drag the component pins `document.body.style.cursor` to `grabbing` and restores the previous value when the drag ends or the component unmounts. The grabbing state must not rely on `:active`: the element under the pointer changes every frame, so `:active` flickers on and off and the grab icon flickers with it. Keyboard dragging (space to pick up) leaves the body cursor alone.
 - Drag-handle accessible labels follow `ConfigProvider locale`; `enUS` provides “Reorder item N”, while the no-provider fallback remains Chinese.
 
 ## Related

@@ -102,24 +102,71 @@ function hash33(v: [number, number, number]): [number, number, number] {
   ];
 }
 
-// ── 工具：任意 CSS 颜色（含 token var()/oklch）→ 归一化 RGB（0–1）──
-// 原版只支持 #rrggbb；瑚琏喂的是 var(--color-chart-1) 这类 oklch token，
-// 用离屏画布让浏览器替我们解析成 rgb，再归一化。失败兜底中性灰。
-function resolveColor(input: string): [number, number, number] {
+// ── 工具：CSS 颜色字符串 → 归一化 RGB（0–1）──
+// 离屏 1×1 画布让浏览器负责一切颜色空间转换（hex / rgb / oklch / lab / color()）。
+// **不要改回正则解析**：本库的 oklch token 经 Lightning CSS 降级后计算值是 `lab(...)`，
+// 只认 `rgb()` 的正则会全数落到兜底色 —— 表现为「color / cursorBallColor 完全不生效」。
+function cssColorToRgb01(css: string): [number, number, number] | null {
+  try {
+    const off = document.createElement("canvas");
+    off.width = 1;
+    off.height = 1;
+    const ctx = off.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "#000";
+    ctx.fillStyle = css;
+    ctx.fillRect(0, 0, 1, 1);
+    const d = ctx.getImageData(0, 0, 1, 1).data;
+    return [d[0]! / 255, d[1]! / 255, d[2]! / 255];
+  } catch {
+    return null;
+  }
+}
+
+// ── 工具：任意 CSS 颜色（含 var() token）→ 归一化 RGB（0–1）──
+// 两步：① 探针元素挂在**组件自己的容器内**读计算值 —— 这样 var() 吃的是就近主题岛
+// 的值而不是 :root 的；② 交给离屏画布转成 sRGB 字节。失败兜底中性灰。
+//
+// color 是可继承属性，这带来一个哑火陷阱：写错的字面量会被 CSSOM 直接拒收，
+// 未定义的 `var(--typo)` 则在计算期失效 —— 两种情况探针都会**静默继承**祖先的文字色，
+// 于是「配错了色」表现为「球是黑的」而不是回到默认色。下面两道判据分别堵这两条。
+//
+// 导出仅供测试：颜色最终只作为 shader uniform 存在，DOM 里查不到，不导出就无从断言
+// （barrel 走 meta-balls/index.ts 白名单，这个符号不会进公开 API）。
+export function resolveColor(input: string, host: Element | null): [number, number, number] {
   const fallback: [number, number, number] = [0.8, 0.8, 0.85];
   if (typeof document === "undefined") return fallback;
   try {
-    const probe = document.createElement("span");
-    probe.style.color = input;
-    probe.style.display = "none";
-    document.body.appendChild(probe);
-    const resolved = getComputedStyle(probe).color; // 例 "rgb(98, 116, 255)"
-    document.body.removeChild(probe);
-    const m = resolved.match(/rgba?\(([^)]+)\)/);
-    if (!m) return fallback;
-    const parts = m[1]!.split(",").map((s) => parseFloat(s.trim()));
-    if (parts.length < 3 || parts.some((n) => Number.isNaN(n))) return fallback;
-    return [parts[0]! / 255, parts[1]! / 255, parts[2]! / 255];
+    const parent = host?.parentElement ?? host ?? document.body;
+
+    // 在指定的继承色下量一次 input 的计算值。
+    const computedUnder = (inherited: string): string | null => {
+      const wrapper = document.createElement("span");
+      wrapper.style.display = "none";
+      wrapper.style.color = inherited;
+      const probe = document.createElement("span");
+      probe.style.color = input;
+      // CSSOM 拒收 = 字面量根本不是合法颜色（var() 一律会被收下，留给第二道判据）。
+      if (probe.style.color === "") return null;
+      wrapper.appendChild(probe);
+      parent.appendChild(wrapper);
+      const resolved = getComputedStyle(probe).color;
+      wrapper.remove();
+      return resolved;
+    };
+
+    // var() 才需要第二道：换一个继承色重量一次，结果跟着变 = 这个 token 没定义，
+    // 探针量到的只是继承下来的文字色。真颜色不会随继承色改变。
+    if (input.includes("var(")) {
+      const a = computedUnder("rgb(1, 2, 3)");
+      const b = computedUnder("rgb(254, 253, 252)");
+      if (!a || a !== b) return fallback;
+      return cssColorToRgb01(a) ?? fallback;
+    }
+
+    const resolved = computedUnder("rgb(1, 2, 3)");
+    if (!resolved) return fallback;
+    return cssColorToRgb01(resolved) ?? fallback;
   } catch {
     return fallback;
   }
@@ -175,8 +222,8 @@ export function MetaBalls({
     const metaBallsUniform: Array<InstanceType<typeof Vec3>> = [];
     for (let i = 0; i < 50; i++) metaBallsUniform.push(new Vec3(0, 0, 0));
 
-    const [r1, g1, b1] = resolveColor(colorRef.current);
-    const [r2, g2, b2] = resolveColor(cursorColorRef.current);
+    const [r1, g1, b1] = resolveColor(colorRef.current, canvas);
+    const [r2, g2, b2] = resolveColor(cursorColorRef.current, canvas);
 
     const program = new Program(gl, {
       vertex: VERT,

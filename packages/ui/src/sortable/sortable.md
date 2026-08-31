@@ -95,6 +95,8 @@ const [items, setItems] = useState(fields);
 - 拖拽手柄的无障碍名称跟随 `ConfigProvider locale`；`enUS` 提供 “Reorder item N”，未包 Provider 时保持中文。
 - 守卫向上查找止步于当前项（`<li>`），不会一路找到 document——整个列表被外层 `<a>`/`<label>` 包住时不会全体锁死。
 - 展示序号别用 `items.findIndex(...)` 反查（O(n²)），直接取 `renderItem` 第二参的 `state.index`。
+- 拖拽中的那一项吃 primary 语义色（主色描边 + 主色淡底）。若 `renderItem` 里自绘了不透明底色，会把这层提示盖掉——那就用第二参的 `state.dragging` 自己表达选中态。
+- 指针拖拽期间组件会把 `document.body.style.cursor` 钉成 `grabbing`（拖拽结束或卸载即还原原值）。抓握态**不能**交给 `:active`：指针底下的元素每帧都在换，`:active` 随之通断，抓手图标会持续闪烁。键盘拖拽（Space 抓起）不动 body 光标。
 
 ## 相关
 [Table](../table/table.md) · [Book3D](../book-3d/book-3d.md) · [ProTable](../pro-table/pro-table.md) · [PricingTable](../pricing-table/pricing-table.md) · [JsonViewer](../json-viewer/json-viewer.md) · [EditableTable](../editable-table/editable-table.md)
