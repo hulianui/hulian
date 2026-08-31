@@ -5,6 +5,16 @@ import { warnOnce } from "../lib/warn-once";
 import type { StatProps } from "./stat.types";
 
 // KPI 指标卡：纯瑚琏皮肤（无图表库）。升=text-primary / 降=text-danger（无 success）。
+//
+// 视觉档位（克制提质，不引入任何新颜色）：
+// · **有高度**：`border-hairline + shadow-sm`，走库内既定判据「有阴影 → 亮色去 border 改
+//   hairline、暗色留 hairline」（同 Card 的 elevated 档）。此前是纯 1px 平面，一排 KPI 卡
+//   与背后的内容区在同一个平面上，扫一眼分不出哪层是数据。
+// · **不给 hover 抬升**：Stat 本身不可点。给了 hover:shadow-md 等于骗用户这儿能点。
+// · **数字等宽**：`tabular-nums`。一排卡片的数字若按比例字距排，位数一变整列就左右跳动
+//   —— 这是可读性缺陷，不是审美偏好。
+// · **字号梯度拉到 2.1×**：label 14px → value 30px。KPI 卡里数字就是内容本身，
+//   此前 24px 与标签只差 1.7 倍，主次不够。
 function StatImpl({ label, value, delta, deltaLabel, hint, icon, chart, className, ...props }: StatProps) {
   const hasDelta = typeof delta === "number";
   const up = hasDelta && (delta as number) >= 0;
@@ -19,19 +29,36 @@ function StatImpl({ label, value, delta, deltaLabel, hint, icon, chart, classNam
   }
   return (
     <div
-      className={cn("rounded-[var(--radius)] border border-border bg-surface p-5", className)}
+      className={cn(
+        "rounded-[var(--radius)] border border-hairline bg-surface p-5 shadow-sm",
+        className,
+      )}
       {...props}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="text-sm text-muted-foreground">{label}</span>
-        {icon ? <span className="text-muted-foreground">{icon}</span> : null}
+        <span className="text-sm font-medium text-muted-foreground">{label}</span>
+        {icon ? (
+          // 中性图标底座：给角标一个立足点，避免它像一枚浮在留白里的孤零零线条。
+          // 用 bg-muted（tokens 0.7.0 起 muted 就是背景色，muted-foreground 才是文字色），
+          // 不着任何语义色 —— KPI 卡的注意力该在数字上。
+          <span className="grid size-8 shrink-0 place-items-center rounded-[min(var(--radius),0.5rem)] bg-muted text-muted-foreground">
+            {icon}
+          </span>
+        ) : null}
       </div>
-      <div className="mt-2 truncate text-2xl font-semibold text-foreground">{value}</div>
+      <div className="mt-3 truncate text-3xl font-semibold tracking-tight text-foreground tabular-nums">
+        {value}
+      </div>
       {chart ? <div className="mt-3">{chart}</div> : null}
       {hasDelta ? (
         // flex-wrap + 子项 whitespace-nowrap：窄容器下「+x% / 标签」整块换行，
         // 不再把数字或 CJK 标签逐字裂行（健壮自适应）。
-        <div className={cn("mt-1 flex flex-wrap items-center gap-x-1 text-sm", up ? "text-primary" : "text-danger")}>
+        <div
+          className={cn(
+            "mt-2.5 flex flex-wrap items-center gap-x-1 text-sm font-medium tabular-nums",
+            up ? "text-primary" : "text-danger",
+          )}
+        >
           <span className="inline-flex items-center gap-1 whitespace-nowrap">
             {up ? <TrendingUp className="size-4 shrink-0" /> : <TrendingDown className="size-4 shrink-0" />}
             {up ? "+" : ""}
@@ -43,7 +70,7 @@ function StatImpl({ label, value, delta, deltaLabel, hint, icon, chart, classNam
       {hint != null ? (
         // 排在趋势行之下：趋势是对数值本身的解读，hint 是整张卡的注脚，语义层级更外。
         // 用 text-xs（比趋势行的 text-sm 小一档）拉开视觉层次，避免两行 muted 文字糊成一片。
-        <div className="mt-1 text-xs text-muted-foreground">{hint}</div>
+        <div className="mt-1.5 text-xs text-muted-foreground">{hint}</div>
       ) : null}
     </div>
   );

@@ -58,6 +58,9 @@ import { Stat } from "@hulianui/ui"
 - **`deltaLabel` 依附于 `delta`，单独传会被静默吞掉**：不传 `delta` 时整块趋势不渲染，`deltaLabel` 一起消失——TS 能过、控制台干净、页面只是少一行字。要「数值 + 一行与趋势无关的注脚」请用 `hint`（开发态现在也会 `console.warn` 点名这种误用）。
 - `delta` 不传则整块趋势不渲染；正负号由数值符号决定颜色，无需自己加箭头。
 - `value` 不做格式化，需自己传格式化后的内容（要自动千分位/前后缀走 [Statistic](../statistic/statistic.md)）。
+- 卡片自带 `shadow-sm` + `border-hairline`（亮色无描边只有投影、暗色有 1px 描边），是库内「有阴影的容器」统一档位。要回到无阴影的纯平面，用 `className="shadow-none border-border"` 覆盖。
+- `value` 字号是 30px 且 `truncate`。**比早期版本大一档**，窄卡（< 200px）里长数值更容易被截断——给卡片留够宽度，或把长数值改走 `Statistic` 的紧凑排版。
+- 卡片**不带 hover 抬升**，因为 Stat 本身不可点。把它包成链接/按钮时，hover 反馈请加在外层包裹元素上。
 
 ## 相关
 [Statistic](../statistic/statistic.md) · [Chart](../chart/chart.md) · [Meter](../meter/meter.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)

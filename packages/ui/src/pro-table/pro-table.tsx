@@ -475,7 +475,10 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
 
       {pagination && (
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-sm text-muted-foreground">{t.total(pagination.total)}</span>
+          {/* tabular-nums：翻页时总数/位数一变，比例字距会让这行左右抽动。 */}
+          <span className="text-sm text-muted-foreground tabular-nums">
+            {t.total(pagination.total)}
+          </span>
           <div className="flex flex-wrap items-center gap-3">
             {/* 切换器与 Pagination 的 pageSizeOptions（#271）共用同一份皮肤（PageSizeSelect），
                 改一次两处同步。这里没有把它交给 Pagination 内部渲染：ProTable 的底栏是

@@ -192,7 +192,11 @@ function renderControl(
   if (field.type === "region") {
     return (
       // fallback 占住控件高度：chunk 到达前不塌行，整片查询区不会跳一下。
-      <Suspense fallback={<div className="h-10 rounded-[var(--radius)] border border-border bg-surface" />}>
+      <Suspense
+        fallback={
+          <div className="h-10 rounded-[var(--radius)] border border-hairline bg-surface shadow-sm" />
+        }
+      >
         <RegionCascader
           value={Array.isArray(value) ? (value as string[]) : []}
           onChange={(codes) => onChange(codes)}
@@ -308,7 +312,12 @@ export function SearchForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={cn("rounded-[var(--radius)] border border-border bg-surface p-4", className)}
+      // 与它下方的 ProTable 容器同档（border-hairline + shadow-sm）。此前查询区是纯 1px 平面、
+      // 表格容器带阴影，同一个列表页上下两块落在不同平面上，中间那道缝一眼就能看出来。
+      className={cn(
+        "rounded-[var(--radius)] border border-hairline bg-surface p-4 shadow-sm",
+        className,
+      )}
     >
       {/* 窄屏强制单列：columns 是给桌面查询区排版的，手机上按 3 列摊会把「标签 + 控件」
           压进 ~120px，字段与操作区互相叠在一起。

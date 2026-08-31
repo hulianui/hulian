@@ -60,5 +60,9 @@ import { Stat } from "@hulianui/ui"
 - Omitting `delta` hides the whole trend; its sign automatically determines direction and color.
 - `value` is not formatted. Pass ready content or use [Statistic](../statistic/statistic.md) for grouping, precision, and affixes.
 
+- The card ships with `shadow-sm` + `border-hairline` (no visible outline in light, a 1px outline in dark) — the library's shared tier for elevated containers. To go back to a flat surface, override with `className="shadow-none border-border"`.
+- `value` renders at 30px and is truncated. That is **one step larger than earlier versions**, so long values are clipped sooner in narrow cards (< 200px). Give the card enough width, or move long values to `Statistic`'s tighter layout.
+- The card has **no hover elevation**, because a Stat is not clickable on its own. When wrapping it in a link or button, put the hover feedback on that wrapper.
+
 ## Related
 [Statistic](../statistic/statistic.md) · [Chart](../chart/chart.md) · [Meter](../meter/meter.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)

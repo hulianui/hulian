@@ -29,7 +29,9 @@ import type { PaginationProps } from "./pagination.types";
 import { useComponentLocale } from "../config/locale-context";
 
 // 方块按钮：复用 buttonVariants 的 focus-ring/disabled，仅覆写尺寸为定高、多位数可横向生长。
-const SQUARE = "h-9 min-w-9 px-1.5";
+// tabular-nums：页码从个位数翻到两位数时，比例字距会让整条页码带左右挪位，
+// 滑块动画的落点也跟着抖。等宽数字把每个页码钉成同宽。
+const SQUARE = "h-9 min-w-9 px-1.5 tabular-nums";
 // press 与颜色统一过渡：transform 走合成层；覆盖 buttonVariants 自带的 transition-colors。
 const PRESS =
   "transition-[color,background-color,box-shadow,transform] duration-150 active:scale-[0.97]";

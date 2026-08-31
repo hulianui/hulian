@@ -236,7 +236,11 @@ export function AdminLayout({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-[var(--hl-layout-header-h)] shrink-0 items-center gap-3 border-b border-border bg-surface px-4">
+        {/* 顶栏用「高度」而不是「线」与内容区分层：border-hairline + shadow-sm 走库内既定判据
+            （有阴影 → 亮色去 border 改 hairline、暗色留 hairline）。此前是一条 1px 硬线，
+            顶栏、页签条、内容区三层全靠线堆叠，整屏只有线没有层。
+            侧栏保持 border-r 不动 —— 竖直方向投影会往内容区糊一片灰，那不是分层是脏。 */}
+        <header className="relative z-10 flex h-[var(--hl-layout-header-h)] shrink-0 items-center gap-3 border-b border-hairline bg-surface px-4 shadow-sm">
           <button
             type="button"
             aria-label={collapsed ? t.expand : t.collapse}
