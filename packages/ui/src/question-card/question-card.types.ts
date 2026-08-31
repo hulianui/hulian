@@ -1,37 +1,44 @@
 import type { ReactNode } from "react";
+import type { QuestionAnswer, QuestionIssue, QuestionOption, QuestionType } from "../question/question.types";
 
-/** 题型。判断题单列，因为它既不像选择题有选项，也不像解答题要写过程。 */
+/** @deprecated 0.59 起改用 `type`（七型枚举）。映射：choice → single、fill → blank、solution → essay、judge → judge。下一个 minor 移除。 */
 export type QuestionKind = "choice" | "fill" | "solution" | "judge";
 
-export interface QuestionOption {
-  /** 选项标号 A/B/C/D */
+/** 旧选项形状（`label` 即 `key`），保留一个 minor。 */
+export interface LegacyQuestionOption {
   label: string;
-  /** 选项正文，支持 LaTeX 记号（由 Formula 排版） */
   text: string;
 }
 
-/** 质量标记：题目从文档里拆出来时发现的可疑点。 */
-export interface QuestionIssue {
-  label: string;
-  tone?: "warning" | "danger" | "neutral";
-}
+export type { QuestionIssue, QuestionOption };
 
 export interface QuestionCardProps {
   /** 原书题号，如 "12"。 */
   number?: ReactNode;
+  /** 题型（七型枚举）。决定标签文案与语气色。 */
+  type?: QuestionType;
+  /** @deprecated 改用 `type`。 */
   kind?: QuestionKind;
-  /** 覆盖题型中文名（缺省用内置映射）。 */
+  /** 覆盖题型标签文案（缺省走 Locale 的 `question.types`）。 */
+  typeLabel?: ReactNode;
+  /** @deprecated 改用 `typeLabel`。 */
   kindLabel?: ReactNode;
   /** 难度/分层标签，如 A 组 / 基础 / 拔高。 */
   difficulty?: ReactNode;
   /** 题干，支持 LaTeX 记号（`\frac{}{}` / `^{}` / `_{}` / 填空槽 `____`），由 Formula 排版。 */
   stem: string;
-  /** 选择题选项；非选择题传空或省略。 */
-  options?: QuestionOption[];
+  /** 选择题选项；非选择题传空或省略。新形状 `{ key, text }`，旧形状 `{ label, text }` 仍接受一个 minor。 */
+  options?: (QuestionOption | LegacyQuestionOption)[];
   /** 小问 (1)(2)(3)。 */
   parts?: string[];
   /** 附图。 */
   figure?: { src: string; alt?: string };
+  /** 答案（形状见 QuestionAnswer）。只有 `showAnswer` 为真才渲染。 */
+  answer?: QuestionAnswer;
+  /** 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染。 */
+  analysis?: string;
+  /** 渲染答案与解析区（题库详情 / 教师端开；学生作答前必须关）。@default false */
+  showAnswer?: boolean;
   /** 出处，如「学能评价 七上 · 第 3 页 · 第 3 题」。 */
   source?: ReactNode;
   /** 章节归属。 */

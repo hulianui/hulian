@@ -2,9 +2,12 @@ import { Card, CardBody } from "../card";
 import { Chip } from "../chip";
 import { Image } from "../image";
 import { cn } from "../lib/cn";
+import { warnOnce } from "../lib/warn-once";
 import { Formula } from "../math/math";
+import type { QuestionType } from "../question/question.types";
 import { Tag } from "../tag";
 import { Text } from "../text";
+import { QuestionAnswerSection, QuestionTypeTag } from "./question-card.client";
 import type { QuestionCardProps, QuestionKind } from "./question-card.types";
 
 // 题目卡片：教辅/题库场景的标准展示件。
@@ -13,29 +16,28 @@ import type { QuestionCardProps, QuestionKind } from "./question-card.types";
 // 会退到裸记号切分，题面照样排得出来 —— 也正因为吃 KaTeX，本件住在 @hulianui/ui/math。
 // 带 issues 的题左侧亮警示边条 —— 从文档自动拆出来的题必须让人一眼看出哪些没把握。
 
-const KIND_LABEL: Record<QuestionKind, string> = {
-  choice: "选择题",
-  fill: "填空题",
-  solution: "解答题",
-  judge: "判断题",
-};
-
-const KIND_TONE: Record<QuestionKind, "brand" | "success" | "warning" | "neutral"> = {
-  choice: "brand",
-  fill: "success",
-  solution: "warning",
-  judge: "neutral",
+/** 旧四型 → 七型。0.59 起 `kind` deprecated，下一个 minor 删这张表。 */
+const KIND_TO_TYPE: Record<QuestionKind, QuestionType> = {
+  choice: "single",
+  fill: "blank",
+  solution: "essay",
+  judge: "judge",
 };
 
 export function QuestionCard({
   number,
+  type,
   kind,
+  typeLabel,
   kindLabel,
   difficulty,
   stem,
   options,
   parts,
   figure,
+  answer,
+  analysis,
+  showAnswer = false,
   source,
   chapter,
   topics,
@@ -44,6 +46,14 @@ export function QuestionCard({
   compact = false,
   className,
 }: QuestionCardProps) {
+  if (kind !== undefined && type === undefined) {
+    warnOnce(
+      "question-card:kind-deprecated",
+      "[瑚琏] QuestionCard：`kind` 已弃用，请改用 `type`（single / multiple / judge / blank / short_answer / calculation / essay）。",
+    );
+  }
+  const resolvedType: QuestionType | undefined = type ?? (kind ? KIND_TO_TYPE[kind] : undefined);
+  const resolvedLabel = typeLabel ?? kindLabel;
   const flagged = (issues?.length ?? 0) > 0;
   const worst = issues?.some((i) => i.tone === "danger") ? "danger" : "warning";
 
@@ -64,11 +74,7 @@ export function QuestionCard({
               {number}.
             </Text>
           )}
-          {kind && (
-            <Tag size="sm" tone={KIND_TONE[kind]} variant="soft">
-              {kindLabel ?? KIND_LABEL[kind]}
-            </Tag>
-          )}
+          {resolvedType && <QuestionTypeTag type={resolvedType} label={resolvedLabel} />}
           {difficulty != null && (
             <Tag size="sm" tone="neutral" variant="outline">
               {difficulty}
@@ -90,16 +96,19 @@ export function QuestionCard({
 
             {options && options.length > 0 && (
               <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
-                {options.map((opt) => (
-                  <li key={opt.label} className="flex gap-1.5">
-                    <Text as="span" tone="muted" className="shrink-0">
-                      {opt.label}.
-                    </Text>
-                    <Text as="span">
-                      <Formula>{opt.text}</Formula>
-                    </Text>
-                  </li>
-                ))}
+                {options.map((opt) => {
+                  const key = "key" in opt ? opt.key : opt.label;
+                  return (
+                    <li key={key} className="flex gap-1.5">
+                      <Text as="span" tone="muted" className="shrink-0">
+                        {key}.
+                      </Text>
+                      <Text as="span">
+                        <Formula>{opt.text}</Formula>
+                      </Text>
+                    </li>
+                  );
+                })}
               </ul>
             )}
 
@@ -113,6 +122,10 @@ export function QuestionCard({
                   </li>
                 ))}
               </ul>
+            )}
+
+            {showAnswer && (
+              <QuestionAnswerSection type={resolvedType} answer={answer} analysis={analysis} />
             )}
           </div>
 

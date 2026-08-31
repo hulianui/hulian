@@ -13,12 +13,7 @@ export { splitMathSegments, mathToPlain } from "./math.parse";
 export type { MathSegment } from "./math.parse";
 
 export { QuestionCard } from "../question-card/question-card";
-export type {
-  QuestionCardProps,
-  QuestionKind,
-  QuestionOption,
-  QuestionIssue,
-} from "../question-card/question-card.types";
+export type { QuestionCardProps, QuestionKind, LegacyQuestionOption } from "../question-card/question-card.types";
 
 // 题目域（类型 / 形状 / 切图 / wire 互转 / 答案文本 / 判分）。与 QuestionCard 同住此路径，
 // 阶段 2–5 的 MathTextarea / QuestionEditor / QuestionAnswer 也从这里导出。
