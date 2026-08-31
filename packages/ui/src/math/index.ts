@@ -19,3 +19,7 @@ export type {
   QuestionOption,
   QuestionIssue,
 } from "../question-card/question-card.types";
+
+// 题目域（类型 / 形状 / 切图 / wire 互转 / 答案文本 / 判分）。与 QuestionCard 同住此路径，
+// 阶段 2–5 的 MathTextarea / QuestionEditor / QuestionAnswer 也从这里导出。
+export * from "../question";
