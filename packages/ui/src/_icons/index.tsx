@@ -450,6 +450,16 @@ export const VolumeX = /* @__PURE__ */ createIcon("volume-x", [
   ["line", { x1: "16", x2: "22", y1: "9", y2: "15", key: "5ykzw1" }],
 ]);
 
+export const Sigma = /* @__PURE__ */ createIcon("sigma", [
+  [
+    "path",
+    {
+      d: "M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2",
+      key: "wuwx1p",
+    },
+  ],
+]);
+
 export const Square = /* @__PURE__ */ createIcon("square", [
   ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
 ]);
