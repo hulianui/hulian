@@ -1,0 +1,14 @@
+[
+  { "name": "plain text stays untouched", "source": "两点之间线段最短。", "text": "两点之间线段最短。", "figures": [] },
+  { "name": "trailing figure block is lifted out", "source": "如图，求 AB 的长\n\n![](question-image/7/aaaa.png)", "text": "如图，求 AB 的长", "figures": ["question-image/7/aaaa.png"] },
+  { "name": "inline figure leaves no double space behind", "source": "甲 ![](textbook/a.png) 乙", "text": "甲 乙", "figures": ["textbook/a.png"] },
+  { "name": "alt text is dropped, key is kept", "source": "![勾股定理示意图](textbook/zj-math-g7/fig-001.png)", "text": "", "figures": ["textbook/zj-math-g7/fig-001.png"] },
+  { "name": "figures come out in document order, duplicates preserved", "source": "![](a.png)中间![](b.png)结尾![](a.png)", "text": "中间结尾", "figures": ["a.png", "b.png", "a.png"] },
+  { "name": "math delimiters survive figure extraction untouched", "source": "已知 $x^2 + y_1 = 1$，如图 ![](textbook/a.png) 求解", "text": "已知 $x^2 + y_1 = 1$，如图 求解", "figures": ["textbook/a.png"] },
+  { "name": "underscores inside the key never leak into the text", "source": "求值 ![](import/formula/a_1^2.png) 完", "text": "求值 完", "figures": ["import/formula/a_1^2.png"] },
+  { "name": "display math block is not mistaken for a figure", "source": "$$\\frac{a}{b}$$", "text": "$$\\frac{a}{b}$$", "figures": [] },
+  { "name": "unclosed image syntax stays literal text", "source": "看图![](未闭合", "text": "看图![](未闭合", "figures": [] },
+  { "name": "blank lines left behind collapse to one", "source": "第一段\n\n![](a.png)\n\n![](b.png)\n\n第二段", "text": "第一段\n\n第二段", "figures": ["a.png", "b.png"] },
+  { "name": "figure only, no prose", "source": "![](textbook/a.png)", "text": "", "figures": ["textbook/a.png"] },
+  { "name": "keys with spaces are not matched (storage keys never contain them)", "source": "![](has space.png)", "text": "![](has space.png)", "figures": [] }
+]
