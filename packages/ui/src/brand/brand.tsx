@@ -43,7 +43,17 @@ function BrandImpl({
       <span
         className={cn(
           // 方角 + token 圆角（对齐库内其它方形容器），不是圆——这正是它区别于 Avatar 的地方。
-          "grid shrink-0 place-items-center overflow-hidden rounded-[calc(var(--radius)-0.125rem)] font-semibold [&>img]:size-full [&>img]:object-cover [&>svg]:size-1/2",
+          "relative grid shrink-0 place-items-center overflow-hidden rounded-[calc(var(--radius)-0.125rem)] font-semibold [&>svg]:size-1/2",
+          // 媒体类 mark 一律铺满徽章：img（含 GIF / APNG / 动图 WebP）、<picture>（给「减弱动效」
+          // 用户一张静态回退的标准写法，img 在它里面一层，所以尺寸用后代选择器）、<video>（静音
+          // 循环的动态 logo）、<canvas>（自绘动画）。
+          //
+          // 为什么是 absolute inset-0 而不是 size-full：这个徽章是 grid 容器，替换元素（img /
+          // video / canvas）作为 grid 项时 height:100% 在 Chrome 里解析不出来（实测 2:1 的图得到
+          // 36×0，flex 同样 0×36），旧的 `[&>img]:size-full` 只是被 1:1 素材掩盖了、object-cover
+          // 从没真正裁过图。绝对定位子元素的百分比按徽章的 padding box 解析，永远是定值。
+          "[&>img]:absolute [&>picture]:absolute [&>video]:absolute [&>canvas]:absolute [&>img]:inset-0 [&>picture]:inset-0 [&>video]:inset-0 [&>canvas]:inset-0",
+          "[&_img]:size-full [&_img]:object-cover [&>picture]:block [&>picture]:size-full [&>video]:size-full [&>video]:object-cover [&>canvas]:size-full",
           MARK[size],
         )}
         style={{ backgroundColor: accent, color: "var(--color-primary-foreground)" }}

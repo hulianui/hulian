@@ -9,6 +9,22 @@ function Mark() {
   );
 }
 
+// 动图示例用内联 SMIL SVG 的 data-URI 顶替真实 GIF：素材零外链（check-remote-assets），
+// 又能在 <img> 里真的动起来。颜色是烘进素材里的——真实的品牌动图（GIF / WebM）也一样是
+// 烘死的颜色，不会跟主题走，这正是它与 currentColor 图标 mark 的差别。
+const MOTION_GLYPH = "<path d='M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Z'/>";
+const MOTION_BG = "<rect width='24' height='24' fill='#1e293b'/>";
+function motionSvg(animated: boolean) {
+  const dot = animated
+    ? "<circle cx='16.5' cy='16.5' r='3.5'><animate attributeName='r' values='3.5;1.5;3.5' dur='1.6s' repeatCount='indefinite'/></circle>"
+    : "<circle cx='16.5' cy='16.5' r='3.5'/>";
+  return `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>${MOTION_BG}<g fill='#fff'>${MOTION_GLYPH}${dot}</g></svg>`,
+  )}`;
+}
+const MOTION_MARK = motionSvg(true);
+const STATIC_MARK = motionSvg(false);
+
 export const brandShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -48,6 +64,37 @@ export const brandShowcase: ShowcaseSpec = {
           <Brand size="md" name="瑚琏" />
           <Brand size="lg" name="瑚琏" />
           <Brand mark={<Mark />} />
+        </div>
+      ),
+    },
+    {
+      title: "动图徽章",
+      description:
+        "GIF / APNG / 动图 WebP 直接塞进 mark 就会动；包一层 <picture> 给开了「减弱动效」的用户一张静态图，两种写法都按铺满徽章处理。",
+      code: `// 动图直接当 img 传；<picture> 给「减弱动效」用户一张静态回退
+<Brand
+  name="瑚琏后台"
+  mark={
+    <picture>
+      <source srcSet="/brand-static.png" media="(prefers-reduced-motion: reduce)" />
+      <img src="/brand-motion.gif" alt="" />
+    </picture>
+  }
+/>
+<Brand mark={<img src="/brand-motion.gif" alt="瑚琏后台" />} />   {/* 收起态 */}`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-8">
+          <Brand
+            name="瑚琏后台"
+            description="picture 减弱动效回退"
+            mark={
+              <picture>
+                <source srcSet={STATIC_MARK} media="(prefers-reduced-motion: reduce)" />
+                <img src={MOTION_MARK} alt="" />
+              </picture>
+            }
+          />
+          <Brand mark={<img src={MOTION_MARK} alt="瑚琏后台" />} />
         </div>
       ),
     },

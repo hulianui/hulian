@@ -89,6 +89,7 @@ const [active, setActive] = useState("dashboard");
 ## 禁忌 / 坑
 
 - **`collapsible` 可用时 `logoCollapsed` 应当必填**。折叠后侧栏只有 64px，没给窄版标识就只能拿宽 logo 顶上，`overflow-hidden` 会把它裁掉半截——不报错，只是难看，所以开发期会打一次告警（#121）。传首字、单色图标、方形 mark 都行。
+- **品牌区直接放 [Brand](../brand/brand.md)**：`logo={<Brand mark={…} name="…" />}`、`logoCollapsed={<Brand mark={…} />}`。动图 / 视频 logo 也走 Brand 的 `mark`（GIF、`<picture>` 减弱动效回退、静音 `<video>` 都已给铺满规则），AdminLayout 的 `logo` 槽只负责摆位与对齐、不给媒体尺寸——裸传一张大图会按原尺寸被 `overflow-hidden` 裁掉。
 - 顶栏与侧栏品牌区共用 `--hl-layout-header-h`，折叠态下品牌区自动切 `justify-center`，与下方 `NavMenu mode="collapsed"` 的图标轨共用同一条中轴。改这块时别只切内容不切对齐。
 
 

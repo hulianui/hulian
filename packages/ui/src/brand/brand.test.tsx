@@ -24,6 +24,44 @@ describe("Brand", () => {
     expect(container.querySelector("[data-logo]")).toBeTruthy();
   });
 
+  it("动图走 <picture>（减弱动效静态回退）时 img 仍受铺满规则约束", () => {
+    // 减弱动效回退的标准写法是 <picture><source media="(prefers-reduced-motion: reduce)"/><img/></picture>，
+    // img 多包了一层；若尺寸规则只认直接子级 img，动图一加回退就按原图尺寸被裁。
+    const { container } = render(
+      <Brand
+        name="瑚琏"
+        mark={
+          <picture>
+            <source srcSet="static.png" media="(prefers-reduced-motion: reduce)" />
+            <img src="motion.gif" alt="" />
+          </picture>
+        }
+      />,
+    );
+    const badge = container.querySelector("span > span") as HTMLElement;
+    expect(badge.querySelector("picture > img")).toBeTruthy();
+    expect(badge.className).toContain("[&_img]:size-full");
+    expect(badge.className).toContain("[&>picture]:absolute");
+    expect(badge.className).toContain("[&>picture]:size-full");
+    // 替换元素在 grid 项里 height:100% 不解析，铺满必须走 absolute inset-0（见组件注释）。
+    expect(badge.className).toContain("relative");
+    expect(badge.className).toContain("[&>img]:absolute");
+  });
+
+  it("video / canvas 类动态 mark 同样铺满徽章", () => {
+    const { container } = render(
+      <Brand name="瑚琏" mark={<video src="brand.webm" muted loop playsInline />} />,
+    );
+    const badge = container.querySelector("span > span") as HTMLElement;
+    expect(badge.querySelector("video")).toBeTruthy();
+    expect(badge.className).toContain("[&>video]:absolute");
+    expect(badge.className).toContain("[&>video]:size-full");
+    expect(badge.className).toContain("[&>canvas]:absolute");
+    expect(badge.className).toContain("[&>canvas]:size-full");
+    // 图标 svg 仍是半尺寸，不被媒体规则误伤。
+    expect(badge.className).toContain("[&>svg]:size-1/2");
+  });
+
   it("省略 name 只出徽章（侧栏收起态）", () => {
     const { container, queryByText } = render(<Brand mark="H" />);
     expect(queryByText("H")).toBeTruthy();

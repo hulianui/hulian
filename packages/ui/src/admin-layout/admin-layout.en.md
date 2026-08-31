@@ -89,6 +89,7 @@ const [active, setActive] = useState("dashboard");
 ## Usage guidelines
 
 - **Treat `logoCollapsed` as required whenever `collapsible` is on.** A collapsed sider is only 64px wide, so without a narrow mark the full logo gets clipped in half by `overflow-hidden`. Nothing throws, it just looks broken, so a development warning fires once (#121). A first glyph, a monochrome icon, or a square mark all work.
+- **Put [Brand](../brand/brand.en.md) directly in the brand area**: `logo={<Brand mark={…} name="…" />}` and `logoCollapsed={<Brand mark={…} />}`. Animated or video logos also go through Brand's `mark` (GIF, `<picture>` reduced-motion fallbacks, and muted `<video>` already receive the fill rules). The AdminLayout `logo` slot only positions and aligns; it gives media no size, so a bare large image is clipped at its natural size by `overflow-hidden`.
 - The header and the sidebar brand block share `--hl-layout-header-h`, and the brand block switches to `justify-center` when collapsed so it shares a centre line with the collapsed `NavMenu` icon rail. When editing this area, switch the alignment as well as the content.
 
 - **Handle `onTabsAction` when `tabs` is controlled.** AdminLayout does not own the `tabs` array in controlled mode. Context-menu actions can only report the keys that should change; the consumer must apply the update.
