@@ -9,3 +9,13 @@
 `Sortable` 之前把抓握态写成 `active:cursor-grabbing`，即「光标取决于指针此刻压着谁」。拖拽期间指针底下的元素每帧都在换（被拖项的 transform 落后一帧、行间空隙归 `ul`、让位动画中的其他行、消费方行内的 `input`/`button`），`:active` 随之通断，浏览器每个输入事件重算一次光标，表现就是抓手图标持续闪烁。改为拖拽期间用与位置无关的常量：被拖行、其余行、`ul` 与 `document.body` 四处同时钉成 `grabbing`，结束或卸载还原；键盘拖拽不动 body 光标（没有按下的鼠标）。
 
 同时给 `Sortable` 拖拽中的那一项加上 primary 语义色（主色描边 + 主色淡底 + 手柄主色），此前只有阴影和中性 ring，长列表里认不出被抓起的是哪一行。
+
+<!-- changelog-en:start -->
+Fixes `MetaBalls` ignoring `color` / `cursorBallColor` entirely, and the grab cursor flickering while dragging a `Sortable` item.
+
+`MetaBalls` used to parse the probe element's computed color with an `/rgba?\(...\)/` regex. This library's `oklch()` tokens are downleveled by Lightning CSS, so the computed value is `lab(...)`: the regex never matched, and **both** color props silently fell back to the neutral grey default. On the docs site the "custom colors" example and the default example rendered the same grey-white blobs. Color resolution now goes through an offscreen 1x1 canvas, the same approach as the other 30-odd WebGL components in the library (the browser handles every color-space conversion). Two hardenings ride along: the probe is mounted inside the component's own subtree, so `var()` reads the nearest theme island instead of `:root`; and a mistyped literal or an undefined `var(--typo)` now falls back to the default color instead of silently inheriting the ancestor text color and painting the blobs black. The color lives only in a shader uniform and is invisible to the DOM, so typecheck, guard and unit tests could not see this defect; real-browser tests now cover it.
+
+`Sortable` expressed the grab state as `active:cursor-grabbing`, meaning "the cursor depends on whatever the pointer is over right now". During a drag the element under the pointer changes every frame (the dragged item's transform lags one frame, the gaps between rows belong to the `ul`, other rows are mid-shift animation, consumer rows contain `input` / `button`), so `:active` toggled on and off and the browser recomputed the cursor on every input event: the grab icon flickered continuously. The drag now uses position-independent constants: the dragged row, every other row, the `ul` and `document.body` are all pinned to `grabbing` for the duration of the drag and restored on end or unmount. Keyboard drags do not touch the body cursor (no mouse button is held).
+
+The item being dragged in `Sortable` also gets the primary semantic color (primary outline, tinted primary background, primary handle). Previously it only had a shadow and a neutral ring, which made the lifted row hard to spot in a long list.
+<!-- changelog-en:end -->
