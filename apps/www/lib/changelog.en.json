@@ -1,5 +1,24 @@
 [
   {
+    "pkg": "@hulianui/ui",
+    "version": "0.58.0",
+    "date": "2026-08-31",
+    "entries": [
+      {
+        "sha": "9124187",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Visual upgrade for the admin family: hierarchy moves from lines to elevation, and jittering numbers are fixed. **This changes the default look; interfaces will look different the day you upgrade.**\n\nThe changes concentrate on three places. After a screen-by-screen audit these were the only genuinely flat spots in the admin family; the rest (Table header, Descriptions key/value rows, NavMenu group titles, Skeleton, Empty) already held up and were deliberately left alone:\n\n- **`Stat`**: raised to `border-hairline + shadow-sm` (the library's established rule: with a shadow, light mode drops the border for a hairline and dark mode keeps the hairline, matching `Card`'s `elevated` tier); value goes from 24px to 30px with `tracking-tight`; label gains `font-medium`; the corner icon gets a neutral `bg-muted` plinth; value and trend rows use `tabular-nums`. Deliberately **no** hover lift: a Stat is not clickable, and a lift would promise a click that does nothing.\n- **`SearchForm`**: the container moves from a flat 1px border to `border-hairline + shadow-sm`. Until now the query area on a list page was flat while the `ProTable` container below it carried a shadow, so the two blocks sat on different planes with a visible seam between them.\n- **`AdminLayout`**: the top bar changes from `border-b border-border` to `border-b border-hairline + shadow-sm`, separating from the content with elevation instead of a hard line. The sidebar keeps its `border-r`: a vertical shadow would smear grey into the content area, which reads as dirt, not depth.\n\nPlus two tabular-number fixes (readability defects, not taste): the \"N items total\" count in `ProTable` and the page numbers in `Pagination`. When the digit count changes, proportional figures make the whole row shift sideways, and in `Pagination` the sliding indicator lands in the wrong place as well.\n\n**Migration**: to keep the old flat look, pass `className=\"shadow-none border-border\"` to `Stat` / `SearchForm`. The `Stat` value is one step larger and still `truncate`, so long values in narrow cards (< 200px) get cut off sooner; give them room or switch to `Statistic`."
+      },
+      {
+        "sha": "9a2cc41",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fixes `MetaBalls` ignoring `color` / `cursorBallColor` entirely, and the grab cursor flickering while dragging a `Sortable` item.\n\n`MetaBalls` used to parse the probe element's computed color with an `/rgba?\\(...\\)/` regex. This library's `oklch()` tokens are downleveled by Lightning CSS, so the computed value is `lab(...)`: the regex never matched, and **both** color props silently fell back to the neutral grey default. On the docs site the \"custom colors\" example and the default example rendered the same grey-white blobs. Color resolution now goes through an offscreen 1x1 canvas, the same approach as the other 30-odd WebGL components in the library (the browser handles every color-space conversion). Two hardenings ride along: the probe is mounted inside the component's own subtree, so `var()` reads the nearest theme island instead of `:root`; and a mistyped literal or an undefined `var(--typo)` now falls back to the default color instead of silently inheriting the ancestor text color and painting the blobs black. The color lives only in a shader uniform and is invisible to the DOM, so typecheck, guard and unit tests could not see this defect; real-browser tests now cover it.\n\n`Sortable` expressed the grab state as `active:cursor-grabbing`, meaning \"the cursor depends on whatever the pointer is over right now\". During a drag the element under the pointer changes every frame (the dragged item's transform lags one frame, the gaps between rows belong to the `ul`, other rows are mid-shift animation, consumer rows contain `input` / `button`), so `:active` toggled on and off and the browser recomputed the cursor on every input event: the grab icon flickered continuously. The drag now uses position-independent constants: the dragged row, every other row, the `ul` and `document.body` are all pinned to `grabbing` for the duration of the drag and restored on end or unmount. Keyboard drags do not touch the body cursor (no mouse button is held).\n\nThe item being dragged in `Sortable` also gets the primary semantic color (primary outline, tinted primary background, primary handle). Previously it only had a shadow and a neutral ring, which made the lifted row hard to spot in a long list."
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/tokens",
     "version": "0.12.0",
     "date": "2026-08-26",

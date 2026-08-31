@@ -1,5 +1,24 @@
 [
   {
+    "pkg": "@hulianui/ui",
+    "version": "0.58.0",
+    "date": "2026-08-31",
+    "entries": [
+      {
+        "sha": "9124187",
+        "bump": "minor",
+        "breaking": false,
+        "body": "中后台家族视觉升级：把「层级」从线改成高度，并修掉数字跳位。**这是默认视觉变更，升级后界面当天就会不一样。**\n\n改动集中在三处 —— 逐屏审计后，中后台真正「素」的就是这三处，其余（Table 表头、Descriptions 键值、NavMenu 分组标题、Skeleton、Empty）本来就已成立，刻意没动：\n\n- **`Stat`**：升到 `border-hairline + shadow-sm`（库内既定判据：有阴影 → 亮色去 border 改 hairline、暗色留 hairline，同 `Card` 的 `elevated` 档）；数值 24px → 30px 并加 `tracking-tight`；label 加 `font-medium`；角标图标获得中性 `bg-muted` 底座；数值与趋势行加 `tabular-nums`。刻意**不加** hover 抬升 —— Stat 本身不可点，给了就是骗用户这儿能点。\n- **`SearchForm`**：容器从纯 1px 平面对齐到 `border-hairline + shadow-sm`。此前同一个列表页里查询区是平的、下方 `ProTable` 容器带阴影，两块落在不同平面上，中间那道缝一眼可见。\n- **`AdminLayout`**：顶栏从 `border-b border-border` 改为 `border-b border-hairline + shadow-sm`，用高度而不是硬线与内容区分层。侧栏保持 `border-r` 不动 —— 竖直投影会往内容区糊一片灰，那不是分层是脏。\n\n外加两处等宽数字修复（可读性缺陷，不是审美偏好）：`ProTable` 的「共 N 条」与 `Pagination` 的页码。位数一变，比例字距会让整行左右抽动，`Pagination` 里还会带偏滑块动画的落点。\n\n**迁移**：想保留旧的纯平面观感，对 `Stat` / `SearchForm` 传 `className=\"shadow-none border-border\"` 即可。`Stat` 的数值大了一档且仍是 `truncate`，窄卡（< 200px）里长数值会更早被截断，请给足宽度或改用 `Statistic`。"
+      },
+      {
+        "sha": "9a2cc41",
+        "bump": "patch",
+        "breaking": false,
+        "body": "修复 `MetaBalls` 的 `color` / `cursorBallColor` 完全不生效，以及 `Sortable` 拖拽时抓手光标持续闪烁。\n\n`MetaBalls` 之前用 `/rgba?\\(...\\)/` 正则解析探针元素的计算色值，而本库的 `oklch()` token 经 Lightning CSS 降级后计算值是 `lab(...)` —— 正则永远不匹配，两个颜色 prop **全部**静默落到兜底中性灰，文档站上「自定义配色」那个示例和默认示例渲染出来是同一片灰白球。改成与库内其它 30 余个 WebGL 件一致的离屏 1×1 画布换算（浏览器负责所有色彩空间转换）。顺带两处硬化：探针挂到组件自己的子树里，`var()` 因此吃就近主题岛的值而不是 `:root` 的；写错的字面量与未定义的 `var(--typo)` 现在回兜底色，而不是静默继承祖先文字色把球画成黑的。颜色只活在 shader uniform 里，DOM 查不到，typecheck / guard / 单测全都看不见这个缺陷，补了真实浏览器测试守着。\n\n`Sortable` 之前把抓握态写成 `active:cursor-grabbing`，即「光标取决于指针此刻压着谁」。拖拽期间指针底下的元素每帧都在换（被拖项的 transform 落后一帧、行间空隙归 `ul`、让位动画中的其他行、消费方行内的 `input`/`button`），`:active` 随之通断，浏览器每个输入事件重算一次光标，表现就是抓手图标持续闪烁。改为拖拽期间用与位置无关的常量：被拖行、其余行、`ul` 与 `document.body` 四处同时钉成 `grabbing`，结束或卸载还原；键盘拖拽不动 body 光标（没有按下的鼠标）。\n\n同时给 `Sortable` 拖拽中的那一项加上 primary 语义色（主色描边 + 主色淡底 + 手柄主色），此前只有阴影和中性 ring，长列表里认不出被抓起的是哪一行。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/tokens",
     "version": "0.12.0",
     "date": "2026-08-26",
