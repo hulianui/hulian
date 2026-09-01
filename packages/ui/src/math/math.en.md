@@ -160,6 +160,7 @@ import {
 - `gradeObjective`: objective grading whose default tier matches the server word for word; normalisation, tolerance, and an injected equivalence comparator are opt-in. **The server remains the grading source of truth.**
 - `answerText`: answer JSON to human-readable text, dispatched by shape.
 - `MathTextarea`: the formula input for authoring (templates / checks / preview), see [MathTextarea](../math-textarea/math-textarea.en.md).
+- `QuestionEditor`: structured editing of one question (seven types / figures / options / blanks / rubric / preview), see [QuestionEditor](../question-editor/question-editor.en.md).
 
 ## How broken data is displayed
 
@@ -187,6 +188,7 @@ The position is that **a corrupted formula must be visible**. Quietly rendering 
 ## Related
 
 - [MathTextarea](../math-textarea/math-textarea.en.md): formula input whose preview is this component; also lives in `@hulianui/ui/math`
+- [QuestionEditor](../question-editor/question-editor.en.md): question editor whose stem, options, and preview are this component; also lives in `@hulianui/ui/math`
 - [QuestionCard](../question-card/question-card.md): question card whose stem and options are this component; shipped on `@hulianui/ui/math` alongside it
 - [Prose](../prose/prose.md): long-form typographic container
 - [Markdown](../markdown/markdown.md): full rich-text passages

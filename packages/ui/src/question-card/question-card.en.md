@@ -70,6 +70,7 @@ An uncertain automatically extracted item:
 | `options` | `{ key, text }[]` | - | Choices whose text supports LaTeX notation. The legacy `{ label, text }` shape is still accepted for one minor. |
 | `parts` | `string[]` | - | Subquestions such as (1), (2), and (3). |
 | `figure` | `{ src, alt? }` | - | Supporting image. |
+| `resolveFigure` | `(key: string) => string` | - | Resolver for `![](key)` references in the stem: when provided, figures are split out first and rendered after the text in order; otherwise the stem is passed to Formula unchanged |
 | `answer` | `QuestionAnswer` | - | Answer key; see `QuestionAnswer` in `@hulianui/ui/math`. Rendered only when `showAnswer` is true. |
 | `analysis` | `string` | - | Explanation, accepts LaTeX. Rendered only when `showAnswer` is true. |
 | `showAnswer` | `boolean` | `false` | Renders the answer and explanation block. Keep it off before a student has answered. |
