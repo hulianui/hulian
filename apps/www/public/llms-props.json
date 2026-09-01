@@ -1249,6 +1249,12 @@
     "PASSPHRASE_WORDLIST": "password-generator",
     "ProForm": "pro-form",
     "PulsatingButton": "pulsating-button",
+    "QuestionAnswer": "question-answer",
+    "canSubmit": "question-answer",
+    "answerKind": "question-answer",
+    "resolveBlankCount": "question-answer",
+    "QUESTION_ANSWER_LOCALE_ZH": "question-answer",
+    "QUESTION_ANSWER_LOCALE_EN": "question-answer",
     "QuestionEditor": "question-editor",
     "questionFormulaIssues": "question-editor",
     "shapeIsDirty": "question-editor",
@@ -11075,6 +11081,15 @@
           "description": "回车 / 确认；MathTextarea 把它接到「插入到光标处」同一条路径"
         },
         {
+          "name": "disabled",
+          "owner": "MathFieldLikeProps（`visualEditor` 的契约）",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "锁定（QuestionAnswer 在已提交 / 提交中时传；MathTextarea 不传）"
+        },
+        {
           "name": "aria-label",
           "owner": "MathFieldLikeProps（`visualEditor` 的契约）",
           "required": false,
@@ -11921,6 +11936,284 @@
           "name": "render",
           "type": "ReactElement",
           "description": "渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与脉冲光环合并进该元素；文案仍取 children"
+        }
+      ]
+    },
+    {
+      "slug": "question-answer",
+      "name": "QuestionAnswer",
+      "category": "forms",
+      "group": "advanced",
+      "status": "enriched",
+      "import": "import { QuestionAnswer, canSubmit, answerKind, resolveBlankCount, QUESTION_ANSWER_LOCALE_ZH, QUESTION_ANSWER_LOCALE_EN } from \"@hulianui/ui\"",
+      "exports": [
+        "QuestionAnswer",
+        "canSubmit",
+        "answerKind",
+        "resolveBlankCount",
+        "QUESTION_ANSWER_LOCALE_ZH",
+        "QUESTION_ANSWER_LOCALE_EN"
+      ],
+      "types": [
+        "QuestionAnswerProps",
+        "AnswerableQuestion",
+        "QuestionAnswerResult",
+        "AnswerKind",
+        "QuestionAnswerLocale"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-answer/question-answer.md",
+      "props": [
+        {
+          "name": "question",
+          "required": false,
+          "kind": "other",
+          "type": "AnswerableQuestion",
+          "default": null,
+          "description": "学生端题面（见下），**没有答案与解析的位置**"
+        },
+        {
+          "name": "value",
+          "required": false,
+          "kind": "other",
+          "type": "StudentAnswer | undefined",
+          "default": null,
+          "description": "受控作答：填空为逐空数组（单空也是一项数组），多选为 key 数组，单选 / 判断为字符串（判断是 `\"true\" | \"false\"`）。续做时可直接传服务端记的字符串"
+        },
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "function",
+          "type": "(next: StudentAnswer) => void",
+          "default": null,
+          "description": "每次作答变化"
+        },
+        {
+          "name": "result",
+          "required": false,
+          "kind": "other",
+          "type": "QuestionAnswerResult | null",
+          "default": "null",
+          "description": "有值 = 已作答：控件锁定、显示正误 / 正确答案 / 解析、按钮变「已提交」"
+        },
+        {
+          "name": "onSubmit",
+          "required": false,
+          "kind": "function",
+          "type": "(answer: StudentAnswer) => void",
+          "default": null,
+          "description": "**给了才出提交按钮**。参数是规范形：填空恒为数组，多选为 key 数组"
+        },
+        {
+          "name": "pending",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "提交中：按钮转圈、控件锁定"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "只读"
+        },
+        {
+          "name": "renderStem",
+          "required": false,
+          "kind": "function",
+          "type": "(stem: string) => ReactNode",
+          "default": null,
+          "description": "自定义题干渲染。缺省与 QuestionCard 同一条路径"
+        },
+        {
+          "name": "resolveFigure",
+          "required": false,
+          "kind": "function",
+          "type": "(key: string) => string",
+          "default": null,
+          "description": "题干里 `![](key)` → 可显示 URL。缺省题干渲染用；给了 `renderStem` 则忽略"
+        },
+        {
+          "name": "blankInput",
+          "required": false,
+          "kind": "enum",
+          "type": "\"text\" | \"math\"",
+          "values": [
+            "text",
+            "math"
+          ],
+          "valueType": "string",
+          "default": "\"text\"",
+          "description": "填空的输入控件"
+        },
+        {
+          "name": "mathField",
+          "required": false,
+          "kind": "other",
+          "type": "ComponentType<MathFieldLikeProps>",
+          "default": null,
+          "description": "`blankInput=\"math\"` 时必给；没给回落成文本输入框并有开发期告警"
+        },
+        {
+          "name": "header",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "顶部标签行右侧（题号 / 出处 / 计时）"
+        },
+        {
+          "name": "reason",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "题干上方的来源说明行（推荐理由 / 「老师布置的 A 层作业」）"
+        },
+        {
+          "name": "correctHint",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "答对时结果区里那句话"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "透传到根 Card"
+        },
+        {
+          "name": "type",
+          "owner": "AnswerableQuestion",
+          "required": false,
+          "kind": "union",
+          "type": "QuestionType | string",
+          "resolvedType": "\"single\" | \"multiple\" | \"judge\" | \"blank\" | \"short_answer\" | \"calculation\" | \"essay\" | string",
+          "values": [
+            "single",
+            "multiple",
+            "judge",
+            "blank",
+            "short_answer",
+            "calculation",
+            "essay"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "七型之一；不认识的字符串按主观题只读处理并有开发期告警"
+        },
+        {
+          "name": "stem",
+          "owner": "AnswerableQuestion",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "题干（含 `$…$` 与 `![](key)`）"
+        },
+        {
+          "name": "options",
+          "owner": "AnswerableQuestion",
+          "required": false,
+          "kind": "other",
+          "type": "QuestionOption[] | null",
+          "default": null,
+          "description": "选择题选项。历史形状（`[\"A. 甲\"]` / `[\"60°\"]`）也认，走 `normalizeOptions`"
+        },
+        {
+          "name": "blankCount",
+          "owner": "AnswerableQuestion",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "填空题空数。缺失或不合法按题干 `____` 数，再不行按 1"
+        },
+        {
+          "name": "difficulty",
+          "owner": "AnswerableQuestion",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "1–5，渲染成星"
+        },
+        {
+          "name": "topics",
+          "owner": "AnswerableQuestion",
+          "required": false,
+          "kind": "array",
+          "type": "string[]",
+          "default": null,
+          "description": "知识点标签"
+        },
+        {
+          "name": "correct",
+          "owner": "QuestionAnswerResult",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": null,
+          "description": "正误"
+        },
+        {
+          "name": "correctAnswer",
+          "owner": "QuestionAnswerResult",
+          "required": false,
+          "kind": "other",
+          "type": "QuestionAnswerValue",
+          "default": null,
+          "description": "正确答案（任意合法形状），用 `answerText` 渲染成文字"
+        },
+        {
+          "name": "analysis",
+          "owner": "QuestionAnswerResult",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "解析，走 Formula"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "other",
+          "type": "(next: StudentAnswer)",
+          "default": null,
+          "description": "作答变化。多选回传排好序的 key 数组；填空回传完整的逐空数组"
+        },
+        {
+          "name": "onSubmit",
+          "required": false,
+          "kind": "other",
+          "type": "(answer: StudentAnswer)",
+          "default": null,
+          "description": "点提交。只在 `canSubmit(answer)` 为真时可点"
+        }
+      ],
+      "slots": [
+        {
+          "name": "header",
+          "type": "顶部标签行右侧",
+          "description": ""
+        },
+        {
+          "name": "reason",
+          "type": "题干上方的来源说明行，前面带一个信息图标",
+          "description": ""
+        },
+        {
+          "name": "correctHint",
+          "type": "答对时结果区正文",
+          "description": ""
         }
       ]
     },
@@ -23988,9 +24281,9 @@
           "name": "answer",
           "required": false,
           "kind": "other",
-          "type": "QuestionAnswer",
+          "type": "QuestionAnswerValue",
           "default": null,
-          "description": "答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswer`。只有 `showAnswer` 为真才渲染"
+          "description": "答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswerValue`。只有 `showAnswer` 为真才渲染"
         },
         {
           "name": "analysis",

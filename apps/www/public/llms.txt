@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 397 个组件 · v0.58.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 398 个组件 · v0.58.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -63,7 +63,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 …
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（68）
+## 表单 forms（69）
 - [AuthPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md): 搭出分屏登录页的品牌一侧，含渐变底、标语和卖点
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 触发操作的按钮，提供实心、浅色、描边、幽灵和危险等变体
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 把相关按钮连成一体或分组排列，做成分段控件
@@ -105,6 +105,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [PasswordGenerator](https://github.com/hulianui/hulian/blob/master/packages/ui/src/password-generator/password-generator.md): 密码生成器 · Bitwarden 式双模面板（字符密码 + 密码短语·内置 1747 词表）+ 熵值实时评级四档强度条 + 参数即改即重算 + 逐字符着色（数字蓝符号红·手抄可辨）+ 复制/重生成 + i18n · …
 - [ProForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-form/pro-form.md): 内联表单编排，自动配好提交与重置底栏
 - [PulsatingButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pulsating-button/pulsating-button.md): 脉冲按钮 · 外扩光环(box-shadow) + RSC · forms/button · #animated
+- [QuestionAnswer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-answer/question-answer.md): 学生作答卡 · 按题型给对的作答控件：单选 RadioGroup / 多选 CheckboxGroup / 判断题型自带两项 / 填空每空一个输入框（可注入公式键盘）· 选项缺失明说做不了、主观题只读 · canSub…
 - [QuestionEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-editor/question-editor.md): 出题编辑器 · 一道数学题的结构化编辑：七型切换（有内容先确认）、题干 + 题图、选项增删上下移（答案跟着走）、判断 / 填空（空数随题干、等价写法、一键对齐）/ 主观题（参考答案 + 分步给分）、解析、难度 / 分值…
 - [Radio](https://github.com/hulianui/hulian/blob/master/packages/ui/src/radio/radio.md): 从一组互斥选项里选一个，支持方向键操作
 - [RainbowButton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/rainbow-button/rainbow-button.md): 彩虹按钮 · chart 流光底 + 模糊光晕 + RSC · forms/button · #animated

@@ -206,6 +206,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Structured editor for one math question: seven types, figures, options, blanks, rubric, and a live QuestionCard preview.",
     keywords: ["question", "editor", "math", "latex", "forms", "quiz"],
   },
+  "question-answer": {
+    shortName: "QuestionAnswer",
+    description:
+      "Student answer card: the right control per question type, missing options stated plainly, submit only when every blank is filled, verdict and explanation after answering.",
+    keywords: ["question", "answer", "student", "quiz", "math", "forms"],
+  },
   math: {
     shortName: "Formula",
     description:

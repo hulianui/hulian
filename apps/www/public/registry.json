@@ -1488,6 +1488,7 @@
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/math-textarea.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
+        "https://hulianui.haloritual.com/zh/r/question-answer.json",
         "https://hulianui.haloritual.com/zh/r/question-card.json",
         "https://hulianui.haloritual.com/zh/r/question-editor.json"
       ],
@@ -5190,6 +5191,88 @@
       ]
     },
     {
+      "name": "question-answer",
+      "type": "registry:ui",
+      "title": "QuestionAnswer",
+      "description": "学生作答卡 · 按题型给对的作答控件：单选 RadioGroup / 多选 CheckboxGroup / 判断题型自带两项 / 填空每空一个输入框（可注入公式键盘）· 选项缺失明说做不了、主观题只读 · canSub…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/alert.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/card.json",
+        "https://hulianui.haloritual.com/zh/r/checkbox.json",
+        "https://hulianui.haloritual.com/zh/r/checkbox-group.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/field.json",
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/math.json",
+        "https://hulianui.haloritual.com/zh/r/math-textarea.json",
+        "https://hulianui.haloritual.com/zh/r/question.json",
+        "https://hulianui.haloritual.com/zh/r/question-card.json",
+        "https://hulianui.haloritual.com/zh/r/radio.json",
+        "https://hulianui.haloritual.com/zh/r/tag.json",
+        "https://hulianui.haloritual.com/zh/r/text.json"
+      ],
+      "meta": {
+        "import": "import { QuestionAnswer, canSubmit, answerKind, resolveBlankCount, QUESTION_ANSWER_LOCALE_ZH, QUESTION_ANSWER_LOCALE_EN } from \"@hulianui/ui\"",
+        "exports": [
+          "QuestionAnswer",
+          "canSubmit",
+          "answerKind",
+          "resolveBlankCount",
+          "QUESTION_ANSWER_LOCALE_ZH",
+          "QUESTION_ANSWER_LOCALE_EN"
+        ],
+        "types": [
+          "QuestionAnswerProps",
+          "AnswerableQuestion",
+          "QuestionAnswerResult",
+          "AnswerKind",
+          "QuestionAnswerLocale"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-answer/question-answer.md",
+        "docLocal": "packages/ui/src/question-answer/question-answer.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/question-answer/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-answer/index.ts"
+        },
+        {
+          "path": "components/hulianui/question-answer/question-answer.locale.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-answer/question-answer.locale.ts"
+        },
+        {
+          "path": "components/hulianui/question-answer/question-answer.state.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-answer/question-answer.state.ts"
+        },
+        {
+          "path": "components/hulianui/question-answer/question-answer.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-answer/question-answer.tsx"
+        },
+        {
+          "path": "components/hulianui/question-answer/question-answer.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-answer/question-answer.types.ts"
+        }
+      ]
+    },
+    {
       "name": "question-editor",
       "type": "registry:ui",
       "title": "QuestionEditor",
@@ -5197,9 +5280,7 @@
       "categories": [
         "forms"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
+      "dependencies": [],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
         "https://hulianui.haloritual.com/zh/r/alert.json",
@@ -10422,6 +10503,11 @@
           "path": "components/hulianui/question-card/question-card.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/question-card/question-card.types.ts"
+        },
+        {
+          "path": "components/hulianui/question-card/question-stem-block.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-card/question-stem-block.tsx"
         }
       ]
     },
@@ -21392,6 +21478,7 @@
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/math-textarea.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
+        "https://hulianui.haloritual.com/zh/r/question-answer.json",
         "https://hulianui.haloritual.com/zh/r/question-editor.json",
         "https://hulianui.haloritual.com/zh/r/social-button.json"
       ],
@@ -21540,6 +21627,11 @@
           "path": "components/hulianui/lib/is-dev.ts",
           "type": "registry:lib",
           "target": "components/hulianui/lib/is-dev.ts"
+        },
+        {
+          "path": "components/hulianui/lib/labelled-group-context.ts",
+          "type": "registry:lib",
+          "target": "components/hulianui/lib/labelled-group-context.ts"
         },
         {
           "path": "components/hulianui/lib/merge-refs.ts",

@@ -920,6 +920,12 @@ export const scenarioLoaders = {
   qrcode: async () =>
     (await import("@hulianui/ui-internal/qrcode/qrcode.showcase"))
       .qrcodeShowcase,
+  "question-answer": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/question-answer/question-answer.showcase"
+      )
+    ).questionAnswerShowcase,
   "question-card": async () =>
     (await import("@hulianui/ui-internal/question-card/question-card.showcase"))
       .questionCardShowcase,
@@ -4286,6 +4292,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/qrcode/index.ts",
+  },
+  "question-answer": {
+    id: "question-answer",
+    scenarioId: "question-answer/basic",
+    component: "QuestionAnswer",
+    entry: "@hulianui/ui/question-answer",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/question-answer/index.ts",
   },
   "question-card": {
     id: "question-card",
