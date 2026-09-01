@@ -23,6 +23,8 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ENTRY = join(HERE, "..", "src", "index.mjs");
 const UI_ROOT = join(HERE, "..", "..", "ui");
+/** 本地模式下「文档按哪一版给」的真源；「接好的项目」fixture 装的就是这一版（#337 起会比对）。 */
+const SOURCE_VERSION = JSON.parse(readFileSync(join(UI_ROOT, "package.json"), "utf8")).version;
 
 /**
  * 起一个 server，走完整 MCP 握手（initialize → notifications/initialized），
@@ -34,7 +36,12 @@ const UI_ROOT = join(HERE, "..", "..", "ui");
  * roots：传了就声明 roots 能力，并在 server 反向请求 roots/list 时如实作答 ——
  * inspect_project 的「优先用 Roots」这条路必须被真的走一遍，光看 fallback 不算数。
  */
-function rpc(requests, { roots = null, cwd, env } = {}) {
+/*
+ * sequential：逐条发，等上一条响应到了再发下一条 —— 真实客户端就是这么调的。默认一次性全灌进去
+ * 是为了顺便验「多个调用同时在飞也不串账」，但依赖调用顺序的场景（inspect_project 记住的根被
+ * 后续 get_component_doc 沿用，#337）必须按顺序发，否则是在测竞争而不是测功能。
+ */
+function rpc(requests, { roots = null, cwd, env, sequential = false } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [ENTRY], {
       cwd,
@@ -43,6 +50,7 @@ function rpc(requests, { roots = null, cwd, env } = {}) {
     });
     const wanted = new Set(requests.map((r) => r.id));
     const byId = new Map();
+    let sent = 0;
     let buf = "";
     const timer = setTimeout(() => {
       child.kill();
@@ -68,7 +76,10 @@ function rpc(requests, { roots = null, cwd, env } = {}) {
           send({ jsonrpc: "2.0", id: msg.id, result: { roots: roots ?? [] } });
           continue;
         }
-        if (wanted.has(msg.id)) byId.set(msg.id, msg);
+        if (wanted.has(msg.id)) {
+          byId.set(msg.id, msg);
+          if (sequential && sent < requests.length) send(requests[sent++]);
+        }
         if (byId.size === wanted.size) {
           clearTimeout(timer);
           child.kill();
@@ -89,7 +100,8 @@ function rpc(requests, { roots = null, cwd, env } = {}) {
       },
     });
     send({ jsonrpc: "2.0", method: "notifications/initialized" });
-    for (const r of requests) send(r);
+    if (sequential) send(requests[sent++]);
+    else for (const r of requests) send(r);
   });
 }
 
@@ -117,7 +129,7 @@ function makeProject(kind) {
   write(
     root,
     "node_modules/@hulianui/ui/package.json",
-    JSON.stringify({ name: "@hulianui/ui", version: "0.15.1" }),
+    JSON.stringify({ name: "@hulianui/ui", version: SOURCE_VERSION }),
   );
   // @source 指向的 src/ 必须真的存在：inspect_project 现在会解析路径而不只是文本匹配，
   // fixture 也得忠实反映「装好了」这件事（hulianui/hulian#66）。
@@ -133,7 +145,7 @@ function makeProject(kind) {
           next: "16.2.0",
           react: "19.0.0",
           "@base-ui/react": "1.0.0",
-          "@hulianui/ui": "^0.15.1",
+          "@hulianui/ui": `^${SOURCE_VERSION}`,
           "@hulianui/tokens": "^0.3.0",
         },
       }),
@@ -512,7 +524,7 @@ test("inspect_project 认出装好的 Next 项目", async () => {
     assert.equal(info.projectRootSource, "argument");
     assert.equal(info.framework.name, "next");
     assert.equal(info.packageManager, "pnpm");
-    assert.equal(info.packages["@hulianui/ui"].installed, "0.15.1");
+    assert.equal(info.packages["@hulianui/ui"].installed, SOURCE_VERSION);
     assert.equal(info.setup.themeProvider, "detected");
     assert.equal(info.setup.tokensCss, "detected");
     assert.equal(info.setup.tailwindSource, "detected");
@@ -656,7 +668,9 @@ test("0.x 版本一致时不误报漂移（^0.16.0 + 0.16.0）", async () => {
   try {
     const [res] = await rpc([call(61, "inspect_project", { projectRoot: root })]);
     const warnings = dataOf(res).warnings.join("\n");
-    assert.doesNotMatch(warnings, /实装/, "版本对得上就不该有漂移警告");
+    // 只盯「声明 vs 实装」这一种漂移：fixture 装的 0.16.0 与本 server 的文档版本不同，那是
+    // 另一条 warning（#337），此处不算误报。
+    assert.doesNotMatch(warnings, /声明 .*但实装/, "版本对得上就不该有漂移警告");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -1198,7 +1212,7 @@ test("versions 区分 guard / registry / 消费方实装版本，首轮调用就
     const versions = dataOf(res).versions;
     assert.ok(versions.guard, "guard 版本");
     assert.match(versions.registry ?? "", /^\d+\.\d+\.\d+$/, "registry 版本不能因为调用顺序而是 null");
-    assert.equal(versions.consumerUi, "0.15.1", "消费方实装版本来自 projectRoot/node_modules");
+    assert.equal(versions.consumerUi, SOURCE_VERSION, "消费方实装版本来自 projectRoot/node_modules");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -1490,4 +1504,175 @@ test("get_component_doc 要 props 时把 events 一并给出（#298）", async (
 test("get_component_doc 拒绝未知 format", async () => {
   const [res] = await rpc([call(63, "get_component_doc", { name: "button", format: "yaml" })]);
   assert.match(bodyOf(res), /format/);
+});
+
+// --------------------------------------------------- 消费方实装版本（#337） --
+
+/**
+ * 两个世界：本 server 的本地源码 + 产物同版（9.9.9-local，不触发 #246 的横幅），
+ * 消费项目 node_modules 里实装另一版。源码文档比实装文档多一个 `numeric`，
+ * 源码还多一个实装里没有的组件 `newer`。
+ */
+function makeSkewWorld({ installed }) {
+  const root = makeLocalRegistry();
+  write(root, "packages/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: "9.9.9-local" }));
+  write(
+    root,
+    "apps/www/public/registry.json",
+    JSON.stringify({
+      name: "hulianui",
+      version: "9.9.9-local",
+      items: [
+        { name: "empty", type: "registry:ui", title: "Empty", meta: { import: "x" } },
+        { name: "newer", type: "registry:ui", title: "Newer", meta: { import: "x" } },
+      ],
+    }),
+  );
+  const table = (rows) => `| Prop | 类型 |\n|---|---|\n${rows.map((r) => `| ${r} |`).join("\n")}\n`;
+  write(root, "packages/ui/src/empty/empty.md", `# Empty\n\n## Props\n\n${table(["size | `sm`", "numeric | `boolean`"])}`);
+  write(root, "packages/ui/src/newer/newer.md", `# Newer\n\n## Props\n\n${table(["x | `1`"])}`);
+  write(
+    root,
+    "apps/www/public/llms-props.json",
+    JSON.stringify({
+      name: "hulianui",
+      version: "9.9.9-local",
+      exportIndex: {},
+      components: [
+        {
+          slug: "empty",
+          name: "Empty",
+          category: "x",
+          import: "x",
+          exports: ["Empty"],
+          doc: "x",
+          props: [{ name: "size", kind: "enum" }, { name: "numeric", kind: "boolean" }],
+          slots: [{ name: "children", type: "ReactNode" }],
+        },
+      ],
+    }),
+  );
+  const consumer = mkdtempSync(join(tmpdir(), "hulian-consumer-337-"));
+  write(consumer, "package.json", JSON.stringify({ name: "app", dependencies: { "@hulianui/ui": `^${installed}` } }));
+  write(consumer, "node_modules/@hulianui/ui/package.json", JSON.stringify({ name: "@hulianui/ui", version: installed }));
+  write(consumer, "node_modules/@hulianui/ui/src/empty/empty.md", `# Empty\n\n## Props\n\n${table(["size | `sm`"])}`);
+  const env = { HULIAN_UI_ROOT: join(root, "packages", "ui") };
+  const cleanup = () => {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(consumer, { recursive: true, force: true });
+  };
+  return { root, consumer, env, cleanup };
+}
+
+test("inspect_project 认过的根被后续文档 tool 沿用：实装比文档旧时贴横幅并改用实装文档（#337）", async () => {
+  const { consumer, env, cleanup } = makeSkewWorld({ installed: "9.9.7-installed" });
+  try {
+    const [inspected, doc, json, newer] = await rpc(
+      [
+        call(80, "inspect_project", { projectRoot: consumer }),
+        call(81, "get_component_doc", { name: "empty" }),
+        call(82, "get_component_doc", { name: "empty", format: "json" }),
+        call(83, "get_component_doc", { name: "newer" }),
+      ],
+      { env, sequential: true },
+    );
+
+    // 第 3 条：inspect_project 的 warnings 得说出两个版本的差
+    const info = dataOf(inspected);
+    assert.equal(info.docsVersion, "9.9.9-local");
+    assert.match(
+      info.warnings.join("\n"),
+      /文档按 @hulianui\/ui v9\.9\.9-local 给，而这里实装的是 v9\.9\.7-installed（差 2 个 patch）/,
+    );
+
+    // 第 1 条：横幅贴在最顶上，两个版本都点名，给出实装文档路径与升级命令
+    const body = bodyOf(doc);
+    assert.match(body, /❌ 错误 · 文档与你项目实装的 @hulianui\/ui 不是同一个版本/);
+    assert.match(body, /v9\.9\.9-local/);
+    assert.match(body, /v9\.9\.7-installed/);
+    assert.match(body, /旧 2 个 patch/);
+    assert.match(body, /pnpm add @hulianui\/ui@9\.9\.9-local/);
+    assert.ok(body.indexOf("❌ 错误") < body.indexOf("# Empty"), "横幅要贴在正文之前");
+    // 正文换成实装那一份：没有 numeric，并明说来源
+    assert.match(body, /取自你项目实装的 \*\*v9\.9\.7-installed\*\*/);
+    assert.match(body, /node_modules\/@hulianui\/ui\/src\/empty\/empty\.md/);
+    assert.match(body, /\| size \|/);
+    assert.doesNotMatch(body.slice(body.indexOf("# Empty")), /numeric/, "实装文档里没有 numeric，正文不该出现");
+    assert.match(body, /消费方实装 @hulianui\/ui v9\.9\.7-installed ≠ 文档 v9\.9\.9-local/, "脚注也要点出");
+
+    // 第 2 条：json 路径逐条标出实装文档没列的 prop，受约束生成可以直接过滤
+    const payload = dataOf(json);
+    assert.deepEqual(payload.consumer, { installed: "9.9.7-installed", docs: "9.9.9-local", direction: "older" });
+    const [empty] = payload.components;
+    assert.equal(empty.installed.version, "9.9.7-installed");
+    assert.deepEqual(empty.installed.notInInstalledDoc, ["numeric", "children"]);
+    const byName = Object.fromEntries(empty.props.map((p) => [p.name, p]));
+    assert.equal(byName.numeric.notInInstalledDoc, true);
+    assert.equal(byName.size.notInInstalledDoc, undefined, "实装文档里有的不许标");
+    assert.equal(payload.source.consumer.installed, "9.9.7-installed");
+    assert.equal(payload.source.consumer.projectRootSource, "remembered:inspect_project");
+    assert.equal(payload.source.consumer.skew.direction, "older");
+
+    // 实装里压根没有的组件：明说「该版本没有」，仍给出文档版的正文
+    const newerBody = bodyOf(newer);
+    assert.match(newerBody, /v9\.9\.7-installed\*\* 里没有 `src\/newer\/newer\.md`/);
+    assert.match(newerBody, /要用得先升级/);
+    assert.match(newerBody, /\| x \|/);
+  } finally {
+    cleanup();
+  }
+});
+
+test("没认过项目也能显式传 projectRoot；不存在的 projectRoot 是参数错误（#337）", async () => {
+  const { consumer, env, cleanup } = makeSkewWorld({ installed: "9.9.7-installed" });
+  try {
+    const [doc, list, bad] = await rpc(
+      [
+        call(84, "get_component_doc", { name: "empty", projectRoot: consumer }),
+        call(85, "list_components", { query: "empty", projectRoot: consumer }),
+        call(86, "get_component_doc", { name: "empty", projectRoot: join(consumer, "nope") }),
+      ],
+      { env },
+    );
+    assert.match(bodyOf(doc), /❌ 错误 · 文档与你项目实装的/);
+    assert.match(bodyOf(doc), /取自你项目实装的/);
+    assert.match(bodyOf(list), /❌ 错误 · 文档与你项目实装的/, "列清单同样要提醒：清单里可能有实装没有的组件");
+    assert.equal(dataOf(list).source.consumer.projectRootSource, "argument");
+    assert.equal(bad.result?.isError, true);
+    assert.match(bodyOf(bad), /projectRoot 不存在/);
+  } finally {
+    cleanup();
+  }
+});
+
+test("实装与文档同版：不贴横幅，脚注如实写实装版本，正文仍是源码那份（#337）", async () => {
+  const { consumer, env, cleanup } = makeSkewWorld({ installed: "9.9.9-local" });
+  try {
+    const [inspected, doc] = await rpc(
+      [call(87, "inspect_project", { projectRoot: consumer }), call(88, "get_component_doc", { name: "empty" })],
+      { env, sequential: true },
+    );
+    assert.doesNotMatch(dataOf(inspected).warnings.join("\n"), /文档按/);
+    const body = bodyOf(doc);
+    assert.doesNotMatch(body, /❌/);
+    assert.match(body, /numeric/, "同版就该给源码文档");
+    assert.match(body, /消费方实装 @hulianui\/ui v9\.9\.9-local/);
+    assert.equal(dataOf(doc), null, "markdown 路径没有 structuredContent，与此前一致");
+  } finally {
+    cleanup();
+  }
+});
+
+test("实装比文档新：横幅说「查不到」而不是「不存在」，正文同样改用实装那份（#337）", async () => {
+  const { consumer, env, cleanup } = makeSkewWorld({ installed: "9.9.10-next" });
+  try {
+    const [doc] = await rpc([call(89, "get_component_doc", { name: "empty", projectRoot: consumer })], { env });
+    const body = bodyOf(doc);
+    assert.match(body, /新 1 个 patch/);
+    assert.match(body, /在本文档里\*\*查不到\*\*/);
+    assert.doesNotMatch(body, /照本文档写会 TS2322/, "实装更新时不存在「照旧文档写会缺 prop」这回事");
+    assert.match(body, /取自你项目实装的 \*\*v9\.9\.10-next\*\*/);
+  } finally {
+    cleanup();
+  }
 });

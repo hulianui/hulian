@@ -347,6 +347,26 @@ export function versionSkew() {
 }
 
 /**
+ * 本次回答**依据**的 @hulianui/ui 版本：本地模式是源码版本（md 正文从那儿来），远程模式是
+ * 产物版本。消费方那一维的比对（consumer.mjs，#337）拿它当基准 —— 与 versionSkew 分工：
+ * 那个比「产物 vs 源码」，这个说「你读到的内容属于哪一版」。
+ * 还没加载过任何产物时退回直接读本地 registry.json；两边都没有就 null。
+ */
+export function answeringVersion() {
+  return localSourceVersion ?? registryMeta.version ?? artifactVersionNow();
+}
+
+/**
+ * 消费方 node_modules/@hulianui/ui 里随包发布的那份组件 md（#337）。
+ * 它与实装版本天然同版，是版本不一致时 get_component_doc 该拿来作答的正文；
+ * 溯源名与源码 md、产物 md 都不同（三份本来就是三个文件）。
+ */
+export function loadInstalledDoc(path, slug) {
+  if (!path || !existsSync(path)) return null;
+  return readLocalText(`installed/src/${slug}/${slug}.md`, path);
+}
+
+/**
  * 版本不一致时贴在响应**最顶部**的 error 级横幅（#246）。一致时返回空串。
  *
  * 为什么不顺手把 MCP 的 `isError` 也置上：那会让客户端把整条响应当成工具故障丢掉，

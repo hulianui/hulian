@@ -33,10 +33,12 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 
 import {
+  answeringVersion,
   docComesFromSource,
   itemUrlOf,
   loadConventions,
   loadDoc,
+  loadInstalledDoc,
   loadItem,
   loadPropsCatalog,
   loadRegistry,
@@ -48,6 +50,18 @@ import {
   versionSkew,
   withArtifactScope,
 } from "./data.mjs";
+import {
+  consumerBanner,
+  consumerFooter,
+  consumerInfo,
+  consumerSkew,
+  describeGap,
+  installedDocPath,
+  installedDocumentedNames,
+  rememberConsumerRoot,
+  resolveConsumer,
+  withConsumer,
+} from "./consumer.mjs";
 import { auditAdoption, renderAudit } from "./audit.mjs";
 import {
   composeProfile,
@@ -68,13 +82,21 @@ const VERSION = createRequire(import.meta.url)("../package.json").version;
 
 // 版本不一致的横幅走**响应最顶部**，不是脚注（#246）：脚注在长文档后面，模型读到那儿时
 // 前面的 props 早已被当成事实吸收；而这条说的正是「前面那些 props 未必属于你装的那一版」。
+// 两种漂移各贴一条横幅：产物 vs 源码（staleBanner，#246）、文档 vs 消费方实装（consumerBanner，#337）。
+// 它们是两个独立的事实，同时成立就两条都贴，不合并 —— 处方不同（重生成 vs 按实装版本写 / 升级）。
 const text = (body, structured) => {
-  const banner = staleBanner();
+  const banners = [staleBanner(), consumerBanner()].filter(Boolean);
+  const footer = [sourceLine(), consumerFooter()].filter(Boolean).join(" · ");
   return {
     content: [
-      { type: "text", text: `${banner ? `${banner}\n\n---\n\n` : ""}${body}\n\n---\n${sourceLine()}` },
+      {
+        type: "text",
+        text: `${banners.length ? `${banners.join("\n\n")}\n\n---\n\n` : ""}${body}\n\n---\n${footer}`,
+      },
     ],
-    ...(structured ? { structuredContent: { ...structured, source: sourceInfo() } } : {}),
+    ...(structured
+      ? { structuredContent: { ...structured, source: { ...sourceInfo(), consumer: consumerInfo() } } }
+      : {}),
   };
 };
 /** isError 只用于「工具没能完成工作」：参数错、读不到文件、数据源坏了。业务代码违规不算。 */
@@ -179,6 +201,14 @@ const READ_ONLY = {
 };
 /** 远程数据源意味着结果取决于外部服务，openWorld 得如实标出来。 */
 const REMOTE_AWARE = { ...READ_ONLY, openWorldHint: source.startsWith("remote:") };
+
+/** 文档类 tool 共用的可选入参：按哪个项目的实装版本核对（#337）。 */
+const PROJECT_ROOT_ARG = {
+  type: "string",
+  description:
+    "消费项目根目录绝对路径，用来按实装的 @hulianui/ui 版本核对文档。不传则沿用最近一次 " +
+    "inspect_project 认过的根，其次 MCP Roots，最后 server 进程的 cwd；版本不同会在响应顶部贴横幅",
+};
 
 async function buildTools() {
   const categories = await categoryKeys().catch(() => []);
@@ -295,6 +325,7 @@ async function buildTools() {
         properties: {
           task: { type: "string", description: "要做的东西，用自然语言描述，越具体越好" },
           limit: { type: "number", description: "每档返回条数，默认 5" },
+          projectRoot: PROJECT_ROOT_ARG,
           surface: {
             type: "string",
             enum: listSurfaces().map((s) => s.id),
@@ -341,6 +372,7 @@ async function buildTools() {
         properties: {
           kind: { type: "string", enum: KIND_ENUM, description: "积木粒度，默认 component" },
           query: { type: "string", description: "关键词，中英皆可（「弹窗」也能找到 dialog）" },
+          projectRoot: PROJECT_ROOT_ARG,
           category: {
             type: "string",
             description: `分类 key（由 registry 真实分类枚举得到）`,
@@ -394,6 +426,7 @@ async function buildTools() {
               "逐条带 kind / 枚举取值 / 默认值。要做受约束生成（校验白名单、生成 Zod、" +
               "按 props 自动生成属性面板）时用 json，别去解析 markdown 表格。",
           },
+          projectRoot: PROJECT_ROOT_ARG,
         },
       },
       annotations: REMOTE_AWARE,
@@ -929,6 +962,13 @@ async function getComponentProps(wanted, sections) {
   const keys = asked?.length ? asked.filter((s) => JSON_SECTIONS.includes(s)) : JSON_SECTIONS;
   const components = [];
   const missing = [];
+  // 消费方实装版本与这份 props 不同版时（#337），拿实装包里随包发布的 md 表首列当对照：
+  // 这份 props 里有、实装文档里没列的，逐条标 `notInInstalledDoc: true`，做受约束生成的
+  // 调用方能直接过滤。口径刻意是「实装文档没列」而不是「实装没有」—— 判据来自表格，
+  // 老版本的文档未必列全（0.28.0 起才有 docs:check:props 门禁守着表与类型一致）。
+  const consumer = consumerSkew();
+  const markInstalled = (entries, names) =>
+    names ? entries.map((e) => (names.has(e.name) ? e : { ...e, notInInstalledDoc: true })) : entries;
   for (const query of wanted) {
     const q = String(query);
     const kebab = q.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
@@ -941,6 +981,21 @@ async function getComponentProps(wanted, sections) {
       missing.push(q);
       continue;
     }
+    const installedNames = consumer ? installedDocumentedNames(consumer.from, hit.slug) : null;
+    const installedDoc = consumer ? installedDocPath(consumer.from, hit.slug) : null;
+    const installed = consumer
+      ? {
+          version: consumer.installed,
+          // doc 为 null = 实装包里没有这一件的 md：多半是该版本还没有这个组件（也可能是
+          // 包里不带 src/），两种情形这里都分不出来，所以不敢逐条标 notInInstalledDoc。
+          doc: installedNames ? installedDoc : null,
+          notInInstalledDoc: installedNames
+            ? [...(hit.props ?? []), ...(hit.slots ?? []), ...(hit.events ?? [])]
+                .map((e) => e.name)
+                .filter((n) => !installedNames.has(n))
+            : null,
+        }
+      : undefined;
     components.push({
       slug: hit.slug,
       name: hit.name,
@@ -948,6 +1003,7 @@ async function getComponentProps(wanted, sections) {
       import: hit.import,
       exports: hit.exports,
       doc: hit.doc,
+      ...(installed ? { installed } : {}),
       ...Object.fromEntries(
         (keys.length ? keys : JSON_SECTIONS).map((k) => [
           k,
@@ -960,14 +1016,17 @@ async function getComponentProps(wanted, sections) {
           //   · 想按语义分开处理的调用方照旧读 .slots / .events
           // 重复出现是刻意的：漏一个入口的代价远大于多一条记录（hulianui/hulian#150、#298）。
           k === "props"
-            ? [
-                ...(hit.props ?? []),
-                ...(hit.slots ?? []).map((slot) => ({ ...slot, kind: "slot" })),
-                // events 同理并进来，`kind:"event"` 标记出身；函数签名本来就写在 type 里
-                // （`() => void`），覆盖 kind 不丢信息（#298）。
-                ...(hit.events ?? []).map((event) => ({ ...event, kind: "event" })),
-              ]
-            : (hit[k] ?? []),
+            ? markInstalled(
+                [
+                  ...(hit.props ?? []),
+                  ...(hit.slots ?? []).map((slot) => ({ ...slot, kind: "slot" })),
+                  // events 同理并进来，`kind:"event"` 标记出身；函数签名本来就写在 type 里
+                  // （`() => void`），覆盖 kind 不丢信息（#298）。
+                  ...(hit.events ?? []).map((event) => ({ ...event, kind: "event" })),
+                ],
+                installedNames,
+              )
+            : markInstalled(hit[k] ?? [], installedNames),
         ]),
       ),
     });
@@ -986,6 +1045,8 @@ async function getComponentProps(wanted, sections) {
   const payload = {
     version: catalog.version,
     ...(skew ? { versionSkew: skew } : {}),
+    // 消费方那一维（#337）：实装的是哪一版、与这份 props 差多少。逐组件的对照在 components[].installed。
+    ...(consumer ? { consumer: { installed: consumer.installed, docs: consumer.docs, direction: consumer.direction } } : {}),
     components,
     ...(missing.length ? { missing } : {}),
   };
@@ -1008,6 +1069,10 @@ async function getComponentDoc({ name, names, sections, format } = {}) {
   const parts = [];
   const missing = [];
   const skew = versionSkew();
+  // 消费方实装版本与本次文档不同版（#337）：直接改用实装包里随包发布的 md 作答。
+  // 这个 tool 的承诺是「props 不许猜，查这里」—— 给错版本的文档再配一条警告只是把猜测
+  // 换了个形式；实装那一份才是照着写就对的那一份。registry 那一版的清单仍用来认名字。
+  const consumer = consumerSkew();
 
   for (const query of wanted) {
     const slug = String(query)
@@ -1021,11 +1086,23 @@ async function getComponentDoc({ name, names, sections, format } = {}) {
       missing.push(query);
       continue;
     }
-    const doc = await loadDoc(hit.name);
+    const installedPath = consumer ? installedDocPath(consumer.from, hit.name) : null;
+    const installedDoc = installedPath ? loadInstalledDoc(installedPath, hit.name) : null;
+    const doc = installedDoc ?? (await loadDoc(hit.name));
     if (!doc) {
       missing.push(`${query}（存在但取不到正文）`);
       continue;
     }
+    const installedNote = installedDoc
+      ? `> ✅ 本段正文取自你项目实装的 **v${consumer.installed}**（\`${installedPath}\`），与实装同版，照着写即可。` +
+        `registry 的 v${consumer.docs} 文档未采用${
+          consumer.direction === "older" ? "；升级后再查即得" : ""
+        }。\n`
+      : installedPath
+        ? `> ❌ 你项目实装的 **v${consumer.installed}** 里没有 \`src/${hit.name}/${hit.name}.md\`` +
+          `（\`${consumer.from}\`）：该版本还没有这个组件，或其文档尚未随包发布。` +
+          `下面文档属于 **v${consumer.docs}**，要用得先升级：\`pnpm add ${PKG}@${consumer.docs}\`。\n`
+        : "";
     const header = [
       `<!-- ${hit.name} · 导入：${hit.meta?.import ?? `import { ... } from "${PKG}"`} -->`,
       hit.dependencies?.length ? `<!-- 额外 npm 依赖：${hit.dependencies.join(", ")} -->` : "",
@@ -1044,7 +1121,8 @@ async function getComponentDoc({ name, names, sections, format } = {}) {
           `**以 \`node_modules/@hulianui/ui/src/${hit.name}/${hit.name}.md\` 与同目录的 ` +
           `\`${hit.name}.types.ts\` 为准**，那两份随 npm 包一起发布，与实装版本同版。\n`
       : "";
-    parts.push(`${header}\n\n${skewNote}${sliceSections(doc, sections)}`);
+    // 正文改用了实装那一份时，「产物 vs 源码」那条注解说的就不是这段正文了，只保留顶部横幅。
+    parts.push(`${header}\n\n${installedNote || skewNote}${sliceSections(doc, sections)}`);
   }
 
   if (!parts.length) {
@@ -1319,6 +1397,24 @@ async function inspectProjectTool(args = {}, server) {
   } catch (error) {
     return fail(`inspect_project 失败：${error.message}`);
   }
+  // 后续 get_component_doc / recommend_ui / list_components 按这个根核对实装版本（#337）；
+  // cwd 兜底认出来的根不记 —— 它们自己也会退到 cwd，记下来没有增量，反而把「兜底」的来源标签抹掉。
+  if (info.projectRootSource !== "cwd-fallback") rememberConsumerRoot(info.projectRoot, "inspect_project");
+
+  // packages 段里两个版本都在了（实装 vs 本 server 的文档版本），差在 warnings 里没说（#337 第 3 条）。
+  // 主动加载 registry：远程模式下不加载就不知道产物是哪一版，而这条 warning 恰恰是为远程消费方写的。
+  await loadRegistry().catch(() => null);
+  const docsVersion = answeringVersion();
+  const installedUi = info.packages?.["@hulianui/ui"]?.installed ?? null;
+  info.docsVersion = docsVersion;
+  if (docsVersion && installedUi && docsVersion !== installedUi) {
+    const gap = describeGap(installedUi, docsVersion);
+    info.warnings.push(
+      `本 MCP 的文档按 @hulianui/ui v${docsVersion} 给，而这里实装的是 v${installedUi}` +
+        `${gap ? `（差 ${gap}）` : ""}：查 props 时以 get_component_doc 返回的实装版文档为准，` +
+        `或先升级到 v${docsVersion} 再照文档写`,
+    );
+  }
   return {
     content: [{ type: "text", text: renderProject(info) }],
     structuredContent: info,
@@ -1347,6 +1443,7 @@ async function auditAdoptionTool(args = {}, server) {
   } catch (error) {
     return fail(`audit_hulian_adoption 失败：${error.message}`);
   }
+  if (args.projectRoot) rememberConsumerRoot(report.projectRoot, "audit_hulian_adoption");
   return {
     content: [{ type: "text", text: renderAudit(report) }],
     structuredContent: report,
@@ -1366,6 +1463,7 @@ async function validateTool(args = {}) {
   //   consumerUi 消费项目里**实装**的 @hulianui/ui —— 与 registry 不一致才是真正要警觉的漂移
   await loadRegistry().catch(() => null);
   const consumerRoot = args.projectRoot ? resolve(args.projectRoot) : process.cwd();
+  if (args.projectRoot) rememberConsumerRoot(consumerRoot, "validate_hulian_usage");
   const versions = {
     guard: guardVersion(),
     registry: sourceInfo().version,
@@ -1391,11 +1489,16 @@ const HANDLERS = {
   audit_hulian_adoption: auditAdoptionTool,
 };
 
+/** 接收可选 projectRoot 来按消费方实装版本核对的文档类 tool（#337）；其余 tool 自己认根、自己报错。 */
+const CONSUMER_AWARE_TOOLS = new Set(["recommend_ui", "list_components", "get_component_doc"]);
+
 // ----------------------------------------------------------------- prompts --
 
 const WORKFLOW = `瑚琏 @hulianui/ui 工作流（按顺序，不要跳步）：
 
 1. inspect_project —— 先认项目：框架、实装版本、ThemeProvider / token CSS 是否就位。
+   之后的文档类 tool 会按这次认出的根核对**实装版本**：与文档不同版会在响应顶部贴横幅，
+   get_component_doc 直接给实装那一版的文档。没认过项目时它们退到 MCP Roots / cwd，也可显式传 projectRoot。
    接手**已经有代码**的项目时，紧接着跑一次 audit_hulian_adoption：它自动判场景、
    列出该用没用上的地方和从哪改起。原型 / demo 记得传 workflow=prototype。
    它给的是**建议不是 error**，别拿它当门禁 —— 门禁是第 9 步。
@@ -1478,10 +1581,19 @@ server.setRequestHandler(GetPromptRequestSchema, async (req) => {
 server.setRequestHandler(CallToolRequestSchema, async (req) => {
   const fn = HANDLERS[req.params.name];
   if (!fn) return fail(`未知 tool：${req.params.name}`);
+  const args = req.params.arguments || {};
+  // 消费方上下文（#337）：这次调用是替哪个项目答的、它装的是哪一版。显式 projectRoot 不存在
+  // 对文档类 tool 是参数错误；认根的三个 tool 有自己的报错文案，这里不抢，让它们自己说。
+  let consumer = null;
+  try {
+    consumer = resolveConsumer({ explicit: args.projectRoot, roots: await clientRoots(server) });
+  } catch (error) {
+    if (CONSUMER_AWARE_TOOLS.has(req.params.name)) return fail(`${req.params.name} 失败：${error.message}`);
+  }
   // 每次调用一个独立的产物溯源作用域，响应里的 source.artifactDigests 才只包含
   // **这一次**真正读过的产物（多个 tool 调用可以同时在飞，见 data.mjs「产物字节身份」）。
   try {
-    return await withArtifactScope(() => fn(req.params.arguments || {}, server));
+    return await withArtifactScope(() => withConsumer(consumer, () => fn(args, server)));
   } catch (e) {
     return fail(`${req.params.name} 执行失败（数据源 ${source}）：${e.message}`);
   }

@@ -55,7 +55,7 @@ Claude Code / Cursor 的 MCP 配置：
 | `get_agent_profile` | 认完项目、动手之前。按场景取「该用什么组件语言、受什么约束、按什么步骤走」。三维正交：`surface` × `modifiers`（可组合）× `workflow`。不传参数先看目录对号入座 |
 | `recommend_ui` | 拿到一句业务需求时。一次返回排序后的 **页面 → 区块 → 组件** 组合，先看有没有现成整页可复用 |
 | `list_components` | 需要按关键词补齐候选时。`kind` 取 `component`(366) / `block`(57) / `page`(20) / `lib`(3)；`query` 会分词并按 name/title/description/category/group/tags/exports 打分排序；`limit` + `offset` 翻页 |
-| `get_component_doc` | 写下第一行使用某组件的代码**之前**。返回 Props / Events / Slots / 示例 / 禁忌坑；`names` 一次取多个，`sections` 只取需要的章节 |
+| `get_component_doc` | 写下第一行使用某组件的代码**之前**。返回 Props / Events / Slots / 示例 / 禁忌坑；`names` 一次取多个，`sections` 只取需要的章节。消费项目实装的 `@hulianui/ui` 与文档不同版时，直接返回实装那一版随包发布的 md（见下「消费方实装版本」） |
 | `get_conventions` | 开始新页面/新功能**之前**。分别返回可由 guard 执行的门禁，以及仍需语境判断的建议 |
 | `get_setup_guide` | `inspect_project` 报了接入缺口时。`target` 取 `install` / `tailwind` / `imports` / `next` / `vite` / `vitest` |
 | `install_block` | 要把区块或整页积木**放进项目**时。返回安装命令（跟随当前 registry base）、递归区块、Provider、必须替换项、插槽 |
@@ -191,6 +191,15 @@ npx -y @hulianui/guard src/components/pages src/components/blocks
    - 产物**陈旧**同样会告警（比版本号 + 比 `<slug>.md` / `<slug>.types.ts` 的 mtime）：
      产物落后意味着新增的组件与 prop 在 MCP 里整个查不到，而这是静默的，比缺产物更危险。
 2. **远程**（默认）：读 `https://hulianui.haloritual.com` 的 `registry.json` / `r/<name>.json` / `d/<slug>.md` / `conventions.json`。
+
+### 消费方实装版本（`source.consumer`）
+
+上面两条判的都是 server 自己这一侧（产物 vs 源码）。第三个版本 —— **调用方项目里 `node_modules/@hulianui/ui` 实装的是哪一版** —— 才决定照文档写出来的 prop 存不存在：文档 v0.58.0 列着 `Text.numeric`，项目装的 v0.56.0 没有，`tsc` 才报 TS2322（#337）。所以每次 tool 调用都带着消费方上下文：
+
+- **根从哪来**：显式 `projectRoot` > 最近一次 `inspect_project`（或显式传根的 `audit_hulian_adoption` / `validate_hulian_usage`）认过的根 > MCP Roots > server 进程 cwd。来源写在 `source.consumer.projectRootSource`，cwd 兜底会在横幅里点名让你确认。`recommend_ui` / `list_components` / `get_component_doc` 都接受可选 `projectRoot`。
+- **不同版时**：响应顶部贴一条与产物漂移同级的 `❌` 横幅（两个版本、差多少、两条出路：按实装版本写，或 `pnpm add @hulianui/ui@<文档版>` 后再照文档写）；脚注多一段 `⚠️ 消费方实装 v… ≠ 文档 v…`。
+- **`get_component_doc`**：markdown 直接改用实装包里 `src/<slug>/<slug>.md` 作答（它随 npm 包发布、与实装同版），正文顶上注明来源；实装包里没有这一件（该版本还没有这个组件）时明说，并仍给出文档版正文。`format:"json"` 的 props 仍按文档版给（`llms-props.json` 不随包发布），但 `components[].installed.notInInstalledDoc` 列出实装文档没列的字段，每条 prop / slot / event 上也带 `notInInstalledDoc: true`，受约束生成可以直接过滤。口径刻意是「实装**文档**没列」而非「实装没有」：0.28.0 之前的版本文档表未必与类型一一对应。
+- **`inspect_project`**：`packages` 段本来就有实装版本，现在 `warnings` 里会直说「文档按 v0.58.0 给，而这里实装的是 v0.56.0（差 2 个 minor）」，并在 `docsVersion` 里给出文档版本。
 
 ### 产物的字节身份（`source.artifactDigests`）
 
