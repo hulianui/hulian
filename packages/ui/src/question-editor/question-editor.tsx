@@ -250,6 +250,8 @@ export function QuestionEditor({
           // 没给 resolveFigure 时把图块摘掉：让 QuestionCard 渲染一串 `![](key)` 源码不是预览。
           stem={resolveFigure ? value.stem : stemBody(value.stem)}
           resolveFigure={resolveFigure}
+          // 预览里的附图 alt 跟编辑器 locale 走：QuestionCard 无 hook 读不到 Locale，缺省会落回中文。
+          figureAlt={L.figureAlt}
           options={value.options ?? undefined}
           answer={value.answer}
           analysis={value.analysis}

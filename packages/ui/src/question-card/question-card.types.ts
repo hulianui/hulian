@@ -39,6 +39,12 @@ export interface QuestionCardProps {
    * QuestionEditor 的实时预览与消费方的题库列表都靠它，两边同一个渲染路径。
    */
   resolveFigure?: (key: string) => string;
+  /**
+   * 题干附图（`![](key)` 切出来的那些）的 alt 文案，如 (1) → "题目附图 1"。缺省是中文。
+   * 本件刻意无 hook（RSC 安全）读不到 Locale，所以由持有 locale 的上层传下来：
+   * QuestionEditor 预览传自己 `questionEditor.figureAlt`，QuestionAnswer 走 `questionAnswer.figureAlt`。
+   */
+  figureAlt?: (index: number) => string;
   /** 答案（形状见 QuestionAnswerValue）。只有 `showAnswer` 为真才渲染。 */
   answer?: QuestionAnswerValue;
   /** 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染。 */

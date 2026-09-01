@@ -8,6 +8,8 @@
 
   面板原本是上块贴顶、下块贴底：分屏认证页右半边的表单按示例是 `place-items-center` 垂直居中，高一点的视口里左侧标语在 y≈128、表单从 y≈284 起，中间隔着一大段空白。消费方只能用 `[&>div:first-child]:flex-1` 猜内部 DOM 去撑，那不是契约。`contentAlign="center"` 时面板改为三行 grid `1fr auto 1fr`：brand 仍贴顶、highlights / footer 仍贴底，中部（title / description / children）相对**整块面板**居中——上下两行等分剩余空间，品牌位与底部区高矮不同也不会把中部推偏（`flex-1 + justify-center` 会）。默认 `start`，现有页面 DOM 不变。
 
+- `QuestionCard` 新增 `figureAlt?: (index) => string`：题干附图的 alt 由持有 locale 的上层传入（QuestionEditor 预览已接自己的 `figureAlt`），此前无论语言都落回中文「题目附图 N」，英文站示例页因此残留中文。 <!-- parity-id: question-card-figure-alt -->
+
 ### Patch Changes
 
 - 034331f: `Stat` 标题行固定 32px 高，有无 `icon` 都一样（#339）。

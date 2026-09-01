@@ -123,4 +123,20 @@ describe("QuestionCard", () => {
     const { container } = render(<QuestionCard stem={"看图 ![](import/a.png)"} type="single" />);
     expect(container.querySelector("img")).toBeNull();
   });
+  // 英文站示例页曾残留中文 alt：QuestionCard 无 hook 读不到 Locale，alt 只能由上层传入。
+  it("figureAlt 透传给题干附图与 figure 槽；不传时缺省中文", () => {
+    const { container, rerender } = render(
+      <QuestionCard
+        type="single"
+        stem="如图 ![](figures/a.svg)"
+        resolveFigure={(key) => `/${key}`}
+        figure={{ src: "/b.svg" }}
+        figureAlt={(i) => `Figure ${i}`}
+      />,
+    );
+    const alts = () => Array.from(container.querySelectorAll("img")).map((img) => img.getAttribute("alt"));
+    expect(alts()).toEqual(["Figure 1", "Figure 1"]);
+    rerender(<QuestionCard type="single" stem="如图 ![](figures/a.svg)" resolveFigure={(key) => `/${key}`} />);
+    expect(alts()).toEqual(["题目附图 1"]);
+  });
 });

@@ -71,6 +71,7 @@ import { QuestionCard } from "@hulianui/ui/math"
 | `parts` | `string[]` | - | 小问 (1)(2)(3) |
 | `figure` | `{ src, alt? }` | - | 附图 |
 | `resolveFigure` | `(key: string) => string` | - | 题干里 `![](key)` 的解析器：给了就先切图再排公式，图按顺序渲染在正文之后；不给则题干原样交给 Formula |
+| `figureAlt` | `(index: number) => string` | - | 题干附图的 alt 文案，如 (1) → "题目附图 1"。本件无 hook 读不到 Locale，缺省中文；QuestionEditor 预览会传自己 locale 的 `figureAlt`，单独用且要英文时自己传 |
 | `answer` | `QuestionAnswerValue` | - | 答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswerValue`。只有 `showAnswer` 为真才渲染 |
 | `analysis` | `string` | - | 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染 |
 | `showAnswer` | `boolean` | `false` | 渲染答案与解析区。学生作答前必须关 |

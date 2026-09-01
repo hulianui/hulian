@@ -80,7 +80,7 @@ const equivalent = await createCasComparator();   // 页面挂载时做一次即
 
 ## Props
 
-`MathFieldProps` 继承 [`MathFieldLikeProps`](../math-textarea/math-textarea.md#mathfieldlikeprops-visualeditor-的契约)，前六行就是那份契约。
+`MathFieldProps` 继承 [`MathFieldLikeProps`](../math-textarea/math-textarea.md)，前六行就是那份契约。
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
@@ -160,4 +160,4 @@ MathLive 通过 CSS 变量取色，本件把它们钉到瑚琏 token，亮暗随
 - [QuestionAnswer](../question-answer/question-answer.md) —— `blankInput="math"` + `mathField`
 - [QuestionEditor](../question-editor/question-editor.md) —— `visualEditor` 透传给每个 MathTextarea
 - [Formula](../math/math.md) —— 排版与 `@hulianui/ui/math` 的题目域纯函数（`gradeObjective`）
-- [消费指南 · 数学题件](../../../../docs/consuming-math.md) —— 三条入口各买什么体积、SSR、判分 SSOT
+- [消费指南 · 数学题件](https://github.com/hulianui/hulian/blob/master/docs/consuming-math.md) —— 三条入口各买什么体积、SSR、判分 SSOT

@@ -6702,7 +6702,7 @@ const equivalent = await createCasComparator();   // 页面挂载时做一次即
 
 ## Props
 
-`MathFieldProps` 继承 [`MathFieldLikeProps`](../math-textarea/math-textarea.md#mathfieldlikeprops-visualeditor-的契约)，前六行就是那份契约。
+`MathFieldProps` 继承 [`MathFieldLikeProps`](https://hulianui.haloritual.com/zh/components/math-textarea)，前六行就是那份契约。
 
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
@@ -6782,7 +6782,7 @@ MathLive 通过 CSS 变量取色，本件把它们钉到瑚琏 token，亮暗随
 - [QuestionAnswer](https://hulianui.haloritual.com/zh/components/question-answer) —— `blankInput="math"` + `mathField`
 - [QuestionEditor](https://hulianui.haloritual.com/zh/components/question-editor) —— `visualEditor` 透传给每个 MathTextarea
 - [Formula](https://hulianui.haloritual.com/zh/components/math) —— 排版与 `@hulianui/ui/math` 的题目域纯函数（`gradeObjective`）
-- [消费指南 · 数学题件](../../../../docs/consuming-math.md) —— 三条入口各买什么体积、SSR、判分 SSOT
+- [消费指南 · 数学题件](https://github.com/hulianui/hulian/blob/master/docs/consuming-math.md) —— 三条入口各买什么体积、SSR、判分 SSOT
 
 <!-- ════════════════════════════════════════════════════════ -->
 # MathTextarea
@@ -14865,6 +14865,7 @@ import { QuestionCard } from "@hulianui/ui/math"
 | `parts` | `string[]` | - | 小问 (1)(2)(3) |
 | `figure` | `{ src, alt? }` | - | 附图 |
 | `resolveFigure` | `(key: string) => string` | - | 题干里 `![](key)` 的解析器：给了就先切图再排公式，图按顺序渲染在正文之后；不给则题干原样交给 Formula |
+| `figureAlt` | `(index: number) => string` | - | 题干附图的 alt 文案，如 (1) → "题目附图 1"。本件无 hook 读不到 Locale，缺省中文；QuestionEditor 预览会传自己 locale 的 `figureAlt`，单独用且要英文时自己传 |
 | `answer` | `QuestionAnswerValue` | - | 答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswerValue`。只有 `showAnswer` 为真才渲染 |
 | `analysis` | `string` | - | 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染 |
 | `showAnswer` | `boolean` | `false` | 渲染答案与解析区。学生作答前必须关 |

@@ -18,7 +18,7 @@ Practice pages, homework pages, and mistake redo: anywhere a student answers one
 
 Every rule in this component maps to an incident that once happened silently (no page error, clean console, the student simply could not answer): a true-false question fell into the "options from `options`" branch and rendered a radio group with zero options; a multi-blank question got one input while grading compares blank by blank; object-shaped `options` were filtered to an empty array by `typeof o === "string"`. A second hand-written copy will hit at least one of them again.
 
-Display only: [QuestionCard](../question-card/question-card.en.md). Authoring: [QuestionEditor](../question-editor/question-editor.en.md).
+Display only: [QuestionCard](../question-card/question-card.md). Authoring: [QuestionEditor](../question-editor/question-editor.md).
 
 ## Import
 
@@ -77,7 +77,7 @@ import { MathField } from "@hulianui/ui/math-field";   // optional peer mathlive
 <QuestionAnswer question={q} value={v} onChange={setV} blankInput="math" mathField={MathField} />
 ```
 
-`mathField` is any component satisfying `MathFieldLikeProps` (see [MathTextarea](../math-textarea/math-textarea.en.md)); `@hulianui/ui/math` itself has zero MathLive.
+`mathField` is any component satisfying `MathFieldLikeProps` (see [MathTextarea](../math-textarea/math-textarea.md)); `@hulianui/ui/math` itself has zero MathLive.
 
 ## Props
 
@@ -144,7 +144,7 @@ All exported from `@hulianui/ui/math`:
 - `canSubmit(answer)`: true only when every blank is filled. Reuse it for a Next button outside the card.
 - `answerKind(question)`: `"single" | "multiple" | "judge" | "blank" | "subjective" | "unanswerable"`, which control this question gets.
 - `resolveBlankCount(question)`: how many blanks to render.
-- `gradeObjective(question, answer)` (phase 1): grading for instant feedback, see [Formula](../math/math.en.md).
+- `gradeObjective(question, answer)` (phase 1): grading for instant feedback, see [Formula](../math/math.md).
 - `encodeBlanks(blanks)` / `decodeBlanks(raw, count)` (phase 1): convert between the per-blank array and the server record.
 
 ## Pitfalls
@@ -160,8 +160,8 @@ All exported from `@hulianui/ui/math`:
 
 ## Related
 
-- [QuestionCard](../question-card/question-card.en.md): display only; the stem is rendered by the same `QuestionStemBlock`
-- [QuestionEditor](../question-editor/question-editor.en.md): authoring
-- [MathTextarea](../math-textarea/math-textarea.en.md): the `MathFieldLikeProps` contract lives in its docs
-- [MathField](../math-field/math-field.en.md): the ready-made `mathField` implementation (optional peer mathlive) and `createCasComparator`
-- [Formula](../math/math.en.md): the question-domain functions of `@hulianui/ui/math` (`gradeObjective` / `encodeBlanks` / `normalizeOptions`)
+- [QuestionCard](../question-card/question-card.md): display only; the stem is rendered by the same `QuestionStemBlock`
+- [QuestionEditor](../question-editor/question-editor.md): authoring
+- [MathTextarea](../math-textarea/math-textarea.md): the `MathFieldLikeProps` contract lives in its docs
+- [MathField](../math-field/math-field.md): the ready-made `mathField` implementation (optional peer mathlive) and `createCasComparator`
+- [Formula](../math/math.md): the question-domain functions of `@hulianui/ui/math` (`gradeObjective` / `encodeBlanks` / `normalizeOptions`)

@@ -14,7 +14,7 @@ status: enriched
 
 ## When to use
 
-A student has to type $\frac{5}{6}$ into a blank, or a teacher authoring questions does not know how to write `\sqrt{}`: the user sees a calculator-like box, what they type is already LaTeX, and the `value` you receive goes straight into [Formula](../math/math.en.md) for typesetting or into `gradeObjective` for grading. To insert a formula into a run of text, use [MathTextarea](../math-textarea/math-textarea.en.md) and pass this component as its `visualEditor`; it wraps the result in `$…$` and inserts at the caret. MathField itself never emits `$`.
+A student has to type $\frac{5}{6}$ into a blank, or a teacher authoring questions does not know how to write `\sqrt{}`: the user sees a calculator-like box, what they type is already LaTeX, and the `value` you receive goes straight into [Formula](../math/math.md) for typesetting or into `gradeObjective` for grading. To insert a formula into a run of text, use [MathTextarea](../math-textarea/math-textarea.md) and pass this component as its `visualEditor`; it wraps the result in `$…$` and inserts at the caret. MathField itself never emits `$`.
 
 For display only, use Formula.
 
@@ -80,7 +80,7 @@ const equivalent = await createCasComparator();   // once, when the page mounts
 
 ## Props
 
-`MathFieldProps` extends [`MathFieldLikeProps`](../math-textarea/math-textarea.en.md#mathfieldlikeprops-the-visualeditor-contract); the first six rows are that contract.
+`MathFieldProps` extends [`MathFieldLikeProps`](../math-textarea/math-textarea.md); the first six rows are that contract.
 
 | Name | Type | Default | Description |
 |---|---|---|---|
@@ -112,7 +112,7 @@ Uses the Compute Engine to decide whether two LaTeX strings are **mathematically
 
 It is async: the Compute Engine is not bundled with mathlive, so the first call runs `import()` and later calls reuse the same engine instance. Without `@cortex-js/compute-engine` it throws `ComputeEngineUnavailableError` with the install command in the message.
 
-**The server is the grading source of truth** (see the `gradeObjective` section in the [Formula](../math/math.en.md) docs): this comparator gives instant feedback and authoring self-checks; official scores come from the server.
+**The server is the grading source of truth** (see the `gradeObjective` section in the [Formula](../math/math.md) docs): this comparator gives instant feedback and authoring self-checks; official scores come from the server.
 
 ## SSR and loading
 
@@ -141,7 +141,7 @@ MathLive reads its colors from CSS variables; the component pins them to Hulian 
 | `--placeholder-color` / `--smart-fence-color` | `--color-muted-foreground` |
 | `--correct-color` / `--incorrect-color` | `--color-success` / `--color-danger` |
 
-The frame shares the border and focus ring of [Input](../input/input.en.md); MathLive's built-in context menu is disabled (`menuItems = []`).
+The frame shares the border and focus ring of [Input](../input/input.md); MathLive's built-in context menu is disabled (`menuItems = []`).
 
 ## Localization
 
@@ -156,8 +156,8 @@ The only copy is the loading placeholder's accessible name and the missing-depen
 
 ## Related
 
-- [MathTextarea](../math-textarea/math-textarea.en.md): the `MathFieldLikeProps` contract and the `visualEditor` injection point
-- [QuestionAnswer](../question-answer/question-answer.en.md): `blankInput="math"` plus `mathField`
-- [QuestionEditor](../question-editor/question-editor.en.md): forwards `visualEditor` to every MathTextarea
-- [Formula](../math/math.en.md): typesetting and the question-domain functions of `@hulianui/ui/math` (`gradeObjective`)
-- [Consuming guide for the math components](../../../../docs/consuming-math.md): what each entry costs, SSR, grading source of truth
+- [MathTextarea](../math-textarea/math-textarea.md): the `MathFieldLikeProps` contract and the `visualEditor` injection point
+- [QuestionAnswer](../question-answer/question-answer.md): `blankInput="math"` plus `mathField`
+- [QuestionEditor](../question-editor/question-editor.md): forwards `visualEditor` to every MathTextarea
+- [Formula](../math/math.md): typesetting and the question-domain functions of `@hulianui/ui/math` (`gradeObjective`)
+- [Consuming guide for the math components](https://github.com/hulianui/hulian/blob/master/docs/consuming-math.md): what each entry costs, SSR, grading source of truth

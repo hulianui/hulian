@@ -37,6 +37,7 @@ export function QuestionCard({
   parts,
   figure,
   resolveFigure,
+  figureAlt,
   answer,
   analysis,
   showAnswer = false,
@@ -92,7 +93,7 @@ export function QuestionCard({
 
         <div className={cn("gap-4", figure && "sm:flex sm:items-start")}>
           <div className="min-w-0 flex-1 space-y-2">
-            <QuestionStemBlock stem={stem} resolveFigure={resolveFigure} />
+            <QuestionStemBlock stem={stem} resolveFigure={resolveFigure} figureAlt={figureAlt} />
 
             {options && options.length > 0 && (
               <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
@@ -132,7 +133,7 @@ export function QuestionCard({
           {figure && (
             <Image
               src={figure.src}
-              alt={figure.alt ?? "题目附图"}
+              alt={figure.alt ?? (figureAlt ? figureAlt(1) : "题目附图")}
               radius="md"
               className="mt-2 shrink-0 self-start border border-border bg-white sm:mt-0"
               // 题目附图是线稿，尺寸差异极大（细高的数轴 vs 扁宽的表格）。

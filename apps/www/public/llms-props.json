@@ -24437,6 +24437,14 @@
           "description": "题干里 `![](key)` 的解析器：给了就先切图再排公式，图按顺序渲染在正文之后；不给则题干原样交给 Formula"
         },
         {
+          "name": "figureAlt",
+          "required": false,
+          "kind": "function",
+          "type": "(index: number) => string",
+          "default": null,
+          "description": "题干附图的 alt 文案，如 (1) → \"题目附图 1\"。本件无 hook 读不到 Locale，缺省中文；QuestionEditor 预览会传自己 locale 的 `figureAlt`，单独用且要英文时自己传"
+        },
+        {
           "name": "answer",
           "required": false,
           "kind": "other",

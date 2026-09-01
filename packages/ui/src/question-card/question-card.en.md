@@ -71,6 +71,7 @@ An uncertain automatically extracted item:
 | `parts` | `string[]` | - | Subquestions such as (1), (2), and (3). |
 | `figure` | `{ src, alt? }` | - | Supporting image. |
 | `resolveFigure` | `(key: string) => string` | - | Resolver for `![](key)` references in the stem: when provided, figures are split out first and rendered after the text in order; otherwise the stem is passed to Formula unchanged |
+| `figureAlt` | `(index: number) => string` | - | Alt text for figures split out of the stem, e.g. (1) → "Figure 1". The card has no hooks and cannot read the Locale, so the default is Chinese; the QuestionEditor preview passes its own locale's `figureAlt`, and standalone English usage should pass one. |
 | `answer` | `QuestionAnswerValue` | - | Answer key; see `QuestionAnswerValue` in `@hulianui/ui/math`. Rendered only when `showAnswer` is true. |
 | `analysis` | `string` | - | Explanation, accepts LaTeX. Rendered only when `showAnswer` is true. |
 | `showAnswer` | `boolean` | `false` | Renders the answer and explanation block. Keep it off before a student has answered. |

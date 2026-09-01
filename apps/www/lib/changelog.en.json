@@ -11,6 +11,13 @@
         "body": "`AuthPanel` gains `contentAlign?: \"start\" | \"center\"` (#338).\n\nThe panel used to pin its top block to the top and its bottom block to the bottom. The form on the other half of a split auth page is vertically centered (`place-items-center` in the docs example), so on a taller viewport the headline sat at y≈128 while the form started around y≈284, with a large gap between them. Consumers could only stretch the internal layout with `[&>div:first-child]:flex-1`, which guesses at the DOM and is not a contract. With `contentAlign=\"center\"` the panel becomes a three-row grid `1fr auto 1fr`: the brand still sits at the top, highlights / footer still sit at the bottom, and the middle content (title / description / children) is centered relative to the whole panel. The two outer rows share the remaining space equally, so a brand slot and a footer of different heights do not push the middle off center (a `flex-1 + justify-center` layout would). The default is `start`, so existing pages render the same DOM as before."
       },
       {
+        "sha": null,
+        "bump": "minor",
+        "breaking": false,
+        "body": "`QuestionCard` gains `figureAlt?: (index) => string`: the alt text for figures split out of the stem now comes from the locale-owning parent (the QuestionEditor preview passes its own `figureAlt`). Previously it always fell back to the Chinese \"题目附图 N\" regardless of language, which left Chinese text on the English docs examples.",
+        "parityId": "question-card-figure-alt"
+      },
+      {
         "sha": "034331f",
         "bump": "patch",
         "breaking": false,
