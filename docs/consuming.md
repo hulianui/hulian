@@ -292,6 +292,8 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@hulianui/ui/tooltip"
 基础设施件同理：`@hulianui/ui/theme`、`@hulianui/ui/access`、`@hulianui/ui/config`、`@hulianui/ui/lib`。
 两个入口导出的是同一份东西，混用没有问题 —— 子路径只是让打包器少看几百个文件。
 
+数学题件（KaTeX / MathLive 两个重依赖、判分 SSOT）单独写在 [docs/consuming-math.md](./consuming-math.md)。
+
 **什么时候收益有限**：你本来就用到大半个库时，根 barrel 更省事。
 
 ### Next.js 消费方：这是最糟的一档，务必加一行配置
