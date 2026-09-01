@@ -16,6 +16,8 @@ export const TASK11_DEMO_ROUTES = [
   "knowledge",
   "learn",
   "learn/courses/react-foundations",
+  "learn/questions",
+  "learn/practice",
   "scheduler",
   "dashboard",
 ];
@@ -30,6 +32,8 @@ export const TASK11_ROUTE_MARKERS = {
   knowledge: "HanVault",
   learn: "Course catalog",
   "learn/courses/react-foundations": "Modern React Engineering in Practice",
+  "learn/questions": "Question bank",
+  "learn/practice": "Practice",
   scheduler: "Hulian Clinic Scheduler",
   dashboard: "Hulian Global Traffic Command Center",
 };

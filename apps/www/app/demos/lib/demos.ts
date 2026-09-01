@@ -92,11 +92,11 @@ export const demos: DemoMeta[] = [
     slug: "learn",
     title: "瀚学 在线课程平台",
     description:
-      "课程目录筛选、课程播放页(大 Video 播放器+章节标记/续播/播完结束屏) + 章节 Tree(当前小节高亮/完成打勾) + 简介/笔记(MarkdownEditor)/讨论(Comment+@提及) + 报名 StepsForm 轻流程 —— 100% 由 @hulianui/ui 搭建的 LMS，让旗舰 Video 从画廊配角升为教学主角。",
+      "课程目录筛选、课程播放页(大 Video 播放器+章节标记/续播/播完结束屏) + 章节 Tree(当前小节高亮/完成打勾) + 简介/笔记(MarkdownEditor)/讨论(Comment+@提及) + 报名 StepsForm 轻流程 —— 100% 由 @hulianui/ui 搭建的 LMS，让旗舰 Video 从画廊配角升为教学主角。新增题库（QuestionEditor + MathField 可视化公式键盘）与练习（QuestionAnswer + gradeObjective 三档即时判分）两页，串起数学题件整条链路。",
     href: "/demos/learn",
     category: "在线教育",
     status: "done",
-    tags: ["Video", "Tree", "章节树", "学习进度", "MarkdownEditor"],
+    tags: ["Video", "Tree", "章节树", "学习进度", "MarkdownEditor", "QuestionEditor", "MathField"],
   },
   {
     slug: "shop",

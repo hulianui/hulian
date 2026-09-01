@@ -18,8 +18,8 @@ test("Task 11 browser scan reports every CJK surface in one route pass", () => {
 });
 
 test("Task 11 browser inventory is the reviewed 11-route scope", () => {
-  assert.equal(TASK11_DEMO_ROUTES.length, 11);
-  assert.equal(new Set(TASK11_DEMO_ROUTES).size, 11);
+  assert.equal(TASK11_DEMO_ROUTES.length, 13);
+  assert.equal(new Set(TASK11_DEMO_ROUTES).size, 13);
   for (const family of ["ai-chat", "ai-workflow", "knowledge", "learn", "scheduler", "dashboard"]) {
     assert.ok(TASK11_DEMO_ROUTES.includes(family));
   }

@@ -7,12 +7,16 @@ export const content = {
     turnEveryLearningIntoVisibleProgress: "把每一次学习，都变成可见的进步",
     courseCatalog: "课程目录",
     myLearning: "我的学习",
+    questionBank: "题库",
+    practice: "练习",
   },
   en: {
     hanxue: "HanLearn",
     turnEveryLearningIntoVisibleProgress: "Turn learning into visible progress",
     courseCatalog: "Course catalog",
     myLearning: "My learning",
+    questionBank: "Question bank",
+    practice: "Practice",
   },
 } as const;
 

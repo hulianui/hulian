@@ -10,4 +10,6 @@ export const brand = {
 export const primaryNav = [
   { label: copy("courseCatalog"), href: LEARN_BASE },
   { label: copy("myLearning"), href: `${LEARN_BASE}?view=mine` },
+  { label: copy("questionBank"), href: `${LEARN_BASE}/questions` },
+  { label: copy("practice"), href: `${LEARN_BASE}/practice` },
 ];

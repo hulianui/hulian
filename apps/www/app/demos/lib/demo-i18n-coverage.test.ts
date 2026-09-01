@@ -463,8 +463,8 @@ const inventory = {
     fixtures: ["_data/images.ts", "_data/org.ts", "_data/vault.ts"],
   },
   learn: {
-    routes: ["(app)/courses/[id]/page.tsx", "(app)/page.tsx"],
-    fixtures: ["_data/courses.ts", "_data/poster.ts"],
+    routes: ["(app)/courses/[id]/page.tsx", "(app)/page.tsx", "(app)/practice/page.tsx", "(app)/questions/page.tsx"],
+    fixtures: ["_data/courses.ts", "_data/poster.ts", "_data/questions.ts"],
   },
   scheduler: {
     routes: ["page.tsx"],

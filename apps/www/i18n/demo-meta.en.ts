@@ -51,9 +51,9 @@ export const demoMetaEn: Record<string, LocalizedDemoMeta> = {
   learn: {
     title: "Online Learning Platform",
     description:
-      "Learning management experience with course video, chapter tree, progress, notes, discussion, and guided enrollment.",
+      "Learning management experience with course video, chapter tree, progress, notes, discussion, and guided enrollment. Adds a question bank (QuestionEditor with the MathField formula keyboard) and a practice page (QuestionAnswer with three-tier instant grading).",
     category: "Online Education",
-    tags: ["Video", "Tree", "chapters", "learning progress", "MarkdownEditor"],
+    tags: ["Video", "Tree", "chapters", "learning progress", "MarkdownEditor", "QuestionEditor", "MathField"],
   },
   shop: {
     title: "HanShop Storefront",
