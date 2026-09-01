@@ -22,6 +22,7 @@
     "@hulianui/ui": "workspace:*",
     "intlayer": "^9.1.1",
     "lucide-react": "^1.28.0",
+    "mathlive": "0.110.0",
     "motion": "^12.43.0",
     "next": "^16.2.12",
     "next-intlayer": "^9.1.1",

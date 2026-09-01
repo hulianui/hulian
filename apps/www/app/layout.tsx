@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import "./globals.css";
+// MathLive 的字体由消费方引入（库不替消费方决定）。文档站与 demo 都渲染 MathField，放根布局一次引齐；
+// @font-face 只在真正用到字形时才下载，不用 MathField 的页面零成本。
+import "mathlive/fonts.css";
 import { geistSans, geistMono } from "./fonts";
 import { themeScript } from "./theme-script";
 import { DocsProviders } from "../components/docs-providers";

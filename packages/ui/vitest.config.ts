@@ -53,6 +53,10 @@ export default defineConfig({
       "@base-ui/react/combobox",
       "recharts",
       "class-variance-authority",
+      // math-field 的 browser 用例第一次 import("mathlive") 时若还没预构建，Vite 会中途重优化 + reload，
+      // 正在跑的用例被打断（见上面那段注释）。
+      "mathlive",
+      "@cortex-js/compute-engine",
     ],
   },
   test: {
