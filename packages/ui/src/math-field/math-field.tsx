@@ -91,9 +91,10 @@ export function MathField({
     const host = hostRef.current;
     if (!host) return;
     const el = document.createElement("math-field") as MathfieldLike;
+    // 先连上 DOM 再动它：MathLive 的 setValue / menuItems 在元素未挂载时会抛 "Mathfield not mounted"。
+    host.appendChild(el);
     el.menuItems = [];
     el.setValue(initialValue.current, { silenceNotifications: true });
-    host.appendChild(el);
     fieldRef.current = el;
 
     const onInput = () => latest.current.onChange(el.getValue("latex"));
@@ -143,9 +144,13 @@ export function MathField({
       data-slot="math-field"
       data-status={status}
       data-keyboard={virtualKeyboard}
-      className={cn("relative w-full", THEME_VARS, HOST_CLASS, virtualKeyboard === "off" && KEYBOARD_OFF_CLASS, className)}
+      className={cn("relative w-full", THEME_VARS, className)}
     >
-      <div ref={hostRef} className={cn(status !== "ready" && "hidden")} />
+      {/* <math-field> 是这个 host 的直接子级：HOST_CLASS 里的 `&>math-field` 选择器只在这一层成立。 */}
+      <div
+        ref={hostRef}
+        className={cn(HOST_CLASS, virtualKeyboard === "off" && KEYBOARD_OFF_CLASS, status !== "ready" && "hidden")}
+      />
       {status === "loading" && <Skeleton shape="rect" className="h-10 w-full" aria-label={L.loading} />}
       {status === "unavailable" && (
         <Alert tone="warning" title={L.missing}>
