@@ -21,6 +21,7 @@ import { GraduationCap, Search } from "lucide-react";
 import { courses, CATEGORY_NAME, priceLabel } from "../_data/courses";
 import { brand, primaryNav, LEARN_BASE } from "./nav-config";
 import { LearnStoreProvider } from "../_lib/learn-store";
+import { QuestionBankProvider } from "../_lib/question-bank-store";
 
 function Logo() {
   return (
@@ -252,12 +253,14 @@ function FooterCol({ title, links }: { title: string; links: string[] }) {
 export function LearnShell({ children }: { children: ReactNode }) {
   return (
     <LearnStoreProvider>
-      <div className="flex min-h-dvh flex-col bg-bg">
-        <LearnNavbar />
-        <main className="flex-1">{children}</main>
-        <LearnFooter />
-        <BackTop visibilityHeight={500} />
-      </div>
+      <QuestionBankProvider>
+        <div className="flex min-h-dvh flex-col bg-bg">
+          <LearnNavbar />
+          <main className="flex-1">{children}</main>
+          <LearnFooter />
+          <BackTop visibilityHeight={500} />
+        </div>
+      </QuestionBankProvider>
     </LearnStoreProvider>
   );
 }
