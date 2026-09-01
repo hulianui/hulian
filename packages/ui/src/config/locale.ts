@@ -1,6 +1,7 @@
 "use client";
 import { useLocaleContext, warnMissingLocaleProvider } from "./locale-context";
 import { QUESTION_LOCALE_EN, QUESTION_LOCALE_ZH, type QuestionLocale } from "../question/question.locale";
+import { MATH_FIELD_LOCALE_EN, MATH_FIELD_LOCALE_ZH, type MathFieldLocale } from "../math-field/math-field.locale";
 import {
   MATH_TEXTAREA_LOCALE_EN,
   MATH_TEXTAREA_LOCALE_ZH,
@@ -743,6 +744,8 @@ export interface ComponentLocale {
   questionEditor?: QuestionEditorLocale;
   /** 学生作答卡词条，SSOT 在 question-answer/question-answer.locale.ts（同 question 的理由）。 */
   questionAnswer?: QuestionAnswerLocale;
+  /** 可视化公式键盘词条，SSOT 在 math-field/math-field.locale.ts（同 question 的理由）。 */
+  mathField?: MathFieldLocale;
   modelViewer?: { reset: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   coupon?: {
@@ -1522,6 +1525,7 @@ const zhComponents: ComponentLocale = {
   mathTextarea: MATH_TEXTAREA_LOCALE_ZH,
   questionEditor: QUESTION_EDITOR_LOCALE_ZH,
   questionAnswer: QUESTION_ANSWER_LOCALE_ZH,
+  mathField: MATH_FIELD_LOCALE_ZH,
   modelViewer: { reset: "重置视角" },
   coupon: {
     available: "立即领取",
@@ -2418,6 +2422,7 @@ const enComponents: ComponentLocale = {
   mathTextarea: MATH_TEXTAREA_LOCALE_EN,
   questionEditor: QUESTION_EDITOR_LOCALE_EN,
   questionAnswer: QUESTION_ANSWER_LOCALE_EN,
+  mathField: MATH_FIELD_LOCALE_EN,
   modelViewer: { reset: "Reset view" },
   coupon: {
     available: "Claim now",
