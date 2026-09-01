@@ -188,6 +188,7 @@ The position is that **a corrupted formula must be visible**. Quietly rendering 
 
 ## Related
 
+- [MathField](../math-field/math-field.en.md): visual formula keyboard on the standalone `@hulianui/ui/math-field` subpath (optional peer mathlive), plus `createCasComparator` for tier-3 grading
 - [MathTextarea](../math-textarea/math-textarea.en.md): formula input whose preview is this component; also lives in `@hulianui/ui/math`
 - [QuestionEditor](../question-editor/question-editor.en.md): question editor whose stem, options, and preview are this component; also lives in `@hulianui/ui/math`
 - [QuestionAnswer](../question-answer/question-answer.en.md): student answer card whose stem, options, and result area are this component; also lives in `@hulianui/ui/math`

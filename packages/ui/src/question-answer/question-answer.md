@@ -72,7 +72,7 @@ onSubmit={(answer) => {
 ### 公式键盘
 
 ```tsx
-import { MathField } from "@hulianui/ui/math-field";   // 阶段 5，可选 peer mathlive
+import { MathField } from "@hulianui/ui/math-field";   // 可选 peer mathlive，见 ../math-field/math-field.md
 
 <QuestionAnswer question={q} value={v} onChange={setV} blankInput="math" mathField={MathField} />
 ```
@@ -163,4 +163,5 @@ import { MathField } from "@hulianui/ui/math-field";   // 阶段 5，可选 peer
 - [QuestionCard](../question-card/question-card.md) —— 只展示；题干渲染与本件同一个 `QuestionStemBlock`
 - [QuestionEditor](../question-editor/question-editor.md) —— 出题
 - [MathTextarea](../math-textarea/math-textarea.md) —— `MathFieldLikeProps` 契约在它的文档里
+- [MathField](../math-field/math-field.md) —— `mathField` 的现成实现（可选 peer mathlive）与 `createCasComparator`
 - [Formula](../math/math.md) —— `@hulianui/ui/math` 的题目域纯函数（`gradeObjective` / `encodeBlanks` / `normalizeOptions`）

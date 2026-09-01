@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.58.0 · 398 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.58.0 · 399 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -1957,6 +1957,7 @@ KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都�
 
 ## 相关
 
+- [MathField](https://hulianui.haloritual.com/zh/components/math-field) —— 可视化公式键盘，独立子路径 `@hulianui/ui/math-field`（可选 peer mathlive），另给 `createCasComparator` 第 3 档判分
 - [MathTextarea](https://hulianui.haloritual.com/zh/components/math-textarea) —— 公式输入框，预览内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionEditor](https://hulianui.haloritual.com/zh/components/question-editor) —— 出题编辑器，题干 / 选项 / 预览内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionAnswer](https://hulianui.haloritual.com/zh/components/question-answer) —— 学生作答卡，题干 / 选项 / 结果区内部就是本组件；同住 `@hulianui/ui/math`
@@ -6625,6 +6626,163 @@ const [md, setMd] = useState("# 标题");
 [SecretField](https://hulianui.haloritual.com/zh/components/secret-field) · [Combobox](https://hulianui.haloritual.com/zh/components/combobox) · [Listbox](https://hulianui.haloritual.com/zh/components/listbox) · [Mentions](https://hulianui.haloritual.com/zh/components/mentions) · [InputOTP](https://hulianui.haloritual.com/zh/components/input-otp) · [Rating](https://hulianui.haloritual.com/zh/components/rating)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# MathField
+
+**导出**：`MathField` · `MATH_FIELD_LOCALE_ZH` · `MATH_FIELD_LOCALE_EN` · `MATHLIVE_INSTALL_HINT` · `MathLiveUnavailableError` · `createCasComparator` · `stripMathDelimiters` · `COMPUTE_ENGINE_INSTALL_HINT` · `ComputeEngineUnavailableError`
+
+> 可视化公式键盘 · MathLive 驱动，所见即所得地敲出 LaTeX（值不带 $）· 满足 MathFieldLikeProps，直接注入 MathTextarea / QuestionEditor 的 visualEditor 与 QuestionAnswer 的 mathField · 服务端与首帧渲染骨架，mathlive 在客户端动态加载，没装时显示安装提示不白屏 · 独立子路径 @hulianui/ui/math-field，主包与 @hulianui/ui/math 零 MathLive · 另给 createCasComparator 做第 3 档等价判分 · forms/advanced
+
+## 何时用
+
+学生在填空题里要敲 $\frac{5}{6}$、老师录题时不会写 `\sqrt{}` 这类场合：用户面对的是一个像计算器一样的公式框，敲出来的东西已经是 LaTeX，你拿到的 `value` 直接能进 [Formula](https://hulianui.haloritual.com/zh/components/math) 排版、进 `gradeObjective` 判分。只是要在一段文字里插公式，用 [MathTextarea](https://hulianui.haloritual.com/zh/components/math-textarea) 并把本件传给它的 `visualEditor`，它负责套 `$…$` 与插到光标处；本件自己不产出 `$`。
+
+只展示不编辑用 Formula。
+
+## 安装
+
+`mathlive` 是**可选 peer**，装了才能用本件：
+
+```bash
+pnpm add mathlive
+```
+
+要用 `createCasComparator` 再装 `@cortex-js/compute-engine`（它是 mathlive 钉死的依赖，通常已经在 node_modules 里，显式装一次让打包器的解析不依赖 hoist）：
+
+```bash
+pnpm add mathlive @cortex-js/compute-engine
+```
+
+字体由你引入一次（Next 放根 layout，Vite 放 main.tsx）；缺字体只是回退成系统字体，不是白屏：
+
+```ts
+import "mathlive/fonts.css";
+```
+
+peer 下界 `mathlive >=0.110.0`、`@cortex-js/compute-engine >=0.58.0`：只承诺测过的版本。MathLive 0.9x 到 0.10x 之间 `menuItems` 与虚拟键盘策略的语义都改过，往下放宽等于拿没测过的组合做承诺。
+
+## 导入
+
+```ts
+import { MathField, createCasComparator } from "@hulianui/ui/math-field"
+```
+
+住独立子路径而不是 `@hulianui/ui/math`：MathLive 本体加 Compute Engine 是几百 KB 的懒加载 chunk，只有真要可视化输入 / CAS 判分的页面才为它们买单；`@hulianui/ui/math` 自身零 MathLive。
+
+## 用法
+
+```tsx
+const [latex, setLatex] = useState("\\frac{a}{b}");
+
+<MathField value={latex} onChange={setLatex} aria-label="公式" />
+```
+
+注入 MathTextarea（多出「可视化输入」页签，确认后按 `$…$` 插到光标处）：
+
+```tsx
+<MathTextarea multiline value={stem} onChange={setStem} visualEditor={MathField} />
+<QuestionEditor value={question} onChange={setQuestion} visualEditor={MathField} />
+```
+
+注入 QuestionAnswer 的填空，并接三档判分：
+
+```tsx
+const equivalent = await createCasComparator();   // 页面挂载时做一次即可
+
+<QuestionAnswer
+  question={q}
+  value={v}
+  onChange={setV}
+  blankInput="math"
+  mathField={MathField}
+  onSubmit={(answer) => gradeObjective(q, answer, { normalize: true, equivalent })}
+/>
+```
+
+## Props
+
+`MathFieldProps` 继承 [`MathFieldLikeProps`](../math-textarea/math-textarea.md#mathfieldlikeprops-visualeditor-的契约)，前六行就是那份契约。
+
+| 名称 | 类型 | 默认 | 说明 |
+|---|---|---|---|
+| value | `string` | - | LaTeX，不带 `$` |
+| onChange | `(latex: string) => void` | - | 每次击键回传 |
+| onSubmit | `(latex: string) => void` | - | 回车。MathTextarea 把它接到「插入到光标处」 |
+| disabled | `boolean` | `false` | 锁定（已提交 / 提交中） |
+| aria-label | `string` | - | 无障碍名，透传给 `<math-field>` |
+| className | `string` | - | 外层容器 |
+| virtualKeyboard | `"auto" \| "manual" \| "off"` | `"auto"` | 虚拟键盘策略：auto 触屏聚焦时弹出、manual 只由切换钮弹出、off 不挂键盘（策略 manual 且隐藏切换钮） |
+| keyboardLayouts | `readonly unknown[]` | - | 透传给 `window.mathVirtualKeyboard.layouts`。键盘是页面级单例，后挂载的覆盖先挂载的 |
+| readOnly | `boolean` | `false` | 只读：能选中复制，不能改 |
+| placeholder | `string` | - | 空值时的占位 |
+
+## Events
+
+| 事件 | 参数 | 时机 |
+|---|---|---|
+| onChange | `latex: string` | 用户每次击键（MathLive 的 `input` 事件） |
+| onSubmit | `latex: string` | 回车（Shift+Enter 不触发） |
+
+## createCasComparator
+
+```ts
+function createCasComparator(): Promise<(a: string, b: string) => boolean>
+```
+
+用 Compute Engine 判两个 LaTeX 是否**数学等价**：`\frac{1}{2}` 与 `0.5`、`2x+1` 与 `1+2x` 都为真。返回值是同步比较器，直接喂 `gradeObjective` 的 `equivalent`（第 3 档，只在字面与归一都不等时才调）。两侧的 `$…$` / `$$…$$` / `\(…\)` 会先剥掉（`stripMathDelimiters`），解析失败、空串、任何异常一律 `false`：判分宁可漏判不可误判。
+
+它是 async 的：Compute Engine 不随 mathlive 打包，第一次调用才 `import()`，之后同一个引擎实例复用。没装 `@cortex-js/compute-engine` 时抛 `ComputeEngineUnavailableError`，消息里带安装命令。
+
+**服务端才是判分 SSOT**（见 [Formula](https://hulianui.haloritual.com/zh/components/math) 文档里 `gradeObjective` 一节）：这里给的是即时反馈与录题自测，正式成绩以服务端为准。
+
+## SSR 与加载
+
+组件有三态，`data-slot="math-field"` 上的 `data-status` 分别是 `loading` / `ready` / `unavailable`：
+
+- **loading**：服务端与客户端首帧都只渲染一个同尺寸 `Skeleton`，两边 HTML 一致，没有 hydration mismatch。
+- **ready**：`mathlive` 在 `useEffect` 里 `import()` 成功后，用 `document.createElement("math-field")` 挂真元素并做受控同步。
+- **unavailable**：没装 mathlive、或解析到的是 MathLive 的 SSR 构建（没有 `MathfieldElement`），渲染一条带安装命令的 `Alert`，**不抛错**，静态导出不会因此整页失败。开发期 `warnOnce` 一次。
+
+Next App Router 直接用，组件已是 client 组件，不需要 `next/dynamic`。Vite 可选 `optimizeDeps.include: ["mathlive", "@cortex-js/compute-engine"]`，避免第一次打开时中途重优化。
+
+## 虚拟键盘
+
+MathLive 的虚拟键盘是**页面级单例**（`window.mathVirtualKeyboard`），同页多个 MathField 共用同一块键盘；`keyboardLayouts` 给了就写进这个单例，后挂载的覆盖先挂载的。桌面端录题一般 `virtualKeyboard="off"`，学生端触屏作答用默认 `auto`。
+
+## 主题
+
+MathLive 通过 CSS 变量取色，本件把它们钉到瑚琏 token，亮暗随主题切换：
+
+| MathLive 变量 | 瑚琏 token |
+|---|---|
+| `--caret-color` | `--color-primary` |
+| `--selection-background-color` | `--color-primary` 18% |
+| `--selection-color` / `--latex-color` / `--highlight-text` | `--color-foreground` |
+| `--contains-highlight-background-color` | `--color-primary` 10% |
+| `--placeholder-color` / `--smart-fence-color` | `--color-muted-foreground` |
+| `--correct-color` / `--incorrect-color` | `--color-success` / `--color-danger` |
+
+外框与 [Input](https://hulianui.haloritual.com/zh/components/input) 同一套边框 / 焦点环；MathLive 内置右键菜单已关掉（`menuItems = []`）。
+
+## 国际化
+
+文案只有加载中占位的无障碍名与缺依赖提示两组，从 `ConfigProvider` 的 `components.mathField` 取，SSOT 在 `math-field.locale.ts`（`MATH_FIELD_LOCALE_ZH` / `MATH_FIELD_LOCALE_EN`）。
+
+## 禁忌 / 坑
+
+- **值是不带 `$` 的 LaTeX**。要插进题干走 MathTextarea 的 `visualEditor`（它负责套 `$`）；直接把 `value` 拼进题干会得到没有定界符的裸记号。
+- **注入的是组件不是元素**：`mathField={MathField}`、`visualEditor={MathField}`，不是 `<MathField />`。
+- **jsdom 里 mathlive 解析到 SSR 构建**，组件会显示安装提示：消费方单测里 `vi.mock("mathlive")` 一个只实现 `getValue` / `setValue` 的假元素，或只断言首帧骨架。
+- **MathLive 的 `setValue` 要求元素已挂载**，本件内部先 `appendChild` 再写值；自己直接操作 `<math-field>` 时同理。
+
+## 相关
+
+- [MathTextarea](https://hulianui.haloritual.com/zh/components/math-textarea) —— `MathFieldLikeProps` 契约与 `visualEditor` 注入点
+- [QuestionAnswer](https://hulianui.haloritual.com/zh/components/question-answer) —— `blankInput="math"` + `mathField`
+- [QuestionEditor](https://hulianui.haloritual.com/zh/components/question-editor) —— `visualEditor` 透传给每个 MathTextarea
+- [Formula](https://hulianui.haloritual.com/zh/components/math) —— 排版与 `@hulianui/ui/math` 的题目域纯函数（`gradeObjective`）
+- [消费指南 · 数学题件](../../../../docs/consuming-math.md) —— 三条入口各买什么体积、SSR、判分 SSOT
+
+<!-- ════════════════════════════════════════════════════════ -->
 # MathTextarea
 
 **导出**：`MathTextarea` · `FORMULA_TEMPLATE_GROUPS` · `applyFormulaTemplate` · `wrapSelectionInMath` · `isInsideMath` · `mathSpans` · `validateFormulaSyntax` · `textPosition` · `katexErrorAt` · `MATH_TEXTAREA_LOCALE_ZH` · `MATH_TEXTAREA_LOCALE_EN`
@@ -6672,7 +6830,7 @@ const [stem, setStem] = useState("已知 $\\triangle ABC$ 中 $\\angle C=90^{\\c
 | compact | `boolean` | `false` | 紧凑形态：预览只占一行、不带说明文字。给选项与每空答案用 |
 | templates | `readonly FormulaTemplateGroup[]` | `FORMULA_TEMPLATE_GROUPS` | 覆盖默认模板组。自定义模板给 `label` / 分组给 `title`，内置模板的名字从 Locale 取 |
 | renderPreview | `(value: string) => ReactNode` | - | 自定义预览渲染；默认 `<Formula>`。题干带图时由 QuestionEditor 传带图渲染 |
-| visualEditor | `ComponentType<MathFieldLikeProps>` | - | 注入可视化公式编辑器；**给了才出「可视化输入」页签**。`@hulianui/ui/math-field` 的 MathField 满足此契约 |
+| visualEditor | `ComponentType<MathFieldLikeProps>` | - | 注入可视化公式编辑器；**给了才出「可视化输入」页签**。`@hulianui/ui/math-field` 的 [MathField](https://hulianui.haloritual.com/zh/components/math-field) 满足此契约 |
 | macros | `Record<string, string>` | - | 透传给默认预览与 KaTeX 探针的宏表；自定义宏不该被报成「未定义命令」 |
 | aria-label | `string` | - | 无障碍名。单行控件必给：选项那一栏靠它区分「选项 A」和「选项 B」 |
 | className | `string` | - | 透传到根节点 |
@@ -6736,6 +6894,7 @@ const [stem, setStem] = useState("已知 $\\triangle ABC$ 中 $\\angle C=90^{\\c
 - [Formula](https://hulianui.haloritual.com/zh/components/math) —— 预览与展示端同一个排版件；`@hulianui/ui/math` 的其余纯函数（切段、转朴素文本）
 - [QuestionCard](https://hulianui.haloritual.com/zh/components/question-card) —— `renderPreview` 里最常见的目标
 - [Textarea](https://hulianui.haloritual.com/zh/components/textarea) / [Input](https://hulianui.haloritual.com/zh/components/input) —— 底下的输入控件
+- [MathField](https://hulianui.haloritual.com/zh/components/math-field) —— `visualEditor` 的现成实现（可选 peer mathlive）
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Mentions
@@ -7276,7 +7435,7 @@ onSubmit={(answer) => {
 ### 公式键盘
 
 ```tsx
-import { MathField } from "@hulianui/ui/math-field";   // 阶段 5，可选 peer mathlive
+import { MathField } from "@hulianui/ui/math-field";   // 可选 peer mathlive，见 ../math-field/math-field.md
 
 <QuestionAnswer question={q} value={v} onChange={setV} blankInput="math" mathField={MathField} />
 ```
@@ -7367,6 +7526,7 @@ import { MathField } from "@hulianui/ui/math-field";   // 阶段 5，可选 peer
 - [QuestionCard](https://hulianui.haloritual.com/zh/components/question-card) —— 只展示；题干渲染与本件同一个 `QuestionStemBlock`
 - [QuestionEditor](https://hulianui.haloritual.com/zh/components/question-editor) —— 出题
 - [MathTextarea](https://hulianui.haloritual.com/zh/components/math-textarea) —— `MathFieldLikeProps` 契约在它的文档里
+- [MathField](https://hulianui.haloritual.com/zh/components/math-field) —— `mathField` 的现成实现（可选 peer mathlive）与 `createCasComparator`
 - [Formula](https://hulianui.haloritual.com/zh/components/math) —— `@hulianui/ui/math` 的题目域纯函数（`gradeObjective` / `encodeBlanks` / `normalizeOptions`）
 
 <!-- ════════════════════════════════════════════════════════ -->

@@ -53,7 +53,7 @@ Single-line compact form for options and per-blank answers:
 | compact | `boolean` | `false` | Compact form: one-line preview with no helper text. For options and per-blank answers |
 | templates | `readonly FormulaTemplateGroup[]` | `FORMULA_TEMPLATE_GROUPS` | Replaces the default template groups. Custom templates provide `label` and groups provide `title`; built-in names come from the locale |
 | renderPreview | `(value: string) => ReactNode` | - | Custom preview; defaults to `<Formula>`. QuestionEditor passes a figure-aware renderer for stems |
-| visualEditor | `ComponentType<MathFieldLikeProps>` | - | Injects a visual formula editor; **the Visual input tab appears only when provided**. MathField from `@hulianui/ui/math-field` satisfies the contract |
+| visualEditor | `ComponentType<MathFieldLikeProps>` | - | Injects a visual formula editor; **the Visual input tab appears only when provided**. [MathField](../math-field/math-field.en.md) from `@hulianui/ui/math-field` satisfies the contract |
 | macros | `Record<string, string>` | - | Macro table passed to the default preview and the KaTeX probe so custom macros are not reported as undefined commands |
 | aria-label | `string` | - | Accessible name. Required for single-line controls: it is how option A and option B are told apart |
 | className | `string` | - | Applied to the root |
@@ -117,3 +117,4 @@ All exported from `@hulianui/ui/math`; those that do not import KaTeX can run in
 - [Formula](../math/math.en.md): the same typesetting component used for preview and display; the other pure functions in `@hulianui/ui/math`
 - [QuestionCard](../question-card/question-card.en.md): the most common `renderPreview` target
 - [Textarea](../textarea/textarea.en.md) / [Input](../input/input.en.md): the underlying inputs
+- [MathField](../math-field/math-field.en.md): the ready-made `visualEditor` implementation (optional peer mathlive)

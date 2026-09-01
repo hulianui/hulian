@@ -176,6 +176,7 @@ KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都�
 
 ## 相关
 
+- [MathField](../math-field/math-field.md) —— 可视化公式键盘，独立子路径 `@hulianui/ui/math-field`（可选 peer mathlive），另给 `createCasComparator` 第 3 档判分
 - [MathTextarea](../math-textarea/math-textarea.md) —— 公式输入框，预览内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionEditor](../question-editor/question-editor.md) —— 出题编辑器，题干 / 选项 / 预览内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionAnswer](../question-answer/question-answer.md) —— 学生作答卡，题干 / 选项 / 结果区内部就是本组件；同住 `@hulianui/ui/math`

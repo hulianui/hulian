@@ -53,7 +53,7 @@ const [stem, setStem] = useState("已知 $\\triangle ABC$ 中 $\\angle C=90^{\\c
 | compact | `boolean` | `false` | 紧凑形态：预览只占一行、不带说明文字。给选项与每空答案用 |
 | templates | `readonly FormulaTemplateGroup[]` | `FORMULA_TEMPLATE_GROUPS` | 覆盖默认模板组。自定义模板给 `label` / 分组给 `title`，内置模板的名字从 Locale 取 |
 | renderPreview | `(value: string) => ReactNode` | - | 自定义预览渲染；默认 `<Formula>`。题干带图时由 QuestionEditor 传带图渲染 |
-| visualEditor | `ComponentType<MathFieldLikeProps>` | - | 注入可视化公式编辑器；**给了才出「可视化输入」页签**。`@hulianui/ui/math-field` 的 MathField 满足此契约 |
+| visualEditor | `ComponentType<MathFieldLikeProps>` | - | 注入可视化公式编辑器；**给了才出「可视化输入」页签**。`@hulianui/ui/math-field` 的 [MathField](../math-field/math-field.md) 满足此契约 |
 | macros | `Record<string, string>` | - | 透传给默认预览与 KaTeX 探针的宏表；自定义宏不该被报成「未定义命令」 |
 | aria-label | `string` | - | 无障碍名。单行控件必给：选项那一栏靠它区分「选项 A」和「选项 B」 |
 | className | `string` | - | 透传到根节点 |
@@ -117,3 +117,4 @@ const [stem, setStem] = useState("已知 $\\triangle ABC$ 中 $\\angle C=90^{\\c
 - [Formula](../math/math.md) —— 预览与展示端同一个排版件；`@hulianui/ui/math` 的其余纯函数（切段、转朴素文本）
 - [QuestionCard](../question-card/question-card.md) —— `renderPreview` 里最常见的目标
 - [Textarea](../textarea/textarea.md) / [Input](../input/input.md) —— 底下的输入控件
+- [MathField](../math-field/math-field.md) —— `visualEditor` 的现成实现（可选 peer mathlive）

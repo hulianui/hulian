@@ -72,7 +72,7 @@ onSubmit={(answer) => {
 ### Formula keyboard
 
 ```tsx
-import { MathField } from "@hulianui/ui/math-field";   // phase 5, optional peer mathlive
+import { MathField } from "@hulianui/ui/math-field";   // optional peer mathlive, see ../math-field/math-field.en.md
 
 <QuestionAnswer question={q} value={v} onChange={setV} blankInput="math" mathField={MathField} />
 ```
@@ -163,4 +163,5 @@ All exported from `@hulianui/ui/math`:
 - [QuestionCard](../question-card/question-card.en.md): display only; the stem is rendered by the same `QuestionStemBlock`
 - [QuestionEditor](../question-editor/question-editor.en.md): authoring
 - [MathTextarea](../math-textarea/math-textarea.en.md): the `MathFieldLikeProps` contract lives in its docs
+- [MathField](../math-field/math-field.en.md): the ready-made `mathField` implementation (optional peer mathlive) and `createCasComparator`
 - [Formula](../math/math.en.md): the question-domain functions of `@hulianui/ui/math` (`gradeObjective` / `encodeBlanks` / `normalizeOptions`)

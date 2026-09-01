@@ -490,6 +490,11 @@
       "success",
       "command"
     ],
+    "MathFieldKeyboardPolicy": [
+      "auto",
+      "manual",
+      "off"
+    ],
     "ModalType": [
       "confirm",
       "info",
@@ -1208,6 +1213,15 @@
     "Listbox": "listbox",
     "LoginForm": "login-form",
     "MarkdownEditor": "markdown-editor",
+    "MathField": "math-field",
+    "MATH_FIELD_LOCALE_ZH": "math-field",
+    "MATH_FIELD_LOCALE_EN": "math-field",
+    "MATHLIVE_INSTALL_HINT": "math-field",
+    "MathLiveUnavailableError": "math-field",
+    "createCasComparator": "math-field",
+    "stripMathDelimiters": "math-field",
+    "COMPUTE_ENGINE_INSTALL_HINT": "math-field",
+    "ComputeEngineUnavailableError": "math-field",
     "MathTextarea": "math-textarea",
     "FORMULA_TEMPLATE_GROUPS": "math-textarea",
     "applyFormulaTemplate": "math-textarea",
@@ -10914,6 +10928,138 @@
       "slots": []
     },
     {
+      "slug": "math-field",
+      "name": "MathField",
+      "category": "forms",
+      "group": "advanced",
+      "status": "enriched",
+      "import": "import { MathField, MATH_FIELD_LOCALE_ZH, MATH_FIELD_LOCALE_EN, MATHLIVE_INSTALL_HINT, MathLiveUnavailableError, createCasComparator, stripMathDelimiters, COMPUTE_ENGINE_INSTALL_HINT, ComputeEngineUnavailableError } from \"@hulianui/ui\"",
+      "exports": [
+        "MathField",
+        "MATH_FIELD_LOCALE_ZH",
+        "MATH_FIELD_LOCALE_EN",
+        "MATHLIVE_INSTALL_HINT",
+        "MathLiveUnavailableError",
+        "createCasComparator",
+        "stripMathDelimiters",
+        "COMPUTE_ENGINE_INSTALL_HINT",
+        "ComputeEngineUnavailableError"
+      ],
+      "types": [
+        "MathFieldProps",
+        "MathFieldKeyboardPolicy",
+        "MathFieldLocale"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-field/math-field.md",
+      "props": [
+        {
+          "name": "value",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "LaTeX，不带 `$`"
+        },
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "function",
+          "type": "(latex: string) => void",
+          "default": null,
+          "description": "每次击键回传"
+        },
+        {
+          "name": "onSubmit",
+          "required": false,
+          "kind": "function",
+          "type": "(latex: string) => void",
+          "default": null,
+          "description": "回车。MathTextarea 把它接到「插入到光标处」"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "锁定（已提交 / 提交中）"
+        },
+        {
+          "name": "aria-label",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "无障碍名，透传给 `<math-field>`"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "外层容器"
+        },
+        {
+          "name": "virtualKeyboard",
+          "required": false,
+          "kind": "enum",
+          "type": "\"auto\" | \"manual\" | \"off\"",
+          "values": [
+            "auto",
+            "manual",
+            "off"
+          ],
+          "valueType": "string",
+          "default": "\"auto\"",
+          "description": "虚拟键盘策略：auto 触屏聚焦时弹出、manual 只由切换钮弹出、off 不挂键盘（策略 manual 且隐藏切换钮）"
+        },
+        {
+          "name": "keyboardLayouts",
+          "required": false,
+          "kind": "array",
+          "type": "readonly unknown[]",
+          "default": null,
+          "description": "透传给 `window.mathVirtualKeyboard.layouts`。键盘是页面级单例，后挂载的覆盖先挂载的"
+        },
+        {
+          "name": "readOnly",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "只读：能选中复制，不能改"
+        },
+        {
+          "name": "placeholder",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "空值时的占位"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "other",
+          "type": "latex: string",
+          "default": null,
+          "description": "用户每次击键（MathLive 的 `input` 事件）"
+        },
+        {
+          "name": "onSubmit",
+          "required": false,
+          "kind": "other",
+          "type": "latex: string",
+          "default": null,
+          "description": "回车（Shift+Enter 不触发）"
+        }
+      ],
+      "slots": []
+    },
+    {
       "slug": "math-textarea",
       "name": "MathTextarea",
       "category": "forms",
@@ -11027,7 +11173,7 @@
           "kind": "other",
           "type": "ComponentType<MathFieldLikeProps>",
           "default": null,
-          "description": "注入可视化公式编辑器；**给了才出「可视化输入」页签**。`@hulianui/ui/math-field` 的 MathField 满足此契约"
+          "description": "注入可视化公式编辑器；**给了才出「可视化输入」页签**。`@hulianui/ui/math-field` 的 [MathField](../math-field/math-field.md) 满足此契约"
         },
         {
           "name": "macros",

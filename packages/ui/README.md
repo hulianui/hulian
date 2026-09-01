@@ -1,8 +1,8 @@
 # @hulianui/ui
 
-> **English TL;DR** — A React component library with 398 components, built on Base UI's accessible behaviour layer and Tailwind CSS v4 OKLCH tokens: zero-flash theme switching and runtime re-skinning. It ships **source**, not a compiled bundle. English docs: <https://hulianui.haloritual.com/en>
+> **English TL;DR** — A React component library with 399 components, built on Base UI's accessible behaviour layer and Tailwind CSS v4 OKLCH tokens: zero-flash theme switching and runtime re-skinning. It ships **source**, not a compiled bundle. English docs: <https://hulianui.haloritual.com/en>
 
-颜值 + 好用的 React 设计系统 —— **398 个组件**，OKLCH 主题 · Tailwind v4 · 暗色零闪烁 · 运行时换肤。
+颜值 + 好用的 React 设计系统 —— **399 个组件**，OKLCH 主题 · Tailwind v4 · 暗色零闪烁 · 运行时换肤。
 
 - 文档站：<https://hulianui.haloritual.com>（中国大陆直连镜像：<https://hulianui-zh.haloritual.com>）
 - 给 AI 用的 MCP server：[`@hulianui/mcp`](https://www.npmjs.com/package/@hulianui/mcp) —— 让 AI 按需查组件，而不是猜签名
