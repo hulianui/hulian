@@ -14,7 +14,7 @@
         "sha": null,
         "bump": "minor",
         "breaking": false,
-        "body": "`QuestionCard` gains `figureAlt?: (index) => string`: the alt text for figures split out of the stem now comes from the locale-owning parent (the QuestionEditor preview passes its own `figureAlt`). Previously it always fell back to the Chinese \"题目附图 N\" regardless of language, which left Chinese text on the English docs examples.",
+        "body": "`QuestionCard` gains `figureAlt?: (index) => string`: the alt text for figures split out of the stem now comes from the locale-owning parent (the QuestionEditor preview passes its own `figureAlt`). Previously it always fell back to the Chinese default alt text regardless of language, which left Chinese text on the English docs examples.",
         "parityId": "question-card-figure-alt"
       },
       {
