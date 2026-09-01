@@ -106,4 +106,21 @@ describe("QuestionCard", () => {
     expect(screen.queryByText("(1)第一问")).toBeNull();
     expect(screen.queryByText("某书 p3")).toBeNull();
   });
+  it("resolveFigure 给了：题干里的图片引用切出来渲染成 img，正文不再含图片语法", () => {
+    const { container } = render(
+      <QuestionCard
+        stem={"如图，$AB \\parallel CD$。\n\n![](import/a.png)\n![](import/b.png)"}
+        type="single"
+        resolveFigure={(key) => `/files/${key}`}
+      />,
+    );
+    const imgs = Array.from(container.querySelectorAll("img")).map((img) => img.getAttribute("src"));
+    expect(imgs).toEqual(["/files/import/a.png", "/files/import/b.png"]);
+    expect(container.textContent).not.toContain("![](");
+  });
+
+  it("resolveFigure 不给：题干原样交给排版（与旧行为一致）", () => {
+    const { container } = render(<QuestionCard stem={"看图 ![](import/a.png)"} type="single" />);
+    expect(container.querySelector("img")).toBeNull();
+  });
 });

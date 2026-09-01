@@ -33,6 +33,12 @@ export interface QuestionCardProps {
   parts?: string[];
   /** 附图。 */
   figure?: { src: string; alt?: string };
+  /**
+   * 题干里 `![](key)` 图片引用的解析器：storage key → 可显示的 URL。
+   * 给了就先切图再排公式（`splitStemFigures`），图按出现顺序渲染在正文之后；不给则题干原样交给 Formula。
+   * QuestionEditor 的实时预览与消费方的题库列表都靠它，两边同一个渲染路径。
+   */
+  resolveFigure?: (key: string) => string;
   /** 答案（形状见 QuestionAnswer）。只有 `showAnswer` 为真才渲染。 */
   answer?: QuestionAnswer;
   /** 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染。 */
