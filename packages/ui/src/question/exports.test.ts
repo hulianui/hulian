@@ -33,5 +33,7 @@ describe("@hulianui/ui/math 导出题目域公开件", () => {
     const main = await import("../index");
     expect(main).not.toHaveProperty("gradeObjective");
     expect(main).not.toHaveProperty("QuestionCard");
-  });
+    // 整包导入主 barrel（400 件）单跑约 6s，全量测试并行时曾超过默认 15s；放宽到 60s，
+    // 这条测的是「不导出」这一事实，不是速度。
+  }, 60_000);
 });

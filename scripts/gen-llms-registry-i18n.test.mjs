@@ -77,7 +77,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   spinner: [2, 3],
   stack: [0, 1],
   "staggered-menu": [4, 5],
-  stat: [6, 7],
+  stat: [7, 8],
   "status-dot": [0, 1],
   "streaming-text": [2, 3],
   table: [39, 40],
