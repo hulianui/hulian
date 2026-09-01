@@ -1,5 +1,43 @@
 # @hulianui/ui
 
+## 0.59.0
+
+### Minor Changes
+
+- 50f5f37: 新增独立子路径 `@hulianui/ui/math-field`：`MathField`（MathLive 驱动的可视化公式输入框，值为不带 `$` 的 LaTeX，满足 `MathFieldLikeProps`，可直接注入 MathTextarea / QuestionEditor 的 `visualEditor` 与 QuestionAnswer 的 `mathField`；服务端与首帧渲染骨架，`mathlive` 在客户端动态加载，没装时显示安装提示而不是抛错；`virtualKeyboard` auto / manual / off、`keyboardLayouts`、`readOnly`、`placeholder`；MathLive 的 CSS 变量钉到本库 token）与 `createCasComparator()`（第 3 档等价判分，返回 `Promise<(a, b) => boolean>`，直接喂 `gradeObjective` 的 `equivalent`；解析失败一律 false）。
+
+  `mathlive`（>=0.110.0）与 `@cortex-js/compute-engine`（>=0.58.0，mathlive 钉死的依赖）作为 **optional peerDependencies** 加入：不装它们的消费方不受影响，主包与 `@hulianui/ui/math` 零 MathLive，`@hulianui/ui/math-field` 的 initial 实测 12.9KB（mathlive 221KB / compute-engine 294KB 走 `import()` 懒加载）。字体由消费方 `import "mathlive/fonts.css"`。
+
+  内置 demo「瀚学」新增题库（QuestionEditor + MathField）与练习（QuestionAnswer + 三档即时判分）两页，并补挂了此前缺失的 ToastProvider；新增 `docs/consuming-math.md`。
+
+- 9f2ed95: `@hulianui/ui/math` 新增题目域的类型与纯函数：`Question` / `QuestionType`（七型枚举 `single / multiple / judge / blank / short_answer / calculation / essay`）/ `QuestionAnswer`，以及 `validateQuestion`、`defaultShape`、`normalizeOptions`、`blankCount`、`splitStemFigures`、`toWireAnswer` / `fromWire`、`answerText`、`gradeObjective`（客观题判分，默认档与消费方服务端逐字同口径，归一与容差 opt-in）。判分与切图各带一份跨语言契约 fixture（`grade.contract.json` / `stem-figures.contract.json`），供 Python 侧对账。
+
+  `QuestionCard`：`kind`（四型）弃用，改用 `type`（七型）；旧值仍映射一个 minor 并在开发期告警。新增 `answer` / `analysis` / `showAnswer`（默认关）展示答案与解析；`options` 改为 `{ key, text }`，旧 `{ label, text }` 仍接受一个 minor。题型标签与答案区文案接入 Locale（新增 `question` 词条）。
+
+- 257102d: `@hulianui/ui/math` 新增 `MathTextarea`：录题用的 LaTeX 输入框。模板插到光标处（选中 `x` 点分式得到 `\frac{x}{}` 且光标在分母）、选区一键包成 `$…$` / `$$…$$`、提交前只查 `$` 未闭合与 `{}` 不配对并报行列、KaTeX 解析错误换算回整串位置、实时预览与展示端同一个 `Formula`。`visualEditor` 可注入满足 `MathFieldLikeProps` 的可视化编辑器（阶段 5 的 MathField），给了才出「可视化输入」页签。文案走 Locale（新增 `mathTextarea` 词条，含内置模板名）。配套纯函数 `applyFormulaTemplate` / `wrapSelectionInMath` / `isInsideMath` / `mathSpans` / `validateFormulaSyntax` / `textPosition` / `katexErrorAt` 一并导出。
+
+  体积：`@hulianui/ui/math` 的 `export *` 上界从 95.6KB 升到 154.4KB（Popover / Tabs / 表单控件进入该入口），基线相应上调到 178KB；库 `sideEffects:false`，只用 `Formula` 的消费方经 tree-shaking 不受影响。
+
+- 8231de3: `@hulianui/ui/math` 新增 `QuestionAnswer`：学生端一道题的作答卡。按题型给对的控件（single → RadioGroup、multiple → CheckboxGroup、judge → 题型自带「正确 / 错误」两项且值为 `"true" | "false"`、blank → 每空一个输入框并标空号，`blankCount` 缺失按题干 `____` 数再不行按 1）；选择题选项缺失明说「暂时没法作答」而不是摆一个空单选组；主观题只读并提示需教师批阅；未知题型按主观题处理并有开发期告警。`canSubmit` 门禁：多空每个空都填了才可交；`onSubmit` 给了才出提交按钮，参数是规范形（填空恒为数组，单空压平交给 `encodeBlanks`）。`result` 有值即锁定并显示正误、`answerText` 渲染的正确答案与解析；`correctHint` / `reason` / `header` 三个插槽；`blankInput="math"` + `mathField` 注入公式键盘（`MathFieldLikeProps` 新增可选 `disabled`）。题干与 QuestionCard 共用新抽出的 `QuestionStemBlock`（`resolveFigure` 切图 + Formula）。消费方原型里三条曾静默让学生「答不了」的 bug（判断题空单选组 / 多空只有一个输入框 / 对象形 options 被滤空）各有回归测试。文案走 Locale（新增 `questionAnswer` 词条）。配套导出 `canSubmit` / `answerKind` / `resolveBlankCount`。
+
+  答案形状类型 `QuestionAnswer` 改名为 `QuestionAnswerValue`（把名字让给组件）。该类型只存在于未发布的 master，不构成破坏性变更。
+
+  体积：`@hulianui/ui/math` 的 `export *` 上界实测 184.5KB（新进入该入口的只有 Radio / RadioGroup / Input），仍在 208KB 基线内；库 `sideEffects:false`，只用 `Formula` / `QuestionCard` 的消费方经 tree-shaking 不受影响。
+
+- 519377c: `@hulianui/ui/math` 新增 `QuestionEditor`：一道数学题的结构化编辑器。七型切换时 options 与 answer 同时重置（有内容先确认，`score` 仍是旧默认分才换新默认分）；题干输入框只见正文，题图以 `![](key)` 块写回题干末尾，`resolveFigure` 解析、`onUploadFigure` 给了才出「插入图片」；选项增删上下移后正确答案跟着内容重映射；填空空数随题干 `____` 变化、不一致时提示并一键对齐、一空可加等价写法；计算 / 解答可切分步给分并显示合计；`validateQuestion` 就地挂 `Field.error`（默认只显示改过的字段，`showAllIssues` 提交时全开）；复核条 `issues` / `onResolveIssue`；`extra` 放消费方私有字段；右侧预览就是 `QuestionCard`。不带提交按钮。文案走 Locale（新增 `questionEditor` 词条，含 `validateQuestion` 机器码文案表）。配套导出 `questionFormulaIssues` / `shapeIsDirty` / `switchType` / `optionCaption` / `stemBody` / `joinStemFigures`。
+
+  `QuestionCard` 新增 `resolveFigure`：题干里的 `![](key)` 先切图再排公式，图渲染在正文之后（编辑器预览与题库列表同一条路径）。
+
+  体积：`@hulianui/ui/math` 的 `export *` 上界从 154.4KB 升到 180.5KB（Field / Segmented / Checkbox / Switch / Rating / NumberField / Alert / AlertDialog / Image 进入该入口），基线相应上调到 208KB；库 `sideEffects:false`，只用 `Formula` / `QuestionCard` 的消费方经 tree-shaking 不受影响。
+
+### Patch Changes
+
+- 381aeda: `Brand` 的徽章支持动图 / 视频 mark：GIF、APNG、动图 WebP 直接当 `img` 传就会动；包一层 `<picture>` 给开了「减弱动效」的用户一张静态回退，以及静音循环的 `<video>`、自绘的 `<canvas>`，现在都按「铺满徽章 + `object-cover`」处理。此前尺寸规则只认直接子级的 `img`，动图一加 `<picture>` 回退就掉出规则、按原图尺寸被裁掉半截。顺带修掉一个被方形素材掩盖的旧缺陷：徽章是 grid 容器，替换元素作为 grid 项时 `height:100%` 不解析，非方形图片此前只按宽度等比缩放、并没有真的被 `object-cover` 裁成方形；现在媒体子元素改走 `absolute inset-0`，任何比例的素材都铺满。
+
+  `AdminLayout` 文档同步说明：品牌区直接放 `Brand`，动图 logo 的尺寸与减弱动效回退在 `Brand` 那边约定，`logo` 槽只负责摆位。
+
+- 26132c0: 修复：`CheckboxGroup` / `RadioGroup` 放进 `Field` 时，组内每个 `Checkbox` / `Radio` 的无障碍名都被 `Field` 标签吞掉（读屏念出 N 个同名项）。现在组内每项由自己的 `label` 命名，`Field` 标签命名整个组，description / error 仍到达每一项（内部用 Base UI `Field.Item`，只在「组内且 Field 内」才包）。不在组内的单个 `Checkbox` 仍由 `Field` 标签命名，行为不变。
+
 ## 0.58.0
 
 ### Minor Changes

@@ -1,6 +1,55 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.59.0",
+    "date": "2026-09-01",
+    "entries": [
+      {
+        "sha": "50f5f37",
+        "bump": "minor",
+        "breaking": false,
+        "body": "New standalone subpath `@hulianui/ui/math-field`: `MathField` (a MathLive-powered visual formula input whose value is LaTeX without `$`; it satisfies `MathFieldLikeProps`, so it plugs straight into the `visualEditor` of MathTextarea / QuestionEditor and the `mathField` of QuestionAnswer; the server and the first client frame render a skeleton, `mathlive` is loaded dynamically on the client, and a missing package shows an install hint instead of throwing; `virtualKeyboard` auto / manual / off, `keyboardLayouts`, `readOnly`, `placeholder`; MathLive's CSS variables are pinned to the library tokens) and `createCasComparator()` (tier-3 equivalence grading that returns `Promise<(a, b) => boolean>` to feed the `equivalent` option of `gradeObjective`; any parse failure is false).\n\n`mathlive` (>=0.110.0) and `@cortex-js/compute-engine` (>=0.58.0, the dependency mathlive pins) join as **optional peerDependencies**: consumers who do not install them are unaffected, the main package and `@hulianui/ui/math` contain zero MathLive, and the initial chunk of `@hulianui/ui/math-field` measures 12.9KB (mathlive 221KB / compute-engine 294KB are lazy-loaded through `import()`). Fonts come from the consumer's `import \"mathlive/fonts.css\"`.\n\nThe built-in HanLearn demo gains a question bank page (QuestionEditor + MathField) and a practice page (QuestionAnswer with three-tier instant grading) and now mounts the ToastProvider it was missing; `docs/consuming-math.md` is new."
+      },
+      {
+        "sha": "9f2ed95",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`@hulianui/ui/math` gains the question domain types and pure functions: `Question` / `QuestionType` (a closed enum of `single / multiple / judge / blank / short_answer / calculation / essay`) / `QuestionAnswer`, plus `validateQuestion`, `defaultShape`, `normalizeOptions`, `blankCount`, `splitStemFigures`, `toWireAnswer` / `fromWire`, `answerText`, and `gradeObjective` (objective grading whose default tier matches the consumer's server logic word for word; normalisation and numeric tolerance are opt-in). Grading and figure extraction each ship a cross-language contract fixture (`grade.contract.json` / `stem-figures.contract.json`) for the Python side to verify against.\n\n`QuestionCard`: `kind` (four values) is deprecated in favour of `type` (seven values); old values still map for one minor and warn in development. New `answer` / `analysis` / `showAnswer` (off by default) render the key and explanation; `options` becomes `{ key, text }`, with the legacy `{ label, text }` shape accepted for one more minor. Type tag and answer copy now come from the locale (new `question` entries)."
+      },
+      {
+        "sha": "257102d",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`@hulianui/ui/math` gains `MathTextarea`, a LaTeX input for question authoring. Templates insert at the caret (select `x`, click Fraction, get `\\frac{x}{}` with the caret in the denominator), one click wraps the selection in `$…$` / `$$…$$`, the pre-submit check reports only unclosed `$` and unbalanced `{}` with line and column, KaTeX parse errors are mapped back to a position in the whole string, and the live preview is the same `Formula` used for display. `visualEditor` injects any component satisfying `MathFieldLikeProps` (MathField in phase 5); the Visual input tab appears only when provided. Copy comes from the locale (new `mathTextarea` entries, including built-in template names). Companion pure functions `applyFormulaTemplate` / `wrapSelectionInMath` / `isInsideMath` / `mathSpans` / `validateFormulaSyntax` / `textPosition` / `katexErrorAt` are exported alongside.\n\nSize: the `export *` upper bound of `@hulianui/ui/math` rises from 95.6KB to 154.4KB (Popover, Tabs, and form controls now live behind this entry) and the baseline is raised to 178KB; the package is `sideEffects:false`, so consumers importing only `Formula` are unaffected after tree-shaking."
+      },
+      {
+        "sha": "8231de3",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`@hulianui/ui/math` gains `QuestionAnswer`, the student-side answer card for one question. It renders the right control per type (single → RadioGroup, multiple → CheckboxGroup, judge → the two built-in True / False options with values `\"true\" | \"false\"`, blank → one input per blank with its number; when `blankCount` is missing it counts `____` in the stem, then falls back to 1); a choice question with missing options says plainly that it cannot be answered yet instead of showing an empty radio group; subjective questions are read-only with a \"graded by the teacher\" note; an unknown type is treated as subjective with a development warning. `canSubmit` gates submission until every blank is filled; the submit button appears only when `onSubmit` is provided and receives the canonical shape (blanks are always an array, flatten a single blank with `encodeBlanks`). A present `result` locks the card and shows the verdict, the correct answer rendered by `answerText`, and the explanation; `correctHint` / `reason` / `header` slots; `blankInput=\"math\"` with `mathField` injects a formula keyboard (`MathFieldLikeProps` gains an optional `disabled`). The stem shares the newly extracted `QuestionStemBlock` with QuestionCard (`resolveFigure` splitting plus Formula). Three silent \"the student cannot answer\" bugs from the consumer's prototype (empty radio group for true-false / one input for multiple blanks / object-shaped options filtered away) each have a regression test. Copy comes from the locale (new `questionAnswer` entries). Companion exports: `canSubmit` / `answerKind` / `resolveBlankCount`.\n\nThe answer-shape type `QuestionAnswer` is renamed `QuestionAnswerValue` to make room for the component. The type only ever existed on the unreleased master, so this is not a breaking change.\n\nSize: the `export *` upper bound of `@hulianui/ui/math` measures 184.5KB (only Radio / RadioGroup / Input newly enter this entry), still within the 208KB baseline; the package is `sideEffects:false`, so consumers importing only `Formula` or `QuestionCard` are unaffected after tree-shaking."
+      },
+      {
+        "sha": "519377c",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`@hulianui/ui/math` gains `QuestionEditor`, a structured editor for one math question. Switching type resets options and answer together (with a confirmation when there is content; the score changes only if it still equals the old default); the stem input shows only the body while figures are written back as a `![](key)` block at the end of the stem, resolved through `resolveFigure`, with the Insert image button appearing only when `onUploadFigure` is provided; after adding, removing, or reordering options the correct answer is remapped to follow the content; the number of blanks follows `____` in the stem with a one-click align and per-blank equivalent forms; calculation and extended-response questions can switch to a rubric with a running total; `validateQuestion` issues land on `Field.error` (only edited fields by default, `showAllIssues` for submit time); a review bar via `issues` / `onResolveIssue`; `extra` for consumer-private fields; the preview on the right is `QuestionCard`. No submit button. Copy comes from the locale (new `questionEditor` entries, including a message table for `validateQuestion` codes). Companion exports: `questionFormulaIssues` / `shapeIsDirty` / `switchType` / `optionCaption` / `stemBody` / `joinStemFigures`.\n\n`QuestionCard` gains `resolveFigure`: `![](key)` references in the stem are split out before typesetting and rendered after the text (the editor preview and the question bank share one path).\n\nSize: the `export *` upper bound of `@hulianui/ui/math` rises from 154.4KB to 180.5KB (Field, Segmented, Checkbox, Switch, Rating, NumberField, Alert, AlertDialog, and Image now live behind this entry) and the baseline is raised to 208KB; the package is `sideEffects:false`, so consumers importing only `Formula` or `QuestionCard` are unaffected after tree-shaking."
+      },
+      {
+        "sha": "381aeda",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Brand` badges now support animated and video marks. A GIF, APNG, or animated WebP passed as an `img` plays as-is; wrapping it in `<picture>` to give users with reduced motion enabled a static fallback, a muted looping `<video>`, and a self-drawn `<canvas>` all now fill the badge with `object-cover`. Previously the size rule only matched a direct-child `img`, so adding a `<picture>` fallback dropped the mark out of the rule and clipped it at its natural size. This also fixes an older defect hidden by square assets: the badge is a grid container, and `height:100%` on a replaced element used as a grid item does not resolve, so non-square images were only scaled by width and never actually cropped square by `object-cover`. Media children now use `absolute inset-0`, so assets of any ratio fill the badge.\n\nThe `AdminLayout` docs now say to place `Brand` directly in the brand area: sizing and the reduced-motion fallback for animated logos are `Brand`'s contract, and the `logo` slot only positions it."
+      },
+      {
+        "sha": "26132c0",
+        "bump": "patch",
+        "breaking": false,
+        "body": "Fix: when a `CheckboxGroup` / `RadioGroup` sits inside a `Field`, every `Checkbox` / `Radio` in the group used to take the `Field` label as its accessible name (screen readers announced N identically named items). Each item is now named by its own `label`, the `Field` label names the group, and description / error still reach every item (Base UI `Field.Item` under the hood, applied only inside a group within a `Field`). A single `Checkbox` inside a `Field` (not in a group) is still named by the `Field` label, unchanged."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.58.0",
     "date": "2026-08-31",
     "entries": [
