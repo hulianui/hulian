@@ -196,6 +196,10 @@ async function writeExternalLab({
           "@vitejs/plugin-react": "4.7.0",
           ...(reactVersion.startsWith("18") ? { jsdom: "25.0.1" } : {}),
           "lucide-react": "1.28.0",
+          // optional peer 也装：这里 typecheck 的是整份 ui 源码（不是发出去的 .d.ts），
+          // math-field 的 `import("mathlive")` 少了它就 TS2307；版本与 packages/ui devDependencies 同步。
+          "@cortex-js/compute-engine": "0.58.0",
+          mathlive: "0.110.0",
           motion: "12.43.0",
           react: reactVersion,
           "react-dom": reactVersion,
