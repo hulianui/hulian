@@ -17,8 +17,9 @@
 #     node_modules/@types，工程一旦落在仓库目录下就会捡到 monorepo 根的 @types/node，
 #     门禁形同虚设 —— issue 报告者本机看不到错误正是这个原因。
 #
-# 消费方工程只装库声明的 peer（react / react-dom / @base-ui/react / motion / tailwindcss），
-# **一个可选依赖都不装** —— 0.15.0 起 @hulianui/ui 没有 optional peer 了，日期族自研为零依赖
+# 消费方工程只装库声明的**必需** peer（react / react-dom / @base-ui/react / motion / tailwindcss），
+# optional peer（mathlive / @cortex-js/compute-engine）**一个都不装** —— 这正是要测的：
+# @hulianui/ui/math-field 的类型面不许依赖它们，没装的消费方也要能 typecheck 通过。日期族自研为零依赖
 # 并回到根 barrel。因此「根 barrel 拉进来的东西是不是都装得上」这件事，这一个场景就能全证。
 # 顺带钉死一条回归：日期族必须能从根 barrel 导入（见下面 app.tsx 里的 DatePicker 等），
 # 谁要是再把它们挪去子路径、或引入需要额外安装的依赖，这里当场 TS2307。
@@ -219,6 +220,7 @@ cat > "$APP_A/src/app.tsx" <<'TSX'
 import { Button, Calendar, DatePicker, DateTimePicker, TimeField } from "@hulianui/ui";
 import * as showcase from "@hulianui/ui/showcase";
 import { Formula } from "@hulianui/ui/math";
+import { MathField } from "@hulianui/ui/math-field";
 import { Tag } from "@hulianui/ui/tag";
 import { ThemeProvider } from "@hulianui/ui/theme";
 import { cn } from "@hulianui/ui/lib";
@@ -231,6 +233,8 @@ export function App() {
           谁再把它们挪去子路径、或让它们依赖需要另外安装的包，这个工程当场编不过。 */}
       {/* Formula 走 @hulianui/ui/math：主 barrel 刻意不导出它，KaTeX 只落在用得上的页面。 */}
       <Formula mode="math">{"\\frac{3}{8}"}</Formula>
+      {/* MathField 走 @hulianui/ui/math-field：mathlive 是 optional peer，这个工程刻意没装，类型面必须独立。 */}
+      <MathField value="" onChange={() => {}} aria-label="formula" />
       <Calendar defaultValue="2026-06-08" />
       <DatePicker defaultValue="2026-06-08" aria-label="日期" />
       <DateTimePicker defaultValue="2026-06-08 09:30" aria-label="日期时间" />

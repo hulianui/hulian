@@ -2,7 +2,7 @@
   "$comment": [
     "消费方 bundle 体积基线。由 scripts/bundle-size.sh 校验，`bash scripts/bundle-size.sh --update` 重新生成。",
     "limitKB 卡的是 initial chunk 的 gzip 大小（见 scripts/bundle-size.mjs 顶部注释）。",
-    "取样口径：轻量常用件 + 五大重依赖入口（chart/video/markdown-editor/rich-text-editor/math）+ 根 barrel。改动这份清单请连带说明为什么。",
+    "取样口径：轻量常用件 + 六个重依赖入口（chart/video/markdown-editor/rich-text-editor/math/math-field；math-field 的 mathlive 与 compute-engine 走 import() 懒加载，initial 只剩壳，total 才含它们）+ 根 barrel。改动这份清单请连带说明为什么。",
     "基线 = 实测值 + 15% 余量。优化完记得 --update 压回去，省下的空间才不会被下次改动悄悄吃掉。"
   ],
   "targets": [
@@ -65,6 +65,11 @@
       "name": "math",
       "entry": "@hulianui/ui/math",
       "limitKB": 208
+    },
+    {
+      "name": "math-field",
+      "entry": "@hulianui/ui/math-field",
+      "limitKB": 15
     },
     {
       "name": "date-picker",

@@ -44,7 +44,9 @@ UI_TGZ="$(ls "$PKG_DIR"/hulianui-ui-*.tgz)"
 #   - 不装 tailwindcss（构建期工具，不进 JS bundle）
 #   - 多一个 esbuild —— 它就是本门禁的打包器
 # peer 必须装齐：少一个，esbuild 会把它当外部模块跳过，体积凭空少一大块，门禁失真。
-# 这里列的就是全部 peer —— 0.15.0 起库里没有 optional peer 了。
+# 两个 optional peer（mathlive / @cortex-js/compute-engine）在这里**故意装上**：math-field 入口
+# 用 import() 懒加载它们，不装则 esbuild 解析失败；装了它们只进独立 chunk —— initial 不含、total 含，
+# 正好量出「消费方打开公式键盘那一刻才付的字节」。
 cat > "$APP_DIR/package.json" <<JSON
 {
   "name": "hulian-bundle-size",
@@ -56,6 +58,8 @@ cat > "$APP_DIR/package.json" <<JSON
     "@hulianui/tokens": "file:$TOKENS_TGZ",
     "@hulianui/ui": "file:$UI_TGZ",
     "@base-ui/react": "^1.5.0",
+    "@cortex-js/compute-engine": "^0.58.0",
+    "mathlive": "^0.110.0",
     "motion": "^12.40.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -77,7 +81,7 @@ echo "▶ 安装消费方依赖（pnpm · 隔离 node_modules · 无 workspace �
 #
 # 查 .pnpm/ 而不是 node_modules/ 顶层：pnpm 的隔离结构下只有工程自己的直接依赖
 # 会出现在顶层，传递依赖一律躺在 .pnpm/ 里（目录名把 `/` 写成 `+`）。
-for dep in recharts @tanstack+react-table @vidstack+react @tiptap+react; do
+for dep in recharts @tanstack+react-table @vidstack+react @tiptap+react mathlive @cortex-js+compute-engine; do
   if ! ls -d "$APP_DIR/node_modules/.pnpm/${dep}@"* >/dev/null 2>&1; then
     echo "✗ ${dep} 没随 @hulianui/ui 装下来，量出的体积会虚低" >&2
     exit 1
