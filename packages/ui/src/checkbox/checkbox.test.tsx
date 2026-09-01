@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Checkbox } from "./checkbox";
 import { Field } from "../field/field";
 
@@ -99,5 +99,14 @@ describe("size 与 labelClassName（#199）", () => {
     expect(getByText("必填").className).toContain("text-muted-foreground");
     expect(box(container).className).toContain("ring-2");
     expect(box(container).className).not.toContain("text-muted-foreground");
+  });
+
+  it("Field 里单个 Checkbox（不在组内）仍由 Field 标签命名", () => {
+    render(
+      <Field label="条款">
+        <Checkbox value="ok" label="我同意" />
+      </Field>,
+    );
+    expect(screen.getByRole("checkbox", { name: "条款" })).toBeTruthy();
   });
 });

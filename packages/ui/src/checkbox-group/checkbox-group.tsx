@@ -1,6 +1,7 @@
 "use client";
 import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
 import { cn } from "../lib/cn";
+import { LabelledGroupContext } from "../lib/labelled-group-context";
 import type { CheckboxGroupProps } from "./checkbox-group.types";
 
 // 复用瑚琏 Checkbox（子项各带 name）；CheckboxGroup 仅协调值数组 + 下发 disabled。
@@ -30,7 +31,7 @@ export function CheckboxGroup({
         className,
       )}
     >
-      {children}
+      <LabelledGroupContext.Provider value={true}>{children}</LabelledGroupContext.Provider>
     </BaseCheckboxGroup>
   );
 }

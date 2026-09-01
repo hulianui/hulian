@@ -1,7 +1,9 @@
 "use client";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
 import { Radio as BaseRadio } from "@base-ui/react/radio";
+import { Field as BaseField } from "@base-ui/react/field";
 import { cn } from "../lib/cn";
+import { LabelledGroupContext, useNeedsFieldItem } from "../lib/labelled-group-context";
 import type { RadioGroupProps, RadioProps } from "./radio.types";
 
 export function RadioGroup({
@@ -25,7 +27,7 @@ export function RadioGroup({
         className,
       )}
     >
-      {children}
+      <LabelledGroupContext.Provider value={true}>{children}</LabelledGroupContext.Provider>
     </BaseRadioGroup>
   );
 }
@@ -59,6 +61,7 @@ export function Radio({
   // 迁过来的恒定写法，也是 React 生态直觉。此前 children 既没被解构、又被 Root 上显式的
   // Indicator 子节点盖掉，结果是「类型放行、运行时什么都不渲染」——三道门禁全绿，只能靠肉眼截图发现。
   const text = label ?? children;
+  const inGroup = useNeedsFieldItem();
   const dot = (
     // a11y（aria-label / aria-labelledby / aria-describedby）必须落到 Root：它才是 role=radio 的宿主。
     // 无 label 用法此前完全拿不到无障碍名 —— 读屏只报「单选按钮」，不知道选的是哪一项。
@@ -78,19 +81,24 @@ export function Radio({
 
   if (text == null || text === false || text === "") return dot;
 
+  const labelText = (
+    <span className={cn(labelSizeClass[size], "text-foreground select-none", disabled && "opacity-50", labelClassName)}>
+      {text}
+    </span>
+  );
+  // 组内：Field.Item 给这一项独立的标签作用域（见 lib/labelled-group-context.ts）。render 成 <label> 本身，DOM 层级不变。
+  if (inGroup) {
+    return (
+      <BaseField.Item render={<label className="inline-flex items-center gap-2" />}>
+        {dot}
+        {labelText}
+      </BaseField.Item>
+    );
+  }
   return (
     <label className="inline-flex items-center gap-2">
       {dot}
-      <span
-        className={cn(
-          labelSizeClass[size],
-          "text-foreground select-none",
-          disabled && "opacity-50",
-          labelClassName,
-        )}
-      >
-        {text}
-      </span>
+      {labelText}
     </label>
   );
 }

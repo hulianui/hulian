@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import { RadioGroup, Radio } from "./radio";
 import { Field } from "../field/field";
 
@@ -163,5 +163,19 @@ describe("Radio size 与 labelClassName（#199）", () => {
     );
     expect(getByText("至今").className).toContain("text-muted-foreground");
     expect(ring(container).className).toContain("ring-2");
+  });
+
+  it("放在 Field 里：每个 Radio 由自己的 label 命名，不被 Field 标签吞掉；radiogroup 由 Field 标签命名", () => {
+    render(
+      <Field label="性别">
+        <RadioGroup>
+          <Radio value="m" label="男" />
+          <Radio value="f" label="女" />
+        </RadioGroup>
+      </Field>,
+    );
+    expect(screen.getByRole("radio", { name: "男" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "女" })).toBeTruthy();
+    expect(screen.getByRole("radiogroup", { name: "性别" })).toBeTruthy();
   });
 });

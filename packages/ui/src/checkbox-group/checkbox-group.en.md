@@ -64,6 +64,7 @@ const [v, setV] = useState<string[]>(["apple"]);
 ## Usage guidelines
 
 - Every child Checkbox must provide `value`, not `name`. See [[base-ui-checkbox-group-matches-members-by-value-not-name]]: Base UI rc.0 matches group members by each child's `value`. Using `name` makes `defaultValue`, `value`, and `onValueChange` fail silently even though the boxes still render.
+- Inside a `Field`, each child Checkbox is named by **its own** `label`; the `Field` label names the group (role=group), and description / error still reach every item. No need to wrap items in Base UI `Field.Item` yourself.
 
 ## Related
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

@@ -2,6 +2,7 @@
 import { cloneElement, isValidElement, type ReactElement } from "react";
 import { Field as BaseField } from "@base-ui/react/field";
 import { cn } from "../lib/cn";
+import { FieldScopeContext } from "../lib/labelled-group-context";
 import { labelClass } from "../label/label";
 import type { FieldProps } from "./field.types";
 
@@ -52,15 +53,17 @@ export function Field({
   // aria-required 落到控件本身：消费方够不着 Field 内部的控件节点，自建 RequiredLabel 也补不了。
   // 只在 children 是单个元素时能注入；多子节点 / 文本时不动它（文档里写明此时自己给）。
   // 已显式写了 aria-required 的以消费方为准，不覆盖。
+  // 让组内的 Checkbox / Radio 知道自己在 Field 里（见 lib/labelled-group-context.ts）。
+  const scopedChildren = <FieldScopeContext.Provider value={true}>{children}</FieldScopeContext.Provider>;
   const control =
     required && isValidElement(children)
       ? (() => {
           const el = children as ReactElement<Record<string, unknown>>;
           return "aria-required" in el.props
-            ? children
-            : cloneElement(el, { "aria-required": true });
+            ? scopedChildren
+            : <FieldScopeContext.Provider value={true}>{cloneElement(el, { "aria-required": true })}</FieldScopeContext.Provider>;
         })()
-      : children;
+      : scopedChildren;
 
   const descriptionNode = description ? (
     <BaseField.Description className={cn("text-xs text-muted-foreground", descriptionClassName)}>

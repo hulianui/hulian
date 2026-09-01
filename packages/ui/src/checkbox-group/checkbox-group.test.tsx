@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { CheckboxGroup } from "./checkbox-group";
 import { Checkbox } from "../checkbox";
+import { Field } from "../field/field";
 
 function Fruits(props: Record<string, unknown>) {
   return (
@@ -47,5 +48,21 @@ describe("CheckboxGroup", () => {
   it("受控 value 控制勾选", () => {
     const { getAllByRole } = render(<Fruits value={["cherry"]} />);
     expect(getAllByRole("checkbox")[2].getAttribute("aria-checked")).toBe("true");
+  });
+
+  it("放在 Field 里：每个 Checkbox 由自己的 label 命名，不被 Field 标签吞掉；组由 Field 标签命名；description 仍到达每项", () => {
+    render(
+      <Field label="正确答案" description="可多选">
+        <CheckboxGroup>
+          <Checkbox value="A" label="A 甲" />
+          <Checkbox value="B" label="B 乙" />
+        </CheckboxGroup>
+      </Field>,
+    );
+    const a = screen.getByRole("checkbox", { name: "A 甲" });
+    expect(screen.getByRole("checkbox", { name: "B 乙" })).toBeTruthy();
+    expect(screen.getByRole("group", { name: "正确答案" })).toBeTruthy();
+    const described = a.getAttribute("aria-describedby") ?? "";
+    expect(described.split(" ").map((id) => document.getElementById(id)?.textContent)).toContain("可多选");
   });
 });

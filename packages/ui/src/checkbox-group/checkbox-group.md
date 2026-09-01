@@ -64,6 +64,7 @@ const [v, setV] = useState<string[]>(["apple"]);
 ## 禁忌 / 坑
 
 - 每个子 Checkbox 必须传 `value`（不是 `name`）——见 [[base-ui-checkbox-group-matches-members-by-value-not-name]]：Base UI rc.0 CheckboxGroup 按子项 `value` 匹配成员，用 `name` 会让 defaultValue/value/onValueChange 全部静默失效（框渲染正常但勾选/回调全空，极易误判已装好）。
+- 放进 `Field` 时每个子 Checkbox 由**自己的** `label` 命名，`Field` 的标签命名的是整个组（role=group），description / error 仍到达每一项。不必再手工包 Base UI 的 `Field.Item`。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [Radio](../radio/radio.md) · [Switch](../switch/switch.md)

@@ -1,7 +1,9 @@
 "use client";
 import { memo } from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
+import { Field as BaseField } from "@base-ui/react/field";
 import { cn } from "../lib/cn";
+import { useNeedsFieldItem } from "../lib/labelled-group-context";
 import type { CheckboxProps } from "./checkbox.types";
 
 // 方盒皮肤：复用 Switch 配方（data-[checked] 驱动 + focus-visible:ring + 语义 token）。
@@ -49,6 +51,7 @@ function CheckboxImpl({
   // children 与 label 等价（#183）：同 Radio，此前 children 会被 Root 上显式的 Indicator 盖掉，
   // 类型放行但一个字都不渲染。
   const text = label ?? children;
+  const inGroup = useNeedsFieldItem();
   const box = (
     <BaseCheckbox.Root
       disabled={disabled}
@@ -71,19 +74,24 @@ function CheckboxImpl({
 
   if (text == null || text === false || text === "") return box;
 
+  const labelText = (
+    <span className={cn(labelSizeClass[size], "text-foreground select-none", disabled && "opacity-50", labelClassName)}>
+      {text}
+    </span>
+  );
+  // 组内：Field.Item 给这一项独立的标签作用域（见 lib/labelled-group-context.ts）。render 成 <label> 本身，DOM 层级不变。
+  if (inGroup) {
+    return (
+      <BaseField.Item render={<label className="inline-flex items-center gap-2" />}>
+        {box}
+        {labelText}
+      </BaseField.Item>
+    );
+  }
   return (
     <label className="inline-flex items-center gap-2">
       {box}
-      <span
-        className={cn(
-          labelSizeClass[size],
-          "text-foreground select-none",
-          disabled && "opacity-50",
-          labelClassName,
-        )}
-      >
-        {text}
-      </span>
+      {labelText}
     </label>
   );
 }

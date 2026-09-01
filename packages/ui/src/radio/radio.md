@@ -99,6 +99,7 @@ const [value, setValue] = useState("standard");
 - **不给 `label` 的 `Radio`（图标卡片、自定义排版）必须自带 `aria-label` 或 `aria-labelledby`**，否则读屏只报「单选按钮」，用户不知道自己在选哪一项——这不只是测试不好写，是真实的可访问性缺陷。`label` 传的是图标之类的非文本 `ReactNode` 时同理。
 - 自己写 `<label>` 把 Radio 包起来是**成立的**，不用手写 `onClick` 转发：Root 渲染出来是 `<span role="radio">`（不是可被 label 关联的元素），看 DOM 容易以为隐式关联不生效，但 Base UI 在里面留了一个视觉隐藏的原生 input 承载激活。排版特殊到 `size` + `labelClassName` 也收不住时就这么用。
 - 但别在包裹的同时再给 `<label htmlFor>` 指向 Root 的 `id`：显式 `htmlFor` 会**压过**隐式关联，两者并存的结果是点文字彻底没反应。
+- 放进 `Field` 时每个 `Radio` 由**自己的** `label` 命名，`Field` 的标签命名的是整个 `RadioGroup`（role=radiogroup），description / error 仍到达每一项。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Switch](../switch/switch.md)

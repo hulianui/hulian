@@ -1,5 +1,4 @@
 "use client";
-import { Field as BaseField } from "@base-ui/react/field";
 import { ChevronDown, ChevronUp, Plus, X } from "../_icons";
 import { Button } from "../button";
 import { Checkbox } from "../checkbox";
@@ -111,11 +110,7 @@ export function OptionsSection({ value, onChange, disabled, L, textarea, errors 
             onValueChange={(keys) => onChange({ ...value, answer: [...keys].sort() }, "answer")}
           >
             {options.map((o) => (
-              // Field.Item 给每个复选框独立的标签作用域：不包的话 Base UI 会让每一项都被外层
-              // Field 的「正确答案」标签命名，读屏念出来四个一模一样的复选框。
-              <BaseField.Item key={o.key}>
-                <Checkbox value={o.key} label={optionCaption(o.key, o.text)} />
-              </BaseField.Item>
+              <Checkbox key={o.key} value={o.key} label={optionCaption(o.key, o.text)} />
             ))}
           </CheckboxGroup>
         )}

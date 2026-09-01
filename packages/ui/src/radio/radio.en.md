@@ -99,6 +99,7 @@ const [value, setValue] = useState("standard");
 - **A Radio without a textual `label` must provide `aria-label` or `aria-labelledby`.** This includes icon cards and custom layouts; otherwise assistive technology announces only “radio button” without identifying the choice.
 - Wrapping the Radio in your own `<label>` **does work**, so there is no need to forward `onClick` by hand. The Root renders as `<span role="radio">`, which is not a labelable element, so the DOM makes implicit association look broken, but Base UI keeps a visually hidden native input inside to carry activation. Use this when the typography is too specific for `size` plus `labelClassName`.
 - Do not add `<label htmlFor>` pointing at the Root `id` while also wrapping: an explicit `htmlFor` **overrides** the implicit association, and having both means clicking the text does nothing at all.
+- Inside a `Field`, each `Radio` is named by **its own** `label`; the `Field` label names the whole `RadioGroup` (role=radiogroup), and description / error still reach every item.
 
 ## Related
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Switch](../switch/switch.md)
