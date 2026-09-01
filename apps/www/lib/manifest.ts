@@ -184,6 +184,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "math-textarea", name: "MathTextarea", shortName: "公式输入框", description: "带公式模板与实时预览的 LaTeX 输入框，产出仍是含 $…$ 的普通字符串", category: "forms", group: "advanced", status: "new" },
   { slug: "question-editor", name: "QuestionEditor", shortName: "出题编辑器", description: "一道数学题的结构化编辑：七型切换、题图、选项、填空、分步给分、实时预览", category: "forms", group: "advanced", status: "new" },
   { slug: "question-answer", name: "QuestionAnswer", shortName: "学生作答卡", description: "学生答一道题：按题型给对的控件、选项缺失明说、多空全填才可交、答完显示正误与解析", category: "forms", group: "advanced", status: "new" },
+  { slug: "math-field", name: "MathField", shortName: "可视化公式键盘", description: "MathLive 驱动的公式输入框：所见即所得地敲出 LaTeX，可注入公式输入框与作答卡，另给 CAS 等价判分", category: "forms", group: "advanced", status: "new" },
   { slug: "math", name: "Formula", shortName: "数学公式排版", description: "排版数学公式，分式、矩阵、求和积分都按真正的二维版式呈现", category: "typography", group: "text", status: "new" },
   { slug: "aurora-text", name: "AuroraText", shortName: "极光文字", description: "让一层多彩极光渐变在文字内部持续流动", category: "typography", group: "text", tags: ["animated"], status: "new" },
   { slug: "line-shadow-text", name: "LineShadowText", shortName: "斜线投影文字", description: "在标题文字背后错开一层硬边条纹投影", category: "typography", group: "text", status: "new" },

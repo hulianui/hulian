@@ -216,6 +216,7 @@ export * from "./markdown-editor.showcase";
 export * from "./markdown.showcase";
 export * from "./marquee.showcase";
 export * from "./masonry.showcase";
+export * from "./math-field.showcase";
 export * from "./math-textarea.showcase";
 export * from "./math.showcase";
 export * from "./mentions.showcase";

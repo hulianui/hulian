@@ -212,6 +212,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Student answer card: the right control per question type, missing options stated plainly, submit only when every blank is filled, verdict and explanation after answering.",
     keywords: ["question", "answer", "student", "quiz", "math", "forms"],
   },
+  "math-field": {
+    shortName: "MathField",
+    description:
+      "MathLive-powered formula input: type LaTeX visually, inject it into MathTextarea and QuestionAnswer, and grade with CAS equivalence.",
+    keywords: ["math", "formula", "latex", "mathlive", "keyboard", "forms"],
+  },
   math: {
     shortName: "Formula",
     description:
