@@ -8555,7 +8555,6 @@
     "已知 $\\triangle ABC$ 中 $\\angle C=90^{\\circ}$，$\\sin A=\\frac{3}{5}$，则 $\\cos A$ 的值为（ ）": "In $\\triangle ABC$, $\\angle C=90^{\\circ}$ and $\\sin A=\\frac{3}{5}$. The value of $\\cos A$ is ( )",
     "由 $\\cos A=\\sqrt{1-\\sin^{2}A}$ 得 $\\cos A=\\frac{4}{5}$。": "From $\\cos A=\\sqrt{1-\\sin^{2}A}$ we get $\\cos A=\\frac{4}{5}$.",
     "计算 $\\frac{1}{2}+\\frac{1}{3}$ 的值：____": "Compute the value of $\\frac{1}{2}+\\frac{1}{3}$: ____",
-    "已知 $x^2=4$，求 $x$。": "Given $x^2=4$, find $x$.",
     "公式": "Formula",
     "通分：$\\frac{3}{6}+\\frac{2}{6}=\\frac{5}{6}$。": "Common denominator: $\\frac{3}{6}+\\frac{2}{6}=\\frac{5}{6}$.",
     "虚拟键盘": "Virtual keyboard",
@@ -8570,7 +8569,8 @@
     "manual 只由切换钮弹出；off 不挂键盘（策略 manual 且隐藏切换钮），适合桌面端录题。": "manual opens only from the toggle; off attaches no keyboard (policy manual with the toggle hidden), suited to desktop authoring.",
     "禁用与只读": "Disabled and read-only",
     "已提交的作答传 disabled；展示参考答案传 readOnly。": "Pass disabled for a submitted answer; pass readOnly to display a reference answer.",
-    "\" aria-label=\"公式\" value={latex} onChange={setLatex} />": "\" aria-label=\"Formula\" value={latex} onChange={setLatex} />"
+    "\" aria-label=\"公式\" value={latex} onChange={setLatex} />": "\" aria-label=\"Formula\" value={latex} onChange={setLatex} />",
+    "已知 $x^2=a$，求 $x$。": "Given $x^2=a$, find $x$."
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

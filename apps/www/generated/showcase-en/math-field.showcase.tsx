@@ -13,7 +13,7 @@ import type { MathFieldProps } from "../../../../packages/ui/src/math-field/math
 const INITIAL = "\\frac{a}{b}+\\sqrt{c}";
 const INTEGRAL = "\\int_0^1 x\\,dx";
 const STEM = "Compute the value of $\\frac{1}{2}+\\frac{1}{3}$: ____";
-const TEXTAREA_INITIAL = "Given $x^2=4$, find $x$.";
+const TEXTAREA_INITIAL = "Given $x^2=a$, find $x$.";
 function Demo({ initial = INITIAL, ...rest }: {
     initial?: string;
 } & Partial<Omit<MathFieldProps, "value" | "onChange">>) {

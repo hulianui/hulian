@@ -15,7 +15,7 @@ import type { MathFieldProps } from "./math-field.types";
 const INITIAL = "\\frac{a}{b}+\\sqrt{c}";
 const INTEGRAL = "\\int_0^1 x\\,dx";
 const STEM = "计算 $\\frac{1}{2}+\\frac{1}{3}$ 的值：____";
-const TEXTAREA_INITIAL = "已知 $x^2=4$，求 $x$。";
+const TEXTAREA_INITIAL = "已知 $x^2=a$，求 $x$。";
 
 function Demo({
   initial = INITIAL,
