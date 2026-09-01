@@ -56,7 +56,7 @@ describe("题型切换", () => {
     expect(scoreDefaults({ essay: 12 }).single).toBe(3);
   });
 
-  it.each([
+  it.each<[string, Question, boolean]>([
     ["空单选不脏", emptyQuestion("single"), false],
     [
       "填了选项就脏",
@@ -67,7 +67,7 @@ describe("题型切换", () => {
     ["判断题默认 true 不脏", emptyQuestion("judge"), false],
     ["判断题改成 false 就脏", { ...emptyQuestion("judge"), answer: false }, true],
     ["空填空不脏", emptyQuestion("blank"), false],
-  ] as const)("shapeIsDirty：%s", (_, q, expected) => {
+  ])("shapeIsDirty：%s", (_, q, expected) => {
     expect(shapeIsDirty(q)).toBe(expected);
   });
 

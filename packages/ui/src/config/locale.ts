@@ -6,6 +6,11 @@ import {
   MATH_TEXTAREA_LOCALE_ZH,
   type MathTextareaLocale,
 } from "../math-textarea/math-textarea.locale";
+import {
+  QUESTION_EDITOR_LOCALE_EN,
+  QUESTION_EDITOR_LOCALE_ZH,
+  type QuestionEditorLocale,
+} from "../question-editor/question-editor.locale";
 // 仅类型引用（编译期擦除，无运行时依赖，故不构成 config ↔ social-button 的循环）。
 import type { SocialProvider } from "../social-button/social-button.types";
 
@@ -729,6 +734,8 @@ export interface ComponentLocale {
   question?: QuestionLocale;
   /** 公式输入框词条，SSOT 在 math-textarea/math-textarea.locale.ts（同 question 的理由）。 */
   mathTextarea?: MathTextareaLocale;
+  /** 出题编辑器词条，SSOT 在 question-editor/question-editor.locale.ts（同 question 的理由）。 */
+  questionEditor?: QuestionEditorLocale;
   modelViewer?: { reset: string };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   coupon?: {
@@ -1506,6 +1513,7 @@ const zhComponents: ComponentLocale = {
   mathText: { blank: "填空", rowSeparator: "；" },
   question: QUESTION_LOCALE_ZH,
   mathTextarea: MATH_TEXTAREA_LOCALE_ZH,
+  questionEditor: QUESTION_EDITOR_LOCALE_ZH,
   modelViewer: { reset: "重置视角" },
   coupon: {
     available: "立即领取",
@@ -2400,6 +2408,7 @@ const enComponents: ComponentLocale = {
   mathText: { blank: "Blank", rowSeparator: ";" },
   question: QUESTION_LOCALE_EN,
   mathTextarea: MATH_TEXTAREA_LOCALE_EN,
+  questionEditor: QUESTION_EDITOR_LOCALE_EN,
   modelViewer: { reset: "Reset view" },
   coupon: {
     available: "Claim now",
