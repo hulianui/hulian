@@ -65,6 +65,7 @@ Single-line compact form for options and per-blank answers:
 | value | `string` | - | LaTeX without `$` |
 | onChange | `(latex: string) => void` | - | Called while editing |
 | onSubmit | `(latex: string) => void` | - | Enter / confirm; MathTextarea routes it to the same "Insert at caret" path |
+| disabled | `boolean` | - | Locked (QuestionAnswer passes it while submitted or pending; MathTextarea does not) |
 | aria-label | `string` | - | Provided by MathTextarea (the tab name) |
 | className | `string` | - | Style passthrough |
 

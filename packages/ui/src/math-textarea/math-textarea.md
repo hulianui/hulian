@@ -65,6 +65,7 @@ const [stem, setStem] = useState("已知 $\\triangle ABC$ 中 $\\angle C=90^{\\c
 | value | `string` | - | LaTeX（不带 `$`） |
 | onChange | `(latex: string) => void` | - | 编辑中回写 |
 | onSubmit | `(latex: string) => void` | - | 回车 / 确认；MathTextarea 把它接到「插入到光标处」同一条路径 |
+| disabled | `boolean` | - | 锁定（QuestionAnswer 在已提交 / 提交中时传；MathTextarea 不传） |
 | aria-label | `string` | - | 由 MathTextarea 传入（页签名） |
 | className | `string` | - | 样式透传 |
 

@@ -4,11 +4,11 @@ import { Image } from "../image";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { Formula } from "../math/math";
-import { splitStemFigures } from "../question/question-stem";
 import type { QuestionType } from "../question/question.types";
 import { Tag } from "../tag";
 import { Text } from "../text";
 import { QuestionAnswerSection, QuestionTypeTag } from "./question-card.client";
+import { QuestionStemBlock } from "./question-stem-block";
 import type { QuestionCardProps, QuestionKind } from "./question-card.types";
 
 // 题目卡片：教辅/题库场景的标准展示件。
@@ -56,9 +56,6 @@ export function QuestionCard({
   }
   const resolvedType: QuestionType | undefined = type ?? (kind ? KIND_TO_TYPE[kind] : undefined);
   const resolvedLabel = typeLabel ?? kindLabel;
-  // 先切图再排公式：storage key 里合法地带着 `_` `^` `\`，交给 Formula 会被当成下标 / 命令吃成乱码。
-  const split = resolveFigure ? splitStemFigures(stem) : null;
-  const stemText = split ? split.text : stem;
   const flagged = (issues?.length ?? 0) > 0;
   const worst = issues?.some((i) => i.tone === "danger") ? "danger" : "warning";
 
@@ -95,24 +92,7 @@ export function QuestionCard({
 
         <div className={cn("gap-4", figure && "sm:flex sm:items-start")}>
           <div className="min-w-0 flex-1 space-y-2">
-            <Text as="p" className="leading-7">
-              <Formula>{stemText}</Formula>
-            </Text>
-
-            {split && resolveFigure && split.figures.length > 0 && (
-              <div data-slot="question-stem-figures" className="flex flex-wrap gap-2">
-                {split.figures.map((key, index) => (
-                  <Image
-                    key={`${key}-${index}`}
-                    src={resolveFigure(key)}
-                    alt={`题目附图 ${index + 1}`}
-                    radius="md"
-                    className="border border-border bg-white"
-                    imgClassName="max-h-44 w-auto max-w-56 object-contain"
-                  />
-                ))}
-              </div>
-            )}
+            <QuestionStemBlock stem={stem} resolveFigure={resolveFigure} />
 
             {options && options.length > 0 && (
               <ul className="grid gap-x-6 gap-y-1 sm:grid-cols-2">

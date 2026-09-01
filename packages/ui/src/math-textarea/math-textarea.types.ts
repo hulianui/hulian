@@ -11,6 +11,8 @@ export interface MathFieldLikeProps {
   onChange: (latex: string) => void;
   /** 回车 / 确认。MathTextarea 把它接到「插入到光标处」同一条路径。 */
   onSubmit?: (latex: string) => void;
+  /** 锁定（已提交 / 提交中）。QuestionAnswer 传；MathTextarea 不传。 */
+  disabled?: boolean;
   "aria-label"?: string;
   className?: string;
 }
