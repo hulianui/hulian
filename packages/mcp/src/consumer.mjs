@@ -18,7 +18,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { answeringVersion } from "./data.mjs";
+import { answeringVersion, mode } from "./data.mjs";
 import { installedVersion, resolveProjectRoot } from "./project.mjs";
 
 const PKG = "@hulianui/ui";
@@ -31,11 +31,6 @@ let remembered = null;
 export function rememberConsumerRoot(projectRoot, via) {
   if (!projectRoot || !existsSync(projectRoot)) return;
   remembered = { projectRoot, via };
-}
-
-/** 测试与热重载用：清掉记忆，不给下一条调用带状态。 */
-export function forgetConsumerRoot() {
-  remembered = null;
 }
 
 /**
@@ -154,28 +149,32 @@ export function consumerFooter() {
  * 与 staleBanner 同一条纪律：error 级的话术 + 完整正文 + 明确的兜底路径，不置 isError ——
  * 调用方此刻最需要的恰恰是「拿到内容 + 知道该信哪一份」。
  */
-export function consumerBanner() {
-  const skew = consumerSkew();
+export function consumerBanner(skew = consumerSkew()) {
   if (!skew) return "";
   const gap = skew.gap ? `，${skew.direction === "older" ? "旧" : "新"} ${skew.gap}` : "";
   const lines = [
     `❌ 错误 · 文档与你项目实装的 ${PKG} 不是同一个版本：本次内容按 **v${skew.docs}** 给，` +
       `而 \`${skew.from}\` 实装的是 **v${skew.installed}**${gap}。`,
   ];
+  const installedIsTruth =
+    `**以 \`node_modules/${PKG}/src/<slug>/<slug>.md\` 与同目录的 \`<slug>.types.ts\` 为准**（随 npm 包发布，与实装同版）—— ` +
+    `get_component_doc 会直接返回实装那一版的文档；\`format:"json"\` 里实装文档没列的 prop 带 \`notInInstalledDoc: true\`。`;
   if (skew.direction === "older") {
+    // 本地源码模式下「文档那一版」是这份检出的版本号，未必已经发到 npm；升级命令得留这个口。
+    const maybeUnpublished = mode === "local" ? "（本地源码模式：该版若尚未发 npm 会装不到）" : "";
     lines.push(
       `v${skew.installed} 之后新增的组件与 prop 在你的项目里**不存在**，照本文档写会 TS2322。两条路任选：`,
-      `· 按实装版本写：props 真源 \`node_modules/${PKG}/src/<slug>/<slug>.types.ts\`、文档 ` +
-        `\`node_modules/${PKG}/src/<slug>/<slug>.md\`（随 npm 包发布，与实装同版）。` +
-        `get_component_doc 会直接返回实装那一版的文档；\`format:"json"\` 里实装文档没列的 prop 带 \`notInInstalledDoc: true\`。`,
-      `· 或先升级：\`pnpm add ${PKG}@${skew.docs} @hulianui/tokens@latest\`，再按本文档写。`,
+      `· 按实装版本写：${installedIsTruth}`,
+      `· 或先升级：\`pnpm add ${PKG}@${skew.docs} @hulianui/tokens@latest\`${maybeUnpublished}，再按本文档写。`,
+    );
+  } else if (skew.direction === "newer") {
+    lines.push(
+      `v${skew.docs} 之后新增的组件与 prop 在本文档里**查不到**，已改名 / 删除的旧签名可能还在。${installedIsTruth}` +
+        `也可以把 MCP 的 \`HULIAN_UI_ROOT\` 指到 \`${skew.from}\`（消费方没有 registry 产物，需同时设 \`HULIAN_ALLOW_REMOTE_FALLBACK=1\`）。`,
     );
   } else {
-    lines.push(
-      `v${skew.docs} 之后新增的组件与 prop 在本文档里**查不到**，已改名 / 删除的旧签名可能还在。` +
-        `**以 \`node_modules/${PKG}/src/<slug>/<slug>.md\` 与同目录的 \`<slug>.types.ts\` 为准** —— ` +
-        `get_component_doc 会直接返回实装那一版的文档；也可以把 MCP 的 \`HULIAN_UI_ROOT\` 指到 \`${skew.from}\`。`,
-    );
+    // 比不出先后（预发布标签、非 semver 版本号）：只知道不是同一份，两边都可能有对方没有的东西。
+    lines.push(`两个版本号比不出先后，只能确定不是同一份：哪边多了、少了什么 prop 这里说不准。${installedIsTruth}`);
   }
   if (skew.projectRootSource === "cwd-fallback") {
     lines.push(
