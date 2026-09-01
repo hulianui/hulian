@@ -18,6 +18,8 @@
 
   Previously the resting state was a `border-border` dashed line on `bg-surface`. The drop zone usually sits on a same-colored card, so its only boundary was a 1px gray dashed line at roughly 1.1:1 contrast on white; consumers reported the edge as barely visible, and hover only swapped the background, making it nearly indistinguishable from rest. The resting state is now one step away from the card, hover differs from rest, and the drag-over `bg-primary/10` is one step heavier than before.
 
+- `QuestionAnswer` difficulty marker now uses `text-muted-foreground`. It previously used `text-muted`, which has been a background token since 0.28.0; Tailwind generated no text-color rule for it, so the marker silently inherited the body color. <!-- parity-id: question-answer-muted-foreground -->
+
 ## 0.59.0
 
 ### Minor Changes

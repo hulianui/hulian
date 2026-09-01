@@ -809,6 +809,13 @@
       "source": "packages/ui/src/auth-panel/auth-panel.md"
     },
     {
+      "id": "component/auth-panel/pitfall/7",
+      "scope": "auth-panel",
+      "title": "AuthPanel",
+      "rule": "**左侧标语与右侧居中的表单对不齐**（高视口下标语贴顶、表单在中间，隔着一大段空白）：用 `contentAlign=\"center\"`。不要用 `[&>div:first-child]:flex-1` 这类猜内部 DOM 的类去撑——内部结构不是契约，改一层 div 就失效。",
+      "source": "packages/ui/src/auth-panel/auth-panel.md"
+    },
+    {
       "id": "component/avatar/pitfall/1",
       "scope": "avatar",
       "title": "Avatar",
@@ -9433,6 +9440,13 @@
       "source": "packages/ui/src/stat/stat.md"
     },
     {
+      "id": "component/stat/pitfall/7",
+      "scope": "stat",
+      "title": "Stat",
+      "rule": "标题行固定 32px 高（`icon` 底座的尺寸），**有没有 `icon` 都一样**——同一排 KPI 卡可以放心混用「有 icon」与「无 icon（右上角留给叠放的 Sparkline）」，数值行起点与卡片高度不会因此错开。",
+      "source": "packages/ui/src/stat/stat.md"
+    },
+    {
       "id": "component/statistic/pitfall/1",
       "scope": "statistic",
       "title": "Statistic",
@@ -11117,7 +11131,7 @@
   ],
   "stats": {
     "componentDocs": 399,
-    "componentAdvisories": 1549,
-    "totalAdvisories": 1559
+    "componentAdvisories": 1551,
+    "totalAdvisories": 1561
   }
 }

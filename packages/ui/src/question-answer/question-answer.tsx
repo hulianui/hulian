@@ -187,7 +187,7 @@ export function QuestionAnswer({
               </Tag>
             ))}
             {difficulty !== undefined && (
-              <span role="img" aria-label={L.difficulty(difficulty)} className="text-xs text-muted">
+              <span role="img" aria-label={L.difficulty(difficulty)} className="text-xs text-muted-foreground">
                 {"★".repeat(difficulty)}
               </span>
             )}

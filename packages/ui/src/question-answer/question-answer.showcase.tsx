@@ -178,7 +178,7 @@ export const questionAnswerShowcase: ShowcaseSpec = {
       description: "reason 是题干上方那行推荐理由；header 放题号或计时。",
       code: `<QuestionAnswer question={question} reason="上次这类题错了" header={<span>第 3 题</span>} />`,
       render: () => (
-        <Demo question={SINGLE} reason="上次这类题错了" header={<span className="text-xs text-muted">第 3 题</span>} />
+        <Demo question={SINGLE} reason="上次这类题错了" header={<span className="text-xs text-muted-foreground">第 3 题</span>} />
       ),
     },
     {

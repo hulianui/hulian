@@ -23,6 +23,16 @@
         "dev": "^1.6.0",
         "why": "跟住实际开发的版本线。原为 >=1.0.0，而库里绝大多数组件直接建在 Base UI 上、只对着 1.6.x 开发和测试：消费方锁在 1.4.1 时 0.30.0 起 Slider 的 SSR 首屏偶发 hydration mismatch（#200 把 aria-label 从 Root 挪到 Thumb，在 1.4.1 上让两侧 useId 序列错开一位；#209 二分实测 1.4.1 中、1.7.0 不中）。Base UI 1.x 仍在快速演进，major 粒度的下界在这里没有约束力。"
       },
+      "@cortex-js/compute-engine": {
+        "peer": ">=0.58.0",
+        "dev": "0.58.0",
+        "why": "mathlive 0.110.0 的 dependencies 把它钉成精确版 0.58.0，装了 mathlive 它就在；本库 createCasComparator() 直接 import 它做第 3 档等价判分，所以单列为 optional peer。下界必须等于 mathlive 钉的那一版：抬 mathlive 时查它的 package.json 同步改这里，不单独抬。"
+      },
+      "mathlive": {
+        "peer": ">=0.110.0",
+        "dev": "0.110.0",
+        "why": "只承诺测过的版本（docs/consuming-math.md）：MathField 对着 0.110.0 开发与测试（MathfieldElement 客户端动态挂载、virtualKeyboard 三态、CSS 变量钉本库 token），它是 optional peer 引入时的当前版，更低版本没有实测记录，下界取首个测过的版本而不是 major。dev 用精确版而非 caret：mathlive 把 @cortex-js/compute-engine 钉成精确版（0.110.0 → 0.58.0），两者必须同步抬，caret 会让两侧漂开。"
+      },
       "motion": {
         "peer": ">=11",
         "dev": "^12.43.0",

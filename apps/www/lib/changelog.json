@@ -21,6 +21,13 @@
         "bump": "patch",
         "breaking": false,
         "body": "`Upload` 落区静止态改为主色淡边 + 淡底，悬停加深、拖入最重，三档递进。\n\n此前静止态是 `border-border` 虚线 + `bg-surface`：落区多半压在同色卡面上，全部边界只剩 1px 灰虚线，白底上对比度约 1.1:1，消费方实机反馈「边缘很模糊」，且悬停只换背景、与静止几乎无差。现在静止就与卡面差一档，悬停必须与静止不同，拖入态 `bg-primary/10` 也比原来重一档。"
+      },
+      {
+        "sha": null,
+        "bump": "patch",
+        "breaking": false,
+        "body": "`QuestionAnswer` 难度标记改用 `text-muted-foreground`：此前写的 `text-muted` 自 0.28.0 起是背景色 token，Tailwind 不生成对应文字色规则，标记静默继承正文色。",
+        "parityId": "question-answer-muted-foreground"
       }
     ]
   },
