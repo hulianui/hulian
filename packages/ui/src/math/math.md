@@ -139,7 +139,7 @@ status: enriched
 import {
   gradeObjective, validateQuestion, defaultShape, normalizeOptions, blankCount,
   splitStemFigures, toWireAnswer, fromWire, answerText,
-  type Question, type QuestionType, type QuestionAnswer,
+  type Question, type QuestionType, type QuestionAnswerValue,
 } from "@hulianui/ui/math"
 ```
 

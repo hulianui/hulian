@@ -4,7 +4,7 @@ import { useComponentLocale } from "../config/locale-context";
 import { Formula } from "../math/math";
 import { answerText } from "../question/answer-format";
 import { QUESTION_LOCALE_ZH } from "../question/question.locale";
-import type { QuestionAnswer, QuestionType } from "../question/question.types";
+import type { QuestionAnswerValue, QuestionType } from "../question/question.types";
 import { Tag } from "../tag";
 import { Text } from "../text";
 
@@ -36,7 +36,7 @@ export function QuestionAnswerSection({
   analysis,
 }: {
   type: QuestionType | undefined;
-  answer: QuestionAnswer | undefined;
+  answer: QuestionAnswerValue | undefined;
   analysis: string | undefined;
 }) {
   const L = useComponentLocale().question ?? QUESTION_LOCALE_ZH;

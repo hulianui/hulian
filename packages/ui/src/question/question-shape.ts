@@ -4,7 +4,7 @@
 import {
   QUESTION_TYPES,
   type Question,
-  type QuestionAnswer,
+  type QuestionAnswerValue,
   type QuestionOption,
   type QuestionType,
   type QuestionValidationIssue,
@@ -110,7 +110,7 @@ function isRubric(value: unknown): value is Rubric {
   );
 }
 
-function validateBlankAnswer(answer: QuestionAnswer, stem: string): QuestionValidationIssue[] {
+function validateBlankAnswer(answer: QuestionAnswerValue, stem: string): QuestionValidationIssue[] {
   if (!Array.isArray(answer) || answer.length === 0) {
     return [{ field: "answer", code: "blank_empty" }];
   }

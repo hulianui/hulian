@@ -4,7 +4,7 @@ export type {
   QuestionOption,
   BlankAnswer,
   Rubric,
-  QuestionAnswer,
+  QuestionAnswerValue,
   QuestionIssue,
   Question,
   StudentAnswer,

@@ -71,7 +71,7 @@ import { QuestionCard } from "@hulianui/ui/math"
 | `parts` | `string[]` | - | 小问 (1)(2)(3) |
 | `figure` | `{ src, alt? }` | - | 附图 |
 | `resolveFigure` | `(key: string) => string` | - | 题干里 `![](key)` 的解析器：给了就先切图再排公式，图按顺序渲染在正文之后；不给则题干原样交给 Formula |
-| `answer` | `QuestionAnswer` | - | 答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswer`。只有 `showAnswer` 为真才渲染 |
+| `answer` | `QuestionAnswerValue` | - | 答案；形状见 `@hulianui/ui/math` 的 `QuestionAnswerValue`。只有 `showAnswer` 为真才渲染 |
 | `analysis` | `string` | - | 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染 |
 | `showAnswer` | `boolean` | `false` | 渲染答案与解析区。学生作答前必须关 |
 | `chapter` / `source` | `ReactNode` | - | 章节归属 / 出处，落在页脚 |

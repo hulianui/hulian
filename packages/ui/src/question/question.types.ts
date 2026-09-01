@@ -48,7 +48,7 @@ export interface Rubric {
  * - blank：外层每项一个空（编辑器内部单空也用一项数组；出口按消费方需要压平见 question-wire）
  * - short_answer / calculation / essay：参考答案文本、Rubric，或 null（允许暂无）
  */
-export type QuestionAnswer = string | string[] | boolean | BlankAnswer[] | Rubric | null;
+export type QuestionAnswerValue = string | string[] | boolean | BlankAnswer[] | Rubric | null;
 
 /** 质量标记：题目从文档拆出来时发现的可疑点（QuestionCard 亮左侧边条）。 */
 export interface QuestionIssue {
@@ -62,7 +62,7 @@ export interface Question {
   stem: string;
   /** 仅 single / multiple 非 null。 */
   options: QuestionOption[] | null;
-  answer: QuestionAnswer;
+  answer: QuestionAnswerValue;
   analysis: string;
   /** 1–5 */
   difficulty: number;

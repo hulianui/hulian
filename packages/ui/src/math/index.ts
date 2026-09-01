@@ -24,3 +24,6 @@ export * from "../math-textarea";
 
 // 出题编辑器（阶段 3）。题干 / 选项 / 预览内部都是 Formula，所以同住此路径。
 export * from "../question-editor";
+
+// 学生作答卡（阶段 4）。题干 / 选项 / 结果区内部都是 Formula，所以同住此路径。
+export * from "../question-answer";

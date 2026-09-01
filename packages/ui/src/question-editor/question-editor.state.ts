@@ -14,7 +14,7 @@ import { stemFigureKeys, stripStemFigures } from "../question/question-stem";
 import type {
   BlankAnswer,
   Question,
-  QuestionAnswer,
+  QuestionAnswerValue,
   QuestionOption,
   QuestionType,
   QuestionValidationIssue,
@@ -62,7 +62,7 @@ function rekey(options: QuestionOption[]): QuestionOption[] {
 }
 
 /** 按「旧 key → 新 key」表重映射选择题答案；表里没有的 key（被删的）丢掉。 */
-function remapChoiceAnswer(answer: QuestionAnswer, map: ReadonlyMap<string, string>): QuestionAnswer {
+function remapChoiceAnswer(answer: QuestionAnswerValue, map: ReadonlyMap<string, string>): QuestionAnswerValue {
   if (typeof answer === "string") return map.get(answer) ?? "";
   if (Array.isArray(answer)) {
     const next: string[] = [];
@@ -126,7 +126,7 @@ export function optionCaption(key: string, text: string): string {
 // 填空（外层每项一个空；一个空是一种写法（字符串）或多种等价写法（数组））
 // ---------------------------------------------------------------------------
 
-export function blankCells(answer: QuestionAnswer): BlankAnswer[] {
+export function blankCells(answer: QuestionAnswerValue): BlankAnswer[] {
   return Array.isArray(answer) && answer.length > 0 ? (answer as BlankAnswer[]) : [""];
 }
 
@@ -202,7 +202,7 @@ export function blankMismatch(
 // 主观题（参考答案文本 / 分步给分 Rubric / null）
 // ---------------------------------------------------------------------------
 
-export function isRubric(answer: QuestionAnswer): answer is Rubric {
+export function isRubric(answer: QuestionAnswerValue): answer is Rubric {
   return (
     answer !== null &&
     typeof answer === "object" &&
@@ -211,7 +211,7 @@ export function isRubric(answer: QuestionAnswer): answer is Rubric {
   );
 }
 
-export function referenceText(answer: QuestionAnswer): string {
+export function referenceText(answer: QuestionAnswerValue): string {
   if (typeof answer === "string") return answer;
   if (isRubric(answer)) return answer.reference;
   return "";
@@ -257,7 +257,7 @@ export function removeRubricPoint(q: Question, index: number): Question {
   return { ...q, answer: { ...q.answer, rubric: q.answer.rubric.filter((_, i) => i !== index) } };
 }
 
-export function rubricTotal(answer: QuestionAnswer): number {
+export function rubricTotal(answer: QuestionAnswerValue): number {
   return isRubric(answer) ? answer.rubric.reduce((sum, row) => sum + (row.score ?? 0), 0) : 0;
 }
 

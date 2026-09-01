@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { QuestionAnswer, QuestionIssue, QuestionOption, QuestionType } from "../question/question.types";
+import type { QuestionAnswerValue, QuestionIssue, QuestionOption, QuestionType } from "../question/question.types";
 
 /** @deprecated 0.59 起改用 `type`（七型枚举）。映射：choice → single、fill → blank、solution → essay、judge → judge。下一个 minor 移除。 */
 export type QuestionKind = "choice" | "fill" | "solution" | "judge";
@@ -39,8 +39,8 @@ export interface QuestionCardProps {
    * QuestionEditor 的实时预览与消费方的题库列表都靠它，两边同一个渲染路径。
    */
   resolveFigure?: (key: string) => string;
-  /** 答案（形状见 QuestionAnswer）。只有 `showAnswer` 为真才渲染。 */
-  answer?: QuestionAnswer;
+  /** 答案（形状见 QuestionAnswerValue）。只有 `showAnswer` 为真才渲染。 */
+  answer?: QuestionAnswerValue;
   /** 解析，支持 LaTeX 记号。只有 `showAnswer` 为真才渲染。 */
   analysis?: string;
   /** 渲染答案与解析区（题库详情 / 教师端开；学生作答前必须关）。@default false */

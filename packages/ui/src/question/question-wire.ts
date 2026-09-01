@@ -2,7 +2,7 @@
 // （单空压成字符串、多选 "A,C" 串、判断 "true" 串、字符串形 options）。互转全部收口在这里，
 // 组件里不再出现 typeof 分支。
 import { normalizeOptions } from "./question-shape";
-import type { Question, QuestionAnswer, QuestionType } from "./question.types";
+import type { Question, QuestionAnswerValue, QuestionType } from "./question.types";
 
 /** 逐空作答 → 提交形：单空交字符串（交 `["90"]` 会被原样存成 JSON 字面量），多空交数组。 */
 export function encodeBlanks(blanks: string[]): string | string[] {
@@ -32,7 +32,7 @@ export function decodeBlanks(raw: string | null | undefined, count: number): str
 }
 
 /** 编辑器规范形 → 消费方后端形：填空「单空且单写法」压回字符串，其余原样。 */
-export function toWireAnswer(q: Pick<Question, "type" | "answer">): QuestionAnswer {
+export function toWireAnswer(q: Pick<Question, "type" | "answer">): QuestionAnswerValue {
   if (q.type === "blank" && Array.isArray(q.answer) && q.answer.length === 1) {
     const only = q.answer[0];
     if (typeof only === "string") return only;

@@ -1,6 +1,6 @@
 import type { ComponentType, ReactNode } from "react";
 import type { MathFieldLikeProps } from "../math-textarea/math-textarea.types";
-import type { Question, QuestionAnswer, QuestionType, StudentAnswer } from "../question/question.types";
+import type { Question, QuestionAnswerValue, QuestionType, StudentAnswer } from "../question/question.types";
 
 /**
  * 学生端拿到的题面：题型、题干、选项与几个展示字段，**没有答案与解析的位置**
@@ -20,7 +20,7 @@ export interface AnswerableQuestion extends Pick<Question, "stem" | "options"> {
 /** 服务端判完回来的结果。`correctAnswer` 用 `answerText` 渲染成文字，`analysis` 走 Formula。 */
 export interface QuestionAnswerResult {
   correct: boolean;
-  correctAnswer: QuestionAnswer;
+  correctAnswer: QuestionAnswerValue;
   analysis?: string;
 }
 

@@ -151,7 +151,7 @@ The inside rule scales with the font size while the outside one is 1px; at body 
 import {
   gradeObjective, validateQuestion, defaultShape, normalizeOptions, blankCount,
   splitStemFigures, toWireAnswer, fromWire, answerText,
-  type Question, type QuestionType, type QuestionAnswer,
+  type Question, type QuestionType, type QuestionAnswerValue,
 } from "@hulianui/ui/math"
 ```
 
