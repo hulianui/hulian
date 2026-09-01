@@ -91,4 +91,37 @@ describe("AuthPanel", () => {
     );
     expect(getByTestId("art")).toBeTruthy();
   });
+  // #338：右侧表单 place-items-center 居中，左侧标语却贴顶。消费方此前只能用
+  // `[&>div:first-child]:flex-1` 猜内部 DOM 去撑，那不是契约。
+  describe("contentAlign", () => {
+    it("默认 start：flex 两块上下分布，DOM 与此前一致", () => {
+      const el = root(<AuthPanel brand={<b>B</b>} title="T" footer="F" />);
+      expect(el.className).toContain("justify-between");
+      expect(el.className).not.toContain("grid-rows");
+      // 上块包含 brand + 标题，下块是 footer
+      expect(el.children).toHaveLength(2);
+      expect(el.children[0].textContent).toBe("BT");
+      expect(el.children[1].textContent).toBe("F");
+    });
+
+    it("center：三行 grid 1fr/auto/1fr，brand 贴顶、中部第二行、footer 贴底", () => {
+      const el = root(<AuthPanel contentAlign="center" brand={<b>B</b>} title="T" footer="F" />);
+      expect(el.className).toContain("grid-rows-[1fr_auto_1fr]");
+      expect(el.className).not.toContain("justify-between");
+      const [brand, middle, bottom] = Array.from(el.children) as HTMLElement[];
+      expect(brand.className).toContain("row-start-1");
+      expect(brand.textContent).toBe("B");
+      expect(middle.className).toContain("row-start-2");
+      expect(middle.textContent).toBe("T");
+      expect(bottom.className).toContain("row-start-3");
+      expect(bottom.className).toContain("self-end");
+      expect(bottom.textContent).toBe("F");
+    });
+
+    it("center 且没有 brand：中部仍钉在第二行，不滑到顶上", () => {
+      const el = root(<AuthPanel contentAlign="center" title="T" />);
+      expect(el.children).toHaveLength(1);
+      expect((el.children[0] as HTMLElement).className).toContain("row-start-2");
+    });
+  });
 });

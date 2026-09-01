@@ -43,6 +43,7 @@ import { AuthPanel } from "@hulianui/ui"
 | footer | `ReactNode` | - | 底部区（版权、备案号、次要链接） |
 | color | `string` | `"primary"` | 品牌色：语义色名 / 任意 CSS 色 / 变量，走 `resolveTone`（同 [Brand](../brand/brand.md) `.color`、[Dot](../dot/dot.md) `.color`、`ChartSeries.color`） |
 | gradient | `"radial" \| "linear" \| "mesh" \| "none"` | `"radial"` | 背景配方，见下 |
+| contentAlign | `"start" \| "center"` | `"start"` | 中部内容（title / description / children）的垂直位置：`start` 紧跟品牌位贴顶；`center` 相对整块面板居中，与右侧 `place-items-center` 的表单齐平。两档下 brand 都贴顶、highlights / footer 都贴底 |
 | className | `string` | - | 根节点类名 |
 
 ### 背景配方
@@ -93,6 +94,7 @@ import { AuthPanel } from "@hulianui/ui"
 - `gradient="none"` 是给「自己叠图案」用的，不是给「不要背景」用的——它仍有 `bg-surface`，因为面板要和右侧表单区在明暗上分开。
 - 右半边表单记得传 `surface={false}`（[LoginForm](../login-form/login-form.md)）：视觉重量已由左侧面板承担，再套一张卡就是卡中卡。
 - 消费方 `style` 仍能覆盖背景（整块换底图的逃生口），但那属于绕开组件体系——先想想是不是该给 `gradient` 加一档。
+- **左侧标语与右侧居中的表单对不齐**（高视口下标语贴顶、表单在中间，隔着一大段空白）：用 `contentAlign="center"`。不要用 `[&>div:first-child]:flex-1` 这类猜内部 DOM 的类去撑——内部结构不是契约，改一层 div 就失效。
 
 ## 相关
 [LoginForm](../login-form/login-form.md) · [Brand](../brand/brand.md) · [Field](../field/field.md) · [SocialButton](../social-button/social-button.md) · [ClickCaptcha](../click-captcha/click-captcha.md) · [DotPattern](../dot-pattern/dot-pattern.md)

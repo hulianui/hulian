@@ -38,5 +38,14 @@ export interface AuthPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, "ti
   color?: string;
   /** 背景配方。@default "radial" */
   gradient?: AuthPanelGradient;
+  /**
+   * 中部内容（title / description / children）的垂直位置。
+   *  · `start`：紧跟品牌位贴顶（默认，现有页面不变）
+   *  · `center`：相对**整块面板**垂直居中——分屏认证页右半边的表单通常 `place-items-center`，
+   *    左侧标语要与它齐平就选这档。brand 仍贴顶、highlights / footer 仍贴底；上下两段等分剩余
+   *    空间，所以居中位置不受品牌位与底部区高度差影响（hulianui/hulian#338）。
+   * @default "start"
+   */
+  contentAlign?: "start" | "center";
   className?: string;
 }

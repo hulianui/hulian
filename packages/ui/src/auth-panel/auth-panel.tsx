@@ -72,17 +72,41 @@ export function AuthPanel({
   footer,
   color = "primary",
   gradient = "radial",
+  contentAlign = "start",
   className,
   style,
   ...rest
 }: AuthPanelProps) {
   const accent = resolveTone(color) ?? "var(--color-primary)";
   const background = backgroundFor(gradient, accent);
+  const center = contentAlign === "center";
+  const content = (
+    <>
+      {(title != null || description != null) && (
+        <div className="flex flex-col gap-3">
+          {title != null && (
+            <Heading level={titleLevel} size="3xl" weight="bold" balance className="leading-tight">
+              {title}
+            </Heading>
+          )}
+          {description != null && (
+            <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">{description}</p>
+          )}
+        </div>
+      )}
+      {children}
+    </>
+  );
   return (
     <div
       className={cn(
         // h-full：面板由外层栅格定高（分屏页通常是 h-dvh 的一列），自己不定高度。
-        "flex h-full flex-col justify-between gap-10 p-10 text-foreground",
+        "h-full gap-10 p-10 text-foreground",
+        // start：上块（brand + 标语 + children）贴顶、下块贴底，中间留白 —— 原始版式。
+        // center：三行 grid `1fr auto 1fr`，中部那行相对**整块面板**居中，与右侧
+        // `place-items-center` 的表单齐平；上下两行等分剩余空间，所以品牌位与底部区高矮不同
+        // 也不会把中部推偏（用 flex-1 + justify-center 就会偏，#338）。brand 仍贴顶、footer 仍贴底。
+        center ? "grid grid-rows-[1fr_auto_1fr]" : "flex flex-col justify-between",
         gradient === "none" && "bg-surface",
         className,
       )}
@@ -90,25 +114,21 @@ export function AuthPanel({
       style={background ? { background, ...style } : style}
       {...rest}
     >
-      <div className="flex flex-col gap-8">
-        {brand}
-        {(title != null || description != null) && (
-          <div className="flex flex-col gap-3">
-            {title != null && (
-              <Heading level={titleLevel} size="3xl" weight="bold" balance className="leading-tight">
-                {title}
-              </Heading>
-            )}
-            {description != null && (
-              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">{description}</p>
-            )}
-          </div>
-        )}
-        {children}
-      </div>
+      {center ? (
+        <>
+          {/* 显式指定行号：brand 缺席时中部不能滑到第一行去 */}
+          {brand != null && <div className="row-start-1 self-start">{brand}</div>}
+          <div className="row-start-2 flex flex-col gap-8">{content}</div>
+        </>
+      ) : (
+        <div className="flex flex-col gap-8">
+          {brand}
+          {content}
+        </div>
+      )}
 
       {(highlights?.length || footer != null) && (
-        <div className="flex flex-col gap-6">
+        <div className={cn("flex flex-col gap-6", center && "row-start-3 self-end")}>
           {highlights?.length ? (
             <ul className="flex flex-col gap-3">
               {highlights.map((item, i) => (

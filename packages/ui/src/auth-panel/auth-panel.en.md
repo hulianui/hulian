@@ -41,6 +41,7 @@ import { AuthPanel } from "@hulianui/ui"
 | footer | `ReactNode` | - | Footer content such as copyright, registration details, or secondary links. |
 | color | `string` | `"primary"` | Brand color. Accepts a semantic tone, arbitrary CSS color, or variable through `resolveTone`, like [Brand](../brand/brand.md) `.color`, [Dot](../dot/dot.md) `.color`, and `ChartSeries.color`. |
 | gradient | `"radial" \| "linear" \| "mesh" \| "none"` | `"radial"` | Background recipe described below. |
+| contentAlign | `"start" \| "center"` | `"start"` | Vertical placement of the middle content (title, description, children). `start` keeps it right below the brand slot; `center` centers it relative to the whole panel so it lines up with a `place-items-center` form on the other side. In both modes the brand stays at the top and highlights / footer stay at the bottom. |
 | className | `string` | - | Class name for the root element. |
 
 ### Background recipes
@@ -91,6 +92,7 @@ import { AuthPanel } from "@hulianui/ui"
 - `gradient="none"` is for layering your own pattern, not for making the panel transparent. It retains `bg-surface` so the panel remains visually distinct from the form area.
 - Pass `surface={false}` to the adjacent [LoginForm](../login-form/login-form.md). The promotional panel already carries the visual weight, and another card surface creates a card-within-a-card layout.
 - A consumer `style` can still replace the background as an escape hatch, but that bypasses the component system. Consider whether a reusable `gradient` recipe should be added instead.
+- **When the headline does not line up with the vertically centered form on the other side** (tall viewport: headline pinned to the top, form in the middle, a large gap between them), use `contentAlign="center"`. Do not stretch the internal layout with selectors such as `[&>div:first-child]:flex-1`. The internal DOM is not a contract and changes to it will break that workaround.
 
 ## Related
 [LoginForm](../login-form/login-form.md) · [Brand](../brand/brand.md) · [Field](../field/field.md) · [SocialButton](../social-button/social-button.md) · [ClickCaptcha](../click-captcha/click-captcha.md) · [DotPattern](../dot-pattern/dot-pattern.md)
