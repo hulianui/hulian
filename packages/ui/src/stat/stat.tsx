@@ -35,7 +35,12 @@ function StatImpl({ label, value, delta, deltaLabel, hint, icon, chart, classNam
       )}
       {...props}
     >
-      <div className="flex items-center justify-between gap-2">
+      {/*
+        min-h-8：标题行无论有没有 icon 都占 32px（icon 底座正是 size-8）。否则同一排 KPI 卡
+        一半传 icon 一半不传时，数值行起点差 12px、卡片高矮不齐（#339）——「要么全有 icon
+        要么全没有」这条约束该由组件保证，而不是靠消费方记住。
+      */}
+      <div className="flex min-h-8 items-center justify-between gap-2">
         <span className="text-sm font-medium text-muted-foreground">{label}</span>
         {icon ? (
           // 中性图标底座：给角标一个立足点，避免它像一枚浮在留白里的孤零零线条。

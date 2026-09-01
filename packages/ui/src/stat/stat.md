@@ -61,6 +61,7 @@ import { Stat } from "@hulianui/ui"
 - 卡片自带 `shadow-sm` + `border-hairline`（亮色无描边只有投影、暗色有 1px 描边），是库内「有阴影的容器」统一档位。要回到无阴影的纯平面，用 `className="shadow-none border-border"` 覆盖。
 - `value` 字号是 30px 且 `truncate`。**比早期版本大一档**，窄卡（< 200px）里长数值更容易被截断——给卡片留够宽度，或把长数值改走 `Statistic` 的紧凑排版。
 - 卡片**不带 hover 抬升**，因为 Stat 本身不可点。把它包成链接/按钮时，hover 反馈请加在外层包裹元素上。
+- 标题行固定 32px 高（`icon` 底座的尺寸），**有没有 `icon` 都一样**——同一排 KPI 卡可以放心混用「有 icon」与「无 icon（右上角留给叠放的 Sparkline）」，数值行起点与卡片高度不会因此错开。
 
 ## 相关
 [Statistic](../statistic/statistic.md) · [Chart](../chart/chart.md) · [Meter](../meter/meter.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)

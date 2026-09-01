@@ -68,4 +68,15 @@ describe("Stat", () => {
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("hint"));
     warn.mockRestore();
   });
+  // #339：0.58.0 给 icon 加了 size-8 底座，标题行有无 icon 高度差 12px，同一排混用时数值错位。
+  it("标题行有无 icon 都预留 32px（min-h-8），混用时数值行对齐", () => {
+    const header = (ui: React.ReactElement) =>
+      render(ui).container.firstElementChild!.firstElementChild as HTMLElement;
+    const withIcon = header(<Stat label="a" value="1" icon={<span>i</span>} />);
+    const without = header(<Stat label="b" value="2" />);
+    expect(withIcon.className).toContain("min-h-8");
+    expect(without.className).toContain("min-h-8");
+    expect(withIcon.querySelector(".size-8")).toBeTruthy();
+    expect(without.querySelector(".size-8")).toBeNull();
+  });
 });

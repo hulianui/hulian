@@ -63,6 +63,7 @@ import { Stat } from "@hulianui/ui"
 - The card ships with `shadow-sm` + `border-hairline` (no visible outline in light, a 1px outline in dark) — the library's shared tier for elevated containers. To go back to a flat surface, override with `className="shadow-none border-border"`.
 - `value` renders at 30px and is truncated. That is **one step larger than earlier versions**, so long values are clipped sooner in narrow cards (< 200px). Give the card enough width, or move long values to `Statistic`'s tighter layout.
 - The card has **no hover elevation**, because a Stat is not clickable on its own. When wrapping it in a link or button, put the hover feedback on that wrapper.
+- The header row is always 32px tall (the size of the `icon` base), **with or without `icon`**. A row of KPI cards can freely mix cards with an icon and cards without one (for example when the top-right corner is reserved for an overlaid Sparkline); the value baseline and card height stay aligned.
 
 ## Related
 [Statistic](../statistic/statistic.md) · [Chart](../chart/chart.md) · [Meter](../meter/meter.md) · [Timeline](../timeline/timeline.md) · [NumberTicker](../number-ticker/number-ticker.md) · [WorldMap](../world-map/world-map.md)
