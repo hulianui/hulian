@@ -8515,19 +8515,15 @@
     "数学": "Mathematics",
     "教材小节": "Textbook section",
     "七上 · 一元二次方程": "Grade 7 · Quadratic equations",
-    "已知 $x^{2}-5x+6=0$，则 $x$ 的值为（ ）": "Given $x^{2}-5x+6=0$, the value of $x$ is ( )",
-    "$2$ 或 $3$": "$2$ or $3$",
-    "$-2$ 或 $-3$": "$-2$ or $-3$",
-    "$1$ 或 $6$": "$1$ or $6$",
-    "无解": "No solution",
-    "因式分解得 $(x-2)(x-3)=0$。": "Factoring gives $(x-2)(x-3)=0$.",
     "将 $\\frac{3}{8}$ 化成小数为____，化成百分数为____。": "Write $\\frac{3}{8}$ as a decimal: ____, and as a percentage: ____.",
     "计算：$\\frac{1}{2}+\\frac{1}{3}$": "Evaluate $\\frac{1}{2}+\\frac{1}{3}$",
     "通分": "Common denominator",
     "相等": "Equal",
     "互补": "Supplementary",
     "读取失败": "Read failed",
-    "如图，$\\triangle ABC$ 中 $AB=AC$，则 $\\angle B$ 与 $\\angle C$ 的关系是（ ）": "As shown, in $\\triangle ABC$ with $AB=AC$, the relation between $\\angle B$ and $\\angle C$ is ( )"
+    "如图，$\\triangle ABC$ 中 $AB=AC$，则 $\\angle B$ 与 $\\angle C$ 的关系是（ ）": "As shown, in $\\triangle ABC$ with $AB=AC$, the relation between $\\angle B$ and $\\angle C$ is ( )",
+    "已知 $\\triangle ABC$ 中 $\\angle C=90^{\\circ}$，$\\sin A=\\frac{3}{5}$，则 $\\cos A$ 的值为（ ）": "In $\\triangle ABC$, $\\angle C=90^{\\circ}$ and $\\sin A=\\frac{3}{5}$. The value of $\\cos A$ is ( )",
+    "由 $\\cos A=\\sqrt{1-\\sin^{2}A}$ 得 $\\cos A=\\frac{4}{5}$。": "From $\\cos A=\\sqrt{1-\\sin^{2}A}$ we get $\\cos A=\\frac{4}{5}$."
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

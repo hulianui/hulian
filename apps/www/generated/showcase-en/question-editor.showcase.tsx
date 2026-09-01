@@ -9,15 +9,15 @@ import { QuestionEditor } from "../../../../packages/ui/src/question-editor/ques
 import type { QuestionEditorProps } from "../../../../packages/ui/src/question-editor/question-editor.types";
 const SINGLE: Question = {
     ...emptyQuestion("single"),
-    stem: "Given $x^{2}-5x+6=0$, the value of $x$ is ( )",
+    stem: "In $\\triangle ABC$, $\\angle C=90^{\\circ}$ and $\\sin A=\\frac{3}{5}$. The value of $\\cos A$ is ( )",
     options: [
-        { key: "A", text: "$2$ or $3$" },
-        { key: "B", text: "$-2$ or $-3$" },
-        { key: "C", text: "$1$ or $6$" },
-        { key: "D", text: "No solution" },
+        { key: "A", text: "$\\frac{4}{5}$" },
+        { key: "B", text: "$\\frac{3}{4}$" },
+        { key: "C", text: "$\\frac{4}{3}$" },
+        { key: "D", text: "$\\frac{5}{4}$" },
     ],
     answer: "A",
-    analysis: "Factoring gives $(x-2)(x-3)=0$.",
+    analysis: "From $\\cos A=\\sqrt{1-\\sin^{2}A}$ we get $\\cos A=\\frac{4}{5}$.",
 };
 const BLANK: Question = {
     ...emptyQuestion("blank"),

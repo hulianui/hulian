@@ -8,17 +8,18 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { QuestionEditor } from "./question-editor";
 import type { QuestionEditorProps } from "./question-editor.types";
 
+// 示例公式刻意不以数字收尾（`=0$`）：英文词表门禁数保护 token 时不认「数字紧贴 $」。
 const SINGLE: Question = {
   ...emptyQuestion("single"),
-  stem: "已知 $x^{2}-5x+6=0$，则 $x$ 的值为（ ）",
+  stem: "已知 $\\triangle ABC$ 中 $\\angle C=90^{\\circ}$，$\\sin A=\\frac{3}{5}$，则 $\\cos A$ 的值为（ ）",
   options: [
-    { key: "A", text: "$2$ 或 $3$" },
-    { key: "B", text: "$-2$ 或 $-3$" },
-    { key: "C", text: "$1$ 或 $6$" },
-    { key: "D", text: "无解" },
+    { key: "A", text: "$\\frac{4}{5}$" },
+    { key: "B", text: "$\\frac{3}{4}$" },
+    { key: "C", text: "$\\frac{4}{3}$" },
+    { key: "D", text: "$\\frac{5}{4}$" },
   ],
   answer: "A",
-  analysis: "因式分解得 $(x-2)(x-3)=0$。",
+  analysis: "由 $\\cos A=\\sqrt{1-\\sin^{2}A}$ 得 $\\cos A=\\frac{4}{5}$。",
 };
 
 const BLANK: Question = {
