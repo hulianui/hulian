@@ -1,5 +1,23 @@
 # @hulianui/ui
 
+## 0.60.0
+
+### Minor Changes
+
+- 5873b64: `AuthPanel` gains `contentAlign?: "start" | "center"` (#338).
+
+  The panel used to pin its top block to the top and its bottom block to the bottom. The form on the other half of a split auth page is vertically centered (`place-items-center` in the docs example), so on a taller viewport the headline sat at y≈128 while the form started around y≈284, with a large gap between them. Consumers could only stretch the internal layout with `[&>div:first-child]:flex-1`, which guesses at the DOM and is not a contract. With `contentAlign="center"` the panel becomes a three-row grid `1fr auto 1fr`: the brand still sits at the top, highlights / footer still sit at the bottom, and the middle content (title / description / children) is centered relative to the whole panel. The two outer rows share the remaining space equally, so a brand slot and a footer of different heights do not push the middle off center (a `flex-1 + justify-center` layout would). The default is `start`, so existing pages render the same DOM as before.
+
+### Patch Changes
+
+- 034331f: The `Stat` header row is now a fixed 32px tall with or without `icon` (#339).
+
+  Since 0.58.0 the corner icon sits on a `size-8` base, so cards with an icon had a 32px header row while cards without one had 20px. In a row of KPI cards where some pass an icon and some do not (typically the ones reserving the top-right corner for an overlaid Sparkline), the value baseline shifted by 12px and card heights diverged. The header row now has `min-h-8`; the "all cards with icons or none" constraint is enforced by the component instead of being something consumers must remember.
+
+- 4e8dccb: The `Upload` drop zone now rests on a faint primary-tinted dashed border and background, darkens on hover, and is heaviest while dragging over: three distinct steps.
+
+  Previously the resting state was a `border-border` dashed line on `bg-surface`. The drop zone usually sits on a same-colored card, so its only boundary was a 1px gray dashed line at roughly 1.1:1 contrast on white; consumers reported the edge as barely visible, and hover only swapped the background, making it nearly indistinguishable from rest. The resting state is now one step away from the card, hover differs from rest, and the drag-over `bg-primary/10` is one step heavier than before.
+
 ## 0.59.0
 
 ### Minor Changes

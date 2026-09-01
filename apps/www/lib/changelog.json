@@ -1,6 +1,31 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.60.0",
+    "date": "2026-09-01",
+    "entries": [
+      {
+        "sha": "5873b64",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`AuthPanel` 新增 `contentAlign?: \"start\" | \"center\"`（#338）。\n\n面板原本是上块贴顶、下块贴底：分屏认证页右半边的表单按示例是 `place-items-center` 垂直居中，高一点的视口里左侧标语在 y≈128、表单从 y≈284 起，中间隔着一大段空白。消费方只能用 `[&>div:first-child]:flex-1` 猜内部 DOM 去撑，那不是契约。`contentAlign=\"center\"` 时面板改为三行 grid `1fr auto 1fr`：brand 仍贴顶、highlights / footer 仍贴底，中部（title / description / children）相对**整块面板**居中——上下两行等分剩余空间，品牌位与底部区高矮不同也不会把中部推偏（`flex-1 + justify-center` 会）。默认 `start`，现有页面 DOM 不变。"
+      },
+      {
+        "sha": "034331f",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Stat` 标题行固定 32px 高，有无 `icon` 都一样（#339）。\n\n0.58.0 给角标图标加了 `size-8` 的底座之后，有 icon 的卡标题行 32px、没 icon 的只有 20px。同一排 KPI 卡只要一半传 icon、一半不传（常见于「右上角留给叠放的 Sparkline」的那两张），数值行起点就差 12px、卡片高矮不齐。现在标题行 `min-h-8`，「要么全有 icon 要么全没有」这条约束由组件保证，消费方不必记。"
+      },
+      {
+        "sha": "4e8dccb",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Upload` 落区静止态改为主色淡边 + 淡底，悬停加深、拖入最重，三档递进。\n\n此前静止态是 `border-border` 虚线 + `bg-surface`：落区多半压在同色卡面上，全部边界只剩 1px 灰虚线，白底上对比度约 1.1:1，消费方实机反馈「边缘很模糊」，且悬停只换背景、与静止几乎无差。现在静止就与卡面差一档，悬停必须与静止不同，拖入态 `bg-primary/10` 也比原来重一档。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.59.0",
     "date": "2026-09-01",
     "entries": [

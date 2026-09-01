@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.59.0",
+  "version": "0.60.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -6312,6 +6312,19 @@
           "valueType": "string",
           "default": "\"radial\"",
           "description": "背景配方，见下"
+        },
+        {
+          "name": "contentAlign",
+          "required": false,
+          "kind": "enum",
+          "type": "\"start\" | \"center\"",
+          "values": [
+            "start",
+            "center"
+          ],
+          "valueType": "string",
+          "default": "\"start\"",
+          "description": "中部内容（title / description / children）的垂直位置：`start` 紧跟品牌位贴顶；`center` 相对整块面板居中，与右侧 `place-items-center` 的表单齐平。两档下 brand 都贴顶、highlights / footer 都贴底"
         },
         {
           "name": "className",
