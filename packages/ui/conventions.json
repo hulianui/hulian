@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|math-textarea|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question|question-card|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|score-scale|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|treemap|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|math-textarea|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question|question-card|question-editor|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|score-scale|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|treemap|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -7431,6 +7431,62 @@
       "source": "packages/ui/src/question-card/question-card.md"
     },
     {
+      "id": "component/question-editor/pitfall/1",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**`value` 必须是规范形**。`answer: \"A,C\"`、`options: [\"A. 甲\"]`、`answer: \"true\"` 这些历史变体先过 `fromWire`；直接喂进来会显示成「没选答案」，而且 `validateQuestion` 会报 `answer_out_of_range`。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/2",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**填空题的 `answer` 出口要压平**。编辑器内部单空也是 `[\"90\"]`；消费方后端若单空只收字符串，提交前 `toWireAnswer(question)`。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/3",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**切题型会清空选项与答案**（有内容时先确认）。这是刻意的：保留旧形状会造出「判断题带选项」这类后端 422 的值。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/4",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**题图在题干里，不在别的字段**。输入框看不到 `![](key)`，但 `value.stem` 里有；图挂在别处的话组卷预览、学生端、导出一张也拿不到。`resolveFigure` 不给时预览把图摘掉、缩略图只剩 key。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/5",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**上传只在给了 `onUploadFigure` 时出现**。文件类型 / 大小限制由消费方在回调里拦，拦住就 `throw new Error(\"单张不超过 5MB\")`，错误信息原样显示在缩略图条上。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/6",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**校验默认只显示改过的字段**。想在提交时全部飘红请置 `showAllIssues`，别在外面再画一遍错误。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/7",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**没有提交按钮**。提交、私有字段必填（如学科）、`estimatedMinutes` 的上限，都是页面的事。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/8",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**JSX 属性字符串不处理 `\\\\`**：初值里含反斜杠的公式写成 `stem: \"$\\\\frac{1}{2}$\"`（TS 字符串），不要写在 JSX 属性里。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
       "id": "component/queue-lane/pitfall/1",
       "scope": "queue-lane",
       "title": "QueueLane",
@@ -10962,8 +11018,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 396,
-    "componentAdvisories": 1527,
-    "totalAdvisories": 1537
+    "componentDocs": 397,
+    "componentAdvisories": 1535,
+    "totalAdvisories": 1545
   }
 }

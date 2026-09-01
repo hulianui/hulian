@@ -923,6 +923,12 @@ export const scenarioLoaders = {
   "question-card": async () =>
     (await import("@hulianui/ui-internal/question-card/question-card.showcase"))
       .questionCardShowcase,
+  "question-editor": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/question-editor/question-editor.showcase"
+      )
+    ).questionEditorShowcase,
   "queue-lane": async () =>
     (await import("@hulianui/ui-internal/queue-lane/queue-lane.showcase"))
       .queueLaneShowcase,
@@ -4291,6 +4297,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/question-card/index.ts",
+  },
+  "question-editor": {
+    id: "question-editor",
+    scenarioId: "question-editor/basic",
+    component: "QuestionEditor",
+    entry: "@hulianui/ui/question-editor",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/question-editor/index.ts",
   },
   "queue-lane": {
     id: "queue-lane",

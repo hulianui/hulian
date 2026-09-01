@@ -268,6 +268,7 @@ export * from "./pull-to-refresh.showcase";
 export * from "./pulsating-button.showcase";
 export * from "./qrcode.showcase";
 export * from "./question-card.showcase";
+export * from "./question-editor.showcase";
 export * from "./queue-lane.showcase";
 export * from "./radar.showcase";
 export * from "./radio.showcase";

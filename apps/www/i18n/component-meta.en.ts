@@ -200,6 +200,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "LaTeX input with formula templates, live KaTeX preview, syntax checks with line and column, and an injectable visual editor tab.",
     keywords: ["math", "latex", "formula", "textarea", "forms", "katex"],
   },
+  "question-editor": {
+    shortName: "QuestionEditor",
+    description:
+      "Structured editor for one math question: seven types, figures, options, blanks, rubric, and a live QuestionCard preview.",
+    keywords: ["question", "editor", "math", "latex", "forms", "quiz"],
+  },
   math: {
     shortName: "Formula",
     description:

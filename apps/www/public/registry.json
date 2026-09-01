@@ -1488,7 +1488,8 @@
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/math-textarea.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
-        "https://hulianui.haloritual.com/zh/r/question-card.json"
+        "https://hulianui.haloritual.com/zh/r/question-card.json",
+        "https://hulianui.haloritual.com/zh/r/question-editor.json"
       ],
       "meta": {
         "import": "import { Formula, formulaToPlain, splitBareMath, hasBareMath, splitMathSegments, mathToPlain, QuestionCard } from \"@hulianui/ui\"",
@@ -5185,6 +5186,117 @@
           "path": "components/hulianui/pulsating-button/pulsating-button.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/pulsating-button/pulsating-button.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "question-editor",
+      "type": "registry:ui",
+      "title": "QuestionEditor",
+      "description": "出题编辑器 · 一道数学题的结构化编辑：七型切换（有内容先确认）、题干 + 题图、选项增删上下移（答案跟着走）、判断 / 填空（空数随题干、等价写法、一键对齐）/ 主观题（参考答案 + 分步给分）、解析、难度 / 分值…",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
+        "https://hulianui.haloritual.com/zh/r/alert.json",
+        "https://hulianui.haloritual.com/zh/r/alert-dialog.json",
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/checkbox.json",
+        "https://hulianui.haloritual.com/zh/r/checkbox-group.json",
+        "https://hulianui.haloritual.com/zh/r/chip.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/field.json",
+        "https://hulianui.haloritual.com/zh/r/image.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/math.json",
+        "https://hulianui.haloritual.com/zh/r/math-textarea.json",
+        "https://hulianui.haloritual.com/zh/r/number-field.json",
+        "https://hulianui.haloritual.com/zh/r/question.json",
+        "https://hulianui.haloritual.com/zh/r/question-card.json",
+        "https://hulianui.haloritual.com/zh/r/rating.json",
+        "https://hulianui.haloritual.com/zh/r/segmented.json",
+        "https://hulianui.haloritual.com/zh/r/switch.json",
+        "https://hulianui.haloritual.com/zh/r/text.json"
+      ],
+      "meta": {
+        "import": "import { QuestionEditor, questionFormulaIssues, shapeIsDirty, switchType, optionCaption, stemBody, joinStemFigures, QUESTION_EDITOR_LOCALE_ZH, QUESTION_EDITOR_LOCALE_EN } from \"@hulianui/ui\"",
+        "exports": [
+          "QuestionEditor",
+          "questionFormulaIssues",
+          "shapeIsDirty",
+          "switchType",
+          "optionCaption",
+          "stemBody",
+          "joinStemFigures",
+          "QUESTION_EDITOR_LOCALE_ZH",
+          "QUESTION_EDITOR_LOCALE_EN"
+        ],
+        "types": [
+          "QuestionEditorProps",
+          "EditorField",
+          "QuestionFormulaIssue",
+          "FormulaField",
+          "QuestionEditorLocale",
+          "SubjectiveType"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-editor/question-editor.md",
+        "docLocal": "packages/ui/src/question-editor/question-editor.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/question-editor/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/index.ts"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor-blanks.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor-blanks.tsx"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor-figures.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor-figures.tsx"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor-options.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor-options.tsx"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor-subjective.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor-subjective.tsx"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor.locale.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor.locale.ts"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor.state.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor.state.ts"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor.tsx"
+        },
+        {
+          "path": "components/hulianui/question-editor/question-editor.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/question-editor/question-editor.types.ts"
         }
       ]
     },
@@ -21280,6 +21392,7 @@
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/math-textarea.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
+        "https://hulianui.haloritual.com/zh/r/question-editor.json",
         "https://hulianui.haloritual.com/zh/r/social-button.json"
       ],
       "meta": {

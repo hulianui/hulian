@@ -1249,6 +1249,15 @@
     "PASSPHRASE_WORDLIST": "password-generator",
     "ProForm": "pro-form",
     "PulsatingButton": "pulsating-button",
+    "QuestionEditor": "question-editor",
+    "questionFormulaIssues": "question-editor",
+    "shapeIsDirty": "question-editor",
+    "switchType": "question-editor",
+    "optionCaption": "question-editor",
+    "stemBody": "question-editor",
+    "joinStemFigures": "question-editor",
+    "QUESTION_EDITOR_LOCALE_ZH": "question-editor",
+    "QUESTION_EDITOR_LOCALE_EN": "question-editor",
     "RadioGroup": "radio",
     "Radio": "radio",
     "RainbowButton": "rainbow-button",
@@ -11912,6 +11921,190 @@
           "name": "render",
           "type": "ReactElement",
           "description": "渲染为自定义元素（如 `<a>`/Next `<Link>`），样式与脉冲光环合并进该元素；文案仍取 children"
+        }
+      ]
+    },
+    {
+      "slug": "question-editor",
+      "name": "QuestionEditor",
+      "category": "forms",
+      "group": "advanced",
+      "status": "enriched",
+      "import": "import { QuestionEditor, questionFormulaIssues, shapeIsDirty, switchType, optionCaption, stemBody, joinStemFigures, QUESTION_EDITOR_LOCALE_ZH, QUESTION_EDITOR_LOCALE_EN } from \"@hulianui/ui\"",
+      "exports": [
+        "QuestionEditor",
+        "questionFormulaIssues",
+        "shapeIsDirty",
+        "switchType",
+        "optionCaption",
+        "stemBody",
+        "joinStemFigures",
+        "QUESTION_EDITOR_LOCALE_ZH",
+        "QUESTION_EDITOR_LOCALE_EN"
+      ],
+      "types": [
+        "QuestionEditorProps",
+        "EditorField",
+        "QuestionFormulaIssue",
+        "FormulaField",
+        "QuestionEditorLocale",
+        "SubjectiveType"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/question-editor/question-editor.md",
+      "props": [
+        {
+          "name": "value",
+          "required": false,
+          "kind": "other",
+          "type": "Question",
+          "default": null,
+          "description": "受控值：规范形（`@hulianui/ui/math` 的 `Question`）。填空题内部**永远是数组**（单空也是一项数组），出口用 `toWireAnswer` 压平"
+        },
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "function",
+          "type": "(next: Question) => void",
+          "default": null,
+          "description": "每次编辑回传整份规范形"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "只读"
+        },
+        {
+          "name": "resolveFigure",
+          "required": false,
+          "kind": "function",
+          "type": "(key: string) => string",
+          "default": null,
+          "description": "题干里 `![](key)` → 可显示 URL。缩略图条与预览都靠它；题干有图而没给时缩略图只显示 key 并有开发期告警"
+        },
+        {
+          "name": "onUploadFigure",
+          "required": false,
+          "kind": "function",
+          "type": "(file: File) => Promise<string>",
+          "default": null,
+          "description": "上传一张题图，返回 storage key。**给了才出「插入图片」**；成功后以 `![](key)` 写回题干末尾，失败在缩略图条上显示原因"
+        },
+        {
+          "name": "extra",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "消费方私有字段，渲染在题型之后、题干之前"
+        },
+        {
+          "name": "issues",
+          "required": false,
+          "kind": "array",
+          "type": "{ label, tone? }[]",
+          "default": null,
+          "description": "复核条：顶部列出，每条一个「已处理」"
+        },
+        {
+          "name": "onResolveIssue",
+          "required": false,
+          "kind": "function",
+          "type": "(label: string) => void",
+          "default": null,
+          "description": "点「已处理」回调；不给则不渲染按钮"
+        },
+        {
+          "name": "defaultScoreByType",
+          "required": false,
+          "kind": "other",
+          "type": "Partial<Record<QuestionType, number>>",
+          "resolvedType": "Partial<Record<\"single\" | \"multiple\" | \"judge\" | \"blank\" | \"short_answer\" | \"calculation\" | \"essay\", number>>",
+          "default": null,
+          "description": "覆盖按题型的默认分。切题型时 `score` 仍等于旧题型默认分才自动换"
+        },
+        {
+          "name": "templates",
+          "required": false,
+          "kind": "array",
+          "type": "readonly FormulaTemplateGroup[]",
+          "default": null,
+          "description": "透传给每个 MathTextarea"
+        },
+        {
+          "name": "visualEditor",
+          "required": false,
+          "kind": "other",
+          "type": "ComponentType<MathFieldLikeProps>",
+          "default": null,
+          "description": "透传给每个 MathTextarea（MathField 满足此契约）"
+        },
+        {
+          "name": "macros",
+          "required": false,
+          "kind": "other",
+          "type": "Record<string, string>",
+          "default": null,
+          "description": "透传给每个 MathTextarea 与预览的 KaTeX 宏表"
+        },
+        {
+          "name": "preview",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "右侧（窄屏在下方）QuestionCard 实时预览，带答案与解析"
+        },
+        {
+          "name": "showAllIssues",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "把 `validateQuestion` 的全部问题立刻挂到字段上。默认只显示**改过的**字段；页面在用户点提交后置 true"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "透传到根节点（两栏 grid）"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "required": false,
+          "kind": "other",
+          "type": "(next: Question)",
+          "default": null,
+          "description": "任一字段变化。切题型时 `options` 与 `answer` 同时重置，`score` 按默认分表换算"
+        },
+        {
+          "name": "onUploadFigure",
+          "required": false,
+          "kind": "other",
+          "type": "(file: File)",
+          "default": null,
+          "description": "用户选了图。返回的 key 在 resolve 之后写回**当时最新**的题干（上传期间继续敲的字不会丢）"
+        },
+        {
+          "name": "onResolveIssue",
+          "required": false,
+          "kind": "other",
+          "type": "(label: string)",
+          "default": null,
+          "description": "复核条上点「已处理」"
+        }
+      ],
+      "slots": [
+        {
+          "name": "extra",
+          "type": "私有字段区，题型之后、题干之前。放学科 / 教材小节 / 考点这类不属于「一道题」的字段",
+          "description": ""
         }
       ]
     },
@@ -23782,6 +23975,14 @@
           "type": "{ src, alt? }",
           "default": null,
           "description": "附图"
+        },
+        {
+          "name": "resolveFigure",
+          "required": false,
+          "kind": "function",
+          "type": "(key: string) => string",
+          "default": null,
+          "description": "题干里 `![](key)` 的解析器：给了就先切图再排公式，图按顺序渲染在正文之后；不给则题干原样交给 Formula"
         },
         {
           "name": "answer",

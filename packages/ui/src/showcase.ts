@@ -118,6 +118,7 @@ export { markdownShowcase } from "./markdown/markdown.showcase";
 export { mathShowcase } from "./math/math.showcase";
 export { questionCardShowcase } from "./question-card/question-card.showcase";
 export { mathTextareaShowcase } from "./math-textarea/math-textarea.showcase";
+export { questionEditorShowcase } from "./question-editor/question-editor.showcase";
 export { marqueeShowcase } from "./marquee/marquee.showcase";
 export { mentionsShowcase } from "./mentions/mentions.showcase";
 export { menubarShowcase } from "./menubar/menubar.showcase";
