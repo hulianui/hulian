@@ -16,7 +16,7 @@ status: enriched
 
 Question-bank entry pages and the calibration page after AI or Word import: anywhere "edit one question" happens, instead of a 1200-line form per page. It owns the question itself (the `Question` canonical shape). Subject, textbook section, knowledge points, general-scope notes, and upload endpoints are consumer-private: put them in the `extra` slot and upload through `onUploadFigure`.
 
-Display only: [QuestionCard](../question-card/question-card.en.md). Student answering: QuestionAnswer (phase 4). A single formula-capable input: [MathTextarea](../math-textarea/math-textarea.en.md) (what this component is built from).
+Display only: [QuestionCard](../question-card/question-card.en.md). Student answering: [QuestionAnswer](../question-answer/question-answer.en.md). A single formula-capable input: [MathTextarea](../math-textarea/math-textarea.en.md) (what this component is built from).
 
 ## Import
 

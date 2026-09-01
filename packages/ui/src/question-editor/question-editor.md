@@ -16,7 +16,7 @@ status: enriched
 
 题库录入页、AI / Word 拆题后的校准页，凡是「编辑一道题」的地方都用它，而不是各写一份 1200 行的表单。它只管一道题本身（`Question` 规范形）；学科、教材小节、考点、通用题授权、上传端点这些是消费方私有字段，放进 `extra` 插槽、上传走 `onUploadFigure`。
 
-只展示不编辑用 [QuestionCard](../question-card/question-card.md)；学生作答用 QuestionAnswer（阶段 4）；单个「可含公式的输入框」用 [MathTextarea](../math-textarea/math-textarea.md)（本件内部就是它）。
+只展示不编辑用 [QuestionCard](../question-card/question-card.md)；学生作答用 [QuestionAnswer](../question-answer/question-answer.md)；单个「可含公式的输入框」用 [MathTextarea](../math-textarea/math-textarea.md)（本件内部就是它）。
 
 ## 导入
 
