@@ -135,7 +135,7 @@ export const questionAnswerShowcase: ShowcaseSpec = {
             title: "Source line and header",
             description: "reason is the recommendation line above the stem; header holds the number or a timer.",
             code: `<QuestionAnswer question={question} reason="You missed this kind last time" header={<span>Question 3</span>} />`,
-            render: () => (<Demo question={SINGLE} reason="You missed this kind last time" header={<span className="text-xs text-muted">Question 3</span>}/>),
+            render: () => (<Demo question={SINGLE} reason="You missed this kind last time" header={<span className="text-xs text-muted-foreground">Question 3</span>}/>),
         },
         {
             title: "Subjective",
