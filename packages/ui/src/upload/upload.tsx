@@ -542,9 +542,14 @@ export function Upload({
               "flex flex-col items-center justify-center rounded-[var(--radius)] border border-dashed text-center outline-none transition-colors",
               DROPZONE_SIZE_CLASS[size],
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+              // 落区得自己长得像个靶子。它多半压在**同色卡面**上（bg-surface 就是卡面本色），
+              // 那时全部边界只剩 1px 虚线 border-border(gray-200)，白底上对比度约 1.1:1，
+              // 肉眼近乎不可见 —— 消费方实机反馈就是「边缘很模糊」（#gyj-workflow 压缩工具页）。
+              // 所以静止态起就带主色淡边 + 一层淡底，与卡面永远差一档；
+              // 三档递进：静止(淡) → 悬停(中) → 拖入(重)，悬停必须与静止不同，否则等于没反馈。
               dragging
-                ? "border-primary bg-primary/5"
-                : "border-border bg-surface hover:bg-surface-hover",
+                ? "border-primary bg-primary/10"
+                : "border-primary/35 bg-primary/[0.04] hover:border-primary/60 hover:bg-primary/[0.08]",
               blocked && "pointer-events-none opacity-50",
             )}
           >
