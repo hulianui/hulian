@@ -89,11 +89,16 @@ describe("ComponentDocNav", () => {
     vi.stubEnv("DOCS_LOCALE", "en");
     try {
       const { ComponentDocNav: EnglishComponentDocNav } = await import("./component-doc-nav");
+      // 邻居按规范顺序动态取（与上面中文用例同款）：写死 slug 会让每次新增组件都翻红一次。
+      const ordered = CATEGORIES.flatMap((category) =>
+        manifest.filter((item) => item.category === category.key),
+      );
+      const buttonIndex = ordered.findIndex((item) => item.slug === "button");
       const html = renderToStaticMarkup(<EnglishComponentDocNav slug="button" />);
 
-      expect(html).toContain(`href="${EN}/components/variable-proximity"`);
+      expect(html).toContain(`href="${EN}/components/${ordered[buttonIndex - 1].slug}"`);
       expect(html).toContain(`href="${EN}/components#forms"`);
-      expect(html).toContain(`href="${EN}/components/shimmer-button"`);
+      expect(html).toContain(`href="${EN}/components/${ordered[buttonIndex + 1].slug}"`);
       // 双前缀防回归。根语言前缀是空串时 `${EN}${EN}/` 会退化成 `/`，而页面上必然有
       // 指向首页的 href="/"，直接断言就成了必然误报 —— 故仅在前缀非空时检查。
       if (EN) expect(html).not.toContain(`href="${EN}${EN}/`);
