@@ -8523,7 +8523,7 @@
     "单选题：选项是 RadioGroup，交了就地用 gradeObjective 判分显示正误与解析。": "Single choice: options are a RadioGroup; on submit the demo grades locally with gradeObjective and shows the verdict and explanation.",
     "三角函数": "Trigonometry",
     "多选题": "Multiple choice",
-    "CheckboxGroup，回传排好序的 key 数组；少选多选都判错。": "A CheckboxGroup returning a sorted array of keys; too few or too many selections are both wrong.",
+    "CheckboxGroup，回传排好序的 key 数组；少选多选都判错。": "A CheckboxGroup returning a sorted key array; too few or too many selections are both wrong.",
     "判断题": "True or false",
     "两个选项是题型自带的（题库里 options 是 null），值是 \"true\" / \"false\"。": "The two options come with the type (options is null in the bank); the value is \"true\" / \"false\".",
     "多空填空": "Multiple blanks",

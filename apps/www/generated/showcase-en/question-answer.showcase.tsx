@@ -103,7 +103,7 @@ export const questionAnswerShowcase: ShowcaseSpec = {
         },
         {
             title: "Multiple choice",
-            description: "A CheckboxGroup returning a sorted array of keys; too few or too many selections are both wrong.",
+            description: "A CheckboxGroup returning a sorted key array; too few or too many selections are both wrong.",
             code: `<QuestionAnswer question={question} value={value} onChange={setValue} onSubmit={submit} />`,
             render: () => <Demo question={MULTIPLE}/>,
         },
