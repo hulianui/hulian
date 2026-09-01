@@ -21,3 +21,6 @@ export * from "../question";
 
 // 公式输入框（阶段 2）。预览内部就是 Formula，所以同住此路径。
 export * from "../math-textarea";
+
+// 出题编辑器（阶段 3）。题干 / 选项 / 预览内部都是 Formula，所以同住此路径。
+export * from "../question-editor";
