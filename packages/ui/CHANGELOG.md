@@ -1,5 +1,28 @@
 # @hulianui/ui
 
+## 0.63.1
+
+### Patch Changes
+
+- aaaa9c4: `DialogContent` 的 `draggable`：把对话框挪开之后，遮罩跟着让开（#346）。
+
+  `draggable`（0.61.0）此前只做完了一半 —— 对话框挪得动，但底下依然什么也看不清：遮罩还是默认的 `bg-black/40 backdrop-blur-sm`，40% 黑加 4px 模糊把整页糊成一片，拖动只是把一块看不清的东西换个地方放。库自己 showcase 里那句「对话框挪开后，底下的页面内容依然可见」在真实页面上并不成立。
+
+  根子不在浓度调没调对，而在两件事互相抵消：默认遮罩表达的语义是「别看后面」，而 `draggable` 存在的唯一理由就是「挪开看后面」。所以让开这件事由组件负责，不再要求每个消费方各自去 `backdropClassName` 里配一遍。
+
+  触发时机是**真的产生了位移**的那一刻 —— 不是按下，也不是开着就变：遮罩被标上 `data-dragged`，浓度降到 10%、模糊撤掉，松手后不撤回，关掉再打开恢复原样（和位置一样不跨开关保留）。没被拖过的可拖对话框层次感一点不变。
+
+  浓度落在 10% 而不是全透明：遮罩仍然吃掉整屏点击（模态就是这个语义），全透会让「看得见却点不到」变成没有任何提示的怪事。要保持原样就用 `backdropClassName` 覆盖同名变体：
+
+  ```tsx
+  <DialogContent
+    draggable
+    backdropClassName="data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm"
+  />
+  ```
+
+  浮层共用的遮罩过渡（`overlayTransitions.backdrop`）随之多列一项 `background-color`，让浓度变化有 200ms 缓动而不是硬跳；刻意**不含** `backdrop-filter` —— 模糊半径是整屏逐帧重算，而它唯一会变的时刻恰好是拖拽刚开始那一帧，会跟拖动本身抢同一批帧。另外四个用这套过渡的浮层从不在开着的时候改底色，多列一项对它们零影响。
+
 ## 0.63.0
 
 ### Minor Changes

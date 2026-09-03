@@ -1,5 +1,28 @@
 # @hulianui/ui
 
+## 0.63.1
+
+### Patch Changes
+
+- aaaa9c4: `DialogContent`'s `draggable`: the backdrop steps aside once the dialog has been moved (#346).
+
+  `draggable` (0.61.0) was only half finished. The dialog moved, but nothing underneath became readable: the backdrop was still the default `bg-black/40 backdrop-blur-sm`, 40% black plus a 4px blur smearing the whole page, so dragging only parked an unreadable page somewhere else. The library's own showcase line, "the page underneath stays visible once the dialog is moved aside", was not true on a real page.
+
+  The root cause is not a dimming value that needed tuning; it is two things cancelling each other out. The default backdrop says "do not look behind me", and the only reason `draggable` exists is to look behind it. So stepping aside is now the component's job, instead of asking every consumer to configure it through `backdropClassName` — which would also mean dimming from the moment it opens, taking the layering away from dialogs nobody ever drags.
+
+  The trigger is the moment a drag **actually displaces** the popup: not on press (clicking the title should change nothing) and not merely because the option is on. The backdrop gets a `data-dragged` marker, drops to 10% dimming with the blur removed, stays that way after the pointer is released, and returns to normal on the next open. The marker is written to the DOM rather than held in React state, because Base UI unmounts the backdrop on close: the next open gets a fresh element with no marker, which keeps this in step with the existing "the position does not survive a close" rule. State would need a separate reset point, since `DialogContent` itself does not unmount with the dialog.
+
+  Dimming lands at 10% rather than fully transparent: the backdrop still swallows every click, which is what modal means, and an invisible layer would turn "visible but unclickable" into an unexplained oddity. To keep the original backdrop, override the same variants:
+
+  ```tsx
+  <DialogContent
+    draggable
+    backdropClassName="data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm"
+  />
+  ```
+
+  The shared overlay backdrop transition (`overlayTransitions.backdrop`) now also lists `background-color`, so the dimming eases over 200ms instead of snapping. It deliberately leaves out `backdrop-filter`: a blur radius is recomputed across the whole screen every frame, and the one moment it would change is the first frame of a drag, competing with the drag itself for those frames. The four other overlays using this transition never change their backdrop color while open, so the extra entry costs them nothing.
+
 ## 0.63.0
 
 ### Minor Changes
