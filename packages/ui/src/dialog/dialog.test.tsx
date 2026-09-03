@@ -323,6 +323,57 @@ describe("DialogContent draggable", () => {
     expect(popup.style.left).toBe("40px");
   });
 
+  // 遮罩让开（#346）：40% 黑 + 模糊与「挪开看后面」互相抵消，拖过之后遮罩必须变淡去模糊。
+  it("拖过之后遮罩让开：标 data-dragged，浓度降到 10% 且不再模糊", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题" draggable>
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const h2 = screen.getByText("标题");
+    const layer = document.querySelector<HTMLElement>(".fixed.inset-0")!;
+    expect(layer.className).toContain("data-[dragged]:bg-black/10");
+    expect(layer.className).toContain("data-[dragged]:backdrop-blur-none");
+    expect(layer.hasAttribute("data-dragged")).toBe(false);
+    // 只按下不算：点一下标题不该改变任何观感。
+    press(h2, 10, 10);
+    expect(layer.hasAttribute("data-dragged")).toBe(false);
+    move(h2, 50, 30);
+    expect(layer.hasAttribute("data-dragged")).toBe(true);
+    // 松手后不撤回：挪开就是为了看后面，看完之前不能把遮罩糊回去。
+    fireEvent.pointerUp(h2, { pointerId: 1 });
+    expect(layer.hasAttribute("data-dragged")).toBe(true);
+  });
+
+  it("不可拖的对话框不挂让开规则，遮罩层次感不变", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题">
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const layer = document.querySelector<HTMLElement>(".fixed.inset-0")!;
+    expect(layer.className).not.toContain("data-[dragged]");
+  });
+
+  it("backdrop={false} 时拖动照常，不去碰不存在的遮罩", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题" draggable backdrop={false}>
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const h2 = screen.getByText("标题");
+    press(h2, 10, 10);
+    move(h2, 50, 30);
+    const popup = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(popup.style.left).toBe("40px");
+  });
+
   it("正文不是把手：按住正文拖不动", () => {
     render(
       <Dialog open>

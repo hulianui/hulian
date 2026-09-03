@@ -33208,7 +33208,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊"
+          "description": "追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊。`draggable` 的「拖过就让开」也写在这里，想按住不放就覆盖同名变体（`data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm`）"
         },
         {
           "name": "scrollable",
@@ -33235,7 +33235,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "false",
-          "description": "允许按住标题行拖动对话框。把手是标题行（`title` 与 `extra` 所在那一行），行里的按钮照常点击不起拖；自画 header 时给自家元素加 `data-drag-handle`。整块不出视口，每次打开回到初始位置。见下方「可拖动」"
+          "description": "允许按住标题行拖动对话框。把手是标题行（`title` 与 `extra` 所在那一行），行里的按钮照常点击不起拖；自画 header 时给自家元素加 `data-drag-handle`。整块不出视口，每次打开回到初始位置；**挪开之后遮罩跟着让开**（浓度降到 10% 且不再模糊），否则看不见底下的内容。见下方「可拖动」"
         },
         {
           "name": "className",

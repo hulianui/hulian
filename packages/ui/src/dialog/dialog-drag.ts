@@ -8,6 +8,12 @@ import { hasInteractiveAncestorWithin } from "../lib/drag-guard";
  */
 export const DRAG_HANDLE_ATTR = "data-drag-handle";
 
+/**
+ * 「已经被挪开过」标记。DialogContent 在首次产生位移时把它写到遮罩元素上，
+ * 遮罩据此让开（见 dialog.tsx 的 `data-[dragged]:` 规则）。
+ */
+export const DRAGGED_ATTR = "data-dragged";
+
 export interface DragRect {
   left: number;
   top: number;
@@ -52,6 +58,8 @@ interface DragSession extends DragBounds {
   startY: number;
   baseLeft: number;
   baseTop: number;
+  /** 本次按住期间是否已经真的挪动过（用来只报一次「动了」，见 onFirstMove）。 */
+  moved: boolean;
 }
 
 type PopupPointerEvent = ReactPointerEvent<HTMLDivElement>;
@@ -65,6 +73,9 @@ export interface PopupDragHandlers {
 
 /**
  * 给 Base UI 的 Popup 装上「按住把手拖动」的一组指针事件。
+ *
+ * `onFirstMove` 在**真的产生了位移**的那一帧调用（每次按住至多一次），
+ * 给调用方一个「用户已经把它挪开了」的时机 —— DialogContent 拿它去让遮罩让开。
  *
  * 位移写在 popup 的内联 `left` / `top`（像素），刻意不碰 `translate` / `transform`：
  * - Popup 靠 `-translate-x-1/2 -translate-y-1/2` 居中（Tailwind v4 编成独立的 `translate` 属性），
@@ -81,7 +92,10 @@ export interface PopupDragHandlers {
  * 位移由 popup 是否还在视口内约束（见 dragBounds）。位置随 Popup 一起卸载：Base UI 关闭即卸载
  * popup，所以每次打开都回到初始位置，不需要额外重置。
  */
-export function usePopupDrag(enabled: boolean): PopupDragHandlers | undefined {
+export function usePopupDrag(
+  enabled: boolean,
+  onFirstMove?: () => void,
+): PopupDragHandlers | undefined {
   const session = useRef<DragSession | null>(null);
 
   const onPointerDown = (e: PopupPointerEvent) => {
@@ -102,6 +116,7 @@ export function usePopupDrag(enabled: boolean): PopupDragHandlers | undefined {
       startY: e.clientY,
       baseLeft: popup.offsetLeft,
       baseTop: popup.offsetTop,
+      moved: false,
       ...dragBounds(rect, { width: window.innerWidth, height: window.innerHeight }),
     };
     // 不让浏览器起文字选择，也不把焦点从正文里的输入框抢走（拖完接着打字）。
@@ -123,6 +138,12 @@ export function usePopupDrag(enabled: boolean): PopupDragHandlers | undefined {
     const popup = e.currentTarget;
     popup.style.left = `${s.baseLeft + dx}px`;
     popup.style.top = `${s.baseTop + dy}px`;
+    // 「按下」还不算动 —— 点一下标题不该改变任何观感；夹到边界后 dx/dy 恒为 0 的那几帧同理。
+    // 真的产生了位移才报，且一次按住只报一次（回调那头是 setAttribute，本身也幂等）。
+    if (!s.moved && (dx !== 0 || dy !== 0)) {
+      s.moved = true;
+      onFirstMove?.();
+    }
   };
 
   const onPointerEnd = (e: PopupPointerEvent) => {

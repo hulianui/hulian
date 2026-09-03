@@ -30,7 +30,7 @@ function reducible(duration: string): string {
 
 export interface TransitionEntry {
   /** CSS 属性名；写 `transform` 会自动展开成 TRANSFORM_TRANSITION_PROPERTIES 四项。 */
-  property: "opacity" | "transform" | "width" | "height";
+  property: "opacity" | "transform" | "width" | "height" | "background-color";
   /**
    * 时长档位；也收原始 CSS 时长，让消费点把时长做成可被 className 压制的变量
    * （Tooltip 的 `var(--hl-tooltip-duration, …)` 就靠这个把 instant 模式压到 0）。
@@ -76,8 +76,20 @@ export const overlayTransitions = {
       { property: "transform", duration: "base" },
     ),
   },
-  /** 遮罩：只淡。 */
-  backdrop: { transition: transitionCss({ property: "opacity", duration: "base" }) },
+  /**
+   * 遮罩：淡入淡出，外加底色浓度 —— DialogContent 开着的时候会自己改浓度
+   * （`draggable` 拖过之后遮罩让开，见 dialog.tsx），不给它过渡就是一下子跳到浅色。
+   * 另外四个用这套过渡的浮层从不在开着的时候改底色，多列一项对它们零影响。
+   *
+   * 刻意**不含** `backdrop-filter`：模糊半径是整屏逐帧重算，而它唯一会变的时刻恰好是
+   * 拖拽刚开始那一帧，跟拖动本身抢同一批帧。模糊直接撤掉反而是更利落的「揭开」。
+   */
+  backdrop: {
+    transition: transitionCss(
+      { property: "opacity", duration: "base" },
+      { property: "background-color", duration: "base" },
+    ),
+  },
   /** 大面积滑入滑出（Drawer / ActionSheet）：位移走 slow 时长 + 抽屉曲线，淡入仍是 base · out。 */
   slide: {
     transition: transitionCss(

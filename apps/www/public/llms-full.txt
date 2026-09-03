@@ -20498,10 +20498,10 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 | `DialogContent.titleClassName` | `string` | - | 追加到标题（默认 `text-lg font-semibold`），走 twMerge |
 | `DialogContent.descriptionClassName` | `string` | - | 追加到说明文案（走 twMerge）。传 `sr-only` 即「只给读屏的说明」——面包屑式标题的弹窗里可见区只留标题，读屏仍拿得到那句话 |
 | `DialogContent.backdrop` | `boolean` | `true` | 是否渲染遮罩。`false` + Root 的 `modal={false}` 才是真正的非模态（只关一边不成立：遮罩那层 `inset-0` 即使透明也吃掉整屏点击） |
-| `DialogContent.backdropClassName` | `string` | - | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
+| `DialogContent.backdropClassName` | `string` | - | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊。`draggable` 的「拖过就让开」也写在这里，想按住不放就覆盖同名变体（`data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm`） |
 | `DialogContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children（双栏各自滚动即写 `flex-1 min-h-0`，不必拍 `h-[58vh]`） |
 | `DialogContent.bodyClassName` | `string` | - | 追加到正文区容器 |
-| `DialogContent.draggable` | `boolean` | `false` | 允许按住标题行拖动对话框。把手是标题行（`title` 与 `extra` 所在那一行），行里的按钮照常点击不起拖；自画 header 时给自家元素加 `data-drag-handle`。整块不出视口，每次打开回到初始位置。见下方「可拖动」 |
+| `DialogContent.draggable` | `boolean` | `false` | 允许按住标题行拖动对话框。把手是标题行（`title` 与 `extra` 所在那一行），行里的按钮照常点击不起拖；自画 header 时给自家元素加 `data-drag-handle`。整块不出视口，每次打开回到初始位置；**挪开之后遮罩跟着让开**（浓度降到 10% 且不再模糊），否则看不见底下的内容。见下方「可拖动」 |
 | `DialogContent.className` | `string` | - | 内容容器类名 |
 
 ## Events
@@ -20548,6 +20548,13 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 - **位移写在 popup 的内联 `left` / `top`，不碰 `translate` / `transform`**（那两个属性在浮层的过渡列表里，拿来承载拖拽会让每一步都吃缓动）。你用 `className` 改的初始位置（`top-10 translate-y-0` 之类）照常生效，拖动只在它的结果上累加。
 - **整块不出视口**，每次打开回到初始位置（Base UI 关闭即卸载 popup，位置随之消失）。
+- **挪开之后遮罩跟着让开**：默认遮罩是 40% 黑 + 模糊，表达的正是「别看后面」，与 `draggable` 的「挪开看后面」互相抵消 —— 不让开的话拖动只是把一块看不清的东西换个地方放。所以**真的产生了位移**的那一刻（不是按下，也不是开着就变），遮罩会被标上 `data-dragged`，浓度降到 10%、模糊撤掉，并且松手后不撤回。没拖过的可拖对话框层次感一点不变。
+
+  浓度留 10% 而不是全透明是有意的：遮罩仍然吃掉整屏点击（模态就是这个语义），全透会让「看得见却点不到」变成没有任何提示的怪事。要按住原样就用 `backdropClassName` 覆盖同名变体：
+
+```tsx
+<DialogContent draggable backdropClassName="data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm" title="…">
+```
 
 ## 禁忌 / 坑
 

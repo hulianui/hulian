@@ -62,6 +62,10 @@ export interface DialogContentProps {
   /**
    * 追加到遮罩层（默认 `bg-black/40 backdrop-blur-sm`）。走 twMerge，
    * 传 `bg-black/10 backdrop-blur-none` 即可把浓度调成自家设计系统的口径。
+   *
+   * `draggable` 的「拖过就让开」也写在这一层（`data-[dragged]:` 变体）：想让遮罩
+   * 拖动前后一个样，覆盖同名变体即可 ——
+   * `backdropClassName="data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm"`。
    */
   backdropClassName?: string;
   /**
@@ -86,6 +90,12 @@ export interface DialogContentProps {
    * 初始位置（`top-10 translate-y-0` 之类）照常生效，拖动只在它的结果上累加。整块不会被拖出视口。
    * 位置不跨开关保留：每次打开都回到初始位置。这只是鼠标 / 触控的便利，没有键盘等价操作，
    * 所以别把「能挪开看底下的内容」当成功能前提 —— 需要边看边填的场景用非模态（`backdrop={false}`）。
+   *
+   * **挪开之后遮罩跟着让开**（#346）：默认遮罩 40% 黑 + 模糊说的正是「别看后面」，
+   * 与拖动的目的互相抵消。真的产生了位移那一刻（不是按下、也不是开着就变）遮罩被标上
+   * `data-dragged`，浓度降到 10% 且撤掉模糊，松手后不撤回，关掉再开恢复原样。
+   * 浓度不归零：遮罩仍然吃掉整屏点击，全透会让「看得见却点不到」失去提示。
+   * 要保持原样用 `backdropClassName` 覆盖 `data-[dragged]:` 变体。
    */
   draggable?: boolean;
   className?: string;

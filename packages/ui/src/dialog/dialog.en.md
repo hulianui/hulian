@@ -37,10 +37,10 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 | `DialogContent.titleClassName` | `string` | - | Appended to the title (defaults to `text-lg font-semibold`), merged with twMerge. |
 | `DialogContent.descriptionClassName` | `string` | - | Appended to the description (merged with twMerge). Pass `sr-only` for a screen-reader-only description, which keeps the visible header to the title alone while assistive technology still reads the sentence. |
 | `DialogContent.backdrop` | `boolean` | `true` | Whether to render the backdrop. Setting it to `false` together with `modal={false}` on the root is what makes an overlay truly non-modal; turning off only one is not enough, because the `inset-0` backdrop swallows every click even when it is transparent. |
-| `DialogContent.backdropClassName` | `string` | - | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so dimming and blur can follow your design system. |
+| `DialogContent.backdropClassName` | `string` | - | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so dimming and blur can follow your design system. The "steps aside once dragged" behavior of `draggable` also lives here, so overriding the same variants (`data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm`) keeps the backdrop as it was. |
 | `DialogContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children, so a two-pane layout only needs `flex-1 min-h-0` instead of a hand-tuned `h-[58vh]`. |
 | `DialogContent.bodyClassName` | `string` | - | Appended to the body container. |
-| `DialogContent.draggable` | `boolean` | `false` | Lets the user move the dialog by holding the title row. The handle is the title row (where `title` and `extra` live); buttons in that row still click instead of dragging. Mark your own element with `data-drag-handle` when you draw the header yourself. The popup stays inside the viewport and returns to its initial position on every open. See "Draggable" below. |
+| `DialogContent.draggable` | `boolean` | `false` | Lets the user move the dialog by holding the title row. The handle is the title row (where `title` and `extra` live); buttons in that row still click instead of dragging. Mark your own element with `data-drag-handle` when you draw the header yourself. The popup stays inside the viewport and returns to its initial position on every open, and **the backdrop steps aside once the dialog has been moved** (dimming drops to 10%, blur goes away) — otherwise nothing underneath becomes readable. See "Draggable" below. |
 | `DialogContent.className` | `string` | - | Content-container class name. |
 
 ## Events
@@ -84,6 +84,13 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 - **The offset is written to the popup's inline `left` / `top`, never to `translate` / `transform`** (those two sit in the overlay transition list, so carrying the drag on them would ease every step). An initial position you set through `className` (such as `top-10 translate-y-0`) keeps working; dragging only adds on top of its result.
 - **The popup never leaves the viewport**, and every open starts from the initial position (Base UI unmounts the popup on close, and the offset goes with it).
+- **The backdrop steps aside once the dialog has been moved.** The default backdrop is 40% black plus blur, which says "do not look behind me" and cancels out exactly what `draggable` is for; without this, dragging only parks an unreadable page somewhere else. So the moment a drag **actually displaces the popup** (not on press, and not merely because the option is on), the backdrop gets a `data-dragged` marker, drops to 10% dimming with no blur, and stays that way after the pointer is released. A draggable dialog nobody has dragged looks exactly as before.
+
+  Keeping 10% instead of going fully transparent is deliberate: the backdrop still swallows every click, which is what modal means, and a fully invisible layer would turn "visible but unclickable" into an unexplained oddity. To keep the original backdrop, override the same variants through `backdropClassName`:
+
+```tsx
+<DialogContent draggable backdropClassName="data-[dragged]:bg-black/40 data-[dragged]:backdrop-blur-sm" title="…">
+```
 
 ## Usage guidelines
 

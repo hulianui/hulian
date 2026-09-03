@@ -1,12 +1,12 @@
 "use client";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
-import type { ComponentProps } from "react";
+import { useRef, type ComponentProps } from "react";
 import { X } from "../_icons";
 import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { overlayTransitions } from "../motion";
-import { DRAG_HANDLE_ATTR, usePopupDrag } from "./dialog-drag";
+import { DRAG_HANDLE_ATTR, DRAGGED_ATTR, usePopupDrag } from "./dialog-drag";
 import type { DialogContentProps } from "./dialog.types";
 
 // overlay 自管 mount/unmount（Base UI 等过渡结束才卸载），故不接 motion 的 AnimatePresence，
@@ -40,7 +40,14 @@ export function DialogContent({
   const loc = useLocaleValue("dialog", {
     close: "关闭",
   });
-  const dragHandlers = usePopupDrag(draggable);
+  // 拖过之后让遮罩让开（#346）：标记直接写 DOM，不走 React state ——
+  // Base UI 关闭即卸载遮罩元素，下次打开拿到的是个全新元素、标记自然没了，
+  // 于是「浓度不跨开关保留」和既有的「位置不跨开关保留」自动同步。换成 state 反倒要另找复位时机：
+  // DialogContent 这个组件本身并不随对话框开关卸载（卸载的是 Portal 里的那两个元素）。
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const dragHandlers = usePopupDrag(draggable, () => {
+    backdropRef.current?.setAttribute(DRAGGED_ATTR, "");
+  });
   // 把手落在标题行上（title 单独成行时是 <h2> 本身，有 extra 时是那一行的容器）：
   // 用 data 属性而不是 ref 认把手，消费方自己画 header 时给自家元素标同一个属性就接上了。
   // touch-none：触控下按住标题拖动不能被浏览器当成滚动页面。
@@ -64,8 +71,17 @@ export function DialogContent({
           Backdrop 那层 fixed inset-0 即使透明也照样吃掉整屏点击。 */}
       {backdrop && (
         <BaseDialog.Backdrop
+          ref={backdropRef}
           className={cn(
             "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            // 挪开之后遮罩跟着让开（#346）：40% 黑 + 模糊表达的是「别看后面」，
+            // 与 draggable 的「挪开看后面」正相反 —— 不让开的话，拖动只是把一块
+            // 看不清的东西换个地方放，`draggable` 等于没做完。
+            // 触发时机是**真的产生了位移**那一刻（不是按下、也不是开着就变）：
+            // 没拖过的可拖对话框层次感一点不变，拖了才认定「用户要看后面」。
+            // 浓度留 10% 而不是全透：它仍然吃掉整屏点击（模态就是这个语义），
+            // 全透会让「点不到后面」变成没有任何提示的怪事。
+            draggable && "data-[dragged]:bg-black/10 data-[dragged]:backdrop-blur-none",
             backdropClassName,
           )}
           style={overlayTransitions.backdrop}
