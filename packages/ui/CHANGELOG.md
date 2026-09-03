@@ -1,5 +1,37 @@
 # @hulianui/ui
 
+## 0.61.0
+
+### Minor Changes
+
+- 69bbb91: `DialogContent` 新增 `draggable`：按住标题行即可把对话框挪开，看清底下被遮住的内容。`ModalForm` 同步透传。
+
+  把手是标题行（`title` 与 `extra` 所在那一行），行里的按钮照常点击、不起拖；可见 header 由消费方自己画时，给自家元素加 `data-drag-handle` 即接上。位移写在 popup 的内联 `left` / `top`，不碰 `translate` / `transform`：一来消费方用 className 改的初始位置照常生效，二来 `transform` 在 Popup 的过渡列表里，写它会让每一步位移都吃 200ms 缓动。整块不会被拖出视口；每次打开回到初始位置。
+
+- 69bbb91: `ScrollArea` 新增 `viewportClassName`：把类名落到真正滚动的那层视口上（#340）。
+
+  `className` 落在 Root 上，而裁剪发生在内层视口 - 声明 `vertical` 后视口带 `overflow-x: hidden`，于是 `w-full` 的表单控件与视口左右零余量，聚焦时 `ring-2 + ring-offset-2` 向外扩的那 4px 整条被切掉，看到的是**焦点环只剩上下两条线**。给 Root 加内边距救不了，裁的是视口。消费方此前只能给滚动内容自己加 `px-*`，每个用到的人都要重新踩一遍。
+
+  现在传 `viewportClassName="px-1.5"` 即可。不做成默认值：留白该加在滚动容器上还是各列上只有消费方知道，默认给一份会让「内容宽度 = 视口宽度」这个多数场景平白缩窄。
+
+### Patch Changes
+
+- 69bbb91: 修复浮层件的缩放与位移入场从未真正动画过（#341）：过渡列表补上 `translate` / `scale` / `rotate`。
+
+  Tailwind v4 把 `scale-95` 编成独立的 `scale` 属性、`-translate-x-full` 编成独立的 `translate` 属性，而按 CSS Transforms Level 2，`transition-property: transform` **不覆盖**这三个独立变换属性。库里 21 个浮层件手写的 `transition: opacity …, transform …` 因此有一半是空转：Dialog / Modal / AlertDialog / Popover / Select / Menu / ContextMenu / Combobox / Cascader / Tooltip / HoverCard / Popconfirm / NavigationMenu 与四个日期时间件的缩放入场、Drawer 四向滑入、ActionSheet 底部滑入、Toast 的位移，一直是瞬间跳到终态，只有 opacity 在淡。因为淡入还在，观感上只是「弹窗是浮现的、不是弹出来的」，没人报障。
+
+  同时把 22 处手写过渡串收敛成 `overlayTransitions` 四个预设（popup / backdrop / slide / fade），并加一条源码守卫测试拦住新的手写串。遮罩现在只声明它真正会变的 `opacity`，不再跟着列一串空操作。
+
+  `@hulianui/ui/select` 的体积基线从 80KB 抬到 82KB：共享模块本身 684 字节（未压缩），落到 select 的 gzip 上约 0.1KB，把它顶过了原本贴着实测值的那条线。只动这一条，其余入口的基线保持原样。
+
+  配套：变换类时长乘 `--hl-motion-transform-factor`（`@hulianui/tokens` 新增），用户偏好减弱动效时该系数为 0，位移与缩放瞬时到位，淡入淡出保留。这条开关必须由库兜住 - 过渡写在内联 `style` 上，而内联样式压不过媒体查询，消费方自己写 `prefers-reduced-motion` 覆盖不掉。
+
+- 69bbb91: 修复 `ScrollArea` 设 `max-h-*` 时静默裁掉内容而不滚动（#342）。
+
+  视口的 `height: 100%` 要有**确定**的父高度才解析得出来。父层只给 `max-h-*` 时它塌成 auto，视口随内容一路长高、不再是滚动容器，于是 Root 的 `overflow-hidden`（本是给自定义滚动条准备的）退化成纯裁剪：没有滚动条、滚轮无效、键盘也到不了被切掉的部分，而版面看着像「本该如此」，比一开始的溢出更难发现。
+
+  修法是让视口继承同一个上限（`max-h-[inherit]`），它自己就有了确定的封顶，配上内联的 `overflow: scroll` 便真的会滚；对确定高度（`h-*`）的用法是空操作。于是 `ScrollArea` 现在能表达「长则封顶滚动、短则紧凑」——对话框正文、下拉面板最常要的那种语义，此前只能退回普通 `max-h-* overflow-y-auto` 元素。新增「封顶滚动」示例并修正文档里「必须给 `h-*`」的旧说法。
+
 ## 0.60.0
 
 ### Minor Changes

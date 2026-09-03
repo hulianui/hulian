@@ -1,5 +1,15 @@
 # @hulianui/tokens
 
+## 0.13.0
+
+### Minor Changes
+
+- 69bbb91: Add `--hl-motion-transform-factor`, a duration multiplier for movement and scaling transitions: 1 normally, 0 under `prefers-reduced-motion: reduce`.
+
+  It pairs with the overlay transition fix in `@hulianui/ui` (#341). Transform durations are written as `calc(duration * var(--hl-motion-transform-factor, 1))`, so a reduced-motion preference settles movement and scaling instantly while fades continue. An opacity change that moves nothing is not what reduced motion sets out to avoid, and removing it would leave people unsure where focus went.
+
+  It is a variable rather than an `!important` rule inside a media query because overlay transitions live in inline `style` (Base UI injects a `transition` shorthand into that same style during the transition lifecycle, and a longhand there would be dropped by React as shorthand and longhand mixing), and inline styles outrank media queries. The fallback value of 1 keeps behaviour unchanged for projects that do not load this layer.
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @hulianui/tokens
 
+## 0.13.0
+
+### Minor Changes
+
+- 69bbb91: 新增 `--hl-motion-transform-factor`：位移 / 缩放类过渡的时长系数，正常 1，`prefers-reduced-motion: reduce` 下 0。
+
+  配合 `@hulianui/ui` 的浮层过渡修复（#341）使用：变换类时长写成 `calc(时长 * var(--hl-motion-transform-factor, 1))`，于是减弱动效偏好下位移与缩放瞬时到位，而淡入淡出照旧 - 不产生位移的透明度变化不在减弱动效要规避的范围内，抹掉反而让人找不到焦点去了哪里。
+
+  做成变量而不是媒体查询里的 `!important`，是因为浮层过渡写在内联 `style` 上（Base UI 在过渡生命周期会往同一个 style 注入 `transition` 简写，长写会被 React 判成 shorthand / longhand 混用并整条丢弃），而内联样式压不过媒体查询。变量带回退值 `1`，没引这层 CSS 的项目行为不变。
+
 ## 0.12.0
 
 ### Minor Changes

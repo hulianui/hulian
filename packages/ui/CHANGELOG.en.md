@@ -1,5 +1,37 @@
 # @hulianui/ui
 
+## 0.61.0
+
+### Minor Changes
+
+- 69bbb91: `DialogContent` gains `draggable`: hold the title row to move the dialog aside and see what it was covering. `ModalForm` passes it through.
+
+  The handle is the title row (where `title` and `extra` live); buttons in that row still click instead of dragging, and a consumer-drawn header hooks in by marking its own element with `data-drag-handle`. The offset is written to the popup's inline `left` / `top` rather than `translate` / `transform`: an initial position set through className keeps working, and `transform` sits in the popup's transition list, so writing it would put a 200ms easing on every step of the drag. The popup never leaves the viewport, and every open starts from the initial position.
+
+- 69bbb91: `ScrollArea` gains `viewportClassName`, which applies classes to the inner viewport that actually scrolls (#340).
+
+  `className` lands on Root while clipping happens in the viewport: declaring `vertical` gives the viewport `overflow-x: hidden`, so a `w-full` form control sits flush against it and the 4px that `ring-2 + ring-offset-2` paints outward is cut away entirely. What you see is a **focus ring reduced to its top and bottom edges**. Padding on Root cannot help, because the viewport is what clips. Until now consumers could only add `px-*` to the scrolling content itself, and every one of them had to rediscover that.
+
+  Pass `viewportClassName="px-1.5"` instead. There is deliberately no default: only the consumer knows whether the gutter belongs on the scroll container or on individual columns, and shipping one would needlessly narrow the common case where content width equals viewport width.
+
+### Patch Changes
+
+- 69bbb91: Fix overlay scale and slide entrances that never actually animated (#341): the transition list now includes `translate`, `scale` and `rotate`.
+
+  Tailwind v4 compiles `scale-95` into the standalone `scale` property and `-translate-x-full` into the standalone `translate` property, and per CSS Transforms Level 2 a `transition-property: transform` does **not** cover those three. Half of every hand-written `transition: opacity …, transform …` in the library was therefore inert: the scale entrance of Dialog, Modal, AlertDialog, Popover, Select, Menu, ContextMenu, Combobox, Cascader, Tooltip, HoverCard, Popconfirm, NavigationMenu and the four date and time components, the four-sided Drawer slide, the ActionSheet bottom slide and the Toast offset all jumped straight to their final state, with only opacity fading. The fade masked it well enough that nobody filed a report; overlays simply appeared rather than popped.
+
+  The 22 hand-written transition strings are now consolidated into four `overlayTransitions` presets (popup, backdrop, slide, fade), guarded by a source-scanning test that rejects new hand-written strings. Backdrops now declare only the `opacity` they actually change instead of trailing a no-op transform segment.
+
+  The size baseline for `@hulianui/ui/select` moves from 80KB to 82KB. The shared module is 684 bytes uncompressed, roughly 0.1KB gzipped inside select, which was enough to cross a line that sat flush against the measured value. Only that entry moved; every other baseline stays as it was.
+
+  Supporting change: transform durations are multiplied by `--hl-motion-transform-factor` (new in `@hulianui/tokens`), which drops to 0 under a reduced-motion preference so movement and scaling settle instantly while fades remain. The library has to own that switch, because the transitions live in inline `style` and inline styles outrank media queries, leaving consumers no way to override them.
+
+- 69bbb91: Fix `ScrollArea` silently clipping its content instead of scrolling when given `max-h-*` (#342).
+
+  The viewport's `height: 100%` needs a **definite** parent height to resolve against. With only `max-h-*` on the parent it collapses to auto, so the viewport grows with its content and stops being a scroll container. The Root's `overflow-hidden`, which exists to host the custom scrollbar, then degrades into a plain crop: no scrollbar, no wheel response, and no keyboard access to what was cut. The layout looks deliberate, which makes it harder to spot than the overflow it was meant to solve.
+
+  The fix is to let the viewport inherit that same cap (`max-h-[inherit]`), which gives it a definite ceiling that its inline `overflow: scroll` can act on. It is a no-op for definite heights. `ScrollArea` can now express grow-then-scroll, the semantic most dialog bodies and dropdown panels need, which previously forced a fall back to a plain `max-h-* overflow-y-auto` element. Adds a capped-scrolling example and corrects the documentation that said a definite `h-*` was required.
+
 ## 0.60.0
 
 ### Minor Changes
