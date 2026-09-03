@@ -41,9 +41,12 @@
       "motionDurationCss",
       "motionEase",
       "motionEaseCss",
+      "overlayTransitions",
       "pressable",
       "pressableClass",
-      "shimmer"
+      "shimmer",
+      "TRANSFORM_TRANSITION_PROPERTIES",
+      "transitionCss"
     ],
     "aliases": [],
     "reason": "Motion primitives and provider infrastructure have no standalone showcase"
