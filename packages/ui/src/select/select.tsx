@@ -889,7 +889,16 @@ export function SelectItem({ value, disabled, children, className }: SelectItemP
       disabled={disabled}
       className={cn(
         "relative flex cursor-default select-none items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] py-1.5 pl-2 pr-8 text-sm outline-none",
+        // 选中态（#344）：此前当前值在打开的面板里只有右侧一个 ✓，一旦键盘移动过、
+        // 或指针划过别的行，选中项就再没有任何可见标记 —— 长列表里等于让人逐行找 ✓。
+        // 色值对齐库内既有的列表选中态（Tree / Listbox / Cascader 都是 bg-primary/12 + text-primary）。
+        "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
         "data-[highlighted]:bg-surface-hover data-[highlighted]:text-foreground",
+        // 叠加态必须显式写：`[data-selected]` 与 `[data-highlighted]` 特异性相同，同时命中时
+        // 谁赢取决于 Tailwind 的生成顺序而不是这里的书写顺序。写成两个属性的链式选择器
+        // （特异性 0,3,0）才稳定压过上面两条（各 0,2,0）—— 键盘停在当前值上时，
+        // 它既要比普通 highlight 更重，又不能丢掉「这是已选项」的主色。
+        "data-[selected]:data-[highlighted]:bg-primary/20 data-[selected]:data-[highlighted]:text-primary",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className,
       )}

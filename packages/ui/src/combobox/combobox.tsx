@@ -441,7 +441,10 @@ export function ComboboxTrigger({
 // 选项行的皮肤：创建项与 ComboboxItem 共用，好让「新建这一条」读起来和别的选项是同一类东西。
 const comboboxItemClass = [
   "relative flex cursor-default select-none items-center gap-2 rounded-[calc(var(--radius)-0.25rem)] py-1.5 pl-2 pr-8 text-sm outline-none",
+  // 选中态与叠加态：口径同 Select（#344），理由见 select.tsx 那段注释。
+  "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
   "data-[highlighted]:bg-surface-hover data-[highlighted]:text-foreground",
+  "data-[selected]:data-[highlighted]:bg-primary/20 data-[selected]:data-[highlighted]:text-primary",
   "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
 ];
 

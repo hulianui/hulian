@@ -1560,4 +1560,17 @@ describe("Select group", () => {
     expect(document.querySelector("[data-hulian-virtual-count]")).toBeNull();
     expect(document.querySelectorAll("[role='option']").length).toBe(many.length);
   });
+
+  // #344：当前值在打开的面板里此前只有右侧一个 ✓，键盘一移动就再无任何标记。
+  it("选项带选中态样式，且与 highlight 叠加时有独立一档", () => {
+    render(<Multi defaultValue={["sans"]} open />);
+    const option = document.querySelector("[role='option'][data-selected]");
+    expect(option).toBeTruthy();
+    const cls = option!.className;
+    expect(cls).toContain("data-[selected]:bg-primary/12");
+    expect(cls).toContain("data-[selected]:text-primary");
+    // 叠加态写成两个属性的链式选择器（特异性 0,3,0）才稳定压过两条单态（各 0,2,0），
+    // 否则谁生效取决于 Tailwind 的生成顺序。
+    expect(cls).toContain("data-[selected]:data-[highlighted]:bg-primary/20");
+  });
 });

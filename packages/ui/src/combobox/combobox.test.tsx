@@ -708,4 +708,16 @@ describe("Combobox 图4 范式（ComboboxTrigger + 弹层内搜索）", () => {
     );
     expect(screen.queryByText("使用 “在职”")).toBeNull();
   });
+
+  // #344：searchable 皮肤（Select 走 Combobox）打开时整列表一行高亮都没有，
+  // 当前值只有右侧一个 ✓，长列表里等于逐行找茬。口径与 Select 对齐。
+  it("已选项带选中态样式，且与 highlight 叠加时有独立一档", () => {
+    render(<Demo defaultOpen defaultValue={FRUITS[1]} />);
+    const option = document.querySelector("[role='option'][data-selected]");
+    expect(option).toBeTruthy();
+    const cls = (option as HTMLElement).className;
+    expect(cls).toContain("data-[selected]:bg-primary/12");
+    expect(cls).toContain("data-[selected]:text-primary");
+    expect(cls).toContain("data-[selected]:data-[highlighted]:bg-primary/20");
+  });
 });
