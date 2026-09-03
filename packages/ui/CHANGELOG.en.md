@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.62.1
+
+### Patch Changes
+
+- d1dbad7: `Select` and `Combobox` options gain a selected state (#344).
+
+  An open panel gave no indication of which row held the current value: the row itself carried no background or text color, only a 16px check mark on the far right. The `searchable` skin, which runs on `Combobox`, made it worse, since not a single row in the list was highlighted and a long list left you scanning for that check mark line by line. A non-searchable Select looked acceptable at the moment it opened, but only because the highlight happened to land on the selected row; one arrow key or a pointer passing over another row stripped the selection of every marker.
+
+  The colors match the list selection already used elsewhere in the library, where `Tree`, `Listbox` and `Cascader` all use `bg-primary/12` with `text-primary`. These two components were the only ones that had never followed.
+
+  Selection combined with highlight gets its own heavier step, written **explicitly as a chained two-attribute selector**. `[data-selected]` and `[data-highlighted]` carry equal specificity, so which one wins while both match depends on Tailwind's output order rather than the order in the class string; the chained rule scores 0,3,0 and reliably beats the two single-attribute rules at 0,2,0. Resting the keyboard on the current value therefore reads heavier than an ordinary highlight without losing the primary color that marks it as selected.
+
 ## 0.62.0
 
 ### Minor Changes
