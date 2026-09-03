@@ -1,11 +1,12 @@
 "use client";
-import { useId, useState, type FormEvent, type ReactElement } from "react";
+import { useId, useRef, useState, type FormEvent, type ReactElement, type ReactNode } from "react";
+import { AlertDialog, AlertDialogContent } from "../alert-dialog";
 import { Button } from "../button";
 import { useLocaleValue } from "../config/locale-context";
 import { Dialog, DialogContent, DialogTrigger } from "../dialog";
 import { Drawer, DrawerContent, DrawerTrigger } from "../drawer";
 import type { FormInstance, FormValues } from "../form/use-form";
-import type { DrawerFormProps, ModalFormProps } from "./form-dialog.types";
+import type { DrawerFormProps, FormDialogChangeDetails, ModalFormProps } from "./form-dialog.types";
 
 // ModalForm / DrawerForm = 弹窗/抽屉表单（列表页「新增/编辑」编排件）。复用 Dialog/Drawer 容器 + useForm
 // 控制器 + Button footer。共享 useFormDialogSubmit：提交前(有 form 则) validate()，async onFinish 成功关闭/失败保持。
@@ -18,26 +19,115 @@ import type { DrawerFormProps, ModalFormProps } from "./form-dialog.types";
 function useOpenState(
   open: boolean | undefined,
   defaultOpen: boolean | undefined,
-  onOpenChange?: (o: boolean) => void,
+  onOpenChange?: (o: boolean, details?: FormDialogChangeDetails) => void,
 ) {
   const [internal, setInternal] = useState(defaultOpen ?? false);
   const value = open ?? internal;
-  const set = (o: boolean) => {
+  const set = (o: boolean, details?: FormDialogChangeDetails) => {
     if (open === undefined) setInternal(o);
-    onOpenChange?.(o);
+    onOpenChange?.(o, details);
   };
   return [value, set] as const;
+}
+
+// locale 兜底只写一份：`useLocaleValue` 的 fallback 要求给全形状，两处各抄一遍迟早漂移。
+const MODAL_FORM_FALLBACK = {
+  submit: "提交",
+  cancel: "取消",
+  discardTitle: "放弃未提交的内容？",
+  discardDescription: "这张表单已经改过，关掉会丢失填写的内容。",
+  discardConfirm: "放弃",
+  discardKeep: "继续填写",
+} as const;
+
+interface DismissGuardOptions {
+  form?: FormInstance;
+  confirmOnClose: boolean;
+  discardTitle?: ReactNode;
+  discardDescription?: ReactNode;
+  setOpen: (open: boolean, details?: FormDialogChangeDetails) => void;
+}
+
+/**
+ * 关闭这张表单前的守门（#343）。
+ *
+ * 编排件与裸 `Dialog` 的区别就在这里：它知道自己装的是一张表单，所以「关掉」不再是
+ * 无代价的动作。改动过就先问一句，确认后才真关；干净表单直接放行，不平白多一步。
+ *
+ * 拦截必须在 Base UI 的 `onOpenChange` 里**同步**调用 `details.cancel()` —— 那是它唯一
+ * 「这次别关」的接口，晚一拍浮层就已经开始卸载了。
+ *
+ * 确认框刻意用自带的 `AlertDialog` 而不是命令式 `modal.confirm`：后者要消费方在应用根部
+ * 挂了 `<ModalProvider />` 才会显示，而我们这时已经把关闭动作拦下来了 —— 没挂的应用
+ * 会得到「窗关不掉、也没有任何提示」的死局。声明式的这份跟着编排件一起渲染，没有前置条件。
+ */
+function useDismissGuard({
+  form,
+  confirmOnClose,
+  discardTitle,
+  discardDescription,
+  setOpen,
+}: DismissGuardOptions) {
+  const loc = useLocaleValue("modalForm", MODAL_FORM_FALLBACK);
+  // 提交成功后的关闭不该再问「确定放弃吗」—— 那时内容已经交出去了。
+  const submittingRef = useRef(false);
+  const [asking, setAsking] = useState(false);
+
+  const handleOpenChange = (next: boolean, details?: FormDialogChangeDetails) => {
+    if (next || submittingRef.current || !confirmOnClose || !form?.isDirty()) {
+      setOpen(next, details);
+      return;
+    }
+    details?.cancel();
+    setAsking(true);
+  };
+
+  const discardDialog = (
+    <AlertDialog open={asking} onOpenChange={setAsking}>
+      <AlertDialogContent
+        title={discardTitle ?? loc.discardTitle}
+        description={discardDescription ?? loc.discardDescription}
+      >
+        <div className="mt-4 flex justify-end gap-2">
+          <Button variant="ghost" onClick={() => setAsking(false)}>
+            {loc.discardKeep}
+          </Button>
+          <Button
+            tone="danger"
+            onClick={() => {
+              setAsking(false);
+              setOpen(false);
+            }}
+          >
+            {loc.discardConfirm}
+          </Button>
+        </div>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+
+  return { handleOpenChange, submittingRef, discardDialog };
 }
 
 interface SubmitOptions {
   form?: FormInstance;
   onFinish?: (values: FormValues) => void | boolean | Promise<void | boolean>;
   onClose: () => void;
+  /** 提交成功走的这次关闭不该再问「确定放弃吗」（#343）：内容已经交出去了。 */
+  submittingRef?: { current: boolean };
 }
 
 // 提交状态提到 ModalForm/DrawerForm 这一层：正文(<form>)与按钮(footer 槽)已被容器分到两棵子树，
 // loading / handleSubmit 必须由共同祖先持有才能同时喂给两边。抽成 hook 供两个编排件共用，避免各写一份。
-function useFormDialogSubmit({ form, onFinish, onClose }: SubmitOptions) {
+function useFormDialogSubmit({ form, onFinish, onClose, submittingRef }: SubmitOptions) {
+  const closeAfterSubmit = () => {
+    if (submittingRef) submittingRef.current = true;
+    try {
+      onClose();
+    } finally {
+      if (submittingRef) submittingRef.current = false;
+    }
+  };
   // 用 id 关联外部提交按钮，故必须是 SSR/CSR 一致且同页多实例不撞的稳定值
   const formId = useId();
   const [loading, setLoading] = useState(false);
@@ -55,14 +145,14 @@ function useFormDialogSubmit({ form, onFinish, onClose }: SubmitOptions) {
       setLoading(true);
       try {
         const v = await ret;
-        if (v !== false) onClose();
+        if (v !== false) closeAfterSubmit();
       } catch {
         /* 失败：保持打开，错误反馈交消费者 */
       } finally {
         setLoading(false);
       }
     } else if (ret !== false) {
-      onClose();
+      closeAfterSubmit();
     }
   };
 
@@ -79,10 +169,7 @@ interface FooterProps {
 }
 
 function FormDialogFooter({ formId, loading, submitText, cancelText, onClose }: FooterProps) {
-  const loc = useLocaleValue("modalForm", {
-    submit: "提交",
-    cancel: "取消",
-  });
+  const loc = useLocaleValue("modalForm", MODAL_FORM_FALLBACK);
   // 不包 div：footer 槽自身已是 flex + justify-end + gap-2 的行容器，再套一层会破坏其对齐
   return (
     <>
@@ -108,13 +195,29 @@ export function ModalForm({
   cancelText,
   className,
   draggable,
+  dismissible = false,
+  confirmOnClose = true,
+  discardTitle,
+  discardDescription,
   children,
 }: ModalFormProps) {
   const [isOpen, setOpen] = useOpenState(open, defaultOpen, onOpenChange);
+  const { handleOpenChange, submittingRef, discardDialog } = useDismissGuard({
+    form,
+    confirmOnClose,
+    discardTitle,
+    discardDescription,
+    setOpen,
+  });
   const onClose = () => setOpen(false);
-  const { formId, loading, handleSubmit } = useFormDialogSubmit({ form, onFinish, onClose });
+  const { formId, loading, handleSubmit } = useFormDialogSubmit({
+    form,
+    onFinish,
+    onClose,
+    submittingRef,
+  });
   return (
-    <Dialog open={isOpen} onOpenChange={setOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange} disablePointerDismissal={!dismissible}>
       {trigger && <DialogTrigger render={trigger as ReactElement<Record<string, unknown>>} />}
       <DialogContent
         title={title}
@@ -135,6 +238,7 @@ export function ModalForm({
           {children}
         </form>
       </DialogContent>
+      {discardDialog}
     </Dialog>
   );
 }
@@ -151,13 +255,29 @@ export function DrawerForm({
   cancelText,
   className,
   side = "right",
+  dismissible = false,
+  confirmOnClose = true,
+  discardTitle,
+  discardDescription,
   children,
 }: DrawerFormProps) {
   const [isOpen, setOpen] = useOpenState(open, defaultOpen, onOpenChange);
+  const { handleOpenChange, submittingRef, discardDialog } = useDismissGuard({
+    form,
+    confirmOnClose,
+    discardTitle,
+    discardDescription,
+    setOpen,
+  });
   const onClose = () => setOpen(false);
-  const { formId, loading, handleSubmit } = useFormDialogSubmit({ form, onFinish, onClose });
+  const { formId, loading, handleSubmit } = useFormDialogSubmit({
+    form,
+    onFinish,
+    onClose,
+    submittingRef,
+  });
   return (
-    <Drawer open={isOpen} onOpenChange={setOpen}>
+    <Drawer open={isOpen} onOpenChange={handleOpenChange} disablePointerDismissal={!dismissible}>
       {trigger && <DrawerTrigger render={trigger as ReactElement<Record<string, unknown>>} />}
       <DrawerContent
         side={side}
@@ -177,6 +297,7 @@ export function DrawerForm({
           {children}
         </form>
       </DrawerContent>
+      {discardDialog}
     </Drawer>
   );
 }

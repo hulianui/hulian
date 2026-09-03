@@ -45,11 +45,48 @@ export interface FormInstance<V extends FormValues = FormValues> {
   /** 校验全部已注册字段。 */
   validate: () => Promise<{ ok: boolean; values: V; errors: Record<string, string> }>;
   resetFields: () => void;
+  /**
+   * 当前值是否与 `initialValues` 不同（#343）。
+   *
+   * 用来回答「这张表单被人动过吗」——关闭确认（"还没提交，确定放弃？"）、
+   * 离开页面拦截、把提交键在无改动时置灰，都靠它。
+   *
+   * 逐字段深比较值本身而不是比引用：多选字段是数组、级联字段是对象，每次 onChange 都会
+   * 产出新引用，比引用会让「改了又改回来」也算脏。`resetFields()` 之后必然回到 false。
+   */
+  isDirty: () => boolean;
   /** 生成 <form onSubmit>：校验通过调 onFinish，否则 onFinishFailed。 */
   submit: (
     onFinish: (values: V) => void,
     onFinishFailed?: (info: { values: V; errors: Record<string, string> }) => void,
   ) => (e?: { preventDefault?: () => void }) => Promise<void>;
+}
+
+/**
+ * 表单值的相等判定（#343）：只认表单里真会出现的形状 —— 原始值、数组（多选）、
+ * 普通对象（级联 / 日期区间）、Date。刻意不做通用深比较：Map / Set / 循环引用不在表单值域内，
+ * 为它们付出的复杂度只会变成看不懂的分支。
+ */
+function sameValue(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) return true;
+  if (a instanceof Date || b instanceof Date) {
+    return a instanceof Date && b instanceof Date && a.getTime() === b.getTime();
+  }
+  if (Array.isArray(a) || Array.isArray(b)) {
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+    return a.every((item, i) => sameValue(item, b[i]));
+  }
+  if (typeof a === "object" && typeof b === "object" && a !== null && b !== null) {
+    const ka = Object.keys(a as object);
+    const kb = Object.keys(b as object);
+    if (ka.length !== kb.length) return false;
+    return ka.every(
+      (k) =>
+        Object.hasOwn(b as object, k) &&
+        sameValue((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]),
+    );
+  }
+  return false;
 }
 
 function extractValue(valueOrEvent: unknown): unknown {
@@ -79,6 +116,10 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
   // values 最新值的同步镜像，供校验/联动在同一事件内读到最新（避免 setState 异步滞后）
   const valuesRef = useRef<V>(initialValues);
   valuesRef.current = values;
+  // 脏判定的基准（#343）：首帧的 initialValues 快照。不能直接读闭包里的 initialValues ——
+  // 消费方多半写成对象字面量，每次渲染都是新的一份，一旦它在渲染间被重建成「当前值」，
+  // isDirty() 就永远是 false。resetFields() 会把这份基准一并刷新，语义上等同于「重新开始」。
+  const pristineRef = useRef<V>(initialValues);
 
   const runValidate = useCallback(async (name: string, snapshot: V): Promise<string | null> => {
     const cfg = configs.current.get(name);
@@ -164,6 +205,16 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
 
   const getFieldValue = useCallback((name: string) => valuesRef.current[name], []);
 
+  const isDirty = useCallback(() => {
+    const current = valuesRef.current;
+    const pristine = pristineRef.current;
+    const keys = new Set([...Object.keys(current), ...Object.keys(pristine)]);
+    for (const key of keys) {
+      if (!sameValue(current[key], pristine[key])) return true;
+    }
+    return false;
+  }, []);
+
   const validate = useCallback(async () => {
     const snapshot = valuesRef.current;
     const names = Array.from(configs.current.keys());
@@ -180,6 +231,8 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
 
   const resetFields = useCallback(() => {
     valuesRef.current = initialValues;
+    // 基准一并回到 initialValues：重置之后 isDirty() 必须是 false（#343）。
+    pristineRef.current = initialValues;
     setValues(initialValues);
     setErrors({});
     touched.current.clear();
@@ -210,6 +263,7 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
     validateField,
     validate,
     resetFields,
+    isDirty,
     submit,
   };
 }

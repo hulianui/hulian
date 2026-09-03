@@ -4025,7 +4025,7 @@
       "id": "component/form-dialog/pitfall/3",
       "scope": "form-dialog",
       "title": "ModalForm / DrawerForm",
-      "rule": "提交成功后想清空字段需自己调 `form.resetFields()`，组件不会替你重置。",
+      "rule": "提交成功后想清空字段需自己调 `form.resetFields()`，组件不会替你重置。 ### 关掉这张表单不是无代价的（#343） `ModalForm` / `DrawerForm` 与裸 `Dialog` / `Drawer` 的默认值刻意不同：**点遮罩默认不关**。原语是通用容器，随手点外面关掉很合理；编排件装的一定是表单，填到第 8 个字段时鼠标落在窗外一点就全部清空，这个代价与那点便利完全不成比例。 退路仍在，只是加了一道确认：Esc 与右上角关闭键在 `form.isDirty()` 为真时先问一句「放弃未提交的内容？」，确认才关。三种情况不会打扰你：没传 `form`（编排件无从判断脏净）、表单一字未改、以及提交成功后的那次关闭。 ```tsx // 默认：点遮罩不关，改过就问一句 <ModalForm title=\"新增学校\" form={form} onFinish={save}>…</ModalForm> // 恢复原语行为 <ModalForm dismissible confirmOnClose={false} …>…</ModalForm> // 自己判断要不要关：details.reason 区分点遮罩 / Esc / 关闭键 <ModalForm onOpenChange={(open, details) => { if (!open && details?.reason === \"outside-press\") details.cancel(); }} …>…</ModalForm> ``` 确认框由编排件自己渲染（`AlertDialog`），**不要求你挂 `ModalProvider`** —— 命令式 `modal.confirm` 在没挂 Provider 的应用里什么都不显示，而关闭动作此时已被拦下，那会变成「窗关不掉又没有提示」的死局。",
       "source": "packages/ui/src/form-dialog/form-dialog.md"
     },
     {

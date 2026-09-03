@@ -80,6 +80,14 @@ export interface Locale {
   modalForm: {
     submit: string;
     cancel: string;
+    /** 放弃未提交内容的确认标题（#343）。 */
+    discardTitle: string;
+    /** 放弃未提交内容的确认说明。 */
+    discardDescription: string;
+    /** 确认放弃的按钮文案。 */
+    discardConfirm: string;
+    /** 继续填写（取消放弃）的按钮文案。 */
+    discardKeep: string;
   };
   editableTable: {
     edit: string;
@@ -2663,6 +2671,10 @@ export const zhCN: Locale = {
   modalForm: {
     submit: "提交",
     cancel: "取消",
+    discardTitle: "放弃未提交的内容？",
+    discardDescription: "这张表单已经改过，关掉会丢失填写的内容。",
+    discardConfirm: "放弃",
+    discardKeep: "继续填写",
   },
   editableTable: {
     edit: "编辑",
@@ -2784,6 +2796,10 @@ export const enUS: Locale = {
   modalForm: {
     submit: "Submit",
     cancel: "Cancel",
+    discardTitle: "Discard unsaved changes?",
+    discardDescription: "This form has been edited. Closing it loses what you filled in.",
+    discardConfirm: "Discard",
+    discardKeep: "Keep editing",
   },
   editableTable: {
     edit: "Edit",

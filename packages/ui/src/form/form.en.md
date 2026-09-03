@@ -43,7 +43,7 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | Fields and form actions. |
 
-`useForm` controller usage (see examples for details): `form.register(name, { rules, dependencies })`, `form.submit(onValid, onInvalid)`, `form.resetFields()`.
+`useForm` controller usage (see examples for details): `form.register(name, { rules, dependencies })`, `form.submit(onValid, onInvalid)`, `form.resetFields()`, `form.isDirty()` (whether the current values differ from `initialValues`, which drives close confirmations, navigation guards and disabling submit while nothing changed; it compares values rather than references, so editing a field and putting it back is not dirty).
 
 `register()` returns `{ name, value, onChange, onBlur, error, required }`. The `required` flag is derived from whether the rules contain `required: true`; forward it to the `required` prop of [`Field`](../field/field.md) so the requirement is visible before submitting (asterisk plus `aria-required`), while the rules remain the only source of validation.
 

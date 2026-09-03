@@ -43,7 +43,7 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 字段内容 |
 
-`useForm` 控制器用法（详见示例）：`form.register(name, { rules, dependencies })`、`form.submit(onValid, onInvalid)`、`form.resetFields()`。
+`useForm` 控制器用法（详见示例）：`form.register(name, { rules, dependencies })`、`form.submit(onValid, onInvalid)`、`form.resetFields()`、`form.isDirty()`（当前值是否与 `initialValues` 不同 —— 关闭确认、离开页面拦截、无改动时置灰提交键都靠它；比的是值不是引用，改了又改回来算不脏）。
 
 `register()` 返回 `{ name, value, onChange, onBlur, error, required }`。其中 `required` 按 `rules` 里有无 `required: true` 派生，透传给 [`Field`](../field/field.md) 的 `required` 即可让必填在提交前就看得见（红星 + `aria-required`），规则仍是唯一的校验来源。
 

@@ -58,6 +58,24 @@ function Demo() {
   );
 }
 
+// 关闭守门（#343）：装着表单的编排件，「关掉」不是无代价的动作。
+function DismissGuardDemo() {
+  const form = useForm({ initialValues: { name: "" } });
+  const name = form.register("name");
+  return (
+    <ModalForm
+      title="新增学校"
+      form={form}
+      trigger={<Button>填一半试试关掉</Button>}
+      onFinish={() => {}}
+    >
+      <Field label="学校名称">
+        <Input value={name.value as string} onChange={name.onChange} placeholder="填点内容再按 Esc" />
+      </Field>
+    </ModalForm>
+  );
+}
+
 export const formDialogShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -87,6 +105,17 @@ export const formDialogShowcase: ShowcaseSpec = {
           </Field>
         </ModalForm>
       ),
+    },
+    {
+      title: "关闭守门",
+      description: "点遮罩默认不关；改动过的表单按 Esc 或点关闭键会先确认一次，干净表单直接关。传 dismissible / confirmOnClose 可各自关掉。",
+      code: `<ModalForm title="新增学校" form={form} onFinish={save}>
+  {/* 点遮罩不关；改过再按 Esc 会问「放弃未提交的内容？」 */}
+</ModalForm>
+
+// 恢复原语行为
+<ModalForm dismissible confirmOnClose={false} … />`,
+      render: () => <DismissGuardDemo />,
     },
     {
       title: "抽屉表单",

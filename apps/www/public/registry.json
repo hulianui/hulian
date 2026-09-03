@@ -4980,8 +4980,11 @@
       "categories": [
         "forms"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "@base-ui/react"
+      ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/alert-dialog.json",
         "https://hulianui.haloritual.com/zh/r/button.json",
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/dialog.json",

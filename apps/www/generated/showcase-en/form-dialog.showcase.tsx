@@ -40,6 +40,15 @@ function Demo() {
       <p className="text-xs text-muted-foreground">Submission of unfilled name points will be blocked by verification and the pop-up window will not be closed; if the submission is successful (simulation 600ms), it will be closed automatically.</p>
     </div>);
 }
+function DismissGuardDemo() {
+    const form = useForm({ initialValues: { name: "" } });
+    const name = form.register("name");
+    return (<ModalForm title="Add school" form={form} trigger={<Button>Fill it in, then try closing</Button>} onFinish={() => { }}>
+      <Field label="School name">
+        <Input value={name.value as string} onChange={name.onChange} placeholder="Type something, then press Esc"/>
+      </Field>
+    </ModalForm>);
+}
 export const formDialogShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -63,6 +72,17 @@ export const formDialogShowcase: ShowcaseSpec = {
             <Input placeholder="Required"/>
           </Field>
         </ModalForm>),
+        },
+        {
+            title: "Guarded close",
+            description: "Pressing the backdrop does not close it. An edited form asks for confirmation on Esc or the close button, while an untouched one closes straight away. Pass dismissible or confirmOnClose to turn either off.",
+            code: `<ModalForm title="Add school" form={form} onFinish={save}>
+  {/* The backdrop does not close it; once edited, Esc asks whether to discard */}
+</ModalForm>
+
+// Restore the primitive behaviour
+<ModalForm dismissible confirmOnClose={false} \u2026 />`,
+            render: () => <DismissGuardDemo />,
         },
         {
             title: "Drawer form",

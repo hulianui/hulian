@@ -8698,6 +8698,17 @@
       "换成固定高度就会在下方留出空白。": "A fixed height would leave empty space below.",
       "条：超过上限后在这里滚动，上限之内则紧贴内容。": ": scrolls here once past the cap, and hugs the content below it.",
       "{/* 内容超过 40 才滚动，不超则容器只有内容那么高 */}": "{/* Scrolls only past 40; below that the container is as tall as its content */}"
+    },
+    "packages/ui/src/form-dialog/form-dialog.showcase.tsx": {
+      "关闭守门": "Guarded close",
+      "点遮罩默认不关；改动过的表单按 Esc 或点关闭键会先确认一次，干净表单直接关。传 dismissible / confirmOnClose 可各自关掉。": "Pressing the backdrop does not close it. An edited form asks for confirmation on Esc or the close button, while an untouched one closes straight away. Pass dismissible or confirmOnClose to turn either off.",
+      "新增学校": "Add school",
+      "填一半试试关掉": "Fill it in, then try closing",
+      "学校名称": "School name",
+      "填点内容再按 Esc": "Type something, then press Esc",
+      "<ModalForm title=\"新增学校\" form={form} onFinish={save}>": "<ModalForm title=\"Add school\" form={form} onFinish={save}>",
+      "{/* 点遮罩不关；改过再按 Esc 会问「放弃未提交的内容？」 */}": "{/* The backdrop does not close it; once edited, Esc asks whether to discard */}",
+      "// 恢复原语行为": "// Restore the primitive behaviour"
     }
   }
 }

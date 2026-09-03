@@ -158,4 +158,49 @@ describe("register().value 的空值口径（#220）", () => {
     const { result } = renderHook(() => useForm({ initialValues: {} }));
     expect(result.current.register("never-set").value).toBe("");
   });
+
+  // #343：编排件要靠它决定「关掉这张表单会不会丢东西」。
+  describe("isDirty", () => {
+    it("未改动是 false，改一个字段变 true，改回原值又是 false", () => {
+      const { result } = renderHook(() => useForm({ initialValues: { name: "甲", age: 1 } }));
+      expect(result.current.isDirty()).toBe(false);
+      act(() => result.current.setFieldValue("name", "乙"));
+      expect(result.current.isDirty()).toBe(true);
+      act(() => result.current.setFieldValue("name", "甲"));
+      expect(result.current.isDirty()).toBe(false);
+    });
+
+    it("数组与对象比值不比引用（多选、级联每次 onChange 都是新引用）", () => {
+      const { result } = renderHook(() =>
+        useForm({ initialValues: { tags: ["a", "b"], area: { province: "粤" } } }),
+      );
+      act(() => result.current.setFieldValue("tags", ["a", "b"]));
+      act(() => result.current.setFieldValue("area", { province: "粤" }));
+      expect(result.current.isDirty()).toBe(false);
+      act(() => result.current.setFieldValue("tags", ["a"]));
+      expect(result.current.isDirty()).toBe(true);
+    });
+
+    it("新增初始值里没有的字段也算改动", () => {
+      const { result } = renderHook(() => useForm({ initialValues: {} }));
+      act(() => result.current.setFieldValue("note", "写了点东西"));
+      expect(result.current.isDirty()).toBe(true);
+    });
+
+    it("resetFields 之后回到未改动", () => {
+      const { result } = renderHook(() => useForm({ initialValues: { name: "甲" } }));
+      act(() => result.current.setFieldValue("name", "乙"));
+      act(() => result.current.resetFields());
+      expect(result.current.isDirty()).toBe(false);
+    });
+
+    it("Date 比时间戳不比引用", () => {
+      const day = new Date("2026-09-03T00:00:00Z");
+      const { result } = renderHook(() => useForm({ initialValues: { at: day } }));
+      act(() => result.current.setFieldValue("at", new Date("2026-09-03T00:00:00Z")));
+      expect(result.current.isDirty()).toBe(false);
+      act(() => result.current.setFieldValue("at", new Date("2026-09-04T00:00:00Z")));
+      expect(result.current.isDirty()).toBe(true);
+    });
+  });
 });
