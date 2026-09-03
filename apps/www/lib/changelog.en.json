@@ -14,6 +14,19 @@
   },
   {
     "pkg": "@hulianui/ui",
+    "version": "0.62.0",
+    "date": "2026-09-03",
+    "entries": [
+      {
+        "sha": "9218a3f",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`ModalForm` and `DrawerForm` no longer close on a backdrop press, and an edited form asks before closing (#343). `useForm` gains `isDirty()`.\n\nA single stray click on the backdrop used to wipe out a half-filled form with no confirmation, and consumers had no prop to turn that off. What separates these components from a bare `Dialog` or `Drawer` is that they know they hold a form: the convenience of dismissing by clicking outside is nowhere near worth losing eight filled fields. Their default is therefore the opposite of the primitives, with `dismissible` defaulting to `false`.\n\nThe exits remain, with one confirmation added: Esc and the top-right close button first ask whether to discard whenever the form has been edited. Three cases never interrupt: no `form` was passed, so dirtiness cannot be judged; the form is untouched; and the close that follows a successful submit. The confirmation renders from inside the component through `AlertDialog`, so it **does not require a `ModalProvider`**. The imperative `modal.confirm` shows nothing in an app that never mounted the provider, and the close has already been intercepted by then, which would leave a dialog that neither closes nor explains itself.\n\nFour new props arrive: `dismissible`, `confirmOnClose`, `discardTitle` and `discardDescription`. `onOpenChange` gains a second argument carrying the Base UI event details, where `reason` separates a backdrop press from Esc and the close button, and `cancel()` lets you veto the change yourself. Consumers written as `(open) => …` are unaffected.\n\n`useForm` gains `isDirty()` to support it, comparing current values against `initialValues` field by field **by value**. Multi-select fields are arrays and cascading fields are objects, so every change produces a fresh reference, and comparing references would report an edit that was undone as still dirty. Navigation guards and disabling submit while nothing changed can use it too."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.61.0",
     "date": "2026-09-03",
     "entries": [
