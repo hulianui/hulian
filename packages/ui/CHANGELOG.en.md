@@ -1,5 +1,23 @@
 # @hulianui/ui
 
+## 0.63.0
+
+### Minor Changes
+
+- 9c466c1: `useForm` gains `markPristine()` and `setFieldsValue(values, { markPristine: true })`, fixing `isDirty()` staying true forever on edit forms filled in asynchronously (#345).
+
+  The confirm-before-closing behaviour added in 0.62.0 misfired on every edit dialog. The dirty baseline came from the `initialValues` of the **first render**, and an edit dialog usually renders that frame with an empty shell while the record is still in flight. Once the data landed, every field differed from the shell, `isDirty()` returned true from then on, and pressing Esc without touching anything still asked whether to discard.
+
+  Declare the incoming values as the initial state while writing them:
+
+  ```tsx
+  form.setFieldsValue({ title: d.title, type: String(d.type) }, { markPristine: true });
+  ```
+
+  Use `form.markPristine()` when the values arrive by another route, such as per-field `setFieldValue` calls or defaults written by the controls. Do not split either into two steps, because a render sits in between and `isDirty()` still reads as edited during that window.
+
+  This also fixes a closure trap in `resetFields`, which was pinned to the first render's `initialValues` by an empty dependency array. Replacing the initial values and resetting went back to the old ones, which closed off "pass the new data as `initialValues` and reset" as a workaround. It now reads the current `initialValues`. It deliberately takes **no** "next initial values" argument: that would place the value type in an argument position, so `FormInstance<SpecificValues>` could no longer be assigned to `FormInstance<FormValues>`, and the `form?: FormInstance` prop on the dialog components would reject every typed instance.
+
 ## 0.62.1
 
 ### Patch Changes

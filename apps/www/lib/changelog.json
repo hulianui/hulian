@@ -14,6 +14,19 @@
   },
   {
     "pkg": "@hulianui/ui",
+    "version": "0.63.0",
+    "date": "2026-09-03",
+    "entries": [
+      {
+        "sha": "9c466c1",
+        "bump": "minor",
+        "breaking": false,
+        "body": "`useForm` 新增 `markPristine()` 与 `setFieldsValue(values, { markPristine: true })`，修掉异步回填的编辑表单 `isDirty()` 恒为真（#345）。\n\n0.62.0 的「改动过的表单关闭前先确认」对编辑弹窗必然误报：脏基线取的是**首帧**的 `initialValues`，而编辑弹窗的首帧多半只有空壳、详情还在路上，回填一跑完当前值就与空壳全字段不同，从此 `isDirty()` 恒为 `true` —— 用户一个字没改，按 Esc 也会被问「放弃未提交的内容？」。\n\n现在回填时把那批值一并声明为初始态即可：\n\n```tsx\nform.setFieldsValue({ title: d.title, type: String(d.type) }, { markPristine: true });\n```\n\n值已经由别的途径进去时（逐字段 `setFieldValue`、控件自填默认值）用 `form.markPristine()`。两者不要拆成两步写，中间隔着一轮渲染，那期间的 `isDirty()` 仍会读到「已改动」。\n\n顺带修掉 `resetFields` 的闭包陷阱：它此前锁死在首帧的 `initialValues`（`useCallback` 空依赖 + `eslint-disable`），消费方换了初始值再 reset 会回到旧值，于是「把新数据当 `initialValues` 传进来再 reset」这条路也是堵的。现在它读当前的 `initialValues`。刻意**不**给它加「新初始值」参数：那会把值类型放到参数位置，`FormInstance<具体类型>` 从此不能再赋给 `FormInstance<FormValues>`，编排件的 `form?: FormInstance` 会当场拒收所有带具体值类型的实例。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.62.1",
     "date": "2026-09-03",
     "entries": [
