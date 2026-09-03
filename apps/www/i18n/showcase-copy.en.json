@@ -8676,6 +8676,28 @@
       "超出量程的值把游标夹到端点；读屏念的仍是原始值，不假装它没超。": "A value beyond the range clamps the cursor to an endpoint; screen readers still read the original number rather than pretending it fits.",
       "越界夹紧": "Clamped out-of-range values",
       "默认四段紧邻只靠色相切分；相邻档同色时（默认 A-F 里 A/B 同绿）开 segmentGap 才分得出档。": "By default the bands sit flush and are told apart by hue alone; when neighbouring bands share one color (A/B are both green in the default A-F set), only segmentGap tells them apart."
+    },
+    "packages/ui/src/dialog/dialog.showcase.tsx": {
+      "可拖动": "Draggable",
+      "draggable 让标题行成为把手：按住标题就能把对话框挪开，看清底下的页面；标题右侧 extra 里的按钮照常点击。": "draggable turns the title row into a handle: hold the title to move the dialog aside and see the page underneath; buttons in extra on the right of the title still click.",
+      "<DialogTrigger render={<Button variant=\"outline\">打开可拖动对话框</Button>} />": "<DialogTrigger render={<Button variant=\"outline\">Open draggable dialog</Button>} />",
+      "title=\"选择附件\"": "title=\"Select attachment\"",
+      "description=\"按住标题可拖动。\"": "description=\"Hold the title to drag.\"",
+      "extra={<Button size=\"sm\" variant=\"ghost\">刷新</Button>}": "extra={<Button size=\"sm\" variant=\"ghost\">Refresh</Button>}",
+      "footer={<DialogClose render={<Button>完成</Button>} />}": "footer={<DialogClose render={<Button>Done</Button>} />}",
+      "打开可拖动对话框": "Open draggable dialog",
+      "选择附件": "Select attachment",
+      "按住标题可拖动。": "Hold the title to drag.",
+      "对话框挪开后，底下的页面内容依然可见。": "Once the dialog is moved aside, the page content underneath stays visible.",
+      "<p className=\"text-sm text-muted-foreground\">对话框挪开后，底下的页面内容依然可见。</p>": "<p className=\"text-sm text-muted-foreground\">Once the dialog is moved aside, the page content underneath stays visible.</p>"
+    },
+    "packages/ui/src/scroll-area/scroll-area.showcase.tsx": {
+      "封顶滚动": "Capped scrolling",
+      "用 max-h-* 表达「长则封顶滚动、短则紧凑」：内容不多时不出滚动条，也不会像固定高度那样在下方留白。": "Use max-h-* for grow-then-scroll: short content shows no scrollbar and leaves none of the empty space below that a fixed height would.",
+      "内容不多时不出滚动条，容器只占内容那么高。": "Short content shows no scrollbar, and the container is only as tall as it needs to be.",
+      "换成固定高度就会在下方留出空白。": "A fixed height would leave empty space below.",
+      "条：超过上限后在这里滚动，上限之内则紧贴内容。": ": scrolls here once past the cap, and hugs the content below it.",
+      "{/* 内容超过 40 才滚动，不超则容器只有内容那么高 */}": "{/* Scrolls only past 40; below that the container is as tall as its content */}"
     }
   }
 }

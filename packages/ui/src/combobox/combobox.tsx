@@ -17,7 +17,7 @@ import { cva } from "class-variance-authority";
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type {
   ComboboxChipProps,
   ComboboxChipsProps,
@@ -28,14 +28,6 @@ import type {
   ComboboxProps,
   ComboboxTriggerProps,
 } from "./combobox.types";
-
-// overlay 自管 mount/unmount；用瑚琏 motion token 驱动 Base UI 原生过渡（同 Select/Dialog）。
-// 用 transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 在过渡生命周期会往内联
-// style 注入 transition 简写，与长写混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。
-// 简写对简写同属性覆盖，无混用 → 警告消除。属性写进简写里，故 className 不再需要 transition-[…] 类。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 // 锚点 context：可见字段(内联外壳 span / 图4 Trigger 按钮)把自身 ref 注册进来，
 // 供 ComboboxContent 的 Positioner anchor=，确保浮层锚到「整个可见字段」而非裸 <input>。
@@ -532,7 +524,7 @@ export function ComboboxContent({
             "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
-          style={overlayTransition}
+          style={overlayTransitions.popup}
         >
           {/* 弹层内搜索框(图4 范式)：图标 + Base UI Input；Base UI 自动在打开时聚焦并接管过滤。 */}
           {searchPlaceholder != null && (

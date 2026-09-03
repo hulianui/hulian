@@ -75,6 +75,19 @@ export interface DialogContentProps {
   scrollable?: boolean;
   /** 追加到正文区容器（与 `scrollable` 配合，可把 `overflow-y-auto` 换成自家排版）。 */
   bodyClassName?: string;
+  /**
+   * 允许按住标题行拖动对话框。默认 `false`。
+   *
+   * 把手是标题行（`title` 与 `extra` 所在的那一行），行里的按钮等交互元素照常点击、不起拖。
+   * 没有 `title` / `extra`、可见 header 由你自己画时，给自家把手元素加 `data-drag-handle` 即可。
+   *
+   * 位移写在 popup 的内联 `left` / `top`，不碰 `translate` / `transform`（它们在浮层的过渡列表里，
+   * 拿来承载拖拽会让每一步都吃缓动）：你用 className 改的
+   * 初始位置（`top-10 translate-y-0` 之类）照常生效，拖动只在它的结果上累加。整块不会被拖出视口。
+   * 位置不跨开关保留：每次打开都回到初始位置。这只是鼠标 / 触控的便利，没有键盘等价操作，
+   * 所以别把「能挪开看底下的内容」当成功能前提 —— 需要边看边填的场景用非模态（`backdrop={false}`）。
+   */
+  draggable?: boolean;
   className?: string;
   /**
    * 对话框的无障碍名，直接落到 popup 上（#272）。

@@ -27,6 +27,7 @@ import { ScrollArea } from "@hulianui/ui"
 |------|------|------|------|
 | orientation | `"vertical" \| "horizontal" \| "both"` | `"vertical"` | Scroll direction. `both` renders horizontal and vertical bars plus their corner. |
 | className | `string` | - | Consumer-supplied size constraint on Root, such as `h-48` or `w-64`; without one, content expands instead of scrolling. |
+| viewportClassName | `string` | - | Appended to the inner viewport, which is the element that actually scrolls. `className` lands on Root and cannot reach the viewport, yet clipping happens there, so pass something like `px-1.5` when a flush-mounted control loses its focus ring (#340; see the usage note below). |
 
 ## Slots
 
@@ -51,8 +52,10 @@ import { ScrollArea } from "@hulianui/ui"
 
 ## Usage guidelines
 
-- **Scrolling requires a size constraint.** ScrollArea has no intrinsic size. Apply `h-*` for vertical scrolling and `w-*` for horizontal scrolling through `className`; otherwise content expands the container and no scrollbar appears.
+- **Scrolling requires a size constraint.** ScrollArea has no intrinsic size, so constrain it through `className` or content will expand the container and no scrollbar will appear. Use `h-*` for a fixed panel, which leaves empty space below short content, and `max-h-*` for grow-then-scroll, which stays snug until the cap is reached (`w-*` / `max-w-*` horizontally). Before 0.61.0 `max-h-*` **silently clipped** the overflow, with no scrollbar, no wheel response and no keyboard access; both forms now work (#342).
 - **The scrollbar is an overlay, so the content must reserve its own gutter.** The bar is absolutely positioned, takes no layout width, and is `w-2` (8px) wide; a horizontal bar is the same height. Give the content at least **`pr-2.5` (10px: an 8px bar plus 2px of breathing room)**, or `pb-2.5` when scrolling horizontally. A smaller gutter such as the common `pr-1` (4px) leaves the bar sitting on top of the rightmost column (#118). This is an explicit convention rather than component behaviour, because only the consumer knows whether the gutter belongs on the content wrapper or on individual columns.
+- **A flush-mounted control loses its focus ring; reserve room with `viewportClassName`** (#340). The clipping described below does not only affect content: a `w-full` `Input` sits flush against the viewport, so the 4px that `ring-2 + ring-offset-2` paints outside the box falls beyond the viewport and is cut away. **The visible result is a focus ring reduced to its top and bottom edges** (spare height keeps those two alive). Padding on Root does not help, because the viewport is what clips. Pass `viewportClassName="px-1.5"`. The component ships no default gutter, because only you know whether the room belongs on the scroll container or on individual columns.
+
 - **Overflow on the undeclared axis is locked (hidden), never silently scrollable.** A `vertical` viewport gets `overflow-x: hidden`, a `horizontal` viewport gets `overflow-y: hidden` (`both` leaves both axes open). Base UI styles the viewport with two-axis `overflow: scroll` and hides the native bars, so content even 1px wider than the viewport used to pan sideways under a trackpad swipe with no scrollbar to explain it, and it looked like a broken layout (#287). Content inside a `vertical` area therefore has to fit its width (`w-full` / `min-w-0` / internal truncation); anything wider is clipped rather than scrollable. Declare `orientation="both"` when you really want two-axis scrolling.
 
 ## Related

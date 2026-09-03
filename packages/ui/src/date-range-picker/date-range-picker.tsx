@@ -27,17 +27,12 @@ import { Calendar, ChevronLeft, ChevronRight, X } from "../_icons";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type {
   DateRangePickerProps,
   DateRangePreset,
   DateRangeValue,
 } from "./date-range-picker.types";
-
-// 与 popover.tsx 同款：transition 简写避免与 Base UI 内联长写混用触发 React shorthand 警告。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 // 触发器刻度与 Input 外壳逐字一致（32/40/48）：区间选择器几乎总是和 Input/Select 并排落在
 // 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
@@ -505,7 +500,7 @@ export function DateRangePicker({
               "flex rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
               "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
-            style={overlayTransition}
+            style={overlayTransitions.popup}
           >
             {presetList && (
               <div className="flex w-28 flex-col gap-1 border-r border-border p-2">

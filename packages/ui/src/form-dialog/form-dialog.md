@@ -35,6 +35,7 @@ import { ModalForm, DrawerForm } from "@hulianui/ui"
 | cancelText | `string` | `locale.modalForm.cancel` | 取消按钮文案 |
 | className | `string` | - | 容器类名（控宽度等） |
 | side | `DrawerSide` | `"right"` | 仅 `DrawerForm`：抽屉贴边方向 |
+| draggable | `boolean` | `false` | 仅 `ModalForm`：允许按住标题拖动对话框（透传 [DialogContent.draggable](../dialog/dialog.md)） |
 
 ## Events
 

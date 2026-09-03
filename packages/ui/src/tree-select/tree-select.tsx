@@ -6,14 +6,10 @@ import { cva } from "class-variance-authority";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import { Tree } from "../tree/tree";
 import { buildIndex, normalizeCheckedToLeaves } from "../tree/tree-core";
 import type { TreeSelectProps } from "./tree-select.types";
-
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 const triggerVariants = cva(
   [
@@ -185,7 +181,7 @@ function TreeSelectImpl({
               "max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-2 text-foreground shadow-xl outline-none",
               "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
-            style={overlayTransition}
+            style={overlayTransitions.popup}
           >
             {multiple ? (
               <Tree

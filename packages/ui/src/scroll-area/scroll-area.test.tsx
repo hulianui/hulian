@@ -80,4 +80,40 @@ describe("ScrollArea", () => {
     );
     expect(container.querySelector(".my-sa")).toBeTruthy();
   });
+
+  // #340：className 落在 Root 上，裁剪发生在视口 —— 贴边控件的焦点环被整条切掉时，
+  // 消费方此前没有任何干净办法给视口留白。
+  it("viewportClassName 落到视口上，且能覆盖轴锁", () => {
+    const { container } = render(
+      <ScrollArea className="h-32" viewportClassName="px-1.5">
+        <div style={{ height: 600 }}>x</div>
+      </ScrollArea>,
+    );
+    const viewport = container.querySelector(".base-ui-disable-scrollbar");
+    expect(viewport?.className).toContain("px-1.5");
+    // 轴锁仍在（消费方没要求去掉）
+    expect(viewport?.className).toContain("overflow-x-hidden!");
+  });
+
+  it("不传 viewportClassName 时视口类名不变（不塞默认留白）", () => {
+    const { container } = render(
+      <ScrollArea className="h-32">
+        <div style={{ height: 600 }}>x</div>
+      </ScrollArea>,
+    );
+    const viewport = container.querySelector(".base-ui-disable-scrollbar");
+    expect(viewport?.className).not.toMatch(/\bpx-/);
+  });
+
+  // #342：视口的 height:100% 在只有 max-height 的父层下塌成 auto，于是不滚而是被 Root 裁掉。
+  // jsdom 没有布局，测不出「能不能滚」，只能锁住这个类不被后人顺手删掉（真实滚动由浏览器门禁验）。
+  it("视口继承 Root 的 max-height，长则封顶滚动、短则紧凑", () => {
+    const { container } = render(
+      <ScrollArea className="max-h-40">
+        <div style={{ height: 600 }}>x</div>
+      </ScrollArea>,
+    );
+    const viewport = container.querySelector(".base-ui-disable-scrollbar");
+    expect(viewport?.className).toContain("max-h-[inherit]");
+  });
 });

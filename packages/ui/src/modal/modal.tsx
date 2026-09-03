@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { CircleCheck, CircleHelp, CircleX, Info, TriangleAlert } from "../_icons";
 import { Button } from "../button/button";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type { ModalInstance, ModalOptions, ModalType } from "./modal.types";
 
 // 命令式对话框：触发(modal.confirm() 等)与渲染(<ModalProvider/>)解耦，机制照 Toast——
@@ -94,11 +94,6 @@ const typeColor: Record<ModalType, string> = {
   warning: "text-warning",
 };
 
-// 与 dialog.tsx 同：用 transition 简写，规避 Base UI 注入简写与长写混用的 React 警告。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
 function ModalDialog({ record }: { record: ModalRecord }) {
   const { id, type, options, open: isOpen } = record;
   const [loading, setLoading] = useState(false);
@@ -143,14 +138,14 @@ function ModalDialog({ record }: { record: ModalRecord }) {
       <BaseDialog.Portal>
         <BaseDialog.Backdrop
           className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
-          style={overlayTransition}
+          style={overlayTransitions.backdrop}
         />
         <BaseDialog.Popup
           className={cn(
             "fixed left-1/2 top-1/2 z-50 w-[min(90vw,26rem)] -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius)] border border-hairline bg-surface p-6 text-foreground shadow-xl outline-none",
             "data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0 data-[ending-style]:scale-[0.96] data-[ending-style]:opacity-0",
           )}
-          style={overlayTransition}
+          style={overlayTransitions.popup}
         >
           <div className="flex gap-3">
             {/* danger 覆盖图标色但不换字形（#231）：字形由 type 决定（confirm 仍是问号 = 「这是一个提问」），

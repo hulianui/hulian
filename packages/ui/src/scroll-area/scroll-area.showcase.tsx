@@ -45,6 +45,27 @@ function Both() {
   );
 }
 
+// 「长则封顶滚动、短则紧凑」：两块并排对照，同一个 max-h-40，只有内容多的那块出滚动条。
+function Capped() {
+  return (
+    <div className="flex flex-wrap gap-4">
+      <ScrollArea className="max-h-40 w-56 border border-border bg-surface p-4">
+        <div className="space-y-2 text-sm text-muted-foreground">
+          <p>内容不多时不出滚动条，容器只占内容那么高。</p>
+          <p>换成固定高度就会在下方留出空白。</p>
+        </div>
+      </ScrollArea>
+      <ScrollArea className="max-h-40 w-56 border border-border bg-surface p-4">
+        <div className="space-y-2 text-sm text-muted-foreground">
+          {paragraphs.map((n) => (
+            <p key={n}>第 {n} 条：超过上限后在这里滚动，上限之内则紧贴内容。</p>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
+  );
+}
+
 export const scrollAreaShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -62,6 +83,14 @@ export const scrollAreaShowcase: ShowcaseSpec = {
   <div className="flex gap-3">{/* 卡片们 */}</div>
 </ScrollArea>`,
       render: () => <Horizontal />,
+    },
+    {
+      title: "封顶滚动",
+      description: "用 max-h-* 表达「长则封顶滚动、短则紧凑」：内容不多时不出滚动条，也不会像固定高度那样在下方留白。",
+      code: `<ScrollArea className="max-h-40 w-56 border border-border p-4">
+  {/* 内容超过 40 才滚动，不超则容器只有内容那么高 */}
+</ScrollArea>`,
+      render: () => <Capped />,
     },
     {
       title: "双向滚动",

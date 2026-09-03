@@ -30,7 +30,7 @@ import {
 } from "../combobox/combobox";
 import type { ComboboxItemData } from "../combobox/combobox.types";
 import { Spinner } from "../spinner/spinner";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type {
   SelectContentProps,
   SelectGroupLabelProps,
@@ -40,13 +40,6 @@ import type {
   SelectTriggerProps,
 } from "./select.types";
 import { orderSelectedFirst } from "./select-order";
-
-// overlay 自管 mount/unmount；用瑚琏 motion token 驱动 Base UI 原生过渡（同 Dialog/Tooltip/Popover）。
-// 用 transition 简写(而非长写)：Base UI 在过渡生命周期会往内联 style 注入 transition 简写，与长写
-// 混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。简写同属性覆盖无混用 → 警告消除。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 const ChevronDownIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -866,7 +859,7 @@ export function SelectContent({
             "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
-          style={overlayTransition}
+          style={overlayTransitions.popup}
         >
           <BaseSelect.List>
             {loadingNode ?? standardChildren}

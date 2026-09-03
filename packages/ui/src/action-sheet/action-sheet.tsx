@@ -2,17 +2,13 @@
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type { ActionSheetContentProps } from "./action-sheet.types";
 
 // 移动端动作面板（底滑·建在 Base UI Dialog 上，同 drawer 范式：overlay 自管 mount，motion token CSS 镜像驱动过渡，零 motion 运行时）。
 // 每个动作即一个 Dialog.Close（点击先跑 onClick 再自然关闭）；底部独立「取消」块。底部吃安全区 inset。
 // 面板整块从屏底滑上来，与 Drawer 同属"大面积位移"，故同样走 drawer 曲线 + slow —— 这也是
 // 用户对底部弹层的肌肉记忆来源（iOS 原生 action sheet 就是这条曲线）。遮罩仍走通用淡入档。
-const sheetTransition = {
-  transition: `transform ${motionDurationCss.slow} ${motionEaseCss.drawer}, opacity ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
 export function ActionSheet(props: ComponentProps<typeof BaseDialog.Root>) {
   return <BaseDialog.Root {...props} />;
 }
@@ -36,7 +32,7 @@ export function ActionSheetContent({
           container ? "absolute" : "fixed",
           "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
         )}
-        style={sheetTransition}
+        style={overlayTransitions.backdrop}
       />
       <BaseDialog.Popup
         className={cn(
@@ -45,7 +41,7 @@ export function ActionSheetContent({
           "data-[ending-style]:translate-y-full data-[starting-style]:translate-y-full",
           className,
         )}
-        style={{ ...sheetTransition, paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0px))" }}
+        style={{ ...overlayTransitions.slide, paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 0px))" }}
       >
         {(title || description) && (
           <div className="rounded-[var(--radius)] bg-surface px-4 py-3 text-center">

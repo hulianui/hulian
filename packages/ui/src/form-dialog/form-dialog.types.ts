@@ -28,7 +28,10 @@ export interface FormDialogBaseProps {
   children?: ReactNode;
 }
 
-export type ModalFormProps = FormDialogBaseProps;
+export interface ModalFormProps extends FormDialogBaseProps {
+  /** 允许按住标题拖动对话框（透传 [DialogContent.draggable](../dialog/dialog.md)）。默认 `false`。 */
+  draggable?: boolean;
+}
 
 export interface DrawerFormProps extends FormDialogBaseProps {
   /** 抽屉贴边方向，默认 right。 */

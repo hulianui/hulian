@@ -30,6 +30,27 @@
     monospace;
 }
 
+/* ===== 动效 · 与主题无关（hulianui/hulian#341）=====
+   位移 / 缩放类过渡的时长系数：正常 1，用户偏好减弱动效时 0（= 变换瞬时到位）。
+
+   为什么这个开关必须由库在**变量层**兜住：浮层的过渡写在内联 `style` 上（Base UI 在过渡
+   生命周期会往同一个 style 注入 `transition` 简写，写成长写会被 React 判成 shorthand /
+   longhand 混用并整条丢弃），而内联样式压不过媒体查询 —— 消费方就算写了
+   `@media (prefers-reduced-motion: reduce)` 也覆盖不掉，除非满地 `!important`。
+   于是把「减多少」做成变量，媒体查询只改变量值，内联串照常读。
+
+   淡入淡出刻意**不**受它影响：不产生位移的透明度变化不在减弱动效要规避的范围内，
+   而它是「浮层出现了 / 消失了」这件事最低成本的线索，一起抹掉反而让人找不到焦点去哪了。 */
+:root {
+  --hl-motion-transform-factor: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --hl-motion-transform-factor: 0;
+  }
+}
+
 /* 亮色既是根默认值，也必须是一个**可选择的**主题：只挂 :root 的话，
    「亮页里嵌暗块」能做（暗块自己匹配到 [data-theme="dark"]），
    「暗页里嵌亮块」做不到（没有规则可匹配，子树继续继承祖先的暗色值）——

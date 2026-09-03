@@ -90,6 +90,40 @@ export const dialogShowcase: ShowcaseSpec = {
         </Dialog>
       ),
     },
+    {
+      title: "可拖动",
+      description: "draggable 让标题行成为把手：按住标题就能把对话框挪开，看清底下的页面；标题右侧 extra 里的按钮照常点击。",
+      code: `<Dialog>
+  <DialogTrigger render={<Button variant="outline">打开可拖动对话框</Button>} />
+  <DialogContent
+    draggable
+    title="选择附件"
+    description="按住标题可拖动。"
+    extra={<Button size="sm" variant="ghost">刷新</Button>}
+    footer={<DialogClose render={<Button>完成</Button>} />}
+  >
+    <p className="text-sm text-muted-foreground">对话框挪开后，底下的页面内容依然可见。</p>
+  </DialogContent>
+</Dialog>`,
+      render: () => (
+        <Dialog>
+          <DialogTrigger render={<Button variant="outline">打开可拖动对话框</Button>} />
+          <DialogContent
+            draggable
+            title="选择附件"
+            description="按住标题可拖动。"
+            extra={
+              <Button size="sm" variant="ghost">
+                刷新
+              </Button>
+            }
+            footer={<DialogClose render={<Button>完成</Button>} />}
+          >
+            <p className="text-sm text-muted-foreground">对话框挪开后，底下的页面内容依然可见。</p>
+          </DialogContent>
+        </Dialog>
+      ),
+    },
   ],
   controls: [],
   states: [{ name: "default", render: () => <Demo /> }],

@@ -6,25 +6,14 @@ import { X } from "../_icons";
 import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type { DrawerContentProps, DrawerSide, DrawerSize } from "./drawer.types";
 
 // 同 dialog.tsx：overlay 自管 mount/unmount，用 motion token CSS 镜像驱动原生过渡，零 motion 运行时。
-// transition 简写(而非长写)：Base UI 过渡期会往内联 style 注入 transition 简写，与长写混用 →
-// React "shorthand/longhand 混用" 警告并丢弃长写。
-//
 // 遮罩与面板刻意分开两套参数（原先共用一套 base/out）：
 //  · 遮罩只是淡入淡出，跟随 overlay 通用档 base(200ms)/out 即可；
 //  · 面板是整屏尺度的位移 —— 用 out(expo) + 200ms 会"冲到位再急停"，抽屉越大越明显。
 //    换 drawer 曲线（iOS/Ionic）+ slow(300ms)：起步果断、尾段长距离减速，大面积滑动才有从容感。
-const backdropTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
-const panelTransition = {
-  transition: `transform ${motionDurationCss.slow} ${motionEaseCss.drawer}, opacity ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
 // 主轴尺寸档（#230）。抽屉的主轴随 side 换手：左右抽屉的主轴是宽，上下抽屉的主轴是高，
 // 所以同一个档在两轴上不是同一个值 —— 视口本来就宽 > 高，「一屏够看」的宽高不等长。
 // md 两列即历史上写死的 24rem / 20rem，故不传 size 的既有调用点渲染不变。
@@ -146,12 +135,12 @@ export function DrawerContent({
             "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             backdropClassName,
           )}
-          style={backdropTransition}
+          style={overlayTransitions.backdrop}
         />
       )}
       <BaseDialog.Popup
         className={cn("relative", place, drawerVariants({ side, size }), className)}
-        style={panelTransition}
+        style={overlayTransitions.slide}
         // 消费方给的 aria-* 最后落，压过 Base UI 由 Dialog.Title 派生的那份（#272）。
         // **必须条件展开，不能写 aria-labelledby={ariaLabelledBy}**：Base UI 的 mergeProps 用
         // `for...in` 遍历外部 props，键存在即覆盖，不看值是不是 undefined

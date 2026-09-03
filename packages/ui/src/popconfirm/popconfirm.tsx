@@ -4,16 +4,11 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { TriangleAlert } from "../_icons";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import { Button } from "../button/button";
 import { Popover, PopoverTrigger } from "../popover/popover";
 import type { PopconfirmProps } from "./popconfirm.types";
 import { useComponentLocale } from "../config/locale-context";
-
-// 与 Popover 同款过渡（transition 简写避 shorthand/longhand 混用警告，见 popover.tsx）。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 /**
  * 气泡确认：dogfood 瑚琏 Popover 引擎（Root/Trigger）+ 直接组合 Base UI 内容部件拿
@@ -126,7 +121,7 @@ export function Popconfirm({
               "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
               className,
             )}
-            style={overlayTransition}
+            style={overlayTransitions.popup}
           >
             <div className="flex gap-3">
               {resolvedIcon}

@@ -2,7 +2,7 @@
 import type { ComponentProps } from "react";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { motionDurationCss, transitionCss } from "../motion";
 import type { TooltipContentProps } from "./tooltip.types";
 
 // overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（与 Dialog 同手感）。
@@ -12,10 +12,13 @@ import type { TooltipContentProps } from "./tooltip.types";
 // 时长走 CSS 变量 + fallback 而非写死：内联 style 的优先级最高，className 覆盖不了它，
 // 但**变量**可以由 className 规则设定（内联这边只读 var）。这样下面的 data-[instant]
 // 才能把同一条内联 transition 的时长压到 0。变量不设默认值、只用 fallback，避免内联反过来锁死它。
+const tooltipDuration = `var(--hl-tooltip-duration, ${motionDurationCss.base})`;
+
 const overlayTransition = {
-  transition:
-    `opacity var(--hl-tooltip-duration, ${motionDurationCss.base}) ${motionEaseCss.out}, ` +
-    `transform var(--hl-tooltip-duration, ${motionDurationCss.base}) ${motionEaseCss.out}`,
+  transition: transitionCss(
+    { property: "opacity", duration: tooltipDuration },
+    { property: "transform", duration: tooltipDuration },
+  ),
 } as const;
 
 // 同一 Provider 分组内已有 tooltip 打开时，再 hover 相邻触发器 → Base UI 打上 data-instant，

@@ -1,7 +1,7 @@
 "use client";
 import { Toast } from "@base-ui/react/toast";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type { ToastOptions, ToastPosition, ToastProviderProps, ToastTone } from "./toast.types";
 import { useComponentLocale } from "../config/locale-context";
 
@@ -58,12 +58,6 @@ const toneTitle: Record<ToastTone, string> = {
   warning: "text-warning",
   danger: "text-danger",
 };
-
-// transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 过渡期会往内联 style 注入
-// transition 简写，与长写混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 // 视口停靠位置（#227）。top-right 那一格与历史逐字一致
 // （拼出来就是 `fixed right-4 top-4 z-[60] flex …`），故不传 position 的既有调用点渲染不变。
@@ -152,7 +146,7 @@ function ToastList({ position }: { position: ToastPosition }) {
           // 进出场：滑入 + 淡入，用 motion-token CSS 镜像驱动 Base UI data-* 过渡
           toastSlide[position] ?? toastSlide["top-right"],
         )}
-        style={overlayTransition}
+        style={overlayTransitions.popup}
       >
         {isLoading && <ToastSpinner />}
         <div className="flex min-w-0 flex-1 flex-col gap-1">

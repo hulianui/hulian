@@ -2,7 +2,7 @@
 import type { ComponentProps, ReactNode } from "react";
 import { ContextMenu as BaseContextMenu } from "@base-ui/react/context-menu";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import { menuItemVariants, MenuCheckboxItem, MenuRadioGroup, MenuRadioItem } from "../menu/menu";
 import type {
   ContextMenuContentProps,
@@ -17,10 +17,6 @@ import type {
 // Base UI rc.0 自带 context-menu 原语（其 Positioner/Popup/Item/Separator/Group 直接复用 menu 部件）。
 // 瑚琏只薄包并复用 menu 的皮肤（同一 menuItemVariants / data-highlighted 钩子 / surface 面板）。
 // 与 Menu 的关键差异：Trigger 是「右键/长按弹出」的区域（渲 <div>），定位锚到光标（无 side/align）。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
 // 面板皮肤（主菜单 / 子菜单共用），抽常量避免漂移。
 const popupClass =
   // 高度上限同 Menu（#198）：右键菜单同样可能被数据撑长，溢出视口的部分点不到也滚不出来。
@@ -39,7 +35,7 @@ export function ContextMenuContent({ children, className }: ContextMenuContentPr
     <BaseContextMenu.Portal>
       {/* 定位锚到光标点击位置，无需 side/align。 */}
       <BaseContextMenu.Positioner className="z-50">
-        <BaseContextMenu.Popup className={cn(popupClass, className)} style={overlayTransition}>
+        <BaseContextMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseContextMenu.Popup>
       </BaseContextMenu.Positioner>
@@ -118,7 +114,7 @@ export function ContextMenuSubContent({ children, className }: ContextMenuSubCon
   return (
     <BaseContextMenu.Portal>
       <BaseContextMenu.Positioner className="z-50" side="right" align="start" sideOffset={4}>
-        <BaseContextMenu.Popup className={cn(popupClass, className)} style={overlayTransition}>
+        <BaseContextMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseContextMenu.Popup>
       </BaseContextMenu.Positioner>

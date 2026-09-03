@@ -14263,6 +14263,11 @@
       },
       "files": [
         {
+          "path": "components/hulianui/dialog/dialog-drag.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/dialog/dialog-drag.ts"
+        },
+        {
           "path": "components/hulianui/dialog/dialog.tsx",
           "type": "registry:ui",
           "target": "components/hulianui/dialog/dialog.tsx"
@@ -21799,6 +21804,11 @@
           "path": "components/hulianui/motion/tokens.ts",
           "type": "registry:lib",
           "target": "components/hulianui/motion/tokens.ts"
+        },
+        {
+          "path": "components/hulianui/motion/transition.ts",
+          "type": "registry:lib",
+          "target": "components/hulianui/motion/transition.ts"
         },
         {
           "path": "components/hulianui/motion/variants.ts",

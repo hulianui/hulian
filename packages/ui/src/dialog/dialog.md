@@ -40,6 +40,7 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 | `DialogContent.backdropClassName` | `string` | - | 追加到遮罩（默认 `bg-black/40 backdrop-blur-sm`），走 twMerge，可调浓度/模糊 |
 | `DialogContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children（双栏各自滚动即写 `flex-1 min-h-0`，不必拍 `h-[58vh]`） |
 | `DialogContent.bodyClassName` | `string` | - | 追加到正文区容器 |
+| `DialogContent.draggable` | `boolean` | `false` | 允许按住标题行拖动对话框。把手是标题行（`title` 与 `extra` 所在那一行），行里的按钮照常点击不起拖；自画 header 时给自家元素加 `data-drag-handle`。整块不出视口，每次打开回到初始位置。见下方「可拖动」 |
 | `DialogContent.className` | `string` | - | 内容容器类名 |
 
 ## Events
@@ -71,6 +72,22 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 </Dialog>
 ```
 
+### 可拖动
+
+`draggable` 只是鼠标 / 触控的便利：按住标题行把对话框挪开，看清底下被遮住的内容再回来操作。几条边界：
+
+- **把手是标题行**。`title` 单独成行时 `<h2>` 就是把手；有 `extra` 时整行是把手，行里的按钮等交互元素自己吃按下、不起拖。没有 `title` / `extra`、可见 header 由你自己画时，给自家把手元素加 `data-drag-handle`：
+
+```tsx
+<DialogContent aria-label="通知" draggable className="p-0 [--hl-overlay-pad:0px]">
+  <div data-drag-handle className="cursor-move border-b px-4 py-3">…</div>
+  {/* 正文 */}
+</DialogContent>
+```
+
+- **位移写在 popup 的内联 `left` / `top`，不碰 `translate` / `transform`**（那两个属性在浮层的过渡列表里，拿来承载拖拽会让每一步都吃缓动）。你用 `className` 改的初始位置（`top-10 translate-y-0` 之类）照常生效，拖动只在它的结果上累加。
+- **整块不出视口**，每次打开回到初始位置（Base UI 关闭即卸载 popup，位置随之消失）。
+
 ## 禁忌 / 坑
 
 - 非模态浮层要**两处一起改**：Root 传 `modal={false}`（让焦点与滚动锁失效）+ Content 传 `backdrop={false}`（不渲染遮罩）。只改前者时那层 `fixed inset-0` 仍在，透明也照样吃掉整屏点击，"非模态"等于没生效。
@@ -78,6 +95,8 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 - `DialogTrigger` / `DialogClose` 用 `render={<Button…/>}` 把自家行为合并到目标元素上，**不要**再额外包一层按钮，否则会出现嵌套交互元素 / 双重 onClick。
 - 操作按钮优先放 `footer` 槽（带分隔线、右对齐），正文 `children` 留给主内容。
+- `draggable` **没有键盘等价操作**，别把「能挪开看底下的内容」当成功能前提：需要边看边填的场景用非模态（Root `modal={false}` + `backdrop={false}`）。
+- 自画 header 的对话框开 `draggable` 时要自己标 `data-drag-handle`：把手默认只认标题行，没有 `title` / `extra` 又没标把手，就是**看着开了、拖不动**。
 
 ### 对话框必须有名字
 

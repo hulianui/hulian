@@ -5,18 +5,12 @@ import { X } from "../_icons";
 import { useLocaleValue } from "../config/locale-context";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
+import { DRAG_HANDLE_ATTR, usePopupDrag } from "./dialog-drag";
 import type { DialogContentProps } from "./dialog.types";
 
 // overlay 自管 mount/unmount（Base UI 等过渡结束才卸载），故不接 motion 的 AnimatePresence，
 // 改用瑚琏动效 token 驱动其原生过渡 —— 与 Button(motion) 共享同一手感曲线，零混库。
-// 用 transition 简写(而非长写)：Base UI 在过渡生命周期会往内联 style 注入 transition 简写，与长写
-// 混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。简写同属性覆盖无混用 → 警告消除。
-// 同时覆盖 opacity+transform：backdrop 仅 opacity 变化(transform 段为空操作)，popup 两者皆动。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
 export function Dialog(props: ComponentProps<typeof BaseDialog.Root>) {
   return <BaseDialog.Root {...props} />;
 }
@@ -38,6 +32,7 @@ export function DialogContent({
   backdropClassName,
   scrollable = true,
   bodyClassName,
+  draggable = false,
   className,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
@@ -45,6 +40,12 @@ export function DialogContent({
   const loc = useLocaleValue("dialog", {
     close: "关闭",
   });
+  const dragHandlers = usePopupDrag(draggable);
+  // 把手落在标题行上（title 单独成行时是 <h2> 本身，有 extra 时是那一行的容器）：
+  // 用 data 属性而不是 ref 认把手，消费方自己画 header 时给自家元素标同一个属性就接上了。
+  // touch-none：触控下按住标题拖动不能被浏览器当成滚动页面。
+  const dragHandleAttrs = draggable ? { [DRAG_HANDLE_ATTR]: "" } : undefined;
+  const dragHandleClass = draggable && "cursor-move touch-none";
   // 与 DrawerContent 同一口径：title="" / null / undefined 都不渲染标题元素。
   const hasTitle = Boolean(title);
   // 同 DrawerContent：Base UI 的 aria-labelledby 只来自 Dialog.Title，没有 Title 时不回落，
@@ -67,7 +68,7 @@ export function DialogContent({
             "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             backdropClassName,
           )}
-          style={overlayTransition}
+          style={overlayTransitions.backdrop}
         />
       )}
       <BaseDialog.Popup
@@ -82,12 +83,13 @@ export function DialogContent({
           "data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0 data-[ending-style]:scale-[0.96] data-[ending-style]:opacity-0",
           className,
         )}
-        style={overlayTransition}
+        style={overlayTransitions.popup}
         // 条件展开而非 aria-label={ariaLabel}：Base UI 的 mergeProps 用 `for...in` 遍历外部 props，
         // 键存在即覆盖、不看值是否 undefined —— 常规写法会把内部由 Dialog.Title 派生的
         // titleElementId 一并抹掉，全库对话框当场集体失去无障碍名（#272）。
         {...(ariaLabel != null && { "aria-label": ariaLabel })}
         {...(ariaLabelledBy != null && { "aria-labelledby": ariaLabelledBy })}
+        {...dragHandlers}
       >
         {/* 关闭按钮（#279，形状与默认值对齐 DrawerContent 的 #63）：只读详情型对话框
             （没有 footer、正文没有关闭控件的那种）此前唯一的可见退路只有点遮罩，
@@ -106,10 +108,12 @@ export function DialogContent({
         {extra == null ? (
           hasTitle && (
             <BaseDialog.Title
+              {...dragHandleAttrs}
               className={cn(
                 "shrink-0 text-lg font-semibold",
                 // 与 drawer 同款联动：开着关闭键就给标题让出右上角那 40px，长标题不钻到按钮底下。
                 showClose && "pr-10",
+                dragHandleClass,
                 titleClassName,
               )}
             >
@@ -121,11 +125,13 @@ export function DialogContent({
           // `<h2>` 只收 phrasing content，且 aria-labelledby 指向整个 `<h2>`，
           // 按钮塞进去会被一并念进对话框的名字。
           <div
+            {...dragHandleAttrs}
             className={cn(
               "flex shrink-0 items-center gap-2",
               hasTitle ? "justify-between" : "justify-end",
               // showClose 时整行让出右上角，extra 不被绝对定位的关闭按钮压住（同 drawer）。
               showClose && "pr-10",
+              dragHandleClass,
             )}
           >
             {hasTitle && (

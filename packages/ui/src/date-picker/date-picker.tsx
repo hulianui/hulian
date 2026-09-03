@@ -8,17 +8,12 @@ import { Calendar } from "../calendar";
 import { PICKER_FORMAT, PICKER_PLACEHOLDER, parseValue } from "../calendar/calendar-core";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type { DatePickerProps } from "./date-picker.types";
 
 // 零依赖单日期选择器：触发器 + Base UI Popover + 常驻面板组件 <Calendar>。
 // 面板本身（三层下钻、禁用判定、今天快捷）全在 Calendar 里，这里只管
 // 「显示什么、什么时候开合、怎么清空」—— 与 DateRangePicker 同源（共用 lib/date）。
-
-// 与 popover.tsx 同款：transition 简写避免与 Base UI 内联长写混用触发 React shorthand 警告。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 // 触发器刻度与 Input 外壳逐字一致（32/40/48）：日期选择器几乎总是和 Input/Select 并排落在
 // 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
@@ -137,7 +132,7 @@ function DatePickerImpl({
               "rounded-[var(--radius)] border border-hairline bg-surface p-3 text-foreground shadow-xl outline-none",
               "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
-            style={overlayTransition}
+            style={overlayTransitions.popup}
           >
             {/*
               面板每次开合都随 Popup 挂卸，所以 cursor / view 天然回到「对齐当前值」的初态，

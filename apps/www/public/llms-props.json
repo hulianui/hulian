@@ -3045,6 +3045,14 @@
           "type": "string",
           "default": null,
           "description": "限高/限宽由消费者经此给 Root（如 `h-48` / `w-64`），否则不会出现滚动。"
+        },
+        {
+          "name": "viewportClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "追加到内层视口（真正的滚动盒）。`className` 落在 Root 上够不着视口，而裁剪发生在视口 —— 贴边控件的焦点环被切掉时传 `px-1.5` 之类留出余量（#340，见下方坑位）"
         }
       ],
       "events": [],
@@ -11576,6 +11584,14 @@
           "valueType": "string",
           "default": "\"right\"",
           "description": "仅 `DrawerForm`：抽屉贴边方向"
+        },
+        {
+          "name": "draggable",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "仅 `ModalForm`：允许按住标题拖动对话框（透传 [DialogContent.draggable](../dialog/dialog.md)）"
         }
       ],
       "events": [
@@ -33179,6 +33195,15 @@
           "type": "string",
           "default": null,
           "description": "追加到正文区容器"
+        },
+        {
+          "name": "draggable",
+          "owner": "DialogContent",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "允许按住标题行拖动对话框。把手是标题行（`title` 与 `extra` 所在那一行），行里的按钮照常点击不起拖；自画 header 时给自家元素加 `data-drag-handle`。整块不出视口，每次打开回到初始位置。见下方「可拖动」"
         },
         {
           "name": "className",

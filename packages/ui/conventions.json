@@ -3108,7 +3108,21 @@
       "id": "component/dialog/pitfall/4",
       "scope": "dialog",
       "title": "Dialog",
-      "rule": "操作按钮优先放 `footer` 槽（带分隔线、右对齐），正文 `children` 留给主内容。 ### 对话框必须有名字 `title` 在 0.47.0 之前是必填，但那不真的保证有名字 —— `title={null}` 一样过类型检查，渲染出的是个空 `<h2>`。改成可选之后，保证换成了运行时告警：`title` / `aria-label` / `aria-labelledby` **三者全无**时开发期会打一条 warn。 因此「可见 header 是一行控件」的铺满型对话框不必再塞一个 `sr-only` 的假标题： ```tsx <DialogContent aria-label=\"通知\" className=\"p-0 [--hl-overlay-pad:0px]\"> <div className=\"flex items-center justify-between border-b px-4 py-3\">…</div> {/* 正文 */} </DialogContent> ``` 标题旁只是要摆几个按钮时用 `extra`，别把整行塞进 `title`：`<h2>` 只收 phrasing content，而 `aria-labelledby` 指向整个 `<h2>`，按钮文案会被一起念进对话框的名字里。同款槽见 [DrawerContent.extra](../drawer/drawer.md) 与 [CardHeader.extra](../card/card.md)。",
+      "rule": "操作按钮优先放 `footer` 槽（带分隔线、右对齐），正文 `children` 留给主内容。",
+      "source": "packages/ui/src/dialog/dialog.md"
+    },
+    {
+      "id": "component/dialog/pitfall/5",
+      "scope": "dialog",
+      "title": "Dialog",
+      "rule": "`draggable` **没有键盘等价操作**，别把「能挪开看底下的内容」当成功能前提：需要边看边填的场景用非模态（Root `modal={false}` + `backdrop={false}`）。",
+      "source": "packages/ui/src/dialog/dialog.md"
+    },
+    {
+      "id": "component/dialog/pitfall/6",
+      "scope": "dialog",
+      "title": "Dialog",
+      "rule": "自画 header 的对话框开 `draggable` 时要自己标 `data-drag-handle`：把手默认只认标题行，没有 `title` / `extra` 又没标把手，就是**看着开了、拖不动**。 ### 对话框必须有名字 `title` 在 0.47.0 之前是必填，但那不真的保证有名字 —— `title={null}` 一样过类型检查，渲染出的是个空 `<h2>`。改成可选之后，保证换成了运行时告警：`title` / `aria-label` / `aria-labelledby` **三者全无**时开发期会打一条 warn。 因此「可见 header 是一行控件」的铺满型对话框不必再塞一个 `sr-only` 的假标题： ```tsx <DialogContent aria-label=\"通知\" className=\"p-0 [--hl-overlay-pad:0px]\"> <div className=\"flex items-center justify-between border-b px-4 py-3\">…</div> {/* 正文 */} </DialogContent> ``` 标题旁只是要摆几个按钮时用 `extra`，别把整行塞进 `title`：`<h2>` 只收 phrasing content，而 `aria-labelledby` 指向整个 `<h2>`，按钮文案会被一起念进对话框的名字里。同款槽见 [DrawerContent.extra](../drawer/drawer.md) 与 [CardHeader.extra](../card/card.md)。",
       "source": "packages/ui/src/dialog/dialog.md"
     },
     {
@@ -8463,7 +8477,7 @@
       "id": "component/scroll-area/pitfall/1",
       "scope": "scroll-area",
       "title": "ScrollArea",
-      "rule": "**不给限高/限宽就不滚**：组件不自带尺寸，必须经 `className` 给 Root 限定 `h-*` / `w-*`（横向则限 `w-*`），否则内容撑开容器、滚动条永不出现。",
+      "rule": "**不给限高/限宽就不滚**：组件不自带尺寸，必须经 `className` 给 Root 限定高度/宽度，否则内容撑开容器、滚动条永不出现。固定高度用 `h-*`（内容少时下方留白），「长则封顶滚动、短则紧凑」用 `max-h-*`（横向同理是 `w-*` / `max-w-*`）—— 0.61.0 前 `max-h-*` 会**静默裁掉**超出部分（没有滚动条、滚轮无效、键盘也到不了），现在两种写法都正常（#342）。",
       "source": "packages/ui/src/scroll-area/scroll-area.md"
     },
     {
@@ -8475,6 +8489,13 @@
     },
     {
       "id": "component/scroll-area/pitfall/3",
+      "scope": "scroll-area",
+      "title": "ScrollArea",
+      "rule": "**贴边控件的焦点环会被裁掉，用 `viewportClassName` 留余量**（#340）。上一条的裁剪不只作用于内容本身：`w-full` 的 `Input` 与视口左右零余量，聚焦时 `ring-2 + ring-offset-2` 向外扩的 4px 整条落在视口外被切掉，**看到的是蓝框只剩上下两条线**（上下方向有富余高度所以还在）。给 Root 加内边距救不了，裁的是视口。传 `viewportClassName=\"px-1.5\"` 即可；留白该加在滚动容器上还是各列上只有你知道，所以组件不给默认值。",
+      "source": "packages/ui/src/scroll-area/scroll-area.md"
+    },
+    {
+      "id": "component/scroll-area/pitfall/4",
       "scope": "scroll-area",
       "title": "ScrollArea",
       "rule": "**非声明方向的溢出被锁死（hidden），不会静默可滚**：`vertical` 的视口 `overflow-x: hidden`、`horizontal` 的视口 `overflow-y: hidden`（`both` 两轴都放开）。Base UI 给视口的是两轴 `overflow: scroll` 且原生条隐藏，此前内容比视口宽哪怕 1px 都能被触控板横扫、又没有任何滚动条提示，观感像布局坏了（#287）。所以放进 `vertical` 区域的内容要自己不超宽（`w-full` / `min-w-0` / 内部截断），超出的部分现在是被裁而不是可滚；真要两轴滚就声明 `orientation=\"both\"`。",
@@ -11131,7 +11152,7 @@
   ],
   "stats": {
     "componentDocs": 399,
-    "componentAdvisories": 1551,
-    "totalAdvisories": 1561
+    "componentAdvisories": 1554,
+    "totalAdvisories": 1564
   }
 }

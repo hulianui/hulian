@@ -28,6 +28,21 @@ function Both() {
       </div>
     </ScrollArea>);
 }
+function Capped() {
+    return (<div className="flex flex-wrap gap-4">
+      <ScrollArea className="max-h-40 w-56 border border-border bg-surface p-4">
+        <div className="space-y-2 text-sm text-muted-foreground">
+          <p>Short content shows no scrollbar, and the container is only as tall as it needs to be.</p>
+          <p>A fixed height would leave empty space below.</p>
+        </div>
+      </ScrollArea>
+      <ScrollArea className="max-h-40 w-56 border border-border bg-surface p-4">
+        <div className="space-y-2 text-sm text-muted-foreground">
+          {paragraphs.map((n) => (<p key={n}>No. {n} : scrolls here once past the cap, and hugs the content below it.</p>))}
+        </div>
+      </ScrollArea>
+    </div>);
+}
 export const scrollAreaShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -45,6 +60,14 @@ export const scrollAreaShowcase: ShowcaseSpec = {
   <div className="flex gap-3">{/* Cards */}</div>
 </ScrollArea>`,
             render: () => <Horizontal />,
+        },
+        {
+            title: "Capped scrolling",
+            description: "Use max-h-* for grow-then-scroll: short content shows no scrollbar and leaves none of the empty space below that a fixed height would.",
+            code: `<ScrollArea className="max-h-40 w-56 border border-border p-4">
+  {/* Scrolls only past 40; below that the container is as tall as its content */}
+</ScrollArea>`,
+            render: () => <Capped />,
         },
         {
             title: "Bi-directional scrolling",

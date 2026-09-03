@@ -5,14 +5,10 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cva } from "class-variance-authority";
 import { ChevronRight } from "../_icons";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import { getNodePath, type TreeNode } from "../tree/tree-core";
 import { flattenLeafPaths, filterLeafPaths } from "./cascader.logic";
 import type { CascaderProps } from "./cascader.types";
-
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 const triggerVariants = cva(
   [
@@ -160,7 +156,7 @@ function CascaderImpl({
               "flex max-h-[min(20rem,var(--available-height))] flex-col rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
               "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
-            style={overlayTransition}
+            style={overlayTransitions.popup}
           >
             {showSearch && (
               <div className="shrink-0 border-b border-border p-1.5">

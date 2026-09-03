@@ -73,6 +73,30 @@ export const dialogShowcase: ShowcaseSpec = {
           </DialogContent>
         </Dialog>),
         },
+        {
+            title: "Draggable",
+            description: "draggable turns the title row into a handle: hold the title to move the dialog aside and see the page underneath; buttons in extra on the right of the title still click.",
+            code: `<Dialog>
+  <DialogTrigger render={<Button variant="outline">Open draggable dialog</Button>} />
+  <DialogContent
+    draggable
+    title="Select attachment"
+    description="Hold the title to drag."
+    extra={<Button size="sm" variant="ghost">Refresh</Button>}
+    footer={<DialogClose render={<Button>Done</Button>} />}
+  >
+    <p className="text-sm text-muted-foreground">Once the dialog is moved aside, the page content underneath stays visible.</p>
+  </DialogContent>
+</Dialog>`,
+            render: () => (<Dialog>
+          <DialogTrigger render={<Button variant="outline">Open draggable dialog</Button>}/>
+          <DialogContent draggable title="Select attachment" description="Hold the title to drag." extra={<Button size="sm" variant="ghost">
+                Refresh
+              </Button>} footer={<DialogClose render={<Button>Complete</Button>}/>}>
+            <p className="text-sm text-muted-foreground">Once the dialog is moved aside, the page content underneath stays visible.</p>
+          </DialogContent>
+        </Dialog>),
+        },
     ],
     controls: [],
     states: [{ name: "default", render: () => <Demo /> }],

@@ -40,6 +40,7 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 | `DialogContent.backdropClassName` | `string` | - | Appended to the backdrop, whose default is `bg-black/40 backdrop-blur-sm`. Classes merge with twMerge, so dimming and blur can follow your design system. |
 | `DialogContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children, so a two-pane layout only needs `flex-1 min-h-0` instead of a hand-tuned `h-[58vh]`. |
 | `DialogContent.bodyClassName` | `string` | - | Appended to the body container. |
+| `DialogContent.draggable` | `boolean` | `false` | Lets the user move the dialog by holding the title row. The handle is the title row (where `title` and `extra` live); buttons in that row still click instead of dragging. Mark your own element with `data-drag-handle` when you draw the header yourself. The popup stays inside the viewport and returns to its initial position on every open. See "Draggable" below. |
 | `DialogContent.className` | `string` | - | Content-container class name. |
 
 ## Events
@@ -68,6 +69,22 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 </Dialog>
 ```
 
+### Draggable
+
+`draggable` is a mouse and touch convenience: hold the title row to move the dialog aside, look at what it was covering, and come back. A few boundaries:
+
+- **The handle is the title row.** When `title` stands alone, the `<h2>` is the handle; with `extra` the whole row is, and interactive elements inside it (buttons and the like) take the press themselves instead of starting a drag. When you draw the visible header yourself (no `title` / `extra`), mark your own handle with `data-drag-handle`:
+
+```tsx
+<DialogContent aria-label="Notifications" draggable className="p-0 [--hl-overlay-pad:0px]">
+  <div data-drag-handle className="cursor-move border-b px-4 py-3">…</div>
+  {/* body */}
+</DialogContent>
+```
+
+- **The offset is written to the popup's inline `left` / `top`, never to `translate` / `transform`** (those two sit in the overlay transition list, so carrying the drag on them would ease every step). An initial position you set through `className` (such as `top-10 translate-y-0`) keeps working; dragging only adds on top of its result.
+- **The popup never leaves the viewport**, and every open starts from the initial position (Base UI unmounts the popup on close, and the offset goes with it).
+
 ## Usage guidelines
 
 - A non-modal overlay takes **two changes**: `modal={false}` on the root, which releases the focus and scroll locks, plus `backdrop={false}` on the content, which stops rendering the backdrop. Changing only the first leaves a `fixed inset-0` layer that swallows every click even while transparent, so nothing actually becomes non-modal.
@@ -75,6 +92,8 @@ import { Dialog, DialogTrigger, DialogClose, DialogContent } from "@hulianui/ui"
 
 - Use `render={<Button … />}` on DialogTrigger and DialogClose to merge behavior into the target element. Do not wrap another button around them; that creates nested interactive elements and duplicate click handling.
 - Prefer the `footer` slot for actions so it receives the divider and alignment, leaving `children` for primary content.
+- `draggable` **has no keyboard equivalent**, so do not make "move it aside to read what is underneath" a precondition of the task; a form that must be filled in while reading the page belongs in a non-modal overlay (`modal={false}` on the root plus `backdrop={false}`).
+- A dialog that draws its own header must mark its handle with `data-drag-handle` when it turns on `draggable`: the handle defaults to the title row alone, so with no `title` / `extra` and no marked handle the option **looks on but nothing moves**.
 
 ### A dialog must have a name
 

@@ -271,3 +271,154 @@ describe("DialogContent 关闭按钮的 locale 接线", () => {
     expect(screen.getByLabelText("Close")).toBeTruthy();
   });
 });
+
+// 可拖动：把手 = 标题行；位移写内联 left/top（不碰 translate/transform，见 dialog-drag.ts）。
+// jsdom 没有布局：offsetLeft/offsetTop 与 getBoundingClientRect 全是 0，起点即 0px，
+// 视口 1024×768 → 允许的位移区间是 [0, 1024] / [0, 768]，所以正向移动可见、负向被夹回 0。
+describe("DialogContent draggable", () => {
+  function press(el: Element, x: number, y: number) {
+    fireEvent.pointerDown(el, { pointerId: 1, button: 0, clientX: x, clientY: y });
+  }
+  function move(el: Element, x: number, y: number) {
+    fireEvent.pointerMove(el, { pointerId: 1, clientX: x, clientY: y });
+  }
+
+  it("默认不可拖：标题上没有把手标记，按住拖也不动", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题">
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(document.querySelector("[data-drag-handle]")).toBeNull();
+    const h2 = screen.getByText("标题");
+    press(h2, 10, 10);
+    move(h2, 50, 30);
+    const popup = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(popup.style.left).toBe("");
+    expect(popup.style.top).toBe("");
+  });
+
+  it("draggable：标题是把手（cursor-move + touch-none），按住拖动改 popup 的 left/top", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题" draggable>
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const h2 = screen.getByText("标题");
+    expect(h2.hasAttribute("data-drag-handle")).toBe(true);
+    expect(h2.className).toContain("cursor-move");
+    expect(h2.className).toContain("touch-none");
+    const popup = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    press(h2, 10, 10);
+    move(h2, 50, 30);
+    expect(popup.style.left).toBe("40px");
+    expect(popup.style.top).toBe("20px");
+    // 松手后再动不跟
+    fireEvent.pointerUp(h2, { pointerId: 1 });
+    move(h2, 500, 500);
+    expect(popup.style.left).toBe("40px");
+  });
+
+  it("正文不是把手：按住正文拖不动", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题" draggable>
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const body = screen.getByText("正文");
+    press(body, 10, 10);
+    move(body, 50, 30);
+    const popup = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(popup.style.left).toBe("");
+  });
+
+  it("有 extra 时整个标题行是把手，但行里的按钮自己吃按下、不起拖", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题" draggable extra={<button>刷新</button>}>
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const h2 = screen.getByText("标题");
+    const row = h2.parentElement!;
+    expect(row.hasAttribute("data-drag-handle")).toBe(true);
+    expect(h2.hasAttribute("data-drag-handle")).toBe(false);
+    const popup = document.querySelector<HTMLElement>('[role="dialog"]')!;
+
+    const btn = screen.getByText("刷新");
+    press(btn, 10, 10);
+    move(btn, 50, 30);
+    expect(popup.style.left).toBe("");
+
+    press(row, 10, 10);
+    move(row, 50, 30);
+    expect(popup.style.left).toBe("40px");
+  });
+
+  it("消费方自画 header：标 data-drag-handle 的元素就是把手", () => {
+    render(
+      <Dialog open>
+        <DialogContent aria-label="通知" draggable>
+          <div data-drag-handle>自画标题</div>
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const handle = screen.getByText("自画标题");
+    press(handle, 0, 0);
+    move(handle, 15, 25);
+    const popup = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(popup.style.left).toBe("15px");
+    expect(popup.style.top).toBe("25px");
+  });
+
+  it("整块不出视口：越界的位移被夹住", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="标题" draggable>
+          <span>正文</span>
+        </DialogContent>
+      </Dialog>,
+    );
+    const popup = document.querySelector<HTMLElement>('[role="dialog"]')!;
+    // 装一个真实尺寸：popup 居中 400×300，视口 1024×768 → 左上角 (312,234)。
+    popup.getBoundingClientRect = () =>
+      ({ left: 312, top: 234, right: 712, bottom: 534, width: 400, height: 300 }) as DOMRect;
+    const h2 = screen.getByText("标题");
+    press(h2, 400, 250);
+    move(h2, -1000, 5000);
+    // 起点 offsetLeft/offsetTop 在 jsdom 里是 0：允许区间 dx∈[-312,312]、dy∈[-234,234]
+    expect(popup.style.left).toBe("-312px");
+    expect(popup.style.top).toBe("234px");
+  });
+
+  it("嵌套对话框：内层拖动不带动外层", () => {
+    render(
+      <Dialog open>
+        <DialogContent title="外层" draggable>
+          <Dialog open>
+            <DialogContent title="内层" draggable>
+              <span>内层正文</span>
+            </DialogContent>
+          </Dialog>
+        </DialogContent>
+      </Dialog>,
+    );
+    // 内层模态开着时外层被 Base UI 标 inert / aria-hidden，按 role 查名字取不到，直接按 DOM 顺序拿。
+    const [outer, inner] = Array.from(document.querySelectorAll<HTMLElement>('[role="dialog"]'));
+    expect(outer.getAttribute("aria-labelledby")).toBe(screen.getByText("外层").id);
+    expect(inner.getAttribute("aria-labelledby")).toBe(screen.getByText("内层").id);
+    const innerTitle = screen.getByText("内层");
+    press(innerTitle, 10, 10);
+    move(innerTitle, 50, 30);
+    expect(inner.style.left).toBe("40px");
+    expect(outer.style.left).toBe("");
+  });
+});

@@ -35,6 +35,7 @@ Public (`ModalForm` = `FormDialogBaseProps`; `DrawerForm` plus `side` on this ba
 | cancelText | `string` | `locale.modalForm.cancel` | Cancel button copy |
 | className | `string` | - | Container class name (control width, etc.) |
 | side | `DrawerSide` | `"right"` | `DrawerForm` only: drawer welt direction |
+| draggable | `boolean` | `false` | `ModalForm` only: lets the user move the dialog by holding the title (passed through to [DialogContent.draggable](../dialog/dialog.md)) |
 
 ## Events
 

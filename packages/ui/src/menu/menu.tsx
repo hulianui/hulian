@@ -4,7 +4,7 @@ import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { Check, ChevronRight } from "../_icons";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type {
   MenuContentProps,
   MenuItemProps,
@@ -14,13 +14,6 @@ import type {
   MenuSubTriggerProps,
   MenuSubContentProps,
 } from "./menu.types";
-
-// overlay 自管 mount/unmount；用瑚琏 motion token 的 CSS 镜像驱动 Base UI 原生过渡（与 Dialog/Popover 同手感）。
-// transition 简写(而非 transitionDuration/TimingFunction 长写)：Base UI 过渡期会往内联 style 注入
-// transition 简写，与长写混在同一 style 对象 → React "shorthand/longhand 混用" 警告并丢弃长写。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 // 面板皮肤（主菜单 / 子菜单共用），抽常量而非各写一遍：#212 的成因正是同一套东西在两处
 // 各自维护后漂开，子面板再抄一份字面量就是把同一个坑挪进本文件。
@@ -48,7 +41,7 @@ export function MenuContent({
   return (
     <BaseMenu.Portal>
       <BaseMenu.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
-        <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransition}>
+        <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
@@ -173,7 +166,7 @@ export function MenuSubContent({ children, className }: MenuSubContentProps) {
   return (
     <BaseMenu.Portal>
       <BaseMenu.Positioner className="z-50" side="right" align="start" sideOffset={4}>
-        <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransition}>
+        <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseMenu.Popup>
       </BaseMenu.Positioner>

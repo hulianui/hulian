@@ -29,7 +29,7 @@
     {
       "name": "select",
       "entry": "@hulianui/ui/select",
-      "limitKB": 80
+      "limitKB": 82
     },
     {
       "name": "table",

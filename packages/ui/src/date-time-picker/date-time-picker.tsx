@@ -8,7 +8,7 @@ import { Calendar } from "../calendar";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
 import { dayjs } from "../lib/date";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import { TimeColumn } from "../time-picker/time-column";
 import {
   buildOptions,
@@ -33,11 +33,6 @@ import type { DateTimePickerProps } from "./date-time-picker.types";
 // 零依赖日期时间选择器：左边一整块 <Calendar>，右边三列时间（与 TimePicker 同一个 TimeColumn）。
 // 两半各管各的，合成与边界换算全在 date-time-picker-core 里 —— 尤其是「时间边界只在
 // 压着 min/max 那一天才生效」这条，它是这个组件里唯一容易写错的地方。
-
-// 与 popover.tsx 同款：transition 简写避免与 Base UI 内联长写混用触发 React shorthand 警告。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
 
 // 触发器刻度与 Input 外壳逐字一致（32/40/48）：日期时间选择器几乎总是和 Input/Select 并排落在
 // 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
@@ -217,7 +212,7 @@ function DateTimePickerImpl({
               "rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
               "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             )}
-            style={overlayTransition}
+            style={overlayTransitions.popup}
           >
             <div className="flex divide-x divide-border">
               <div className="p-3">

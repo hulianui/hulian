@@ -107,6 +107,7 @@ export function ModalForm({
   submitText,
   cancelText,
   className,
+  draggable,
   children,
 }: ModalFormProps) {
   const [isOpen, setOpen] = useOpenState(open, defaultOpen, onOpenChange);
@@ -118,6 +119,7 @@ export function ModalForm({
       <DialogContent
         title={title}
         className={className}
+        draggable={draggable}
         footer={
           <FormDialogFooter
             formId={formId}

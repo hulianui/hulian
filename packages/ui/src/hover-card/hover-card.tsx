@@ -10,16 +10,12 @@ import {
 } from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type { HoverCardProps, HoverCardContentProps } from "./hover-card.types";
 
 // Base UI rc.0 无 hover-card 原语，且 Popover.Root 不支持 openOnHover/delay。
 // → 在 Popover 引擎上自研：受控 open + 自管 open/close 计时（复刻 Tooltip Provider 的 delay/closeDelay 范式）。
 // 触发器与卡片都监听 mouseenter/leave，使指针在两者间移动时卡片保持打开；Esc/点外仍由 Popover 兜底关闭。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
 interface HoverCardCtx {
   open: () => void;
   close: () => void;
@@ -117,7 +113,7 @@ export function HoverCardContent({
             "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}
-          style={{ ...overlayTransition, ...style }}
+          style={{ ...overlayTransitions.popup, ...style }}
         >
           {children}
           {/* 箭头：同 Popover —— Base UI arrowStyles 只管交叉轴居中，垂直于边那轴要自己按 data-side

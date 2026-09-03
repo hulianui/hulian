@@ -3,7 +3,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { CircleCheck, CircleX, Info, TriangleAlert } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
-import { motionDuration, motionDurationCss, motionEaseCss } from "../motion";
+import { motionDuration, overlayTransitions } from "../motion";
 import type {
   NotificationInstance,
   NotificationOptions,
@@ -102,10 +102,6 @@ const typeBorder: Record<NotificationType, string> = {
   warning: "border-l-warning",
 };
 
-const cardTransition = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-} as const;
-
 function NotificationCard({ record }: { record: NotificationRecord }) {
   const { id, type, options, open: isOpen } = record;
   const { title, description, icon, btn, duration = 4500, placement = "topRight" } = options;
@@ -152,7 +148,7 @@ function NotificationCard({ record }: { record: NotificationRecord }) {
         typeBorder[type],
         slide,
       )}
-      style={cardTransition}
+      style={overlayTransitions.popup}
       role={type === "error" ? "alert" : "status"}
     >
       {/* items-start：关闭按钮是外层 flex 的第三个子项，外层不设 items-* 时默认 stretch，

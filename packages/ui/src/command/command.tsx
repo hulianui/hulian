@@ -5,20 +5,15 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 
 import { Search } from "../_icons";
 import { cn } from "../lib/cn";
 import { Empty } from "../empty";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions } from "../motion";
 import type { CommandItemData, CommandProps } from "./command.types";
 
 // 模态外壳复用瑚琏 Dialog 引擎（Base UI Dialog：Portal + Backdrop + Popup + focus-trap + Esc + 点外关闭），
 // 同 drawer.tsx 装配；overlay 自管 mount/unmount，用 motion token CSS 镜像驱动原生过渡，零 motion 运行时。
-// transition 用简写：Base UI 过渡期会往内联 style 注入 transition 简写，与长写混用会触发 React 警告并丢弃长写。
 //
 // 命令面板刻意「无位移、更快」：它是键盘高频入口（⌘K 一天可开数十上百次），
 // 位移/缩放进场会让每一次唤起都显得慢半拍——与其他 overlay 的 base(200ms)+scale 不同，
 // 这里只留 fast(150ms) 的 opacity，既不从"无"硬闪出来，也不拖住高频动作。
-const overlayTransition = {
-  transition: `opacity ${motionDurationCss.fast} ${motionEaseCss.out}`,
-} as const;
-
 // 外壳皮肤与布局分家（#178）：填充/描边/阴影收进这支 CVA，尺寸与定位留在 Popup 的类串里。
 // 混在同一串时，消费方为了换个底色必须连 w-[min(92vw,40rem)] 这类布局类一起承担 twMerge 的
 // 不确定性；分开后 `surface="none"` 就是「库不画、我来画」，皮肤升级不会和覆盖打架。
@@ -230,7 +225,7 @@ export function Command({
             "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             backdropClassName,
           )}
-          style={overlayTransition}
+          style={overlayTransitions.fade}
         />
         <BaseDialog.Popup
           initialFocus={inputRef}
@@ -242,7 +237,7 @@ export function Command({
             shellVariants({ surface }),
             className,
           )}
-          style={overlayTransition}
+          style={overlayTransitions.fade}
         >
           <BaseDialog.Title className="sr-only">{ariaLabel}</BaseDialog.Title>
 

@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { NavigationMenu as BaseNav } from "@base-ui/react/navigation-menu";
 import { ChevronDown } from "../_icons";
 import { cn } from "../lib/cn";
-import { motionDurationCss, motionEaseCss } from "../motion";
+import { overlayTransitions, transitionCss } from "../motion";
 import type {
   NavigationMenuContentProps,
   NavigationMenuItemProps,
@@ -13,17 +13,17 @@ import type {
   NavigationMenuTriggerProps,
 } from "./navigation-menu.types";
 
-// transition 简写避 shorthand/longhand 混用警告（同 popover/menu）。
-const overlayTransition: CSSProperties = {
-  transition: `opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
-};
-
 // Popup 尺寸形变：宽高跟随 Base UI 实测的 --popup-width/height 平滑过渡，配 --transform-origin。
 const popupMorph: CSSProperties = {
   width: "var(--popup-width)",
   height: "var(--popup-height)",
   transformOrigin: "var(--transform-origin)",
-  transition: `width ${motionDurationCss.base} ${motionEaseCss.out}, height ${motionDurationCss.base} ${motionEaseCss.out}, opacity ${motionDurationCss.base} ${motionEaseCss.out}, transform ${motionDurationCss.base} ${motionEaseCss.out}`,
+  transition: transitionCss(
+    { property: "width", duration: "base" },
+    { property: "height", duration: "base" },
+    { property: "opacity", duration: "base" },
+    { property: "transform", duration: "base" },
+  ),
 };
 
 /**
@@ -97,7 +97,7 @@ export function NavigationMenuTrigger({ className, children, ...props }: Navigat
 export function NavigationMenuContent({ className, ...props }: NavigationMenuContentProps) {
   return (
     <BaseNav.Content
-      style={overlayTransition}
+      style={overlayTransitions.popup}
       className={cn(
         // 当前内容在正常流(让 Popup 测得自然尺寸)；仅退出态转 absolute 让进入内容定尺寸。
         "w-max max-w-[calc(100vw-2rem)] p-4",
