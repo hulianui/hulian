@@ -18,6 +18,14 @@ export interface UseFormOptions<V extends FormValues = FormValues> {
   onValuesChange?: (changed: Partial<V>, all: V) => void;
 }
 
+export interface SetFieldsValueOptions {
+  /**
+   * 把这批值同时钉成新的干净基线（`isDirty()` 重新从 false 起算）。
+   * 异步回填详情时传 `true`：那批值是初始态，不是用户改的。
+   */
+  markPristine?: boolean;
+}
+
 /** register() 返回的绑定 props，展开到 Field + 控件上。 */
 export interface FieldBinding {
   name: string;
@@ -38,13 +46,36 @@ export interface FormInstance<V extends FormValues = FormValues> {
   /** 注册字段并拿到绑定 props（在渲染期调用）。 */
   register: (name: string, config?: FieldConfig) => FieldBinding;
   setFieldValue: (name: string, value: unknown) => void;
-  setFieldsValue: (partial: Partial<V>) => void;
+  /**
+   * 批量赋值。`markPristine` 把这批值同时钉成新的「干净基线」（#345）——
+   * **异步回填的编辑表单必须传它**，否则数据一到 `isDirty()` 就恒为 true。
+   */
+  setFieldsValue: (partial: Partial<V>, options?: SetFieldsValueOptions) => void;
   getFieldValue: (name: string) => unknown;
   /** 校验单个字段，返回错误文案(或 null)。 */
   validateField: (name: string) => Promise<string | null>;
   /** 校验全部已注册字段。 */
   validate: () => Promise<{ ok: boolean; values: V; errors: Record<string, string> }>;
+  /**
+   * 清回 `initialValues` 并清空错误与 touched，同时把脏基线一并复位。
+   *
+   * 用的是**当前**的 `initialValues`（0.63.0 起）：此前闭包锁死在首帧那一份，
+   * 消费方换了 `initialValues` 再 reset 会回到旧值 —— 那是缺陷不是约定。
+   *
+   * 刻意不收「新初始值」参数：那会把 `V` 放到参数位置，`FormInstance<具体类型>`
+   * 从此不能再赋给 `FormInstance<FormValues>`（逆变），编排件的 `form?: FormInstance`
+   * 会当场拒收所有带具体值类型的实例。换一条记录继续编辑用
+   * `setFieldsValue(next, { markPristine: true })`。
+   */
   resetFields: () => void;
+  /**
+   * 把**此刻**的值钉成新的干净基线，于是 `isDirty()` 重新从 false 起算（#345）。
+   *
+   * 用于异步回填：`initialValues` 在首帧多半是空壳，详情回来后填进去的那批值属于
+   * 「初始态」而不是「用户的编辑」。回填走 `setFieldsValue(v, { markPristine: true })`
+   * 更省一步；值已经由别的途径进去时（逐字段 `setFieldValue`、控件自填默认值）用这个。
+   */
+  markPristine: () => void;
   /**
    * 当前值是否与 `initialValues` 不同（#343）。
    *
@@ -120,6 +151,10 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
   // 消费方多半写成对象字面量，每次渲染都是新的一份，一旦它在渲染间被重建成「当前值」，
   // isDirty() 就永远是 false。resetFields() 会把这份基准一并刷新，语义上等同于「重新开始」。
   const pristineRef = useRef<V>(initialValues);
+  // 跟踪**当前**的 initialValues：resetFields 过去锁死在首帧那一份（useCallback 空依赖 +
+  // eslint-disable），消费方换了初始值再 reset 会回到旧值。ref 每次渲染刷新，闭包读它就跟得上。
+  const initialValuesRef = useRef<V>(initialValues);
+  initialValuesRef.current = initialValues;
 
   const runValidate = useCallback(async (name: string, snapshot: V): Promise<string | null> => {
     const cfg = configs.current.get(name);
@@ -194,14 +229,21 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
   const setFieldValue = useCallback((name: string, value: unknown) => applyChange(name, value), [applyChange]);
 
   const setFieldsValue = useCallback(
-    (partial: Partial<V>) => {
+    (partial: Partial<V>, options?: SetFieldsValueOptions) => {
       const next = { ...valuesRef.current, ...partial } as V;
       valuesRef.current = next;
+      // 与赋值同步钉基线，而不是让消费方回填后再调一次 markPristine：那样要多等一轮
+      // 渲染，中间任何一次 isDirty() 都会读到「已改动」。
+      if (options?.markPristine) pristineRef.current = next;
       setValues(next);
       onValuesChange?.(partial, next);
     },
     [onValuesChange],
   );
+
+  const markPristine = useCallback(() => {
+    pristineRef.current = valuesRef.current;
+  }, []);
 
   const getFieldValue = useCallback((name: string) => valuesRef.current[name], []);
 
@@ -230,13 +272,13 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
   }, []);
 
   const resetFields = useCallback(() => {
-    valuesRef.current = initialValues;
-    // 基准一并回到 initialValues：重置之后 isDirty() 必须是 false（#343）。
-    pristineRef.current = initialValues;
-    setValues(initialValues);
+    const base = initialValuesRef.current;
+    valuesRef.current = base;
+    // 基准一并回到初始值：重置之后 isDirty() 必须是 false（#343）。
+    pristineRef.current = base;
+    setValues(base);
     setErrors({});
     touched.current.clear();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submit = useCallback(
@@ -263,6 +305,7 @@ export function useForm<V extends FormValues = FormValues>(options: UseFormOptio
     validateField,
     validate,
     resetFields,
+    markPristine,
     isDirty,
     submit,
   };

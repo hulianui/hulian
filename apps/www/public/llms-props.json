@@ -11607,7 +11607,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "true",
-          "description": "表单改动过时，关闭前先确认一次。判据来自 `form.isDirty()`，**没传 `form` 就不生效**；干净表单直接关；提交成功后的关闭也不问"
+          "description": "表单改动过时，关闭前先确认一次。判据来自 `form.isDirty()`，**没传 `form` 就不生效**；干净表单直接关；提交成功后的关闭也不问。**异步回填的编辑表单**要用 `setFieldsValue(v, { markPristine: true })` 把回填那一刻钉成基线，否则什么都没改也会弹确认（[见 Form](../form/form.md)）"
         },
         {
           "name": "discardTitle",

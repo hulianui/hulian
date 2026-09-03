@@ -203,4 +203,54 @@ describe("register().value 的空值口径（#220）", () => {
       expect(result.current.isDirty()).toBe(true);
     });
   });
+
+  // #345：编辑弹窗的 initialValues 在首帧多半是空壳，详情异步回来才填进去。
+  // 若不把回填那一刻钉成新基线，isDirty() 从此恒为 true，confirmOnClose 必然误报。
+  describe("markPristine（异步回填）", () => {
+    it("回填不标记基线时确实会被判成脏（这正是 #345 的现象）", () => {
+      const { result } = renderHook(() => useForm({ initialValues: { title: "", type: "1" } }));
+      act(() => result.current.setFieldsValue({ title: "月度考核", type: "2" }));
+      expect(result.current.isDirty()).toBe(true);
+    });
+
+    it("setFieldsValue 传 markPristine：回填后仍是干净的", () => {
+      const { result } = renderHook(() => useForm({ initialValues: { title: "", type: "1" } }));
+      act(() => result.current.setFieldsValue({ title: "月度考核", type: "2" }, { markPristine: true }));
+      expect(result.current.isDirty()).toBe(false);
+      // 之后用户真的改一个字段才算脏
+      act(() => result.current.setFieldValue("title", "季度考核"));
+      expect(result.current.isDirty()).toBe(true);
+      // 改回回填值又不脏（基线是回填那批值，不是首帧空壳）
+      act(() => result.current.setFieldValue("title", "月度考核"));
+      expect(result.current.isDirty()).toBe(false);
+    });
+
+    it("markPristine() 把此刻的值钉成基线（值已由别的途径进去时用）", () => {
+      const { result } = renderHook(() => useForm({ initialValues: { title: "" } }));
+      act(() => result.current.setFieldValue("title", "月度考核"));
+      expect(result.current.isDirty()).toBe(true);
+      act(() => result.current.markPristine());
+      expect(result.current.isDirty()).toBe(false);
+    });
+
+    it("标记基线后 resetFields 回到 initialValues，而不是回到被标记的那批值", () => {
+      const { result } = renderHook(() => useForm({ initialValues: { title: "原始" } }));
+      act(() => result.current.setFieldsValue({ title: "回填" }, { markPristine: true }));
+      act(() => result.current.resetFields());
+      expect(result.current.values.title).toBe("原始");
+      expect(result.current.isDirty()).toBe(false);
+    });
+  });
+
+  // #345 顺带修：resetFields 过去闭包锁死首帧 initialValues，换了初始值再 reset 会回到旧值。
+  it("resetFields 用当前的 initialValues，不是首帧那一份", () => {
+    const { result, rerender } = renderHook(({ init }) => useForm({ initialValues: init }), {
+      initialProps: { init: { title: "第一条" } },
+    });
+    rerender({ init: { title: "第二条" } });
+    act(() => result.current.setFieldValue("title", "改过了"));
+    act(() => result.current.resetFields());
+    expect(result.current.values.title).toBe("第二条");
+    expect(result.current.isDirty()).toBe(false);
+  });
 });

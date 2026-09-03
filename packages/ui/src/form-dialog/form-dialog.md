@@ -37,7 +37,7 @@ import { ModalForm, DrawerForm } from "@hulianui/ui"
 | side | `DrawerSide` | `"right"` | 仅 `DrawerForm`：抽屉贴边方向 |
 | draggable | `boolean` | `false` | 仅 `ModalForm`：允许按住标题拖动对话框（透传 [DialogContent.draggable](../dialog/dialog.md)） |
 | dismissible | `boolean` | `false` | 点遮罩是否关闭。**与 `Dialog` / `Drawer` 原语相反**：编排件知道自己装着一张表单，填到一半被随手点没的代价太大（#343）。传 `true` 恢复原语行为 |
-| confirmOnClose | `boolean` | `true` | 表单改动过时，关闭前先确认一次。判据来自 `form.isDirty()`，**没传 `form` 就不生效**；干净表单直接关；提交成功后的关闭也不问 |
+| confirmOnClose | `boolean` | `true` | 表单改动过时，关闭前先确认一次。判据来自 `form.isDirty()`，**没传 `form` 就不生效**；干净表单直接关；提交成功后的关闭也不问。**异步回填的编辑表单**要用 `setFieldsValue(v, { markPristine: true })` 把回填那一刻钉成基线，否则什么都没改也会弹确认（[见 Form](../form/form.md)） |
 | discardTitle | `ReactNode` | locale `modalForm.discardTitle` | 放弃确认的标题 |
 | discardDescription | `ReactNode` | locale `modalForm.discardDescription` | 放弃确认的说明 |
 

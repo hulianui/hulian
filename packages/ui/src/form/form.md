@@ -43,7 +43,28 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | 字段内容 |
 
-`useForm` 控制器用法（详见示例）：`form.register(name, { rules, dependencies })`、`form.submit(onValid, onInvalid)`、`form.resetFields()`、`form.isDirty()`（当前值是否与 `initialValues` 不同 —— 关闭确认、离开页面拦截、无改动时置灰提交键都靠它；比的是值不是引用，改了又改回来算不脏）。
+`useForm` 控制器用法（详见示例）：`form.register(name, { rules, dependencies })`、`form.submit(onValid, onInvalid)`、`form.resetFields()`、`form.isDirty()`（当前值是否与基线不同 —— 关闭确认、离开页面拦截、无改动时置灰提交键都靠它；比的是值不是引用，改了又改回来算不脏）、`form.markPristine()`（把此刻的值钉成新基线）。
+
+### 异步回填的编辑表单要钉基线（#345）
+
+脏基线默认是**首帧**的 `initialValues`。编辑弹窗的首帧多半只有空壳、详情还在路上，回填一跑完当前值就与空壳全字段不同，`isDirty()` 从此恒为 `true` —— 接了 [ModalForm 的 confirmOnClose](../form-dialog/form-dialog.md) 就会变成「什么都没改也弹确认」。
+
+回填时把那批值一并声明为初始态即可：
+
+```tsx
+const form = useForm({ initialValues: { title: "", type: "1" } });
+
+useEffect(() => {
+  fetchDetail(id).then((d) => {
+    // ✅ 这批值是初始态，不是用户的编辑
+    form.setFieldsValue({ title: d.title, type: String(d.type) }, { markPristine: true });
+  });
+}, [id]);
+```
+
+值已经由别的途径进去时（逐字段 `setFieldValue`、控件自己填的默认值）用 `form.markPristine()` 补一刀。**别用两步写法**（先 `setFieldsValue` 再 `markPristine()`）：中间隔着一轮渲染，那期间任何一次 `isDirty()` 都会读到「已改动」。
+
+`resetFields()` 也会把基线复位，且用的是**当前**的 `initialValues`（0.63.0 起；此前锁死在首帧那一份，换了初始值再 reset 会回到旧值）。
 
 `register()` 返回 `{ name, value, onChange, onBlur, error, required }`。其中 `required` 按 `rules` 里有无 `required: true` 派生，透传给 [`Field`](../field/field.md) 的 `required` 即可让必填在提交前就看得见（红星 + `aria-required`），规则仍是唯一的校验来源。
 

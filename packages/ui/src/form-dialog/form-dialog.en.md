@@ -37,7 +37,7 @@ Public (`ModalForm` = `FormDialogBaseProps`; `DrawerForm` plus `side` on this ba
 | side | `DrawerSide` | `"right"` | `DrawerForm` only: drawer welt direction |
 | draggable | `boolean` | `false` | `ModalForm` only: lets the user move the dialog by holding the title (passed through to [DialogContent.draggable](../dialog/dialog.md)) |
 | dismissible | `boolean` | `false` | Whether pressing the backdrop closes the dialog. **The opposite of the `Dialog` and `Drawer` primitives**, because this component knows it holds a form and losing a half-filled one to a stray click costs far more than the convenience is worth (#343). Pass `true` to restore the primitive behaviour |
-| confirmOnClose | `boolean` | `true` | Ask for confirmation before closing an edited form. The test is `form.isDirty()`, so it **does nothing without a `form`**; an untouched form closes straight away, and so does the close that follows a successful submit |
+| confirmOnClose | `boolean` | `true` | Ask for confirmation before closing an edited form. The test is `form.isDirty()`, so it **does nothing without a `form`**; an untouched form closes straight away, and so does the close that follows a successful submit. An **edit form filled in asynchronously** must pin its baseline with `setFieldsValue(v, { markPristine: true })`, or it asks to discard even when nothing was touched ([see Form](../form/form.md)) |
 | discardTitle | `ReactNode` | locale `modalForm.discardTitle` | Title of the discard confirmation |
 | discardDescription | `ReactNode` | locale `modalForm.discardDescription` | Body copy of the discard confirmation |
 

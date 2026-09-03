@@ -43,7 +43,28 @@ import { Form, useForm, validateValue, FormList } from "@hulianui/ui"
 |------|------|------|
 | children | `ReactNode` | Fields and form actions. |
 
-`useForm` controller usage (see examples for details): `form.register(name, { rules, dependencies })`, `form.submit(onValid, onInvalid)`, `form.resetFields()`, `form.isDirty()` (whether the current values differ from `initialValues`, which drives close confirmations, navigation guards and disabling submit while nothing changed; it compares values rather than references, so editing a field and putting it back is not dirty).
+`useForm` controller usage (see examples for details): `form.register(name, { rules, dependencies })`, `form.submit(onValid, onInvalid)`, `form.resetFields()`, `form.isDirty()` (whether the current values differ from the baseline, which drives close confirmations, navigation guards and disabling submit while nothing changed; it compares values rather than references, so editing a field and putting it back is not dirty), and `form.markPristine()` (pin the current values as the new baseline).
+
+### An edit form filled in asynchronously has to pin its baseline (#345)
+
+The dirty baseline defaults to the `initialValues` of the **first render**. An edit dialog usually renders that first frame with an empty shell while the record is still in flight, so once the data lands every field differs from that shell and `isDirty()` stays `true` forever. Combined with [confirmOnClose on ModalForm](../form-dialog/form-dialog.md) it turns into "asks to discard even though nothing was touched".
+
+Declare the incoming values as the initial state while writing them:
+
+```tsx
+const form = useForm({ initialValues: { title: "", type: "1" } });
+
+useEffect(() => {
+  fetchDetail(id).then((d) => {
+    // These values are the initial state, not an edit made by the user
+    form.setFieldsValue({ title: d.title, type: String(d.type) }, { markPristine: true });
+  });
+}, [id]);
+```
+
+When the values arrive by another route, such as per-field `setFieldValue` calls or defaults written by the controls themselves, follow up with `form.markPristine()`. **Avoid the two-step form** of calling `setFieldsValue` and then `markPristine()`: a render sits between them, and any `isDirty()` during that window reads as edited.
+
+`resetFields()` also restores the baseline, using the **current** `initialValues` (since 0.63.0; before that a closure pinned it to the first render, so replacing the initial values and resetting went back to the old ones).
 
 `register()` returns `{ name, value, onChange, onBlur, error, required }`. The `required` flag is derived from whether the rules contain `required: true`; forward it to the `required` prop of [`Field`](../field/field.md) so the requirement is visible before submitting (asterisk plus `aria-required`), while the rules remain the only source of validation.
 
