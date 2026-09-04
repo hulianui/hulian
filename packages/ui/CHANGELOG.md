@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.63.2
+
+### Patch Changes
+
+- 7cc4645: `Table` 新增 `scrollbar="always"`，外壳恒按真实滚动态打 `data-overflow-left` / `data-overflow-right`。
+
+  macOS 默认是 overlay 滚动条，不滚的时候完全不可见：1440 宽的屏上一张 1800 宽的列表，用户看不出右边还有列。`scrollbar="always"` 给外壳套用与 `stickyScrollbar` 代理条**同一份**经典滚动条皮肤（抽成一处常量两边共用），横向溢出时滚动条一直画着；不溢出时浏览器自然不画、不占高度。默认值 `"auto"` 维持现状。它与 `stickyScrollbar` 正交：一个管外壳自己的真滚动条，一个管表格底边过了折叠线之后的代理条，宽长表两者同开最稳。`stickyHeader="scrollParent"` 下外壳不横向滚动，本项无对象可作用。
+
+  无论取哪档，外壳都会按真实滚动态打 `data-overflow-left` / `data-overflow-right`（对应侧还有被裁掉的内容才有，滚到头就摘掉），命令式改 DOM 不进 state。冻结列的分隔阴影改为只读这个标记：只在那一侧确实还有内容时才出现，滚到底了阴影就收掉，不再常驻。消费方要做自己的溢出提示直接选 `[data-overflow-right]` 即可，不必再量 `scrollWidth`。`stickyHeader="scrollParent"` 下外壳不是滚动容器，量不到也就不打，冻结列退回常驻阴影。
+
 ## 0.63.1
 
 ### Patch Changes

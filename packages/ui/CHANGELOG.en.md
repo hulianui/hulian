@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.63.2
+
+### Patch Changes
+
+- 7cc4645: `Table` gains `scrollbar="always"`, and the shell now reports its real scroll state as `data-overflow-left` / `data-overflow-right`.
+
+  macOS uses overlay scrollbars by default, which are invisible until you scroll: an 1800px-wide list on a 1440px screen gives the user no hint that there are more columns to the right. `scrollbar="always"` applies the **same** classic scrollbar skin the `stickyScrollbar` proxy uses to the shell itself (extracted into one shared constant), so the bar stays visible whenever the content overflows horizontally; when nothing overflows the browser simply draws none and reserves no height. The default `"auto"` keeps the current behavior. It is orthogonal to `stickyScrollbar`: one styles the shell's own real scrollbar, the other adds a proxy once the table's bottom edge is below the fold, and wide, tall tables are best with both on. Under `stickyHeader="scrollParent"` the shell does not scroll horizontally, so the option has nothing to act on.
+
+  Regardless of the value, the shell sets `data-overflow-left` / `data-overflow-right` from its actual scroll position (present only while content is clipped on that side, removed once you reach the edge), written imperatively to the DOM rather than kept in state. The pinned-column divider shadows now read exactly that marker: they show only while there is more content on that side and disappear at the edge instead of staying on permanently. For a custom overflow hint, select `[data-overflow-right]` instead of measuring `scrollWidth` yourself. Under `stickyHeader="scrollParent"` the shell is not the scroll container, nothing is measured, and pinned columns fall back to a permanent shadow.
+
 ## 0.63.1
 
 ### Patch Changes

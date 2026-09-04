@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.63.1 · 399 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.63.2 · 399 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -16239,6 +16239,7 @@ import {
 | cellWhitespace | `"nowrap" \| "normal" \| "pre-wrap"` | - | 换行策略的表级默认；列 `meta.whitespace` 覆盖。典型形状是「表级 nowrap + 少数几列 normal」 |
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
 | stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 或 `maxHeight` 开启时无效**（外壳自己就是定高滚动容器，真滚动条一直看得见，再挂一条会上下两条并排）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
+| scrollbar | `"auto" \| "always"` | `"auto"` | 外壳横向滚动条的显示策略。`"auto"` 交给浏览器（macOS overlay 滚动条不滚时完全不可见，用户看不出右边还有列）；`"always"` 给外壳套用与 `stickyScrollbar` 代理条同一份经典滚动条皮肤，横向溢出时一直画着，不溢出时浏览器自然不画、不占高度。与 `stickyScrollbar` 正交（一个管外壳真滚动条，一个管过了折叠线之后的代理条），宽长表两者同开最稳；`stickyHeader="scrollParent"` 下外壳不横向滚动，本项无对象可作用 |
 | className | `string` | - | 根节点类名 |
 
 ## Events
@@ -16512,6 +16513,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 - 组合原语没有排序 / 分页 / 冻结列 / 虚拟滚动 —— 它只是皮肤。需要这些能力就回高层 `Table`，不要在原语上手搓一套。
 - 原语的 `striped` 默认 `false`（与高层 `Table` 相反）：手写结构里常有整宽附属行与跨行合并，斑马纹按 `<tr>` 计数，会把「一条记录」的视觉分组读乱。确实是规整的一行一条时再显式开。
 - 树形（`getSubRows`）下只有顶层行可拖，子行手柄恒禁用——跨层级拖拽的落点语义未定义，需要拖子节点请用 [Tree](https://hulianui.haloritual.com/zh/components/tree) 或按层级拆表。
+- **外壳按真实滚动态打 `data-overflow-left` / `data-overflow-right`**（对应侧还有被裁掉的内容才有，滚到头就摘掉），与 `scrollbar` 取值无关。冻结列的分隔阴影读的就是它：只在那一侧确实还有内容时才出现，滚到底了阴影就收掉。要做自己的溢出提示直接选 `[data-overflow-right]` 即可，不必再量 `scrollWidth`。`stickyHeader="scrollParent"` 下外壳不是滚动容器，量不到也就不打，冻结列退回常驻阴影。
 
 ## 相关
 [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table) · [List](https://hulianui.haloritual.com/zh/components/list)
