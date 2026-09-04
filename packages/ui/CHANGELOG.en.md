@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.63.3
+
+### Patch Changes
+
+- f29d165: `Table` classic scrollbar skin fix: `scrollbar-width` / `scrollbar-color` are now applied only to engines that do not understand `::-webkit-scrollbar`.
+
+  In 0.63.2 the skin shared by `scrollbar="always"` and the `stickyScrollbar` proxy declared both the `::-webkit-scrollbar*` pseudo-element rules and the standard `scrollbar-width: thin` / `scrollbar-color` properties side by side. Chromium 121+ ignores `::-webkit-scrollbar*` entirely once either standard property is set to something other than `auto`, and on macOS `scrollbar-width: thin` still resolves to the system overlay bar that only appears while scrolling. The net result on Chromium/macOS was no scrollbar at all (measured `offsetHeight - clientHeight === 0`).
+
+  The standard properties are now wrapped in `@supports not selector(::-webkit-scrollbar)`: engines that know the pseudo-elements take that path with the standard properties left at `auto`, and Firefox keeps using `scrollbar-width: thin` as before.
+
 ## 0.63.2
 
 ### Patch Changes

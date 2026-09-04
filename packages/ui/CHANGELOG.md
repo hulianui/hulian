@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.63.3
+
+### Patch Changes
+
+- f29d165: `Table` 经典滚动条皮肤修复：`scrollbar-width` / `scrollbar-color` 只给不认 `::-webkit-scrollbar` 的引擎。
+
+  0.63.2 里 `scrollbar="always"` 与 `stickyScrollbar` 代理条共用的那份皮肤，把 `::-webkit-scrollbar*` 伪元素规则和标准属性 `scrollbar-width: thin` / `scrollbar-color` 裸写并存。Chromium 121+ 规定这两个标准属性任一非 `auto` 就整体忽略 `::-webkit-scrollbar*`，而 macOS 上 `scrollbar-width: thin` 仍走系统 overlay 条（滚动时才显示），结果是 Chromium/macOS 一条都不画（实测 `offsetHeight - clientHeight === 0`）。
+
+  现在标准属性包进 `@supports not selector(::-webkit-scrollbar)`：认得伪元素的引擎一律走伪元素那套、标准属性保持 `auto`；Firefox 照旧走 `scrollbar-width: thin`。
+
 ## 0.63.2
 
 ### Patch Changes
