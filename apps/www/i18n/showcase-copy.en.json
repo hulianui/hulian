@@ -4433,6 +4433,8 @@
     "固定主题色": "Fixed theme color",
     "固定主题色（chart token）": "Fixed theme color (chart token)",
     "固定列（左首列 / 右操作列·横滚试试）": "Fixed columns (first left column/right operating column·try scrolling)",
+    "横向滚动条常显（scrollbar=\"always\"）": "Always-visible horizontal scrollbar (scrollbar=\"always\")",
+    "macOS overlay 滚动条不滚时完全不可见，宽表右边还有列这件事用户看不出来；scrollbar=\"always\" 让外壳常显经典滚动条，不溢出时浏览器不画。外壳还按真实滚动态打 data-overflow-left / data-overflow-right，冻结列阴影只在对应侧还有内容时出现。": "macOS overlay scrollbars are invisible until you scroll, so nothing tells the user a wide table has more columns to the right; scrollbar=\"always\" keeps a classic scrollbar on the shell, and the browser draws none when nothing overflows. The shell also reports its real scroll state as data-overflow-left / data-overflow-right, and pinned-column shadows appear only while there is more content on that side.",
     "横向滚动条常显（scrollbar=\"always\"·短表也看得见右边还有列）": "Always-visible horizontal scrollbar (scrollbar=\"always\" · even a short table shows there are more columns to the right)",
     "固定基准": "Fixed datum",
     "固定比例 · 只读": "Fixed ratio · Read only",

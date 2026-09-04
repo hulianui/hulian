@@ -99,7 +99,7 @@ function StickyDemo() {
     return <Table columns={stickyColumns} data={users}/>;
 }
 function ScrollbarAlwaysDemo() {
-    return <Table columns={stickyColumns} data={users.slice(0, 3)} scrollbar="always"/>;
+    return <Table columns={stickyColumns} data={users.slice(0, 3)} layout="fixed" scrollbar="always"/>;
 }
 const geometryColumns: ColumnDef<DemoUser, any>[] = [
     { accessorKey: "name", header: "Name", size: 120 },
@@ -498,6 +498,12 @@ export const tableShowcase: ShowcaseSpec = {
 
 <Table columns={groupedColumns} data={rows} />`,
             render: () => <GroupedHeaderDemo />,
+        },
+        {
+            title: "Always-visible horizontal scrollbar (scrollbar=\"always\")",
+            description: "macOS overlay scrollbars are invisible until you scroll, so nothing tells the user a wide table has more columns to the right; scrollbar=\"always\" keeps a classic scrollbar on the shell, and the browser draws none when nothing overflows. The shell also reports its real scroll state as data-overflow-left / data-overflow-right, and pinned-column shadows appear only while there is more content on that side.",
+            code: `<Table columns={stickyColumns} data={users.slice(0, 3)} layout="fixed" scrollbar="always" />`,
+            render: () => <ScrollbarAlwaysDemo />,
         },
     ],
     controls: [

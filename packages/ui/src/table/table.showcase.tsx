@@ -137,7 +137,7 @@ function StickyDemo() {
 }
 // 滚动条常显：短表也横向溢出时，macOS overlay 滚动条平时不可见，看不出右边还有列
 function ScrollbarAlwaysDemo() {
-  return <Table columns={stickyColumns} data={users.slice(0, 3)} scrollbar="always" />;
+  return <Table columns={stickyColumns} data={users.slice(0, 3)} layout="fixed" scrollbar="always" />;
 }
 
 // 列几何：size 定宽 + minSize 保底 + align/headerAlign 对齐 + ellipsis 溢出省略（悬停看全文）
@@ -620,6 +620,13 @@ export const tableShowcase: ShowcaseSpec = {
 
 <Table columns={groupedColumns} data={rows} />`,
       render: () => <GroupedHeaderDemo />,
+    },
+    {
+      title: "横向滚动条常显（scrollbar=\"always\"）",
+      description:
+        "macOS overlay 滚动条不滚时完全不可见，宽表右边还有列这件事用户看不出来；scrollbar=\"always\" 让外壳常显经典滚动条，不溢出时浏览器不画。外壳还按真实滚动态打 data-overflow-left / data-overflow-right，冻结列阴影只在对应侧还有内容时出现。",
+      code: `<Table columns={stickyColumns} data={users.slice(0, 3)} layout="fixed" scrollbar="always" />`,
+      render: () => <ScrollbarAlwaysDemo />,
     },
   ],
   controls: [

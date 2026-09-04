@@ -1196,8 +1196,20 @@ describe("Table 底部悬浮横向滚动条", () => {
 // 外壳横向滚动条常显 + data-overflow-* 溢出标记。
 // 滚动条的实际外观是 ::-webkit-scrollbar / scrollbar-width 皮肤，jsdom 不画；这里断言的是
 // 「always 时外壳带那份皮肤、auto 时不带」以及溢出标记的判定逻辑（几何量照旧靠桩驱动）。
+// 皮肤本身有一条硬约束：scrollbar-width / scrollbar-color 必须包在
+// @supports not selector(::-webkit-scrollbar) 里 —— Chromium 121+ 下任一裸写都会让
+// ::-webkit-scrollbar* 整体失效，macOS 上就一条都不画（0.63.2 实测回归）。
 describe("Table 横向滚动条常显与溢出标记", () => {
-  const SCROLLBAR_SKIN = "[scrollbar-width:thin]";
+  const SUPPORTS_NO_WEBKIT = "supports-[not_selector(::-webkit-scrollbar)]:";
+  const SCROLLBAR_SKIN = `${SUPPORTS_NO_WEBKIT}[scrollbar-width:thin]`;
+  // 裸写（无任何变体前缀）的 scrollbar-width / scrollbar-color 工具类
+  const BARE_STANDARD_SCROLLBAR = /(^|\s)\[scrollbar-(width|color):/;
+  const expectClassicSkin = (el: HTMLElement) => {
+    expect(el.className).toContain(SCROLLBAR_SKIN);
+    expect(el.className).toContain(`${SUPPORTS_NO_WEBKIT}[scrollbar-color:`);
+    expect(el.className).toContain("[&::-webkit-scrollbar]:h-2.5");
+    expect(el.className).not.toMatch(BARE_STANDARD_SCROLLBAR);
+  };
   const shellOf = (container: HTMLElement) => container.firstElementChild as HTMLElement;
   const stubScroll = (
     el: HTMLElement,
@@ -1222,22 +1234,21 @@ describe("Table 横向滚动条常显与溢出标记", () => {
     expect(shell.hasAttribute("data-overflow-right")).toBe(false);
   });
 
-  it('scrollbar="always"：外壳带与代理条同一份经典滚动条皮肤', () => {
+  it('scrollbar="always"：外壳带与代理条同一份经典滚动条皮肤，标准属性只给非 WebKit 引擎', () => {
     const { container } = render(<Table columns={columns} data={data} scrollbar="always" />);
     const shell = shellOf(container);
     expect(shell.className).toContain("overflow-x-auto");
-    expect(shell.className).toContain(SCROLLBAR_SKIN);
-    expect(shell.className).toContain("[&::-webkit-scrollbar]:h-2.5");
+    expectClassicSkin(shell);
   });
 
-  it('scrollbar="always" 与 stickyScrollbar 同开：外壳与代理条各自带皮肤', () => {
+  it('scrollbar="always" 与 stickyScrollbar 同开：外壳与代理条各自带皮肤，代理条同样不裸写标准属性', () => {
     const { container } = render(
       <Table columns={columns} data={data} scrollbar="always" stickyScrollbar />,
     );
     const shell = container.querySelector<HTMLElement>(".overflow-x-auto")!;
     const bar = container.querySelector<HTMLElement>('div[aria-hidden="true"].sticky')!;
-    expect(shell.className).toContain(SCROLLBAR_SKIN);
-    expect(bar.className).toContain(SCROLLBAR_SKIN);
+    expectClassicSkin(shell);
+    expectClassicSkin(bar);
   });
 
   it('stickyHeader="scrollParent" 下外壳不横向滚动，always 不套皮肤', () => {

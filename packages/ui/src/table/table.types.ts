@@ -424,8 +424,9 @@ export interface TableProps<TData> {
    * - `"auto"`：交给浏览器。macOS 默认是 overlay 滚动条，不滚的时候完全不可见 ——
    *   1440 宽的屏上一张 1800 宽的列表，用户看不出右边还有列。
    * - `"always"`：外壳套用与 `stickyScrollbar` 代理条**同一份**经典滚动条皮肤
-   *   （给 `::-webkit-scrollbar` 定了尺寸，WebKit / Blink 退回常驻滚动条；Firefox 走
-   *   `scrollbar-width: thin`），横向溢出时滚动条一直画着。内容不溢出时浏览器自然不画、不占高度。
+   *   （给 `::-webkit-scrollbar` 定了尺寸，WebKit / Blink 退回常驻滚动条；`scrollbar-width: thin`
+   *   只给不认 `::-webkit-scrollbar` 的 Firefox —— Chromium 下两者并存会把伪元素整体忽略掉），
+   *   横向溢出时滚动条一直画着。内容不溢出时浏览器自然不画、不占高度。
    *
    * 与 `stickyScrollbar` 正交：一个管外壳自己的真滚动条，一个管表格底边过了折叠线之后的代理条，
    * 宽长表两者同开最稳。`stickyHeader="scrollParent"` 下外壳不横向滚动，本项无对象可作用。

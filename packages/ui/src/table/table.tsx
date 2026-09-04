@@ -75,10 +75,16 @@ const VALIGN_CLASS = { top: "align-top", middle: "align-middle", bottom: "align-
 
 // 经典常驻横向滚动条皮肤：macOS 默认是 overlay 滚动条（平时完全不可见，且元素
 // offsetHeight-clientHeight 恒为 0），给 ::-webkit-scrollbar 定了尺寸即可让 WebKit/Blink
-// 退回经典常驻滚动条；Firefox 走 scrollbar-width/color。
+// 退回经典常驻滚动条。
+// 标准属性 scrollbar-width / scrollbar-color **只能给 Firefox**：Chromium 121+ 规定这两个
+// 属性任一非 auto 就整体忽略 ::-webkit-scrollbar*，而 macOS 上 scrollbar-width: thin 仍走
+// 系统 overlay 条（滚动时才显示）—— 两者裸写并存的结果是 Chromium 一条都不画（0.63.2 实测
+// offsetHeight-clientHeight === 0）。所以标准属性包进 @supports not selector(::-webkit-scrollbar)，
+// 认得 ::-webkit-scrollbar 的引擎一律走伪元素那套、标准属性保持 auto。
 // `stickyScrollbar` 的代理条与 `scrollbar="always"` 的外壳共用这一份，两处不许各写一套。
 const CLASSIC_SCROLLBAR_CLASS = cn(
-  "[scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]",
+  "supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-width:thin]",
+  "supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-color:var(--color-border)_transparent]",
   "[&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar-track]:bg-transparent",
   "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border",
   "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground",
