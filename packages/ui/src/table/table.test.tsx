@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "./table-primitives";
 import type { ColumnDef } from "./table.types";
+import { classicScrollbar, SUPPORTS_NO_WEBKIT_SCROLLBAR } from "../lib/scrollbar";
 
 interface Row {
   name: string;
@@ -1200,8 +1201,10 @@ describe("Table 底部悬浮横向滚动条", () => {
 // @supports not selector(::-webkit-scrollbar) 里 —— Chromium 121+ 下任一裸写都会让
 // ::-webkit-scrollbar* 整体失效，macOS 上就一条都不画（0.63.2 实测回归）。
 describe("Table 横向滚动条常显与溢出标记", () => {
-  const SUPPORTS_NO_WEBKIT = "supports-[not_selector(::-webkit-scrollbar)]:";
-  const SCROLLBAR_SKIN = `${SUPPORTS_NO_WEBKIT}[scrollbar-width:thin]`;
+  // 皮肤本体在 lib/scrollbar.ts（Chart / Gantt 同一份，#347）：这里断言 Table 用的就是那份、
+  // 没有自己另写一套，且厚度补在了外面。裸写的全库扫描在 lib/scrollbar.test.ts。
+  const SUPPORTS_NO_WEBKIT = SUPPORTS_NO_WEBKIT_SCROLLBAR;
+  const SCROLLBAR_SKIN = classicScrollbar.border;
   // 裸写（无任何变体前缀）的 scrollbar-width / scrollbar-color 工具类
   const BARE_STANDARD_SCROLLBAR = /(^|\s)\[scrollbar-(width|color):/;
   const expectClassicSkin = (el: HTMLElement) => {

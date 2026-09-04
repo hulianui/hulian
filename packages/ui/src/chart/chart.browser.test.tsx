@@ -52,3 +52,16 @@ describe("Chart 图例几何（真实浏览器）", () => {
     expect(canvas.getBoundingClientRect().height).toBe(HEIGHT);
   });
 });
+
+// #347：图例横向滚动条得真的画出来。皮肤里 scrollbar-width / scrollbar-color 一旦裸写，
+// Chromium 121+ 会整体忽略 ::-webkit-scrollbar*，macOS 上一条都不画 —— 类名对不对 jsdom 看得见，
+// 「画没画」只有真实浏览器量 offsetHeight-clientHeight 才知道（vitest.config 已去掉
+// headless 默认的 --hide-scrollbars，否则这里永远是 0）。
+describe("Chart 图例滚动条（真实浏览器）", () => {
+  it("legendScroll：横向滚动条占据真实高度，标准属性在 Chromium 下保持 auto", () => {
+    const { legend } = renderChart({ legendScroll: true });
+    expect(legend.scrollWidth).toBeGreaterThan(legend.clientWidth);
+    expect(legend.offsetHeight - legend.clientHeight).toBeGreaterThan(0);
+    expect(getComputedStyle(legend).scrollbarWidth).toBe("auto");
+  });
+});

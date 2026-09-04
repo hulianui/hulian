@@ -1,6 +1,7 @@
 "use client";
 import { memo, useMemo } from "react";
 import { cn } from "../lib/cn";
+import { classicScrollbar } from "../lib/scrollbar";
 import { useComponentLocale } from "../config/locale-context";
 import type { GanttProps, GanttTask, GanttUnit } from "./gantt.types";
 
@@ -214,14 +215,13 @@ function GanttImpl({
           overscroll-x-contain 阻止触控板两指横滑被浏览器抢去做「前进/后退」页面手势 → 横滑真正滚动甘特图；
           纵向滚轮/手势不拦截，自然滚动页面（不再 JS 劫持 deltaY→横向，避免「上下也滚不动」）。
           常显可见滚动条：定义 ::-webkit-scrollbar 让 Chrome/macOS 退出 overlay 隐藏模式、强制常显，
-          给「可横滑」明确视觉与可拖拽抓手；Firefox 走 scrollbar-width/color；轨道透明、滑块 muted 半透明悬停加深。 */}
+          给「可横滑」明确视觉与可拖拽抓手。皮肤取 lib/scrollbar.ts 那份（标准属性只给非 WebKit 引擎，
+          裸写会让 Chromium 一条都不画），这里只补厚度。 */}
       <div
         className={cn(
           "overflow-x-auto overscroll-x-contain",
-          "[scrollbar-width:thin] [scrollbar-color:var(--color-muted-foreground)_transparent]",
-          "[&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent",
-          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/50",
-          "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/80",
+          classicScrollbar.muted,
+          "[&::-webkit-scrollbar]:h-2",
         )}
       >
         <div style={{ minWidth: `calc(180px + ${minWidth}px)` }}>

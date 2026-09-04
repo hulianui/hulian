@@ -27,6 +27,7 @@ import {
 } from "recharts";
 import { Dot } from "../dot/dot";
 import { cn } from "../lib/cn";
+import { classicScrollbar } from "../lib/scrollbar";
 import { resolveTone } from "../lib/tone";
 import { warnOnce } from "../lib/warn-once";
 import { RADAR_RAW, normalizeRadarData } from "./chart-radar-axis";
@@ -70,11 +71,9 @@ function ChartLegend({ series, scroll }: { series: ChartSeries[]; scroll?: boole
           ? [
               // 恒单行：不换行、超出横向滚动。序列多到几十条时唯一不吃画布的形态。
               "shrink-0 flex-nowrap justify-start overflow-x-auto overscroll-x-contain whitespace-nowrap",
-              // 常显细滚动条，给「可横滑」明确的视觉与抓手（同 Gantt）
-              "[scrollbar-width:thin] [scrollbar-color:var(--color-muted-foreground)_transparent]",
-              "[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent",
-              "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/50",
-              "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/80",
+              // 常显细滚动条，给「可横滑」明确的视觉与抓手（皮肤与 Gantt 同一份，见 lib/scrollbar.ts）
+              classicScrollbar.muted,
+              "[&::-webkit-scrollbar]:h-1.5",
             ]
           : "flex-wrap justify-center",
       )}

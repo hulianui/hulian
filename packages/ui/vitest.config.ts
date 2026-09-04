@@ -45,6 +45,10 @@ export default defineConfig({
       "@dnd-kit/sortable",
       "@dnd-kit/utilities",
       "@tanstack/react-virtual",
+      // table 的 browser 用例（#347）：漏了这两项会以「Cannot read properties of null (reading 'useState')」
+      // 的面目出现，看着像组件坏了，其实是 React 实例被拆成了两份。
+      "@tanstack/react-table",
+      "@base-ui/react/tooltip",
       "@base-ui/react/context-menu",
       "@base-ui/react/dialog",
       "@base-ui/react/field",
@@ -92,7 +96,10 @@ export default defineConfig({
             enabled: true,
             provider: "playwright",
             headless: true,
-            instances: [{ browser: "chromium" }],
+            // headless chromium 默认带 --hide-scrollbars：任何滚动条都不画、offsetHeight-clientHeight
+            // 恒为 0，「经典常驻滚动条到底画没画」（#347）在这里永远量不出来。去掉它，滚动条
+            // 才按真实 CSS 参与布局；不影响其余用例（要藏的滚动条走的是 scrollbar-width:none）。
+            instances: [{ browser: "chromium", launch: { ignoreDefaultArgs: ["--hide-scrollbars"] } }],
           },
         },
       },
