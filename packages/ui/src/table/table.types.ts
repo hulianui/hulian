@@ -418,6 +418,25 @@ export interface TableProps<TData> {
    */
   stickyScrollbar?: boolean;
 
+  /**
+   * 外壳横向滚动条的显示策略。
+   *
+   * - `"auto"`：交给浏览器。macOS 默认是 overlay 滚动条，不滚的时候完全不可见 ——
+   *   1440 宽的屏上一张 1800 宽的列表，用户看不出右边还有列。
+   * - `"always"`：外壳套用与 `stickyScrollbar` 代理条**同一份**经典滚动条皮肤
+   *   （给 `::-webkit-scrollbar` 定了尺寸，WebKit / Blink 退回常驻滚动条；Firefox 走
+   *   `scrollbar-width: thin`），横向溢出时滚动条一直画着。内容不溢出时浏览器自然不画、不占高度。
+   *
+   * 与 `stickyScrollbar` 正交：一个管外壳自己的真滚动条，一个管表格底边过了折叠线之后的代理条，
+   * 宽长表两者同开最稳。`stickyHeader="scrollParent"` 下外壳不横向滚动，本项无对象可作用。
+   *
+   * 无论取哪档，外壳都会按真实滚动态打 `data-overflow-left` / `data-overflow-right`
+   * （对应侧还有被裁掉的内容），冻结列的分隔阴影只在对应侧溢出时才出现；消费方也可以拿它做
+   * 自己的溢出提示。
+   * @default "auto"
+   */
+  scrollbar?: "auto" | "always";
+
   // —— 单元格排版（表级默认，列 meta 可逐列覆盖）——
   /**
    * 单元格水平对齐的**表级默认**（#292）。不写即维持历史默认（左）。

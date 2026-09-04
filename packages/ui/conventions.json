@@ -9930,6 +9930,13 @@
       "source": "packages/ui/src/table/table.md"
     },
     {
+      "id": "component/table/pitfall/40",
+      "scope": "table",
+      "title": "Table",
+      "rule": "**外壳按真实滚动态打 `data-overflow-left` / `data-overflow-right`**（对应侧还有被裁掉的内容才有，滚到头就摘掉），与 `scrollbar` 取值无关。冻结列的分隔阴影读的就是它：只在那一侧确实还有内容时才出现，滚到底了阴影就收掉。要做自己的溢出提示直接选 `[data-overflow-right]` 即可，不必再量 `scrollWidth`。`stickyHeader=\"scrollParent\"` 下外壳不是滚动容器，量不到也就不打，冻结列退回常驻阴影。",
+      "source": "packages/ui/src/table/table.md"
+    },
+    {
       "id": "component/tablet/pitfall/1",
       "scope": "tablet",
       "title": "Tablet",
@@ -11152,7 +11159,7 @@
   ],
   "stats": {
     "componentDocs": 399,
-    "componentAdvisories": 1554,
-    "totalAdvisories": 1564
+    "componentAdvisories": 1555,
+    "totalAdvisories": 1565
   }
 }

@@ -1193,6 +1193,116 @@ describe("Table 底部悬浮横向滚动条", () => {
   });
 });
 
+// 外壳横向滚动条常显 + data-overflow-* 溢出标记。
+// 滚动条的实际外观是 ::-webkit-scrollbar / scrollbar-width 皮肤，jsdom 不画；这里断言的是
+// 「always 时外壳带那份皮肤、auto 时不带」以及溢出标记的判定逻辑（几何量照旧靠桩驱动）。
+describe("Table 横向滚动条常显与溢出标记", () => {
+  const SCROLLBAR_SKIN = "[scrollbar-width:thin]";
+  const shellOf = (container: HTMLElement) => container.firstElementChild as HTMLElement;
+  const stubScroll = (
+    el: HTMLElement,
+    { scrollLeft, scrollWidth, clientWidth }: { scrollLeft: number; scrollWidth: number; clientWidth: number },
+  ) => {
+    Object.defineProperty(el, "scrollLeft", { value: scrollLeft, configurable: true, writable: true });
+    Object.defineProperty(el, "scrollWidth", { value: scrollWidth, configurable: true });
+    Object.defineProperty(el, "clientWidth", { value: clientWidth, configurable: true });
+  };
+  const pinnedColumns: ColumnDef<Row, any>[] = [
+    { accessorKey: "name", header: "姓名", meta: { sticky: "left" } },
+    { accessorKey: "age", header: "年龄" },
+    { id: "actions", header: "操作", cell: () => "编辑", meta: { sticky: "right" } },
+  ];
+
+  it('默认 scrollbar="auto"：外壳不带经典滚动条皮肤（DOM 与之前一致）', () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    const shell = shellOf(container);
+    expect(shell.className).toContain("overflow-x-auto");
+    expect(shell.className).not.toContain(SCROLLBAR_SKIN);
+    expect(shell.hasAttribute("data-overflow-left")).toBe(false);
+    expect(shell.hasAttribute("data-overflow-right")).toBe(false);
+  });
+
+  it('scrollbar="always"：外壳带与代理条同一份经典滚动条皮肤', () => {
+    const { container } = render(<Table columns={columns} data={data} scrollbar="always" />);
+    const shell = shellOf(container);
+    expect(shell.className).toContain("overflow-x-auto");
+    expect(shell.className).toContain(SCROLLBAR_SKIN);
+    expect(shell.className).toContain("[&::-webkit-scrollbar]:h-2.5");
+  });
+
+  it('scrollbar="always" 与 stickyScrollbar 同开：外壳与代理条各自带皮肤', () => {
+    const { container } = render(
+      <Table columns={columns} data={data} scrollbar="always" stickyScrollbar />,
+    );
+    const shell = container.querySelector<HTMLElement>(".overflow-x-auto")!;
+    const bar = container.querySelector<HTMLElement>('div[aria-hidden="true"].sticky')!;
+    expect(shell.className).toContain(SCROLLBAR_SKIN);
+    expect(bar.className).toContain(SCROLLBAR_SKIN);
+  });
+
+  it('stickyHeader="scrollParent" 下外壳不横向滚动，always 不套皮肤', () => {
+    const { container } = render(
+      <Table columns={columns} data={data} stickyHeader="scrollParent" scrollbar="always" />,
+    );
+    const shell = shellOf(container);
+    expect(shell.className).not.toContain("overflow-x-auto");
+    expect(shell.className).not.toContain(SCROLLBAR_SKIN);
+  });
+
+  it("横向溢出 → 打 data-overflow-right；滚到底改打 data-overflow-left；两头都有时同打", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    const shell = shellOf(container);
+    stubScroll(shell, { scrollLeft: 0, scrollWidth: 1600, clientWidth: 800 });
+    fireEvent.scroll(shell);
+    expect(shell.hasAttribute("data-overflow-right")).toBe(true);
+    expect(shell.hasAttribute("data-overflow-left")).toBe(false);
+
+    stubScroll(shell, { scrollLeft: 400, scrollWidth: 1600, clientWidth: 800 });
+    fireEvent.scroll(shell);
+    expect(shell.hasAttribute("data-overflow-right")).toBe(true);
+    expect(shell.hasAttribute("data-overflow-left")).toBe(true);
+
+    stubScroll(shell, { scrollLeft: 800, scrollWidth: 1600, clientWidth: 800 });
+    fireEvent.scroll(shell);
+    expect(shell.hasAttribute("data-overflow-right")).toBe(false);
+    expect(shell.hasAttribute("data-overflow-left")).toBe(true);
+  });
+
+  it("不溢出（窗口够宽）→ 两个标记都摘掉", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    const shell = shellOf(container);
+    stubScroll(shell, { scrollLeft: 0, scrollWidth: 1600, clientWidth: 800 });
+    fireEvent.scroll(shell);
+    expect(shell.hasAttribute("data-overflow-right")).toBe(true);
+    stubScroll(shell, { scrollLeft: 0, scrollWidth: 800, clientWidth: 800 });
+    fireEvent(window, new Event("resize"));
+    expect(shell.hasAttribute("data-overflow-right")).toBe(false);
+    expect(shell.hasAttribute("data-overflow-left")).toBe(false);
+  });
+
+  it("冻结列分隔阴影只在对应侧溢出时出现（读外壳的 data-overflow-* 标记）", () => {
+    const { container } = render(<Table columns={pinnedColumns} data={data} />);
+    const shell = shellOf(container);
+    expect(shell.className).toContain("group/table-shell");
+    const firstCell = container.querySelector<HTMLElement>("tbody td")!;
+    const lastCell = container.querySelector<HTMLElement>("tbody tr td:last-child")!;
+    expect(firstCell.className).toContain("group-data-[overflow-left]/table-shell:shadow-pin-left");
+    expect(firstCell.className).not.toMatch(/(^|\s)shadow-pin-left(\s|$)/);
+    expect(lastCell.className).toContain("group-data-[overflow-right]/table-shell:shadow-pin-right");
+    expect(lastCell.className).not.toMatch(/(^|\s)shadow-pin-right(\s|$)/);
+  });
+
+  it('stickyHeader="scrollParent" 量不到溢出，冻结列退回常驻阴影', () => {
+    const { container } = render(
+      <Table columns={pinnedColumns} data={data} stickyHeader="scrollParent" />,
+    );
+    const firstCell = container.querySelector<HTMLElement>("tbody td")!;
+    const lastCell = container.querySelector<HTMLElement>("tbody tr td:last-child")!;
+    expect(firstCell.className).toMatch(/(^|\s)shadow-pin-left(\s|$)/);
+    expect(lastCell.className).toMatch(/(^|\s)shadow-pin-right(\s|$)/);
+  });
+});
+
 // #176：单元格合并（el-table :span-method 的等价能力）
 describe("Table 单元格合并（#176）", () => {
   interface StoreRow {

@@ -4433,6 +4433,7 @@
     "固定主题色": "Fixed theme color",
     "固定主题色（chart token）": "Fixed theme color (chart token)",
     "固定列（左首列 / 右操作列·横滚试试）": "Fixed columns (first left column/right operating column·try scrolling)",
+    "横向滚动条常显（scrollbar=\"always\"·短表也看得见右边还有列）": "Always-visible horizontal scrollbar (scrollbar=\"always\" · even a short table shows there are more columns to the right)",
     "固定基准": "Fixed datum",
     "固定比例 · 只读": "Fixed ratio · Read only",
     "固定设备预设": "Fixed device presets",

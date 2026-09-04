@@ -98,6 +98,9 @@ const stickyColumns: ColumnDef<DemoUser, any>[] = [
 function StickyDemo() {
     return <Table columns={stickyColumns} data={users}/>;
 }
+function ScrollbarAlwaysDemo() {
+    return <Table columns={stickyColumns} data={users.slice(0, 3)} scrollbar="always"/>;
+}
 const geometryColumns: ColumnDef<DemoUser, any>[] = [
     { accessorKey: "name", header: "Name", size: 120 },
     {
@@ -506,6 +509,7 @@ export const tableShowcase: ShowcaseSpec = {
         { name: "Row selection (select all + single selection)", render: () => <SelectionDemo /> },
         { name: "Column filter (meta.filterable)", render: () => <FilterDemo /> },
         { name: "Fixed columns (first left column/right operating column\u00B7try scrolling)", render: () => <StickyDemo /> },
+        { name: "Always-visible horizontal scrollbar (scrollbar=\"always\" \u00B7 even a short table shows there are more columns to the right)", render: () => <ScrollbarAlwaysDemo /> },
         { name: "Column geometry (size fixed width + align aligned + ellipsis omitted)", render: () => <GeometryDemo /> },
         { name: "Column width drag (drag the right edge of the table header\u00B7double-click to reset)", render: () => <ResizableDemo /> },
         { name: "Drag and drop width adjustment + fixed column (offset real-time recalculation)", render: () => <ResizableStickyDemo /> },

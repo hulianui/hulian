@@ -72,6 +72,19 @@ const ROW_INTERACTIVE_SELECTOR =
 // （meta.sticky 只是初始 columnPinning 的派生源；offset 走 getStart/getAfter 不手算累加宽度）
 /** #194：单元格垂直对齐（表头恒 middle，不跟随）。 */
 const VALIGN_CLASS = { top: "align-top", middle: "align-middle", bottom: "align-bottom" } as const;
+
+// 经典常驻横向滚动条皮肤：macOS 默认是 overlay 滚动条（平时完全不可见，且元素
+// offsetHeight-clientHeight 恒为 0），给 ::-webkit-scrollbar 定了尺寸即可让 WebKit/Blink
+// 退回经典常驻滚动条；Firefox 走 scrollbar-width/color。
+// `stickyScrollbar` 的代理条与 `scrollbar="always"` 的外壳共用这一份，两处不许各写一套。
+const CLASSIC_SCROLLBAR_CLASS = cn(
+  "[scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]",
+  "[&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar-track]:bg-transparent",
+  "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border",
+  "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground",
+);
+// 外壳的 group 名：冻结列阴影要读外壳身上的 data-overflow-* 标记。
+const SHELL_GROUP_CLASS = "group/table-shell";
 /**
  * #194：按列的换行策略。
  * `pre-wrap` 连带 `break-words` —— 否则超长无空格串（URL / 身份证号）会撑破列宽，
@@ -90,14 +103,19 @@ function stickyStyle<TData>(column: Column<TData, unknown>): React.CSSProperties
     zIndex: 1,
   };
 }
-function stickyClass<TData>(column: Column<TData, unknown>): string | undefined {
+function stickyClass<TData>(column: Column<TData, unknown>, overflowAware: boolean): string | undefined {
   const pinned = column.getIsPinned();
   if (!pinned) return undefined;
-  // 固定列须实心底色（否则横滚时下层内容透出来）；边缘列加投影分隔（防 [[element-ui-table-fixed-right-overflow-leak]] 那类溢出/透漏）
+  // 固定列须实心底色（否则横滚时下层内容透出来）；边缘列加投影分隔（防 [[element-ui-table-fixed-right-overflow-leak]] 那类溢出/透漏）。
+  // 阴影只在**那一侧确实还有被裁掉的内容**时出现（外壳的 data-overflow-* 标记）：
+  // 常驻的静态阴影表达不了「右边还有列」，滚到底了还挂着反而像是没滚到底。
+  // 外壳不是滚动容器时（stickyHeader="scrollParent"）量不到溢出，退回常驻阴影。
+  const edgeLeft = pinned === "left" && column.getIsLastColumn("left");
+  const edgeRight = pinned === "right" && column.getIsFirstColumn("right");
   return cn(
     "bg-bg",
-    pinned === "left" && column.getIsLastColumn("left") && "shadow-pin-left",
-    pinned === "right" && column.getIsFirstColumn("right") && "shadow-pin-right",
+    edgeLeft && (overflowAware ? "group-data-[overflow-left]/table-shell:shadow-pin-left" : "shadow-pin-left"),
+    edgeRight && (overflowAware ? "group-data-[overflow-right]/table-shell:shadow-pin-right" : "shadow-pin-right"),
   );
 }
 
@@ -490,8 +508,9 @@ export function Table<TData>({
   minWidth,
   // 虚拟滚动
   virtual,
-  // 底部悬浮横向滚动条
+  // 底部悬浮横向滚动条 / 外壳滚动条常显
   stickyScrollbar = false,
+  scrollbar = "auto",
   // 空态
   emptyText,
   renderEmpty,
@@ -789,6 +808,43 @@ export function Table<TData>({
     };
   }, [stickyBarEnabled]);
 
+  // ── 横向溢出标记：data-overflow-left / data-overflow-right ─────────────────
+  // 外壳按真实滚动态打两个 data 属性：对应侧还有被裁掉的内容就打上、滚到头就摘掉。
+  // 冻结列的分隔阴影读它（见 stickyClass），消费方也可以拿它做自己的溢出提示。
+  // 走命令式直接改 DOM 而不进 state：滚动每帧都触发，setState 会让整张表重渲染；
+  // React 不管理这两个属性，重渲染也不会把它们抹掉。不溢出时属性不存在，DOM 与之前逐字节一致。
+  // scrollParent 吸顶档下外壳不是滚动容器（scrollLeft 恒 0），量不到、也就不打。
+  const shellMeasuresOverflow = !stickyToScrollParent;
+  useEffect(() => {
+    if (!shellMeasuresOverflow) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    const sync = () => {
+      const left = el.scrollLeft > 1;
+      const right = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+      el.toggleAttribute("data-overflow-left", left);
+      el.toggleAttribute("data-overflow-right", right);
+    };
+    sync();
+    // 容器与**表格本身**的宽度都要盯：拖列宽只改后者。jsdom 没有 ResizeObserver，先判存在。
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => sync());
+      ro.observe(el);
+      const tableEl = el.querySelector("table");
+      if (tableEl) ro.observe(tableEl);
+    }
+    el.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    return () => {
+      ro?.disconnect();
+      el.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      el.removeAttribute("data-overflow-left");
+      el.removeAttribute("data-overflow-right");
+    };
+  }, [shellMeasuresOverflow]);
+
   // 空态宽度：只在真的空的时候量，非空表零成本。
   const [emptyViewportWidth, setEmptyViewportWidth] = useState<number | null>(null);
   const isEmpty = rows.length === 0;
@@ -960,7 +1016,7 @@ export function Table<TData>({
                 // 水平对齐（#292）：列 `meta.align` 优先，缺省落表级 `cellAlign`，都不写才不落类（左）
                 (meta?.align ?? cellAlign) && ALIGN_TEXT[(meta?.align ?? cellAlign) as Align],
                 meta?.ellipsis && "overflow-hidden",
-                stickyClass(cell.column),
+                stickyClass(cell.column, shellMeasuresOverflow),
                 // 指示线走 inset box-shadow 而非真 border：<table> 是 border-collapse，
                 // 加 border 会与相邻行分隔线合并、把行高顶掉 1~2px（拖拽中抖动）。
                 dropEdge === "before" && "shadow-[inset_0_2px_0_0_var(--color-primary)]",
@@ -1143,7 +1199,7 @@ export function Table<TData>({
             className={cn(
               cellPad,
               "font-normal",
-              stickyClass(column),
+              stickyClass(column, shellMeasuresOverflow),
               headerSticks && column.getIsPinned() && "bg-bg",
             )}
           >
@@ -1168,6 +1224,9 @@ export function Table<TData>({
         // bordered=false：去掉自身描边框（如被 ProTable 卡片包裹时，由卡片提供外框，避免双框）。
         bordered && "rounded-[var(--radius)] border border-border",
         !shellScrolls && !stickyToScrollParent && "overflow-x-auto",
+        SHELL_GROUP_CLASS,
+        // 常显横向滚动条：与代理条同一份皮肤。scrollParent 档下外壳不横向滚动，无对象可作用。
+        scrollbar === "always" && shellMeasuresOverflow && CLASSIC_SCROLLBAR_CLASS,
         className,
       )}
     >
@@ -1262,7 +1321,7 @@ export function Table<TData>({
                         // 纵向跨行的格子（独立列与分组列混排时）在两行之间居中，
                         // 否则名字吊在第一行、下半格空着
                         rowSpan > 1 && "align-middle",
-                        stickyClass(header.column),
+                        stickyClass(header.column, shellMeasuresOverflow),
                         headerSticks && header.column.getIsPinned() && "bg-bg",
                       )}
                     >
@@ -1365,14 +1424,9 @@ export function Table<TData>({
         }}
         className={cn(
           "sticky bottom-0 z-[3] h-2.5 overflow-x-auto overflow-y-hidden",
-          // 显式画滚动条而不是听凭系统：macOS 默认是 overlay 滚动条（平时完全不可见，
-          // 且元素 offsetHeight-clientHeight 恒为 0），那样这条就成了一道空白，
-          // 与 issue 要的「常驻一条」正好相反。给 ::-webkit-scrollbar 定了尺寸即可
-          // 让 WebKit/Blink 退回经典常驻滚动条；Firefox 走 scrollbar-width/color。
-          "[scrollbar-width:thin] [scrollbar-color:var(--color-border)_transparent]",
-          "[&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar-track]:bg-transparent",
-          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border",
-          "hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground",
+          // 显式画滚动条而不是听凭系统：overlay 滚动条下这条就成了一道空白，
+          // 与 issue 要的「常驻一条」正好相反（皮肤见 CLASSIC_SCROLLBAR_CLASS）。
+          CLASSIC_SCROLLBAR_CLASS,
           !bar.visible && "hidden",
         )}
       >

@@ -135,6 +135,10 @@ const stickyColumns: ColumnDef<DemoUser, any>[] = [
 function StickyDemo() {
   return <Table columns={stickyColumns} data={users} />;
 }
+// 滚动条常显：短表也横向溢出时，macOS overlay 滚动条平时不可见，看不出右边还有列
+function ScrollbarAlwaysDemo() {
+  return <Table columns={stickyColumns} data={users.slice(0, 3)} scrollbar="always" />;
+}
 
 // 列几何：size 定宽 + minSize 保底 + align/headerAlign 对齐 + ellipsis 溢出省略（悬停看全文）
 const geometryColumns: ColumnDef<DemoUser, any>[] = [
@@ -627,6 +631,7 @@ export const tableShowcase: ShowcaseSpec = {
     { name: "行选择（全选 + 单选）", render: () => <SelectionDemo /> },
     { name: "列筛选（meta.filterable）", render: () => <FilterDemo /> },
     { name: "固定列（左首列 / 右操作列·横滚试试）", render: () => <StickyDemo /> },
+    { name: "横向滚动条常显（scrollbar=\"always\"·短表也看得见右边还有列）", render: () => <ScrollbarAlwaysDemo /> },
     { name: "列几何（size 定宽 + align 对齐 + ellipsis 省略）", render: () => <GeometryDemo /> },
     { name: "列宽拖拽（表头右缘拖动·双击复位）", render: () => <ResizableDemo /> },
     { name: "拖拽调宽 + 固定列（offset 实时重算）", render: () => <ResizableStickyDemo /> },
