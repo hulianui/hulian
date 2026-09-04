@@ -1,5 +1,15 @@
 # @hulianui/ui
 
+## 0.63.4
+
+### Patch Changes
+
+- 71e5033: `Chart` legend and `Gantt` horizontal scrollbars were not drawn at all on Chromium 121+, the same root cause as the `Table` fix in 0.63.3 (#347); the classic scrollbar skin is now a single shared definition.
+
+  0.63.3 only fixed `Table`: a bare `scrollbar-width` / `scrollbar-color` makes Chromium 121+ ignore `::-webkit-scrollbar*` entirely, so macOS falls back to the overlay bar that is invisible until you scroll. The same bare declarations were still present in the `Chart` legend row under `legendScroll` and in the `Gantt` timeline scroll container, whose comment still claimed that defining `::-webkit-scrollbar` forces a persistent bar on Chrome/macOS while the `scrollbar-width: thin` on the previous line cancelled it.
+
+  The skin itself (guarded standard properties, transparent track, rounded thumb, two thumb color presets) now lives in one shared place inside the library. The `Table` shell and proxy bar, the `Chart` legend and `Gantt` all reference it and only add their own thickness. A new source-scanning test forbids any bare `scrollbar-width` (other than `none`) or `scrollbar-color` anywhere in the library, so a fourth copy cannot appear. Each of the three components gains a real Chromium test asserting the scrollbar occupies real height (the test environment drops headless Chromium's default `--hide-scrollbars`, without which the measurement is always 0).
+
 ## 0.63.3
 
 ### Patch Changes

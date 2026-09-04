@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.63.4",
+    "date": "2026-09-04",
+    "entries": [
+      {
+        "sha": "71e5033",
+        "bump": "patch",
+        "breaking": false,
+        "body": "`Chart` 图例与 `Gantt` 的横向滚动条在 Chromium 121+ 一条都不画，与 0.63.3 修的 `Table` 同根（#347）；经典滚动条皮肤收成一份共享。\n\n0.63.3 只修了 `Table`：`scrollbar-width` / `scrollbar-color` 任一裸写都会让 Chromium 121+ 整体忽略 `::-webkit-scrollbar*`，macOS 上退回 overlay 条、平时一条都看不见。同款裸写还留在 `Chart` 的 `legendScroll` 图例行和 `Gantt` 的时间轴滚动容器里，注释还写着「定义 `::-webkit-scrollbar` 让 Chrome/macOS 强制常显」，实际被上一行的 `scrollbar-width: thin` 抵消。\n\n皮肤本体（守卫过的标准属性 + 轨道透明 + 滑块圆角 + 两档滑块取色）提到库内一处共享，`Table` 外壳与代理条、`Chart` 图例、`Gantt` 三处改为引用，各自只补厚度。新增源码扫描测试：全库不许再出现裸写的 `scrollbar-width`（`none` 除外）/ `scrollbar-color`，从根上堵第四处。三个组件各加真实 Chromium 用例量滚动条真实高度大于 0（测试环境去掉了 headless 默认的 `--hide-scrollbars`，否则永远量到 0）。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.63.3",
     "date": "2026-09-04",
     "entries": [
