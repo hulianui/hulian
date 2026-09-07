@@ -180,3 +180,27 @@ describe("Alert", () => {
     });
   });
 });
+
+describe("Alert 单行对齐", () => {
+  // 只有 title + action 时：动作按钮比一行标题高，若仍 items-start，图标和标题会整体上浮，肉眼可见没对齐。
+  it("无正文时整条居中，icon 不带首行光学补偿", () => {
+    const { container } = render(
+      <Alert title="本地网络权限未授予" icon={<svg data-testid="ic" />} action={<button>去授权</button>} />,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).toContain("items-center");
+    expect(root.className).not.toContain("items-start");
+    expect(root.querySelector("[data-testid=ic]")!.parentElement!.className).not.toContain("mt-0.5");
+  });
+
+  it("有正文时保持顶对齐，icon 钉在首行", () => {
+    const { container } = render(
+      <Alert title="标题" icon={<svg data-testid="ic" />}>
+        正文
+      </Alert>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).toContain("items-start");
+    expect(root.querySelector("[data-testid=ic]")!.parentElement!.className).toContain("mt-0.5");
+  });
+});

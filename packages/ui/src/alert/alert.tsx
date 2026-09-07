@@ -66,10 +66,20 @@ function AlertImpl({
   const resolvedCloseLabel = closeLabel ?? alertLocale.close;
   // role 由 tone 派生：danger=需打断的错误→assertive(alert)；其余→polite(status)。props.role 可覆盖。
   const resolvedRole = role ?? (tone === "danger" ? "alert" : "status");
+  // 单行提示（只有 title 没有正文）：图标 / 标题 / 动作三者按容器居中对齐。默认的 items-start 是为
+  // 多行正文准备的（图标钉在首行），可动作按钮比一行标题高，单行时顶对齐会让左侧整体上浮 2-4px，
+  // 一眼就是「没对齐」。icon 的 mt-0.5 也是首行光学补偿，居中时同样不该有。
+  const singleLine = children == null;
 
   return (
-    <div role={resolvedRole} className={cn(alertVariants({ variant, tone }), className)} {...props}>
-      {icon != null && <span className="mt-0.5 shrink-0 [&>svg]:size-5">{icon}</span>}
+    <div
+      role={resolvedRole}
+      className={cn(alertVariants({ variant, tone }), singleLine && "items-center", className)}
+      {...props}
+    >
+      {icon != null && (
+        <span className={cn("shrink-0 [&>svg]:size-5", !singleLine && "mt-0.5")}>{icon}</span>
+      )}
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         {title != null && <div className="text-sm font-medium">{title}</div>}
         {children != null && <div className="text-sm text-muted-foreground">{children}</div>}
