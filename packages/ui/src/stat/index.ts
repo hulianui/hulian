@@ -1,2 +1,2 @@
 export { Stat } from "./stat";
-export type { StatProps } from "./stat.types";
+export type { StatProps, StatTone } from "./stat.types";

@@ -26,6 +26,7 @@ import { Stat } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | delta | `number` | - | 环比百分比，>=0 升(text-primary) / <0 降(text-danger)；不传则不渲染趋势 |
+| tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色，**只作用于 `icon` 底座**（浅底 + 语义色文字），不改 `value` / `delta` 的颜色；不传 `icon` 时无落点 |
 | …HTMLAttributes | `HTMLAttributes<HTMLDivElement>` | - | 透传 div 原生属性（含 className） |
 
 ## Slots
@@ -52,10 +53,16 @@ import { Stat } from "@hulianui/ui"
 
 // hint 与趋势可同时出现：趋势行在上，注脚在下
 <Stat label="参考人数" value="38" delta={6.4} deltaLabel="较上场" hint="2 人未交卷" className="w-64" />
+
+// 一排同构卡按 tone 给 icon 底座上色，便于按颜色定位类别（数值与趋势的颜色不受影响）
+<Stat label="在线设备" value="1,284" tone="success" icon={<Activity className="size-4" />} className="w-64" />
+<Stat label="故障节点" value="2" tone="danger" icon={<AlertTriangle className="size-4" />} className="w-64" />
 ```
 
 ## 禁忌 / 坑
 - **`deltaLabel` 依附于 `delta`，单独传会被静默吞掉**：不传 `delta` 时整块趋势不渲染，`deltaLabel` 一起消失——TS 能过、控制台干净、页面只是少一行字。要「数值 + 一行与趋势无关的注脚」请用 `hint`（开发态现在也会 `console.warn` 点名这种误用）。
+- **`tone` 只给 `icon` 底座上色**，`value` 与趋势行的颜色不受影响（升=primary / 降=danger 这条口径不变）。因此不传 `icon` 时 `tone` 一处也落不下去——这种情况开发态会 `console.warn` 点名，不要靠反复换 tone 值去试。
+- **不要为了让标签更醒目而往 `label` 里塞 `<span className="text-foreground">`**：`label` 默认就是 `text-foreground`（卡片标题），`hint` 与 `deltaLabel` 才是 `text-muted-foreground`（注脚与口径）。反过来想让标签更弱也不要改色——那会让它和注脚重新撞成一档。
 - `delta` 不传则整块趋势不渲染；正负号由数值符号决定颜色，无需自己加箭头。
 - `value` 不做格式化，需自己传格式化后的内容（要自动千分位/前后缀走 [Statistic](../statistic/statistic.md)）。
 - 卡片自带 `shadow-sm` + `border-hairline`（亮色无描边只有投影、暗色有 1px 描边），是库内「有阴影的容器」统一档位。要回到无阴影的纯平面，用 `className="shadow-none border-border"` 覆盖。

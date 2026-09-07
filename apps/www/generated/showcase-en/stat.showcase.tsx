@@ -1,5 +1,5 @@
 "use client";
-import { Activity, Users, ShoppingCart } from "lucide-react";
+import { Activity, AlertTriangle, Archive, Bell, RefreshCw, ShoppingCart, Users, } from "lucide-react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Stat } from "../../../../packages/ui/src/stat/stat";
 export const statShowcase: ShowcaseSpec = {
@@ -33,6 +33,26 @@ export const statShowcase: ShowcaseSpec = {
   icon={<Activity className="size-4" />}
 />`,
             render: () => (<Stat label="This month GMV" value="¥128,400" delta={12.5} deltaLabel="Compared with last month" icon={<Activity className="size-4"/>} className="w-64"/>),
+        },
+        {
+            title: "Semantic icon base",
+            description: "tone colors only the icon base (subtle background plus semantic text); the value and trend colors never change. A row of identical KPI cards can be told apart by base color instead of stacking your own base over the component's. The default neutral is grey, and tone has no effect without an icon.",
+            code: `<div className="grid grid-cols-3 gap-4">
+  <Stat label="Subscribers" value="8,021" tone="brand" icon={<Users className="size-4" />} />
+  <Stat label="Devices online" value="1,284" tone="success" icon={<Activity className="size-4" />} />
+  <Stat label="Open alerts" value="7" tone="warning" icon={<Bell className="size-4" />} />
+  <Stat label="Failed nodes" value="2" tone="danger" icon={<AlertTriangle className="size-4" />} />
+  <Stat label="Pending sync" value="19" tone="info" icon={<RefreshCw className="size-4" />} />
+  <Stat label="Archived" value="431" tone="neutral" icon={<Archive className="size-4" />} />
+</div>`,
+            render: () => (<div className="grid w-[52rem] max-w-full grid-cols-3 gap-4">
+          <Stat label="Subscribers" value="8,021" tone="brand" icon={<Users className="size-4"/>}/>
+          <Stat label="Devices online" value="1,284" tone="success" icon={<Activity className="size-4"/>}/>
+          <Stat label="Open alerts" value="7" tone="warning" icon={<Bell className="size-4"/>}/>
+          <Stat label="Failed nodes" value="2" tone="danger" icon={<AlertTriangle className="size-4"/>}/>
+          <Stat label="Pending sync" value="19" tone="info" icon={<RefreshCw className="size-4"/>}/>
+          <Stat label="Archived" value="431" tone="neutral" icon={<Archive className="size-4"/>}/>
+        </div>),
         },
         {
             title: "Footnote hint",

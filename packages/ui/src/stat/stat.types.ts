@@ -1,5 +1,9 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
+// 取值与顺序照抄 [Tag](../tag/tag.types.ts) 的 TagTone：同一套语义色在库内只该有一份命名，
+// 消费方在一个页面里混用 Tag 与 Stat 时不必记两张对照表。
+export type StatTone = "neutral" | "brand" | "info" | "success" | "warning" | "danger";
+
 export interface StatProps extends HTMLAttributes<HTMLDivElement> {
   label: ReactNode;
   value: ReactNode;
@@ -14,6 +18,13 @@ export interface StatProps extends HTMLAttributes<HTMLDivElement> {
    */
   hint?: ReactNode;
   icon?: ReactNode;
+  /**
+   * 语气色，**只作用于 `icon` 底座**（浅底 `bg-*-subtle` + 语义色文字），
+   * 不改 `value` 与 `delta` 的颜色——KPI 卡的注意力仍该在数字上。
+   * 默认 `neutral` 即中性灰底座，与 0.63.x 之前的表现完全一致。
+   * 用途是让一排同构 KPI 卡能按颜色定位（在线/告警/故障各是一色），不传 `icon` 时无效。
+   */
+  tone?: StatTone;
   /** 可选图表插槽（如 KPI 趋势 sparkline），渲染在数值行下方、delta 上方。 */
   chart?: ReactNode;
 }

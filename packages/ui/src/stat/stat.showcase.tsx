@@ -1,5 +1,13 @@
 "use client";
-import { Activity, Users, ShoppingCart } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  Archive,
+  Bell,
+  RefreshCw,
+  ShoppingCart,
+  Users,
+} from "lucide-react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Stat } from "./stat";
 
@@ -44,6 +52,39 @@ export const statShowcase: ShowcaseSpec = {
           icon={<Activity className="size-4" />}
           className="w-64"
         />
+      ),
+    },
+    {
+      title: "语义色底座",
+      description:
+        "tone 只给 icon 底座上色（浅底 + 语义色文字），value 与趋势的颜色一律不动。一排同构 KPI 卡靠底座颜色分辨类别，不必自己叠一层底座去盖住组件的。默认 neutral 即中性灰；不传 icon 时 tone 没有落点。",
+      code: `<div className="grid grid-cols-3 gap-4">
+  <Stat label="订阅用户" value="8,021" tone="brand" icon={<Users className="size-4" />} />
+  <Stat label="在线设备" value="1,284" tone="success" icon={<Activity className="size-4" />} />
+  <Stat label="待处理告警" value="7" tone="warning" icon={<Bell className="size-4" />} />
+  <Stat label="故障节点" value="2" tone="danger" icon={<AlertTriangle className="size-4" />} />
+  <Stat label="待同步" value="19" tone="info" icon={<RefreshCw className="size-4" />} />
+  <Stat label="已归档" value="431" tone="neutral" icon={<Archive className="size-4" />} />
+</div>`,
+      render: () => (
+        <div className="grid w-[52rem] max-w-full grid-cols-3 gap-4">
+          <Stat label="订阅用户" value="8,021" tone="brand" icon={<Users className="size-4" />} />
+          <Stat
+            label="在线设备"
+            value="1,284"
+            tone="success"
+            icon={<Activity className="size-4" />}
+          />
+          <Stat label="待处理告警" value="7" tone="warning" icon={<Bell className="size-4" />} />
+          <Stat
+            label="故障节点"
+            value="2"
+            tone="danger"
+            icon={<AlertTriangle className="size-4" />}
+          />
+          <Stat label="待同步" value="19" tone="info" icon={<RefreshCw className="size-4" />} />
+          <Stat label="已归档" value="431" tone="neutral" icon={<Archive className="size-4" />} />
+        </div>
       ),
     },
     {

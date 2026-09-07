@@ -8573,7 +8573,20 @@
     "禁用与只读": "Disabled and read-only",
     "已提交的作答传 disabled；展示参考答案传 readOnly。": "Pass disabled for a submitted answer; pass readOnly to display a reference answer.",
     "\" aria-label=\"公式\" value={latex} onChange={setLatex} />": "\" aria-label=\"Formula\" value={latex} onChange={setLatex} />",
-    "已知 $x^2=a$，求 $x$。": "Given $x^2=a$, find $x$."
+    "已知 $x^2=a$，求 $x$。": "Given $x^2=a$, find $x$.",
+    "语义色底座": "Semantic icon base",
+    "tone 只给 icon 底座上色（浅底 + 语义色文字），value 与趋势的颜色一律不动。一排同构 KPI 卡靠底座颜色分辨类别，不必自己叠一层底座去盖住组件的。默认 neutral 即中性灰；不传 icon 时 tone 没有落点。": "tone colors only the icon base (subtle background plus semantic text); the value and trend colors never change. A row of identical KPI cards can be told apart by base color instead of stacking your own base over the component's. The default neutral is grey, and tone has no effect without an icon.",
+    "订阅用户": "Subscribers",
+    "在线设备": "Devices online",
+    "待处理告警": "Open alerts",
+    "故障节点": "Failed nodes",
+    "待同步": "Pending sync",
+    "<Stat label=\"订阅用户\" value=\"8,021\" tone=\"brand\" icon={<Users className=\"size-4\" />} />": "<Stat label=\"Subscribers\" value=\"8,021\" tone=\"brand\" icon={<Users className=\"size-4\" />} />",
+    "<Stat label=\"在线设备\" value=\"1,284\" tone=\"success\" icon={<Activity className=\"size-4\" />} />": "<Stat label=\"Devices online\" value=\"1,284\" tone=\"success\" icon={<Activity className=\"size-4\" />} />",
+    "<Stat label=\"待处理告警\" value=\"7\" tone=\"warning\" icon={<Bell className=\"size-4\" />} />": "<Stat label=\"Open alerts\" value=\"7\" tone=\"warning\" icon={<Bell className=\"size-4\" />} />",
+    "<Stat label=\"故障节点\" value=\"2\" tone=\"danger\" icon={<AlertTriangle className=\"size-4\" />} />": "<Stat label=\"Failed nodes\" value=\"2\" tone=\"danger\" icon={<AlertTriangle className=\"size-4\" />} />",
+    "<Stat label=\"待同步\" value=\"19\" tone=\"info\" icon={<RefreshCw className=\"size-4\" />} />": "<Stat label=\"Pending sync\" value=\"19\" tone=\"info\" icon={<RefreshCw className=\"size-4\" />} />",
+    "<Stat label=\"已归档\" value=\"431\" tone=\"neutral\" icon={<Archive className=\"size-4\" />} />": "<Stat label=\"Archived\" value=\"431\" tone=\"neutral\" icon={<Archive className=\"size-4\" />} />"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

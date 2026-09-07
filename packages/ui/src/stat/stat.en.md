@@ -26,6 +26,7 @@ import { Stat } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | delta | `number` | - | Percentage change; nonnegative is primary and negative is danger. Omission hides the trend. |
+| tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | Semantic color applied **only to the `icon` base** (subtle background plus semantic text). It never changes `value` or `delta` colors and has no effect without `icon`. |
 | …HTMLAttributes | `HTMLAttributes<HTMLDivElement>` | - | Forwarded div attributes including className. |
 
 ## Slots
@@ -52,11 +53,17 @@ import { Stat } from "@hulianui/ui"
 
 // Trend and footnote together
 <Stat label="Participants" value="38" delta={6.4} deltaLabel="vs previous session" hint="2 missing submissions" className="w-64" />
+
+// Color the icon base per category so a row of identical cards stays scannable
+<Stat label="Devices online" value="1,284" tone="success" icon={<Activity className="size-4" />} className="w-64" />
+<Stat label="Failed nodes" value="2" tone="danger" icon={<AlertTriangle className="size-4" />} className="w-64" />
 ```
 
 ## Pitfalls
 - **`deltaLabel` depends on `delta`** and is silently omitted without it. Use `hint` for independent context. Development builds also emit a Chinese console warning for this misuse.
 - The exact warning is `"[hulian] Stat \u4f20\u4e86 deltaLabel \u4f46\u6ca1\u6709 delta\uff0c\u5b83\u4e0d\u4f1a\u88ab\u6e32\u67d3\uff1b\u82e5\u60f3\u8981\u4e0e\u8d8b\u52bf\u65e0\u5173\u7684\u6ce8\u811a\u8bf7\u7528 hint\u3002"` ("deltaLabel was supplied without delta; use hint for a trend-independent footnote").
+- **`tone` colors only the `icon` base.** The `value` and the trend row keep their own colors (nonnegative delta stays primary, negative stays danger). Because the base is its only landing spot, `tone` does nothing when `icon` is omitted; development builds warn about that instead of leaving you to guess.
+- **Do not wrap `label` in `<span className="text-foreground">` to make it stand out.** `label` already uses `text-foreground` as the card title, while `hint` and `deltaLabel` use `text-muted-foreground` as annotations. Dimming `label` by hand is equally wrong: it collapses the title back into the same tier as the footnote.
 - Omitting `delta` hides the whole trend; its sign automatically determines direction and color.
 - `value` is not formatted. Pass ready content or use [Statistic](../statistic/statistic.md) for grouping, precision, and affixes.
 
