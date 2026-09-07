@@ -16521,6 +16521,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 ## 禁忌 / 坑
 
 - `loading` **不画遮罩**，只在「一行都没有」那一档接管表体渲染骨架行。已有行时它只打 `aria-busy`——「正在更新」的半透明遮罩要么用 `ProTable`（自带），要么自己在表外套一层。反过来也成立：别在自己的遮罩底下让空态透出来，那正是 `loading` 存在的原因（#349）。
+- 骨架行带 `data-loading-row` 且**整行 `aria-hidden`**，数据行两者都没有。写 E2E / 自动化时判活探针要写成 `tbody tr:not([data-loading-row])`——直接数 `tbody tr` 会把骨架行算进去，而骨架行数常常正好等于 `pageSize`，于是「等到 N 行」会在数据到达之前就被满足（#349）。
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
 - **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
 - 写薄包装转发原语 props 时，`TableHeadProps` / `TableCellProps` 的 `align` 得跟着 `Omit` 一次：那两个接口把原生的 `align`（更宽的联合，含 `justify` / `char`）换成了 `"left" | "center" | "right"`，直接 `extends ThHTMLAttributes<…>` 转发会类型不兼容。

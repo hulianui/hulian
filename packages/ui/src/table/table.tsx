@@ -1106,7 +1106,18 @@ export function Table<TData>({
     const leaves = table.getVisibleLeafColumns();
     const count = Math.min(Math.max(1, Math.trunc(loadingRows) || 1), MAX_SKELETON_ROWS);
     body = Array.from({ length: count }).map((_, r) => (
-      <tr key={`__loading__${r}`} className="border-b border-border last:border-0">
+      <tr
+        key={`__loading__${r}`}
+        // 骨架行必须与数据行**可区分**，否则它就是一颗竞态地雷：消费方的 E2E / 自动化普遍
+        // 用「tbody tr 到了 N 行」当「数据到了」的判活探针，而骨架行数常常正好等于 pageSize，
+        // 探针会在数据到达前就被满足（库自己的 demo 门禁就这么翻了车 —— 首屏骨架 8 行让
+        // 「等 8 行」立刻通过，于是错过了后面才出现的重试按钮，整条链路等在一份空数据上）。
+        // aria-hidden 同时解决无障碍那侧：几十行空占位逐行念一遍没有任何信息量，
+        // 「正在加载」由外壳那一处 role="status" 统一播报。
+        data-loading-row=""
+        aria-hidden
+        className="border-b border-border last:border-0"
+      >
         {leaves.map((column, c) => (
           <td
             key={column.id}
@@ -1118,13 +1129,6 @@ export function Table<TData>({
             }}
             className={cn(cellPad, stickyClass(column, shellMeasuresOverflow))}
           >
-            {/* 全表只此一处活动区域（#245 口径）：容器打 aria-busy 表示「这块正在更新」，
-                「正在加载」这句话只由这一个 role="status" 播报。 */}
-            {r === 0 && c === 0 && (
-              <span role="status" className="sr-only">
-                {componentLocale.spinner?.loading ?? "加载中"}
-              </span>
-            )}
             <div
               // 占位块不进无障碍树：几十个灰块逐个念一遍毫无信息量。
               aria-hidden
@@ -1278,7 +1282,6 @@ export function Table<TData>({
     <div
       ref={scrollRef}
       // 加载中给容器打 aria-busy（#245 口径）：说的是「这块正在更新，先别当最终内容读」。
-      // 「正在加载」那句播报只在骨架行里开一处 role="status"，这里不再叠第二个活动区域。
       aria-busy={loading || undefined}
       style={
         virtualEnabled
@@ -1297,6 +1300,14 @@ export function Table<TData>({
         className,
       )}
     >
+      {/* 全表只此一处活动区域（#245 口径）：容器打 aria-busy 表示「这块正在更新」，
+          「正在加载」这句话只由这一个 role="status" 播报。它落在骨架行**之外** ——
+          骨架行整行 aria-hidden，播报节点若住在里面会跟着一起被藏掉。 */}
+      {loading && rows.length === 0 && (
+        <span role="status" className="sr-only">
+          {componentLocale.spinner?.loading ?? "加载中"}
+        </span>
+      )}
       <MaybeTooltipProvider enabled={hasEllipsis}>
         <table
           // fixed 布局：表宽 = 各列 getSize() 之和；窄于容器时 min-w-full 兜底撑满

@@ -206,20 +206,24 @@ export async function scanAdminDemoOutput(outputRoot = "apps/www/out") {
 
     await page.goto(`${origin}${EN}/demos/crm/customers`, { waitUntil: "networkidle" });
     const retry = page.getByRole("button", { name: "Try again" });
-    await page.waitForFunction(() => (
-      document.querySelectorAll("tbody tr").length === 8
+    // 判活探针一律排除骨架行（`[data-loading-row]`，Table 的首屏加载态 #349）。这页的 mock
+    // 数据第一次必失败（failOnce），而骨架行数正好等于 pageSize=8 —— 不排除的话「等到 8 行」
+    // 会在请求失败之前就被满足，于是错过后面才出现的 Try again，整条链路等在一份空数据上。
+    const dataRows = "tbody tr:not([data-loading-row])";
+    await page.waitForFunction((selector) => (
+      document.querySelectorAll(selector).length === 8
       || [...document.querySelectorAll("button")].some((button) => button.textContent?.trim() === "Try again")
-    ));
+    ), dataRows);
     if (await retry.isVisible()) {
       await retry.click();
     }
-    await page.waitForFunction(() => document.querySelectorAll("tbody tr").length === 8);
+    await page.waitForFunction((selector) => document.querySelectorAll(selector).length === 8, dataRows);
     await page.getByRole("button", { name: "Expand" }).click();
     await page.getByRole("combobox", { name: "Owner" }).click();
     await page.getByRole("option", { name: "Zhou Mingyuan" }).click();
     await page.getByRole("button", { name: "Search", exact: true }).click();
-    const customerRows = page.locator("tbody tr");
-    await page.waitForFunction(() => document.querySelectorAll("tbody tr").length === 5);
+    const customerRows = page.locator(dataRows);
+    await page.waitForFunction((selector) => document.querySelectorAll(selector).length === 5, dataRows);
     if (await customerRows.count() !== 5) throw new Error("CRM owner filter did not return the expected 5 customers");
     const filteredCustomers = (await customerRows.allInnerTexts()).join("\n");
     for (const customer of ["Yunqi Technology", "Jinxiu Textile", "Intelligent Link Software", "Golden Harvest Bank", "Hongtu printing"]) {

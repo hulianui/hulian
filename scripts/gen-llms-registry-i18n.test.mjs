@@ -84,7 +84,7 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "status-dot": [0, 1],
   "streaming-text": [2, 3],
   // #349 的首屏骨架各给中英加了两条，两边同增，差值不变
-  table: [41, 42],
+  table: [42, 43],
   tag: [5, 4],
   "task-runner": [3, 4],
   text: [0, 1],

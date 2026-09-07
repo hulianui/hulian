@@ -2181,12 +2181,31 @@ describe("加载态（#349）", () => {
     expect(skeletonBlocks(container).length).toBe(0);
   });
 
-  it("a11y：容器打 aria-busy，播报只留一处 role=status（骨架块自身 aria-hidden）", () => {
+  it("a11y：容器打 aria-busy，播报只留一处 role=status（骨架行整行 aria-hidden）", () => {
     const { container } = render(<Table columns={columns} data={[]} loading />);
     expect(container.querySelector("[aria-busy='true']")).toBeTruthy();
     const status = container.querySelectorAll('[role="status"]');
     expect(status.length).toBe(1);
     expect(status[0]!.textContent).toBe("加载中");
+    // 播报节点必须落在骨架行之外：行整行 aria-hidden，住在里面会被一起藏掉。
+    expect(status[0]!.closest("[data-loading-row]")).toBeNull();
+    expect(status[0]!.closest("tbody")).toBeNull();
+  });
+
+  // 骨架行与数据行必须可区分。消费方的 E2E 普遍拿「tbody tr 到了 N 行」当判活探针，
+  // 而骨架行数常常正好等于 pageSize —— 不给标记的话探针会在数据到达前就被满足（库自己的
+  // demo 门禁就这么翻过车：首屏 8 行骨架让「等 8 行」立刻通过，错过了后面才出现的重试按钮）。
+  it("骨架行带 data-loading-row 且整行 aria-hidden，数据行两者都没有", () => {
+    const { container } = render(<Table columns={columns} data={[]} loading loadingRows={3} />);
+    const skeletonRows = container.querySelectorAll("tbody tr[data-loading-row]");
+    expect(skeletonRows.length).toBe(3);
+    for (const row of skeletonRows) expect(row.getAttribute("aria-hidden")).toBe("true");
+    // 这正是消费方该用的判活选择器：骨架期为 0，数据到位才计数。
+    expect(container.querySelectorAll("tbody tr:not([data-loading-row])").length).toBe(0);
+
+    const { container: loaded } = render(<Table columns={columns} data={data} />);
+    expect(loaded.querySelectorAll("tbody tr[data-loading-row]").length).toBe(0);
+    expect(loaded.querySelectorAll("tbody tr:not([data-loading-row])").length).toBe(3);
   });
 
   it("有数据时也打 aria-busy，但不开活动区域（那句播报归外层遮罩）", () => {
