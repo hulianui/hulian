@@ -46,7 +46,8 @@ import { Skeleton, TableSkeleton, CardSkeleton, ListSkeleton } from "@hulianui/u
 ## 禁忌 / 坑
 
 - 骨架本身是「无 chrome」的占位，预设（Card/List/Table）不自带边框/卡片容器；别再外层套一层 Card 造成双重边框。
-- shimmer 是纯 CSS 动画，与图表/canvas 那类 rAF 动画不同，headless 截图能正常显形，无需特殊处理。
+- shimmer 是 motion 驱动的 `backgroundPosition` 补间，不是 CSS 动画 —— `motion-reduce:` 这类 Tailwind 类变体够不着它；但骨架块本身是静态 DOM，headless 截图能正常显形，无需特殊处理。
+- `prefers-reduced-motion: reduce` 下**组件自己退成静态灰块**（#350）：占位形状照旧，只去掉扫光与那层渐变，三个预设走同一个原语因此一并静止。这条偏好一律由库负责，不需要消费方做任何事。
 - 预设读取 `ConfigProvider` 的运行时语言，因此属于客户端组件；服务端组件可以正常导入并渲染它们。
 
 ## 相关

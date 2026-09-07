@@ -46,7 +46,8 @@ ListSkeleton and CardSkeleton use `rows` and `count`, respectively; constrain pr
 ## Pitfalls
 
 - Presets intentionally omit chrome. Do not add an unnecessary Card wrapper that creates duplicate borders.
-- Shimmer uses CSS rather than requestAnimationFrame, so headless screenshots show its shape without special handling.
+- The shimmer is a motion-driven `backgroundPosition` tween, not a CSS animation, so Tailwind variants such as `motion-reduce:` cannot reach it. The placeholder block itself stays static DOM, so headless screenshots show its shape without special handling.
+- Under `prefers-reduced-motion: reduce` **the component falls back to a static block by itself** (#350). The placeholder geometry stays, only the sweep and its gradient go away, and all three presets share the same primitive so they settle together. The library owns this preference; consumers need to do nothing.
 - Presets expose a localized runtime loading label to assistive technology.
 - Presets read the runtime locale from `ConfigProvider`, so they are client components; server components can still import and render them.
 

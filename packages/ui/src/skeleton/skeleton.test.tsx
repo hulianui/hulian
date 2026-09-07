@@ -10,6 +10,15 @@ describe("Skeleton", () => {
   it("稳定父更新时跳过骨架子树", async () => {
     await expectMemoSkipsSubtree(() => <Skeleton shape="text" className="h-4 w-full" />);
   });
+
+  // 减弱动效那一侧在 skeleton.reduced-motion.test.tsx —— motion 的 useReducedMotion 首次调用
+  // 就把结果缓存进模块级变量，两侧必须分文件，否则先跑的那侧会把后一侧钉死。
+  it("默认（未开减弱动效）挂着扫光的渐变背景", () => {
+    const { container } = render(<Skeleton />);
+    const block = container.firstElementChild as HTMLElement;
+    expect(block.style.backgroundImage).toContain("linear-gradient");
+    expect(block.style.backgroundSize).toBe("200% 100%");
+  });
 });
 
 describe("skeletonVariants", () => {

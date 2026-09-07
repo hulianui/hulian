@@ -71,16 +71,20 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   select: [12, 13],
   separator: [0, 1],
   "service-message": [3, 4],
-  skeleton: [3, 4],
+  // #350 给中英各加了一条 reduced-motion 的坑，两边同增，既有的 1 条差值没变
+  // （en 多的那条是「预设向辅助技术暴露加载文案」，zh 一直没写，属存量分歧）。
+  skeleton: [4, 5],
   spacer: [0, 1],
   spin: [3, 4],
   spinner: [2, 3],
   stack: [0, 1],
   "staggered-menu": [4, 5],
-  stat: [7, 8],
+  // #348 的 tone / label 色阶各给中英加了两条，两边同增，差值不变
+  stat: [9, 10],
   "status-dot": [0, 1],
   "streaming-text": [2, 3],
-  table: [39, 40],
+  // #349 的首屏骨架各给中英加了两条，两边同增，差值不变
+  table: [41, 42],
   tag: [5, 4],
   "task-runner": [3, 4],
   text: [0, 1],
