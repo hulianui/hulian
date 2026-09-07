@@ -37,7 +37,8 @@ import { ModalForm, DrawerForm } from "@hulianui/ui"
 | side | `DrawerSide` | `"right"` | 仅 `DrawerForm`：抽屉贴边方向 |
 | draggable | `boolean` | `false` | 仅 `ModalForm`：允许按住标题拖动对话框（透传 [DialogContent.draggable](../dialog/dialog.md)） |
 | dismissible | `boolean` | `false` | 点遮罩是否关闭。**与 `Dialog` / `Drawer` 原语相反**：编排件知道自己装着一张表单，填到一半被随手点没的代价太大（#343）。传 `true` 恢复原语行为 |
-| confirmOnClose | `boolean` | `true` | 表单改动过时，关闭前先确认一次。判据来自 `form.isDirty()`，**没传 `form` 就不生效**；干净表单直接关；提交成功后的关闭也不问。**异步回填的编辑表单**要用 `setFieldsValue(v, { markPristine: true })` 把回填那一刻钉成基线，否则什么都没改也会弹确认（[见 Form](../form/form.md)） |
+| confirmOnClose | `boolean` | `true` | 表单改动过时，关闭前先确认一次。判据是 `form.isDirty()` 与 `hasExternalChanges()` **取或**，**两个都没传就不生效**；干净表单直接关；提交成功后的关闭也不问。**异步回填的编辑表单**要用 `setFieldsValue(v, { markPristine: true })` 把回填那一刻钉成基线，否则什么都没改也会弹确认（[见 Form](../form/form.md)） |
+| hasExternalChanges | `() => boolean` | - | 补一条 `form` 管不着的脏判定，与 `form.isDirty()` **取或，不是覆盖**（#351）：任一侧为真就先确认。给弹窗里自持 state、不走 `form.register` 的复合控件用（区划级联、权限勾选组、标签编辑器）。只在真要关的那一刻求值；不传 `form` 时也能单独用这一侧 |
 | discardTitle | `ReactNode` | locale `modalForm.discardTitle` | 放弃确认的标题 |
 | discardDescription | `ReactNode` | locale `modalForm.discardDescription` | 放弃确认的说明 |
 
@@ -82,7 +83,7 @@ const name = form.register("name", { rules: [{ required: true, message: "请输�
 
 `ModalForm` / `DrawerForm` 与裸 `Dialog` / `Drawer` 的默认值刻意不同：**点遮罩默认不关**。原语是通用容器，随手点外面关掉很合理；编排件装的一定是表单，填到第 8 个字段时鼠标落在窗外一点就全部清空，这个代价与那点便利完全不成比例。
 
-退路仍在，只是加了一道确认：Esc 与右上角关闭键在 `form.isDirty()` 为真时先问一句「放弃未提交的内容？」，确认才关。三种情况不会打扰你：没传 `form`（编排件无从判断脏净）、表单一字未改、以及提交成功后的那次关闭。
+退路仍在，只是加了一道确认：Esc 与右上角关闭键在 `form.isDirty()` 为真时先问一句「放弃未提交的内容？」，确认才关。三种情况不会打扰你：没传 `form`（编排件无从判断脏净 —— 除非用下面的 `hasExternalChanges` 把判据接进来）、表单一字未改、以及提交成功后的那次关闭。
 
 ```tsx
 // 默认：点遮罩不关，改过就问一句
@@ -98,6 +99,29 @@ const name = form.register("name", { rules: [{ required: true, message: "请输�
 ```
 
 确认框由编排件自己渲染（`AlertDialog`），**不要求你挂 `ModalProvider`** —— 命令式 `modal.confirm` 在没挂 Provider 的应用里什么都不显示，而关闭动作此时已被拦下，那会变成「窗关不掉又没有提示」的死局。
+
+### `form` 管不着的字段也算改过（#351）
+
+上面那道守门的判据只有 `form.isDirty()`，也就是只覆盖走 `form.register` 的字段。真实后台表单里相当一部分控件是自持 state 的 —— 区划三级级联、权限勾选组、标签编辑器、学科/年级联动下拉，它们本来就不是「一个输入框一个值」，不进 `form.values`。于是只选了区划、勾了六条权限就按 Esc，编排件会判成干净表单，不问就关，填的全没。
+
+`hasExternalChanges` 把这一侧接回来，**与 `form.isDirty()` 取或**：
+
+```tsx
+const [region, setRegion] = useState<string[]>([]);
+const [codes, setCodes] = useState<string[]>([]);
+const snapshot = useRef("");           // 打开/回填那一刻的基线，由你自己钉
+
+<ModalForm
+  title="编辑学校"
+  form={form}
+  hasExternalChanges={() => snapshot.current !== JSON.stringify({ region, codes })}
+  onFinish={save}
+>…</ModalForm>
+```
+
+用回调不用布尔，是为了不逼着每次渲染都算一遍快照比对 —— 这个答案只在「真要关」的那一刻有人看。要传布尔写 `() => flag` 即可。
+
+**与 `markPristine` 的边界**：这一侧的状态全在你手上。`form.markPristine()` / `setFieldsValue(v, { markPristine: true })` 只钉 `form` 自己的基线，碰不到你的 `useState`，编排件也不存快照、不会替你重置。所以异步回填的编辑表单要在调 `markPristine` 的**同一处**把自己的快照一并刷新（上例里就是给 `snapshot.current` 重新赋值），否则回填会被这一侧算成「改过」，什么都没动也弹确认。
 
 ## 相关
 [Form](../form/form.md) · [ProForm](../pro-form/pro-form.md) · [StepsForm](../steps-form/steps-form.md) · [LoginForm](../login-form/login-form.md) · [Field](../field/field.md) · [SearchForm](../search-form/search-form.md)

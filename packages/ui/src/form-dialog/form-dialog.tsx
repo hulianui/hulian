@@ -43,6 +43,7 @@ const MODAL_FORM_FALLBACK = {
 interface DismissGuardOptions {
   form?: FormInstance;
   confirmOnClose: boolean;
+  hasExternalChanges?: () => boolean;
   discardTitle?: ReactNode;
   discardDescription?: ReactNode;
   setOpen: (open: boolean, details?: FormDialogChangeDetails) => void;
@@ -64,6 +65,7 @@ interface DismissGuardOptions {
 function useDismissGuard({
   form,
   confirmOnClose,
+  hasExternalChanges,
   discardTitle,
   discardDescription,
   setOpen,
@@ -73,8 +75,13 @@ function useDismissGuard({
   const submittingRef = useRef(false);
   const [asking, setAsking] = useState(false);
 
+  // 脏判定是「取或」而不是只认 form（#351）：`form` 只管得着 register 过的字段，而弹窗里的
+  // 区划级联、权限勾选组这类自持 state 的控件不在 `form.values` 里 —— 只改过它们就按 Esc，
+  // 单看 `isDirty()` 会判成干净表单直接关掉。消费方那一侧惰性求值：只在真要关这一刻问一次。
+  const isDirty = () => Boolean(form?.isDirty()) || Boolean(hasExternalChanges?.());
+
   const handleOpenChange = (next: boolean, details?: FormDialogChangeDetails) => {
-    if (next || submittingRef.current || !confirmOnClose || !form?.isDirty()) {
+    if (next || submittingRef.current || !confirmOnClose || !isDirty()) {
       setOpen(next, details);
       return;
     }
@@ -197,6 +204,7 @@ export function ModalForm({
   draggable,
   dismissible = false,
   confirmOnClose = true,
+  hasExternalChanges,
   discardTitle,
   discardDescription,
   children,
@@ -205,6 +213,7 @@ export function ModalForm({
   const { handleOpenChange, submittingRef, discardDialog } = useDismissGuard({
     form,
     confirmOnClose,
+    hasExternalChanges,
     discardTitle,
     discardDescription,
     setOpen,
@@ -257,6 +266,7 @@ export function DrawerForm({
   side = "right",
   dismissible = false,
   confirmOnClose = true,
+  hasExternalChanges,
   discardTitle,
   discardDescription,
   children,
@@ -265,6 +275,7 @@ export function DrawerForm({
   const { handleOpenChange, submittingRef, discardDialog } = useDismissGuard({
     form,
     confirmOnClose,
+    hasExternalChanges,
     discardTitle,
     discardDescription,
     setOpen,

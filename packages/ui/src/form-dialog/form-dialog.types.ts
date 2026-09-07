@@ -35,6 +35,22 @@ export interface FormDialogBaseProps {
    * 提交成功后的关闭也不确认 —— 那时数据已经交出去了。
    */
   confirmOnClose?: boolean;
+  /**
+   * 补一条 `form` 管不着的脏判定，与 `form.isDirty()` **取或**（#351）。
+   *
+   * `confirmOnClose` 原本只认 `form.isDirty()`，也就是只覆盖走 `form.register` 的字段。
+   * 真实后台表单里相当一部分控件是自持 state 的（区划级联、权限勾选组、标签编辑器），
+   * 它们不在 `form.values` 里 —— 只改过这些就按 Esc，编排件会以为表单干净，不问就关。
+   *
+   * 传一个返回布尔的函数，编排件在**真要关的那一刻**才调它：任一侧为真就先确认。
+   * 它是补充不是覆盖，`form` 那侧照常生效；不传 `form` 时也能单独用这一侧。
+   * 用回调而不是布尔，是为了不逼着每次渲染都算一遍快照比对 —— 多数渲染没人看这个答案。
+   *
+   * 这一侧的状态全在消费方手上：编排件不存快照，`form.markPristine()` 也只钉 `form`
+   * 自己的基线，碰不到你的 state。异步回填的编辑表单要在调 `markPristine` 的同一处
+   * 把自己的快照一并刷新，否则回填会被这一侧算成「改过」。
+   */
+  hasExternalChanges?: () => boolean;
   /** 放弃确认的标题，缺省吃 ConfigProvider locale（`modalForm.discardTitle`）。 */
   discardTitle?: ReactNode;
   /** 放弃确认的说明，缺省吃 locale（`modalForm.discardDescription`）。 */

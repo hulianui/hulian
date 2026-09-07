@@ -194,3 +194,125 @@ describe("ModalForm 关闭守门", () => {
     expect(queryByText("放弃未提交的内容？")).toBeNull();
   });
 });
+
+// #351：`form` 只管得着 register 过的字段，弹窗里自持 state 的复合控件（区划级联、权限勾选组）
+// 不在 form.values 里 —— 只改过它们就按 Esc，守门会判成干净表单不问就关。
+describe("ModalForm 外部脏判定（hasExternalChanges）", () => {
+  function Harness({
+    withForm = true,
+    ...rest
+  }: Partial<React.ComponentProps<typeof ModalForm>> & { withForm?: boolean }) {
+    const form = useForm({ initialValues: { name: "" } });
+    return (
+      <ModalForm open title="新增" form={withForm ? form : undefined} {...rest}>
+        <input
+          aria-label="姓名"
+          value={form.register("name").value as string}
+          onChange={(e) => form.setFieldValue("name", e.target.value)}
+        />
+      </ModalForm>
+    );
+  }
+
+  const esc = () => fireEvent.keyDown(document.activeElement ?? document.body, { key: "Escape" });
+
+  it("不传：外部状态改到天上去也直接关，与此前逐字一致（回归钉）", async () => {
+    const onOpenChange = vi.fn();
+    const { queryByText } = render(<Harness onOpenChange={onOpenChange} />);
+    esc();
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything()));
+    expect(queryByText("放弃未提交的内容？")).toBeNull();
+  });
+
+  it("外部脏：按 Esc 先问一句，不直接关", async () => {
+    const onOpenChange = vi.fn();
+    const { findByText } = render(
+      <Harness onOpenChange={onOpenChange} hasExternalChanges={() => true} />,
+    );
+    esc();
+    expect(await findByText("放弃未提交的内容？")).toBeTruthy();
+    expect(onOpenChange.mock.calls.some(([open]) => open === false)).toBe(false);
+  });
+
+  it("外部脏：点右上角关闭键也问", async () => {
+    const onOpenChange = vi.fn();
+    const { getByLabelText, findByText } = render(
+      <Harness onOpenChange={onOpenChange} hasExternalChanges={() => true} />,
+    );
+    fireEvent.click(getByLabelText("关闭"));
+    expect(await findByText("放弃未提交的内容？")).toBeTruthy();
+    expect(onOpenChange.mock.calls.some(([open]) => open === false)).toBe(false);
+  });
+
+  it("外部干净且表单没改过：直接关，不多问一句", async () => {
+    const onOpenChange = vi.fn();
+    const { queryByText } = render(
+      <Harness onOpenChange={onOpenChange} hasExternalChanges={() => false} />,
+    );
+    esc();
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything()));
+    expect(queryByText("放弃未提交的内容？")).toBeNull();
+  });
+
+  it("与 form.isDirty() 取或：form 脏、外部干净照样问", async () => {
+    const onOpenChange = vi.fn();
+    const { getByLabelText, findByText } = render(
+      <Harness onOpenChange={onOpenChange} hasExternalChanges={() => false} />,
+    );
+    fireEvent.change(getByLabelText("姓名"), { target: { value: "甲" } });
+    esc();
+    expect(await findByText("放弃未提交的内容？")).toBeTruthy();
+    expect(onOpenChange.mock.calls.some(([open]) => open === false)).toBe(false);
+  });
+
+  it("没传 form 时也能单独用这一侧", async () => {
+    const onOpenChange = vi.fn();
+    const { findByText } = render(
+      <Harness withForm={false} onOpenChange={onOpenChange} hasExternalChanges={() => true} />,
+    );
+    esc();
+    expect(await findByText("放弃未提交的内容？")).toBeTruthy();
+    expect(onOpenChange.mock.calls.some(([open]) => open === false)).toBe(false);
+  });
+
+  it("惰性求值：不关就不问它，真要关那一刻才调", () => {
+    const hasExternalChanges = vi.fn(() => true);
+    render(<Harness hasExternalChanges={hasExternalChanges} />);
+    // 渲染期不问：这一侧多数时候没人看，不该逼消费方每帧比一次快照。
+    expect(hasExternalChanges).not.toHaveBeenCalled();
+    esc();
+    expect(hasExternalChanges).toHaveBeenCalled();
+  });
+
+  it("提交成功的关闭不问「确定放弃」（既有语义没破）", async () => {
+    const onOpenChange = vi.fn();
+    const { getByText, queryByText } = render(
+      <Harness onOpenChange={onOpenChange} onFinish={() => {}} hasExternalChanges={() => true} />,
+    );
+    fireEvent.click(getByText("提交"));
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false, undefined));
+    expect(queryByText("放弃未提交的内容？")).toBeNull();
+  });
+
+  it("confirmOnClose={false} 把两侧一并关掉", async () => {
+    const onOpenChange = vi.fn();
+    const { queryByText } = render(
+      <Harness onOpenChange={onOpenChange} confirmOnClose={false} hasExternalChanges={() => true} />,
+    );
+    esc();
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything()));
+    expect(queryByText("放弃未提交的内容？")).toBeNull();
+  });
+
+  it("DrawerForm 共用同一道守门", async () => {
+    const onOpenChange = vi.fn();
+    const { findByText } = render(
+      <DrawerForm open title="新增" onOpenChange={onOpenChange} hasExternalChanges={() => true}>
+        <div>body</div>
+      </DrawerForm>,
+    );
+    esc();
+    expect(await findByText("放弃未提交的内容？")).toBeTruthy();
+    expect(onOpenChange.mock.calls.some(([open]) => open === false)).toBe(false);
+  });
+});

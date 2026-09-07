@@ -37,7 +37,8 @@ Public (`ModalForm` = `FormDialogBaseProps`; `DrawerForm` plus `side` on this ba
 | side | `DrawerSide` | `"right"` | `DrawerForm` only: drawer welt direction |
 | draggable | `boolean` | `false` | `ModalForm` only: lets the user move the dialog by holding the title (passed through to [DialogContent.draggable](../dialog/dialog.md)) |
 | dismissible | `boolean` | `false` | Whether pressing the backdrop closes the dialog. **The opposite of the `Dialog` and `Drawer` primitives**, because this component knows it holds a form and losing a half-filled one to a stray click costs far more than the convenience is worth (#343). Pass `true` to restore the primitive behaviour |
-| confirmOnClose | `boolean` | `true` | Ask for confirmation before closing an edited form. The test is `form.isDirty()`, so it **does nothing without a `form`**; an untouched form closes straight away, and so does the close that follows a successful submit. An **edit form filled in asynchronously** must pin its baseline with `setFieldsValue(v, { markPristine: true })`, or it asks to discard even when nothing was touched ([see Form](../form/form.md)) |
+| confirmOnClose | `boolean` | `true` | Ask for confirmation before closing an edited form. The test is `form.isDirty()` **or** `hasExternalChanges()`, so it **does nothing when neither is passed**; an untouched form closes straight away, and so does the close that follows a successful submit. An **edit form filled in asynchronously** must pin its baseline with `setFieldsValue(v, { markPristine: true })`, or it asks to discard even when nothing was touched ([see Form](../form/form.md)) |
+| hasExternalChanges | `() => boolean` | - | An extra dirty test for state the `form` cannot see, **OR-ed with `form.isDirty()` rather than replacing it** (#351): either side being true asks first. Meant for compound controls inside the dialog that hold their own state instead of going through `form.register` — cascading region pickers, permission checkbox groups, tag editors. It is evaluated only at the moment the dialog is about to close, and works on its own when no `form` is passed |
 | discardTitle | `ReactNode` | locale `modalForm.discardTitle` | Title of the discard confirmation |
 | discardDescription | `ReactNode` | locale `modalForm.discardDescription` | Body copy of the discard confirmation |
 
@@ -82,7 +83,7 @@ trigger={<Button> adds </Button>}
 
 `ModalForm` and `DrawerForm` deliberately differ from the bare `Dialog` and `Drawer`: **pressing the backdrop does not close them**. A primitive is a general container where dismissing by clicking outside is reasonable. This component always holds a form, and wiping out eight filled fields because the pointer landed just outside the window costs far more than that convenience is worth.
 
-The exits remain, with one confirmation added: Esc and the top-right close button first ask "Discard unsaved changes?" whenever `form.isDirty()` is true. Three cases never interrupt you: no `form` was passed, so dirtiness cannot be judged; the form is untouched; and the close that follows a successful submit.
+The exits remain, with one confirmation added: Esc and the top-right close button first ask "Discard unsaved changes?" whenever `form.isDirty()` is true. Three cases never interrupt you: no `form` was passed, so dirtiness cannot be judged (unless `hasExternalChanges` below supplies the test); the form is untouched; and the close that follows a successful submit.
 
 ```tsx
 // Default: the backdrop does not close it, and an edited form asks first
@@ -98,6 +99,29 @@ The exits remain, with one confirmation added: Esc and the top-right close butto
 ```
 
 The confirmation is rendered by the component itself through `AlertDialog`, so it **does not require a `ModalProvider`**. The imperative `modal.confirm` shows nothing in an app that never mounted the provider, and since the close has already been intercepted at that point, the result would be a dialog that neither closes nor explains itself.
+
+### Fields the `form` cannot see also count as edits (#351)
+
+The guard above tests `form.isDirty()` alone, which covers only fields routed through `form.register`. A fair share of the controls in a real back-office form hold their own state — a three-level region cascader, a permission checkbox group, a tag editor, linked subject and grade selects. They are not "one input, one value", so they never reach `form.values`. Pick a region, tick six permissions, press Esc, and the component reads the form as untouched, closes without asking, and the work is gone.
+
+`hasExternalChanges` wires that side back in, **OR-ed with `form.isDirty()`**:
+
+```tsx
+const [region, setRegion] = useState<string[]>([]);
+const [codes, setCodes] = useState<string[]>([]);
+const snapshot = useRef("");           // the baseline at open or backfill time, pinned by you
+
+<ModalForm
+  title="Edit school"
+  form={form}
+  hasExternalChanges={() => snapshot.current !== JSON.stringify({ region, codes })}
+  onFinish={save}
+>…</ModalForm>
+```
+
+It takes a callback rather than a boolean so that no render has to run a snapshot comparison nobody reads; the answer matters only at the moment the dialog is about to close. Pass `() => flag` when a boolean is all you have.
+
+**Where `markPristine` stops**: this side of the test lives entirely in your code. `form.markPristine()` and `setFieldsValue(v, { markPristine: true })` pin the baseline of the `form` only — they never touch your `useState`, and the component keeps no snapshot of its own to reset. So an edit form filled in asynchronously must refresh its own snapshot in the **same place** it calls `markPristine` (reassigning `snapshot.current` in the example above), or the backfill counts as an edit on this side and asks to discard when nothing was touched.
 
 ## Related
 [Form](../form/form.md) · [ProForm](../pro-form/pro-form.md) · [StepsForm](../steps-form/steps-form.md) · [LoginForm](../login-form/login-form.md) · [Field](../field/field.md) · [SearchForm](../search-form/search-form.md)
