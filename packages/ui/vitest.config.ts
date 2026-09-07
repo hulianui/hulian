@@ -92,6 +92,14 @@ export default defineConfig({
           name: "browser",
           include: [BROWSER_TESTS],
           setupFiles: ["./vitest.setup.browser.ts"],
+          // 与 unit 那条同因、但更严重：browser 用例走 Playwright 的 actionability 等待
+          // （元素可见、命中测试通过、**位置连续两帧不变**才发事件），这几步全都按墙钟计时，
+          // 而它们与 500+ 个 jsdom 文件挤在同一个 vitest run 里抢 CI 的 2 核。
+          // 实测：整个 browser project 本地 4 秒跑完、单条用例约 1 秒，CI 上却能把某一条拖过
+          // 15 秒（2026-09-07 连红两次，两次失败的用例集合还不一样 —— 是负载不是死锁）。
+          // 放宽不掩盖真 bug：真挂住的用例照样超时，只是反馈慢一点。若再复发，结构性解法是
+          // 把 browser project 从 unit 那一趟里拆出去单独跑，而不是继续加这个数。
+          testTimeout: 45_000,
           browser: {
             enabled: true,
             provider: "playwright",
