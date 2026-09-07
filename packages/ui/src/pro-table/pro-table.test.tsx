@@ -18,6 +18,19 @@ const data: Row[] = [
   { id: 2, name: "乙" },
 ];
 
+/**
+ * 等首屏数据**真的落地**，而不是等 `request` 被调用。
+ *
+ * `waitFor(() => expect(request).toHaveBeenCalledTimes(1))` 只等到「请求发出去了」，
+ * 此时 promise 还没 resolve：`total` 仍是 0（分页只有第 1 页，`第 2 页` 根本不存在）、
+ * 表体还是加载态。之后紧接着去点分页或表头，就是在跟首次请求赛跑 —— 本机快，赢；
+ * CI 上 2 核跑 513 个测试文件，输。这类竞态一直潜伏着，0.64.0 的首屏骨架（#349）
+ * 把首屏渲染从 1 行空态变成 10 行占位，只是把它顶了出来。
+ */
+async function firstLoadSettled(findByText: (text: string) => Promise<HTMLElement>) {
+  await findByText("甲");
+}
+
 describe("ProTable", () => {
   it("渲染标题与表格数据", () => {
     const { getByText } = render(<ProTable title="员工列表" columns={columns} data={data} />);
@@ -156,7 +169,9 @@ describe("ProTable 托管模式", () => {
         }}
       />,
     );
-    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    // 等首次请求**结束**再点查询：查询区收的是 `loading={fetching}`（pro-table.tsx:350），
+    // 首次请求在途时「查询」是禁用的，这一刻点下去没有任何事发生。
+    await waitFor(() => expect((getByText("查询") as HTMLButtonElement).disabled).toBe(false));
     fireEvent.change(getByLabelText("姓名"), { target: { value: "甲" } });
     fireEvent.click(getByText("查询"));
     await waitFor(() =>
@@ -169,10 +184,10 @@ describe("ProTable 托管模式", () => {
       data: [{ id: 1, name: "甲" }],
       total: 1,
     }));
-    const { getByText } = render(
+    const { getByText, findByText } = render(
       <ProTable<Row> columns={cols} request={request} getRowId={(r) => String(r.id)} />,
     );
-    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    await firstLoadSettled(findByText);
     fireEvent.click(getByText("姓名"));
     await waitFor(
       () =>
@@ -365,7 +380,7 @@ describe("ProTable 托管模式 · defaultSorting", () => {
 
   it("defaultSorting 只是初值：点表头仍可改排序", async () => {
     const request = vi.fn(async (_p: ProTableRequestParams) => ({ data, total: 2 }));
-    const { getByText } = render(
+    const { getByText, findByText } = render(
       <ProTable<Row>
         columns={cols}
         request={request}
@@ -373,7 +388,7 @@ describe("ProTable 托管模式 · defaultSorting", () => {
         getRowId={(r) => String(r.id)}
       />,
     );
-    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    await firstLoadSettled(findByText);
     // 换列排序（首点方向由 TanStack 按列类型决定，这里只关心「初值没锁死」）
     fireEvent.click(getByText("工号"));
     await waitFor(() =>
@@ -448,11 +463,11 @@ describe("ProTable 托管模式 · params 固定查询参数", () => {
         />
       );
     }
-    const { rerender, getByLabelText } = render(<Host scopeId={1} />);
-    await waitFor(() => expect(request).toHaveBeenCalledTimes(1));
+    const { rerender, findByLabelText } = render(<Host scopeId={1} />);
 
-    // 先翻到第 2 页
-    fireEvent.click(getByLabelText("第 2 页"));
+    // 先翻到第 2 页。等的是「第 2 页这个按钮出现」而不是「request 被调用」——
+    // total 要等首次请求 resolve 才有值，在那之前分页只有第 1 页。
+    fireEvent.click(await findByLabelText("第 2 页"));
     await waitFor(() => expect(request).toHaveBeenCalledTimes(2));
     expect(request.mock.calls.at(-1)![0]).toMatchObject({ page: 2, params: { scopeId: 1 } });
 
