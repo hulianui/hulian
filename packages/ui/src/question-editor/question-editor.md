@@ -63,6 +63,7 @@ const [submitted, setSubmitted] = useState(false);
 | disabled | `boolean` | `false` | 只读 |
 | resolveFigure | `(key: string) => string` | - | 题干里 `![](key)` → 可显示 URL。缩略图条与预览都靠它；题干有图而没给时缩略图只显示 key 并有开发期告警 |
 | onUploadFigure | `(file: File) => Promise<string>` | - | 上传一张题图，返回 storage key。**给了才出「插入图片」**；成功后以 `![](key)` 写回题干末尾，失败在缩略图条上显示原因 |
+| figureFilter | `(key: string) => boolean` | - | 哪些 key 算「题图」（进缩略图条、可增删、写回题干末尾）。不给 = 全部。不匹配的引用**原样留在题干正文里**，编辑器不挪它、也不动它的 alt |
 | extra | `ReactNode` | - | 消费方私有字段，渲染在题型之后、题干之前 |
 | issues | `{ label, tone? }[]` | - | 复核条：顶部列出，每条一个「已处理」 |
 | onResolveIssue | `(label: string) => void` | - | 点「已处理」回调；不给则不渲染按钮 |
@@ -100,7 +101,7 @@ const [submitted, setSubmitted] = useState(false);
 - `shapeIsDirty(q)` → `boolean`：切题型会不会丢内容（选项有字或答案不等于该题型的空形状）。页面做「清空表单」二次确认时可复用。
 - `switchType(q, type, defaults?)` → `Question`：options 与 answer 同时重置 + 默认分换算。
 - `optionCaption(key, text)` → `string`：正确答案控件上的标签（`A 选项文本前 20 字`，朴素文本）。
-- `stemBody(stem)` / `joinStemFigures(body, keys)`：题干正文与题图块的拆合，判据与编辑器一致。
+- `stemBody(stem, accept?)` / `joinStemFigures(body, keys)`：题干正文与题图块的拆合，判据与编辑器一致。`accept` 就是 `figureFilter`，不给 = 全部当题图。
 
 ## 禁忌 / 坑
 
@@ -108,6 +109,13 @@ const [submitted, setSubmitted] = useState(false);
 - **填空题的 `answer` 出口要压平**。编辑器内部单空也是 `["90"]`；消费方后端若单空只收字符串，提交前 `toWireAnswer(question)`。
 - **切题型会清空选项与答案**（有内容时先确认）。这是刻意的：保留旧形状会造出「判断题带选项」这类后端 422 的值。
 - **题图在题干里，不在别的字段**。输入框看不到 `![](key)`，但 `value.stem` 里有；图挂在别处的话组卷预览、学生端、导出一张也拿不到。`resolveFigure` 不给时预览把图摘掉、缩略图只剩 key。
+- **不是每个 `![](…)` 都该当题图，行内公式图要用 `figureFilter` 划出去**。默认（不给 `figureFilter`）题干里所有图片引用都算题图，会被整批搬到题干末尾——对 Word 导入线切出的行内公式图这是错的：`不等式![7x+5<5x+1](import/formula/….png)的解集为______．` 编辑一轮就变成「不等式的解集为______．」加末尾一张图，句子读不通。按 key 前缀划开：
+
+  ```tsx
+  <QuestionEditor figureFilter={(key) => !key.startsWith("import/formula/")} … />
+  ```
+
+  划出去的引用原样留在题干正文里（输入框里能看到那段 `![…](…)`），缩略图条不收它、删不掉它、位置和 alt 都不动。
 - **上传只在给了 `onUploadFigure` 时出现**。文件类型 / 大小限制由消费方在回调里拦，拦住就 `throw new Error("单张不超过 5MB")`，错误信息原样显示在缩略图条上。
 - **校验默认只显示改过的字段**。想在提交时全部飘红请置 `showAllIssues`，别在外面再画一遍错误。
 - **没有提交按钮**。提交、私有字段必填（如学科）、`estimatedMinutes` 的上限，都是页面的事。

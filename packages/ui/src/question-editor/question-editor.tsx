@@ -41,7 +41,9 @@ import type { EditorField, QuestionEditorProps, SectionContext } from "./questio
  * 只认规范形 `Question`（阶段 1 类型）。切题型时 options 与 answer 同时重置成新题型的空形状
  * （否则会造出「judge 带 options」这类被后端 422 的值），有内容时先确认。校验用 `validateQuestion`
  * 就地挂到 Field.error，默认只显示改过的字段，页面点提交后置 `showAllIssues`。
- * 题干输入框只见正文，图以 `![](key)` 块写回题干末尾，预览与展示端同一条 `resolveFigure` 路径。
+ * 题干输入框只见正文，题图以 `![](key)` 块写回题干末尾，预览与展示端同一条 `resolveFigure` 路径。
+ * 哪些引用算题图由 `figureFilter` 说了算（不给 = 全部）：行内公式图这类「位置就是语义」的引用
+ * 划到题图之外，就原样留在题干正文里，编辑器不挪它、也不动它的 alt。
  */
 export function QuestionEditor({
   value,
@@ -49,6 +51,7 @@ export function QuestionEditor({
   disabled = false,
   resolveFigure,
   onUploadFigure,
+  figureFilter,
   extra,
   issues,
   onResolveIssue,
@@ -102,7 +105,7 @@ export function QuestionEditor({
 
   const textarea = { templates, visualEditor, macros };
   const section: SectionContext = { value, onChange: commit, disabled, L, textarea, errors };
-  const figures = stemFigures(value.stem);
+  const figures = stemFigures(value.stem, figureFilter);
   const subjective =
     value.type === "short_answer" || value.type === "calculation" || value.type === "essay";
 
@@ -150,8 +153,8 @@ export function QuestionEditor({
             rows={3}
             aria-label={L.stem}
             placeholder={L.stemPlaceholder}
-            value={stemBody(value.stem)}
-            onChange={(body) => commit(setStemBody(value, body), "stem")}
+            value={stemBody(value.stem, figureFilter)}
+            onChange={(body) => commit(setStemBody(value, body, figureFilter), "stem")}
             disabled={disabled}
             {...textarea}
           />
@@ -160,8 +163,8 @@ export function QuestionEditor({
             disabled={disabled}
             resolveFigure={resolveFigure}
             onUploadFigure={onUploadFigure}
-            onAdd={(key) => commit(addStemFigure(value, key), "stem")}
-            onRemove={(key) => commit(removeStemFigure(value, key), "stem")}
+            onAdd={(key) => commit(addStemFigure(value, key, figureFilter), "stem")}
+            onRemove={(key) => commit(removeStemFigure(value, key, figureFilter), "stem")}
             L={L}
           />
         </div>
@@ -248,6 +251,7 @@ export function QuestionEditor({
         <QuestionCard
           type={value.type}
           // 没给 resolveFigure 时把图块摘掉：让 QuestionCard 渲染一串 `![](key)` 源码不是预览。
+          // 这里刻意**不**过 figureFilter：留下的行内引用一样解析不出图，只会印成源码。
           stem={resolveFigure ? value.stem : stemBody(value.stem)}
           resolveFigure={resolveFigure}
           // 预览里的附图 alt 跟编辑器 locale 走：QuestionCard 无 hook 读不到 Locale，缺省会落回中文。

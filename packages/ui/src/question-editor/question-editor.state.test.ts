@@ -301,6 +301,92 @@ describe("题图", () => {
   });
 });
 
+// 消费方（题库校准页）真实数据里的四类前缀：手工题图与导入插图摆末尾即可，
+// 行内公式图与教材插图的位置就是语义。判据只看前缀，写成谓词喂给编辑器。
+const notInlineFormula = (key: string) => !key.startsWith("import/formula/");
+
+// 库里真实存在的最坏形态：整道题就是一句话，公式图嵌在句子中间，alt 是下游要读的 LaTeX。
+const INLINE = "不等式![7x+5<5x+1](import/formula/72be44de798e4f0e963ef99d637fe516.png)的解集为______．";
+
+describe("题图 · figureFilter", () => {
+  it("不匹配的引用原样留在正文里，编辑一轮后位置逐字不变", () => {
+    const q: Question = { ...emptyQuestion("blank"), stem: INLINE };
+    expect(stemFigures(q.stem, notInlineFormula)).toEqual([]);
+    expect(stemBody(q.stem, notInlineFormula)).toBe(INLINE);
+    // 编辑器每次编辑都走这条路径：读出正文 → 写回。位置与 alt 都不能被动过。
+    expect(setStemBody(q, stemBody(q.stem, notInlineFormula), notInlineFormula).stem).toBe(INLINE);
+  });
+
+  it("题图与行内公式图混在一条题干里：只有题图被整块搬到末尾", () => {
+    const stem = "看图![7x+5<5x+1](import/formula/f1.png)求解\n\n![](question-image/g.png)";
+    const q: Question = { ...emptyQuestion("single"), stem };
+    expect(stemFigures(q.stem, notInlineFormula)).toEqual(["question-image/g.png"]);
+    const body = stemBody(q.stem, notInlineFormula);
+    expect(body).toBe("看图![7x+5<5x+1](import/formula/f1.png)求解");
+    expect(setStemBody(q, body, notInlineFormula).stem).toBe(stem);
+    expect(setStemBody(q, `${body}改了`, notInlineFormula).stem).toBe(
+      "看图![7x+5<5x+1](import/formula/f1.png)求解改了\n\n![](question-image/g.png)",
+    );
+  });
+
+  it("addStemFigure / removeStemFigure 只动匹配的那批", () => {
+    const stem = "看图![7x+5<5x+1](import/formula/f1.png)求解\n\n![](question-image/g.png)";
+    let q: Question = { ...emptyQuestion("single"), stem };
+    q = addStemFigure(q, "question-image/n.png", notInlineFormula);
+    expect(q.stem).toBe(
+      "看图![7x+5<5x+1](import/formula/f1.png)求解\n\n![](question-image/g.png)\n![](question-image/n.png)",
+    );
+    // 谓词之外的 key 编辑器根本看不见它，删不动
+    expect(removeStemFigure(q, "import/formula/f1.png", notInlineFormula)).toBe(q);
+    q = removeStemFigure(q, "question-image/g.png", notInlineFormula);
+    q = removeStemFigure(q, "question-image/n.png", notInlineFormula);
+    expect(q.stem).toBe("看图![7x+5<5x+1](import/formula/f1.png)求解");
+  });
+
+  it("教材线插图同样可以划到题图之外", () => {
+    const manualOnly = (key: string) => key.startsWith("question-image/");
+    const stem = "如图![](textbook/p12.png)所示";
+    expect(stemFigures(stem, manualOnly)).toEqual([]);
+    expect(stemBody(stem, manualOnly)).toBe(stem);
+    expect(stemFigures(stem)).toEqual(["textbook/p12.png"]);
+  });
+
+  it("不给谓词时逐字维持老行为：全部当题图、整批搬到末尾", () => {
+    const q: Question = { ...emptyQuestion("blank"), stem: INLINE };
+    expect(stemFigures(q.stem)).toEqual(["import/formula/72be44de798e4f0e963ef99d637fe516.png"]);
+    expect(stemBody(q.stem)).toBe("不等式的解集为______．");
+    expect(setStemBody(q, "正文").stem).toBe(
+      "正文\n\n![7x+5<5x+1](import/formula/72be44de798e4f0e963ef99d637fe516.png)",
+    );
+  });
+});
+
+describe("题图 · alt 保真", () => {
+  it("写回时保住 alt（公式图的 alt 就是那段机器可读的 LaTeX）", () => {
+    const stem = "看图![7x+5<5x+1](import/formula/f1.png)求解";
+    const q: Question = { ...emptyQuestion("single"), stem };
+    // 不给谓词 = 老的「全部搬末尾」行为，但 alt 不再被抹掉
+    expect(setStemBody(q, stemBody(q.stem)).stem).toBe(
+      "看图求解\n\n![7x+5<5x+1](import/formula/f1.png)",
+    );
+  });
+
+  it("增删题图不会顺手抹掉别的图的 alt", () => {
+    let q: Question = { ...emptyQuestion("single"), stem: "正文\n\n![几何图](a.png)" };
+    q = addStemFigure(q, "b.png");
+    expect(q.stem).toBe("正文\n\n![几何图](a.png)\n![](b.png)");
+    q = removeStemFigure(q, "b.png");
+    expect(q.stem).toBe("正文\n\n![几何图](a.png)");
+  });
+
+  it("alt 为空（编辑器自己写回的形状）时输出与老实现逐字相同", () => {
+    expect(joinStemFigures("正文", ["a.png", "b.png"])).toBe("正文\n\n![](a.png)\n![](b.png)");
+    const q: Question = { ...emptyQuestion("single"), stem: "正文\n\n![](a.png)" };
+    expect(stemBody(q.stem)).toBe("正文");
+    expect(setStemBody(q, "正文").stem).toBe("正文\n\n![](a.png)");
+  });
+});
+
 describe("其余", () => {
   it("setEstimatedMinutes：null 删掉字段而不是写 undefined", () => {
     const q = setEstimatedMinutes(emptyQuestion("single"), 5);

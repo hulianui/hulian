@@ -22,6 +22,12 @@ export interface QuestionEditorProps {
   resolveFigure?: (key: string) => string;
   /** 上传一张题图，返回 storage key。**给了才出「插入图片」**；成功后以 `![](key)` 写回题干末尾。 */
   onUploadFigure?: (file: File) => Promise<string>;
+  /**
+   * 哪些 key 算「题图」：进缩略图条、可增删、编辑时整块写回题干末尾。不给 = 全部（现有行为）。
+   * 不匹配的引用**原样留在题干正文里**，编辑器一个字不动它——行内公式图
+   * （`![7x+5<5x+1](import/formula/….png)`）的位置就是语义，挪到末尾句子就读不通了。
+   */
+  figureFilter?: (key: string) => boolean;
   /** 消费方私有字段（学科 / 教材小节 / 考点 …），渲染在题型之后、题干之前。 */
   extra?: ReactNode;
   /** 复核条：有值时顶部列出，每条一个「已处理」。 */

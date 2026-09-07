@@ -5,19 +5,38 @@
 // 非图部分内部的 `$…$` 切段由 math/math.parse.ts 的 splitMathSegments 负责，两把刀不重叠。
 
 /** Markdown 图片语法。每次用都新建：带 /g 的正则有 lastIndex 状态，模块级共用会静默漏图。
- *  key 里不允许空白：storage key 从不含空格，而允许空格会让 `![](未闭合` 之后整段正文被吞。 */
-const figurePattern = () => /!\[[^\]]*\]\(([^)\s]+)\)/g;
+ *  key 里不允许空白：storage key 从不含空格，而允许空格会让 `![](未闭合` 之后整段正文被吞。
+ *  两组捕获：alt、key。alt 也归这一刀切——它是同一处引用的一部分，公式图的 alt 就是那段 LaTeX。 */
+const figurePattern = () => /!\[([^\]]*)\]\(([^)\s]+)\)/g;
 
 /** 题干里的插图 key，按出现顺序，重复保留。`accept` 只取某一类（如手工题图只认某前缀）。 */
 export function stemFigureKeys(stem: string, accept?: (key: string) => boolean): string[] {
-  const keys = [...stem.matchAll(figurePattern())].map((m) => m[1]);
+  const keys = [...stem.matchAll(figurePattern())].map((m) => m[2]);
   return accept ? keys.filter(accept) : keys;
+}
+
+/** 题干里的一处图片引用：key 加 `![alt](key)` 方括号里那段。公式图的 alt 是 LaTeX 源码。 */
+export interface StemFigureRef {
+  key: string;
+  alt: string;
+}
+
+/**
+ * 同 `stemFigureKeys`，但连 alt 一起给。写回题干的一方（QuestionEditor）需要它：
+ * 只按 key 重拼会把 `![7x+5<5x+1](import/formula/….png)` 抹成 `![](…)`，
+ * 而那段 LaTeX 是下游（答案比对 / docx 导出）在读的机器可读值。
+ */
+export function stemFigureRefs(stem: string, accept?: (key: string) => boolean): StemFigureRef[] {
+  const refs = [...stem.matchAll(figurePattern())].map((m) => ({ alt: m[1], key: m[2] }));
+  return accept ? refs.filter((ref) => accept(ref.key)) : refs;
 }
 
 /** 摘掉插图引用后的正文。三步收拾行尾空格 / 行内双空格 / 三连换行，否则渲染出忽宽忽窄的空隙。 */
 export function stripStemFigures(stem: string, accept?: (key: string) => boolean): string {
   return stem
-    .replace(figurePattern(), (whole, key: string) => (accept === undefined || accept(key) ? "" : whole))
+    .replace(figurePattern(), (whole, _alt: string, key: string) =>
+      accept === undefined || accept(key) ? "" : whole,
+    )
     .replace(/[^\S\n]{2,}/g, " ")
     .replace(/[^\S\n]+\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")

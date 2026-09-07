@@ -180,6 +180,31 @@ describe("QuestionEditor", () => {
     expect(onValue).toHaveBeenLastCalledWith(expect.objectContaining({ stem: "如图\n\n![](import/new.png)" }));
   });
 
+  it("figureFilter：行内公式图留在题干框里、不进缩略图条，编辑一轮位置与 alt 都不动", () => {
+    const onValue = vi.fn();
+    const stem = "不等式![7x+5<5x+1](import/formula/f1.png)的解集为______．\n\n![](question-image/g.png)";
+    render(
+      <Harness
+        initial={{ ...single(), stem }}
+        onValue={onValue}
+        resolveFigure={(key) => `/files/${key}`}
+        figureFilter={(key) => !key.startsWith("import/formula/")}
+      />,
+    );
+    const textarea = screen.getByLabelText("题干") as HTMLTextAreaElement;
+    expect(textarea.value).toBe("不等式![7x+5<5x+1](import/formula/f1.png)的解集为______．");
+    // 缩略图条只有那张手工题图（公式图不可删）
+    expect(screen.getByRole("button", { name: "删除题图 1" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "删除题图 2" })).toBeNull();
+
+    fireEvent.change(textarea, { target: { value: `${textarea.value}改` } });
+    expect(onValue).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        stem: "不等式![7x+5<5x+1](import/formula/f1.png)的解集为______．改\n\n![](question-image/g.png)",
+      }),
+    );
+  });
+
   it("没给 onUploadFigure 时没有「插入图片」", () => {
     render(<Harness initial={single()} />);
     expect(screen.queryByRole("button", { name: "插入图片" })).toBeNull();

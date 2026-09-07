@@ -63,6 +63,7 @@ Normalize legacy data first: `fromWire({ type, options, answer })` turns `"A,C"`
 | disabled | `boolean` | `false` | Read-only |
 | resolveFigure | `(key: string) => string` | - | Maps `![](key)` in the stem to a displayable URL. Both the thumbnail strip and the preview use it; when the stem has figures and it is missing, thumbnails show only the key and a dev warning fires |
 | onUploadFigure | `(file: File) => Promise<string>` | - | Uploads one figure and resolves to its storage key. **The Insert image button appears only when provided**; on success `![](key)` is appended to the stem, on failure the reason shows in the strip |
+| figureFilter | `(key: string) => boolean` | - | Which keys count as figures (they enter the thumbnail strip, can be added or removed, and are written back at the end of the stem). Omitted = all of them. References it rejects **stay exactly where they are in the stem body**; the editor never moves them and never touches their alt text |
 | extra | `ReactNode` | - | Consumer-private fields, rendered after the type and before the stem |
 | issues | `{ label, tone? }[]` | - | Review bar listed at the top, one Resolved button per item |
 | onResolveIssue | `(label: string) => void` | - | Called from the Resolved button; the button is omitted when this is missing |
@@ -100,7 +101,7 @@ All exported from `@hulianui/ui/math`:
 - `shapeIsDirty(q)` returns `boolean`: whether switching type would lose content (an option has text, or the answer differs from the type's empty shape). Reuse it for a "clear form" confirmation.
 - `switchType(q, type, defaults?)` returns `Question`: resets options and answer together and remaps the score.
 - `optionCaption(key, text)` returns `string`: the label on the correct-answer control (`A` plus the first 20 characters of the option as plain text).
-- `stemBody(stem)` / `joinStemFigures(body, keys)`: split and join the stem body and the figure block with the editor's own rule.
+- `stemBody(stem, accept?)` / `joinStemFigures(body, keys)`: split and join the stem body and the figure block with the editor's own rule. `accept` is the same predicate as `figureFilter`; omitted, every reference counts as a figure.
 
 ## Pitfalls
 
@@ -108,6 +109,13 @@ All exported from `@hulianui/ui/math`:
 - **Flatten blank answers on the way out.** Inside the editor a single blank is `["90"]`; if the backend wants a plain string for single blanks, call `toWireAnswer(question)` before submitting.
 - **Switching type clears options and answer** (with a confirmation when there is content). Keeping the old shape would produce values such as a true-false question with options, which the backend rejects.
 - **Figures live in the stem, not in another field.** The input hides `![](key)` but `value.stem` contains it; if figures lived elsewhere, paper preview, the student view, and export would get none of them. Without `resolveFigure` the preview drops figures and thumbnails show only the key.
+- **Not every `![](...)` should count as a figure; carve inline formula images out with `figureFilter`.** By default every image reference in the stem is treated as a figure and the whole set is moved to the end of the stem. That is wrong for the inline formula images a Word import pipeline produces: `x![7x+5<5x+1](import/formula/....png) has the solution set ______.` turns into "x has the solution set ______." plus a trailing image after a single edit, and the sentence no longer reads. Split them by key prefix:
+
+  ```tsx
+  <QuestionEditor figureFilter={(key) => !key.startsWith("import/formula/")} ... />
+  ```
+
+  Rejected references stay verbatim in the stem body (the `![...](...)` text is visible in the input), the strip does not list them, they cannot be deleted there, and neither their position nor their alt text changes.
 - **Upload appears only with `onUploadFigure`.** Enforce type and size limits inside the callback; reject with `throw new Error("Max 5MB per image")` and the message shows verbatim in the strip.
 - **Validation shows only edited fields by default.** Set `showAllIssues` to flag everything at submit time; do not draw errors again outside.
 - **No submit button.** Submitting, required private fields (such as subject), and an upper bound for `estimatedMinutes` belong to the page.

@@ -10,7 +10,12 @@ import {
   MAX_OPTIONS,
   optionKey,
 } from "../question/question-shape";
-import { stemFigureKeys, stripStemFigures } from "../question/question-stem";
+import {
+  stemFigureKeys,
+  stemFigureRefs,
+  stripStemFigures,
+  type StemFigureRef,
+} from "../question/question-stem";
 import type {
   BlankAnswer,
   Question,
@@ -262,56 +267,70 @@ export function rubricTotal(answer: QuestionAnswerValue): number {
 }
 
 // ---------------------------------------------------------------------------
-// 题图：输入框只见正文，图以 `![](key)` 块写回题干末尾（所有渲染点都把图摆在正文之后，挪到末尾对显示无损）
+// 题图：输入框只见正文，图以 `![alt](key)` 块写回题干末尾（所有渲染点都把图摆在正文之后，挪到末尾对显示无损）
+//
+// 但**不是题干里的每个 `![](…)` 都是题图**。导入线切出的行内公式图
+// （`不等式![7x+5<5x+1](import/formula/….png)的解集为____`）位置就是语义，被挪到末尾句子就读不通了，
+// alt 里那段 LaTeX 也是下游要读的机器可读值。所以这一节的每个函数都收一个 `accept` 谓词：
+// 匹配的才是题图，不匹配的**原样留在正文里**，编辑器一个字不动它。不给 accept = 全部当题图（老行为）。
 // ---------------------------------------------------------------------------
 
-export function stemFigures(stem: string): string[] {
-  return stemFigureKeys(stem);
+export function stemFigures(stem: string, accept?: (key: string) => boolean): string[] {
+  return stemFigureKeys(stem, accept);
 }
 
-function figureBlock(keys: string[]): string {
-  return keys.map((key) => `![](${key})`).join("\n");
+function figureBlock(refs: readonly StemFigureRef[]): string {
+  return refs.map((ref) => `![${ref.alt}](${ref.key})`).join("\n");
 }
 
-export function joinStemFigures(body: string, keys: string[]): string {
-  if (keys.length === 0) return body;
-  const block = figureBlock(keys);
+/** `joinStemFigures` 的内部形态：多带一份 alt。公开签名刻意不动（`joinStemFigures` 是对外导出）。 */
+function joinFigureRefs(body: string, refs: readonly StemFigureRef[]): string {
+  if (refs.length === 0) return body;
+  const block = figureBlock(refs);
   return body.trim() === "" ? block : `${body}\n\n${block}`;
 }
 
+export function joinStemFigures(body: string, keys: string[]): string {
+  return joinFigureRefs(
+    body,
+    keys.map((key) => ({ key, alt: "" })),
+  );
+}
+
 /**
- * 题干正文（不含图）。编辑器自己写回的形状是「正文 + 空行 + 图块」，能整块切掉就整块切，
+ * 题干正文（不含题图）。编辑器自己写回的形状是「正文 + 空行 + 图块」，能整块切掉就整块切，
  * 保住老师刚敲的换行；别的来源（导入线把图夹在正文里）退回通用剥离。
+ * `accept` 之外的引用不算题图，留在返回的正文里。
  */
-export function stemBody(stem: string): string {
-  const keys = stemFigureKeys(stem);
-  if (keys.length === 0) return stem;
-  const block = figureBlock(keys);
+export function stemBody(stem: string, accept?: (key: string) => boolean): string {
+  const refs = stemFigureRefs(stem, accept);
+  if (refs.length === 0) return stem;
+  const block = figureBlock(refs);
   if (stem === block) return "";
   const suffix = `\n\n${block}`;
   if (stem.endsWith(suffix)) return stem.slice(0, -suffix.length);
-  return stripStemFigures(stem);
+  return stripStemFigures(stem, accept);
 }
 
-export function setStemBody(q: Question, body: string): Question {
-  return { ...q, stem: joinStemFigures(body, stemFigures(q.stem)) };
+export function setStemBody(q: Question, body: string, accept?: (key: string) => boolean): Question {
+  return { ...q, stem: joinFigureRefs(body, stemFigureRefs(q.stem, accept)) };
 }
 
 /** 后端按内容哈希落盘，同一张图重传收敛成同一个 key：挂两遍只会印出两张一样的图。 */
-export function addStemFigure(q: Question, key: string): Question {
-  const keys = stemFigures(q.stem);
-  if (keys.includes(key)) return q;
-  return { ...q, stem: joinStemFigures(stemBody(q.stem), [...keys, key]) };
+export function addStemFigure(q: Question, key: string, accept?: (key: string) => boolean): Question {
+  const refs = stemFigureRefs(q.stem, accept);
+  if (refs.some((ref) => ref.key === key)) return q;
+  return { ...q, stem: joinFigureRefs(stemBody(q.stem, accept), [...refs, { key, alt: "" }]) };
 }
 
-export function removeStemFigure(q: Question, key: string): Question {
-  const keys = stemFigures(q.stem);
-  if (!keys.includes(key)) return q;
+export function removeStemFigure(q: Question, key: string, accept?: (key: string) => boolean): Question {
+  const refs = stemFigureRefs(q.stem, accept);
+  if (!refs.some((ref) => ref.key === key)) return q;
   return {
     ...q,
-    stem: joinStemFigures(
-      stemBody(q.stem),
-      keys.filter((k) => k !== key),
+    stem: joinFigureRefs(
+      stemBody(q.stem, accept),
+      refs.filter((ref) => ref.key !== key),
     ),
   };
 }
