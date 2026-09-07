@@ -1,6 +1,25 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.65.0",
+    "date": "2026-09-07",
+    "entries": [
+      {
+        "sha": "3d0b0b5",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(question-editor): 题图缩略图条此前只有「缩略图 + 删除 + 插入图片」，从自造表单迁过来的消费方丢了三件本来有的能力；现在补齐：每张图底下一对「前移 / 后移」（题图顺序就是它们写在题干末尾的顺序，也就是组卷预览、学生端与 docx 导出里的显示顺序，此前要调序只能删掉重传一遍），点缩略图用 `ImageViewer` 打开看大图（80px 够认出是哪张，认不出几何题图里的字母标注），上传失败那一行留住原来的 `File` 并给出「重试」（此前只能关掉提示重新选文件）。调序照常经 `onChange` 回传整份 `Question`，不另开 `onSortFigures`：顺序本来就是 `stem` 的一部分，编辑器手里既有题干也有 `figureFilter`，多一个口子只会让题图顺序有两个真源；用按钮而不是拖拽，与本编辑器里选项调序同一套交互，键盘与读屏天然可用，也不必为一条缩略图条把 dnd-kit 塞给所有 `@hulianui/ui/math` 消费方。类型 / 大小 / 张数上限仍由消费方在 `onUploadFigure` 里 `throw` (#354)"
+      },
+      {
+        "sha": "3d0b0b5",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(question-editor): 题干输入框底下那块预览恒是 `<Formula>`，它不认 markdown 图片语法——0.64.0 的 `figureFilter`（#353）把行内公式图划出题图之后，那些引用**按设计**留在题干正文里，于是预览把 `![7x+5<5x+1](import/formula/….png)` 原样印成一串源码；现在题干预览改走库内题干渲染的同一条路（`QuestionCard` / `QuestionAnswer` 共用的那一块），图画出来、`macros` 一并透传，老师在输入框底下看到的就是展示端会渲染出来的东西。没给 `resolveFigure` 时仍退回默认预览（那条路一样解析不出图）；正文里既没公式也没图时预览整块收起——那时它与输入框逐字相同。附带两处：题干附图的 alt 优先用引用自己写的那段（`![7x+5<5x+1](…)` 里方括号里的 LaTeX 比「题目附图 2」有信息），没写才回落到 `figureAlt` 编号；`MathTextarea` 的 `renderPreview` 现在说了算——返回 `null` 表示这段没什么可预览的，不再只看值里有没有 `$` (#355)"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.64.1",
     "date": "2026-09-07",
     "entries": [

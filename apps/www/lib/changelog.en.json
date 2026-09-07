@@ -1,6 +1,25 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.65.0",
+    "date": "2026-09-07",
+    "entries": [
+      {
+        "sha": "3d0b0b5",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(question-editor): the figure strip used to be nothing but thumbnails, a delete button and \"insert image\", so consumers migrating off their own hand-written form lost three things they had. All three are back: every thumbnail carries a \"move earlier / move later\" pair (a figure's position is the order it is written at the end of the stem, which is also the display order in paper preview, the student view and docx export; reordering used to mean deleting everything and uploading it again in order), clicking a thumbnail opens it full size in `ImageViewer` (80px is enough to tell which figure it is, not enough to read the letters labelling a geometry diagram), and a failed upload row keeps the original `File` behind a \"retry\" button (it used to offer nothing but dismissing the notice and picking the file again). Reordering comes back through `onChange` as a whole `Question` rather than a new `onSortFigures`: the order is already part of `stem`, the editor holds both the stem and `figureFilter`, and a second channel would only give figure order two sources of truth. Buttons rather than drag: the same interaction this editor already uses for option order, keyboard and screen reader accessible by construction, and no reason to hand dnd-kit to every `@hulianui/ui/math` consumer for one thumbnail strip. Type, size and count limits are still the consumer's to `throw` inside `onUploadFigure` (#354)"
+      },
+      {
+        "sha": "3d0b0b5",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(question-editor): the preview under the stem input was always `<Formula>`, which does not understand markdown image syntax. Since 0.64.0 `figureFilter` (#353) carves inline formula images out of the figure set and leaves those references in the stem body **by design**, so the preview printed `![7x+5<5x+1](import/formula/….png)` verbatim as source. The stem preview now renders through the same path as everything else in the library (the block `QuestionCard` and `QuestionAnswer` share): figures are drawn and `macros` is passed along, so what the teacher sees under the input is what the display end will render. Without `resolveFigure` it still falls back to the default preview (that path cannot resolve figures either), and when the body has neither formulas nor figures the preview box is hidden entirely. Two things ride along: alt text for a stem figure now prefers the alt written on the reference itself (the LaTeX inside the brackets of `![7x+5<5x+1](…)` says more than \"Figure 2\"), falling back to numbering through `figureAlt` only when there is none; and `MathTextarea`'s `renderPreview` now decides for itself - returning `null` means there is nothing worth previewing, instead of the box appearing only when the value contains `$` (#355)"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.64.1",
     "date": "2026-09-07",
     "entries": [
