@@ -841,6 +841,14 @@
       "row",
       "column"
     ],
+    "StatTone": [
+      "neutral",
+      "brand",
+      "info",
+      "success",
+      "warning",
+      "danger"
+    ],
     "ChannelStatus": [
       "online",
       "degraded",
@@ -11607,7 +11615,15 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "true",
-          "description": "表单改动过时，关闭前先确认一次。判据来自 `form.isDirty()`，**没传 `form` 就不生效**；干净表单直接关；提交成功后的关闭也不问。**异步回填的编辑表单**要用 `setFieldsValue(v, { markPristine: true })` 把回填那一刻钉成基线，否则什么都没改也会弹确认（[见 Form](../form/form.md)）"
+          "description": "表单改动过时，关闭前先确认一次。判据是 `form.isDirty()` 与 `hasExternalChanges()` **取或**，**两个都没传就不生效**；干净表单直接关；提交成功后的关闭也不问。**异步回填的编辑表单**要用 `setFieldsValue(v, { markPristine: true })` 把回填那一刻钉成基线，否则什么都没改也会弹确认（[见 Form](../form/form.md)）"
+        },
+        {
+          "name": "hasExternalChanges",
+          "required": false,
+          "kind": "function",
+          "type": "() => boolean",
+          "default": null,
+          "description": "补一条 `form` 管不着的脏判定，与 `form.isDirty()` **取或，不是覆盖**（#351）：任一侧为真就先确认。给弹窗里自持 state、不走 `form.register` 的复合控件用（区划级联、权限勾选组、标签编辑器）。只在真要关的那一刻求值；不传 `form` 时也能单独用这一侧"
         },
         {
           "name": "discardTitle",
@@ -12491,6 +12507,14 @@
           "type": "(file: File) => Promise<string>",
           "default": null,
           "description": "上传一张题图，返回 storage key。**给了才出「插入图片」**；成功后以 `![](key)` 写回题干末尾，失败在缩略图条上显示原因"
+        },
+        {
+          "name": "figureFilter",
+          "required": false,
+          "kind": "function",
+          "type": "(key: string) => boolean",
+          "default": null,
+          "description": "哪些 key 算「题图」（进缩略图条、可增删、写回题干末尾）。不给 = 全部。不匹配的引用**原样留在题干正文里**，编辑器不挪它、也不动它的 alt"
         },
         {
           "name": "extra",
@@ -24147,7 +24171,15 @@
           "kind": "boolean",
           "type": "boolean",
           "default": null,
-          "description": "加载态：刷新图标旋转"
+          "description": "加载态（展示模式；托管模式由 `request` 自管，此项忽略）。刷新图标旋转，并按有无数据分两档：已有行时盖一层半透明遮罩（保留上一批内容），**一行都没有时**改由内部 `Table` 渲染骨架行、不出遮罩 —— 遮罩底下透出「暂无数据」等于同时说「正在加载」和「没有数据」"
+        },
+        {
+          "name": "loadingRows",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "每页条数",
+          "description": "首轮骨架行数（透传 `Table`）。默认取当前 `pagination.pageSize`，不传分页时取托管模式的每页条数；显式传值可覆盖"
         },
         {
           "name": "actionRef",
@@ -26177,7 +26209,8 @@
         "Stat"
       ],
       "types": [
-        "StatProps"
+        "StatProps",
+        "StatTone"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/stat/stat.md",
       "props": [
@@ -26188,6 +26221,23 @@
           "type": "number",
           "default": null,
           "description": "环比百分比，>=0 升(text-primary) / <0 降(text-danger)；不传则不渲染趋势"
+        },
+        {
+          "name": "tone",
+          "required": false,
+          "kind": "enum",
+          "type": "\"neutral\" | \"brand\" | \"info\" | \"success\" | \"warning\" | \"danger\"",
+          "values": [
+            "neutral",
+            "brand",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"neutral\"",
+          "description": "语气色，**只作用于 `icon` 底座**（浅底 + 语义色文字），不改 `value` / `delta` 的颜色；不传 `icon` 时无落点"
         },
         {
           "name": "…HTMLAttributes",
@@ -26885,6 +26935,22 @@
           "valueType": "string",
           "default": "\"auto\"",
           "description": "外壳横向滚动条的显示策略。`\"auto\"` 交给浏览器（macOS overlay 滚动条不滚时完全不可见，用户看不出右边还有列）；`\"always\"` 给外壳套用与 `stickyScrollbar` 代理条同一份经典滚动条皮肤，横向溢出时一直画着，不溢出时浏览器自然不画、不占高度。与 `stickyScrollbar` 正交（一个管外壳真滚动条，一个管过了折叠线之后的代理条），宽长表两者同开最稳；`stickyHeader=\"scrollParent\"` 下外壳不横向滚动，本项无对象可作用"
+        },
+        {
+          "name": "loading",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "加载中。**只有一行都没有时**才接管表体：渲染骨架行、且不渲染空态 —— 首轮数据还没到，「暂无数据」说的是一件还不知道真假的事。已经有行时（翻页 / 刷新 / 改筛选）本项只打 `aria-busy`，行照旧显示，「正在更新」那层半透明遮罩由外层负责（`ProTable` 自带）"
+        },
+        {
+          "name": "loadingRows",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "5",
+          "description": "骨架行数（仅「`loading` 且无行」那一档生效），取值收在 1..20。建议传每页条数，让占位高度贴近真实表高，数据到位时不跳版"
         },
         {
           "name": "className",

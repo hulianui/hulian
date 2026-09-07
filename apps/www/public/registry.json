@@ -11235,6 +11235,11 @@
           "path": "components/hulianui/skeleton/skeleton.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/skeleton/skeleton.types.ts"
+        },
+        {
+          "path": "components/hulianui/skeleton/skeleton.variants.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/skeleton/skeleton.variants.ts"
         }
       ]
     },
@@ -11372,7 +11377,8 @@
           "Stat"
         ],
         "types": [
-          "StatProps"
+          "StatProps",
+          "StatTone"
         ],
         "group": "stat",
         "tags": [],
@@ -11523,6 +11529,7 @@
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/empty.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/skeleton.json",
         "https://hulianui.haloritual.com/zh/r/tooltip.json"
       ],
       "meta": {
