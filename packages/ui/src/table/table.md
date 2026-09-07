@@ -69,6 +69,8 @@ import {
 | virtual | `VirtualOptions` | 关 | 虚拟滚动（需 @tanstack/react-virtual）：`{ enabled; rowHeight?=44; height?=480; overscan?=8 }` |
 | stickyScrollbar | `boolean` | `false` | 底部悬浮横向滚动条：宽表比视口高时在视口底部常驻一条代理滚动条，不必滚到表底才够得着。仅在「确实横向溢出 + 表格底边已在视口之下」时出现，滚到表底自动收起。与冻结列共存；**`virtual` 或 `maxHeight` 开启时无效**（外壳自己就是定高滚动容器，真滚动条一直看得见，再挂一条会上下两条并排）。⚠️ 开启后表格外多包一层 `div`（sticky 的代理条必须是滚动容器的兄弟），`className` 仍落在内层滚动容器上——flex / grid 父容器里成为 item 的是这层外壳 |
 | scrollbar | `"auto" ｜ "always"` | `"auto"` | 外壳横向滚动条的显示策略。`"auto"` 交给浏览器（macOS overlay 滚动条不滚时完全不可见，用户看不出右边还有列）；`"always"` 给外壳套用与 `stickyScrollbar` 代理条同一份经典滚动条皮肤，横向溢出时一直画着，不溢出时浏览器自然不画、不占高度。与 `stickyScrollbar` 正交（一个管外壳真滚动条，一个管过了折叠线之后的代理条），宽长表两者同开最稳；`stickyHeader="scrollParent"` 下外壳不横向滚动，本项无对象可作用 |
+| loading | `boolean` | `false` | 加载中。**只有一行都没有时**才接管表体：渲染骨架行、且不渲染空态 —— 首轮数据还没到，「暂无数据」说的是一件还不知道真假的事。已经有行时（翻页 / 刷新 / 改筛选）本项只打 `aria-busy`，行照旧显示，「正在更新」那层半透明遮罩由外层负责（`ProTable` 自带） |
+| loadingRows | `number` | `5` | 骨架行数（仅「`loading` 且无行」那一档生效），取值收在 1..20。建议传每页条数，让占位高度贴近真实表高，数据到位时不跳版 |
 | className | `string` | - | 根节点类名 |
 
 ## Events
@@ -303,6 +305,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 
 ## 禁忌 / 坑
 
+- `loading` **不画遮罩**，只在「一行都没有」那一档接管表体渲染骨架行。已有行时它只打 `aria-busy`——「正在更新」的半透明遮罩要么用 `ProTable`（自带），要么自己在表外套一层。反过来也成立：别在自己的遮罩底下让空态透出来，那正是 `loading` 存在的原因（#349）。
 - 列宽只认**显式写在 ColumnDef 上的** `size/minSize/maxSize`。没写 size 的列不会落宽度样式（保持内容自适应）——这是刻意的：TanStack 会把 `defaultColumn`（size 150）合并进每个 columnDef，照着 `getSize()` 无脑出宽度会把整张表钉成等宽。
 - **`columns` 必须 memo。** cell 函数经 TanStack 的 `flexRender` 被**当作组件类型**渲染，identity 一变整格**卸载重挂**（不是重渲染）。展示表只是白烧性能；格子里有输入框时直接坏功能：受控输入框每敲一个字失焦 + 光标跳到末尾，挂了 `onBlur` 提交的还会被重挂时的 blur 触发**误提交**（半截值直接进库），非受控的则被 `defaultValue` 复位丢字。三个症状都不长得像「columns 没 memo」，排查会先怀疑输入框本身。同理 `useMemo` 的依赖里**不要放逐键变化的输入值** —— 那等于没 memo；行内编辑优先让输入框非受控（`defaultValue` + 提交时读 DOM）。
 - 写薄包装转发原语 props 时，`TableHeadProps` / `TableCellProps` 的 `align` 得跟着 `Omit` 一次：那两个接口把原生的 `align`（更宽的联合，含 `justify` / `char`）换成了 `"left" | "center" | "right"`，直接 `extends ThHTMLAttributes<…>` 转发会类型不兼容。

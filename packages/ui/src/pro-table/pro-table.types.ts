@@ -105,7 +105,11 @@ export interface ProTableProps<TData> extends Omit<TableProps<TData>, "data"> {
   search?: Omit<SearchFormProps, "onSearch"> & { onSearch?: SearchFormProps["onSearch"] };
   /** 刷新回调（点击工具栏刷新图标触发）。 */
   onReload?: () => void;
-  /** 加载态：刷新图标旋转。 */
+  /**
+   * 加载态（展示模式；托管模式由 request 自管，此项忽略）。刷新图标旋转，并按有无数据分两档：
+   * 已有行时盖一层半透明遮罩（保留上一批内容），**一行都没有时**改由内部 Table 渲染骨架行、
+   * 不出遮罩 —— 遮罩底下透出「暂无数据」等于同时说「正在加载」和「没有数据」（#349）。
+   */
   loading?: boolean;
   /** 集成分页（底部）。不传则不渲染。 */
   pagination?: ProTablePagination;

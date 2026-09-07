@@ -524,6 +524,24 @@ export interface TableProps<TData> {
    */
   cellSpan?: (ctx: TableCellSpanContext<TData>) => TableCellSpan | void;
 
+  // —— 加载态 ——
+  /**
+   * 加载中（#349）。**只有一行都没有时**才接管表体：渲染骨架行，且**不渲染空态**——
+   * 首轮加载数据还没到，此时那句「暂无数据」说的是一件还不知道真假的事，
+   * 与转圈的遮罩正好互相打脸。
+   *
+   * 已经有行时（翻页 / 刷新 / 改筛选）本项**只打 `aria-busy`**，行照旧显示：
+   * 保留上一批内容再盖一层半透明遮罩（ProTable 自带）比闪一屏骨架稳，
+   * 那一档的遮罩不归 Table 管。
+   */
+  loading?: boolean;
+  /**
+   * 骨架行数（仅「`loading` 且无行」那一档生效）。默认 5，取值收在 1..20——
+   * 每页 100 条时铺 100 行骨架只是把首屏 DOM 撑大，占位到一屏高就够了。
+   * 建议传每页条数，让占位高度贴近真实表高，数据到位时不跳版。
+   */
+  loadingRows?: number;
+
   // —— 空态（data 为空时）——
   /** 空态文案（渲染进内置 <Empty> 标题）。默认取 locale.table.empty（zhCN「暂无数据」）。 */
   emptyText?: ReactNode;

@@ -49,8 +49,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight, GripVertical } from "../_icons";
 import { Button } from "../button/button";
 import { Checkbox } from "../checkbox/checkbox";
-import { useLocaleValue } from "../config/locale-context";
+import { useComponentLocale, useLocaleValue } from "../config/locale-context";
 import { Empty } from "../empty";
+import { skeletonVariants } from "../skeleton/skeleton.variants";
 import { cn } from "../lib/cn";
 import { classicScrollbar } from "../lib/scrollbar";
 import { warnOnce } from "../lib/warn-once";
@@ -87,6 +88,27 @@ const SHELL_GROUP_CLASS = "group/table-shell";
  */
 // 类名与组合原语共用一份（#285）：换行是皮肤的一部分，两边不能各写一套。
 const WHITESPACE_CLASS = TABLE_WHITESPACE_CLASS;
+
+// 骨架行（#349）上限：每页 100 条时铺 100 行占位只是把首屏 DOM 撑大，一屏高就够了。
+const MAX_SKELETON_ROWS = 20;
+// 骨架块宽度按**列**循环（不按行随机）：同一列上下等宽才像一列真数据，
+// 逐格随机反而像一堆噪点。参差是必要的 —— 整片等宽满格看着是块灰板不是表。
+const SKELETON_WIDTHS = ["w-full", "w-3/5", "w-4/5", "w-2/3"] as const;
+// 底色 / 圆角引 skeleton 的 cva（唯一真源），但**不引 <Skeleton /> 组件本身**：
+// 从 skeleton.tsx 引任何东西——哪怕只要那个 cva——motion 运行时都会整个进来，
+// 同一把 esbuild 尺子实测 table 入口 97.8KB → 127.4KB gzip，而 loading 是可选档，
+// 不用它的消费方不该替它买单（scripts/size-limits.json 里 table 的上限是 101KB，直接顶穿）。
+// 所以皮肤单独拆成了零依赖的 skeleton/skeleton.variants.ts，两边共用。
+//
+// 动效两边不同是**有意的**，不是漂移：<Skeleton /> 是 motion 驱动的渐变扫光，
+// 这里用 CSS `animate-pulse`（Tailwind 自带关键帧，零新增 CSS、零运行时）。
+// 表格骨架一屏就是几十块，明暗呼吸与扫光在这个密度下观感相当，不值得为此背一个动画运行时。
+const SKELETON_BLOCK_CLASS = cn(
+  skeletonVariants({ shape: "text" }),
+  // 减弱动效下定格成静态灰块（DOM 不变）。CSS 动画够得着 `motion-reduce:`，
+  // 不必像 <Skeleton /> 那样靠 useReducedMotion 判（#350）。
+  "animate-pulse motion-reduce:animate-none",
+);
 
 function stickyStyle<TData>(column: Column<TData, unknown>): React.CSSProperties | undefined {
   const pinned = column.getIsPinned();
@@ -506,6 +528,9 @@ export function Table<TData>({
   // 底部悬浮横向滚动条 / 外壳滚动条常显
   stickyScrollbar = false,
   scrollbar = "auto",
+  // 加载态
+  loading = false,
+  loadingRows = 5,
   // 空态
   emptyText,
   renderEmpty,
@@ -521,6 +546,9 @@ export function Table<TData>({
     filter: (column) => `筛选 ${column}`,
     resizeColumn: "调整列宽",
   });
+  // 「加载中」这句话复用 spinner 那条（skeleton 预设、Spinner、Empty 加载态都读它），
+  // 不在 locale.table 下另开一条同义词条 —— 两条同义 key 迟早会翻译成两句话。
+  const componentLocale = useComponentLocale();
   const selectionEnabled = Boolean(enableRowSelection);
   const treeMode = Boolean(getSubRows);
   const panelMode = Boolean(renderExpandedRow);
@@ -1071,7 +1099,48 @@ export function Table<TData>({
 
   // tbody 主体：虚拟模式只渲染视口窗口 + 上下撑高占位行
   let body: React.ReactNode;
-  if (rows.length === 0) {
+  if (loading && rows.length === 0) {
+    // 首轮加载（#349）：一行都没有时渲染骨架行，**不渲染空态** —— 数据还没到，
+    // 「暂无数据」说的是一件还不知道真假的事（而遮罩同时在说「正在加载」，两句话互相打脸）。
+    // 有行时不走这里：那一档保留上一批内容 + 外层遮罩，比闪一屏骨架稳。
+    const leaves = table.getVisibleLeafColumns();
+    const count = Math.min(Math.max(1, Math.trunc(loadingRows) || 1), MAX_SKELETON_ROWS);
+    body = Array.from({ length: count }).map((_, r) => (
+      <tr key={`__loading__${r}`} className="border-b border-border last:border-0">
+        {leaves.map((column, c) => (
+          <td
+            key={column.id}
+            // 宽度 / 冻结列几何与数据行同一口径：骨架换成真数据时列不许跳，
+            // 冻结列也不能在骨架这一档漏掉 sticky（否则横滚时占位块从表头下面穿过去）。
+            style={{
+              ...colWidthStyle(column, fixedLayout, declaredWidths),
+              ...stickyStyle(column),
+            }}
+            className={cn(cellPad, stickyClass(column, shellMeasuresOverflow))}
+          >
+            {/* 全表只此一处活动区域（#245 口径）：容器打 aria-busy 表示「这块正在更新」，
+                「正在加载」这句话只由这一个 role="status" 播报。 */}
+            {r === 0 && c === 0 && (
+              <span role="status" className="sr-only">
+                {componentLocale.spinner?.loading ?? "加载中"}
+              </span>
+            )}
+            <div
+              // 占位块不进无障碍树：几十个灰块逐个念一遍毫无信息量。
+              aria-hidden
+              className={cn(
+                SKELETON_BLOCK_CLASS,
+                // 选择 / 展开器 / 拖拽手柄列是固定几何的图标列，铺条形占位会把它撑歪。
+                BUILT_IN_COL.test(column.id)
+                  ? "size-4"
+                  : SKELETON_WIDTHS[c % SKELETON_WIDTHS.length],
+              )}
+            />
+          </td>
+        ))}
+      </tr>
+    ));
+  } else if (rows.length === 0) {
     body = (
       <tr>
         <td colSpan={colCount} className="py-4">
@@ -1208,6 +1277,9 @@ export function Table<TData>({
   const shell = (
     <div
       ref={scrollRef}
+      // 加载中给容器打 aria-busy（#245 口径）：说的是「这块正在更新，先别当最终内容读」。
+      // 「正在加载」那句播报只在骨架行里开一处 role="status"，这里不再叠第二个活动区域。
+      aria-busy={loading || undefined}
       style={
         virtualEnabled
           ? { height: virtual?.height ?? 480, overflow: "auto" }

@@ -303,6 +303,11 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   // 解析最终数据 / 分页 / loading（托管 vs 展示）。
   const tableData = managed ? fetched.data : dataProp ?? [];
   const loading = managed ? fetching : loadingProp;
+  // 首轮加载（#349）：一行都没有时，半透明遮罩底下透出来的是 Table 的「暂无数据」——
+  // 转圈说「正在加载」、底下说「没有数据」，两句话互相打脸。这一档把表体让给 Table 的
+  // 骨架行，遮罩不出（否则骨架上再压一层灰）。托管模式尤其绕不过去：loading 与 data
+  // 都由组件内部持有，消费方连「现在是不是首轮」都拿不到，只能库里解。
+  const firstLoad = Boolean(loading) && tableData.length === 0;
   // cursor 模式不走数字分页（keyset 无 total/随机跳页），由专属 footer 渲染。
   const pagination = cursorMode
     ? undefined
@@ -464,9 +469,13 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
           sorting={managed ? sorting : sortingProp}
           onSortingChange={managed ? handleSortingChange : onSortingChange}
           getRowId={getRowId}
+          loading={loading}
+          // 骨架铺到每页条数那么高，数据到位时不跳版。放在 {...tableProps} 之前：
+          // 消费方要自己定行数仍可覆盖。
+          loadingRows={pagination?.pageSize ?? pageSize}
           {...tableProps}
         />
-        {loading && (
+        {loading && !firstLoad && (
           <div className="absolute inset-0 z-10 grid place-items-center rounded-[var(--radius)] bg-surface/60">
             <Spin />
           </div>

@@ -46,7 +46,8 @@ import { ProTable } from "@hulianui/ui"
 | pagination | `ProTablePagination` | - | 展示模式集成分页（底部）；`{page,pageSize,total,onPageChange,showFirstLast?,onPageSizeChange?}` |
 | search | `Omit<SearchFormProps,"onSearch"> & { onSearch? }` | - | 集成查询区（复用 SearchForm）；托管模式下 onSearch 可省 |
 | toolbar | `boolean \| ProTableToolbarFeatures` | `true` | true=全开 / false=不渲染 / 对象逐项开关（reload/density/columnSetting/fullscreen） |
-| loading | `boolean` | - | 加载态：刷新图标旋转 |
+| loading | `boolean` | - | 加载态（展示模式；托管模式由 `request` 自管，此项忽略）。刷新图标旋转，并按有无数据分两档：已有行时盖一层半透明遮罩（保留上一批内容），**一行都没有时**改由内部 `Table` 渲染骨架行、不出遮罩 —— 遮罩底下透出「暂无数据」等于同时说「正在加载」和「没有数据」 |
+| loadingRows | `number` | 每页条数 | 首轮骨架行数（透传 `Table`）。默认取当前 `pagination.pageSize`，不传分页时取托管模式的每页条数；显式传值可覆盖 |
 | actionRef | `Ref<ProTableActions>` | - | 命令式句柄：`reload()` 重新请求 / `clearSelection()` 清选 |
 | columnVisibility | `Record<string, boolean>` | - | 受控列显隐（`列 id → 是否可见`，**缺省的键视为可见**）。与 `rowSelection` / `sorting` 同口径：传了就受控、必须配 `onColumnVisibilityChange`，不传才内部自持。列 id 取 `ColumnDef.id`，没有则取 `accessorKey`。带 `meta.lockVisible` 的列恒可见，对它写 `false` 不生效 |
 | rootClassName | `string` | - | 外层容器类名（区别透传 Table 的 className） |

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor, act } from "@testing-library/react";
 import { useRef, useState } from "react";
 import type { ColumnDef } from "../table/table.types";
 import { ProTable } from "./pro-table";
@@ -911,5 +911,96 @@ describe("ProTable 列显隐（columnVisibility / meta.lockVisible）", () => {
     await waitFor(() => expect(boxes().length).toBe(2));
     fireEvent.click(boxes()[1]); // 关掉仅剩的「姓名」
     expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe("ProTable 首轮加载（#349）", () => {
+  const cols: ColumnDef<Row, any>[] = [
+    { accessorKey: "id", header: "工号" },
+    { accessorKey: "name", header: "姓名" },
+  ];
+  // 骨架块 = Skeleton 原语的 aria-hidden <div>；遮罩 = 半透明 Spin 层。
+  const skeletonBlocks = (c: HTMLElement) => c.querySelectorAll('tbody td div[aria-hidden="true"]');
+  const overlay = (c: HTMLElement) => c.querySelector('[class*="bg-surface/60"]');
+  function defer<T>() {
+    let resolve!: (v: T) => void;
+    const promise = new Promise<T>((r) => {
+      resolve = r;
+    });
+    return { promise, resolve };
+  }
+
+  it("托管模式首轮：骨架行占位，不出「暂无数据」也不盖遮罩", async () => {
+    const d = defer<{ data: Row[]; total: number }>();
+    const { container, queryByText, getByText } = render(
+      <ProTable<Row> columns={cols} request={() => d.promise} getRowId={(r) => String(r.id)} />,
+    );
+    await waitFor(() => expect(skeletonBlocks(container).length).toBeGreaterThan(0));
+    expect(queryByText("暂无数据")).toBeNull();
+    expect(overlay(container)).toBeNull();
+
+    d.resolve({ data: [{ id: 1, name: "甲" }], total: 1 });
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(skeletonBlocks(container).length).toBe(0);
+  });
+
+  it("托管模式请求回来是空的：骨架收起，「暂无数据」这时才该说", async () => {
+    const { container, getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={async () => ({ data: [], total: 0 })}
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("暂无数据")).toBeTruthy());
+    expect(skeletonBlocks(container).length).toBe(0);
+  });
+
+  it("托管模式二次加载（已有行）：保留上一批数据 + 盖遮罩，不换骨架", async () => {
+    const second = defer<{ data: Row[]; total: number }>();
+    let call = 0;
+    const actionRef = { current: null as ProTableActions | null };
+    const { container, getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        actionRef={actionRef}
+        request={() =>
+          ++call === 1 ? Promise.resolve({ data: [{ id: 1, name: "甲" }], total: 1 }) : second.promise
+        }
+        getRowId={(r) => String(r.id)}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+
+    act(() => actionRef.current!.reload());
+    await waitFor(() => expect(overlay(container)).toBeTruthy());
+    // 上一批数据还在，没有被骨架顶掉
+    expect(getByText("甲")).toBeTruthy();
+    expect(skeletonBlocks(container).length).toBe(0);
+
+    second.resolve({ data: [{ id: 2, name: "乙" }], total: 1 });
+    await waitFor(() => expect(getByText("乙")).toBeTruthy());
+  });
+
+  it("展示模式：loading + 空数据走骨架不走遮罩；有数据才盖遮罩", () => {
+    const { container: empty } = render(<ProTable columns={cols} data={[]} loading />);
+    expect(skeletonBlocks(empty).length).toBeGreaterThan(0);
+    expect(overlay(empty)).toBeNull();
+
+    const { container: filled } = render(<ProTable columns={cols} data={data} loading />);
+    expect(skeletonBlocks(filled).length).toBe(0);
+    expect(overlay(filled)).toBeTruthy();
+  });
+
+  it("骨架行数跟随每页条数（占位高度贴近真实表高）", () => {
+    const { container } = render(
+      <ProTable
+        columns={cols}
+        data={[]}
+        loading
+        pagination={{ page: 1, pageSize: 3, total: 0, onPageChange: () => {} }}
+      />,
+    );
+    expect(container.querySelectorAll("tbody tr").length).toBe(3);
   });
 });

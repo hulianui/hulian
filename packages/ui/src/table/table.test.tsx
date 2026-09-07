@@ -2139,3 +2139,86 @@ describe("Table 分组表头", () => {
     expect(rows[1]!.querySelector("button")).toBeTruthy();
   });
 });
+
+describe("加载态（#349）", () => {
+  // 骨架块是 Skeleton 原语渲染的 aria-hidden <div> —— 这是「这一行是占位不是数据」的唯一 DOM 特征。
+  // 限定 div：空态插画是同样 aria-hidden 的 <svg>，不限定的话空态会被误计为骨架。
+  const skeletonBlocks = (c: HTMLElement) => c.querySelectorAll('tbody td div[aria-hidden="true"]');
+
+  it("首轮加载（loading + 无数据）渲染骨架行，且**不出现**「暂无数据」", () => {
+    const { container, queryByText } = render(<Table columns={columns} data={[]} loading />);
+    expect(queryByText("暂无数据")).toBeNull();
+    // 默认 5 行 × 2 列
+    expect(container.querySelectorAll("tbody tr").length).toBe(5);
+    expect(skeletonBlocks(container).length).toBe(10);
+  });
+
+  it("骨架格与数据格同列数：colSpan 撑通那一格只属于空态", () => {
+    const { container } = render(<Table columns={columns} data={[]} loading />);
+    const firstRowCells = container.querySelectorAll("tbody tr")[0]!.querySelectorAll("td");
+    expect(firstRowCells.length).toBe(2);
+    expect(firstRowCells[0]!.getAttribute("colspan")).toBeNull();
+  });
+
+  it("loadingRows 决定骨架行数，且收在 1..20", () => {
+    const { container: c1 } = render(<Table columns={columns} data={[]} loading loadingRows={3} />);
+    expect(c1.querySelectorAll("tbody tr").length).toBe(3);
+    const { container: c2 } = render(<Table columns={columns} data={[]} loading loadingRows={100} />);
+    expect(c2.querySelectorAll("tbody tr").length).toBe(20);
+    const { container: c3 } = render(<Table columns={columns} data={[]} loading loadingRows={0} />);
+    expect(c3.querySelectorAll("tbody tr").length).toBe(1);
+  });
+
+  it("已有数据时 loading 不换骨架：行照旧显示（遮罩归 ProTable）", () => {
+    const { container } = render(<Table columns={columns} data={data} loading />);
+    expect(nameOrder(container)).toEqual(["Charlie", "Alice", "Bob"]);
+    expect(skeletonBlocks(container).length).toBe(0);
+  });
+
+  it("loading=false 时空态照旧（回归）", () => {
+    const { container, getByText } = render(<Table columns={columns} data={[]} />);
+    expect(getByText("暂无数据")).toBeTruthy();
+    expect(skeletonBlocks(container).length).toBe(0);
+  });
+
+  it("a11y：容器打 aria-busy，播报只留一处 role=status（骨架块自身 aria-hidden）", () => {
+    const { container } = render(<Table columns={columns} data={[]} loading />);
+    expect(container.querySelector("[aria-busy='true']")).toBeTruthy();
+    const status = container.querySelectorAll('[role="status"]');
+    expect(status.length).toBe(1);
+    expect(status[0]!.textContent).toBe("加载中");
+  });
+
+  it("有数据时也打 aria-busy，但不开活动区域（那句播报归外层遮罩）", () => {
+    const { container } = render(<Table columns={columns} data={data} loading />);
+    expect(container.querySelector("[aria-busy='true']")).toBeTruthy();
+    expect(container.querySelectorAll('[role="status"]').length).toBe(0);
+  });
+
+  it("不加载时不打 aria-busy", () => {
+    const { container } = render(<Table columns={columns} data={data} />);
+    expect(container.querySelector("[aria-busy]")).toBeNull();
+  });
+
+  it("英文语境下播报文案跟随 locale", () => {
+    const { container } = render(
+      <ConfigProvider locale={enUS}>
+        <Table columns={columns} data={[]} loading />
+      </ConfigProvider>,
+    );
+    expect(container.querySelector('[role="status"]')!.textContent).toBe("Loading");
+  });
+});
+
+describe("加载态：内建前插列的骨架块", () => {
+  it("选择列的占位是方块（size-4 覆盖掉条形的 h-4），数据列才铺条形", () => {
+    const { container } = render(
+      <Table columns={columns} data={[]} loading enableRowSelection loadingRows={1} />,
+    );
+    const blocks = container.querySelectorAll<HTMLElement>('tbody td div[aria-hidden="true"]');
+    expect(blocks.length).toBe(3); // 选择列 + 2 数据列
+    expect(blocks[0]!.className).toContain("size-4");
+    expect(blocks[0]!.className).not.toContain("h-4");
+    expect(blocks[1]!.className).toContain("h-4");
+  });
+});
