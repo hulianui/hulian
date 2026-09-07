@@ -142,7 +142,11 @@ export function MathTextarea({
 
   const issue = validateFormulaSyntax(value);
   const hasMath = value.includes("$");
-  const showPreview = hasMath && issue === null;
+  // 自定义预览要不要出现，由它自己说了算：返回 null = 这段没什么可预览的。默认预览仍只在有 `$`
+  // 时出现（没有公式时它与输入框逐字相同，那个框纯属噪音），但「有没有可预览的东西」这件事
+  // 传了 renderPreview 的一方比这里清楚——QuestionEditor 的题干里，一张 `![](key)` 没有公式也要预览。
+  const custom = renderPreview ? renderPreview(value) : null;
+  const showPreview = issue === null && (renderPreview ? custom !== null : hasMath);
   const parseIssue = showPreview ? katexErrorAt(value, { macros }) : null;
 
   const editorProps = {
@@ -293,7 +297,7 @@ export function MathTextarea({
           )}
           <div className={cn(!compact && "mt-1", compact && "truncate")}>
             {renderPreview ? (
-              renderPreview(value)
+              custom
             ) : (
               <Text size="sm" className="block whitespace-pre-wrap">
                 <Formula macros={macros}>{value}</Formula>

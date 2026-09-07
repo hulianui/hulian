@@ -323,6 +323,25 @@ export function addStemFigure(q: Question, key: string, accept?: (key: string) =
   return { ...q, stem: joinFigureRefs(stemBody(q.stem, accept), [...refs, { key, alt: "" }]) };
 }
 
+/**
+ * 题图调序。题图的数组顺序**就是**它们写在题干末尾的顺序，也就是组卷预览 / 学生端 / docx 导出里的
+ * 显示顺序——调序不是「视图偏好」，是在改题干本身，所以照常整份写回 `stem`。
+ * `accept` 之外的行内引用一个都不参与：它们留在正文里，位置就是语义。
+ */
+export function moveStemFigure(
+  q: Question,
+  from: number,
+  to: number,
+  accept?: (key: string) => boolean,
+): Question {
+  const refs = stemFigureRefs(q.stem, accept);
+  if (from === to || from < 0 || to < 0 || from >= refs.length || to >= refs.length) return q;
+  const next = [...refs];
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved);
+  return { ...q, stem: joinFigureRefs(stemBody(q.stem, accept), next) };
+}
+
 export function removeStemFigure(q: Question, key: string, accept?: (key: string) => boolean): Question {
   const refs = stemFigureRefs(q.stem, accept);
   if (!refs.some((ref) => ref.key === key)) return q;

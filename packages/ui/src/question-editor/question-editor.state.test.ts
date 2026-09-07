@@ -24,6 +24,7 @@ import {
   removeBlankWriting,
   removeOption,
   removeRubricPoint,
+  moveStemFigure,
   removeStemFigure,
   rubricTotal,
   scoreDefaults,
@@ -299,6 +300,19 @@ describe("题图", () => {
     q = removeStemFigure(q, "b.png");
     expect(q.stem).toBe("正文改了\n");
   });
+
+  it("moveStemFigure：换的是题干里的书写顺序（也就是展示顺序），alt 跟着图走", () => {
+    const q: Question = {
+      ...emptyQuestion("single"),
+      stem: "如图\n\n![甲](a.png)\n![乙](b.png)\n![丙](c.png)",
+    };
+    expect(moveStemFigure(q, 2, 0).stem).toBe("如图\n\n![丙](c.png)\n![甲](a.png)\n![乙](b.png)");
+    expect(moveStemFigure(q, 0, 1).stem).toBe("如图\n\n![乙](b.png)\n![甲](a.png)\n![丙](c.png)");
+    // 原地与越界一律原样返回（同一个引用，不产生一次多余的 onChange）
+    expect(moveStemFigure(q, 1, 1)).toBe(q);
+    expect(moveStemFigure(q, -1, 0)).toBe(q);
+    expect(moveStemFigure(q, 0, 3)).toBe(q);
+  });
 });
 
 // 消费方（题库校准页）真实数据里的四类前缀：手工题图与导入插图摆末尾即可，
@@ -341,6 +355,17 @@ describe("题图 · figureFilter", () => {
     q = removeStemFigure(q, "question-image/g.png", notInlineFormula);
     q = removeStemFigure(q, "question-image/n.png", notInlineFormula);
     expect(q.stem).toBe("看图![7x+5<5x+1](import/formula/f1.png)求解");
+  });
+
+  it("moveStemFigure 只在题图之间换位：正文里的行内公式图一个字不动", () => {
+    const stem =
+      "看图![7x+5<5x+1](import/formula/f1.png)求解\n\n![](question-image/g.png)\n![](question-image/n.png)";
+    const q: Question = { ...emptyQuestion("single"), stem };
+    expect(moveStemFigure(q, 1, 0, notInlineFormula).stem).toBe(
+      "看图![7x+5<5x+1](import/formula/f1.png)求解\n\n![](question-image/n.png)\n![](question-image/g.png)",
+    );
+    // 谓词之外的那张压根不在这条队列里，下标越界 = 原样返回
+    expect(moveStemFigure(q, 2, 0, notInlineFormula)).toBe(q);
   });
 
   it("教材线插图同样可以划到题图之外", () => {

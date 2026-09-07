@@ -11194,7 +11194,7 @@
           "kind": "function",
           "type": "(value: string) => ReactNode",
           "default": null,
-          "description": "自定义预览渲染；默认 `<Formula>`。题干带图时由 QuestionEditor 传带图渲染"
+          "description": "自定义预览渲染。默认预览是 `<Formula>`，只在值里有 `$` 时出现；给了这个函数就由它说了算——返回 `null` 表示这段没什么可预览的，预览区整块收起。QuestionEditor 给题干传的是带图渲染"
         },
         {
           "name": "visualEditor",
@@ -12498,7 +12498,7 @@
           "kind": "function",
           "type": "(key: string) => string",
           "default": null,
-          "description": "题干里 `![](key)` → 可显示 URL。缩略图条与预览都靠它；题干有图而没给时缩略图只显示 key 并有开发期告警"
+          "description": "题干里 `![](key)` → 可显示 URL。缩略图条、看大图、题干预览都靠它；题干有图而没给时缩略图只显示 key 并有开发期告警"
         },
         {
           "name": "onUploadFigure",
@@ -12571,7 +12571,7 @@
           "kind": "other",
           "type": "Record<string, string>",
           "default": null,
-          "description": "透传给每个 MathTextarea 与预览的 KaTeX 宏表"
+          "description": "透传给每个 MathTextarea 与题干预览的 KaTeX 宏表（右侧 QuestionCard 预览不吃宏表）"
         },
         {
           "name": "preview",
@@ -24522,7 +24522,7 @@
           "kind": "function",
           "type": "(index: number) => string",
           "default": null,
-          "description": "题干附图的 alt 文案，如 (1) → \"题目附图 1\"。本件无 hook 读不到 Locale，缺省中文；QuestionEditor 预览会传自己 locale 的 `figureAlt`，单独用且要英文时自己传"
+          "description": "题干附图的 alt 文案，如 (1) → \"题目附图 1\"。**只在引用自己没写 alt 时用**：`![7x+5<5x+1](…)` 这种带 alt 的引用（导入线切出的公式图）直接用方括号里那段。本件无 hook 读不到 Locale，缺省中文；QuestionEditor 预览会传自己 locale 的 `figureAlt`，单独用且要英文时自己传"
         },
         {
           "name": "answer",

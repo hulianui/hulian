@@ -21,6 +21,13 @@ export interface QuestionEditorLocale {
   uploading: (name: string) => string;
   uploadFailed: (name: string, message: string) => string;
   dismissUpload: string;
+  /** 上传失败那一行的「重试」——文件还在手里，不该逼人重新去选一遍。 */
+  retryUpload: (name: string) => string;
+  /** 点缩略图看大图（ImageViewer）。缩略图 80px 只够认出是哪张，看不清图里的字母标注。 */
+  viewFigure: (index: number) => string;
+  /** 题图调序：顺序即展示顺序（组卷 / 学生端 / 导出）。 */
+  moveFigureEarlier: (index: number) => string;
+  moveFigureLater: (index: number) => string;
   options: string;
   optionsHint: (min: number, max: number) => string;
   optionLabel: (key: string) => string;
@@ -86,6 +93,10 @@ export const QUESTION_EDITOR_LOCALE_ZH: QuestionEditorLocale = {
   uploading: (name) => `正在上传 ${name}`,
   uploadFailed: (name, message) => `${name} 上传失败：${message}`,
   dismissUpload: "关闭上传提示",
+  retryUpload: (name) => `重试上传 ${name}`,
+  viewFigure: (index) => `查看题图 ${index}`,
+  moveFigureEarlier: (index) => `题图 ${index} 前移`,
+  moveFigureLater: (index) => `题图 ${index} 后移`,
   options: "选项",
   optionsHint: (min, max) => `${min}–${max} 项，字母按顺序自动编号`,
   optionLabel: (key) => `选项 ${key}`,
@@ -167,6 +178,10 @@ export const QUESTION_EDITOR_LOCALE_EN: QuestionEditorLocale = {
   uploading: (name) => `Uploading ${name}`,
   uploadFailed: (name, message) => `${name} failed to upload: ${message}`,
   dismissUpload: "Dismiss upload notice",
+  retryUpload: (name) => `Retry uploading ${name}`,
+  viewFigure: (index) => `View figure ${index}`,
+  moveFigureEarlier: (index) => `Move figure ${index} earlier`,
+  moveFigureLater: (index) => `Move figure ${index} later`,
   options: "Options",
   optionsHint: (min, max) => `${min} to ${max} options, lettered in order`,
   optionLabel: (key) => `Option ${key}`,

@@ -54,6 +54,17 @@ const [submitted, setSubmitted] = useState(false);
 
 历史数据先归一再喂进来：`fromWire({ type, options, answer })` 把 `"A,C"` 多选串、字符串形 options、`"true"` 判断串收成规范形。
 
+### 题图条
+
+题干输入框底下那条缩略图条管四件事，全部就地写回 `stem`（题图不是 `Question` 上的字段，是题干里的 `![](key)` 引用）：
+
+- **插入**：给了 `onUploadFigure` 才出现「插入图片」，返回的 key 以 `![](key)` 追加到题干末尾。
+- **调序**：每张图底下一对「前移 / 后移」。顺序就是它们写在题干末尾的顺序，也就是组卷预览、学生端与 docx 导出里的显示顺序——调序是在改题干，所以照常经 `onChange` 回传整份 `Question`，不另开 `onSortFigures`。只有一张图时不出这对按钮。
+- **看大图**：点缩略图用 [ImageViewer](../image-viewer/image-viewer.md) 打开（可缩放 / 左右翻）。80px 够认出是哪张，认不出图里的字母标注。
+- **失败重试**：上传失败那一行留着原来的 `File`，点重试直接再传一遍，不必回文件对话框里重新找。失败原因就是 `onUploadFigure` 抛出来的 `Error.message`（类型 / 大小 / 张数上限都在消费方那一侧拦）。
+
+题干输入框底下的预览走的是展示端那条路（`QuestionCard` 内部同一块），所以 `figureFilter` 划出去、留在正文里的行内公式图在这里是渲染成图的，不是一串 `![…](…)` 源码。
+
 ## Props
 
 | 名称 | 类型 | 默认 | 说明 |
@@ -61,7 +72,7 @@ const [submitted, setSubmitted] = useState(false);
 | value | `Question` | - | 受控值：规范形（`@hulianui/ui/math` 的 `Question`）。填空题内部**永远是数组**（单空也是一项数组），出口用 `toWireAnswer` 压平 |
 | onChange | `(next: Question) => void` | - | 每次编辑回传整份规范形 |
 | disabled | `boolean` | `false` | 只读 |
-| resolveFigure | `(key: string) => string` | - | 题干里 `![](key)` → 可显示 URL。缩略图条与预览都靠它；题干有图而没给时缩略图只显示 key 并有开发期告警 |
+| resolveFigure | `(key: string) => string` | - | 题干里 `![](key)` → 可显示 URL。缩略图条、看大图、题干预览都靠它；题干有图而没给时缩略图只显示 key 并有开发期告警 |
 | onUploadFigure | `(file: File) => Promise<string>` | - | 上传一张题图，返回 storage key。**给了才出「插入图片」**；成功后以 `![](key)` 写回题干末尾，失败在缩略图条上显示原因 |
 | figureFilter | `(key: string) => boolean` | - | 哪些 key 算「题图」（进缩略图条、可增删、写回题干末尾）。不给 = 全部。不匹配的引用**原样留在题干正文里**，编辑器不挪它、也不动它的 alt |
 | extra | `ReactNode` | - | 消费方私有字段，渲染在题型之后、题干之前 |
@@ -70,7 +81,7 @@ const [submitted, setSubmitted] = useState(false);
 | defaultScoreByType | `Partial<Record<QuestionType, number>>` | - | 覆盖按题型的默认分。切题型时 `score` 仍等于旧题型默认分才自动换 |
 | templates | `readonly FormulaTemplateGroup[]` | - | 透传给每个 MathTextarea |
 | visualEditor | `ComponentType<MathFieldLikeProps>` | - | 透传给每个 MathTextarea（MathField 满足此契约） |
-| macros | `Record<string, string>` | - | 透传给每个 MathTextarea 与预览的 KaTeX 宏表 |
+| macros | `Record<string, string>` | - | 透传给每个 MathTextarea 与题干预览的 KaTeX 宏表（右侧 QuestionCard 预览不吃宏表） |
 | preview | `boolean` | `true` | 右侧（窄屏在下方）QuestionCard 实时预览，带答案与解析 |
 | showAllIssues | `boolean` | `false` | 把 `validateQuestion` 的全部问题立刻挂到字段上。默认只显示**改过的**字段；页面在用户点提交后置 true |
 | className | `string` | - | 透传到根节点（两栏 grid） |
@@ -116,6 +127,7 @@ const [submitted, setSubmitted] = useState(false);
   ```
 
   划出去的引用原样留在题干正文里（输入框里能看到那段 `![…](…)`），缩略图条不收它、删不掉它、位置和 alt 都不动。
+- **题干预览要图，就得给 `resolveFigure`**。给了它，输入框底下那块预览走展示端同一条渲染路径（图画出来、alt 用引用自带的那段）；不给则退回默认的 `<Formula>` 预览，它不认 markdown 图片语法，题干里的 `![](key)` 会原样印成源码。正文里既没公式也没图时预览整块不显示——那时它与输入框逐字相同。
 - **上传只在给了 `onUploadFigure` 时出现**。文件类型 / 大小限制由消费方在回调里拦，拦住就 `throw new Error("单张不超过 5MB")`，错误信息原样显示在缩略图条上。
 - **校验默认只显示改过的字段**。想在提交时全部飘红请置 `showAllIssues`，别在外面再画一遍错误。
 - **没有提交按钮**。提交、私有字段必填（如学科）、`estimatedMinutes` 的上限，都是页面的事。

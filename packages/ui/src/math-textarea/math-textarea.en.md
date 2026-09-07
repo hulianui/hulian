@@ -52,7 +52,7 @@ Single-line compact form for options and per-blank answers:
 | disabled | `boolean` | `false` | Disables input and toolbar |
 | compact | `boolean` | `false` | Compact form: one-line preview with no helper text. For options and per-blank answers |
 | templates | `readonly FormulaTemplateGroup[]` | `FORMULA_TEMPLATE_GROUPS` | Replaces the default template groups. Custom templates provide `label` and groups provide `title`; built-in names come from the locale |
-| renderPreview | `(value: string) => ReactNode` | - | Custom preview; defaults to `<Formula>`. QuestionEditor passes a figure-aware renderer for stems |
+| renderPreview | `(value: string) => ReactNode` | - | Custom preview. The default preview is `<Formula>` and appears only when the value contains `$`; once this function is given it decides - returning `null` means there is nothing worth previewing and the whole preview box is hidden. QuestionEditor passes a figure-aware renderer for stems |
 | visualEditor | `ComponentType<MathFieldLikeProps>` | - | Injects a visual formula editor; **the Visual input tab appears only when provided**. [MathField](../math-field/math-field.md) from `@hulianui/ui/math-field` satisfies the contract |
 | macros | `Record<string, string>` | - | Macro table passed to the default preview and the KaTeX probe so custom macros are not reported as undefined commands |
 | aria-label | `string` | - | Accessible name. Required for single-line controls: it is how option A and option B are told apart |

@@ -145,6 +145,17 @@ describe("MathTextarea", () => {
     expect(screen.getByTestId("custom").textContent).toBe("3");
   });
 
+  it("renderPreview 说了算：没有 $ 也照样预览，返回 null 则整块收起", () => {
+    const withNode = render(
+      <Harness initial="没有公式" aria-label="题干" renderPreview={() => <em data-testid="custom">图</em>} />,
+    );
+    expect(withNode.container.querySelector('[data-slot="math-textarea-preview"]')).toBeTruthy();
+    expect(screen.getByTestId("custom").textContent).toBe("图");
+
+    const withNull = render(<Harness initial="$x$" aria-label="题干" renderPreview={() => null} />);
+    expect(withNull.container.querySelector('[data-slot="math-textarea-preview"]')).toBeNull();
+  });
+
   it("templates 覆盖默认模板组：用自定义 title / label", async () => {
     const onValue = vi.fn();
     render(

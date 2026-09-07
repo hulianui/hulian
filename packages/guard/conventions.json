@@ -7581,25 +7581,32 @@
       "id": "component/question-editor/pitfall/6",
       "scope": "question-editor",
       "title": "QuestionEditor",
-      "rule": "**上传只在给了 `onUploadFigure` 时出现**。文件类型 / 大小限制由消费方在回调里拦，拦住就 `throw new Error(\"单张不超过 5MB\")`，错误信息原样显示在缩略图条上。",
+      "rule": "**题干预览要图，就得给 `resolveFigure`**。给了它，输入框底下那块预览走展示端同一条渲染路径（图画出来、alt 用引用自带的那段）；不给则退回默认的 `<Formula>` 预览，它不认 markdown 图片语法，题干里的 `![](key)` 会原样印成源码。正文里既没公式也没图时预览整块不显示——那时它与输入框逐字相同。",
       "source": "packages/ui/src/question-editor/question-editor.md"
     },
     {
       "id": "component/question-editor/pitfall/7",
       "scope": "question-editor",
       "title": "QuestionEditor",
-      "rule": "**校验默认只显示改过的字段**。想在提交时全部飘红请置 `showAllIssues`，别在外面再画一遍错误。",
+      "rule": "**上传只在给了 `onUploadFigure` 时出现**。文件类型 / 大小限制由消费方在回调里拦，拦住就 `throw new Error(\"单张不超过 5MB\")`，错误信息原样显示在缩略图条上。",
       "source": "packages/ui/src/question-editor/question-editor.md"
     },
     {
       "id": "component/question-editor/pitfall/8",
       "scope": "question-editor",
       "title": "QuestionEditor",
-      "rule": "**没有提交按钮**。提交、私有字段必填（如学科）、`estimatedMinutes` 的上限，都是页面的事。",
+      "rule": "**校验默认只显示改过的字段**。想在提交时全部飘红请置 `showAllIssues`，别在外面再画一遍错误。",
       "source": "packages/ui/src/question-editor/question-editor.md"
     },
     {
       "id": "component/question-editor/pitfall/9",
+      "scope": "question-editor",
+      "title": "QuestionEditor",
+      "rule": "**没有提交按钮**。提交、私有字段必填（如学科）、`estimatedMinutes` 的上限，都是页面的事。",
+      "source": "packages/ui/src/question-editor/question-editor.md"
+    },
+    {
+      "id": "component/question-editor/pitfall/10",
       "scope": "question-editor",
       "title": "QuestionEditor",
       "rule": "**JSX 属性字符串不处理 `\\\\`**：初值里含反斜杠的公式写成 `stem: \"$\\\\frac{1}{2}$\"`（TS 字符串），不要写在 JSX 属性里。",
@@ -11201,7 +11208,7 @@
   ],
   "stats": {
     "componentDocs": 399,
-    "componentAdvisories": 1561,
-    "totalAdvisories": 1571
+    "componentAdvisories": 1562,
+    "totalAdvisories": 1572
   }
 }

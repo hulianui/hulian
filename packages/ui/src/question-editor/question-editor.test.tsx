@@ -205,6 +205,107 @@ describe("QuestionEditor", () => {
     );
   });
 
+  it("题干预览：figureFilter 划出去的行内公式图画成图，不再印成源码（#355）", () => {
+    const stem = "不等式![7x+5<5x+1](import/formula/f1.png)的解集为 $x<1$";
+    const { container } = render(
+      <Harness
+        initial={{ ...single(), stem }}
+        resolveFigure={(key) => `/files/${key}`}
+        figureFilter={(key) => !key.startsWith("import/formula/")}
+      />,
+    );
+    const previews = container.querySelectorAll('[data-slot="math-textarea-preview"]');
+    expect(previews.length).toBe(1); // 只有题干这一个框有公式 / 有图
+    const preview = previews[0] as HTMLElement;
+    const img = preview.querySelector("img");
+    expect(img?.getAttribute("src")).toBe("/files/import/formula/f1.png");
+    // 引用自带的 alt 就是这张图念出来是什么，比「题图 1」有信息
+    expect(img?.getAttribute("alt")).toBe("7x+5<5x+1");
+    expect(preview.textContent).not.toContain("import/formula");
+  });
+
+  it("题干预览：没给 resolveFigure 时退回默认的公式预览（解析不出图，不多包一层）", () => {
+    const stem = "不等式![7x+5<5x+1](import/formula/f1.png)的解集为 $x<1$";
+    const { container } = render(<Harness initial={{ ...single(), stem }} />);
+    const preview = container.querySelector('[data-slot="math-textarea-preview"]') as HTMLElement;
+    expect(preview.querySelector("img")).toBeNull();
+  });
+
+  it("题干预览：既没公式也没图时整块收起（预览与输入框逐字相同 = 噪音）", () => {
+    const { container } = render(
+      <Harness initial={{ ...single(), stem: "下列正确的是" }} resolveFigure={(key) => `/files/${key}`} />,
+    );
+    expect(container.querySelector('[data-slot="math-textarea-preview"]')).toBeNull();
+  });
+
+  it("题图调序：前移 / 后移改的是题干里的书写顺序（#354）", () => {
+    const onValue = vi.fn();
+    render(
+      <Harness
+        initial={{ ...single(), stem: "如图\n\n![](a.png)\n![](b.png)" }}
+        onValue={onValue}
+        resolveFigure={(key) => `/files/${key}`}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "题图 1 后移" }));
+    expect(onValue).toHaveBeenLastCalledWith(
+      expect.objectContaining({ stem: "如图\n\n![](b.png)\n![](a.png)" }),
+    );
+    expect((screen.getByRole("button", { name: "题图 1 前移" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("button", { name: "题图 2 后移" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("只有一张题图时不出调序按钮", () => {
+    render(
+      <Harness
+        initial={{ ...single(), stem: "如图\n\n![](a.png)" }}
+        resolveFigure={(key) => `/files/${key}`}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: "题图 1 后移" })).toBeNull();
+  });
+
+  it("点缩略图看大图（#354）", async () => {
+    render(
+      <Harness
+        initial={{ ...single(), stem: "如图\n\n![](a.png)\n![](b.png)" }}
+        resolveFigure={(key) => `/files/${key}`}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "查看题图 2" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog.querySelector('img[src="/files/b.png"]')).toBeTruthy();
+  });
+
+  it("上传失败留住那个 File，点一下重试再传一遍（#354）", async () => {
+    const onValue = vi.fn();
+    const upload = vi
+      .fn<(file: File) => Promise<string>>()
+      .mockRejectedValueOnce(new Error("网络断了"))
+      .mockResolvedValueOnce("import/new.png");
+    const { container } = render(
+      <Harness
+        initial={{ ...single(), stem: "如图" }}
+        onValue={onValue}
+        resolveFigure={(key) => `/files/${key}`}
+        onUploadFigure={upload}
+      />,
+    );
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [new File(["x"], "g.png", { type: "image/png" })] } });
+    const retry = await screen.findByRole("button", { name: "重试上传 g.png" });
+    fireEvent.click(retry);
+    await waitFor(() =>
+      expect(onValue).toHaveBeenLastCalledWith(
+        expect.objectContaining({ stem: "如图\n\n![](import/new.png)" }),
+      ),
+    );
+    expect(upload).toHaveBeenCalledTimes(2);
+    // 重试传的是同一个 File，不必回文件对话框里重新找一遍
+    expect(upload.mock.calls[1][0]).toBe(upload.mock.calls[0][0]);
+    expect(screen.queryByRole("button", { name: "重试上传 g.png" })).toBeNull();
+  });
+
   it("没给 onUploadFigure 时没有「插入图片」", () => {
     render(<Harness initial={single()} />);
     expect(screen.queryByRole("button", { name: "插入图片" })).toBeNull();

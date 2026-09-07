@@ -37,9 +37,11 @@ const CALCULATION: Question = {
 };
 const FIGURE_SRC = "data:image/svg+xml;utf8," +
     encodeURIComponent("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\"><rect width=\"160\" height=\"120\" fill=\"#fff\"/><polygon points=\"20,100 140,100 80,20\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"76\" y=\"14\" font-size=\"12\">A</text><text x=\"10\" y=\"114\" font-size=\"12\">B</text><text x=\"142\" y=\"114\" font-size=\"12\">C</text></svg>");
+const FIGURE_SRC_2 = "data:image/svg+xml;utf8," +
+    encodeURIComponent("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"160\" height=\"120\"><rect width=\"160\" height=\"120\" fill=\"#fff\"/><circle cx=\"80\" cy=\"60\" r=\"42\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\"/><line x1=\"80\" y1=\"60\" x2=\"122\" y2=\"60\" stroke=\"#333\" stroke-width=\"2\"/><text x=\"96\" y=\"52\" font-size=\"12\">r</text></svg>");
 const WITH_FIGURE: Question = {
     ...emptyQuestion("single"),
-    stem: "As shown, in $\\triangle ABC$ with $AB=AC$, the relation between $\\angle B$ and $\\angle C$ is ( )\n\n![](figures/abc.svg)",
+    stem: "As shown, in $\\triangle ABC$ with $AB=AC$, the relation between $\\angle B$ and $\\angle C$ is ( )\n\n![](figures/abc.svg)\n![](figures/circle.svg)",
     options: [
         { key: "A", text: "Equal" },
         { key: "B", text: "Supplementary" },
@@ -58,7 +60,11 @@ const uploadFigure = (file: File) => new Promise<string>((resolve, reject) => {
     reader.onerror = () => reject(new Error("Read failed"));
     reader.readAsDataURL(file);
 });
-const resolveUploaded = (key: string) => (key.startsWith("data:") ? key : FIGURE_SRC);
+const resolveUploaded = (key: string) => {
+    if (key.startsWith("data:"))
+        return key;
+    return key === "figures/circle.svg" ? FIGURE_SRC_2 : FIGURE_SRC;
+};
 function PrivateFields() {
     return (<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <Field label="Subject">

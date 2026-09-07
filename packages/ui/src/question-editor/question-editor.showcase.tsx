@@ -47,9 +47,17 @@ const FIGURE_SRC =
     '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120"><rect width="160" height="120" fill="#fff"/><polygon points="20,100 140,100 80,20" fill="none" stroke="#333" stroke-width="2"/><text x="76" y="14" font-size="12">A</text><text x="10" y="114" font-size="12">B</text><text x="142" y="114" font-size="12">C</text></svg>',
   );
 
+// 第二张：让画廊里能看见「前移 / 后移」那对按钮（只有一张图时它们不出现）。
+const FIGURE_SRC_2 =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120"><rect width="160" height="120" fill="#fff"/><circle cx="80" cy="60" r="42" fill="none" stroke="#333" stroke-width="2"/><line x1="80" y1="60" x2="122" y2="60" stroke="#333" stroke-width="2"/><text x="96" y="52" font-size="12">r</text></svg>',
+  );
+
 const WITH_FIGURE: Question = {
   ...emptyQuestion("single"),
-  stem: "如图，$\\triangle ABC$ 中 $AB=AC$，则 $\\angle B$ 与 $\\angle C$ 的关系是（ ）\n\n![](figures/abc.svg)",
+  stem:
+    "如图，$\\triangle ABC$ 中 $AB=AC$，则 $\\angle B$ 与 $\\angle C$ 的关系是（ ）\n\n![](figures/abc.svg)\n![](figures/circle.svg)",
   options: [
     { key: "A", text: "相等" },
     { key: "B", text: "互补" },
@@ -70,7 +78,10 @@ const uploadFigure = (file: File) =>
     reader.onerror = () => reject(new Error("读取失败"));
     reader.readAsDataURL(file);
   });
-const resolveUploaded = (key: string) => (key.startsWith("data:") ? key : FIGURE_SRC);
+const resolveUploaded = (key: string) => {
+  if (key.startsWith("data:")) return key;
+  return key === "figures/circle.svg" ? FIGURE_SRC_2 : FIGURE_SRC;
+};
 
 function PrivateFields() {
   return (

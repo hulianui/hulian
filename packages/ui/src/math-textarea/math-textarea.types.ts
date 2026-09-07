@@ -31,7 +31,11 @@ export interface MathTextareaProps {
   compact?: boolean;
   /** 覆盖默认模板组（高中加向量 / 数集，初中去积分）。@default FORMULA_TEMPLATE_GROUPS */
   templates?: readonly FormulaTemplateGroup[];
-  /** 自定义预览渲染。默认 `<Formula>`；QuestionEditor 传带图渲染。 */
+  /**
+   * 自定义预览渲染。默认预览是 `<Formula>`，只在值里有 `$` 时出现；给了这个函数就由它说了算：
+   * 返回 `null` = 这段没什么可预览的，预览区整块收起。QuestionEditor 的题干传的是带图渲染
+   * （题干正文里可能留着行内公式图的 `![…](…)` 引用，`<Formula>` 会把它印成源码）。
+   */
   renderPreview?: (value: string) => ReactNode;
   /** 注入可视化公式编辑器；给了才出「可视化输入」页签。 */
   visualEditor?: ComponentType<MathFieldLikeProps>;

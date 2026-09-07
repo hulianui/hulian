@@ -54,6 +54,17 @@ const [submitted, setSubmitted] = useState(false);
 
 Normalize legacy data first: `fromWire({ type, options, answer })` turns `"A,C"` multiple-choice strings, string-shaped options, and `"true"` strings into the canonical shape.
 
+### The figure strip
+
+The thumbnail strip under the stem input does four things, all of them written straight back into `stem` (figures are not a field on `Question`; they are `![](key)` references inside the stem):
+
+- **Insert.** "Insert image" appears only with `onUploadFigure`; the key it returns is appended to the stem as `![](key)`.
+- **Reorder.** Each thumbnail carries a "move earlier / move later" pair. Their order is the order they are written at the end of the stem, which is also the display order in paper preview, the student view, and docx export - reordering edits the stem, so it comes back through `onChange` as a whole `Question` rather than through a separate `onSortFigures`. With a single figure the pair is hidden.
+- **Open full size.** Clicking a thumbnail opens [ImageViewer](../image-viewer/image-viewer.md) (zoom and paging). 80px is enough to tell which figure it is, not enough to read the letters labelling it.
+- **Retry.** A failed row keeps the original `File`; one click uploads it again, with no trip back to the file dialog. The failure text is whatever `Error.message` `onUploadFigure` threw (type, size, and count limits stay on the consumer side).
+
+The preview under the stem input renders through the same path as the display end (the block inside `QuestionCard`), so inline formula images carved out by `figureFilter` and left in the body show as images here, not as `![...](...)` source.
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -61,7 +72,7 @@ Normalize legacy data first: `fromWire({ type, options, answer })` turns `"A,C"`
 | value | `Question` | - | Controlled value in the canonical shape (`Question` from `@hulianui/ui/math`). Blank answers are **always arrays** inside the editor (one entry even for a single blank); flatten on the way out with `toWireAnswer` |
 | onChange | `(next: Question) => void` | - | Called with the whole canonical shape on every edit |
 | disabled | `boolean` | `false` | Read-only |
-| resolveFigure | `(key: string) => string` | - | Maps `![](key)` in the stem to a displayable URL. Both the thumbnail strip and the preview use it; when the stem has figures and it is missing, thumbnails show only the key and a dev warning fires |
+| resolveFigure | `(key: string) => string` | - | Maps `![](key)` in the stem to a displayable URL. The thumbnail strip, the lightbox, and the stem preview all use it; when the stem has figures and it is missing, thumbnails show only the key and a dev warning fires |
 | onUploadFigure | `(file: File) => Promise<string>` | - | Uploads one figure and resolves to its storage key. **The Insert image button appears only when provided**; on success `![](key)` is appended to the stem, on failure the reason shows in the strip |
 | figureFilter | `(key: string) => boolean` | - | Which keys count as figures (they enter the thumbnail strip, can be added or removed, and are written back at the end of the stem). Omitted = all of them. References it rejects **stay exactly where they are in the stem body**; the editor never moves them and never touches their alt text |
 | extra | `ReactNode` | - | Consumer-private fields, rendered after the type and before the stem |
@@ -70,7 +81,7 @@ Normalize legacy data first: `fromWire({ type, options, answer })` turns `"A,C"`
 | defaultScoreByType | `Partial<Record<QuestionType, number>>` | - | Overrides the per-type default score. On a type switch the score changes only if it still equals the old type's default |
 | templates | `readonly FormulaTemplateGroup[]` | - | Passed to every MathTextarea |
 | visualEditor | `ComponentType<MathFieldLikeProps>` | - | Passed to every MathTextarea (MathField satisfies the contract) |
-| macros | `Record<string, string>` | - | KaTeX macros passed to every MathTextarea and the preview |
+| macros | `Record<string, string>` | - | KaTeX macros passed to every MathTextarea and to the stem preview (the QuestionCard preview on the right does not take macros) |
 | preview | `boolean` | `true` | Live QuestionCard preview on the right (below on narrow screens), with answer and explanation |
 | showAllIssues | `boolean` | `false` | Show every `validateQuestion` issue at once. By default only fields the user has **edited** show issues; set it after the user presses submit |
 | className | `string` | - | Root node (a two-column grid) |
@@ -116,6 +127,7 @@ All exported from `@hulianui/ui/math`:
   ```
 
   Rejected references stay verbatim in the stem body (the `![...](...)` text is visible in the input), the strip does not list them, they cannot be deleted there, and neither their position nor their alt text changes.
+- **The stem preview needs `resolveFigure` to show figures.** With it, the preview under the input renders through the same path as the display end (figures drawn, alt taken from the reference itself); without it the preview falls back to plain `<Formula>`, which does not understand markdown image syntax and prints `![](key)` verbatim. When the body has neither formulas nor figures the preview box is hidden entirely - it would be character-for-character the input.
 - **Upload appears only with `onUploadFigure`.** Enforce type and size limits inside the callback; reject with `throw new Error("Max 5MB per image")` and the message shows verbatim in the strip.
 - **Validation shows only edited fields by default.** Set `showAllIssues` to flag everything at submit time; do not draw errors again outside.
 - **No submit button.** Submitting, required private fields (such as subject), and an upper bound for `estimatedMinutes` belong to the page.

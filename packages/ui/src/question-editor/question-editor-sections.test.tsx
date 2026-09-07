@@ -178,7 +178,7 @@ describe("SubjectiveSection", () => {
 describe("FiguresStrip", () => {
   it("没有图也没有上传回调时什么都不渲染", () => {
     const { container } = render(
-      <FiguresStrip keys={[]} disabled={false} onAdd={() => {}} onRemove={() => {}} L={L} />,
+      <FiguresStrip keys={[]} disabled={false} onAdd={() => {}} onRemove={() => {}} onMove={() => {}} L={L} />,
     );
     expect(container.firstChild).toBeNull();
   });
@@ -192,6 +192,7 @@ describe("FiguresStrip", () => {
         resolveFigure={(key) => `/files/${key}`}
         onAdd={() => {}}
         onRemove={onRemove}
+        onMove={() => {}}
         L={L}
       />,
     );
@@ -208,6 +209,7 @@ describe("FiguresStrip", () => {
         disabled={false}
         onAdd={() => {}}
         onRemove={() => {}}
+        onMove={() => {}}
         L={L}
       />,
     );
@@ -229,6 +231,7 @@ describe("FiguresStrip", () => {
         onUploadFigure={upload}
         onAdd={onAdd}
         onRemove={() => {}}
+        onMove={() => {}}
         L={L}
       />,
     );

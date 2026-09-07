@@ -39,7 +39,7 @@ export interface QuestionEditorProps {
   templates?: readonly FormulaTemplateGroup[];
   /** 透传给每个 MathTextarea 的可视化编辑器。 */
   visualEditor?: ComponentType<MathFieldLikeProps>;
-  /** 透传给每个 MathTextarea 与预览的 KaTeX 宏表。 */
+  /** 透传给每个 MathTextarea 与题干预览的 KaTeX 宏表（右侧 QuestionCard 预览不吃宏表）。 */
   macros?: Record<string, string>;
   /** 右侧 / 下方 QuestionCard 实时预览（`showAnswer`）。@default true */
   preview?: boolean;

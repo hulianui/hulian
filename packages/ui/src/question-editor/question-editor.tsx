@@ -9,6 +9,8 @@ import { cn } from "../lib/cn";
 import { MathTextarea } from "../math-textarea/math-textarea";
 import { NumberField } from "../number-field";
 import { QuestionCard } from "../question-card/question-card";
+import { QuestionStemBlock } from "../question-card/question-stem-block";
+import { stemFigureKeys } from "../question/question-stem";
 import { validateQuestion } from "../question/question-shape";
 import { QUESTION_LOCALE_ZH } from "../question/question.locale";
 import { QUESTION_TYPES, type Question, type QuestionType } from "../question/question.types";
@@ -23,6 +25,7 @@ import { QUESTION_EDITOR_LOCALE_ZH } from "./question-editor.locale";
 import {
   addStemFigure,
   issuesByField,
+  moveStemFigure,
   removeStemFigure,
   scoreDefaults,
   setEstimatedMinutes,
@@ -104,6 +107,29 @@ export function QuestionEditor({
   };
 
   const textarea = { templates, visualEditor, macros };
+  // 题干输入框底下那块预览。默认预览是 `<Formula>`，它不认 markdown 图片语法：`figureFilter`
+  // 划出去、原样留在正文里的行内公式图（`![7x+5<5x+1](import/formula/….png)`）会被整段印成源码。
+  // 这里改走库内题干渲染的**同一条路**（QuestionStemBlock，QuestionCard / QuestionAnswer 共用），
+  // 老师在输入框底下看到的就是展示端会画出来的东西。刻意不新开 `renderStemPreview` 这类透传口：
+  // 「题干怎么渲染」只能有一个真源，多一个口子就多一种和学生端不一样的可能。
+  // 没给 resolveFigure 就不接管——那条路一样解析不出图，退回默认预览即可。
+  const renderStemPreview = resolveFigure
+    ? (body: string) => {
+        // 既没公式也没图，预览就与输入框里的字一模一样，那个框纯属噪音：返回 null 让 MathTextarea 收起它。
+        if (!body.includes("$") && stemFigureKeys(body).length === 0) return null;
+        // 换行是老师排的版（默认预览也保着它），whitespace 继承给里面的正文。
+        return (
+          <div className="whitespace-pre-wrap">
+            <QuestionStemBlock
+              stem={body}
+              resolveFigure={resolveFigure}
+              figureAlt={L.figureAlt}
+              macros={macros}
+            />
+          </div>
+        );
+      }
+    : undefined;
   const section: SectionContext = { value, onChange: commit, disabled, L, textarea, errors };
   const figures = stemFigures(value.stem, figureFilter);
   const subjective =
@@ -157,6 +183,7 @@ export function QuestionEditor({
             onChange={(body) => commit(setStemBody(value, body, figureFilter), "stem")}
             disabled={disabled}
             {...textarea}
+            renderPreview={renderStemPreview}
           />
           <FiguresStrip
             keys={figures}
@@ -165,6 +192,7 @@ export function QuestionEditor({
             onUploadFigure={onUploadFigure}
             onAdd={(key) => commit(addStemFigure(value, key, figureFilter), "stem")}
             onRemove={(key) => commit(removeStemFigure(value, key, figureFilter), "stem")}
+            onMove={(from, to) => commit(moveStemFigure(value, from, to, figureFilter), "stem")}
             L={L}
           />
         </div>
