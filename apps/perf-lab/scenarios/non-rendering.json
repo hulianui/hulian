@@ -58,6 +58,7 @@
     "exports": [
       "answerLines",
       "answerText",
+      "asQuestionType",
       "blankCount",
       "canonicalAnswer",
       "decodeBlanks",
@@ -67,6 +68,7 @@
       "encodeBlanks",
       "fromWire",
       "gradeObjective",
+      "isKnownQuestionType",
       "isSubjective",
       "JUDGE_FALSE",
       "JUDGE_TRUE",

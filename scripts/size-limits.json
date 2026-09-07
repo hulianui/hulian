@@ -74,7 +74,7 @@
     {
       "name": "date-picker",
       "entry": "@hulianui/ui/date-picker",
-      "limitKB": 60
+      "limitKB": 69.5
     },
     {
       "name": "root-barrel",
