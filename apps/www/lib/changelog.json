@@ -1,6 +1,55 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.64.0",
+    "date": "2026-09-07",
+    "entries": [
+      {
+        "sha": "9da5356",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(form-dialog): 此前 ModalForm / DrawerForm 的关闭守门只认 `form.isDirty()`，弹窗里自持 state 的复合控件（区划级联、权限勾选组、标签编辑器）改了照样不问就关；现在可传 `hasExternalChanges` 回调，在真要关的那一刻与 `form.isDirty()` 取或求值，不传则行为不变 (#351)"
+      },
+      {
+        "sha": "74b83b8",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(math): 题型收窄此前没导出，每个消费方都得自己照着 QUESTION_TYPES 再写一遍 `raw as QuestionType`；现在 `@hulianui/ui/math` 直接给出 `isKnownQuestionType`（类型谓词，收窄失败那侧仍是 string）与 `asQuestionType`（wire 上的 `string | null | undefined` 转 `QuestionType`，认不出给 `undefined`，正好是 `answerLines` / `answerText` / `QuestionCard` 按答案形状兜底的那一档）(#352)"
+      },
+      {
+        "sha": "2486651",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(question-editor): 此前题干里所有 `![](…)` 一律当题图，编辑一轮就被整批搬到题干末尾、alt 一并抹掉，Word 导入线切出的行内公式图（`不等式![7x+5<5x+1](import/formula/….png)的解集为______．`）因此句子读不通、下游要读的那段 LaTeX 也没了；现在加 `figureFilter` 按 key 划出哪些算题图，划出去的引用原样留在题干正文里、位置与 alt 都不动，写回时也不再丢 alt (#353)"
+      },
+      {
+        "sha": "9a9ff12",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(stat): 此前 label 与 hint 同为 muted 灰、只差 2px 字号，一眼分不出哪行是卡片标题哪行是注脚，icon 底座又写死中性灰，一排 4 张同构卡没法按颜色定位；现在 label 归 text-foreground（注脚仍是 muted，主次由色阶而非字号硬撑），并新增 `tone`（neutral/brand/info/success/warning/danger，默认 neutral 与此前完全一致）只给 icon 底座上浅底 + 语义色，value 与趋势颜色不动，消费方不必再往 label 里塞 span、也不必自己叠一层同尺寸底座去盖住组件的 (#348)"
+      },
+      {
+        "sha": "6f63cb8",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(table): 首次加载时半透明遮罩底下透出「暂无数据」，转圈与空态同时各说各话；现在 Table 新增 `loading` / `loadingRows`，一行都没有时改渲染骨架行并压住空态，ProTable 首轮也随之只出骨架不出遮罩，已有数据的刷新/翻页仍保留原来的遮罩语义 (#349)"
+      },
+      {
+        "sha": "fec8de1",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(alert): 只有 title 没有正文时整条改为垂直居中，icon 去掉首行光学补偿。此前 items-start 让「标题 + 动作按钮」的单行提示左侧整体上浮，看起来没对齐。"
+      },
+      {
+        "sha": "a33f6b4",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(skeleton): 此前开着系统「减少动态效果」，一屏几十块骨架（TableSkeleton 8×5 就是 40 块）照样永久扫光——shimmer 是 motion 驱动的 backgroundPosition 补间，Tailwind 的 motion-reduce: 类变体够不着；现在 reduce 下退成静态灰块，占位形状照旧，只去掉扫光与那层渐变，三个预设一并静止 (#350)"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.63.4",
     "date": "2026-09-04",
     "entries": [

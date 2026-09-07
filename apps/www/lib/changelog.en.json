@@ -1,6 +1,55 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.64.0",
+    "date": "2026-09-07",
+    "entries": [
+      {
+        "sha": "9da5356",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(form-dialog): the close guard on ModalForm / DrawerForm used to consult `form.isDirty()` alone, so a dialog whose compound controls hold their own state (cascading regions, permission checkbox groups, tag editors) closed without asking even after the user had filled them in; you can now pass a `hasExternalChanges` callback, evaluated at the moment the dialog is actually about to close and OR-ed with `form.isDirty()`. Omitting it leaves behaviour unchanged (#351)"
+      },
+      {
+        "sha": "74b83b8",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(math): question-type narrowing was never exported, so every consumer rewrote the same `raw as QuestionType` against `QUESTION_TYPES`; `@hulianui/ui/math` now exports `isKnownQuestionType` (a type predicate whose failing branch stays a `string`) and `asQuestionType` (converts the wire's `string | null | undefined` to `QuestionType`, yielding `undefined` when unrecognised, which is exactly the tier where `answerLines` / `answerText` / `QuestionCard` fall back to the answer's shape) (#352)"
+      },
+      {
+        "sha": "2486651",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(question-editor): every `![](…)` in a stem used to count as a question figure, so one round of editing moved them all to the end of the stem and stripped their alt text. Inline formula images cut by the Word import pipeline (a stem such as `…![7x+5<5x+1](import/formula/….png)…` where the image sits mid-sentence) therefore stopped reading as sentences, and the LaTeX downstream tools read from the alt was gone. The new `figureFilter` decides by key which references count as question figures; everything it excludes stays exactly where it is in the stem body, position and alt untouched, and alt is no longer dropped on write-back (#353)"
+      },
+      {
+        "sha": "9a9ff12",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(stat): label and hint were both muted grey and only 2px apart in size, so there was no telling which line was the card title and which was the footnote, while the icon base was hard-coded neutral grey, leaving a row of four identical cards with nothing to locate them by. The label now uses `text-foreground` (the footnote stays muted, so the hierarchy comes from colour instead of leaning on size alone), and the new `tone` (neutral/brand/info/success/warning/danger, defaulting to neutral, identical to before) tints only the icon base with a subtle background plus semantic text. The value and trend colours never change, so consumers no longer need to wrap the label in a span or stack their own same-size base over the component's (#348)"
+      },
+      {
+        "sha": "6f63cb8",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(table): on first load the \"no data\" line showed through from under the translucent overlay, with the spinner and the empty state each saying something different. `Table` now takes `loading` / `loadingRows`: with no rows at all it renders skeleton rows and suppresses the empty state, and `ProTable` likewise shows only the skeleton on its first load rather than the overlay. Refreshing or paging with data already present keeps the previous overlay semantics (#349)"
+      },
+      {
+        "sha": "fec8de1",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(alert): when there is a title but no body, the whole alert is now centred vertically and the icon drops its first-line optical offset. `items-start` used to float the left-hand side of a single-line \"title plus action button\" notice upwards, which read as misaligned."
+      },
+      {
+        "sha": "a33f6b4",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(skeleton): with the system \"reduce motion\" setting on, a screen full of skeletons (a TableSkeleton of 8x5 is already 40 blocks) kept shimmering forever. The shimmer is a motion-driven `backgroundPosition` tween, so Tailwind's `motion-reduce:` variant cannot reach it. Under reduce it now falls back to a static grey block: the placeholder geometry stays, only the sweep and its gradient go away, and all three presets settle together (#350)"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.63.4",
     "date": "2026-09-04",
     "entries": [
