@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.64.1
+
+### Patch Changes
+
+- d4f8895: fix(table): skeleton rows now carry `data-loading-row` and the whole row is `aria-hidden`, so they are no longer indistinguishable from data rows. The first-load skeleton shipped in 0.64.0 (#349) looked exactly like real rows in the DOM, while consumer end-to-end tests routinely use "`tbody tr` reached N rows" as the probe for "the data arrived", and the skeleton row count is often exactly `pageSize`, so the probe was satisfied before the data ever landed. This library's own demo gate hit it: the CRM customers page fails its first mock request by design, `pageSize` happens to be 8, and eight skeleton rows satisfied "wait for 8 rows" immediately, so the gate missed the retry button that only appeared afterwards and every later assertion waited on empty data. Write the probe as `tbody tr:not([data-loading-row])`. Hiding the whole row also settles the accessibility side, since dozens of empty placeholders carry no information, and the "loading" announcement moved out to the shell where `aria-hidden` cannot swallow it.
+
 ## 0.64.0
 
 ### Minor Changes
