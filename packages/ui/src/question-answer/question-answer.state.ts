@@ -6,15 +6,11 @@
 //   · 对象形 options 被 typeof o === "string" 滤成空 → 96 道选择题一道都选不了（走 normalizeOptions）
 import { blankCount as stemBlankCount, normalizeOptions } from "../question/question-shape";
 import { decodeBlanks } from "../question/question-wire";
-import { QUESTION_TYPES, type QuestionType, type StudentAnswer } from "../question/question.types";
+import type { StudentAnswer } from "../question/question.types";
 import type { AnswerableQuestion } from "./question-answer.types";
 
 /** 作答控件的种类。`unanswerable` 是选择题选项没入库的兜底：明说做不了，不摆一个点不动的空单选组。 */
 export type AnswerKind = "single" | "multiple" | "judge" | "blank" | "subjective" | "unanswerable";
-
-export function isKnownQuestionType(type: string): type is QuestionType {
-  return (QUESTION_TYPES as readonly string[]).includes(type);
-}
 
 /** 这道题该用哪种作答控件。先按题型分派，再看选项——判断题的 options 本来就是 null。未知题型按主观题只读。 */
 export function answerKind(question: Pick<AnswerableQuestion, "type" | "options">): AnswerKind {

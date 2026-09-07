@@ -4,7 +4,7 @@ name: Formula
 category: typography
 group: text
 tags: []
-exports: [Formula, QuestionCard, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath]
+exports: [Formula, QuestionCard, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath, isKnownQuestionType, asQuestionType]
 status: enriched
 ---
 
@@ -151,11 +151,14 @@ The inside rule scales with the font size while the outside one is 1px; at body 
 import {
   gradeObjective, validateQuestion, defaultShape, normalizeOptions, blankCount,
   splitStemFigures, toWireAnswer, fromWire, answerText,
+  isKnownQuestionType, asQuestionType,
   type Question, type QuestionType, type QuestionAnswerValue,
 } from "@hulianui/ui/math"
 ```
 
 - `validateQuestion` / `defaultShape` / `normalizeOptions` / `blankCount`: type-driven shape rules, isomorphic to the consumer backend's `_check_type_shape`.
+- `asQuestionType(raw)` -> `QuestionType | undefined`: **the question type on the server wire is always a `string`** (that is what the OpenAPI types say, and the wrong-answer / review paths still carry legacy junk values), and anything unrecognised becomes `undefined`. That is exactly what `answerLines` / `answerText` / `QuestionCard` accept for `type`, where `undefined` selects their "fall back to the answer's shape" tier. Do not write `raw as QuestionType` yourself: the cast produces a type this library does not have, so the fallback branch is never reached.
+- `isKnownQuestionType(type)` -> `type is QuestionType`: the type predicate, for use inside an `if`. The failing side stays a `string`, so you can still report, log, or display the raw type verbatim. Use `asQuestionType` when you only want the conversion and not the raw string; that is what QuestionAnswer itself does, warning once and degrading to read-only subjective when the value does not convert.
 - `splitStemFigures`: lifts `![](key)` figures out of the stem before math parsing; the contract lives in `stem-figures.contract.json`.
 - `gradeObjective`: objective grading whose default tier matches the server word for word; normalisation, tolerance, and an injected equivalence comparator are opt-in. **The server remains the grading source of truth.**
 - `answerText`: answer JSON to human-readable text, dispatched by shape.

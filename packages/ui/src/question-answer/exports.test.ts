@@ -16,6 +16,12 @@ describe("question-answer 导出面", () => {
     }
   });
 
+  it("题型收窄搬去题目域后，仍从同一入口可达（#352）", () => {
+    for (const name of ["isKnownQuestionType", "asQuestionType"]) {
+      expect((mathEntry as Record<string, unknown>)[name], name).toBeDefined();
+    }
+  });
+
   it("主 barrel 一个都不带（KaTeX 不进 @hulianui/ui）", () => {
     expect((rootEntry as Record<string, unknown>).QuestionAnswer).toBeUndefined();
     expect((rootEntry as Record<string, unknown>).canSubmit).toBeUndefined();

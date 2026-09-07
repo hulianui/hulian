@@ -6,7 +6,6 @@ import {
   choiceKey,
   choiceKeys,
   currentAnswer,
-  isKnownQuestionType,
   resolveBlankCount,
   setBlank,
 } from "./question-answer.state";
@@ -32,16 +31,6 @@ describe("answerKind：这道题该用哪种作答控件", () => {
 
   it("字符串形 options（历史数据）也算有选项", () => {
     expect(answerKind({ type: "single", options: ["A. 甲", "B. 乙"] as never })).toBe("single");
-  });
-});
-
-describe("isKnownQuestionType", () => {
-  it("七型认识，其余不认识", () => {
-    for (const t of ["single", "multiple", "judge", "blank", "short_answer", "calculation", "essay"]) {
-      expect(isKnownQuestionType(t)).toBe(true);
-    }
-    expect(isKnownQuestionType("matching")).toBe(false);
-    expect(isKnownQuestionType("")).toBe(false);
   });
 });
 

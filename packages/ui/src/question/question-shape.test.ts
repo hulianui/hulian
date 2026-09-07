@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_SCORE_BY_TYPE,
   SUBJECTIVE_TYPES,
+  asQuestionType,
   blankCount,
   defaultShape,
   emptyQuestion,
+  isKnownQuestionType,
   isSubjective,
   normalizeOptions,
   optionKey,
@@ -214,5 +216,29 @@ describe("question-shape · validateQuestion（与后端 _check_type_shape 同�
       );
       expect(issues, type).toEqual([]);
     }
+  });
+});
+
+describe("isKnownQuestionType：题型的类型谓词", () => {
+  it("七型认识，其余不认识", () => {
+    for (const t of QUESTION_TYPES) expect(isKnownQuestionType(t)).toBe(true);
+    expect(isKnownQuestionType("matching")).toBe(false);
+    expect(isKnownQuestionType("")).toBe(false);
+  });
+});
+
+describe("asQuestionType：wire 上的题型串转 QuestionType", () => {
+  it("七型每一型原样返回", () => {
+    for (const t of QUESTION_TYPES) expect(asQuestionType(t)).toBe(t);
+  });
+  it.each([
+    ["未知题型", "matching"],
+    ["空串", ""],
+    ["大小写不对", "Single"],
+    ["带空格", " single "],
+    ["null", null],
+    ["undefined", undefined],
+  ])("%s → undefined", (_label, raw) => {
+    expect(asQuestionType(raw)).toBeUndefined();
   });
 });

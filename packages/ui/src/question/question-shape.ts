@@ -11,6 +11,28 @@ import {
   type Rubric,
 } from "./question.types";
 
+/**
+ * 题型的类型谓词：这个字符串是不是本库认识的七型之一。
+ * 用在 if 分支里 —— 收窄成立的那侧拿到 `QuestionType`，不成立的那侧仍是 `string`，
+ * 未知题型怎么兜底由调用方自己写（QuestionAnswer 就是在这一侧退成主观题只读，
+ * 同时把原始题型串照原样显示出来）。只要转换、不要保留原串时用 `asQuestionType`。
+ */
+export function isKnownQuestionType(type: string): type is QuestionType {
+  return (QUESTION_TYPES as readonly string[]).includes(type);
+}
+
+/**
+ * 把服务端 wire 上的题型转成 `QuestionType`，认不出就给 `undefined`。
+ * 消费方拿到的 `type` 一律是 `string`（OpenAPI 生成的类型，错题 / 复核链路上还有历史脏值），
+ * 而 `answerLines` / `answerText` / `QuestionCard` 的 `type` 接的都是 `QuestionType | undefined` ——
+ * 「拿不到题型就按答案形状兜底」正是这个 `undefined` 档，所以直接喂它们即可，
+ * 不必硬 cast 一个不存在的题型。要在收窄失败那侧继续用原串就改用 `isKnownQuestionType`。
+ */
+export function asQuestionType(raw: string | null | undefined): QuestionType | undefined {
+  if (typeof raw !== "string") return undefined;
+  return isKnownQuestionType(raw) ? raw : undefined;
+}
+
 /** 要人来判的题型。判分回 `correct: null`，统计要把它们排除在正确率之外。 */
 export const SUBJECTIVE_TYPES: ReadonlySet<QuestionType> = new Set<QuestionType>([
   "short_answer",

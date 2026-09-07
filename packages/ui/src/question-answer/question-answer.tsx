@@ -15,9 +15,8 @@ import { Formula } from "../math/math";
 import { QuestionTypeTag } from "../question-card/question-card.client";
 import { QuestionStemBlock } from "../question-card/question-stem-block";
 import { answerText } from "../question/answer-format";
-import { normalizeOptions } from "../question/question-shape";
+import { asQuestionType, normalizeOptions } from "../question/question-shape";
 import { QUESTION_LOCALE_ZH } from "../question/question.locale";
-import type { QuestionType } from "../question/question.types";
 import { Radio, RadioGroup } from "../radio";
 import { Tag } from "../tag";
 import { Text } from "../text";
@@ -29,7 +28,6 @@ import {
   choiceKey,
   choiceKeys,
   currentAnswer,
-  isKnownQuestionType,
   resolveBlankCount,
   setBlank,
 } from "./question-answer.state";
@@ -63,8 +61,9 @@ export function QuestionAnswer({
   const L = locale.questionAnswer ?? QUESTION_ANSWER_LOCALE_ZH;
   const Q = locale.question ?? QUESTION_LOCALE_ZH;
 
-  const known = isKnownQuestionType(question.type);
-  if (!known) {
+  // wire 上的题型是 string，收窄不了就按主观题只读（#352 起用库自己的 asQuestionType，不再就地 cast）
+  const type = asQuestionType(question.type);
+  if (type === undefined) {
     warnOnce(
       "question-answer:unknown-type",
       "[瑚琏] QuestionAnswer：不认识的题型，按主观题只读处理（七型见 QuestionType）。",
@@ -79,7 +78,6 @@ export function QuestionAnswer({
   // 给了 mathField 且要 math 才用；其余一律文本框。
   const MathInput = blankInput === "math" ? mathField : undefined;
 
-  const type: QuestionType | undefined = known ? (question.type as QuestionType) : undefined;
   const kind = answerKind(question);
   const blanks = kind === "blank" ? resolveBlankCount(question) : 1;
   const answered = result !== null && result !== undefined;

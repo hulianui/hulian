@@ -13,6 +13,8 @@ export type {
 } from "./question.types";
 export { QUESTION_TYPES } from "./question.types";
 export {
+  isKnownQuestionType,
+  asQuestionType,
   SUBJECTIVE_TYPES,
   DEFAULT_SCORE_BY_TYPE,
   MAX_OPTIONS,

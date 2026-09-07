@@ -4,7 +4,7 @@ name: Formula
 category: typography
 group: text
 tags: []
-exports: [Formula, QuestionCard, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath]
+exports: [Formula, QuestionCard, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath, isKnownQuestionType, asQuestionType]
 status: enriched
 ---
 
@@ -139,11 +139,14 @@ status: enriched
 import {
   gradeObjective, validateQuestion, defaultShape, normalizeOptions, blankCount,
   splitStemFigures, toWireAnswer, fromWire, answerText,
+  isKnownQuestionType, asQuestionType,
   type Question, type QuestionType, type QuestionAnswerValue,
 } from "@hulianui/ui/math"
 ```
 
 - `validateQuestion` / `defaultShape` / `normalizeOptions` / `blankCount`：题型驱动的形状规则，与消费方后端 `_check_type_shape` 同构。
+- `asQuestionType(raw)` → `QuestionType | undefined`：**服务端 wire 上的题型一律是 `string`**（OpenAPI 生成的类型，错题 / 复核链路上还有历史脏值），转不出来给 `undefined` —— 而 `answerLines` / `answerText` / `QuestionCard` 的 `type` 接的就是 `QuestionType | undefined`，`undefined` 正是它们「按答案形状兜底」那一档。别自己写 `raw as QuestionType`：cast 出来的是一个库里不存在的题型，兜底分支反而进不去。
+- `isKnownQuestionType(type)` → `type is QuestionType`：类型谓词，用在 if 分支里 —— 不成立那侧仍是 `string`，可以拿原始题型串去报错 / 打日志 / 显示。只要转换、不留原串就用 `asQuestionType`（QuestionAnswer 内部走的就是它：转不出来即 warn 一次并退成主观题只读）。
 - `splitStemFigures`：题干先切 `![](key)` 图再排公式，判据在 `stem-figures.contract.json`。
 - `gradeObjective`：客观题判分，默认档与服务端逐字同口径；归一 / 容差 / 等价比较器均 opt-in。**服务端才是判分 SSOT**。
 - `answerText`：答案 JSON → 人读文本，按形状分派。

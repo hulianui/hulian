@@ -5,6 +5,8 @@ describe("@hulianui/ui/math 导出题目域公开件", () => {
   it("纯函数与常量齐全", () => {
     const names = [
       "QUESTION_TYPES",
+      "isKnownQuestionType",
+      "asQuestionType",
       "SUBJECTIVE_TYPES",
       "DEFAULT_SCORE_BY_TYPE",
       "isSubjective",
