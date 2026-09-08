@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.67.0",
+    "date": "2026-09-08",
+    "entries": [
+      {
+        "sha": "acc418a",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(question-editor): the three fields of the metrics row (difficulty, score, estimated time) were always rendered, with no way out. Yet **what a question is worth is usually not a property of the question but of its place on a paper** - the same question is 8 points on a midterm and 5 on a unit test, so the score belongs to the paper-question pair. A product modelled that way had to show an entry page with a score input that must not take effect: whatever the teacher types either contradicts the product (\"this question is worth 3 points\" inside a question bank) or gets dropped silently on submit, and both are worse than not showing it. The same holds for `estimatedMinutes`. The editor now takes `hiddenFields` (an array of `\"difficulty\" | \"score\" | \"estimatedMinutes\"`): hidden fields are not rendered, the row collapses to the columns it still has (one hidden field leaves two columns; hiding all three drops the row), **and the editor writes nothing to them** - switching question type no longer recomputes `score` from the default table, because writing a field the user cannot see is a silent data change. The values themselves still pass in and out through `Question` untouched, and `validateQuestion` is unchanged. Only those three can be hidden: stem, options, answer and explanation are what makes a question a question. The one workaround available before was flattening `defaultScoreByType` to zeros, which only stops the editor from inventing a score - the input stayed (#358)"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.66.0",
     "date": "2026-09-08",
     "entries": [
