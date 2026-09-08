@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.68.0
+
+### Minor Changes
+
+- 8b8e941: fix(tree-select): the popup pinned only its lower width bound (`min-w-[var(--anchor-width)]`) and had no upper one, so its width was shrink-to-fit - which means **the longest label in the entire tree**. Three things stack up: `truncate` on a row does not constrain intrinsic width while its container has no upper bound; collapsed subtrees are still in the DOM (squeezed to zero height, and an `overflow: hidden` box still derives its max-content size from its contents); and the popup had no `max-w`. One long node name nobody ever expanded was therefore enough to push the popup wider than the viewport, where the positioner slid it against the left edge, completely detached from its trigger (measured by the consumer: a 203-character node name produced a 1536px popup in a 1280px viewport). The upper bound is now `min(32rem, var(--available-width))`: pinning it to the viewport alone is not enough, since a 288px trigger with that node name still produced a 1270px popup covering half the page, and 32rem keeps the popup at the scale of its trigger. Wide fields are not squeezed, because min-width always beats max-width in CSS. The same popup recipe lives in `Select` and `Combobox` (same missing upper bound, same `truncate` on items), so both are pinned too. `TreeSelect` also gains `popupClassName` (`className` only ever reached the trigger, leaving no room even for a stopgap) and passes `virtual` through (the inner Tree has had virtual scrolling all along, with no way in from TreeSelect - and a textbook outline with tens of thousands of nodes is more common inside a collapsed picker than in an always-visible tree) (#359)
+
 ## 0.67.0
 
 ### Minor Changes
