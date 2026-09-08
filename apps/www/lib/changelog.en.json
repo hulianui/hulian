@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.65.1",
+    "date": "2026-09-08",
+    "entries": [
+      {
+        "sha": "1b7a63c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(pro-table): with controlled row selection (`rowSelection` plus `onRowSelectionChange`), `clearSelection` did nothing at all. It was hard-wired to clear the internal state while controlled mode renders from the prop, so the batch bar stayed, rows stayed selected and the consumer's state never moved - and the button was there, clickable, with a hover state, exactly as quiet a failure as #202. All three exits are the same function and were broken together: the \"clear\" link built into the batch bar, the `clearSelection` handed to `batchActions`, and `actionRef.clearSelection()`. It now follows the same controlled/uncontrolled split as the rest of the selection state (controlled goes through `onRowSelectionChange`, uncontrolled still clears the internal state). The `actionRef` handle also moved onto a ref: it used to be rebuilt only when `managed` changed, freezing `onReload` and `onRowSelectionChange` at their first-render identity, and inline arrow props are the norm - so the imperative path called a stale callback, which matters much more once `clearSelection` reads controlled-ness from props (#356)"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.65.0",
     "date": "2026-09-07",
     "entries": [
