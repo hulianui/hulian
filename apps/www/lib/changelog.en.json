@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/ui",
+    "version": "0.66.0",
+    "date": "2026-09-08",
+    "entries": [
+      {
+        "sha": "7d92cb4",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(page-header): `meta` always rendered as the `<ul>` below the title row, with no say in where it sits. With only two or three short factual values (`Shanghai Science and Technology Edition` - `4 chapters` - `0 questions` - `105MB source file`) that row is nearly empty and simply makes the header taller, even though those values are already the same size and colour as `subTitle` and read as one string. The new `metaPlacement` (`\"block\"`, the default, or `\"inline\"`) hangs the list inside the title group and drops its `mt-2`, placing it after `subTitle` and before `tags` so status chips never split that run of muted small text. With a `subTitle` present the component adds one more separator between it and the first entry - otherwise the first gap is a space while the rest are dots, which reads as an oversight; without a `subTitle` it adds none, since the title is another size and weight and a dot right after it reads as if the title were an entry too. Both placements keep exactly the same semantics: still `ul`/`li`, still skipping empty entries, separator still `aria-hidden`. This continues #240 - that one settled whether a header can carry `meta`, this one settles where it goes - so consumers no longer have to `join(\" · \")` an edition name and its facts into `subTitle` to get them on one line, which throws away the list semantics, the empty-entry skipping and the decorative separator (#357)"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.65.1",
     "date": "2026-09-08",
     "entries": [
