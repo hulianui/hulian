@@ -8596,7 +8596,9 @@
     "原件 105MB": "105MB source file",
     "  title=\"物理高中年级必修第一册\"": "  title=\"Physics, Senior High Compulsory Volume 1\"",
     "  subTitle=\"沪科技版\"": "  subTitle=\"Shanghai Science and Technology Edition\"",
-    "  meta={[\"4 章\", \"0 题\", \"原件 105MB\"]}": "  meta={[\"4 chapters\", \"0 questions\", \"105MB source file\"]}"
+    "  meta={[\"4 章\", \"0 题\", \"原件 105MB\"]}": "  meta={[\"4 chapters\", \"0 questions\", \"105MB source file\"]}",
+    "关掉分值 / 预估用时": "Hiding score and estimated time",
+    "分值属于「卷 × 题」而不是题本身时，用 hiddenFields 把那个框关掉：关掉的字段编辑器一个字都不写，切题型也不再换算分值，度量行的列数跟着收。": "When a score belongs to the paper-question pair rather than the question itself, hide the input with hiddenFields: the editor writes nothing to a hidden field, switching type no longer recomputes the score, and the metrics row shrinks to the columns it still has."
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

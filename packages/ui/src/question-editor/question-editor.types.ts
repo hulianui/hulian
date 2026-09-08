@@ -12,6 +12,15 @@ import type { QuestionEditorLocale } from "./question-editor.locale";
 /** 校验问题能挂到的字段（与 `QuestionValidationIssue.field` 同一集合）。 */
 export type EditorField = QuestionValidationIssue["field"];
 
+/**
+ * 可以整块关掉的字段：度量那一行的三个（难度 / 分值 / 预估用时）。
+ *
+ * 只有这一行给关，是因为只有这一行的字段**可能根本不属于消费方的题模型**：
+ * 「一道题值几分」往往是它在某张卷上的属性（同一道题期中卷 8 分、单元测 5 分），
+ * 配时同理。题干 / 选项 / 答案 / 解析不在此列——那是题之为题的部分，关掉就不是这个组件了。
+ */
+export type QuestionEditorHideableField = "difficulty" | "score" | "estimatedMinutes";
+
 export interface QuestionEditorProps {
   /** 受控值：规范形（`Question`）。历史变体先用 `fromWire` 归一再喂进来。 */
   value: Question;
@@ -41,6 +50,19 @@ export interface QuestionEditorProps {
   visualEditor?: ComponentType<MathFieldLikeProps>;
   /** 透传给每个 MathTextarea 与题干预览的 KaTeX 宏表（右侧 QuestionCard 预览不吃宏表）。 */
   macros?: Record<string, string>;
+  /**
+   * 不渲染哪些字段（度量行的三个：`difficulty` / `score` / `estimatedMinutes`）。
+   *
+   * 给的理由是**建模差异，不是排版偏好**：分值属于「卷 × 题」这条关系的产品线，
+   * 题库里那个分值框填了也不该生效——留着它，老师填了要么与产品口径冲突，
+   * 要么被提交时静默丢掉，两条都比不显示更糟（#358）。
+   *
+   * 关掉的字段编辑器一个字都不写：切题型时 `score` 也不再按默认分表换算
+   * （不显示却照写 = 静默改数据）。值本身照旧原样留在 `Question` 里传进传出，
+   * `validateQuestion` 也照旧——被隐藏字段的校验问题只是没有地方显示，不会消失。
+   * 三个全关时整行不渲染；关掉一个则那一行收成两列，不留空格子。
+   */
+  hiddenFields?: readonly QuestionEditorHideableField[];
   /** 右侧 / 下方 QuestionCard 实时预览（`showAnswer`）。@default true */
   preview?: boolean;
   /**

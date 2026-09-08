@@ -306,6 +306,72 @@ describe("QuestionEditor", () => {
     expect(screen.queryByRole("button", { name: "重试上传 g.png" })).toBeNull();
   });
 
+  it("hiddenFields：关掉的字段不渲染，其余照旧（#358）", () => {
+    const { queryByLabelText, getByLabelText } = render(
+      <Harness initial={single()} hiddenFields={["score", "estimatedMinutes"]} />,
+    );
+    expect(queryByLabelText("分值")).toBeNull();
+    expect(queryByLabelText("预估用时（分钟）")).toBeNull();
+    expect(screen.getByText("难度")).toBeTruthy();
+    expect(getByLabelText("题干")).toBeTruthy();
+  });
+
+  it("hiddenFields：列数跟着实际字段收，三个全关时整行不渲染", () => {
+    const gridOf = (c: HTMLElement) => c.querySelector(".grid.grid-cols-1.gap-4") as HTMLElement | null;
+    const all = render(<Harness initial={single()} />);
+    expect(gridOf(all.container)!.className).toContain("sm:grid-cols-3");
+    const two = render(<Harness initial={single()} hiddenFields={["score"]} />);
+    expect(gridOf(two.container)!.className).toContain("sm:grid-cols-2");
+    const one = render(<Harness initial={single()} hiddenFields={["score", "estimatedMinutes"]} />);
+    expect(gridOf(one.container)!.className).not.toContain("sm:grid-cols-");
+    const none = render(
+      <Harness initial={single()} hiddenFields={["difficulty", "score", "estimatedMinutes"]} />,
+    );
+    expect(gridOf(none.container)).toBeNull();
+  });
+
+  it("hiddenFields 关掉分值时，切题型不再按默认分表改写 score（不显示就不写）", () => {
+    const onValue = vi.fn();
+    render(
+      <Harness
+        initial={{ ...emptyQuestion("single"), score: 0 }}
+        onValue={onValue}
+        hiddenFields={["score"]}
+        defaultScoreByType={{ single: 0, judge: 7 }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("radio", { name: "判断" }));
+    expect(onValue).toHaveBeenLastCalledWith(expect.objectContaining({ type: "judge", score: 0 }));
+  });
+
+  it("没关分值时切题型照旧换算默认分（回归）", () => {
+    const onValue = vi.fn();
+    render(
+      <Harness
+        initial={{ ...emptyQuestion("single"), score: 0 }}
+        onValue={onValue}
+        defaultScoreByType={{ single: 0, judge: 7 }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("radio", { name: "判断" }));
+    expect(onValue).toHaveBeenLastCalledWith(expect.objectContaining({ type: "judge", score: 7 }));
+  });
+
+  it("hiddenFields 只是不渲染：值原样留在 Question 里，不被清掉", () => {
+    const onValue = vi.fn();
+    render(
+      <Harness
+        initial={{ ...single(), score: 8, estimatedMinutes: 3 }}
+        onValue={onValue}
+        hiddenFields={["score", "estimatedMinutes"]}
+      />,
+    );
+    fireEvent.change(screen.getByLabelText("题干"), { target: { value: "改了题干" } });
+    expect(onValue).toHaveBeenLastCalledWith(
+      expect.objectContaining({ score: 8, estimatedMinutes: 3, stem: "改了题干" }),
+    );
+  });
+
   it("没给 onUploadFigure 时没有「插入图片」", () => {
     render(<Harness initial={single()} />);
     expect(screen.queryByRole("button", { name: "插入图片" })).toBeNull();

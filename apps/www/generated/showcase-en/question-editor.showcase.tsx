@@ -119,6 +119,16 @@ export const questionEditorShowcase: ShowcaseSpec = {
             render: () => (<Demo initial={SINGLE} issues={[{ label: "An option may be missing" }, { label: "Answer in doubt", tone: "danger" }]} onResolveIssue={() => { }} extra={<PrivateFields />}/>),
         },
         {
+            title: "Hiding score and estimated time",
+            description: "When a score belongs to the paper-question pair rather than the question itself, hide the input with hiddenFields: the editor writes nothing to a hidden field, switching type no longer recomputes the score, and the metrics row shrinks to the columns it still has.",
+            code: `<QuestionEditor
+  value={question}
+  onChange={setQuestion}
+  hiddenFields={["score", "estimatedMinutes"]}
+/>`,
+            render: () => <Demo initial={SINGLE} hiddenFields={["score", "estimatedMinutes"]}/>,
+        },
+        {
             title: "Validate everything on submit",
             description: "By default only edited fields turn red; showAllIssues attaches every validateQuestion issue at once.",
             code: `<QuestionEditor value={question} onChange={setQuestion} showAllIssues />`,

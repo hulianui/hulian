@@ -1,6 +1,10 @@
 // 出题编辑器。**不是对外 subpath**：从 @hulianui/ui/math 转出（题干 / 选项 / 预览内部都是 Formula，独立入口省不掉 KaTeX）。
 export { QuestionEditor } from "./question-editor";
-export type { QuestionEditorProps, EditorField } from "./question-editor.types";
+export type {
+  QuestionEditorProps,
+  EditorField,
+  QuestionEditorHideableField,
+} from "./question-editor.types";
 export {
   questionFormulaIssues,
   shapeIsDirty,

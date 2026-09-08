@@ -625,6 +625,11 @@
       "solution",
       "judge"
     ],
+    "QuestionEditorHideableField": [
+      "difficulty",
+      "score",
+      "estimatedMinutes"
+    ],
     "RelativeTimeLocale": [
       "zh",
       "en"
@@ -12465,6 +12470,7 @@
       "types": [
         "QuestionEditorProps",
         "EditorField",
+        "QuestionEditorHideableField",
         "QuestionFormulaIssue",
         "FormulaField",
         "QuestionEditorLocale",
@@ -12576,6 +12582,14 @@
           "type": "Record<string, string>",
           "default": null,
           "description": "透传给每个 MathTextarea 与题干预览的 KaTeX 宏表（右侧 QuestionCard 预览不吃宏表）"
+        },
+        {
+          "name": "hiddenFields",
+          "required": false,
+          "kind": "array",
+          "type": "readonly (\"difficulty\" | \"score\" | \"estimatedMinutes\")[]",
+          "default": null,
+          "description": "不渲染度量行里的哪些字段。分值属于「卷 × 题」的产品线用它关掉分值框；关掉的字段编辑器一个字都不写（切题型也不再换算 `score`），值原样留在 `Question` 里。三个全关时整行不渲染"
         },
         {
           "name": "preview",

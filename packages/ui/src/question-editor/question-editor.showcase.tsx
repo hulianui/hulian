@@ -147,6 +147,17 @@ export const questionEditorShowcase: ShowcaseSpec = {
       ),
     },
     {
+      title: "关掉分值 / 预估用时",
+      description:
+        "分值属于「卷 × 题」而不是题本身时，用 hiddenFields 把那个框关掉：关掉的字段编辑器一个字都不写，切题型也不再换算分值，度量行的列数跟着收。",
+      code: `<QuestionEditor
+  value={question}
+  onChange={setQuestion}
+  hiddenFields={["score", "estimatedMinutes"]}
+/>`,
+      render: () => <Demo initial={SINGLE} hiddenFields={["score", "estimatedMinutes"]} />,
+    },
+    {
       title: "提交时全部校验",
       description: "默认只对改过的字段飘红；showAllIssues 把 validateQuestion 的问题一次挂全。",
       code: `<QuestionEditor value={question} onChange={setQuestion} showAllIssues />`,

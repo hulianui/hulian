@@ -5402,6 +5402,7 @@
         "types": [
           "QuestionEditorProps",
           "EditorField",
+          "QuestionEditorHideableField",
           "QuestionFormulaIssue",
           "FormulaField",
           "QuestionEditorLocale",

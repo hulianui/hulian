@@ -48,6 +48,9 @@ import type { EditorField, QuestionEditorProps, SectionContext } from "./questio
  * 哪些引用算题图由 `figureFilter` 说了算（不给 = 全部）：行内公式图这类「位置就是语义」的引用
  * 划到题图之外，就原样留在题干正文里，编辑器不挪它、也不动它的 alt。
  */
+/** 度量行的列数：Tailwind 扫的是源码里写全的类名，拼不出来，只能查表。 */
+const METRIC_COLUMNS: Record<number, string> = { 1: "", 2: "sm:grid-cols-2", 3: "sm:grid-cols-3" };
+
 export function QuestionEditor({
   value,
   onChange,
@@ -62,6 +65,7 @@ export function QuestionEditor({
   templates,
   visualEditor,
   macros,
+  hiddenFields,
   preview = true,
   showAllIssues = false,
   className,
@@ -92,6 +96,14 @@ export function QuestionEditor({
     score: message("score"),
   };
 
+  const hidden = useMemo(() => new Set(hiddenFields ?? []), [hiddenFields]);
+  // 关掉的字段编辑器一个字都不写：切题型原本会按默认分表换算 `score`，而分值那一档关着时
+  // 用户既看不见也改不了它——照写就是静默改数据（#358）。
+  const retype = (type: QuestionType): Question => {
+    const next = switchType(value, type, defaults);
+    return hidden.has("score") ? { ...next, score: value.score } : next;
+  };
+
   const pickType = (raw: string) => {
     const type = raw as QuestionType;
     if (type === value.type) return;
@@ -99,10 +111,10 @@ export function QuestionEditor({
       setPendingType(type);
       return;
     }
-    commit(switchType(value, type, defaults));
+    commit(retype(type));
   };
   const confirmType = () => {
-    if (pendingType !== null) commit(switchType(value, pendingType, defaults));
+    if (pendingType !== null) commit(retype(pendingType));
     setPendingType(null);
   };
 
@@ -134,6 +146,41 @@ export function QuestionEditor({
   const figures = stemFigures(value.stem, figureFilter);
   const subjective =
     value.type === "short_answer" || value.type === "calculation" || value.type === "essay";
+
+  const metrics = [
+    hidden.has("difficulty") ? null : (
+      <Field key="difficulty" label={L.difficulty} description={L.difficultyHint} error={errors.difficulty}>
+        <Rating
+          max={5}
+          value={value.difficulty}
+          disabled={disabled}
+          onValueChange={(v) => commit({ ...value, difficulty: v ?? 1 }, "difficulty")}
+        />
+      </Field>
+    ),
+    hidden.has("score") ? null : (
+      <Field key="score" label={L.score} error={errors.score}>
+        <NumberField
+          aria-label={L.score}
+          min={0}
+          value={value.score}
+          onValueChange={(v) => commit({ ...value, score: v ?? 0 }, "score")}
+          disabled={disabled}
+        />
+      </Field>
+    ),
+    hidden.has("estimatedMinutes") ? null : (
+      <Field key="estimatedMinutes" label={L.estimatedMinutes}>
+        <NumberField
+          aria-label={L.estimatedMinutes}
+          min={0}
+          value={value.estimatedMinutes ?? null}
+          onValueChange={(v) => commit(setEstimatedMinutes(value, v))}
+          disabled={disabled}
+        />
+      </Field>
+    ),
+  ].filter((node) => node !== null);
 
   const editor = (
     <div data-slot="question-editor-form" className="space-y-5">
@@ -233,34 +280,11 @@ export function QuestionEditor({
         />
       </Field>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Field label={L.difficulty} description={L.difficultyHint} error={errors.difficulty}>
-          <Rating
-            max={5}
-            value={value.difficulty}
-            disabled={disabled}
-            onValueChange={(v) => commit({ ...value, difficulty: v ?? 1 }, "difficulty")}
-          />
-        </Field>
-        <Field label={L.score} error={errors.score}>
-          <NumberField
-            aria-label={L.score}
-            min={0}
-            value={value.score}
-            onValueChange={(v) => commit({ ...value, score: v ?? 0 }, "score")}
-            disabled={disabled}
-          />
-        </Field>
-        <Field label={L.estimatedMinutes}>
-          <NumberField
-            aria-label={L.estimatedMinutes}
-            min={0}
-            value={value.estimatedMinutes ?? null}
-            onValueChange={(v) => commit(setEstimatedMinutes(value, v))}
-            disabled={disabled}
-          />
-        </Field>
-      </div>
+      {metrics.length > 0 && (
+        // 列数跟着**实际渲染的**字段走：关掉一个还写死三列，难度会孤零零占三分之一。
+        // Tailwind 只认写全的类名，所以查表而不是拼 `sm:grid-cols-${n}`。
+        <div className={cn("grid grid-cols-1 gap-4", METRIC_COLUMNS[metrics.length])}>{metrics}</div>
+      )}
     </div>
   );
 
