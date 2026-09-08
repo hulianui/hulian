@@ -266,7 +266,11 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [managed, page, pageSize, sortParam, filtersKey, reloadKey, cursorKey, paramsVersion]);
 
-  const clearSelection = () => setInternalSelection({});
+  // clearSelection 必须跟着上面的 setSelection 分流（#356）：受控模式下渲染读的是
+  // rowSelectionProp，清内部 state 是清了个寂寞——批量条不消失、行仍是选中态、消费方 state
+  // 不变，而按钮在、能点、有 hover 态，失败方式和 #202 一样安静，只有实机点一下才发现。
+  // 受控却没给 onRowSelectionChange 时它是空操作（那种配法上面已经告警）。
+  const clearSelection = () => setSelection?.({});
   const doReload = () => {
     if (managed) setReloadKey((k) => k + 1);
     else onReload?.();
@@ -278,7 +282,20 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
     if (cursorMode) resetCursor();
   };
 
-  useImperativeHandle(actionRef, () => ({ reload: doReload, clearSelection }), [managed]);
+  // 句柄的实现体走 ref（与本文件的 requestRef / onRequestErrorRef 同一惯例）：
+  // useImperativeHandle 一旦建好句柄，闭包里的 onReload / onRowSelectionChange 就定格在那一次
+  // 渲染，而这两个 prop 写成内联箭头（每次渲染新身份）是常态。#356 之后 clearSelection 从
+  // prop 读「受控与否」和写回出口，命令式那条路更不能拿首渲染那一份去调。
+  const latestActions = useRef({ reload: doReload, clearSelection });
+  latestActions.current = { reload: doReload, clearSelection };
+  useImperativeHandle(
+    actionRef,
+    () => ({
+      reload: () => latestActions.current.reload(),
+      clearSelection: () => latestActions.current.clearSelection(),
+    }),
+    [],
+  );
 
   const visibleColumns = useMemo(
     // 判据与 isColVisible 同源，这里内联是为了让 memo 的依赖只有 columns / columnVisibility

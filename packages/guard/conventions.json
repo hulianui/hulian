@@ -7189,7 +7189,7 @@
       "id": "component/pro-table/pitfall/4",
       "scope": "pro-table",
       "title": "ProTable",
-      "rule": "**行选择的判据是「你有没有接管」，不是「是不是托管模式」**：传了 `rowSelection` 就走受控（须同时给 `onRowSelectionChange`，否则勾不动且只有 dev 告警提示），不传才由组件内部自持。0.29.0 及之前托管模式一律自持、把这两个 prop 静默丢弃——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 `{}`，直到提交时拿到空数组才暴露（#202）。",
+      "rule": "**行选择的判据是「你有没有接管」，不是「是不是托管模式」**：传了 `rowSelection` 就走受控（须同时给 `onRowSelectionChange`，否则勾不动且只有 dev 告警提示），不传才由组件内部自持。0.29.0 及之前托管模式一律自持、把这两个 prop 静默丢弃——页面上勾得动、表头全选框也会变半选，看起来完全正常，但消费方的 state 恒为 `{}`，直到提交时拿到空数组才暴露（#202）。**受控时 `clearSelection` 也走 `onRowSelectionChange`**（批量条里的「清空」、`batchActions` ctx 给的那个、`actionRef.clearSelection()` 是同一个）——0.65.0 及之前它写死清内部 state，受控下点了没有任何反应（#356）。",
       "source": "packages/ui/src/pro-table/pro-table.md"
     },
     {

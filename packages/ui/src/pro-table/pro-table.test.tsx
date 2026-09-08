@@ -813,6 +813,90 @@ describe("托管模式下的受控行选择（#202）", () => {
     expect(onBatch).toHaveBeenCalledWith(["1"]);
   });
 
+  it("受控时 clearSelection 走消费方的出口：批量条与内置「清空」都真的清空（#356）", async () => {
+    function Harness() {
+      const [sel, setSel] = useState<Record<string, boolean>>({ "1": true });
+      return (
+        <ProTable<Row>
+          columns={cols}
+          request={makeRequest()}
+          enableRowSelection
+          getRowId={(r) => String(r.id)}
+          rowSelection={sel}
+          onRowSelectionChange={(u) => setSel((prev) => (typeof u === "function" ? u(prev) : u))}
+          batchActions={({ clearSelection }) => (
+            <button onClick={clearSelection}>取消选择</button>
+          )}
+        />
+      );
+    }
+    const { getByLabelText, getByText, queryByText } = render(<Harness />);
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    expect(getByLabelText("选择行").hasAttribute("data-checked")).toBe(true);
+    fireEvent.click(getByText("取消选择"));
+    // 批量条消失 = 选中集合真的空了（此前它写死 setInternalSelection，受控下清了个寂寞）
+    await waitFor(() => expect(queryByText("取消选择")).toBeNull());
+    expect(getByLabelText("选择行").hasAttribute("data-checked")).toBe(false);
+
+    // 内置那个「清空」是同一条出口，一并守住
+    fireEvent.click(getByLabelText("选择行"));
+    await waitFor(() => expect(getByText("已选 1 项")).toBeTruthy());
+    fireEvent.click(getByText("清空"));
+    await waitFor(() => expect(queryByText("已选 1 项")).toBeNull());
+  });
+
+  it("受控时 actionRef.clearSelection() 同样生效，且调的是最新那份回调（#356）", async () => {
+    const actionRef = { current: null as ProTableActions | null };
+    const seenAt: number[] = [];
+    function Harness() {
+      const [sel, setSel] = useState<Record<string, boolean>>({ "1": true });
+      const [tick, setTick] = useState(0);
+      return (
+        <>
+          <button onClick={() => setTick((n) => n + 1)}>tick</button>
+          <ProTable<Row>
+            columns={cols}
+            request={makeRequest()}
+            actionRef={actionRef}
+            enableRowSelection
+            getRowId={(r) => String(r.id)}
+            rowSelection={sel}
+            // 内联箭头 + 闭包里读 tick：句柄若定格在首渲染，这里读到的恒是 0
+            onRowSelectionChange={(u) => {
+              seenAt.push(tick);
+              setSel((prev) => (typeof u === "function" ? u(prev) : u));
+            }}
+          />
+        </>
+      );
+    }
+    const { getByLabelText, getByText } = render(<Harness />);
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByText("tick"));
+    fireEvent.click(getByText("tick"));
+    act(() => actionRef.current!.clearSelection());
+    await waitFor(() => expect(getByLabelText("选择行").hasAttribute("data-checked")).toBe(false));
+    expect(seenAt).toEqual([2]);
+  });
+
+  it("不传 rowSelection 时 clearSelection 仍清内部自持的那份（回归）", async () => {
+    const { getByLabelText, getByText, queryByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={makeRequest()}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        batchActions={({ clearSelection }) => <button onClick={clearSelection}>取消选择</button>}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByLabelText("选择行"));
+    await waitFor(() => expect(getByText("已选 1 项")).toBeTruthy());
+    fireEvent.click(getByText("取消选择"));
+    await waitFor(() => expect(queryByText("已选 1 项")).toBeNull());
+    expect(getByLabelText("选择行").hasAttribute("data-checked")).toBe(false);
+  });
+
   it("受控却没给 onRowSelectionChange 时 dev 告警（勾不动和「组件坏了」长得一样）", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const { getByText } = render(
@@ -826,6 +910,25 @@ describe("托管模式下的受控行选择（#202）", () => {
     );
     await waitFor(() => expect(getByText("甲")).toBeTruthy());
     expect(warn.mock.calls.some((c) => String(c[0]).includes("onRowSelectionChange"))).toBe(true);
+    warn.mockRestore();
+  });
+
+  // 必须排在上面那条告警用例之后：warnOnce 同 key 整个进程只打一次，先渲染这一配置会把它吃掉。
+  it("受控却没给 onRowSelectionChange 时 clearSelection 是空操作而不是崩溃", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { getByText } = render(
+      <ProTable<Row>
+        columns={cols}
+        request={makeRequest()}
+        enableRowSelection
+        getRowId={(r) => String(r.id)}
+        rowSelection={{ "1": true }}
+        batchActions={({ clearSelection }) => <button onClick={clearSelection}>取消选择</button>}
+      />,
+    );
+    await waitFor(() => expect(getByText("甲")).toBeTruthy());
+    fireEvent.click(getByText("取消选择"));
+    expect(getByText("取消选择")).toBeTruthy();
     warn.mockRestore();
   });
 });
