@@ -64,7 +64,9 @@ function TreeSelectImpl({
   searchable = false,
   expandTrigger,
   showLine = false,
+  virtual,
   className,
+  popupClassName,
   ...rest
 }: TreeSelectProps) {
   const copy = useComponentLocale().treeSelect ?? { placeholder: "请选择", clear: "清除" };
@@ -178,8 +180,16 @@ function TreeSelectImpl({
         <BasePopover.Positioner side="bottom" align="start" sideOffset={6} className="z-50">
           <BasePopover.Popup
             className={cn(
-              "max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-2 text-foreground shadow-xl outline-none",
+              // 宽度**两头都要钉**：只给下限时浮层是 shrink-to-fit，宽度等于整棵树里最长的那个
+              // label——行上的 `truncate` 在容器无上限时一点不起作用，折叠着的子树也照样算进
+              // 固有宽度（它们在 DOM 里，只是高度被压成 0），于是一个没人展开过的长节点名就能
+              // 把浮层撑得比视口还宽（#359）。上限取 `min(32rem, 可用宽度)`：只钉「不超出视口」
+              // 还不够——实测 288px 的触发器配一个 203 字的节点名，浮层仍有 1270px，照样盖住半个
+              // 页面、与触发器完全对不上；32rem 让它留在触发器的量级上。宽字段不会被压窄：
+              // CSS 里 min-width 恒赢过 max-width，下限那条（--anchor-width）说了算。
+              "max-h-[min(24rem,var(--available-height))] max-w-[min(32rem,var(--available-width))] min-w-[var(--anchor-width)] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-2 text-foreground shadow-xl outline-none",
               "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+              popupClassName,
             )}
             style={overlayTransitions.popup}
           >
@@ -190,6 +200,7 @@ function TreeSelectImpl({
                 searchable={searchable}
                 expandTrigger={expandTrigger}
                 showLine={showLine}
+                virtual={virtual}
                 checkedKeys={current as string[]}
                 onCheck={(info) =>
                   setValue(
@@ -204,6 +215,7 @@ function TreeSelectImpl({
                 // 单选下这个默认值决定了「分支节点能不能选中」——见 tree-select.types.ts 的说明。
                 expandTrigger={expandTrigger}
                 showLine={showLine}
+                virtual={virtual}
                 selectedKeys={current ? [current as string] : []}
                 onSelect={(keys) => {
                   setValue(keys[0]);

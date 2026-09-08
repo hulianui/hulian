@@ -855,7 +855,10 @@ export function SelectContent({
       >
         <BaseSelect.Popup
           className={cn(
-            "max-h-[min(24rem,var(--available-height))] min-w-[var(--anchor-width)] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none",
+            // 宽度两头都钉：只给下限时浮层是 shrink-to-fit，一个超长选项就能把它撑得比视口还宽，
+            // 而项上的 `truncate` 在容器无上限时一点不起作用（#359 在 TreeSelect 上先暴露）。
+            // 上限取 `min(32rem, 可用宽度)`；宽字段不受影响——min-width 恒赢过 max-width。
+            "max-h-[min(24rem,var(--available-height))] max-w-[min(32rem,var(--available-width))] min-w-[var(--anchor-width)] overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 text-foreground shadow-xl outline-none",
             "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             className,
           )}

@@ -16001,12 +16001,28 @@
           "description": "显示树连接线"
         },
         {
+          "name": "virtual",
+          "required": false,
+          "kind": "other",
+          "type": "boolean | { height?, itemHeight?, overscan? }",
+          "default": "false",
+          "description": "虚拟滚动，透传给内部 [Tree](../tree/tree.md)。上万节点的教材目录 / 组织树在收拢式选择器里比在常驻树里更常见，不开的话它们全在 DOM 里。开启后 Tree 自带定高滚动容器（`height` 默认 320px），与 `showLine` 互斥"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
           "description": "透传到触发器"
+        },
+        {
+          "name": "popupClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "浮层类名。宽高上限组件已给足，这里是留给「这一处特殊」的逃生口"
         }
       ],
       "events": [

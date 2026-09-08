@@ -37,7 +37,9 @@ import { TreeSelect } from "@hulianui/ui"
 | searchable | `boolean` | `false` | 浮层内树搜索框，多层命中跳转 |
 | expandTrigger | `"row" \| "icon"` | `"row"` | 什么东西触发展开/收起，透传给内部 [Tree](../tree/tree.md)。**默认 `"row"` 下单选只有叶子选得中**；要「选到中间层」（某个部门 / 某个大类 / 某一册）传 `"icon"`：箭头管展开、行管选中 |
 | showLine | `boolean` | - | 显示树连接线 |
+| virtual | `boolean \| { height?, itemHeight?, overscan? }` | `false` | 虚拟滚动，透传给内部 [Tree](../tree/tree.md)。上万节点的教材目录 / 组织树在收拢式选择器里比在常驻树里更常见，不开的话它们全在 DOM 里。开启后 Tree 自带定高滚动容器（`height` 默认 320px），与 `showLine` 互斥 |
 | className | `string` | - | 透传到触发器 |
+| popupClassName | `string` | - | 浮层类名。宽高上限组件已给足，这里是留给「这一处特殊」的逃生口 |
 
 ## Events
 
@@ -70,6 +72,7 @@ const [dept, setDept] = useState<string | string[]>("");
 - `value` 受控时 `multiple` 切换会改变值的类型（string ↔ string[]），onChange 回调的入参类型随 `multiple` 而变，消费侧需按当前模式分支处理，不要混存。
 - 多选下 `value` 只需传叶子/已选 key，父级半选态由组件依树结构派生，不要手动塞入半选父 key。
 - **单选默认只有叶子节点可选**：`expandTrigger` 缺省是 `"row"`，有子节点的行点了只展开、不回传 `onChange`，点几次都选不中。需要提交任意层级就传 `expandTrigger="icon"`（箭头管展开、行管选中），或改用 [Cascader](../cascader/cascader.md) 的 `changeOnSelect`。多选不受影响——勾选框是独立命中区。
+- **浮层宽度由触发器与视口共同钉死，不由数据钉死**：下限是触发器宽度（`--anchor-width`），上限是 `min(32rem, 可用宽度)`。0.67.0 及之前只有下限，浮层宽度等于**整棵树里最长的那个 label** —— 行上的 `truncate` 在容器无上限时一点不起作用，而折叠着的子树也照样算进固有宽度（它们在 DOM 里，只是高度被压成 0），所以一个从没被展开过的长节点名就能把浮层撑得比视口还宽（#359）。只钉「不超出视口」还不够：288px 的触发器配一个 203 字的节点名，浮层仍有 1270px，照样盖住半个页面，所以上限同时钉在 32rem 上，让浮层留在触发器的量级。宽字段不会被压窄——CSS 里 min-width 恒赢过 max-width。现在长名字正常截成省略号；确实想让某一处更宽/更窄，用 `popupClassName`。
 - 触发器是 `role="combobox"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。
 - 放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。
 - 测试里按角色取触发器要用 `getByRole("combobox")`，不再是 `"button"`。

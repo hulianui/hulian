@@ -10829,18 +10829,25 @@
       "id": "component/tree-select/pitfall/5",
       "scope": "tree-select",
       "title": "TreeSelect",
-      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
+      "rule": "**浮层宽度由触发器与视口共同钉死，不由数据钉死**：下限是触发器宽度（`--anchor-width`），上限是 `min(32rem, 可用宽度)`。0.67.0 及之前只有下限，浮层宽度等于**整棵树里最长的那个 label** —— 行上的 `truncate` 在容器无上限时一点不起作用，而折叠着的子树也照样算进固有宽度（它们在 DOM 里，只是高度被压成 0），所以一个从没被展开过的长节点名就能把浮层撑得比视口还宽（#359）。只钉「不超出视口」还不够：288px 的触发器配一个 203 字的节点名，浮层仍有 1270px，照样盖住半个页面，所以上限同时钉在 32rem 上，让浮层留在触发器的量级。宽字段不会被压窄——CSS 里 min-width 恒赢过 max-width。现在长名字正常截成省略号；确实想让某一处更宽/更窄，用 `popupClassName`。",
       "source": "packages/ui/src/tree-select/tree-select.md"
     },
     {
       "id": "component/tree-select/pitfall/6",
       "scope": "tree-select",
       "title": "TreeSelect",
-      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "rule": "触发器是 `role=\"combobox\"` 的按钮：未在 Props 里列出的原生属性（`aria-*` / `data-*` / `id` / `title` / `onBlur` …）落到**它**身上，不是外层容器 —— 读屏念的、能聚焦的都是它（#293）。",
       "source": "packages/ui/src/tree-select/tree-select.md"
     },
     {
       "id": "component/tree-select/pitfall/7",
+      "scope": "tree-select",
+      "title": "TreeSelect",
+      "rule": "放进 [Field](../field/field.md) 时，`label` 的 `htmlFor`、`aria-describedby`、`invalid` 与 `disabled` 会自动串到触发器上；`<Field required>` 注入的 `aria-required` 同理。**0.54.0 之前这条链是断的**（label 指向一个不存在的 id，读屏念不出字段名），升级后无需改调用代码。",
+      "source": "packages/ui/src/tree-select/tree-select.md"
+    },
+    {
+      "id": "component/tree-select/pitfall/8",
       "scope": "tree-select",
       "title": "TreeSelect",
       "rule": "测试里按角色取触发器要用 `getByRole(\"combobox\")`，不再是 `\"button\"`。",
@@ -11222,7 +11229,7 @@
   ],
   "stats": {
     "componentDocs": 399,
-    "componentAdvisories": 1564,
-    "totalAdvisories": 1574
+    "componentAdvisories": 1565,
+    "totalAdvisories": 1575
   }
 }

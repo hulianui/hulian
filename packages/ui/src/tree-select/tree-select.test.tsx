@@ -114,6 +114,53 @@ describe("TreeSelect", () => {
     });
   });
 
+  describe("浮层宽度与透传（#359）", () => {
+    const popupOf = () => document.querySelector('[role="tree"]')!.closest("[class*='max-h-']") as HTMLElement;
+
+    it("浮层宽度两头都钉：下限贴触发器，上限是可用宽度", () => {
+      render(<TreeSelect nodes={NODES} placeholder="请选择" />);
+      fireEvent.click(screen.getByRole("combobox"));
+      const cls = popupOf().className;
+      expect(cls).toContain("min-w-[var(--anchor-width)]");
+      // 没有这一条，浮层宽度 = 整棵树里最长的那个 label（行上的 truncate 不限制固有宽度）
+      expect(cls).toContain("max-w-[min(32rem,var(--available-width))]");
+    });
+
+    it("popupClassName 落在浮层上，className 仍只落触发器", () => {
+      render(<TreeSelect nodes={NODES} className="trigger-x" popupClassName="popup-x" placeholder="请选择" />);
+      const trigger = screen.getByRole("combobox");
+      expect(trigger.className).toContain("trigger-x");
+      expect(trigger.className).not.toContain("popup-x");
+      fireEvent.click(trigger);
+      expect(popupOf().className).toContain("popup-x");
+    });
+
+    // jsdom 量不到视口（getBoundingClientRect 恒 0），虚拟化到底渲了几行不可信；
+    // 这里改验「确实交给了 Tree 的虚拟路径」——定高滚动容器 + 总高占位，两者与视口无关。
+    it("virtual 透传给内部 Tree（否则上万节点整棵进 DOM）", () => {
+      const many: TreeNode[] = Array.from({ length: 500 }, (_, i) => ({ key: `k${i}`, label: `节点 ${i}` }));
+      const plain = render(<TreeSelect nodes={many} placeholder="请选择" />);
+      fireEvent.click(plain.getByRole("combobox"));
+      expect(document.querySelectorAll('[role="treeitem"]').length).toBe(500);
+      expect((document.querySelector('[role="tree"]') as HTMLElement).style.height).toBe("");
+      plain.unmount();
+
+      render(<TreeSelect nodes={many} virtual={{ height: 300, itemHeight: 40 }} placeholder="请选择" />);
+      fireEvent.click(screen.getByRole("combobox"));
+      const list = document.querySelector('[role="tree"]') as HTMLElement;
+      expect(list.style.height).toBe("20000px"); // 500 × 40 的总高占位
+      expect((list.parentElement as HTMLElement).style.height).toBe("300px");
+      expect(document.querySelectorAll('[role="treeitem"]').length).toBeLessThan(500);
+    });
+
+    it("多选下 virtual 一样透传", () => {
+      const many: TreeNode[] = Array.from({ length: 200 }, (_, i) => ({ key: `k${i}`, label: `节点 ${i}` }));
+      render(<TreeSelect nodes={many} multiple virtual={{ itemHeight: 40 }} placeholder="请选择" />);
+      fireEvent.click(screen.getByRole("combobox"));
+      expect((document.querySelector('[role="tree"]') as HTMLElement).style.height).toBe("8000px");
+    });
+  });
+
   it("多选受控传父级 key → chip 与 Tree 勾选态同源（展示叶 chip 而非父 chip）", () => {
     // 父级 "a" 有叶子 "a1"。外部塞父 key，Tree 内部会级联勾到叶；
     // chip 也应归一为叶（显示 "甲一"），不能停留在父级 chip（"甲"）造成显示/勾选脱节。
