@@ -13454,7 +13454,8 @@
           "PageHeader"
         ],
         "types": [
-          "PageHeaderProps"
+          "PageHeaderProps",
+          "PageHeaderMetaPlacement"
         ],
         "group": "inpage",
         "tags": [],

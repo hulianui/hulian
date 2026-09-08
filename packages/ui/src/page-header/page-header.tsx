@@ -18,6 +18,7 @@ export function PageHeader({
   breadcrumb,
   tags,
   meta,
+  metaPlacement = "block",
   metaSeparator = "·",
   extra,
   footer,
@@ -31,6 +32,37 @@ export function PageHeader({
   // （#240 —— 消费方用 `span + span::before` 拼点，绕的正是这件事）。
   // `0` 是事实值（0 家公司），不算空。
   const metaItems = meta?.filter((item) => item != null && item !== false && item !== "");
+  const inlineMeta = metaPlacement === "inline";
+  const separator = (key: string) => (
+    <li key={key} aria-hidden="true" className="select-none [&>svg]:size-3.5">
+      {metaSeparator}
+    </li>
+  );
+  // 元信息行：一串并列的事实值 → 真列表语义（ul/li），分隔符落独立 aria-hidden 装饰位，
+  // 读屏读到的是「5 项列表」而不是一串被中点粘住的文本（照 Breadcrumb 的分隔符范式）。
+  // 位置由 metaPlacement 决定，两档共用这一份：内联档只是挂进标题群、去掉 mt-2（#357），
+  // 语义、空项过滤、分隔符装饰位一个字不变。
+  const metaList = metaItems && metaItems.length > 0 && (
+    <ul
+      data-slot="page-header-meta"
+      data-placement={metaPlacement}
+      className={cn(
+        "flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground",
+        !inlineMeta && "mt-2",
+      )}
+    >
+      {/* 内联档接在 subTitle 之后时补一个前导分隔符：两者同字号同色、本来就是同一串，
+          少了它就成了「第一个空格、后面全是中点」的两套分隔，看着像漏写。
+          没有 subTitle 就不补：标题字号字重都是另一档，紧跟一个中点会读成「标题也是一项」。 */}
+      {inlineMeta && subTitle && separator("lead")}
+      {metaItems.map((item, i) => (
+        <Fragment key={i}>
+          {i > 0 && separator(`sep-${i}`)}
+          <li className="min-w-0">{item}</li>
+        </Fragment>
+      ))}
+    </ul>
+  );
   return (
     <header className={cn("w-full", className)} {...props}>
       {breadcrumb && <div className="mb-2">{breadcrumb}</div>}
@@ -59,6 +91,9 @@ export function PageHeader({
                 这条口子，标签没有（#247）。 */}
             <TitleTag className="text-xl font-semibold text-foreground">{title}</TitleTag>
             {subTitle && <span className="text-sm text-muted-foreground">{subTitle}</span>}
+            {/* 内联的 meta 排在 tags 之前：它与 subTitle 是同一串弱化小字，
+                中间插进实心状态标记会把这串劈成两半。 */}
+            {inlineMeta && metaList}
             {tags && <div className="flex items-center gap-1.5">{tags}</div>}
           </div>
         </div>
@@ -66,25 +101,7 @@ export function PageHeader({
         {extra && <div className="flex flex-wrap items-center gap-2">{extra}</div>}
       </div>
 
-      {/* 元信息行：一串并列的事实值 → 真列表语义（ul/li），分隔符落独立 aria-hidden 装饰位，
-          读屏读到的是「5 项列表」而不是一串被中点粘住的文本（照 Breadcrumb 的分隔符范式）。 */}
-      {metaItems && metaItems.length > 0 && (
-        <ul
-          data-slot="page-header-meta"
-          className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground"
-        >
-          {metaItems.map((item, i) => (
-            <Fragment key={i}>
-              {i > 0 && (
-                <li aria-hidden="true" className="select-none [&>svg]:size-3.5">
-                  {metaSeparator}
-                </li>
-              )}
-              <li className="min-w-0">{item}</li>
-            </Fragment>
-          ))}
-        </ul>
-      )}
+      {!inlineMeta && metaList}
 
       {footer && <div className="mt-3">{footer}</div>}
 

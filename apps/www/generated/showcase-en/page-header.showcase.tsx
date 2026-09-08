@@ -114,6 +114,19 @@ export const pageHeaderShowcase: ShowcaseSpec = {
                 ]}/>
         </div>),
         },
+        {
+            title: "Inline meta after the subtitle",
+            description: "With only two or three short factual values, use metaPlacement=\"inline\": they are the same muted small text as the subtitle, and giving them their own row only makes the header taller. The semantics are unchanged - it is still a list.",
+            code: `<PageHeader
+  title="Physics, Senior High Compulsory Volume 1"
+  subTitle="Shanghai Science and Technology Edition"
+  metaPlacement="inline"
+  meta={["4 chapters", "0 questions", "105MB source file"]}
+/>`,
+            render: () => (<div className="w-full max-w-3xl">
+          <PageHeader title="Physics, Senior High Compulsory Volume 1" subTitle="Shanghai Science and Technology Edition" metaPlacement="inline" meta={["4 chapters", "0 questions", "105MB source file"]}/>
+        </div>),
+        },
     ],
     controls: [
         { prop: "onBack", type: "boolean", defaultValue: true, label: "Back button" },

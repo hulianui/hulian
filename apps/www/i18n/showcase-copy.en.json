@@ -8586,7 +8586,17 @@
     "<Stat label=\"待处理告警\" value=\"7\" tone=\"warning\" icon={<Bell className=\"size-4\" />} />": "<Stat label=\"Open alerts\" value=\"7\" tone=\"warning\" icon={<Bell className=\"size-4\" />} />",
     "<Stat label=\"故障节点\" value=\"2\" tone=\"danger\" icon={<AlertTriangle className=\"size-4\" />} />": "<Stat label=\"Failed nodes\" value=\"2\" tone=\"danger\" icon={<AlertTriangle className=\"size-4\" />} />",
     "<Stat label=\"待同步\" value=\"19\" tone=\"info\" icon={<RefreshCw className=\"size-4\" />} />": "<Stat label=\"Pending sync\" value=\"19\" tone=\"info\" icon={<RefreshCw className=\"size-4\" />} />",
-    "<Stat label=\"已归档\" value=\"431\" tone=\"neutral\" icon={<Archive className=\"size-4\" />} />": "<Stat label=\"Archived\" value=\"431\" tone=\"neutral\" icon={<Archive className=\"size-4\" />} />"
+    "<Stat label=\"已归档\" value=\"431\" tone=\"neutral\" icon={<Archive className=\"size-4\" />} />": "<Stat label=\"Archived\" value=\"431\" tone=\"neutral\" icon={<Archive className=\"size-4\" />} />",
+    "元信息内联到副标题后": "Inline meta after the subtitle",
+    "只有两三个短事实值时用 metaPlacement=\"inline\"：它们与副标题本来就是同一串弱化小字，另起一行只会把页头拉高一档。语义不变，仍是列表。": "With only two or three short factual values, use metaPlacement=\"inline\": they are the same muted small text as the subtitle, and giving them their own row only makes the header taller. The semantics are unchanged - it is still a list.",
+    "物理高中年级必修第一册": "Physics, Senior High Compulsory Volume 1",
+    "沪科技版": "Shanghai Science and Technology Edition",
+    "4 章": "4 chapters",
+    "0 题": "0 questions",
+    "原件 105MB": "105MB source file",
+    "  title=\"物理高中年级必修第一册\"": "  title=\"Physics, Senior High Compulsory Volume 1\"",
+    "  subTitle=\"沪科技版\"": "  subTitle=\"Shanghai Science and Technology Edition\"",
+    "  meta={[\"4 章\", \"0 题\", \"原件 105MB\"]}": "  meta={[\"4 chapters\", \"0 questions\", \"105MB source file\"]}"
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

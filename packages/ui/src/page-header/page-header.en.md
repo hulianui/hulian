@@ -27,6 +27,7 @@ import { PageHeader } from "@hulianui/ui"
 |------|------|------|------|
 | backLabel | `string` | `"\u8fd4\u56de"` | Accessible label for the back button. The built-in Chinese copy means “Back.” |
 | bordered | `boolean` | `false` | Whether to render a bottom divider using `<Separator/>`. |
+| metaPlacement | `"block" \| "inline"` | `"block"` | Where the `meta` string sits: `block` gives it its own row under the title; `inline` appends it to `subTitle` on the title row (use it for two or three short factual values, where a separate row only makes the header taller). Both placements keep the same semantics. |
 | metaSeparator | `ReactNode` | `"·"` | Separator placed between `meta` entries. It is decorative and gets `aria-hidden` automatically. |
 | titleAs | `ElementType` | `"h1"` | Element the title renders as. The heading level belongs to the page; **only the tag is handed over, the font size does not follow it** (always 20px/28px). |
 
@@ -46,7 +47,7 @@ import { PageHeader } from "@hulianui/ui"
 | subTitle | `ReactNode` | Muted secondary title displayed inline after the primary title. |
 | breadcrumb | `ReactNode` | Breadcrumb region above the title row, typically a HulianUI `<Breadcrumb/>`. |
 | tags | `ReactNode` | Status indicators beside the title, such as `<Chip/>` or `<Badge/>`. |
-| meta | `ReactNode[]` | Metadata row: the string of factual values under the title, joined by `metaSeparator`. The component inserts the separator between entries and skips empty ones. |
+| meta | `ReactNode[]` | Metadata row: a string of factual values joined by `metaSeparator`, placed under the title by default (`metaPlacement="inline"` appends it to `subTitle` instead). The component inserts the separator between entries and skips empty ones. |
 | extra | `ReactNode` | Actions on the right. It wraps below the title on **narrow screens** (viewport under 640px); on wider viewports no title length pushes it down, and a long title truncates instead. |
 | footer | `ReactNode` | Footer region, commonly `<Tabs/>`. |
 
@@ -91,9 +92,21 @@ Metadata row (ID number, gender, insured periods, and so on):
 />
 ```
 
+With only two or three short factual values, append them to the subtitle (`metaPlacement="inline"`) instead of spending a whole row on them:
+```tsx
+<PageHeader
+  title="Physics, Senior High Compulsory Volume 1"
+  subTitle="Shanghai Science and Technology Edition"
+  metaPlacement="inline"
+  meta={["4 chapters", "0 questions", "105MB source file"]}
+/>
+// Physics, Senior High Compulsory Volume 1  Shanghai Science and Technology Edition · 4 chapters · 0 questions · 105MB source file
+```
+
 ## Usage guidelines
 
 - `meta` holds **a series of parallel factual values**. Keep the other slots for what they are: one sentence of supporting copy goes in `subTitle`, status markers in `tags`, and block content such as tabs in `footer`.
+- **To put the values on one line, use `metaPlacement="inline"` rather than `join(" · ")`-ing them into `subTitle`** (#357). Once they are one string, the list semantics, the automatic skipping of empty entries, and the decorative separator are all gone, and a screen reader is back to reading one sentence glued together by middle dots - exactly what `meta` exists to remove. The inline placement only moves the row: still `ul`/`li`, still skipping empty entries, separator still `aria-hidden`. When `subTitle` is present the component adds one more separator between it and the first entry (otherwise the first gap is a space while the rest are dots, which reads as an oversight); without a `subTitle` it adds none, since the title is another size and weight and a dot right after it reads as if the title were an entry too.
 - Empty entries in `meta` (`null`, `undefined`, `false`, `""`) are skipped, and the separator is inserted only between the entries that survive, so callers do not need to `filter(Boolean)` first. The number `0` is a factual value ("0 companies") and is kept.
 - The metadata row renders as `<ul>`/`<li>` with the separator in its own `aria-hidden` decorative item, so a screen reader announces list items instead of one long string glued together by middle dots. Stop hand-rolling `span + span::before { content: "·" }`.
 - When migrating away from `span + span::before { content: "·" }`, **check the entries one by one instead of copying the row over**. That selector really means "insert a dot only between adjacent rendered `<span>` elements", so wherever the old row mixed in a button, icon, or link (rendered as `<button>`, `<svg>`, or `<a>`) there was **never a dot in production**. A `meta` entry, by contrast, is an **array item**: the separator goes between items regardless of what each one renders as. Porting a mixed row such as `[idNumber, <CopyButton/>]` verbatim adds a separator that was not there before, which is a real visual regression rather than a bug in this component (hulianui/hulian#247).

@@ -183,3 +183,83 @@ describe("PageHeader 元信息行（#240）", () => {
     expect(getByTestId("node")).toBeTruthy();
   });
 });
+
+describe("PageHeader 元信息位置 metaPlacement（#357）", () => {
+  const metaOf = (c: HTMLElement) =>
+    c.querySelector('[data-slot="page-header-meta"]') as HTMLElement;
+  const titleGroupOf = (c: HTMLElement) => c.querySelector("h1")!.parentElement!;
+  const realItems = (row: HTMLElement) =>
+    [...row.querySelectorAll("li")].filter((li) => li.getAttribute("aria-hidden") === null);
+
+  it("默认 block：自成一行、挂在标题群之外、带 mt-2（既有行为逐字不变）", () => {
+    const { container } = render(<PageHeader title="册子" subTitle="沪科技版" meta={["4 章", "0 题"]} />);
+    const row = metaOf(container);
+    expect(row.dataset.placement).toBe("block");
+    expect(row.parentElement).not.toBe(titleGroupOf(container));
+    expect(row.className).toContain("mt-2");
+    expect(row.textContent).toBe("4 章·0 题");
+  });
+
+  it("inline：挂进标题群、去掉 mt-2，列表语义原样保留", () => {
+    const { container } = render(
+      <PageHeader title="册子" subTitle="沪科技版" metaPlacement="inline" meta={["4 章", "0 题", "原件 105MB"]} />,
+    );
+    const row = metaOf(container);
+    expect(row.tagName).toBe("UL");
+    expect(row.dataset.placement).toBe("inline");
+    expect(row.parentElement).toBe(titleGroupOf(container));
+    expect(row.className).not.toContain("mt-2");
+    expect(realItems(row).map((li) => li.textContent)).toEqual(["4 章", "0 题", "原件 105MB"]);
+  });
+
+  it("inline 且有 subTitle：补一个前导分隔符，与后面的中点是同一套", () => {
+    const { container } = render(
+      <PageHeader title="册子" subTitle="沪科技版" metaPlacement="inline" meta={["4 章", "0 题"]} />,
+    );
+    const row = metaOf(container);
+    // 2 项 → 项间 1 个 + 前导 1 个
+    expect(row.querySelectorAll('li[aria-hidden="true"]').length).toBe(2);
+    expect(row.firstElementChild!.getAttribute("aria-hidden")).toBe("true");
+    expect(row.textContent).toBe("·4 章·0 题");
+    // 前导那个也可换
+    const custom = render(
+      <PageHeader title="册子" subTitle="沪科技版" metaPlacement="inline" metaSeparator="/" meta={["4 章"]} />,
+    );
+    expect(metaOf(custom.container).textContent).toBe("/4 章");
+  });
+
+  it("inline 但没有 subTitle：不补前导分隔符（紧跟标题的中点会读成「标题也是一项」）", () => {
+    const { container } = render(<PageHeader title="册子" metaPlacement="inline" meta={["4 章", "0 题"]} />);
+    const row = metaOf(container);
+    expect(row.firstElementChild!.getAttribute("aria-hidden")).toBeNull();
+    expect(row.textContent).toBe("4 章·0 题");
+  });
+
+  it("inline 时排在 subTitle 之后、tags 之前（同一串弱化小字不被状态标记劈开）", () => {
+    const { container, getByTestId } = render(
+      <PageHeader
+        title="册子"
+        subTitle="沪科技版"
+        metaPlacement="inline"
+        meta={["4 章"]}
+        tags={<span data-testid="tag" />}
+      />,
+    );
+    const row = metaOf(container);
+    const sub = container.querySelector("h1")!.nextElementSibling!;
+    expect(sub.textContent).toBe("沪科技版");
+    expect(sub.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(row.compareDocumentPosition(getByTestId("tag")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("inline 下空项过滤与「全空不渲染」照旧", () => {
+    const { container } = render(
+      <PageHeader title="册子" subTitle="沪科技版" metaPlacement="inline" meta={["4 章", null, "", 0]} />,
+    );
+    expect(metaOf(container).textContent).toBe("·4 章·0");
+    const empty = render(
+      <PageHeader title="册子" subTitle="沪科技版" metaPlacement="inline" meta={[null, false, ""]} />,
+    );
+    expect(empty.container.querySelector('[data-slot="page-header-meta"]')).toBeNull();
+  });
+});

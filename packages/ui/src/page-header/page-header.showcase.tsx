@@ -169,6 +169,27 @@ export const pageHeaderShowcase: ShowcaseSpec = {
         </div>
       ),
     },
+    {
+      title: "元信息内联到副标题后",
+      description:
+        "只有两三个短事实值时用 metaPlacement=\"inline\"：它们与副标题本来就是同一串弱化小字，另起一行只会把页头拉高一档。语义不变，仍是列表。",
+      code: `<PageHeader
+  title="物理高中年级必修第一册"
+  subTitle="沪科技版"
+  metaPlacement="inline"
+  meta={["4 章", "0 题", "原件 105MB"]}
+/>`,
+      render: () => (
+        <div className="w-full max-w-3xl">
+          <PageHeader
+            title="物理高中年级必修第一册"
+            subTitle="沪科技版"
+            metaPlacement="inline"
+            meta={["4 章", "0 题", "原件 105MB"]}
+          />
+        </div>
+      ),
+    },
   ],
   controls: [
     { prop: "onBack", type: "boolean", defaultValue: true, label: "返回按钮" },

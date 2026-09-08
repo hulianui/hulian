@@ -27,6 +27,7 @@ import { PageHeader } from "@hulianui/ui"
 |------|------|------|------|
 | backLabel | `string` | `"返回"` | 返回按钮的无障碍标签。 |
 | bordered | `boolean` | `false` | 是否在页头底部渲染分隔线（复用 `<Separator/>`）。 |
+| metaPlacement | `"block" \| "inline"` | `"block"` | `meta` 这一串放哪：`block` 是标题行下面自成一行；`inline` 接在 `subTitle` 后面、与标题同一行（两三个短事实值时用它，另起一行只会把页头拉高一档）。两档语义一样。 |
 | metaSeparator | `ReactNode` | `"·"` | `meta` 各项之间的分隔符，装饰位自动 `aria-hidden`。 |
 | titleAs | `ElementType` | `"h1"` | 标题渲染成哪个标签。层级归页面决定；**只让出标签，字号不跟着标签变**（恒为 20px/28px）。 |
 
@@ -46,7 +47,7 @@ import { PageHeader } from "@hulianui/ui"
 | subTitle | `ReactNode` | 副标题，内联于标题右侧，中性弱化色。 |
 | breadcrumb | `ReactNode` | 面包屑区（标题行上方），传入瑚琏 `<Breadcrumb/>`。 |
 | tags | `ReactNode` | 状态标签区（贴标题右侧），传入 `<Chip/>`/`<Badge/>` 等。 |
-| meta | `ReactNode[]` | 元信息行：标题下面那串用 `metaSeparator` 串起来的事实值。分隔符由组件插在项与项之间，空项自动跳过。 |
+| meta | `ReactNode[]` | 元信息行：用 `metaSeparator` 串起来的一串事实值，默认排在标题行下面（`metaPlacement="inline"` 改为接在 `subTitle` 后面）。分隔符由组件插在项与项之间，空项自动跳过。 |
 | extra | `ReactNode` | 右侧操作区（按钮组等），**窄屏**（视口 < 640px）自动换行到标题下方；宽屏下标题再长也不换行，长标题该截断就截断。 |
 | footer | `ReactNode` | 底部附加区，常放 `<Tabs/>`。 |
 
@@ -91,9 +92,21 @@ import { PageHeader } from "@hulianui/ui"
 />
 ```
 
+只有两三个短事实值时把它接到副标题后面（`metaPlacement="inline"`），别为它单开一行：
+```tsx
+<PageHeader
+  title="物理高中年级必修第一册"
+  subTitle="沪科技版"
+  metaPlacement="inline"
+  meta={["4 章", "0 题", "原件 105MB"]}
+/>
+// 物理高中年级必修第一册  沪科技版 · 4 章 · 0 题 · 原件 105MB
+```
+
 ## 禁忌 / 坑
 
 - `meta` 是**一串并列的事实值**，别拿它当别的槽用：一句话说明用 `subTitle`，状态标记用 `tags`，Tabs 之类的整块内容用 `footer`。
+- **要排成一行就用 `metaPlacement="inline"`，别把事实值 `join(" · ")` 塞进 `subTitle`**（#357）。一拼成文本，列表语义、空项自动跳过、装饰位分隔符就全丢了，读屏读到的又是一串被中点粘住的话——那正是 `meta` 要根除的东西。内联档只换位置：仍是 `ul`/`li`，仍跳空项，分隔符仍是 `aria-hidden`。有 `subTitle` 时组件会在它与第一项之间补一个同款分隔符（不然第一处是空格、后面全是中点，看着像漏写）；没有 `subTitle` 则不补——标题是另一档字号字重，紧跟一个中点会读成「标题也是一项」。
 - `meta` 里的空项（`null` / `undefined` / `false` / `""`）自动跳过，分隔符只插在留下来的项之间，所以不必在调用点先 `filter(Boolean)`。数字 `0` 是事实值（「0 家公司」），不算空。
 - 元信息行渲染为 `<ul>`/`<li>`，分隔符是独立的 `aria-hidden` 装饰位——读屏读到的是列表项而不是被中点粘住的长串文本。别再用 `span + span::before { content: "·" }` 自己拼点。
 - 从 `span + span::before { content: "·" }` 迁过来时**要逐项核对，不能照搬**：那条选择器的真实语义是「**渲染出来的相邻 `<span>` 之间**才插点」，所以那一行里混了按钮 / 图标 / 链接（渲染成 `<button>` / `<svg>` / `<a>`）的位置，现网**本来就没有点**。而 `meta` 的「一项」是**数组项**，不看它渲染成什么标签，一律在项与项之间插分隔符。把 `[证件号, <CopyButton/>]` 这类混排原样搬过来，会凭空多出一个分隔符——这是真实的视觉回归，不是本组件的 bug（hulianui/hulian#247）。

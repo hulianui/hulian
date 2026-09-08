@@ -527,6 +527,10 @@
       "wave",
       "custom"
     ],
+    "PageHeaderMetaPlacement": [
+      "block",
+      "inline"
+    ],
     "GeneratorMode": [
       "password",
       "passphrase"
@@ -31262,7 +31266,8 @@
         "PageHeader"
       ],
       "types": [
-        "PageHeaderProps"
+        "PageHeaderProps",
+        "PageHeaderMetaPlacement"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/page-header/page-header.md",
       "props": [
@@ -31281,6 +31286,19 @@
           "type": "boolean",
           "default": "false",
           "description": "是否在页头底部渲染分隔线（复用 `<Separator/>`）。"
+        },
+        {
+          "name": "metaPlacement",
+          "required": false,
+          "kind": "enum",
+          "type": "\"block\" | \"inline\"",
+          "values": [
+            "block",
+            "inline"
+          ],
+          "valueType": "string",
+          "default": "\"block\"",
+          "description": "`meta` 这一串放哪：`block` 是标题行下面自成一行；`inline` 接在 `subTitle` 后面、与标题同一行（两三个短事实值时用它，另起一行只会把页头拉高一档）。两档语义一样。"
         },
         {
           "name": "metaSeparator",
@@ -31333,7 +31351,7 @@
         {
           "name": "meta",
           "type": "ReactNode[]",
-          "description": "元信息行：标题下面那串用 `metaSeparator` 串起来的事实值。分隔符由组件插在项与项之间，空项自动跳过。"
+          "description": "元信息行：用 `metaSeparator` 串起来的一串事实值，默认排在标题行下面（`metaPlacement=\"inline\"` 改为接在 `subTitle` 后面）。分隔符由组件插在项与项之间，空项自动跳过。"
         },
         {
           "name": "extra",
