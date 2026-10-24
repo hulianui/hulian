@@ -18,13 +18,18 @@
 
 <p align="center">
   <a href="https://hulianui.haloritual.com"><b>📖 Docs</b></a> ·
+  <a href="https://hulianui-zh.haloritual.com"><b>🌐 China mirror</b></a> ·
   <a href="https://hulianui.haloritual.com/demos"><b>🏗️ Live Demos</b></a> ·
   <a href="README.md"><b>中文</b></a>
 </p>
 
 ---
 
-**Hulian** is a React component library you can `import` directly, paired with a real-data, tweakable [showcase docs site](https://hulianui.haloritual.com). Accessible behavior comes from Base UI; skinning comes from a Tailwind v4 OKLCH two-layer token system — light/dark switching is flash-free and themes can be swapped at runtime.
+**Hulian UI (hulianui)** is a React component library for admin apps and AI-assisted coding — polished by default, with deep widgets like Gantt and Flow, plus llms.txt and MCP so Cursor / Claude can read the API verbatim. You can `import` it directly; it ships with a real-data, tweakable [showcase docs site](https://hulianui.haloritual.com). Accessible behavior comes from Base UI; skinning comes from a Tailwind v4 OKLCH two-layer token system — light/dark switching is flash-free and themes can be swapped at runtime.
+
+- **China mainland mirror** — <https://hulianui-zh.haloritual.com>
+- **AI entry** — [`llms.txt`](https://hulianui.haloritual.com/llms.txt) · [`@hulianui/mcp`](https://www.npmjs.com/package/@hulianui/mcp)
+- **Deep widgets** — [Gantt](https://hulianui.haloritual.com/components/gantt) · [Flow](https://hulianui.haloritual.com/components/flow) · [ProTable](https://hulianui.haloritual.com/components/pro-table)
 
 ## ✨ Features
 
