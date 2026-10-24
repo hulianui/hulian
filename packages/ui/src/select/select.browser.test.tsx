@@ -1,6 +1,6 @@
 import { act, useEffect, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { page, userEvent } from "@vitest/browser/context";
 import type {} from "@vitest/browser/providers/playwright";
 import {
@@ -14,6 +14,7 @@ import {
 import { Field } from "../field/field";
 
 afterEach(cleanup);
+
 
 async function interact(action: () => Promise<void>) {
   await act(async () => {
@@ -496,11 +497,25 @@ describe("Select multiselect workflows (#328)", () => {
 
   it("searchable 过滤不强插未命中的已选项", async () => {
     render(<ControlledFixture initialValue={["mono", "sans"]} searchable />);
-    await interact(() => userEvent.click(screen.getByRole("combobox")));
-    await interact(() => userEvent.fill(screen.getByPlaceholderText("搜索"), "衬线"));
-    const labels = screen.getAllByRole("option").map((option) => option.textContent);
-    expect(labels).toEqual(["无衬线", "衬线"]);
-    expect(labels).not.toContain("等宽");
+    const trigger = screen.getByRole("combobox");
+    await interact(() => userEvent.click(trigger));
+    // 浮层定位会连发 ResizeObserver loop。`userEvent.fill` 要等输入框持续「可见且可编辑」，
+    // 这一等占满整条用例的 45s，CI 负载下框还在抖就直接超时。等它挂上 DOM 后聚焦并键入，
+    // 超时落在过滤结果上，失败信息是选项列表而不是一条没有行号的 Test timed out。
+    const search = () => screen.getByPlaceholderText("搜索");
+    await waitFor(() => expect(search().isConnected).toBe(true), { timeout: 10_000 });
+    await interact(async () => {
+      search().focus();
+      await userEvent.keyboard("衬线");
+    });
+    await waitFor(
+      () => {
+        const labels = screen.getAllByRole("option").map((option) => option.textContent);
+        expect(labels).toEqual(["无衬线", "衬线"]);
+        expect(labels).not.toContain("等宽");
+      },
+      { timeout: 10_000 },
+    );
   });
 
   it("120 项自动虚拟化前先将 selectedFirst 项排到窗口首位", async () => {
