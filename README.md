@@ -18,6 +18,7 @@
 
 <p align="center">
   <a href="https://hulianui.haloritual.com"><b>📖 文档站</b></a> ·
+  <a href="https://hulianui-zh.haloritual.com"><b>🌐 中国大陆镜像</b></a> ·
   <a href="https://hulianui.haloritual.com/demos"><b>🏗️ 在线 Demo</b></a> ·
   <a href="README.en.md"><b>English</b></a>
 </p>
@@ -27,7 +28,11 @@
 > 名出《论语·公冶长》"瑚琏也"——宗庙盛黍稷的玉器，至贵至美又确有大用。
 > **颜值审美 + 好用 = 软件商业化第一生产力。人不该油头满面地对着丑/烂软件干活。**
 
-**瑚琏**是一套可直接 `import` 的 React 组件库，配套一个真实数据驱动、可调参的 [showcase 文档站](https://hulianui.haloritual.com)。基于 Base UI 的无障碍行为层 + Tailwind v4 的 OKLCH 双层 token 皮肤，明暗切换 0 闪烁、支持运行时换肤。
+**瑚琏（Hulian UI）**是面向中后台与 AI 协作的 React 组件库——默认好看、覆盖甘特 / 流程图等深度件，并提供 llms.txt 与 MCP，让 Cursor / Claude 直接读懂组件。可直接 `import`，配套一个真实数据驱动、可调参的 [showcase 文档站](https://hulianui.haloritual.com)。基于 Base UI 的无障碍行为层 + Tailwind v4 的 OKLCH 双层 token 皮肤，明暗切换 0 闪烁、支持运行时换肤。
+
+- **中国大陆镜像** —— <https://hulianui-zh.haloritual.com>
+- **AI 入口** —— [`llms.txt`](https://hulianui.haloritual.com/zh/llms.txt) · [`@hulianui/mcp`](https://www.npmjs.com/package/@hulianui/mcp)
+- **深度件** —— [Gantt](https://hulianui.haloritual.com/zh/components/gantt) 甘特 · [Flow](https://hulianui.haloritual.com/zh/components/flow) 流程图 · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table)
 
 ## ✨ 特性
 
