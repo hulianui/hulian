@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { NovelReader } from "./novel-reader";
 import { novelProgressStorageKey } from "./novel-reader.logic";
 
@@ -12,6 +12,7 @@ afterEach(() => {
   cleanup();
   localStorage.clear();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 function mockBox() {
@@ -94,6 +95,53 @@ describe("NovelReader", () => {
     expect(region.getAttribute("data-novel-offset")).toBe("4");
     expect(localStorage.getItem(key)).toContain('"charOffset":4');
     expect(localStorage.getItem(key)).not.toContain('"chapterId":"c1"');
+  });
+
+  it("方括号连续切章，焦点在章末按钮上也不失效", () => {
+    render(<NovelReader chapters={chapters} />);
+    const region = screen.getByRole("region", { name: "正文" });
+    const next = screen.getByRole("button", { name: "下一章" });
+    next.focus();
+    fireEvent.keyDown(next, { key: "]" });
+    expect(region.getAttribute("data-novel-chapter")).toBe("c2");
+    fireEvent.keyDown(region, { key: "[" });
+    expect(region.getAttribute("data-novel-chapter")).toBe("c1");
+    expect(region.getAttribute("data-novel-offset")).toBe("0");
+  });
+
+  it("窗口尺寸变化只重投影，不改字符偏移", () => {
+    const key = novelProgressStorageKey("resize");
+    localStorage.setItem(key, JSON.stringify({ chapterId: "c2", charOffset: 4 }));
+    let notify: ResizeObserverCallback | null = null;
+    class BoxObserver {
+      constructor(callback: ResizeObserverCallback) {
+        notify = callback;
+      }
+      observe() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("ResizeObserver", BoxObserver);
+    render(<NovelReader chapters={chapters} persistKey="resize" />);
+    const region = screen.getByRole("region", { name: "正文" });
+    const viewport = document.querySelector("[data-novel-viewport]") as HTMLElement;
+    let top = 0;
+    Object.defineProperty(viewport, "clientHeight", { configurable: true, value: 100 });
+    Object.defineProperty(viewport, "scrollHeight", { configurable: true, value: 400 });
+    Object.defineProperty(viewport, "scrollTop", {
+      configurable: true,
+      get: () => top,
+      set: (value: number) => {
+        top = value;
+        viewport.dispatchEvent(new Event("scroll"));
+      },
+    });
+    act(() => {
+      notify?.([], {} as ResizeObserver);
+    });
+    expect(region.getAttribute("data-novel-chapter")).toBe("c2");
+    expect(region.getAttribute("data-novel-offset")).toBe("4");
+    expect(top).toBeGreaterThan(0);
+    vi.unstubAllGlobals();
   });
 
   it("滚轮和 Alt+方向键都按章前进或后退", () => {

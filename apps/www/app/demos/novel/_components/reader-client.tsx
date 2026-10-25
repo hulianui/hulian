@@ -10,6 +10,7 @@ export function ReaderClient({ book }: { book: NovelDemoBook }) {
   const [chapters] = useManuscript(book.id, book.chapters);
   return (
     <NovelReader
+      autoFocus
       className="h-dvh"
       title={book.title}
       author={book.author}

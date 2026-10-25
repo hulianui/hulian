@@ -239,6 +239,7 @@ export function NovelReader({
   const readyRef = useRef(false);
   const sheetRef = useRef(false);
   const stepAt = useRef(0);
+  const projectingRef = useRef(false);
   const suppressClick = useRef(false);
   const pointer = useRef<{ id: number; x: number; y: number } | null>(null);
   const regionRef = useRef<HTMLDivElement>(null);
@@ -281,9 +282,18 @@ export function NovelReader({
     return true;
   };
 
-  const goChapter = (nextIndex: number, offset: number) => {
+  const projectScroll = (element: HTMLElement) => {
+    projectingRef.current = true;
+    applyScroll(element, offsetRef.current, lengthRef.current);
+    queueMicrotask(() => {
+      projectingRef.current = false;
+    });
+  };
+
+  const goChapter = (nextIndex: number, offset: number, discrete = true) => {
     const next = chaptersRef.current[nextIndex];
-    if (!next || !lockStep()) return;
+    if (!next) return;
+    if (discrete && !lockStep()) return;
     setChapterId(next.id);
     const clamped = clampOffset(offset, Number.MAX_SAFE_INTEGER);
     offsetRef.current = clamped;
@@ -372,7 +382,7 @@ export function NovelReader({
     if (!ready || paged) return;
     const scroller = viewportRef.current;
     if (!scroller) return;
-    applyScroll(scroller, offsetRef.current, lengthRef.current);
+    projectScroll(scroller);
   }, [ready, paged, active?.id, fontSize, lineHeight, measure, textLength, catalogOpen, settingsOpen]);
 
   const activeId = active?.id ?? "";
@@ -402,7 +412,7 @@ export function NovelReader({
     const scroller = viewportRef.current;
     if (!scroller || paged) return;
     const onScroll = () => {
-      if (!readyRef.current || sheetRef.current || turnRef.current !== "scroll") return;
+      if (projectingRef.current || !readyRef.current || sheetRef.current || turnRef.current !== "scroll") return;
       const next = offsetFromScroll(scroller, lengthRef.current);
       if (next == null || next === offsetRef.current) return;
       offsetRef.current = next;
@@ -411,6 +421,34 @@ export function NovelReader({
     scroller.addEventListener("scroll", onScroll, { passive: true });
     return () => scroller.removeEventListener("scroll", onScroll);
   }, [paged, active?.id]);
+
+  useEffect(() => {
+    const view = viewportRef.current;
+    if (!view) return;
+    const projectViewport = () => {
+      if (turnRef.current === "scroll") {
+        projectScroll(view);
+        return;
+      }
+      const column = view.firstElementChild;
+      if (!(column instanceof HTMLElement)) return;
+      const height = view.clientHeight;
+      const contentHeight = column.scrollHeight;
+      if (height <= 0 || contentHeight <= 0) return;
+      const pages = pageCountFor(contentHeight, height);
+      setViewHeight((current) => (current === height ? current : height));
+      setPageCount((current) => (current === pages ? current : pages));
+    };
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(projectViewport);
+    observer?.observe(view);
+    window.addEventListener("resize", projectViewport);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", projectViewport);
+    };
+    // projectScroll 每次渲染都读 ref，观察器只跟当前视口走。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active?.id]);
 
   useEffect(() => {
     if (turn !== "simulation") {
@@ -571,9 +609,14 @@ export function NovelReader({
         step(direction);
       }}
       onKeyDown={(event) => {
-        if (interactiveTarget(event.target)) return;
+        const typing =
+          event.target instanceof Element &&
+          Boolean(event.target.closest("input, textarea, select, [contenteditable='true']"));
+        if (typing) return;
         const action = actionFromKey(event.key, event.altKey);
         if (!action) return;
+        const onControl = interactiveTarget(event.target);
+        if (onControl && action !== "chapter-next" && action !== "chapter-prev" && action !== "dismiss") return;
         event.preventDefault();
         if (action === "dismiss") {
           setChrome(false);
@@ -581,8 +624,8 @@ export function NovelReader({
           setSettingsOpen(false);
           return;
         }
-        if (action === "chapter-next") goChapter(index + 1, 0);
-        else if (action === "chapter-prev") goChapter(index - 1, 0);
+        if (action === "chapter-next") goChapter(indexRef.current + 1, 0, false);
+        else if (action === "chapter-prev") goChapter(indexRef.current - 1, 0, false);
         else if (action === "forward") step(1);
         else step(-1);
       }}
