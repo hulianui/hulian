@@ -801,8 +801,10 @@ export function NovelReader({
           side="bottom"
           size="sm"
           title={labels.settings}
-          className="bg-surface/80 backdrop-blur-md"
-          backdropClassName="bg-foreground/15 backdrop-blur-none"
+          // /80 再加整屏压暗和 backdrop-blur，浅色页上会合成一块不透明浅灰，当前句被盖死。
+          // 遮罩保持透明，面板只用更透的 surface，字留在抽屉后面仍能看见。
+          className="bg-surface/60 backdrop-blur-none"
+          backdropClassName="bg-transparent backdrop-blur-none"
         >
           <div className="flex flex-col gap-4 pb-2">
             <ChoiceRow

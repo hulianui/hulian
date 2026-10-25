@@ -182,8 +182,16 @@ describe("NovelReader", () => {
     fireEvent.click(region, { clientX: 200, clientY: 200 });
     fireEvent.click(screen.getByRole("button", { name: "阅读设置" }));
     const dialog = screen.getByRole("dialog", { name: "阅读设置" });
-    expect(dialog.className).toContain("bg-surface/80");
+    expect(dialog.className).toContain("bg-surface/60");
+    expect(dialog.className).toContain("backdrop-blur-none");
+    expect(dialog.className.includes("bg-surface/80")).toBe(false);
+    expect(dialog.className.includes("backdrop-blur-md")).toBe(false);
     expect(dialog.className).toContain("bottom-0");
+    const backdrop = document.body.querySelector("[class*='bg-transparent']");
+    expect(backdrop?.className).toContain("bg-transparent");
+    expect(backdrop?.className.includes("bg-foreground/15")).toBe(false);
+    expect(backdrop?.className.includes("bg-black/40")).toBe(false);
+    expect(backdrop?.className.includes("backdrop-blur-sm")).toBe(false);
     expect(dialog.contains(sentence)).toBe(false);
     expect(screen.getByRole("radiogroup", { name: "翻页" })).toBeTruthy();
     expect(screen.getByRole("radio", { name: "滚动" })).toBeTruthy();
