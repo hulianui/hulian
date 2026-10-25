@@ -109,6 +109,8 @@ export { listboxShowcase } from "./listbox/listbox.showcase";
 export { listShowcase } from "./list/list.showcase";
 export { magicCardShowcase } from "./magic-card/magic-card.showcase";
 export { markdownEditorShowcase } from "./markdown-editor/markdown-editor.showcase";
+export { novelEditorShowcase } from "./novel-editor/novel-editor.showcase";
+export { novelReaderShowcase } from "./novel-reader/novel-reader.showcase";
 export { richTextEditorShowcase } from "./rich-text-editor/rich-text-editor.showcase";
 export { codeEditorShowcase } from "./code-editor/code-editor.showcase";
 export { issueReporterShowcase } from "./issue-reporter/issue-reporter.showcase";

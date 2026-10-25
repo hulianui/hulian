@@ -3,6 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Fab } from "@hulianui/ui";
 import { LayoutGrid } from "lucide-react";
 import { SiteNavbar } from "../../../components/site-navbar";
+import { stripDocsBasePath } from "../../../lib/docs-locale";
 import { copy } from "./demos-chrome.content";
 
 // /demos 路由的统一外壳 chrome（client，单挂在 demos/layout）：
@@ -12,10 +13,12 @@ import { copy } from "./demos-chrome.content";
 export function DemosChrome() {
   const pathname = usePathname();
   const router = useRouter();
-  const onGallery = pathname === "/demos";
-  // ai-workflow 是全屏工作室、底部常驻运行面板，悬浮 Fab 会盖住面板，
-  // 故其「返回示例库」改放工作室顶栏（见 studio-shell），此处不渲染悬浮件。
-  const ownsBackAffordance = pathname.startsWith("/demos/ai-workflow");
+  const bare = stripDocsBasePath(pathname);
+  const onGallery = bare === "/demos";
+  // ai-workflow 的返回在工作室顶栏。小说阅读页的左右缘是翻页热区，
+  // 左下角悬浮按钮会挡住向后翻，返回改放到唤出菜单的角落。
+  const ownsBackAffordance =
+    bare.startsWith("/demos/ai-workflow") || bare.startsWith("/demos/novel");
 
   if (ownsBackAffordance) return null;
 

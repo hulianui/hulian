@@ -526,6 +526,11 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Edits Markdown through a WYSIWYG TipTap surface with Markdown input and output.",
     keywords: ["markdown", "editor", "forms", "advanced"],
   },
+  "novel-editor": {
+    shortName: "Novel editor",
+    description: "Manages chapters and edits Markdown, with the outline and a preview on one screen.",
+    keywords: ["novel", "chapters", "markdown", "editor", "forms", "advanced"],
+  },
   "rich-text-editor": {
     shortName: "RichTextEditor",
     description:
@@ -835,6 +840,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description:
       "Frames business documents on an A4-style sheet with header, section, footer, and print controls.",
     keywords: ["document", "sheet", "data-display", "collection"],
+  },
+  "novel-reader": {
+    shortName: "Novel reader",
+    description:
+      "Opens on the prose, keeps progress as a character offset, and puts page turn, type size, and paper in a bottom sheet.",
+    keywords: ["novel", "reader", "progress", "data-display", "collection"],
   },
   gantt: {
     shortName: "Gantt",

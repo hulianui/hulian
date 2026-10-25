@@ -966,6 +966,54 @@ export interface ComponentLocale {
       };
     };
   };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  novelReader?: {
+    catalog: string;
+    settings: string;
+    previousChapter: string;
+    nextChapter: string;
+    chapterEnd: string;
+    fontSize: string;
+    lineHeight: string;
+    measure: string;
+    paper: string;
+    turn: string;
+    readingRegion: string;
+    empty: string;
+    bookProgress: string;
+    chapterProgress: string;
+    turns: { scroll: string; cover: string; simulation: string };
+    papers: { default: string; day: string; eye: string; night: string; oled: string };
+    fontSizes: { sm: string; md: string; lg: string; xl: string };
+    lineHeights: { snug: string; normal: string; relaxed: string; loose: string };
+    measures: { narrow: string; normal: string; wide: string };
+    numbered: (index: number, title: string) => string;
+    percent: (value: number) => string;
+    wordCount: (count: number) => string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  novelEditor?: {
+    chapters: string;
+    newChapter: string;
+    delete: string;
+    deleteConfirm: string;
+    deleteDescription: string;
+    save: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    preview: string;
+    previewEmpty: string;
+    titlePlaceholder: string;
+    untitled: string;
+    wordCount: (count: number) => string;
+    editorLabel: string;
+    showPreview: string;
+    hidePreview: string;
+    collapseChapters: string;
+    expandChapters: string;
+    moveUp: string;
+    moveDown: string;
+  };
 }
 
 const zhComponents: ComponentLocale = {
@@ -1724,6 +1772,52 @@ const zhComponents: ComponentLocale = {
         impactPlaceholder: "会不会破坏现有用法？",
       },
     },
+  },
+  novelReader: {
+    catalog: "目录",
+    settings: "阅读设置",
+    previousChapter: "上一章",
+    nextChapter: "下一章",
+    chapterEnd: "本章完",
+    fontSize: "字号",
+    lineHeight: "行距",
+    measure: "栏宽",
+    paper: "背景",
+    turn: "翻页",
+    readingRegion: "正文",
+    empty: "还没有章节",
+    bookProgress: "全书",
+    chapterProgress: "本章",
+    turns: { scroll: "滚动", cover: "覆盖", simulation: "仿真" },
+    papers: { default: "默认", day: "日间", eye: "护眼", night: "夜间", oled: "近黑" },
+    fontSizes: { sm: "小", md: "标准", lg: "大", xl: "特大" },
+    lineHeights: { snug: "紧", normal: "标准", relaxed: "松", loose: "更松" },
+    measures: { narrow: "窄", normal: "标准", wide: "宽" },
+    numbered: (index, title) => `第 ${index} 章 ${title}`,
+    percent: (value) => `${value}%`,
+    wordCount: (count) => `${count} 字`,
+  },
+  novelEditor: {
+    chapters: "章节",
+    newChapter: "新建章节",
+    delete: "删除",
+    deleteConfirm: "删除这一章？",
+    deleteDescription: "删除后不能恢复。",
+    save: "保存",
+    emptyTitle: "还没有章节",
+    emptyDescription: "先新建一章再写正文。",
+    preview: "预览",
+    previewEmpty: "这一章还没有正文。",
+    titlePlaceholder: "章节标题",
+    untitled: "未命名章节",
+    wordCount: (count) => `${count} 字`,
+    editorLabel: "正文",
+    showPreview: "显示预览",
+    hidePreview: "收起预览",
+    collapseChapters: "收起章节",
+    expandChapters: "展开章节",
+    moveUp: "上移",
+    moveDown: "下移",
   },
 };
 
@@ -2622,6 +2716,52 @@ const enComponents: ComponentLocale = {
         impactPlaceholder: "Would it break existing usage?",
       },
     },
+  },
+  novelReader: {
+    catalog: "Contents",
+    settings: "Reading settings",
+    previousChapter: "Previous chapter",
+    nextChapter: "Next chapter",
+    chapterEnd: "End of chapter",
+    fontSize: "Type size",
+    lineHeight: "Line height",
+    measure: "Measure",
+    paper: "Paper",
+    turn: "Page turn",
+    readingRegion: "Text",
+    empty: "No chapters yet",
+    bookProgress: "Book",
+    chapterProgress: "Chapter",
+    turns: { scroll: "Scroll", cover: "Cover", simulation: "Simulation" },
+    papers: { default: "Default", day: "Day", eye: "Eye care", night: "Night", oled: "Near black" },
+    fontSizes: { sm: "Small", md: "Standard", lg: "Large", xl: "Extra large" },
+    lineHeights: { snug: "Tight", normal: "Standard", relaxed: "Loose", loose: "Looser" },
+    measures: { narrow: "Narrow", normal: "Standard", wide: "Wide" },
+    numbered: (index, title) => `Chapter ${index}. ${title}`,
+    percent: (value) => `${value}%`,
+    wordCount: (count) => `${count} characters`,
+  },
+  novelEditor: {
+    chapters: "Chapters",
+    newChapter: "New chapter",
+    delete: "Delete",
+    deleteConfirm: "Delete this chapter?",
+    deleteDescription: "This cannot be undone.",
+    save: "Save",
+    emptyTitle: "No chapters yet",
+    emptyDescription: "Create a chapter before writing.",
+    preview: "Preview",
+    previewEmpty: "This chapter has no text yet.",
+    titlePlaceholder: "Chapter title",
+    untitled: "Untitled chapter",
+    wordCount: (count) => `${count} characters`,
+    editorLabel: "Body",
+    showPreview: "Show preview",
+    hidePreview: "Hide preview",
+    collapseChapters: "Hide chapters",
+    expandChapters: "Show chapters",
+    moveUp: "Move up",
+    moveDown: "Move down",
   },
 };
 

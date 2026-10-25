@@ -217,6 +217,16 @@ export const demos: DemoMeta[] = [
     status: "done",
     tags: ["CodeReviewThread", "code-diff", "Heatmap", "ScoreRing", "代码审查", "质量门禁"],
   },
+  {
+    slug: "novel",
+    title: "渡口的灯",
+    description:
+      "打开就是正文的小说阅读页：滚动、覆盖、仿真三种翻页，字号行距和栏宽在同一套设置里，进度按章节和字符偏移记住。书架和写作是从唤出菜单进的，没有开屏、下载和促销。100% 由 @hulianui/ui 搭建，dogfood NovelReader / NovelEditor。",
+    href: "/demos/novel",
+    category: "阅读",
+    status: "done",
+    tags: ["NovelReader", "NovelEditor", "Markdown", "阅读进度"],
+  },
 ];
 
 /** Localized display/search overlay. Routes, status, and demo identifiers remain canonical. */

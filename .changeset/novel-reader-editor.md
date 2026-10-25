@@ -1,0 +1,5 @@
+---
+"@hulianui/ui": minor
+---
+
+新增 NovelReader 与 NovelEditor。阅读进度只记章节和字符偏移；翻页、字号、行距、栏宽和纸色收在同一套底部设置里，菜单默认不占位。

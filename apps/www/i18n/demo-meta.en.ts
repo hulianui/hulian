@@ -146,4 +146,11 @@ export const demoMetaEn: Record<string, LocalizedDemoMeta> = {
     category: "Application",
     tags: ["CodeReviewThread", "code-diff", "Heatmap", "ScoreRing", "code review", "quality gates"],
   },
+  novel: {
+    title: "The Ferry Light",
+    description:
+      "A novel reader that opens on the prose, with scroll, cover, and simulation turns, type size and measure in one sheet, and progress stored as a character offset.",
+    category: "Reading",
+    tags: ["NovelReader", "NovelEditor", "Markdown", "reading progress"],
+  },
 };

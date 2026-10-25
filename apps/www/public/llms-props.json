@@ -515,6 +515,39 @@
       "info",
       "warning"
     ],
+    "NovelTurn": [
+      "scroll",
+      "cover",
+      "simulation"
+    ],
+    "NovelMode": [
+      "scroll",
+      "paginated"
+    ],
+    "NovelFontSize": [
+      "sm",
+      "md",
+      "lg",
+      "xl"
+    ],
+    "NovelLineHeight": [
+      "snug",
+      "normal",
+      "relaxed",
+      "loose"
+    ],
+    "NovelMeasure": [
+      "narrow",
+      "normal",
+      "wide"
+    ],
+    "NovelPaper": [
+      "default",
+      "day",
+      "eye",
+      "night",
+      "oled"
+    ],
     "OrbitShape": [
       "ellipse",
       "circle",
@@ -1258,6 +1291,7 @@
     "segmentMentions": "mentions",
     "ModalForm": "form-dialog",
     "DrawerForm": "form-dialog",
+    "NovelEditor": "novel-editor",
     "NumberField": "number-field",
     "PasswordGenerator": "password-generator",
     "AMBIGUOUS": "password-generator",
@@ -1497,6 +1531,7 @@
     "MagicCard": "magic-card",
     "Marquee": "marquee",
     "Meter": "meter",
+    "NovelReader": "novel-reader",
     "NumberTicker": "number-ticker",
     "formatTicker": "number-ticker",
     "PixelCard": "pixel-card",
@@ -11681,6 +11716,89 @@
           "description": "表单字段"
         }
       ]
+    },
+    {
+      "slug": "novel-editor",
+      "name": "NovelEditor",
+      "category": "forms",
+      "group": "advanced",
+      "status": "enriched",
+      "import": "import { NovelEditor } from \"@hulianui/ui\"",
+      "exports": [
+        "NovelEditor"
+      ],
+      "types": [
+        "NovelEditorProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-editor/novel-editor.md",
+      "props": [
+        {
+          "name": "chapters",
+          "required": false,
+          "kind": "array",
+          "type": "NovelChapter[]",
+          "default": null,
+          "description": "受控章节。和 `onChaptersChange` 一起用"
+        },
+        {
+          "name": "defaultChapters",
+          "required": false,
+          "kind": "array",
+          "type": "NovelChapter[]",
+          "default": "[]",
+          "description": "非受控初始章节"
+        },
+        {
+          "name": "onChaptersChange",
+          "required": false,
+          "kind": "function",
+          "type": "(chapters: NovelChapter[]) => void",
+          "default": null,
+          "description": "章节或正文变化"
+        },
+        {
+          "name": "activeChapterId",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "受控正在编辑的章"
+        },
+        {
+          "name": "defaultActiveChapterId",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "第一章",
+          "description": "非受控初始章"
+        },
+        {
+          "name": "onActiveChapterChange",
+          "required": false,
+          "kind": "function",
+          "type": "(id: string) => void",
+          "default": null,
+          "description": "切换正在编辑的章"
+        },
+        {
+          "name": "onSave",
+          "required": false,
+          "kind": "function",
+          "type": "(chapters: NovelChapter[]) => void",
+          "default": null,
+          "description": "传入后显示保存按钮"
+        },
+        {
+          "name": "disabled",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "禁止编辑、排序和删除"
+        }
+      ],
+      "events": [],
+      "slots": []
     },
     {
       "slug": "number-field",
@@ -23760,6 +23878,373 @@
           "description": "标签（如「磁盘用量」）。**这是给 `role=\"meter\"` 挂无障碍名的唯一途径**（内部走 `aria-labelledby` 关联），不传就是一条读屏无名的度量条 —— 自绘一行标题不算"
         }
       ]
+    },
+    {
+      "slug": "novel-reader",
+      "name": "NovelReader",
+      "category": "data-display",
+      "group": "collection",
+      "status": "enriched",
+      "import": "import { NovelReader } from \"@hulianui/ui\"",
+      "exports": [
+        "NovelReader"
+      ],
+      "types": [
+        "NovelChapter",
+        "NovelFontSize",
+        "NovelLineHeight",
+        "NovelMeasure",
+        "NovelMode",
+        "NovelPaper",
+        "NovelProgress",
+        "NovelReaderProps",
+        "NovelTurn"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-reader/novel-reader.md",
+      "props": [
+        {
+          "name": "title",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "书名。写在正文开头，并在唤出的顶栏里重复"
+        },
+        {
+          "name": "author",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "作者"
+        },
+        {
+          "name": "chapters",
+          "required": false,
+          "kind": "array",
+          "type": "NovelChapter[]",
+          "default": null,
+          "description": "章节。`content` 是 Markdown"
+        },
+        {
+          "name": "chapterId",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "受控当前章"
+        },
+        {
+          "name": "defaultChapterId",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "第一章",
+          "description": "非受控初始章。本地进度优先于它"
+        },
+        {
+          "name": "onChapterChange",
+          "required": false,
+          "kind": "function",
+          "type": "(id: string) => void",
+          "default": null,
+          "description": "切章回调"
+        },
+        {
+          "name": "turn",
+          "required": false,
+          "kind": "enum",
+          "type": "\"scroll\" | \"cover\" | \"simulation\"",
+          "values": [
+            "scroll",
+            "cover",
+            "simulation"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "受控翻页：滚动 / 覆盖 / 仿真。三者共用一套向前、向后"
+        },
+        {
+          "name": "defaultTurn",
+          "required": false,
+          "kind": "enum",
+          "type": "\"scroll\" | \"cover\" | \"simulation\"",
+          "values": [
+            "scroll",
+            "cover",
+            "simulation"
+          ],
+          "valueType": "string",
+          "default": "\"scroll\"",
+          "description": "非受控翻页。默认滚动连读"
+        },
+        {
+          "name": "onTurnChange",
+          "required": false,
+          "kind": "function",
+          "type": "(turn: NovelTurn) => void",
+          "resolvedType": "(turn: \"scroll\" | \"cover\" | \"simulation\") => void",
+          "default": null,
+          "description": "翻页方式变化"
+        },
+        {
+          "name": "mode",
+          "required": false,
+          "kind": "enum",
+          "type": "\"scroll\" | \"paginated\"",
+          "values": [
+            "scroll",
+            "paginated"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "旧入口。`paginated` 视为覆盖，`scroll` 视为滚动。与 `turn` 同时传时以 `turn` 为准"
+        },
+        {
+          "name": "fontSize",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "受控字号，对应 `text-sm` 到 `text-xl`"
+        },
+        {
+          "name": "defaultFontSize",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "非受控字号"
+        },
+        {
+          "name": "onFontSizeChange",
+          "required": false,
+          "kind": "function",
+          "type": "(size: NovelFontSize) => void",
+          "resolvedType": "(size: \"sm\" | \"md\" | \"lg\" | \"xl\") => void",
+          "default": null,
+          "description": "字号变化"
+        },
+        {
+          "name": "lineHeight",
+          "required": false,
+          "kind": "enum",
+          "type": "\"snug\" | \"normal\" | \"relaxed\" | \"loose\"",
+          "values": [
+            "snug",
+            "normal",
+            "relaxed",
+            "loose"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "受控行距"
+        },
+        {
+          "name": "defaultLineHeight",
+          "required": false,
+          "kind": "enum",
+          "type": "\"snug\" | \"normal\" | \"relaxed\" | \"loose\"",
+          "values": [
+            "snug",
+            "normal",
+            "relaxed",
+            "loose"
+          ],
+          "valueType": "string",
+          "default": "\"relaxed\"",
+          "description": "非受控行距"
+        },
+        {
+          "name": "onLineHeightChange",
+          "required": false,
+          "kind": "function",
+          "type": "(lineHeight: NovelLineHeight) => void",
+          "resolvedType": "(lineHeight: \"snug\" | \"normal\" | \"relaxed\" | \"loose\") => void",
+          "default": null,
+          "description": "行距变化"
+        },
+        {
+          "name": "measure",
+          "required": false,
+          "kind": "enum",
+          "type": "\"narrow\" | \"normal\" | \"wide\"",
+          "values": [
+            "narrow",
+            "normal",
+            "wide"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "受控栏宽，对应 `max-w-xl` / `2xl` / `3xl`"
+        },
+        {
+          "name": "defaultMeasure",
+          "required": false,
+          "kind": "enum",
+          "type": "\"narrow\" | \"normal\" | \"wide\"",
+          "values": [
+            "narrow",
+            "normal",
+            "wide"
+          ],
+          "valueType": "string",
+          "default": "\"normal\"",
+          "description": "非受控栏宽"
+        },
+        {
+          "name": "onMeasureChange",
+          "required": false,
+          "kind": "function",
+          "type": "(measure: NovelMeasure) => void",
+          "resolvedType": "(measure: \"narrow\" | \"normal\" | \"wide\") => void",
+          "default": null,
+          "description": "栏宽变化"
+        },
+        {
+          "name": "paper",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"day\" | \"eye\" | \"night\" | \"oled\"",
+          "values": [
+            "default",
+            "day",
+            "eye",
+            "night",
+            "oled"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "受控纸色。只包住正文，菜单仍跟系统主题"
+        },
+        {
+          "name": "defaultPaper",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"day\" | \"eye\" | \"night\" | \"oled\"",
+          "values": [
+            "default",
+            "day",
+            "eye",
+            "night",
+            "oled"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "非受控纸色"
+        },
+        {
+          "name": "onPaperChange",
+          "required": false,
+          "kind": "function",
+          "type": "(paper: NovelPaper) => void",
+          "resolvedType": "(paper: \"default\" | \"day\" | \"eye\" | \"night\" | \"oled\") => void",
+          "default": null,
+          "description": "纸色变化"
+        },
+        {
+          "name": "persistKey",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "把 `{ chapterId, charOffset }` 写入 `localStorage`。不记页码"
+        },
+        {
+          "name": "onProgressChange",
+          "required": false,
+          "kind": "function",
+          "type": "(progress: NovelProgress) => void",
+          "default": null,
+          "description": "进度变化。进度只有章节和字符偏移"
+        },
+        {
+          "name": "leading",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "唤出菜单后放在顶栏左上角，例如返回和书架"
+        },
+        {
+          "name": "trailing",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "唤出菜单后放在顶栏右侧"
+        },
+        {
+          "name": "id",
+          "owner": "NovelChapter",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "稳定章节 id"
+        },
+        {
+          "name": "title",
+          "owner": "NovelChapter",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "章名，不含「第 N 章」前缀"
+        },
+        {
+          "name": "content",
+          "owner": "NovelChapter",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "Markdown 正文"
+        },
+        {
+          "name": "wordCount",
+          "owner": "NovelChapter",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "按去空白字符数估算",
+          "description": "展示用字数"
+        },
+        {
+          "name": "chapterId",
+          "owner": "NovelProgress",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "当前章"
+        },
+        {
+          "name": "charOffset",
+          "owner": "NovelProgress",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "相对本章已渲染正文的字符偏移"
+        }
+      ],
+      "events": [],
+      "slots": []
     },
     {
       "slug": "number-ticker",

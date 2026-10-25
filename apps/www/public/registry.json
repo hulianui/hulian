@@ -5030,6 +5030,66 @@
       ]
     },
     {
+      "name": "novel-editor",
+      "type": "registry:ui",
+      "title": "NovelEditor",
+      "description": "章节大纲、Markdown 正文和预览放在同一屏",
+      "categories": [
+        "forms"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/empty.json",
+        "https://hulianui.haloritual.com/zh/r/input.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/markdown.json",
+        "https://hulianui.haloritual.com/zh/r/markdown-editor.json",
+        "https://hulianui.haloritual.com/zh/r/novel-reader.json",
+        "https://hulianui.haloritual.com/zh/r/popconfirm.json",
+        "https://hulianui.haloritual.com/zh/r/scroll-area.json",
+        "https://hulianui.haloritual.com/zh/r/sortable.json",
+        "https://hulianui.haloritual.com/zh/r/text.json",
+        "https://hulianui.haloritual.com/zh/r/toolbar.json",
+        "https://hulianui.haloritual.com/zh/r/virtual-list.json"
+      ],
+      "meta": {
+        "import": "import { NovelEditor } from \"@hulianui/ui\"",
+        "exports": [
+          "NovelEditor"
+        ],
+        "types": [
+          "NovelEditorProps"
+        ],
+        "group": "advanced",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-editor/novel-editor.md",
+        "docLocal": "packages/ui/src/novel-editor/novel-editor.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/novel-editor/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/novel-editor/index.ts"
+        },
+        {
+          "path": "components/hulianui/novel-editor/novel-editor.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/novel-editor/novel-editor.tsx"
+        },
+        {
+          "path": "components/hulianui/novel-editor/novel-editor.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/novel-editor/novel-editor.types.ts"
+        }
+      ]
+    },
+    {
       "name": "number-field",
       "type": "registry:ui",
       "title": "NumberField",
@@ -10185,6 +10245,74 @@
           "path": "components/hulianui/meter/meter.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/meter/meter.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "novel-reader",
+      "type": "registry:ui",
+      "title": "NovelReader",
+      "description": "长文阅读器：菜单默认收起，进度按章节和字符偏移记住",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/drawer.json",
+        "https://hulianui.haloritual.com/zh/r/empty.json",
+        "https://hulianui.haloritual.com/zh/r/heading.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/markdown.json",
+        "https://hulianui.haloritual.com/zh/r/text.json",
+        "https://hulianui.haloritual.com/zh/r/virtual-list.json"
+      ],
+      "meta": {
+        "import": "import { NovelReader } from \"@hulianui/ui\"",
+        "exports": [
+          "NovelReader"
+        ],
+        "types": [
+          "NovelChapter",
+          "NovelFontSize",
+          "NovelLineHeight",
+          "NovelMeasure",
+          "NovelMode",
+          "NovelPaper",
+          "NovelProgress",
+          "NovelReaderProps",
+          "NovelTurn"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-reader/novel-reader.md",
+        "docLocal": "packages/ui/src/novel-reader/novel-reader.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/novel-reader/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/novel-reader/index.ts"
+        },
+        {
+          "path": "components/hulianui/novel-reader/novel-reader.logic.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/novel-reader/novel-reader.logic.ts"
+        },
+        {
+          "path": "components/hulianui/novel-reader/novel-reader.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/novel-reader/novel-reader.tsx"
+        },
+        {
+          "path": "components/hulianui/novel-reader/novel-reader.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/novel-reader/novel-reader.types.ts"
         }
       ]
     },
