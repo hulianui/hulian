@@ -29,7 +29,7 @@ export const novelReaderShowcase: ShowcaseSpec = {
   examples: [
     {
       title: "基础用法",
-      description: "菜单默认收起，打开就是正文。点中间唤出目录和阅读设置。",
+      description: "菜单默认收起，打开就是正文。章末的下一章留在正文里。点中间才唤出目录和阅读设置。",
       code,
       render: () => <Demo />,
     },

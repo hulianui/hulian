@@ -85,6 +85,8 @@ Inherits `HTMLAttributes<HTMLDivElement>` except the native `title`. The root ne
 
 Edge taps, the wheel, and arrow keys share one forward and back. The center only summons the menu. That menu changes simulation, cover, and scroll, plus type size, line height, measure, and paper. The summoned footer shows a book bar and an in-chapter percent.
 
+The chapter start has a previous-chapter button, except the first chapter, which opens on the prose. The chapter end is a card. When another chapter follows, next chapter sits on that card. Both controls are in the text flow and stay when the menu is hidden. They are not a page-level top or bottom bar. Arrow keys still turn the view. Alt plus an arrow, or `[` and `]`, still change the chapter.
+
 ## Pitfalls
 
 - The root has no height of its own. Without `h-dvh` or `h-[28rem]`, the scroller and the page viewport cannot be measured.
@@ -95,6 +97,7 @@ Edge taps, the wheel, and arrow keys share one forward and back. The center only
 - The center hotspot only toggles the menu. Put back and shelf in `leading` or `trailing`.
 - Catalog and settings are bottom drawers. Do not pin a gear to the left edge.
 - Chapter buttons say previous chapter and next chapter. Do not reuse Pagination, whose labels mean previous page and next page.
+- Do not pin a page-level header or footer for previous and next chapter. Previous chapter stays at the chapter start. Next chapter stays at the chapter end, in the text flow, including while the menu is hidden. Chapter controls in the top bar may hide with the menu.
 
 ## Related
 [NovelEditor](../novel-editor/novel-editor.md) · [Markdown](../markdown/markdown.md) · [Drawer](../drawer/drawer.md) · [Empty](../empty/empty.md)

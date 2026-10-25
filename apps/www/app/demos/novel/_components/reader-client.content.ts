@@ -3,10 +3,14 @@ import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 
 export const content = {
   "zh-CN": {
-    backToReading: "返回正文",
+    book: "书页",
+    gallery: "示例库",
+    write: "写作",
   },
   en: {
-    backToReading: "Back to the text",
+    book: "Book",
+    gallery: "Gallery",
+    write: "Write",
   },
 } as const;
 
@@ -20,7 +24,7 @@ export function copy(key: ContentKey, ...values: readonly unknown[]): string {
 }
 
 const dictionary: Dictionary = {
-  key: "demo-novel-write-page",
+  key: "demo-novel-reader-client",
   content: t(content),
 };
 

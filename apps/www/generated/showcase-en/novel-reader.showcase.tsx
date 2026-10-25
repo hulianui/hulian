@@ -18,7 +18,7 @@ export const novelReaderShowcase: ShowcaseSpec = {
     examples: [
         {
             title: "Basic usage",
-            description: "The menu stays hidden, so the page opens on the prose. Tap the center to summon the catalog and reading settings.",
+            description: "The menu stays hidden, so the page opens on the prose. Next chapter stays at the end of the chapter. Tap the center to summon the catalog and reading settings.",
             code,
             render: () => <Demo />,
         },

@@ -3,14 +3,16 @@ import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 
 export const content = {
   "zh-CN": {
-    shelfTitle: "书架",
-    read: "阅读",
-    write: "写作",
+    brand: "渡口",
+    slogan: "打开书就能读，章末接着下一章。",
+    library: "书库",
+    studio: "作者后台",
   },
   en: {
-    shelfTitle: "Shelf",
-    read: "Read",
-    write: "Write",
+    brand: "Ferry",
+    slogan: "Open a book and read. The next chapter waits at the end.",
+    library: "Library",
+    studio: "Author studio",
   },
 } as const;
 
@@ -24,7 +26,7 @@ export function copy(key: ContentKey, ...values: readonly unknown[]): string {
 }
 
 const dictionary: Dictionary = {
-  key: "demo-novel-shelf-page",
+  key: "demo-novel-nav-config",
   content: t(content),
 };
 

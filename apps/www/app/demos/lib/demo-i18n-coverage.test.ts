@@ -481,7 +481,13 @@ const inventory = {
     fixtures: ["_data/content.ts"],
   },
   novel: {
-    routes: ["page.tsx", "shelf/page.tsx", "write/page.tsx"],
+    routes: [
+      "(site)/books/[id]/page.tsx",
+      "(site)/page.tsx",
+      "(site)/studio/[id]/page.tsx",
+      "(site)/studio/page.tsx",
+      "read/[id]/page.tsx",
+    ],
     fixtures: ["_data/books.ts"],
   },
   mobile: {

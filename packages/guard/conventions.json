@@ -6521,6 +6521,13 @@
       "source": "packages/ui/src/novel-reader/novel-reader.md"
     },
     {
+      "id": "component/novel-reader/pitfall/9",
+      "scope": "novel-reader",
+      "title": "NovelReader",
+      "rule": "不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章留在章首，下一章留在章末，都在正文流里。菜单收起后这两处仍在。顶栏里的切章可以跟着菜单一起藏。",
+      "source": "packages/ui/src/novel-reader/novel-reader.md"
+    },
+    {
       "id": "component/number-field/pitfall/1",
       "scope": "number-field",
       "title": "NumberField",
@@ -11306,7 +11313,7 @@
   ],
   "stats": {
     "componentDocs": 401,
-    "componentAdvisories": 1576,
-    "totalAdvisories": 1586
+    "componentAdvisories": 1577,
+    "totalAdvisories": 1587
   }
 }

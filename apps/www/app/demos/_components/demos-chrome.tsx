@@ -15,8 +15,9 @@ export function DemosChrome() {
   const router = useRouter();
   const bare = stripDocsBasePath(pathname);
   const onGallery = bare === "/demos";
-  // ai-workflow 的返回在工作室顶栏。小说阅读页的左右缘是翻页热区，
-  // 左下角悬浮按钮会挡住向后翻，返回改放到唤出菜单的角落。
+  // ai-workflow 的返回在工作室顶栏。
+  // 小说站自带顶栏。阅读页左右缘是翻页热区，左下角悬浮按钮会挡住向后翻，
+  // 返回示例库放在唤出菜单的角落。
   const ownsBackAffordance =
     bare.startsWith("/demos/ai-workflow") || bare.startsWith("/demos/novel");
 

@@ -219,9 +219,9 @@ export const demos: DemoMeta[] = [
   },
   {
     slug: "novel",
-    title: "渡口的灯",
+    title: "渡口小说站",
     description:
-      "打开就是正文的小说阅读页：滚动、覆盖、仿真三种翻页，字号行距和栏宽在同一套设置里，进度按章节和字符偏移记住。书架和写作是从唤出菜单进的，没有开屏、下载和促销。100% 由 @hulianui/ui 搭建，dogfood NovelReader / NovelEditor。",
+      "可逛的迷你小说站：书库和书页进入沉浸阅读，章首上一章、章末下一章留在正文里，菜单默认不占位。作者后台用 NovelEditor 管章节和正文，改动写回同一本书。100% 由 @hulianui/ui 搭建。",
     href: "/demos/novel",
     category: "阅读",
     status: "done",

@@ -495,8 +495,14 @@ export function NovelReader({
   const column = (
     <div className={cn("mx-auto flex w-full min-h-full flex-col px-6 py-8", NOVEL_MEASURE_CLASS[measure])}>
       {index > 0 ? (
-        <div className="mb-6">
-          <Button type="button" variant="ghost" muted size="sm" onClick={() => goChapter(index - 1, Number.MAX_SAFE_INTEGER)}>
+        <div data-novel-chapter-nav="start" className="mb-8">
+          <Button
+            type="button"
+            variant="ghost"
+            muted
+            size="sm"
+            onClick={() => goChapter(index - 1, Number.MAX_SAFE_INTEGER)}
+          >
             {labels.previousChapter}
           </Button>
         </div>
@@ -523,12 +529,15 @@ export function NovelReader({
         </Heading>
         <Markdown>{active.content}</Markdown>
       </article>
-      <div className="mt-10 flex items-center justify-between gap-3 border-t border-border pt-6">
+      <div
+        data-novel-chapter-nav="end"
+        className="mt-10 flex items-center justify-between gap-3 rounded-[var(--radius)] border border-border bg-surface/60 px-4 py-3"
+      >
         <Text size="sm" tone="muted">
           {labels.chapterEnd}
         </Text>
         {index < chapters.length - 1 ? (
-          <Button type="button" variant="ghost" onClick={() => goChapter(index + 1, 0)}>
+          <Button type="button" variant="outline" size="sm" onClick={() => goChapter(index + 1, 0)}>
             {labels.nextChapter}
           </Button>
         ) : null}
@@ -617,7 +626,7 @@ export function NovelReader({
       )}
 
       {chrome ? (
-        <div className="pointer-events-none absolute inset-0 z-20">
+        <div data-novel-chrome="" className="pointer-events-none absolute inset-0 z-20">
           <header className="pointer-events-auto absolute inset-x-0 top-0 flex flex-col gap-2 bg-surface/80 px-3 py-2 backdrop-blur-md">
             <div className="flex items-center gap-2">
               <div className="flex shrink-0 items-center gap-1">{leading}</div>

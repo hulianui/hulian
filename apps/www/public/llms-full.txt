@@ -14608,7 +14608,9 @@ import { NovelReader } from "@hulianui/ui"
 />
 ```
 
-点正文左右边缘、滚轮、方向键是同一套向前 / 向后。点正中只唤出菜单。菜单里可以改仿真、覆盖、滚动，以及字号、行距、栏宽和纸色。底部同时有全书章条和章内百分比。
+点正文左右边缘、滚轮、方向键是同一套向前 / 向后。点正中只唤出菜单。菜单里可以改仿真、覆盖、滚动，以及字号、行距、栏宽和纸色。唤出后的底栏同时有全书章条和章内百分比。
+
+章首有一枚「上一章」（第一章没有，正文直接开始）。章末有一张章尾卡片，有下一章时「下一章」就在卡片上。这两枚按钮在正文流里，菜单收起时也在，不做成整页顶栏或底栏。键盘仍可用：方向键翻页，Alt + 方向键或 `[` `]` 切章。
 
 ## 禁忌 / 坑
 
@@ -14620,6 +14622,7 @@ import { NovelReader } from "@hulianui/ui"
 - 正中热区只负责唤出或收起菜单。返回、书架放在 `leading` / `trailing`，不要放在正文正中。
 - 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。
 - 章内的「上一章 / 下一章」用按钮文案，不要拿 Pagination 的「上一页 / 下一页」来切章。
+- 不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章留在章首，下一章留在章末，都在正文流里。菜单收起后这两处仍在。顶栏里的切章可以跟着菜单一起藏。
 
 ## 相关
 [NovelEditor](https://hulianui.haloritual.com/zh/components/novel-editor) · [Markdown](https://hulianui.haloritual.com/zh/components/markdown) · [Drawer](https://hulianui.haloritual.com/zh/components/drawer) · [Empty](https://hulianui.haloritual.com/zh/components/empty)

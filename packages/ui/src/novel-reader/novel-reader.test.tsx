@@ -31,16 +31,36 @@ function mockBox() {
 }
 
 describe("NovelReader", () => {
-  it("默认收起菜单，正文先出现，章内可以进入下一章", () => {
+  it("默认没有整页顶底栏，章末下一章在正文流里", () => {
     render(<NovelReader chapters={chapters} />);
+    expect(document.querySelector("[data-novel-chrome]")).toBeNull();
     expect(screen.queryByRole("button", { name: "目录" })).toBeNull();
     expect(screen.queryByRole("button", { name: "本章说" })).toBeNull();
+    expect(document.querySelector("[data-novel-chapter-nav='start']")).toBeNull();
     expect(screen.getByRole("heading", { name: "第 1 章 夜航" })).toBeTruthy();
     expect(screen.getByText("河面暗下来。")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "下一章" }));
+    const end = document.querySelector("[data-novel-chapter-nav='end']");
+    const next = screen.getByRole("button", { name: "下一章" });
+    expect(end?.contains(next)).toBe(true);
+    expect(end?.textContent).toContain("本章完");
+    fireEvent.click(next);
     const region = screen.getByRole("region", { name: "正文" });
     expect(region.getAttribute("data-novel-chapter")).toBe("c2");
+    expect(document.querySelector("[data-novel-chrome]")).toBeNull();
     expect(screen.queryByRole("button", { name: "目录" })).toBeNull();
+  });
+
+  it("有上一章时，上一章在章首而不是顶栏", () => {
+    render(<NovelReader chapters={chapters} defaultChapterId="c2" />);
+    expect(document.querySelector("[data-novel-chrome]")).toBeNull();
+    const start = document.querySelector("[data-novel-chapter-nav='start']");
+    const previous = screen.getByRole("button", { name: "上一章" });
+    expect(start?.contains(previous)).toBe(true);
+    expect(document.querySelector("[data-novel-chapter-nav='end'] button")).toBeNull();
+    fireEvent.click(previous);
+    const region = screen.getByRole("region", { name: "正文" });
+    expect(region.getAttribute("data-novel-chapter")).toBe("c1");
+    expect(document.querySelector("[data-novel-chapter-nav='end']")?.contains(screen.getByRole("button", { name: "下一章" }))).toBe(true);
   });
 
   it("点中间唤出菜单，点边缘不把菜单打开；目录跳章后焦点回到正文", () => {
@@ -50,6 +70,8 @@ describe("NovelReader", () => {
     fireEvent.click(region, { clientX: 10, clientY: 200 });
     expect(screen.queryByRole("button", { name: "目录" })).toBeNull();
     fireEvent.click(region, { clientX: 200, clientY: 200 });
+    expect(document.querySelector("[data-novel-chrome]")).toBeTruthy();
+    expect(document.querySelector("[data-novel-chapter-nav='end']")?.textContent).toContain("下一章");
     fireEvent.click(screen.getByRole("button", { name: "目录" }));
     expect(screen.getByRole("dialog", { name: "目录" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "第 2 章 返程" }));

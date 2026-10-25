@@ -56,7 +56,7 @@ export interface NovelReaderProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   onChapterChange?: (id: string) => void;
   /**
    * 翻页方式。滚动、覆盖、仿真共用一套「向前 / 向后」。
-   * 滚动是默认：长文连读，到章末可以继续进入下一章。
+   * 滚动是默认：长文连读。章末的「下一章」写在正文流里，不靠常驻底栏。
    */
   turn?: NovelTurn;
   defaultTurn?: NovelTurn;

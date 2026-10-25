@@ -1,16 +1,14 @@
 import { t, type Dictionary } from "intlayer";
-import { DOCS_LOCALE } from "../../../lib/docs-locale";
+import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 
 export const content = {
   "zh-CN": {
-    shelf: "书架",
-    gallery: "示例库",
-    write: "写作",
+    backToReading: "返回正文",
+    allBooks: "全部书稿",
   },
   en: {
-    shelf: "Shelf",
-    gallery: "Gallery",
-    write: "Write",
+    backToReading: "Back to the text",
+    allBooks: "All manuscripts",
   },
 } as const;
 
@@ -24,7 +22,7 @@ export function copy(key: ContentKey, ...values: readonly unknown[]): string {
 }
 
 const dictionary: Dictionary = {
-  key: "demo-novel-page",
+  key: "demo-novel-editor-client",
   content: t(content),
 };
 
