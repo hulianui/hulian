@@ -85,7 +85,7 @@ Inherits `HTMLAttributes<HTMLDivElement>` except the native `title`. The root ne
 
 Edge taps, swipes, the wheel, and arrow keys share one forward and back. The center only summons the menu. That menu changes simulation, cover, and scroll, plus type size, line height, measure, and paper. Type size, line height, and paper use type tokens. While the menu is hidden, the bottom edge keeps a book bar, a chapter bar, and the in-chapter percent, with no buttons. The summoned footer labels both bars. Closing the catalog or settings returns focus to the prose and keeps the character offset.
 
-In the default scroll, both the chapter start and the chapter end have previous chapter and next chapter. They sit in the text flow, not in a page-level top or bottom bar. A button disables at the ends of the book. They stay when the menu is hidden. Arrow keys still turn the view. Alt plus an arrow, or `[` and `]`, still change the chapter.
+The chapter start has a light previous-chapter button. The first chapter omits it, so the prose starts immediately. The chapter end is a card. When another chapter follows, next chapter sits on that card. The last chapter omits it. Both controls are in the text flow and stay when the menu is hidden. They are not a page-level top or bottom bar. Previous and next in the summoned bars hide with the menu. Arrow keys still turn the view. Alt plus an arrow, or `[` and `]`, still change the chapter.
 
 ## Pitfalls
 
@@ -97,7 +97,7 @@ In the default scroll, both the chapter start and the chapter end have previous 
 - The center hotspot only toggles the menu. Put back and shelf in `leading` or `trailing`.
 - Catalog and settings are bottom drawers. Do not pin a gear to the left edge.
 - Chapter buttons say previous chapter and next chapter. Do not reuse Pagination, whose labels mean previous page and next page.
-- Do not pin a page-level header or footer for previous and next chapter. Scroll mode keeps both buttons at the chapter start and at the chapter end while the menu is hidden. The summoned top and bottom bars may repeat them, and those bars hide with the menu.
+- Do not pin a page-level header or footer for previous and next chapter. Previous chapter stays at the chapter start and is omitted on the first chapter. Next chapter stays at the chapter end, in the text flow, including while the menu is hidden, and is omitted on the last chapter. Chapter controls in the top and bottom bars hide with the menu.
 
 ## Related
 [NovelEditor](../novel-editor/novel-editor.md) · [Markdown](../markdown/markdown.md) · [Drawer](../drawer/drawer.md) · [Empty](../empty/empty.md)
