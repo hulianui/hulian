@@ -41,6 +41,7 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.scrollable` | `boolean` | `true` | Whether the body scrolls itself. When `false`, the body becomes a column flex container that passes a definite height to its children. |
 | `DrawerContent.bodyClassName` | `string` | - | Appended to the body container. |
 | `DrawerContent.className` | `string` | - | Content-container class name. |
+| `DrawerContent.style` | `CSSProperties` | - | Merged onto the panel with the slide transition. Same-named properties here win. For a translucent fill, set `color-mix(...)`. `bg-surface/80` alone is not enough: production CSS emits an opaque `var(--color-surface)` first, and the panel stays opaque when the `color-mix(in lab)` support test fails. |
 
 ### Size steps
 

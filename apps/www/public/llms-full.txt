@@ -14620,7 +14620,7 @@ import { NovelReader } from "@hulianui/ui"
 - 夜间纸色不是系统 Dark，也不是纯黑。`night` 用暗色 `bg-surface` 和更软的 `text-muted-foreground`，chrome 仍跟页面 token。`oled` 才用暗色 `bg-bg`。颜色走 token，不要写死色值。
 - 组件不提供批注或本章说。不要在阅读器打开时叠开屏、下载、促销或任务弹层。
 - 正中热区只负责唤出或收起菜单。返回、书架放在 `leading` / `trailing`，不要放在正文正中。
-- 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用 `bg-surface/60` 且不要 `backdrop-blur`。`bg-surface/80` 再加整屏压暗，在浅色页上会合成一块不透明浅灰，当前句被盖死。
+- 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用内联 `color-mix(in srgb, var(--color-surface) 80%, transparent)`，不要 `backdrop-blur`。只写 `bg-surface/80` 时，生产 CSS 会先落到实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测就变成不透明浅灰，当前句被盖死。
 - 章内的「上一章 / 下一章」用按钮文案，不要拿 Pagination 的「上一页 / 下一页」来切章。
 - 不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章只留在章首，第一章不放；下一章只留在章末，最后一章不放。章末的下一章在菜单收起时也在。顶栏和底栏里的切章跟着菜单一起藏。
 
@@ -20848,6 +20848,7 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children |
 | `DrawerContent.bodyClassName` | `string` | - | 追加到正文区容器 |
 | `DrawerContent.className` | `string` | - | 内容容器类名 |
+| `DrawerContent.style` | `CSSProperties` | - | 落到面板上，和滑入过渡合并，同名属性以这里为准。半透明底写 `color-mix(...)`，不要只靠 `bg-surface/80`：生产 CSS 里那条类先是实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测时面板不透明 |
 
 ### 尺寸档对照
 

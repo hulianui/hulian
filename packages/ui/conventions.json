@@ -6510,7 +6510,7 @@
       "id": "component/novel-reader/pitfall/7",
       "scope": "novel-reader",
       "title": "NovelReader",
-      "rule": "目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用 `bg-surface/60` 且不要 `backdrop-blur`。`bg-surface/80` 再加整屏压暗，在浅色页上会合成一块不透明浅灰，当前句被盖死。",
+      "rule": "目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用内联 `color-mix(in srgb, var(--color-surface) 80%, transparent)`，不要 `backdrop-blur`。只写 `bg-surface/80` 时，生产 CSS 会先落到实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测就变成不透明浅灰，当前句被盖死。",
       "source": "packages/ui/src/novel-reader/novel-reader.md"
     },
     {

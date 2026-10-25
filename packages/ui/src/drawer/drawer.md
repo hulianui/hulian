@@ -41,6 +41,7 @@ import { Drawer, DrawerTrigger, DrawerClose, DrawerContent, drawerVariants } fro
 | `DrawerContent.scrollable` | `boolean` | `true` | 正文区是否自带纵向滚动。`false` 时正文变成列向 flex 容器，把确定高度传给 children |
 | `DrawerContent.bodyClassName` | `string` | - | 追加到正文区容器 |
 | `DrawerContent.className` | `string` | - | 内容容器类名 |
+| `DrawerContent.style` | `CSSProperties` | - | 落到面板上，和滑入过渡合并，同名属性以这里为准。半透明底写 `color-mix(...)`，不要只靠 `bg-surface/80`：生产 CSS 里那条类先是实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测时面板不透明 |
 
 ### 尺寸档对照
 

@@ -181,10 +181,13 @@ describe("NovelReader", () => {
     const sentence = screen.getByText("河面暗下来。");
     fireEvent.click(region, { clientX: 200, clientY: 200 });
     fireEvent.click(screen.getByRole("button", { name: "阅读设置" }));
-    const dialog = screen.getByRole("dialog", { name: "阅读设置" });
-    expect(dialog.className).toContain("bg-surface/60");
-    expect(dialog.className).toContain("backdrop-blur-none");
+    const dialog = screen.getByRole("dialog", { name: "阅读设置" }) as HTMLElement;
+    expect(dialog.style.backgroundColor).toBe(
+      "color-mix(in srgb, var(--color-surface) 80%, transparent)",
+    );
     expect(dialog.className.includes("bg-surface/80")).toBe(false);
+    expect(dialog.className.includes("bg-surface/60")).toBe(false);
+    expect(dialog.className).toContain("backdrop-blur-none");
     expect(dialog.className.includes("backdrop-blur-md")).toBe(false);
     expect(dialog.className).toContain("bottom-0");
     const backdrop = document.body.querySelector("[class*='bg-transparent']");

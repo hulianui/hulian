@@ -95,7 +95,7 @@ The chapter start has a light previous-chapter button. The first chapter omits i
 - Night paper is not system dark and not pure black. `night` uses dark `bg-surface` and softer `text-muted-foreground`. Chrome keeps the page tokens. `oled` uses dark `bg-bg`. Use tokens.
 - The reader has no annotation or chapter-comment layer. Do not cover it with a splash, an app install prompt, a promotion, or a task modal.
 - The center hotspot only toggles the menu. Put back and shelf in `leading` or `trailing`.
-- Catalog and settings are bottom drawers. Do not pin a gear to the left edge. The settings backdrop stays transparent, and the panel uses `bg-surface/60` without `backdrop-blur`. `bg-surface/80` plus a full-screen dim composites to an opaque light gray on a light page and hides the current sentence.
+- Catalog and settings are bottom drawers. Do not pin a gear to the left edge. The settings backdrop stays transparent. The panel sets an inline `color-mix(in srgb, var(--color-surface) 80%, transparent)` and does not use `backdrop-blur`. `bg-surface/80` alone is emitted as opaque `var(--color-surface)` first, so a failed `color-mix(in lab)` test leaves a solid light panel and hides the current sentence.
 - Chapter buttons say previous chapter and next chapter. Do not reuse Pagination, whose labels mean previous page and next page.
 - Do not pin a page-level header or footer for previous and next chapter. Previous chapter stays at the chapter start and is omitted on the first chapter. Next chapter stays at the chapter end, in the text flow, including while the menu is hidden, and is omitted on the last chapter. Chapter controls in the top and bottom bars hide with the menu.
 

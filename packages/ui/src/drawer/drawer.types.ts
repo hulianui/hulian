@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, CSSProperties, ReactNode } from "react";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 
 export type DrawerSide = "left" | "right" | "top" | "bottom";
@@ -93,6 +93,13 @@ export interface DrawerContentProps {
 
   container?: ComponentProps<typeof BaseDialog.Portal>["container"];
   className?: string;
+  /**
+   * 落到抽屉面板上的内联样式，和滑入过渡合并，同名属性以这里为准。
+   * 半透明底要用它写 `color-mix`，不要只靠 `bg-surface/80`：
+   * 那条工具类在生产 CSS 里先落到实色 `var(--color-surface)`，
+   * 浏览器不过 `color-mix(in lab)` 检测时面板就是不透明的。
+   */
+  style?: CSSProperties;
   /**
    * 抽屉的无障碍名，直接落到 popup 上（#272）。
    *

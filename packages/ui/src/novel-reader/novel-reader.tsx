@@ -801,10 +801,12 @@ export function NovelReader({
           side="bottom"
           size="sm"
           title={labels.settings}
-          // /80 再加整屏压暗和 backdrop-blur，浅色页上会合成一块不透明浅灰，当前句被盖死。
-          // 遮罩保持透明，面板只用更透的 surface，字留在抽屉后面仍能看见。
-          className="bg-surface/60 backdrop-blur-none"
+          // bg-surface/80 在生产 CSS 里先写成实色 var(--color-surface)，
+          // 不过 color-mix(in lab) 检测时整块是不透明浅底。内联 color-mix 不走这条回退。
+          // 遮罩保持透明、面板不模糊，当前句才能从 80% surface 后面透出来。
+          className="backdrop-blur-none"
           backdropClassName="bg-transparent backdrop-blur-none"
+          style={{ backgroundColor: "color-mix(in srgb, var(--color-surface) 80%, transparent)" }}
         >
           <div className="flex flex-col gap-4 pb-2">
             <ChoiceRow
