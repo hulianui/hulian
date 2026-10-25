@@ -5,7 +5,7 @@
 <h1 align="center">Hulian (瑚琏)</h1>
 
 <p align="center">
-  A beautiful, practical React design system — <b>399 components</b>, OKLCH theming · Tailwind v4 · zero-flash dark mode · runtime theming.
+  A beautiful, practical React design system — <b>401 components</b>, OKLCH theming · Tailwind v4 · zero-flash dark mode · runtime theming.
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@
 
 ## ✨ Features
 
-- 🧩 **399 components** — controls / forms / data display / feedback / navigation / overlay / charts / effect backgrounds / AI agent / live streaming / node canvas …
+- 🧩 **401 components** — controls / forms / data display / feedback / navigation / overlay / charts / effect backgrounds / AI agent / live streaming / node canvas …
 - 🎨 **OKLCH two-layer tokens** — primitive + semantic layers; toggle `[data-theme]` with zero flash, re-theme at runtime
 - ♿ **Accessibility first** — behavior layer built on [Base UI](https://base-ui.com); keyboard / focus / ARIA out of the box
 - 🌗 **Zero-flash dark mode** — `ThemeProvider` + an entry inline script keep SSR first paint clean
@@ -41,7 +41,7 @@
 - 🔧 **Source distribution** — ships TSX source so your Tailwind fully owns the styling; no black-box CSS
 - 📚 **AI-first docs** — every component has Props/Events/Slots + live examples + a playground, and emits `llms.txt`
 - 🤖 **Constrained generation ready** — `llms-props.json` gives every prop its kind, enum values and default, plus an export-name index, so consumers never parse markdown
-- 🏗️ **19 real demos** — CRM / shop / data dashboard / AI workflow / live streaming … all dogfooding the library
+- 🏗️ **20 real demos** — CRM / shop / data dashboard / AI workflow / live streaming … all dogfooding the library
 
 ## 📦 Quick start
 
