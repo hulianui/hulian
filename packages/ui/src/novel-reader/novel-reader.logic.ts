@@ -141,7 +141,7 @@ export function paperPresentation(paper: NovelPaper): { theme?: "light" | "dark"
     case "eye":
       return { theme: "light", className: "bg-success/12 text-foreground" };
     case "night":
-      return { theme: "dark", className: "bg-surface text-foreground" };
+      return { theme: "dark", className: "bg-surface text-muted-foreground" };
     case "oled":
       return { theme: "dark", className: "bg-bg text-foreground" };
     default:

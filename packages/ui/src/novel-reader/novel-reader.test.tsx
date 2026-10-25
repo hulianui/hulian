@@ -73,9 +73,13 @@ describe("NovelReader", () => {
     fireEvent.click(region, { clientX: 10, clientY: 200 });
     expect(screen.queryByRole("button", { name: "目录" })).toBeNull();
     fireEvent.click(region, { clientX: 200, clientY: 200 });
-    expect(document.querySelector("[data-novel-chrome]")).toBeTruthy();
+    const chrome = document.querySelector("[data-novel-chrome]");
+    expect(chrome).toBeTruthy();
+    expect(chrome?.querySelectorAll("button").length).toBeGreaterThan(0);
+    const catalogs = screen.getAllByRole("button", { name: "目录" });
+    expect(catalogs).toHaveLength(2);
     expect(document.querySelector("[data-novel-chapter-nav='end']")?.textContent).toContain("下一章");
-    fireEvent.click(screen.getByRole("button", { name: "目录" }));
+    fireEvent.click(catalogs[0]);
     expect(screen.getByRole("dialog", { name: "目录" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "第 2 章 返程" }));
     expect(region.getAttribute("data-novel-chapter")).toBe("c2");
@@ -162,9 +166,11 @@ describe("NovelReader", () => {
     const article = document.querySelector("article");
     expect(article?.getAttribute("data-theme")).toBe("dark");
     expect(article?.className).toContain("bg-surface");
+    expect(article?.className).toContain("text-muted-foreground");
     const region = screen.getByRole("region", { name: "正文" });
     expect(region.hasAttribute("data-theme")).toBe(false);
     expect(region.className.includes("bg-surface")).toBe(false);
+    expect(region.className.includes("text-muted-foreground")).toBe(false);
     const sentence = screen.getByText("河面暗下来。");
     fireEvent.click(region, { clientX: 200, clientY: 200 });
     fireEvent.click(screen.getByRole("button", { name: "阅读设置" }));

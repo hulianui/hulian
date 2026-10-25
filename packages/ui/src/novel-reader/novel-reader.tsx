@@ -685,6 +685,9 @@ export function NovelReader({
               <Button type="button" variant="ghost" size="sm" disabled={index <= 0} onClick={() => goChapter(index - 1, 0)}>
                 {labels.previousChapter}
               </Button>
+              <Button type="button" variant="outline" size="sm" onClick={openCatalog}>
+                {labels.catalog}
+              </Button>
               <Button
                 type="button"
                 variant="ghost"

@@ -14617,7 +14617,7 @@ import { NovelReader } from "@hulianui/ui"
 - 根节点不带高度。不写 `h-dvh` 或 `h-[28rem]` 时，滚动区和翻页视口都量不到。
 - 进度是 `(chapterId, charOffset)`，不是页码。字号、行距、栏宽一变，页数会变，页码会对不上原来那一句。
 - 不要在外面再套一条吸顶顶栏。菜单默认不占位，自己再加一条就会把正文顶下去。
-- 夜间纸色不是系统 Dark，也不是纯黑。`night` 用暗色 `bg-surface`，`oled` 才用暗色 `bg-bg`。颜色走 token，不要写死色值。
+- 夜间纸色不是系统 Dark，也不是纯黑。`night` 用暗色 `bg-surface` 和更软的 `text-muted-foreground`，chrome 仍跟页面 token。`oled` 才用暗色 `bg-bg`。颜色走 token，不要写死色值。
 - 组件不提供批注或本章说。不要在阅读器打开时叠开屏、下载、促销或任务弹层。
 - 正中热区只负责唤出或收起菜单。返回、书架放在 `leading` / `trailing`，不要放在正文正中。
 - 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。

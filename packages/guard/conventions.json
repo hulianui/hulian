@@ -6489,7 +6489,7 @@
       "id": "component/novel-reader/pitfall/4",
       "scope": "novel-reader",
       "title": "NovelReader",
-      "rule": "夜间纸色不是系统 Dark，也不是纯黑。`night` 用暗色 `bg-surface`，`oled` 才用暗色 `bg-bg`。颜色走 token，不要写死色值。",
+      "rule": "夜间纸色不是系统 Dark，也不是纯黑。`night` 用暗色 `bg-surface` 和更软的 `text-muted-foreground`，chrome 仍跟页面 token。`oled` 才用暗色 `bg-bg`。颜色走 token，不要写死色值。",
       "source": "packages/ui/src/novel-reader/novel-reader.md"
     },
     {

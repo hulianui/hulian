@@ -92,7 +92,7 @@ The chapter start has a previous-chapter button, except the first chapter, which
 - The root has no height of its own. Without `h-dvh` or `h-[28rem]`, the scroller and the page viewport cannot be measured.
 - Progress is `(chapterId, charOffset)`, not a page index. Changing type size, line height, or measure changes the page count and would miss the sentence.
 - Do not wrap the reader in another sticky app bar. The menu is out of flow until summoned.
-- Night paper is not system dark and not pure black. `night` uses dark `bg-surface`; `oled` uses dark `bg-bg`. Use tokens.
+- Night paper is not system dark and not pure black. `night` uses dark `bg-surface` and softer `text-muted-foreground`. Chrome keeps the page tokens. `oled` uses dark `bg-bg`. Use tokens.
 - The reader has no annotation or chapter-comment layer. Do not cover it with a splash, an app install prompt, a promotion, or a task modal.
 - The center hotspot only toggles the menu. Put back and shelf in `leading` or `trailing`.
 - Catalog and settings are bottom drawers. Do not pin a gear to the left edge.
