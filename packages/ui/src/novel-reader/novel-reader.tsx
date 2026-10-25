@@ -521,21 +521,47 @@ export function NovelReader({
     step(direction);
   };
 
+  const atFirst = index <= 0;
+  const atLast = index < 0 || index >= chapters.length - 1;
+  const chapterJump = (placement: "start" | "end") => (
+    <div
+      data-novel-chapter-nav={placement}
+      className={cn(
+        "flex items-center justify-between gap-2",
+        placement === "start" ? "mb-6" : "mt-10 rounded-[var(--radius)] border border-border bg-surface/60 px-4 py-3",
+      )}
+    >
+      <Button
+        type="button"
+        variant="ghost"
+        muted
+        size="sm"
+        disabled={atFirst}
+        onClick={() => goChapter(index - 1, Number.MAX_SAFE_INTEGER)}
+      >
+        {labels.previousChapter}
+      </Button>
+      {placement === "end" ? (
+        <Text size="sm" tone="muted">
+          {labels.chapterEnd}
+        </Text>
+      ) : null}
+      <Button
+        type="button"
+        variant={placement === "end" ? "outline" : "ghost"}
+        muted={placement === "start"}
+        size="sm"
+        disabled={atLast}
+        onClick={() => goChapter(index + 1, 0)}
+      >
+        {labels.nextChapter}
+      </Button>
+    </div>
+  );
+
   const column = (
     <div className={cn("mx-auto flex w-full min-h-full flex-col px-6 py-8", NOVEL_MEASURE_CLASS[measure])}>
-      {index > 0 ? (
-        <div data-novel-chapter-nav="start" className="mb-8">
-          <Button
-            type="button"
-            variant="ghost"
-            muted
-            size="sm"
-            onClick={() => goChapter(index - 1, Number.MAX_SAFE_INTEGER)}
-          >
-            {labels.previousChapter}
-          </Button>
-        </div>
-      ) : null}
+      {chapterJump("start")}
       <article
         ref={articleRef}
         data-paper={paper}
@@ -558,19 +584,7 @@ export function NovelReader({
         </Heading>
         <Markdown>{active.content}</Markdown>
       </article>
-      <div
-        data-novel-chapter-nav="end"
-        className="mt-10 flex items-center justify-between gap-3 rounded-[var(--radius)] border border-border bg-surface/60 px-4 py-3"
-      >
-        <Text size="sm" tone="muted">
-          {labels.chapterEnd}
-        </Text>
-        {index < chapters.length - 1 ? (
-          <Button type="button" variant="outline" size="sm" onClick={() => goChapter(index + 1, 0)}>
-            {labels.nextChapter}
-          </Button>
-        ) : null}
-      </div>
+      {chapterJump("end")}
     </div>
   );
 

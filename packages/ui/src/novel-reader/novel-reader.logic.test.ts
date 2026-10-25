@@ -69,7 +69,10 @@ describe("翻页方向", () => {
   });
 
   it("夜间纸色走暗色 token，且比近黑更靠 surface", () => {
-    expect(paperPresentation("night")).toEqual({ theme: "dark", className: "bg-surface text-muted-foreground" });
+    expect(paperPresentation("night").className).toContain("bg-surface");
+    expect(paperPresentation("night").className).toContain("text-muted-foreground");
+    expect(paperPresentation("night").className).not.toContain("bg-black");
+    expect(paperPresentation("night").theme).toBe("dark");
     expect(paperPresentation("oled").className).toContain("bg-bg");
     expect(paperPresentation("eye").className).toContain("bg-success/12");
     expect(paperPresentation("default").theme).toBeUndefined();

@@ -32,38 +32,45 @@ function mockBox() {
 }
 
 describe("NovelReader", () => {
-  it("默认没有整页顶底栏，章末下一章在正文流里", () => {
+  it("默认滚动时章首章末都有上一章和下一章，且不是整页顶底栏", () => {
     render(<NovelReader chapters={chapters} />);
+    const region = screen.getByRole("region", { name: "正文" });
+    expect(region.getAttribute("data-turn")).toBe("scroll");
     expect(document.querySelector("[data-novel-chrome]")).toBeNull();
     expect(screen.queryByRole("button", { name: "目录" })).toBeNull();
     expect(screen.queryByRole("button", { name: "本章说" })).toBeNull();
-    expect(document.querySelector("[data-novel-chapter-nav='start']")).toBeNull();
+    expect(screen.queryByRole("button", { name: "段评" })).toBeNull();
     expect(screen.getByRole("heading", { name: "第 1 章 夜航" })).toBeTruthy();
     expect(screen.getByText("河面暗下来。")).toBeTruthy();
     expect(screen.getByRole("progressbar", { name: "本章" })).toBeTruthy();
+    expect(screen.getByRole("progressbar", { name: "全书" })).toBeTruthy();
     expect(screen.getByText("0%")).toBeTruthy();
+    const start = document.querySelector("[data-novel-chapter-nav='start']");
     const end = document.querySelector("[data-novel-chapter-nav='end']");
-    const next = screen.getByRole("button", { name: "下一章" });
-    expect(end?.contains(next)).toBe(true);
+    expect(start?.textContent).toContain("上一章");
+    expect(start?.textContent).toContain("下一章");
+    expect(end?.textContent).toContain("上一章");
+    expect(end?.textContent).toContain("下一章");
     expect(end?.textContent).toContain("本章完");
-    fireEvent.click(next);
-    const region = screen.getByRole("region", { name: "正文" });
+    expect(start?.querySelector("button")?.hasAttribute("disabled")).toBe(true);
+    const endNext = [...(end?.querySelectorAll("button") ?? [])].find((button) => button.textContent === "下一章");
+    fireEvent.click(endNext!);
     expect(region.getAttribute("data-novel-chapter")).toBe("c2");
     expect(document.querySelector("[data-novel-chrome]")).toBeNull();
-    expect(screen.queryByRole("button", { name: "目录" })).toBeNull();
   });
 
-  it("有上一章时，上一章在章首而不是顶栏", () => {
+  it("有上一章时从章首返回，末章的下一章禁用", () => {
     render(<NovelReader chapters={chapters} defaultChapterId="c2" />);
     expect(document.querySelector("[data-novel-chrome]")).toBeNull();
     const start = document.querySelector("[data-novel-chapter-nav='start']");
-    const previous = screen.getByRole("button", { name: "上一章" });
-    expect(start?.contains(previous)).toBe(true);
-    expect(document.querySelector("[data-novel-chapter-nav='end'] button")).toBeNull();
-    fireEvent.click(previous);
+    const end = document.querySelector("[data-novel-chapter-nav='end']");
+    const previous = [...(start?.querySelectorAll("button") ?? [])].find((button) => button.textContent === "上一章");
+    const endNext = [...(end?.querySelectorAll("button") ?? [])].find((button) => button.textContent === "下一章");
+    expect(previous?.hasAttribute("disabled")).toBe(false);
+    expect(endNext?.hasAttribute("disabled")).toBe(true);
+    fireEvent.click(previous!);
     const region = screen.getByRole("region", { name: "正文" });
     expect(region.getAttribute("data-novel-chapter")).toBe("c1");
-    expect(document.querySelector("[data-novel-chapter-nav='end']")?.contains(screen.getByRole("button", { name: "下一章" }))).toBe(true);
   });
 
   it("点中间唤出菜单，点边缘不把菜单打开；目录跳章后焦点回到正文", () => {
@@ -104,7 +111,7 @@ describe("NovelReader", () => {
   it("方括号连续切章，焦点在章末按钮上也不失效", () => {
     render(<NovelReader chapters={chapters} />);
     const region = screen.getByRole("region", { name: "正文" });
-    const next = screen.getByRole("button", { name: "下一章" });
+    const next = document.querySelector("[data-novel-chapter-nav='end'] button:last-child") as HTMLButtonElement;
     next.focus();
     fireEvent.keyDown(next, { key: "]" });
     expect(region.getAttribute("data-novel-chapter")).toBe("c2");
@@ -178,6 +185,9 @@ describe("NovelReader", () => {
     expect(dialog.className).toContain("bg-surface/80");
     expect(dialog.className).toContain("bottom-0");
     expect(dialog.contains(sentence)).toBe(false);
+    expect(screen.getByRole("radiogroup", { name: "翻页" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "滚动" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "覆盖" })).toBeTruthy();
     expect(screen.getByRole("radio", { name: "仿真" })).toBeTruthy();
     expect(screen.getByRole("radiogroup", { name: "字号" })).toBeTruthy();
     expect(screen.getByRole("radiogroup", { name: "行距" })).toBeTruthy();

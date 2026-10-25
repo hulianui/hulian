@@ -6524,7 +6524,7 @@
       "id": "component/novel-reader/pitfall/9",
       "scope": "novel-reader",
       "title": "NovelReader",
-      "rule": "不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章留在章首，下一章留在章末，都在正文流里。菜单收起后这两处仍在。顶栏里的切章可以跟着菜单一起藏。",
+      "rule": "不要做整页常驻的顶栏和底栏来放上一章、下一章。滚动模式下章首和章末都有这两枚按钮，菜单收起后仍在。唤出菜单的顶栏和底栏可以再放一套，并跟着菜单一起藏。",
       "source": "packages/ui/src/novel-reader/novel-reader.md"
     },
     {
