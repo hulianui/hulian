@@ -13,12 +13,60 @@ import {
 } from "./select";
 import { Field } from "../field/field";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+});
 
 async function interact(action: () => Promise<void>) {
   await act(async () => {
     await action();
   });
+}
+
+type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
+
+function optionLabels() {
+  return [...document.querySelectorAll<HTMLElement>("[role='option']")].map(
+    (option) => option.textContent ?? "",
+  );
+}
+
+function setNativeInputValue(input: HTMLInputElement, value: string) {
+  const prototype = Object.getPrototypeOf(input) as HTMLInputElement;
+  const setter =
+    Object.getOwnPropertyDescriptor(prototype, "value")?.set ??
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+  setter?.call(input, value);
+}
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+// 搜索浮层的定位每帧 setState。`act` / `waitFor` 要等到 React 空闲才返回，Playwright 的
+// click / fill / keyboard 要等几何连续两帧不动；两边在 CI 上都会占满 45s。超时后还在飞的
+// insertText 会写进下一条用例刚打开的搜索框。这段交互关掉 act 环境，让更新按真实浏览器提交，
+// 再用定时器轮询 DOM，不进那两条队列。
+async function withLiveUpdates<T>(action: () => Promise<T>) {
+  const actGlobal = globalThis as ActGlobal;
+  const previous = actGlobal.IS_REACT_ACT_ENVIRONMENT;
+  actGlobal.IS_REACT_ACT_ENVIRONMENT = false;
+  try {
+    return await action();
+  } finally {
+    actGlobal.IS_REACT_ACT_ENVIRONMENT = previous;
+  }
+}
+
+async function pollUntil(ready: () => boolean, timeoutMs: number, detail: () => string) {
+  const started = performance.now();
+  while (performance.now() - started < timeoutMs) {
+    if (ready()) return;
+    await delay(16);
+  }
+  throw new Error(detail());
 }
 
 const browserItems = [
@@ -496,9 +544,45 @@ describe("Select multiselect workflows (#328)", () => {
 
   it("searchable 过滤不强插未命中的已选项", async () => {
     render(<ControlledFixture initialValue={["mono", "sans"]} searchable />);
-    await interact(() => userEvent.click(screen.getByRole("combobox")));
-    await interact(() => userEvent.fill(screen.getByPlaceholderText("搜索"), "衬线"));
-    const labels = screen.getAllByRole("option").map((option) => option.textContent);
+    const trigger = screen.getByRole("combobox");
+    // 过滤断言与 jsdom 的「searchable 先过滤，未命中的已选项不被强插」同一条。
+    // Combobox 触发器走 useClick({ event: "mousedown" })，打开本身再等一帧；
+    // 输入走原生 input，让 onChange 读到 currentTarget.value。
+    await withLiveUpdates(async () => {
+      trigger.dispatchEvent(
+        new MouseEvent("mousedown", {
+          bubbles: true,
+          cancelable: true,
+          button: 0,
+          view: window,
+        }),
+      );
+      await pollUntil(
+        () => document.querySelector("input[placeholder='搜索']") != null,
+        10_000,
+        () => "搜索框没有打开",
+      );
+      const search = document.querySelector<HTMLInputElement>("input[placeholder='搜索']");
+      if (search == null) throw new Error("搜索框没有打开");
+      setNativeInputValue(search, "衬线");
+      search.dispatchEvent(
+        new InputEvent("input", {
+          bubbles: true,
+          cancelable: true,
+          inputType: "insertText",
+          data: "衬线",
+        }),
+      );
+      await pollUntil(
+        () => {
+          const labels = optionLabels();
+          return labels.length === 2 && labels[0] === "无衬线" && labels[1] === "衬线";
+        },
+        10_000,
+        () => `过滤结果不符：${JSON.stringify(optionLabels())}`,
+      );
+    });
+    const labels = optionLabels();
     expect(labels).toEqual(["无衬线", "衬线"]);
     expect(labels).not.toContain("等宽");
   });
