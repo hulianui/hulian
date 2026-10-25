@@ -39,6 +39,8 @@ describe("NovelReader", () => {
     expect(document.querySelector("[data-novel-chapter-nav='start']")).toBeNull();
     expect(screen.getByRole("heading", { name: "第 1 章 夜航" })).toBeTruthy();
     expect(screen.getByText("河面暗下来。")).toBeTruthy();
+    expect(screen.getByRole("progressbar", { name: "本章" })).toBeTruthy();
+    expect(screen.getByText("0%")).toBeTruthy();
     const end = document.querySelector("[data-novel-chapter-nav='end']");
     const next = screen.getByRole("button", { name: "下一章" });
     expect(end?.contains(next)).toBe(true);
@@ -126,5 +128,11 @@ describe("NovelReader", () => {
     expect(screen.getByRole("radiogroup", { name: "字号" })).toBeTruthy();
     expect(screen.getByRole("radiogroup", { name: "行距" })).toBeTruthy();
     expect(screen.getByRole("radiogroup", { name: "栏宽" })).toBeTruthy();
+    const offset = region.getAttribute("data-novel-offset");
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    expect(screen.queryByRole("dialog", { name: "阅读设置" })).toBeNull();
+    expect(region.getAttribute("data-novel-offset")).toBe(offset);
+    expect(document.activeElement).toBe(region);
+    expect(screen.getByText("河面暗下来。")).toBeTruthy();
   });
 });

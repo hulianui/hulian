@@ -247,9 +247,7 @@ export function NovelReader({
   const onProgressRef = useRef(onProgressChange);
   const flipSeen = useRef(false);
   const focusReaderAfterCatalog = useRef(false);
-  const catalogOpener = useRef<HTMLElement | null>(null);
   const restoreCatalogOpener = useRef(false);
-  const settingsOpener = useRef<HTMLElement | null>(null);
   const restoreSettingsOpener = useRef(false);
 
   chaptersRef.current = chapters;
@@ -430,31 +428,24 @@ export function NovelReader({
 
   useEffect(() => {
     if (catalogOpen) return;
-    if (focusReaderAfterCatalog.current) {
-      focusReaderAfterCatalog.current = false;
-      restoreCatalogOpener.current = false;
-      regionRef.current?.focus();
-      return;
-    }
-    if (!restoreCatalogOpener.current) return;
+    if (!focusReaderAfterCatalog.current && !restoreCatalogOpener.current) return;
+    focusReaderAfterCatalog.current = false;
     restoreCatalogOpener.current = false;
-    catalogOpener.current?.focus();
+    regionRef.current?.focus();
   }, [catalogOpen]);
 
   useEffect(() => {
     if (settingsOpen || !restoreSettingsOpener.current) return;
     restoreSettingsOpener.current = false;
-    settingsOpener.current?.focus();
+    regionRef.current?.focus();
   }, [settingsOpen]);
 
   const openCatalog = () => {
-    catalogOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     restoreCatalogOpener.current = true;
     setCatalogOpen(true);
   };
 
   const openSettings = () => {
-    settingsOpener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     restoreSettingsOpener.current = true;
     setSettingsOpen(true);
   };
@@ -621,7 +612,12 @@ export function NovelReader({
       {chrome ? null : (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col gap-px">
           <ProgressTrack label={labels.bookProgress} value={bookPercent} className="h-0.5 rounded-none" />
-          <ProgressTrack label={labels.chapterProgress} value={chapterPercent} className="h-0.5 rounded-none" />
+          <div className="flex items-center gap-2 bg-bg/80">
+            <ProgressTrack label={labels.chapterProgress} value={chapterPercent} className="h-0.5 flex-1 rounded-none" />
+            <Text size="xs" tone="muted" numeric className="pr-2">
+              {labels.percent(chapterPercent)}
+            </Text>
+          </div>
         </div>
       )}
 

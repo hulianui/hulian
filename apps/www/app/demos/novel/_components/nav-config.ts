@@ -9,6 +9,6 @@ export const brand = {
 };
 
 export const primaryNav = [
-  { label: copy("library"), href: NOVEL_BASE },
+  { label: copy("library"), href: `${NOVEL_BASE}/library` },
   { label: copy("studio"), href: `${NOVEL_BASE}/studio` },
 ];

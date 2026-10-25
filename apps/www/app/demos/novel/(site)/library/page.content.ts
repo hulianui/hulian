@@ -1,5 +1,5 @@
 import { t, type Dictionary } from "intlayer";
-import { DOCS_LOCALE } from "../../../../lib/docs-locale";
+import { DOCS_LOCALE } from "../../../../../lib/docs-locale";
 
 export const content = {
   "zh-CN": {

@@ -149,7 +149,7 @@ export const demoMetaEn: Record<string, LocalizedDemoMeta> = {
   novel: {
     title: "Ferry Novel",
     description:
-      "A walkable novel site: library and book pages open an immersive reader, with previous chapter at the start and next chapter at the end of the prose. The author studio edits chapters in NovelEditor and writes back to the same book.",
+      "Opens on The Ferry Light. The first chapter is short and complete. Type size, line height, the catalog, and day or night stay in a hidden menu. Progress is stored in this browser. The library and author studio open from that menu.",
     category: "Reading",
     tags: ["NovelReader", "NovelEditor", "Markdown", "reading progress"],
   },

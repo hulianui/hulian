@@ -17,7 +17,7 @@ export function BookDetailClient({ book }: { book: NovelDemoBook }) {
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-8">
-      <Button variant="ghost" size="sm" muted render={<Link href="/demos/novel" />}>
+      <Button variant="ghost" size="sm" muted render={<Link href="/demos/novel/library" />}>
         {copy("backToLibrary")}
       </Button>
       <header className="mt-4">

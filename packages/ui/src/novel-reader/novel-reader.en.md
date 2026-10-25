@@ -83,7 +83,7 @@ Inherits `HTMLAttributes<HTMLDivElement>` except the native `title`. The root ne
 />
 ```
 
-Edge taps, the wheel, and arrow keys share one forward and back. The center only summons the menu. That menu changes simulation, cover, and scroll, plus type size, line height, measure, and paper. The summoned footer shows a book bar and an in-chapter percent.
+Edge taps, swipes, the wheel, and arrow keys share one forward and back. The center only summons the menu. That menu changes simulation, cover, and scroll, plus type size, line height, measure, and paper. Type size, line height, and paper use type tokens. While the menu is hidden, the bottom edge keeps a book bar, a chapter bar, and the in-chapter percent, with no buttons. The summoned footer labels both bars. Closing the catalog or settings returns focus to the prose and keeps the character offset.
 
 The chapter start has a previous-chapter button, except the first chapter, which opens on the prose. The chapter end is a card. When another chapter follows, next chapter sits on that card. Both controls are in the text flow and stay when the menu is hidden. They are not a page-level top or bottom bar. Arrow keys still turn the view. Alt plus an arrow, or `[` and `]`, still change the chapter.
 

@@ -3,11 +3,13 @@ import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 
 export const content = {
   "zh-CN": {
+    library: "书库",
     book: "书页",
     gallery: "示例库",
     write: "写作",
   },
   en: {
+    library: "Library",
     book: "Book",
     gallery: "Gallery",
     write: "Write",

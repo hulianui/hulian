@@ -34,12 +34,10 @@ function Logo() {
   );
 }
 
-function isLibrary(bare: string) {
-  return bare === NOVEL_BASE || bare.startsWith(`${NOVEL_BASE}/books`);
-}
-
 function isActive(bare: string, href: string) {
-  if (href === NOVEL_BASE) return isLibrary(bare);
+  if (href === `${NOVEL_BASE}/library`) {
+    return bare === href || bare.startsWith(`${NOVEL_BASE}/books`);
+  }
   return bare === href || bare.startsWith(`${href}/`);
 }
 

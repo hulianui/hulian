@@ -221,7 +221,7 @@ export const demos: DemoMeta[] = [
     slug: "novel",
     title: "渡口小说站",
     description:
-      "可逛的迷你小说站：书库和书页进入沉浸阅读，章首上一章、章末下一章留在正文里，菜单默认不占位。作者后台用 NovelEditor 管章节和正文，改动写回同一本书。100% 由 @hulianui/ui 搭建。",
+      "打开就是《渡口的灯》正文，短章可以当页读完。字号、行距、目录和日夜间都在收起的菜单里，章内进度记在这台浏览器。书库和作者后台从唤出菜单进入。100% 由 @hulianui/ui 搭建。",
     href: "/demos/novel",
     category: "阅读",
     status: "done",

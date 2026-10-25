@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button, Card, CardBody, CardFooter, CardHeader, Heading, Text } from "@hulianui/ui";
-import { novelBooks } from "../_data/books";
+import { novelBooks } from "../../_data/books";
 import { copy } from "./page.content";
 
 export default function NovelLibraryPage() {

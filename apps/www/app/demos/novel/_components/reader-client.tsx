@@ -17,6 +17,9 @@ export function ReaderClient({ book }: { book: NovelDemoBook }) {
       persistKey={book.id}
       leading={
         <>
+          <Button variant="ghost" size="sm" muted render={<Link href="/demos/novel/library" />}>
+            {copy("library")}
+          </Button>
           <Button variant="ghost" size="sm" muted render={<Link href={`/demos/novel/books/${book.id}`} />}>
             {copy("book")}
           </Button>
