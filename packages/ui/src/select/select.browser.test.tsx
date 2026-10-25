@@ -1,6 +1,6 @@
 import { act, useEffect, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { page, userEvent } from "@vitest/browser/context";
 import type {} from "@vitest/browser/providers/playwright";
 import {
@@ -13,13 +13,60 @@ import {
 } from "./select";
 import { Field } from "../field/field";
 
-afterEach(cleanup);
-
+afterEach(() => {
+  cleanup();
+});
 
 async function interact(action: () => Promise<void>) {
   await act(async () => {
     await action();
   });
+}
+
+type ActGlobal = typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean };
+
+function optionLabels() {
+  return [...document.querySelectorAll<HTMLElement>("[role='option']")].map(
+    (option) => option.textContent ?? "",
+  );
+}
+
+function setNativeInputValue(input: HTMLInputElement, value: string) {
+  const prototype = Object.getPrototypeOf(input) as HTMLInputElement;
+  const setter =
+    Object.getOwnPropertyDescriptor(prototype, "value")?.set ??
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+  setter?.call(input, value);
+}
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+// 搜索浮层的定位每帧 setState。`act` / `waitFor` 要等到 React 空闲才返回，Playwright 的
+// click / fill / keyboard 要等几何连续两帧不动；两边在 CI 上都会占满 45s。超时后还在飞的
+// insertText 会写进下一条用例刚打开的搜索框。这段交互关掉 act 环境，让更新按真实浏览器提交，
+// 再用定时器轮询 DOM，不进那两条队列。
+async function withLiveUpdates<T>(action: () => Promise<T>) {
+  const actGlobal = globalThis as ActGlobal;
+  const previous = actGlobal.IS_REACT_ACT_ENVIRONMENT;
+  actGlobal.IS_REACT_ACT_ENVIRONMENT = false;
+  try {
+    return await action();
+  } finally {
+    actGlobal.IS_REACT_ACT_ENVIRONMENT = previous;
+  }
+}
+
+async function pollUntil(ready: () => boolean, timeoutMs: number, detail: () => string) {
+  const started = performance.now();
+  while (performance.now() - started < timeoutMs) {
+    if (ready()) return;
+    await delay(16);
+  }
+  throw new Error(detail());
 }
 
 const browserItems = [
@@ -498,24 +545,46 @@ describe("Select multiselect workflows (#328)", () => {
   it("searchable 过滤不强插未命中的已选项", async () => {
     render(<ControlledFixture initialValue={["mono", "sans"]} searchable />);
     const trigger = screen.getByRole("combobox");
-    await interact(() => userEvent.click(trigger));
-    // 浮层定位会连发 ResizeObserver loop。`userEvent.fill` 要等输入框持续「可见且可编辑」，
-    // 这一等占满整条用例的 45s，CI 负载下框还在抖就直接超时。等它挂上 DOM 后聚焦并键入，
-    // 超时落在过滤结果上，失败信息是选项列表而不是一条没有行号的 Test timed out。
-    const search = () => screen.getByPlaceholderText("搜索");
-    await waitFor(() => expect(search().isConnected).toBe(true), { timeout: 10_000 });
-    await interact(async () => {
-      search().focus();
-      await userEvent.keyboard("衬线");
+    // 过滤断言与 jsdom 的「searchable 先过滤，未命中的已选项不被强插」同一条。
+    // Combobox 触发器走 useClick({ event: "mousedown" })，打开本身再等一帧；
+    // 输入走原生 input，让 onChange 读到 currentTarget.value。
+    await withLiveUpdates(async () => {
+      trigger.dispatchEvent(
+        new MouseEvent("mousedown", {
+          bubbles: true,
+          cancelable: true,
+          button: 0,
+          view: window,
+        }),
+      );
+      await pollUntil(
+        () => document.querySelector("input[placeholder='搜索']") != null,
+        10_000,
+        () => "搜索框没有打开",
+      );
+      const search = document.querySelector<HTMLInputElement>("input[placeholder='搜索']");
+      if (search == null) throw new Error("搜索框没有打开");
+      setNativeInputValue(search, "衬线");
+      search.dispatchEvent(
+        new InputEvent("input", {
+          bubbles: true,
+          cancelable: true,
+          inputType: "insertText",
+          data: "衬线",
+        }),
+      );
+      await pollUntil(
+        () => {
+          const labels = optionLabels();
+          return labels.length === 2 && labels[0] === "无衬线" && labels[1] === "衬线";
+        },
+        10_000,
+        () => `过滤结果不符：${JSON.stringify(optionLabels())}`,
+      );
     });
-    await waitFor(
-      () => {
-        const labels = screen.getAllByRole("option").map((option) => option.textContent);
-        expect(labels).toEqual(["无衬线", "衬线"]);
-        expect(labels).not.toContain("等宽");
-      },
-      { timeout: 10_000 },
-    );
+    const labels = optionLabels();
+    expect(labels).toEqual(["无衬线", "衬线"]);
+    expect(labels).not.toContain("等宽");
   });
 
   it("120 项自动虚拟化前先将 selectedFirst 项排到窗口首位", async () => {
