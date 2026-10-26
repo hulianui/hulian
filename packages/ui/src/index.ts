@@ -182,6 +182,8 @@ export * from "./country-select";
 export * from "./input-otp";
 export * from "./listbox";
 export * from "./markdown-editor";
+export * from "./novel-editor";
+export * from "./novel-reader";
 export * from "./rich-text-editor";
 export * from "./code-editor";
 export * from "./issue-reporter";

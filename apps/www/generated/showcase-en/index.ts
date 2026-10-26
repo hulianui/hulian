@@ -233,6 +233,8 @@ export * from "./nav-menu.showcase";
 export * from "./navbar.showcase";
 export * from "./navigation-menu.showcase";
 export * from "./notification.showcase";
+export * from "./novel-editor.showcase";
+export * from "./novel-reader.showcase";
 export * from "./number-field.showcase";
 export * from "./number-ticker.showcase";
 export * from "./orb.showcase";

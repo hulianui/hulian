@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 399 个组件 · v0.68.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 401 个组件 · v0.68.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -63,7 +63,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [VariableProximity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/variable-proximity/variable-proximity.md): 邻近可变字体 · 鼠标邻近驱动的逐字可变字体文本 · 按距离插值 font-variation-settings（wght/opsz 等轴）+ linear/exponential/gaussian 三档衰减（零依赖 …
 - [WordRotate](https://github.com/hulianui/hulian/blob/master/packages/ui/src/word-rotate/word-rotate.md): 轮换词 · motion 进出场 + reduced-motion · typography/text · #animated
 
-## 表单 forms（70）
+## 表单 forms（71）
 - [AuthPanel](https://github.com/hulianui/hulian/blob/master/packages/ui/src/auth-panel/auth-panel.md): 搭出分屏登录页的品牌一侧，含渐变底、标语和卖点
 - [Button](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button/button.md): 触发操作的按钮，提供实心、浅色、描边、幽灵和危险等变体
 - [ButtonGroup](https://github.com/hulianui/hulian/blob/master/packages/ui/src/button-group/button-group.md): 把相关按钮连成一体或分组排列，做成分段控件
@@ -102,6 +102,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [MathTextarea](https://github.com/hulianui/hulian/blob/master/packages/ui/src/math-textarea/math-textarea.md): 公式输入框 · 录题用的 LaTeX 输入框：模板插到光标处、选区一键包成 $…$、提交前自检报行列、KaTeX 解析错误定位、实时预览与消费端同一套排版 · 可注入可视化公式编辑器（MathField）出第二个页签 …
 - [Mentions](https://github.com/hulianui/hulian/blob/master/packages/ui/src/mentions/mentions.md): 输入触发符后弹出候选，把提及插进文本
 - [ModalForm / DrawerForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/form-dialog/form-dialog.md): 把带校验的表单装进弹窗或抽屉，管好提交与关闭
+- [NovelEditor](https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-editor/novel-editor.md): 章节大纲、Markdown 正文和预览放在同一屏
 - [NumberField](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-field/number-field.md): 编辑数字，带上下限、步进按钮和键盘步进
 - [PasswordGenerator](https://github.com/hulianui/hulian/blob/master/packages/ui/src/password-generator/password-generator.md): 密码生成器 · Bitwarden 式双模面板（字符密码 + 密码短语·内置 1747 词表）+ 熵值实时评级四档强度条 + 参数即改即重算 + 逐字符着色（数字蓝符号红·手抄可辨）+ 复制/重生成 + i18n · …
 - [ProForm](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pro-form/pro-form.md): 内联表单编排，自动配好提交与重置底栏
@@ -135,7 +136,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（94）
+## 数据展示 data-display（95）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 展示用户头像，加载失败时回退到备用内容
@@ -196,6 +197,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [MagicCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/magic-card/magic-card.md): 魔法卡片 · 鼠标跟随径向高光(motion) + surface token · data-display/collection · #animated
 - [Marquee](https://github.com/hulianui/hulian/blob/master/packages/ui/src/marquee/marquee.md): 跑马灯 · 纯 CSS 无缝循环 + hover 暂停 + 方向 · data-display/collection · #animated
 - [Meter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/meter/meter.md): 用语义化的量条表示某个值在已知范围里的占比
+- [NovelReader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-reader/novel-reader.md): 长文阅读器：菜单默认收起，进度按章节和字符偏移记住
 - [NumberTicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-ticker/number-ticker.md): 数字滚动 · 进入视口 tween 到目标值 + reduced-motion · data-display/stat · #animated
 - [PixelCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pixel-card/pixel-card.md): 像素卡片 · canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion …
 - [PricingTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pricing-table/pricing-table.md): 把多个方案按属性逐行对照，可高亮推荐列

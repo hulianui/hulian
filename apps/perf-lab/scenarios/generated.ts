@@ -794,6 +794,12 @@ export const scenarioLoaders = {
   notification: async () =>
     (await import("@hulianui/ui-internal/notification/notification.showcase"))
       .notificationShowcase,
+  "novel-editor": async () =>
+    (await import("@hulianui/ui-internal/novel-editor/novel-editor.showcase"))
+      .novelEditorShowcase,
+  "novel-reader": async () =>
+    (await import("@hulianui/ui-internal/novel-reader/novel-reader.showcase"))
+      .novelReaderShowcase,
   "number-field": async () =>
     (await import("@hulianui/ui-internal/number-field/number-field.showcase"))
       .numberFieldShowcase,
@@ -3921,6 +3927,28 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/notification/index.ts",
+  },
+  "novel-editor": {
+    id: "novel-editor",
+    scenarioId: "novel-editor/basic",
+    component: "NovelEditor",
+    entry: "@hulianui/ui/novel-editor",
+    category: "standard",
+    categories: ["advanced", "forms"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/novel-editor/index.ts",
+  },
+  "novel-reader": {
+    id: "novel-reader",
+    scenarioId: "novel-reader/basic",
+    component: "NovelReader",
+    entry: "@hulianui/ui/novel-reader",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/novel-reader/index.ts",
   },
   "number-field": {
     id: "number-field",

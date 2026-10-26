@@ -217,6 +217,16 @@ export const demos: DemoMeta[] = [
     status: "done",
     tags: ["CodeReviewThread", "code-diff", "Heatmap", "ScoreRing", "代码审查", "质量门禁"],
   },
+  {
+    slug: "novel",
+    title: "渡口小说站",
+    description:
+      "打开就是《渡口的灯》正文，短章可以当页读完。字号、行距、目录和日夜间都在收起的菜单里，章内进度记在这台浏览器。书库和作者后台从唤出菜单进入。100% 由 @hulianui/ui 搭建。",
+    href: "/demos/novel",
+    category: "阅读",
+    status: "done",
+    tags: ["NovelReader", "NovelEditor", "Markdown", "阅读进度"],
+  },
 ];
 
 /** Localized display/search overlay. Routes, status, and demo identifiers remain canonical. */

@@ -203,6 +203,24 @@ describe("DrawerContent 遮罩与正文滚动（#185 / #188）", () => {
     expect(body.className).not.toContain("overflow-y-auto");
     expect(body.className).toContain("flex flex-col");
   });
+
+  it("style 落到面板上，并保留滑入过渡", () => {
+    render(
+      <Drawer open>
+        <DrawerContent
+          title="阅读设置"
+          style={{ backgroundColor: "color-mix(in srgb, var(--color-surface) 80%, transparent)" }}
+        >
+          正文
+        </DrawerContent>
+      </Drawer>,
+    );
+    const dialog = screen.getByRole("dialog", { name: "阅读设置" }) as HTMLElement;
+    expect(dialog.style.backgroundColor).toBe(
+      "color-mix(in srgb, var(--color-surface) 80%, transparent)",
+    );
+    expect(dialog.style.transition.length).toBeGreaterThan(0);
+  });
 });
 
 // #272 铺满型抽屉的命名手段：aria-* 透传 + extra 槽。

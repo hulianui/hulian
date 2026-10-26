@@ -8737,6 +8737,24 @@
       "<ModalForm title=\"新增学校\" form={form} onFinish={save}>": "<ModalForm title=\"Add school\" form={form} onFinish={save}>",
       "{/* 点遮罩不关；改过再按 Esc 会问「放弃未提交的内容？」 */}": "{/* The backdrop does not close it; once edited, Esc asks whether to discard */}",
       "// 恢复原语行为": "// Restore the primitive behaviour"
+    },
+    "packages/ui/src/novel-reader/novel-reader.showcase.tsx": {
+      "夜航": "Night crossing",
+      "河面暗下来。沈晚把灯挂上桅杆。": "The river went dark. Shen Wan hung the lamp on the mast.",
+      "返程": "The way back",
+      "回程更轻。她把火重新点上。": "The way back was lighter. She lit the flame again.",
+      "菜单默认收起，打开就是正文。章末的下一章留在正文里。点中间才唤出目录和阅读设置。": "The menu stays hidden, so the page opens on the prose. Next chapter stays at the end of the chapter. Tap the center to summon the catalog and reading settings.",
+      "  title=\"渡口的灯\"": "  title=\"The Ferry Light\"",
+      "  author=\"沈晚\"": "  author=\"Shen Wan\"",
+      "连读": "Continuous scroll",
+      "渡口的灯": "The Ferry Light",
+      "沈晚": "Shen Wan"
+    },
+    "packages/ui/src/novel-editor/novel-editor.showcase.tsx": {
+      "夜航": "Night crossing",
+      "河面暗下来。": "The river went dark.",
+      "左侧管理章节，右侧写 Markdown，并可以同时看预览。": "Manage chapters on the left, write Markdown on the right, and keep the preview open.",
+      "写作": "Writing"
     }
   }
 }

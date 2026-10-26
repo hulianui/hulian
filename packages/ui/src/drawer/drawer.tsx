@@ -101,6 +101,7 @@ export function DrawerContent({
   scrollable = true,
   bodyClassName,
   className,
+  style,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
 }: DrawerContentProps) {
@@ -140,7 +141,7 @@ export function DrawerContent({
       )}
       <BaseDialog.Popup
         className={cn("relative", place, drawerVariants({ side, size }), className)}
-        style={overlayTransitions.slide}
+        style={{ ...overlayTransitions.slide, ...style }}
         // 消费方给的 aria-* 最后落，压过 Base UI 由 Dialog.Title 派生的那份（#272）。
         // **必须条件展开，不能写 aria-labelledby={ariaLabelledBy}**：Base UI 的 mergeProps 用
         // `for...in` 遍历外部 props，键存在即覆盖，不看值是不是 undefined
