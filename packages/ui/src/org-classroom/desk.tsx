@@ -44,7 +44,7 @@ function DeskImpl({
 
   return (
     <div
-      className="pointer-events-auto relative"
+      className="pointer-events-auto relative [transform-style:preserve-3d]"
       style={{ gridColumn: Math.max(seat.col, 1), gridRow: Math.max(seat.row, 1) }}
       data-seat-id={seat.id}
     >
@@ -68,7 +68,7 @@ function DeskImpl({
           {person ? (
             <span className={cn(ISO_BILLBOARD_CLASS, "mb-[-1.35rem] flex flex-col items-center")}>
               <Avatar />
-              <span className="mt-0.5 max-w-[4.75rem] truncate rounded-full bg-surface px-1.5 py-0.5 text-[11px] font-medium text-foreground shadow-sm ring-1 ring-border">
+              <span className="mt-0.5 whitespace-nowrap rounded-full bg-surface px-1.5 py-0.5 text-xs font-medium text-foreground shadow-sm ring-1 ring-border">
                 {person.name}
               </span>
             </span>
