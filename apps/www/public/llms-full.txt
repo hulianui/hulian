@@ -14711,7 +14711,7 @@ import type { Seat, SeatStatus, Zone } from "@hulianui/ui"
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
-| onSeatSelect | `(seatId: string) => void` | 点选座位（有人或空位都可以） |
+| onSeatSelect | `(seatId: string \| null) => void` | 点选座位时得到座位 id。关闭按钮或 Esc 得到 `null`。再点已选中的座位仍得到同一个 id |
 | onStatusChange | `(seatId: string, status: "idle" \| "busy" \| "meeting" \| "leave" \| "interview") => void` | 在人员卡里改状态。组件不改 `zones` |
 | onZoneFocus | `(zoneId: string \| null) => void` | 点分区空白处聚焦；再点一次已聚焦的空白处得到 `null` |
 
@@ -14765,7 +14765,7 @@ const [zones, setZones] = useState<Zone[]>([
 
 - 空座位不渲染状态气泡。默认文案就是「在岗 / 忙碌 / 会议中 / 休假 / 面试中」。英文产品在根上挂 `ConfigProvider locale={enUS}`，不要在调用处改这五个字。
 - 状态是受控的。人员卡只调用 `onStatusChange`，下一帧的气泡来自你写回的 `person.status`。用 `updateSeatStatus` 可以保持没改动的座位引用。气泡用透明度过渡，不要靠 `key={status}` 把整颗气泡卸掉重挂。
-- 点座位是选中，点分区里桌子以外的空白才是聚焦。再点一次已聚焦分区的空白会清空。v1 没有拖拽换座、多选，也没有平移缩放。
+- 点座位是选中，点分区里桌子以外的空白才是聚焦。再点一次已聚焦分区的空白会清空聚焦，**不会**关掉人员卡。再点一次已经选中的座位也**不会**关闭，只会再次交出同一个座位 id。关闭只有两条：卡片上的「关闭人员卡」，或焦点在组件里时按 Esc。两条都会把选中清成 `null`（受控时要由 `onSeatSelect(null)` 写回 `selectedSeatId`），并把焦点还到打开这张卡的座位按钮上。v1 没有拖拽换座、多选，也没有平移缩放。
 - `accent` 里的主题变量必须带 `--color-` 前缀。座位上的人是内部剪影，不是头像组件 [Avatar](https://hulianui.haloritual.com/zh/components/avatar)。
 - 这是 CSS 等距舞台加 SVG，不是 Three.js / R3F。中间层如果加了 `opacity` 以外的滤镜，或把 `overflow: hidden` 套在旋转平面上，抬起和正对屏幕的人名会扁掉。人名上也不要再用 `truncate`：它会把标签裁成 `overflow: hidden`，3D 舞台就此被压扁。
 - 英文文档的代码块同样会被英文站渲染出来。`*.en.md` 的围栏里不要写「在岗 / 忙碌 / 会议中 / 休假 / 面试中」。`docs:i18n:check` 会报 `fenced-cjk`；只查正文、放行围栏，会绿到静态导出之后的英文产物门禁和 showcase 浏览器门禁才红。

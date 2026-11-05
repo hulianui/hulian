@@ -14,6 +14,7 @@ export interface OrgClassroomCopy {
   emptySeatHint: string;
   selectPrompt: string;
   personCard: string;
+  closeCard: string;
   focusZone: (name: string) => string;
   clearFocus: (name: string) => string;
   seatLabel: (name: string, status: string) => string;
@@ -30,6 +31,7 @@ export const ORG_CLASSROOM_COPY_ZH = {
   emptySeatHint: "这个座位还没有人",
   selectPrompt: "点选一个座位查看人员",
   personCard: "人员",
+  closeCard: "关闭人员卡",
   focusZone: (name) => `聚焦${name}`,
   clearFocus: (name) => `取消聚焦${name}`,
   seatLabel: (name, status) => `${name}，${status}`,
@@ -52,6 +54,7 @@ export const ORG_CLASSROOM_COPY_EN = {
   emptySeatHint: "Nobody is sitting here",
   selectPrompt: "Select a seat to see who is here",
   personCard: "Person",
+  closeCard: "Close person card",
   focusZone: (name) => `Focus ${name}`,
   clearFocus: (name) => `Clear focus on ${name}`,
   seatLabel: (name, status) => `${name}, ${status}`,

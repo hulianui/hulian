@@ -36,8 +36,12 @@ export interface OrgClassroomProps {
    * 不传则组件自己记住最近一次点选。
    */
   selectedSeatId?: string | null;
-  /** 点选座位（有人或空位都可以）。 */
-  onSeatSelect?: (seatId: string) => void;
+  /**
+   * 点选座位（有人或空位都可以）时得到座位 id。
+   * 关闭人员卡（关闭按钮或 Esc）时得到 `null`。
+   * 再点已经选中的座位仍得到同一个 id，卡片保持打开。
+   */
+  onSeatSelect?: (seatId: string | null) => void;
   /**
    * 在人员卡里改状态。组件不自己改 `zones`，
    * 调用方把新状态写回 `Seat.person.status`。

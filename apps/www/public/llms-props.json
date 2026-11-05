@@ -24407,9 +24407,9 @@
           "name": "onSeatSelect",
           "required": false,
           "kind": "function",
-          "type": "(seatId: string) => void",
+          "type": "(seatId: string | null) => void",
           "default": null,
-          "description": "点选座位（有人或空位都可以）"
+          "description": "点选座位时得到座位 id。关闭按钮或 Esc 得到 `null`。再点已选中的座位仍得到同一个 id"
         },
         {
           "name": "onStatusChange",

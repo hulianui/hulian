@@ -1,5 +1,5 @@
 "use client";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
 import { ORG_CLASSROOM_COPY_ZH, type OrgClassroomCopy } from "./copy";
@@ -67,13 +67,42 @@ function OrgClassroomImpl({
   const [uncontrolledFocus, setUncontrolledFocus] = useState<string | null>(null);
   const selectedId = selectionControlled ? (selectedSeatId ?? null) : uncontrolledSelected;
   const focusedId = focusControlled ? (focusedZoneId ?? null) : uncontrolledFocus;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const restoreSeatId = useRef<string | null>(null);
 
   const selectSeat = useCallback(
     (seatId: string) => {
+      restoreSeatId.current = null;
       if (!selectionControlled) setUncontrolledSelected(seatId);
       onSeatSelect?.(seatId);
     },
     [onSeatSelect, selectionControlled],
+  );
+
+  const requestClose = useCallback(() => {
+    if (!selectedId) return;
+    restoreSeatId.current = selectedId;
+    if (!selectionControlled) setUncontrolledSelected(null);
+    onSeatSelect?.(null);
+  }, [onSeatSelect, selectedId, selectionControlled]);
+
+  useLayoutEffect(() => {
+    if (selectedId != null) return;
+    const seatId = restoreSeatId.current;
+    const root = rootRef.current;
+    if (!seatId || !root) return;
+    restoreSeatId.current = null;
+    const escaped = typeof CSS !== "undefined" && typeof CSS.escape === "function" ? CSS.escape(seatId) : seatId;
+    root.querySelector<HTMLButtonElement>(`[data-seat-id="${escaped}"] button`)?.focus();
+  }, [selectedId]);
+
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
+      if (event.key !== "Escape" || !selectedId || event.defaultPrevented) return;
+      event.preventDefault();
+      requestClose();
+    },
+    [requestClose, selectedId],
   );
 
   const toggleZone = useCallback(
@@ -95,7 +124,12 @@ function OrgClassroomImpl({
   }, [selectedId, zones]);
 
   return (
-    <div data-slot="org-classroom" className={cn("flex flex-col gap-4 lg:flex-row lg:items-start", className)}>
+    <div
+      ref={rootRef}
+      data-slot="org-classroom"
+      className={cn("flex flex-col gap-4 lg:flex-row lg:items-start", className)}
+      onKeyDown={onKeyDown}
+    >
       <div className="min-w-0 flex-1">
         <Floor label={copy.floor} layoutKey={layoutKeyFor(zones)} annotations={annotationsFor(zones, copy)}>
           {zones.map((zone) => (
@@ -118,6 +152,7 @@ function OrgClassroomImpl({
         seatId={selected?.seat.id ?? null}
         person={selected?.seat.person ?? null}
         onStatusChange={onStatusChange}
+        onClose={selectedId ? requestClose : undefined}
       />
     </div>
   );

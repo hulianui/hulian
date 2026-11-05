@@ -35,7 +35,7 @@ function ZoneTileImpl({
       data-focused={focused ? "true" : "false"}
       data-quiet={quiet ? "true" : "false"}
       className={cn(
-        "relative rounded-[28px] border border-border px-3 pt-3 pb-3 shadow-[0_16px_40px_-24px_rgba(0,0,0,0.18)] [transform-style:preserve-3d]",
+        "pointer-events-auto relative rounded-[28px] border border-border px-3 pt-3 pb-3 shadow-[0_16px_40px_-24px_rgba(0,0,0,0.18)] [transform-style:preserve-3d]",
         "transition-opacity duration-300 ease-out motion-reduce:transition-none",
         "data-[quiet=true]:opacity-40 data-[focused=true]:ring-2 data-[focused=true]:ring-primary/40",
         ZONE_WASH,

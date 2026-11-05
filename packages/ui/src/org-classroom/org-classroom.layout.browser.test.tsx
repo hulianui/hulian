@@ -1,7 +1,9 @@
-import { cleanup, render } from "@testing-library/react";
+import { useState } from "react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { OrgClassroom } from "./org-classroom";
 import type { Zone } from "./org-classroom.types";
+import { updateSeatStatus } from "./seat-status";
 
 afterEach(cleanup);
 
@@ -62,5 +64,79 @@ describe("OrgClassroom narrow scene", () => {
         expect(overlap(rects[i]!, rects[j]!)).toBe(0);
       }
     }
+  });
+
+  it("390x1026 打开人员卡后五个状态按钮不被左下角返回钮挡住，关闭后焦点回到座位", async () => {
+    function Harness() {
+      const [zones, setZones] = useState<Zone[]>([zone()]);
+      const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
+      return (
+        <div data-testid="phone" style={{ position: "relative", width: 390, height: 1026 }}>
+          <div data-testid="scroller" className="h-full overflow-auto px-3 pt-6 pb-32">
+            <OrgClassroom
+              zones={zones}
+              selectedSeatId={selectedSeatId}
+              onSeatSelect={setSelectedSeatId}
+              onStatusChange={(seatId, status) => {
+                setZones((current) => updateSeatStatus(current, seatId, status));
+              }}
+            />
+          </div>
+          <div
+            data-testid="return-fab"
+            style={{ position: "absolute", left: 24, bottom: 24, zIndex: 50, width: 148, height: 56 }}
+          />
+        </div>
+      );
+    }
+
+    const { getByRole } = render(<Harness />);
+    const seat = getByRole("button", { name: "林予涵，在岗" });
+    fireEvent.click(seat);
+    await expect.poll(() => document.querySelector("[data-status-actions]")).toBeTruthy();
+
+    const actions = document.querySelector<HTMLElement>("[data-status-actions]")!;
+    const scroller = document.querySelector<HTMLElement>("[data-testid=scroller]")!;
+    const fab = document.querySelector<HTMLElement>("[data-testid=return-fab]")!;
+    const fabTop = () => fab.getBoundingClientRect().top;
+    const hide = actions.getBoundingClientRect().bottom - (fabTop() - 8);
+    if (hide > 0) scroller.scrollTop += hide;
+
+    const buttons = [...actions.querySelectorAll<HTMLButtonElement>("button")];
+    expect(buttons.map((button) => button.textContent)).toEqual(["在岗", "忙碌", "会议中", "休假", "面试中"]);
+    const visibleTop = scroller.getBoundingClientRect().top;
+    for (const button of buttons) {
+      const rect = button.getBoundingClientRect();
+      expect(rect.width).toBeGreaterThan(0);
+      expect(rect.height).toBeGreaterThan(0);
+      expect(rect.top).toBeGreaterThanOrEqual(visibleTop - 1);
+      expect(rect.bottom).toBeLessThanOrEqual(fabTop() - 1);
+      expect(overlap(rect, fab.getBoundingClientRect())).toBe(0);
+    }
+
+    const zoneEl = document.querySelector<HTMLElement>("[data-zone-id=design]")!;
+    const box = zoneEl.getBoundingClientRect();
+    let emptyFloor: Element | null = null;
+    for (let y = box.top + 6; y < box.bottom && !emptyFloor; y += 10) {
+      for (let x = box.left + 6; x < box.right; x += 10) {
+        const hit = document.elementFromPoint(x, y);
+        if (hit?.closest("[data-zone-floor]") && !hit.closest("[data-seat-id]")) {
+          emptyFloor = hit;
+          break;
+        }
+      }
+    }
+    expect(emptyFloor).toBeTruthy();
+    fireEvent.click(emptyFloor as HTMLElement);
+    await expect.poll(() => zoneEl.getAttribute("data-focused")).toBe("true");
+    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
+
+    fireEvent.click(getByRole("button", { name: "关闭人员卡" }));
+    await expect.poll(() => document.activeElement).toBe(seat);
+    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("false");
+
+    fireEvent.click(seat);
+    fireEvent.keyDown(document.querySelector("[data-slot=org-classroom]")!, { key: "Escape" });
+    await expect.poll(() => document.activeElement).toBe(seat);
   });
 });

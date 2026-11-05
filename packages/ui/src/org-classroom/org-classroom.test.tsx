@@ -137,6 +137,74 @@ describe("OrgClassroom", () => {
     expect(getByRole("group", { name: "Change status" })).toBeTruthy();
   });
 
+  it("关闭按钮和 Esc 清空选中并把焦点还给座位；再点座位和点空白都不关闭", () => {
+    const onSeatSelect = vi.fn();
+    const onZoneFocus = vi.fn();
+    const { getByRole, container } = render(
+      <OrgClassroom zones={[zone()]} onSeatSelect={onSeatSelect} onZoneFocus={onZoneFocus} />,
+    );
+    const seat = getByRole("button", { name: "林予涵，在岗" });
+    fireEvent.click(seat);
+    const card = getByRole("complementary", { name: "人员" });
+    expect(card.getAttribute("data-open")).toBe("true");
+    expect(card.textContent).toContain("林予涵");
+
+    fireEvent.click(seat);
+    expect(onSeatSelect).toHaveBeenLastCalledWith("s1");
+    expect(card.getAttribute("data-open")).toBe("true");
+
+    fireEvent.click(container.querySelector("[data-zone-floor]")!);
+    expect(onZoneFocus).toHaveBeenCalledWith("design");
+    expect(card.getAttribute("data-open")).toBe("true");
+    expect(card.textContent).toContain("林予涵");
+
+    fireEvent.click(getByRole("button", { name: "关闭人员卡" }));
+    expect(onSeatSelect).toHaveBeenLastCalledWith(null);
+    expect(card.getAttribute("data-open")).toBe("false");
+    expect(card.textContent).toContain("点选一个座位查看人员");
+    expect(document.activeElement).toBe(seat);
+    expect(seat.getAttribute("aria-pressed")).toBe("false");
+
+    fireEvent.click(seat);
+    fireEvent.keyDown(container.querySelector("[data-slot=org-classroom]")!, { key: "Escape" });
+    expect(onSeatSelect).toHaveBeenLastCalledWith(null);
+    expect(card.getAttribute("data-open")).toBe("false");
+    expect(document.activeElement).toBe(seat);
+  });
+
+  it("受控选中只有父级写回 null 才关闭，忽略 null 时卡片保持打开", () => {
+    const onSeatSelect = vi.fn();
+    function Harness({ honor }: { honor: boolean }) {
+      const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
+      return (
+        <OrgClassroom
+          zones={[zone()]}
+          selectedSeatId={selectedSeatId}
+          onSeatSelect={(seatId) => {
+            onSeatSelect(seatId);
+            if (honor || seatId != null) setSelectedSeatId(seatId);
+          }}
+        />
+      );
+    }
+    const ignored = render(<Harness honor={false} />);
+    fireEvent.click(ignored.getByRole("button", { name: "林予涵，在岗" }));
+    fireEvent.click(ignored.getByRole("button", { name: "关闭人员卡" }));
+    expect(onSeatSelect).toHaveBeenLastCalledWith(null);
+    expect(ignored.getByRole("complementary", { name: "人员" }).getAttribute("data-open")).toBe("true");
+    expect(document.activeElement).not.toBe(ignored.getByRole("button", { name: "林予涵，在岗" }));
+    ignored.unmount();
+
+    onSeatSelect.mockClear();
+    const honored = render(<Harness honor />);
+    const seat = honored.getByRole("button", { name: "林予涵，在岗" });
+    fireEvent.click(seat);
+    fireEvent.keyDown(honored.container.querySelector("[data-slot=org-classroom]")!, { key: "Escape" });
+    expect(onSeatSelect).toHaveBeenLastCalledWith(null);
+    expect(honored.getByRole("complementary", { name: "人员" }).getAttribute("data-open")).toBe("false");
+    expect(document.activeElement).toBe(seat);
+  });
+
   it("等距平面用 CSS 旋转，不用 WebGL", () => {
     const { container } = render(<OrgClassroom zones={[zone()]} />);
     const plane = container.querySelector("[data-slot=org-classroom-plane]")!;

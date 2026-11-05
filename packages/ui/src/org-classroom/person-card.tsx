@@ -15,25 +15,52 @@ const BUTTON_TONE = {
   interview: "neutral",
 } as const;
 
+const CloseIcon = (
+  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden className="size-4">
+    <path d="M5 5l10 10M15 5L5 15" />
+  </svg>
+);
+
 export function PersonCard({
   copy,
   zone,
   seatId,
   person,
   onStatusChange,
+  onClose,
 }: {
   copy: OrgClassroomCopy;
   zone: Zone | null;
   seatId: string | null;
   person: Zone["seats"][number]["person"] | null;
   onStatusChange?: (seatId: string, status: SeatStatus) => void;
+  onClose?: () => void;
 }) {
+  const close = onClose ? (
+    <Button
+      type="button"
+      size="iconSm"
+      variant="ghost"
+      tone="neutral"
+      aria-label={copy.closeCard}
+      data-seat-close
+      onClick={onClose}
+    >
+      {CloseIcon}
+    </Button>
+  ) : null;
+
   return (
-    <aside aria-label={copy.personCard} data-slot="org-classroom-person" className="w-full shrink-0 lg:w-80">
+    <aside
+      aria-label={copy.personCard}
+      data-slot="org-classroom-person"
+      data-open={seatId ? "true" : "false"}
+      className="w-full shrink-0 scroll-mb-28 lg:w-80"
+    >
       <Card variant="elevated" size="sm">
         {person && zone ? (
           <>
-            <CardHeader title={person.name} />
+            <CardHeader title={person.name} extra={close} />
             <CardBody className="flex flex-col gap-3">
               <div>
                 <Text size="xs" tone="muted">
@@ -51,7 +78,7 @@ export function PersonCard({
                   {copy.statuses[person.status]}
                 </Tag>
               </div>
-              <div role="group" aria-label={copy.changeStatus} className="flex flex-wrap gap-1.5">
+              <div role="group" aria-label={copy.changeStatus} data-status-actions className="flex flex-wrap gap-1.5 scroll-mb-28">
                 {SEAT_STATUSES.map((status) => {
                   const active = person.status === status;
                   return (
@@ -76,7 +103,7 @@ export function PersonCard({
           </>
         ) : (
           <>
-            <CardHeader title={zone ? copy.emptySeat : copy.personCard} />
+            <CardHeader title={zone ? copy.emptySeat : copy.personCard} extra={zone ? close : null} />
             <CardBody>
               <Text size="sm" tone="muted">
                 {zone ? copy.emptySeatHint : copy.selectPrompt}
