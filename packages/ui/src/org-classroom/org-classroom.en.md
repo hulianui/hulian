@@ -55,15 +55,15 @@ import type { Seat, SeatStatus, Zone } from "@hulianui/ui"
 | SeatPerson.name | `string` | Display name. |
 | SeatPerson.status | `SeatStatus` | `idle`, `busy`, `meeting`, `leave`, or `interview`. |
 
-Default status labels (Chinese product copy):
+Default bubble copy is locked in the Chinese locale. With `ConfigProvider locale={enUS}` the same five statuses read:
 
-```text
-idle: 在岗
-busy: 忙碌
-meeting: 会议中
-leave: 休假
-interview: 面试中
-```
+| Status | enUS label |
+|------|------|
+| idle | On duty |
+| busy | Busy |
+| meeting | In a meeting |
+| leave | On leave |
+| interview | Interviewing |
 
 ## Examples
 ```tsx
@@ -75,7 +75,7 @@ interview: 面试中
 
 ## Usage notes
 
-- Empty seats do not render a status bubble. The Chinese strings above are the default labels. English apps set `ConfigProvider locale={enUS}` instead of replacing those defaults at the call site.
+- Empty seats do not render a status bubble. The default labels are the locked Chinese short copy. English apps set `ConfigProvider locale={enUS}` instead of replacing those defaults at the call site.
 - Status is controlled. The person card only calls `onStatusChange`; the next bubble reads `person.status`. `updateSeatStatus` keeps untouched seat references. The bubble crossfades with opacity. Do not remount it with `key={status}`.
 - Clicking a seat selects it. Clicking empty floor space focuses that zone, and clicking the same empty space again clears the focus. v1 has no drag-to-reseat, multi-select, or pan/zoom.
 - Theme variables inside `accent` need the `--color-` prefix. The silhouette on a seat is not the portrait [Avatar](../avatar/avatar.md).
