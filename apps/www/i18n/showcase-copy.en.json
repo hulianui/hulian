@@ -8773,6 +8773,25 @@
       "河面暗下来。": "The river went dark.",
       "左侧管理章节，右侧写 Markdown，并可以同时看预览。": "Manage chapters on the left, write Markdown on the right, and keep the preview open.",
       "写作": "Writing"
+    },
+    "packages/ui/src/org-classroom/org-classroom.showcase.tsx": {
+      "一个分区里排开工位。点座位打开人员卡，在卡片里改状态。": "Arrange seats in one zone. Select a seat to open the person card and change status there.",
+      "产品设计部": "Product Design",
+      "何安": "He An",
+      "吴桐": "Wu Tong",
+      "周宁": "Zhou Ning",
+      "孙晚": "Sun Wan",
+      "没有人的座位只有桌子，不出现状态气泡。": "An empty seat is only a desk, with no status bubble.",
+      "沈酌": "Shen Zhuo",
+      "点分区空白处让其它分区安静下来，再点一次恢复。": "Click empty floor space to quiet the other zones, then click again to restore them.",
+      "空位不显示气泡": "Empty seats have no bubble",
+      "林予涵": "Lin Yuhan",
+      "技术研发部": "Engineering",
+      "聚焦分区": "Focus a zone",
+      "许知夏": "Xu Zhixia",
+      "赵启明": "Zhao Qiming",
+      "郑澄": "Zheng Cheng",
+      "陈可": "Chen Ke"
     }
   }
 }

@@ -19,6 +19,8 @@ import {
 } from "../question-answer/question-answer.locale";
 // 仅类型引用（编译期擦除，无运行时依赖，故不构成 config ↔ social-button 的循环）。
 import type { SocialProvider } from "../social-button/social-button.types";
+import { ORG_CLASSROOM_COPY_EN, ORG_CLASSROOM_COPY_ZH } from "../org-classroom/copy";
+import type { OrgClassroomCopy } from "../org-classroom/copy";
 
 /**
  * 组件内置文案的 i18n 字典。当前覆盖企业层 ProTable / AdminLayout 的可见文案；
@@ -1014,6 +1016,8 @@ export interface ComponentLocale {
     moveUp: string;
     moveDown: string;
   };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
+  orgClassroom?: OrgClassroomCopy;
 }
 
 const zhComponents: ComponentLocale = {
@@ -1819,6 +1823,7 @@ const zhComponents: ComponentLocale = {
     moveUp: "上移",
     moveDown: "下移",
   },
+  orgClassroom: ORG_CLASSROOM_COPY_ZH,
 };
 
 const enComponents: ComponentLocale = {
@@ -2763,6 +2768,7 @@ const enComponents: ComponentLocale = {
     moveUp: "Move up",
     moveDown: "Move down",
   },
+  orgClassroom: ORG_CLASSROOM_COPY_EN,
 };
 
 /** 默认中文（zh-CN）。各值与组件原硬编码逐字一致，保证未包 Provider 时行为不变。 */

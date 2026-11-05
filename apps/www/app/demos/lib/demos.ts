@@ -227,6 +227,16 @@ export const demos: DemoMeta[] = [
     status: "done",
     tags: ["NovelReader", "NovelEditor", "Markdown", "阅读进度"],
   },
+  {
+    slug: "org-classroom",
+    title: "组织工位",
+    description:
+      "一块可点的等距工位平面：一个部门、十二个座位，点座位看人员卡并改状态，点空白处聚焦分区。100% 由 @hulianui/ui 搭建，dogfood OrgClassroom。顶栏 KPI、面试间和档案侧栏不在这个组件里。",
+    href: "/demos/org-classroom",
+    category: "中后台",
+    status: "done",
+    tags: ["OrgClassroom", "工位", "状态"],
+  },
 ];
 
 /** Localized display/search overlay. Routes, status, and demo identifiers remain canonical. */

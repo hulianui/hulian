@@ -240,6 +240,7 @@ export * from "./number-ticker.showcase";
 export * from "./orb.showcase";
 export * from "./orbit-images.showcase";
 export * from "./orbiting-circles.showcase";
+export * from "./org-classroom.showcase";
 export * from "./page-header.showcase";
 export * from "./pagination.showcase";
 export * from "./particles.showcase";

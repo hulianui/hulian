@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 401 个组件 · v0.68.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 402 个组件 · v0.68.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -136,7 +136,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（95）
+## 数据展示 data-display（96）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 展示用户头像，加载失败时回退到备用内容
@@ -199,6 +199,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Meter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/meter/meter.md): 用语义化的量条表示某个值在已知范围里的占比
 - [NovelReader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-reader/novel-reader.md): 长文阅读器：菜单默认收起，进度按章节和字符偏移记住
 - [NumberTicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-ticker/number-ticker.md): 数字滚动 · 进入视口 tween 到目标值 + reduced-motion · data-display/stat · #animated
+- [OrgClassroom](https://github.com/hulianui/hulian/blob/master/packages/ui/src/org-classroom/org-classroom.md): 组织工位 · CSS 等距平面（rotateX + rotateZ）+ SVG 桌子 / 剪影 · 部门分区、人名、状态气泡 · 点座位看人员卡并改状态
 - [PixelCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pixel-card/pixel-card.md): 像素卡片 · canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion …
 - [PricingTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pricing-table/pricing-table.md): 把多个方案按属性逐行对照，可高亮推荐列
 - [ProfileCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/profile-card/profile-card.md): 全息名片卡 · 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-d…
