@@ -47,7 +47,7 @@ function ClassroomPreview({ initial }: {
     const [zones, setZones] = useState(initial);
     const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
     const [focusedZoneId, setFocusedZoneId] = useState<string | null>(null);
-    const onSeatSelect = useCallback((seatId: string) => {
+    const onSeatSelect = useCallback((seatId: string | null) => {
         setSelectedSeatId(seatId);
     }, []);
     const onZoneFocus = useCallback((zoneId: string | null) => {
