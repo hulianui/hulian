@@ -212,16 +212,28 @@ describe("NovelReader", () => {
     expect(screen.getByText("河面暗下来。")).toBeTruthy();
   });
 
-  it("菜单展开时正文让开顶栏，收起时仍紧贴章首", () => {
+  it("菜单展开时滚动视口夹在顶栏和底栏之间，收起后铺满", () => {
+    const descriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetHeight");
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
+      if (this.tagName === "HEADER") return 88;
+      if (this.tagName === "FOOTER") return 160;
+      return descriptor?.get?.call(this) ?? 0;
+    });
     const { unmount } = render(<NovelReader chapters={chapters} defaultChromeOpen />);
-    const open = document.querySelector("article")?.parentElement;
-    expect(open?.className).toContain("pt-32");
-    expect(open?.className.split(/\s+/).includes("pt-12")).toBe(false);
+    const viewport = document.querySelector("[data-novel-viewport]") as HTMLElement;
+    expect(viewport.style.top).toBe("104px");
+    expect(viewport.style.bottom).toBe("176px");
+    expect(screen.getByRole("heading", { name: "第 1 章 夜航" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "本章说" })).toBeNull();
+    expect(document.querySelector("[data-novel-chapter-nav='end']")?.textContent).toContain("下一章");
     unmount();
+    vi.restoreAllMocks();
     render(<NovelReader chapters={chapters} />);
-    const closed = document.querySelector("article")?.parentElement;
-    expect(closed?.className).toContain("pt-12");
-    expect(closed?.className.split(/\s+/).includes("pt-32")).toBe(false);
+    const closed = document.querySelector("[data-novel-viewport]") as HTMLElement;
+    expect(closed.style.top).toBe("");
+    expect(closed.style.bottom).toBe("");
+    expect(closed.className).toContain("h-full");
+    expect(screen.getByRole("heading", { name: "第 1 章 夜航" })).toBeTruthy();
   });
 
   it("正文字族落在 article 上，正文跟外层的字号和行距走", () => {
