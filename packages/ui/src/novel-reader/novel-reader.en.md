@@ -56,6 +56,7 @@ Inherits `HTMLAttributes<HTMLDivElement>` except the native `title`. The root ne
 | onProgressChange | `(progress: NovelProgress) => void` | — | Progress callback. Progress is only a chapter id and a character offset |
 | leading | `ReactNode` | — | Top-left slot inside the summoned bar, for back and shelf |
 | trailing | `ReactNode` | — | Top-right slot inside the summoned bar |
+| articleClassName | `string` | — | Classes on the body `<article>`, for a typeface such as a serif. Type size and line height stay on the component's own settings. Do not restyle the article from outside with `[&_article]` |
 
 ### NovelChapter
 
@@ -99,6 +100,7 @@ The chapter start has a light previous-chapter button. The first chapter omits i
 - Catalog and settings are bottom drawers. Do not pin a gear to the left edge. The settings backdrop stays transparent. The panel sets an inline `color-mix(in srgb, var(--color-surface) 80%, transparent)` and does not use `backdrop-blur`. `bg-surface/80` alone is emitted as opaque `var(--color-surface)` first, so a failed `color-mix(in lab)` test leaves a solid light panel and hides the current sentence.
 - Chapter buttons say previous chapter and next chapter. Do not reuse Pagination, whose labels mean previous page and next page.
 - Do not pin a page-level header or footer for previous and next chapter. Previous chapter stays at the chapter start and is omitted on the first chapter. Next chapter stays at the chapter end, in the text flow, including while the menu is hidden, and is omitted on the last chapter. Chapter controls in the top and bottom bars hide with the menu.
+- Set the body typeface with `articleClassName`. Do not restyle the article from outside with `[&_article]`. Body Markdown follows the reader's type size and line height.
 
 ## Related
 [NovelEditor](../novel-editor/novel-editor.md) · [Markdown](../markdown/markdown.md) · [Drawer](../drawer/drawer.md) · [Empty](../empty/empty.md)

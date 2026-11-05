@@ -620,7 +620,8 @@
     ],
     "ProseSize": [
       "sm",
-      "base"
+      "base",
+      "inherit"
     ],
     "QRCodeLevel": [
       "L",
@@ -4837,7 +4838,15 @@
           ],
           "valueType": "string",
           "default": "\"base\"",
-          "description": "排版尺寸基准，透传给内部 Prose"
+          "description": "排版尺寸基准，透传给内部 Prose。`inheritTypography` 打开时不生效"
+        },
+        {
+          "name": "inheritTypography",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "字号和行距跟父级走，内部不再钉 `text-base` / `leading-7`。阅读器把档位写在外层时打开。文档页保持关闭"
         },
         {
           "name": "headingIds",
@@ -4893,14 +4902,15 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"sm\" | \"base\"",
+          "type": "\"sm\" | \"base\" | \"inherit\"",
           "values": [
             "sm",
-            "base"
+            "base",
+            "inherit"
           ],
           "valueType": "string",
           "default": "\"base\"",
-          "description": "整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文"
+          "description": "整体排版尺寸基准。`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文。`inherit` 不钉字号和行距，跟父级走，给外层已经管着档位的阅读器用"
         },
         {
           "name": "scrollableTables",
@@ -11795,6 +11805,14 @@
           "type": "boolean",
           "default": "false",
           "description": "禁止编辑、排序和删除"
+        },
+        {
+          "name": "previewClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "预览区的类名。用来铺纸色和字族，让预览像正文。编辑栏不受影响"
         }
       ],
       "events": [],
@@ -24195,6 +24213,14 @@
           "type": "ReactNode",
           "default": null,
           "description": "唤出菜单后放在顶栏右侧"
+        },
+        {
+          "name": "articleClassName",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "加在正文 `<article>` 上，用来换字族（例如宋体）。字号和行距仍由组件档位控制。不要在外面用 `[&_article]` 改内部节点"
         },
         {
           "name": "id",

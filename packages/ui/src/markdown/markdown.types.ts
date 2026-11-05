@@ -6,6 +6,13 @@ export interface MarkdownProps {
   /** 排版尺寸基准，透传给内部 Prose。@default "base" */
   size?: ProseSize;
   /**
+   * 字号和行距跟父级走，内部不再钉 `text-base` / `leading-7`。
+   * 阅读器把档位写在外层时打开。文档页保持关闭。
+   * 打开后 `size` 不再生效。
+   * @default false
+   */
+  inheritTypography?: boolean;
+  /**
    * 给渲染出的标题挂锚点 id（规则见 `slugifyHeading`），使长文可做目录与 `#片段` 深链。
    *
    * 默认 false：id 是全局命名空间，Markdown 常被嵌进已有 id 的页面里，

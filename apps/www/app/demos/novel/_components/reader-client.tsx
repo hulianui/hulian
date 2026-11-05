@@ -21,7 +21,8 @@ export function ReaderClient({ book }: { book: NovelDemoBook }) {
   return (
     <NovelReader
       autoFocus
-      className="novel-theme h-dvh [&_article]:font-serif"
+      className="novel-theme h-dvh"
+      articleClassName="novel-serif"
       title={book.title}
       author={book.author}
       chapters={chapters}

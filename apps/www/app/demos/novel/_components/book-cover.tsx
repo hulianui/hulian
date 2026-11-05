@@ -26,13 +26,19 @@ export function BookCover({
   return (
     <Book3D
       title={
-        <span className={compact ? "block pl-3 text-[1.05rem] leading-snug" : "block pl-2.5"}>
+        <span
+          className={
+            compact
+              ? "novel-serif block pl-5 text-[1.3rem] font-normal leading-snug tracking-normal"
+              : "novel-serif block pl-4 text-[1.85rem] font-normal leading-tight tracking-normal"
+          }
+        >
           {book.title}
           <span
             className={
               compact
-                ? "mt-1 block text-[8px] font-normal uppercase tracking-[0.22em] text-white/55"
-                : "mt-1.5 block text-[10px] font-normal uppercase tracking-[0.3em] text-white/55"
+                ? "mt-2 block text-[9px] font-normal normal-case tracking-[0.14em] text-white/70"
+                : "mt-2 block text-[11px] font-normal normal-case tracking-[0.16em] text-white/70"
             }
           >
             {book.titleEn}

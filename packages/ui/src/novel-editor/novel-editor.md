@@ -35,6 +35,7 @@ import { NovelEditor } from "@hulianui/ui"
 | onActiveChapterChange | `(id: string) => void` | — | 切换正在编辑的章 |
 | onSave | `(chapters: NovelChapter[]) => void` | — | 传入后显示保存按钮 |
 | disabled | `boolean` | `false` | 禁止编辑、排序和删除 |
+| previewClassName | `string` | — | 预览区的类名。用来铺纸色和字族，让预览像正文。编辑栏不受影响 |
 
 章节超过 40 时，左侧改为虚拟列表加上下移动，避免和拖拽虚拟化叠在一起。
 
@@ -52,6 +53,7 @@ import { NovelEditor } from "@hulianui/ui"
 - 根节点不带高度时，章节栏和编辑区会把页面撑长，预览也无法自己滚动。
 - `chapters` 受控时，忽略 `onChaptersChange` 会让输入看起来无效。
 - 删除会立刻从列表里拿掉该章。需要确认时用组件自带的 Popconfirm，不要再套一层会挡住正文的全局弹窗。
+- 预览要像在读的那一页，用 `previewClassName` 铺纸色和字族。不要把整页背景改成编辑器底，把阅读的感觉盖掉。
 
 ## 相关
 [NovelReader](../novel-reader/novel-reader.md) · [MarkdownEditor](../markdown-editor/markdown-editor.md) · [Sortable](../sortable/sortable.md) · [Popconfirm](../popconfirm/popconfirm.md)

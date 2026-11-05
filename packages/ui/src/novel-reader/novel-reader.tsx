@@ -198,6 +198,7 @@ export function NovelReader({
   defaultChromeOpen,
   leading,
   trailing,
+  articleClassName,
   className,
   ...rest
 }: NovelReaderProps) {
@@ -526,7 +527,14 @@ export function NovelReader({
   const atLast = index < 0 || index >= chapters.length - 1;
 
   const column = (
-    <div className={cn("mx-auto flex w-full min-h-full flex-col px-6 pb-20 pt-12 md:pt-16", NOVEL_MEASURE_CLASS[measure])}>
+    <div
+      className={cn(
+        "mx-auto flex w-full min-h-full flex-col px-6",
+        // 顶栏/底栏是浮层。菜单展开时如果不把正文往下推，手机上第一章标题会整行埋进顶栏。
+        chrome ? "pb-40 pt-32 md:pb-28 md:pt-20" : "pb-20 pt-12 md:pt-16",
+        NOVEL_MEASURE_CLASS[measure],
+      )}
+    >
       {atFirst ? null : (
         <div data-novel-chapter-nav="start" className="mb-6">
           <Button
@@ -546,6 +554,7 @@ export function NovelReader({
           "flex-1 px-1",
           NOVEL_FONT_CLASS[fontSize],
           NOVEL_LINE_CLASS[lineHeight],
+          articleClassName,
         )}
       >
         {title ? (
@@ -558,7 +567,7 @@ export function NovelReader({
           {labels.numbered(index + 1, active.title)}
         </Heading>
         <div className="mt-6">
-          <Markdown>{active.content}</Markdown>
+          <Markdown inheritTypography>{active.content}</Markdown>
         </div>
       </article>
       <div

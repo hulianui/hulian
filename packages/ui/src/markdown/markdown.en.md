@@ -25,7 +25,8 @@ import { Markdown, parseBlocks, extractHeadings, slugifyHeading } from "@hulianu
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| size | `"sm" \| "base"` | `"base"` | Typography scale passed to the internal Prose component. |
+| size | `"sm" \| "base"` | `"base"` | Typography scale passed to the internal Prose component. Ignored when `inheritTypography` is set. |
+| inheritTypography | `boolean` | `false` | Type size and line height follow the parent. The internal Prose no longer pins `text-base` / `leading-7`. Turn this on when a reader already owns those settings. Leave it off on documentation pages. |
 | headingIds | `boolean \| string` | `false` | Adds anchor ids to rendered headings (slug rules under "Heading anchors and tables of contents") so long pages can offer a table of contents and `#fragment` deep links. Off by default: ids share one global namespace, so generating them by default would add ids to every existing call site that may collide with ids already on the page. Pass a string to enable them and use it as an id prefix (`headingIds="doc-"` yields `doc-props`), which keeps this batch of ids in its own namespace. |
 | className | `string` | - | Additional container class name. |
 

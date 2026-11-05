@@ -103,14 +103,15 @@ export function NovelShell({ children }: { children: ReactNode }) {
         <div className="sticky top-16 z-20 border-b border-hairline bg-surface/95 backdrop-blur-md md:hidden">
           <Stack direction="column" gap={1} className="px-4 py-3">
             {[...primaryNav, { label: copy("gallery"), href: "/demos" }].map((link) => (
-              <Link
+              <Button
                 key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="rounded-[var(--radius)] px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
+                variant="ghost"
+                muted
+                className="w-full justify-start"
+                render={<Link href={link.href} onClick={() => setOpen(false)} />}
               >
                 {link.label}
-              </Link>
+              </Button>
             ))}
           </Stack>
         </div>
@@ -137,13 +138,16 @@ export function NovelShell({ children }: { children: ReactNode }) {
                     {copy("navigate")}
                   </Text>
                   {[...primaryNav, { label: copy("gallery"), href: "/demos" }].map((link) => (
-                    <Link
+                    <Button
                       key={link.href}
-                      href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      variant="link"
+                      muted
+                      size="sm"
+                      className="h-auto justify-start px-0"
+                      render={<Link href={link.href} />}
                     >
                       {link.label}
-                    </Link>
+                    </Button>
                   ))}
                 </div>
                 <div className="flex max-w-[16rem] flex-col gap-2">

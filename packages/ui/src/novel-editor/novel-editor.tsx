@@ -64,6 +64,7 @@ export function NovelEditor({
   onActiveChapterChange,
   onSave,
   disabled,
+  previewClassName,
   className,
   ...rest
 }: NovelEditorProps) {
@@ -269,11 +270,15 @@ export function NovelEditor({
               </div>
               {preview ? (
                 <div
-                  className="min-h-0 overflow-auto border-t border-border p-4 lg:border-l lg:border-t-0"
+                  data-novel-preview=""
                   aria-label={labels.preview}
+                  className={cn(
+                    "min-h-0 overflow-auto border-t border-border p-4 text-base leading-7 lg:border-l lg:border-t-0",
+                    previewClassName,
+                  )}
                 >
                   {active.content.trim() ? (
-                    <Markdown>{active.content}</Markdown>
+                    <Markdown inheritTypography>{active.content}</Markdown>
                   ) : (
                     <Text tone="muted">{labels.previewEmpty}</Text>
                   )}

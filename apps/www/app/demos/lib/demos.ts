@@ -221,7 +221,7 @@ export const demos: DemoMeta[] = [
     slug: "novel",
     title: "渡口小说站",
     description:
-      "打开就是《渡口的灯》正文，短章可以当页读完。字号、行距、目录和日夜间都在收起的菜单里，章内进度记在这台浏览器。书库和作者后台从唤出菜单进入。100% 由 @hulianui/ui 搭建。",
+      "打开就是《渡口的灯》正文。章节够读，不是几行占位。字号、行距、目录和日夜间在菜单里，菜单默认展开。进度记在这台浏览器。书库、书页和作者工作台一两下就能进。100% 由 @hulianui/ui 搭建。",
     href: "/demos/novel",
     category: "阅读",
     status: "done",

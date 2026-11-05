@@ -211,4 +211,30 @@ describe("NovelReader", () => {
     expect(document.activeElement).toBe(region);
     expect(screen.getByText("河面暗下来。")).toBeTruthy();
   });
+
+  it("菜单展开时正文让开顶栏，收起时仍紧贴章首", () => {
+    const { unmount } = render(<NovelReader chapters={chapters} defaultChromeOpen />);
+    const open = document.querySelector("article")?.parentElement;
+    expect(open?.className).toContain("pt-32");
+    expect(open?.className.split(/\s+/).includes("pt-12")).toBe(false);
+    unmount();
+    render(<NovelReader chapters={chapters} />);
+    const closed = document.querySelector("article")?.parentElement;
+    expect(closed?.className).toContain("pt-12");
+    expect(closed?.className.split(/\s+/).includes("pt-32")).toBe(false);
+  });
+
+  it("正文字族落在 article 上，正文跟外层的字号和行距走", () => {
+    render(<NovelReader chapters={chapters} articleClassName="novel-serif" fontSize="lg" lineHeight="loose" />);
+    const articles = document.querySelectorAll("article");
+    expect(articles.length).toBeGreaterThan(1);
+    expect(articles[0]?.className).toContain("novel-serif");
+    expect(articles[0]?.className).toContain("text-lg");
+    expect(articles[0]?.className).toContain("leading-loose");
+    const prose = articles[1];
+    expect(prose?.className).toContain("text-[length:inherit]");
+    expect(prose?.className).toContain("leading-[inherit]");
+    expect(prose?.className.split(/\s+/).includes("text-base")).toBe(false);
+    expect(prose?.className.split(/\s+/).includes("leading-7")).toBe(false);
+  });
 });

@@ -5,7 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Container,
+  Empty,
   Heading,
+  Input,
   Progress,
   Segmented,
   Text,
@@ -32,12 +34,16 @@ function ShelfCard({ book, resumable }: { book: NovelDemoBook; resumable: string
   return (
     <article className="group flex flex-col">
       <div className="flex justify-start">
-        <BookCover
-          book={book}
-          compact
+        <Link
           href={`${NOVEL_BASE}/books/${book.id}`}
-          className="w-40 transition-transform duration-300 group-hover:-translate-y-1.5 motion-reduce:transition-none"
-        />
+          className="inline-block rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <BookCover
+            book={book}
+            compact
+            className="w-44 transition-transform duration-300 group-hover:-translate-y-1.5 motion-reduce:transition-none sm:w-48"
+          />
+        </Link>
       </div>
 
       <div className="mt-6 flex flex-1 flex-col">
@@ -57,7 +63,7 @@ function ShelfCard({ book, resumable }: { book: NovelDemoBook; resumable: string
         <Text size="sm" tone="muted" className="mt-1">
           {book.author}
         </Text>
-        <Text size="sm" className="mt-3 leading-relaxed" lineClamp={2}>
+        <Text size="sm" className="novel-serif mt-3 leading-relaxed" lineClamp={2}>
           {book.tagline}
         </Text>
 
@@ -108,6 +114,7 @@ function ShelfCard({ book, resumable }: { book: NovelDemoBook; resumable: string
 export default function NovelLibraryPage() {
   const books = useMemo(() => novelBooks(), []);
   const [filter, setFilter] = useState("all");
+  const [query, setQuery] = useState("");
   const [resume, setResume] = useState<Record<string, string | null>>({});
 
   // 进度只存在这台浏览器里，首屏不能读 —— 先渲染未读态，挂载后再补。
@@ -118,7 +125,15 @@ export default function NovelLibraryPage() {
   }, [books]);
 
   const genres = useMemo(() => Array.from(new Set(books.map((book) => book.genre))), [books]);
-  const shown = filter === "all" ? books : books.filter((book) => book.genre === filter);
+  const needle = query.trim().toLowerCase();
+  const shown = books.filter((book) => {
+    if (filter !== "all" && book.genre !== filter) return false;
+    if (!needle) return true;
+    return [book.title, book.titleEn, book.author, book.tagline, book.genre]
+      .join("\n")
+      .toLowerCase()
+      .includes(needle);
+  });
   const featured = books[0];
   const totalChapters = books.reduce((total, book) => total + book.chapters.length, 0);
   const totalWords = books.reduce((total, book) => total + bookWordCount(book), 0);
@@ -130,7 +145,7 @@ export default function NovelLibraryPage() {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_80%_20%,var(--color-primary)/0.08,transparent)]"
         />
-        <Container size="2xl" className="relative py-16 md:py-24">
+        <Container size="2xl" className="relative py-10 md:py-14">
           <div className="grid items-center gap-14 lg:grid-cols-[1.15fr_0.85fr]">
             <div>
               <Text size="xs" tone="muted" className="novel-serif tracking-[0.42em]">
@@ -147,7 +162,7 @@ export default function NovelLibraryPage() {
                 <br />
                 {copy("heroLine2")}
               </Heading>
-              <Text size="lg" tone="muted" className="mt-7 max-w-xl leading-relaxed">
+              <Text size="lg" tone="muted" className="novel-serif mt-7 max-w-xl leading-relaxed">
                 {copy("heroLead")}
               </Text>
               <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -186,9 +201,14 @@ export default function NovelLibraryPage() {
                   aria-hidden
                   className="absolute -inset-10 -z-10 rounded-full bg-[radial-gradient(closest-side,var(--color-primary)/0.10,transparent)] blur-2xl"
                 />
-                <BookCover book={featured} className="w-40 sm:w-52" href={`${NOVEL_BASE}/books/${featured.id}`} />
+                <Link
+                  href={`${NOVEL_BASE}/books/${featured.id}`}
+                  className="inline-block rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <BookCover book={featured} className="w-40 sm:w-48" />
+                </Link>
                 <div className="mt-6 max-w-[13rem]">
-                  <Text size="sm" className="novel-serif italic leading-relaxed" tone="muted">
+                  <Text size="sm" className="novel-serif leading-relaxed" tone="muted">
                     「{featured.excerpt}」
                   </Text>
                 </div>
@@ -208,22 +228,47 @@ export default function NovelLibraryPage() {
               {copy("shelfLead")}
             </Text>
           </div>
-          <Segmented
-            aria-label={copy("shelfTitle")}
-            value={filter}
-            onValueChange={setFilter}
-            items={[
-              { value: "all", label: copy("filterAll") },
-              ...genres.map((genre) => ({ value: genre, label: genre })),
-            ]}
-          />
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:items-end">
+            <Input
+              size="sm"
+              value={query}
+              placeholder={copy("searchPlaceholder")}
+              aria-label={copy("searchLabel")}
+              className="w-full sm:w-64"
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            <Segmented
+              aria-label={copy("shelfTitle")}
+              value={filter}
+              onValueChange={setFilter}
+              items={[
+                { value: "all", label: copy("filterAll") },
+                ...genres.map((genre) => ({ value: genre, label: genre })),
+              ]}
+            />
+          </div>
         </div>
 
-        <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-          {shown.map((book) => (
-            <ShelfCard key={book.id} book={book} resumable={resume[book.id] ?? null} />
-          ))}
-        </div>
+        {shown.length === 0 ? (
+          <Empty className="novel-serif mt-10" title={copy("emptyTitle")} description={copy("emptyDescription")}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setQuery("");
+                setFilter("all");
+              }}
+            >
+              {copy("emptyReset")}
+            </Button>
+          </Empty>
+        ) : (
+          <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            {shown.map((book) => (
+              <ShelfCard key={book.id} book={book} resumable={resume[book.id] ?? null} />
+            ))}
+          </div>
+        )}
 
         <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-hairline pt-6">
           <Text size="xs" tone="muted" className="novel-serif">

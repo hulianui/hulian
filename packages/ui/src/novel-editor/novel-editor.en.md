@@ -35,6 +35,7 @@ Inherits `HTMLAttributes<HTMLDivElement>` except `onChange`. The root needs a he
 | onActiveChapterChange | `(id: string) => void` | — | Called when the edited chapter changes |
 | onSave | `(chapters: NovelChapter[]) => void` | — | Shows a save button when provided |
 | disabled | `boolean` | `false` | Disables editing, reordering, and deletion |
+| previewClassName | `string` | — | Classes for the preview pane. Use them for paper color and typeface so the preview reads like the book. The editing column is unchanged |
 
 Above 40 chapters the sidebar switches to a virtual list with move buttons, instead of combining drag-and-drop with virtualization.
 
@@ -52,6 +53,7 @@ Above 40 chapters the sidebar switches to a virtual list with move buttons, inst
 - Without a height on the root, the chapter list and the editor grow the page, and the preview cannot scroll on its own.
 - In controlled mode, ignoring `onChaptersChange` makes typing look broken.
 - Delete removes the chapter immediately after the built-in confirm. Do not add another modal over the manuscript.
+- The preview should look like the page being read. Use `previewClassName` for paper and typeface. Do not paint the whole screen with the editor's chrome and lose the reading surface.
 
 ## Related
 [NovelReader](../novel-reader/novel-reader.md) · [MarkdownEditor](../markdown-editor/markdown-editor.md) · [Sortable](../sortable/sortable.md) · [Popconfirm](../popconfirm/popconfirm.md)

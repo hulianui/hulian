@@ -56,6 +56,7 @@ import { NovelReader } from "@hulianui/ui"
 | defaultChromeOpen | `boolean` | `false` | 首屏就展开顶栏/底栏。沉浸阅读默认收起（点正文中间三档唤出）；做阅读产品落地页时默认展开，否则第一眼是一页没有返回、没有目录的白纸 |
 | leading | `ReactNode` | — | 唤出菜单后放在顶栏左上角，例如返回和书架 |
 | trailing | `ReactNode` | — | 唤出菜单后放在顶栏右侧 |
+| articleClassName | `string` | — | 加在正文 `<article>` 上，用来换字族（例如宋体）。字号和行距仍由组件档位控制。不要在外面用 `[&_article]` 改内部节点 |
 
 ### NovelChapter
 
@@ -99,6 +100,7 @@ import { NovelReader } from "@hulianui/ui"
 - 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用内联 `color-mix(in srgb, var(--color-surface) 80%, transparent)`，不要 `backdrop-blur`。只写 `bg-surface/80` 时，生产 CSS 会先落到实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测就变成不透明浅灰，当前句被盖死。
 - 章内的「上一章 / 下一章」用按钮文案，不要拿 Pagination 的「上一页 / 下一页」来切章。
 - 不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章只留在章首，第一章不放；下一章只留在章末，最后一章不放。章末的下一章在菜单收起时也在。顶栏和底栏里的切章跟着菜单一起藏。
+- 正文字族用 `articleClassName`。不要在外面写 `[&_article]` 去改组件内部。正文 Markdown 跟外层的字号和行距走。
 
 ## 相关
 [NovelEditor](../novel-editor/novel-editor.md) · [Markdown](../markdown/markdown.md) · [Drawer](../drawer/drawer.md) · [Empty](../empty/empty.md)

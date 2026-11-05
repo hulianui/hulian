@@ -2278,7 +2278,8 @@ import { Markdown, parseBlocks, extractHeadings, slugifyHeading } from "@hulianu
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose |
+| size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose。`inheritTypography` 打开时不生效 |
+| inheritTypography | `boolean` | `false` | 字号和行距跟父级走，内部不再钉 `text-base` / `leading-7`。阅读器把档位写在外层时打开。文档页保持关闭 |
 | headingIds | `boolean \| string` | `false` | 给渲染出的标题挂锚点 id（slug 规则见「标题锚点与目录」），使长文可做目录与 `#片段` 深链。默认关闭：id 是全局命名空间，默认生成会让存量调用点凭空多出一批可能与页面已有 id 撞车的锚点。传字符串则同时开启并把它当 id 前缀（`headingIds="doc-"` → `doc-props`），用于把这批 id 关进自己的命名空间 |
 | className | `string` | — | 透传容器类名 |
 
@@ -2355,7 +2356,7 @@ import { Prose } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | as | `ElementType` | `"article"` | 渲染的容器标签 |
-| size | `"sm" \| "base"` | `"base"` | 整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文 |
+| size | `"sm" \| "base" \| "inherit"` | `"base"` | 整体排版尺寸基准。`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文。`inherit` 不钉字号和行距，跟父级走，给外层已经管着档位的阅读器用 |
 | scrollableTables | `boolean` | `false` | 宽表兜底：把 `table` 自身变成横向滚动容器，列多时不撑破版心（表头随之不换行）。代价是表格宽度改为按内容撑开、不再恒占满版心 |
 
 继承 `HTMLAttributes<HTMLElement>`（`className` / `style` 等）。
@@ -7145,6 +7146,7 @@ import { NovelEditor } from "@hulianui/ui"
 | onActiveChapterChange | `(id: string) => void` | — | 切换正在编辑的章 |
 | onSave | `(chapters: NovelChapter[]) => void` | — | 传入后显示保存按钮 |
 | disabled | `boolean` | `false` | 禁止编辑、排序和删除 |
+| previewClassName | `string` | — | 预览区的类名。用来铺纸色和字族，让预览像正文。编辑栏不受影响 |
 
 章节超过 40 时，左侧改为虚拟列表加上下移动，避免和拖拽虚拟化叠在一起。
 
@@ -7162,6 +7164,7 @@ import { NovelEditor } from "@hulianui/ui"
 - 根节点不带高度时，章节栏和编辑区会把页面撑长，预览也无法自己滚动。
 - `chapters` 受控时，忽略 `onChaptersChange` 会让输入看起来无效。
 - 删除会立刻从列表里拿掉该章。需要确认时用组件自带的 Popconfirm，不要再套一层会挡住正文的全局弹窗。
+- 预览要像在读的那一页，用 `previewClassName` 铺纸色和字族。不要把整页背景改成编辑器底，把阅读的感觉盖掉。
 
 ## 相关
 [NovelReader](https://hulianui.haloritual.com/zh/components/novel-reader) · [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor) · [Sortable](https://hulianui.haloritual.com/zh/components/sortable) · [Popconfirm](https://hulianui.haloritual.com/zh/components/popconfirm)
@@ -14581,6 +14584,7 @@ import { NovelReader } from "@hulianui/ui"
 | defaultChromeOpen | `boolean` | `false` | 首屏就展开顶栏/底栏。沉浸阅读默认收起（点正文中间三档唤出）；做阅读产品落地页时默认展开，否则第一眼是一页没有返回、没有目录的白纸 |
 | leading | `ReactNode` | — | 唤出菜单后放在顶栏左上角，例如返回和书架 |
 | trailing | `ReactNode` | — | 唤出菜单后放在顶栏右侧 |
+| articleClassName | `string` | — | 加在正文 `<article>` 上，用来换字族（例如宋体）。字号和行距仍由组件档位控制。不要在外面用 `[&_article]` 改内部节点 |
 
 ### NovelChapter
 
@@ -14624,6 +14628,7 @@ import { NovelReader } from "@hulianui/ui"
 - 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用内联 `color-mix(in srgb, var(--color-surface) 80%, transparent)`，不要 `backdrop-blur`。只写 `bg-surface/80` 时，生产 CSS 会先落到实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测就变成不透明浅灰，当前句被盖死。
 - 章内的「上一章 / 下一章」用按钮文案，不要拿 Pagination 的「上一页 / 下一页」来切章。
 - 不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章只留在章首，第一章不放；下一章只留在章末，最后一章不放。章末的下一章在菜单收起时也在。顶栏和底栏里的切章跟着菜单一起藏。
+- 正文字族用 `articleClassName`。不要在外面写 `[&_article]` 去改组件内部。正文 Markdown 跟外层的字号和行距走。
 
 ## 相关
 [NovelEditor](https://hulianui.haloritual.com/zh/components/novel-editor) · [Markdown](https://hulianui.haloritual.com/zh/components/markdown) · [Drawer](https://hulianui.haloritual.com/zh/components/drawer) · [Empty](https://hulianui.haloritual.com/zh/components/empty)

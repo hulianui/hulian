@@ -6,7 +6,7 @@ export const content = {
     brand: "渡口",
     slogan: "打开书就能读，章末接着下一章。",
     library: "书库",
-    studio: "作者后台",
+    studio: "作者工作台",
   },
   en: {
     brand: "Ferry",

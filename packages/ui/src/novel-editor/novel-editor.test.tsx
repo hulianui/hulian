@@ -41,4 +41,16 @@ describe("NovelEditor", () => {
     const markdown = onChaptersChange.mock.calls.at(-1)?.[0]?.[0]?.content as string | undefined;
     expect(markdown ?? "").toContain("#");
   });
+
+  it("预览区接住纸色和字族，不把它们铺到编辑栏上", () => {
+    const { container } = render(
+      <NovelEditor defaultChapters={chapters} previewClassName="novel-serif" />,
+    );
+    const preview = container.querySelector("[data-novel-preview]");
+    expect(preview?.className).toContain("novel-serif");
+    expect(preview?.getAttribute("aria-label")).toBe("预览");
+    const prose = preview?.querySelector("article");
+    expect(prose?.className).toContain("leading-[inherit]");
+    expect(container.querySelector("aside")?.className.includes("novel-serif")).toBe(false);
+  });
 });

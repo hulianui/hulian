@@ -25,7 +25,8 @@ import { Markdown, parseBlocks, extractHeadings, slugifyHeading } from "@hulianu
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose |
+| size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose。`inheritTypography` 打开时不生效 |
+| inheritTypography | `boolean` | `false` | 字号和行距跟父级走，内部不再钉 `text-base` / `leading-7`。阅读器把档位写在外层时打开。文档页保持关闭 |
 | headingIds | `boolean \| string` | `false` | 给渲染出的标题挂锚点 id（slug 规则见「标题锚点与目录」），使长文可做目录与 `#片段` 深链。默认关闭：id 是全局命名空间，默认生成会让存量调用点凭空多出一批可能与页面已有 id 撞车的锚点。传字符串则同时开启并把它当 id 前缀（`headingIds="doc-"` → `doc-props`），用于把这批 id 关进自己的命名空间 |
 | className | `string` | — | 透传容器类名 |
 

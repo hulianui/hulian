@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button, Container, Heading, Text } from "@hulianui/ui";
+import { Button, Container, Empty, Heading, Text } from "@hulianui/ui";
 import { bookWordCount, novelBooks } from "../../_data/books";
 import { formatWords } from "../../_lib/format";
 import { copy } from "./page.content";
@@ -12,6 +12,7 @@ export default function NovelStudioPage() {
   const books = novelBooks();
   const totalChapters = books.reduce((total, book) => total + book.chapters.length, 0);
   const totalWords = books.reduce((total, book) => total + bookWordCount(book), 0);
+  const latest = books.at(-1);
 
   return (
     <Container size="2xl" className="py-12 md:py-16">
@@ -23,7 +24,7 @@ export default function NovelStudioPage() {
           <Heading level={1} size="3xl" weight="normal" className="novel-serif mt-4">
             {copy("studioTitle")}
           </Heading>
-          <Text size="sm" tone="muted" className="mt-3 leading-relaxed">
+          <Text size="sm" tone="muted" className="novel-serif mt-3 leading-relaxed">
             {copy("studioLead")}
           </Text>
         </div>
@@ -46,6 +47,10 @@ export default function NovelStudioPage() {
         </dl>
       </header>
 
+      {books.length === 0 ? (
+        <Empty className="novel-serif" title={copy("emptyHint")} description={copy("emptyLead")} />
+      ) : (
+      <>
       <div className="mt-8 hidden grid-cols-[1fr_auto_auto_auto] items-center gap-x-8 border-b border-hairline pb-3 md:grid">
         <Text size="xs" tone="muted" className="tracking-[0.16em]">
           {copy("colWork")}
@@ -76,7 +81,14 @@ export default function NovelStudioPage() {
               />
               <div className="min-w-0">
                 <Heading level={2} size="base" weight="medium" className="novel-serif">
-                  {book.title}
+                  <Button
+                    variant="link"
+                    tone="neutral"
+                    className="novel-serif h-auto px-0 text-base font-medium"
+                    render={<Link href={`${NOVEL_BASE}/studio/${book.id}`} />}
+                  >
+                    {book.title}
+                  </Button>
                 </Heading>
                 <Text size="xs" tone="muted" className="mt-1">
                   {book.author} · {book.genre} · {book.year}
@@ -109,19 +121,19 @@ export default function NovelStudioPage() {
           </li>
         ))}
       </ul>
-
-      {books.length === 0 ? (
-        <Text tone="muted" className="py-16 text-center">
-          {copy("emptyHint")}
-        </Text>
-      ) : null}
+      </>
+      )}
 
       <div className="mt-12 flex items-center justify-between gap-4 border-t border-hairline pt-6">
-        <Text size="xs" tone="muted" className="novel-serif">
-          {copy("lastUpdate")} · {books.at(-1)?.year}
-        </Text>
+        {latest ? (
+          <Text size="xs" tone="muted" className="novel-serif">
+            {copy("lastUpdate")} · {latest.year}
+          </Text>
+        ) : (
+          <span />
+        )}
         <Button variant="ghost" size="sm" muted render={<Link href={`${NOVEL_BASE}/library`} />}>
-          {copy("colWork")}
+          {copy("backToLibrary")}
         </Button>
       </div>
     </Container>

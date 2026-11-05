@@ -6465,6 +6465,13 @@
       "source": "packages/ui/src/novel-editor/novel-editor.md"
     },
     {
+      "id": "component/novel-editor/pitfall/4",
+      "scope": "novel-editor",
+      "title": "NovelEditor",
+      "rule": "预览要像在读的那一页，用 `previewClassName` 铺纸色和字族。不要把整页背景改成编辑器底，把阅读的感觉盖掉。",
+      "source": "packages/ui/src/novel-editor/novel-editor.md"
+    },
+    {
       "id": "component/novel-reader/pitfall/1",
       "scope": "novel-reader",
       "title": "NovelReader",
@@ -6525,6 +6532,13 @@
       "scope": "novel-reader",
       "title": "NovelReader",
       "rule": "不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章只留在章首，第一章不放；下一章只留在章末，最后一章不放。章末的下一章在菜单收起时也在。顶栏和底栏里的切章跟着菜单一起藏。",
+      "source": "packages/ui/src/novel-reader/novel-reader.md"
+    },
+    {
+      "id": "component/novel-reader/pitfall/10",
+      "scope": "novel-reader",
+      "title": "NovelReader",
+      "rule": "正文字族用 `articleClassName`。不要在外面写 `[&_article]` 去改组件内部。正文 Markdown 跟外层的字号和行距走。",
       "source": "packages/ui/src/novel-reader/novel-reader.md"
     },
     {
@@ -11320,7 +11334,7 @@
   ],
   "stats": {
     "componentDocs": 401,
-    "componentAdvisories": 1578,
-    "totalAdvisories": 1588
+    "componentAdvisories": 1580,
+    "totalAdvisories": 1590
   }
 }

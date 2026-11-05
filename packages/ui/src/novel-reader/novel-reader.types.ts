@@ -99,4 +99,9 @@ export interface NovelReaderProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   leading?: ReactNode;
   /** 唤出菜单后放在顶栏右侧（写作入口等）。 */
   trailing?: ReactNode;
+  /**
+   * 加在正文 `<article>` 上，用来换字族（例如阅读站的宋体）。
+   * 字号和行距仍由组件的档位控制。不要在外面用后代选择器改 article。
+   */
+  articleClassName?: string;
 }

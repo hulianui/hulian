@@ -4,7 +4,7 @@ import { copy } from "./book-detail-client.content";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, Container, Heading, Text } from "@hulianui/ui";
-import { ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import { bookWordCount, chapterWordCount, type NovelDemoBook } from "../_data/books";
 import { savedChapterId } from "../_lib/reading-progress";
 import { chapterNumeral, formatWords } from "../_lib/format";
@@ -47,7 +47,8 @@ export function BookDetailClient({ book }: { book: NovelDemoBook }) {
         muted
         render={<Link href={`${NOVEL_BASE}/library`} />}
       >
-        ← {copy("backToLibrary")}
+        <ArrowLeft aria-hidden className="size-3.5" />
+        {copy("backToLibrary")}
       </Button>
 
       <div className="mt-8 grid items-start gap-10 md:mt-12 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-16">
@@ -100,7 +101,7 @@ export function BookDetailClient({ book }: { book: NovelDemoBook }) {
             「{book.excerpt}」
           </blockquote>
 
-          <Text className="mt-7 max-w-2xl leading-loose">{book.blurb}</Text>
+          <Text className="novel-serif mt-7 max-w-2xl leading-loose">{book.blurb}</Text>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Button
@@ -133,9 +134,10 @@ export function BookDetailClient({ book }: { book: NovelDemoBook }) {
                 const here = resume === chapter.id;
                 return (
                   <li key={chapter.id}>
-                    <Link
-                      href={`${readHref}?c=${chapter.id}`}
-                      className="group flex items-center gap-4 py-4 transition-colors hover:text-foreground"
+                    <Button
+                      variant="ghost"
+                      className="h-auto w-full justify-start gap-4 rounded-none px-1 py-4 font-normal"
+                      render={<Link href={`${readHref}?c=${chapter.id}`} />}
                     >
                       <Text
                         as="span"
@@ -162,9 +164,9 @@ export function BookDetailClient({ book }: { book: NovelDemoBook }) {
                       </Text>
                       <ChevronRight
                         aria-hidden
-                        className="size-4 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
+                        className="size-4 shrink-0 text-muted-foreground/50"
                       />
-                    </Link>
+                    </Button>
                   </li>
                 );
               })}

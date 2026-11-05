@@ -42,7 +42,12 @@ export function EditorClient({ book }: { book: NovelDemoBook }) {
           {copy("backToStudio")}
         </Button>
       </div>
-      <NovelEditor className="min-h-0 flex-1" chapters={chapters} onChaptersChange={setChapters} />
+      <NovelEditor
+        className="min-h-0 flex-1"
+        chapters={chapters}
+        onChaptersChange={setChapters}
+        previewClassName="novel-serif bg-[color-mix(in_oklab,var(--color-warning)_6%,var(--color-bg))] px-6 py-8 text-lg leading-loose sm:px-10"
+      />
     </div>
   );
 }
