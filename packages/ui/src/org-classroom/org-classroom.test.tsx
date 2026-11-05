@@ -35,19 +35,18 @@ describe("OrgClassroom", () => {
 
   it("有人的座位显示当前状态，空座位没有气泡", () => {
     const { container } = render(<OrgClassroom zones={[zone()]} />);
-    const occupied = container.querySelector('[data-seat-id="s1"] [data-slot="status-chip"]')!;
+    const occupied = container.querySelector('[data-seat-label="s1"] [data-slot="status-chip"]')!;
     const visible = occupied.querySelector('[data-visible="true"]')!;
     expect(visible.textContent).toBe("在岗");
     expect(occupied.querySelector('[data-visible="false"]')?.textContent).toBe("忙碌");
-    expect(occupied.className).not.toContain("translateZ");
-    expect(container.querySelector('[data-seat-id="s3"] [data-slot="status-chip"]')).toBeNull();
+    expect(container.querySelector('[data-seat-label="s3"]')).toBeNull();
     expect(container.querySelector('[data-seat-id="s3"]')!.textContent).not.toContain("在岗");
   });
 
   it("悬停只抬桌子和人，状态气泡不在抬起层里，并且带透明度过渡", () => {
     const { container } = render(<OrgClassroom zones={[zone()]} />);
     const lift = container.querySelector('[data-seat-id="s1"] [data-seat-lift]')!;
-    const chip = container.querySelector('[data-seat-id="s1"] [data-slot="status-chip"]')!;
+    const chip = container.querySelector('[data-seat-label="s1"] [data-slot="status-chip"]')!;
     expect(lift.className).toContain("translateZ(18px)");
     expect(lift.className).toContain("motion-reduce:transition-none");
     expect(lift.contains(chip)).toBe(false);
@@ -88,9 +87,9 @@ describe("OrgClassroom", () => {
     }
     const { container, getByRole } = render(<Harness />);
     fireEvent.click(getByRole("button", { name: "林予涵，在岗" }));
-    const before = container.querySelector('[data-seat-id="s1"] [data-slot="status-chip"]');
+    const before = container.querySelector('[data-seat-label="s1"] [data-slot="status-chip"]');
     fireEvent.click(container.querySelector('[data-status-option="meeting"]')!);
-    const after = container.querySelector('[data-seat-id="s1"] [data-slot="status-chip"]');
+    const after = container.querySelector('[data-seat-label="s1"] [data-slot="status-chip"]');
     expect(onStatusChange).toHaveBeenCalledWith("s1", "meeting");
     expect(after).toBe(before);
     expect(after!.querySelector('[data-visible="true"]')!.textContent).toBe("会议中");
@@ -141,8 +140,9 @@ describe("OrgClassroom", () => {
   it("等距平面用 CSS 旋转，不用 WebGL", () => {
     const { container } = render(<OrgClassroom zones={[zone()]} />);
     const plane = container.querySelector("[data-slot=org-classroom-plane]")!;
-    expect(plane.className).toContain("rotateX(58deg)");
-    expect(plane.className).toContain("rotateZ(-42deg)");
+    expect(plane.getAttribute("data-iso")).toBe("rotateX(58deg) rotateZ(-42deg)");
+    expect(plane.getAttribute("style")).toContain("rotateX(58deg)");
+    expect(plane.getAttribute("style")).toContain("rotateZ(-42deg)");
     expect(container.querySelector("canvas")).toBeNull();
   });
 });

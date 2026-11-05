@@ -146,6 +146,30 @@ export function maskMarkdownFences(source) {
   return mapMarkdownCode(source, { fenced: spacesPreservingNewlines });
 }
 
+const FENCED_CJK_RUN = /[\u3400-\u9fff\uf900-\ufaff]+/g;
+
+/**
+ * CJK inside an English `*.en.md` code fence.
+ *
+ * `maskMarkdownFences` intentionally hides fences from the prose CJK check: a fence is
+ * not a translated sentence. That exemption is not safe for the published English site.
+ * The built page renders the fence as `<pre><code>`, and both `check-english-output`
+ * and the hydrated showcase browser gate read that text. OrgClassroom v1 put the locked
+ * Chinese status labels in an English code sample; `docs:i18n:check` stayed green and
+ * the browser gates failed only after the static export. Fences are therefore checked
+ * on their own, before that build.
+ */
+export function fencedCjkSnippets(source) {
+  const snippets = [];
+  mapMarkdownCode(source, {
+    fenced(value) {
+      for (const match of value.matchAll(FENCED_CJK_RUN)) snippets.push(match[0]);
+      return value;
+    },
+  });
+  return snippets;
+}
+
 /** Hide fenced and inline code while preserving offsets for link diagnostics. */
 export function maskMarkdownCode(source) {
   return mapMarkdownCode(source, {
@@ -308,6 +332,21 @@ export function checkComponentDocTranslations({
           `English frontmatter slug ${englishSlug ?? "<missing>"} differs from Chinese ${
             chineseSlug ?? "<missing>"
           }`,
+        ),
+      );
+    }
+
+    for (const snippet of fencedCjkSnippets(english)) {
+      const offset = Math.max(0, english.indexOf(snippet));
+      diagnostics.push(
+        diagnostic(
+          pair.english,
+          english,
+          offset,
+          "fenced-cjk",
+          `CJK inside an English code fence (${JSON.stringify(
+            snippet,
+          )}) is rendered in <pre><code> and fails the English output and showcase browser gates`,
         ),
       );
     }

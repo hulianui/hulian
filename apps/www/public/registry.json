@@ -10425,6 +10425,11 @@
           "target": "components/hulianui/org-classroom/desk.tsx"
         },
         {
+          "path": "components/hulianui/org-classroom/fit-scene.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/fit-scene.ts"
+        },
+        {
           "path": "components/hulianui/org-classroom/floor.tsx",
           "type": "registry:ui",
           "target": "components/hulianui/org-classroom/floor.tsx"

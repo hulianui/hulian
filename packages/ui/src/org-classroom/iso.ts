@@ -6,9 +6,6 @@ export const ISO_PLANE_CLASS =
 export const ISO_BILLBOARD_CLASS =
   "[transform-style:preserve-3d] [transform:rotateZ(42deg)_rotateX(-58deg)]";
 
-export const ISO_BILLBOARD_CENTER_CLASS =
-  "pointer-events-none absolute left-1/2 top-0 [transform-style:preserve-3d] [transform:translateX(-50%)_rotateZ(42deg)_rotateX(-58deg)]";
-
 /**
  * 抬起的是桌子和人，不是状态气泡。
  * 气泡挂在按钮里、抬起层外面，悬停时位置不变。

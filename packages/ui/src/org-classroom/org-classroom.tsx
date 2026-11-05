@@ -2,11 +2,54 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
-import { ORG_CLASSROOM_COPY_ZH } from "./copy";
-import { Floor } from "./floor";
+import { ORG_CLASSROOM_COPY_ZH, type OrgClassroomCopy } from "./copy";
+import { Floor, type FloorAnnotation } from "./floor";
 import { PersonCard } from "./person-card";
-import type { OrgClassroomProps } from "./org-classroom.types";
+import type { OrgClassroomProps, Zone } from "./org-classroom.types";
+import { StatusChip } from "./status-chip";
 import { ZoneTile } from "./zone-tile";
+
+function layoutKeyFor(zones: Zone[]) {
+  return zones
+    .map(
+      (zone) =>
+        `${zone.id}:${zone.name}:${zone.seats
+          .map((seat) => `${seat.id}.${seat.row}.${seat.col}.${seat.person?.name ?? ""}.${seat.person?.status ?? ""}`)
+          .join(",")}`,
+    )
+    .join("|");
+}
+
+function annotationsFor(zones: Zone[], copy: OrgClassroomCopy): FloorAnnotation[] {
+  const annotations: FloorAnnotation[] = [];
+  for (const zone of zones) {
+    annotations.push({
+      id: `zone-${zone.id}`,
+      anchor: zone.id,
+      node: (
+        <span className="whitespace-nowrap rounded-full bg-surface/95 px-2 py-0.5 text-xs font-medium text-foreground shadow-sm ring-1 ring-border">
+          {zone.name}
+        </span>
+      ),
+    });
+    for (const seat of zone.seats) {
+      if (!seat.person) continue;
+      annotations.push({
+        id: seat.id,
+        anchor: seat.id,
+        node: (
+          <>
+            <StatusChip status={seat.person.status} labels={copy.statuses} />
+            <span className="whitespace-nowrap rounded-full bg-surface px-1.5 py-0.5 text-xs font-medium text-foreground shadow-sm ring-1 ring-border">
+              {seat.person.name}
+            </span>
+          </>
+        ),
+      });
+    }
+  }
+  return annotations;
+}
 
 function OrgClassroomImpl({
   zones,
@@ -54,7 +97,7 @@ function OrgClassroomImpl({
   return (
     <div data-slot="org-classroom" className={cn("flex flex-col gap-4 lg:flex-row lg:items-start", className)}>
       <div className="min-w-0 flex-1">
-        <Floor label={copy.floor}>
+        <Floor label={copy.floor} layoutKey={layoutKeyFor(zones)} annotations={annotationsFor(zones, copy)}>
           {zones.map((zone) => (
             <ZoneTile
               key={zone.id}

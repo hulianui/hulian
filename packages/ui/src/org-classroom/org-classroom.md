@@ -91,7 +91,8 @@ const [zones, setZones] = useState<Zone[]>([
 - 状态是受控的。人员卡只调用 `onStatusChange`，下一帧的气泡来自你写回的 `person.status`。用 `updateSeatStatus` 可以保持没改动的座位引用。气泡用透明度过渡，不要靠 `key={status}` 把整颗气泡卸掉重挂。
 - 点座位是选中，点分区里桌子以外的空白才是聚焦。再点一次已聚焦分区的空白会清空。v1 没有拖拽换座、多选，也没有平移缩放。
 - `accent` 里的主题变量必须带 `--color-` 前缀。座位上的人是内部剪影，不是头像组件 [Avatar](../avatar/avatar.md)。
-- 这是 CSS 等距舞台加 SVG，不是 Three.js / R3F。中间层如果加了 `opacity` 以外的滤镜，或把 `overflow: hidden` 套在旋转平面上，抬起和正对屏幕的人名会扁掉。
+- 这是 CSS 等距舞台加 SVG，不是 Three.js / R3F。中间层如果加了 `opacity` 以外的滤镜，或把 `overflow: hidden` 套在旋转平面上，抬起和正对屏幕的人名会扁掉。人名上也不要再用 `truncate`：它会把标签裁成 `overflow: hidden`，3D 舞台就此被压扁。
+- 英文文档的代码块同样会被英文站渲染出来。`*.en.md` 的围栏里不要写「在岗 / 忙碌 / 会议中 / 休假 / 面试中」。`docs:i18n:check` 会报 `fenced-cjk`；只查正文、放行围栏，会绿到静态导出之后的英文产物门禁和 showcase 浏览器门禁才红。
 
 ## 相关
 [Card](../card/card.md) · [Tag](../tag/tag.md) · [Button](../button/button.md) · [Badge](../badge/badge.md) · [Kanban](../kanban/kanban.md) · [Scheduler](../scheduler/scheduler.md)

@@ -3,7 +3,6 @@ import type { CSSProperties } from "react";
 import { cn } from "../lib/cn";
 import type { OrgClassroomCopy } from "./copy";
 import { Desk } from "./desk";
-import { ISO_BILLBOARD_CENTER_CLASS } from "./iso";
 import type { Zone } from "./org-classroom.types";
 
 const ZONE_WASH = "bg-[color-mix(in_oklab,var(--zone-accent)_16%,var(--color-surface))]";
@@ -32,10 +31,11 @@ function ZoneTileImpl({
   return (
     <div
       data-zone-id={zone.id}
+      data-anchor={zone.id}
       data-focused={focused ? "true" : "false"}
       data-quiet={quiet ? "true" : "false"}
       className={cn(
-        "relative rounded-[28px] border border-border px-5 pt-16 pb-5 shadow-[0_16px_40px_-24px_rgba(0,0,0,0.18)] [transform-style:preserve-3d]",
+        "relative rounded-[28px] border border-border px-3 pt-3 pb-3 shadow-[0_16px_40px_-24px_rgba(0,0,0,0.18)] [transform-style:preserve-3d]",
         "transition-opacity duration-300 ease-out motion-reduce:transition-none",
         "data-[quiet=true]:opacity-40 data-[focused=true]:ring-2 data-[focused=true]:ring-primary/40",
         ZONE_WASH,
@@ -50,16 +50,11 @@ function ZoneTileImpl({
         aria-label={focused ? copy.clearFocus(zone.name) : copy.focusZone(zone.name)}
         onClick={() => onZoneToggle(zone.id)}
       />
-      <div className={cn(ISO_BILLBOARD_CENTER_CLASS, "top-4 z-20")}>
-        <span className="whitespace-nowrap rounded-full bg-surface/95 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm ring-1 ring-border">
-          {zone.name}
-        </span>
-      </div>
       <div
-        className="relative z-10 grid gap-x-2 gap-y-1 pointer-events-none [transform-style:preserve-3d]"
+        className="relative z-10 grid gap-x-3 gap-y-3 pointer-events-none [transform-style:preserve-3d]"
         style={{
-          gridTemplateColumns: `repeat(${columns}, 5.75rem)`,
-          gridTemplateRows: `repeat(${rows}, 7.25rem)`,
+          gridTemplateColumns: `repeat(${columns}, 5.4rem)`,
+          gridTemplateRows: `repeat(${rows}, 6.75rem)`,
         }}
       >
         {zone.seats.map((seat) => (

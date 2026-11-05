@@ -10,6 +10,9 @@
 // "Regenerate changelog data"，配套 checkout 的 fetch-depth: 0 才能读到 tag）。
 // 所以发版后**不需要**人工回填这个文件；仓库里那份滞后不影响线上。
 //
+// 条目只来自 `changeset version` 写进 CHANGELOG.md 的已发布版本。`.changeset/*.md`
+// 里还没消费的说明不会出现在页面上，也不要在这里补一个假版本或假日期。
+//
 // 零依赖。跑：node scripts/gen-changelog.mjs（已挂进 pnpm docs:all）
 
 import { readFileSync, writeFileSync } from "node:fs";

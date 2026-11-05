@@ -6685,7 +6685,14 @@
       "id": "component/org-classroom/pitfall/5",
       "scope": "org-classroom",
       "title": "OrgClassroom",
-      "rule": "这是 CSS 等距舞台加 SVG，不是 Three.js / R3F。中间层如果加了 `opacity` 以外的滤镜，或把 `overflow: hidden` 套在旋转平面上，抬起和正对屏幕的人名会扁掉。",
+      "rule": "这是 CSS 等距舞台加 SVG，不是 Three.js / R3F。中间层如果加了 `opacity` 以外的滤镜，或把 `overflow: hidden` 套在旋转平面上，抬起和正对屏幕的人名会扁掉。人名上也不要再用 `truncate`：它会把标签裁成 `overflow: hidden`，3D 舞台就此被压扁。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/6",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "英文文档的代码块同样会被英文站渲染出来。`*.en.md` 的围栏里不要写「在岗 / 忙碌 / 会议中 / 休假 / 面试中」。`docs:i18n:check` 会报 `fenced-cjk`；只查正文、放行围栏，会绿到静态导出之后的英文产物门禁和 showcase 浏览器门禁才红。",
       "source": "packages/ui/src/org-classroom/org-classroom.md"
     },
     {
@@ -11369,7 +11376,7 @@
   ],
   "stats": {
     "componentDocs": 402,
-    "componentAdvisories": 1585,
-    "totalAdvisories": 1595
+    "componentAdvisories": 1586,
+    "totalAdvisories": 1596
   }
 }

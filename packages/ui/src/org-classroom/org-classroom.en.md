@@ -75,7 +75,7 @@ Default bubble copy is locked in the Chinese locale. With `ConfigProvider locale
 
 ## Usage notes
 
-- Empty seats do not render a status bubble. The default labels are the locked Chinese short copy. English apps set `ConfigProvider locale={enUS}` instead of replacing those defaults at the call site.
+- Empty seats do not render a status bubble. The default labels are the locked Chinese short copy. English apps set `ConfigProvider locale={enUS}` instead of replacing those defaults at the call site. Do not paste those Chinese labels into this English document, including code samples: the published page renders fences as code, and the English output gate reads them. `docs:i18n:check` reports `fenced-cjk` for that case.
 - Status is controlled. The person card only calls `onStatusChange`; the next bubble reads `person.status`. `updateSeatStatus` keeps untouched seat references. The bubble crossfades with opacity. Do not remount it with `key={status}`.
 - Clicking a seat selects it. Clicking empty floor space focuses that zone, and clicking the same empty space again clears the focus. v1 has no drag-to-reseat, multi-select, or pan/zoom.
 - Theme variables inside `accent` need the `--color-` prefix. The silhouette on a seat is not the portrait [Avatar](../avatar/avatar.md).
