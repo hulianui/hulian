@@ -6,6 +6,8 @@ export const brand = {
   name: copy("brand"),
   nameEn: "Ferry",
   slogan: copy("slogan"),
+  sealTop: copy("sealTop"),
+  sealBottom: copy("sealBottom"),
 };
 
 export const primaryNav = [

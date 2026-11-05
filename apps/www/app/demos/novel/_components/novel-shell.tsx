@@ -33,8 +33,8 @@ function Seal({ className }: { className?: string }) {
       }
     >
       <span className="novel-serif flex flex-col items-center text-[10px] leading-[1.08] tracking-[0.08em]">
-        <span>渡</span>
-        <span>口</span>
+        <span>{brand.sealTop}</span>
+        <span>{brand.sealBottom}</span>
       </span>
     </span>
   );

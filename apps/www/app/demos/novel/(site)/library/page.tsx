@@ -209,7 +209,9 @@ export default function NovelLibraryPage() {
                 </Link>
                 <div className="mt-6 max-w-[13rem]">
                   <Text size="sm" className="novel-serif leading-relaxed" tone="muted">
-                    「{featured.excerpt}」
+                    {copy("quoteOpen")}
+                    {featured.excerpt}
+                    {copy("quoteClose")}
                   </Text>
                 </div>
               </div>

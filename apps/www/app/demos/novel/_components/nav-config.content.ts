@@ -4,12 +4,16 @@ import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 export const content = {
   "zh-CN": {
     brand: "渡口",
+    sealTop: "渡",
+    sealBottom: "口",
     slogan: "打开书就能读，章末接着下一章。",
     library: "书库",
     studio: "作者工作台",
   },
   en: {
     brand: "Ferry",
+    sealTop: "F",
+    sealBottom: "Y",
     slogan: "Open a book and read. The next chapter waits at the end.",
     library: "Library",
     studio: "Author studio",

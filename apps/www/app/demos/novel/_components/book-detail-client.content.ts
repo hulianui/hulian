@@ -17,6 +17,8 @@ export const content = {
     words: "{0} 字",
     chapters: "{0} 章",
     minutes: "约 {0} 分钟",
+    quoteOpen: "「",
+    quoteClose: "」",
   },
   en: {
     backToLibrary: "Back to the library",
@@ -33,6 +35,8 @@ export const content = {
     words: "{0} words",
     chapters: "{0} chapters",
     minutes: "About {0} min",
+    quoteOpen: '"',
+    quoteClose: '"',
   },
 } as const;
 

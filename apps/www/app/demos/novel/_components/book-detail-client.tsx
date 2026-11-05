@@ -98,7 +98,9 @@ export function BookDetailClient({ book }: { book: NovelDemoBook }) {
           </Text>
 
           <blockquote className="novel-serif mt-9 border-l-2 border-foreground/25 pl-5 text-lg leading-loose text-muted-foreground">
-            「{book.excerpt}」
+            {copy("quoteOpen")}
+            {book.excerpt}
+            {copy("quoteClose")}
           </blockquote>
 
           <Text className="novel-serif mt-7 max-w-2xl leading-loose">{book.blurb}</Text>
