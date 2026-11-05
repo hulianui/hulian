@@ -26,7 +26,7 @@ import { Prose } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | as | `ElementType` | `"article"` | 渲染的容器标签 |
-| size | `"sm" \| "base"` | `"base"` | 整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文 |
+| size | `"sm" \| "base" \| "inherit"` | `"base"` | 整体排版尺寸基准。`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文。`inherit` 不钉字号和行距，跟父级走，给外层已经管着档位的阅读器用 |
 | scrollableTables | `boolean` | `false` | 宽表兜底：把 `table` 自身变成横向滚动容器，列多时不撑破版心（表头随之不换行）。代价是表格宽度改为按内容撑开、不再恒占满版心 |
 
 继承 `HTMLAttributes<HTMLElement>`（`className` / `style` 等）。

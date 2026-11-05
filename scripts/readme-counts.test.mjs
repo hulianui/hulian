@@ -6,6 +6,7 @@ import test from "node:test";
 // 口径与同步逻辑都在 readme-counts.mjs —— 测试只负责断言，不再自带一份正则，
 // 否则「校验用的口径」和「修复用的口径」会各自漂移，那正是这条门禁想防的病。
 import {
+  PACKAGE_MANIFEST_FILE,
   README_FILES,
   ROOT,
   ROOT_README_FILES,
@@ -43,6 +44,22 @@ for (const file of README_FILES) {
     }
   });
 }
+
+test(`${PACKAGE_MANIFEST_FILE} 的 description 组件数不滞后`, () => {
+  // npm 包页面的副标题就是这个字段，和 README 一样是一等公开文案。
+  // 它曾长期写着 "340+ 组件"（0.68.0 时实际已 399）—— 因为它既不在 README_FILES 里，
+  // 带 "+" 的写法也匹配不到 COMPONENT_RE，两重原因让它整段躲过了门禁。
+  const manifest = readFileSync(join(ROOT, PACKAGE_MANIFEST_FILE), "utf8");
+  const claimed = componentNumbersIn(manifest);
+  assert.ok(claimed.length > 0, "description 里找不到「N 个组件」——请保持与 README 同一口径");
+  for (const n of claimed) {
+    assert.equal(
+      n,
+      componentCount(),
+      `description 写了 ${n} 个组件，实际 ${componentCount()} 个 —— 跑 \`pnpm readme:sync\` 同步`,
+    );
+  }
+});
 
 test("README 不再写死会随每次提交漂移的测试用例数", () => {
   // 用例数每加一条测试就变，写进 README 等于制造一个必然滞后的数字（曾写 2705 / 367，

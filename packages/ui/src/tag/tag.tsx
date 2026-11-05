@@ -4,10 +4,20 @@ import { cva } from "class-variance-authority";
 import { X } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
+import { resolveTone } from "../lib/tone";
 import type { TagProps, TagTone } from "./tag.types";
 
 // Tag = 状态标签（区别于 Badge 计数 / Chip 令牌）：6 语气覆盖状态光谱 + 可呼吸状态圆点 + 可关闭。
 // 圆角用比 Badge/Chip(pill) 更小的矩形，强化「状态标记」语义。纯消费语义 token。
+//
+// 两条配色轴（互不替代，同时传时 `color` 优先）：
+//  · `tone` 是**语义**轴 —— 六档状态色，全库共用同一套枚举（conventions 里的 tone SSOT）。
+//  · `color` 是**分类**轴 —— 「这个标签属于哪一类」跟状态无关：渠道（抖音/小红书/视频号）、
+//    业务线、文件类型、标签体系都可能需要十几二十种颜色，语义色接不住，强行映射只会让
+//    「成功」和「渠道 A」共用一个绿。走 `resolveTone`，与 `Dot.color` / `Brand.color` / `ChartSeries.color`
+//    同一条路径：语义色名（`chart-2` / `primary` …）、任意 CSS 颜色或 `var(--color-*)` 都收。
+//    三档 variant 各自从这一个色派生（soft 12% 底、outline 描边、solid 实底），
+//    所以分类色也自动吃明暗主题，不必为每个色再写一套亮暗值。
 //
 // `info` 与 `brand` 是两个语义不是两种叫法（#232，取值集与顺序对齐 alert.tsx）：`brand` 用主色说
 // 「这条和产品/主操作有关」，`info` 用独立的 info 色说「这是中性事实说明」。缺 info 那一档时，
@@ -62,16 +72,31 @@ function TagImpl({
   variant,
   tone = "neutral",
   size = "md",
+  color,
   dot,
   pulse,
   icon,
   onClose,
   isDisabled,
   className,
+  style,
   children,
   ...rest
 }: TagProps) {
   const labels = { remove: "移除", ...useComponentLocale().tag };
+  // 分类色覆盖：tone 的 bg-*/text-* 工具类仍在 className 里，但内联样式优先级更高，
+  // 于是不必再维护一份「color 存在时该去掉哪些类」的映射表 —— 那份表迟早跟 cva 漂开。
+  // 自己拼色块照同一份配方（soft 12% = 与 tone 的 /12 同口径），见 tag.md「三档配色」。
+  const accent = resolveTone(color);
+  const accentStyle = accent
+    ? variant === "solid"
+      ? // 实底：前景用 primary-foreground（亮色白 / 暗色近黑），与 Button / Brand 的实底同一口径。
+        // 传入的色若本身极浅（如 chart-3 的琥珀），白字会偏弱 —— 分类色请优先软底或描边。
+        { backgroundColor: accent, color: "var(--color-primary-foreground)" }
+      : variant === "outline"
+        ? { borderColor: accent, color: accent }
+        : { backgroundColor: `color-mix(in oklab, ${accent} 12%, transparent)`, color: accent }
+    : undefined;
   return (
     <span
       className={cn(
@@ -79,6 +104,8 @@ function TagImpl({
         isDisabled && "pointer-events-none opacity-50",
         className,
       )}
+      // 消费方显式 style 仍能覆盖（逃生口），故放在自家分类色之后。
+      style={accentStyle ? { ...accentStyle, ...style } : style}
       aria-disabled={isDisabled || undefined}
       {...rest}
     >
@@ -91,13 +118,18 @@ function TagImpl({
               <span
                 className={cn(
                   "absolute inline-flex size-full animate-ping rounded-full opacity-60",
-                  dotByTone[tone],
+                  !accent && dotByTone[tone],
                 )}
+                style={accent ? { backgroundColor: accent } : undefined}
                 aria-hidden
               />
             )}
             <span
-              className={cn("relative inline-flex size-1.5 rounded-full", dotByTone[tone])}
+              className={cn(
+                "relative inline-flex size-1.5 rounded-full",
+                !accent && dotByTone[tone],
+              )}
+              style={accent ? { backgroundColor: accent } : undefined}
               aria-hidden
             />
           </span>

@@ -26,7 +26,7 @@ import { Prose } from "@hulianui/ui"
 | Name | Type | Default | Description |
 |------|------|------|------|
 | as | `ElementType` | `"article"` | Container element to render. |
-| size | `"sm" \| "base"` | `"base"` | Typography scale. `sm` uses a `text-sm` base for long content in sidebars or cards. |
+| size | `"sm" \| "base" \| "inherit"` | `"base"` | Typography scale. `sm` uses a `text-sm` base for long content in sidebars or cards. `inherit` does not pin type size or line height, so a parent that already owns those settings (a reader) can drive them |
 | scrollableTables | `boolean` | `false` | Wide-table fallback: turns the `table` itself into a horizontal scroller so many-column tables no longer break out of the measure (headers stop wrapping as part of this). In exchange the table sizes to its content instead of always filling the measure. |
 
 Inherits `HTMLAttributes<HTMLElement>` (`className` / `style`, etc.).

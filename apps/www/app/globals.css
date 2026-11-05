@@ -5,6 +5,7 @@
 /* 中文：自托管思源黑体分片（#319）。放在 preset 之后、@source 之前 —— CSS 的 @import
    必须在其他规则之前，而这份只声明 @font-face，不产出任何工具类。 */
 @import "./fonts/noto-sans-sc.css";
+@import "./fonts/noto-serif-sc.css";
 
 /* 模型 A 核心：让消费方 Tailwind 扫到 @hulianui/ui 源码里的 className */
 @source "../../../packages/ui/src/**/*.{ts,tsx}";
@@ -172,4 +173,35 @@ body {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ---- 渡口小说站（/demos/novel）------------------------------------------
+   只作用于这一个 demo，不进库：
+   · .novel-serif 给标题和正文一副宋体。自托管的 Noto Serif SC 必须排在
+     ui-serif / system-ui 前面 —— 那些通用族会把汉字直接交给系统黑体，
+     排在后面的宋体永远轮不到。Songti / SimSun 只做字体文件没装上时的兜底。
+   · .novel-theme 是一块「墨色主题岛」——把主色换成本色纸墨（亮色近黑/暗色近白），
+     于是按钮、进度条、链接全部跟着变，不再是一块 SaaS 蓝。底色混进一点点暖色，
+     和阅读器的日间纸是同一张桌子。库本身支持运行时换肤，这里只换 token 的值。 */
+.novel-serif {
+  font-family:
+    "Noto Serif SC", "Songti SC", "STSong", "SimSun", ui-serif, Georgia, Cambria,
+    "Times New Roman", Times, serif;
+}
+
+.novel-theme {
+  --color-primary: var(--gray-900);
+  --color-primary-hover: var(--gray-800);
+  --color-primary-foreground: var(--white);
+  --color-primary-subtle: var(--gray-100);
+  --color-ring: var(--gray-500);
+  background-color: color-mix(in oklab, var(--color-warning) 4%, var(--color-bg));
+}
+
+[data-theme="dark"] .novel-theme {
+  --color-primary: var(--gray-100);
+  --color-primary-hover: var(--white);
+  --color-primary-foreground: var(--gray-950);
+  --color-primary-subtle: var(--gray-900);
+  --color-ring: var(--gray-400);
 }

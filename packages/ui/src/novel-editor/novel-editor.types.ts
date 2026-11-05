@@ -14,4 +14,9 @@ export interface NovelEditorProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   /** 传入后显示保存按钮，参数为当前全部章节。 */
   onSave?: (chapters: NovelChapter[]) => void;
   disabled?: boolean;
+  /**
+   * 预览区的类名。阅读站用来铺纸色和宋体，让预览像正文。
+   * 编辑栏不受影响。
+   */
+  previewClassName?: string;
 }

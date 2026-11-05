@@ -170,13 +170,14 @@ describe("NovelReader", () => {
   it("夜间纸色只包住正文，设置抽屉半透明且不收走当前句", () => {
     mockBox();
     render(<NovelReader chapters={chapters} paper="night" />);
-    const article = document.querySelector("article");
-    expect(article?.getAttribute("data-theme")).toBe("dark");
-    expect(article?.className).toContain("bg-surface");
-    expect(article?.className).toContain("text-muted-foreground");
+    // 纸是满视口的一张，主题也跟着挂在视口上；正文区域（region）本身不带主题
+    const viewport = document.querySelector("[data-novel-viewport]");
+    expect(viewport?.getAttribute("data-theme")).toBe("dark");
+    expect(viewport?.className).toContain("color-mix");
+    expect(viewport?.className).toContain("text-muted-foreground");
     const region = screen.getByRole("region", { name: "正文" });
     expect(region.hasAttribute("data-theme")).toBe(false);
-    expect(region.className.includes("bg-surface")).toBe(false);
+    expect(region.className.includes("color-mix")).toBe(false);
     expect(region.className.includes("text-muted-foreground")).toBe(false);
     const sentence = screen.getByText("河面暗下来。");
     fireEvent.click(region, { clientX: 200, clientY: 200 });
@@ -209,5 +210,43 @@ describe("NovelReader", () => {
     expect(region.getAttribute("data-novel-offset")).toBe(offset);
     expect(document.activeElement).toBe(region);
     expect(screen.getByText("河面暗下来。")).toBeTruthy();
+  });
+
+  it("菜单展开时滚动视口夹在顶栏和底栏之间，收起后铺满", () => {
+    const descriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetHeight");
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(function (this: HTMLElement) {
+      if (this.tagName === "HEADER") return 88;
+      if (this.tagName === "FOOTER") return 160;
+      return descriptor?.get?.call(this) ?? 0;
+    });
+    const { unmount } = render(<NovelReader chapters={chapters} defaultChromeOpen />);
+    const viewport = document.querySelector("[data-novel-viewport]") as HTMLElement;
+    expect(viewport.style.top).toBe("104px");
+    expect(viewport.style.bottom).toBe("176px");
+    expect(screen.getByRole("heading", { name: "第 1 章 夜航" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "本章说" })).toBeNull();
+    expect(document.querySelector("[data-novel-chapter-nav='end']")?.textContent).toContain("下一章");
+    unmount();
+    vi.restoreAllMocks();
+    render(<NovelReader chapters={chapters} />);
+    const closed = document.querySelector("[data-novel-viewport]") as HTMLElement;
+    expect(closed.style.top).toBe("");
+    expect(closed.style.bottom).toBe("");
+    expect(closed.className).toContain("h-full");
+    expect(screen.getByRole("heading", { name: "第 1 章 夜航" })).toBeTruthy();
+  });
+
+  it("正文字族落在 article 上，正文跟外层的字号和行距走", () => {
+    render(<NovelReader chapters={chapters} articleClassName="novel-serif" fontSize="lg" lineHeight="loose" />);
+    const articles = document.querySelectorAll("article");
+    expect(articles.length).toBeGreaterThan(1);
+    expect(articles[0]?.className).toContain("novel-serif");
+    expect(articles[0]?.className).toContain("text-lg");
+    expect(articles[0]?.className).toContain("leading-loose");
+    const prose = articles[1];
+    expect(prose?.className).toContain("text-[length:inherit]");
+    expect(prose?.className).toContain("leading-[inherit]");
+    expect(prose?.className.split(/\s+/).includes("text-base")).toBe(false);
+    expect(prose?.className.split(/\s+/).includes("leading-7")).toBe(false);
   });
 });

@@ -4,11 +4,13 @@ import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 export const content = {
   "zh-CN": {
     backToReading: "返回正文",
-    allBooks: "全部书稿",
+    backToStudio: "全部书稿",
+    writing: "正在写",
   },
   en: {
-    backToReading: "Back to the text",
-    allBooks: "All manuscripts",
+    backToReading: "Back to reading",
+    backToStudio: "All works",
+    writing: "Writing",
   },
 } as const;
 

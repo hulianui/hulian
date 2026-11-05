@@ -135,13 +135,26 @@ export function actionFromKey(key: string, altKey: boolean): NovelKeyAction | nu
 }
 
 export function paperPresentation(paper: NovelPaper): { theme?: "light" | "dark"; className: string } {
+  // 纸色不是「换一个底色」，是「换一种纸」：日纸偏暖、护眼纸偏青、夜纸偏棕。
+  // 都从语义色混出来而不是写死 hex —— 换主题（尤其嵌套的明暗岛）时纸色跟着走，
+  // 不会出现「暗色页面里夹一张雪白纸」。
   switch (paper) {
     case "day":
-      return { theme: "light", className: "bg-bg text-foreground" };
+      return {
+        theme: "light",
+        className: "bg-[color-mix(in_oklab,var(--color-warning)_6%,var(--color-bg))] text-foreground",
+      };
     case "eye":
-      return { theme: "light", className: "bg-success/12 text-foreground" };
+      return {
+        theme: "light",
+        className: "bg-[color-mix(in_oklab,var(--color-success)_11%,var(--color-bg))] text-foreground",
+      };
     case "night":
-      return { theme: "dark", className: "bg-surface text-muted-foreground [&_p]:text-muted-foreground" };
+      return {
+        theme: "dark",
+        className:
+          "bg-[color-mix(in_oklab,var(--color-warning)_5%,var(--color-bg))] text-muted-foreground [&_p]:text-muted-foreground",
+      };
     case "oled":
       return { theme: "dark", className: "bg-bg text-foreground" };
     default:

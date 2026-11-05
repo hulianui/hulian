@@ -20,6 +20,11 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const ROOT_README_FILES = ["README.md", "README.en.md"];
 export const PACKAGE_README_FILES = ["packages/ui/README.md"];
 export const README_FILES = [...ROOT_README_FILES, ...PACKAGE_README_FILES];
+// 第四处：npm 包页面的 meta description（package.json 的 description 字段）。
+// 它不在 README 里，所以上面的门禁从来没扫到它 —— 0.68.0 时它还写着 "340+ 组件"，
+// 而实际已是 399。带 "+" 的写法正则匹配不到，这里一并按「N 个组件」的同一口径收编。
+export const PACKAGE_MANIFEST_FILE = "packages/ui/package.json";
+export const COUNTED_FILES = [...README_FILES, PACKAGE_MANIFEST_FILE];
 
 export function componentCount() {
   const src = join(ROOT, "packages/ui/src");
@@ -67,7 +72,7 @@ function main() {
   const components = componentCount();
   const demos = demoCount();
   let stale = 0;
-  for (const file of README_FILES) {
+  for (const file of COUNTED_FILES) {
     const path = join(ROOT, file);
     const { text, changed } = rewrite(readFileSync(path, "utf8"), components, demos);
     if (!changed) continue;

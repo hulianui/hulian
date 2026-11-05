@@ -7,7 +7,7 @@ import type { ProseProps, ProseSize } from "./prose.types";
 // 塞进来（如 markdown→HTML、dangerouslySetInnerHTML、MDX 输出），排版样式由本容器统一接管。
 // 全程零依赖、只消费语义 token，明暗自适配。
 const proseBase = cn(
-  "text-foreground leading-7",
+  "text-foreground",
   // 首尾子元素去外边距，间距由容器自身控制
   "[&>:first-child]:mt-0 [&>:last-child]:mb-0",
   // 标题：Tailwind preflight 把标题字号重置为继承（=正文），故必须显式给字号，
@@ -53,8 +53,11 @@ const proseBase = cn(
 );
 
 const SIZE: Record<ProseSize, string> = {
-  sm: "text-sm",
-  base: "text-base",
+  sm: "text-sm leading-7",
+  base: "text-base leading-7",
+  // 字号和行距跟父级走。阅读器把档位写在外层 article 上，这里再钉 text-base / leading-7
+  // 会把那两档设置盖掉，正文大小不动。
+  inherit: "text-[length:inherit] leading-[inherit]",
 };
 
 // 宽表兜底。Prose 两种内容形态都支持：children（JSX 子节点）与 dangerouslySetInnerHTML

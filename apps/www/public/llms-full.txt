@@ -2278,7 +2278,8 @@ import { Markdown, parseBlocks, extractHeadings, slugifyHeading } from "@hulianu
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose |
+| size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose。`inheritTypography` 打开时不生效 |
+| inheritTypography | `boolean` | `false` | 字号和行距跟父级走，内部不再钉 `text-base` / `leading-7`。阅读器把档位写在外层时打开。文档页保持关闭 |
 | headingIds | `boolean \| string` | `false` | 给渲染出的标题挂锚点 id（slug 规则见「标题锚点与目录」），使长文可做目录与 `#片段` 深链。默认关闭：id 是全局命名空间，默认生成会让存量调用点凭空多出一批可能与页面已有 id 撞车的锚点。传字符串则同时开启并把它当 id 前缀（`headingIds="doc-"` → `doc-props`），用于把这批 id 关进自己的命名空间 |
 | className | `string` | — | 透传容器类名 |
 
@@ -2355,7 +2356,7 @@ import { Prose } from "@hulianui/ui"
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | as | `ElementType` | `"article"` | 渲染的容器标签 |
-| size | `"sm" \| "base"` | `"base"` | 整体排版尺寸基准；`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文 |
+| size | `"sm" \| "base" \| "inherit"` | `"base"` | 整体排版尺寸基准。`sm` 把基准字号降到 text-sm，适合侧栏/卡片内长文。`inherit` 不钉字号和行距，跟父级走，给外层已经管着档位的阅读器用 |
 | scrollableTables | `boolean` | `false` | 宽表兜底：把 `table` 自身变成横向滚动容器，列多时不撑破版心（表头随之不换行）。代价是表格宽度改为按内容撑开、不再恒占满版心 |
 
 继承 `HTMLAttributes<HTMLElement>`（`className` / `style` 等）。
@@ -7145,6 +7146,7 @@ import { NovelEditor } from "@hulianui/ui"
 | onActiveChapterChange | `(id: string) => void` | — | 切换正在编辑的章 |
 | onSave | `(chapters: NovelChapter[]) => void` | — | 传入后显示保存按钮 |
 | disabled | `boolean` | `false` | 禁止编辑、排序和删除 |
+| previewClassName | `string` | — | 预览区的类名。用来铺纸色和字族，让预览像正文。编辑栏不受影响 |
 
 章节超过 40 时，左侧改为虚拟列表加上下移动，避免和拖拽虚拟化叠在一起。
 
@@ -7162,6 +7164,7 @@ import { NovelEditor } from "@hulianui/ui"
 - 根节点不带高度时，章节栏和编辑区会把页面撑长，预览也无法自己滚动。
 - `chapters` 受控时，忽略 `onChaptersChange` 会让输入看起来无效。
 - 删除会立刻从列表里拿掉该章。需要确认时用组件自带的 Popconfirm，不要再套一层会挡住正文的全局弹窗。
+- 预览要像在读的那一页，用 `previewClassName` 铺纸色和字族。不要把整页背景改成编辑器底，把阅读的感觉盖掉。
 
 ## 相关
 [NovelReader](https://hulianui.haloritual.com/zh/components/novel-reader) · [MarkdownEditor](https://hulianui.haloritual.com/zh/components/markdown-editor) · [Sortable](https://hulianui.haloritual.com/zh/components/sortable) · [Popconfirm](https://hulianui.haloritual.com/zh/components/popconfirm)
@@ -14578,8 +14581,10 @@ import { NovelReader } from "@hulianui/ui"
 | onPaperChange | `(paper: "default" \| "day" \| "eye" \| "night" \| "oled") => void` | — | 纸色变化 |
 | persistKey | `string` | — | 把 `{ chapterId, charOffset }` 写入 `localStorage`。不记页码 |
 | onProgressChange | `(progress: NovelProgress) => void` | — | 进度变化。进度只有章节和字符偏移 |
+| defaultChromeOpen | `boolean` | `false` | 首屏就展开顶栏/底栏。沉浸阅读默认收起（点正文中间三档唤出）；做阅读产品落地页时默认展开，否则第一眼是一页没有返回、没有目录的白纸 |
 | leading | `ReactNode` | — | 唤出菜单后放在顶栏左上角，例如返回和书架 |
 | trailing | `ReactNode` | — | 唤出菜单后放在顶栏右侧 |
+| articleClassName | `string` | — | 加在正文 `<article>` 上，用来换字族（例如宋体）。字号和行距仍由组件档位控制。不要在外面用 `[&_article]` 改内部节点 |
 
 ### NovelChapter
 
@@ -14617,12 +14622,13 @@ import { NovelReader } from "@hulianui/ui"
 - 根节点不带高度。不写 `h-dvh` 或 `h-[28rem]` 时，滚动区和翻页视口都量不到。
 - 进度是 `(chapterId, charOffset)`，不是页码。字号、行距、栏宽一变，页数会变，页码会对不上原来那一句。
 - 不要在外面再套一条吸顶顶栏。菜单默认不占位，自己再加一条就会把正文顶下去。
-- 夜间纸色不是系统 Dark，也不是纯黑。`night` 用暗色 `bg-surface` 和更软的 `text-muted-foreground`，chrome 仍跟页面 token。`oled` 才用暗色 `bg-bg`。颜色走 token，不要写死色值。
+- 纸色是「换一种纸」而不是换一个底色：`day` 偏暖（`warning` 混 6%）、`eye` 偏青（`success` 混 11%）、`night` 是暗底混 5% 暖色。四档都从语义色混出来 —— 换主题时纸色跟着换，不会出现「暗色页面里夹一张雪白纸」。`oled` 才接近纯黑。纸色画在整块视口上，不是画在 `<article>` 上 —— 画在正文上会得到一张在正文末尾齐刷刷截断的半张纸；`data-theme` 也跟着视口走，于是「菜单跟页面 token、纸色只包住正文」仍然成立。
 - 组件不提供批注或本章说。不要在阅读器打开时叠开屏、下载、促销或任务弹层。
 - 正中热区只负责唤出或收起菜单。返回、书架放在 `leading` / `trailing`，不要放在正文正中。
 - 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用内联 `color-mix(in srgb, var(--color-surface) 80%, transparent)`，不要 `backdrop-blur`。只写 `bg-surface/80` 时，生产 CSS 会先落到实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测就变成不透明浅灰，当前句被盖死。
 - 章内的「上一章 / 下一章」用按钮文案，不要拿 Pagination 的「上一页 / 下一页」来切章。
 - 不要做整页常驻的顶栏和底栏来放上一章、下一章。上一章只留在章首，第一章不放；下一章只留在章末，最后一章不放。章末的下一章在菜单收起时也在。顶栏和底栏里的切章跟着菜单一起藏。
+- 正文字族用 `articleClassName`。不要在外面写 `[&_article]` 去改组件内部。正文 Markdown 跟外层的字号和行距走。
 
 ## 相关
 [NovelEditor](https://hulianui.haloritual.com/zh/components/novel-editor) · [Markdown](https://hulianui.haloritual.com/zh/components/markdown) · [Drawer](https://hulianui.haloritual.com/zh/components/drawer) · [Empty](https://hulianui.haloritual.com/zh/components/empty)
@@ -16736,7 +16742,7 @@ const groupedColumns: ColumnDef<DemoRow, any>[] = [
 
 **导出**：`Tag` · `tagVariants`
 
-> 状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌) · data-display/info
+> 状态标签 · 6 语气状态色 + 任意分类色(color) + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌) · data-display/info
 
 ## 何时用
 
@@ -16753,6 +16759,7 @@ import { Tag, tagVariants } from "@hulianui/ui"
 |------|------|------|------|
 | variant | `"soft" \| "solid" \| "outline"` | `"soft"` | 视觉变体：soft 浅底（最常用于状态标签）/ solid 实底 / outline 描边。三档各自的底与文字色见「三档配色」 |
 | tone | `"neutral" \| "brand" \| "info" \| "success" \| "warning" \| "danger"` | `"neutral"` | 语气色。取值集与 [Alert](https://hulianui.haloritual.com/zh/components/alert) 一致。 |
+| color | `string` | - | 分类色：渠道 / 业务线 / 文件类型这类「属于哪一类」的着色（见下节「语义色 vs 分类色」）。语义色名（`chart-2` / `primary` …）、任意 CSS 颜色或 `var(--color-*)` 都收，与 [[Dot]] 的 `color` / [[Brand]] 的 `color` 同一条路径。与 `tone` 同时传时 `color` 优先。 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸。 |
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
@@ -16790,6 +16797,12 @@ import { Tag, tagVariants } from "@hulianui/ui"
 <Tag dot pulse tone="brand">部署中</Tag>
 <Tag onClose={() => remove(id)}>待审核</Tag>
 ```
+```tsx
+// 分类色：语义六档接不住十几二十种分类（渠道 / 业务线 / 文件类型）时用它
+<Tag color="chart-1">抖音</Tag>
+<Tag color="chart-4">B 站</Tag>
+<Tag color="#ec4899">自定义色</Tag>
+```
 
 ## 三档配色
 
@@ -16803,9 +16816,17 @@ import { Tag, tagVariants } from "@hulianui/ui"
 
 **`-foreground` 只配实心底**：亮色下它就是白。浅底上按命名直觉写 `text-warning-foreground` 得到的是白字白底、文字整个看不见，而暗色下反而是对的（那边 `-foreground` 是近黑），谁在暗色主题里开发谁查不出来。浅底的文字色一律用语义色本身。
 
+## 语义色 vs 分类色
+
+- `tone` 是**语义**轴：六档状态色，全库共用同一套枚举，回答「它现在是什么状态」——成功 / 警告 / 错误 / 进行中 / 中性说明 / 与主操作有关。
+- `color` 是**分类**轴：回答「它属于哪一类」，与状态无关。渠道、业务线、文件类型、标签体系常有十几二十种，语义色接不住；硬映射只会让「成功」和「渠道 A」共用一个绿，读的人再从颜色反推含义就会错。
+- 两者同时传时 `color` 优先（`tone` 是语义快捷方式）。分类色同样吃明暗主题：soft 是 12% 混合底、outline 是描边、solid 是实底，不必为每个色再准备亮暗两套值。
+- 极浅的分类色（例如 `chart-3` 的琥珀）配 `solid` 时前景走 `primary-foreground`，白字对比偏弱 —— 分类色优先用 soft / outline。
+
 ## 禁忌 / 坑
 
 - **`brand` 与 `info` 不是同一件事**（#232）。`brand` 是主色，意思是「这条和产品/主操作有关」；`info` 走独立的 info 色，意思是「这是中性事实说明，读一下就好」。表达「当前处于什么模式」这类既不成功也不警告的事实，用 `info`——用 `brand` 会让一个不可点的标签在页面里与主 CTA 抢注意力，用 `neutral` 则会和一堆灰标签糊在一起读不出来。两者在 tokens 0.8.0 补齐 `--color-info` 前确实是一个颜色（见 [Alert](https://hulianui.haloritual.com/zh/components/alert) 的同一段历史），现在不是了。
+- `color` **不是**第六档语义色。要表达状态仍然用 `tone`；把「成功」写成 `color="chart-2"`，暗色表里的绿就只是一段数据序列色，换主题时语义会漂。
 - `pulse` 只在 `dot` 为真时生效，单独传 `pulse` 无动画。
 - `icon` 与 `dot` 互斥，同传时只渲染 `icon`——想要圆点就别传 icon。
 - `onClose` 列表场景需自行维护移除后的状态（受控数组 filter），组件本身不删元素。

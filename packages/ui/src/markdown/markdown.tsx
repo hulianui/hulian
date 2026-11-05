@@ -146,7 +146,13 @@ function renderProseBlock(b: ProseBlock, key: number, dataTableLabel: string, id
   }
 }
 
-function MarkdownImpl({ children = "", size = "base", headingIds = false, className }: MarkdownProps) {
+function MarkdownImpl({
+  children = "",
+  size = "base",
+  headingIds = false,
+  inheritTypography = false,
+  className,
+}: MarkdownProps) {
   const labels = useComponentLocale().markdown ?? { dataTable: "数据表格" };
   const blocks = parseBlocks(children);
   // 锚点 id 必须在切 Prose 段之前、按文档顺序一次算完：去重后缀依赖标题的先后，
@@ -166,7 +172,7 @@ function MarkdownImpl({ children = "", size = "base", headingIds = false, classN
     if (!run.length) return;
     const items = run;
     out.push(
-      <Prose key={`p${key++}`} size={size}>
+      <Prose key={`p${key++}`} size={inheritTypography ? "inherit" : size}>
         {items.map((b, j) => renderProseBlock(b, j, labels.dataTable, ids.get(b)))}
       </Prose>,
     );

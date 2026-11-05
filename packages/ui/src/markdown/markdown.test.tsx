@@ -66,4 +66,13 @@ describe("Markdown", () => {
     expect(container.querySelector("strong")?.textContent).toBe("粗");
     expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com/a");
   });
+
+  it("inheritTypography 把字号和行距让给父级", () => {
+    const { container } = render(<Markdown inheritTypography>{"正文一段"}</Markdown>);
+    const prose = container.querySelector("article");
+    expect(prose?.className).toContain("text-[length:inherit]");
+    expect(prose?.className).toContain("leading-[inherit]");
+    expect(prose?.className.split(/\s+/).includes("text-base")).toBe(false);
+    expect(prose?.className.split(/\s+/).includes("leading-7")).toBe(false);
+  });
 });

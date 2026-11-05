@@ -1,11 +1,14 @@
 import type { ElementType, ReactNode } from "react";
 import type { PolymorphicProps } from "../lib/polymorphic";
 
-export type ProseSize = "sm" | "base";
+export type ProseSize = "sm" | "base" | "inherit";
 
 export interface ProseOwnProps {
   className?: string;
-  /** 整体排版尺寸基准。@default "base" */
+  /**
+   * 整体排版尺寸基准。`inherit` 不钉字号和行距，跟父级走。
+   * @default "base"
+   */
   size?: ProseSize;
   /**
    * 宽表兜底：把 `table` 自身变成横向滚动容器（列多时不再撑破版心），表头随之不换行。

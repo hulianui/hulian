@@ -85,7 +85,8 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   "streaming-text": [2, 3],
   // #349 的首屏骨架各给中英加了两条，两边同增，差值不变
   table: [42, 43],
-  tag: [5, 4],
+  // 分类色（color）给中英各加了一条「color 不是第七档语义色」的坑，两边同增、差值不变
+  tag: [6, 5],
   "task-runner": [3, 4],
   text: [0, 1],
   "thread-list": [2, 3],

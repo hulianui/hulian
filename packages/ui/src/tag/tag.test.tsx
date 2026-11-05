@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import type { ReactElement } from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { Tag } from "./tag";
 import { ConfigProvider, enUS } from "../config";
@@ -179,5 +180,63 @@ describe("Tag", () => {
     const el = container.firstElementChild as HTMLElement;
     expect(el.getAttribute("aria-disabled")).toBe("true");
     expect(el.getAttribute("title")).toBe("t");
+  });
+});
+
+// 分类色轴（color）：tone 是六档语义色，而「这属于哪一类」—— 渠道、业务线、文件类型、
+// 标签体系 —— 常常要十几二十种颜色。语义色接不住，硬映射只会让「成功」和「渠道 A」共用一个绿。
+// 走 resolveTone，与 Dot.color / Brand.color / ChartSeries.color 同一条路径。
+describe("Tag color（分类色）", () => {
+  const tag = (node: ReactElement) =>
+    render(node).container.firstElementChild as HTMLElement;
+
+  it("语义色名解析为 var(--color-*)，soft 底由 12% 混合派生", () => {
+    const el = tag(<Tag color="chart-2">抖音</Tag>);
+    expect(el.style.color).toBe("var(--color-chart-2)");
+    expect(el.style.backgroundColor).toBe(
+      "color-mix(in oklab, var(--color-chart-2) 12%, transparent)",
+    );
+  });
+
+  it("任意 CSS 颜色走 outline：描边与文字同色", () => {
+    const el = tag(
+      <Tag variant="outline" color="#7c3aed">
+        视频号
+      </Tag>,
+    );
+    expect(el.style.color).toBe("rgb(124, 58, 237)");
+    expect(el.style.borderColor).toBe("rgb(124, 58, 237)");
+  });
+
+  it("solid 实底用 primary-foreground 前景（与 Button / Brand 实底同一口径）", () => {
+    const el = tag(
+      <Tag variant="solid" color="chart-4">
+        小红书
+      </Tag>,
+    );
+    expect(el.style.backgroundColor).toBe("var(--color-chart-4)");
+    expect(el.style.color).toBe("var(--color-primary-foreground)");
+  });
+
+  it("与 tone 同时传时 color 优先，dot 也跟着分类色走", () => {
+    const el = tag(
+      <Tag tone="danger" color="chart-1" dot>
+        渠道 A
+      </Tag>,
+    );
+    expect(el.style.backgroundColor).toBe(
+      "color-mix(in oklab, var(--color-chart-1) 12%, transparent)",
+    );
+    const dotEl = el.querySelector('[aria-hidden="true"]') as HTMLElement;
+    expect(dotEl.style.backgroundColor).toBe("var(--color-chart-1)");
+  });
+
+  it("消费方 style 仍能覆盖分类色（逃生口）", () => {
+    const el = tag(
+      <Tag color="chart-2" style={{ color: "red" }}>
+        x
+      </Tag>,
+    );
+    expect(el.style.color).toBe("red");
   });
 });

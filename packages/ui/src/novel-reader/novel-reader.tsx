@@ -195,8 +195,10 @@ export function NovelReader({
   onPaperChange,
   persistKey,
   onProgressChange,
+  defaultChromeOpen,
   leading,
   trailing,
+  articleClassName,
   className,
   ...rest
 }: NovelReaderProps) {
@@ -225,7 +227,7 @@ export function NovelReader({
   const [pageCount, setPageCount] = useState(1);
   const [viewHeight, setViewHeight] = useState(0);
   const [ready, setReady] = useState(false);
-  const [chrome, setChrome] = useState(false);
+  const [chrome, setChrome] = useState(defaultChromeOpen ?? false);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [flipping, setFlipping] = useState(false);
@@ -244,6 +246,9 @@ export function NovelReader({
   const pointer = useRef<{ id: number; x: number; y: number } | null>(null);
   const regionRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const chromeHeaderRef = useRef<HTMLElement>(null);
+  const chromeFooterRef = useRef<HTMLElement>(null);
+  const [chromeInset, setChromeInset] = useState({ top: 0, bottom: 0 });
   const articleRef = useRef<HTMLElement>(null);
   const onProgressRef = useRef(onProgressChange);
   const flipSeen = useRef(false);
@@ -450,6 +455,30 @@ export function NovelReader({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active?.id]);
 
+  useLayoutEffect(() => {
+    if (!chrome) {
+      setChromeInset((current) => (current.top === 0 && current.bottom === 0 ? current : { top: 0, bottom: 0 }));
+      return;
+    }
+    const header = chromeHeaderRef.current;
+    const footer = chromeFooterRef.current;
+    if (!header || !footer) return;
+    // 底栏盖住的是「当前视口的最后一行」，不是文末。把滚动视口夹在顶栏和底栏之间，
+    // 静止时最底一行才露在底栏之上。只在正文末尾加 padding，滚到中段仍然被挡住。
+    const measure = () => {
+      // 多留一行的缝，避免行盒正好压在栏沿上，看起来像底栏切掉最底一行。
+      const gap = 16;
+      const top = header.offsetHeight + gap;
+      const bottom = footer.offsetHeight + gap;
+      setChromeInset((current) => (current.top === top && current.bottom === bottom ? current : { top, bottom }));
+    };
+    measure();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    observer?.observe(header);
+    observer?.observe(footer);
+    return () => observer?.disconnect();
+  }, [chrome]);
+
   useEffect(() => {
     if (turn !== "simulation") {
       flipSeen.current = false;
@@ -525,7 +554,12 @@ export function NovelReader({
   const atLast = index < 0 || index >= chapters.length - 1;
 
   const column = (
-    <div className={cn("mx-auto flex w-full min-h-full flex-col px-6 py-8", NOVEL_MEASURE_CLASS[measure])}>
+    <div
+      className={cn(
+        "mx-auto flex w-full min-h-full flex-col px-6 pb-20 pt-12 md:pt-16",
+        NOVEL_MEASURE_CLASS[measure],
+      )}
+    >
       {atFirst ? null : (
         <div data-novel-chapter-nav="start" className="mb-6">
           <Button
@@ -541,13 +575,11 @@ export function NovelReader({
       )}
       <article
         ref={articleRef}
-        data-paper={paper}
-        {...(paperView.theme ? { "data-theme": paperView.theme } : {})}
         className={cn(
-          "flex-1 rounded-[var(--radius)] px-1",
-          paperView.className,
+          "flex-1 px-1",
           NOVEL_FONT_CLASS[fontSize],
           NOVEL_LINE_CLASS[lineHeight],
+          articleClassName,
         )}
       >
         {title ? (
@@ -556,10 +588,12 @@ export function NovelReader({
             {author ? <> · {author}</> : null}
           </Text>
         ) : null}
-        <Heading level={1} size="xl">
+        <Heading level={1} size="xl" className="mt-1">
           {labels.numbered(index + 1, active.title)}
         </Heading>
-        <Markdown>{active.content}</Markdown>
+        <div className="mt-6">
+          <Markdown inheritTypography>{active.content}</Markdown>
+        </div>
       </article>
       <div
         data-novel-chapter-nav="end"
@@ -634,13 +668,38 @@ export function NovelReader({
       }}
     >
       <div
+        aria-hidden
+        {...(paperView.theme ? { "data-theme": paperView.theme } : {})}
+        className={cn("pointer-events-none absolute inset-0", paperView.className)}
+      />
+      <div
         ref={viewportRef}
         data-novel-viewport=""
-        className={cn("h-full", paged ? "overflow-hidden" : "overflow-y-auto")}
-        style={paged ? { perspective: "800px" } : undefined}
+        data-paper={paper}
+        {...(paperView.theme ? { "data-theme": paperView.theme } : {})}
+        // 纸色画在视口上而不是 <article> 上：正文只有几百字时，画在 article 上会得到
+        // 一张在正文末尾齐刷刷截断的「半张纸」。视口是满高的，纸就是满的。
+        // 主题也一并挂在这里 —— 它和纸是同一块范围，顶栏/抽屉不受影响。
+        // 菜单展开时视口改夹在顶栏和底栏之间（高度跟实测走）。正文末尾的 padding
+        // 只在滚到底时有用，盖不住视口中间那一行。
+        className={cn(
+          chrome ? "absolute inset-x-0" : "h-full",
+          paged ? "overflow-hidden" : "overflow-y-auto",
+          paperView.className,
+        )}
+        style={{
+          ...(paged ? { perspective: "800px" } : {}),
+          ...(chrome ? { top: chromeInset.top, bottom: chromeInset.bottom } : {}),
+        }}
       >
         <div
-          className={cn(paged && "transition-transform duration-300 ease-out motion-reduce:transition-none")}
+          // 连读时撑满一屏：纸色画在 <article> 上，这一层不定高的话 article 只有内容高，
+          // 一张「纸」会在正文结束处齐刷刷截断（半页米色、半页白）。翻页模式下不能让
+          // 它撑满，否则 translateY 的分页位移会被整高一屏的容器吃掉。
+          className={cn(
+            !paged && "min-h-full",
+            paged && "transition-transform duration-300 ease-out motion-reduce:transition-none",
+          )}
           style={
             paged && viewHeight > 0
               ? {
@@ -669,7 +728,10 @@ export function NovelReader({
 
       {chrome ? (
         <div data-novel-chrome="" className="pointer-events-none absolute inset-0 z-20">
-          <header className="pointer-events-auto absolute inset-x-0 top-0 flex flex-col gap-2 bg-surface/80 px-3 py-2 backdrop-blur-md">
+          <header
+            ref={chromeHeaderRef}
+            className="pointer-events-auto absolute inset-x-0 top-0 flex flex-col gap-2 bg-surface/80 px-3 py-2 backdrop-blur-md"
+          >
             <div className="flex items-center gap-2">
               <div className="flex shrink-0 items-center gap-1">{leading}</div>
               <div className="min-w-0 flex-1">
@@ -702,7 +764,10 @@ export function NovelReader({
               </Button>
             </div>
           </header>
-          <footer className="pointer-events-auto absolute inset-x-0 bottom-0 flex flex-col gap-2 bg-surface/80 px-3 py-2 backdrop-blur-md">
+          <footer
+            ref={chromeFooterRef}
+            className="pointer-events-auto absolute inset-x-0 bottom-0 flex flex-col gap-2 bg-surface/80 px-3 py-2 backdrop-blur-md"
+          >
             <div className="flex items-center gap-2">
               <Text size="xs" tone="muted" className="w-8 shrink-0">
                 {labels.bookProgress}
