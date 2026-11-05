@@ -13,11 +13,22 @@ export type TagVariant = "soft" | "solid" | "outline";
  * 典型如表格里显示「Word」而 title 是完整 MIME）、挂 `data-testid` 给 e2e、挂 `aria-*` 给读屏。
  * 封闭接口把这些全挡在外面，而同库的 Button / Card / Empty / Progress 都是继承的（#148）。
  */
-export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
+export interface TagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "color"> {
   /** 视觉变体：soft 浅底（默认，最常用于状态标签）/ solid 实底 / outline 描边。 */
   variant?: TagVariant;
   /** 语气色：neutral 默认 / brand 与主操作有关 / info 中性说明 / success 成功 / warning 警告 / danger 错误。 */
   tone?: TagTone;
+  /**
+   * 分类色：与状态无关的「这属于哪一类」着色（渠道、业务线、文件类型、标签体系…），
+   * 语义六档接不住十几二十种分类时用它。走 `resolveTone` —— 语义色名（`chart-2` / `primary` …）、
+   * 任意 CSS 颜色（`#7c3aed` / `oklch(...)`）或 `var(--color-*)` 都收，与 `Dot.color` /
+   * `Brand.color` / `ChartSeries.color` 同一条路径。
+   *
+   * 三档 variant 都从这一个色派生（soft 12% 底、outline 描边、solid 实底），自动吃明暗主题。
+   * 与 `tone` 同时传时 `color` 优先（`tone` 是语义快捷方式）。极浅的分类色建议配 soft / outline，
+   * 实底用的是 `primary-foreground` 前景，浅底上白字会偏弱。
+   */
+  color?: string;
   size?: "sm" | "md";
   /** 前导状态圆点（颜色随 tone）。与 icon 互斥：icon > dot。 */
   dot?: boolean;

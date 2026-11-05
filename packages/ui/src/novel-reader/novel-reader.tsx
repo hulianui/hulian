@@ -195,6 +195,7 @@ export function NovelReader({
   onPaperChange,
   persistKey,
   onProgressChange,
+  defaultChromeOpen,
   leading,
   trailing,
   className,
@@ -225,7 +226,7 @@ export function NovelReader({
   const [pageCount, setPageCount] = useState(1);
   const [viewHeight, setViewHeight] = useState(0);
   const [ready, setReady] = useState(false);
-  const [chrome, setChrome] = useState(false);
+  const [chrome, setChrome] = useState(defaultChromeOpen ?? false);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [flipping, setFlipping] = useState(false);
@@ -525,7 +526,7 @@ export function NovelReader({
   const atLast = index < 0 || index >= chapters.length - 1;
 
   const column = (
-    <div className={cn("mx-auto flex w-full min-h-full flex-col px-6 py-8", NOVEL_MEASURE_CLASS[measure])}>
+    <div className={cn("mx-auto flex w-full min-h-full flex-col px-6 pb-20 pt-12 md:pt-16", NOVEL_MEASURE_CLASS[measure])}>
       {atFirst ? null : (
         <div data-novel-chapter-nav="start" className="mb-6">
           <Button
@@ -541,11 +542,8 @@ export function NovelReader({
       )}
       <article
         ref={articleRef}
-        data-paper={paper}
-        {...(paperView.theme ? { "data-theme": paperView.theme } : {})}
         className={cn(
-          "flex-1 rounded-[var(--radius)] px-1",
-          paperView.className,
+          "flex-1 px-1",
           NOVEL_FONT_CLASS[fontSize],
           NOVEL_LINE_CLASS[lineHeight],
         )}
@@ -556,10 +554,12 @@ export function NovelReader({
             {author ? <> · {author}</> : null}
           </Text>
         ) : null}
-        <Heading level={1} size="xl">
+        <Heading level={1} size="xl" className="mt-1">
           {labels.numbered(index + 1, active.title)}
         </Heading>
-        <Markdown>{active.content}</Markdown>
+        <div className="mt-6">
+          <Markdown>{active.content}</Markdown>
+        </div>
       </article>
       <div
         data-novel-chapter-nav="end"
@@ -636,11 +636,26 @@ export function NovelReader({
       <div
         ref={viewportRef}
         data-novel-viewport=""
-        className={cn("h-full", paged ? "overflow-hidden" : "overflow-y-auto")}
+        data-paper={paper}
+        {...(paperView.theme ? { "data-theme": paperView.theme } : {})}
+        // 纸色画在视口上而不是 <article> 上：正文只有几百字时，画在 article 上会得到
+        // 一张在正文末尾齐刷刷截断的「半张纸」。视口是满高的，纸就是满的。
+        // 主题也一并挂在这里 —— 它和纸是同一块范围，顶栏/抽屉不受影响。
+        className={cn(
+          "h-full",
+          paged ? "overflow-hidden" : "overflow-y-auto",
+          paperView.className,
+        )}
         style={paged ? { perspective: "800px" } : undefined}
       >
         <div
-          className={cn(paged && "transition-transform duration-300 ease-out motion-reduce:transition-none")}
+          // 连读时撑满一屏：纸色画在 <article> 上，这一层不定高的话 article 只有内容高，
+          // 一张「纸」会在正文结束处齐刷刷截断（半页米色、半页白）。翻页模式下不能让
+          // 它撑满，否则 translateY 的分页位移会被整高一屏的容器吃掉。
+          className={cn(
+            !paged && "min-h-full",
+            paged && "transition-transform duration-300 ease-out motion-reduce:transition-none",
+          )}
           style={
             paged && viewHeight > 0
               ? {

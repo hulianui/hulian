@@ -86,6 +86,13 @@ export interface NovelReaderProps extends Omit<HTMLAttributes<HTMLDivElement>, "
   persistKey?: string;
   onProgressChange?: (progress: NovelProgress) => void;
   /**
+   * 首次渲染就展开顶栏/底栏（沉浸式阅读默认收起，点正文中间三档 toggle）。
+   * 剧情向阅读器适合默认收起；做「阅读产品」首页落地时默认展开更好——否则用户
+   * 第一眼看到的是一页没有返回、没有目录、没有设置的白纸。
+   * @default false
+   */
+  defaultChromeOpen?: boolean;
+  /**
    * 唤出菜单后放在顶栏左上角（返回、书架）。
    * 不要放正文正中，以免和翻页热区抢点击。
    */

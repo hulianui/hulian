@@ -52,6 +52,7 @@ Inherits `HTMLAttributes<HTMLDivElement>` except the native `title`. The root ne
 | defaultPaper | `"default" \| "day" \| "eye" \| "night" \| "oled"` | `"default"` | Uncontrolled paper |
 | onPaperChange | `(paper: NovelPaper) => void` | — | Called when the paper changes |
 | persistKey | `string` | — | Stores `{ chapterId, charOffset }` in `localStorage`. Page index is not stored |
+| defaultChromeOpen | `boolean` | `false` | Start with the top and bottom bars expanded. Immersive reading keeps them collapsed (tap the middle third to summon). A reading product landing page wants them open, or the first screen is a blank page with no back, no catalog, and no settings |
 | onProgressChange | `(progress: NovelProgress) => void` | — | Progress callback. Progress is only a chapter id and a character offset |
 | leading | `ReactNode` | — | Top-left slot inside the summoned bar, for back and shelf |
 | trailing | `ReactNode` | — | Top-right slot inside the summoned bar |
@@ -92,7 +93,7 @@ The chapter start has a light previous-chapter button. The first chapter omits i
 - The root has no height of its own. Without `h-dvh` or `h-[28rem]`, the scroller and the page viewport cannot be measured.
 - Progress is `(chapterId, charOffset)`, not a page index. Changing type size, line height, or measure changes the page count and would miss the sentence.
 - Do not wrap the reader in another sticky app bar. The menu is out of flow until summoned.
-- Night paper is not system dark and not pure black. `night` uses dark `bg-surface` and softer `text-muted-foreground`. Chrome keeps the page tokens. `oled` uses dark `bg-bg`. Use tokens.
+- Paper means a different sheet, not just a different fill: `day` leans warm (`warning` at 6%), `eye` leans green (`success` at 11%), `night` is a dark base with 5% warmth. All four are mixed from semantic colours, so the paper follows the theme and a dark page never ends up with a snow-white sheet in the middle. `oled` is the near-black one. The paper paints the whole viewport rather than the `<article>`; painting the article leaves a sheet that stops dead at the last line. `data-theme` rides the viewport too, so chrome still follows the page tokens while the paper wraps the prose.
 - The reader has no annotation or chapter-comment layer. Do not cover it with a splash, an app install prompt, a promotion, or a task modal.
 - The center hotspot only toggles the menu. Put back and shelf in `leading` or `trailing`.
 - Catalog and settings are bottom drawers. Do not pin a gear to the left edge. The settings backdrop stays transparent. The panel sets an inline `color-mix(in srgb, var(--color-surface) 80%, transparent)` and does not use `backdrop-blur`. `bg-surface/80` alone is emitted as opaque `var(--color-surface)` first, so a failed `color-mix(in lab)` test leaves a solid light panel and hides the current sentence.

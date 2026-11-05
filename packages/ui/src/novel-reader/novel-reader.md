@@ -53,6 +53,7 @@ import { NovelReader } from "@hulianui/ui"
 | onPaperChange | `(paper: NovelPaper) => void` | — | 纸色变化 |
 | persistKey | `string` | — | 把 `{ chapterId, charOffset }` 写入 `localStorage`。不记页码 |
 | onProgressChange | `(progress: NovelProgress) => void` | — | 进度变化。进度只有章节和字符偏移 |
+| defaultChromeOpen | `boolean` | `false` | 首屏就展开顶栏/底栏。沉浸阅读默认收起（点正文中间三档唤出）；做阅读产品落地页时默认展开，否则第一眼是一页没有返回、没有目录的白纸 |
 | leading | `ReactNode` | — | 唤出菜单后放在顶栏左上角，例如返回和书架 |
 | trailing | `ReactNode` | — | 唤出菜单后放在顶栏右侧 |
 
@@ -92,7 +93,7 @@ import { NovelReader } from "@hulianui/ui"
 - 根节点不带高度。不写 `h-dvh` 或 `h-[28rem]` 时，滚动区和翻页视口都量不到。
 - 进度是 `(chapterId, charOffset)`，不是页码。字号、行距、栏宽一变，页数会变，页码会对不上原来那一句。
 - 不要在外面再套一条吸顶顶栏。菜单默认不占位，自己再加一条就会把正文顶下去。
-- 夜间纸色不是系统 Dark，也不是纯黑。`night` 用暗色 `bg-surface` 和更软的 `text-muted-foreground`，chrome 仍跟页面 token。`oled` 才用暗色 `bg-bg`。颜色走 token，不要写死色值。
+- 纸色是「换一种纸」而不是换一个底色：`day` 偏暖（`warning` 混 6%）、`eye` 偏青（`success` 混 11%）、`night` 是暗底混 5% 暖色。四档都从语义色混出来 —— 换主题时纸色跟着换，不会出现「暗色页面里夹一张雪白纸」。`oled` 才接近纯黑。纸色画在整块视口上，不是画在 `<article>` 上 —— 画在正文上会得到一张在正文末尾齐刷刷截断的半张纸；`data-theme` 也跟着视口走，于是「菜单跟页面 token、纸色只包住正文」仍然成立。
 - 组件不提供批注或本章说。不要在阅读器打开时叠开屏、下载、促销或任务弹层。
 - 正中热区只负责唤出或收起菜单。返回、书架放在 `leading` / `trailing`，不要放在正文正中。
 - 目录和阅读设置是底部抽屉。不要在左侧做一枚常驻齿轮。阅读设置的遮罩保持透明，面板用内联 `color-mix(in srgb, var(--color-surface) 80%, transparent)`，不要 `backdrop-blur`。只写 `bg-surface/80` 时，生产 CSS 会先落到实色 `var(--color-surface)`，不过 `color-mix(in lab)` 检测就变成不透明浅灰，当前句被盖死。

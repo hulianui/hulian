@@ -68,13 +68,17 @@ describe("翻页方向", () => {
     expect(resolveNovelTurn("simulation", "paginated")).toBe("simulation");
   });
 
-  it("夜间纸色走暗色 token，且比近黑更靠 surface", () => {
-    expect(paperPresentation("night").className).toContain("bg-surface");
+  it("纸色是「换一种纸」而不是换一个底色", () => {
+    // 夜纸：暗色 token 打底 + 一点暖色，不是纯黑也不是纯 surface 灰
     expect(paperPresentation("night").className).toContain("text-muted-foreground");
+    expect(paperPresentation("night").className).toContain("color-mix");
     expect(paperPresentation("night").className).not.toContain("bg-black");
     expect(paperPresentation("night").theme).toBe("dark");
+    // 日纸偏暖、护眼纸偏青，都从语义色混出来，主题换了纸色跟着换
+    expect(paperPresentation("day").className).toContain("--color-warning");
+    expect(paperPresentation("eye").className).toContain("--color-success");
     expect(paperPresentation("oled").className).toContain("bg-bg");
-    expect(paperPresentation("eye").className).toContain("bg-success/12");
     expect(paperPresentation("default").theme).toBeUndefined();
+    expect(paperPresentation("default").className).toBe("bg-bg text-foreground");
   });
 });

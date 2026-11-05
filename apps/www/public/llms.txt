@@ -222,7 +222,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Statistic](https://github.com/hulianui/hulian/blob/master/packages/ui/src/statistic/statistic.md): 格式化统计数值，可带前后缀、滚动入场或倒计时
 - [StatusDot](https://github.com/hulianui/hulian/blob/master/packages/ui/src/status-dot/status-dot.md): 用圆点加文字表示服务在线、降级、离线还是维护
 - [Table](https://github.com/hulianui/hulian/blob/master/packages/ui/src/table/table.md): 表格 · TanStack headless + 列排序 + 列几何(size/align/ellipsis/resizable·固定列 offset 自动重算) + 行点击/整行导航(onRowClick/rowHr…
-- [Tag](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tag/tag.md): 状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)
+- [Tag](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tag/tag.md): 状态标签 · 6 语气状态色 + 任意分类色(color) + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)
 - [TiltedCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilted-card/tilted-card.md): 倾斜卡片 · 指针驱动的 3D 倾斜卡片 · perspective + rotateX/Y 弹簧倾斜 + 悬停放大 + 跟随指针的浮动提示气泡（motion 弹簧·零新依赖·reduced-motion） · dat…
 - [Timeline](https://github.com/hulianui/hulian/blob/master/packages/ui/src/timeline/timeline.md): 把事件按时间排成一条线，节点样式可自定义
 - [Tree](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tree/tree.md): 展示可展开的层级节点，支持选择和键盘操作

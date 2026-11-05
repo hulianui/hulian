@@ -173,3 +173,32 @@ body {
     transform: none;
   }
 }
+
+/* ---- 渡口小说站（/demos/novel）------------------------------------------
+   只作用于这一个 demo，不进库：
+   · .novel-serif 给中文标题/正文一副宋体字族。Tailwind 的 font-serif 只覆盖
+     拉丁字（ui-serif/Georgia），中文会落回系统黑体，文学站最要紧的那口气就没了。
+   · .novel-theme 是一块「墨色主题岛」——把主色换成本色纸墨（亮色近黑/暗色近白），
+     于是按钮、进度条、链接全部跟着变，不再是一块 SaaS 蓝。库本身支持运行时换肤，
+     这里只是把 token 的值换掉，没有覆盖任何组件的样式。 */
+.novel-serif {
+  font-family:
+    "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "SimSun",
+    ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+.novel-theme {
+  --color-primary: var(--gray-900);
+  --color-primary-hover: var(--gray-800);
+  --color-primary-foreground: var(--white);
+  --color-primary-subtle: var(--gray-100);
+  --color-ring: var(--gray-500);
+}
+
+[data-theme="dark"] .novel-theme {
+  --color-primary: var(--gray-100);
+  --color-primary-hover: var(--white);
+  --color-primary-foreground: var(--gray-950);
+  --color-primary-subtle: var(--gray-900);
+  --color-ring: var(--gray-400);
+}

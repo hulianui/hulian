@@ -11741,7 +11741,7 @@
       "name": "tag",
       "type": "registry:ui",
       "title": "Tag",
-      "description": "状态标签 · 6 语气状态色 + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)",
+      "description": "状态标签 · 6 语气状态色 + 任意分类色(color) + 状态圆点/呼吸进行态(pulse) + 图标 + 可关闭(企业状态标记·区别 Chip 令牌)",
       "categories": [
         "data-display"
       ],

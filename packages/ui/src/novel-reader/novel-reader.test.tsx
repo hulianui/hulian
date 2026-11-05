@@ -170,13 +170,14 @@ describe("NovelReader", () => {
   it("夜间纸色只包住正文，设置抽屉半透明且不收走当前句", () => {
     mockBox();
     render(<NovelReader chapters={chapters} paper="night" />);
-    const article = document.querySelector("article");
-    expect(article?.getAttribute("data-theme")).toBe("dark");
-    expect(article?.className).toContain("bg-surface");
-    expect(article?.className).toContain("text-muted-foreground");
+    // 纸是满视口的一张，主题也跟着挂在视口上；正文区域（region）本身不带主题
+    const viewport = document.querySelector("[data-novel-viewport]");
+    expect(viewport?.getAttribute("data-theme")).toBe("dark");
+    expect(viewport?.className).toContain("color-mix");
+    expect(viewport?.className).toContain("text-muted-foreground");
     const region = screen.getByRole("region", { name: "正文" });
     expect(region.hasAttribute("data-theme")).toBe(false);
-    expect(region.className.includes("bg-surface")).toBe(false);
+    expect(region.className.includes("color-mix")).toBe(false);
     expect(region.className.includes("text-muted-foreground")).toBe(false);
     const sentence = screen.getByText("河面暗下来。");
     fireEvent.click(region, { clientX: 200, clientY: 200 });

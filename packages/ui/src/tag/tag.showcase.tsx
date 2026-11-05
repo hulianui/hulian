@@ -5,7 +5,7 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Tag } from "./tag";
 
 type Variant = "soft" | "solid" | "outline";
-type Tone = "neutral" | "brand" | "success" | "warning" | "danger";
+type Tone = "neutral" | "brand" | "info" | "success" | "warning" | "danger";
 
 function Closable() {
   const [items, setItems] = useState(["待审核", "已通过", "已驳回", "草稿"]);
@@ -25,10 +25,12 @@ export const tagShowcase: ShowcaseSpec = {
   examples: [
     {
       title: "语气色",
-      description: "tone 覆盖状态光谱：neutral / brand / success / warning / danger。",
+      description:
+        "tone 覆盖语义状态光谱：neutral / brand / info / success / warning / danger。",
       code: `<>
   <Tag>默认</Tag>
   <Tag tone="brand">处理中</Tag>
+  <Tag tone="info">外接浏览器模式</Tag>
   <Tag tone="success">成功</Tag>
   <Tag tone="warning">警告</Tag>
   <Tag tone="danger">错误</Tag>
@@ -37,9 +39,35 @@ export const tagShowcase: ShowcaseSpec = {
         <div className="flex flex-wrap gap-2">
           <Tag>默认</Tag>
           <Tag tone="brand">处理中</Tag>
+          <Tag tone="info">外接浏览器模式</Tag>
           <Tag tone="success">成功</Tag>
           <Tag tone="warning">警告</Tag>
           <Tag tone="danger">错误</Tag>
+        </div>
+      ),
+    },
+    {
+      title: "分类色",
+      description:
+        "tone 管状态，color 管分类 —— 渠道、业务线、文件类型这类「属于哪一类」的着色常有十几二十种，语义六档接不住。color 走语义 token，自动吃明暗主题；也接受任意 CSS 颜色。",
+      code: `<>
+  <Tag color="chart-1">抖音</Tag>
+  <Tag color="chart-2">小红书</Tag>
+  <Tag color="chart-3">视频号</Tag>
+  <Tag color="chart-4">哔哩哔哩</Tag>
+  <Tag color="chart-5">快手</Tag>
+  <Tag color="chart-6">知乎</Tag>
+  <Tag color="#ec4899">自定义色</Tag>
+</>`,
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          <Tag color="chart-1">抖音</Tag>
+          <Tag color="chart-2">小红书</Tag>
+          <Tag color="chart-3">视频号</Tag>
+          <Tag color="chart-4">哔哩哔哩</Tag>
+          <Tag color="chart-5">快手</Tag>
+          <Tag color="chart-6">知乎</Tag>
+          <Tag color="#ec4899">自定义色</Tag>
         </div>
       ),
     },
@@ -104,7 +132,7 @@ export const tagShowcase: ShowcaseSpec = {
   ],
   controls: [
     { prop: "variant", type: "select", options: ["soft", "solid", "outline"], defaultValue: "soft" },
-    { prop: "tone", type: "select", options: ["neutral", "brand", "success", "warning", "danger"], defaultValue: "neutral" },
+    { prop: "tone", type: "select", options: ["neutral", "brand", "info", "success", "warning", "danger"], defaultValue: "neutral" },
   ],
   states: [
     {
@@ -137,6 +165,19 @@ export const tagShowcase: ShowcaseSpec = {
           <Tag variant="outline">默认</Tag>
           <Tag variant="outline" tone="brand">处理中</Tag>
           <Tag variant="outline" tone="success">成功</Tag>
+        </div>
+      ),
+    },
+    {
+      name: "分类色（color）",
+      render: () => (
+        <div className="flex flex-wrap gap-2">
+          {["chart-1", "chart-2", "chart-3", "chart-4", "chart-5", "chart-6"].map((c) => (
+            <Tag key={c} color={c}>
+              {c}
+            </Tag>
+          ))}
+          <Tag color="#ec4899">#ec4899</Tag>
         </div>
       ),
     },

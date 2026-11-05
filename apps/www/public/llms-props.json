@@ -24173,6 +24173,14 @@
           "description": "进度变化。进度只有章节和字符偏移"
         },
         {
+          "name": "defaultChromeOpen",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "首屏就展开顶栏/底栏。沉浸阅读默认收起（点正文中间三档唤出）；做阅读产品落地页时默认展开，否则第一眼是一页没有返回、没有目录的白纸"
+        },
+        {
           "name": "leading",
           "required": false,
           "kind": "node",
@@ -27651,6 +27659,14 @@
           "valueType": "string",
           "default": "\"neutral\"",
           "description": "语气色。取值集与 [Alert](../alert/alert.md) 一致。"
+        },
+        {
+          "name": "color",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "分类色：渠道 / 业务线 / 文件类型这类「属于哪一类」的着色（见下节「语义色 vs 分类色」）。语义色名（`chart-2` / `primary` …）、任意 CSS 颜色或 `var(--color-*)` 都收，与 [[Dot]] 的 `color` / [[Brand]] 的 `color` 同一条路径。与 `tone` 同时传时 `color` 优先。"
         },
         {
           "name": "size",
