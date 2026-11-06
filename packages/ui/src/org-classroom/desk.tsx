@@ -70,9 +70,9 @@ function Chair() {
 }
 
 /**
- * 骨盆和两条略扁的腿留在椅子和桌面远沿之间，高度低于桌面。
- * 它们沿桌深伸到远沿下面，被 translateZ(16px) 的整块桌面盖住伸进去的一段。
- * 近端停在近沿之前，底边是平的，也不贴桌面两侧。
+ * 髋在围巾下面，两条略扁的腿从椅子和桌面远沿之间的空隙起，沿桌深伸进整块桌面下。
+ * 髋只有一薄条、圆角很小，避免和两条腿合成一颗胶囊。
+ * translateZ 低于桌面，近端停在近沿之前，底边是平的。
  */
 function SeatedLap({ onSelect }: { onSelect: () => void }) {
   const select = (event: ReactMouseEvent) => {
@@ -82,17 +82,18 @@ function SeatedLap({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-lap
-      className="pointer-events-auto absolute left-1/2 z-[5] w-[2.3rem] -translate-x-1/2"
-      style={{ top: "-1.35rem", height: "2.15rem", transform: "translateZ(9px)" }}
+      className="pointer-events-auto absolute left-[calc(50%-0.2rem)] z-[8] w-[2.35rem]"
+      style={{ top: "-3rem", height: "4.85rem", transform: "translateZ(14px)" }}
       aria-hidden
       onClick={select}
     >
+      <span data-seat-thigh className="absolute bottom-0 left-[0.08rem] h-[4.45rem] w-[0.66rem] rounded-t-sm bg-foreground" />
       <span
-        data-seat-pelvis
-        className="absolute inset-x-0 top-1.5 h-[0.85rem] rounded-[0.7rem] bg-foreground"
+        data-seat-thigh
+        className="absolute left-[1.02rem] w-[0.66rem] rounded-t-sm bg-foreground"
+        style={{ bottom: -6, height: "calc(4.45rem + 6px)" }}
       />
-      <span data-seat-thigh className="absolute bottom-0 left-0 h-[1.55rem] w-[0.62rem] rounded-t-md bg-foreground" />
-      <span data-seat-thigh className="absolute bottom-0 right-0 h-[1.55rem] w-[0.62rem] rounded-t-md bg-foreground" />
+      <span data-seat-pelvis className="absolute inset-x-0 top-0 z-[1] h-3 rounded-sm bg-foreground" />
     </span>
   );
 }
@@ -105,7 +106,7 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-figure
-      className="pointer-events-none absolute left-1/2 top-[-4.15rem] z-10 w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
+      className="pointer-events-none absolute left-1/2 top-[-6.7rem] z-[1] w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
     >
       <span
         data-seat-torso

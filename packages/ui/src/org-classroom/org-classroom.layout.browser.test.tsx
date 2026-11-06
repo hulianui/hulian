@@ -79,26 +79,43 @@ describe("OrgClassroom narrow scene", () => {
       expect(seat.querySelector("[data-desk-top-rear]")).toBeNull();
       expect(overlap(lap.getBoundingClientRect(), deskBox)).toBeGreaterThan(0);
       expect(lap.offsetTop).toBeLessThan(desk.offsetTop - 8);
-      expect(lap.offsetTop + lap.offsetHeight).toBeGreaterThan(desk.offsetTop + 4);
+      const under = lap.offsetTop + lap.offsetHeight - desk.offsetTop;
+      expect(under).toBeGreaterThanOrEqual(16);
       expect(lap.offsetTop + lap.offsetHeight).toBeLessThanOrEqual(desk.offsetTop + desk.offsetHeight - 6);
       const lapZ = Number(getComputedStyle(lap).zIndex);
       const deskZ = Number(getComputedStyle(desk).zIndex);
       expect(lapZ).toBeLessThan(deskZ);
-      expect(lap.style.transform).toContain("translateZ(9px)");
+      expect(lap.style.transform).toContain("translateZ(14px)");
       const pelvis = seat.querySelector<HTMLElement>("[data-seat-pelvis]")!;
-      expect(pelvis.offsetHeight).toBeGreaterThanOrEqual(12);
+      expect(pelvis.offsetHeight).toBeGreaterThanOrEqual(6);
+      expect(pelvis.offsetWidth).toBeGreaterThan(20);
+      const pelvisRadius = parseFloat(getComputedStyle(pelvis).borderTopLeftRadius);
+      expect(pelvisRadius).toBeLessThan(pelvis.offsetHeight / 2);
       const thighs = [...seat.querySelectorAll<HTMLElement>("[data-seat-thigh]")];
       expect(thighs).toHaveLength(2);
       const lapBox = lap.getBoundingClientRect();
-      let exposed = 0;
+      let pelvisExposed = 0;
+      const thighExposed = [0, 0];
+      const thighX: number[][] = [[], []];
       for (let x = lapBox.left + 1; x < lapBox.right; x += 2) {
         for (let y = lapBox.top + 1; y < lapBox.bottom; y += 2) {
           const hit = document.elementFromPoint(x, y);
-          const body = hit?.closest("[data-seat-thigh], [data-seat-pelvis]");
-          if (body && !hit?.closest("[data-desk-top]")) exposed += 1;
+          if (!hit || hit.closest("[data-desk-top]")) continue;
+          if (hit.closest("[data-seat-pelvis]")) pelvisExposed += 1;
+          const index = thighs.findIndex((thigh) => hit === thigh);
+          if (index >= 0) {
+            thighExposed[index] += 1;
+            thighX[index]!.push(x);
+          }
         }
       }
-      expect(exposed).toBeGreaterThan(4);
+      expect(pelvisExposed).toBeGreaterThan(2);
+      expect(thighExposed[0]).toBeGreaterThan(3);
+      expect(thighExposed[1]).toBeGreaterThan(3);
+      const meanX = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
+      expect(Math.abs(meanX(thighX[0]!) - meanX(thighX[1]!))).toBeGreaterThan(6);
+      const deskBody = seat.querySelector<HTMLElement>("[data-desk-body]")!;
+      expect(Number(getComputedStyle(figure).zIndex)).toBeLessThan(Number(getComputedStyle(deskBody).zIndex));
       const thighCenters: number[] = [];
       for (const thigh of thighs) {
         expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth);
@@ -122,6 +139,7 @@ describe("OrgClassroom narrow scene", () => {
       expect(scarfBox.height).toBeGreaterThanOrEqual(8);
       expect(scarfBox.width).toBeGreaterThanOrEqual(14);
       expect(scarfBox.top).toBeLessThan(deskBox.top + 8);
+      expect(scarfBox.bottom).toBeLessThan(pelvis.getBoundingClientRect().bottom - 1);
       const headMark = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
       expect(headMark.height).toBeGreaterThanOrEqual(16);
       const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
