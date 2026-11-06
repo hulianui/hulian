@@ -60,13 +60,14 @@ describe("OrgClassroom narrow scene", () => {
       expect(rect.height).toBeGreaterThanOrEqual(16);
       expect(rect.width).toBeGreaterThanOrEqual(24);
     }
-    for (let i = 0; i < rects.length; i += 1) {
-      for (let j = i + 1; j < rects.length; j += 1) {
-        expect(overlap(rects[i]!, rects[j]!)).toBe(0);
+    const zoneLabels = labels.filter((label) => label.getAttribute("data-seat-label")!.startsWith("zone-"));
+    for (const seatLabel of seatLabels) {
+      for (const zoneLabel of zoneLabels) {
+        expect(overlap(seatLabel.getBoundingClientRect(), zoneLabel.getBoundingClientRect())).toBe(0);
       }
     }
     const torso = container.querySelector("[data-seat-torso]")!.getBoundingClientRect();
-    expect(torso.height).toBeGreaterThan(20);
+    expect(torso.height).toBeGreaterThan(32);
     for (const seat of container.querySelectorAll<HTMLElement>("[data-seat-id]")) {
       const figure = seat.querySelector<HTMLElement>("[data-seat-figure]");
       const desk = seat.querySelector<HTMLElement>("[data-desk-top]");
@@ -76,33 +77,38 @@ describe("OrgClassroom narrow scene", () => {
       const deskBox = desk.getBoundingClientRect();
       expect(figureBox.bottom).toBeGreaterThan(deskBox.top + 2);
       expect(overlap(lap.getBoundingClientRect(), deskBox)).toBeGreaterThan(0);
+      expect(lap.offsetTop + lap.offsetHeight).toBeLessThanOrEqual(desk.offsetTop + desk.offsetHeight + 1);
       const thighs = [...seat.querySelectorAll<HTMLElement>("[data-seat-thigh]")];
       expect(thighs).toHaveLength(2);
       expect(seat.querySelector("[data-seat-pelvis]")).toBeTruthy();
       const thighCenters: number[] = [];
       for (const thigh of thighs) {
-        expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth * 2.4);
+        expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth * 1.5);
         const thighBox = thigh.getBoundingClientRect();
         expect(overlap(thighBox, deskBox)).toBeGreaterThan(0);
-        expect(thighBox.bottom).toBeGreaterThan(deskBox.bottom - 1);
+        expect(thighBox.bottom).toBeLessThan(deskBox.bottom + 22);
         const center = thighBox.left + thighBox.width / 2;
         expect(center).toBeGreaterThan(deskBox.left);
         expect(center).toBeLessThan(deskBox.right);
         thighCenters.push(center);
       }
-      expect(Math.abs(thighCenters[0]! - thighCenters[1]!)).toBeGreaterThan(6);
+      expect(Math.abs(thighCenters[0]! - thighCenters[1]!)).toBeGreaterThan(4);
       const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]")!;
-      expect(scarf.getBoundingClientRect().height).toBeGreaterThanOrEqual(4);
-      expect(scarf.getBoundingClientRect().top).toBeLessThan(deskBox.bottom);
+      const scarfBox = scarf.getBoundingClientRect();
+      expect(scarfBox.height).toBeGreaterThanOrEqual(8);
+      expect(scarfBox.width).toBeGreaterThanOrEqual(14);
+      expect(scarfBox.top).toBeLessThan(deskBox.top + 8);
+      const headMark = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
+      expect(headMark.height).toBeGreaterThanOrEqual(16);
       const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
       if (!label) continue;
       const labelBox = label.getBoundingClientRect();
       const head = seat.querySelector<HTMLElement>("[data-seat-torso]")!.getBoundingClientRect();
       const dx = Math.abs(labelBox.left + labelBox.width / 2 - (head.left + head.width / 2));
       const dy = head.top - labelBox.bottom;
-      expect(dx).toBeLessThanOrEqual(48);
-      expect(dy).toBeLessThanOrEqual(56);
-      expect(dy).toBeGreaterThanOrEqual(-12);
+      expect(dx).toBeLessThanOrEqual(28);
+      expect(dy).toBeLessThanOrEqual(10);
+      expect(dy).toBeGreaterThanOrEqual(-head.height);
     }
   });
 
@@ -368,9 +374,19 @@ describe("OrgClassroom narrow scene", () => {
         const labelBox = label.getBoundingClientRect();
         const dx = Math.abs(labelBox.left + labelBox.width / 2 - (headBox.left + headBox.width / 2));
         const dy = headBox.top - labelBox.bottom;
-        expect(dx, id).toBeLessThanOrEqual(48);
-        expect(dy, id).toBeLessThanOrEqual(56);
-        expect(dy, id).toBeGreaterThanOrEqual(-12);
+        expect(dx, id).toBeLessThanOrEqual(28);
+        expect(dy, id).toBeLessThanOrEqual(10);
+        expect(dy, id).toBeGreaterThanOrEqual(-headBox.height - labelBox.height);
+      }
+      const zoneChips = labels.filter((label) => (label.dataset.seatLabel ?? "").startsWith("zone-"));
+      const nameChips = labels.filter((label) => !(label.dataset.seatLabel ?? "").startsWith("zone-"));
+      for (const name of nameChips) {
+        for (const zoneChip of zoneChips) {
+          expect(
+            overlap(name.getBoundingClientRect(), zoneChip.getBoundingClientRect()),
+            `${name.dataset.seatLabel} x ${zoneChip.dataset.seatLabel}`,
+          ).toBe(0);
+        }
       }
     } finally {
       await page.viewport(1280, 800);

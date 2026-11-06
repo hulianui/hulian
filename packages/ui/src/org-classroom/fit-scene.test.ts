@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { anchorLabelsNearHeads, containScale, figureScaleFor, fitScene, labelScaleFor, liftLabels, parkLabels, separateLabels } from "./fit-scene";
+import { anchorLabelsNearHeads, containScale, figureScaleFor, fitScene, labelScaleFor, liftLabels, liftZoneLabels, parkLabels, separateLabels } from "./fit-scene";
 
 describe("fitScene", () => {
   it("leaves a scene that already fits at scale 1", () => {
@@ -93,6 +93,25 @@ describe("anchorLabelsNearHeads", () => {
     }
     const s3 = placed.find((item) => item.id === "s3")!;
     expect(s3.y).toBeGreaterThan(110);
+  });
+
+  it("does not float a chip above the head it started on", () => {
+    const labels = [
+      { id: "s1", x: 0, y: 40, w: 70, h: 20 },
+      { id: "s2", x: 20, y: 44, w: 70, h: 20 },
+    ];
+    const [first] = anchorLabelsNearHeads(labels, [], 200, 4, 16);
+    expect(first!.y).toBeGreaterThanOrEqual(40 - 6);
+  });
+});
+
+describe("liftZoneLabels", () => {
+  it("moves a department chip off a name without moving the name", () => {
+    const name = { id: "s3", x: 40, y: 20, w: 80, h: 22 };
+    const zone = { id: "zone-engineering", x: 30, y: 16, w: 72, h: 20 };
+    const [placedName, placedZone] = liftZoneLabels([name, zone], 6);
+    expect(placedName).toEqual(name);
+    expect(placedZone!.y + placedZone!.h).toBeLessThanOrEqual(name.y - 6);
   });
 });
 

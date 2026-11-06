@@ -27,7 +27,7 @@ function DeskBody({
     <span data-desk-body className="pointer-events-none relative z-20 block h-14 w-[5.1rem] [transform-style:preserve-3d]">
       <span className="absolute -bottom-1 left-3 right-3 h-2 rounded-full bg-foreground/15" />
       <Chair />
-      <span data-desk-front className={cn(FRONT, "bottom-0.5 left-1 right-1 h-4")} />
+      <span data-desk-front className={cn(FRONT, "bottom-0.5 left-1 right-1 h-3")} />
       <span data-desk-side className={cn(SIDE, "bottom-0.5 right-1 top-3 w-4")} />
       {lap}
       <button
@@ -69,7 +69,10 @@ function Chair() {
   );
 }
 
-/** 骨盆和两条大腿留在等距平面里，沿桌深往近处走。桌面盖住靠里的一段。 */
+/**
+ * 骨盆在椅侧，两条压扁的腿沿桌深走到桌面近缘为止，不伸出近缘。
+ * 桌面 translateZ(16px) 盖住靠里的一段。
+ */
 function SeatedLap({ onSelect }: { onSelect: () => void }) {
   const select = (event: ReactMouseEvent) => {
     event.stopPropagation();
@@ -78,17 +81,23 @@ function SeatedLap({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-lap
-      className="pointer-events-auto absolute left-1/2 z-[1] w-14 -translate-x-1/2"
-      style={{ top: "0.55rem", height: "4.55rem", transform: "translateZ(9px)" }}
+      className="pointer-events-auto absolute left-1/2 z-[1] w-12 -translate-x-1/2"
+      style={{ top: "0.15rem", height: "2.2rem" }}
       aria-hidden
       onClick={select}
     >
       <span
         data-seat-pelvis
-        className="absolute left-1/2 top-0 h-3.5 w-9 -translate-x-1/2 rounded-full bg-foreground"
+        className="absolute left-1/2 top-0 h-2.5 w-8 -translate-x-1/2 rounded-[50%] bg-foreground"
       />
-      <span data-seat-thigh className="absolute bottom-0 left-0 h-full w-[1.3rem] rounded-full bg-foreground" />
-      <span data-seat-thigh className="absolute bottom-0 right-0 h-full w-[1.3rem] rounded-full bg-foreground" />
+      <span
+        data-seat-thigh
+        className="absolute bottom-0 left-0 h-[1.85rem] w-[0.95rem] rounded-[50%] bg-foreground"
+      />
+      <span
+        data-seat-thigh
+        className="absolute bottom-0 right-0 h-[1.85rem] w-[0.95rem] rounded-[50%] bg-foreground"
+      />
     </span>
   );
 }
@@ -101,14 +110,14 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-figure
-      className="pointer-events-none absolute left-1/2 top-[-1.7rem] z-10 w-14 -translate-x-1/2 [transform-style:preserve-3d]"
+      className="pointer-events-none absolute left-1/2 top-[-3.35rem] z-10 w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
     >
       <span
         data-seat-torso
-        className="pointer-events-none block w-14 [transform-style:preserve-3d]"
+        className="pointer-events-none block w-[4.6rem] [transform-style:preserve-3d]"
         style={{
           transformOrigin: "center bottom",
-          transform: "scale(var(--figure-scale, 1)) rotateZ(42deg) rotateX(-58deg)",
+          transform: "scale(max(1, var(--figure-scale, 1))) rotateZ(42deg) rotateX(-58deg)",
         }}
       >
         <Avatar onSelect={select} />

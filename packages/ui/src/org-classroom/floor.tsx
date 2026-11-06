@@ -1,6 +1,6 @@
 "use client";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { anchorLabelsNearHeads, containScale, figureScaleFor, fitScene, labelScaleFor, type LabelBox } from "./fit-scene";
+import { anchorLabelsNearHeads, containScale, figureScaleFor, fitScene, labelScaleFor, liftZoneLabels, type LabelBox } from "./fit-scene";
 
 const EDGE = 4;
 
@@ -78,7 +78,7 @@ export function Floor({
           const torso = anchor.querySelector<HTMLElement>("[data-seat-torso]");
           const box = (torso ?? anchor).getBoundingClientRect();
           const x = torso ? box.left + box.width / 2 - width / 2 : box.left;
-          const y = torso ? box.top - height - 4 : box.top;
+          const y = torso ? box.top + box.height / 2 - height / 2 : box.top;
           boxes.push({
             id: key,
             x: x - hostRect.left,
@@ -92,7 +92,7 @@ export function Floor({
         if (seatChips.length) {
           const top = Math.min(...seatChips.map((box) => box.y));
           for (const zoneLabel of boxes.filter((box) => box.id.startsWith("zone-"))) {
-            zoneLabel.y = top - zoneLabel.h - 8;
+            zoneLabel.y = top - zoneLabel.h - 10;
             zoneLabel.x = cursor;
             cursor += zoneLabel.w + 8;
           }
@@ -109,7 +109,7 @@ export function Floor({
             h: box.height,
           });
         }
-        const placed = anchorLabelsNearHeads(boxes, heads, frame.clientWidth, 4, 32);
+        const placed = liftZoneLabels(anchorLabelsNearHeads(boxes, heads, frame.clientWidth, 4, 16), 8);
         host.style.setProperty("--label-scale", String(labelScaleFor(placed, heads)));
         const nextPoints: Record<string, AnchorPoint> = {};
         for (const box of placed) {

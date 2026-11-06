@@ -129,14 +129,14 @@ export function avoidForeignHeads(labels: readonly LabelBox[], heads: readonly L
 
 /**
  * Keep each chip within `maxShift` of the spot it was anchored to (its own head).
- * Neighbors may nudge it locally. A narrow frame must not sweep every name into one row.
+ * A chip may slide sideways in that neighborhood. It does not float up into a row.
  */
 export function anchorLabelsNearHeads(
   labels: readonly LabelBox[],
   obstacles: readonly LabelBox[],
   frameWidth: number,
   gap = 4,
-  maxShift = 32,
+  maxShift = 16,
 ): LabelBox[] {
   const home = new Map(labels.map((box) => [box.id, { x: box.x, y: box.y }]));
   const next = labels.map((box) => ({ ...box }));
@@ -146,30 +146,24 @@ export function anchorLabelsNearHeads(
     const origin = home.get(id)!;
     return {
       x: Math.min(origin.x + maxShift, Math.max(origin.x - maxShift, x)),
-      y: Math.min(origin.y + maxShift, Math.max(origin.y - maxShift, y)),
+      y: Math.min(origin.y + 8, Math.max(origin.y - 6, y)),
     };
   };
 
-  for (let pass = 0; pass < 16; pass += 1) {
+  for (let pass = 0; pass < 12; pass += 1) {
     let moved = false;
     for (const label of next) {
       if (label.id.startsWith("zone-")) continue;
       const blocks = [
-        ...obstacles.filter((block) => block.id !== label.id),
-        ...next.filter((other) => other !== label),
+        ...obstacles.filter((block) => block.id !== label.id && !block.id.startsWith("zone-")),
+        ...next.filter((other) => other !== label && !other.id.startsWith("zone-")),
       ];
       for (const block of blocks) {
         if (!overlaps(label, block, gap)) continue;
-        const above = clampToHome(label.id, label.x, block.y - gap - label.h);
-        if (above.y < label.y - 0.5) {
-          label.y = above.y;
-          moved = true;
-          continue;
-        }
         const towardLeft = label.x + label.w / 2 <= block.x + block.w / 2;
         const side = clampToHome(
           label.id,
-          towardLeft ? block.x - gap - label.w : block.x + block.w + gap,
+          towardLeft ? label.x - 6 : label.x + 6,
           label.y,
         );
         if (Math.abs(side.x - label.x) > 0.5) {
@@ -186,6 +180,22 @@ export function anchorLabelsNearHeads(
       }
     }
     if (!moved) break;
+  }
+  return next;
+}
+
+/** Department chips move up until they no longer cover a person's name. Names stay put. */
+export function liftZoneLabels(labels: readonly LabelBox[], gap = 6): LabelBox[] {
+  const next = labels.map((box) => ({ ...box }));
+  const seats = next.filter((box) => !box.id.startsWith("zone-"));
+  for (const zone of next) {
+    if (!zone.id.startsWith("zone-")) continue;
+    let guard = 0;
+    while (seats.some((seat) => overlaps(zone, seat, gap)) && guard < 12) {
+      const seat = seats.find((item) => overlaps(zone, item, gap))!;
+      zone.y = seat.y - gap - zone.h;
+      guard += 1;
+    }
   }
   return next;
 }
