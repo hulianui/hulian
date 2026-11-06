@@ -149,7 +149,7 @@ describe("OrgClassroom narrow scene", () => {
       const pelvisBox = pelvis.getBoundingClientRect();
       const scarfHipGap = pelvisBox.top - scarfBox.bottom;
       expect(scarfHipGap, `scarf bottom must clear the hip top, gap ${scarfHipGap}`).toBeGreaterThanOrEqual(4);
-      expect(scarfHipGap, `scarf must stay near the hip, gap ${scarfHipGap}`).toBeLessThanOrEqual(12);
+      expect(scarfHipGap, `scarf must stay near the hip, gap ${scarfHipGap}`).toBeLessThanOrEqual(8);
       const headMark = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
       expect(headMark.height).toBeGreaterThanOrEqual(16);
       const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
