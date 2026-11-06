@@ -76,6 +76,21 @@ describe("OrgClassroom narrow scene", () => {
       const deskBox = desk.getBoundingClientRect();
       expect(figureBox.bottom).toBeGreaterThan(deskBox.top + 2);
       expect(overlap(lap.getBoundingClientRect(), deskBox)).toBeGreaterThan(0);
+      const thighs = [...seat.querySelectorAll<HTMLElement>("[data-seat-thigh]")];
+      expect(thighs).toHaveLength(2);
+      expect(seat.querySelector("[data-seat-pelvis]")).toBeTruthy();
+      const thighCenters: number[] = [];
+      for (const thigh of thighs) {
+        expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth * 2.4);
+        const thighBox = thigh.getBoundingClientRect();
+        expect(overlap(thighBox, deskBox)).toBeGreaterThan(0);
+        expect(thighBox.bottom).toBeGreaterThan(deskBox.bottom - 1);
+        const center = thighBox.left + thighBox.width / 2;
+        expect(center).toBeGreaterThan(deskBox.left);
+        expect(center).toBeLessThan(deskBox.right);
+        thighCenters.push(center);
+      }
+      expect(Math.abs(thighCenters[0]! - thighCenters[1]!)).toBeGreaterThan(6);
       const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]")!;
       expect(scarf.getBoundingClientRect().height).toBeGreaterThanOrEqual(4);
       expect(scarf.getBoundingClientRect().top).toBeLessThan(deskBox.bottom);
@@ -85,9 +100,9 @@ describe("OrgClassroom narrow scene", () => {
       const head = seat.querySelector<HTMLElement>("[data-seat-torso]")!.getBoundingClientRect();
       const dx = Math.abs(labelBox.left + labelBox.width / 2 - (head.left + head.width / 2));
       const dy = head.top - labelBox.bottom;
-      expect(dx).toBeLessThan(180);
-      expect(dy).toBeLessThanOrEqual(64);
-      expect(dy).toBeGreaterThanOrEqual(-head.height - 8);
+      expect(dx).toBeLessThanOrEqual(48);
+      expect(dy).toBeLessThanOrEqual(56);
+      expect(dy).toBeGreaterThanOrEqual(-12);
     }
   });
 
@@ -305,9 +320,24 @@ describe("OrgClassroom narrow scene", () => {
           { id: "s12", row: 4, col: 3, person: { id: "p12", name: "沈酌", status: "interview" } },
         ],
       };
+      const engineering: Zone = {
+        id: "engineering",
+        name: "技术研发部",
+        accent: "var(--color-info)",
+        seats: [
+          { id: "e1", row: 1, col: 1, person: { id: "q1", name: "周宁", status: "leave" } },
+          { id: "e2", row: 1, col: 2, person: { id: "q2", name: "吴桐", status: "busy" } },
+        ],
+      };
       function Harness() {
         const [selectedSeatId, setSelectedSeatId] = useState<string | null>("s1");
-        return <OrgClassroom zones={[packed]} selectedSeatId={selectedSeatId} onSeatSelect={setSelectedSeatId} />;
+        return (
+          <OrgClassroom
+            zones={[packed, engineering]}
+            selectedSeatId={selectedSeatId}
+            onSeatSelect={setSelectedSeatId}
+          />
+        );
       }
       const { container } = render(<Harness />);
       await expect.poll(() => container.querySelector("[data-scene-scale]")).toBeTruthy();
@@ -329,13 +359,62 @@ describe("OrgClassroom narrow scene", () => {
         expect(rect.right).toBeLessThanOrEqual(view.right + 1);
         expect(rect.bottom).toBeLessThanOrEqual(view.bottom + 1);
       }
-      for (let i = 0; i < rects.length; i += 1) {
-        for (let j = i + 1; j < rects.length; j += 1) {
-          expect(overlap(rects[i]!, rects[j]!), `${labels[i]!.dataset.seatLabel} x ${labels[j]!.dataset.seatLabel}`).toBe(0);
-        }
+      for (const label of labels) {
+        const id = label.dataset.seatLabel ?? "";
+        if (id.startsWith("zone-")) continue;
+        const head = container.querySelector<HTMLElement>(`[data-seat-id="${id}"] [data-seat-torso]`);
+        expect(head, id).toBeTruthy();
+        const headBox = head!.getBoundingClientRect();
+        const labelBox = label.getBoundingClientRect();
+        const dx = Math.abs(labelBox.left + labelBox.width / 2 - (headBox.left + headBox.width / 2));
+        const dy = headBox.top - labelBox.bottom;
+        expect(dx, id).toBeLessThanOrEqual(48);
+        expect(dy, id).toBeLessThanOrEqual(56);
+        expect(dy, id).toBeGreaterThanOrEqual(-12);
       }
     } finally {
       await page.viewport(1280, 800);
     }
+  });
+
+  it("悬停桌面不会挪开点击位置，第一下就打开人员卡", async () => {
+    render(<OrgClassroom zones={[zone()]} />);
+    await expect.poll(() => document.querySelector('[data-seat-id="s1"] [data-desk-top]')).toBeTruthy();
+    const desk = document.querySelector<HTMLElement>('[data-seat-id="s1"] [data-desk-top]')!;
+    const before = desk.getBoundingClientRect();
+    const button = page.getByRole("button", { name: "林予涵，在岗" });
+    await button.hover();
+    const after = desk.getBoundingClientRect();
+    expect(Math.abs(after.top - before.top)).toBeLessThan(1.5);
+    expect(Math.abs(after.left - before.left)).toBeLessThan(1.5);
+    expect(Math.abs(after.width - before.width)).toBeLessThan(1.5);
+    await button.click();
+    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.textContent).toContain("林予涵");
+    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
+  });
+
+  it("点大腿打开该座位的人员卡", async () => {
+    render(<OrgClassroom zones={[zone()]} />);
+    await expect.poll(() => document.querySelector("[data-seat-thigh]")).toBeTruthy();
+    const thigh = document.querySelector<HTMLElement>("[data-seat-thigh]")!;
+    const box = thigh.getBoundingClientRect();
+    let hit: Element | null = null;
+    for (let y = box.bottom - 2; y > box.top && !hit; y -= 3) {
+      for (let x = box.left + 2; x < box.right; x += 3) {
+        const candidate = document.elementFromPoint(x, y);
+        if (candidate?.closest("[data-seat-lap]")) {
+          hit = candidate;
+          break;
+        }
+      }
+    }
+    const seatId = hit?.closest("[data-seat-id]")?.getAttribute("data-seat-id");
+    expect(seatId).toBeTruthy();
+    expect(hit?.closest("[data-seat-lap]")).toBeTruthy();
+    fireEvent.click(hit as HTMLElement);
+    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe(
+      "true",
+    );
+    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
   });
 });

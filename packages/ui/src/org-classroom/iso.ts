@@ -7,8 +7,8 @@ export const ISO_BILLBOARD_CLASS =
   "[transform-style:preserve-3d] [transform:rotateZ(42deg)_rotateX(-58deg)]";
 
 /**
- * 抬起的是桌子和人，不是状态气泡。
- * 气泡挂在按钮里、抬起层外面，悬停时位置不变。
+ * 悬停和选中只加阴影。不要平移桌子或人，否则第一下点击会打在已经挪走的桌面上。
+ * 状态气泡在抬起层外面，不受这层阴影影响。
  */
 export const SEAT_LIFT_CLASS =
-  "[transform-style:preserve-3d] transition-transform duration-200 ease-out motion-reduce:transition-none group-hover:[transform:translateZ(18px)] group-data-[selected=true]:[transform:translateZ(18px)]";
+  "[transform-style:preserve-3d] transition-shadow duration-200 ease-out motion-reduce:transition-none group-hover:shadow-[0_16px_20px_-14px_rgba(0,0,0,0.55)] group-data-[selected=true]:shadow-[0_16px_20px_-14px_rgba(0,0,0,0.55)]";

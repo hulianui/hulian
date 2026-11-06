@@ -1,4 +1,4 @@
-import { memo, type MouseEvent as ReactMouseEvent } from "react";
+import { memo, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "./avatar";
 import type { OrgClassroomCopy } from "./copy";
@@ -16,21 +16,28 @@ function DeskBody({
   label,
   selected,
   onSelect,
+  lap,
 }: {
   label: string;
   selected: boolean;
   onSelect: () => void;
+  lap?: ReactNode;
 }) {
   return (
     <span data-desk-body className="pointer-events-none relative z-20 block h-14 w-[5.1rem] [transform-style:preserve-3d]">
       <span className="absolute -bottom-1 left-3 right-3 h-2 rounded-full bg-foreground/15" />
+      <Chair />
       <span data-desk-front className={cn(FRONT, "bottom-0.5 left-1 right-1 h-4")} />
       <span data-desk-side className={cn(SIDE, "bottom-0.5 right-1 top-3 w-4")} />
+      {lap}
       <button
         type="button"
         data-desk-top
         data-desk-hit
-        className={cn(TOP, "pointer-events-auto inset-x-0 top-1.5 h-8 cursor-pointer border-0 p-0 [transform:translateZ(16px)]")}
+        className={cn(
+          TOP,
+          "pointer-events-auto inset-x-0 top-1.5 z-30 h-8 cursor-pointer border-0 p-0 [transform:translateZ(16px)]",
+        )}
         data-selected={selected ? "true" : "false"}
         aria-pressed={selected}
         aria-label={label}
@@ -45,39 +52,60 @@ function DeskBody({
 
 function Chair() {
   return (
-    <span data-chair className="absolute bottom-11 left-1/2 h-8 w-8 -translate-x-1/2 [transform-style:preserve-3d]" aria-hidden>
+    <span
+      data-chair
+      className="pointer-events-none absolute left-1/2 top-0.5 h-6 w-7 -translate-x-1/2 [transform-style:preserve-3d]"
+      aria-hidden
+    >
       <span
         data-chair-seat
-        className="absolute inset-x-1 bottom-0 h-2.5 rounded-md bg-muted [transform:translateZ(8px)]"
+        className="absolute inset-x-1 bottom-0 h-2 rounded-md bg-muted [transform:translateZ(6px)]"
       />
       <span
         data-chair-back
-        className="absolute inset-x-0.5 top-0 h-6 rounded-t-lg bg-[color-mix(in_oklab,var(--color-muted)_40%,var(--color-foreground))] [transform:translateZ(8px)]"
+        className="absolute inset-x-0.5 top-0 h-4 rounded-t-md bg-[color-mix(in_oklab,var(--color-muted)_40%,var(--color-foreground))] [transform:translateZ(6px)]"
       />
     </span>
   );
 }
 
-function SeatedFigure({ onSelect }: { onSelect: () => void }) {
+/** 骨盆和两条大腿留在等距平面里，沿桌深往近处走。桌面盖住靠里的一段。 */
+function SeatedLap({ onSelect }: { onSelect: () => void }) {
   const select = (event: ReactMouseEvent) => {
     event.stopPropagation();
     onSelect();
   };
   return (
-    <span data-seat-figure className="pointer-events-none relative z-10 -mb-6 h-[4.5rem] w-[4.4rem] [transform-style:preserve-3d]">
+    <span
+      data-seat-lap
+      className="pointer-events-auto absolute left-1/2 z-[1] w-14 -translate-x-1/2"
+      style={{ top: "0.55rem", height: "4.55rem", transform: "translateZ(9px)" }}
+      aria-hidden
+      onClick={select}
+    >
       <span
-        data-seat-lap
-        className="pointer-events-auto absolute bottom-0 left-1/2 flex w-[3.4rem] -translate-x-1/2 justify-between"
-        style={{ transform: "scale(var(--lap-scale, 1))", transformOrigin: "center bottom" }}
-        aria-hidden
-        onClick={select}
-      >
-        <span className="h-8 w-[1.35rem] rounded-full bg-foreground" />
-        <span className="h-8 w-[1.35rem] rounded-full bg-foreground" />
-      </span>
+        data-seat-pelvis
+        className="absolute left-1/2 top-0 h-3.5 w-9 -translate-x-1/2 rounded-full bg-foreground"
+      />
+      <span data-seat-thigh className="absolute bottom-0 left-0 h-full w-[1.3rem] rounded-full bg-foreground" />
+      <span data-seat-thigh className="absolute bottom-0 right-0 h-full w-[1.3rem] rounded-full bg-foreground" />
+    </span>
+  );
+}
+
+function SeatedTorso({ onSelect }: { onSelect: () => void }) {
+  const select = (event: ReactMouseEvent) => {
+    event.stopPropagation();
+    onSelect();
+  };
+  return (
+    <span
+      data-seat-figure
+      className="pointer-events-none absolute left-1/2 top-[-1.7rem] z-10 w-14 -translate-x-1/2 [transform-style:preserve-3d]"
+    >
       <span
         data-seat-torso
-        className="pointer-events-none absolute bottom-5 left-1/2 w-14 -translate-x-1/2 [transform-style:preserve-3d]"
+        className="pointer-events-none block w-14 [transform-style:preserve-3d]"
         style={{
           transformOrigin: "center bottom",
           transform: "scale(var(--figure-scale, 1)) rotateZ(42deg) rotateX(-58deg)",
@@ -122,9 +150,13 @@ function DeskImpl({
           "group-data-[selected=true]:outline group-data-[selected=true]:outline-2 group-data-[selected=true]:outline-primary",
         )}
       >
-        {person ? <SeatedFigure onSelect={() => onSelect(seat.id)} /> : null}
-        <Chair />
-        <DeskBody label={label} selected={selected} onSelect={() => onSelect(seat.id)} />
+        {person ? <SeatedTorso onSelect={() => onSelect(seat.id)} /> : null}
+        <DeskBody
+          label={label}
+          selected={selected}
+          onSelect={() => onSelect(seat.id)}
+          lap={person ? <SeatedLap onSelect={() => onSelect(seat.id)} /> : undefined}
+        />
       </span>
     </div>
   );

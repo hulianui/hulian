@@ -10,6 +10,28 @@ export function containScale(contentWidth: number, availableWidth: number, curre
   return currentScale * (availableWidth / contentWidth);
 }
 
+/**
+ * Shrink a name chip when neighboring heads are closer than the chip is wide.
+ * The chip stays anchored on its own head; it only gets smaller.
+ */
+export function labelScaleFor(labels: readonly LabelBox[], heads: readonly LabelBox[]) {
+  const seats = labels.filter((label) => !label.id.startsWith("zone-"));
+  const unique = heads.filter((head, index) => heads.findIndex((item) => item.id === head.id) === index);
+  if (seats.length === 0 || unique.length < 2) return 1;
+  let nearest = Infinity;
+  for (let i = 0; i < unique.length; i += 1) {
+    for (let j = i + 1; j < unique.length; j += 1) {
+      const dx = unique[i]!.x + unique[i]!.w / 2 - (unique[j]!.x + unique[j]!.w / 2);
+      const dy = unique[i]!.y + unique[i]!.h / 2 - (unique[j]!.y + unique[j]!.h / 2);
+      const distance = Math.hypot(dx, dy);
+      if (distance > 12) nearest = Math.min(nearest, distance);
+    }
+  }
+  const widest = Math.max(...seats.map((label) => label.w));
+  if (!Number.isFinite(nearest) || widest <= nearest - 4) return 1;
+  return Math.min(1, Math.max(0.78, (nearest - 4) / widest));
+}
+
 /** Screen size of a seated figure when the floor itself is scaled down. */
 export function figureScaleFor(sceneScale: number) {
   if (!(sceneScale > 0)) return 1;
@@ -101,6 +123,69 @@ export function avoidForeignHeads(labels: readonly LabelBox[], heads: readonly L
       label.y = Math.abs(label.y - above) <= Math.abs(label.y - below) ? above : below;
       if (overlaps(label, head, gap)) label.x = head.x + head.w + gap;
     }
+  }
+  return next;
+}
+
+/**
+ * Keep each chip within `maxShift` of the spot it was anchored to (its own head).
+ * Neighbors may nudge it locally. A narrow frame must not sweep every name into one row.
+ */
+export function anchorLabelsNearHeads(
+  labels: readonly LabelBox[],
+  obstacles: readonly LabelBox[],
+  frameWidth: number,
+  gap = 4,
+  maxShift = 32,
+): LabelBox[] {
+  const home = new Map(labels.map((box) => [box.id, { x: box.x, y: box.y }]));
+  const next = labels.map((box) => ({ ...box }));
+  const edge = 4;
+
+  const clampToHome = (id: string, x: number, y: number) => {
+    const origin = home.get(id)!;
+    return {
+      x: Math.min(origin.x + maxShift, Math.max(origin.x - maxShift, x)),
+      y: Math.min(origin.y + maxShift, Math.max(origin.y - maxShift, y)),
+    };
+  };
+
+  for (let pass = 0; pass < 16; pass += 1) {
+    let moved = false;
+    for (const label of next) {
+      if (label.id.startsWith("zone-")) continue;
+      const blocks = [
+        ...obstacles.filter((block) => block.id !== label.id),
+        ...next.filter((other) => other !== label),
+      ];
+      for (const block of blocks) {
+        if (!overlaps(label, block, gap)) continue;
+        const above = clampToHome(label.id, label.x, block.y - gap - label.h);
+        if (above.y < label.y - 0.5) {
+          label.y = above.y;
+          moved = true;
+          continue;
+        }
+        const towardLeft = label.x + label.w / 2 <= block.x + block.w / 2;
+        const side = clampToHome(
+          label.id,
+          towardLeft ? block.x - gap - label.w : block.x + block.w + gap,
+          label.y,
+        );
+        if (Math.abs(side.x - label.x) > 0.5) {
+          label.x = side.x;
+          moved = true;
+        }
+      }
+      const framed = Math.max(edge, Math.min(label.x, Math.max(edge, frameWidth - label.w - edge)));
+      const kept = clampToHome(label.id, framed, label.y);
+      if (Math.abs(kept.x - label.x) > 0.5 || Math.abs(kept.y - label.y) > 0.5) {
+        label.x = kept.x;
+        label.y = kept.y;
+        moved = true;
+      }
+    }
+    if (!moved) break;
   }
   return next;
 }

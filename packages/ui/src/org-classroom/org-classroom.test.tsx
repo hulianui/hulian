@@ -43,11 +43,12 @@ describe("OrgClassroom", () => {
     expect(container.querySelector('[data-seat-id="s3"]')!.textContent).not.toContain("在岗");
   });
 
-  it("悬停只抬桌子和人，状态气泡不在抬起层里，并且带透明度过渡", () => {
+  it("悬停只加阴影，不平移桌子和人，状态气泡不在抬起层里", () => {
     const { container } = render(<OrgClassroom zones={[zone()]} />);
     const lift = container.querySelector('[data-seat-id="s1"] [data-seat-lift]')!;
     const chip = container.querySelector('[data-seat-label="s1"] [data-slot="status-chip"]')!;
-    expect(lift.className).toContain("translateZ(18px)");
+    expect(lift.className).toContain("group-hover:shadow-");
+    expect(lift.className).not.toContain("translateZ");
     expect(lift.className).toContain("motion-reduce:transition-none");
     expect(lift.contains(chip)).toBe(false);
     expect(chip.innerHTML).toContain("transition-opacity");

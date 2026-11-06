@@ -1,6 +1,6 @@
 "use client";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { avoidForeignHeads, containScale, figureScaleFor, fitScene, parkLabels, resolveLabelOverlaps, type LabelBox } from "./fit-scene";
+import { anchorLabelsNearHeads, containScale, figureScaleFor, fitScene, labelScaleFor, type LabelBox } from "./fit-scene";
 
 const EDGE = 4;
 
@@ -13,32 +13,6 @@ export type FloorAnnotation = {
 };
 
 type AnchorPoint = { x: number; y: number };
-
-function coversDesk(x: number, y: number) {
-  const hit = document.elementFromPoint(x, y);
-  return Boolean(hit?.closest("[data-desk-top], [data-desk-body]"));
-}
-
-/** A chip spot in viewport pixels that is not sitting on a desktop. */
-function clearSpot(head: HTMLElement, width: number, height: number, host: DOMRect) {
-  const box = head.getBoundingClientRect();
-  const spots = [
-    { x: box.left + box.width / 2 - width / 2, y: box.top - height - 4 },
-    { x: box.right + 6, y: box.top - 2 },
-    { x: box.left - width - 6, y: box.top - 2 },
-    { x: box.right + 6, y: box.top - height },
-    { x: box.left - width - 6, y: box.top - height },
-  ];
-  for (const spot of spots) {
-    const samples = [
-      [spot.x + width / 2, spot.y + height / 2],
-      [spot.x + 6, spot.y + 6],
-      [spot.x + width - 6, spot.y + height - 6],
-    ];
-    if (samples.every(([sx, sy]) => sx > host.left && sy > host.top && !coversDesk(sx, sy))) return spot;
-  }
-  return spots[0]!;
-}
 
 export function Floor({
   label,
@@ -88,15 +62,12 @@ export function Floor({
         plane.style.transform = `translateX(-50%) ${ISO_TRANSFORM} scale(${nextScale})`;
         plane.style.setProperty("--iso-scale", String(nextScale));
         plane.style.setProperty("--figure-scale", String(figureScale));
-        plane.style.setProperty("--lap-scale", String(Math.min(1.2, figureScale)));
         const hostRect = host.getBoundingClientRect();
         const boxes: LabelBox[] = [];
-        const obstacles: LabelBox[] = [];
+        const heads: LabelBox[] = [];
         for (const anchor of frame.querySelectorAll<HTMLElement>("[data-anchor]")) {
           const id = anchor.dataset.anchor;
           if (!id) continue;
-          const head = anchor.querySelector<HTMLElement>("[data-seat-torso]") ?? anchor;
-          const box = head.getBoundingClientRect();
           const label = frame.querySelector<HTMLElement>(
             `[data-seat-label="${CSS.escape(id)}"], [data-seat-label="zone-${CSS.escape(id)}"]`,
           );
@@ -105,13 +76,13 @@ export function Floor({
           const height = label?.offsetHeight ?? 0;
           if (width <= 0 || height <= 0) continue;
           const torso = anchor.querySelector<HTMLElement>("[data-seat-torso]");
-          const spot = torso ? clearSpot(torso, width, height, hostRect) : null;
-          const x = (spot?.x ?? box.left + box.width / 2 - width / 2) - hostRect.left;
-          const y = (spot?.y ?? box.top - height - 6) - hostRect.top;
+          const box = (torso ?? anchor).getBoundingClientRect();
+          const x = torso ? box.left + box.width / 2 - width / 2 : box.left;
+          const y = torso ? box.top - height - 4 : box.top;
           boxes.push({
             id: key,
-            x: Math.max(EDGE, Math.min(x, frame.clientWidth - width - EDGE)),
-            y,
+            x: x - hostRect.left,
+            y: y - hostRect.top,
             w: width,
             h: height,
           });
@@ -126,20 +97,7 @@ export function Floor({
             cursor += zoneLabel.w + 8;
           }
         }
-        for (const desk of frame.querySelectorAll<HTMLElement>("[data-desk-top]")) {
-          const seatId = desk.closest<HTMLElement>("[data-seat-id]")?.dataset.seatId;
-          if (!seatId) continue;
-          const box = desk.getBoundingClientRect();
-          obstacles.push({
-            id: seatId,
-            x: box.left - hostRect.left,
-            y: box.top - hostRect.top,
-            w: box.width,
-            h: box.height,
-          });
-        }
-        const heads: LabelBox[] = [];
-        for (const torso of frame.querySelectorAll<HTMLElement>("[data-seat-torso], [data-seat-scarf], [data-seat-lap]")) {
+        for (const torso of frame.querySelectorAll<HTMLElement>("[data-seat-torso], [data-seat-scarf]")) {
           const seatId = torso.closest<HTMLElement>("[data-seat-id]")?.dataset.seatId;
           if (!seatId) continue;
           const box = torso.getBoundingClientRect();
@@ -151,12 +109,8 @@ export function Floor({
             h: box.height,
           });
         }
-        const parked = resolveLabelOverlaps(
-          avoidForeignHeads(parkLabels(boxes, obstacles, 4, 16), heads, 2),
-          frame.clientWidth,
-          4,
-        );
-        const placed = resolveLabelOverlaps(avoidForeignHeads(parked, heads, 2), frame.clientWidth, 4);
+        const placed = anchorLabelsNearHeads(boxes, heads, frame.clientWidth, 4, 32);
+        host.style.setProperty("--label-scale", String(labelScaleFor(placed, heads)));
         const nextPoints: Record<string, AnchorPoint> = {};
         for (const box of placed) {
           nextPoints[box.id] = { x: box.x + box.w / 2, y: box.y + box.h };
@@ -171,15 +125,16 @@ export function Floor({
           el.style.visibility = "visible";
           el.style.left = `${point.x}px`;
           el.style.top = `${point.y}px`;
-          el.style.transform = "translate(-50%, -100%)";
+          el.style.transform = "translate(-50%, -100%) scale(var(--label-scale, 1))";
+          el.style.transformOrigin = "center bottom";
         }
         return nextPoints;
       };
-      for (let pass = 0; pass < 4; pass += 1) {
+      for (let pass = 0; pass < 5; pass += 1) {
         points = layoutAt(scale);
         const painted = contentWidth(frame, plane, host);
         const nextScale = containScale(painted, available, scale);
-        if (nextScale > scale - 0.015) break;
+        if (nextScale > scale - 0.001) break;
         scale = nextScale;
       }
       points = layoutAt(scale);
@@ -235,7 +190,6 @@ export function Floor({
             transform: `translateX(-50%) ${ISO_TRANSFORM} scale(${scale})`,
             ["--iso-scale" as string]: String(scale),
             ["--figure-scale" as string]: String(figureScaleFor(scale)),
-            ["--lap-scale" as string]: String(Math.min(1.2, figureScaleFor(scale))),
           }}
         >
           {children}
@@ -250,7 +204,12 @@ export function Floor({
                 className="pointer-events-none absolute flex w-max items-center"
                 style={
                   point
-                    ? { left: point.x, top: point.y, transform: "translate(-50%, -100%)" }
+                    ? {
+                        left: point.x,
+                        top: point.y,
+                        transform: "translate(-50%, -100%) scale(var(--label-scale, 1))",
+                        transformOrigin: "center bottom",
+                      }
                     : { left: 0, top: 0, visibility: "hidden" }
                 }
               >

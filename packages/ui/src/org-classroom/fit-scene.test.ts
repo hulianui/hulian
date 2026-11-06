@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { containScale, figureScaleFor, fitScene, liftLabels, parkLabels, separateLabels } from "./fit-scene";
+import { anchorLabelsNearHeads, containScale, figureScaleFor, fitScene, labelScaleFor, liftLabels, parkLabels, separateLabels } from "./fit-scene";
 
 describe("fitScene", () => {
   it("leaves a scene that already fits at scale 1", () => {
@@ -27,6 +27,32 @@ describe("containScale", () => {
   });
 });
 
+describe("labelScaleFor", () => {
+  it("leaves chips alone when each head has room", () => {
+    expect(
+      labelScaleFor(
+        [{ id: "s1", x: 0, y: 0, w: 40, h: 18 }],
+        [{ id: "s1", x: 10, y: 24, w: 20, h: 20 }],
+      ),
+    ).toBe(1);
+  });
+
+  it("shrinks chips when heads sit closer than a name is wide", () => {
+    const scale = labelScaleFor(
+      [
+        { id: "s1", x: 0, y: 0, w: 100, h: 22 },
+        { id: "s2", x: 10, y: 0, w: 100, h: 22 },
+      ],
+      [
+        { id: "s1", x: 40, y: 30, w: 24, h: 24 },
+        { id: "s2", x: 70, y: 36, w: 24, h: 24 },
+      ],
+    );
+    expect(scale).toBeGreaterThanOrEqual(0.78);
+    expect(scale).toBeLessThan(1);
+  });
+});
+
 describe("figureScaleFor", () => {
   it("keeps a seated figure from collapsing when the floor shrinks", () => {
     expect(figureScaleFor(1)).toBe(1);
@@ -44,6 +70,29 @@ describe("parkLabels", () => {
     expect(parked!.y).toBeGreaterThanOrEqual(80 - 16);
     expect(parked!.y).toBeLessThan(80);
     expect(parked!.y).toBeGreaterThan(otherDesk.y + otherDesk.h);
+  });
+});
+
+describe("anchorLabelsNearHeads", () => {
+  it("keeps every chip within a short walk of its own head on a narrow frame", () => {
+    const labels = [
+      { id: "s1", x: 8, y: 30, w: 88, h: 22 },
+      { id: "s2", x: 20, y: 36, w: 88, h: 22 },
+      { id: "s3", x: 36, y: 150, w: 88, h: 22 },
+    ];
+    const heads = [
+      { id: "s1", x: 24, y: 56, w: 28, h: 28 },
+      { id: "s2", x: 40, y: 62, w: 28, h: 28 },
+      { id: "s3", x: 48, y: 176, w: 28, h: 28 },
+    ];
+    const placed = anchorLabelsNearHeads(labels, heads, 120, 4, 32);
+    for (const label of placed) {
+      const home = labels.find((item) => item.id === label.id)!;
+      expect(Math.abs(label.x - home.x)).toBeLessThanOrEqual(32);
+      expect(Math.abs(label.y - home.y)).toBeLessThanOrEqual(32);
+    }
+    const s3 = placed.find((item) => item.id === "s3")!;
+    expect(s3.y).toBeGreaterThan(110);
   });
 });
 
