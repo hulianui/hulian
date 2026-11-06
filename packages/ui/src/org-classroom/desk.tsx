@@ -71,7 +71,7 @@ function Chair() {
 
 /**
  * 髋在围巾下面，两条略扁的腿从椅子和桌面远沿之间的空隙起，沿桌深伸进整块桌面下。
- * 上身沿等距往下靠到髋上，围巾和髋之间只留一条窄缝。髋是一条小圆角扁条，横在两条大腿根上。
+ * 上身再往下靠一段，收窄头左侧那块变宽的地板。髋是一条小圆角扁条，横在两条大腿根上。
  * translateZ 低于桌面，近端停在近沿之前，底边是平的。
  */
 function SeatedLap({ onSelect }: { onSelect: () => void }) {
@@ -110,7 +110,7 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-figure
-      className="pointer-events-none absolute left-1/2 top-[-6.25rem] z-[1] w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
+      className="pointer-events-none absolute left-1/2 top-[-6.05rem] z-[1] w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
     >
       <span
         data-seat-torso
