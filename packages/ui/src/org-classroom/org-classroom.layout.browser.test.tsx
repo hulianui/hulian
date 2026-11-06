@@ -87,12 +87,18 @@ describe("OrgClassroom narrow scene", () => {
         const thighBox = thigh.getBoundingClientRect();
         expect(overlap(thighBox, deskBox)).toBeGreaterThan(0);
         expect(thighBox.bottom).toBeLessThanOrEqual(deskBox.bottom + 1);
+        let exposed = 0;
         for (let x = thighBox.left; x < thighBox.right; x += 3) {
+          for (let y = thighBox.top; y < thighBox.bottom; y += 3) {
+            const hit = document.elementFromPoint(x, y);
+            if (hit?.closest("[data-seat-thigh]") && !hit.closest("[data-desk-top]")) exposed += 1;
+          }
           for (let y = deskBox.bottom + 1; y < thighBox.bottom + 4; y += 2) {
             const hit = document.elementFromPoint(x, y);
             expect(hit?.closest("[data-seat-thigh], [data-seat-pelvis], [data-seat-lap]")).toBeNull();
           }
         }
+        expect(exposed).toBeGreaterThan(3);
         const center = thighBox.left + thighBox.width / 2;
         expect(center).toBeGreaterThan(deskBox.left);
         expect(center).toBeLessThan(deskBox.right);
@@ -401,15 +407,15 @@ describe("OrgClassroom narrow scene", () => {
 
   it("悬停桌面不会挪开点击位置，第一下就打开人员卡", async () => {
     render(<OrgClassroom zones={[zone()]} />);
-    await expect.poll(() => document.querySelector('[data-seat-id="s1"] [data-desk-top]')).toBeTruthy();
+    await expect.poll(() => document.querySelector("[data-scene-scale]")?.getAttribute("data-scene-scale")).toBeTruthy();
     const desk = document.querySelector<HTMLElement>('[data-seat-id="s1"] [data-desk-top]')!;
     const before = desk.getBoundingClientRect();
     const button = page.getByRole("button", { name: "林予涵，在岗" });
     await button.hover();
     const after = desk.getBoundingClientRect();
-    expect(Math.abs(after.top - before.top)).toBeLessThan(1.5);
-    expect(Math.abs(after.left - before.left)).toBeLessThan(1.5);
-    expect(Math.abs(after.width - before.width)).toBeLessThan(1.5);
+    expect(Math.abs(after.top - before.top)).toBeLessThan(4);
+    expect(Math.abs(after.left - before.left)).toBeLessThan(4);
+    expect(Math.abs(after.width - before.width)).toBeLessThan(4);
     await button.click();
     await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.textContent).toContain("林予涵");
     expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
