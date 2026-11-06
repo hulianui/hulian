@@ -64,6 +64,21 @@ describe("OrgClassroom narrow scene", () => {
         expect(overlap(rects[i]!, rects[j]!)).toBe(0);
       }
     }
+    const desks = [...container.querySelectorAll<HTMLElement>("[data-desk-top]")];
+    for (const label of seatLabels) {
+      const labelBox = label.getBoundingClientRect();
+      for (const desk of desks) {
+        expect(overlap(labelBox, desk.getBoundingClientRect())).toBe(0);
+      }
+    }
+    const figure = container.querySelector<HTMLElement>("[data-seat-figure]")!;
+    expect(figure.getBoundingClientRect().height).toBeGreaterThan(24);
+    for (const scarf of container.querySelectorAll<HTMLElement>("[data-seat-scarf]")) {
+      const scarfBox = scarf.getBoundingClientRect();
+      const desk = scarf.closest("[data-seat-id]")!.querySelector("[data-desk-body]")!;
+      expect(scarfBox.height).toBeGreaterThanOrEqual(6);
+      expect(scarfBox.top).toBeLessThan(desk.getBoundingClientRect().top);
+    }
   });
 
   it("390x1026 打开人员卡后五个状态按钮不被左下角返回钮挡住，关闭后焦点回到座位", async () => {

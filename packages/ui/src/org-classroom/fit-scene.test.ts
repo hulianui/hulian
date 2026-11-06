@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fitScene, separateLabels } from "./fit-scene";
+import { fitScene, liftLabels, separateLabels } from "./fit-scene";
 
 describe("fitScene", () => {
   it("leaves a scene that already fits at scale 1", () => {
@@ -14,6 +14,14 @@ describe("fitScene", () => {
     expect(fitScene(0, 200, 320)).toBeNull();
     expect(fitScene(200, 0, 320)).toBeNull();
     expect(fitScene(200, 100, 0)).toBeNull();
+  });
+});
+
+describe("liftLabels", () => {
+  it("moves a name plate up until it clears the desk", () => {
+    const desk = { id: "desk", x: 0, y: 40, w: 80, h: 28 };
+    const [label] = liftLabels([{ id: "a", x: 12, y: 36, w: 48, h: 18 }], [desk], 4);
+    expect(label!.y + label!.h).toBeLessThanOrEqual(desk.y - 4);
   });
 });
 

@@ -35,7 +35,7 @@ function StatusChipImpl({
           <Tag
             key={item}
             tone={STATUS_TONE[item]}
-            size="md"
+            size="sm"
             variant="soft"
             data-visible={visible ? "true" : "false"}
             className={cn(FADE_CLASS, visible ? "opacity-100" : "pointer-events-none opacity-0")}

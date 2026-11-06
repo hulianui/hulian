@@ -51,10 +51,10 @@ function ZoneTileImpl({
         onClick={() => onZoneToggle(zone.id)}
       />
       <div
-        className="relative z-10 grid gap-x-3 gap-y-3 pointer-events-none [transform-style:preserve-3d]"
+        className="relative z-10 grid gap-x-4 gap-y-8 pointer-events-none [transform-style:preserve-3d]"
         style={{
-          gridTemplateColumns: `repeat(${columns}, 5.4rem)`,
-          gridTemplateRows: `repeat(${rows}, 6.75rem)`,
+          gridTemplateColumns: `repeat(${columns}, 5.6rem)`,
+          gridTemplateRows: `repeat(${rows}, 8.25rem)`,
         }}
       >
         {zone.seats.map((seat) => (

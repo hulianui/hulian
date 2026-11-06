@@ -38,12 +38,10 @@ function annotationsFor(zones: Zone[], copy: OrgClassroomCopy): FloorAnnotation[
         id: seat.id,
         anchor: seat.id,
         node: (
-          <>
+          <span className="inline-flex items-center gap-1 rounded-full bg-surface/95 py-0.5 pl-0.5 pr-2 shadow-sm ring-1 ring-border">
             <StatusChip status={seat.person.status} labels={copy.statuses} />
-            <span className="whitespace-nowrap rounded-full bg-surface px-1.5 py-0.5 text-xs font-medium text-foreground shadow-sm ring-1 ring-border">
-              {seat.person.name}
-            </span>
-          </>
+            <span className="whitespace-nowrap text-xs font-medium leading-none text-foreground">{seat.person.name}</span>
+          </span>
         ),
       });
     }

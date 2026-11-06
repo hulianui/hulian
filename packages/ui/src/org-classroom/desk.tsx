@@ -2,7 +2,7 @@ import { memo } from "react";
 import { cn } from "../lib/cn";
 import { Avatar } from "./avatar";
 import type { OrgClassroomCopy } from "./copy";
-import { ISO_BILLBOARD_CLASS, SEAT_LIFT_CLASS } from "./iso";
+import { SEAT_LIFT_CLASS } from "./iso";
 import type { Seat } from "./org-classroom.types";
 
 const TOP = "absolute rounded-[7px] bg-surface ring-1 ring-border";
@@ -61,7 +61,7 @@ function DeskImpl({
     >
       <button
         type="button"
-        className="group relative flex h-[6.75rem] w-[5.4rem] cursor-pointer items-end justify-center border-0 bg-transparent p-0 [transform-style:preserve-3d]"
+        className="group relative flex h-[8.25rem] w-[5.6rem] cursor-pointer items-end justify-center border-0 bg-transparent p-0 [transform-style:preserve-3d]"
         data-selected={selected ? "true" : "false"}
         aria-pressed={selected}
         aria-label={label}
@@ -77,7 +77,15 @@ function DeskImpl({
           )}
         >
           {person ? (
-            <span className={cn(ISO_BILLBOARD_CLASS, "relative z-10 -mb-3")}>
+            <span
+              data-seat-figure
+              className="relative z-20 mb-1 [transform-style:preserve-3d]"
+              style={{
+                transformOrigin: "center bottom",
+                transform:
+                  "translateY(-52px) rotateZ(42deg) rotateX(-58deg) scale(var(--figure-scale, 1))",
+              }}
+            >
               <Avatar />
             </span>
           ) : null}
