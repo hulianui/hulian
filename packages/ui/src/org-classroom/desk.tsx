@@ -71,7 +71,7 @@ function Chair() {
 
 /**
  * 髋在围巾下面，两条略扁的腿从椅子和桌面远沿之间的空隙起，沿桌深伸进整块桌面下。
- * 髋只有一薄条、圆角很小，避免和两条腿合成一颗胶囊。
+ * 围巾下沿停在髋的上沿之上。髋是一条小圆角扁条，横在两条大腿根上。
  * translateZ 低于桌面，近端停在近沿之前，底边是平的。
  */
 function SeatedLap({ onSelect }: { onSelect: () => void }) {
@@ -93,7 +93,11 @@ function SeatedLap({ onSelect }: { onSelect: () => void }) {
         className="absolute left-[1.02rem] w-[0.66rem] rounded-t-sm bg-foreground"
         style={{ bottom: -6, height: "calc(4.45rem + 6px)" }}
       />
-      <span data-seat-pelvis className="absolute inset-x-0 top-0 z-[1] h-3 rounded-sm bg-foreground" />
+      <span
+        data-seat-pelvis
+        className="absolute top-0 z-[1] h-3 rounded-sm bg-foreground"
+        style={{ left: 0, width: "1.78rem" }}
+      />
     </span>
   );
 }
@@ -113,7 +117,7 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
         className="pointer-events-none block w-[4.6rem] [transform-style:preserve-3d]"
         style={{
           transformOrigin: "center bottom",
-          transform: "scale(var(--figure-scale, 1)) rotateZ(42deg) rotateX(-58deg)",
+          transform: "scale(var(--figure-scale, 1)) rotateZ(42deg) rotateX(-58deg) translateY(-8px)",
         }}
       >
         <Avatar onSelect={select} />

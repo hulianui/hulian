@@ -114,6 +114,13 @@ describe("OrgClassroom narrow scene", () => {
       expect(thighExposed[1]).toBeGreaterThan(3);
       const meanX = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
       expect(Math.abs(meanX(thighX[0]!) - meanX(thighX[1]!))).toBeGreaterThan(6);
+      const pelvisLeft = pelvis.offsetLeft;
+      const pelvisRight = pelvisLeft + pelvis.offsetWidth;
+      for (const thigh of thighs) {
+        const overlapX =
+          Math.min(pelvisRight, thigh.offsetLeft + thigh.offsetWidth) - Math.max(pelvisLeft, thigh.offsetLeft);
+        expect(overlapX).toBeGreaterThan(4);
+      }
       const deskBody = seat.querySelector<HTMLElement>("[data-desk-body]")!;
       expect(Number(getComputedStyle(figure).zIndex)).toBeLessThan(Number(getComputedStyle(deskBody).zIndex));
       const thighCenters: number[] = [];
@@ -139,7 +146,9 @@ describe("OrgClassroom narrow scene", () => {
       expect(scarfBox.height).toBeGreaterThanOrEqual(8);
       expect(scarfBox.width).toBeGreaterThanOrEqual(14);
       expect(scarfBox.top).toBeLessThan(deskBox.top + 8);
-      expect(scarfBox.bottom).toBeLessThan(pelvis.getBoundingClientRect().bottom - 1);
+      const pelvisBox = pelvis.getBoundingClientRect();
+      const scarfHipGap = pelvisBox.top - scarfBox.bottom;
+      expect(scarfHipGap, `scarf bottom must clear the hip top, gap ${scarfHipGap}`).toBeGreaterThanOrEqual(4);
       const headMark = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
       expect(headMark.height).toBeGreaterThanOrEqual(16);
       const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
