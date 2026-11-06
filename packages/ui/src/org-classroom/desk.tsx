@@ -110,7 +110,7 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-figure
-      className="pointer-events-none absolute left-1/2 top-[-6.05rem] z-[1] w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
+      className="pointer-events-none absolute left-1/2 top-[-5.79rem] z-[1] w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
     >
       <span
         data-seat-torso
