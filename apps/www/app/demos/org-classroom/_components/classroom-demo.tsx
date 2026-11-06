@@ -29,8 +29,20 @@ function buildZone(): Zone {
   };
 }
 
+function buildEngineering(): Zone {
+  return {
+    id: "engineering",
+    name: copy("engineering"),
+    accent: "var(--color-info)",
+    seats: [
+      occupied("e1", copy("zhou"), "leave", 1, 1),
+      occupied("e2", copy("wu"), "busy", 1, 2),
+    ],
+  };
+}
+
 export function ClassroomDemo() {
-  const [zones, setZones] = useState<Zone[]>(() => [buildZone()]);
+  const [zones, setZones] = useState<Zone[]>(() => [buildZone(), buildEngineering()]);
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
   const [focusedZoneId, setFocusedZoneId] = useState<string | null>(null);
   const onSeatSelect = useCallback((seatId: string | null) => {

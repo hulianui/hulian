@@ -136,10 +136,10 @@ function OrgClassroomImpl({
     <div
       ref={rootRef}
       data-slot="org-classroom"
-      className={cn("flex flex-col gap-4 lg:flex-row lg:items-start", className)}
+      className={cn("flex flex-col-reverse gap-4 lg:flex-row lg:items-start", className)}
       onKeyDown={onKeyDown}
     >
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 w-full flex-1">
         <Floor label={copy.floor} layoutKey={layoutKeyFor(zones)} annotations={annotationsFor(zones, copy, selectSeat)}>
           {zones.map((zone) => (
             <ZoneTile

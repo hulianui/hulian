@@ -3,6 +3,19 @@
  * `naturalWidth` / `naturalHeight` are the axis-aligned size AFTER rotate, at scale 1.
  * Returns null when there is nothing to measure yet (jsdom, first frame).
  */
+/** Shrink an already-scaled scene so its painted width, including labels, fits. */
+export function containScale(contentWidth: number, availableWidth: number, currentScale: number) {
+  if (!(contentWidth > 0) || !(availableWidth > 0) || !(currentScale > 0)) return currentScale;
+  if (contentWidth <= availableWidth) return currentScale;
+  return currentScale * (availableWidth / contentWidth);
+}
+
+/** Screen size of a seated figure when the floor itself is scaled down. */
+export function figureScaleFor(sceneScale: number) {
+  if (!(sceneScale > 0)) return 1;
+  return Math.min(1.6, Math.max(1, 0.92 / sceneScale));
+}
+
 export function fitScene(
   naturalWidth: number,
   naturalHeight: number,
@@ -34,7 +47,7 @@ export function parkLabels(
   const originX = new Map(labels.map((box) => [box.id, box.x]));
   const next = labels.map((box) => ({ ...box }));
   const clampY = (id: string, y: number) => Math.max(originY.get(id)! - maxLift, y);
-  const clampX = (id: string, x: number) => Math.min(originX.get(id)! + 36, Math.max(originX.get(id)! - 36, x));
+  const clampX = (id: string, x: number) => Math.min(originX.get(id)! + 72, Math.max(originX.get(id)! - 72, x));
 
   for (let pass = 0; pass < 24; pass += 1) {
     let moved = false;
@@ -44,6 +57,7 @@ export function parkLabels(
         const b = next[j]!;
         if (!overlaps(a, b, gap)) continue;
         const overlapX = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+        const overlapY = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
         const push = overlapX / 2 + gap / 2;
         const ax = clampX(a.id, a.x <= b.x ? a.x - push : a.x + push);
         const bx = clampX(b.id, a.x <= b.x ? b.x + push : b.x - push);
@@ -51,32 +65,70 @@ export function parkLabels(
           a.x = ax;
           b.x = bx;
           moved = true;
+        } else if (overlapY > 0) {
+          const lower = a.y >= b.y ? a : b;
+          const nextY = clampY(lower.id, lower.y - overlapY - gap);
+          if (nextY < lower.y - 0.5) {
+            lower.y = nextY;
+            moved = true;
+          }
         }
       }
     }
     for (const label of next) {
-      for (const desk of ownDesks) {
-        if (!overlaps(label, desk, gap)) continue;
-        if (desk.id === label.id) {
-          const nextY = clampY(label.id, desk.y - gap - label.h);
-          if (nextY < label.y - 0.5) {
-            label.y = nextY;
-            moved = true;
-            continue;
-          }
-        }
-        const deskMid = desk.x + desk.w / 2;
-        const labelMid = label.x + label.w / 2;
-        const nextX = clampX(label.id, labelMid >= deskMid ? desk.x + desk.w + gap : desk.x - gap - label.w);
-        if (Math.abs(nextX - label.x) > 0.5) {
-          label.x = nextX;
-          moved = true;
-        }
+      const desk = ownDesks.find((item) => item.id === label.id);
+      if (!desk || !overlaps(label, desk, gap)) continue;
+      const nextY = clampY(label.id, desk.y - gap - label.h);
+      if (nextY < label.y - 0.5) {
+        label.y = nextY;
+        moved = true;
       }
     }
     if (!moved) break;
   }
   return next;
+}
+
+/** A chip may sit on its own head, not on somebody else's. */
+export function avoidForeignHeads(labels: readonly LabelBox[], heads: readonly LabelBox[], gap = 2): LabelBox[] {
+  const next = labels.map((box) => ({ ...box }));
+  for (const label of next) {
+    if (label.id.startsWith("zone-")) continue;
+    for (const head of heads) {
+      if (head.id === label.id || !overlaps(label, head, gap)) continue;
+      const above = head.y - gap - label.h;
+      const below = head.y + head.h + gap;
+      label.y = Math.abs(label.y - above) <= Math.abs(label.y - below) ? above : below;
+      if (overlaps(label, head, gap)) label.x = head.x + head.w + gap;
+    }
+  }
+  return next;
+}
+
+/** Place chips inside the frame without letting neighbors cover each other. */
+export function resolveLabelOverlaps(labels: readonly LabelBox[], frameWidth: number, gap = 4): LabelBox[] {
+  const edge = 4;
+  const originY = new Map(labels.map((box) => [box.id, box.y]));
+  const next = labels.map((box) => ({ ...box })).sort((a, b) => a.y - b.y || a.x - b.x);
+  const placed: LabelBox[] = [];
+  for (const label of next) {
+    let guard = 0;
+    while (placed.some((other) => overlaps(label, other, gap)) && guard < 16) {
+      const other = placed.find((item) => overlaps(label, item, gap))!;
+      const shifted = other.x + other.w + gap;
+      if (shifted + label.w <= frameWidth - edge) {
+        label.x = shifted;
+      } else {
+        label.x = edge;
+        const ceiling = originY.get(label.id)! + label.h + gap;
+        label.y = Math.min(ceiling, other.y + other.h + gap);
+      }
+      guard += 1;
+    }
+    label.x = Math.max(edge, Math.min(label.x, Math.max(edge, frameWidth - label.w - edge)));
+    placed.push(label);
+  }
+  return placed;
 }
 
 /**

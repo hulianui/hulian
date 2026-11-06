@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fitScene, liftLabels, parkLabels, separateLabels } from "./fit-scene";
+import { containScale, figureScaleFor, fitScene, liftLabels, parkLabels, separateLabels } from "./fit-scene";
 
 describe("fitScene", () => {
   it("leaves a scene that already fits at scale 1", () => {
@@ -14,6 +14,24 @@ describe("fitScene", () => {
     expect(fitScene(0, 200, 320)).toBeNull();
     expect(fitScene(200, 0, 320)).toBeNull();
     expect(fitScene(200, 100, 0)).toBeNull();
+  });
+});
+
+describe("containScale", () => {
+  it("leaves a scene that already fits", () => {
+    expect(containScale(300, 360, 0.8)).toBe(0.8);
+  });
+
+  it("shrinks when labels stick out past the viewport", () => {
+    expect(containScale(480, 360, 1)).toBeCloseTo(0.75);
+  });
+});
+
+describe("figureScaleFor", () => {
+  it("keeps a seated figure from collapsing when the floor shrinks", () => {
+    expect(figureScaleFor(1)).toBe(1);
+    expect(figureScaleFor(0.5)).toBeGreaterThan(1.5);
+    expect(figureScaleFor(0.5)).toBeLessThanOrEqual(1.6);
   });
 });
 

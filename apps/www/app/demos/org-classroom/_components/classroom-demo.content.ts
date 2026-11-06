@@ -4,6 +4,7 @@ import { DOCS_LOCALE } from "../../../../lib/docs-locale";
 export const content = {
   "zh-CN": {
     department: "产品设计部",
+    engineering: "技术研发部",
     lin: "林予涵",
     chen: "陈可",
     zhou: "周宁",
@@ -17,6 +18,7 @@ export const content = {
   },
   en: {
     department: "Product Design",
+    engineering: "Engineering",
     lin: "Lin Yuhan",
     chen: "Chen Ke",
     zhou: "Zhou Ning",

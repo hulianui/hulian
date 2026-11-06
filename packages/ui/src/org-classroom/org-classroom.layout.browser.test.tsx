@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
+import { page } from "@vitest/browser/context";
 import { afterEach, describe, expect, it } from "vitest";
 import { OrgClassroom } from "./org-classroom";
 import type { Zone } from "./org-classroom.types";
@@ -212,5 +213,129 @@ describe("OrgClassroom narrow scene", () => {
     expect(engineering.getAttribute("data-quiet")).toBe("false");
     expect(document.querySelector('[data-seat-id="s1"] button')!.getAttribute("aria-pressed")).toBe("true");
     expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
+  });
+
+  it("点头或围巾打开该座位的人员卡，不聚焦分区", async () => {
+    render(<OrgClassroom zones={[zone()]} />);
+    await expect.poll(() => document.querySelector("[data-seat-scarf]")).toBeTruthy();
+    const scarf = document.querySelector("[data-seat-scarf]")!;
+    const box = scarf.getBoundingClientRect();
+    const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    const seatId = hit?.closest("[data-seat-id]")?.getAttribute("data-seat-id");
+    expect(seatId).toBeTruthy();
+    expect(hit?.closest("[data-zone-floor]")).toBeNull();
+    fireEvent.click(hit as HTMLElement);
+    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe(
+      "true",
+    );
+    expect(document.querySelector("[data-slot=org-classroom-person]")!.textContent).toContain(
+      seatId === "s1" ? "林予涵" : "",
+    );
+    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
+    expect(document.querySelector(`[data-seat-id="${seatId}"] [data-desk-hit]`)!.getAttribute("aria-pressed")).toBe(
+      "true",
+    );
+  });
+
+  it("点林予涵的桌面不会选中孙晚", async () => {
+    const seats: Zone = {
+      ...zone(),
+      seats: [
+        { id: "s1", row: 1, col: 1, person: { id: "p1", name: "林予涵", status: "idle" } },
+        { id: "s5", row: 2, col: 2, person: { id: "p5", name: "孙晚", status: "interview" } },
+      ],
+    };
+    render(<OrgClassroom zones={[seats]} />);
+    await expect.poll(() => document.querySelector('[data-seat-id="s1"] [data-desk-top]')).toBeTruthy();
+    const desk = document.querySelector('[data-seat-id="s1"] [data-desk-top]')!;
+    const box = desk.getBoundingClientRect();
+    const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    expect(hit?.closest("[data-seat-id]")?.getAttribute("data-seat-id")).toBe("s1");
+    fireEvent.click(hit as HTMLElement);
+    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.textContent).toContain("林予涵");
+    expect(document.querySelector('[data-seat-id="s1"] [data-desk-hit]')!.getAttribute("aria-pressed")).toBe("true");
+    expect(document.querySelector('[data-seat-id="s5"] [data-desk-hit]')!.getAttribute("aria-pressed")).toBe("false");
+    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
+  });
+
+  it("五个状态同时写回气泡和人员卡", async () => {
+    function Harness() {
+      const [zones, setZones] = useState<Zone[]>([zone()]);
+      const [selectedSeatId, setSelectedSeatId] = useState<string | null>("s1");
+      return (
+        <OrgClassroom
+          zones={zones}
+          selectedSeatId={selectedSeatId}
+          onSeatSelect={setSelectedSeatId}
+          onStatusChange={(seatId, status) => setZones((current) => updateSeatStatus(current, seatId, status))}
+        />
+      );
+    }
+    render(<Harness />);
+    const cases = [
+      ["idle", "在岗"],
+      ["busy", "忙碌"],
+      ["meeting", "会议中"],
+      ["leave", "休假"],
+      ["interview", "面试中"],
+    ] as const;
+    for (const [status, label] of cases) {
+      fireEvent.click(document.querySelector(`[data-status-option="${status}"]`)!);
+      await expect.poll(() => document.querySelector("[data-field=status]")!.textContent).toBe(label);
+      expect(document.querySelector('[data-seat-label="s1"] [data-visible="true"]')!.textContent).toBe(label);
+    }
+  });
+
+  it("390 宽打开人员卡时不横向溢出，标签在视口内，地板不盖住卡片", async () => {
+    await page.viewport(390, 1026);
+    try {
+      const packed: Zone = {
+        id: "design",
+        name: "产品设计部",
+        accent: "var(--color-primary)",
+        seats: [
+          { id: "s1", row: 1, col: 1, person: { id: "p1", name: "林予涵", status: "idle" } },
+          { id: "s2", row: 1, col: 2, person: { id: "p2", name: "陈可", status: "busy" } },
+          { id: "s3", row: 1, col: 3, person: { id: "p3", name: "周宁", status: "meeting" } },
+          { id: "s4", row: 2, col: 1, person: { id: "p4", name: "赵启明", status: "leave" } },
+          { id: "s5", row: 2, col: 2, person: { id: "p5", name: "孙晚", status: "interview" } },
+          { id: "s6", row: 2, col: 3, person: { id: "p6", name: "何安", status: "meeting" } },
+          { id: "s8", row: 3, col: 2, person: { id: "p8", name: "郑澄", status: "busy" } },
+          { id: "s10", row: 4, col: 1, person: { id: "p10", name: "许知夏", status: "leave" } },
+          { id: "s12", row: 4, col: 3, person: { id: "p12", name: "沈酌", status: "interview" } },
+        ],
+      };
+      function Harness() {
+        const [selectedSeatId, setSelectedSeatId] = useState<string | null>("s1");
+        return <OrgClassroom zones={[packed]} selectedSeatId={selectedSeatId} onSeatSelect={setSelectedSeatId} />;
+      }
+      const { container } = render(<Harness />);
+      await expect.poll(() => container.querySelector("[data-scene-scale]")).toBeTruthy();
+      const root = container.querySelector<HTMLElement>("[data-slot=org-classroom]")!;
+      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+      expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth + 1);
+      const card = container.querySelector<HTMLElement>("[data-slot=org-classroom-person]")!;
+      const plane = container.querySelector<HTMLElement>("[data-slot=org-classroom-plane]")!;
+      expect(getComputedStyle(card).zIndex).toBe("20");
+      expect(getComputedStyle(container.querySelector("[data-slot=org-classroom-floor]")!).zIndex).toBe("0");
+      expect(plane.getBoundingClientRect().top).toBeGreaterThanOrEqual(card.getBoundingClientRect().bottom - 2);
+      const view = root.getBoundingClientRect();
+      const labels = [...container.querySelectorAll<HTMLElement>("[data-seat-label]")].filter(
+        (label) => getComputedStyle(label).visibility !== "hidden",
+      );
+      const rects = labels.map((label) => label.getBoundingClientRect());
+      for (const rect of rects) {
+        expect(rect.left).toBeGreaterThanOrEqual(view.left - 1);
+        expect(rect.right).toBeLessThanOrEqual(view.right + 1);
+        expect(rect.bottom).toBeLessThanOrEqual(view.bottom + 1);
+      }
+      for (let i = 0; i < rects.length; i += 1) {
+        for (let j = i + 1; j < rects.length; j += 1) {
+          expect(overlap(rects[i]!, rects[j]!), `${labels[i]!.dataset.seatLabel} x ${labels[j]!.dataset.seatLabel}`).toBe(0);
+        }
+      }
+    } finally {
+      await page.viewport(1280, 800);
+    }
   });
 });
