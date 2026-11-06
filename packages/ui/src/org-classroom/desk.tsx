@@ -71,7 +71,7 @@ function Chair() {
 
 /**
  * 髋在围巾下面，两条略扁的腿从椅子和桌面远沿之间的空隙起，沿桌深伸进整块桌面下。
- * 髋仍是同一条小圆角扁条，左边略抬，接住围巾左侧那条向左变宽的地面缝。大腿根不脱开。
+ * 髋仍是同一条小圆角扁条，左边再抬一档，接住围巾左侧那条向左变宽的地面缝。大腿根不脱开。
  * translateZ 低于桌面，近端停在近沿之前，底边是平的。
  */
 function SeatedLap({ onSelect }: { onSelect: () => void }) {
@@ -96,7 +96,7 @@ function SeatedLap({ onSelect }: { onSelect: () => void }) {
       <span
         data-seat-pelvis
         className="absolute top-0 z-[1] h-3 origin-right rounded-sm bg-foreground"
-        style={{ left: 0, width: "1.78rem", transform: "translateY(5px) skewY(11deg)" }}
+        style={{ left: 0, width: "1.78rem", transform: "translateY(5px) skewY(18deg)" }}
       />
     </span>
   );
