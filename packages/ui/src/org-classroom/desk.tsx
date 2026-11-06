@@ -117,7 +117,7 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
         className="pointer-events-none block w-[4.6rem] [transform-style:preserve-3d]"
         style={{
           transformOrigin: "center bottom",
-          transform: "scale(var(--figure-scale, 1)) rotateZ(42deg) rotateX(-58deg) translateY(-8px)",
+          transform: "scale(var(--figure-scale, 1)) rotateZ(42deg) rotateX(-58deg)",
         }}
       >
         <Avatar onSelect={select} />

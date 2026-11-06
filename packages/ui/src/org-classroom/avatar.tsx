@@ -15,7 +15,7 @@ function AvatarImpl({ onSelect }: { onSelect: (event: ReactMouseEvent) => void }
     >
       <path
         data-seat-scarf
-        d="M16 23h40c1.2 7.4-2.2 10.2-12 11.6H28C18.2 33.2 14.8 30.4 16 23z"
+        d="M16 19h40c0.9 5.6-1.5 7.8-12 9.6H28C17.6 28 15 24.6 16 19z"
         fill="var(--zone-accent, var(--color-primary))"
       />
       <circle cx="16" cy="18" r="3.2" fill="var(--color-foreground)" />
