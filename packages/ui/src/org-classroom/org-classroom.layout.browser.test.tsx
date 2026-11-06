@@ -83,10 +83,16 @@ describe("OrgClassroom narrow scene", () => {
       expect(seat.querySelector("[data-seat-pelvis]")).toBeTruthy();
       const thighCenters: number[] = [];
       for (const thigh of thighs) {
-        expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth * 1.5);
+        expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth);
         const thighBox = thigh.getBoundingClientRect();
         expect(overlap(thighBox, deskBox)).toBeGreaterThan(0);
-        expect(thighBox.bottom).toBeLessThan(deskBox.bottom + 22);
+        expect(thighBox.bottom).toBeLessThanOrEqual(deskBox.bottom + 1);
+        for (let x = thighBox.left; x < thighBox.right; x += 3) {
+          for (let y = deskBox.bottom + 1; y < thighBox.bottom + 4; y += 2) {
+            const hit = document.elementFromPoint(x, y);
+            expect(hit?.closest("[data-seat-thigh], [data-seat-pelvis], [data-seat-lap]")).toBeNull();
+          }
+        }
         const center = thighBox.left + thighBox.width / 2;
         expect(center).toBeGreaterThan(deskBox.left);
         expect(center).toBeLessThan(deskBox.right);
@@ -107,8 +113,8 @@ describe("OrgClassroom narrow scene", () => {
       const dx = Math.abs(labelBox.left + labelBox.width / 2 - (head.left + head.width / 2));
       const dy = head.top - labelBox.bottom;
       expect(dx).toBeLessThanOrEqual(28);
-      expect(dy).toBeLessThanOrEqual(10);
-      expect(dy).toBeGreaterThanOrEqual(-head.height);
+      expect(dy).toBeLessThanOrEqual(16);
+      expect(dy).toBeGreaterThanOrEqual(-8);
     }
   });
 
@@ -375,8 +381,8 @@ describe("OrgClassroom narrow scene", () => {
         const dx = Math.abs(labelBox.left + labelBox.width / 2 - (headBox.left + headBox.width / 2));
         const dy = headBox.top - labelBox.bottom;
         expect(dx, id).toBeLessThanOrEqual(28);
-        expect(dy, id).toBeLessThanOrEqual(10);
-        expect(dy, id).toBeGreaterThanOrEqual(-headBox.height - labelBox.height);
+        expect(dy, id).toBeLessThanOrEqual(16);
+        expect(dy, id).toBeGreaterThanOrEqual(-24);
       }
       const zoneChips = labels.filter((label) => (label.dataset.seatLabel ?? "").startsWith("zone-"));
       const nameChips = labels.filter((label) => !(label.dataset.seatLabel ?? "").startsWith("zone-"));
@@ -412,10 +418,10 @@ describe("OrgClassroom narrow scene", () => {
   it("点大腿打开该座位的人员卡", async () => {
     render(<OrgClassroom zones={[zone()]} />);
     await expect.poll(() => document.querySelector("[data-seat-thigh]")).toBeTruthy();
-    const thigh = document.querySelector<HTMLElement>("[data-seat-thigh]")!;
-    const box = thigh.getBoundingClientRect();
+    const lap = document.querySelector<HTMLElement>("[data-seat-lap]")!;
+    const box = lap.getBoundingClientRect();
     let hit: Element | null = null;
-    for (let y = box.bottom - 2; y > box.top && !hit; y -= 3) {
+    for (let y = box.top + 2; y < box.bottom && !hit; y += 3) {
       for (let x = box.left + 2; x < box.right; x += 3) {
         const candidate = document.elementFromPoint(x, y);
         if (candidate?.closest("[data-seat-lap]")) {

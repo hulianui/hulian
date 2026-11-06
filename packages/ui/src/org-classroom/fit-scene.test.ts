@@ -55,9 +55,10 @@ describe("labelScaleFor", () => {
 
 describe("figureScaleFor", () => {
   it("keeps a seated figure from collapsing when the floor shrinks", () => {
-    expect(figureScaleFor(1)).toBe(1);
-    expect(figureScaleFor(0.5)).toBeGreaterThan(1.5);
-    expect(figureScaleFor(0.5)).toBeLessThanOrEqual(1.6);
+    expect(figureScaleFor(1)).toBeGreaterThanOrEqual(0.86);
+    expect(figureScaleFor(1)).toBeLessThan(1);
+    expect(figureScaleFor(0.5)).toBeGreaterThan(1);
+    expect(figureScaleFor(0.5)).toBeLessThanOrEqual(1.15);
   });
 });
 

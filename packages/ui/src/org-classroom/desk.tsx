@@ -70,8 +70,8 @@ function Chair() {
 }
 
 /**
- * 骨盆在椅侧，两条压扁的腿沿桌深走到桌面近缘为止，不伸出近缘。
- * 桌面 translateZ(16px) 盖住靠里的一段。
+ * 骨盆在椅侧，和两条压扁的腿连在一起。腿伸进与桌面同一投影的裁切层，
+ * 近端被桌面矩形裁掉，不再画出圆头。桌面 translateZ(16px) 盖住桌下的一段。
  */
 function SeatedLap({ onSelect }: { onSelect: () => void }) {
   const select = (event: ReactMouseEvent) => {
@@ -79,26 +79,33 @@ function SeatedLap({ onSelect }: { onSelect: () => void }) {
     onSelect();
   };
   return (
-    <span
-      data-seat-lap
-      className="pointer-events-auto absolute left-1/2 z-[1] w-12 -translate-x-1/2"
-      style={{ top: "0.15rem", height: "2.2rem" }}
-      aria-hidden
-      onClick={select}
-    >
+    <>
       <span
-        data-seat-pelvis
-        className="absolute left-1/2 top-0 h-2.5 w-8 -translate-x-1/2 rounded-[50%] bg-foreground"
-      />
+        data-seat-lap
+        className="pointer-events-auto absolute left-1/2 z-[1] w-[2.4rem] -translate-x-1/2"
+        style={{ top: "-0.35rem", height: "1.35rem", transform: "translateZ(10px)" }}
+        aria-hidden
+        onClick={select}
+      >
+        <span
+          data-seat-pelvis
+          className="absolute inset-x-0 top-0 h-[0.5rem] rounded-t-[0.55rem] bg-foreground"
+        />
+        <span data-seat-thigh className="absolute bottom-0 left-0.5 h-3 w-[0.62rem] rounded-t-sm bg-foreground" />
+        <span data-seat-thigh className="absolute bottom-0 right-0.5 h-3 w-[0.62rem] rounded-t-sm bg-foreground" />
+      </span>
       <span
-        data-seat-thigh
-        className="absolute bottom-0 left-0 h-[1.85rem] w-[0.95rem] rounded-[50%] bg-foreground"
-      />
-      <span
-        data-seat-thigh
-        className="absolute bottom-0 right-0 h-[1.85rem] w-[0.95rem] rounded-[50%] bg-foreground"
-      />
-    </span>
+        data-desk-leg-clip
+        className="pointer-events-none absolute inset-x-0 top-1.5 z-[2] h-8 overflow-hidden"
+        style={{ transform: "translateZ(15px)" }}
+        aria-hidden
+      >
+        <span className="absolute left-1/2 top-0 flex h-full w-[2.4rem] -translate-x-1/2 justify-between px-0.5">
+          <span className="h-full w-[0.62rem] bg-foreground" />
+          <span className="h-full w-[0.62rem] bg-foreground" />
+        </span>
+      </span>
+    </>
   );
 }
 
@@ -117,7 +124,7 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
         className="pointer-events-none block w-[4.6rem] [transform-style:preserve-3d]"
         style={{
           transformOrigin: "center bottom",
-          transform: "scale(max(1, var(--figure-scale, 1))) rotateZ(42deg) rotateX(-58deg)",
+          transform: "scale(var(--figure-scale, 1)) rotateZ(42deg) rotateX(-58deg)",
         }}
       >
         <Avatar onSelect={select} />

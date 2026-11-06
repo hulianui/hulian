@@ -78,7 +78,7 @@ export function Floor({
           const torso = anchor.querySelector<HTMLElement>("[data-seat-torso]");
           const box = (torso ?? anchor).getBoundingClientRect();
           const x = torso ? box.left + box.width / 2 - width / 2 : box.left;
-          const y = torso ? box.top + box.height / 2 - height / 2 : box.top;
+          const y = torso ? box.top - height - 2 : box.top;
           boxes.push({
             id: key,
             x: x - hostRect.left,

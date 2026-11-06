@@ -35,7 +35,7 @@ export function labelScaleFor(labels: readonly LabelBox[], heads: readonly Label
 /** Screen size of a seated figure when the floor itself is scaled down. */
 export function figureScaleFor(sceneScale: number) {
   if (!(sceneScale > 0)) return 1;
-  return Math.min(1.6, Math.max(1, 0.92 / sceneScale));
+  return Math.min(1.15, Math.max(0.86, 0.62 / sceneScale));
 }
 
 export function fitScene(
