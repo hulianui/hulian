@@ -76,29 +76,41 @@ describe("OrgClassroom narrow scene", () => {
       const figureBox = figure.getBoundingClientRect();
       const deskBox = desk.getBoundingClientRect();
       expect(figureBox.bottom).toBeGreaterThan(deskBox.top + 2);
+      expect(seat.querySelector("[data-desk-top-rear]")).toBeNull();
       expect(overlap(lap.getBoundingClientRect(), deskBox)).toBeGreaterThan(0);
-      expect(lap.offsetTop + lap.offsetHeight).toBeLessThanOrEqual(desk.offsetTop + desk.offsetHeight + 1);
+      expect(lap.offsetTop).toBeLessThan(desk.offsetTop - 8);
+      expect(lap.offsetTop + lap.offsetHeight).toBeGreaterThan(desk.offsetTop + 4);
+      expect(lap.offsetTop + lap.offsetHeight).toBeLessThanOrEqual(desk.offsetTop + desk.offsetHeight - 6);
+      const lapZ = Number(getComputedStyle(lap).zIndex);
+      const deskZ = Number(getComputedStyle(desk).zIndex);
+      expect(lapZ).toBeLessThan(deskZ);
+      expect(lap.style.transform).toContain("translateZ(9px)");
+      const pelvis = seat.querySelector<HTMLElement>("[data-seat-pelvis]")!;
+      expect(pelvis.offsetHeight).toBeGreaterThanOrEqual(12);
       const thighs = [...seat.querySelectorAll<HTMLElement>("[data-seat-thigh]")];
       expect(thighs).toHaveLength(2);
-      expect(seat.querySelector("[data-seat-pelvis]")).toBeTruthy();
+      const lapBox = lap.getBoundingClientRect();
+      let exposed = 0;
+      for (let x = lapBox.left + 1; x < lapBox.right; x += 2) {
+        for (let y = lapBox.top + 1; y < lapBox.bottom; y += 2) {
+          const hit = document.elementFromPoint(x, y);
+          const body = hit?.closest("[data-seat-thigh], [data-seat-pelvis]");
+          if (body && !hit?.closest("[data-desk-top]")) exposed += 1;
+        }
+      }
+      expect(exposed).toBeGreaterThan(4);
       const thighCenters: number[] = [];
       for (const thigh of thighs) {
         expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth);
         const thighBox = thigh.getBoundingClientRect();
         expect(overlap(thighBox, deskBox)).toBeGreaterThan(0);
         expect(thighBox.bottom).toBeLessThanOrEqual(deskBox.bottom + 1);
-        let exposed = 0;
         for (let x = thighBox.left; x < thighBox.right; x += 3) {
-          for (let y = thighBox.top; y < thighBox.bottom; y += 3) {
-            const hit = document.elementFromPoint(x, y);
-            if (hit?.closest("[data-seat-thigh]") && !hit.closest("[data-desk-top]")) exposed += 1;
-          }
           for (let y = deskBox.bottom + 1; y < thighBox.bottom + 4; y += 2) {
             const hit = document.elementFromPoint(x, y);
             expect(hit?.closest("[data-seat-thigh], [data-seat-pelvis], [data-seat-lap]")).toBeNull();
           }
         }
-        expect(exposed).toBeGreaterThan(3);
         const center = thighBox.left + thighBox.width / 2;
         expect(center).toBeGreaterThan(deskBox.left);
         expect(center).toBeLessThan(deskBox.right);

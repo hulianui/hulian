@@ -29,10 +29,6 @@ function DeskBody({
       <Chair />
       <span data-desk-front className={cn(FRONT, "bottom-0.5 left-1 right-1 h-3")} />
       <span data-desk-side className={cn(SIDE, "bottom-0.5 right-1 top-3 w-4")} />
-      <span
-        data-desk-top-rear
-        className={cn(TOP, "pointer-events-none inset-x-0 top-1.5 z-10 h-3.5 rounded-b-none ring-0 [transform:translateZ(16px)]")}
-      />
       {lap}
       <button
         type="button"
@@ -40,7 +36,7 @@ function DeskBody({
         data-desk-hit
         className={cn(
           TOP,
-          "pointer-events-auto inset-x-0 top-[19px] z-30 h-[19px] cursor-pointer rounded-t-none border-0 p-0 ring-0 [transform:translateZ(16px)]",
+          "pointer-events-auto inset-x-0 top-1.5 z-30 h-8 cursor-pointer border-0 p-0 [transform:translateZ(16px)]",
         )}
         data-selected={selected ? "true" : "false"}
         aria-pressed={selected}
@@ -58,7 +54,7 @@ function Chair() {
   return (
     <span
       data-chair
-      className="pointer-events-none absolute left-1/2 top-0.5 h-6 w-7 -translate-x-1/2 [transform-style:preserve-3d]"
+      className="pointer-events-none absolute left-1/2 -top-5 h-7 w-8 -translate-x-1/2 [transform-style:preserve-3d]"
       aria-hidden
     >
       <span
@@ -74,8 +70,9 @@ function Chair() {
 }
 
 /**
- * 椅侧的骨盆和两条略扁的腿画在桌面后半之上，沿桌深伸进前半。
- * 前半桌面盖住伸进去的那一截。近端停在桌面近沿之内，也不贴到桌面侧边。
+ * 骨盆和两条略扁的腿留在椅子和桌面远沿之间，高度低于桌面。
+ * 它们沿桌深伸到远沿下面，被 translateZ(16px) 的整块桌面盖住伸进去的一段。
+ * 近端停在近沿之前，底边是平的，也不贴桌面两侧。
  */
 function SeatedLap({ onSelect }: { onSelect: () => void }) {
   const select = (event: ReactMouseEvent) => {
@@ -85,17 +82,17 @@ function SeatedLap({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-lap
-      className="pointer-events-auto absolute left-1/2 z-20 w-[2.05rem] -translate-x-1/2"
-      style={{ top: "-0.15rem", height: "1.7rem", transform: "translateZ(16px)" }}
+      className="pointer-events-auto absolute left-1/2 z-[5] w-[2.3rem] -translate-x-1/2"
+      style={{ top: "-1.35rem", height: "2.15rem", transform: "translateZ(9px)" }}
       aria-hidden
       onClick={select}
     >
       <span
         data-seat-pelvis
-        className="absolute inset-x-0 top-0 h-[0.4rem] rounded-[0.4rem] bg-foreground"
+        className="absolute inset-x-0 top-1.5 h-[0.85rem] rounded-[0.7rem] bg-foreground"
       />
-      <span data-seat-thigh className="absolute bottom-0 left-0 h-[1.4rem] w-[0.58rem] rounded-t-md bg-foreground" />
-      <span data-seat-thigh className="absolute bottom-0 right-0 h-[1.4rem] w-[0.58rem] rounded-t-md bg-foreground" />
+      <span data-seat-thigh className="absolute bottom-0 left-0 h-[1.55rem] w-[0.62rem] rounded-t-md bg-foreground" />
+      <span data-seat-thigh className="absolute bottom-0 right-0 h-[1.55rem] w-[0.62rem] rounded-t-md bg-foreground" />
     </span>
   );
 }
@@ -108,7 +105,7 @@ function SeatedTorso({ onSelect }: { onSelect: () => void }) {
   return (
     <span
       data-seat-figure
-      className="pointer-events-none absolute left-1/2 top-[-3.7rem] z-10 w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
+      className="pointer-events-none absolute left-1/2 top-[-4.15rem] z-10 w-[4.6rem] -translate-x-1/2 [transform-style:preserve-3d]"
     >
       <span
         data-seat-torso
