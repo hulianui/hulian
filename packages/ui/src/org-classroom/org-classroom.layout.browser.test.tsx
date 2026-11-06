@@ -115,7 +115,7 @@ describe("OrgClassroom narrow scene", () => {
           }
         }
       }
-      expect(pelvisExposed, `exposed hip pixels ${pelvisExposed}`).toBeGreaterThan(0);
+      expect(pelvisExposed, `exposed hip pixels ${pelvisExposed}`).toBeGreaterThan(2);
       expect(thighExposed[0]).toBeGreaterThan(3);
       expect(thighExposed[1]).toBeGreaterThan(3);
       const meanX = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
@@ -157,7 +157,7 @@ describe("OrgClassroom narrow scene", () => {
       const headBox = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
       let floorGap = 0;
       let floorSamples = 0;
-      for (const fraction of [0.4, 0.5]) {
+      for (const fraction of [0.28, 0.4, 0.5]) {
         const x = headBox.left + headBox.width * fraction;
         let lastBust = headBox.bottom;
         const paint = (y: number) => {
@@ -188,14 +188,14 @@ describe("OrgClassroom narrow scene", () => {
           }
           if (!layer.bust) gap += 1;
         }
-        if (!found) continue;
+        if (!found) gap = 28;
         floorSamples += 1;
         floorGap = Math.max(floorGap, gap);
       }
-      expect(floorSamples).toBeGreaterThan(0);
-      expect(scarfHipGap, `scarf bottom must clear the hip top, gap ${scarfHipGap}`).toBeGreaterThan(-2);
+      expect(floorSamples).toBe(3);
+      expect(scarfHipGap, `scarf bottom must clear the hip top, gap ${scarfHipGap}`).toBeGreaterThan(0);
       expect(floorGap, `visible floor between scarf and hip ${floorGap}`).toBeLessThanOrEqual(8);
-      expect(floorGap, `visible floor between scarf and hip ${floorGap}`).toBeGreaterThanOrEqual(1);
+      expect(floorGap, `visible floor between scarf and hip ${floorGap}`).toBeGreaterThanOrEqual(2);
       const headMark = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
       expect(headMark.height).toBeGreaterThanOrEqual(16);
       const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
