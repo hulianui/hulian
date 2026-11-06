@@ -20,6 +20,66 @@ function overlaps(a: LabelBox, b: LabelBox, gap: number) {
 }
 
 /**
+ * Keep each chip next to the seat it was anchored to.
+ * Sideways nudges separate neighbors. A chip may rise only `maxLift` pixels,
+ * and only to clear its own desk — never the whole field.
+ */
+export function parkLabels(
+  labels: readonly LabelBox[],
+  ownDesks: readonly LabelBox[],
+  gap = 3,
+  maxLift = 18,
+): LabelBox[] {
+  const originY = new Map(labels.map((box) => [box.id, box.y]));
+  const originX = new Map(labels.map((box) => [box.id, box.x]));
+  const next = labels.map((box) => ({ ...box }));
+  const clampY = (id: string, y: number) => Math.max(originY.get(id)! - maxLift, y);
+  const clampX = (id: string, x: number) => Math.min(originX.get(id)! + 36, Math.max(originX.get(id)! - 36, x));
+
+  for (let pass = 0; pass < 24; pass += 1) {
+    let moved = false;
+    for (let i = 0; i < next.length; i += 1) {
+      for (let j = i + 1; j < next.length; j += 1) {
+        const a = next[i]!;
+        const b = next[j]!;
+        if (!overlaps(a, b, gap)) continue;
+        const overlapX = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+        const push = overlapX / 2 + gap / 2;
+        const ax = clampX(a.id, a.x <= b.x ? a.x - push : a.x + push);
+        const bx = clampX(b.id, a.x <= b.x ? b.x + push : b.x - push);
+        if (ax !== a.x || bx !== b.x) {
+          a.x = ax;
+          b.x = bx;
+          moved = true;
+        }
+      }
+    }
+    for (const label of next) {
+      for (const desk of ownDesks) {
+        if (!overlaps(label, desk, gap)) continue;
+        if (desk.id === label.id) {
+          const nextY = clampY(label.id, desk.y - gap - label.h);
+          if (nextY < label.y - 0.5) {
+            label.y = nextY;
+            moved = true;
+            continue;
+          }
+        }
+        const deskMid = desk.x + desk.w / 2;
+        const labelMid = label.x + label.w / 2;
+        const nextX = clampX(label.id, labelMid >= deskMid ? desk.x + desk.w + gap : desk.x - gap - label.w);
+        if (Math.abs(nextX - label.x) > 0.5) {
+          label.x = nextX;
+          moved = true;
+        }
+      }
+    }
+    if (!moved) break;
+  }
+  return next;
+}
+
+/**
  * Keep name plates off the furniture.
  * Labels may move up, never down onto a desk. `x`/`y` are each box's top-left.
  */

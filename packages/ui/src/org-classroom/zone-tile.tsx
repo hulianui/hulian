@@ -35,7 +35,7 @@ function ZoneTileImpl({
       data-focused={focused ? "true" : "false"}
       data-quiet={quiet ? "true" : "false"}
       className={cn(
-        "pointer-events-auto relative rounded-[28px] border border-border px-3 pt-3 pb-3 shadow-[0_16px_40px_-24px_rgba(0,0,0,0.18)] [transform-style:preserve-3d]",
+        "pointer-events-auto relative rounded-[32px] border border-border px-4 pt-4 pb-4 shadow-[0_22px_36px_-20px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.72)] [transform-style:preserve-3d]",
         "transition-opacity duration-300 ease-out motion-reduce:transition-none",
         "data-[quiet=true]:opacity-40 data-[focused=true]:ring-2 data-[focused=true]:ring-primary/40",
         ZONE_WASH,
@@ -48,13 +48,16 @@ function ZoneTileImpl({
         className="absolute inset-0 z-0 cursor-pointer rounded-[28px] border-0 bg-transparent p-0"
         aria-pressed={focused}
         aria-label={focused ? copy.clearFocus(zone.name) : copy.focusZone(zone.name)}
-        onClick={() => onZoneToggle(zone.id)}
+        onClick={(event) => {
+          event.stopPropagation();
+          onZoneToggle(zone.id);
+        }}
       />
       <div
-        className="relative z-10 grid gap-x-4 gap-y-8 pointer-events-none [transform-style:preserve-3d]"
+        className="relative z-10 grid gap-x-5 gap-y-10 pointer-events-none [transform-style:preserve-3d]"
         style={{
           gridTemplateColumns: `repeat(${columns}, 5.6rem)`,
-          gridTemplateRows: `repeat(${rows}, 8.25rem)`,
+          gridTemplateRows: `repeat(${rows}, 7.5rem)`,
         }}
       >
         {zone.seats.map((seat) => (

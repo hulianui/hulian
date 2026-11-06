@@ -5,33 +5,54 @@ import type { OrgClassroomCopy } from "./copy";
 import { SEAT_LIFT_CLASS } from "./iso";
 import type { Seat } from "./org-classroom.types";
 
-const TOP = "absolute rounded-[7px] bg-surface ring-1 ring-border";
+const TOP =
+  "absolute rounded-xl bg-surface shadow-[0_10px_16px_-12px_rgba(0,0,0,0.55)] ring-1 ring-border";
 const FRONT =
-  "absolute origin-bottom bg-[color-mix(in_oklab,var(--color-surface)_64%,var(--color-foreground))] [transform:rotateX(-90deg)]";
+  "absolute origin-bottom rounded-b-lg bg-[color-mix(in_oklab,var(--color-surface)_58%,var(--color-foreground))] [transform:rotateX(-90deg)]";
 const SIDE =
-  "absolute origin-right bg-[color-mix(in_oklab,var(--color-surface)_78%,var(--color-foreground))] [transform:rotateY(90deg)]";
+  "absolute origin-right rounded-r-lg bg-[color-mix(in_oklab,var(--color-surface)_74%,var(--color-foreground))] [transform:rotateY(90deg)]";
 
 function DeskBody() {
   return (
-    <span data-desk-body className="relative block h-11 w-[4.7rem] [transform-style:preserve-3d]" aria-hidden>
-      <span data-desk-front className={cn(FRONT, "bottom-1 left-1 right-1 h-3 rounded-b-[6px]")} />
-      <span data-desk-side className={cn(SIDE, "bottom-1 right-1 top-3 w-3 rounded-r-[6px]")} />
-      <span data-desk-top className={cn(TOP, "inset-x-0 top-2 h-7 [transform:translateZ(12px)]")} />
+    <span data-desk-body className="relative z-20 block h-14 w-[5.1rem] [transform-style:preserve-3d]" aria-hidden>
+      <span className="absolute -bottom-1 left-3 right-3 h-2 rounded-full bg-foreground/15" />
+      <span data-desk-front className={cn(FRONT, "bottom-0.5 left-1 right-1 h-4")} />
+      <span data-desk-side className={cn(SIDE, "bottom-0.5 right-1 top-3 w-4")} />
+      <span data-desk-top className={cn(TOP, "inset-x-0 top-1.5 h-8 [transform:translateZ(16px)]")} />
     </span>
   );
 }
 
 function Chair() {
   return (
-    <span data-chair className="absolute bottom-8 left-1/2 h-9 w-9 -translate-x-1/2 [transform-style:preserve-3d]" aria-hidden>
+    <span data-chair className="absolute bottom-11 left-1/2 h-8 w-8 -translate-x-1/2 [transform-style:preserve-3d]" aria-hidden>
       <span
         data-chair-seat
-        className="absolute inset-x-1 bottom-0 h-2.5 rounded-[4px] bg-muted [transform:translateZ(8px)]"
+        className="absolute inset-x-1 bottom-0 h-2.5 rounded-md bg-muted [transform:translateZ(8px)]"
       />
       <span
         data-chair-back
-        className="absolute inset-x-0 top-0 h-7 rounded-t-[7px] bg-[color-mix(in_oklab,var(--color-muted)_42%,var(--color-foreground))] [transform:translateZ(8px)]"
+        className="absolute inset-x-0.5 top-0 h-6 rounded-t-lg bg-[color-mix(in_oklab,var(--color-muted)_40%,var(--color-foreground))] [transform:translateZ(8px)]"
       />
+    </span>
+  );
+}
+
+function SeatedFigure() {
+  return (
+    <span data-seat-figure className="pointer-events-none relative z-10 -mb-8 h-16 w-[4.6rem] [transform-style:preserve-3d]">
+      <span
+        data-seat-lap
+        className="absolute bottom-1 left-1/2 h-4 w-11 -translate-x-1/2 rounded-full bg-foreground"
+        aria-hidden
+      />
+      <span
+        data-seat-torso
+        className="absolute bottom-5 left-1/2 w-12 -translate-x-1/2 [transform-style:preserve-3d]"
+        style={{ transformOrigin: "center bottom", transform: "rotateZ(42deg) rotateX(-58deg)" }}
+      >
+        <Avatar />
+      </span>
     </span>
   );
 }
@@ -54,18 +75,21 @@ function DeskImpl({
 
   return (
     <div
-      className="pointer-events-auto relative [transform-style:preserve-3d]"
+      className="pointer-events-none relative flex items-end justify-center [transform-style:preserve-3d]"
       style={{ gridColumn: Math.max(seat.col, 1), gridRow: Math.max(seat.row, 1) }}
       data-seat-id={seat.id}
       data-anchor={seat.id}
     >
       <button
         type="button"
-        className="group relative flex h-[8.25rem] w-[5.6rem] cursor-pointer items-end justify-center border-0 bg-transparent p-0 [transform-style:preserve-3d]"
+        className="pointer-events-auto group relative flex w-[5.4rem] cursor-pointer items-end justify-center border-0 bg-transparent p-0 [transform-style:preserve-3d]"
         data-selected={selected ? "true" : "false"}
         aria-pressed={selected}
         aria-label={label}
-        onClick={() => onSelect(seat.id)}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect(seat.id);
+        }}
       >
         <span
           data-seat-lift
@@ -76,19 +100,7 @@ function DeskImpl({
             "group-data-[selected=true]:outline group-data-[selected=true]:outline-2 group-data-[selected=true]:outline-primary",
           )}
         >
-          {person ? (
-            <span
-              data-seat-figure
-              className="relative z-20 mb-1 [transform-style:preserve-3d]"
-              style={{
-                transformOrigin: "center bottom",
-                transform:
-                  "translateY(-52px) rotateZ(42deg) rotateX(-58deg) scale(var(--figure-scale, 1))",
-              }}
-            >
-              <Avatar />
-            </span>
-          ) : null}
+          {person ? <SeatedFigure /> : null}
           <Chair />
           <DeskBody />
         </span>

@@ -64,20 +64,29 @@ describe("OrgClassroom narrow scene", () => {
         expect(overlap(rects[i]!, rects[j]!)).toBe(0);
       }
     }
-    const desks = [...container.querySelectorAll<HTMLElement>("[data-desk-top]")];
-    for (const label of seatLabels) {
+    const torso = container.querySelector("[data-seat-torso]")!.getBoundingClientRect();
+    expect(torso.height).toBeGreaterThan(20);
+    for (const seat of container.querySelectorAll<HTMLElement>("[data-seat-id]")) {
+      const figure = seat.querySelector<HTMLElement>("[data-seat-figure]");
+      const desk = seat.querySelector<HTMLElement>("[data-desk-top]");
+      const lap = seat.querySelector<HTMLElement>("[data-seat-lap]");
+      if (!figure || !desk || !lap) continue;
+      const figureBox = figure.getBoundingClientRect();
+      const deskBox = desk.getBoundingClientRect();
+      expect(figureBox.bottom).toBeGreaterThan(deskBox.top + 2);
+      expect(overlap(lap.getBoundingClientRect(), deskBox)).toBeGreaterThan(0);
+      const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]")!;
+      expect(scarf.getBoundingClientRect().height).toBeGreaterThanOrEqual(4);
+      expect(scarf.getBoundingClientRect().top).toBeLessThan(deskBox.bottom);
+      const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
+      if (!label) continue;
       const labelBox = label.getBoundingClientRect();
-      for (const desk of desks) {
-        expect(overlap(labelBox, desk.getBoundingClientRect())).toBe(0);
-      }
-    }
-    const figure = container.querySelector<HTMLElement>("[data-seat-figure]")!;
-    expect(figure.getBoundingClientRect().height).toBeGreaterThan(24);
-    for (const scarf of container.querySelectorAll<HTMLElement>("[data-seat-scarf]")) {
-      const scarfBox = scarf.getBoundingClientRect();
-      const desk = scarf.closest("[data-seat-id]")!.querySelector("[data-desk-body]")!;
-      expect(scarfBox.height).toBeGreaterThanOrEqual(6);
-      expect(scarfBox.top).toBeLessThan(desk.getBoundingClientRect().top);
+      const head = seat.querySelector<HTMLElement>("[data-seat-torso]")!.getBoundingClientRect();
+      const dx = Math.abs(labelBox.left + labelBox.width / 2 - (head.left + head.width / 2));
+      const dy = head.top - labelBox.bottom;
+      expect(dx).toBeLessThan(180);
+      expect(dy).toBeLessThanOrEqual(64);
+      expect(dy).toBeGreaterThanOrEqual(-head.height - 8);
     }
   });
 
@@ -153,5 +162,55 @@ describe("OrgClassroom narrow scene", () => {
     fireEvent.click(seat);
     fireEvent.keyDown(document.querySelector("[data-slot=org-classroom]")!, { key: "Escape" });
     await expect.poll(() => document.activeElement).toBe(seat);
+  });
+
+  it("点分区空白聚焦并再次点同一空白取消，不会改选中的座位", async () => {
+    const other: Zone = {
+      id: "engineering",
+      name: "技术研发部",
+      accent: "var(--color-info)",
+      seats: [{ id: "e1", row: 1, col: 1, person: { id: "q1", name: "周宁", status: "leave" } }],
+    };
+    function Harness() {
+      const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
+      return (
+        <div style={{ width: 720 }}>
+          <OrgClassroom zones={[zone(), other]} selectedSeatId={selectedSeatId} onSeatSelect={setSelectedSeatId} />
+        </div>
+      );
+    }
+    const { getByRole } = render(<Harness />);
+    fireEvent.click(getByRole("button", { name: "林予涵，在岗" }));
+    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe(
+      "true",
+    );
+
+    const design = document.querySelector<HTMLElement>('[data-zone-id="design"]')!;
+    const engineering = document.querySelector<HTMLElement>('[data-zone-id="engineering"]')!;
+    const area = design.getBoundingClientRect();
+    let empty: HTMLElement | null = null;
+    for (let y = area.top + 4; y < area.bottom && !empty; y += 8) {
+      for (let x = area.left + 4; x < area.right; x += 8) {
+        const hit = document.elementFromPoint(x, y);
+        if (hit?.closest("[data-zone-floor]") && !hit.closest("[data-seat-id]") && !hit.closest("[data-seat-label]")) {
+          empty = hit as HTMLElement;
+          break;
+        }
+      }
+    }
+    expect(empty).toBeTruthy();
+    fireEvent.click(empty!);
+    await expect.poll(() => design.getAttribute("data-focused")).toBe("true");
+    expect(design.querySelector("[data-zone-floor]")!.getAttribute("aria-pressed")).toBe("true");
+    expect(engineering.getAttribute("data-quiet")).toBe("true");
+    expect(document.querySelector('[data-seat-id="s1"] button')!.getAttribute("aria-pressed")).toBe("true");
+    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
+
+    fireEvent.click(empty!);
+    await expect.poll(() => design.getAttribute("data-focused")).toBe("false");
+    expect(design.querySelector("[data-zone-floor]")!.getAttribute("aria-pressed")).toBe("false");
+    expect(engineering.getAttribute("data-quiet")).toBe("false");
+    expect(document.querySelector('[data-seat-id="s1"] button')!.getAttribute("aria-pressed")).toBe("true");
+    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
   });
 });

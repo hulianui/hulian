@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fitScene, liftLabels, separateLabels } from "./fit-scene";
+import { fitScene, liftLabels, parkLabels, separateLabels } from "./fit-scene";
 
 describe("fitScene", () => {
   it("leaves a scene that already fits at scale 1", () => {
@@ -14,6 +14,18 @@ describe("fitScene", () => {
     expect(fitScene(0, 200, 320)).toBeNull();
     expect(fitScene(200, 0, 320)).toBeNull();
     expect(fitScene(200, 100, 0)).toBeNull();
+  });
+});
+
+describe("parkLabels", () => {
+  it("clears only that seat's desk and will not float the chip away from its anchor", () => {
+    const chip = { id: "s1", x: 10, y: 80, w: 48, h: 18 };
+    const ownDesk = { id: "s1", x: 0, y: 70, w: 70, h: 36 };
+    const otherDesk = { id: "s2", x: 0, y: 10, w: 70, h: 36 };
+    const [parked] = parkLabels([chip], [ownDesk, otherDesk], 4, 16);
+    expect(parked!.y).toBeGreaterThanOrEqual(80 - 16);
+    expect(parked!.y).toBeLessThan(80);
+    expect(parked!.y).toBeGreaterThan(otherDesk.y + otherDesk.h);
   });
 });
 

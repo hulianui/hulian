@@ -20,7 +20,11 @@ function layoutKeyFor(zones: Zone[]) {
     .join("|");
 }
 
-function annotationsFor(zones: Zone[], copy: OrgClassroomCopy): FloorAnnotation[] {
+function annotationsFor(
+  zones: Zone[],
+  copy: OrgClassroomCopy,
+  onSeatSelect: (seatId: string) => void,
+): FloorAnnotation[] {
   const annotations: FloorAnnotation[] = [];
   for (const zone of zones) {
     annotations.push({
@@ -38,7 +42,14 @@ function annotationsFor(zones: Zone[], copy: OrgClassroomCopy): FloorAnnotation[
         id: seat.id,
         anchor: seat.id,
         node: (
-          <span className="inline-flex items-center gap-1 rounded-full bg-surface/95 py-0.5 pl-0.5 pr-2 shadow-sm ring-1 ring-border">
+          <span
+            aria-hidden
+            className="inline-flex cursor-pointer items-center gap-1 rounded-full bg-surface/95 py-0.5 pl-0.5 pr-2 shadow-sm ring-1 ring-border"
+            onClick={(event) => {
+              event.stopPropagation();
+              onSeatSelect(seat.id);
+            }}
+          >
             <StatusChip status={seat.person.status} labels={copy.statuses} />
             <span className="whitespace-nowrap text-xs font-medium leading-none text-foreground">{seat.person.name}</span>
           </span>
@@ -129,7 +140,7 @@ function OrgClassroomImpl({
       onKeyDown={onKeyDown}
     >
       <div className="min-w-0 flex-1">
-        <Floor label={copy.floor} layoutKey={layoutKeyFor(zones)} annotations={annotationsFor(zones, copy)}>
+        <Floor label={copy.floor} layoutKey={layoutKeyFor(zones)} annotations={annotationsFor(zones, copy, selectSeat)}>
           {zones.map((zone) => (
             <ZoneTile
               key={zone.id}

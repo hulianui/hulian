@@ -1,6 +1,7 @@
 "use client";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { fitScene, liftLabels, type LabelBox } from "./fit-scene";
+import { cn } from "../lib/cn";
+import { fitScene, parkLabels, type LabelBox } from "./fit-scene";
 
 /** Space above the projected board so screen-space labels are not clipped. */
 const LABEL_GUTTER = 28;
@@ -15,6 +16,32 @@ export type FloorAnnotation = {
 };
 
 type AnchorPoint = { x: number; y: number };
+
+function coversDesk(x: number, y: number) {
+  const hit = document.elementFromPoint(x, y);
+  return Boolean(hit?.closest("[data-desk-top], [data-desk-body]"));
+}
+
+/** A chip spot in viewport pixels that is not sitting on a desktop. */
+function clearSpot(head: HTMLElement, width: number, height: number, host: DOMRect) {
+  const box = head.getBoundingClientRect();
+  const spots = [
+    { x: box.left + box.width / 2 - width / 2, y: box.top - height - 4 },
+    { x: box.right + 6, y: box.top - 2 },
+    { x: box.left - width - 6, y: box.top - 2 },
+    { x: box.right + 6, y: box.top - height },
+    { x: box.left - width - 6, y: box.top - height },
+  ];
+  for (const spot of spots) {
+    const samples = [
+      [spot.x + width / 2, spot.y + height / 2],
+      [spot.x + 6, spot.y + 6],
+      [spot.x + width - 6, spot.y + height - 6],
+    ];
+    if (samples.every(([sx, sy]) => sx > host.left && sy > host.top && !coversDesk(sx, sy))) return spot;
+  }
+  return spots[0]!;
+}
 
 export function Floor({
   label,
@@ -50,16 +77,15 @@ export function Floor({
       }
       host.style.top = "0px";
       if (!naturalRef.current) {
-        plane.style.transform = `translate(-50%, -50%) ${ISO_TRANSFORM} scale(1)`;
+        plane.style.transform = `translateX(-50%) ${ISO_TRANSFORM} scale(1)`;
         const rect = plane.getBoundingClientRect();
         if (rect.width <= 0 || rect.height <= 0) return;
         naturalRef.current = { w: rect.width, h: rect.height };
       }
       const next = fitScene(naturalRef.current.w, naturalRef.current.h, frame.clientWidth);
       if (!next) return;
-      plane.style.transform = `translate(-50%, -50%) ${ISO_TRANSFORM} scale(${next.scale})`;
+      plane.style.transform = `translateX(-50%) ${ISO_TRANSFORM} scale(${next.scale})`;
       plane.style.setProperty("--iso-scale", String(next.scale));
-      plane.style.setProperty("--figure-scale", String(Math.min(1.35, 1 / next.scale)));
       const fitted = plane.getBoundingClientRect();
       const hostRect = host.getBoundingClientRect();
       const boxes: LabelBox[] = [];
@@ -67,31 +93,35 @@ export function Floor({
       for (const anchor of frame.querySelectorAll<HTMLElement>("[data-anchor]")) {
         const id = anchor.dataset.anchor;
         if (!id) continue;
-        const figure = anchor.querySelector<HTMLElement>("[data-seat-figure]");
-        const box = (figure ?? anchor).getBoundingClientRect();
+        const head = anchor.querySelector<HTMLElement>("[data-seat-torso]") ?? anchor;
+        const box = head.getBoundingClientRect();
         const label = frame.querySelector<HTMLElement>(
           `[data-seat-label="${CSS.escape(id)}"], [data-seat-label="zone-${CSS.escape(id)}"]`,
         );
         const key = label?.getAttribute("data-seat-label") ?? id;
         const width = label?.offsetWidth ?? 0;
         const height = label?.offsetHeight ?? 0;
-        const x = box.left + box.width / 2 - hostRect.left;
-        const y = box.top - hostRect.top;
         if (width > 0 && height > 0) {
-          boxes.push({ id: key, x: x - width / 2, y: y - height - (figure ? 8 : 36), w: width, h: height });
+          const torso = anchor.querySelector<HTMLElement>("[data-seat-torso]");
+          const spot = torso ? clearSpot(torso, width, height, hostRect) : null;
+          const x = (spot?.x ?? box.left + box.width / 2 - width / 2) - hostRect.left;
+          const y = (spot?.y ?? box.top - height - 6) - hostRect.top;
+          boxes.push({ id: key, x, y, w: width, h: height });
         }
       }
-      for (const desk of frame.querySelectorAll<HTMLElement>("[data-desk-top], [data-seat-figure]")) {
+      for (const desk of frame.querySelectorAll<HTMLElement>("[data-desk-top]")) {
+        const seatId = desk.closest<HTMLElement>("[data-seat-id]")?.dataset.seatId;
+        if (!seatId) continue;
         const box = desk.getBoundingClientRect();
         obstacles.push({
-          id: desk.dataset.seatId ?? "obstacle",
+          id: seatId,
           x: box.left - hostRect.left,
           y: box.top - hostRect.top,
           w: box.width,
           h: box.height,
         });
       }
-      const placed = liftLabels(boxes, obstacles, 6);
+      const placed = parkLabels(boxes, obstacles, 3, 8);
       const overflow = placed.length === 0 ? 0 : Math.max(0, 8 - Math.min(...placed.map((box) => box.y)));
       const points: Record<string, AnchorPoint> = {};
       for (const box of placed) {
@@ -133,11 +163,10 @@ export function Floor({
           ref={planeRef}
           data-slot="org-classroom-plane"
           data-iso={ISO_TRANSFORM}
-          className="absolute left-1/2 top-1/2 [transform-style:preserve-3d]"
+          className="absolute left-1/2 top-0 [transform-style:preserve-3d]"
           style={{
-            transform: `translate(-50%, -50%) ${ISO_TRANSFORM} scale(${scale})`,
+            transform: `translateX(-50%) ${ISO_TRANSFORM} scale(${scale})`,
             ["--iso-scale" as string]: String(scale),
-            ["--figure-scale" as string]: String(Math.min(1.35, 1 / scale)),
           }}
         >
           {children}
@@ -149,7 +178,10 @@ export function Floor({
               <div
                 key={annotation.id}
                 data-seat-label={annotation.id}
-                className="absolute flex items-center"
+                className={cn(
+                "absolute flex w-max items-center",
+                annotation.id.startsWith("zone-") ? "pointer-events-none" : "pointer-events-auto",
+              )}
                 style={
                   point
                     ? { left: point.x, top: point.y, transform: "translate(-50%, -100%)" }
