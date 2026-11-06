@@ -148,8 +148,22 @@ describe("OrgClassroom narrow scene", () => {
       expect(scarfBox.top).toBeLessThan(deskBox.top + 8);
       const pelvisBox = pelvis.getBoundingClientRect();
       const scarfHipGap = pelvisBox.top - scarfBox.bottom;
-      expect(scarfHipGap, `scarf bottom must clear the hip top, gap ${scarfHipGap}`).toBeGreaterThanOrEqual(4);
-      expect(scarfHipGap, `scarf must stay near the hip, gap ${scarfHipGap}`).toBeLessThanOrEqual(8);
+      const x0 = scarfBox.left + scarfBox.width / 2;
+      const y0 = scarfBox.bottom;
+      const x1 = pelvisBox.left + pelvisBox.width / 2;
+      const y1 = pelvisBox.top;
+      const span = Math.hypot(x1 - x0, y1 - y0);
+      let floorGap = 0;
+      for (let step = 1; step < span; step += 1) {
+        const t = step / span;
+        const hit = document.elementFromPoint(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t);
+        const onThisSeat = hit?.closest("[data-seat-id]") === seat;
+        if (onThisSeat && hit?.closest("[data-seat-pelvis], [data-seat-thigh]")) break;
+        if (!onThisSeat || !hit?.closest("[data-seat-scarf], [data-seat-head]")) floorGap += 1;
+      }
+      expect(scarfHipGap, `scarf bottom must clear the hip top, gap ${scarfHipGap}`).toBeGreaterThan(0);
+      expect(floorGap, `visible floor between scarf and hip ${floorGap}`).toBeLessThanOrEqual(8);
+      expect(floorGap, `visible floor between scarf and hip ${floorGap}`).toBeGreaterThanOrEqual(2);
       const headMark = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
       expect(headMark.height).toBeGreaterThanOrEqual(16);
       const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
