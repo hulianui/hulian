@@ -310,6 +310,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "novel-reader", name: "NovelReader", shortName: "小说阅读器", description: "打开就进入正文，用底部抽屉调翻页、字号和纸色，进度按字符偏移记住", category: "data-display", group: "collection", status: "new" },
   { slug: "gantt", name: "Gantt", shortName: "甘特图(只读)", description: "把任务排到时间轴上，展示分组、进度和今天的位置", category: "data-display", group: "collection", status: "new" },
   { slug: "scheduler", name: "Scheduler", shortName: "事件日历/排班", description: "在月、周、日和资源视图里排事件，可拖拽建单改期", category: "data-display", group: "collection", status: "new" },
+  { slug: "org-classroom", name: "OrgClassroom", shortName: "组织工位", description: "在等距工位平面上看部门座位、人员和在岗状态", category: "data-display", group: "collection", status: "new" },
   { slug: "image-viewer", name: "ImageViewer", shortName: "图片查看器", description: "全屏查看图片，可缩放、平移、翻页和看缩略图", category: "data-display", group: "info", status: "new" },
   { slug: "danmaku", name: "Danmaku", shortName: "弹幕引擎", description: "把观众弹幕分轨飘过画面，互不重叠", category: "data-display", group: "collection", tags: ["animated"], status: "new" },
   { slug: "live-chat", name: "LiveChat", shortName: "直播公屏", description: "展示直播公屏消息流，带礼物、进场、置顶和自动滚动", category: "data-display", group: "collection", status: "new" },

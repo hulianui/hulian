@@ -817,6 +817,9 @@ export const scenarioLoaders = {
         "@hulianui/ui-internal/orbiting-circles/orbiting-circles.showcase"
       )
     ).orbitingCirclesShowcase,
+  "org-classroom": async () =>
+    (await import("@hulianui/ui-internal/org-classroom/org-classroom.showcase"))
+      .orgClassroomShowcase,
   "page-header": async () =>
     (await import("@hulianui/ui-internal/page-header/page-header.showcase"))
       .pageHeaderShowcase,
@@ -4004,6 +4007,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: false,
     source: "packages/ui/src/orbiting-circles/index.ts",
+  },
+  "org-classroom": {
+    id: "org-classroom",
+    scenarioId: "org-classroom/basic",
+    component: "OrgClassroom",
+    entry: "@hulianui/ui/org-classroom",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/org-classroom/index.ts",
   },
   "page-header": {
     id: "page-header",

@@ -153,4 +153,11 @@ export const demoMetaEn: Record<string, LocalizedDemoMeta> = {
     category: "Reading",
     tags: ["NovelReader", "NovelEditor", "Markdown", "reading progress"],
   },
+  "org-classroom": {
+    title: "Org classroom",
+    description:
+      "A clickable isometric floor with one department and twelve seats. Select a seat to open the person card and change status, or click empty floor space to focus the zone.",
+    category: "Application",
+    tags: ["OrgClassroom", "seats", "status"],
+  },
 };

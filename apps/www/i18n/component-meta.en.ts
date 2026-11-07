@@ -859,6 +859,11 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Manages events across month, week, day, and resource views with drag-based editing.",
     keywords: ["scheduler", "data-display", "collection"],
   },
+  "org-classroom": {
+    shortName: "Org classroom",
+    description: "Shows department seats, people, and presence on an isometric floor.",
+    keywords: ["org", "classroom", "seats", "data-display", "collection"],
+  },
   "image-viewer": {
     shortName: "ImageViewer",
     description:

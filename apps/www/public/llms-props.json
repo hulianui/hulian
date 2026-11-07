@@ -560,6 +560,13 @@
       "wave",
       "custom"
     ],
+    "SeatStatus": [
+      "idle",
+      "busy",
+      "meeting",
+      "leave",
+      "interview"
+    ],
     "PageHeaderMetaPlacement": [
       "block",
       "inline"
@@ -1535,6 +1542,8 @@
     "NovelReader": "novel-reader",
     "NumberTicker": "number-ticker",
     "formatTicker": "number-ticker",
+    "OrgClassroom": "org-classroom",
+    "updateSeatStatus": "org-classroom",
     "PixelCard": "pixel-card",
     "PricingTable": "pricing-table",
     "ProfileCard": "profile-card",
@@ -24338,6 +24347,88 @@
         }
       ],
       "events": [],
+      "slots": []
+    },
+    {
+      "slug": "org-classroom",
+      "name": "OrgClassroom",
+      "category": "data-display",
+      "group": "collection",
+      "status": "enriched",
+      "import": "import { OrgClassroom, updateSeatStatus } from \"@hulianui/ui\"",
+      "exports": [
+        "OrgClassroom",
+        "updateSeatStatus"
+      ],
+      "types": [
+        "OrgClassroomProps",
+        "Seat",
+        "SeatPerson",
+        "SeatStatus",
+        "Zone"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/org-classroom/org-classroom.md",
+      "props": [
+        {
+          "name": "zones",
+          "required": true,
+          "kind": "array",
+          "type": "Zone[]",
+          "default": null,
+          "description": "部门分区"
+        },
+        {
+          "name": "selectedSeatId",
+          "required": false,
+          "kind": "other",
+          "type": "string | null",
+          "default": "非受控",
+          "description": "当前选中的座位。传 `null` 表示没选中"
+        },
+        {
+          "name": "focusedZoneId",
+          "required": false,
+          "kind": "other",
+          "type": "string | null",
+          "default": "非受控",
+          "description": "当前聚焦的分区。传 `null` 表示没有聚焦"
+        },
+        {
+          "name": "className",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "根节点类名"
+        }
+      ],
+      "events": [
+        {
+          "name": "onSeatSelect",
+          "required": false,
+          "kind": "function",
+          "type": "(seatId: string | null) => void",
+          "default": null,
+          "description": "点选座位时得到座位 id。关闭按钮或 Esc 得到 `null`。再点已选中的座位仍得到同一个 id"
+        },
+        {
+          "name": "onStatusChange",
+          "required": false,
+          "kind": "function",
+          "type": "(seatId: string, status: SeatStatus) => void",
+          "resolvedType": "(seatId: string, status: \"idle\" | \"busy\" | \"meeting\" | \"leave\" | \"interview\") => void",
+          "default": null,
+          "description": "在人员卡里改状态。组件不改 `zones`"
+        },
+        {
+          "name": "onZoneFocus",
+          "required": false,
+          "kind": "function",
+          "type": "(zoneId: string | null) => void",
+          "default": null,
+          "description": "点分区空白处聚焦；再点一次已聚焦的空白处得到 `null`"
+        }
+      ],
       "slots": []
     },
     {

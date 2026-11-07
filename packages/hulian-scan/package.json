@@ -16,7 +16,7 @@
     "scan:internal": "tsx src/cli.ts"
   },
   "dependencies": {
-    "playwright": "^1.62.1",
+    "playwright": "1.62.1",
     "react-scan": "0.5.7"
   },
   "devDependencies": {
