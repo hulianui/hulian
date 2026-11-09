@@ -140,7 +140,7 @@ function CoverageCanvas({ mode }: {
     const [items, setItems] = useState(coverageNodes);
     const [edges, setEdges] = useState(() => coverageEdges(mode));
     const title = mode === "on" ? "Same data, with labels" : mode === "off" ? "Same data, no label" : "Same data, blank label";
-    return (<section data-coverage-mode={mode}>
+    return (<section data-coverage-mode={mode} className="w-full">
       <h3 className="mb-2 text-sm font-semibold text-foreground">{title}</h3>
       <div className="h-[960px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
         <Flow<NodeData> nodes={items} edges={edges} getHandles={getHandles} controls={false} onNodesChange={setItems} onEdgesDelete={(ids) => setEdges((prev) => prev.filter((edge) => !ids.includes(edge.id)))} renderNode={(item) => (<div className={`relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] before:absolute before:inset-y-0 before:left-0 before:w-1 ${TONE[item.data.tone]}`}>
@@ -150,7 +150,7 @@ function CoverageCanvas({ mode }: {
     </section>);
 }
 function FlowCoverageDemo() {
-    return (<div className="space-y-6">
+    return (<div className="w-full basis-full space-y-6">
       <CoverageCanvas mode="on"/>
       <CoverageCanvas mode="off"/>
       <CoverageCanvas mode="blank"/>

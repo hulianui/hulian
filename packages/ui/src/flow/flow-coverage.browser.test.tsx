@@ -23,7 +23,7 @@ function DocsUsageColumn({ width, children }: { width: number; children: ReactNo
           <div className="flex gap-10">
             <div className="min-w-0 flex-1">
               <div className="overflow-hidden rounded-[var(--radius)] border border-border">
-                <div className="bg-bg p-8">{children}</div>
+                <div className="flex flex-wrap items-center gap-4 bg-bg p-8">{children}</div>
               </div>
             </div>
             <aside className="w-44 shrink-0" />
@@ -36,7 +36,7 @@ function DocsUsageColumn({ width, children }: { width: number; children: ReactNo
     <div style={{ width }}>
       <div className="px-4 py-8">
         <div className="overflow-hidden rounded-[var(--radius)] border border-border">
-          <div className="bg-bg p-8">{children}</div>
+          <div className="flex flex-wrap items-center gap-4 bg-bg p-8">{children}</div>
         </div>
       </div>
     </div>

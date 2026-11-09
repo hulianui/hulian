@@ -184,7 +184,7 @@ function CoverageCanvas({ mode }: { mode: "on" | "off" | "blank" }) {
   const [edges, setEdges] = useState(() => coverageEdges(mode));
   const title = mode === "on" ? "同数据 · 有文案" : mode === "off" ? "同数据 · 无 label" : "同数据 · 空白 label";
   return (
-    <section data-coverage-mode={mode}>
+    <section data-coverage-mode={mode} className="w-full">
       <h3 className="mb-2 text-sm font-semibold text-foreground">{title}</h3>
       <div className="h-[960px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
         <Flow<NodeData>
@@ -207,7 +207,7 @@ function CoverageCanvas({ mode }: { mode: "on" | "off" | "blank" }) {
 
 function FlowCoverageDemo() {
   return (
-    <div className="space-y-6">
+    <div className="w-full basis-full space-y-6">
       <CoverageCanvas mode="on" />
       <CoverageCanvas mode="off" />
       <CoverageCanvas mode="blank" />
