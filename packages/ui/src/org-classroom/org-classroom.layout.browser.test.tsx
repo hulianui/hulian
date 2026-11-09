@@ -531,4 +531,99 @@ describe("OrgClassroom narrow scene", () => {
     );
     expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
   });
+
+  it("measures the hip seam after the rounded crest", async () => {
+    for (const [name, width, vw, vh] of [
+      ["desk", 1100, 1280, 844],
+      ["w390", 390, 480, 1000],
+      ["w360", 360, 480, 900],
+    ] as const) {
+      await page.viewport(vw, vh);
+      const { container, unmount } = render(
+        <div style={{ width }}>
+          <OrgClassroom zones={[zone()]} />
+        </div>,
+      );
+      const floor = container.querySelector<HTMLElement>("[data-slot=org-classroom-floor]")!;
+      await expect.poll(() => Number(floor.getAttribute("data-scene-scale"))).toBeGreaterThan(0.2);
+      const gaps: string[] = [];
+      for (const seat of container.querySelectorAll<HTMLElement>("[data-seat-id]")) {
+        const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]");
+        const pelvis = seat.querySelector<HTMLElement>("[data-seat-pelvis]");
+        if (!scarf || !pelvis) continue;
+        const scarfBox = scarf.getBoundingClientRect();
+        const pelvisBox = pelvis.getBoundingClientRect();
+        gaps.push(`${seat.dataset.seatId}:${(pelvisBox.top - scarfBox.bottom).toFixed(2)}`);
+      }
+      const seat = container.querySelector<HTMLElement>("[data-seat-id=s1]")!;
+      const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]")!;
+      const pelvis = seat.querySelector<HTMLElement>("[data-seat-pelvis]")!;
+      const head = seat.querySelector<HTMLElement>("[data-seat-head]")!;
+      const scarfBox = scarf.getBoundingClientRect();
+      const pelvisBox = pelvis.getBoundingClientRect();
+      const headBox = head.getBoundingClientRect();
+      const lapBox = seat.querySelector<HTMLElement>("[data-seat-lap]")!.getBoundingClientRect();
+      const floors: number[] = [];
+      for (const fraction of [0.28, 0.4, 0.5]) {
+        const x = headBox.left + headBox.width * fraction;
+        let lastBust = headBox.bottom;
+        const paint = (y: number) => {
+          const stack = document.elementsFromPoint(x, y);
+          const onSeat = (element: Element) => element.closest("[data-seat-id]") === seat;
+          return {
+            bust: stack.some(
+              (element) =>
+                onSeat(element) &&
+                (element.matches("[data-seat-scarf], [data-seat-head]") ||
+                  element.closest("[data-seat-scarf], [data-seat-head]")),
+            ),
+            hip: stack.some(
+              (element) => onSeat(element) && element.closest("[data-seat-pelvis], [data-seat-thigh]"),
+            ),
+          };
+        };
+        for (let y = headBox.top; y < headBox.bottom + 24; y += 1) if (paint(y).bust) lastBust = y;
+        let gap = 0;
+        let found = false;
+        for (let y = lastBust + 1; y < lastBust + 28; y += 1) {
+          const layer = paint(y);
+          if (layer.hip) {
+            found = true;
+            break;
+          }
+          if (!layer.bust) gap += 1;
+        }
+        floors.push(found ? gap : 28);
+      }
+      let exposed = 0;
+      for (let x = lapBox.left + 1; x < lapBox.right; x += 2) {
+        for (let y = lapBox.top + 1; y < lapBox.bottom; y += 2) {
+          const stack = document.elementsFromPoint(x, y);
+          const covered = stack.some((element) => element.closest("[data-seat-scarf]"));
+          const hit = stack.find((element) => element.closest("[data-seat-id]") === seat);
+          if (!hit || hit.closest("[data-desk-top]") || covered) continue;
+          if (stack.some((element) => element.closest("[data-seat-pelvis]") && element.closest("[data-seat-id]") === seat)) {
+            exposed += 1;
+          }
+        }
+      }
+      const rows: string[] = [];
+      for (let x = Math.round(pelvisBox.left); x <= Math.round(pelvisBox.right); x += 3) {
+        let scarfBottom = -1;
+        let hipTop = -1;
+        for (let y = Math.round(scarfBox.top); y < pelvisBox.bottom + 8; y += 1) {
+          const stack = document.elementsFromPoint(x, y);
+          const onSeat = (element: Element) => element.closest("[data-seat-id]") === seat;
+          if (stack.some((element) => onSeat(element) && element.closest("[data-seat-scarf]"))) scarfBottom = y;
+          if (hipTop < 0 && stack.some((element) => onSeat(element) && element.closest("[data-seat-pelvis]"))) hipTop = y;
+        }
+        if (scarfBottom > 0 && hipTop > 0) rows.push(String(hipTop - scarfBottom));
+      }
+      console.log(
+        `MEASURE ${name} scale ${floor.getAttribute("data-scene-scale")} boxes ${gaps.join(" ")} floor ${floors.join("/")} exposed ${exposed} seam ${rows.join(",")}`,
+      );
+      if (name === "desk") await page.screenshot({ path: "__screenshots__/crest-desk.png" });
+      unmount();
+    }
+  });
 });

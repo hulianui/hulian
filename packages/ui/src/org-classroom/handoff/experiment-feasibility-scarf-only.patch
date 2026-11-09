@@ -1,0 +1,13 @@
+diff --git a/packages/ui/src/org-classroom/avatar.tsx b/packages/ui/src/org-classroom/avatar.tsx
+index 526cb94e..c362b06c 100644
+--- a/packages/ui/src/org-classroom/avatar.tsx
++++ b/packages/ui/src/org-classroom/avatar.tsx
+@@ -15,7 +15,7 @@ function AvatarImpl({ onSelect }: { onSelect: (event: ReactMouseEvent) => void }
+     >
+       <path
+         data-seat-scarf
+-        d="M16 19h40c1.12 7.5-2 10.6-12 12.6H18L8 37.6C10.2 33.2 13.4 25.4 16 19z"
++        d="M16 19H56L56.18 33.99L55.04 33.99L53.93 32.97L52.82 31.95L51.75 28.90L50.64 27.88L49.50 27.88L48.39 26.86L47.25 26.86L46.12 26.86L44.98 26.86L43.84 26.86L42.68 27.88L41.54 27.88L40.40 27.88L39.26 27.88L38.13 27.88L36.96 28.90L35.83 28.90L34.69 28.90L33.55 28.90L32.39 29.92L31.25 29.92L30.11 29.92L28.95 30.93L27.81 30.93L26.68 30.93L25.51 31.95L24.35 32.97L23.21 32.97L22.05 33.99L20.91 33.99L19.75 35.01Z"
+         fill="var(--zone-accent, var(--color-primary))"
+       />
+       <circle cx="16" cy="18" r="3.2" fill="var(--color-foreground)" />

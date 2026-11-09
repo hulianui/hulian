@@ -1,0 +1,26 @@
+diff --git a/packages/ui/src/org-classroom/avatar.tsx b/packages/ui/src/org-classroom/avatar.tsx
+index 526cb94e..ba567300 100644
+--- a/packages/ui/src/org-classroom/avatar.tsx
++++ b/packages/ui/src/org-classroom/avatar.tsx
+@@ -15,7 +15,7 @@ function AvatarImpl({ onSelect }: { onSelect: (event: ReactMouseEvent) => void }
+     >
+       <path
+         data-seat-scarf
+-        d="M16 19h40c1.12 7.5-2 10.6-12 12.6H18L8 37.6C10.2 33.2 13.4 25.4 16 19z"
++        d="M16 19H56L48.15 21.86L15.89 29.65Z"
+         fill="var(--zone-accent, var(--color-primary))"
+       />
+       <circle cx="16" cy="18" r="3.2" fill="var(--color-foreground)" />
+diff --git a/packages/ui/src/org-classroom/desk.tsx b/packages/ui/src/org-classroom/desk.tsx
+index 0b4e5f46..09f26ad5 100644
+--- a/packages/ui/src/org-classroom/desk.tsx
++++ b/packages/ui/src/org-classroom/desk.tsx
+@@ -95,7 +95,7 @@ function SeatedLap({ onSelect }: { onSelect: () => void }) {
+       />
+       <span
+         data-seat-pelvis
+-        className="absolute top-0 z-[1] h-3 origin-right rounded-sm bg-foreground"
++        className="absolute top-0 z-[1] h-3 origin-right rounded-b-sm bg-foreground"
+         style={{ left: 0, width: "1.78rem", transform: "translateY(5px) skewY(18deg)" }}
+       />
+     </span>
