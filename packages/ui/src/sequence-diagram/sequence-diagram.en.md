@@ -14,7 +14,7 @@ status: enriched
 
 ## When to use
 
-Use it to show who calls whom during one request: sign-in, a payment callback, an approval hand-off, or a chain of service calls. Participants run left to right and messages run top to bottom. To drag and wire nodes, use [Flow](../flow/flow.en.md). To list events in time without participants, use [Timeline](../timeline/timeline.en.md).
+Use it to show who calls whom during one request: sign-in, a payment callback, an approval hand-off, or a chain of service calls. Participants run left to right and messages run top to bottom. To drag and wire nodes, use [Flow](../flow/flow.md). To list events in time without participants, use [Timeline](../timeline/timeline.md).
 
 ## Import
 ```ts
@@ -66,4 +66,4 @@ The root is a named `<figure>`. Participants are a `<ul>` and messages are an `<
 - Client component: it reads `ConfigProvider` copy through Context, so it cannot be used directly as a static server component.
 
 ## Related
-[Flow](../flow/flow.en.md) · [Timeline](../timeline/timeline.en.md) · [Steps](../steps/steps.en.md)
+[Flow](../flow/flow.md) · [Timeline](../timeline/timeline.md) · [Steps](../steps/steps.md)
