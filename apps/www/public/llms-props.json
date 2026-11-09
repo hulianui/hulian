@@ -21308,7 +21308,7 @@
           "kind": "array",
           "type": "FlowEdge[]",
           "default": null,
-          "description": "受控连线数组（`{ id, source, target, sourceHandle?, targetHandle? }`）"
+          "description": "受控连线数组（`{ id, source, target, sourceHandle?, targetHandle?, label? }`）。`label` 可选，见「连线文案」"
         },
         {
           "name": "getHandles",
