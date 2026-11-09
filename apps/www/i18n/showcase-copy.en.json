@@ -8616,7 +8616,18 @@
     "  <Tag color=\"chart-6\">知乎</Tag>": "  <Tag color=\"chart-6\">Zhihu</Tag>",
     "  <Tag color=\"chart-4\">哔哩哔哩</Tag>": "  <Tag color=\"chart-4\">Bilibili</Tag>",
     "哔哩哔哩": "Bilibili",
-    "  <Tag color=\"#ec4899\">自定义色</Tag>": "  <Tag color=\"#ec4899\">Custom colour</Tag>"
+    "  <Tag color=\"#ec4899\">自定义色</Tag>": "  <Tag color=\"#ec4899\">Custom colour</Tag>",
+    "原始事件": "Raw events",
+    "可检索": "Searchable",
+    "分流": "Split",
+    "队列": "Queue",
+    "三条出口": "Three outputs",
+    "异常": "Exception",
+    "留痕": "Trace",
+    "入队": "Enqueue",
+    "连线标签": "Edge labels",
+    "把原始事件规范成可检索的归档记录，并保留来源与时间": "Normalize raw events into a searchable archive and keep the source and time",
+    "FlowEdge.label 可选。长文案沿连线换行，分叉挤在一起时仍让开两端的桩。不写 label 的连线保持原样。名字挂在 aria-hidden 连线层之外，读屏能读到；键盘逐条选中连线不在这一步。": "FlowEdge.label is optional. Long copy wraps along the edge, and a tighter fork still leaves both connector ports clear. An edge without a label stays as it was. The name sits outside the aria-hidden edge layer so a screen reader can read it. Per-edge keyboard selection is not part of this step."
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {

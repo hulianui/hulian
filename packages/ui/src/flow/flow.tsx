@@ -14,11 +14,13 @@ import { DotPattern } from "../dot-pattern";
 import { FlowNodeView } from "./flow-node";
 import {
   bezierPath,
+  edgeLabelMaxWidth,
   fitViewport,
   handleKey,
   handlePoint,
   layeredLayout,
   nodesBounds,
+  placeEdgeLabel,
   screenToCanvas,
   zoomAtPoint,
 } from "./flow-geometry";
@@ -380,6 +382,20 @@ export function Flow<T>({
       ? handleWorld(gesture.current.source, gesture.current.sourceHandle, "source")
       : null;
 
+  const renderedEdges = edges.map((edge) => {
+    const from = handleWorld(edge.source, edge.sourceHandle, "source");
+    const to = handleWorld(edge.target, edge.targetHandle, "target");
+    return {
+      edge,
+      from,
+      to,
+      d: from && to ? bezierPath(from, to) : null,
+      active: selectedEdge === edge.id,
+      animated: Boolean(isEdgeAnimated?.(edge)),
+      text: visibleEdgeLabel(edge.label),
+    };
+  });
+
   return (
     <div
       ref={containerRef}
@@ -404,13 +420,8 @@ export function Flow<T>({
           height={1}
           aria-hidden
         >
-          {edges.map((edge) => {
-            const from = handleWorld(edge.source, edge.sourceHandle, "source");
-            const to = handleWorld(edge.target, edge.targetHandle, "target");
-            if (!from || !to) return null;
-            const d = bezierPath(from, to);
-            const active = selectedEdge === edge.id;
-            const animated = isEdgeAnimated?.(edge);
+          {renderedEdges.map(({ edge, from, to, d, active, animated }) => {
+            if (!from || !to || !d) return null;
             return (
               <g key={edge.id}>
                 {/* 透明粗线作点击命中区 */}
@@ -474,6 +485,21 @@ export function Flow<T>({
             />
           )}
         </svg>
+
+        {/* 标签在 aria-hidden 的 SVG 之外，读屏才读得到；pointer-events-none 以免挡住连线命中和删除钮。 */}
+        {renderedEdges.map(({ edge, from, to, text, active }) =>
+          text && from && to ? (
+            <FlowEdgeLabel
+              key={edge.id}
+              edgeId={edge.id}
+              text={text}
+              from={from}
+              to={to}
+              zoom={vp.zoom}
+              selected={active}
+            />
+          ) : null,
+        )}
 
         {/* 节点层 */}
         {nodes.map((n) => (
@@ -562,6 +588,71 @@ export function Flow<T>({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/** 空白不算文案：不渲染标签，也不往无障碍树里加节点。 */
+function visibleEdgeLabel(label: string | undefined): string | null {
+  if (typeof label !== "string") return null;
+  const text = label.trim();
+  return text.length > 0 ? text : null;
+}
+
+function FlowEdgeLabel({
+  edgeId,
+  text,
+  from,
+  to,
+  zoom,
+  selected,
+}: {
+  edgeId: string;
+  text: string;
+  from: FlowPoint;
+  to: FlowPoint;
+  zoom: number;
+  selected: boolean;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const maxWidth = edgeLabelMaxWidth(from, to, zoom);
+
+  // 尺寸来自 DOM，直接写 left/top。不把测量结果放进 state，避免文案一变就多一轮渲染。
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const place = () => {
+      const width = el.offsetWidth;
+      const height = el.offsetHeight;
+      const placement = placeEdgeLabel(from, to, { width, height }, zoom);
+      el.style.left = `${placement.x}px`;
+      el.style.top = `${placement.y}px`;
+      el.style.visibility = "visible";
+    };
+    place();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(place);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [from, to, maxWidth, text, zoom]);
+
+  return (
+    <div
+      ref={ref}
+      data-flow-edge-label={edgeId}
+      role="group"
+      aria-label={text}
+      className={cn(
+        "pointer-events-none absolute w-max select-none break-words rounded-[var(--radius)] border border-hairline bg-surface px-1.5 py-0.5 text-center text-xs leading-snug text-foreground shadow-sm",
+        selected && "border-primary",
+      )}
+      style={{
+        maxWidth,
+        visibility: "hidden",
+      }}
+    >
+      {/* 视觉文字不进无障碍树，避免和分组的 aria-label 各念一遍。 */}
+      <span aria-hidden="true">{text}</span>
     </div>
   );
 }

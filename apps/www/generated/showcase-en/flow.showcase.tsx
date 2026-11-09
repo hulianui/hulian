@@ -62,6 +62,43 @@ function FlowDemo({ controls = true, animated = false }: {
           </div>)}/>
     </div>);
 }
+const labelNodes: FlowNode<NodeData>[] = [
+    { id: "ingest", position: { x: 8, y: 96 }, width: 80, data: { title: "Collection", subtitle: "Raw events", tone: "brand", io: ["out"] } },
+    { id: "archive", position: { x: 228, y: 96 }, width: 80, data: { title: "Archive", subtitle: "Searchable", tone: "neutral", io: ["in"] } },
+    { id: "router", position: { x: 8, y: 248 }, width: 80, data: { title: "Split", subtitle: "Three outputs", tone: "violet", io: ["out"] } },
+    { id: "queue", position: { x: 228, y: 196 }, width: 80, data: { title: "Queue", subtitle: "Pending", tone: "amber", io: ["in"] } },
+    { id: "alert", position: { x: 228, y: 260 }, width: 80, data: { title: "Alarm", subtitle: "Exception", tone: "amber", io: ["in"] } },
+    { id: "audit", position: { x: 228, y: 324 }, width: 80, data: { title: "audit", subtitle: "Trace", tone: "neutral", io: ["in"] } },
+];
+const labelEdges: FlowEdge[] = [
+    { id: "long", source: "ingest", target: "archive", label: "Normalize raw events into a searchable archive and keep the source and time" },
+    { id: "queue", source: "router", target: "queue", label: "Enqueue" },
+    { id: "alert", source: "router", target: "alert", label: "Alarm" },
+    { id: "audit", source: "router", target: "audit", label: "Trace" },
+];
+function FlowLabelDemo() {
+    const [nodes, setNodes] = useState(labelNodes);
+    const [edges, setEdges] = useState(labelEdges);
+    const [selected, setSelected] = useState<string | null>(null);
+    const nextEdgeId = useRef(0);
+    return (<div className="h-[460px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
+      <Flow<NodeData> nodes={nodes} edges={edges} getHandles={getHandles} controls={false} selectedId={selected} onSelectNode={setSelected} onNodesChange={setNodes} onConnect={(c) => setEdges((prev) => {
+            if (prev.some((e) => e.source === c.source && e.target === c.target))
+                return prev;
+            nextEdgeId.current += 1;
+            return [...prev, { id: `label-edge-${nextEdgeId.current}`, ...c }];
+        })} onEdgesDelete={(ids) => setEdges((prev) => prev.filter((e) => !ids.includes(e.id)))} onNodeDelete={(id) => {
+            setNodes((prev) => prev.filter((n) => n.id !== id));
+            setEdges((prev) => prev.filter((e) => e.source !== id && e.target !== id));
+            setSelected(null);
+        }} renderNode={(n) => (<div className={`relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] before:absolute before:inset-y-0 before:left-0 before:w-1 ${TONE[n.data.tone]}`}>
+            <div className="px-2.5 py-2">
+              <div className="text-[13px] font-semibold text-foreground">{n.data.title}</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">{n.data.subtitle}</div>
+            </div>
+          </div>)}/>
+    </div>);
+}
 export const flowShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -82,6 +119,21 @@ const [edges, setEdges] = useState(initialEdges);
   renderNode={(n) => <NodeCard data={n.data} />}
 />`,
             render: () => <FlowDemo />,
+        },
+        {
+            title: "Edge labels",
+            description: "FlowEdge.label is optional. Long copy wraps along the edge, and a tighter fork still leaves both connector ports clear. An edge without a label stays as it was. The name sits outside the aria-hidden edge layer so a screen reader can read it. Per-edge keyboard selection is not part of this step.",
+            code: `<Flow
+  nodes={nodes}
+  edges={[
+    { id: "e1", source: "ingest", target: "archive", label: "Normalize raw events into a searchable archive" },
+    { id: "e2", source: "router", target: "queue", label: "Enqueue" },
+    { id: "e3", source: "router", target: "alert" },
+  ]}
+  getHandles={getHandles}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>`,
+            render: () => <FlowLabelDemo />,
         },
         {
             title: "Select and delete",

@@ -62,6 +62,164 @@ export function bezierPath(from: FlowPoint, to: FlowPoint): string {
   return `M ${r(from.x)},${r(from.y)} C ${r(from.x + dx)},${r(from.y)} ${r(to.x - dx)},${r(to.y)} ${r(to.x)},${r(to.y)}`;
 }
 
+// 连接桩在屏幕上是 12px 圆（flow-node 按 zoom 反缩放）。标签要让开的是这个圆，再加一圈间隙。
+const PORT_SCREEN_RADIUS = 6;
+const PORT_SCREEN_GAP = 4;
+// 选中连线的删除钮是 18px，外加 4px，避免标签压住可点的 ×。
+const DELETE_CLEARANCE = 9 + 4;
+
+/** 标签必须让开的桩半径（世界坐标）。zoom 越小，反缩放后的桩在世界上越大。 */
+export function flowPortExclusionRadius(zoom: number): number {
+  const z = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
+  return (PORT_SCREEN_RADIUS + PORT_SCREEN_GAP) / z;
+}
+
+/** 长标签的换行上限。再宽就会横过密图，盖住旁边的桩。 */
+export const FLOW_EDGE_LABEL_MAX_WIDTH = 160;
+/** 短到无法阅读之前，宁可把标签挪到桩的外侧，也不压成一条细缝。 */
+export const FLOW_EDGE_LABEL_MIN_WIDTH = 72;
+
+function edgeBezierControls(from: FlowPoint, to: FlowPoint) {
+  const dx = Math.max(Math.abs(to.x - from.x) * 0.5, 36);
+  return {
+    p0: from,
+    p1: { x: from.x + dx, y: from.y },
+    p2: { x: to.x - dx, y: to.y },
+    p3: to,
+  };
+}
+
+function cubicAt(p0: number, p1: number, p2: number, p3: number, t: number): number {
+  const u = 1 - t;
+  return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3;
+}
+
+function cubicTangentAt(p0: number, p1: number, p2: number, p3: number, t: number): number {
+  const u = 1 - t;
+  return 3 * u * u * (p1 - p0) + 6 * u * t * (p2 - p1) + 3 * t * t * (p3 - p2);
+}
+
+/**
+ * 标签的最大宽度：优先落在两端桩之间的空隙里，并封顶，让长文案换行而不是拉成一条横杠。
+ * 空隙比最小可读宽度还窄时，返回最小宽度，位置计算再把盒子挪开桩。
+ */
+export function edgeLabelMaxWidth(from: FlowPoint, to: FlowPoint, zoom: number): number {
+  const len = Math.hypot(to.x - from.x, to.y - from.y);
+  const gap = Math.max(len - flowPortExclusionRadius(zoom) * 2 - 8, 0);
+  if (gap >= FLOW_EDGE_LABEL_MIN_WIDTH) return Math.min(gap, FLOW_EDGE_LABEL_MAX_WIDTH);
+  return FLOW_EDGE_LABEL_MIN_WIDTH;
+}
+
+function circleHitsAabb(
+  px: number,
+  py: number,
+  radius: number,
+  left: number,
+  top: number,
+  width: number,
+  height: number,
+): boolean {
+  const nearestX = clamp(px, left, left + width);
+  const nearestY = clamp(py, top, top + height);
+  const dx = px - nearestX;
+  const dy = py - nearestY;
+  return dx * dx + dy * dy < radius * radius;
+}
+
+function aabbsOverlap(
+  a: { left: number; top: number; width: number; height: number },
+  b: { left: number; top: number; width: number; height: number },
+): boolean {
+  return (
+    a.left < b.left + b.width &&
+    a.left + a.width > b.left &&
+    a.top < b.top + b.height &&
+    a.top + a.height > b.top
+  );
+}
+
+export interface FlowEdgeLabelPlacement {
+  /** 标签盒子左上角，世界坐标。 */
+  x: number;
+  y: number;
+  maxWidth: number;
+}
+
+/**
+ * 把标签放在贝塞尔中点的一侧（优先往上），贴着路径，但盒子不压两端连接桩，也不压中点的删除钮。
+ * 只看这一条边自己的端点。交叉或几乎重合的另一条边不参与，标签之间可能叠在一起。
+ */
+export function placeEdgeLabel(
+  from: FlowPoint,
+  to: FlowPoint,
+  size: { width: number; height: number },
+  zoom: number,
+): FlowEdgeLabelPlacement {
+  const maxWidth = edgeLabelMaxWidth(from, to, zoom);
+  const width = Math.max(size.width, 0);
+  const height = Math.max(size.height, 0);
+  const { p0, p1, p2, p3 } = edgeBezierControls(from, to);
+  const mid = {
+    x: cubicAt(p0.x, p1.x, p2.x, p3.x, 0.5),
+    y: cubicAt(p0.y, p1.y, p2.y, p3.y, 0.5),
+  };
+  let nx = -cubicTangentAt(p0.y, p1.y, p2.y, p3.y, 0.5);
+  let ny = cubicTangentAt(p0.x, p1.x, p2.x, p3.x, 0.5);
+  const nlen = Math.hypot(nx, ny) || 1;
+  nx /= nlen;
+  ny /= nlen;
+  if (ny > 0 || (ny === 0 && nx > 0)) {
+    nx = -nx;
+    ny = -ny;
+  }
+
+  const portR = flowPortExclusionRadius(zoom);
+  const buttonSize = DELETE_CLEARANCE * 2;
+  const button = {
+    left: mid.x - buttonSize / 2,
+    top: mid.y - buttonSize / 2,
+    width: buttonSize,
+    height: buttonSize,
+  };
+  const blocked = (left: number, top: number) =>
+    circleHitsAabb(from.x, from.y, portR, left, top, width, height) ||
+    circleHitsAabb(to.x, to.y, portR, left, top, width, height) ||
+    aabbsOverlap({ left, top, width, height }, button);
+
+  const base = height / 2 + DELETE_CLEARANCE;
+  const farthest = Math.max(
+    Math.hypot(from.x - mid.x, from.y - mid.y),
+    Math.hypot(to.x - mid.x, to.y - mid.y),
+  );
+  // 沿法线推到这个距离之后，盒子中心离任一端点都远过「半对角 + 桩半径」。
+  const limit = base + farthest + Math.hypot(width, height) + portR + 4;
+
+  const candidate = (distance: number, sign: number): FlowEdgeLabelPlacement | null => {
+    const cx = mid.x + nx * distance * sign;
+    const cy = mid.y + ny * distance * sign;
+    const left = Math.round(cx - width / 2);
+    const top = Math.round(cy - height / 2);
+    if (blocked(left, top)) return null;
+    return { x: left, y: top, maxWidth };
+  };
+
+  for (let distance = base; distance <= limit; distance += 1) {
+    const above = candidate(distance, 1);
+    if (above) return above;
+  }
+  for (let distance = base; distance <= limit; distance += 1) {
+    const below = candidate(distance, -1);
+    if (below) return below;
+  }
+  return (
+    candidate(limit, 1) ?? {
+      x: Math.round(mid.x - width / 2),
+      y: Math.round(mid.y - height - DELETE_CLEARANCE),
+      maxWidth,
+    }
+  );
+}
+
 /** 缩放并保持锚点（屏幕坐标，相对容器）下的世界点不动 —— 滚轮缩放对准光标。 */
 export function zoomAtPoint(
   vp: FlowViewport,

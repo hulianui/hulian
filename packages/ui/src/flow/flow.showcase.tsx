@@ -83,6 +83,64 @@ function FlowDemo({ controls = true, animated = false }: { controls?: boolean; a
   );
 }
 
+const labelNodes: FlowNode<NodeData>[] = [
+  { id: "ingest", position: { x: 8, y: 96 }, width: 80, data: { title: "采集", subtitle: "原始事件", tone: "brand", io: ["out"] } },
+  { id: "archive", position: { x: 228, y: 96 }, width: 80, data: { title: "归档", subtitle: "可检索", tone: "neutral", io: ["in"] } },
+  { id: "router", position: { x: 8, y: 248 }, width: 80, data: { title: "分流", subtitle: "三条出口", tone: "violet", io: ["out"] } },
+  { id: "queue", position: { x: 228, y: 196 }, width: 80, data: { title: "队列", subtitle: "待处理", tone: "amber", io: ["in"] } },
+  { id: "alert", position: { x: 228, y: 260 }, width: 80, data: { title: "告警", subtitle: "异常", tone: "amber", io: ["in"] } },
+  { id: "audit", position: { x: 228, y: 324 }, width: 80, data: { title: "审计", subtitle: "留痕", tone: "neutral", io: ["in"] } },
+];
+
+const labelEdges: FlowEdge[] = [
+  { id: "long", source: "ingest", target: "archive", label: "把原始事件规范成可检索的归档记录，并保留来源与时间" },
+  { id: "queue", source: "router", target: "queue", label: "入队" },
+  { id: "alert", source: "router", target: "alert", label: "告警" },
+  { id: "audit", source: "router", target: "audit", label: "留痕" },
+];
+
+function FlowLabelDemo() {
+  const [nodes, setNodes] = useState(labelNodes);
+  const [edges, setEdges] = useState(labelEdges);
+  const [selected, setSelected] = useState<string | null>(null);
+  const nextEdgeId = useRef(0);
+
+  return (
+    <div className="h-[460px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
+      <Flow<NodeData>
+        nodes={nodes}
+        edges={edges}
+        getHandles={getHandles}
+        controls={false}
+        selectedId={selected}
+        onSelectNode={setSelected}
+        onNodesChange={setNodes}
+        onConnect={(c) =>
+          setEdges((prev) => {
+            if (prev.some((e) => e.source === c.source && e.target === c.target)) return prev;
+            nextEdgeId.current += 1;
+            return [...prev, { id: `label-edge-${nextEdgeId.current}`, ...c }];
+          })
+        }
+        onEdgesDelete={(ids) => setEdges((prev) => prev.filter((e) => !ids.includes(e.id)))}
+        onNodeDelete={(id) => {
+          setNodes((prev) => prev.filter((n) => n.id !== id));
+          setEdges((prev) => prev.filter((e) => e.source !== id && e.target !== id));
+          setSelected(null);
+        }}
+        renderNode={(n) => (
+          <div className={`relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] before:absolute before:inset-y-0 before:left-0 before:w-1 ${TONE[n.data.tone]}`}>
+            <div className="px-2.5 py-2">
+              <div className="text-[13px] font-semibold text-foreground">{n.data.title}</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">{n.data.subtitle}</div>
+            </div>
+          </div>
+        )}
+      />
+    </div>
+  );
+}
+
 export const flowShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -104,6 +162,22 @@ const [edges, setEdges] = useState(initialEdges);
   renderNode={(n) => <NodeCard data={n.data} />}
 />`,
       render: () => <FlowDemo />,
+    },
+    {
+      title: "连线标签",
+      description:
+        "FlowEdge.label 可选。长文案沿连线换行，分叉挤在一起时仍让开两端的桩。不写 label 的连线保持原样。名字挂在 aria-hidden 连线层之外，读屏能读到；键盘逐条选中连线不在这一步。",
+      code: `<Flow
+  nodes={nodes}
+  edges={[
+    { id: "e1", source: "ingest", target: "archive", label: "Normalize raw events into a searchable archive" },
+    { id: "e2", source: "router", target: "queue", label: "Enqueue" },
+    { id: "e3", source: "router", target: "alert" },
+  ]}
+  getHandles={getHandles}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>`,
+      render: () => <FlowLabelDemo />,
     },
     {
       title: "选中与删除",
