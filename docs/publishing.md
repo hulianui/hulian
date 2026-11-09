@@ -100,14 +100,14 @@ export default () => <Button>你好</Button>;
 
 ## 三、首次启用清单（一次性，维护者操作）
 
-> 切到 npmjs 后，**首次发布前**必须完成以下步骤，否则 release workflow 的 publish 步骤会因缺 `NPM_TOKEN` 失败。
+> 发布走 **npm Trusted Publishing**（GitHub OIDC），仓库里不存 npm token。2026-11 之前用的 `NPM_TOKEN` 是 90 天有效的写 token，过期后 0.69.0 发布报 `E404 PUT`，因此改掉。
 
 1. **注册 npmjs 组织 `hulianui`**：scope `@hulianui` 必须对应同名组织（<https://www.npmjs.com/org/create>）。
-2. **生成 npm Automation token**：npmjs → Access Tokens → Generate New Token → **Automation**（CI 友好，绕过 2FA）。
-3. **加 GitHub Actions secret**：仓库 Settings → Secrets and variables → Actions → New repository secret，名字 **`NPM_TOKEN`**，值为上一步的 token。
+2. **每个公开包登记 Trusted Publisher**：npmjs → 包页 → Settings → Trusted Publisher → GitHub Actions，填 Organization `hulianui`、Repository `hulian`、Workflow filename `release.yml`、Environment 留空。`@hulianui/ui` / `tokens` / `mcp` / `guard` 四个包各登记一次；新增公开包时同样要登记，且 `package.json` 的 `repository.url` 必须指向 `github.com/hulianui/hulian`。
+3. **workflow 侧**：`release.yml` 已有 `id-token: write`，并把 npm 升到 ≥ 11.5.1（Node 22 自带的 npm 10 不认 OIDC）。不要再给 publish 步骤传 `NODE_AUTH_TOKEN`。
 4. **放行 Actions 开 PR（可选）**：仓库 Settings → Actions → General → Workflow permissions → 勾 **Read and write** + **Allow GitHub Actions to create and approve pull requests**（用 Version PR 流程时才需要；本仓库默认走"本地先 version 再 push"绕开它）。
 5. **首发**：本地 `pnpm version-packages` 落好版本 → push，release workflow 直接 publish 到 npmjs（registry 上还没该版本时 action 直接发布）。
-   - 或本地手动首发：`export NODE_AUTH_TOKEN=<npm token>` 后 `pnpm release`。
+   - 或本地手动发：`npm login` 后 `pnpm release`（需要 2FA OTP）。
 
 ---
 
