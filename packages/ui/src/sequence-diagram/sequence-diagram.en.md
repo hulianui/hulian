@@ -31,7 +31,7 @@ Extends `HTMLAttributes<HTMLElement>` (without `title`) on the root `<figure>`.
 | messages * | `SequenceMessage[]` | - | Messages, `{ id, from, to, label, kind? }`, top to bottom in array order. `from === to` draws a self-call loop |
 | title | string | "Sequence diagram" | Accessible name of the whole figure |
 | autoNumber | boolean | false | Shows a number before each message; screen readers hear it too |
-| activeId | string ｜ null | - | Highlights the current step and sets `aria-current="step"` |
+| activeId | string \| null | - | Highlights the current step and sets `aria-current="step"` |
 | minColumnWidth | number | 160 | Minimum column width in px. The figure scrolls horizontally when the container is narrower |
 
 `kind` is `sync` (default, solid line with a filled head), `async` (solid line with an open head), or `reply` (dashed line with an open head, in a quieter color).
