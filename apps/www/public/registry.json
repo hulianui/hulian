@@ -11251,6 +11251,65 @@
       ]
     },
     {
+      "name": "sequence-diagram",
+      "type": "registry:ui",
+      "title": "SequenceDiagram",
+      "description": "按时间顺序画出参与者之间的调用、异步消息和返回",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { SequenceDiagram, layoutSequence } from \"@hulianui/ui\"",
+        "exports": [
+          "SequenceDiagram",
+          "layoutSequence"
+        ],
+        "types": [
+          "SequenceDirection",
+          "SequenceRow",
+          "SequenceDiagramProps",
+          "SequenceMessage",
+          "SequenceMessageKind",
+          "SequenceParticipant"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/sequence-diagram/sequence-diagram.md",
+        "docLocal": "packages/ui/src/sequence-diagram/sequence-diagram.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/sequence-diagram/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/sequence-diagram/index.ts"
+        },
+        {
+          "path": "components/hulianui/sequence-diagram/sequence-diagram-layout.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/sequence-diagram/sequence-diagram-layout.ts"
+        },
+        {
+          "path": "components/hulianui/sequence-diagram/sequence-diagram.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/sequence-diagram/sequence-diagram.tsx"
+        },
+        {
+          "path": "components/hulianui/sequence-diagram/sequence-diagram.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/sequence-diagram/sequence-diagram.types.ts"
+        }
+      ]
+    },
+    {
       "name": "shield-badge",
       "type": "registry:ui",
       "title": "ShieldBadge",

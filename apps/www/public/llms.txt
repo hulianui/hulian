@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 401 个组件 · v0.69.1
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 402 个组件 · v0.69.1
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
@@ -136,7 +136,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（95）
+## 数据展示 data-display（96）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 展示用户头像，加载失败时回退到备用内容
@@ -214,6 +214,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ScoreRing](https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-ring/score-ring.md): 用彩色环形仪表盘展示分值和对应等级
 - [ScoreScale](https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-scale/score-scale.md): 用整条按档着色的横带展示分值落在哪一档
 - [ScrollStack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-stack/scroll-stack.md): 滚动堆叠卡 · 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collec…
+- [SequenceDiagram](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sequence-diagram/sequence-diagram.md): 按时间顺序画出参与者之间的调用、异步消息和返回
 - [ShieldBadge](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shield-badge/shield-badge.md): README 徽章 · shields.io 风格「左灰标签 + 右彩数值」双段贴纸(版本/许可证/下载量/CI/星标) · 5 语气 + color 逃生舱 · solid/soft/outline 三皮肤 × ro…
 - [Skeleton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/skeleton/skeleton.md): 用占位骨架预留内容位置，等待数据到达
 - [Sortable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sortable/sortable.md): 拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove)
