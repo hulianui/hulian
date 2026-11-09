@@ -683,7 +683,9 @@ export function NovelReader({
         // 菜单展开时视口改夹在顶栏和底栏之间（高度跟实测走）。正文末尾的 padding
         // 只在滚到底时有用，盖不住视口中间那一行。
         className={cn(
-          chrome ? "absolute inset-x-0" : "h-full",
+          // 收起菜单时也必须是定位元素：上面那层纸是 absolute，定位元素按 DOM 顺序画在
+          // 普通流之上。视口若只是 h-full，整张纸会盖住正文，读者看到一页空白。
+          chrome ? "absolute inset-x-0" : "relative h-full",
           paged ? "overflow-hidden" : "overflow-y-auto",
           paperView.className,
         )}
