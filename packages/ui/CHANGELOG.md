@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.69.1
+
+### Patch Changes
+
+- 7bf3302: fix(novel-reader): 菜单收起时正文被纸色层盖住，整页空白。纸色层是 `absolute`，收起菜单时正文视口只有 `h-full`、不是定位元素，按 CSS 绘制顺序纸画在了正文上面；DOM 里文字都在，屏幕上什么也看不见。菜单展开时视口改成 `absolute`，所以只有默认状态出问题。视口在收起时也改为 `relative`，补了一条真实浏览器的命中测试。
+
 ## 0.69.0
 
 ### Minor Changes
