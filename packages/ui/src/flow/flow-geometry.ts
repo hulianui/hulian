@@ -74,10 +74,8 @@ export function flowPortExclusionRadius(zoom: number): number {
   return (PORT_SCREEN_RADIUS + PORT_SCREEN_GAP) / z;
 }
 
-/** 长标签的换行上限。再宽就会横过密图，盖住旁边的桩。 */
+/** 长标签的换行上限。宽度不跟边长走：边短时收成四五字一列，桌面同样难读。 */
 export const FLOW_EDGE_LABEL_MAX_WIDTH = 160;
-/** 短到无法阅读之前，宁可把标签挪到桩的外侧，也不压成一条细缝。 */
-export const FLOW_EDGE_LABEL_MIN_WIDTH = 72;
 
 function edgeBezierControls(from: FlowPoint, to: FlowPoint) {
   const dx = Math.max(Math.abs(to.x - from.x) * 0.5, 36);
@@ -99,15 +97,20 @@ function cubicTangentAt(p0: number, p1: number, p2: number, p3: number, t: numbe
   return 3 * u * u * (p1 - p0) + 6 * u * t * (p2 - p1) + 3 * t * t * (p3 - p2);
 }
 
+export interface FlowLabelObstacle {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
 /**
- * 标签的最大宽度：优先落在两端桩之间的空隙里，并封顶，让长文案换行而不是拉成一条横杠。
- * 空隙比最小可读宽度还窄时，返回最小宽度，位置计算再把盒子挪开桩。
+ * 长文案的换行宽度。不按两端桩的间距收窄：那会让一句长话在桌面宽画布上仍变成四五字一列。
+ * 桩和两端节点是否被盖住，由 placeEdgeLabel 把盒子挪开，而不是把字压窄。
  */
 export function edgeLabelMaxWidth(from: FlowPoint, to: FlowPoint, zoom: number): number {
-  const len = Math.hypot(to.x - from.x, to.y - from.y);
-  const gap = Math.max(len - flowPortExclusionRadius(zoom) * 2 - 8, 0);
-  if (gap >= FLOW_EDGE_LABEL_MIN_WIDTH) return Math.min(gap, FLOW_EDGE_LABEL_MAX_WIDTH);
-  return FLOW_EDGE_LABEL_MIN_WIDTH;
+  if (!Number.isFinite(from.x + to.x + zoom)) return FLOW_EDGE_LABEL_MAX_WIDTH;
+  return FLOW_EDGE_LABEL_MAX_WIDTH;
 }
 
 function circleHitsAabb(
@@ -146,7 +149,7 @@ export interface FlowEdgeLabelPlacement {
 }
 
 /**
- * 把标签放在贝塞尔中点的一侧（优先往上），贴着路径，但盒子不压两端连接桩，也不压中点的删除钮。
+ * 把标签放在贝塞尔中点的一侧（优先往上），贴着路径，但盒子不压两端连接桩、两端节点，也不压中点的删除钮。
  * 只看这一条边自己的端点。交叉或几乎重合的另一条边不参与，标签之间可能叠在一起。
  */
 export function placeEdgeLabel(
@@ -154,6 +157,7 @@ export function placeEdgeLabel(
   to: FlowPoint,
   size: { width: number; height: number },
   zoom: number,
+  obstacles: FlowLabelObstacle[] = [],
 ): FlowEdgeLabelPlacement {
   const maxWidth = edgeLabelMaxWidth(from, to, zoom);
   const width = Math.max(size.width, 0);
@@ -184,7 +188,8 @@ export function placeEdgeLabel(
   const blocked = (left: number, top: number) =>
     circleHitsAabb(from.x, from.y, portR, left, top, width, height) ||
     circleHitsAabb(to.x, to.y, portR, left, top, width, height) ||
-    aabbsOverlap({ left, top, width, height }, button);
+    aabbsOverlap({ left, top, width, height }, button) ||
+    obstacles.some((obstacle) => aabbsOverlap({ left, top, width, height }, obstacle));
 
   const base = height / 2 + DELETE_CLEARANCE;
   const farthest = Math.max(

@@ -101,6 +101,61 @@ function FlowLabelDemo() {
           </div>)}/>
     </div>);
 }
+const coverageNodes: FlowNode<NodeData>[] = [
+    { id: "hub", position: { x: 8, y: 96 }, width: 88, data: { title: "Fan out", subtitle: "One source", tone: "violet", io: ["out"] } },
+    { id: "up", position: { x: 156, y: 8 }, width: 88, data: { title: "Upper branch", subtitle: "Fan", tone: "amber", io: ["in"] } },
+    { id: "mid", position: { x: 156, y: 112 }, width: 88, data: { title: "Middle branch", subtitle: "Fan", tone: "amber", io: ["in"] } },
+    { id: "down", position: { x: 156, y: 216 }, width: 88, data: { title: "Lower branch", subtitle: "Fan", tone: "amber", io: ["in"] } },
+    { id: "west", position: { x: 8, y: 340 }, width: 88, data: { title: "West", subtitle: "Cross", tone: "brand", io: ["out"] } },
+    { id: "east", position: { x: 156, y: 448 }, width: 88, data: { title: "East", subtitle: "Cross", tone: "neutral", io: ["in"] } },
+    { id: "south", position: { x: 8, y: 448 }, width: 88, data: { title: "South", subtitle: "Cross", tone: "brand", io: ["out"] } },
+    { id: "north", position: { x: 156, y: 340 }, width: 88, data: { title: "North", subtitle: "Cross", tone: "neutral", io: ["in"] } },
+    { id: "nearA", position: { x: 8, y: 560 }, width: 88, data: { title: "Near upper", subtitle: "Adjacent", tone: "neutral", io: ["out"] } },
+    { id: "nearB", position: { x: 156, y: 560 }, width: 88, data: { title: "Near upper end", subtitle: "Adjacent", tone: "neutral", io: ["in"] } },
+    { id: "nearC", position: { x: 8, y: 640 }, width: 88, data: { title: "Near lower", subtitle: "Adjacent", tone: "neutral", io: ["out"] } },
+    { id: "nearD", position: { x: 156, y: 648 }, width: 88, data: { title: "Near lower end", subtitle: "Adjacent", tone: "neutral", io: ["in"] } },
+    { id: "ingest", position: { x: 8, y: 820 }, width: 88, data: { title: "Collection", subtitle: "Raw events", tone: "brand", io: ["out"] } },
+    { id: "archive", position: { x: 156, y: 820 }, width: 88, data: { title: "Archive", subtitle: "Searchable", tone: "neutral", io: ["in"] } },
+];
+const coverageLabeled: FlowEdge[] = [
+    { id: "fan-up", source: "hub", target: "up", label: "Send up" },
+    { id: "fan-mid", source: "hub", target: "mid", label: "Straight" },
+    { id: "fan-down", source: "hub", target: "down", label: "Send down" },
+    { id: "cross-ab", source: "west", target: "east", label: "Down diagonal" },
+    { id: "cross-cd", source: "south", target: "north", label: "Up diagonal" },
+    { id: "near-1", source: "nearA", target: "nearB", label: "Close upper" },
+    { id: "near-2", source: "nearC", target: "nearD", label: "Close lower" },
+    { id: "long", source: "ingest", target: "archive", label: "Normalize raw events into a searchable archive and keep the source and time" },
+];
+function coverageEdges(mode: "on" | "off" | "blank"): FlowEdge[] {
+    if (mode === "off")
+        return coverageLabeled.map(({ label: _label, ...edge }) => edge);
+    if (mode === "blank")
+        return coverageLabeled.map((edge) => ({ ...edge, label: "   " }));
+    return coverageLabeled;
+}
+function CoverageCanvas({ mode }: {
+    mode: "on" | "off" | "blank";
+}) {
+    const [items, setItems] = useState(coverageNodes);
+    const [edges, setEdges] = useState(() => coverageEdges(mode));
+    const title = mode === "on" ? "Same data, with labels" : mode === "off" ? "Same data, no label" : "Same data, blank label";
+    return (<section data-coverage-mode={mode}>
+      <h3 className="mb-2 text-sm font-semibold text-foreground">{title}</h3>
+      <div className="h-[960px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
+        <Flow<NodeData> nodes={items} edges={edges} getHandles={getHandles} controls={false} onNodesChange={setItems} onEdgesDelete={(ids) => setEdges((prev) => prev.filter((edge) => !ids.includes(edge.id)))} renderNode={(item) => (<div className={`relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] before:absolute before:inset-y-0 before:left-0 before:w-1 ${TONE[item.data.tone]}`}>
+              <div className="px-2.5 py-2 text-[13px] font-semibold text-foreground">{item.data.title}</div>
+            </div>)}/>
+      </div>
+    </section>);
+}
+function FlowCoverageDemo() {
+    return (<div className="space-y-6">
+      <CoverageCanvas mode="on"/>
+      <CoverageCanvas mode="off"/>
+      <CoverageCanvas mode="blank"/>
+    </div>);
+}
 export const flowShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -136,6 +191,19 @@ const [edges, setEdges] = useState(initialEdges);
   renderNode={(n) => <NodeCard data={n.data} />}
 />`,
             render: () => <FlowLabelDemo />,
+        },
+        {
+            title: "Comparison, fan-out, and crossing",
+            description: "The same nodes and edges are shown three times: no label, a blank label, and visible text. The labeled copy is a shared-source fan, two crossing curves, two adjacent edges, and one long label. A short label at a crossing can still sit against the neighboring edge; this step does not guarantee they are separated.",
+            code: `<Flow
+  nodes={nodes}
+  edges={labeled}
+  getHandles={getHandles}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>
+<Flow nodes={nodes} edges={unlabeled} getHandles={getHandles} renderNode={(n) => <NodeCard data={n.data} />} />
+<Flow nodes={nodes} edges={blankLabels} getHandles={getHandles} renderNode={(n) => <NodeCard data={n.data} />} />`,
+            render: () => <FlowCoverageDemo />,
         },
         {
             title: "Select and delete",

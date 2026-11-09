@@ -382,6 +382,23 @@ export function Flow<T>({
       ? handleWorld(gesture.current.source, gesture.current.sourceHandle, "source")
       : null;
 
+  const endpointObstacles = (sourceId: string, targetId: string) => {
+    const boxes = [];
+    for (const id of [sourceId, targetId]) {
+      const node = nodeById.get(id);
+      const size = node ? sizes[node.id] : undefined;
+      if (!node || !size) continue;
+      const pos = displayPos(node);
+      boxes.push({
+        left: pos.x,
+        top: pos.y,
+        width: node.width ?? size.width,
+        height: size.height,
+      });
+    }
+    return boxes;
+  };
+
   const renderedEdges = edges.map((edge) => {
     const from = handleWorld(edge.source, edge.sourceHandle, "source");
     const to = handleWorld(edge.target, edge.targetHandle, "target");
@@ -498,6 +515,7 @@ export function Flow<T>({
               to={to}
               zoom={vp.zoom}
               selected={active}
+              obstacles={endpointObstacles(edge.source, edge.target)}
             />
           ) : null,
         )}
@@ -607,6 +625,7 @@ function FlowEdgeLabel({
   to,
   zoom,
   selected,
+  obstacles,
 }: {
   edgeId: string;
   text: string;
@@ -614,6 +633,7 @@ function FlowEdgeLabel({
   to: FlowPoint;
   zoom: number;
   selected: boolean;
+  obstacles: { left: number; top: number; width: number; height: number }[];
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const maxWidth = edgeLabelMaxWidth(from, to, zoom);
@@ -625,7 +645,7 @@ function FlowEdgeLabel({
     const place = () => {
       const width = el.offsetWidth;
       const height = el.offsetHeight;
-      const placement = placeEdgeLabel(from, to, { width, height }, zoom);
+      const placement = placeEdgeLabel(from, to, { width, height }, zoom, obstacles);
       el.style.left = `${placement.x}px`;
       el.style.top = `${placement.y}px`;
       el.style.visibility = "visible";
@@ -635,7 +655,7 @@ function FlowEdgeLabel({
     const observer = new ResizeObserver(place);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [from, to, maxWidth, text, zoom]);
+  }, [from, to, maxWidth, obstacles, text, zoom]);
 
   return (
     <div

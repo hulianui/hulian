@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   FLOW_EDGE_LABEL_MAX_WIDTH,
-  FLOW_EDGE_LABEL_MIN_WIDTH,
   bezierPath,
   clampZoom,
   edgeLabelMaxWidth,
@@ -87,10 +86,10 @@ describe("edge labels", () => {
     expect(flowPortExclusionRadius(0)).toBe(10);
   });
 
-  it("长边封顶换行，中等空隙用满，短边退回最小可读宽度", () => {
+  it("换行宽度不随边长收成窄条", () => {
     expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 400, y: 0 }, 1)).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
-    expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 120, y: 0 }, 1)).toBe(92);
-    expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 40, y: 0 }, 1)).toBe(FLOW_EDGE_LABEL_MIN_WIDTH);
+    expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 120, y: 0 }, 1)).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
+    expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 40, y: 0 }, 1)).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
   });
 
   it("水平连线的标签在路径上方，不压桩，也不压中点删除钮", () => {
@@ -117,6 +116,30 @@ describe("edge labels", () => {
     expect(circleHitsRect(from.x, from.y, port, rect)).toBe(false);
     expect(circleHitsRect(to.x, to.y, port, rect)).toBe(false);
     expect(rectsOverlap(rect, { x: 59 - 13, y: 50 - 13, w: 26, h: 26 })).toBe(false);
+  });
+
+  it("比两端节点更宽的长文案让开节点和桩，不收成窄条", () => {
+    const from = { x: 88, y: 80 };
+    const to = { x: 168, y: 80 };
+    const size = { width: 160, height: 56 };
+    const nodes = [
+      { left: 8, top: 52, width: 80, height: 56 },
+      { left: 168, top: 52, width: 80, height: 56 },
+    ];
+    const place = placeEdgeLabel(from, to, size, 1, nodes);
+    const rect = { x: place.x, y: place.y, w: size.width, h: size.height };
+    const port = flowPortExclusionRadius(1);
+    expect(place.maxWidth).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
+    expect(circleHitsRect(from.x, from.y, port, rect)).toBe(false);
+    expect(circleHitsRect(to.x, to.y, port, rect)).toBe(false);
+    for (const node of nodes) {
+      const overlaps =
+        rect.x < node.left + node.width &&
+        rect.x + rect.w > node.left &&
+        rect.y < node.top + node.height &&
+        rect.y + rect.h > node.top;
+      expect(overlaps).toBe(false);
+    }
   });
 
   it("缩小后桩在世界上变大，标签仍让开", () => {

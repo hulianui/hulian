@@ -145,6 +145,76 @@ function FlowLabelDemo() {
   );
 }
 
+const coverageNodes: FlowNode<NodeData>[] = [
+  { id: "hub", position: { x: 8, y: 96 }, width: 88, data: { title: "汇出", subtitle: "一共出", tone: "violet", io: ["out"] } },
+  { id: "up", position: { x: 156, y: 8 }, width: 88, data: { title: "上支", subtitle: "扇出", tone: "amber", io: ["in"] } },
+  { id: "mid", position: { x: 156, y: 112 }, width: 88, data: { title: "中支", subtitle: "扇出", tone: "amber", io: ["in"] } },
+  { id: "down", position: { x: 156, y: 216 }, width: 88, data: { title: "下支", subtitle: "扇出", tone: "amber", io: ["in"] } },
+  { id: "west", position: { x: 8, y: 340 }, width: 88, data: { title: "西", subtitle: "交叉", tone: "brand", io: ["out"] } },
+  { id: "east", position: { x: 156, y: 448 }, width: 88, data: { title: "东", subtitle: "交叉", tone: "neutral", io: ["in"] } },
+  { id: "south", position: { x: 8, y: 448 }, width: 88, data: { title: "南", subtitle: "交叉", tone: "brand", io: ["out"] } },
+  { id: "north", position: { x: 156, y: 340 }, width: 88, data: { title: "北", subtitle: "交叉", tone: "neutral", io: ["in"] } },
+  { id: "nearA", position: { x: 8, y: 560 }, width: 88, data: { title: "近上", subtitle: "相邻", tone: "neutral", io: ["out"] } },
+  { id: "nearB", position: { x: 156, y: 560 }, width: 88, data: { title: "近上的", subtitle: "相邻", tone: "neutral", io: ["in"] } },
+  { id: "nearC", position: { x: 8, y: 640 }, width: 88, data: { title: "近下", subtitle: "相邻", tone: "neutral", io: ["out"] } },
+  { id: "nearD", position: { x: 156, y: 648 }, width: 88, data: { title: "近下的", subtitle: "相邻", tone: "neutral", io: ["in"] } },
+  { id: "ingest", position: { x: 8, y: 820 }, width: 88, data: { title: "采集", subtitle: "原始事件", tone: "brand", io: ["out"] } },
+  { id: "archive", position: { x: 156, y: 820 }, width: 88, data: { title: "归档", subtitle: "可检索", tone: "neutral", io: ["in"] } },
+];
+
+const coverageLabeled: FlowEdge[] = [
+  { id: "fan-up", source: "hub", target: "up", label: "上送" },
+  { id: "fan-mid", source: "hub", target: "mid", label: "直行" },
+  { id: "fan-down", source: "hub", target: "down", label: "下送" },
+  { id: "cross-ab", source: "west", target: "east", label: "斜下" },
+  { id: "cross-cd", source: "south", target: "north", label: "斜上" },
+  { id: "near-1", source: "nearA", target: "nearB", label: "贴上" },
+  { id: "near-2", source: "nearC", target: "nearD", label: "贴下" },
+  { id: "long", source: "ingest", target: "archive", label: "把原始事件规范成可检索的归档记录，并保留来源与时间" },
+];
+
+function coverageEdges(mode: "on" | "off" | "blank"): FlowEdge[] {
+  if (mode === "off") return coverageLabeled.map(({ label: _label, ...edge }) => edge);
+  if (mode === "blank") return coverageLabeled.map((edge) => ({ ...edge, label: "   " }));
+  return coverageLabeled;
+}
+
+function CoverageCanvas({ mode }: { mode: "on" | "off" | "blank" }) {
+  const [items, setItems] = useState(coverageNodes);
+  const [edges, setEdges] = useState(() => coverageEdges(mode));
+  const title = mode === "on" ? "同数据 · 有文案" : mode === "off" ? "同数据 · 无 label" : "同数据 · 空白 label";
+  return (
+    <section data-coverage-mode={mode}>
+      <h3 className="mb-2 text-sm font-semibold text-foreground">{title}</h3>
+      <div className="h-[960px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
+        <Flow<NodeData>
+          nodes={items}
+          edges={edges}
+          getHandles={getHandles}
+          controls={false}
+          onNodesChange={setItems}
+          onEdgesDelete={(ids) => setEdges((prev) => prev.filter((edge) => !ids.includes(edge.id)))}
+          renderNode={(item) => (
+            <div className={`relative overflow-hidden rounded-[calc(var(--radius)+0.25rem)] before:absolute before:inset-y-0 before:left-0 before:w-1 ${TONE[item.data.tone]}`}>
+              <div className="px-2.5 py-2 text-[13px] font-semibold text-foreground">{item.data.title}</div>
+            </div>
+          )}
+        />
+      </div>
+    </section>
+  );
+}
+
+function FlowCoverageDemo() {
+  return (
+    <div className="space-y-6">
+      <CoverageCanvas mode="on" />
+      <CoverageCanvas mode="off" />
+      <CoverageCanvas mode="blank" />
+    </div>
+  );
+}
+
 export const flowShowcase: ShowcaseSpec = {
   examples: [
     {
@@ -182,6 +252,20 @@ const [edges, setEdges] = useState(initialEdges);
   renderNode={(n) => <NodeCard data={n.data} />}
 />`,
       render: () => <FlowLabelDemo />,
+    },
+    {
+      title: "对照、扇出与交叉",
+      description:
+        "同一份节点和连线排三遍：不写 label、只写空白、写上文案。有文案的那份是共享源扇出、两条交叉曲线、两条相邻近线，再加一条长文案。交叉处的短标签仍可能贴到邻边，这一步不保证把它们分开。",
+      code: `<Flow
+  nodes={nodes}
+  edges={labeled}
+  getHandles={getHandles}
+  renderNode={(n) => <NodeCard data={n.data} />}
+/>
+<Flow nodes={nodes} edges={unlabeled} getHandles={getHandles} renderNode={(n) => <NodeCard data={n.data} />} />
+<Flow nodes={nodes} edges={blankLabels} getHandles={getHandles} renderNode={(n) => <NodeCard data={n.data} />} />`,
+      render: () => <FlowCoverageDemo />,
     },
     {
       title: "选中与删除",
