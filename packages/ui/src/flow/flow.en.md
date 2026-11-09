@@ -28,7 +28,7 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 | Name | Type | Default | Description |
 |------|------|------|------|
 | nodes * | FlowNode\<T\>[] | - | Controlled `{ id, position, data, width? }` nodes. |
-| edges * | FlowEdge[] | - | Controlled `{ id, source, target, sourceHandle?, targetHandle? }` edges. |
+| edges * | FlowEdge[] | - | Controlled `{ id, source, target, sourceHandle?, targetHandle?, label? }` edges. `label` is optional; see Edge labels. |
 | getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | - | Declares left target and right source handles, distributed vertically in return order. |
 | selectedId | string \| null | - | Controlled selected node id. |
 | defaultNodeWidth | number | 240 | Default node width in canvas pixels. |
@@ -81,9 +81,26 @@ const [selected, setSelected] = useState<string | null>(null);
 </div>
 ```
 
+## Edge labels
+
+`FlowEdge.label` is optional. Omit it, or pass only whitespace, and that edge draws no label. Pointer interaction, deletion, and the accessibility tree stay the same as an edge without the field.
+
+```tsx
+{ id: "e1", source: "prompt", target: "model", label: "Prompt" }
+```
+
+When the text is present, the chip sits on the outside of its own bezier, off the midpoint, and a short leader joins it back to that point on the curve. It uses the surface background and foreground text, the same tokens as nodes and the delete button. Long text wraps at a maximum of 10rem. It is not truncated and it does not turn into an ellipsis. A short edge does not collapse the text into a few characters per line; the chip moves clear of the endpoint nodes and ports instead.
+
+The box stays off both connector ports and off the delete button that appears at the midpoint of a selected edge. Placement looks only at that edge's own endpoints. Crossing, coincident, or tightly packed edges are not separated from each other, so their labels can still overlap.
+
+The path is drawn in an `aria-hidden` SVG, which means text inside that layer is not exposed to assistive technology. The label is a group outside that layer, and the group's accessible name is the label text. The visible characters are `aria-hidden` so the name is not announced twice. This slice exposes the name only. It does not add per-edge keyboard selection, deletion, or focus restoration.
+
 ## Usage notes
 
 - The outer element must have a definite height or the canvas is invisible.
+- `label` is optional. When it is omitted or blank, the edge draws no label, and pointer, delete, and screen-reader behavior match an edge without the field.
+- A label sits on the outside of its own curve, off the crossing, and a short leader joins the chip back to that curve. It stays clear of both connector ports, both endpoint nodes, and the selected edge's delete button. Long text wraps at a maximum of 10rem instead of collapsing to a few characters when the edge is short. Labels do not avoid each other: the chips can still stack.
+- Edge paths live in an `aria-hidden` SVG. The label name is outside that layer, so assistive technology can read the text. This slice does not add per-edge keyboard selection, deletion, or focus restoration.
 - Flow is fully controlled. Add ids and deduplicate new connections; when deleting a node, also remove its incident edges.
 - Pointer Events make Flow client-only.
 - The similarly named navigation-menu layout note concerns Base UI and does not apply here.

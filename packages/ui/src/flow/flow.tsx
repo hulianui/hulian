@@ -14,11 +14,13 @@ import { DotPattern } from "../dot-pattern";
 import { FlowNodeView } from "./flow-node";
 import {
   bezierPath,
+  edgeLabelMaxWidth,
   fitViewport,
   handleKey,
   handlePoint,
   layeredLayout,
   nodesBounds,
+  placeEdgeLabel,
   screenToCanvas,
   zoomAtPoint,
 } from "./flow-geometry";
@@ -380,6 +382,37 @@ export function Flow<T>({
       ? handleWorld(gesture.current.source, gesture.current.sourceHandle, "source")
       : null;
 
+  const endpointObstacles = (sourceId: string, targetId: string) => {
+    const boxes = [];
+    for (const id of [sourceId, targetId]) {
+      const node = nodeById.get(id);
+      const size = node ? sizes[node.id] : undefined;
+      if (!node || !size) continue;
+      const pos = displayPos(node);
+      boxes.push({
+        left: pos.x,
+        top: pos.y,
+        width: node.width ?? size.width,
+        height: size.height,
+      });
+    }
+    return boxes;
+  };
+
+  const renderedEdges = edges.map((edge) => {
+    const from = handleWorld(edge.source, edge.sourceHandle, "source");
+    const to = handleWorld(edge.target, edge.targetHandle, "target");
+    return {
+      edge,
+      from,
+      to,
+      d: from && to ? bezierPath(from, to) : null,
+      active: selectedEdge === edge.id,
+      animated: Boolean(isEdgeAnimated?.(edge)),
+      text: visibleEdgeLabel(edge.label),
+    };
+  });
+
   return (
     <div
       ref={containerRef}
@@ -404,15 +437,10 @@ export function Flow<T>({
           height={1}
           aria-hidden
         >
-          {edges.map((edge) => {
-            const from = handleWorld(edge.source, edge.sourceHandle, "source");
-            const to = handleWorld(edge.target, edge.targetHandle, "target");
-            if (!from || !to) return null;
-            const d = bezierPath(from, to);
-            const active = selectedEdge === edge.id;
-            const animated = isEdgeAnimated?.(edge);
+          {renderedEdges.map(({ edge, from, to, d, active, animated }) => {
+            if (!from || !to || !d) return null;
             return (
-              <g key={edge.id}>
+              <g key={edge.id} data-flow-edge={edge.id}>
                 {/* 透明粗线作点击命中区 */}
                 <path
                   d={d}
@@ -429,6 +457,7 @@ export function Flow<T>({
                 />
                 <path
                   d={d}
+                  data-flow-edge-stroke=""
                   className={cn(
                     active ? "text-primary" : "text-muted-foreground",
                     animated &&
@@ -474,6 +503,22 @@ export function Flow<T>({
             />
           )}
         </svg>
+
+        {/* 标签在 aria-hidden 的 SVG 之外，读屏才读得到；pointer-events-none 以免挡住连线命中和删除钮。 */}
+        {renderedEdges.map(({ edge, from, to, text, active }) =>
+          text && from && to ? (
+            <FlowEdgeLabel
+              key={edge.id}
+              edgeId={edge.id}
+              text={text}
+              from={from}
+              to={to}
+              zoom={vp.zoom}
+              selected={active}
+              obstacles={endpointObstacles(edge.source, edge.target)}
+            />
+          ) : null,
+        )}
 
         {/* 节点层 */}
         {nodes.map((n) => (
@@ -562,6 +607,85 @@ export function Flow<T>({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/** 空白不算文案：不渲染标签，也不往无障碍树里加节点。 */
+function visibleEdgeLabel(label: string | undefined): string | null {
+  if (typeof label !== "string") return null;
+  const text = label.trim();
+  return text.length > 0 ? text : null;
+}
+
+function FlowEdgeLabel({
+  edgeId,
+  text,
+  from,
+  to,
+  zoom,
+  selected,
+  obstacles,
+}: {
+  edgeId: string;
+  text: string;
+  from: FlowPoint;
+  to: FlowPoint;
+  zoom: number;
+  selected: boolean;
+  obstacles: { left: number; top: number; width: number; height: number }[];
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const leaderRef = useRef<SVGLineElement>(null);
+  const maxWidth = edgeLabelMaxWidth(from, to, zoom);
+
+  // 尺寸来自 DOM，直接写 left/top。不把测量结果放进 state，避免文案一变就多一轮渲染。
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const place = () => {
+      const width = el.offsetWidth;
+      const height = el.offsetHeight;
+      const placement = placeEdgeLabel(from, to, { width, height }, zoom, obstacles);
+      el.style.left = `${placement.x}px`;
+      el.style.top = `${placement.y}px`;
+      el.style.visibility = "visible";
+      const leader = leaderRef.current;
+      if (!leader) return;
+      const localX = placement.anchorX - placement.x;
+      const localY = placement.anchorY - placement.y;
+      leader.setAttribute("x1", String(Math.min(Math.max(localX, 0), width)));
+      leader.setAttribute("y1", String(Math.min(Math.max(localY, 0), height)));
+      leader.setAttribute("x2", String(localX));
+      leader.setAttribute("y2", String(localY));
+    };
+    place();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(place);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [from, to, maxWidth, obstacles, text, zoom]);
+
+  return (
+    <div
+      ref={ref}
+      data-flow-edge-label={edgeId}
+      role="group"
+      aria-label={text}
+      className={cn(
+        "pointer-events-none absolute w-max select-none break-words rounded-[var(--radius)] border border-hairline bg-surface px-1.5 py-0.5 text-center text-xs leading-snug text-foreground shadow-sm",
+        selected && "border-primary",
+      )}
+      style={{
+        maxWidth,
+        visibility: "hidden",
+      }}
+    >
+      <svg className="pointer-events-none absolute left-0 top-0 overflow-visible text-muted-foreground" width={1} height={1} aria-hidden="true">
+        <line ref={leaderRef} stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
+      {/* 视觉文字不进无障碍树，避免和分组的 aria-label 各念一遍。 */}
+      <span aria-hidden="true">{text}</span>
     </div>
   );
 }

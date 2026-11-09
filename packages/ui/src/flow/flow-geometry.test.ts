@@ -1,12 +1,16 @@
 import { describe, it, expect } from "vitest";
 import {
+  FLOW_EDGE_LABEL_MAX_WIDTH,
   bezierPath,
   clampZoom,
+  edgeLabelMaxWidth,
   fitViewport,
+  flowPortExclusionRadius,
   handleOffsetRatio,
   handlePoint,
   layeredLayout,
   nodesBounds,
+  placeEdgeLabel,
   screenToCanvas,
   zoomAtPoint,
 } from "./flow-geometry";
@@ -52,6 +56,164 @@ describe("bezierPath", () => {
     const d = bezierPath({ x: 10, y: 10 }, { x: 12, y: 10 });
     // dx 最小 36 → 第一个控制点 x = 10+36 = 46
     expect(d).toContain("C 46,10");
+  });
+});
+
+function curveSamples(from: { x: number; y: number }, to: { x: number; y: number }) {
+  const dx = Math.max(Math.abs(to.x - from.x) * 0.5, 36);
+  const p0 = from;
+  const p1 = { x: from.x + dx, y: from.y };
+  const p2 = { x: to.x - dx, y: to.y };
+  const p3 = to;
+  const points = [];
+  for (let i = 0; i <= 48; i += 1) {
+    const t = i / 48;
+    const u = 1 - t;
+    points.push({
+      x: u * u * u * p0.x + 3 * u * u * t * p1.x + 3 * u * t * t * p2.x + t * t * t * p3.x,
+      y: u * u * u * p0.y + 3 * u * u * t * p1.y + 3 * u * t * t * p2.y + t * t * t * p3.y,
+    });
+  }
+  return points;
+}
+
+function gapToRect(
+  points: { x: number; y: number }[],
+  rect: { x: number; y: number; w: number; h: number },
+) {
+  let best = Number.POSITIVE_INFINITY;
+  for (const point of points) {
+    const nearestX = Math.min(Math.max(point.x, rect.x), rect.x + rect.w);
+    const nearestY = Math.min(Math.max(point.y, rect.y), rect.y + rect.h);
+    best = Math.min(best, Math.hypot(point.x - nearestX, point.y - nearestY));
+  }
+  return best;
+}
+
+function circleHitsRect(
+  px: number,
+  py: number,
+  radius: number,
+  rect: { x: number; y: number; w: number; h: number },
+) {
+  const nearestX = Math.min(Math.max(px, rect.x), rect.x + rect.w);
+  const nearestY = Math.min(Math.max(py, rect.y), rect.y + rect.h);
+  const dx = px - nearestX;
+  const dy = py - nearestY;
+  return dx * dx + dy * dy < radius * radius;
+}
+
+function rectsOverlap(
+  a: { x: number; y: number; w: number; h: number },
+  b: { x: number; y: number; w: number; h: number },
+) {
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+describe("edge labels", () => {
+  it("桩的让位半径按屏幕 12px 圆加 4px 间隙、再除以 zoom", () => {
+    expect(flowPortExclusionRadius(1)).toBe(10);
+    expect(flowPortExclusionRadius(0.5)).toBe(20);
+    expect(flowPortExclusionRadius(0)).toBe(10);
+  });
+
+  it("换行宽度不随边长收成窄条", () => {
+    expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 400, y: 0 }, 1)).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
+    expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 120, y: 0 }, 1)).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
+    expect(edgeLabelMaxWidth({ x: 0, y: 0 }, { x: 40, y: 0 }, 1)).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
+  });
+
+  it("水平连线的标签在路径上方，不压桩，也不压中点删除钮", () => {
+    const from = { x: 100, y: 80 };
+    const to = { x: 360, y: 80 };
+    const size = { width: 140, height: 48 };
+    const place = placeEdgeLabel(from, to, size, 1);
+    const rect = { x: place.x, y: place.y, w: size.width, h: size.height };
+    const port = flowPortExclusionRadius(1);
+    expect(rect.y + size.height / 2).toBeLessThan(80);
+    expect(rect.x + size.width / 2).toBeGreaterThan(100);
+    expect(rect.x + size.width / 2).toBeLessThan(360);
+    expect(circleHitsRect(from.x, from.y, port, rect)).toBe(false);
+    expect(circleHitsRect(to.x, to.y, port, rect)).toBe(false);
+    expect(rectsOverlap(rect, { x: 230 - 13, y: 80 - 13, w: 26, h: 26 })).toBe(false);
+  });
+
+  it("交叉的两条对角线各自连回自己的斜段，而不是停在交点空档", () => {
+    const down = { from: { x: 72, y: 360 }, to: { x: 184, y: 500 } };
+    const up = { from: { x: 72, y: 500 }, to: { x: 184, y: 360 } };
+    const size = { width: 36, height: 22 };
+    const downPlace = placeEdgeLabel(down.from, down.to, size, 1, [
+      { left: 8, top: 340, width: 64, height: 40 },
+      { left: 184, top: 480, width: 64, height: 40 },
+    ]);
+    const upPlace = placeEdgeLabel(up.from, up.to, size, 1, [
+      { left: 8, top: 480, width: 64, height: 40 },
+      { left: 184, top: 340, width: 64, height: 40 },
+    ]);
+    const downRect = { x: downPlace.x, y: downPlace.y, w: size.width, h: size.height };
+    const upRect = { x: upPlace.x, y: upPlace.y, w: size.width, h: size.height };
+    const downPts = curveSamples(down.from, down.to);
+    const upPts = curveSamples(up.from, up.to);
+    const nearest = (points: { x: number; y: number }[], x: number, y: number) =>
+      Math.min(...points.map((point) => Math.hypot(point.x - x, point.y - y)));
+    // 引线终点在自己的曲线上，并且离开另一条曲线。只比两个盒子谁更近不够。
+    expect(nearest(downPts, downPlace.anchorX, downPlace.anchorY)).toBeLessThanOrEqual(2);
+    expect(nearest(upPts, upPlace.anchorX, upPlace.anchorY)).toBeLessThanOrEqual(2);
+    expect(nearest(upPts, downPlace.anchorX, downPlace.anchorY)).toBeGreaterThanOrEqual(16);
+    expect(nearest(downPts, upPlace.anchorX, upPlace.anchorY)).toBeGreaterThanOrEqual(16);
+    expect(gapToRect([{ x: downPlace.anchorX, y: downPlace.anchorY }], downRect)).toBeLessThanOrEqual(24);
+    expect(gapToRect([{ x: upPlace.anchorX, y: upPlace.anchorY }], upRect)).toBeLessThanOrEqual(24);
+    expect(gapToRect(upPts, downRect)).toBeGreaterThanOrEqual(8);
+    expect(gapToRect(downPts, upRect)).toBeGreaterThanOrEqual(8);
+    expect(rectsOverlap(downRect, upRect)).toBe(false);
+  });
+
+  it("比边还宽的标签会挪开两端的桩", () => {
+    const from = { x: 40, y: 50 };
+    const to = { x: 78, y: 50 };
+    const size = { width: 160, height: 64 };
+    const place = placeEdgeLabel(from, to, size, 1);
+    const rect = { x: place.x, y: place.y, w: size.width, h: size.height };
+    const port = flowPortExclusionRadius(1);
+    expect(circleHitsRect(from.x, from.y, port, rect)).toBe(false);
+    expect(circleHitsRect(to.x, to.y, port, rect)).toBe(false);
+    expect(rectsOverlap(rect, { x: 59 - 13, y: 50 - 13, w: 26, h: 26 })).toBe(false);
+  });
+
+  it("比两端节点更宽的长文案让开节点和桩，不收成窄条", () => {
+    const from = { x: 88, y: 80 };
+    const to = { x: 168, y: 80 };
+    const size = { width: 160, height: 56 };
+    const nodes = [
+      { left: 8, top: 52, width: 80, height: 56 },
+      { left: 168, top: 52, width: 80, height: 56 },
+    ];
+    const place = placeEdgeLabel(from, to, size, 1, nodes);
+    const rect = { x: place.x, y: place.y, w: size.width, h: size.height };
+    const port = flowPortExclusionRadius(1);
+    expect(place.maxWidth).toBe(FLOW_EDGE_LABEL_MAX_WIDTH);
+    expect(circleHitsRect(from.x, from.y, port, rect)).toBe(false);
+    expect(circleHitsRect(to.x, to.y, port, rect)).toBe(false);
+    for (const node of nodes) {
+      const overlaps =
+        rect.x < node.left + node.width &&
+        rect.x + rect.w > node.left &&
+        rect.y < node.top + node.height &&
+        rect.y + rect.h > node.top;
+      expect(overlaps).toBe(false);
+    }
+  });
+
+  it("缩小后桩在世界上变大，标签仍让开", () => {
+    const from = { x: 20, y: 40 };
+    const to = { x: 180, y: 90 };
+    const size = { width: 180, height: 52 };
+    const zoom = 0.35;
+    const place = placeEdgeLabel(from, to, size, zoom);
+    const rect = { x: place.x, y: place.y, w: size.width, h: size.height };
+    const port = flowPortExclusionRadius(zoom);
+    expect(circleHitsRect(from.x, from.y, port, rect)).toBe(false);
+    expect(circleHitsRect(to.x, to.y, port, rect)).toBe(false);
   });
 });
 

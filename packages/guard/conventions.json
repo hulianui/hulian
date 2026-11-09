@@ -3871,18 +3871,39 @@
       "id": "component/flow/pitfall/2",
       "scope": "flow",
       "title": "Flow",
-      "rule": "全受控：`onConnect` 回吐的连接**无 id**，你要自己补 id 并去重；`onNodeDelete` 只给节点 id，关联连线要你自己一并清掉（否则留下悬空 edge）。",
+      "rule": "`label` 可选。缺省或空白时不画标签，点击、删除和读屏结果与没有该字段时相同。",
       "source": "packages/ui/src/flow/flow.md"
     },
     {
       "id": "component/flow/pitfall/3",
       "scope": "flow",
       "title": "Flow",
-      "rule": "客户端组件（原生 Pointer Events），必须在 client 上下文用。",
+      "rule": "标签落在自己曲线的斜段外侧，短引线连回这条曲线、避开相交中点，并让开两端连接桩、两端节点和选中后的删除钮。长文案按最多 10rem 换行，不因为边短就收成四五字一列。它不跟其他标签互相避让：标签仍可能叠在一起。",
       "source": "packages/ui/src/flow/flow.md"
     },
     {
       "id": "component/flow/pitfall/4",
+      "scope": "flow",
+      "title": "Flow",
+      "rule": "连线路径在 `aria-hidden` 的 SVG 里。标签名挂在这层外面，读屏能读到文案。这一步没有键盘逐条选中、删除或焦点恢复。",
+      "source": "packages/ui/src/flow/flow.md"
+    },
+    {
+      "id": "component/flow/pitfall/5",
+      "scope": "flow",
+      "title": "Flow",
+      "rule": "全受控：`onConnect` 回吐的连接**无 id**，你要自己补 id 并去重；`onNodeDelete` 只给节点 id，关联连线要你自己一并清掉（否则留下悬空 edge）。",
+      "source": "packages/ui/src/flow/flow.md"
+    },
+    {
+      "id": "component/flow/pitfall/6",
+      "scope": "flow",
+      "title": "Flow",
+      "rule": "客户端组件（原生 Pointer Events），必须在 client 上下文用。",
+      "source": "packages/ui/src/flow/flow.md"
+    },
+    {
+      "id": "component/flow/pitfall/7",
       "scope": "flow",
       "title": "Flow",
       "rule": "候选坑 `base-ui-navigation-menu-content-must-stay-in-flow-for-popup-size-measure` 仅因「flow」字面匹配，讲的是 Base UI 导航菜单布局，与本组件无关，不引用。",
@@ -11334,7 +11355,7 @@
   ],
   "stats": {
     "componentDocs": 401,
-    "componentAdvisories": 1580,
-    "totalAdvisories": 1590
+    "componentAdvisories": 1583,
+    "totalAdvisories": 1593
   }
 }
