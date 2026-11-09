@@ -423,7 +423,7 @@ export function Flow<T>({
           {renderedEdges.map(({ edge, from, to, d, active, animated }) => {
             if (!from || !to || !d) return null;
             return (
-              <g key={edge.id}>
+              <g key={edge.id} data-flow-edge={edge.id}>
                 {/* 透明粗线作点击命中区 */}
                 <path
                   d={d}
@@ -440,6 +440,7 @@ export function Flow<T>({
                 />
                 <path
                   d={d}
+                  data-flow-edge-stroke=""
                   className={cn(
                     active ? "text-primary" : "text-muted-foreground",
                     animated &&

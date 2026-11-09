@@ -83,20 +83,24 @@ function FlowDemo({ controls = true, animated = false }: { controls?: boolean; a
   );
 }
 
+// 官网 360 视口的正文列约 328px，示例预览还有 p-8，画布只剩约 260px。
+// 右缘停在 248，桩留在画布里。短边分成三行，不共用一个出口，避免中线标签贴到旁边的曲线上。
 const labelNodes: FlowNode<NodeData>[] = [
-  { id: "ingest", position: { x: 8, y: 96 }, width: 80, data: { title: "采集", subtitle: "原始事件", tone: "brand", io: ["out"] } },
-  { id: "archive", position: { x: 228, y: 96 }, width: 80, data: { title: "归档", subtitle: "可检索", tone: "neutral", io: ["in"] } },
-  { id: "router", position: { x: 8, y: 248 }, width: 80, data: { title: "分流", subtitle: "三条出口", tone: "violet", io: ["out"] } },
-  { id: "queue", position: { x: 228, y: 196 }, width: 80, data: { title: "队列", subtitle: "待处理", tone: "amber", io: ["in"] } },
-  { id: "alert", position: { x: 228, y: 260 }, width: 80, data: { title: "告警", subtitle: "异常", tone: "amber", io: ["in"] } },
-  { id: "audit", position: { x: 228, y: 324 }, width: 80, data: { title: "审计", subtitle: "留痕", tone: "neutral", io: ["in"] } },
+  { id: "route", position: { x: 8, y: 48 }, width: 80, data: { title: "分流", subtitle: "三条出口", tone: "violet", io: ["out"] } },
+  { id: "queue", position: { x: 168, y: 48 }, width: 80, data: { title: "队列", subtitle: "待处理", tone: "amber", io: ["in"] } },
+  { id: "watch", position: { x: 8, y: 176 }, width: 80, data: { title: "异常", subtitle: "待处理", tone: "amber", io: ["out"] } },
+  { id: "alert", position: { x: 168, y: 176 }, width: 80, data: { title: "告警", subtitle: "异常", tone: "amber", io: ["in"] } },
+  { id: "record", position: { x: 8, y: 304 }, width: 80, data: { title: "审计", subtitle: "留痕", tone: "neutral", io: ["out"] } },
+  { id: "audit", position: { x: 168, y: 304 }, width: 80, data: { title: "留痕", subtitle: "待处理", tone: "neutral", io: ["in"] } },
+  { id: "ingest", position: { x: 8, y: 500 }, width: 80, data: { title: "采集", subtitle: "原始事件", tone: "brand", io: ["out"] } },
+  { id: "archive", position: { x: 168, y: 500 }, width: 80, data: { title: "归档", subtitle: "可检索", tone: "neutral", io: ["in"] } },
 ];
 
 const labelEdges: FlowEdge[] = [
   { id: "long", source: "ingest", target: "archive", label: "把原始事件规范成可检索的归档记录，并保留来源与时间" },
-  { id: "queue", source: "router", target: "queue", label: "入队" },
-  { id: "alert", source: "router", target: "alert", label: "告警" },
-  { id: "audit", source: "router", target: "audit", label: "留痕" },
+  { id: "queue", source: "route", target: "queue", label: "入队" },
+  { id: "alert", source: "watch", target: "alert", label: "告警" },
+  { id: "audit", source: "record", target: "audit", label: "留痕" },
 ];
 
 function FlowLabelDemo() {
@@ -106,7 +110,7 @@ function FlowLabelDemo() {
   const nextEdgeId = useRef(0);
 
   return (
-    <div className="h-[460px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
+    <div className="h-[680px] w-full overflow-hidden rounded-[calc(var(--radius)+0.25rem)] border border-border">
       <Flow<NodeData>
         nodes={nodes}
         edges={edges}
@@ -166,7 +170,7 @@ const [edges, setEdges] = useState(initialEdges);
     {
       title: "连线标签",
       description:
-        "FlowEdge.label 可选。长文案沿连线换行，分叉挤在一起时仍让开两端的桩。不写 label 的连线保持原样。名字挂在 aria-hidden 连线层之外，读屏能读到；键盘逐条选中连线不在这一步。",
+        "FlowEdge.label 可选。长文案在文档列宽里换行，短标签各自落在自己的边上。不写 label 的连线保持原样。名字挂在 aria-hidden 连线层之外，读屏能读到；键盘逐条选中连线不在这一步。交叉边上的标签仍可能贴到邻边，这一步不做通用避碰。",
       code: `<Flow
   nodes={nodes}
   edges={[

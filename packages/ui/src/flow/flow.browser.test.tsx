@@ -1,83 +1,152 @@
+import type { ReactNode } from "react";
 import { describe, it, expect, afterEach } from "vitest";
 import { render, cleanup, screen } from "@testing-library/react";
-import { Flow } from "./flow";
-import type { FlowEdge, FlowHandleSpec, FlowNode } from "./flow.types";
+import { page } from "@vitest/browser/context";
+import { flowShowcase } from "./flow.showcase";
 
 /**
- * 标签是否压住连接桩只能在真实布局里验。jsdom 的 getBoundingClientRect 恒为 0，
- * 几何单测锁的是放置函数，这里锁的是换行之后的真实盒子。
+ * 官网手机列宽不是「画布自己有 360px」。
+ * Layout.Content 是 px-4，示例预览再套 p-8，360 视口里 Flow 大约只剩 260px。
+ * 这里按这两层真实间距把官方「连线标签」示例放进同样的列，并真的把视口设成 360 / 390。
  */
 
 afterEach(cleanup);
 
-interface D {
-  label: string;
-}
-
 const LONG = "把原始事件规范成可检索的归档记录，并保留来源与时间";
 
-const nodes: FlowNode<D>[] = [
-  { id: "ingest", position: { x: 8, y: 96 }, width: 80, data: { label: "采集" } },
-  { id: "archive", position: { x: 228, y: 96 }, width: 80, data: { label: "归档" } },
-  { id: "router", position: { x: 8, y: 248 }, width: 80, data: { label: "分流" } },
-  { id: "queue", position: { x: 228, y: 196 }, width: 80, data: { label: "队列" } },
-  { id: "alert", position: { x: 228, y: 260 }, width: 80, data: { label: "告警" } },
-  { id: "audit", position: { x: 228, y: 324 }, width: 80, data: { label: "审计" } },
-];
+function DocsUsageColumn({ width, children }: { width: number; children: ReactNode }) {
+  return (
+    <div style={{ width }}>
+      <div className="px-4 py-8">
+        <div className="overflow-hidden rounded-[var(--radius)] border border-border">
+          <div className="bg-bg p-8">{children}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-const edges: FlowEdge[] = [
-  { id: "long", source: "ingest", target: "archive", label: LONG },
-  { id: "queue", source: "router", target: "queue", label: "入队" },
-  { id: "alert", source: "router", target: "alert", label: "告警" },
-  { id: "audit", source: "router", target: "audit", label: "留痕" },
-  { id: "bare", source: "ingest", target: "queue" },
-];
-
-const handles = (node: FlowNode<D>): FlowHandleSpec[] =>
-  node.id === "ingest" || node.id === "router"
-    ? [{ id: "out", type: "source" }]
-    : [{ id: "in", type: "target" }];
+function inside(inner: DOMRect, outer: DOMRect) {
+  return (
+    inner.left >= outer.left - 1 &&
+    inner.top >= outer.top - 1 &&
+    inner.right <= outer.right + 1 &&
+    inner.bottom <= outer.bottom + 1
+  );
+}
 
 function intersects(a: DOMRect, b: DOMRect) {
   return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 }
 
-describe("Flow 连线标签（真实布局）", () => {
-  it("长标签换行可读，密边的标签都不压连接桩，名字在隐藏 SVG 之外", async () => {
-    render(
-      <div style={{ width: 360, height: 460 }}>
-        <Flow<D>
-          className="h-[460px]"
-          nodes={nodes}
-          edges={edges}
-          getHandles={handles}
-          controls={false}
-          renderNode={(node) => <div className="px-2.5 py-2 text-xs">{node.data.label}</div>}
-        />
-      </div>,
-    );
+function strokeDistance(label: HTMLElement, path: SVGPathElement) {
+  const box = label.getBoundingClientRect();
+  const cx = box.left + box.width / 2;
+  const cy = box.top + box.height / 2;
+  const ctm = path.getScreenCTM();
+  if (!ctm) return Number.POSITIVE_INFINITY;
+  const len = path.getTotalLength();
+  const step = Math.max(len / 48, 2);
+  let best = Number.POSITIVE_INFINITY;
+  for (let distance = 0; distance <= len; distance += step) {
+    const point = path.getPointAtLength(distance);
+    const screen = new DOMPoint(point.x, point.y).matrixTransform(ctm);
+    best = Math.min(best, Math.hypot(screen.x - cx, screen.y - cy));
+  }
+  return best;
+}
 
-    const longLabel = await screen.findByRole("group", { name: LONG });
-    expect(longLabel.closest("svg")).toBeNull();
-    expect(longLabel.closest('[aria-hidden="true"]')).toBeNull();
-    expect(longLabel.getAttribute("aria-label")).toBe(LONG);
+describe("Flow 连线标签在文档列宽里", () => {
+  for (const viewportWidth of [360, 390]) {
+    it(`${viewportWidth} 视口的文档列里，节点、标签和桩都在画布内且可滚到`, async () => {
+      await page.viewport(viewportWidth, 900);
+      const example = flowShowcase.examples?.find((item) => item.title === "连线标签");
+      expect(example).toBeTruthy();
+      render(<DocsUsageColumn width={viewportWidth}>{example!.render()}</DocsUsageColumn>);
 
-    const box = longLabel.getBoundingClientRect();
-    expect(box.width).toBeGreaterThan(48);
-    expect(box.width).toBeLessThanOrEqual(160);
-    expect(box.height).toBeGreaterThan(box.width * 0.45);
+      const longLabel = await screen.findByRole("group", { name: LONG });
+      expect(window.innerWidth).toBe(viewportWidth);
+      expect(longLabel.getAttribute("aria-label")).toBe(LONG);
+      expect(longLabel.textContent).toBe(LONG);
+      expect(longLabel.closest("svg")).toBeNull();
+      expect(getComputedStyle(longLabel).fontSize).toBe("12px");
+      expect(longLabel.scrollWidth).toBeLessThanOrEqual(longLabel.clientWidth + 1);
 
-    const labels = [...document.querySelectorAll<HTMLElement>("[data-flow-edge-label]")];
-    const ports = [...document.querySelectorAll<HTMLElement>("[data-flow-handle]")];
-    expect(labels).toHaveLength(4);
-    expect(ports.length).toBeGreaterThan(0);
-    for (const label of labels) {
-      const labelBox = label.getBoundingClientRect();
-      expect(labelBox.width).toBeGreaterThan(0);
-      expect(labelBox.height).toBeGreaterThan(0);
-      for (const port of ports) {
-        expect(intersects(labelBox, port.getBoundingClientRect())).toBe(false);
+      const canvas = longLabel.closest<HTMLElement>('[role="application"]')!;
+      const canvasBox = canvas.getBoundingClientRect();
+      // 列宽必须是文档壳吃掉边距之后的宽度，而不是把 360 整页都给画布。
+      expect(canvasBox.width).toBeGreaterThan(230);
+      expect(canvasBox.width).toBeLessThan(viewportWidth - 80);
+      const world = canvas.querySelector<HTMLElement>("[style*='scale']")!;
+      expect(world.style.transform).toContain("scale(1)");
+
+      const nodes = [...canvas.querySelectorAll<HTMLElement>("[data-flow-node]")];
+      const ports = [...canvas.querySelectorAll<HTMLElement>("[data-flow-handle]")];
+      const labels = [...canvas.querySelectorAll<HTMLElement>("[data-flow-edge-label]")];
+      expect(nodes).toHaveLength(8);
+      expect(ports).toHaveLength(8);
+      expect(labels.map((label) => label.getAttribute("aria-label"))).toEqual([
+        LONG,
+        "入队",
+        "告警",
+        "留痕",
+      ]);
+
+      for (const el of [...nodes, ...ports, ...labels]) {
+        const box = el.getBoundingClientRect();
+        expect(box.width).toBeGreaterThan(0);
+        expect(box.height).toBeGreaterThan(0);
+        expect(inside(box, canvas.getBoundingClientRect())).toBe(true);
       }
-    }
-  });
+      for (const el of [...nodes, ...ports, ...labels]) {
+        el.scrollIntoView({ block: "center" });
+        const reached = el.getBoundingClientRect();
+        expect(reached.top).toBeGreaterThanOrEqual(-1);
+        expect(reached.bottom).toBeLessThanOrEqual(window.innerHeight + 1);
+        expect(inside(reached, canvas.getBoundingClientRect())).toBe(true);
+      }
+
+      for (const label of labels) {
+        const box = label.getBoundingClientRect();
+        for (const node of nodes) {
+          const nodeBox = node.getBoundingClientRect();
+          if (intersects(box, nodeBox)) {
+            throw new Error(
+              `${label.getAttribute("data-flow-edge-label")} overlaps ${node.getAttribute("data-flow-node")} label=${Math.round(box.left)},${Math.round(box.top)},${Math.round(box.right)},${Math.round(box.bottom)} node=${Math.round(nodeBox.left)},${Math.round(nodeBox.top)},${Math.round(nodeBox.right)},${Math.round(nodeBox.bottom)}`,
+            );
+          }
+        }
+        for (const port of ports) {
+          const portBox = port.getBoundingClientRect();
+          if (intersects(box, portBox)) {
+            throw new Error(
+              `${label.getAttribute("data-flow-edge-label")} overlaps port ${port.getAttribute("data-node-id")}:${port.getAttribute("data-flow-handle")} label=${Math.round(box.left)},${Math.round(box.top)},${Math.round(box.right)},${Math.round(box.bottom)} port=${Math.round(portBox.left)},${Math.round(portBox.top)},${Math.round(portBox.right)},${Math.round(portBox.bottom)}`,
+            );
+          }
+        }
+      }
+
+      const shortLabels = labels.filter((label) => label.getAttribute("aria-label") !== LONG);
+      for (const label of shortLabels) {
+        const ownId = label.getAttribute("data-flow-edge-label")!;
+        const strokes = [
+          ...canvas.querySelectorAll<SVGPathElement>("[data-flow-edge] [data-flow-edge-stroke]"),
+        ];
+        const distances = strokes.map((path) => ({
+          id: path.closest("[data-flow-edge]")!.getAttribute("data-flow-edge")!,
+          distance: strokeDistance(label, path),
+        }));
+        const own = distances.find((item) => item.id === ownId)!;
+        const others = distances.filter((item) => item.id !== ownId);
+        const nearestOther = Math.min(...others.map((item) => item.distance));
+        if (!(own.distance < nearestOther - 8)) {
+          throw new Error(
+            `${ownId} own=${own.distance.toFixed(1)} others=${others
+              .map((item) => `${item.id}:${item.distance.toFixed(1)}`)
+              .join(",")}`,
+          );
+        }
+      }
+    });
+  }
 });

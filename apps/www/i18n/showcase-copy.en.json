@@ -8627,7 +8627,7 @@
     "入队": "Enqueue",
     "连线标签": "Edge labels",
     "把原始事件规范成可检索的归档记录，并保留来源与时间": "Normalize raw events into a searchable archive and keep the source and time",
-    "FlowEdge.label 可选。长文案沿连线换行，分叉挤在一起时仍让开两端的桩。不写 label 的连线保持原样。名字挂在 aria-hidden 连线层之外，读屏能读到；键盘逐条选中连线不在这一步。": "FlowEdge.label is optional. Long copy wraps along the edge, and a tighter fork still leaves both connector ports clear. An edge without a label stays as it was. The name sits outside the aria-hidden edge layer so a screen reader can read it. Per-edge keyboard selection is not part of this step."
+    "FlowEdge.label 可选。长文案在文档列宽里换行，短标签各自落在自己的边上。不写 label 的连线保持原样。名字挂在 aria-hidden 连线层之外，读屏能读到；键盘逐条选中连线不在这一步。交叉边上的标签仍可能贴到邻边，这一步不做通用避碰。": "FlowEdge.label is optional. Long copy wraps inside the documentation column, and each short label sits on its own edge. An edge without a label stays as it was. The name sits outside the aria-hidden edge layer so a screen reader can read it. Per-edge keyboard selection is not part of this step. A label on a crossing edge can still sit against a neighbor; this step does not add general collision avoidance."
   },
   "files": {
     "packages/ui/src/math/math.showcase.tsx": {
