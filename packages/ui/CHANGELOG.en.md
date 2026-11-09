@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.70.0
+
+### Minor Changes
+
+- 05bd2f6: feat(sequence-diagram): adds SequenceDiagram, a read-only first slice. Participants run left to right and messages run top to bottom. `kind` is a synchronous call (solid line, filled head), an asynchronous message (open head), or a reply (dashed). `from === to` draws a self-call loop, and its text borrows the next column so a few words do not wrap. `autoNumber` adds numbers, and `activeId` highlights the current step with `aria-current="step"`. The message layer and the lifeline layer share one set of grid columns, so arrow ends need no DOM measurement. When columns do not fit, the figure scrolls horizontally inside its own area and the page does not overflow. Screen readers hear an ordered list, each item read as "A to B (synchronous call): text"; arrows sit in an `aria-hidden` decoration layer, and the prefix follows the `ConfigProvider` language. This slice has no notes, no frames, no activation bars, and messages cannot be selected.
+
 ## 0.69.1
 
 ### Patch Changes
