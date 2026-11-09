@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.69.1
+
+### Patch Changes
+
+- 7bf3302: fix(novel-reader): with the menus collapsed, the paper layer covered the text and the page looked blank. The paper layer is `absolute`, while the collapsed viewport was only `h-full` and not positioned, so CSS paint order drew the paper above the text. The text was in the DOM but nothing showed on screen. The open-menu state made the viewport `absolute`, so only the default state broke. The collapsed viewport is now `relative`, and a real-browser hit test covers it.
+
 ## 0.69.0
 
 ### Minor Changes
