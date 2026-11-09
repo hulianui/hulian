@@ -146,11 +146,19 @@ export interface FlowEdgeLabelPlacement {
   x: number;
   y: number;
   maxWidth: number;
+  /** 这条曲线上、标签所属的点。引线从盒子连到这里。 */
+  anchorX: number;
+  anchorY: number;
 }
 
+/** 曲线与标签边缘之间留下的缝。再大，交叉处的字就会飘在两条对角线的空档里。 */
+const LABEL_CURVE_GAP = 4;
+
 /**
- * 把标签放在贝塞尔中点的一侧（优先往上），贴着路径，但盒子不压两端连接桩、两端节点，也不压中点的删除钮。
- * 只看这一条边自己的端点。交叉或几乎重合的另一条边不参与，标签之间可能叠在一起。
+ * 把标签放到它自己曲线的斜段外侧，并让开两端连接桩、两端节点和中点删除钮。
+ * 锚点先取 0.65 / 0.35：0.5 是两条对角线的交点，水平出线端又会和另一条的水平进线挤在同一侧。
+ * 桩或删除钮把盒子推开时，anchor 仍留在曲线上，由短引线连回去。
+ * 只看这一条边。别的边不参与，标签之间仍可能叠在一起。
  */
 export function placeEdgeLabel(
   from: FlowPoint,
@@ -163,22 +171,12 @@ export function placeEdgeLabel(
   const width = Math.max(size.width, 0);
   const height = Math.max(size.height, 0);
   const { p0, p1, p2, p3 } = edgeBezierControls(from, to);
+  const portR = flowPortExclusionRadius(zoom);
+  const buttonSize = DELETE_CLEARANCE * 2;
   const mid = {
     x: cubicAt(p0.x, p1.x, p2.x, p3.x, 0.5),
     y: cubicAt(p0.y, p1.y, p2.y, p3.y, 0.5),
   };
-  let nx = -cubicTangentAt(p0.y, p1.y, p2.y, p3.y, 0.5);
-  let ny = cubicTangentAt(p0.x, p1.x, p2.x, p3.x, 0.5);
-  const nlen = Math.hypot(nx, ny) || 1;
-  nx /= nlen;
-  ny /= nlen;
-  if (ny > 0 || (ny === 0 && nx > 0)) {
-    nx = -nx;
-    ny = -ny;
-  }
-
-  const portR = flowPortExclusionRadius(zoom);
-  const buttonSize = DELETE_CLEARANCE * 2;
   const button = {
     left: mid.x - buttonSize / 2,
     top: mid.y - buttonSize / 2,
@@ -191,36 +189,80 @@ export function placeEdgeLabel(
     aabbsOverlap({ left, top, width, height }, button) ||
     obstacles.some((obstacle) => aabbsOverlap({ left, top, width, height }, obstacle));
 
-  const base = height / 2 + DELETE_CLEARANCE;
   const farthest = Math.max(
     Math.hypot(from.x - mid.x, from.y - mid.y),
     Math.hypot(to.x - mid.x, to.y - mid.y),
   );
-  // 沿法线推到这个距离之后，盒子中心离任一端点都远过「半对角 + 桩半径」。
-  const limit = base + farthest + Math.hypot(width, height) + portR + 4;
+  let best: { place: FlowEdgeLabelPlacement; offset: number } | null = null;
+  let attached: { place: FlowEdgeLabelPlacement; offset: number } | null = null;
 
-  const candidate = (distance: number, sign: number): FlowEdgeLabelPlacement | null => {
-    const cx = mid.x + nx * distance * sign;
-    const cy = mid.y + ny * distance * sign;
-    const left = Math.round(cx - width / 2);
-    const top = Math.round(cy - height / 2);
-    if (blocked(left, top)) return null;
-    return { x: left, y: top, maxWidth };
-  };
+  for (const t of [0.65, 0.35, 0.78, 0.22, 0.5]) {
+    const anchor = {
+      x: cubicAt(p0.x, p1.x, p2.x, p3.x, t),
+      y: cubicAt(p0.y, p1.y, p2.y, p3.y, t),
+    };
+    let nx = -cubicTangentAt(p0.y, p1.y, p2.y, p3.y, t);
+    let ny = cubicTangentAt(p0.x, p1.x, p2.x, p3.x, t);
+    const nlen = Math.hypot(nx, ny) || 1;
+    nx /= nlen;
+    ny /= nlen;
+    const awayLen = Math.hypot(anchor.x - mid.x, anchor.y - mid.y) || 1;
+    const outward = (nx * (anchor.x - mid.x) + ny * (anchor.y - mid.y)) / awayLen;
+    // 斜线在中点相交。法线朝离开中点的一侧，字才落在自己那条臂的外侧，而不是交点空档。
+    // 接近水平时两侧都离开中点，保持向上。
+    if (outward < -0.2 || (Math.abs(outward) <= 0.2 && (ny > 0 || (ny === 0 && nx > 0)))) {
+      nx = -nx;
+      ny = -ny;
+    }
+    let tx = cubicTangentAt(p0.x, p1.x, p2.x, p3.x, t);
+    let ty = cubicTangentAt(p0.y, p1.y, p2.y, p3.y, t);
+    const tlen = Math.hypot(tx, ty) || 1;
+    tx /= tlen;
+    ty /= tlen;
+    if (tx * (anchor.x - mid.x) + ty * (anchor.y - mid.y) < 0) {
+      tx = -tx;
+      ty = -ty;
+    }
+    const base = height / 2 + LABEL_CURVE_GAP;
+    const limit = base + farthest + Math.hypot(width, height) + portR + 4;
+    let tight: { place: FlowEdgeLabelPlacement; offset: number } | null = null;
+    let loose: { place: FlowEdgeLabelPlacement; offset: number } | null = null;
+    // 先沿切线离开交点，盒子才不会盖住对面那条臂。宽标签让不开时再退回锚点。
+    for (const along of [Math.min(width * 0.75, 32), Math.min(width / 2, 16), 0]) {
+      let chosen: { place: FlowEdgeLabelPlacement; offset: number } | null = null;
+      for (const sign of [1, -1]) {
+        for (let distance = base; distance <= limit; distance += 1) {
+          const left = Math.round(anchor.x + tx * along + nx * distance * sign - width / 2);
+          const top = Math.round(anchor.y + ty * along + ny * distance * sign - height / 2);
+          if (blocked(left, top)) continue;
+          chosen = {
+            place: { x: left, y: top, maxWidth, anchorX: anchor.x, anchorY: anchor.y },
+            offset: distance,
+          };
+          break;
+        }
+        if (chosen) break;
+      }
+      if (!chosen) continue;
+      if (loose === null || chosen.offset < loose.offset) loose = chosen;
+      if (chosen.offset - height / 2 <= 16) {
+        tight = chosen;
+        break;
+      }
+    }
+    if (tight && attached === null) attached = tight;
+    const candidate = tight ?? loose;
+    if (candidate && (best === null || candidate.offset < best.offset)) best = candidate;
+  }
 
-  for (let distance = base; distance <= limit; distance += 1) {
-    const above = candidate(distance, 1);
-    if (above) return above;
-  }
-  for (let distance = base; distance <= limit; distance += 1) {
-    const below = candidate(distance, -1);
-    if (below) return below;
-  }
   return (
-    candidate(limit, 1) ?? {
+    attached?.place ??
+    best?.place ?? {
       x: Math.round(mid.x - width / 2),
       y: Math.round(mid.y - height - DELETE_CLEARANCE),
       maxWidth,
+      anchorX: mid.x,
+      anchorY: mid.y,
     }
   );
 }

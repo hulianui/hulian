@@ -89,6 +89,12 @@ function polylinesCross(left: { x: number; y: number }[], right: { x: number; y:
       if (segmentsCross(left[i], left[i + 1], right[j], right[j + 1])) return true;
     }
   }
+  // 对称的两条对角线会在采样点上相遇，端点相接不算相交。
+  for (let i = 1; i < left.length - 1; i += 1) {
+    for (let j = 1; j < right.length - 1; j += 1) {
+      if (Math.hypot(left[i].x - right[j].x, left[i].y - right[j].y) <= 2) return true;
+    }
+  }
   return false;
 }
 
@@ -151,6 +157,43 @@ describe("Flow 对照、扇出与交叉", () => {
       expect(longLabel.getBoundingClientRect().height).toBeLessThan(longLabel.getBoundingClientRect().width);
 
       expect(polylinesCross(samples(stroke(on, "cross-ab")), samples(stroke(on, "cross-cd")))).toBe(true);
+      const nearestPoint = (edgeId: string, point: { x: number; y: number }) => {
+        let best = Number.POSITIVE_INFINITY;
+        for (const sample of samples(stroke(on, edgeId))) {
+          best = Math.min(best, Math.hypot(sample.x - point.x, sample.y - point.y));
+        }
+        return best;
+      };
+      const leaderEnd = (id: string) => {
+        const label = on.querySelector<HTMLElement>(`[data-flow-edge-label='${id}']`)!;
+        const line = label.querySelector("line");
+        expect(line).toBeTruthy();
+        const svg = line!.ownerSVGElement!;
+        const local = svg.createSVGPoint();
+        local.x = line!.x2.baseVal.value;
+        local.y = line!.y2.baseVal.value;
+        const screen = local.matrixTransform(svg.getScreenCTM()!);
+        return { x: screen.x, y: screen.y, label };
+      };
+      // 引线终点落在自己的曲线上，并离开另一条。只比两个盒子谁更近不够。
+      for (const [own, other] of [
+        ["cross-ab", "cross-cd"],
+        ["cross-cd", "cross-ab"],
+      ] as const) {
+        const end = leaderEnd(own);
+        expect(nearestPoint(own, end)).toBeLessThanOrEqual(3);
+        expect(nearestPoint(other, end)).toBeGreaterThanOrEqual(16);
+        const box = end.label.getBoundingClientRect();
+        const edgeX = Math.min(Math.max(end.x, box.left), box.right);
+        const edgeY = Math.min(Math.max(end.y, box.top), box.bottom);
+        expect(Math.hypot(end.x - edgeX, end.y - edgeY)).toBeLessThanOrEqual(24);
+      }
+      expect(
+        intersects(
+          on.querySelector<HTMLElement>("[data-flow-edge-label='cross-ab']")!.getBoundingClientRect(),
+          on.querySelector<HTMLElement>("[data-flow-edge-label='cross-cd']")!.getBoundingClientRect(),
+        ),
+      ).toBe(false);
       const fanStarts = ["fan-up", "fan-mid", "fan-down"].map((id) => samples(stroke(on, id))[0]);
       expect(Math.hypot(fanStarts[0].x - fanStarts[1].x, fanStarts[0].y - fanStarts[1].y)).toBeLessThan(3);
       expect(Math.hypot(fanStarts[0].x - fanStarts[2].x, fanStarts[0].y - fanStarts[2].y)).toBeLessThan(3);

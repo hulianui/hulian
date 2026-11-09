@@ -636,6 +636,7 @@ function FlowEdgeLabel({
   obstacles: { left: number; top: number; width: number; height: number }[];
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const leaderRef = useRef<SVGLineElement>(null);
   const maxWidth = edgeLabelMaxWidth(from, to, zoom);
 
   // 尺寸来自 DOM，直接写 left/top。不把测量结果放进 state，避免文案一变就多一轮渲染。
@@ -649,6 +650,14 @@ function FlowEdgeLabel({
       el.style.left = `${placement.x}px`;
       el.style.top = `${placement.y}px`;
       el.style.visibility = "visible";
+      const leader = leaderRef.current;
+      if (!leader) return;
+      const localX = placement.anchorX - placement.x;
+      const localY = placement.anchorY - placement.y;
+      leader.setAttribute("x1", String(Math.min(Math.max(localX, 0), width)));
+      leader.setAttribute("y1", String(Math.min(Math.max(localY, 0), height)));
+      leader.setAttribute("x2", String(localX));
+      leader.setAttribute("y2", String(localY));
     };
     place();
     if (typeof ResizeObserver === "undefined") return;
@@ -672,6 +681,9 @@ function FlowEdgeLabel({
         visibility: "hidden",
       }}
     >
+      <svg className="pointer-events-none absolute left-0 top-0 overflow-visible text-muted-foreground" width={1} height={1} aria-hidden="true">
+        <line ref={leaderRef} stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      </svg>
       {/* 视觉文字不进无障碍树，避免和分组的 aria-label 各念一遍。 */}
       <span aria-hidden="true">{text}</span>
     </div>
