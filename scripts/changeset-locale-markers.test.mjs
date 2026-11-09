@@ -25,7 +25,7 @@ function localizedPackages(text) {
 
 test("ui and tokens changesets carry one English marker pair", () => {
   const files = pendingChangesets().filter((file) => localizedPackages(file.text).length > 0);
-  assert.ok(files.length > 0);
+  // A version PR consumes every changeset; an empty queue has nothing to check.
   for (const file of files) {
     const starts = file.text.split(START).length - 1;
     const ends = file.text.split(END).length - 1;
