@@ -47,6 +47,7 @@ export * from "./pricing-table";
 export * from "./json-viewer";
 export * from "./kanban";
 export * from "./flow";
+export * from "./sequence-diagram";
 export * from "./design-canvas";
 export * from "./component-picker";
 export * from "./watermark";

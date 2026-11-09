@@ -1077,6 +1077,12 @@ export const scenarioLoaders = {
   separator: async () =>
     (await import("@hulianui/ui-internal/separator/separator.showcase"))
       .separatorShowcase,
+  "sequence-diagram": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/sequence-diagram/sequence-diagram.showcase"
+      )
+    ).sequenceDiagramShowcase,
   "service-message": async () =>
     (
       await import(
@@ -4796,6 +4802,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/separator/index.ts",
+  },
+  "sequence-diagram": {
+    id: "sequence-diagram",
+    scenarioId: "sequence-diagram/basic",
+    component: "SequenceDiagram",
+    entry: "@hulianui/ui/sequence-diagram",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/sequence-diagram/index.ts",
   },
   "service-message": {
     id: "service-message",
