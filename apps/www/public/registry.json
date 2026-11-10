@@ -11254,7 +11254,7 @@
       "name": "sequence-diagram",
       "type": "registry:ui",
       "title": "SequenceDiagram",
-      "description": "按时间顺序画出参与者之间的调用、异步消息和返回",
+      "description": "按时间顺序画出参与者之间的调用、异步消息、返回和注释",
       "categories": [
         "data-display"
       ],
@@ -11264,17 +11264,25 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { SequenceDiagram, layoutSequence } from \"@hulianui/ui\"",
+        "import": "import { SequenceDiagram, analyzeSequence, layoutSequence, validateSequence } from \"@hulianui/ui\"",
         "exports": [
           "SequenceDiagram",
-          "layoutSequence"
+          "analyzeSequence",
+          "layoutSequence",
+          "validateSequence"
         ],
         "types": [
+          "SequenceAnalysis",
           "SequenceDirection",
+          "SequenceMessageRow",
+          "SequenceNoteRow",
           "SequenceRow",
           "SequenceDiagramProps",
+          "SequenceIssue",
+          "SequenceItem",
           "SequenceMessage",
           "SequenceMessageKind",
+          "SequenceNote",
           "SequenceParticipant"
         ],
         "group": "collection",
