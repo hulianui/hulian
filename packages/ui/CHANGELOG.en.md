@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.72.0
+
+### Minor Changes
+
+- c49e3dd: feat(org-classroom): adds OrgClassroom, an organization seat floor. One person per single desk, desks in a row join into a long table, and seats are grouped by department zone. Seats are Blender pre-rendered isometric sprites split into a shadow, color-group masks, and a white shading pass; masks are filled with theme colors and the shading is multiplied on top, so the person follows `--color-foreground`, the desk top follows `--color-surface`, the scarf follows the zone `accent`, and dark mode needs no new images. The images ship as WebP data URIs in source: no runtime dependency and no WebGL. Clicks are tested per pixel: the desk, chair, or person selects the seat, and a transparent spot falls through to the zone floor and focuses the zone, so overlapping neighbors never steal a click. Seats are real buttons; Tab follows row and column order, focus and selection draw an outline glow, and Enter opens the person card. Status changes from the person card; its close button or Escape closes it and returns focus to the seat. The layout follows the component's own width, and name bubbles collapse into status dots when the scene is scaled down. `Zone.facing` sets which side of the floor plan each zone faces, `view` / `onViewChange` plus two buttons next to the compass rotate the viewing angle, and `northDeg` points the compass at true north; the compass is drawn as a circle on the floor, in the same perspective as the floor. Default status labels stay the locked Chinese copy. This version has no drag-to-reseat, pan/zoom, KPI bar, or interview room.
+
 ## 0.71.0
 
 ### Minor Changes
