@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   checkComponentDocTranslations,
+  fencedCjkSnippets,
   formatDiagnostics,
 } from "./check-component-doc-translations.mjs";
 import { absolutize, collectDocs } from "./gen-llms-registry.mjs";
@@ -211,6 +212,30 @@ test("multiline code spans hide related links using their exact backtick run", (
   );
 });
 
+test("English component docs do not put CJK inside code fences", () => {
+  const root = join(ROOT, "packages/ui/src");
+  const hits = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const path = join(dir, name);
+      if (statSync(path).isDirectory()) walk(path);
+      else if (name.endsWith(".en.md")) {
+        for (const snippet of fencedCjkSnippets(readFileSync(path, "utf8"))) {
+          hits.push(`${path}: ${snippet}`);
+        }
+      }
+    }
+  };
+  walk(root);
+  assert.deepEqual(hits, []);
+  const org = readFileSync(join(root, "org-classroom/org-classroom.en.md"), "utf8");
+  assert.equal(fencedCjkSnippets(org).length, 0);
+  assert.equal(
+    fencedCjkSnippets("```text\nidle: 在岗\n```").join(""),
+    "在岗",
+  );
+});
+
 test("an unmatched inline delimiter stops at a fence boundary during coverage checks", () => {
   withFixture(
     {
@@ -225,6 +250,10 @@ test("an unmatched inline delimiter stops at a fence boundary during coverage ch
       assert.deepEqual(
         diagnostics.map((diagnostic) => [diagnostic.code, diagnostic.message]),
         [
+          [
+            "fenced-cjk",
+            'CJK inside an English code fence ("围栏中文") is rendered in <pre><code> and fails the English output and showcase browser gates',
+          ],
           ["broken-related", "Broken related-component slug ghost-visible"],
           [
             "cjk",

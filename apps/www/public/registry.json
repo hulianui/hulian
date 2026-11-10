@@ -10370,6 +10370,105 @@
       ]
     },
     {
+      "name": "org-classroom",
+      "type": "registry:ui",
+      "title": "OrgClassroom",
+      "description": "组织工位 · Blender 预渲染等距精灵图（分层吃主题色，零运行时依赖）· 单人桌可拼接 · 部门分区、人名、状态气泡 · 点座位看人员卡并改状态",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/card.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/tag.json",
+        "https://hulianui.haloritual.com/zh/r/text.json"
+      ],
+      "meta": {
+        "import": "import { OrgClassroom, updateSeatStatus } from \"@hulianui/ui\"",
+        "exports": [
+          "OrgClassroom",
+          "updateSeatStatus"
+        ],
+        "types": [
+          "OrgClassroomProps",
+          "Seat",
+          "SeatPerson",
+          "SeatStatus",
+          "ViewAngle",
+          "Zone",
+          "ZoneFacing"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/org-classroom/org-classroom.md",
+        "docLocal": "packages/ui/src/org-classroom/org-classroom.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/org-classroom/copy.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/copy.ts"
+        },
+        {
+          "path": "components/hulianui/org-classroom/floor.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/floor.tsx"
+        },
+        {
+          "path": "components/hulianui/org-classroom/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/index.ts"
+        },
+        {
+          "path": "components/hulianui/org-classroom/iso-layout.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/iso-layout.ts"
+        },
+        {
+          "path": "components/hulianui/org-classroom/org-classroom-sprites.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/org-classroom-sprites.ts"
+        },
+        {
+          "path": "components/hulianui/org-classroom/org-classroom.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/org-classroom.tsx"
+        },
+        {
+          "path": "components/hulianui/org-classroom/org-classroom.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/org-classroom.types.ts"
+        },
+        {
+          "path": "components/hulianui/org-classroom/person-card.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/person-card.tsx"
+        },
+        {
+          "path": "components/hulianui/org-classroom/seat-status.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/seat-status.ts"
+        },
+        {
+          "path": "components/hulianui/org-classroom/status-chip.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/status-chip.tsx"
+        },
+        {
+          "path": "components/hulianui/org-classroom/view-controls.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/view-controls.tsx"
+        }
+      ]
+    },
+    {
       "name": "pixel-card",
       "type": "registry:ui",
       "title": "PixelCard",
@@ -21770,6 +21869,7 @@
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/math-field.json",
         "https://hulianui.haloritual.com/zh/r/math-textarea.json",
+        "https://hulianui.haloritual.com/zh/r/org-classroom.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
         "https://hulianui.haloritual.com/zh/r/question-answer.json",
         "https://hulianui.haloritual.com/zh/r/question-editor.json",

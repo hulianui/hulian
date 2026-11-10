@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|math-field|math-textarea|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|novel-editor|novel-reader|number-field|number-ticker|orb|orbit-images|orbiting-circles|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question|question-answer|question-card|question-editor|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|score-scale|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|sequence-diagram|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|treemap|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|math-field|math-textarea|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|novel-editor|novel-reader|number-field|number-ticker|orb|orbit-images|orbiting-circles|org-classroom|page-header|pagination|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question|question-answer|question-card|question-editor|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|score-scale|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|sequence-diagram|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|treemap|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -6675,6 +6675,83 @@
       "source": "packages/ui/src/orbiting-circles/orbiting-circles.md"
     },
     {
+      "id": "component/org-classroom/pitfall/1",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "空座位不渲染状态气泡。默认文案就是「在岗 / 忙碌 / 会议中 / 休假 / 面试中」。英文产品在根上挂 `ConfigProvider locale={enUS}`，不要在调用处改这五个字。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/2",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "状态是受控的。人员卡只调用 `onStatusChange`，下一帧的气泡来自你写回的 `person.status`。用 `updateSeatStatus` 可以保持没改动的座位引用。气泡用透明度过渡，不要靠 `key={status}` 把整颗气泡卸掉重挂。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/3",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "点座位是选中，点分区里桌子以外的空白才是聚焦。再点一次已聚焦分区的空白会清空聚焦，**不会**关掉人员卡。再点一次已经选中的座位也**不会**关闭，只会再次交出同一个座位 id。关闭只有两条：卡片上的「关闭人员卡」，或焦点在组件里时按 Esc。两条都会把选中清成 `null`（受控时要由 `onSeatSelect(null)` 写回 `selectedSeatId`），并把焦点还到打开这张卡的座位按钮上。v1 没有拖拽换座、多选，也没有平移缩放。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/4",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "`accent` 里的主题变量必须带 `--color-` 前缀。它同时决定分区地板和这一区人的围巾颜色。座位上的人是内部模型，不是头像组件 [Avatar](../avatar/avatar.md)。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/5",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "座位是 Blender 预渲染的精灵图，不是 Three.js / R3F，也不是实时 WebGL。每张图拆成阴影、按颜色组的遮罩和一张白模光照：遮罩填主题色（人吃 `--color-foreground`，桌面吃 `--color-surface`，围巾吃 `accent`），光照用 `multiply` 叠上去，所以换主题、深色模式都不用重新出图。改模型或相机后在本目录跑 `blender -b --factory-startup --python org-classroom-sprites.bake.py`（需要 `cwebp`）重新生成 `org-classroom-sprites.ts`，不要手改它。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/6",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "一人一张单人桌，同一行的桌子并排拼成长条。行列只决定位置，不要用 `row` / `col` 留空当过道：分区之间本来就有过道。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/7",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "点击按像素判断：点到桌椅人身上才算这个座位，点到图片透明处落到分区地板。前后座位图片会重叠，所以不要在外面给座位包一层按矩形接点击的元素。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/8",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "指南针画成平放在地面上的圆的投影，所以北向刻度在等距画面里通常是斜的；它和地板同一个透视，不是画错了。`northDeg` 只转指南针，不转楼层；要让人朝真北，用 `facing` 配合 `northDeg` 自己算。`facing` 只有四个方向，桌子不做任意角度。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/9",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "座位图按「朝向 − 视角」的 4 个相对角各烘一套，`org-classroom-sprites.ts` 约 360KB（WebP data URI）。只用默认朝向和视角也会整体打进包里。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/10",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "排布按组件自身宽度（容器查询）切换：宽于 48rem 时人员卡在右侧，否则在上方。场景缩小到一定比例后，人名气泡收成状态圆点，名字和状态仍在座位按钮的读屏标签和人员卡里。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/11",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "英文文档的代码块同样会被英文站渲染出来。`*.en.md` 的围栏里不要写「在岗 / 忙碌 / 会议中 / 休假 / 面试中」。`docs:i18n:check` 会报 `fenced-cjk`；只查正文、放行围栏，会绿到静态导出之后的英文产物门禁和 showcase 浏览器门禁才红。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
       "id": "component/page-header/pitfall/1",
       "scope": "page-header",
       "title": "PageHeader",
@@ -11382,8 +11459,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 402,
-    "componentAdvisories": 1587,
-    "totalAdvisories": 1597
+    "componentDocs": 403,
+    "componentAdvisories": 1598,
+    "totalAdvisories": 1608
   }
 }

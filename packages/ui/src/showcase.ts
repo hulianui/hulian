@@ -258,6 +258,7 @@ export { masonryShowcase } from "./masonry/masonry.showcase";
 export { documentSheetShowcase } from "./document-sheet/document-sheet.showcase";
 export { ganttShowcase } from "./gantt/gantt.showcase";
 export { schedulerShowcase } from "./scheduler/scheduler.showcase";
+export { orgClassroomShowcase } from "./org-classroom/org-classroom.showcase";
 export { imageViewerShowcase } from "./image-viewer/image-viewer.showcase";
 // 实时直播批（demo 瀚播 dogfood 驱动）
 export { danmakuShowcase } from "./danmaku/danmaku.showcase";

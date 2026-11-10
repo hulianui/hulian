@@ -318,6 +318,7 @@ export * from "./masonry";
 export * from "./document-sheet";
 export * from "./gantt";
 export * from "./scheduler";
+export * from "./org-classroom";
 export * from "./image-viewer";
 
 // 实时直播批（demo 瀚播 dogfood 驱动·零依赖）

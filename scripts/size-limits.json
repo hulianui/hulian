@@ -79,7 +79,7 @@
     {
       "name": "root-barrel",
       "entry": "@hulianui/ui",
-      "limitKB": 1098
+      "limitKB": 1400
     }
   ]
 }

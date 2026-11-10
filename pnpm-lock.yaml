@@ -186,7 +186,7 @@ importers:
   packages/hulian-scan:
     dependencies:
       playwright:
-        specifier: ^1.62.1
+        specifier: 1.62.1
         version: 1.62.1
       react-scan:
         specifier: 0.5.7
