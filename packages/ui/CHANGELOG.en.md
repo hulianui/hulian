@@ -1,5 +1,43 @@
 # @hulianui/ui
 
+## 0.70.0
+
+### Minor Changes
+
+- 05bd2f6: feat(sequence-diagram): adds SequenceDiagram, a read-only first slice. Participants run left to right and messages run top to bottom. `kind` is a synchronous call (solid line, filled head), an asynchronous message (open head), or a reply (dashed). `from === to` draws a self-call loop, and its text borrows the next column so a few words do not wrap. `autoNumber` adds numbers, and `activeId` highlights the current step with `aria-current="step"`. The message layer and the lifeline layer share one set of grid columns, so arrow ends need no DOM measurement. When columns do not fit, the figure scrolls horizontally inside its own area and the page does not overflow. Screen readers hear an ordered list, each item read as "A to B (synchronous call): text"; arrows sit in an `aria-hidden` decoration layer, and the prefix follows the `ConfigProvider` language. This slice has no notes, no frames, no activation bars, and messages cannot be selected.
+
+## 0.69.1
+
+### Patch Changes
+
+- 7bf3302: fix(novel-reader): with the menus collapsed, the paper layer covered the text and the page looked blank. The paper layer is `absolute`, while the collapsed viewport was only `h-full` and not positioned, so CSS paint order drew the paper above the text. The text was in the DOM but nothing showed on screen. The open-menu state made the viewport `absolute`, so only the default state broke. The collapsed viewport is now `relative`, and a real-browser hit test covers it.
+
+## 0.69.0
+
+### Minor Changes
+
+- 2f349ef: feat(flow): an edge can carry optional text, `FlowEdge.label`. Omitting it, or leaving only whitespace, keeps the canvas, pointer, delete, and screen-reader behavior unchanged. When text is present, the chip sits on the outside of its own bezier, off the midpoint, and a short leader joins it back to that point on the curve. It stays clear of both connector ports, both endpoint nodes, and the selected edge's delete button. Long text wraps at a maximum of 10rem and is not truncated. Labels on crossing or tightly packed edges do not avoid each other and can still overlap. The path stays in an `aria-hidden` SVG, and the label name hangs on a group outside that layer so assistive technology can read the text. This step only adds the name. It does not add per-edge keyboard selection, deletion, or focus restoration. It is not released yet, and the production docs site does not have it yet.
+
+- 815d5df: feat(novel-reader): three closures, each a gap that only shows up when building a reading product.
+
+  **`defaultChromeOpen`**: immersive reading keeps the top and bottom bars collapsed by default (a tap in the middle of the text cycles them in). A reading-site landing page then opens on a blank sheet with no back control, no contents, and no settings, and the reader cannot tell what is tappable. This prop defaults to `false`, matching the previous behavior. A reading product's home page passes `true`, so the first screen already has the top bar (back, bibliography, contents, settings).
+
+  **Paper is actually paper**: `day` and `default` used to render identically (both `bg-bg`), `eye` was only a green film of `bg-success/12`, and `night` was plain `bg-surface`, so the four names did not match the paint. They are now mixed from semantic colors: `day` runs warm (`warning` at 6%), `eye` runs green (`success` at 11%), `night` mixes 5% warmth into the dark ground, and `oled` is the one that approaches pure black. Changing theme carries the paper color with it, so a dark page does not hold a white sheet.
+
+  **Paper fills the viewport, not the `<article>`**: with only a few hundred characters, paper painted on the article stops dead at the last line, half beige and half white, as if rendering had broken. Paper color and `data-theme` now both hang on the scroll viewport, which is full height. The constraint that menus follow page tokens while paper only wraps the text still holds. The continuous-reading content layer is `min-h-full`, so the text container can fill the screen.
+
+- f7ed85e: Adds NovelReader and NovelEditor. Reading progress stores only the chapter and a character offset. Page turns (scroll, cover, or simulation), type size, line height, column width, and paper color live in one bottom settings sheet, and the menu does not take space by default. The previous chapter sits at the start of the chapter and the next chapter at the end, both in the text flow; the first and last chapters omit the control that would do nothing. It does not rely on top and bottom bars that stay on the page.
+
+- 815d5df: feat(novel): the text's font family, size, and line height can actually land on the glyphs.
+
+  **`NovelReader.articleClassName`**: size and line height were already written on the text `<article>`, but the font family could not be changed. A reading site that wants the text in a Song typeface uses this prop, instead of writing `[&_article]` outside the component to reach inside it.
+
+  **`Markdown.inheritTypography`**: the inner Prose pins `text-base` and `leading-7`, so changing size or line height in the reader left the text still. Turning this on lets both follow the outer layer. Docs pages leave it off, and their appearance stays the same.
+
+  **`NovelEditor.previewClassName`**: the preview can use the same paper and the same type as the reader. The editing bar stays a tool and does not turn the whole screen into an admin page.
+
+- 815d5df: feat(tag): adds a `color` axis for categories. `tone` is the six semantic colors and answers "what state is this in". "Which category does this belong to" — a channel, a business line, a file type, a tag system — often has a dozen or twenty values, and the semantic colors cannot hold them. Forcing the mapping makes "success" and "channel A" share one green, so a reader who infers meaning from the color gets it wrong. `color` goes through `resolveTone` (the same path as `Dot.color`, `Brand.color`, and `ChartSeries.color`) and accepts a semantic name (`chart-1..6`, `primary`, and the rest), any CSS color, or `var(--color-*)`. The soft, outline, and solid treatments all derive from that one color (a 12% mix for the background, a stroke, and a solid fill), follow light and dark themes, and do not need a separate light and dark value for each color. When `color` and `tone` are both passed, `color` wins and `tone` keeps its semantic meaning. The docs site also adds the `info` step that the examples and the Playground had both omitted: the page had been showing five of the six semantic colors, which looked like there were only five treatments.
+
 ## 0.68.0
 
 ### Minor Changes

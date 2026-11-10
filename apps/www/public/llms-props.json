@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.68.0",
+  "version": "0.70.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -768,6 +768,11 @@
       "sm",
       "md",
       "lg"
+    ],
+    "SequenceMessageKind": [
+      "sync",
+      "async",
+      "reply"
     ],
     "ShapeBlurVariation": [
       "round-rect",
@@ -1584,6 +1589,8 @@
     "toPercent": "score-scale",
     "ScrollStack": "scroll-stack",
     "ScrollStackItem": "scroll-stack",
+    "SequenceDiagram": "sequence-diagram",
+    "layoutSequence": "sequence-diagram",
     "ShieldBadge": "shield-badge",
     "ShieldBadgeGroup": "shield-badge",
     "compactCount": "shield-badge",
@@ -21317,7 +21324,7 @@
           "kind": "array",
           "type": "FlowEdge[]",
           "default": null,
-          "description": "受控连线数组（`{ id, source, target, sourceHandle?, targetHandle? }`）"
+          "description": "受控连线数组（`{ id, source, target, sourceHandle?, targetHandle?, label? }`）。`label` 可选，见「连线文案」"
         },
         {
           "name": "getHandles",
@@ -26403,6 +26410,79 @@
           "description": "卡片内容，建议每张用 `ScrollStackItem` 包裹（组件自动识别 `data-scroll-stack-card` 标记的元素参与堆叠）"
         }
       ]
+    },
+    {
+      "slug": "sequence-diagram",
+      "name": "SequenceDiagram",
+      "category": "data-display",
+      "group": "collection",
+      "status": "enriched",
+      "import": "import { SequenceDiagram, layoutSequence } from \"@hulianui/ui\"",
+      "exports": [
+        "SequenceDiagram",
+        "layoutSequence"
+      ],
+      "types": [
+        "SequenceDirection",
+        "SequenceRow",
+        "SequenceDiagramProps",
+        "SequenceMessage",
+        "SequenceMessageKind",
+        "SequenceParticipant"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/sequence-diagram/sequence-diagram.md",
+      "props": [
+        {
+          "name": "participants",
+          "required": true,
+          "kind": "array",
+          "type": "SequenceParticipant[]",
+          "default": null,
+          "description": "参与者，`{ id, label, description? }`，按数组顺序从左到右"
+        },
+        {
+          "name": "messages",
+          "required": true,
+          "kind": "array",
+          "type": "SequenceMessage[]",
+          "default": null,
+          "description": "消息，`{ id, from, to, label, kind? }`，按数组顺序自上而下。`from === to` 画成自调用回环"
+        },
+        {
+          "name": "title",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "「时序图」",
+          "description": "整张图的可访问名称"
+        },
+        {
+          "name": "autoNumber",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "每条消息前显示序号，读屏也念序号"
+        },
+        {
+          "name": "activeId",
+          "required": false,
+          "kind": "other",
+          "type": "string | null",
+          "default": null,
+          "description": "高亮当前这一步，并标 `aria-current=\"step\"`"
+        },
+        {
+          "name": "minColumnWidth",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "160",
+          "description": "每列最小宽度（px）。容器放不下时横向滚动"
+        }
+      ],
+      "events": [],
+      "slots": []
     },
     {
       "slug": "shield-badge",

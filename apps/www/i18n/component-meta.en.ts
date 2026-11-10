@@ -804,6 +804,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Edits controlled node-and-edge canvases with node dragging, edge connection, panning, zooming, and fit view.",
     keywords: ["flow", "data-display", "collection"],
   },
+  "sequence-diagram": {
+    shortName: "SequenceDiagram",
+    description:
+      "Draws calls, asynchronous messages, and replies between participants in time order.",
+    keywords: ["sequence diagram", "data-display", "collection"],
+  },
   sankey: {
     shortName: "Sankey",
     description: "Visualizes weighted flow between stages with proportional nodes and links.",

@@ -313,6 +313,7 @@ export * from "./secret-field.showcase";
 export * from "./segmented.showcase";
 export * from "./select.showcase";
 export * from "./separator.showcase";
+export * from "./sequence-diagram.showcase";
 export * from "./service-message.showcase";
 export * from "./shape-blur.showcase";
 export * from "./shape-grid.showcase";

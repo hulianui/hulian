@@ -868,6 +868,18 @@ export interface ComponentLocale {
     };
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
+  sequenceDiagram?: {
+    /** Accessible name of the figure when `title` is not passed. */
+    diagram: string;
+    participants: string;
+    messages: string;
+    /** Screen-reader prefix read before a message label, e.g. "A to B (synchronous call): ". */
+    message: (from: string, to: string, kind: string) => string;
+    /** Screen-reader prefix for a self-call. */
+    self: (from: string, kind: string) => string;
+    kinds: { sync: string; async: string; reply: string };
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
   codeEditor?: {
     /** Accessible name of the editing surface; the language tag is appended when known. */
     editor: (language?: string) => string;
@@ -1681,6 +1693,14 @@ const zhComponents: ComponentLocale = {
       overflowAuto: "滚动",
       hiddenElement: "隐藏元素",
     },
+  },
+  sequenceDiagram: {
+    diagram: "时序图",
+    participants: "参与者",
+    messages: "消息",
+    message: (from, to, kind) => `${from} 发给 ${to}（${kind}）：`,
+    self: (from, kind) => `${from} 发给自己（${kind}）：`,
+    kinds: { sync: "同步调用", async: "异步消息", reply: "返回" },
   },
   codeEditor: {
     editor: (language) => `代码编辑器${language ? `（${language}）` : ""}`,
@@ -2626,6 +2646,14 @@ const enComponents: ComponentLocale = {
       overflowAuto: "Scroll",
       hiddenElement: "Hide element",
     },
+  },
+  sequenceDiagram: {
+    diagram: "Sequence diagram",
+    participants: "Participants",
+    messages: "Messages",
+    message: (from, to, kind) => `${from} to ${to} (${kind}): `,
+    self: (from, kind) => `${from} to itself (${kind}): `,
+    kinds: { sync: "synchronous call", async: "asynchronous message", reply: "reply" },
   },
   codeEditor: {
     editor: (language) => (language ? `Code editor (${language})` : "Code editor"),

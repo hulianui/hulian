@@ -34,7 +34,9 @@ const EXPECTED_CONVENTION_COUNT_MISMATCHES = {
   divider: [0, 1],
   "document-sheet": [2, 3],
   "floating-reactions": [2, 3],
-  flow: [4, 5],
+  // 连线 label 给中英各加了三条（可选、不互相避让、名字在 aria-hidden 层外且不含键盘选中）。
+  // 两边同增，既有的 1 条差值没变：英文多的是「内置中文无障碍文案清单」，中文不重复那条。
+  flow: [7, 8],
   "flowing-menu": [2, 3],
   gantt: [3, 4],
   "gift-feed": [3, 4],
@@ -391,6 +393,40 @@ test("all 70 reviewed locale-specific convention count differences stay explicit
 
   assert.equal(Object.keys(actual).length, 70);
   assert.deepEqual(actual, EXPECTED_CONVENTION_COUNT_MISMATCHES);
+});
+
+test("Flow label advisories are paired in generated Chinese and English conventions", () => {
+  const flowRules = (root) =>
+    json(root, "conventions.json").advisories.filter((item) => item.scope === "flow");
+  const zh = flowRules(roots.zh);
+  const en = flowRules(roots.en);
+  const pairs = [
+    ["必须有确定高度", "definite height"],
+    ["`label` 可选", "`label` is optional"],
+    ["不跟其他标签互相避让", "do not avoid each other"],
+    ["aria-hidden", "aria-hidden"],
+    ["onConnect", "fully controlled"],
+    ["Pointer Events", "Pointer Events"],
+    ["base-ui-navigation-menu-content-must-stay-in-flow", "navigation-menu layout note"],
+  ];
+
+  assert.deepEqual(
+    zh.map((item) => item.id),
+    pairs.map((_, index) => `component/flow/pitfall/${index + 1}`),
+  );
+  assert.deepEqual(
+    en.map((item) => item.id),
+    [...pairs.map((_, index) => `component/flow/pitfall/${index + 1}`), "component/flow/pitfall/8"],
+  );
+  assert.ok(zh.every((item) => item.source === "packages/ui/src/flow/flow.md"));
+  assert.ok(en.every((item) => item.source === "packages/ui/src/flow/flow.en.md"));
+  pairs.forEach(([zhText, enText], index) => {
+    assert.ok(zh[index].rule.includes(zhText), `zh pitfall ${index + 1} missing ${zhText}`);
+    assert.ok(en[index].rule.includes(enText), `en pitfall ${index + 1} missing ${enText}`);
+  });
+  assert.ok(en[7].rule.startsWith("Built-in Chinese accessibility labels"));
+  assert.equal(en.filter((item) => item.rule.includes("`label` is optional")).length, 1);
+  assert.equal(zh.filter((item) => item.rule.includes("`label` 可选")).length, 1);
 });
 
 test("isolated locale generation reproduces canonical Chinese bytes and never mutates them", () => {

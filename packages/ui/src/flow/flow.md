@@ -28,7 +28,7 @@ import { Flow, bezierPath, clampZoom, fitViewport, handleOffsetRatio, handlePoin
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | nodes * | FlowNode\<T\>[] | - | 受控节点数组（`{ id, position, data, width? }`） |
-| edges * | FlowEdge[] | - | 受控连线数组（`{ id, source, target, sourceHandle?, targetHandle? }`） |
+| edges * | FlowEdge[] | - | 受控连线数组（`{ id, source, target, sourceHandle?, targetHandle?, label? }`）。`label` 可选，见「连线文案」 |
 | getHandles * | (node: FlowNode\<T\>) => FlowHandleSpec[] | - | 声明每节点连接桩（左 target/右 source，按返回顺序在该侧均分纵向位置） |
 | selectedId | string ｜ null | - | 单选受控：当前选中节点 id |
 | defaultNodeWidth | number | 240 | 默认节点宽度（px，画布坐标） |
@@ -81,9 +81,26 @@ const [selected, setSelected] = useState<string | null>(null);
 </div>
 ```
 
+## 连线文案
+
+`FlowEdge.label` 可选。不传，或去掉空白后为空，这条连线不画标签，点击、删除和读屏结果与没有该字段时相同。
+
+```tsx
+{ id: "e1", source: "prompt", target: "model", label: "提示词" }
+```
+
+有文案时，标签放在它自己这条贝塞尔的斜段外侧，并用短引线连回曲线上的那个点。底用表面色，字用前景色，和节点、删除钮同一套 token。长文案最多按 10rem 换行，不截断，也不另做省略号；边短时不再收成四五字一列，而是把盒子挪开两端节点和桩。
+
+盒子会避开两端连接桩，也会避开选中连线后出现在中点的删除钮。计算只看这一条边的两个端点：交叉、重合或挤在一起的其他连线不参与，那些标签仍可能彼此叠住。
+
+路径画在 `aria-hidden` 的 SVG 里，放进去的文字辅助技术读不到。标签因此挂在这层外面的分组上，分组的可访问名称就是这段文案。视觉上的字再标 `aria-hidden`，避免同一个名字念两遍。这一步只提供名称。键盘逐条选中连线、删除和焦点恢复不在这里。
+
 ## 禁忌 / 坑
 
 - 外层 `className` **必须有确定高度**（如 `h-[420px]` 或父级撑满），画布按外层尺寸填充——高度塌缩则画布不可见。
+- `label` 可选。缺省或空白时不画标签，点击、删除和读屏结果与没有该字段时相同。
+- 标签落在自己曲线的斜段外侧，短引线连回这条曲线、避开相交中点，并让开两端连接桩、两端节点和选中后的删除钮。长文案按最多 10rem 换行，不因为边短就收成四五字一列。它不跟其他标签互相避让：标签仍可能叠在一起。
+- 连线路径在 `aria-hidden` 的 SVG 里。标签名挂在这层外面，读屏能读到文案。这一步没有键盘逐条选中、删除或焦点恢复。
 - 全受控：`onConnect` 回吐的连接**无 id**，你要自己补 id 并去重；`onNodeDelete` 只给节点 id，关联连线要你自己一并清掉（否则留下悬空 edge）。
 - 客户端组件（原生 Pointer Events），必须在 client 上下文用。
 - 候选坑 `base-ui-navigation-menu-content-must-stay-in-flow-for-popup-size-measure` 仅因「flow」字面匹配，讲的是 Base UI 导航菜单布局，与本组件无关，不引用。

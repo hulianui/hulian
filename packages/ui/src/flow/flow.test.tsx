@@ -92,6 +92,55 @@ describe("Flow 渲染", () => {
     expect(getByLabelText("Delete edge", { selector: "button" })).toBeTruthy();
   });
 
+  it("不传 label 时不产生连线标签，连线层仍是 aria-hidden", () => {
+    const { container } = render(<Flow<D> {...base} />);
+    expect(container.querySelector("[data-flow-edge-label]")).toBeNull();
+    expect(container.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("空白 label 与不传一样", () => {
+    const { container } = render(
+      <Flow<D> {...base} edges={[{ id: "e1", source: "a", target: "b", label: "   " }]} />,
+    );
+    expect(container.querySelector("[data-flow-edge-label]")).toBeNull();
+  });
+
+  it("label 的可访问名称在 aria-hidden 的连线 SVG 之外", () => {
+    const { container, getByRole } = render(
+      <Flow<D> {...base} edges={[{ id: "e1", source: "a", target: "b", label: "同步到归档" }]} />,
+    );
+    const label = getByRole("group", { name: "同步到归档" });
+    expect(label.getAttribute("data-flow-edge-label")).toBe("e1");
+    expect(label.closest("svg")).toBeNull();
+    expect(label.closest('[aria-hidden="true"]')).toBeNull();
+    expect(label.className).toContain("pointer-events-none");
+    expect(container.querySelector("svg")?.querySelector("[data-flow-edge-label]")).toBeNull();
+  });
+
+  it("长 label 的可访问名称是全文，未标注的邻边不产生标签", () => {
+    const text = "把原始事件规范成可检索的归档记录，并保留来源与时间";
+    const nodes3: FlowNode<D>[] = [
+      ...nodes,
+      { id: "c", position: { x: 300, y: 160 }, data: { label: "丙" } },
+    ];
+    const handles = (n: FlowNode<D>): FlowHandleSpec[] =>
+      n.id === "a" ? [{ id: "out", type: "source" }] : [{ id: "in", type: "target" }];
+    const { getByRole, queryByRole, container } = render(
+      <Flow<D>
+        {...base}
+        nodes={nodes3}
+        getHandles={handles}
+        edges={[
+          { id: "long", source: "a", target: "b", label: text },
+          { id: "bare", source: "a", target: "c" },
+        ]}
+      />,
+    );
+    expect(getByRole("group", { name: text }).textContent).toBe(text);
+    expect(queryByRole("group", { name: "bare" })).toBeNull();
+    expect(container.querySelectorAll("[data-flow-edge-label]").length).toBe(1);
+  });
+
   it("keeps an explicit handle title exact while localizing only its fallback aria label", () => {
     const explicitHandles = (node: FlowNode<D>): FlowHandleSpec[] =>
       node.id === "a"

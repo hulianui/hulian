@@ -6,6 +6,7 @@ export { accordionShowcase } from "./accordion/accordion.showcase";
 export { sortableShowcase } from "./sortable/sortable.showcase";
 export { kanbanShowcase } from "./kanban/kanban.showcase";
 export { flowShowcase } from "./flow/flow.showcase";
+export { sequenceDiagramShowcase } from "./sequence-diagram/sequence-diagram.showcase";
 export { designCanvasShowcase } from "./design-canvas/design-canvas.showcase";
 export { componentPickerShowcase } from "./component-picker/component-picker.showcase";
 export { affixShowcase } from "./affix/affix.showcase";

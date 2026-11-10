@@ -34,6 +34,11 @@ export interface FlowEdge {
   sourceHandle?: string;
   target: string;
   targetHandle?: string;
+  /**
+   * 可选文案。缺省或空白时不渲染标签，交互与无障碍树与没有该字段时相同。
+   * 有文案时显示在路径中点一侧，并作为这条连线的无障碍名称。
+   */
+  label?: string;
 }
 
 /** 连接桩声明：左侧 target（入），右侧 source（出）。 */

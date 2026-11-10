@@ -11,6 +11,7 @@ concurrency:
 permissions:
   contents: write # 允许 action 创建 "Version Packages" 提交/PR
   pull-requests: write # 允许开版本 PR
+  id-token: write # npm Trusted Publishing：用 GitHub OIDC 换一次性发布凭证，不再依赖会过期的 NPM_TOKEN
 
 jobs:
   release:
@@ -36,6 +37,10 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
           scope: "@hulianui"
+
+      # Trusted Publishing 需要 npm >= 11.5.1；Node 22 自带 npm 10。pnpm 8 的 publish 最终调用这份 npm。
+      - name: Upgrade npm for Trusted Publishing
+        run: npm install -g npm@11.6.2
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -67,4 +72,5 @@ jobs:
           publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # changesets/action 用于开 Version PR / 打 tag
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 发布到公共 npmjs 的鉴权（需在仓库 secrets 配置）
+          # 不传 NODE_AUTH_TOKEN：npm 走 Trusted Publishing（npmjs.com 每个包的 Settings 里登记了
+          # hulianui/hulian · release.yml）。旧 NPM_TOKEN 2026-09 前后过期，0.69.0 因此 E404。
