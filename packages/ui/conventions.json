@@ -9023,42 +9023,28 @@
       "id": "component/sequence-diagram/pitfall/1",
       "scope": "sequence-diagram",
       "title": "SequenceDiagram",
-      "rule": "只读首片：没有标注（note）、分组框（alt / loop）、激活条，也不能点选或拖动消息。",
+      "rule": "不要靠坐标或时间戳排序——组件只认数组顺序，先排好再传。",
       "source": "packages/ui/src/sequence-diagram/sequence-diagram.md"
     },
     {
       "id": "component/sequence-diagram/pitfall/2",
       "scope": "sequence-diagram",
       "title": "SequenceDiagram",
-      "rule": "`from` / `to` 引用了不存在的参与者 id，这条消息不画，序号会跳过它保持连续。参与者 id 重复时只认第一次出现的那一列。",
+      "rule": "一条消息跨的列越少，文案可用宽度越窄；很长的说明放进注释或图外。",
       "source": "packages/ui/src/sequence-diagram/sequence-diagram.md"
     },
     {
       "id": "component/sequence-diagram/pitfall/3",
       "scope": "sequence-diagram",
       "title": "SequenceDiagram",
-      "rule": "文案按列宽换行，不截断。一条消息跨的列越少，可用宽度越窄；很长的说明放到图外面写。",
+      "rule": "最右一列的自调用文案只有半列宽，必要时调大 `minColumnWidth` 或把那个参与者往左挪。",
       "source": "packages/ui/src/sequence-diagram/sequence-diagram.md"
     },
     {
       "id": "component/sequence-diagram/pitfall/4",
       "scope": "sequence-diagram",
       "title": "SequenceDiagram",
-      "rule": "自调用的回环画在该列右半边，文案借用右边一列。最右一列没有可借的列，文案只剩半列宽，必要时调大 `minColumnWidth`。",
-      "source": "packages/ui/src/sequence-diagram/sequence-diagram.md"
-    },
-    {
-      "id": "component/sequence-diagram/pitfall/5",
-      "scope": "sequence-diagram",
-      "title": "SequenceDiagram",
-      "rule": "列多时整张图横向滚动，不会把列压到比 `minColumnWidth` 更窄。手机上参与者建议不超过 3 个。",
-      "source": "packages/ui/src/sequence-diagram/sequence-diagram.md"
-    },
-    {
-      "id": "component/sequence-diagram/pitfall/6",
-      "scope": "sequence-diagram",
-      "title": "SequenceDiagram",
-      "rule": "客户端组件：读 `ConfigProvider` 的文案用到了 Context，不能在 server 组件里直接当静态件用。",
+      "rule": "客户端组件：读 `ConfigProvider` 的文案用到了 Context，还会量一次自己是否溢出，不能在 server 组件里当静态件用。",
       "source": "packages/ui/src/sequence-diagram/sequence-diagram.md"
     },
     {
@@ -11474,7 +11460,7 @@
   ],
   "stats": {
     "componentDocs": 403,
-    "componentAdvisories": 1600,
-    "totalAdvisories": 1610
+    "componentAdvisories": 1598,
+    "totalAdvisories": 1608
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "hulianui",
-  "version": "0.70.0",
+  "version": "0.71.0",
   "description": "颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion）",
   "typeAliases": {
     "AgentTaskStatus": [
@@ -1602,7 +1602,9 @@
     "ScrollStack": "scroll-stack",
     "ScrollStackItem": "scroll-stack",
     "SequenceDiagram": "sequence-diagram",
+    "analyzeSequence": "sequence-diagram",
     "layoutSequence": "sequence-diagram",
+    "validateSequence": "sequence-diagram",
     "ShieldBadge": "shield-badge",
     "ShieldBadgeGroup": "shield-badge",
     "compactCount": "shield-badge",
@@ -26464,17 +26466,25 @@
       "category": "data-display",
       "group": "collection",
       "status": "enriched",
-      "import": "import { SequenceDiagram, layoutSequence } from \"@hulianui/ui\"",
+      "import": "import { SequenceDiagram, analyzeSequence, layoutSequence, validateSequence } from \"@hulianui/ui\"",
       "exports": [
         "SequenceDiagram",
-        "layoutSequence"
+        "analyzeSequence",
+        "layoutSequence",
+        "validateSequence"
       ],
       "types": [
+        "SequenceAnalysis",
         "SequenceDirection",
+        "SequenceMessageRow",
+        "SequenceNoteRow",
         "SequenceRow",
         "SequenceDiagramProps",
+        "SequenceIssue",
+        "SequenceItem",
         "SequenceMessage",
         "SequenceMessageKind",
+        "SequenceNote",
         "SequenceParticipant"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/sequence-diagram/sequence-diagram.md",
@@ -26485,15 +26495,15 @@
           "kind": "array",
           "type": "SequenceParticipant[]",
           "default": null,
-          "description": "参与者，`{ id, label, description? }`，按数组顺序从左到右"
+          "description": "参与者，按数组顺序从左到右"
         },
         {
           "name": "messages",
           "required": true,
           "kind": "array",
-          "type": "SequenceMessage[]",
+          "type": "SequenceItem[]",
           "default": null,
-          "description": "消息，`{ id, from, to, label, kind? }`，按数组顺序自上而下。`from === to` 画成自调用回环"
+          "description": "消息与注释，按数组顺序自上而下。顺序就是时间，组件不重排、不看坐标"
         },
         {
           "name": "title",
@@ -26509,7 +26519,7 @@
           "kind": "boolean",
           "type": "boolean",
           "default": "false",
-          "description": "每条消息前显示序号，读屏也念序号"
+          "description": "每条消息前显示序号（注释不编号），读屏也念序号"
         },
         {
           "name": "activeId",
@@ -26517,7 +26527,7 @@
           "kind": "other",
           "type": "string | null",
           "default": null,
-          "description": "高亮当前这一步，并标 `aria-current=\"step\"`"
+          "description": "高亮当前这一步（消息或注释的 id），并标 `aria-current=\"step\"`"
         },
         {
           "name": "minColumnWidth",
@@ -26525,7 +26535,7 @@
           "kind": "number",
           "type": "number",
           "default": "160",
-          "description": "每列最小宽度（px）。容器放不下时横向滚动"
+          "description": "每列最小宽度（px）。容器放不下时图内横向滚动"
         }
       ],
       "events": [],

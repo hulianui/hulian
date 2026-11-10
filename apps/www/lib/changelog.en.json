@@ -1,5 +1,31 @@
 [
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.14.0",
+    "date": "2026-11-10",
+    "entries": [
+      {
+        "sha": "9327f21",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(sequence-diagram): SequenceDiagram gains notes, invalid-input handling, an empty state, color, and motion. `messages` now accepts `{ type: \"note\", over }` notes that share the timeline with messages in array order; `over` with one id sits on a lifeline and with two ids spans both, and screen readers hear \"Note between A and B: \". A repeated participant id no longer draws an extra empty lifeline, a repeated message id draws only the first item, and items that name a missing participant are not drawn; development builds warn once for each case, and the new pure functions `validateSequence` and `analyzeSequence` return the details. With nothing to draw it shows \"No messages\". Color uses semantic tokens as a second channel only: sync `primary`, async `info`, reply `muted`, notes `warning-subtle`, and a `primary` top edge on headings. Motion plays once on mount: rows fade in in order and arrow lines grow from sender to receiver; when `activeId` changes the highlight fades over and the current step scrolls into the figure horizontally; reduced motion turns all of it off. The figure joins the Tab order only when it overflows, with a visible focus ring and arrow-key scrolling. `ref` lands on the root `<figure>`. Type change: `SequenceRow` is now the union `SequenceMessageRow | SequenceNoteRow`, so check `row.type === \"message\"` before reading `row.message`. `@hulianui/tokens` adds the keyframes `hulian-sequence-in` and `hulian-sequence-draw`; without the tokens upgrade these animations do not run and elements render in their final state."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.71.0",
+    "date": "2026-11-10",
+    "entries": [
+      {
+        "sha": "9327f21",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(sequence-diagram): SequenceDiagram gains notes, invalid-input handling, an empty state, color, and motion. `messages` now accepts `{ type: \"note\", over }` notes that share the timeline with messages in array order; `over` with one id sits on a lifeline and with two ids spans both, and screen readers hear \"Note between A and B: \". A repeated participant id no longer draws an extra empty lifeline, a repeated message id draws only the first item, and items that name a missing participant are not drawn; development builds warn once for each case, and the new pure functions `validateSequence` and `analyzeSequence` return the details. With nothing to draw it shows \"No messages\". Color uses semantic tokens as a second channel only: sync `primary`, async `info`, reply `muted`, notes `warning-subtle`, and a `primary` top edge on headings. Motion plays once on mount: rows fade in in order and arrow lines grow from sender to receiver; when `activeId` changes the highlight fades over and the current step scrolls into the figure horizontally; reduced motion turns all of it off. The figure joins the Tab order only when it overflows, with a visible focus ring and arrow-key scrolling. `ref` lands on the root `<figure>`. Type change: `SequenceRow` is now the union `SequenceMessageRow | SequenceNoteRow`, so check `row.type === \"message\"` before reading `row.message`. `@hulianui/tokens` adds the keyframes `hulian-sequence-in` and `hulian-sequence-draw`; without the tokens upgrade these animations do not run and elements render in their final state."
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.70.0",
     "date": "2026-11-09",

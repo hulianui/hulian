@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.71.0
+
+### Minor Changes
+
+- 9327f21: feat(sequence-diagram): SequenceDiagram 补齐注释、无效输入处理、空态、配色与动效。`messages` 里可以放 `{ type: "note", over }` 注释，和消息同轴按数组顺序排列，`over` 一个 id 贴生命线、两个 id 横跨两线，读屏念「注释（甲 与 乙 之间）：」。重复的参与者 id 不再多画一条空生命线，重复的消息 id 只画第一条，引用不存在参与者的项不画；三种情况开发期各告警一次，新增纯函数 `validateSequence` / `analyzeSequence` 拿到明细。没有可画的消息时显示「暂无消息」。配色走语义令牌、只作第二通道：同步 `primary`、异步 `info`、返回 `muted`，注释 `warning-subtle`，列头 `primary` 顶边。动效只在挂载时播一次：行按顺序淡入、箭头线从发送方伸向接收方；`activeId` 变化时高亮平滑过渡，并把当前一步横向滚进图里；减弱动效时全部关闭。图横向溢出时才进 Tab 顺序，焦点环可见，方向键可滚。`ref` 落到根 `<figure>`。类型变化：`SequenceRow` 现在是 `SequenceMessageRow | SequenceNoteRow` 联合，读 `row.message` 前先判 `row.type === "message"`。`@hulianui/tokens` 新增关键帧 `hulian-sequence-in` / `hulian-sequence-draw`；tokens 未升级时这两个动画不生效、元素直接显示终态。
+
 ## 0.70.0
 
 ### Minor Changes
