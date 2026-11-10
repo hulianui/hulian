@@ -567,6 +567,18 @@
       "leave",
       "interview"
     ],
+    "ZoneFacing": [
+      "up",
+      "right",
+      "down",
+      "left"
+    ],
+    "ViewAngle": [
+      "0",
+      "90",
+      "180",
+      "270"
+    ],
     "PageHeaderMetaPlacement": [
       "block",
       "inline"
@@ -24372,7 +24384,9 @@
         "Seat",
         "SeatPerson",
         "SeatStatus",
-        "Zone"
+        "ViewAngle",
+        "Zone",
+        "ZoneFacing"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/org-classroom/org-classroom.md",
       "props": [
@@ -24399,6 +24413,30 @@
           "type": "string | null",
           "default": "非受控",
           "description": "当前聚焦的分区。传 `null` 表示没有聚焦"
+        },
+        {
+          "name": "view",
+          "required": false,
+          "kind": "enum",
+          "type": "ViewAngle",
+          "resolvedType": "0 | 90 | 180 | 270",
+          "values": [
+            "0",
+            "90",
+            "180",
+            "270"
+          ],
+          "valueType": "number",
+          "default": "非受控，从 `0` 开始",
+          "description": "观察视角，`0` / `90` / `180` / `270`。每加 90，楼层在屏幕上顺时针转 90°"
+        },
+        {
+          "name": "northDeg",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "0",
+          "description": "真北相对平面图上方顺时针转过的角度，只影响指南针"
         },
         {
           "name": "className",
@@ -24434,6 +24472,15 @@
           "type": "(zoneId: string | null) => void",
           "default": null,
           "description": "点分区空白处聚焦；再点一次已聚焦的空白处得到 `null`"
+        },
+        {
+          "name": "onViewChange",
+          "required": false,
+          "kind": "function",
+          "type": "(view: ViewAngle) => void",
+          "resolvedType": "(view: 0 | 90 | 180 | 270) => void",
+          "default": null,
+          "description": "点指南针旁的旋转按钮时得到新视角。受控时由你写回 `view`"
         }
       ],
       "slots": []

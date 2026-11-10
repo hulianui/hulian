@@ -55,7 +55,7 @@ export function PersonCard({
       aria-label={copy.personCard}
       data-slot="org-classroom-person"
       data-open={seatId ? "true" : "false"}
-      className="relative z-20 w-full min-w-0 shrink-0 scroll-mb-28 lg:w-80"
+      className="relative z-20 w-full min-w-0 shrink-0 scroll-mb-28 @3xl:w-80"
     >
       <Card variant="elevated" size="sm">
         {person && zone ? (

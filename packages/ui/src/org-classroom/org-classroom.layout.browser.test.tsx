@@ -1,629 +1,322 @@
 import { useState } from "react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { page } from "@vitest/browser/context";
+import { userEvent } from "@vitest/browser/context";
 import { afterEach, describe, expect, it } from "vitest";
+import { COMPACT_BELOW, layoutScene, project, SPRITE_KEYS, spriteFor, VIEW_ANGLES, type Point } from "./iso-layout";
 import { OrgClassroom } from "./org-classroom";
-import type { Zone } from "./org-classroom.types";
+import type { Seat, ViewAngle, Zone } from "./org-classroom.types";
 import { updateSeatStatus } from "./seat-status";
 
 afterEach(cleanup);
 
-function zone(): Zone {
-  return {
-    id: "design",
-    name: "产品设计部",
-    accent: "var(--color-primary)",
-    seats: [
-      { id: "s1", row: 1, col: 1, person: { id: "p1", name: "林予涵", status: "idle" } },
-      { id: "s2", row: 1, col: 2, person: { id: "p2", name: "陈可", status: "busy" } },
-      { id: "s3", row: 1, col: 3, person: { id: "p3", name: "周宁", status: "meeting" } },
-      { id: "s4", row: 2, col: 1 },
-      { id: "s5", row: 2, col: 2, person: { id: "p5", name: "赵启明", status: "leave" } },
-      { id: "s6", row: 2, col: 3, person: { id: "p6", name: "孙晚", status: "interview" } },
-    ],
-  };
+const occupied = (
+  id: string,
+  name: string,
+  status: NonNullable<Seat["person"]>["status"],
+  row: number,
+  col: number,
+): Seat => ({
+  id,
+  row,
+  col,
+  person: { id: `p-${id}`, name, status },
+});
+
+/** 和 showcase 一样的两个分区：3×4 + 2×2，含空位。 */
+function zones(): Zone[] {
+  return [
+    {
+      id: "design",
+      name: "产品设计部",
+      accent: "var(--color-primary)",
+      seats: [
+        occupied("d1", "林予涵", "idle", 1, 1),
+        occupied("d2", "陈可", "busy", 1, 2),
+        occupied("d3", "周宁", "meeting", 1, 3),
+        occupied("d4", "赵启明", "leave", 2, 1),
+        occupied("d5", "孙晚", "interview", 2, 2),
+        occupied("d6", "吴桐", "idle", 2, 3),
+        { id: "d7", row: 3, col: 1 },
+        occupied("d8", "郑澄", "busy", 3, 2),
+        occupied("d9", "何安", "meeting", 3, 3),
+        occupied("d10", "许知夏", "leave", 4, 1),
+        { id: "d11", row: 4, col: 2 },
+        occupied("d12", "沈酌", "interview", 4, 3),
+      ],
+    },
+    {
+      id: "engineering",
+      name: "技术研发部",
+      accent: "var(--color-info)",
+      seats: [
+        occupied("e1", "林一", "idle", 1, 1),
+        occupied("e2", "陈二", "busy", 1, 2),
+        { id: "e3", row: 2, col: 1 },
+        occupied("e4", "周四", "meeting", 2, 2),
+      ],
+    },
+  ];
 }
 
 function overlap(a: DOMRect, b: DOMRect) {
   const width = Math.min(a.right, b.right) - Math.max(a.left, b.left);
   const height = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
-  if (width <= 0 || height <= 0) return 0;
-  return width * height;
+  return width > 0 && height > 0 ? width * height : 0;
 }
 
-describe("OrgClassroom narrow scene", () => {
-  it("fits a 360px frame, keeps labels readable, and does not stack them on each other", async () => {
+function Harness({ width, initial = zones(), view }: { width: number; initial?: Zone[]; view?: ViewAngle }) {
+  const [list, setList] = useState(initial);
+  return (
+    <div data-testid="frame" style={{ width }}>
+      <OrgClassroom
+        zones={list}
+        view={view}
+        onStatusChange={(id, status) => setList((current) => updateSeatStatus(current, id, status))}
+      />
+    </div>
+  );
+}
+
+async function mount(width: number, initial?: Zone[], view: ViewAngle = 0) {
+  const utils = render(<Harness width={width} initial={initial} view={view} />);
+  const scene = utils.container.querySelector<HTMLElement>("[data-slot=org-classroom-scene]")!;
+  await expect.poll(() => scene.getAttribute("data-hit-ready"), { timeout: 5000 }).toBe("true");
+  const layout = layoutScene(initial ?? zones(), view);
+  /** 场景坐标（缩放 1）→ 视口坐标。 */
+  const toClient = (p: Point) => {
+    const rect = scene.getBoundingClientRect();
+    const scale = rect.width / layout.width;
+    return { clientX: rect.left + p.x * scale, clientY: rect.top + p.y * scale };
+  };
+  return { ...utils, scene, layout, toClient };
+}
+
+function seatOrigin(layout: ReturnType<typeof layoutScene>, id: string) {
+  const seat = layout.seats.find((item) => item.seatId === id)!;
+  const sprite = spriteFor(seat.sprite);
+  return { seat, origin: { x: seat.box.x + sprite.anchor[0], y: seat.box.y + sprite.anchor[1] } };
+}
+
+const pressedSeat = () =>
+  document
+    .querySelector('[data-seat-id] [aria-pressed="true"]')
+    ?.closest("[data-seat-id]")
+    ?.getAttribute("data-seat-id") ?? null;
+
+describe("OrgClassroom sprite scene", () => {
+  for (const width of [360, 390, 1280]) {
+    it(`${width}px：不横向溢出，场景按宽度缩放，人名气泡在框内且互不压住`, async () => {
+      const { container } = await mount(width);
+      const frame = container.querySelector<HTMLElement>("[data-testid=frame]")!;
+      const floor = container.querySelector<HTMLElement>("[data-slot=org-classroom-floor]")!;
+      expect(frame.scrollWidth).toBeLessThanOrEqual(frame.clientWidth + 1);
+      expect(floor.getBoundingClientRect().width).toBeLessThanOrEqual(width + 1);
+
+      const scale = Number(floor.getAttribute("data-scene-scale"));
+      const compact = floor.getAttribute("data-compact") === "true";
+      // 1280 宽时人员卡在侧边，场景只剩约 940px：略缩，但人名气泡保持完整
+      if (width === 1280) {
+        expect(scale).toBeGreaterThan(COMPACT_BELOW);
+        expect(compact).toBe(false);
+      } else {
+        expect(scale).toBeLessThan(COMPACT_BELOW);
+        expect(compact).toBe(true);
+      }
+
+      const frameRect = frame.getBoundingClientRect();
+      const visible = [...container.querySelectorAll<HTMLElement>("[data-seat-label]")].map((label) =>
+        (compact ? label.querySelector("[data-status-dot]")! : label.firstElementChild!).getBoundingClientRect(),
+      );
+      expect(visible).toHaveLength(13);
+      for (const rect of visible) {
+        expect(rect.width).toBeGreaterThan(0);
+        expect(rect.left).toBeGreaterThanOrEqual(frameRect.left - 1);
+        expect(rect.right).toBeLessThanOrEqual(frameRect.right + 1);
+      }
+      for (let i = 0; i < visible.length; i += 1)
+        for (let j = i + 1; j < visible.length; j += 1) expect(overlap(visible[i]!, visible[j]!)).toBe(0);
+    });
+  }
+
+  it("放在按内容收缩的 flex 预览框里（文档站就是这样）也占满宽度、场景缩进框内", async () => {
     const { container } = render(
-      <div data-testid="narrow" style={{ width: 360 }}>
-        <OrgClassroom zones={[zone()]} />
+      <div data-testid="preview" className="flex flex-wrap items-center gap-4 p-8" style={{ width: 1000 }}>
+        <OrgClassroom zones={zones()} />
       </div>,
     );
-    const frame = container.querySelector<HTMLElement>("[data-testid=narrow]")!;
-    const floor = container.querySelector<HTMLElement>("[data-slot=org-classroom-floor]")!;
+    const preview = container.querySelector<HTMLElement>("[data-testid=preview]")!;
+    const root = container.querySelector<HTMLElement>("[data-slot=org-classroom]")!;
+    const scene = container.querySelector<HTMLElement>("[data-slot=org-classroom-scene]")!;
+    const card = container.querySelector<HTMLElement>("[data-slot=org-classroom-person]")!;
+    await expect.poll(() => root.getBoundingClientRect().width).toBeGreaterThan(900);
+    expect(card.getBoundingClientRect().width).toBeGreaterThan(240);
+    const frame = preview.getBoundingClientRect();
+    const sceneRect = scene.getBoundingClientRect();
+    expect(sceneRect.left).toBeGreaterThanOrEqual(frame.left);
+    expect(sceneRect.right).toBeLessThanOrEqual(frame.right);
+  });
 
-    await expect.poll(() => floor.getAttribute("data-scene-scale")).not.toBe("1");
+  it("鼠标悬停那一刻光晕就是主色，不会先闪黑", async () => {
+    const { scene, layout, toClient } = await mount(1280);
+    const { seat } = seatOrigin(layout, "d5");
+    const sprite = document.querySelector<HTMLElement>('[data-seat-id="d5"] [data-seat-sprite]')!;
+    const probe = document.createElement("div");
+    probe.style.color = "var(--color-primary)";
+    document.body.append(probe);
+    const primary = getComputedStyle(probe).color;
+    probe.remove();
+    fireEvent.pointerMove(scene, { pointerType: "mouse", ...toClient({ x: seat.head!.x, y: seat.head!.y + 10 }) });
+    await expect.poll(() => sprite.closest("[data-seat-id]")!.getAttribute("data-hover")).toBe("true");
+    const filter = getComputedStyle(sprite).filter;
+    expect(getComputedStyle(sprite).transitionProperty).not.toContain("filter");
+    expect(filter).toContain(primary);
+    expect(filter).not.toContain("rgb(0, 0, 0)");
+  });
 
-    expect(frame.scrollWidth).toBeLessThanOrEqual(frame.clientWidth + 1);
-    expect(floor.getBoundingClientRect().width).toBeLessThanOrEqual(361);
-    expect(container.querySelector("[data-desk-top]")).toBeTruthy();
-    expect(container.querySelector("[data-desk-front]")).toBeTruthy();
-    expect(container.querySelector("[data-chair-seat]")).toBeTruthy();
-    expect(container.querySelector("[data-seat-person]")).toBeTruthy();
+  for (const view of VIEW_ANGLES) {
+    it(`视角 ${view}°、两个分区朝向不同：点头部选中这个人，点桌面选中桌主，人名不互相压住`, async () => {
+      const mixed = zones();
+      mixed[1] = { ...mixed[1]!, facing: "right" };
+      const { container, scene, layout, toClient } = await mount(1280, mixed, view);
+      for (const id of ["d1", "d5", "d12", "e1", "e4"]) {
+        const seat = layout.seats.find((item) => item.seatId === id)!;
+        fireEvent.click(scene, toClient({ x: seat.head!.x, y: seat.head!.y + 10 }));
+        await expect.poll(pressedSeat).toBe(id);
+      }
+      const labels = [...container.querySelectorAll<HTMLElement>("[data-seat-label]")].map((label) =>
+        (container.querySelector("[data-compact=true]")
+          ? label.querySelector("[data-status-dot]")!
+          : label.firstElementChild!
+        ).getBoundingClientRect(),
+      );
+      for (let i = 0; i < labels.length; i += 1)
+        for (let j = i + 1; j < labels.length; j += 1) expect(overlap(labels[i]!, labels[j]!)).toBe(0);
+    });
+  }
 
-    const labels = [...container.querySelectorAll<HTMLElement>("[data-seat-label]")].filter(
-      (label) => getComputedStyle(label).visibility !== "hidden" && label.id !== "zone",
-    );
-    const seatLabels = labels.filter((label) => !label.getAttribute("data-seat-label")!.startsWith("zone-"));
-    expect(seatLabels.length).toBe(5);
-    const rects = seatLabels.map((label) => label.getBoundingClientRect());
-    for (const rect of rects) {
-      expect(rect.height).toBeGreaterThanOrEqual(16);
-      expect(rect.width).toBeGreaterThanOrEqual(24);
-    }
-    const zoneLabels = labels.filter((label) => label.getAttribute("data-seat-label")!.startsWith("zone-"));
-    for (const seatLabel of seatLabels) {
-      for (const zoneLabel of zoneLabels) {
-        expect(overlap(seatLabel.getBoundingClientRect(), zoneLabel.getBoundingClientRect())).toBe(0);
-      }
-    }
-    const torso = container.querySelector("[data-seat-torso]")!.getBoundingClientRect();
-    expect(torso.height).toBeGreaterThan(32);
-    for (const seat of container.querySelectorAll<HTMLElement>("[data-seat-id]")) {
-      const figure = seat.querySelector<HTMLElement>("[data-seat-figure]");
-      const desk = seat.querySelector<HTMLElement>("[data-desk-top]");
-      const lap = seat.querySelector<HTMLElement>("[data-seat-lap]");
-      if (!figure || !desk || !lap) continue;
-      const figureBox = figure.getBoundingClientRect();
-      const deskBox = desk.getBoundingClientRect();
-      expect(figureBox.bottom).toBeGreaterThan(deskBox.top + 2);
-      expect(seat.querySelector("[data-desk-top-rear]")).toBeNull();
-      expect(overlap(lap.getBoundingClientRect(), deskBox)).toBeGreaterThan(0);
-      expect(lap.offsetTop).toBeLessThan(desk.offsetTop - 8);
-      const under = lap.offsetTop + lap.offsetHeight - desk.offsetTop;
-      expect(under).toBeGreaterThanOrEqual(16);
-      expect(lap.offsetTop + lap.offsetHeight).toBeLessThanOrEqual(desk.offsetTop + desk.offsetHeight - 6);
-      const lapZ = Number(getComputedStyle(lap).zIndex);
-      const deskZ = Number(getComputedStyle(desk).zIndex);
-      expect(lapZ).toBeLessThan(deskZ);
-      expect(lap.style.transform).toContain("translateZ(14px)");
-      const pelvis = seat.querySelector<HTMLElement>("[data-seat-pelvis]")!;
-      expect(pelvis.offsetHeight).toBeGreaterThanOrEqual(6);
-      expect(pelvis.offsetWidth).toBeGreaterThan(20);
-      const pelvisRadius = parseFloat(getComputedStyle(pelvis).borderTopLeftRadius);
-      expect(pelvisRadius).toBeLessThan(pelvis.offsetHeight / 2);
-      const thighs = [...seat.querySelectorAll<HTMLElement>("[data-seat-thigh]")];
-      expect(thighs).toHaveLength(2);
-      const lapBox = lap.getBoundingClientRect();
-      let pelvisExposed = 0;
-      const thighExposed = [0, 0];
-      const thighX: number[][] = [[], []];
-      for (let x = lapBox.left + 1; x < lapBox.right; x += 2) {
-        for (let y = lapBox.top + 1; y < lapBox.bottom; y += 2) {
-          const stack = document.elementsFromPoint(x, y);
-          const coveredByScarf = stack.some(
-            (element) => element.matches("[data-seat-scarf]") || element.closest("[data-seat-scarf]"),
-          );
-          const hit = stack.find((element) => element.closest("[data-seat-id]") === seat) ?? null;
-          if (!hit || hit.closest("[data-desk-top]") || coveredByScarf) continue;
-          if (stack.some((element) => element.closest("[data-seat-pelvis]") && element.closest("[data-seat-id]") === seat)) {
-            pelvisExposed += 1;
-          }
-          const index = thighs.findIndex((thigh) => stack.includes(thigh));
-          if (index >= 0) {
-            thighExposed[index] += 1;
-            thighX[index]!.push(x);
-          }
-        }
-      }
-      expect(pelvisExposed, `exposed hip pixels ${pelvisExposed}`).toBeGreaterThan(2);
-      expect(thighExposed[0]).toBeGreaterThan(3);
-      expect(thighExposed[1]).toBeGreaterThan(3);
-      const meanX = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
-      expect(Math.abs(meanX(thighX[0]!) - meanX(thighX[1]!))).toBeGreaterThan(6);
-      const pelvisLeft = pelvis.offsetLeft;
-      const pelvisRight = pelvisLeft + pelvis.offsetWidth;
-      for (const thigh of thighs) {
-        const overlapX =
-          Math.min(pelvisRight, thigh.offsetLeft + thigh.offsetWidth) - Math.max(pelvisLeft, thigh.offsetLeft);
-        expect(overlapX).toBeGreaterThan(4);
-      }
-      const deskBody = seat.querySelector<HTMLElement>("[data-desk-body]")!;
-      expect(Number(getComputedStyle(figure).zIndex)).toBeLessThan(Number(getComputedStyle(deskBody).zIndex));
-      const thighCenters: number[] = [];
-      for (const thigh of thighs) {
-        expect(thigh.offsetHeight).toBeGreaterThan(thigh.offsetWidth);
-        const thighBox = thigh.getBoundingClientRect();
-        expect(overlap(thighBox, deskBox)).toBeGreaterThan(0);
-        expect(thighBox.bottom).toBeLessThanOrEqual(deskBox.bottom + 1);
-        for (let x = thighBox.left; x < thighBox.right; x += 3) {
-          for (let y = deskBox.bottom + 1; y < thighBox.bottom + 4; y += 2) {
-            const hit = document.elementFromPoint(x, y);
-            expect(hit?.closest("[data-seat-thigh], [data-seat-pelvis], [data-seat-lap]")).toBeNull();
-          }
-        }
-        const center = thighBox.left + thighBox.width / 2;
-        expect(center).toBeGreaterThan(deskBox.left);
-        expect(center).toBeLessThan(deskBox.right);
-        thighCenters.push(center);
-      }
-      expect(Math.abs(thighCenters[0]! - thighCenters[1]!)).toBeGreaterThan(4);
-      const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]")!;
-      const scarfBox = scarf.getBoundingClientRect();
-      expect(scarfBox.height).toBeGreaterThanOrEqual(8);
-      expect(scarfBox.width).toBeGreaterThanOrEqual(14);
-      expect(scarfBox.top).toBeLessThan(deskBox.top + 8);
-      const pelvisBox = pelvis.getBoundingClientRect();
-      const scarfHipGap = pelvisBox.top - scarfBox.bottom;
-      const headBox = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
-      let floorGap = 0;
-      let floorSamples = 0;
-      for (const fraction of [0.28, 0.4, 0.5]) {
-        const x = headBox.left + headBox.width * fraction;
-        let lastBust = headBox.bottom;
-        const paint = (y: number) => {
-          const stack = document.elementsFromPoint(x, y);
-          const onSeat = (element: Element) => element.closest("[data-seat-id]") === seat;
-          return {
-            bust: stack.some(
-              (element) =>
-                onSeat(element) &&
-                (element.matches("[data-seat-scarf], [data-seat-head]") ||
-                  element.closest("[data-seat-scarf], [data-seat-head]")),
-            ),
-            hip: stack.some(
-              (element) => onSeat(element) && element.closest("[data-seat-pelvis], [data-seat-thigh]"),
-            ),
-          };
-        };
-        for (let y = headBox.top; y < headBox.bottom + 24; y += 1) {
-          if (paint(y).bust) lastBust = y;
-        }
-        let gap = 0;
-        let found = false;
-        for (let y = lastBust + 1; y < lastBust + 28; y += 1) {
-          const layer = paint(y);
-          if (layer.hip) {
-            found = true;
-            break;
-          }
-          if (!layer.bust) gap += 1;
-        }
-        if (!found) gap = 28;
-        floorSamples += 1;
-        floorGap = Math.max(floorGap, gap);
-      }
-      expect(floorSamples).toBe(3);
-      expect(scarfHipGap, `scarf bottom must clear the hip top, gap ${scarfHipGap}`).toBeGreaterThan(0);
-      expect(floorGap, `visible floor between scarf and hip ${floorGap}`).toBeLessThanOrEqual(8);
-      expect(floorGap, `visible floor between scarf and hip ${floorGap}`).toBeGreaterThanOrEqual(2);
-      const headMark = seat.querySelector<HTMLElement>("[data-seat-head]")!.getBoundingClientRect();
-      expect(headMark.height).toBeGreaterThanOrEqual(16);
-      const label = container.querySelector<HTMLElement>(`[data-seat-label="${seat.dataset.seatId}"]`);
-      if (!label) continue;
-      const labelBox = label.getBoundingClientRect();
-      const head = seat.querySelector<HTMLElement>("[data-seat-torso]")!.getBoundingClientRect();
-      const dx = Math.abs(labelBox.left + labelBox.width / 2 - (head.left + head.width / 2));
-      const dy = head.top - labelBox.bottom;
-      expect(dx).toBeLessThanOrEqual(28);
-      expect(dy).toBeLessThanOrEqual(16);
-      expect(dy).toBeGreaterThanOrEqual(-8);
+  it("点头部选中这个人；同排紧挨的邻座互不抢点击", async () => {
+    const { scene, layout, toClient } = await mount(1280);
+    for (const id of ["d1", "d2", "d3", "d5", "e2"]) {
+      const { seat } = seatOrigin(layout, id);
+      fireEvent.click(scene, toClient({ x: seat.head!.x, y: seat.head!.y + 10 }));
+      await expect.poll(pressedSeat).toBe(id);
     }
   });
 
-  it("390x1026 打开人员卡后五个状态按钮不被左下角返回钮挡住，关闭后焦点回到座位", async () => {
-    function Harness() {
-      const [zones, setZones] = useState<Zone[]>([zone()]);
-      const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
-      return (
-        <div data-testid="phone" style={{ position: "relative", width: 390, height: 1026 }}>
-          <div data-testid="scroller" className="h-full overflow-auto px-3 pt-6 pb-32">
-            <OrgClassroom
-              zones={zones}
-              selectedSeatId={selectedSeatId}
-              onSeatSelect={setSelectedSeatId}
-              onStatusChange={(seatId, status) => {
-                setZones((current) => updateSeatStatus(current, seatId, status));
-              }}
-            />
-          </div>
-          <div
-            data-testid="return-fab"
-            style={{ position: "absolute", left: 24, bottom: 24, zIndex: 50, width: 148, height: 56 }}
-          />
-        </div>
-      );
+  it("点桌面中间选中桌子的主人，不选到前后左右的座位", async () => {
+    const { scene, layout, toClient } = await mount(1280);
+    const desk = project(0, -0.46, 0.75);
+    for (const id of ["d5", "d7", "d11", "e3"]) {
+      const { origin } = seatOrigin(layout, id);
+      fireEvent.click(scene, toClient({ x: origin.x + desk.x, y: origin.y + desk.y }));
+      await expect.poll(pressedSeat).toBe(id);
     }
+  });
 
-    const { getByRole } = render(<Harness />);
-    const seat = getByRole("button", { name: "林予涵，在岗" });
-    fireEvent.click(seat);
-    await expect.poll(() => document.querySelector("[data-status-actions]")).toBeTruthy();
+  it("精灵图透明处点到的是分区地板：聚焦分区、不改选中，再点一次取消", async () => {
+    const { container, scene, layout, toClient } = await mount(1280);
+    const zone = layout.zones.find((item) => item.zoneId === "design")!;
+    const near = zone.polygon.reduce((a, b) => (b.y > a.y ? b : a));
+    const centre = zone.polygon.reduce((acc, p) => ({ x: acc.x + p.x / 4, y: acc.y + p.y / 4 }), {
+      x: 0,
+      y: 0,
+    });
+    const floorPoint = {
+      x: near.x + (centre.x - near.x) * 0.06,
+      y: near.y + (centre.y - near.y) * 0.06,
+    };
+    const covering = layout.seats.filter(
+      ({ box }) =>
+        floorPoint.x >= box.x &&
+        floorPoint.x <= box.x + box.w &&
+        floorPoint.y >= box.y &&
+        floorPoint.y <= box.y + box.h,
+    );
+    expect(covering.length).toBeGreaterThan(0); // 点在某个座位的图片盒子里，只是那里没有像素
 
-    const actions = document.querySelector<HTMLElement>("[data-status-actions]")!;
-    const scroller = document.querySelector<HTMLElement>("[data-testid=scroller]")!;
-    const fab = document.querySelector<HTMLElement>("[data-testid=return-fab]")!;
-    const fabTop = () => fab.getBoundingClientRect().top;
-    const hide = actions.getBoundingClientRect().bottom - (fabTop() - 8);
-    if (hide > 0) scroller.scrollTop += hide;
-
-    const buttons = [...actions.querySelectorAll<HTMLButtonElement>("button")];
-    expect(buttons.map((button) => button.textContent)).toEqual(["在岗", "忙碌", "会议中", "休假", "面试中"]);
-    const visibleTop = scroller.getBoundingClientRect().top;
-    for (const button of buttons) {
-      const rect = button.getBoundingClientRect();
-      expect(rect.width).toBeGreaterThan(0);
-      expect(rect.height).toBeGreaterThan(0);
-      expect(rect.top).toBeGreaterThanOrEqual(visibleTop - 1);
-      expect(rect.bottom).toBeLessThanOrEqual(fabTop() - 1);
-      expect(overlap(rect, fab.getBoundingClientRect())).toBe(0);
-    }
-
-    const zoneEl = document.querySelector<HTMLElement>("[data-zone-id=design]")!;
-    const box = zoneEl.getBoundingClientRect();
-    let emptyFloor: Element | null = null;
-    for (let y = box.top + 6; y < box.bottom && !emptyFloor; y += 10) {
-      for (let x = box.left + 6; x < box.right; x += 10) {
-        const hit = document.elementFromPoint(x, y);
-        if (hit?.closest("[data-zone-floor]") && !hit.closest("[data-seat-id]")) {
-          emptyFloor = hit;
-          break;
-        }
-      }
-    }
-    expect(emptyFloor).toBeTruthy();
-    fireEvent.click(emptyFloor as HTMLElement);
+    const zoneEl = container.querySelector<HTMLElement>("[data-zone-id=design]")!;
+    fireEvent.click(scene, toClient(floorPoint));
     await expect.poll(() => zoneEl.getAttribute("data-focused")).toBe("true");
-    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
-
-    fireEvent.click(getByRole("button", { name: "关闭人员卡" }));
-    await expect.poll(() => document.activeElement).toBe(seat);
-    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("false");
-
-    fireEvent.click(seat);
-    fireEvent.keyDown(document.querySelector("[data-slot=org-classroom]")!, { key: "Escape" });
-    await expect.poll(() => document.activeElement).toBe(seat);
+    expect(pressedSeat()).toBeNull();
+    expect(container.querySelector<HTMLElement>("[data-zone-id=engineering]")!.getAttribute("data-quiet")).toBe("true");
+    fireEvent.click(scene, toClient(floorPoint));
+    await expect.poll(() => zoneEl.getAttribute("data-focused")).toBe("false");
   });
 
-  it("点分区空白聚焦并再次点同一空白取消，不会改选中的座位", async () => {
-    const other: Zone = {
-      id: "engineering",
-      name: "技术研发部",
-      accent: "var(--color-info)",
-      seats: [{ id: "e1", row: 1, col: 1, person: { id: "q1", name: "周宁", status: "leave" } }],
+  it("键盘 Tab 按排、列顺序走到座位，聚焦时精灵图有光晕，Enter 打开人员卡", async () => {
+    const { container } = await mount(1280);
+    const seatButtons = [...container.querySelectorAll<HTMLButtonElement>("[data-seat-hit]")];
+    expect(seatButtons.slice(0, 3).map((b) => b.getAttribute("aria-label"))).toEqual([
+      "林予涵，在岗",
+      "陈可，忙碌",
+      "周宁，会议中",
+    ]);
+    seatButtons[0]!.focus();
+    await userEvent.tab();
+    expect(document.activeElement).toBe(seatButtons[1]);
+    const sprite = seatButtons[1]!.closest("[data-seat-id]")!.querySelector<HTMLElement>("[data-seat-sprite]")!;
+    await expect.poll(() => getComputedStyle(sprite).filter).toContain("drop-shadow");
+    await userEvent.keyboard("{Enter}");
+    await expect.poll(pressedSeat).toBe("d2");
+    expect(container.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
+  });
+
+  it("围巾跟分区色，人和桌子跟主题色：深色主题下人变浅、桌面变深", async () => {
+    const { container } = await mount(1280);
+    const color = (seatId: string, group: string) =>
+      getComputedStyle(
+        container.querySelector<HTMLElement>(`[data-seat-id="${seatId}"] [data-sprite-layer="${group}"]`)!,
+      ).backgroundColor;
+    expect(color("d1", "scarf")).not.toBe(color("e1", "scarf"));
+    const lum = (css: string) => {
+      const probe = document.createElement("div");
+      probe.style.color = css;
+      document.body.append(probe);
+      const canvas = document.createElement("canvas").getContext("2d")!;
+      canvas.fillStyle = getComputedStyle(probe).color;
+      canvas.fillRect(0, 0, 1, 1);
+      const [r, g, b] = canvas.getImageData(0, 0, 1, 1).data;
+      probe.remove();
+      return (r! + g! + b!) / 3;
     };
-    function Harness() {
-      const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
-      return (
-        <div style={{ width: 720 }}>
-          <OrgClassroom zones={[zone(), other]} selectedSeatId={selectedSeatId} onSeatSelect={setSelectedSeatId} />
-        </div>
-      );
-    }
-    const { getByRole } = render(<Harness />);
-    fireEvent.click(getByRole("button", { name: "林予涵，在岗" }));
-    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe(
-      "true",
-    );
-
-    const design = document.querySelector<HTMLElement>('[data-zone-id="design"]')!;
-    const engineering = document.querySelector<HTMLElement>('[data-zone-id="engineering"]')!;
-    const area = design.getBoundingClientRect();
-    let empty: HTMLElement | null = null;
-    for (let y = area.top + 4; y < area.bottom && !empty; y += 8) {
-      for (let x = area.left + 4; x < area.right; x += 8) {
-        const hit = document.elementFromPoint(x, y);
-        if (hit?.closest("[data-zone-floor]") && !hit.closest("[data-seat-id]") && !hit.closest("[data-seat-label]")) {
-          empty = hit as HTMLElement;
-          break;
-        }
-      }
-    }
-    expect(empty).toBeTruthy();
-    fireEvent.click(empty!);
-    await expect.poll(() => design.getAttribute("data-focused")).toBe("true");
-    expect(design.querySelector("[data-zone-floor]")!.getAttribute("aria-pressed")).toBe("true");
-    expect(engineering.getAttribute("data-quiet")).toBe("true");
-    expect(document.querySelector('[data-seat-id="s1"] button')!.getAttribute("aria-pressed")).toBe("true");
-    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
-
-    fireEvent.click(empty!);
-    await expect.poll(() => design.getAttribute("data-focused")).toBe("false");
-    expect(design.querySelector("[data-zone-floor]")!.getAttribute("aria-pressed")).toBe("false");
-    expect(engineering.getAttribute("data-quiet")).toBe("false");
-    expect(document.querySelector('[data-seat-id="s1"] button')!.getAttribute("aria-pressed")).toBe("true");
-    expect(document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe("true");
-  });
-
-  it("点头或围巾打开该座位的人员卡，不聚焦分区", async () => {
-    render(<OrgClassroom zones={[zone()]} />);
-    await expect.poll(() => document.querySelector("[data-seat-scarf]")).toBeTruthy();
-    const scarf = document.querySelector("[data-seat-scarf]")!;
-    const box = scarf.getBoundingClientRect();
-    const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
-    const seatId = hit?.closest("[data-seat-id]")?.getAttribute("data-seat-id");
-    expect(seatId).toBeTruthy();
-    expect(hit?.closest("[data-zone-floor]")).toBeNull();
-    fireEvent.click(hit as HTMLElement);
-    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe(
-      "true",
-    );
-    expect(document.querySelector("[data-slot=org-classroom-person]")!.textContent).toContain(
-      seatId === "s1" ? "林予涵" : "",
-    );
-    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
-    expect(document.querySelector(`[data-seat-id="${seatId}"] [data-desk-hit]`)!.getAttribute("aria-pressed")).toBe(
-      "true",
-    );
-  });
-
-  it("点林予涵的桌面不会选中孙晚", async () => {
-    const seats: Zone = {
-      ...zone(),
-      seats: [
-        { id: "s1", row: 1, col: 1, person: { id: "p1", name: "林予涵", status: "idle" } },
-        { id: "s5", row: 2, col: 2, person: { id: "p5", name: "孙晚", status: "interview" } },
-      ],
-    };
-    render(<OrgClassroom zones={[seats]} />);
-    await expect.poll(() => document.querySelector('[data-seat-id="s1"] [data-desk-top]')).toBeTruthy();
-    const desk = document.querySelector('[data-seat-id="s1"] [data-desk-top]')!;
-    const box = desk.getBoundingClientRect();
-    const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
-    expect(hit?.closest("[data-seat-id]")?.getAttribute("data-seat-id")).toBe("s1");
-    fireEvent.click(hit as HTMLElement);
-    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.textContent).toContain("林予涵");
-    expect(document.querySelector('[data-seat-id="s1"] [data-desk-hit]')!.getAttribute("aria-pressed")).toBe("true");
-    expect(document.querySelector('[data-seat-id="s5"] [data-desk-hit]')!.getAttribute("aria-pressed")).toBe("false");
-    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
-  });
-
-  it("五个状态同时写回气泡和人员卡", async () => {
-    function Harness() {
-      const [zones, setZones] = useState<Zone[]>([zone()]);
-      const [selectedSeatId, setSelectedSeatId] = useState<string | null>("s1");
-      return (
-        <OrgClassroom
-          zones={zones}
-          selectedSeatId={selectedSeatId}
-          onSeatSelect={setSelectedSeatId}
-          onStatusChange={(seatId, status) => setZones((current) => updateSeatStatus(current, seatId, status))}
-        />
-      );
-    }
-    render(<Harness />);
-    const cases = [
-      ["idle", "在岗"],
-      ["busy", "忙碌"],
-      ["meeting", "会议中"],
-      ["leave", "休假"],
-      ["interview", "面试中"],
-    ] as const;
-    for (const [status, label] of cases) {
-      fireEvent.click(document.querySelector(`[data-status-option="${status}"]`)!);
-      await expect.poll(() => document.querySelector("[data-field=status]")!.textContent).toBe(label);
-      expect(document.querySelector('[data-seat-label="s1"] [data-visible="true"]')!.textContent).toBe(label);
-    }
-  });
-
-  it("390 宽打开人员卡时不横向溢出，标签在视口内，地板不盖住卡片", async () => {
-    await page.viewport(390, 1026);
+    const lightBody = lum(color("d1", "body"));
+    const lightDesk = lum(color("d1", "desk"));
+    expect(lightBody).toBeLessThan(lightDesk);
+    const previous = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", "dark");
     try {
-      const packed: Zone = {
-        id: "design",
-        name: "产品设计部",
-        accent: "var(--color-primary)",
-        seats: [
-          { id: "s1", row: 1, col: 1, person: { id: "p1", name: "林予涵", status: "idle" } },
-          { id: "s2", row: 1, col: 2, person: { id: "p2", name: "陈可", status: "busy" } },
-          { id: "s3", row: 1, col: 3, person: { id: "p3", name: "周宁", status: "meeting" } },
-          { id: "s4", row: 2, col: 1, person: { id: "p4", name: "赵启明", status: "leave" } },
-          { id: "s5", row: 2, col: 2, person: { id: "p5", name: "孙晚", status: "interview" } },
-          { id: "s6", row: 2, col: 3, person: { id: "p6", name: "何安", status: "meeting" } },
-          { id: "s8", row: 3, col: 2, person: { id: "p8", name: "郑澄", status: "busy" } },
-          { id: "s10", row: 4, col: 1, person: { id: "p10", name: "许知夏", status: "leave" } },
-          { id: "s12", row: 4, col: 3, person: { id: "p12", name: "沈酌", status: "interview" } },
-        ],
-      };
-      const engineering: Zone = {
-        id: "engineering",
-        name: "技术研发部",
-        accent: "var(--color-info)",
-        seats: [
-          { id: "e1", row: 1, col: 1, person: { id: "q1", name: "周宁", status: "leave" } },
-          { id: "e2", row: 1, col: 2, person: { id: "q2", name: "吴桐", status: "busy" } },
-        ],
-      };
-      function Harness() {
-        const [selectedSeatId, setSelectedSeatId] = useState<string | null>("s1");
-        return (
-          <OrgClassroom
-            zones={[packed, engineering]}
-            selectedSeatId={selectedSeatId}
-            onSeatSelect={setSelectedSeatId}
-          />
-        );
-      }
-      const { container } = render(<Harness />);
-      await expect.poll(() => container.querySelector("[data-scene-scale]")).toBeTruthy();
-      const root = container.querySelector<HTMLElement>("[data-slot=org-classroom]")!;
-      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
-      expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(document.documentElement.clientWidth + 1);
-      const card = container.querySelector<HTMLElement>("[data-slot=org-classroom-person]")!;
-      const plane = container.querySelector<HTMLElement>("[data-slot=org-classroom-plane]")!;
-      expect(getComputedStyle(card).zIndex).toBe("20");
-      expect(getComputedStyle(container.querySelector("[data-slot=org-classroom-floor]")!).zIndex).toBe("0");
-      expect(plane.getBoundingClientRect().top).toBeGreaterThanOrEqual(card.getBoundingClientRect().bottom - 2);
-      const view = root.getBoundingClientRect();
-      const labels = [...container.querySelectorAll<HTMLElement>("[data-seat-label]")].filter(
-        (label) => getComputedStyle(label).visibility !== "hidden",
-      );
-      const rects = labels.map((label) => label.getBoundingClientRect());
-      for (const rect of rects) {
-        expect(rect.left).toBeGreaterThanOrEqual(view.left - 1);
-        expect(rect.right).toBeLessThanOrEqual(view.right + 1);
-        expect(rect.bottom).toBeLessThanOrEqual(view.bottom + 1);
-      }
-      for (const label of labels) {
-        const id = label.dataset.seatLabel ?? "";
-        if (id.startsWith("zone-")) continue;
-        const head = container.querySelector<HTMLElement>(`[data-seat-id="${id}"] [data-seat-torso]`);
-        expect(head, id).toBeTruthy();
-        const headBox = head!.getBoundingClientRect();
-        const labelBox = label.getBoundingClientRect();
-        const dx = Math.abs(labelBox.left + labelBox.width / 2 - (headBox.left + headBox.width / 2));
-        const dy = headBox.top - labelBox.bottom;
-        expect(dx, id).toBeLessThanOrEqual(28);
-        expect(dy, id).toBeLessThanOrEqual(16);
-        expect(dy, id).toBeGreaterThanOrEqual(-24);
-      }
-      const zoneChips = labels.filter((label) => (label.dataset.seatLabel ?? "").startsWith("zone-"));
-      const nameChips = labels.filter((label) => !(label.dataset.seatLabel ?? "").startsWith("zone-"));
-      for (const name of nameChips) {
-        for (const zoneChip of zoneChips) {
-          expect(
-            overlap(name.getBoundingClientRect(), zoneChip.getBoundingClientRect()),
-            `${name.dataset.seatLabel} x ${zoneChip.dataset.seatLabel}`,
-          ).toBe(0);
-        }
-      }
+      expect(lum(color("d1", "body"))).toBeGreaterThan(lum(color("d1", "desk")));
     } finally {
-      await page.viewport(1280, 800);
+      if (previous == null) document.documentElement.removeAttribute("data-theme");
+      else document.documentElement.setAttribute("data-theme", previous);
     }
   });
 
-  it("悬停桌面不会挪开点击位置，第一下就打开人员卡", async () => {
-    render(<OrgClassroom zones={[zone()]} />);
-    await expect.poll(() => document.querySelector("[data-scene-scale]")?.getAttribute("data-scene-scale")).toBeTruthy();
-    const desk = document.querySelector<HTMLElement>('[data-seat-id="s1"] [data-desk-top]')!;
-    const before = desk.getBoundingClientRect();
-    const button = page.getByRole("button", { name: "林予涵，在岗" });
-    await button.hover();
-    const after = desk.getBoundingClientRect();
-    expect(Math.abs(after.top - before.top)).toBeLessThan(4);
-    expect(Math.abs(after.left - before.left)).toBeLessThan(4);
-    expect(Math.abs(after.width - before.width)).toBeLessThan(4);
-    await button.click();
-    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.textContent).toContain("林予涵");
-    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
-  });
+  it("多实例：240 个座位首屏渲染和命中都很快，DOM 不随 base64 膨胀", async () => {
+    const many: Zone[] = Array.from({ length: 10 }, (_, z) => ({
+      id: `z${z}`,
+      name: `分区${z}`,
+      accent: z % 2 ? "var(--color-info)" : "var(--color-primary)",
+      seats: Array.from({ length: 24 }, (_, i) =>
+        i % 5 === 4
+          ? { id: `z${z}-${i}`, row: Math.floor(i / 4) + 1, col: (i % 4) + 1 }
+          : occupied(`z${z}-${i}`, `人${i}`, "idle", Math.floor(i / 4) + 1, (i % 4) + 1),
+      ),
+    }));
+    const started = performance.now();
+    const { container, scene, layout, toClient } = await mount(1280, many);
+    const mounted = performance.now() - started;
+    expect(container.querySelectorAll("[data-seat-id]")).toHaveLength(240);
+    expect(mounted).toBeLessThan(3000);
+    // 每张图只在场景根的 CSS 变量里出现一次，240 个座位都用 var() 引用
+    const images = SPRITE_KEYS.reduce((sum, key) => sum + spriteFor(key).layers.length + 2, 0);
+    expect(container.innerHTML.split("data:image/webp").length - 1).toBe(images);
 
-  it("点大腿打开该座位的人员卡", async () => {
-    render(<OrgClassroom zones={[zone()]} />);
-    await expect.poll(() => document.querySelector("[data-seat-thigh]")).toBeTruthy();
-    const lap = document.querySelector<HTMLElement>("[data-seat-lap]")!;
-    const box = lap.getBoundingClientRect();
-    let hit: Element | null = null;
-    for (let y = box.top + 2; y < box.bottom && !hit; y += 3) {
-      for (let x = box.left + 2; x < box.right; x += 3) {
-        const candidate = document.elementFromPoint(x, y);
-        if (candidate?.closest("[data-seat-lap]")) {
-          hit = candidate;
-          break;
-        }
-      }
-    }
-    const seatId = hit?.closest("[data-seat-id]")?.getAttribute("data-seat-id");
-    expect(seatId).toBeTruthy();
-    expect(hit?.closest("[data-seat-lap]")).toBeTruthy();
-    fireEvent.click(hit as HTMLElement);
-    await expect.poll(() => document.querySelector("[data-slot=org-classroom-person]")!.getAttribute("data-open")).toBe(
-      "true",
-    );
-    expect(document.querySelector('[data-zone-id="design"]')!.getAttribute("data-focused")).toBe("false");
-  });
-
-  it("measures the hip seam after the rounded crest", async () => {
-    for (const [name, width, vw, vh] of [
-      ["desk", 1100, 1280, 844],
-      ["w390", 390, 480, 1000],
-      ["w360", 360, 480, 900],
-    ] as const) {
-      await page.viewport(vw, vh);
-      const { container, unmount } = render(
-        <div style={{ width }}>
-          <OrgClassroom zones={[zone()]} />
-        </div>,
-      );
-      const floor = container.querySelector<HTMLElement>("[data-slot=org-classroom-floor]")!;
-      await expect.poll(() => Number(floor.getAttribute("data-scene-scale"))).toBeGreaterThan(0.2);
-      const gaps: string[] = [];
-      for (const seat of container.querySelectorAll<HTMLElement>("[data-seat-id]")) {
-        const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]");
-        const pelvis = seat.querySelector<HTMLElement>("[data-seat-pelvis]");
-        if (!scarf || !pelvis) continue;
-        const scarfBox = scarf.getBoundingClientRect();
-        const pelvisBox = pelvis.getBoundingClientRect();
-        gaps.push(`${seat.dataset.seatId}:${(pelvisBox.top - scarfBox.bottom).toFixed(2)}`);
-      }
-      const seat = container.querySelector<HTMLElement>("[data-seat-id=s1]")!;
-      const scarf = seat.querySelector<HTMLElement>("[data-seat-scarf]")!;
-      const pelvis = seat.querySelector<HTMLElement>("[data-seat-pelvis]")!;
-      const head = seat.querySelector<HTMLElement>("[data-seat-head]")!;
-      const scarfBox = scarf.getBoundingClientRect();
-      const pelvisBox = pelvis.getBoundingClientRect();
-      const headBox = head.getBoundingClientRect();
-      const lapBox = seat.querySelector<HTMLElement>("[data-seat-lap]")!.getBoundingClientRect();
-      const floors: number[] = [];
-      for (const fraction of [0.28, 0.4, 0.5]) {
-        const x = headBox.left + headBox.width * fraction;
-        let lastBust = headBox.bottom;
-        const paint = (y: number) => {
-          const stack = document.elementsFromPoint(x, y);
-          const onSeat = (element: Element) => element.closest("[data-seat-id]") === seat;
-          return {
-            bust: stack.some(
-              (element) =>
-                onSeat(element) &&
-                (element.matches("[data-seat-scarf], [data-seat-head]") ||
-                  element.closest("[data-seat-scarf], [data-seat-head]")),
-            ),
-            hip: stack.some(
-              (element) => onSeat(element) && element.closest("[data-seat-pelvis], [data-seat-thigh]"),
-            ),
-          };
-        };
-        for (let y = headBox.top; y < headBox.bottom + 24; y += 1) if (paint(y).bust) lastBust = y;
-        let gap = 0;
-        let found = false;
-        for (let y = lastBust + 1; y < lastBust + 28; y += 1) {
-          const layer = paint(y);
-          if (layer.hip) {
-            found = true;
-            break;
-          }
-          if (!layer.bust) gap += 1;
-        }
-        floors.push(found ? gap : 28);
-      }
-      let exposed = 0;
-      for (let x = lapBox.left + 1; x < lapBox.right; x += 2) {
-        for (let y = lapBox.top + 1; y < lapBox.bottom; y += 2) {
-          const stack = document.elementsFromPoint(x, y);
-          const covered = stack.some((element) => element.closest("[data-seat-scarf]"));
-          const hit = stack.find((element) => element.closest("[data-seat-id]") === seat);
-          if (!hit || hit.closest("[data-desk-top]") || covered) continue;
-          if (stack.some((element) => element.closest("[data-seat-pelvis]") && element.closest("[data-seat-id]") === seat)) {
-            exposed += 1;
-          }
-        }
-      }
-      const rows: string[] = [];
-      for (let x = Math.round(pelvisBox.left); x <= Math.round(pelvisBox.right); x += 3) {
-        let scarfBottom = -1;
-        let hipTop = -1;
-        for (let y = Math.round(scarfBox.top); y < pelvisBox.bottom + 8; y += 1) {
-          const stack = document.elementsFromPoint(x, y);
-          const onSeat = (element: Element) => element.closest("[data-seat-id]") === seat;
-          if (stack.some((element) => onSeat(element) && element.closest("[data-seat-scarf]"))) scarfBottom = y;
-          if (hipTop < 0 && stack.some((element) => onSeat(element) && element.closest("[data-seat-pelvis]"))) hipTop = y;
-        }
-        if (scarfBottom > 0 && hipTop > 0) rows.push(String(hipTop - scarfBottom));
-      }
-      console.log(
-        `MEASURE ${name} scale ${floor.getAttribute("data-scene-scale")} boxes ${gaps.join(" ")} floor ${floors.join("/")} exposed ${exposed} seam ${rows.join(",")}`,
-      );
-      if (name === "desk") await page.screenshot({ path: "__screenshots__/crest-desk.png" });
-      unmount();
-    }
+    const target = layout.seats.find((seat) => seat.seatId === "z9-10")!;
+    const t0 = performance.now();
+    for (let i = 0; i < 50; i += 1) fireEvent.click(scene, toClient({ x: target.head!.x, y: target.head!.y + 10 }));
+    const perClick = (performance.now() - t0) / 50;
+    await expect.poll(pressedSeat).toBe("z9-10");
+    expect(perClick).toBeLessThan(16);
   });
 });

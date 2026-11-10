@@ -19,6 +19,11 @@ export interface OrgClassroomCopy {
   clearFocus: (name: string) => string;
   seatLabel: (name: string, status: string) => string;
   emptySeatLabel: (row: number, col: number) => string;
+  /** 指南针和旋转按钮这一组控件的读屏名。 */
+  compass: string;
+  north: string;
+  rotateCounterClockwise: string;
+  rotateClockwise: string;
   statuses: Record<SeatStatus, string>;
 }
 
@@ -36,6 +41,10 @@ export const ORG_CLASSROOM_COPY_ZH = {
   clearFocus: (name) => `取消聚焦${name}`,
   seatLabel: (name, status) => `${name}，${status}`,
   emptySeatLabel: (row, col) => `空位 ${row}-${col}`,
+  compass: "指南针",
+  north: "北",
+  rotateCounterClockwise: "逆时针旋转视角",
+  rotateClockwise: "顺时针旋转视角",
   statuses: {
     idle: "在岗",
     busy: "忙碌",
@@ -59,6 +68,10 @@ export const ORG_CLASSROOM_COPY_EN = {
   clearFocus: (name) => `Clear focus on ${name}`,
   seatLabel: (name, status) => `${name}, ${status}`,
   emptySeatLabel: (row, col) => `Empty seat ${row}-${col}`,
+  compass: "Compass",
+  north: "N",
+  rotateCounterClockwise: "Rotate view counterclockwise",
+  rotateClockwise: "Rotate view clockwise",
   statuses: {
     idle: "On duty",
     busy: "Busy",

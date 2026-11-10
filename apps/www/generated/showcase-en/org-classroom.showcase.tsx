@@ -2,7 +2,7 @@
 import { useCallback, useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { OrgClassroom } from "../../../../packages/ui/src/org-classroom/org-classroom";
-import type { Seat, SeatStatus, Zone } from "../../../../packages/ui/src/org-classroom/org-classroom.types";
+import type { Seat, SeatStatus, ViewAngle, Zone } from "../../../../packages/ui/src/org-classroom/org-classroom.types";
 import { updateSeatStatus } from "../../../../packages/ui/src/org-classroom/seat-status";
 function occupied(id: string, name: string, status: SeatStatus, row: number, col: number): Seat {
     return { id, row, col, person: { id, name, status } };
@@ -58,6 +58,10 @@ function ClassroomPreview({ initial }: {
     }, []);
     return (<OrgClassroom zones={zones} selectedSeatId={selectedSeatId} onSeatSelect={onSeatSelect} focusedZoneId={focusedZoneId} onZoneFocus={onZoneFocus} onStatusChange={onStatusChange}/>);
 }
+function OrientedPreview() {
+    const [view, setView] = useState<ViewAngle>(0);
+    return (<OrgClassroom zones={[designZone(), { ...engineeringZone(), facing: "left" }]} view={view} onViewChange={setView} northDeg={30}/>);
+}
 const basicZones = () => [designZone()];
 const focusZones = () => [designZone(), engineeringZone()];
 export const orgClassroomShowcase: ShowcaseSpec = {
@@ -95,6 +99,17 @@ export const orgClassroomShowcase: ShowcaseSpec = {
   onZoneFocus={setFocusedZoneId}
 />`,
             render: () => <ClassroomPreview initial={focusZones()}/>,
+        },
+        {
+            title: "Facing and compass",
+            description: "facing sets which side of the floor plan a zone's people face; northDeg tells the compass how far true north is turned. The two buttons beside it rotate the viewing angle.",
+            code: `<OrgClassroom
+  zones={[design, { ...engineering, facing: "left" }]}
+  view={view}
+  onViewChange={setView}
+  northDeg={30}
+/>`,
+            render: () => <OrientedPreview />,
         },
     ],
     controls: [],

@@ -6699,18 +6699,53 @@
       "id": "component/org-classroom/pitfall/4",
       "scope": "org-classroom",
       "title": "OrgClassroom",
-      "rule": "`accent` 里的主题变量必须带 `--color-` 前缀。座位上的人是内部剪影，不是头像组件 [Avatar](../avatar/avatar.md)。",
+      "rule": "`accent` 里的主题变量必须带 `--color-` 前缀。它同时决定分区地板和这一区人的围巾颜色。座位上的人是内部模型，不是头像组件 [Avatar](../avatar/avatar.md)。",
       "source": "packages/ui/src/org-classroom/org-classroom.md"
     },
     {
       "id": "component/org-classroom/pitfall/5",
       "scope": "org-classroom",
       "title": "OrgClassroom",
-      "rule": "这是 CSS 等距舞台加 SVG，不是 Three.js / R3F。中间层如果加了 `opacity` 以外的滤镜，或把 `overflow: hidden` 套在旋转平面上，抬起和正对屏幕的人名会扁掉。人名上也不要再用 `truncate`：它会把标签裁成 `overflow: hidden`，3D 舞台就此被压扁。",
+      "rule": "座位是 Blender 预渲染的精灵图，不是 Three.js / R3F，也不是实时 WebGL。每张图拆成阴影、按颜色组的遮罩和一张白模光照：遮罩填主题色（人吃 `--color-foreground`，桌面吃 `--color-surface`，围巾吃 `accent`），光照用 `multiply` 叠上去，所以换主题、深色模式都不用重新出图。改模型或相机后在本目录跑 `blender -b --factory-startup --python org-classroom-sprites.bake.py`（需要 `cwebp`）重新生成 `org-classroom-sprites.ts`，不要手改它。",
       "source": "packages/ui/src/org-classroom/org-classroom.md"
     },
     {
       "id": "component/org-classroom/pitfall/6",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "一人一张单人桌，同一行的桌子并排拼成长条。行列只决定位置，不要用 `row` / `col` 留空当过道：分区之间本来就有过道。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/7",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "点击按像素判断：点到桌椅人身上才算这个座位，点到图片透明处落到分区地板。前后座位图片会重叠，所以不要在外面给座位包一层按矩形接点击的元素。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/8",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "指南针画成平放在地面上的圆的投影，所以北向刻度在等距画面里通常是斜的；它和地板同一个透视，不是画错了。`northDeg` 只转指南针，不转楼层；要让人朝真北，用 `facing` 配合 `northDeg` 自己算。`facing` 只有四个方向，桌子不做任意角度。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/9",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "座位图按「朝向 − 视角」的 4 个相对角各烘一套，`org-classroom-sprites.ts` 约 360KB（WebP data URI）。只用默认朝向和视角也会整体打进包里。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/10",
+      "scope": "org-classroom",
+      "title": "OrgClassroom",
+      "rule": "排布按组件自身宽度（容器查询）切换：宽于 48rem 时人员卡在右侧，否则在上方。场景缩小到一定比例后，人名气泡收成状态圆点，名字和状态仍在座位按钮的读屏标签和人员卡里。",
+      "source": "packages/ui/src/org-classroom/org-classroom.md"
+    },
+    {
+      "id": "component/org-classroom/pitfall/11",
       "scope": "org-classroom",
       "title": "OrgClassroom",
       "rule": "英文文档的代码块同样会被英文站渲染出来。`*.en.md` 的围栏里不要写「在岗 / 忙碌 / 会议中 / 休假 / 面试中」。`docs:i18n:check` 会报 `fenced-cjk`；只查正文、放行围栏，会绿到静态导出之后的英文产物门禁和 showcase 浏览器门禁才红。",
@@ -11439,7 +11474,7 @@
   ],
   "stats": {
     "componentDocs": 403,
-    "componentAdvisories": 1595,
-    "totalAdvisories": 1605
+    "componentAdvisories": 1600,
+    "totalAdvisories": 1610
   }
 }

@@ -2,7 +2,7 @@
 import { useCallback, useState } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { OrgClassroom } from "./org-classroom";
-import type { Seat, SeatStatus, Zone } from "./org-classroom.types";
+import type { Seat, SeatStatus, ViewAngle, Zone } from "./org-classroom.types";
 import { updateSeatStatus } from "./seat-status";
 
 function occupied(id: string, name: string, status: SeatStatus, row: number, col: number): Seat {
@@ -70,6 +70,18 @@ function ClassroomPreview({ initial }: { initial: Zone[] }) {
   );
 }
 
+function OrientedPreview() {
+  const [view, setView] = useState<ViewAngle>(0);
+  return (
+    <OrgClassroom
+      zones={[designZone(), { ...engineeringZone(), facing: "left" }]}
+      view={view}
+      onViewChange={setView}
+      northDeg={30}
+    />
+  );
+}
+
 const basicZones = () => [designZone()];
 const focusZones = () => [designZone(), engineeringZone()];
 
@@ -112,6 +124,17 @@ export const orgClassroomShowcase: ShowcaseSpec = {
   onZoneFocus={setFocusedZoneId}
 />`,
       render: () => <ClassroomPreview initial={focusZones()} />,
+    },
+    {
+      title: "朝向与指南针",
+      description: "facing 设定一个分区的人面朝平面图哪边；northDeg 告诉指南针真北偏了多少度。旁边两颗按钮旋转观察视角。",
+      code: `<OrgClassroom
+  zones={[design, { ...engineering, facing: "left" }]}
+  view={view}
+  onViewChange={setView}
+  northDeg={30}
+/>`,
+      render: () => <OrientedPreview />,
     },
   ],
   controls: [],

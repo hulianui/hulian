@@ -199,7 +199,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Meter](https://github.com/hulianui/hulian/blob/master/packages/ui/src/meter/meter.md): 用语义化的量条表示某个值在已知范围里的占比
 - [NovelReader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/novel-reader/novel-reader.md): 长文阅读器：菜单默认收起，进度按章节和字符偏移记住
 - [NumberTicker](https://github.com/hulianui/hulian/blob/master/packages/ui/src/number-ticker/number-ticker.md): 数字滚动 · 进入视口 tween 到目标值 + reduced-motion · data-display/stat · #animated
-- [OrgClassroom](https://github.com/hulianui/hulian/blob/master/packages/ui/src/org-classroom/org-classroom.md): 组织工位 · CSS 等距平面（rotateX + rotateZ）+ SVG 桌子 / 剪影 · 部门分区、人名、状态气泡 · 点座位看人员卡并改状态
+- [OrgClassroom](https://github.com/hulianui/hulian/blob/master/packages/ui/src/org-classroom/org-classroom.md): 组织工位 · Blender 预渲染等距精灵图（分层吃主题色，零运行时依赖）· 单人桌可拼接 · 部门分区、人名、状态气泡 · 点座位看人员卡并改状态
 - [PixelCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pixel-card/pixel-card.md): 像素卡片 · canvas2d 像素卡片 · 悬停/聚焦时像素自中心波纹生长+闪烁、离开收缩消散 · 4 变体/可定制 gap·speed·colors(零依赖 RAF·token 配色·reduced-motion …
 - [PricingTable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/pricing-table/pricing-table.md): 把多个方案按属性逐行对照，可高亮推荐列
 - [ProfileCard](https://github.com/hulianui/hulian/blob/master/packages/ui/src/profile-card/profile-card.md): 全息名片卡 · 指针倾斜 + 全息炫彩名片卡 · RAF 阻尼弹簧驱动 3D 旋转/光晕（零依赖）+ chart token 全息渐变 + 无头像落首字母占位（reduced-motion 静态降级） · data-d…

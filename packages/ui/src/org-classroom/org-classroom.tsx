@@ -1,64 +1,21 @@
 "use client";
-import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  memo,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+} from "react";
 import { cn } from "../lib/cn";
 import { useComponentLocale } from "../config/locale-context";
-import { ORG_CLASSROOM_COPY_ZH, type OrgClassroomCopy } from "./copy";
-import { Floor, type FloorAnnotation } from "./floor";
+import { ORG_CLASSROOM_COPY_ZH } from "./copy";
+import { Floor } from "./floor";
 import { PersonCard } from "./person-card";
-import type { OrgClassroomProps, Zone } from "./org-classroom.types";
-import { StatusChip } from "./status-chip";
-import { ZoneTile } from "./zone-tile";
-
-function layoutKeyFor(zones: Zone[]) {
-  return zones
-    .map(
-      (zone) =>
-        `${zone.id}:${zone.name}:${zone.seats
-          .map((seat) => `${seat.id}.${seat.row}.${seat.col}.${seat.person?.name ?? ""}.${seat.person?.status ?? ""}`)
-          .join(",")}`,
-    )
-    .join("|");
-}
-
-function annotationsFor(
-  zones: Zone[],
-  copy: OrgClassroomCopy,
-  onSeatSelect: (seatId: string) => void,
-): FloorAnnotation[] {
-  const annotations: FloorAnnotation[] = [];
-  for (const zone of zones) {
-    annotations.push({
-      id: `zone-${zone.id}`,
-      anchor: zone.id,
-      node: (
-        <span className="whitespace-nowrap rounded-full bg-surface/95 px-2 py-0.5 text-xs font-medium text-foreground shadow-sm ring-1 ring-border">
-          {zone.name}
-        </span>
-      ),
-    });
-    for (const seat of zone.seats) {
-      if (!seat.person) continue;
-      annotations.push({
-        id: seat.id,
-        anchor: seat.id,
-        node: (
-          <span
-            aria-hidden
-            className="inline-flex cursor-pointer items-center gap-1 rounded-full bg-surface/95 py-0.5 pl-0.5 pr-2 shadow-sm ring-1 ring-border"
-            onClick={(event) => {
-              event.stopPropagation();
-              onSeatSelect(seat.id);
-            }}
-          >
-            <StatusChip status={seat.person.status} labels={copy.statuses} />
-            <span className="whitespace-nowrap text-xs font-medium leading-none text-foreground">{seat.person.name}</span>
-          </span>
-        ),
-      });
-    }
-  }
-  return annotations;
-}
+import type { OrgClassroomProps, ViewAngle } from "./org-classroom.types";
+import { ViewControls } from "./view-controls";
 
 function OrgClassroomImpl({
   zones,
@@ -67,6 +24,9 @@ function OrgClassroomImpl({
   onStatusChange,
   focusedZoneId,
   onZoneFocus,
+  view: viewProp,
+  onViewChange,
+  northDeg = 0,
   className,
 }: OrgClassroomProps) {
   const copy = useComponentLocale().orgClassroom ?? ORG_CLASSROOM_COPY_ZH;
@@ -74,8 +34,17 @@ function OrgClassroomImpl({
   const focusControlled = focusedZoneId !== undefined;
   const [uncontrolledSelected, setUncontrolledSelected] = useState<string | null>(null);
   const [uncontrolledFocus, setUncontrolledFocus] = useState<string | null>(null);
-  const selectedId = selectionControlled ? (selectedSeatId ?? null) : uncontrolledSelected;
-  const focusedId = focusControlled ? (focusedZoneId ?? null) : uncontrolledFocus;
+  const selectedId = selectionControlled ? selectedSeatId ?? null : uncontrolledSelected;
+  const focusedId = focusControlled ? focusedZoneId ?? null : uncontrolledFocus;
+  const [uncontrolledView, setUncontrolledView] = useState<ViewAngle>(0);
+  const view = viewProp ?? uncontrolledView;
+  const changeView = useCallback(
+    (next: ViewAngle) => {
+      if (viewProp === undefined) setUncontrolledView(next);
+      onViewChange?.(next);
+    },
+    [onViewChange, viewProp],
+  );
   const rootRef = useRef<HTMLDivElement>(null);
   const restoreSeatId = useRef<string | null>(null);
 
@@ -133,36 +102,51 @@ function OrgClassroomImpl({
   }, [selectedId, zones]);
 
   return (
+    // container-type 让元素不再由内容撑宽：在 flex / 收缩包裹的父级里必须自己占满宽度，否则会塌成 0
     <div
       ref={rootRef}
       data-slot="org-classroom"
-      className={cn("flex flex-col-reverse gap-4 lg:flex-row lg:items-start", className)}
+      className={cn("@container w-full min-w-0", className)}
       onKeyDown={onKeyDown}
     >
-      <div className="min-w-0 w-full flex-1">
-        <Floor label={copy.floor} layoutKey={layoutKeyFor(zones)} annotations={annotationsFor(zones, copy, selectSeat)}>
-          {zones.map((zone) => (
-            <ZoneTile
-              key={zone.id}
-              zone={zone}
-              copy={copy}
-              focused={focusedId === zone.id}
-              quiet={focusedId != null && focusedId !== zone.id}
-              selectedSeatId={selectedId}
-              onSeatSelect={selectSeat}
-              onZoneToggle={toggleZone}
-            />
-          ))}
-        </Floor>
+      {/* 按组件自己的宽度换排布，而不是视口：宽页面里的窄栏也能拿到手机排布。 */}
+      <div className="flex flex-col-reverse gap-4 @3xl:flex-row @3xl:items-start">
+        <div className="flex min-w-0 w-full flex-1 flex-col gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <ul data-slot="org-classroom-zones" className="flex flex-wrap gap-2">
+              {zones.map((zone) => (
+                <li
+                  key={zone.id}
+                  data-zone-label={zone.id}
+                  className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-surface/95 px-2 py-0.5 text-xs font-medium text-foreground shadow-sm ring-1 ring-border"
+                  style={{ "--zone-accent": zone.accent } as CSSProperties}
+                >
+                  <span aria-hidden className="size-2 rounded-full bg-[var(--zone-accent)]" />
+                  {zone.name}
+                </li>
+              ))}
+            </ul>
+            <ViewControls copy={copy} view={view} northDeg={northDeg} onViewChange={changeView} />
+          </div>
+          <Floor
+            zones={zones}
+            copy={copy}
+            focusedZoneId={focusedId}
+            selectedSeatId={selectedId}
+            onSeatSelect={selectSeat}
+            onZoneToggle={toggleZone}
+            view={view}
+          />
+        </div>
+        <PersonCard
+          copy={copy}
+          zone={selected?.zone ?? null}
+          seatId={selected?.seat.id ?? null}
+          person={selected?.seat.person ?? null}
+          onStatusChange={onStatusChange}
+          onClose={selectedId ? requestClose : undefined}
+        />
       </div>
-      <PersonCard
-        copy={copy}
-        zone={selected?.zone ?? null}
-        seatId={selected?.seat.id ?? null}
-        person={selected?.seat.person ?? null}
-        onStatusChange={onStatusChange}
-        onClose={selectedId ? requestClose : undefined}
-      />
     </div>
   );
 }

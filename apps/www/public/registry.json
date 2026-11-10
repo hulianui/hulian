@@ -10373,7 +10373,7 @@
       "name": "org-classroom",
       "type": "registry:ui",
       "title": "OrgClassroom",
-      "description": "组织工位 · CSS 等距平面（rotateX + rotateZ）+ SVG 桌子 / 剪影 · 部门分区、人名、状态气泡 · 点座位看人员卡并改状态",
+      "description": "组织工位 · Blender 预渲染等距精灵图（分层吃主题色，零运行时依赖）· 单人桌可拼接 · 部门分区、人名、状态气泡 · 点座位看人员卡并改状态",
       "categories": [
         "data-display"
       ],
@@ -10397,7 +10397,9 @@
           "Seat",
           "SeatPerson",
           "SeatStatus",
-          "Zone"
+          "ViewAngle",
+          "Zone",
+          "ZoneFacing"
         ],
         "group": "collection",
         "tags": [],
@@ -10410,24 +10412,9 @@
       },
       "files": [
         {
-          "path": "components/hulianui/org-classroom/avatar.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/org-classroom/avatar.tsx"
-        },
-        {
           "path": "components/hulianui/org-classroom/copy.ts",
           "type": "registry:ui",
           "target": "components/hulianui/org-classroom/copy.ts"
-        },
-        {
-          "path": "components/hulianui/org-classroom/desk.tsx",
-          "type": "registry:ui",
-          "target": "components/hulianui/org-classroom/desk.tsx"
-        },
-        {
-          "path": "components/hulianui/org-classroom/fit-scene.ts",
-          "type": "registry:ui",
-          "target": "components/hulianui/org-classroom/fit-scene.ts"
         },
         {
           "path": "components/hulianui/org-classroom/floor.tsx",
@@ -10440,9 +10427,14 @@
           "target": "components/hulianui/org-classroom/index.ts"
         },
         {
-          "path": "components/hulianui/org-classroom/iso.ts",
+          "path": "components/hulianui/org-classroom/iso-layout.ts",
           "type": "registry:ui",
-          "target": "components/hulianui/org-classroom/iso.ts"
+          "target": "components/hulianui/org-classroom/iso-layout.ts"
+        },
+        {
+          "path": "components/hulianui/org-classroom/org-classroom-sprites.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/org-classroom/org-classroom-sprites.ts"
         },
         {
           "path": "components/hulianui/org-classroom/org-classroom.tsx",
@@ -10470,9 +10462,9 @@
           "target": "components/hulianui/org-classroom/status-chip.tsx"
         },
         {
-          "path": "components/hulianui/org-classroom/zone-tile.tsx",
+          "path": "components/hulianui/org-classroom/view-controls.tsx",
           "type": "registry:ui",
-          "target": "components/hulianui/org-classroom/zone-tile.tsx"
+          "target": "components/hulianui/org-classroom/view-controls.tsx"
         }
       ]
     },

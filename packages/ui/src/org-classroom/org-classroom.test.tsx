@@ -43,14 +43,16 @@ describe("OrgClassroom", () => {
     expect(container.querySelector('[data-seat-id="s3"]')!.textContent).not.toContain("在岗");
   });
 
-  it("悬停只加阴影，不平移桌子和人，状态气泡不在抬起层里", () => {
+  it("悬停、选中、键盘聚焦只给精灵图加描边光晕，不移动座位，状态气泡不在精灵图里", () => {
     const { container } = render(<OrgClassroom zones={[zone()]} />);
-    const lift = container.querySelector('[data-seat-id="s1"] [data-seat-lift]')!;
+    const sprite = container.querySelector('[data-seat-id="s1"] [data-seat-sprite]')!;
     const chip = container.querySelector('[data-seat-label="s1"] [data-slot="status-chip"]')!;
-    expect(lift.className).toContain("group-hover:shadow-");
-    expect(lift.className).not.toContain("translateZ");
-    expect(lift.className).toContain("motion-reduce:transition-none");
-    expect(lift.contains(chip)).toBe(false);
+    expect(sprite.className).toContain("group-data-[hover=true]/seat:[filter:drop-shadow");
+    expect(sprite.className).toContain("group-data-[selected=true]/seat:[filter:drop-shadow");
+    expect(sprite.className).toContain("group-has-[:focus-visible]/seat:[filter:drop-shadow");
+    expect(sprite.className).not.toContain("transition"); // 过渡 filter 会先闪黑
+    expect(sprite.className).not.toContain("translate");
+    expect(sprite.contains(chip)).toBe(false);
     expect(chip.innerHTML).toContain("transition-opacity");
     expect(chip.innerHTML).toContain("duration-200");
   });
@@ -200,19 +202,76 @@ describe("OrgClassroom", () => {
     const honored = render(<Harness honor />);
     const seat = honored.getByRole("button", { name: "林予涵，在岗" });
     fireEvent.click(seat);
-    fireEvent.keyDown(honored.container.querySelector("[data-slot=org-classroom]")!, { key: "Escape" });
+    fireEvent.keyDown(honored.container.querySelector("[data-slot=org-classroom]")!, {
+      key: "Escape",
+    });
     expect(onSeatSelect).toHaveBeenLastCalledWith(null);
     expect(honored.getByRole("complementary", { name: "人员" }).getAttribute("data-open")).toBe("false");
     expect(document.activeElement).toBe(seat);
   });
 
-  it("等距平面用 CSS 旋转，不用 WebGL", () => {
+  it("座位是预渲染精灵图分层上色，不用 WebGL；大块图片只在场景根上写一次", () => {
     const { container } = render(<OrgClassroom zones={[zone()]} />);
-    const plane = container.querySelector("[data-slot=org-classroom-plane]")!;
-    expect(plane.getAttribute("data-iso")).toBe("rotateX(58deg) rotateZ(-42deg)");
-    expect(plane.getAttribute("style")).toContain("rotateX(58deg)");
-    expect(plane.getAttribute("style")).toContain("rotateZ(-42deg)");
     expect(container.querySelector("canvas")).toBeNull();
+    const scene = container.querySelector<HTMLElement>("[data-slot=org-classroom-scene]")!;
+    expect(scene.style.getPropertyValue("--oc-0-occupied-scarf")).toContain("data:image/webp;base64,");
+    const occupied = container.querySelector('[data-seat-id="s1"]')!;
+    const empty = container.querySelector('[data-seat-id="s3"]')!;
+    expect(occupied.querySelector('[data-sprite-layer="scarf"]')).not.toBeNull();
+    expect(empty.querySelector('[data-sprite-layer="scarf"]')).toBeNull();
+    expect(empty.querySelector('[data-sprite-layer="desk"]')).not.toBeNull();
+    expect(occupied.innerHTML).not.toContain("base64");
+  });
+
+  it("分区名排成图例，每个分区一项", () => {
+    const zones = [zone(), zone({ id: "engineering", name: "技术研发部", seats: [{ id: "e1", row: 1, col: 1 }] })];
+    const { container } = render(<OrgClassroom zones={zones} />);
+    const items = [...container.querySelectorAll("[data-zone-label]")].map((item) => item.textContent);
+    expect(items).toEqual(["产品设计部", "技术研发部"]);
+  });
+});
+
+describe("OrgClassroom 视角与指南针", () => {
+  it("非受控：顺时针按钮把视角转到 90，逆时针从 0 转到 270，指南针跟着转", () => {
+    const onViewChange = vi.fn();
+    const { container, getByRole } = render(<OrgClassroom zones={[zone()]} onViewChange={onViewChange} />);
+    const floor = container.querySelector("[data-slot=org-classroom-floor]")!;
+    const needle = () => container.querySelector("[data-compass]")!.getAttribute("data-needle-deg");
+    expect(floor.getAttribute("data-view")).toBe("0");
+    const before = needle();
+    fireEvent.click(getByRole("button", { name: "顺时针旋转视角" }));
+    expect(onViewChange).toHaveBeenLastCalledWith(90);
+    expect(floor.getAttribute("data-view")).toBe("90");
+    expect(needle()).not.toBe(before);
+    fireEvent.click(getByRole("button", { name: "逆时针旋转视角" }));
+    fireEvent.click(getByRole("button", { name: "逆时针旋转视角" }));
+    expect(onViewChange).toHaveBeenLastCalledWith(270);
+    expect(floor.getAttribute("data-view")).toBe("270");
+  });
+
+  it("受控：只回调，不自己改视角", () => {
+    const onViewChange = vi.fn();
+    const { container, getByRole } = render(<OrgClassroom zones={[zone()]} view={180} onViewChange={onViewChange} />);
+    fireEvent.click(getByRole("button", { name: "顺时针旋转视角" }));
+    expect(onViewChange).toHaveBeenCalledWith(270);
+    expect(container.querySelector("[data-slot=org-classroom-floor]")!.getAttribute("data-view")).toBe("180");
+  });
+
+  it("northDeg 改变指南针方向；指南针和按钮是一组带名字的控件", () => {
+    const a = render(<OrgClassroom zones={[zone()]} />);
+    const north0 = a.container.querySelector("[data-compass]")!.getAttribute("data-needle-deg");
+    a.unmount();
+    const b = render(<OrgClassroom zones={[zone()]} northDeg={90} />);
+    expect(b.container.querySelector("[data-compass]")!.getAttribute("data-needle-deg")).not.toBe(north0);
+    expect(b.getByRole("group", { name: "指南针" })).toBeTruthy();
+  });
+
+  it("分区朝向换成另一个角度的座位图", () => {
+    const { container } = render(<OrgClassroom zones={[zone({ facing: "up" })]} />);
+    const layer = container.querySelector<HTMLElement>('[data-seat-id="s1"] [data-sprite-layer="desk"]')!;
+    expect(layer.style.maskImage || layer.style.getPropertyValue("-webkit-mask-image")).toContain(
+      "--oc-180-occupied-desk",
+    );
   });
 });
 

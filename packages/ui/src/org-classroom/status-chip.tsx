@@ -13,6 +13,15 @@ const STATUS_TONE: Record<SeatStatus, TagTone> = {
   interview: "info",
 };
 
+/** 场景缩小时人名收成圆点，圆点用和气泡同一档色。 */
+const STATUS_DOT: Record<SeatStatus, string> = {
+  idle: "bg-success",
+  busy: "bg-warning",
+  meeting: "bg-primary",
+  leave: "bg-muted-foreground",
+  interview: "bg-info",
+};
+
 const FADE_CLASS =
   "col-start-1 row-start-1 transition-opacity duration-200 ease-out motion-reduce:transition-none";
 
@@ -51,4 +60,4 @@ function StatusChipImpl({
 export const StatusChip = memo(StatusChipImpl);
 StatusChip.displayName = "StatusChip";
 
-export { STATUS_TONE };
+export { STATUS_DOT, STATUS_TONE };
