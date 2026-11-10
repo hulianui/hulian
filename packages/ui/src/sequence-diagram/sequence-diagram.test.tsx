@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { SequenceDiagram } from "./sequence-diagram";
 import { ConfigProvider } from "../config/config-provider";
@@ -74,7 +74,8 @@ describe("SequenceDiagram", () => {
     expect(active[0].textContent).toContain("200 OK");
   });
 
-  it("引用不存在参与者的消息不画", () => {
+  it("引用不存在参与者的消息不画，并在开发期告警", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     zh(
       <SequenceDiagram
         participants={participants}
@@ -82,6 +83,93 @@ describe("SequenceDiagram", () => {
       />,
     );
     expect(screen.queryByText("丢失")).toBeNull();
+    expect(warn.mock.calls.flat().join("\n")).toContain('不存在的参与者 "ghost"');
+    warn.mockRestore();
+  });
+
+  it("参与者 id 重复不会多画一列空生命线", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = zh(
+      <SequenceDiagram
+        participants={[...participants, { id: "app", label: "重复的客户端" }]}
+        messages={messages}
+      />,
+    );
+    expect(container.querySelectorAll("[data-sequence-lifeline]")).toHaveLength(2);
+    expect(screen.queryByText("重复的客户端")).toBeNull();
+    warn.mockRestore();
+  });
+
+  it("消息 id 重复只画第一条，activeId 不会命中两条", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = zh(
+      <SequenceDiagram
+        participants={participants}
+        messages={[...messages, { id: "m1", from: "api", to: "app", label: "冒名" }]}
+        activeId="m1"
+      />,
+    );
+    expect(screen.queryByText("冒名")).toBeNull();
+    expect(container.querySelectorAll("[aria-current='step']")).toHaveLength(1);
+    warn.mockRestore();
+  });
+
+  it("注释和消息同在有序列表里按数组顺序念，注释说明它贴着谁", () => {
+    zh(
+      <SequenceDiagram
+        participants={participants}
+        messages={[
+          messages[0],
+          { id: "n1", type: "note", over: "api", label: "限流 5 次/分钟" },
+          { id: "n2", type: "note", over: ["api", "app"], label: "全程 HTTPS" },
+          messages[2],
+        ]}
+        autoNumber
+      />,
+    );
+    const items = within(screen.getByRole("list", { name: "消息" })).getAllByRole("listitem");
+    expect(items.map((li) => li.textContent)).toEqual([
+      "1. 客户端 发给 网关（同步调用）：1POST /login",
+      "注释（网关）：限流 5 次/分钟",
+      "注释（客户端 与 网关 之间）：全程 HTTPS",
+      "2. 网关 发给 客户端（返回）：2200 OK",
+    ]);
+  });
+
+  it("注释横跨两列时占满这两列，单列注释只占自己那列", () => {
+    const { container } = zh(
+      <SequenceDiagram
+        participants={participants}
+        messages={[
+          { id: "n1", type: "note", over: "api", label: "a" },
+          { id: "n2", type: "note", over: ["api", "app"], label: "b" },
+        ]}
+      />,
+    );
+    const [one, two] = container.querySelectorAll<HTMLElement>("[data-sequence-note]");
+    expect(one.style.gridColumn).toBe("2 / span 1");
+    expect(two.style.gridColumn).toBe("1 / span 2");
+  });
+
+  it("没有可画的消息时给出空态，不留一个空列表", () => {
+    zh(<SequenceDiagram participants={participants} messages={[]} />);
+    expect(screen.getByText("暂无消息")).toBeTruthy();
+    expect(screen.queryByRole("list", { name: "消息" })).toBeNull();
+    cleanup();
+    const { container } = zh(<SequenceDiagram participants={[]} messages={[]} />);
+    expect(screen.queryByRole("list", { name: "参与者" })).toBeNull();
+    expect(container.querySelector("[data-sequence-empty]")).toBeTruthy();
+  });
+
+  it("不溢出时不进 Tab 顺序", () => {
+    zh(<SequenceDiagram participants={participants} messages={messages} />);
+    expect(screen.getByRole("figure").hasAttribute("tabindex")).toBe(false);
+  });
+
+  it("ref 拿到根 figure", () => {
+    let node: HTMLElement | null = null;
+    zh(<SequenceDiagram ref={(el) => void (node = el)} participants={participants} messages={messages} />);
+    expect(node).toBe(screen.getByRole("figure"));
   });
 
   it("跟随 ConfigProvider 切到英文", () => {
@@ -94,5 +182,15 @@ describe("SequenceDiagram", () => {
     const items = within(screen.getByRole("list", { name: "Messages" })).getAllByRole("listitem");
     expect(items[0].textContent).toBe("客户端 to 网关 (synchronous call): POST /login");
     expect(items[1].textContent).toBe("网关 to itself (asynchronous message): 校验签名");
+    cleanup();
+    render(
+      <ConfigProvider locale={enUS}>
+        <SequenceDiagram
+          participants={participants}
+          messages={[{ id: "n", type: "note", over: ["app", "api"], label: "TLS" }]}
+        />
+      </ConfigProvider>,
+    );
+    expect(screen.getByText(/Note between 客户端 and 网关/)).toBeTruthy();
   });
 });

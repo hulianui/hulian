@@ -214,7 +214,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ScoreRing](https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-ring/score-ring.md): 用彩色环形仪表盘展示分值和对应等级
 - [ScoreScale](https://github.com/hulianui/hulian/blob/master/packages/ui/src/score-scale/score-scale.md): 用整条按档着色的横带展示分值落在哪一档
 - [ScrollStack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-stack/scroll-stack.md): 滚动堆叠卡 · 滚动驱动的卡片堆叠组件 · 逐张钉住 + 缩放递进 + 可选旋转/景深模糊(零依赖原生滚动+RAF·token 皮肤·reduced-motion 静态平铺) · data-display/collec…
-- [SequenceDiagram](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sequence-diagram/sequence-diagram.md): 按时间顺序画出参与者之间的调用、异步消息和返回
+- [SequenceDiagram](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sequence-diagram/sequence-diagram.md): 按时间顺序画出参与者之间的调用、异步消息、返回和注释
 - [ShieldBadge](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shield-badge/shield-badge.md): README 徽章 · shields.io 风格「左灰标签 + 右彩数值」双段贴纸(版本/许可证/下载量/CI/星标) · 5 语气 + color 逃生舱 · solid/soft/outline 三皮肤 × ro…
 - [Skeleton](https://github.com/hulianui/hulian/blob/master/packages/ui/src/skeleton/skeleton.md): 用占位骨架预留内容位置，等待数据到达
 - [Sortable](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sortable/sortable.md): 拖拽排序 · @dnd-kit headless + 键盘可拖(Space 抓起/方向键移动) + 手柄/整项两式 + 横竖向 · 受控 onChange(arrayMove)

@@ -374,6 +374,21 @@
   }
 }
 
+/* data-display/SequenceDiagram 入场：消息 / 注释行按顺序淡入并轻微上移。 */
+@keyframes hulian-sequence-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* data-display/SequenceDiagram 描线：箭头线从发送方一端伸到接收方（transform-origin 由组件定）。 */
+@keyframes hulian-sequence-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
 /* Danmaku 弹幕滚动：从容器右缘(left:100%)向左平移整段距离(--dm-x 为负值=容器宽+自身宽)。 */
 @keyframes hulian-danmaku-scroll {
   from {

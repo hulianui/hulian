@@ -876,6 +876,10 @@ export interface ComponentLocale {
     /** Screen-reader prefix for a self-call. */
     self: (from: string, kind: string) => string;
     kinds: { sync: string; async: string; reply: string };
+    /** Screen-reader prefix for a note; `targets` holds one or two participant labels. */
+    note?: (targets: string[]) => string;
+    /** Shown when there is nothing to draw. */
+    empty?: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   codeEditor?: {
@@ -1697,6 +1701,9 @@ const zhComponents: ComponentLocale = {
     message: (from, to, kind) => `${from} 发给 ${to}（${kind}）：`,
     self: (from, kind) => `${from} 发给自己（${kind}）：`,
     kinds: { sync: "同步调用", async: "异步消息", reply: "返回" },
+    note: (targets) =>
+      targets.length > 1 ? `注释（${targets[0]} 与 ${targets[1]} 之间）：` : `注释（${targets[0]}）：`,
+    empty: "暂无消息",
   },
   codeEditor: {
     editor: (language) => `代码编辑器${language ? `（${language}）` : ""}`,
@@ -2649,6 +2656,9 @@ const enComponents: ComponentLocale = {
     message: (from, to, kind) => `${from} to ${to} (${kind}): `,
     self: (from, kind) => `${from} to itself (${kind}): `,
     kinds: { sync: "synchronous call", async: "asynchronous message", reply: "reply" },
+    note: (targets) =>
+      targets.length > 1 ? `Note between ${targets[0]} and ${targets[1]}: ` : `Note on ${targets[0]}: `,
+    empty: "No messages",
   },
   codeEditor: {
     editor: (language) => (language ? `Code editor (${language})` : "Code editor"),
