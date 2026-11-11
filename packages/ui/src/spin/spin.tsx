@@ -43,7 +43,7 @@ export function Spin({
     return (
       <div
         className={cn(
-          "fixed inset-0 z-[70] flex items-center justify-center bg-bg/60 backdrop-blur-sm",
+          "fixed inset-0 z-[calc(var(--hl-z-overlay,50)+20)] flex items-center justify-center bg-bg/60 backdrop-blur-sm",
           className,
         )}
         role="status"

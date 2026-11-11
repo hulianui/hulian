@@ -151,7 +151,7 @@ export function Coupon({
           formatDiscount={formatDiscount}
           freeShipping={labels.freeShipping}
         />
-        <span className="text-center text-[11px] leading-tight opacity-90">{thresholdText}</span>
+        <span className="text-center text-[length:var(--hl-text-2xs,0.6875rem)] leading-tight opacity-90">{thresholdText}</span>
       </div>
 
       {/* 中缝：虚线 + 上下半圆穿孔（穿孔色 = 页底色，营造凿穿） */}
@@ -184,7 +184,7 @@ export function Coupon({
             {title}
           </div>
           {scope && <div className="mt-0.5 truncate text-xs text-muted-foreground">{scope}</div>}
-          {validUntil && <div className="mt-0.5 truncate text-[11px] text-muted-foreground">{validUntil}</div>}
+          {validUntil && <div className="mt-0.5 truncate text-[length:var(--hl-text-2xs,0.6875rem)] text-muted-foreground">{validUntil}</div>}
         </div>
 
         <div className="shrink-0">

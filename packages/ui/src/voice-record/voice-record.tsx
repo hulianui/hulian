@@ -184,7 +184,7 @@ export function VoiceRecord({
           className={cn(
             "relative z-10 inline-flex items-center justify-center rounded-full",
             "border-2 border-border bg-surface text-foreground",
-            "transition-[scale,background-color,border-color,color] duration-200 ease-out",
+            "transition-[scale,background-color,border-color,color] duration-[var(--hl-duration-base,200ms)] ease-out",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             "touch-none",
             s.btn,
@@ -233,7 +233,7 @@ export function VoiceRecord({
       {/* 状态标签 */}
       <span
         className={cn(
-          "font-medium transition-colors duration-200",
+          "font-medium transition-colors duration-[var(--hl-duration-base,200ms)]",
           s.font,
           isRecording && "text-danger",
           isProcessing && "text-chart-3",

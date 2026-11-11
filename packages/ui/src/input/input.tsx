@@ -12,7 +12,7 @@ import type { InputProps } from "./input.types";
 export const inputShellVariants = cva(
   [
     "inline-flex w-full items-center gap-2 text-foreground transition-colors",
-    "has-[:disabled]:opacity-50 has-[:disabled]:pointer-events-none",
+    "has-[:disabled]:opacity-[var(--hl-opacity-disabled,0.5)] has-[:disabled]:pointer-events-none",
   ],
   {
     variants: {
@@ -27,7 +27,7 @@ export const inputShellVariants = cva(
       //     下划线取实心 primary 才是那条可达标的线。两者一起给「在编辑」的语义 + 可达性。
       variant: {
         default: [
-          "rounded-[var(--radius)] border border-border bg-surface",
+          "rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg",
           "has-[[data-invalid]]:border-danger has-[[data-invalid]]:focus-within:ring-danger",
         ],
@@ -50,10 +50,10 @@ export const inputShellVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: "default", size: "xs", class: "h-7 px-2" },
-      { variant: "default", size: "sm", class: "h-8 px-2.5" },
-      { variant: "default", size: "md", class: "h-10 px-3" },
-      { variant: "default", size: "lg", class: "h-12 px-3.5" },
+      { variant: "default", size: "xs", class: "h-[var(--hl-control-h-xs,1.75rem)] px-2" },
+      { variant: "default", size: "sm", class: "h-[var(--hl-control-h-sm,2rem)] px-2.5" },
+      { variant: "default", size: "md", class: "h-[var(--hl-control-h-md,2.5rem)] px-3" },
+      { variant: "default", size: "lg", class: "h-[var(--hl-control-h-lg,3rem)] px-3.5" },
     ],
     defaultVariants: { size: "md", variant: "default" },
   },

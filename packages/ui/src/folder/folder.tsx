@@ -97,7 +97,7 @@ export function Folder({
         className={cn(
           "group/folder relative block cursor-pointer appearance-none border-0 bg-transparent p-0",
           // ease-out 而非 ease-in：ease-in 开头慢，正好卡在用户注视最紧的那一刻，同样 200ms 却显得迟钝。
-          "transition-transform duration-200 ease-out",
+          "transition-transform duration-[var(--hl-duration-base,200ms)] ease-out",
           // 收起态 hover 抬升；展开态常驻抬升
           open ? "-translate-y-2" : "hover:-translate-y-2",
           "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
@@ -122,7 +122,7 @@ export function Folder({
               onMouseLeave={() => handlePaperLeave(i)}
               className={cn(
                 "absolute bottom-[10%] left-1/2 z-[2] rounded-[10px]",
-                "transition-[transform,height] duration-300 ease-in-out",
+                "transition-[transform,height] duration-[var(--hl-duration-slow,300ms)] ease-in-out",
                 "motion-reduce:transition-none",
                 // 三层纸张尺寸 + 配色
                 i === 0 && "h-[80%] w-[70%] bg-[var(--hl-paper-1)]",
@@ -153,7 +153,7 @@ export function Folder({
           <div
             className={cn(
               "absolute inset-0 z-[3] h-full w-full origin-bottom rounded-tl-[5px] rounded-tr-[10px] rounded-b-[10px]",
-              "bg-[var(--hl-folder-color)] transition-transform duration-300 ease-in-out",
+              "bg-[var(--hl-folder-color)] transition-transform duration-[var(--hl-duration-slow,300ms)] ease-in-out",
               "motion-reduce:transition-none",
               open
                 ? "[transform:skew(15deg)_scaleY(0.6)]"
@@ -163,7 +163,7 @@ export function Folder({
           <div
             className={cn(
               "absolute inset-0 z-[3] h-full w-full origin-bottom rounded-tl-[5px] rounded-tr-[10px] rounded-b-[10px]",
-              "bg-[var(--hl-folder-color)] transition-transform duration-300 ease-in-out",
+              "bg-[var(--hl-folder-color)] transition-transform duration-[var(--hl-duration-slow,300ms)] ease-in-out",
               "motion-reduce:transition-none",
               open
                 ? "[transform:skew(-15deg)_scaleY(0.6)]"

@@ -24,7 +24,7 @@ const DENSITY_ORDER = ["default", "middle", "compact"] as const;
 type Density = (typeof DENSITY_ORDER)[number];
 
 const iconBtn =
-  "inline-grid size-8 place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
+  "inline-grid size-8 place-items-center rounded-[var(--hl-radius-control,var(--radius))] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
 
 function colId<TData>(c: ColumnDef<TData, any>): string {
   if (c.id) return c.id;
@@ -356,7 +356,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
         "flex flex-col gap-4",
         // 列表页旗舰：整体即一张浮起卡片（表面 + 发丝边 + 阴影），与 Card 同层级。
         !fullscreen && "rounded-[var(--radius)] border border-hairline bg-surface p-4 shadow-sm",
-        fullscreen && "fixed inset-0 z-50 overflow-auto bg-bg p-6",
+        fullscreen && "fixed inset-0 z-[var(--hl-z-overlay,50)] overflow-auto bg-bg p-6",
         rootClassName,
       )}
     >

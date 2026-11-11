@@ -13,18 +13,18 @@ import type { TreeSelectProps } from "./tree-select.types";
 
 const triggerVariants = cva(
   [
-    "inline-flex w-full items-center justify-between gap-2 rounded-[var(--radius)] border border-border bg-surface text-foreground transition-colors",
+    "inline-flex w-full items-center justify-between gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface text-foreground transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
     "data-[popup-open]:border-ring",
     "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
-    "disabled:cursor-not-allowed disabled:opacity-50",
+    "disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
   ],
   {
     variants: {
       size: {
-        sm: "min-h-8 px-2.5 text-sm",
-        md: "min-h-10 px-3 text-sm",
-        lg: "min-h-12 px-3.5 text-base",
+        sm: "min-h-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm",
+        md: "min-h-[var(--hl-control-h-md,2.5rem)] px-3 text-sm",
+        lg: "min-h-[var(--hl-control-h-lg,3rem)] px-3.5 text-base",
       },
     },
     defaultVariants: { size: "md" },
@@ -177,7 +177,7 @@ function TreeSelectImpl({
         </span>
       )}
       <BasePopover.Portal>
-        <BasePopover.Positioner side="bottom" align="start" sideOffset={6} className="z-50">
+        <BasePopover.Positioner side="bottom" align="start" sideOffset={6} className="z-[var(--hl-z-overlay,50)]">
           <BasePopover.Popup
             className={cn(
               // 宽度**两头都要钉**：只给下限时浮层是 shrink-to-fit，宽度等于整棵树里最长的那个

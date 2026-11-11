@@ -10,7 +10,7 @@ import type { ToggleProps, ToggleGroupProps } from "./toggle.types";
 // pressableClass 平替原 transition-colors：它自带含颜色项的 transition-property 列表，
 // 顺带补上按下缩放（可按压元素必须对按压有即时反应）。
 export const toggleVariants = cva(
-  `inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius)] font-medium ${pressableClass} outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none`,
+  `inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--hl-radius-control,var(--radius))] font-medium ${pressableClass} outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-[var(--hl-opacity-disabled,0.5)] disabled:pointer-events-none`,
   {
     variants: {
       variant: {
@@ -24,8 +24,8 @@ export const toggleVariants = cva(
         pill: "rounded-full border border-border font-normal text-muted-foreground hover:bg-surface-hover hover:text-foreground data-[pressed]:border-primary/40 data-[pressed]:bg-primary/10 data-[pressed]:text-primary",
       },
       size: {
-        sm: "h-8 min-w-8 px-2.5 text-sm",
-        md: "h-10 min-w-10 px-3 text-sm",
+        sm: "h-[var(--hl-control-h-sm,2rem)] min-w-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm",
+        md: "h-[var(--hl-control-h-md,2.5rem)] min-w-[var(--hl-control-h-md,2.5rem)] px-3 text-sm",
       },
     },
     defaultVariants: { variant: "default", size: "md" },
@@ -55,7 +55,7 @@ export function ToggleGroup({
       orientation={orientation}
       disabled={disabled}
       className={cn(
-        "inline-flex gap-1 rounded-[var(--radius)] border border-border bg-surface p-1",
+        "inline-flex gap-1 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface p-1",
         "data-[orientation=vertical]:flex-col",
         className,
       )}

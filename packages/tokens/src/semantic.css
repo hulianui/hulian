@@ -51,6 +51,65 @@
   }
 }
 
+/* ===== 结构令牌 · 与主题无关 =====
+   颜色之外决定「看起来是不是一套东西」的那几个维度：圆角、控件高度、时长、禁用态、微型字号、
+   浮层层级。它们此前是散在组件里的字面量（h-10 / duration-300 / disabled:opacity-50 /
+   text-[11px] / z-50），于是同一个意思在库里漂出了好几个写法 —— 禁用态有 50 / 40 / 30 三种
+   透明度，过渡时长用得最多的是 300ms 而动效基准定的是 200ms。收进令牌后改一行即可全库同步，
+   消费方也才有抓手（要更紧凑的表单、更方的输入框、把浮层抬到遗留系统的 z-index 之上）。
+
+   组件一律写成带回退的任意值：`h-[var(--hl-control-h-md,2.5rem)]`。回退值就是令牌的默认值，
+   所以 @hulianui/ui 配旧版 tokens 时渲染不变，不会出现「令牌没定义 → 控件塌成 0 高」。
+   不做成具名工具类（h-control-md）有两个原因：具名类依赖消费方装的 preset 版本，缺了是
+   静默不生成；且 tailwind-merge 不认识自定义名，`className="h-auto"` 会盖不掉它。
+
+   与主题无关，所以不进下面的明暗两块（同上面的字型一节）。--radius 也从亮色块挪到了这里：
+   留在 [data-theme="light"] 里时，一个嵌套的亮色岛会把消费方在 :root 上改过的圆角重置回默认值。 */
+:root {
+  /* 基准圆角：容器这一档（Card / Dialog / Popover / 表格外框 / 说明条）。 */
+  --radius: 0.625rem;
+  /* 控件圆角：用户一次操作一个的单行目标 —— 按钮、输入框、选择器触发器、分段轨道、
+     Tab、图标按钮、侧栏菜单项。与容器分开是因为圆角的观感取决于它与元素尺寸之比：
+     同样 10px，落在 600px 宽的卡片上是「微圆」，落在 28px 高的按钮上已经接近胶囊。
+     取基准的 0.8 倍（默认 8px）：28–48px 高的控件上圆角与高度之比落在 0.17–0.29，
+     读作「圆角矩形」而不是胶囊；轨道内的滑块再减去轨道内边距（见 Segmented / Tabs）保持同心。
+     由 --radius 派生，于是只改 --radius 时两档一起动、比例不变；--radius: 0 时这里也是 0。
+     ⚠️ 自定义属性是代入后才继承的：在**子树**上改 --radius 不会带动这一档，
+     要局部改就把 --hl-radius-control 一并写上。 */
+  --hl-radius-control: calc(var(--radius) * 0.8);
+
+  /* 控件高度：表单控件共用的一把梯子（Button / Input / Select / Combobox / Cascader /
+     DatePicker 系 / TimeField / TreeSelect / Segmented / Toggle / Upload）。
+     并排摆放时等高是这些组件之间最基本的关系，此前靠 15 个文件各写一遍 h-8 / h-10 / h-12 维持。 */
+  --hl-control-h-xs: 1.75rem;
+  --hl-control-h-sm: 2rem;
+  --hl-control-h-md: 2.5rem;
+  --hl-control-h-lg: 3rem;
+
+  /* 过渡时长（CSS 工具类口径）。与 @hulianui/ui 的 motion/tokens.ts 同值：
+     fast = 按压 / hover 这类贴身反馈，base = 浮层进出场，slow = 大块位移与展开收起。
+     JS 驱动的动效读的是那边的常量，改这里不会带动它们 —— 两处要一起改。 */
+  --hl-duration-fast: 150ms;
+  --hl-duration-base: 200ms;
+  --hl-duration-slow: 300ms;
+
+  /* 禁用态透明度。全库统一一个值：禁用是一种状态而不是一种程度，同一页上深浅不一的
+     「灰掉」会被读成不同的含义。 */
+  --hl-opacity-disabled: 0.5;
+
+  /* 字阶之下的两档微型字号：角标、图例、时间轴刻度、密集表格的辅助信息。
+     Tailwind 的字阶到 text-xs（12px）为止，再小只能写 text-[11px] 这种字面量。
+     10px 的中文在多数屏幕上已经吃力 —— 面向中文用户时可以把 3xs 抬到与 2xs 相同。 */
+  --hl-text-2xs: 0.6875rem;
+  --hl-text-3xs: 0.625rem;
+
+  /* 浮层层级：Popover / Select / Menu / Dialog / Drawer 的弹出面。
+     其余几层由它派生，写在组件里：遮罩 = 它 − 10，Toast / Notification = 它 + 10，
+     全屏 Spin = 它 + 20。嵌进有自己一套 z-index 的系统（Element UI 的弹层从 2000 起）时，
+     把这一个值抬上去即可，层间次序不变。 */
+  --hl-z-overlay: 50;
+}
+
 /* 亮色既是根默认值，也必须是一个**可选择的**主题：只挂 :root 的话，
    「亮页里嵌暗块」能做（暗块自己匹配到 [data-theme="dark"]），
    「暗页里嵌亮块」做不到（没有规则可匹配，子树继续继承祖先的暗色值）——
@@ -117,7 +176,7 @@
        outline → border-warning    + text-warning                              （#268） */
   --color-primary: var(--brand-700);
   --color-primary-foreground: var(--white);
-  --color-primary-hover: var(--brand-500);
+  --color-primary-hover: var(--brand-800);
   /* 语义色的**浅档**：提示条底、选中行/选中树节点、Tag/Badge 浅底、侧栏当前项高亮、
      focus ring 外圈。这些位置放实心强调色太重，放中性灰又丢掉「这块跟该语义相关」的信息。
      -subtle = 浅底，-border = 配套的浅边框（工具类：bg-primary-subtle / border-primary-border）。
@@ -125,32 +184,36 @@
      消费方对着白色 mix 一定是错的（#145）。暗色档见 [data-theme="dark"]。 */
   --color-primary-subtle: var(--brand-50);
   --color-primary-border: var(--brand-200);
-  /* 语义色的 hover 档一律取「亮暗两端之间的那一档」——亮色下变亮、暗色下变暗，
-     同一个变量名在两个主题里都朝对比更弱的方向走一步，与 --color-primary-hover 同构。
+  /* 语义色的 hover 档：**两个主题都朝更深走一步**（亮色 700 → 800，暗色 400 → 500）。
+     判据是 hover 档上的 `-foreground` 文字对比不得低于静息档的门槛（AA 4.5）——悬停恰是
+     用户正要点下去、盯得最紧的一刻，文字不能在这一刻变得更难读。
+     0.15.0 之前亮色取的是「更亮的一档」（700 → 500 / 600），白字对比从 5.8–7.0 掉到
+     3.5–4.05，五个语义色的 hover 全部够不到 AA（实测：primary 3.70 / danger 4.05 /
+     success 3.97 / warning 3.76 / info 3.51）。现在是 8.0–9.4。
      缺这一档时 solid 语义按钮的 hover 只能写回自身，等于**没有悬停反馈**（#122）。 */
   --color-danger: var(--danger-700);
   --color-danger-foreground: var(--white);
-  --color-danger-hover: var(--danger-500);
+  --color-danger-hover: var(--danger-800);
   --color-danger-subtle: var(--danger-50);
   --color-danger-border: var(--danger-200);
   --color-success: var(--success-700);
   --color-success-foreground: var(--white);
-  --color-success-hover: var(--success-600);
+  --color-success-hover: var(--success-800);
   --color-success-subtle: var(--success-50);
   --color-success-border: var(--success-200);
   --color-warning: var(--warning-700);
   --color-warning-foreground: var(--white);
-  --color-warning-hover: var(--warning-600);
+  --color-warning-hover: var(--warning-800);
   --color-warning-subtle: var(--warning-50);
   --color-warning-border: var(--warning-200);
   /* 信息（#173）：提示 / 说明 / 中性通知。它与 --color-primary **不是**一回事：
      primary 表达「这里可以点、这是主操作」，info 表达「这段是说明，读一下就好」。
      二者同为蓝族但差 30° 色相（见 primitives.css），并排时能分辨；共用 primary 的话，
      提示条与主按钮、选中态、当前菜单项同色，页面上最稀缺的注意力资源被说明文案占掉。
-     档位选择与 brand/danger 同构（亮 700 / 暗 400 / hover 500），因为三者的亮度梯子相同。 */
+     档位选择与 brand/danger 同构（亮 700 → hover 800 / 暗 400 → hover 500），因为三者的亮度梯子相同。 */
   --color-info: var(--info-700);
   --color-info-foreground: var(--white);
-  --color-info-hover: var(--info-500);
+  --color-info-hover: var(--info-800);
   --color-info-subtle: var(--info-50);
   --color-info-border: var(--info-200);
   /* 图表分类色板（数据序列用，SVG 经 var() 直接消费 → 明暗自适应） */
@@ -167,7 +230,6 @@
   --code-number: var(--warning-700);
   --code-tag: var(--danger-700);
   --code-attr: oklch(0.55 0.2 300);
-  --radius: 0.625rem;
   /* ===== 信号色（#295）：不随主题变的实心标记 =====
      角标 / 未读点这类**极小的实心块**，颜色本身就是语义（"红 = 有未读"）。它们与
      按钮、警示条那种大面积语义面不同，不能套 `-foreground` 那套随主题翻转的口径：
@@ -282,7 +344,7 @@
   --color-warning-subtle: color-mix(in oklab, var(--warning-500) 16%, var(--color-surface));
   --color-warning-border: color-mix(in oklab, var(--warning-500) 34%, var(--color-surface));
   /* 信息 · 暗色：取 400 档做强调，与 primary/danger 同构（它们的亮度梯子相同）。
-     hover 仍是 500 —— 「亮暗两端之间的那一档」，在暗色下即朝更沉的方向走一步。 */
+     hover 是 500 —— 与亮色同向，朝更沉的方向走一步。 */
   --color-info: var(--info-400);
   --color-info-foreground: var(--gray-950);
   --color-info-hover: var(--info-500);

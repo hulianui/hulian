@@ -117,7 +117,7 @@ function Bucket({
           values.map((v) => (
             <li
               key={v}
-              className="flex items-center gap-2 rounded-[var(--radius)] border border-border bg-bg px-2.5 py-1.5"
+              className="flex items-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-bg px-2.5 py-1.5"
             >
               <code className="min-w-0 flex-1 break-all font-mono text-xs text-foreground">
                 {v}
@@ -127,7 +127,7 @@ function Bucket({
                   type="button"
                   aria-label={locale.remove(v)}
                   onClick={() => onRemove(v)}
-                  className="shrink-0 rounded-[var(--radius)] px-1 text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  className="shrink-0 rounded-[var(--hl-radius-control,var(--radius))] px-1 text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   ✕
                 </button>
@@ -153,12 +153,12 @@ function Bucket({
                 }
               }}
               placeholder={placeholder}
-              className="min-w-0 flex-1 rounded-[var(--radius)] border border-border bg-bg px-2.5 py-1.5 font-mono text-xs text-foreground outline-none placeholder:font-sans placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-w-0 flex-1 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-bg px-2.5 py-1.5 font-mono text-xs text-foreground outline-none placeholder:font-sans placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <button
               type="button"
               onClick={commit}
-              className="shrink-0 rounded-[var(--radius)] border border-border px-2.5 py-1.5 text-xs text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
+              className="shrink-0 rounded-[var(--hl-radius-control,var(--radius))] border border-border px-2.5 py-1.5 text-xs text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
             >
               {locale.add}
             </button>
@@ -176,7 +176,7 @@ function Bucket({
                     key={s}
                     type="button"
                     onClick={() => setDraft(s)}
-                    className="rounded-full border border-dashed border-border px-2 py-0.5 font-mono text-[11px] text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    className="rounded-full border border-dashed border-border px-2 py-0.5 font-mono text-[length:var(--hl-text-2xs,0.6875rem)] text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {s}
                   </button>

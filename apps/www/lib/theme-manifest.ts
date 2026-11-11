@@ -24,7 +24,7 @@ export const THEME_NAV: ThemeNavItem[] = [
   { slug: "typography", label: "排版", en: "Typography", blurb: "字号 / 字重 / 行高比例" },
   { slug: "spacing", label: "间距", en: "Spacing", blurb: "0.25rem 基准间距阶梯" },
   { slug: "breakpoints", label: "断点", en: "Breakpoints", blurb: "响应式断点与用法" },
-  { slug: "radius", label: "圆角", en: "Radius", blurb: "--radius 基准与派生" },
+  { slug: "radius", label: "圆角", en: "Radius", blurb: "容器与控件两档圆角" },
   { slug: "shadows", label: "阴影", en: "Shadows", blurb: "层级投影比例" },
   { slug: "motion", label: "动效", en: "Motion", blurb: "缓动曲线 / 时长 / 该不该动" },
   { slug: "cursors", label: "光标", en: "Cursors", blurb: "交互态指针语义" },
@@ -156,9 +156,9 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
       {
         token: "color-primary-hover",
         label: "主色悬停",
-        light: "brand-500",
+        light: "brand-800",
         dark: "brand-500",
-        note: "语义色的悬停档一律取「亮暗两端之间的那一档」：亮色下变亮、暗色下变暗，两个主题都朝对比更弱的方向走一步。",
+        note: "语义色的悬停档在两个主题都朝更深走一步（亮色 700 → 800，暗色 400 → 500），且悬停档上的前景文字对比不低于 AA 4.5。",
       },
       {
         token: "color-primary-subtle",
@@ -187,7 +187,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         fg: "color-danger-foreground",
         note: NOTE_FOREGROUND,
       },
-      { token: "color-danger-hover", label: "危险悬停", light: "danger-500", dark: "danger-500" },
+      { token: "color-danger-hover", label: "危险悬停", light: "danger-800", dark: "danger-500" },
       {
         token: "color-danger-subtle",
         label: "危险浅底",
@@ -209,7 +209,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         fg: "color-success-foreground",
         note: NOTE_FOREGROUND,
       },
-      { token: "color-success-hover", label: "成功悬停", light: "success-600", dark: "success-600" },
+      { token: "color-success-hover", label: "成功悬停", light: "success-800", dark: "success-600" },
       {
         token: "color-success-subtle",
         label: "成功浅底",
@@ -231,7 +231,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
         fg: "color-warning-foreground",
         note: NOTE_FOREGROUND,
       },
-      { token: "color-warning-hover", label: "警告悬停", light: "warning-600", dark: "warning-600" },
+      { token: "color-warning-hover", label: "警告悬停", light: "warning-800", dark: "warning-600" },
       {
         token: "color-warning-subtle",
         label: "警告浅底",
@@ -255,7 +255,7 @@ const SEMANTIC_GROUPS_ZH: { title: string; colors: SemanticColor[] }[] = [
           "提示 / 说明 / 中性通知，刻意与主色分开：主色说「这里可以点」，信息色说「这段是说明」。两者同为蓝族但差 30° 色相，借主色当提示色会让页面上最稀缺的注意力资源被说明文案占掉。" +
           NOTE_FOREGROUND,
       },
-      { token: "color-info-hover", label: "信息悬停", light: "info-500", dark: "info-500" },
+      { token: "color-info-hover", label: "信息悬停", light: "info-800", dark: "info-500" },
       {
         token: "color-info-subtle",
         label: "信息浅底",
@@ -306,7 +306,7 @@ const SEMANTIC_COLOR_EN: Record<string, { label: string; note?: string }> = {
   "color-primary": { label: "Primary", note: NOTE_FOREGROUND_EN },
   "color-primary-hover": {
     label: "Primary hover",
-    note: "Every semantic hover token picks the step between the light and dark values, so it moves one step towards lower contrast in both themes.",
+    note: "Every semantic hover token moves one step darker in both themes (light 700 → 800, dark 400 → 500), and foreground text on the hover step keeps at least AA 4.5 contrast.",
   },
   "color-primary-subtle": { label: "Primary tint", note: NOTE_SUBTLE_EN },
   "color-primary-border": { label: "Primary tinted border" },
@@ -357,11 +357,11 @@ export const GRAY_SCALE = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
 // 各族档位不齐是刻意的：warning 在 400/500 之间几乎看不出差别，硬凑成同一把梯子只会
 // 造出一堆无人使用的死档；这里如实反映 primitives.css 里真正定义了的那些。
 export const SEMANTIC_RAMPS: { name: string; steps: number[] }[] = [
-  { name: "brand", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
-  { name: "danger", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
-  { name: "success", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
-  { name: "warning", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
-  { name: "info", steps: [50, 100, 200, 300, 400, 500, 600, 700] },
+  { name: "brand", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800] },
+  { name: "danger", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800] },
+  { name: "success", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800] },
+  { name: "warning", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800] },
+  { name: "info", steps: [50, 100, 200, 300, 400, 500, 600, 700, 800] },
 ];
 
 // ===== 排版（Tailwind v4 默认 text-* 比例，瑚琏全站沿用）=====
@@ -400,8 +400,9 @@ export const SPACING_STEPS = [0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24].map((n)
   px: n * 4,
 }));
 
-// ===== 圆角（真源：--radius = 0.625rem，Tailwind rounded-* 派生）=====
+// ===== 圆角（真源：semantic.css 的 --radius = 0.625rem 与 --hl-radius-control = 0.8 × --radius）=====
 export const RADIUS_TOKEN = { name: "--radius", rem: "0.625rem", px: 10 };
+export const RADIUS_CONTROL_TOKEN = { name: "--hl-radius-control", rem: "0.5rem", px: 8 };
 export const RADIUS_SCALE = [
   { name: "rounded-sm", rem: "0.25rem", px: 4 },
   { name: "rounded-md", rem: "0.375rem", px: 6 },
@@ -492,17 +493,17 @@ export interface DurationToken {
   use: string;
 }
 const DURATIONS_ZH: DurationToken[] = [
-  { name: "fast", ms: 150, utility: "duration-150", use: "按压反馈 / 贴身微交互（100–160ms）" },
+  { name: "fast", ms: 150, utility: "duration-[var(--hl-duration-fast,150ms)]", use: "按压反馈 / 贴身微交互（100–160ms）" },
   {
     name: "base",
     ms: 200,
-    utility: "duration-200",
+    utility: "duration-[var(--hl-duration-base,200ms)]",
     use: "浮层进出场：Tooltip、Popover、Select、Menu",
   },
   {
     name: "slow",
     ms: 300,
-    utility: "duration-300",
+    utility: "duration-[var(--hl-duration-slow,300ms)]",
     use: "大块转场：Drawer / ActionSheet 面板滑动",
   },
   {

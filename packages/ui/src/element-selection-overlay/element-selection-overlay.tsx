@@ -599,7 +599,7 @@ export function ElementSelectionOverlay({
           ref={labelRef}
           data-part="label"
           data-placement={labelPos.placement}
-          className="absolute max-w-[16rem] truncate rounded-[min(var(--radius),0.25rem)] bg-primary px-1.5 text-[11px] font-medium leading-5 text-primary-foreground shadow-sm"
+          className="absolute max-w-[16rem] truncate rounded-[min(var(--radius),0.25rem)] bg-primary px-1.5 text-[length:var(--hl-text-2xs,0.6875rem)] font-medium leading-5 text-primary-foreground shadow-sm"
           style={{ top: labelPos.top, left: labelPos.left }}
         >
           {labelBox.label}

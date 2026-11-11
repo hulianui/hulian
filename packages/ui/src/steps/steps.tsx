@@ -23,7 +23,7 @@ const titleByStatus: Record<StepStatus, string> = {
 };
 
 const sizeMap = {
-  sm: { box: "size-6 text-xs", title: "text-xs", desc: "text-[11px]" },
+  sm: { box: "size-6 text-xs", title: "text-xs", desc: "text-[length:var(--hl-text-2xs,0.6875rem)]" },
   md: { box: "size-8 text-sm", title: "text-sm", desc: "text-xs" },
 } as const;
 

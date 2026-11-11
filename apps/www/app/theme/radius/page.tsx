@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getIntlayer } from "next-intlayer";
-import { RADIUS_TOKEN, RADIUS_SCALE } from "../../../lib/theme-manifest";
+import { RADIUS_TOKEN, RADIUS_CONTROL_TOKEN, RADIUS_SCALE } from "../../../lib/theme-manifest";
 import { DocHeader, Section, Code } from "../_components/doc-kit";
 import { DOCS_LOCALE } from "../../../lib/docs-locale";
 
@@ -29,6 +29,35 @@ export default function RadiusPage() {
               {RADIUS_TOKEN.rem} · {RADIUS_TOKEN.px}px
             </p>
           </div>
+        </div>
+      </Section>
+
+      <Section title={content.roles} desc={content.rolesDescription}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[
+            { token: RADIUS_TOKEN, role: content.containerRole, cls: "h-20 w-full" },
+            { token: RADIUS_CONTROL_TOKEN, role: content.controlRole, cls: "h-10 w-32" },
+          ].map(({ token, role, cls }) => (
+            <div
+              key={token.name}
+              className="flex flex-col gap-3 rounded-[var(--radius)] border border-border bg-surface p-5"
+            >
+              <div className="flex h-20 items-center">
+                <span
+                  className={`block border border-border bg-surface-hover ${cls}`}
+                  style={{ borderRadius: `var(${token.name})` }}
+                  aria-hidden
+                />
+              </div>
+              <div>
+                <Code>{token.name}</Code>
+                <p className="mt-1 font-mono text-sm text-muted-foreground">
+                  {token.rem} · {token.px}px
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{role}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </Section>
 

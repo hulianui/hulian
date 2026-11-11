@@ -11,7 +11,7 @@ export function Menubar({ className, ...props }: MenubarProps) {
     <BaseMenubar
       {...props}
       className={cn(
-        "inline-flex items-center gap-0.5 rounded-[var(--radius)] border border-border bg-surface p-1 text-foreground",
+        "inline-flex items-center gap-0.5 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface p-1 text-foreground",
         "data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch",
         className,
       )}
@@ -32,7 +32,7 @@ export function MenubarTrigger({ className, ...props }: MenubarTriggerProps) {
         "flex cursor-default select-none items-center rounded-[min(var(--radius),0.375rem)] px-3 py-1.5 text-sm font-medium outline-none transition-colors",
         "hover:bg-surface-hover data-[popup-open]:bg-surface-hover",
         "focus-visible:ring-2 focus-visible:ring-ring",
-        "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]",
         className,
       )}
       {...props}

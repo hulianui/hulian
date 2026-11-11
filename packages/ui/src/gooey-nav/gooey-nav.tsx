@@ -227,7 +227,7 @@ export function GooeyNav({
                     onClick={(e) => handleClick(e, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     className={cn(
-                      "inline-block rounded-full px-4 py-2 transition-colors duration-300",
+                      "inline-block rounded-full px-4 py-2 transition-colors duration-[var(--hl-duration-slow,300ms)]",
                       "outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       // 本件自带深色画布（容器必须深底，见文档要点），所以文字色**不能**跟随
                       // 页面主题：亮色主题下 --color-foreground 是 gray-900，深字压深底直接糊掉。

@@ -39,7 +39,7 @@ function SliderImpl({ className, showValue, thumbAriaLabel, ...props }: SliderPr
       aria-label={nameMovesToThumb ? undefined : rootLabel}
       aria-labelledby={nameMovesToThumb ? undefined : rootLabelledBy}
       className={cn(
-        "w-full select-none data-[disabled]:opacity-50 data-[disabled]:pointer-events-none",
+        "w-full select-none data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)] data-[disabled]:pointer-events-none",
         className,
       )}
     >

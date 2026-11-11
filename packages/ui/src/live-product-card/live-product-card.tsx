@@ -56,12 +56,12 @@ function LiveProductCardImpl({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={image} alt="" className="size-full object-cover" />
       {index != null && (
-        <span className="absolute left-0 top-0 rounded-br-md bg-chart-4 px-1.5 text-[11px] font-bold text-white">
+        <span className="absolute left-0 top-0 rounded-br-md bg-chart-4 px-1.5 text-[length:var(--hl-text-2xs,0.6875rem)] font-bold text-white">
           {index}
         </span>
       )}
       {explaining && (
-        <span className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-1 bg-danger/90 py-0.5 text-[10px] font-medium text-danger-foreground">
+        <span className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-1 bg-danger/90 py-0.5 text-[length:var(--hl-text-3xs,0.625rem)] font-medium text-danger-foreground">
           <span className="size-1 animate-pulse rounded-full bg-white" />
           {labels.presenting}
         </span>
@@ -84,7 +84,7 @@ function LiveProductCardImpl({
       <div className={cn("min-w-0 flex-1", isCard && "w-full")}>
         <div className="flex items-start gap-1">
           {tag && (
-            <span className="shrink-0 rounded bg-danger/15 px-1 text-[10px] font-medium leading-4 text-danger">
+            <span className="shrink-0 rounded bg-danger/15 px-1 text-[length:var(--hl-text-3xs,0.625rem)] font-medium leading-4 text-danger">
               {tag}
             </span>
           )}
@@ -94,7 +94,7 @@ function LiveProductCardImpl({
           <div>
             {Price}
             {(stock != null || sold != null) && (
-              <div className="mt-0.5 text-[11px] text-muted-foreground">
+              <div className="mt-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] text-muted-foreground">
                 {sold != null && <span>{labels.sold(sold)}</span>}
                 {sold != null && stock != null && <span> · </span>}
                 {stock != null && <span>{labels.remaining(stock)}</span>}

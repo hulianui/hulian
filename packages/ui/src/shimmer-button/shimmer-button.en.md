@@ -28,7 +28,7 @@ import { ShimmerButton } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Size step, on the same 32/40/48px scale as Button. |
 | shimmerColor | `string` | follows `foreground` | Shimmer highlight color; defaults to `--hulian-shimmer-fg` (i.e. `foreground`). |
 | shimmerSize | `string` | `0.05em` | Shimmer width. |
-| borderRadius | `string` | `var(--radius)` | Button border radius. |
+| borderRadius | `string` | `var(--hl-radius-control, var(--radius))` | Button border radius. Follows the control radius token. |
 | shimmerDuration | `string` | `3s` | Duration of one shimmer cycle. |
 | background | `string` | `var(--color-primary)` | Button background color. |
 | foreground | `string` | `var(--color-primary-foreground)` | Text color (#288), paired with `background`: by default both follow the theme; when you pass a **fixed** background (a brand gradient that ignores the theme) pair it with a fixed foreground, or dark mode renders near-black text on the gradient. Lands in `--hulian-shimmer-fg`; the shimmer color reads it by default. |

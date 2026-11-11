@@ -89,7 +89,7 @@ export function HoverCardContent({
         side={side}
         align={align}
         sideOffset={sideOffset}
-        className="z-50"
+        className="z-[var(--hl-z-overlay,50)]"
       >
         <BasePopover.Popup
           // 透传消费方的 div 属性（#201）。摆在最前是让内部关键 props 不被顶掉；指针进出与 style

@@ -12,7 +12,7 @@ export const textareaVariants = cva(
   [
     "w-full text-foreground transition-colors",
     "outline-none placeholder:text-muted-foreground",
-    "disabled:opacity-50 disabled:cursor-not-allowed",
+    "disabled:opacity-[var(--hl-opacity-disabled,0.5)] disabled:cursor-not-allowed",
   ],
   {
     variants: {
@@ -21,7 +21,7 @@ export const textareaVariants = cva(
       // 这是浏览器原生做的，没有 autoResize 那条 useLayoutEffect + 读 scrollHeight 的往返。
       variant: {
         default: [
-          "rounded-[var(--radius)] border border-border bg-surface",
+          "rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface",
           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
           "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
         ],

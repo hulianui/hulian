@@ -70,7 +70,7 @@ describe("DialogContent", () => {
         </DialogContent>
       </Dialog>,
     );
-    expect(document.querySelector(".fixed.inset-0.z-40")).toBeNull();
+    expect(document.querySelector('.fixed.inset-0[class~="z-[calc(var(--hl-z-overlay,50)-10)]"]')).toBeNull();
     expect(document.querySelector('[role="dialog"]')).toBeTruthy();
   });
 
@@ -82,7 +82,7 @@ describe("DialogContent", () => {
         </DialogContent>
       </Dialog>,
     );
-    const backdrop = document.querySelector(".fixed.inset-0.z-40")!;
+    const backdrop = document.querySelector('.fixed.inset-0[class~="z-[calc(var(--hl-z-overlay,50)-10)]"]')!;
     expect(backdrop.className).toContain("bg-black/10");
     expect(backdrop.className).not.toContain("bg-black/40");
   });

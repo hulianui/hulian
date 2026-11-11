@@ -288,7 +288,7 @@ export function MathTextarea({
       {showPreview && (
         <div
           data-slot="math-textarea-preview"
-          className="rounded-[var(--radius)] border border-border bg-surface px-3 py-2"
+          className="rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface px-3 py-2"
         >
           {!compact && (
             <Text size="xs" tone="muted" className="block">

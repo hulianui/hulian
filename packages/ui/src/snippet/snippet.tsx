@@ -36,7 +36,7 @@ function SnippetImpl({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-3 rounded-[var(--radius)] border border-border bg-surface px-3 py-2 font-mono text-sm",
+        "inline-flex items-center gap-3 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface px-3 py-2 font-mono text-sm",
         className,
       )}
     >

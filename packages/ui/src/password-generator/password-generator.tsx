@@ -39,7 +39,7 @@ import type {
 //    也不让异常冒泡炸掉整棵树。
 
 const iconBtn =
-  "inline-flex size-8 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex size-8 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]";
 
 const rowCls = "flex items-center justify-between gap-3 text-sm";
 

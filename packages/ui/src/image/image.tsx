@@ -13,7 +13,7 @@ const radiusClass = {
 } as const;
 
 // 图片皮肤：加载完成淡入 + 失败回退/占位 + isZoomed hover 放大（含状态故 "use client"）。
-export const imageVariants = cva("block size-full object-cover transition-[transform,opacity] duration-300");
+export const imageVariants = cva("block size-full object-cover transition-[transform,opacity] duration-[var(--hl-duration-slow,300ms)]");
 
 export const Image = forwardRef<HTMLImageElement, ImageProps>(function Image(
   {

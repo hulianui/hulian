@@ -69,7 +69,7 @@ export function ServiceMessage({
               <Avatar
                 size="sm"
                 {...avatar}
-                className={cn("size-5 text-[10px]", avatar.className)}
+                className={cn("size-5 text-[length:var(--hl-text-3xs,0.625rem)]", avatar.className)}
               />
             )}
             {source != null && (

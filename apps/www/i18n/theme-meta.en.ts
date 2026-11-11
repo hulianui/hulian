@@ -16,7 +16,7 @@ export const themeMetaEn: Record<string, LocalizedThemeMeta> = {
   },
   spacing: { label: "Spacing", description: "Spacing scale based on a 0.25rem unit." },
   breakpoints: { label: "Breakpoints", description: "Responsive breakpoints and usage guidance." },
-  radius: { label: "Radius", description: "Base radius token and derived corner scales." },
+  radius: { label: "Radius", description: "Container and control radius roles, and the corner scale." },
   shadows: { label: "Shadows", description: "Elevation and shadow scales." },
   motion: { label: "Motion", description: "Easing, duration, and when motion is appropriate." },
   cursors: { label: "Cursors", description: "Pointer semantics for interactive states." },

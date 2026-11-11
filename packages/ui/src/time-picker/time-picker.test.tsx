@@ -161,9 +161,9 @@ describe("TimePicker", () => {
 
   // #98：触发器此前硬编码 h-9(36px)，与 Input 的 32/40/48 刻度对不上，并排必错位。
   it.each([
-    ["sm", "h-8"],
-    ["md", "h-10"],
-    ["lg", "h-12"],
+    ["sm", "h-[var(--hl-control-h-sm,2rem)]"],
+    ["md", "h-[var(--hl-control-h-md,2.5rem)]"],
+    ["lg", "h-[var(--hl-control-h-lg,3rem)]"],
   ] as const)("size=%s 触发器高度 %s，与 Input 同刻度", (size, h) => {
     expect(inputShellVariants({ size })).toContain(h);
     const { container } = render(<TimePicker size={size} aria-label="选择时间" />);
@@ -172,7 +172,7 @@ describe("TimePicker", () => {
 
   it("不传 size 时按 md（40px）渲染", () => {
     const { container } = render(<TimePicker aria-label="选择时间" />);
-    expect(container.querySelector("button")!.className).toContain("h-10");
+    expect(container.querySelector("button")!.className).toContain("h-[var(--hl-control-h-md,2.5rem)]");
   });
 
   // #315：与 DatePicker 在 #293 里补的是同一条链 —— TimePicker 当时漏在名单外。

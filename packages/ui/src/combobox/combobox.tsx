@@ -127,17 +127,17 @@ const SearchIcon = () => (
 // 输入外壳：抄 Input 外壳气质；焦点环落外壳 focus-within（内层 input 自身受焦点，异于 Select.Trigger 的 button focus-visible）。
 export const comboboxInputShellVariants = cva(
   [
-    "inline-flex w-full items-center gap-2 rounded-[var(--radius)] border border-border bg-surface text-foreground transition-colors",
+    "inline-flex w-full items-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface text-foreground transition-colors",
     "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg",
     "has-[[data-invalid]]:border-danger has-[[data-invalid]]:focus-within:ring-danger",
-    "has-[:disabled]:opacity-50 has-[:disabled]:pointer-events-none",
+    "has-[:disabled]:opacity-[var(--hl-opacity-disabled,0.5)] has-[:disabled]:pointer-events-none",
   ],
   {
     variants: {
       size: {
-        sm: "h-8 px-2.5 text-sm",
-        md: "h-10 px-3 text-sm",
-        lg: "h-12 px-3.5 text-base",
+        sm: "h-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm",
+        md: "h-[var(--hl-control-h-md,2.5rem)] px-3 text-sm",
+        lg: "h-[var(--hl-control-h-lg,3rem)] px-3.5 text-base",
       },
     },
     defaultVariants: { size: "md" },
@@ -147,18 +147,18 @@ export const comboboxInputShellVariants = cva(
 // Trigger 外壳：复用 Select.Trigger 气质（button 自身 focus-visible）；图4 范式的可见字段。
 export const comboboxTriggerVariants = cva(
   [
-    "inline-flex w-full items-center justify-between gap-2 rounded-[var(--radius)] border border-border bg-surface text-foreground transition-colors",
+    "inline-flex w-full items-center justify-between gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface text-foreground transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
     "data-[popup-open]:border-ring",
     "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
-    "disabled:cursor-not-allowed disabled:opacity-50",
+    "disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
   ],
   {
     variants: {
       size: {
-        sm: "h-8 px-2.5 text-sm",
-        md: "h-10 px-3 text-sm",
-        lg: "h-12 px-3.5 text-base",
+        sm: "h-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm",
+        md: "h-[var(--hl-control-h-md,2.5rem)] px-3 text-sm",
+        lg: "h-[var(--hl-control-h-lg,3rem)] px-3.5 text-base",
       },
     },
     defaultVariants: { size: "md" },
@@ -445,7 +445,7 @@ const comboboxItemClass = [
   "data-[selected]:bg-primary/12 data-[selected]:font-medium data-[selected]:text-primary",
   "data-[highlighted]:bg-surface-hover data-[highlighted]:text-foreground",
   "data-[selected]:data-[highlighted]:bg-primary/20 data-[selected]:data-[highlighted]:text-primary",
-  "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+  "data-[disabled]:pointer-events-none data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]",
 ];
 
 /** 判重用：把分组结构（`{ value, items }`）摊平成一层选项，非选项形状的条目直接丢掉。 */
@@ -519,7 +519,7 @@ export function ComboboxContent({
         side={side}
         align={align}
         sideOffset={sideOffset}
-        className="z-50"
+        className="z-[var(--hl-z-overlay,50)]"
       >
         <BaseCombobox.Popup
           className={cn(
@@ -609,7 +609,7 @@ export function ComboboxChips({
       {...(invalid && { "data-invalid": "", "aria-invalid": true })}
       className={cn(
         comboboxInputShellVariants({ size }),
-        "h-auto min-h-10 flex-wrap gap-1.5 py-1.5",
+        "h-auto min-h-[var(--hl-control-h-md,2.5rem)] flex-wrap gap-1.5 py-1.5",
         className,
       )}
     >

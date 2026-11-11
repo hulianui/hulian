@@ -551,7 +551,7 @@ export function Tree({
   return (
     <div className={cn("w-full select-none text-foreground", className)}>
       {searchable ? (
-        <div className="mb-2 flex h-9 items-center gap-2 rounded-[var(--radius)] border border-border bg-surface px-2.5 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-bg">
+        <div className="mb-2 flex h-9 items-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface px-2.5 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-bg">
           <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <input
             value={query}

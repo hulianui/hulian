@@ -114,7 +114,7 @@ export function MagicBento({
             style={cardStyle}
             className={cn(
               "group relative isolate flex min-h-32 flex-col justify-between overflow-hidden rounded-xl",
-              "border border-border bg-surface p-5 transition-transform duration-150 ease-out",
+              "border border-border bg-surface p-5 transition-transform duration-[var(--hl-duration-fast,150ms)] ease-out",
               // 描边光：呼吸关键帧，仅 hover 时点亮（border-glow 开关控制不透明度）
               enableBorderGlow &&
                 "[animation:hulian-magic-bento_4s_ease-in-out_infinite] motion-reduce:[animation:none]",
@@ -125,7 +125,7 @@ export function MagicBento({
               <div
                 aria-hidden
                 data-magic-bento-spotlight=""
-                className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-300"
+                className="pointer-events-none absolute inset-0 -z-10 transition-opacity duration-[var(--hl-duration-slow,300ms)]"
                 style={{
                   opacity: "var(--hl-mb-glow-intensity, 0)",
                   background:
@@ -138,7 +138,7 @@ export function MagicBento({
               <div
                 aria-hidden
                 data-magic-bento-border=""
-                className="pointer-events-none absolute inset-0 -z-10 rounded-xl transition-opacity duration-300"
+                className="pointer-events-none absolute inset-0 -z-10 rounded-xl transition-opacity duration-[var(--hl-duration-slow,300ms)]"
                 style={{
                   opacity: "var(--hl-mb-glow-intensity, 0)",
                   boxShadow:

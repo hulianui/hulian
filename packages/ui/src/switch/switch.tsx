@@ -12,7 +12,7 @@ const trackVariants = cva(
     "relative inline-flex items-center rounded-full border border-border transition-colors outline-none",
     "bg-surface-hover data-[checked]:bg-primary",
     "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-    "disabled:opacity-50 disabled:pointer-events-none",
+    "disabled:opacity-[var(--hl-opacity-disabled,0.5)] disabled:pointer-events-none",
   ),
   {
     variants: {

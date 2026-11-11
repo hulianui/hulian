@@ -111,7 +111,7 @@ export function Book3D({
               <span className="pointer-events-none absolute -right-px top-[6px] z-10" aria-hidden>
                 <span
                   className={cn(
-                    "block px-3 py-0.5 text-[11px] font-bold tracking-wide shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,8px_100%)]",
+                    "block px-3 py-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] font-bold tracking-wide shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,8px_100%)]",
                     ribbonToneClass[ribbonTone],
                   )}
                 >

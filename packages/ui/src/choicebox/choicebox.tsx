@@ -96,7 +96,7 @@ export function Choicebox({
         // 按下缩放刻意用 0.99 而非通用的 0.97：scale 会连带缩放子元素，整张卡（标题+描述+图标）
         // 缩 3% 位移量太大、像"跳一下"；大面积可按压元素 1% 就够表达"按到了"。
         "relative flex cursor-pointer items-start gap-3 rounded-[var(--radius)] border bg-surface p-4 outline-none",
-        "transition-[scale,border-color,box-shadow,background-color] duration-150 ease-out active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100",
+        "transition-[scale,border-color,box-shadow,background-color] duration-[var(--hl-duration-fast,150ms)] ease-out active:scale-[0.99] motion-reduce:transition-none motion-reduce:active:scale-100",
         "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg",
         selected
           ? "border-primary bg-primary/[0.06] shadow-sm"

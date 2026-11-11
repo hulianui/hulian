@@ -138,14 +138,14 @@ export function InterceptCard({
                 onChange={(e) => setReason(e.target.value)}
                 placeholder={resolvedOverridePlaceholder}
                 rows={2}
-                className="w-full resize-y rounded-[var(--radius)] border border-border bg-bg px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full resize-y rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-bg px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               />
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   disabled={!canSubmit}
                   onClick={submit}
-                  className="rounded-[var(--radius)] bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground outline-none transition-opacity disabled:cursor-not-allowed disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded-[var(--hl-radius-control,var(--radius))] bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground outline-none transition-opacity disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)] focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {busy ? locale.processing : locale.confirmOverride}
                 </button>
@@ -155,7 +155,7 @@ export function InterceptCard({
                     setOpen(false);
                     setReason("");
                   }}
-                  className="rounded-[var(--radius)] px-3 py-1.5 text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded-[var(--hl-radius-control,var(--radius))] px-3 py-1.5 text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {locale.cancel}
                 </button>
@@ -166,7 +166,7 @@ export function InterceptCard({
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="rounded-[var(--radius)] border border-border px-3 py-1.5 text-xs text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
+                className="rounded-[var(--hl-radius-control,var(--radius))] border border-border px-3 py-1.5 text-xs text-foreground outline-none hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {resolvedOverrideLabel}
               </button>

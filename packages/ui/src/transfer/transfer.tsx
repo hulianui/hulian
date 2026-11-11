@@ -46,7 +46,7 @@ function MoveButton({
       className={cn(
         "flex size-8 items-center justify-center rounded-[min(var(--radius),0.5rem)] border border-border bg-surface text-foreground transition-colors",
         "hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-        "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-surface",
+        "disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)] disabled:hover:bg-surface",
       )}
     >
       <Icon className="size-4" aria-hidden />
@@ -151,7 +151,7 @@ function TransferPanel({
             className={cn(
               "h-8 w-full rounded-[min(var(--radius),0.375rem)] border border-border bg-bg px-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground",
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-surface",
-              "disabled:cursor-not-allowed disabled:opacity-50",
+              "disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
             )}
           />
         </div>

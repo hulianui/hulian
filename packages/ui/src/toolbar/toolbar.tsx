@@ -16,7 +16,7 @@ export function Toolbar({ className, ...props }: ToolbarProps) {
     <BaseToolbar.Root
       {...props}
       className={cn(
-        "inline-flex items-center gap-1 rounded-[var(--radius)] border border-border bg-surface p-1",
+        "inline-flex items-center gap-1 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface p-1",
         "data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch",
         className,
       )}
@@ -31,7 +31,7 @@ export function ToolbarButton({ className, ...props }: ToolbarButtonProps) {
       className={cn(
         "inline-flex h-8 items-center justify-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2.5 text-sm text-foreground outline-none transition-colors",
         "hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-        "data-[pressed]:bg-surface-hover disabled:pointer-events-none disabled:opacity-50",
+        "data-[pressed]:bg-surface-hover disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
         className,
       )}
     />
@@ -61,7 +61,7 @@ export function ToolbarToggle({
         "inline-flex h-8 items-center justify-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2.5 text-sm text-foreground outline-none transition-colors",
         "hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
         "data-[pressed]:bg-primary data-[pressed]:text-primary-foreground data-[pressed]:hover:bg-primary",
-        "disabled:pointer-events-none disabled:opacity-50",
+        "disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
         className,
       )}
     />

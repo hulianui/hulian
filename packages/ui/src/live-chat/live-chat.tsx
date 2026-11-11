@@ -107,7 +107,7 @@ export function LiveChat({
 
 function LevelBadge({ level }: { level: number }) {
   return (
-    <span className="mr-1 inline-flex shrink-0 items-center rounded bg-chart-2/85 px-1 text-[10px] font-bold leading-4 text-white">
+    <span className="mr-1 inline-flex shrink-0 items-center rounded bg-chart-2/85 px-1 text-[length:var(--hl-text-3xs,0.625rem)] font-bold leading-4 text-white">
       {level}
     </span>
   );

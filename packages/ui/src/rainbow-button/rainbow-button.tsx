@@ -32,9 +32,9 @@ export const RainbowButton = forwardRef<HTMLButtonElement, RainbowButtonProps>(
     const mergedClassName = cn(
       EFFECT_BUTTON_BASE_CLASS,
       BUTTON_SIZE_CLASS[size],
-      "group relative cursor-pointer rounded-[var(--radius)] text-primary-foreground",
+      "group relative cursor-pointer rounded-[var(--hl-radius-control,var(--radius))] text-primary-foreground",
       "[animation:hulian-rainbow_var(--hulian-rainbow-speed,3s)_linear_infinite] [background-size:200%] motion-reduce:[animation:none]",
-      "transition-transform duration-200 active:translate-y-px",
+      "transition-transform duration-[var(--hl-duration-base,200ms)] active:translate-y-px",
       className,
     );
 

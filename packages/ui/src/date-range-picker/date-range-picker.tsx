@@ -39,13 +39,13 @@ import type {
 // 注意：面板里日期格的 h-9 / size-9 是网格几何（与 size-9 的日按钮成对），与触发器无关，不跟档。
 const triggerVariants = cva(
   [
-    "inline-flex min-w-[16rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg text-foreground outline-none transition-colors",
+    "inline-flex min-w-[16rem] items-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-bg text-foreground outline-none transition-colors",
     "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30",
-    "disabled:cursor-not-allowed disabled:opacity-50",
+    "disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
   ],
   {
     variants: {
-      size: { sm: "h-8 px-2.5 text-sm", md: "h-10 px-3 text-sm", lg: "h-12 px-3.5 text-base" },
+      size: { sm: "h-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm", md: "h-[var(--hl-control-h-md,2.5rem)] px-3 text-sm", lg: "h-[var(--hl-control-h-lg,3rem)] px-3.5 text-base" },
     },
     defaultVariants: { size: "md" },
   },
@@ -494,7 +494,7 @@ export function DateRangePicker({
         )}
       </div>
       <BasePopover.Portal>
-        <BasePopover.Positioner side="bottom" align="start" sideOffset={8} className="z-50">
+        <BasePopover.Positioner side="bottom" align="start" sideOffset={8} className="z-[var(--hl-z-overlay,50)]">
           <BasePopover.Popup
             className={cn(
               "flex rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
@@ -514,7 +514,7 @@ export function DateRangePicker({
                       onClick={() => applyPreset(p)}
                       disabled={readOnly}
                       className={cn(
-                        "rounded-md px-2 py-1.5 text-left text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                        "rounded-md px-2 py-1.5 text-left text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
                         active
                           ? "bg-primary/10 font-medium text-primary"
                           : "text-foreground hover:bg-surface-hover",

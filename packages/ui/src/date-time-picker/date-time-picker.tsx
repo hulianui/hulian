@@ -38,13 +38,13 @@ import type { DateTimePickerProps } from "./date-time-picker.types";
 // 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
 const triggerVariants = cva(
   [
-    "inline-flex min-w-[13rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg text-foreground outline-none transition-colors",
+    "inline-flex min-w-[13rem] items-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-bg text-foreground outline-none transition-colors",
     "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30",
-    "disabled:cursor-not-allowed disabled:opacity-50",
+    "disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
   ],
   {
     variants: {
-      size: { sm: "h-8 px-2.5 text-sm", md: "h-10 px-3 text-sm", lg: "h-12 px-3.5 text-base" },
+      size: { sm: "h-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm", md: "h-[var(--hl-control-h-md,2.5rem)] px-3 text-sm", lg: "h-[var(--hl-control-h-lg,3rem)] px-3.5 text-base" },
     },
     defaultVariants: { size: "md" },
   },
@@ -206,7 +206,7 @@ function DateTimePickerImpl({
       </div>
 
       <BasePopover.Portal>
-        <BasePopover.Positioner side="bottom" align="start" sideOffset={8} className="z-50">
+        <BasePopover.Positioner side="bottom" align="start" sideOffset={8} className="z-[var(--hl-z-overlay,50)]">
           <BasePopover.Popup
             className={cn(
               "rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
@@ -261,7 +261,7 @@ function DateTimePickerImpl({
                   type="button"
                   onClick={pickNow}
                   disabled={readOnly}
-                  className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]"
                 >
                   {labels.now}
                 </button>

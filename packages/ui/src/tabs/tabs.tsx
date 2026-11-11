@@ -29,7 +29,7 @@ export const tabsListVariants = cva("relative inline-flex items-center", {
     variant: {
       underline: "border-b border-border",
       // bg-track 而非 bg-surface-hover：后者与药丸的 bg-surface 亮色下只差 3.3%、暗色下方向还是反的（#152）。
-      solid: "rounded-[var(--radius)] bg-track",
+      solid: "rounded-[var(--hl-radius-control,var(--radius))] bg-track",
     },
     size: { sm: "gap-0.5", md: "gap-1" },
   },
@@ -109,7 +109,7 @@ const indicatorByVariant: Record<"underline" | "solid", { className: string; sty
   },
   solid: {
     className:
-      "pointer-events-none absolute left-0 top-0 rounded-[calc(var(--radius)-0.25rem)] bg-surface shadow-sm",
+      "pointer-events-none absolute left-0 top-0 rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)] bg-surface shadow-sm",
     style: {
       ...indicatorTransition,
       transitionProperty: "transform, width, height",
@@ -145,10 +145,10 @@ export function TabsList({ className, variant, size, tone, children, ...props }:
 // tone 只回答"选中意味着什么"，静息层级是另一件事。
 const tabsTabVariants = cva(
   cn(
-    "relative z-10 cursor-pointer select-none rounded-[var(--radius)] font-medium",
+    "relative z-10 cursor-pointer select-none rounded-[var(--hl-radius-control,var(--radius))] font-medium",
     "text-muted-foreground transition-colors hover:text-foreground data-[active]:text-foreground",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-    "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+    "data-[disabled]:pointer-events-none data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]",
   ),
   {
     variants: {

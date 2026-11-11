@@ -170,10 +170,10 @@ describe("Tabs 尺寸档（#269）", () => {
 // 存量页面不传 tone，就一个像素都不该动。
 describe("Tabs tone（#316）", () => {
   const TAB_CLASS_BEFORE_TONE =
-    "relative z-10 cursor-pointer select-none rounded-[var(--radius)] font-medium " +
+    "relative z-10 cursor-pointer select-none rounded-[var(--hl-radius-control,var(--radius))] font-medium " +
     "text-muted-foreground transition-colors hover:text-foreground data-[active]:text-foreground " +
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg " +
-    "data-[disabled]:pointer-events-none data-[disabled]:opacity-50 px-3 py-1.5 text-sm";
+    "data-[disabled]:pointer-events-none data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)] px-3 py-1.5 text-sm";
   const UNDERLINE_INDICATOR_BEFORE_TONE =
     "pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-primary";
 

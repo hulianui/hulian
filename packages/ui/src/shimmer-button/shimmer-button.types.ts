@@ -12,7 +12,7 @@ export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
   shimmerColor?: string;
   /** 火花宽度，默认 0.05em */
   shimmerSize?: string;
-  /** 圆角，默认 var(--radius) */
+  /** 圆角，默认 var(--hl-radius-control)（控件圆角，回退 var(--radius)） */
   borderRadius?: string;
   /** 一轮火花秒数，默认 3s */
   shimmerDuration?: string;

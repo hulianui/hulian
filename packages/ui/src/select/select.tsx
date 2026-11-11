@@ -74,20 +74,20 @@ const ClearIcon = () => (
 // Trigger 外壳：复用 Input 外壳气质；焦点环落 Trigger 自身（button 可聚焦 → self focus-visible）。
 export const selectTriggerVariants = cva(
   [
-    "inline-flex w-full items-center justify-between gap-2 rounded-[var(--radius)] border border-border bg-surface text-foreground transition-colors",
+    "inline-flex w-full items-center justify-between gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface text-foreground transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
     "data-[popup-open]:border-ring",
     "data-[invalid]:border-danger data-[invalid]:focus-visible:ring-danger",
-    "disabled:cursor-not-allowed disabled:opacity-50",
+    "disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
   ],
   {
     variants: {
       size: {
         // 与 Input / Textarea 的 xs 等高：同一行里三种控件必须对齐，缺一档就整行错位（#187）。
-        xs: "h-7 px-2 text-xs",
-        sm: "h-8 px-2.5 text-sm",
-        md: "h-10 px-3 text-sm",
-        lg: "h-12 px-3.5 text-base",
+        xs: "h-[var(--hl-control-h-xs,1.75rem)] px-2 text-xs",
+        sm: "h-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm",
+        md: "h-[var(--hl-control-h-md,2.5rem)] px-3 text-sm",
+        lg: "h-[var(--hl-control-h-lg,3rem)] px-3.5 text-base",
       },
     },
     defaultVariants: { size: "md" },
@@ -122,7 +122,7 @@ const EMPTY_SELECTED_VALUES: readonly string[] = [];
 const chipLayerClass =
   "absolute inset-y-0 left-0 right-8 flex items-center gap-1 overflow-hidden px-3";
 const chipVisualClass =
-  "inline-flex min-w-0 shrink-0 items-center gap-1 rounded bg-surface-raised px-1.5 py-0.5 text-xs";
+  "inline-flex min-w-0 shrink-0 items-center gap-1 rounded bg-surface-hover px-1.5 py-0.5 text-xs";
 const chipLabelClass = "max-w-28 truncate";
 
 function isChipRemoveControl(target: EventTarget | null) {
@@ -851,7 +851,7 @@ export function SelectContent({
         align={align}
         sideOffset={sideOffset}
         alignItemWithTrigger={false}
-        className="z-50"
+        className="z-[var(--hl-z-overlay,50)]"
       >
         <BaseSelect.Popup
           className={cn(
@@ -902,7 +902,7 @@ export function SelectItem({ value, disabled, children, className }: SelectItemP
         // （特异性 0,3,0）才稳定压过上面两条（各 0,2,0）—— 键盘停在当前值上时，
         // 它既要比普通 highlight 更重，又不能丢掉「这是已选项」的主色。
         "data-[selected]:data-[highlighted]:bg-primary/20 data-[selected]:data-[highlighted]:text-primary",
-        "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "data-[disabled]:pointer-events-none data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]",
         className,
       )}
     >

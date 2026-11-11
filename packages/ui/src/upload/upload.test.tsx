@@ -334,12 +334,12 @@ describe("Upload · size 尺寸档（#243）", () => {
     // 多次 render 共用 document.body，getByText 会跨实例撞车，这里按各自 container 取
     const trigger = (c: HTMLElement) => c.querySelector("button") as HTMLElement;
     const md = trigger(render(<Upload variant="button" />).container);
-    expect(md.className).toContain("h-10");
+    expect(md.className).toContain("h-[var(--hl-control-h-md,2.5rem)]");
     const sm = trigger(render(<Upload variant="button" size="sm" />).container);
-    expect(sm.className).toContain("h-8");
-    expect(sm.className).not.toContain("h-10");
+    expect(sm.className).toContain("h-[var(--hl-control-h-sm,2rem)]");
+    expect(sm.className).not.toContain("h-[var(--hl-control-h-md,2.5rem)]");
     const lg = trigger(render(<Upload variant="button" size="lg" />).container);
-    expect(lg.className).toContain("h-12");
+    expect(lg.className).toContain("h-[var(--hl-control-h-lg,3rem)]");
   });
 });
 

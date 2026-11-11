@@ -98,7 +98,7 @@ export function Crosshair({
         ref={lineYRef}
         className={cn(
           "absolute left-0 top-0 w-full will-change-transform",
-          "transition-opacity duration-300",
+          "transition-opacity duration-[var(--hl-duration-slow,300ms)]",
           visible ? "opacity-100" : "opacity-0",
           pulse,
         )}
@@ -114,7 +114,7 @@ export function Crosshair({
         ref={lineXRef}
         className={cn(
           "absolute left-0 top-0 h-full will-change-transform",
-          "transition-opacity duration-300",
+          "transition-opacity duration-[var(--hl-duration-slow,300ms)]",
           visible ? "opacity-100" : "opacity-0",
           pulse,
         )}

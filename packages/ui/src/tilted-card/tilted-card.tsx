@@ -126,7 +126,7 @@ export function TiltedCard({
             className={cn(
               "pointer-events-none absolute left-0 top-0 z-[3]",
               "rounded-md border border-border bg-surface px-2.5 py-1",
-              "text-[10px] leading-none text-foreground shadow-sm",
+              "text-[length:var(--hl-text-3xs,0.625rem)] leading-none text-foreground shadow-sm",
             )}
             style={{ x, y, opacity, rotate: rotateCaption }}
           >

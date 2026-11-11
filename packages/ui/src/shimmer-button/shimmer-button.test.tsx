@@ -19,7 +19,7 @@ describe("ShimmerButton", () => {
     const { container } = render(<ShimmerButton>x</ShimmerButton>);
     const btn = container.querySelector("button") as HTMLButtonElement;
     expect(btn.style.getPropertyValue("--hulian-shimmer-bg")).toBe("var(--color-primary)");
-    expect(btn.style.getPropertyValue("--hulian-shimmer-radius")).toBe("var(--radius)");
+    expect(btn.style.getPropertyValue("--hulian-shimmer-radius")).toBe("var(--hl-radius-control, var(--radius))");
     // 火花色缺省跟随前景变量；前景缺省 primary-foreground（#288）
     expect(btn.style.getPropertyValue("--hulian-shimmer-color")).toBe("var(--hulian-shimmer-fg)");
     expect(btn.style.getPropertyValue("--hulian-shimmer-fg")).toBe("var(--color-primary-foreground)");

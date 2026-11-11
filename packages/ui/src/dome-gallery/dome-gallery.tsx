@@ -341,7 +341,7 @@ export function DomeGallery({
                     src={tile.src}
                     alt={tile.alt}
                     draggable={false}
-                    className="pointer-events-none h-full w-full object-cover transition-[filter] duration-300 group-hover:[filter:none]"
+                    className="pointer-events-none h-full w-full object-cover transition-[filter] duration-[var(--hl-duration-slow,300ms)] group-hover:[filter:none]"
                     style={{ filter: grayscale ? "grayscale(1)" : "none" }}
                   />
                 ) : (

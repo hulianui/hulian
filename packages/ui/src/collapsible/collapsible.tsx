@@ -26,10 +26,10 @@ export function CollapsibleTrigger({ className, children, ...props }: Collapsibl
       {...props}
       className={cn(
         // min-h-11（44px）：Trigger 常配单行短文案，仅靠 py-2.5 只有 40px，低于触控目标推荐值。
-        "group flex min-h-11 w-full items-center justify-between gap-3 rounded-[var(--radius)] px-3 py-2.5 text-left text-sm font-medium text-foreground outline-none transition-colors",
+        "group flex min-h-11 w-full items-center justify-between gap-3 rounded-[var(--hl-radius-control,var(--radius))] px-3 py-2.5 text-left text-sm font-medium text-foreground outline-none transition-colors",
         "hover:bg-surface-hover",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-        "data-[disabled]:opacity-50 data-[disabled]:pointer-events-none",
+        "data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)] data-[disabled]:pointer-events-none",
         className,
       )}
     >
@@ -43,7 +43,7 @@ export function CollapsibleTrigger({ className, children, ...props }: Collapsibl
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[panel-open]:rotate-180"
+        className="size-4 shrink-0 text-muted-foreground transition-transform duration-[var(--hl-duration-base,200ms)] group-data-[panel-open]:rotate-180"
       >
         <path d="m6 9 6 6 6-6" />
       </svg>

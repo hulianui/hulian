@@ -190,7 +190,7 @@ function FileTreeImpl({
           onChange={(e) => setQuery(e.target.value)}
           placeholder={resolvedSearchPlaceholder}
           aria-label={resolvedSearchPlaceholder}
-          className="w-full rounded-[var(--radius)] border border-border bg-surface px-2.5 py-1.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+          className="w-full rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface px-2.5 py-1.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
         />
       )}
       <ul className="rounded-[var(--radius)] border border-border bg-surface p-1.5">

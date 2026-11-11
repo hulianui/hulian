@@ -243,7 +243,7 @@ function GanttImpl({
                   <div
                     key={i}
                     className={cn(
-                      "flex items-center justify-center border-r border-border/60 py-2 text-[11px] tabular-nums text-muted-foreground",
+                      "flex items-center justify-center border-r border-border/60 py-2 text-[length:var(--hl-text-2xs,0.6875rem)] tabular-nums text-muted-foreground",
                       i === ticks.length - 1 && "border-r-0",
                     )}
                     style={{ flex: `${tk.span} 1 0`, minWidth: 0 }}
@@ -345,7 +345,7 @@ function GanttImpl({
                       />
                       {/* 进度文字（条够宽时显示） */}
                       {progress > 0 && widthPct > 8 && (
-                        <span className="relative z-[1] truncate px-2 text-[11px] font-medium tabular-nums text-primary-foreground">
+                        <span className="relative z-[1] truncate px-2 text-[length:var(--hl-text-2xs,0.6875rem)] font-medium tabular-nums text-primary-foreground">
                           {progress}%
                         </span>
                       )}

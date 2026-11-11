@@ -14,6 +14,9 @@ export const motionDuration = {
 } as const;
 
 // 时长（毫秒字符串，CSS transitionDuration 口径）。
+// fast / base / slow 另有一份 CSS 变量镜像在 @hulianui/tokens 的 semantic.css（--hl-duration-*），
+// 组件里 Tailwind 工具类驱动的过渡读的是那一份：`duration-[var(--hl-duration-fast,150ms)]`。
+// 两处同值，改任一处必须同步另一处。
 export const motionDurationCss = {
   fast: "150ms",
   base: "200ms",

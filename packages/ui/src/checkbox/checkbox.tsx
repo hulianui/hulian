@@ -15,7 +15,7 @@ const boxClass = cn(
   "data-[indeterminate]:bg-primary data-[indeterminate]:border-primary",
   "data-[invalid]:border-danger",
   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-  "data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed",
+  "data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)] data-[disabled]:cursor-not-allowed",
 );
 
 // 三档尺寸联动（#199）：勾号跟着方盒缩放。勾号此前独立写死 14px，方盒一压到 16px 就顶满，

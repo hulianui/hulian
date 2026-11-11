@@ -53,11 +53,11 @@ export interface ControlContext {
 }
 
 const iconButtonClass = cn(
-  "grid size-8 shrink-0 place-items-center rounded-[var(--radius)] border border-border text-muted-foreground outline-none transition-colors",
+  "grid size-8 shrink-0 place-items-center rounded-[var(--hl-radius-control,var(--radius))] border border-border text-muted-foreground outline-none transition-colors",
   "hover:bg-surface-hover",
   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
   "aria-pressed:border-primary aria-pressed:text-primary",
-  "disabled:opacity-50 disabled:pointer-events-none",
+  "disabled:opacity-[var(--hl-opacity-disabled,0.5)] disabled:pointer-events-none",
 );
 
 // ===== 数字输入（number / length / spacing 共用）=====

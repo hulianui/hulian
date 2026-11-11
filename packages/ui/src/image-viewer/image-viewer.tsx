@@ -259,7 +259,7 @@ export function ImageViewer({
       aria-labelledby={titleId}
       ref={panelRef}
       tabIndex={-1}
-      className={cn("fixed inset-0 z-50 flex flex-col bg-black/90 outline-none", className)}
+      className={cn("fixed inset-0 z-[var(--hl-z-overlay,50)] flex flex-col bg-black/90 outline-none", className)}
     >
       {/* 顶部条：序号 + caption/alt + 关闭 */}
       <div className="flex shrink-0 items-center justify-between gap-4 px-4 py-3 text-white">
@@ -275,7 +275,7 @@ export function ImageViewer({
           type="button"
           aria-label="关闭图片查看器"
           onClick={close}
-          className="grid size-9 place-items-center rounded-[var(--radius)] text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+          className="grid size-9 place-items-center rounded-[var(--hl-radius-control,var(--radius))] text-white/80 transition-colors hover:bg-white/10 hover:text-white"
         >
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden>
             <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -313,7 +313,7 @@ export function ImageViewer({
           onPointerCancel={endDrag}
           style={imgStyle}
           className={cn(
-            "max-h-full max-w-full select-none object-contain transition-opacity duration-300",
+            "max-h-full max-w-full select-none object-contain transition-opacity duration-[var(--hl-duration-slow,300ms)]",
             loaded ? "opacity-100" : "opacity-0",
           )}
         />

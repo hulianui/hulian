@@ -120,7 +120,7 @@ export function ReflectiveCard({
           <>
             {badge != null && (
               <div className="flex items-center justify-between border-b border-white/20 pb-4">
-                <span className="flex items-center gap-1.5 rounded border border-white/20 bg-white/10 px-2 py-1 text-[10px] font-bold tracking-[0.1em]">
+                <span className="flex items-center gap-1.5 rounded border border-white/20 bg-white/10 px-2 py-1 text-[length:var(--hl-text-3xs,0.625rem)] font-bold tracking-[0.1em]">
                   <Lock size={14} aria-hidden />
                   {badge}
                 </span>

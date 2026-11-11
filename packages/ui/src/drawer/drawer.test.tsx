@@ -31,7 +31,7 @@ describe("drawerVariants", () => {
   });
   it("base 带 z-50 + 语义皮肤；定位(fixed/absolute)由 DrawerContent 按 container 决定，不写死在变体里", () => {
     const c = drawerVariants({});
-    expect(c).toContain("z-50");
+    expect(c).toContain("z-[var(--hl-z-overlay,50)]");
     expect(c).toContain("bg-surface");
     expect(c).not.toContain("fixed");
   });
@@ -181,7 +181,7 @@ describe("DrawerContent 遮罩与正文滚动（#185 / #188）", () => {
         </DrawerContent>
       </Drawer>,
     );
-    expect(document.querySelector(".fixed.inset-0.z-40")).toBeNull();
+    expect(document.querySelector('.fixed.inset-0[class~="z-[calc(var(--hl-z-overlay,50)-10)]"]')).toBeNull();
     expect(document.querySelector('[role="dialog"]')).toBeTruthy();
   });
 
@@ -198,7 +198,7 @@ describe("DrawerContent 遮罩与正文滚动（#185 / #188）", () => {
         </DrawerContent>
       </Drawer>,
     );
-    expect(document.querySelector(".fixed.inset-0.z-40")!.className).toContain("bg-black/10");
+    expect(document.querySelector('.fixed.inset-0[class~="z-[calc(var(--hl-z-overlay,50)-10)]"]')!.className).toContain("bg-black/10");
     const body = screen.getByTestId("drawer-body-child").parentElement!;
     expect(body.className).not.toContain("overflow-y-auto");
     expect(body.className).toContain("flex flex-col");

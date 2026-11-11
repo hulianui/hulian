@@ -96,9 +96,9 @@ const DROPZONE_SIZE_CLASS = {
 // button 形态与 Button 的同名档逐字等高（button-base.ts 的 BUTTON_SIZE_CLASS）。刻意不 import：
 // 那份表还带 icon/xs 等本组件用不到的档，而这三行的全部意义就是「和旁边那颗按钮对齐」。
 const BUTTON_SIZE_CLASS = {
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4 text-sm",
-  lg: "h-12 px-6 text-base",
+  sm: "h-[var(--hl-control-h-sm,2rem)] px-3 text-sm",
+  md: "h-[var(--hl-control-h-md,2.5rem)] px-4 text-sm",
+  lg: "h-[var(--hl-control-h-lg,3rem)] px-6 text-base",
 };
 const DROPZONE_ICON_CLASS = { sm: "size-6", md: "size-7", lg: "size-9" };
 const DROPZONE_LABEL_CLASS = { sm: "text-sm", md: "text-sm", lg: "text-base" };
@@ -477,7 +477,7 @@ export function Upload({
               aria-describedby={describedBy}
               onClick={openDialog}
               className={cn(
-                "inline-flex items-center justify-center gap-2 rounded-[var(--radius)] border border-hairline bg-surface font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50",
+                "inline-flex items-center justify-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-hairline bg-surface font-medium text-foreground shadow-sm outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
                 BUTTON_SIZE_CLASS[size],
               )}
             >

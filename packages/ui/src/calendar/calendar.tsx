@@ -27,7 +27,7 @@ import type { CalendarPicker, CalendarProps } from "./calendar.types";
 // Popover。所以任何面板行为（禁用判定、下钻、今天）只在这里实现一次。
 
 const navBtn =
-  "rounded-md p-1 text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-40";
+  "rounded-md p-1 text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]";
 
 const cellBase = "flex items-center justify-center rounded-md text-sm transition-colors";
 
@@ -307,7 +307,7 @@ function CalendarImpl({
             type="button"
             onClick={goToday}
             disabled={locked}
-            className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-md px-2 py-1 text-sm text-primary outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]"
           >
             {picker === "date"
               ? locale.today

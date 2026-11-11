@@ -5,7 +5,7 @@ import type { AvatarCirclesProps } from "./avatar-circles.types";
 // 吸取自 magicui.design AvatarCircles：堆叠重叠的头像组 + "+N" 计数圆（可 RSC，纯皮肤）。
 // 瑚琏化：环线 ring 用 bg token（亮/暗自动）、+N 圆用 primary token，替 magicui 写死 white/black。
 const sizes = {
-  sm: { box: "size-7 text-[10px]", ring: "ring-2", ml: "-ml-2" },
+  sm: { box: "size-7 text-[length:var(--hl-text-3xs,0.625rem)]", ring: "ring-2", ml: "-ml-2" },
   md: { box: "size-9 text-xs", ring: "ring-2", ml: "-ml-3" },
   lg: { box: "size-11 text-sm", ring: "ring-[3px]", ml: "-ml-4" },
 } as const;
