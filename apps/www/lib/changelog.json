@@ -1,6 +1,32 @@
 [
   {
     "pkg": "@hulianui/tokens",
+    "version": "0.15.0",
+    "date": "2026-11-11",
+    "entries": [
+      {
+        "sha": "1393aed",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(tokens): 补齐颜色之外的结构令牌，修正亮色 hover 对比度，并把控件圆角与容器圆角分开。**有视觉变化**，升级后请过一遍自己的页面。\n\n**悬停对比度（修复）**：亮色下五个语义色的 `--color-*-hover` 此前取的是更亮的一档，实心按钮悬停时白字对比从 5.8–7.0 掉到 3.5–4.05，全部够不到 AA 4.5。现在两个主题都朝更深走一步（亮色 700 → 新增的 800 档），悬停时白字对比为 8.1–9.4。新增原语 `--brand-800` / `--danger-800` / `--success-800` / `--warning-800` / `--info-800`。\n\n**结构令牌（新增）**：`--hl-radius-control`、`--hl-control-h-xs/sm/md/lg`、`--hl-duration-fast/base/slow`、`--hl-opacity-disabled`、`--hl-text-2xs/3xs`、`--hl-z-overlay`，默认值见 `packages/tokens/README.md`。组件里对应的字面量（`h-10`、`duration-300`、`disabled:opacity-50`、`text-[11px]`、`z-50`）全部改成带回退的任意值，例如 `h-[var(--hl-control-h-md,2.5rem)]`；回退值等于默认值，所以 `@hulianui/ui` 配旧版 tokens 时渲染不变。用 `className` 覆盖的写法（`h-auto`、`rounded-full`、`z-10`）照常生效。\n\n**控件圆角 8px**：按钮、输入框、选择器触发器、分段轨道、Tab、图标按钮、侧栏菜单项从 `--radius`（10px）改为 `--hl-radius-control`（默认 `--radius` 的 0.8 倍）；Segmented / Tabs 的滑块随之减到 4px 保持同心。容器（Card / Dialog / Popover）不变。想保持旧观感：`:root { --hl-radius-control: var(--radius); }`。\n\n**中性色**：灰阶色相从 286° 并到品牌轴 258°；亮端梯子改为等步长（`--gray-50` 0.985 → 0.98，`--gray-100` 0.967 → 0.96），卡片与页底的亮度比从 1.04 升到 1.06，hover 底与静息底从 1.10 升到 1.12。\n\n**其它**：`--radius` 从亮色主题块挪到 `:root`，嵌套的亮色岛不再把消费方改过的圆角重置回默认值。7 处 `disabled:opacity-40` 统一到 `--hl-opacity-disabled`（0.5）。Select 多选标签此前用了未定义的 `bg-surface-raised`（没有底色），改为 `bg-surface-hover`。`ShimmerButton` 的 `borderRadius` 默认值改为 `var(--hl-radius-control, var(--radius))`。\n\n写了 `.fixed.z-50` 这类选择器去找瑚琏浮层的测试需要改：类名现在是 `z-[var(--hl-z-overlay,50)]`。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.73.0",
+    "date": "2026-11-11",
+    "entries": [
+      {
+        "sha": "1393aed",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(tokens): 补齐颜色之外的结构令牌，修正亮色 hover 对比度，并把控件圆角与容器圆角分开。**有视觉变化**，升级后请过一遍自己的页面。\n\n**悬停对比度（修复）**：亮色下五个语义色的 `--color-*-hover` 此前取的是更亮的一档，实心按钮悬停时白字对比从 5.8–7.0 掉到 3.5–4.05，全部够不到 AA 4.5。现在两个主题都朝更深走一步（亮色 700 → 新增的 800 档），悬停时白字对比为 8.1–9.4。新增原语 `--brand-800` / `--danger-800` / `--success-800` / `--warning-800` / `--info-800`。\n\n**结构令牌（新增）**：`--hl-radius-control`、`--hl-control-h-xs/sm/md/lg`、`--hl-duration-fast/base/slow`、`--hl-opacity-disabled`、`--hl-text-2xs/3xs`、`--hl-z-overlay`，默认值见 `packages/tokens/README.md`。组件里对应的字面量（`h-10`、`duration-300`、`disabled:opacity-50`、`text-[11px]`、`z-50`）全部改成带回退的任意值，例如 `h-[var(--hl-control-h-md,2.5rem)]`；回退值等于默认值，所以 `@hulianui/ui` 配旧版 tokens 时渲染不变。用 `className` 覆盖的写法（`h-auto`、`rounded-full`、`z-10`）照常生效。\n\n**控件圆角 8px**：按钮、输入框、选择器触发器、分段轨道、Tab、图标按钮、侧栏菜单项从 `--radius`（10px）改为 `--hl-radius-control`（默认 `--radius` 的 0.8 倍）；Segmented / Tabs 的滑块随之减到 4px 保持同心。容器（Card / Dialog / Popover）不变。想保持旧观感：`:root { --hl-radius-control: var(--radius); }`。\n\n**中性色**：灰阶色相从 286° 并到品牌轴 258°；亮端梯子改为等步长（`--gray-50` 0.985 → 0.98，`--gray-100` 0.967 → 0.96），卡片与页底的亮度比从 1.04 升到 1.06，hover 底与静息底从 1.10 升到 1.12。\n\n**其它**：`--radius` 从亮色主题块挪到 `:root`，嵌套的亮色岛不再把消费方改过的圆角重置回默认值。7 处 `disabled:opacity-40` 统一到 `--hl-opacity-disabled`（0.5）。Select 多选标签此前用了未定义的 `bg-surface-raised`（没有底色），改为 `bg-surface-hover`。`ShimmerButton` 的 `borderRadius` 默认值改为 `var(--hl-radius-control, var(--radius))`。\n\n写了 `.fixed.z-50` 这类选择器去找瑚琏浮层的测试需要改：类名现在是 `z-[var(--hl-z-overlay,50)]`。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
     "version": "0.14.0",
     "date": "2026-11-10",
     "entries": [
