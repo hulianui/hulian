@@ -1,5 +1,23 @@
 # @hulianui/tokens
 
+## 0.15.0
+
+### Minor Changes
+
+- 1393aed: feat(tokens): add the structural tokens beyond color, fix light-theme hover contrast, and separate control radius from container radius. **This changes how things look**, so review your pages after upgrading.
+
+  **Hover contrast (fix)**: in the light theme the five `--color-*-hover` tokens used a lighter step, so white text on a hovered solid button dropped from 5.8–7.0 to 3.5–4.05, all below AA 4.5. Both themes now move one step darker (light 700 → the new 800 step), and white text on hover measures 8.1–9.4. New primitives: `--brand-800`, `--danger-800`, `--success-800`, `--warning-800`, `--info-800`.
+
+  **Structural tokens (new)**: `--hl-radius-control`, `--hl-control-h-xs/sm/md/lg`, `--hl-duration-fast/base/slow`, `--hl-opacity-disabled`, `--hl-text-2xs/3xs`, `--hl-z-overlay`; defaults are listed in `packages/tokens/README.md`. The matching literals in components (`h-10`, `duration-300`, `disabled:opacity-50`, `text-[11px]`, `z-50`) are now arbitrary values with a fallback, such as `h-[var(--hl-control-h-md,2.5rem)]`; the fallback equals the default, so `@hulianui/ui` renders the same with an older tokens release. `className` overrides such as `h-auto`, `rounded-full`, and `z-10` still win.
+
+  **Control radius is 8px**: buttons, inputs, select triggers, segmented tracks, tabs, icon buttons, and sidebar menu items move from `--radius` (10px) to `--hl-radius-control` (0.8× `--radius` by default); the Segmented and Tabs thumbs drop to 4px to stay concentric. Containers (Card, Dialog, Popover) are unchanged. To keep the old look: `:root { --hl-radius-control: var(--radius); }`.
+
+  **Neutrals**: the gray hue moves from 286° to the brand axis at 258°; the light end now uses even steps (`--gray-50` 0.985 → 0.98, `--gray-100` 0.967 → 0.96), raising the card-to-page luminance ratio from 1.04 to 1.06 and hover-to-rest from 1.10 to 1.12.
+
+  **Other**: `--radius` moves from the light theme block to `:root`, so a nested light island no longer resets a radius you changed. Seven `disabled:opacity-40` uses now follow `--hl-opacity-disabled` (0.5). Select multi-value tags used the undefined `bg-surface-raised` (no background) and now use `bg-surface-hover`. `ShimmerButton` defaults `borderRadius` to `var(--hl-radius-control, var(--radius))`.
+
+  Tests that find Hulian overlays with selectors such as `.fixed.z-50` need updating: the class is now `z-[var(--hl-z-overlay,50)]`.
+
 ## 0.14.0
 
 ### Minor Changes
