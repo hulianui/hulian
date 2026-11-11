@@ -33,12 +33,12 @@ const segClass =
 // 同一行表单里，任何自创档位都会当场露出高度差。min-w 是本组件的内容宽度，不随档位变。
 const shellVariants = cva(
   [
-    "relative inline-flex min-w-[7.5rem] items-center gap-2 rounded-[var(--radius)] border border-border bg-bg text-foreground transition-colors",
+    "relative inline-flex min-w-[7.5rem] items-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-bg text-foreground transition-colors",
     "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
   ],
   {
     variants: {
-      size: { sm: "h-8 px-2.5 text-sm", md: "h-10 px-3 text-sm", lg: "h-12 px-3.5 text-base" },
+      size: { sm: "h-[var(--hl-control-h-sm,2rem)] px-2.5 text-sm", md: "h-[var(--hl-control-h-md,2.5rem)] px-3 text-sm", lg: "h-[var(--hl-control-h-lg,3rem)] px-3.5 text-base" },
     },
     defaultVariants: { size: "md" },
   },

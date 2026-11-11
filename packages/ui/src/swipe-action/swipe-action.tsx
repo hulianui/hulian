@@ -130,7 +130,7 @@ export function SwipeAction({
         style={{ transform: `translateX(${offset}px)` }}
         className={cn(
           "relative touch-pan-y bg-surface",
-          !dragging && "transition-transform duration-200 motion-reduce:transition-none",
+          !dragging && "transition-transform duration-[var(--hl-duration-base,200ms)] motion-reduce:transition-none",
         )}
       >
         {children}

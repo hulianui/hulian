@@ -52,7 +52,7 @@ export function TabBar({
             disabled={it.disabled}
             onClick={() => !it.disabled && select(it.key)}
             className={cn(
-              "relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-xs outline-none transition-colors focus-visible:bg-surface-hover disabled:pointer-events-none disabled:opacity-40",
+              "relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 py-1.5 text-xs outline-none transition-colors focus-visible:bg-surface-hover disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
               on ? "text-primary" : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -60,7 +60,7 @@ export function TabBar({
               <span className="relative flex text-xl leading-none">
                 {on ? it.activeIcon ?? it.icon : it.icon}
                 {it.badge != null ? (
-                  <span className="absolute -right-2.5 -top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-medium leading-4 text-danger-foreground">
+                  <span className="absolute -right-2.5 -top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[length:var(--hl-text-3xs,0.625rem)] font-medium leading-4 text-danger-foreground">
                     {it.badge}
                   </span>
                 ) : it.dot ? (

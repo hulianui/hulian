@@ -19,7 +19,7 @@ import type { FilterChipGroupProps, FilterChipProps } from "./filter-chip.types"
 
 // 尺寸只影响高度/字号/段内边距，不影响结构。md 对齐 Tag 的字号刻度：三段并排本就长，
 // 字号跟着高度一起放大会让一行放不下几条。
-const sizeClass = { sm: "h-6 text-[11px]", md: "h-7 text-xs" } as const;
+const sizeClass = { sm: "h-6 text-[length:var(--hl-text-2xs,0.6875rem)]", md: "h-7 text-xs" } as const;
 const padClass = { sm: "px-1.5", md: "px-2" } as const;
 const removeWidth = { sm: "w-6", md: "w-7" } as const;
 const iconSize = { sm: "size-2.5", md: "size-3" } as const;

@@ -56,7 +56,7 @@ export function GiftFeed({ events, max = 3, duration = 4000, className }: GiftFe
           <Avatar size="sm" src={b.user.avatar} alt={b.user.name} fallback={b.user.name[0]} />
           <div className="leading-tight">
             <div className="text-xs font-medium">{b.user.name}</div>
-            <div className="text-[11px] text-white/75">
+            <div className="text-[length:var(--hl-text-2xs,0.6875rem)] text-white/75">
               {locale.sent} {b.gift.name} {b.gift.icon}
             </div>
           </div>

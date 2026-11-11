@@ -359,7 +359,7 @@ describe("CellEditor 档位透传", () => {
 
   it("size 落到内层 Input 的档位上", () => {
     const { container } = renderCell({ variant: "default", size: "sm" });
-    expect(container.firstElementChild!.className).toContain("h-8");
+    expect(container.firstElementChild!.className).toContain("h-[var(--hl-control-h-sm,2rem)]");
   });
 
   it("多行档同样吃 variant / size", () => {

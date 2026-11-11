@@ -56,7 +56,7 @@ export const drawerVariants = cva(
     // --hl-overlay-pad 与 p-6 必须同值：正文滚动区靠它做负边距补偿（见 DrawerContent 内注释）。
     // 消费方若用 className 覆盖内边距（如 p-0 做铺满型抽屉），必须一并覆盖这个变量，
     // 否则正文会向抽屉外溢出 —— 例：className="p-0 [--hl-overlay-pad:0px]"。
-    "z-50 flex flex-col gap-1 bg-surface border-hairline p-6 [--hl-overlay-pad:1.5rem] text-foreground shadow-xl outline-none",
+    "z-[var(--hl-z-overlay,50)] flex flex-col gap-1 bg-surface border-hairline p-6 [--hl-overlay-pad:1.5rem] text-foreground shadow-xl outline-none",
   ],
   {
     variants: {
@@ -133,7 +133,7 @@ export function DrawerContent({
         <BaseDialog.Backdrop
           className={cn(
             place,
-            "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            "inset-0 z-[calc(var(--hl-z-overlay,50)-10)] bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             backdropClassName,
           )}
           style={overlayTransitions.backdrop}
@@ -156,7 +156,7 @@ export function DrawerContent({
         {showClose && (
           <BaseDialog.Close
             aria-label={closeLabel ?? loc.close}
-            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--hl-radius-control,var(--radius))] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="size-4" aria-hidden />
           </BaseDialog.Close>

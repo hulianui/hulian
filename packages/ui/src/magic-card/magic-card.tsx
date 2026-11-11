@@ -45,7 +45,7 @@ export function MagicCard({
       <LazyMotionProvider>
         <m.div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[var(--hulian-magic-opacity)]"
+          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-[var(--hl-duration-slow,300ms)] group-hover:opacity-[var(--hulian-magic-opacity)]"
           style={{ background }}
         />
       </LazyMotionProvider>

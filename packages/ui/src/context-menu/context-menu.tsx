@@ -34,7 +34,7 @@ export function ContextMenuContent({ children, className }: ContextMenuContentPr
   return (
     <BaseContextMenu.Portal>
       {/* 定位锚到光标点击位置，无需 side/align。 */}
-      <BaseContextMenu.Positioner className="z-50">
+      <BaseContextMenu.Positioner className="z-[var(--hl-z-overlay,50)]">
         <BaseContextMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseContextMenu.Popup>
@@ -113,7 +113,7 @@ export function ContextMenuSubTrigger({ variant, className, children, ...props }
 export function ContextMenuSubContent({ children, className }: ContextMenuSubContentProps) {
   return (
     <BaseContextMenu.Portal>
-      <BaseContextMenu.Positioner className="z-50" side="right" align="start" sideOffset={4}>
+      <BaseContextMenu.Positioner className="z-[var(--hl-z-overlay,50)]" side="right" align="start" sideOffset={4}>
         <BaseContextMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseContextMenu.Popup>

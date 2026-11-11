@@ -33,7 +33,7 @@ const LAYOUT =
  * 传了 disabled 只是点不动但看上去和可用状态一模一样、连点会把按钮文字刷成蓝底。
  */
 const INTERACTION =
-  "select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none";
+  "select-none outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-[var(--hl-opacity-disabled,0.5)] disabled:pointer-events-none";
 
 /**
  * 普通 Button 的 base：排布 + 圆角 + 按压反馈（含颜色过渡）+ 交互态。
@@ -49,7 +49,7 @@ const INTERACTION =
  *
  * `prefers-reduced-motion: reduce` 下缩放与过渡都自动去掉，这条偏好一律由库负责。
  */
-export const BUTTON_BASE_CLASS = `${LAYOUT} rounded-[var(--radius)] ${pressableClass} ${INTERACTION}`;
+export const BUTTON_BASE_CLASS = `${LAYOUT} rounded-[var(--hl-radius-control,var(--radius))] ${pressableClass} ${INTERACTION}`;
 
 /**
  * 特效按钮的 base：只有排布与交互态。
@@ -106,15 +106,15 @@ export const BUTTON_SIZE_CLASS = {
   //
   // 圆角**不覆盖**，保持 base 的 --radius：判据同 icon28——10px 半径落在 28px 上是 0.36，
   // 与 iconSm(32px) 的 0.31 同组，读不成圆片。所以这一档与 icon28 并排时半径也一致。
-  "28": "h-7 gap-1.5 px-2.5 text-xs",
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4 text-sm",
-  lg: "h-12 px-6 text-base",
+  "28": "h-[var(--hl-control-h-xs,1.75rem)] gap-1.5 px-2.5 text-xs",
+  sm: "h-[var(--hl-control-h-sm,2rem)] px-3 text-sm",
+  md: "h-[var(--hl-control-h-md,2.5rem)] px-4 text-sm",
+  lg: "h-[var(--hl-control-h-lg,3rem)] px-6 text-base",
   // 纯图标方形按钮（无文字内边距）：免去消费方手贴 size-10 px-0 之类补丁。
   // 0.26.0 前 icon 是孤立的 36px，与任何文字档都对不齐（见 #97）。
-  icon: "size-10 p-0",
-  iconSm: "size-8 p-0",
-  iconLg: "size-12 p-0",
+  icon: "size-[var(--hl-control-h-md,2.5rem)] p-0",
+  iconSm: "size-[var(--hl-control-h-sm,2rem)] p-0",
+  iconLg: "size-[var(--hl-control-h-lg,3rem)] p-0",
   // 20px 档：**不与任何文字档等高**（离它最近的 xs 是 24px，差 4px），故意不叫 iconXs 之外的
   // 名字。它服务的是「密集表格行内的微型操作」——树形展开箭头、拖拽手柄、单元格里的小动作，
   // 常见就是 16–20px。最小的 iconSm(32px) 塞进 density="compact" 的行会把行高撑起来，
@@ -145,9 +145,9 @@ export const BUTTON_SIZE_CLASS = {
   // 圆角刻意不同，判据是 10px 的 --radius 落在这个边长上是否读成圆片（半径/边长越接近 0.5
   // 越像圆）：24px 上是 0.42（与 xs / iconXs 同组，降到 rounded-sm），28px 上是 0.36，
   // 与 iconSm(32px) 的 0.31 同组，故保持 base 的 --radius 不覆盖——Sidebar 的 28px 菜单项
-  // 用的也正是 rounded-[var(--radius)]。
+  // 用的也正是 rounded-[var(--hl-radius-control,var(--radius))]。
   icon24: "size-6 rounded-sm p-0",
-  icon28: "size-7 p-0",
+  icon28: "size-[var(--hl-control-h-xs,1.75rem)] p-0",
 } as const;
 
 /**

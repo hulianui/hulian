@@ -22,7 +22,7 @@ describe("menuItemVariants", () => {
   it("default 用 data-[highlighted]:bg-surface-hover（非 hover/focus 伪类）+ data-[disabled]", () => {
     const c = menuItemVariants({});
     expect(c).toContain("data-[highlighted]:bg-surface-hover");
-    expect(c).toContain("data-[disabled]:opacity-50");
+    expect(c).toContain("data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]");
   });
   it("danger 用 text-danger + data-[highlighted]:bg-danger/10", () => {
     const c = menuItemVariants({ variant: "danger" });
@@ -172,7 +172,7 @@ describe("Menu", () => {
     ]) {
       // 皮肤同一份：高亮/禁用钩子来自 menuItemVariants，不是另抄的字面量。
       expect(item.className).toContain("data-[highlighted]:bg-surface-hover");
-      expect(item.className).toContain("data-[disabled]:opacity-50");
+      expect(item.className).toContain("data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]");
       // 槽位：display 换成 grid（tailwind-merge 顶掉 variants 的 flex），首列 1rem = Item 的 size-4 图标位，
       // gap-2 仍由 variants 提供 —— 所以文字左缘与带图标的普通项一致。
       expect(item.className).toContain("grid-cols-[1rem_1fr]");
@@ -311,7 +311,7 @@ describe("MenuSub / MenuSubTrigger / MenuSubContent", () => {
     const { unmount } = render(<Nested />);
     const trigger = screen.getByText("状态");
     expect(trigger.className).toContain("data-[highlighted]:bg-surface-hover");
-    expect(trigger.className).toContain("data-[disabled]:opacity-50");
+    expect(trigger.className).toContain("data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]");
     // 指针移进子面板后父项不再 hover，靠这条撑住底色。
     expect(trigger.className).toContain("data-[popup-open]:bg-surface-hover");
     unmount();

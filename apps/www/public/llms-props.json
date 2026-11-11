@@ -14822,8 +14822,8 @@
           "required": false,
           "kind": "string",
           "type": "string",
-          "default": "var(--radius)",
-          "description": "圆角"
+          "default": "var(--hl-radius-control, var(--radius))",
+          "description": "圆角，默认跟随控件圆角令牌"
         },
         {
           "name": "shimmerDuration",

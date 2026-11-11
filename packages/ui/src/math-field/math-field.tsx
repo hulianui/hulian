@@ -30,11 +30,11 @@ const THEME_VARS = cn(
 // 宿主里那个 <math-field> 的外观：与 Input 同一套静止态 / 聚焦态（照抄 inputShellVariants 的 default 档）。
 const HOST_CLASS = cn(
   "[&>math-field]:block [&>math-field]:w-full [&>math-field]:min-h-10",
-  "[&>math-field]:rounded-[var(--radius)] [&>math-field]:border [&>math-field]:border-border [&>math-field]:bg-surface",
+  "[&>math-field]:rounded-[var(--hl-radius-control,var(--radius))] [&>math-field]:border [&>math-field]:border-border [&>math-field]:bg-surface",
   "[&>math-field]:px-3 [&>math-field]:py-1.5 [&>math-field]:text-base [&>math-field]:text-foreground",
   "[&>math-field:focus-within]:outline-none [&>math-field:focus-within]:ring-2 [&>math-field:focus-within]:ring-ring",
   "[&>math-field:focus-within]:ring-offset-2 [&>math-field:focus-within]:ring-offset-bg",
-  "[&>math-field[disabled]]:pointer-events-none [&>math-field[disabled]]:opacity-50",
+  "[&>math-field[disabled]]:pointer-events-none [&>math-field[disabled]]:opacity-[var(--hl-opacity-disabled,0.5)]",
   // 内置右键菜单已在 JS 里清空（menuItems = []）；键盘切换钮按 virtualKeyboard 决定。
   "[&>math-field::part(menu-toggle)]:hidden",
 );

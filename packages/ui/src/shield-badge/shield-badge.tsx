@@ -50,7 +50,7 @@ export function compactCount(value: number, digits = 1): string {
 }
 
 const sizeClass: Record<ShieldBadgeSize, string> = {
-  sm: "h-5 text-[11px]",
+  sm: "h-5 text-[length:var(--hl-text-2xs,0.6875rem)]",
   md: "h-6 text-xs",
 };
 

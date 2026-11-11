@@ -251,12 +251,12 @@ describe("toast loading 档（#227）", () => {
 });
 
 describe("ToastProvider position（#227）", () => {
-  const viewport = () => document.querySelector(".fixed.z-\\[60\\]") as HTMLElement;
+  const viewport = () => document.querySelector('.fixed[class~="z-[calc(var(--hl-z-overlay,50)+10)]"]') as HTMLElement;
 
   it("不传 position：仍是右上角，类串与历史逐字一致", () => {
     render(<ToastProvider />);
     expect(viewport().getAttribute("class")).toBe(
-      "fixed right-4 top-4 z-[60] flex w-[min(90vw,22rem)] flex-col gap-2 outline-none",
+      "fixed right-4 top-4 z-[calc(var(--hl-z-overlay,50)+10)] flex w-[min(90vw,22rem)] flex-col gap-2 outline-none",
     );
   });
 

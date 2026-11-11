@@ -314,7 +314,7 @@ export function TimeGrid({
               {c.label}
             </span>
             {c.sublabel && (
-              <span className={cn("truncate text-[11px] tabular-nums", c.isToday ? "text-primary" : "text-muted-foreground")}>
+              <span className={cn("truncate text-[length:var(--hl-text-2xs,0.6875rem)] tabular-nums", c.isToday ? "text-primary" : "text-muted-foreground")}>
                 {c.sublabel}
               </span>
             )}
@@ -330,7 +330,7 @@ export function TimeGrid({
             {hours.map((h) => (
               <div
                 key={h}
-                className="absolute right-1 -translate-y-1/2 text-[11px] tabular-nums text-muted-foreground"
+                className="absolute right-1 -translate-y-1/2 text-[length:var(--hl-text-2xs,0.6875rem)] tabular-nums text-muted-foreground"
                 style={{ top: (h * 60 - dayStartMin) * pxPerMin }}
               >
                 {h === dayStartHour ? "" : `${String(h).padStart(2, "0")}:00`}
@@ -411,9 +411,9 @@ export function TimeGrid({
                           renderEvent(ev)
                         ) : (
                           <>
-                            <div className="truncate text-[11px] font-medium leading-tight">{ev.title}</div>
+                            <div className="truncate text-[length:var(--hl-text-2xs,0.6875rem)] font-medium leading-tight">{ev.title}</div>
                             {tall && (
-                              <div className="truncate text-[10px] tabular-nums opacity-75">
+                              <div className="truncate text-[length:var(--hl-text-3xs,0.625rem)] tabular-nums opacity-75">
                                 {fmtMinutes(s)}–{fmtMinutes(en)}
                                 {ev.subtitle ? ` · ${ev.subtitle}` : ""}
                               </div>
@@ -483,7 +483,7 @@ function DragGhost({
   if (!col) return null;
   return (
     <div
-      className="pointer-events-none absolute z-30 overflow-hidden rounded-[var(--radius)] border border-primary bg-primary/25 px-1.5 py-1 text-[11px] font-medium text-primary shadow-md"
+      className="pointer-events-none absolute z-30 overflow-hidden rounded-[var(--radius)] border border-primary bg-primary/25 px-1.5 py-1 text-[length:var(--hl-text-2xs,0.6875rem)] font-medium text-primary shadow-md"
       style={{
         top: (a - dayStartMin) * pxPerMin,
         height: Math.max((b - a) * pxPerMin, 1),

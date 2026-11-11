@@ -700,7 +700,7 @@ export function NovelReader({
           // 它撑满，否则 translateY 的分页位移会被整高一屏的容器吃掉。
           className={cn(
             !paged && "min-h-full",
-            paged && "transition-transform duration-300 ease-out motion-reduce:transition-none",
+            paged && "transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out motion-reduce:transition-none",
           )}
           style={
             paged && viewHeight > 0

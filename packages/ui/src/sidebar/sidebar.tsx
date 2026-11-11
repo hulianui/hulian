@@ -407,7 +407,7 @@ export function SidebarTrigger({
   };
   const content = children ?? <Menu className="size-4" aria-hidden />;
   const cls = cn(
-    "inline-grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors",
+    "inline-grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--hl-radius-control,var(--radius))] text-muted-foreground outline-none transition-colors",
     "hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
     className,
   );
@@ -522,7 +522,7 @@ export function SidebarGroupLabel({ className, ...props }: ComponentProps<"div">
     <div
       data-sidebar="group-label"
       className={cn(
-        "flex h-8 shrink-0 items-center rounded-[var(--radius)] px-2 text-xs font-medium text-muted-foreground",
+        "flex h-8 shrink-0 items-center rounded-[var(--hl-radius-control,var(--radius))] px-2 text-xs font-medium text-muted-foreground",
         // 折叠成图标条后这行小标题没有可读宽度，留着只会变成一截被裁断的字。
         "group-data-[collapsible=icon]/sidebar:hidden",
         className,
@@ -580,9 +580,9 @@ export function SidebarMenuItem({ className, ...props }: ComponentProps<"li">) {
 
 export const sidebarMenuButtonVariants = cva(
   [
-    "group/menu-button peer/menu-button flex w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-[var(--radius)] px-2 text-left text-sm outline-none transition-colors",
+    "group/menu-button peer/menu-button flex w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-[var(--hl-radius-control,var(--radius))] px-2 text-left text-sm outline-none transition-colors",
     "hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
-    "disabled:pointer-events-none disabled:opacity-50",
+    "disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
     "[&>svg]:size-4 [&>svg]:shrink-0 [&>span:last-child]:min-w-0 [&>span:last-child]:flex-1 [&>span:last-child]:truncate",
     // icon 档：退化成正方形图标按钮，文字标签整块收走（所以标签必须包在 <span> 里）。
     "group-data-[collapsible=icon]/sidebar:size-8 group-data-[collapsible=icon]/sidebar:justify-center group-data-[collapsible=icon]/sidebar:px-0",
@@ -673,7 +673,7 @@ export function SidebarMenuBadge({ className, ...props }: ComponentProps<"div">)
     <div
       data-sidebar="menu-badge"
       className={cn(
-        "pointer-events-none absolute right-1 top-1 inline-flex h-6 min-w-6 select-none items-center justify-center rounded-[var(--radius)] px-1 text-xs font-medium tabular-nums text-muted-foreground",
+        "pointer-events-none absolute right-1 top-1 inline-flex h-6 min-w-6 select-none items-center justify-center rounded-[var(--hl-radius-control,var(--radius))] px-1 text-xs font-medium tabular-nums text-muted-foreground",
         "peer-data-[active=true]/menu-button:text-primary",
         "group-data-[collapsible=icon]/sidebar:hidden",
         className,
@@ -694,7 +694,7 @@ export function SidebarMenuSkeleton({
   return (
     <div
       data-sidebar="menu-skeleton"
-      className={cn("flex h-8 items-center gap-2 rounded-[var(--radius)] px-2", className)}
+      className={cn("flex h-8 items-center gap-2 rounded-[var(--hl-radius-control,var(--radius))] px-2", className)}
       {...props}
     >
       {showIcon && <Skeleton shape="rect" className="size-4 shrink-0" />}
@@ -745,9 +745,9 @@ export function SidebarMenuSubButton({
   ...props
 }: SidebarMenuSubButtonProps) {
   const cls = cn(
-    "flex w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-[var(--radius)] px-2 text-left outline-none transition-colors",
+    "flex w-full min-w-0 cursor-pointer items-center gap-2 overflow-hidden rounded-[var(--hl-radius-control,var(--radius))] px-2 text-left outline-none transition-colors",
     "hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
-    "disabled:pointer-events-none disabled:opacity-50",
+    "disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
     "[&>svg]:size-4 [&>svg]:shrink-0 [&>span:last-child]:min-w-0 [&>span:last-child]:flex-1 [&>span:last-child]:truncate",
     size === "sm" ? "h-6 text-xs" : "h-7 text-sm",
     isActive ? "bg-primary-subtle font-medium text-primary" : "text-muted-foreground",

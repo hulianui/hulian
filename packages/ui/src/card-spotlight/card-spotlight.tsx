@@ -99,7 +99,7 @@ export function CardSpotlight({
         className={cn(
           "pointer-events-none absolute inset-0 z-0",
           // opacity 过渡（渐入渐出）+ motion-reduce 降级
-          "transition-opacity duration-300 motion-reduce:duration-0",
+          "transition-opacity duration-[var(--hl-duration-slow,300ms)] motion-reduce:duration-0",
         )}
         style={{
           opacity: "var(--hulian-spotlight-opacity)",

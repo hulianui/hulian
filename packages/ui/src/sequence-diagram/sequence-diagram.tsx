@@ -266,7 +266,7 @@ export function SequenceDiagram({
                   >
                     <span
                       className={cn(
-                        "block min-w-0 rounded-[var(--radius)] border border-warning-border bg-warning-subtle px-2.5 py-1.5 text-sm leading-snug text-foreground transition-shadow duration-150 [overflow-wrap:anywhere]",
+                        "block min-w-0 rounded-[var(--radius)] border border-warning-border bg-warning-subtle px-2.5 py-1.5 text-sm leading-snug text-foreground transition-shadow duration-[var(--hl-duration-fast,150ms)] [overflow-wrap:anywhere]",
                         single ? "max-w-full" : "w-full text-center",
                         active && "ring-2 ring-primary",
                       )}
@@ -302,7 +302,7 @@ export function SequenceDiagram({
                 >
                   <span
                     className={cn(
-                      "block rounded-[min(var(--radius),0.375rem)] text-sm leading-snug transition-colors duration-150 [overflow-wrap:anywhere]",
+                      "block rounded-[min(var(--radius),0.375rem)] text-sm leading-snug transition-colors duration-[var(--hl-duration-fast,150ms)] [overflow-wrap:anywhere]",
                       self ? "pl-2 text-left" : "px-2 text-center",
                       row.kind === "reply" ? "text-muted-foreground" : "text-foreground",
                       active && "bg-primary-subtle font-medium text-primary",

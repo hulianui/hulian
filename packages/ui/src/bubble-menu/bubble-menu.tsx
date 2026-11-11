@@ -138,13 +138,13 @@ export function BubbleMenu({
         >
           <span
             className={cn(
-              "block h-0.5 w-[26px] rounded-full bg-foreground transition-transform duration-300 ease-out",
+              "block h-0.5 w-[26px] rounded-full bg-foreground transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out",
               isOpen && "translate-y-[5px] rotate-45",
             )}
           />
           <span
             className={cn(
-              "mt-1.5 block h-0.5 w-[26px] rounded-full bg-foreground transition-transform duration-300 ease-out",
+              "mt-1.5 block h-0.5 w-[26px] rounded-full bg-foreground transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out",
               isOpen && "-translate-y-[5px] -rotate-45",
             )}
           />
@@ -207,7 +207,7 @@ export function BubbleMenu({
                         "rounded-full bg-surface text-foreground shadow-md",
                         "min-h-[80px] md:min-h-[120px]",
                         "text-2xl md:text-5xl font-normal whitespace-nowrap no-underline",
-                        "transition-colors duration-300 ease-out",
+                        "transition-colors duration-[var(--hl-duration-slow,300ms)] ease-out",
                         "hover:[background:var(--hover-bg)] hover:[color:var(--hover-color)]",
                       )}
                       style={

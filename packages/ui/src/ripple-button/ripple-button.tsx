@@ -140,9 +140,9 @@ export const RippleButton = forwardRef<HTMLButtonElement, RippleButtonProps>(
   const mergedClassName = cn(
     EFFECT_BUTTON_BASE_CLASS,
     BUTTON_SIZE_CLASS[size],
-    "relative cursor-pointer overflow-hidden rounded-[var(--radius)]",
+    "relative cursor-pointer overflow-hidden rounded-[var(--hl-radius-control,var(--radius))]",
     rippleColorVariants({ variant, tone }),
-    "transition-transform duration-200 active:translate-y-px",
+    "transition-transform duration-[var(--hl-duration-base,200ms)] active:translate-y-px",
     className,
   );
 

@@ -535,7 +535,7 @@ export function NavMenu({
                     "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
                     "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                     "data-[selected]:bg-primary/10 data-[selected]:text-primary",
-                    "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+                    "aria-disabled:pointer-events-none aria-disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
                     "before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-primary before:opacity-0 data-[selected]:before:opacity-100",
                   )}
                 >
@@ -602,7 +602,7 @@ export function NavMenu({
         "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
         "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
         "data-[selected]:bg-primary/10 data-[selected]:font-medium data-[selected]:text-primary",
-        "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+        "aria-disabled:pointer-events-none aria-disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
         "before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-0.5 before:rounded-full before:bg-primary before:opacity-0 data-[selected]:before:opacity-100",
       );
 
@@ -773,7 +773,7 @@ export function NavMenu({
 // 多级嵌套时同名 group 会让祖先 hover 连带点亮所有后代面板（三级四级同时炸开）。
 // 这里用 `li:hover>&` / `li:focus-within>&` 直接子选择器，每层只认自己那个 li，天然自洽。
 const FLYOUT_WRAP = cn(
-  "pointer-events-none absolute left-full top-0 z-50 pl-2 opacity-0 transition-opacity",
+  "pointer-events-none absolute left-full top-0 z-[var(--hl-z-overlay,50)] pl-2 opacity-0 transition-opacity",
   "[li:hover>&]:pointer-events-auto [li:hover>&]:opacity-100",
   "[li:focus-within>&]:pointer-events-auto [li:focus-within>&]:opacity-100",
 );
@@ -784,7 +784,7 @@ const FLYOUT_WRAP = cn(
 // fixed 的包含块是视口，不受祖先 overflow 影响；代价是 `left-full/top-0` 这种相对定位失效，
 // 坐标必须 JS 实测（见 measureFlyout）。第二层起不需要：它们的祖先就是本面板，不裁剪。
 const FLYOUT_WRAP_FIXED = cn(
-  "pointer-events-none fixed z-50 pl-2 opacity-0 transition-opacity",
+  "pointer-events-none fixed z-[var(--hl-z-overlay,50)] pl-2 opacity-0 transition-opacity",
   "[li:hover>&]:pointer-events-auto [li:hover>&]:opacity-100",
   "[li:focus-within>&]:pointer-events-auto [li:focus-within>&]:opacity-100",
 );
@@ -795,7 +795,7 @@ const FLYOUT_ROW = cn(
   "text-muted-foreground hover:bg-surface-hover hover:text-foreground",
   "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
   "data-[selected]:bg-primary/10 data-[selected]:font-medium data-[selected]:text-primary",
-  "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+  "aria-disabled:pointer-events-none aria-disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
 );
 
 // 飞出层父项的「还有下一层」指示（纯装饰，aria-hidden）。

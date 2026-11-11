@@ -14,7 +14,7 @@ describe("buttonVariants", () => {
   it("default = solid brand md", () => {
     const c = buttonVariants({});
     expect(c).toContain("bg-primary");
-    expect(c).toContain("h-10");
+    expect(c).toContain("h-[var(--hl-control-h-md,2.5rem)]");
   });
   it("danger solid swaps to danger bg", () => {
     expect(buttonVariants({ variant: "solid", tone: "danger" })).toContain("bg-danger");
@@ -73,11 +73,11 @@ describe("Button render（按钮样式的链接）", () => {
 
   // #97：icon 档曾是孤立的 36px（size-9），与任何文字档都对不齐，ButtonGroup 连排露台阶。
   // 这条锁住「图标档边长 == 同名文字档高度」的不变量：Tailwind 的 h-N 与 size-N 共用同一
-  // 刻度（h-8/size-8=32、h-10/size-10=40、h-12/size-12=48），所以比对数字后缀即可。
+  // 刻度（--hl-control-h-sm/md/lg = 32/40/48），所以比对同一个令牌后缀即可。
   it.each([
-    ["sm", "iconSm", "8"],
-    ["md", "icon", "10"],
-    ["lg", "iconLg", "12"],
+    ["sm", "iconSm", "[var(--hl-control-h-sm,2rem)]"],
+    ["md", "icon", "[var(--hl-control-h-md,2.5rem)]"],
+    ["lg", "iconLg", "[var(--hl-control-h-lg,3rem)]"],
   ])("尺寸档 %s 与图标档 %s 等高（刻度 %s）", (text, icon, step) => {
     expect(buttonVariants({ size: text as "sm" })).toContain(`h-${step}`);
     expect(buttonVariants({ size: icon as "icon" })).toContain(`size-${step}`);
@@ -92,7 +92,7 @@ describe("Button render（按钮样式的链接）", () => {
     expect(cls).toContain("text-xs");
     expect(cls).toContain("px-2");
     // sm 的那套必须被替换掉而不是叠加——消费方迁移时写覆盖类正是因为撤不掉它们。
-    expect(cls).not.toContain("h-8");
+    expect(cls).not.toContain("h-[var(--hl-control-h-sm,2rem)]");
     expect(cls).not.toContain("text-sm");
     expect(cls).not.toContain("px-3");
   });
@@ -103,7 +103,7 @@ describe("Button render（按钮样式的链接）", () => {
     // 与 iconXs 同源的坑：本库在 @theme 注册了 --radius，裸 `rounded` 就是 var(--radius)(10px)，
     // twMerge 去重后半径没降下来。className 断言拦不住它（两个类名确实不同），
     // 留这条是锁「不许改回裸 rounded / --radius」的意图，真判据是实机量 borderRadius。
-    expect(cls).not.toContain("rounded-[var(--radius)]");
+    expect(cls).not.toContain("rounded-[var(--hl-radius-control,var(--radius))]");
     expect(cls.split(/\s+/)).not.toContain("rounded");
   });
 
@@ -136,7 +136,7 @@ describe("Button render（按钮样式的链接）", () => {
     // 这条断言拦不住那个坑（两个类名确实不同），真正的判据是实机量 borderRadius；
     // 留它是为了锁住「不许改回裸 rounded / --radius」这个意图。
     expect(cls).toContain("rounded-sm");
-    expect(cls).not.toContain("rounded-[var(--radius)]");
+    expect(cls).not.toContain("rounded-[var(--hl-radius-control,var(--radius))]");
     expect(cls.split(/\s+/)).not.toContain("rounded");
   });
 
@@ -153,7 +153,7 @@ describe("Button render（按钮样式的链接）", () => {
 
   it("icon28 是 28px 方形（Chip md / Sidebar sm 那条行刻度）", () => {
     const cls = cn(buttonVariants({ size: "icon28" }));
-    expect(cls).toContain("size-7");
+    expect(cls).toContain("size-[var(--hl-control-h-xs,1.75rem)]");
     expect(cls).toContain("p-0");
   });
 
@@ -162,23 +162,24 @@ describe("Button render（按钮样式的链接）", () => {
   it("icon24 圆角降到 rounded-sm，icon28 保持 --radius", () => {
     const c24 = cn(buttonVariants({ size: "icon24" }));
     expect(c24).toContain("rounded-sm");
-    expect(c24).not.toContain("rounded-[var(--radius)]");
+    expect(c24).not.toContain("rounded-[var(--hl-radius-control,var(--radius))]");
     // 同 xs / iconXs 的坑：裸 rounded 就是 var(--radius)，等于没降
     expect(c24.split(/\s+/)).not.toContain("rounded");
 
     const c28 = cn(buttonVariants({ size: "icon28" }));
-    expect(c28).toContain("rounded-[var(--radius)]");
+    expect(c28).toContain("rounded-[var(--hl-radius-control,var(--radius))]");
     expect(c28).not.toContain("rounded-sm");
   });
 
   it("四个密集图标档互不等高（20 / 24 / 28 / 32，各服务各的行刻度）", () => {
     const side = (size: "iconXs" | "icon24" | "icon28" | "iconSm") =>
-      buttonVariants({ size }).match(/\bsize-(\d+)\b/)![1];
+      buttonVariants({ size }).match(/(?:^|\s)size-(\S+)/)![1];
+    // 20 / 24 是梯子之外的字面量刻度，28 / 32 落在控件高度令牌的 xs / sm 档上。
     expect([side("iconXs"), side("icon24"), side("icon28"), side("iconSm")]).toEqual([
       "5",
       "6",
-      "7",
-      "8",
+      "[var(--hl-control-h-xs,1.75rem)]",
+      "[var(--hl-control-h-sm,2rem)]",
     ]);
   });
 
@@ -187,13 +188,13 @@ describe("Button render（按钮样式的链接）", () => {
   it('size="28" 是 28px 高、12px 字的密集文字档', () => {
     const { container } = rtlRender(<Button size="28">筛选</Button>);
     const cls = container.querySelector("button")!.className;
-    expect(cls).toContain("h-7");
+    expect(cls).toContain("h-[var(--hl-control-h-xs,1.75rem)]");
     // 字号跟 xs 走（密集端的带就是 10~12px），不跟同高度的 Chip md / Sidebar sm 走
     expect(cls).toContain("text-xs");
     expect(cls).toContain("px-2.5");
     // 相邻两档的那套必须被替换掉而不是叠加
     expect(cls).not.toContain("h-6");
-    expect(cls).not.toContain("h-8");
+    expect(cls).not.toContain("h-[var(--hl-control-h-sm,2rem)]");
     expect(cls).not.toContain("text-sm");
     expect(cls.split(/\s+/)).not.toContain("px-2");
     expect(cls.split(/\s+/)).not.toContain("px-3");
@@ -203,11 +204,11 @@ describe("Button render（按钮样式的链接）", () => {
   it('size="28" 与 icon28 等高，且圆角同为 --radius（并排不露台阶）', () => {
     const text28 = cn(buttonVariants({ size: "28" }));
     const icon28 = cn(buttonVariants({ size: "icon28" }));
-    expect(text28).toContain("h-7");
-    expect(icon28).toContain("size-7");
+    expect(text28).toContain("h-[var(--hl-control-h-xs,1.75rem)]");
+    expect(icon28).toContain("size-[var(--hl-control-h-xs,1.75rem)]");
     // 28px 上 --radius(10px) 是 0.36，与 iconSm(32px) 同组，读不成圆片 → 不降档
-    expect(text28).toContain("rounded-[var(--radius)]");
-    expect(icon28).toContain("rounded-[var(--radius)]");
+    expect(text28).toContain("rounded-[var(--hl-radius-control,var(--radius))]");
+    expect(icon28).toContain("rounded-[var(--hl-radius-control,var(--radius))]");
     expect(text28).not.toContain("rounded-sm");
   });
 
@@ -226,14 +227,15 @@ describe("Button render（按钮样式的链接）", () => {
   // 加一档不许动别的档：这三档在 0.39.0 的渲染结果一个字符都不该变。
   it('新增 "28" 不影响相邻的 xs / sm / md', () => {
     expect(cn(buttonVariants({ size: "xs" }))).toContain("h-6 gap-1 px-2 text-xs rounded-sm");
-    expect(cn(buttonVariants({ size: "sm" }))).toContain("h-8 px-3 text-sm");
-    expect(cn(buttonVariants({ size: "md" }))).toContain("h-10 px-4 text-sm");
+    expect(cn(buttonVariants({ size: "sm" }))).toContain("h-[var(--hl-control-h-sm,2rem)] px-3 text-sm");
+    expect(cn(buttonVariants({ size: "md" }))).toContain("h-[var(--hl-control-h-md,2.5rem)] px-4 text-sm");
   });
 
   // 五个密集档的高度谱：只有 "28" 与 icon28 重合，其余各钉一条行刻度。
   it("密集端文字档 24 / 28 与图标档 20 / 24 / 28 各就各位", () => {
-    const h = (size: "xs" | "28") => buttonVariants({ size }).match(/\bh-(\d+)\b/)![1];
-    expect([h("xs"), h("28")]).toEqual(["6", "7"]);
+    // xs 是控件梯子之外的 24px 密集档（字面量 h-6），28 落在梯子的 xs 档上。
+    expect(buttonVariants({ size: "xs" })).toContain("h-6");
+    expect(buttonVariants({ size: "28" })).toContain("h-[var(--hl-control-h-xs,1.75rem)]");
   });
 
   // #138：按钮文字是控件标签不是内容，连点会被浏览器识别成双击选词。

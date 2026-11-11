@@ -64,7 +64,7 @@ describe("InteractiveHoverButton", () => {
     const { getByRole } = render(
       <InteractiveHoverButton size="lg">去下载</InteractiveHoverButton>,
     );
-    expect(getByRole("button").className).toContain("h-12");
+    expect(getByRole("button").className).toContain("h-[var(--hl-control-h-lg,3rem)]");
   });
 
   it("配色 prop 落到 CSS 变量；dotColor 缺省跟随 background", () => {

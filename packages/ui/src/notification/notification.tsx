@@ -167,7 +167,7 @@ function NotificationCard({ record }: { record: NotificationRecord }) {
           type="button"
           aria-label={locale.close}
           onClick={() => hulianNotificationManager.close(id)}
-          className="shrink-0 rounded-[var(--radius)] p-0.5 text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="shrink-0 rounded-[var(--hl-radius-control,var(--radius))] p-0.5 text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
@@ -202,7 +202,7 @@ export function NotificationProvider() {
           <div
             key={placement}
             className={cn(
-              "pointer-events-none fixed z-[60] flex w-[min(92vw,24rem)] gap-3",
+              "pointer-events-none fixed z-[calc(var(--hl-z-overlay,50)+10)] flex w-[min(92vw,24rem)] gap-3",
               viewportClass[placement],
             )}
           >

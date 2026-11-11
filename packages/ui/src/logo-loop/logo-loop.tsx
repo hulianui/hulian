@@ -217,7 +217,7 @@ export function LogoLoop({
             className={cn(
               "inline-flex items-center text-foreground",
               scaleOnHover &&
-                "transition-transform duration-300 ease-out group-hover/item:scale-120",
+                "transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out group-hover/item:scale-120",
             )}
             aria-hidden={!!item.href && !item.ariaLabel}
           >
@@ -239,14 +239,14 @@ export function LogoLoop({
               "block w-auto select-none object-contain [pointer-events:none]",
               "h-[var(--hl-loop-logo-h)]",
               scaleOnHover &&
-                "transition-transform duration-300 ease-out group-hover/item:scale-120",
+                "transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out group-hover/item:scale-120",
             )}
           />
         ) : null;
       const itemAriaLabel = "node" in item ? item.ariaLabel ?? item.title : item.alt ?? item.title;
       const inner = item.href ? (
         <a
-          className="inline-flex items-center rounded-sm no-underline opacity-100 outline-none transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+          className="inline-flex items-center rounded-sm no-underline opacity-100 outline-none transition-opacity duration-[var(--hl-duration-base,200ms)] hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           href={item.href}
           aria-label={itemAriaLabel || locale.link}
           target="_blank"

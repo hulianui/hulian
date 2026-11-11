@@ -29,7 +29,7 @@ const ALL_ACTIONS: RouteTabsAction[] = [
 ];
 
 const scrollBtn =
-  "grid size-7 shrink-0 place-items-center rounded-[calc(var(--radius)-0.25rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40";
+  "grid size-7 shrink-0 place-items-center rounded-[calc(var(--radius)-0.25rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-[var(--hl-opacity-disabled,0.5)]";
 
 export function RouteTabs({
   items,

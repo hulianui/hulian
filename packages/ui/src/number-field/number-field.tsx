@@ -12,7 +12,7 @@ import { useComponentLocale } from "../config/locale-context";
 // select-none：±按钮内是 SVG 图标无文本，双击/连点时浏览器会把选区蔓延到附近整块(整个 Playground)，故禁选。
 // Input 不加，保留数字可选。
 const btnClass =
-  "inline-flex size-9 shrink-0 select-none items-center justify-center text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
+  "inline-flex size-9 shrink-0 select-none items-center justify-center text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]";
 
 function NumberFieldImpl({
   className,
@@ -52,9 +52,9 @@ function NumberFieldImpl({
         className={cn(
           // max-w-full：外部 className 给的宽度（如 w-32）小于内容固有宽时，夹住自身不溢出容器；
           // 配合 Input 的 min-w-0 flex-1，多余/不足的宽度都由中间输入框吸收，±按钮恒定 size-9。
-          "inline-flex max-w-full items-center overflow-hidden rounded-[var(--radius)] border border-border bg-surface",
+          "inline-flex max-w-full items-center overflow-hidden rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-bg",
-          "data-[disabled]:opacity-50",
+          "data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]",
         )}
       >
         <BaseNumberField.Decrement

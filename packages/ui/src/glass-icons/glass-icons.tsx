@@ -62,7 +62,7 @@ export function GlassIcons({
             className={cn(
               "absolute inset-0 block rounded-[1.25em] [transform:rotate(15deg)] [transform-origin:100%_100%]",
               "shadow-lg [will-change:transform]",
-              "transition-transform duration-300 ease-[cubic-bezier(0.83,0,0.17,1)]",
+              "transition-transform duration-[var(--hl-duration-slow,300ms)] ease-[cubic-bezier(0.83,0,0.17,1)]",
               "group-hover:[transform:rotate(25deg)_translate3d(-0.4em,-0.4em,0.5em)]",
               "group-focus-visible:[transform:rotate(25deg)_translate3d(-0.4em,-0.4em,0.5em)]",
               "motion-reduce:transition-none motion-reduce:group-hover:[transform:rotate(15deg)] motion-reduce:group-focus-visible:[transform:rotate(15deg)]",
@@ -74,7 +74,7 @@ export function GlassIcons({
               "absolute inset-0 flex rounded-[1.25em]",
               "bg-white/15 [box-shadow:0_0_0_0.1em_var(--color-hairline)_inset] [backdrop-filter:blur(0.75em)]",
               "[transform-origin:80%_50%] [will-change:transform]",
-              "transition-transform duration-300 ease-[cubic-bezier(0.83,0,0.17,1)]",
+              "transition-transform duration-[var(--hl-duration-slow,300ms)] ease-[cubic-bezier(0.83,0,0.17,1)]",
               "group-hover:[transform:translate3d(0,0,2em)] group-focus-visible:[transform:translate3d(0,0,2em)]",
               "motion-reduce:transition-none motion-reduce:group-hover:[transform:none] motion-reduce:group-focus-visible:[transform:none]",
             )}
@@ -88,7 +88,7 @@ export function GlassIcons({
             className={cn(
               "absolute inset-x-0 top-full whitespace-nowrap text-center text-sm leading-8 text-foreground",
               "opacity-0 [transform:translateY(0)]",
-              "transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.83,0,0.17,1)]",
+              "transition-[opacity,transform] duration-[var(--hl-duration-slow,300ms)] ease-[cubic-bezier(0.83,0,0.17,1)]",
               "group-hover:opacity-100 group-hover:[transform:translateY(20%)]",
               "group-focus-visible:opacity-100 group-focus-visible:[transform:translateY(20%)]",
               "motion-reduce:transition-none",

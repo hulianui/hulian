@@ -24,7 +24,7 @@ export const pressable = {
 // 整条丢弃，导致要么颜色不过渡、要么按压不过渡。列表里带上颜色项即可平替原类，语义不丢。
 // 另：Tailwind v4 下 scale-* 编译为独立的 scale 属性（不是 transform），故 property 必须显式列 scale。
 export const pressableClass =
-  "transition-[scale,background-color,border-color,color,box-shadow,filter,opacity] duration-150 ease-out active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100";
+  "transition-[scale,background-color,border-color,color,box-shadow,filter,opacity] duration-[var(--hl-duration-fast,150ms)] ease-out active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100";
 
 // 进出场：fade + scale。overlay（Dialog/Popover）与卡片通用的进场/退场。
 // 用于 motion 组件时摊开 initial/animate/exit；Base UI 这类自管 mount 的组件

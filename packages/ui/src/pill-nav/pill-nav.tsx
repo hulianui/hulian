@@ -42,7 +42,7 @@ export function PillNav({
             enterLogo,
           )}
         >
-          <span className="inline-flex size-full items-center justify-center p-2 transition-transform duration-300 ease-out group-hover/logo:rotate-[360deg] motion-reduce:transition-none motion-reduce:group-hover/logo:rotate-0 [&_img]:size-full [&_img]:object-cover [&_svg]:size-full">
+          <span className="inline-flex size-full items-center justify-center p-2 transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out group-hover/logo:rotate-[360deg] motion-reduce:transition-none motion-reduce:group-hover/logo:rotate-0 [&_img]:size-full [&_img]:object-cover [&_svg]:size-full">
             {logo}
           </span>
         </a>
@@ -67,7 +67,7 @@ export function PillNav({
                 className={cn(
                   "group/pill relative isolate inline-flex items-center justify-center overflow-hidden rounded-full px-[18px]",
                   "text-sm font-semibold uppercase tracking-[0.2px] whitespace-nowrap",
-                  "transition-colors duration-200 ease-out",
+                  "transition-colors duration-[var(--hl-duration-base,200ms)] ease-out",
                   isActive
                     ? "bg-primary text-primary-foreground"
                     : "bg-transparent text-foreground hover:text-primary-foreground",
@@ -78,7 +78,7 @@ export function PillNav({
                   aria-hidden="true"
                   className={cn(
                     "pointer-events-none absolute left-1/2 bottom-0 z-0 aspect-square w-[140%] -translate-x-1/2 translate-y-1/4 rounded-full bg-primary",
-                    "origin-bottom scale-0 transition-transform duration-300 ease-out group-hover/pill:scale-100",
+                    "origin-bottom scale-0 transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out group-hover/pill:scale-100",
                     "motion-reduce:transition-none",
                     isActive && "scale-100",
                   )}
@@ -87,7 +87,7 @@ export function PillNav({
                 <span className="relative z-10 grid leading-none">
                   <span
                     className={cn(
-                      "col-start-1 row-start-1 transition-transform duration-300 ease-out group-hover/pill:-translate-y-[200%] motion-reduce:transition-none",
+                      "col-start-1 row-start-1 transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out group-hover/pill:-translate-y-[200%] motion-reduce:transition-none",
                       isActive && "-translate-y-[200%]",
                     )}
                   >
@@ -96,7 +96,7 @@ export function PillNav({
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "col-start-1 row-start-1 translate-y-[200%] text-primary-foreground transition-transform duration-300 ease-out group-hover/pill:translate-y-0 motion-reduce:transition-none",
+                      "col-start-1 row-start-1 translate-y-[200%] text-primary-foreground transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out group-hover/pill:translate-y-0 motion-reduce:transition-none",
                       isActive && "translate-y-0",
                     )}
                   >

@@ -73,7 +73,7 @@ export function DialogContent({
         <BaseDialog.Backdrop
           ref={backdropRef}
           className={cn(
-            "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            "fixed inset-0 z-[calc(var(--hl-z-overlay,50)-10)] bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             // 挪开之后遮罩跟着让开（#346）：40% 黑 + 模糊表达的是「别看后面」，
             // 与 draggable 的「挪开看后面」正相反 —— 不让开的话，拖动只是把一块
             // 看不清的东西换个地方放，`draggable` 等于没做完。
@@ -95,7 +95,7 @@ export function DialogContent({
           // --hl-overlay-pad 与 p-6 必须同值：正文滚动区靠它做负边距补偿（见下方注释）。
           // 消费方若用 className 覆盖内边距（如 p-0 做铺满型抽屉），必须一并覆盖这个变量，
           // 否则正文会向 Popup 外溢出 —— 例：className="p-0 [--hl-overlay-pad:0px]"。
-          "fixed left-1/2 top-1/2 z-50 flex max-h-[85dvh] w-[min(90vw,28rem)] -translate-x-1/2 -translate-y-1/2 flex-col rounded-[var(--radius)] border border-hairline bg-surface p-6 [--hl-overlay-pad:1.5rem] text-foreground shadow-xl outline-none",
+          "fixed left-1/2 top-1/2 z-[var(--hl-z-overlay,50)] flex max-h-[85dvh] w-[min(90vw,28rem)] -translate-x-1/2 -translate-y-1/2 flex-col rounded-[var(--radius)] border border-hairline bg-surface p-6 [--hl-overlay-pad:1.5rem] text-foreground shadow-xl outline-none",
           "data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0 data-[ending-style]:scale-[0.96] data-[ending-style]:opacity-0",
           className,
         )}
@@ -115,7 +115,7 @@ export function DialogContent({
         {showClose && (
           <BaseDialog.Close
             aria-label={closeLabel ?? loc.close}
-            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--radius)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute right-3 top-3 z-10 grid size-8 shrink-0 cursor-pointer place-items-center rounded-[var(--hl-radius-control,var(--radius))] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="size-4" aria-hidden />
           </BaseDialog.Close>

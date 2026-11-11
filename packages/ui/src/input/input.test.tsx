@@ -5,11 +5,11 @@ import { inputShellVariants, Input } from "./input";
 
 describe("inputShellVariants", () => {
   it("默认 md（h-10）", () => {
-    expect(inputShellVariants({})).toContain("h-10");
+    expect(inputShellVariants({})).toContain("h-[var(--hl-control-h-md,2.5rem)]");
   });
   it("size 变体改高度", () => {
-    expect(inputShellVariants({ size: "sm" })).toContain("h-8");
-    expect(inputShellVariants({ size: "lg" })).toContain("h-12");
+    expect(inputShellVariants({ size: "sm" })).toContain("h-[var(--hl-control-h-sm,2rem)]");
+    expect(inputShellVariants({ size: "lg" })).toContain("h-[var(--hl-control-h-lg,3rem)]");
   });
   it("外壳带 invalid/focus-within 钩子", () => {
     const c = inputShellVariants({});
@@ -24,7 +24,7 @@ describe("inputShellVariants", () => {
     expect(c).toContain("bg-transparent");
     expect(c).toContain("p-0");
     // 高度与内距只挂在 default 的 compoundVariants 上；cell 若继承到 h-10 会把表格行撑起来
-    expect(c).not.toContain("h-10");
+    expect(c).not.toContain("h-[var(--hl-control-h-md,2.5rem)]");
     expect(c).not.toContain("px-3");
   });
 
@@ -50,7 +50,7 @@ describe("inputShellVariants", () => {
     const c = inputShellVariants({ size: "sm" });
     expect(c).toContain("border-border");
     expect(c).toContain("bg-surface");
-    expect(c).toContain("h-8");
+    expect(c).toContain("h-[var(--hl-control-h-sm,2rem)]");
     expect(c).toContain("px-2.5");
   });
 });
@@ -125,7 +125,7 @@ describe("Input", () => {
   it("size=xs 是 28px 高 / 12px 字的密集档，且仍然有边框（区别于无边框的 cell）", () => {
     const { container } = render(<Input size="xs" aria-label="i" />);
     const shell = container.firstElementChild as HTMLElement;
-    expect(shell.className).toContain("h-7");
+    expect(shell.className).toContain("h-[var(--hl-control-h-xs,1.75rem)]");
     expect(shell.className).toContain("text-xs");
     expect(shell.className).toContain("border");
   });

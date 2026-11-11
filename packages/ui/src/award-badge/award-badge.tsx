@@ -61,8 +61,8 @@ const emblemSize: Record<AwardBadgeSize, string> = { sm: "size-8", md: "size-10"
 const rankSize: Record<AwardBadgeSize, string> = { sm: "text-sm", md: "text-base", lg: "text-lg" };
 const kickerSize: Record<AwardBadgeSize, string> = {
   sm: "text-[9px]",
-  md: "text-[10px]",
-  lg: "text-[11px]",
+  md: "text-[length:var(--hl-text-3xs,0.625rem)]",
+  lg: "text-[length:var(--hl-text-2xs,0.6875rem)]",
 };
 const titleSize: Record<AwardBadgeSize, string> = { sm: "text-xs", md: "text-base", lg: "text-lg" };
 

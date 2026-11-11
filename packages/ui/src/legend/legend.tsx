@@ -14,7 +14,7 @@ import type { LegendMarker, LegendProps } from "./legend.types";
 // 纯展示零 hook（可 RSC）；显隐是**受控**的——组件不自管状态，`hidden` 由调用方给。
 
 const markerSize: Record<"sm" | "md", string> = { sm: "size-2", md: "size-2.5" };
-const textSize: Record<"sm" | "md", string> = { sm: "text-[11px]", md: "text-xs" };
+const textSize: Record<"sm" | "md", string> = { sm: "text-[length:var(--hl-text-2xs,0.6875rem)]", md: "text-xs" };
 
 function markerClass(marker: LegendMarker, size: "sm" | "md"): string {
   if (marker === "line") return cn("h-0.5 rounded-full", size === "sm" ? "w-3" : "w-3.5");

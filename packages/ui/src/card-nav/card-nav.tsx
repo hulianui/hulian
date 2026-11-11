@@ -77,13 +77,13 @@ export function CardNav({
             >
               <span
                 className={cn(
-                  "h-[2px] w-[30px] origin-center bg-foreground transition-transform duration-300 group-hover:opacity-75",
+                  "h-[2px] w-[30px] origin-center bg-foreground transition-transform duration-[var(--hl-duration-slow,300ms)] group-hover:opacity-75",
                   open && "translate-y-[4px] rotate-45",
                 )}
               />
               <span
                 className={cn(
-                  "h-[2px] w-[30px] origin-center bg-foreground transition-transform duration-300 group-hover:opacity-75",
+                  "h-[2px] w-[30px] origin-center bg-foreground transition-transform duration-[var(--hl-duration-slow,300ms)] group-hover:opacity-75",
                   open && "-translate-y-[4px] -rotate-45",
                 )}
               />

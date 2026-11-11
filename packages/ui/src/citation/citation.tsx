@@ -8,7 +8,7 @@ function CitationImpl({ index, title, href, source, className, ...props }: Citat
   const inner = (
     <>
       {index != null && (
-        <span className="flex size-4 shrink-0 items-center justify-center rounded-[0.25rem] bg-surface-hover text-[10px] font-medium text-muted-foreground">
+        <span className="flex size-4 shrink-0 items-center justify-center rounded-[0.25rem] bg-surface-hover text-[length:var(--hl-text-3xs,0.625rem)] font-medium text-muted-foreground">
           {index}
         </span>
       )}

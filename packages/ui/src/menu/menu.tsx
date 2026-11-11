@@ -40,7 +40,7 @@ export function MenuContent({
 }: MenuContentProps) {
   return (
     <BaseMenu.Portal>
-      <BaseMenu.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
+      <BaseMenu.Positioner side={side} align={align} sideOffset={sideOffset} className="z-[var(--hl-z-overlay,50)]">
         <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseMenu.Popup>
@@ -54,7 +54,7 @@ export function MenuContent({
 export const menuItemVariants = cva(
   [
     "flex cursor-default select-none items-center gap-2 rounded-[min(var(--radius),0.375rem)] px-2 py-1.5 text-sm outline-none transition-colors",
-    "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+    "data-[disabled]:pointer-events-none data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)]",
   ],
   {
     variants: {
@@ -165,7 +165,7 @@ export function MenuSubTrigger({ variant, className, children, ...props }: MenuS
 export function MenuSubContent({ children, className }: MenuSubContentProps) {
   return (
     <BaseMenu.Portal>
-      <BaseMenu.Positioner className="z-50" side="right" align="start" sideOffset={4}>
+      <BaseMenu.Positioner className="z-[var(--hl-z-overlay,50)]" side="right" align="start" sideOffset={4}>
         <BaseMenu.Popup className={cn(popupClass, className)} style={overlayTransitions.popup}>
           {children}
         </BaseMenu.Popup>

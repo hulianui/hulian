@@ -37,7 +37,7 @@ export function AccordionTrigger({ className, children, ...props }: AccordionTri
           "group flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-medium text-foreground outline-none transition-colors",
           "hover:bg-surface-hover",
           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-          "data-[disabled]:opacity-50 data-[disabled]:pointer-events-none",
+          "data-[disabled]:opacity-[var(--hl-opacity-disabled,0.5)] data-[disabled]:pointer-events-none",
           className,
         )}
       >
@@ -51,7 +51,7 @@ export function AccordionTrigger({ className, children, ...props }: AccordionTri
           strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[panel-open]:rotate-180"
+          className="size-4 shrink-0 text-muted-foreground transition-transform duration-[var(--hl-duration-base,200ms)] group-data-[panel-open]:rotate-180"
         >
           <path d="m6 9 6 6 6-6" />
         </svg>

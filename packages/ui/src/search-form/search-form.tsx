@@ -194,7 +194,7 @@ function renderControl(
       // fallback 占住控件高度：chunk 到达前不塌行，整片查询区不会跳一下。
       <Suspense
         fallback={
-          <div className="h-10 rounded-[var(--radius)] border border-hairline bg-surface shadow-sm" />
+          <div className="h-[var(--hl-control-h-md,2.5rem)] rounded-[var(--hl-radius-control,var(--radius))] border border-hairline bg-surface shadow-sm" />
         }
       >
         <RegionCascader

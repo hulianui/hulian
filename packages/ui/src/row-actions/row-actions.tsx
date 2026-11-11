@@ -186,7 +186,7 @@ export function RowActions({
           revealOnHover &&
             // 时长与曲线取自动效体系的 fast 档（贴身微交互），不自己写数字；
             // reduced-motion 下直接切换不过渡 —— 这条偏好一律由库负责，不指望消费方去关。
-            "opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none group-hover/row:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100",
+            "opacity-0 transition-opacity duration-[var(--hl-duration-fast,150ms)] ease-out motion-reduce:transition-none group-hover/row:opacity-100 focus-within:opacity-100 [@media(hover:none)]:opacity-100",
           className,
         )}
         {...props}

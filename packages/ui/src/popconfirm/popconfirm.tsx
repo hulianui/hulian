@@ -114,7 +114,7 @@ export function Popconfirm({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger render={triggerElement as ReactElement<Record<string, unknown>>} />
       <BasePopover.Portal>
-        <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
+        <BasePopover.Positioner side={side} align={align} sideOffset={sideOffset} className="z-[var(--hl-z-overlay,50)]">
           <BasePopover.Popup
             className={cn(
               "w-[min(90vw,18rem)] rounded-[var(--radius)] border border-hairline bg-surface p-4 text-foreground shadow-xl outline-none",

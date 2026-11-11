@@ -222,7 +222,7 @@ export function Command({
       <BaseDialog.Portal>
         <BaseDialog.Backdrop
           className={cn(
-            "fixed inset-0 z-40 bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+            "fixed inset-0 z-[calc(var(--hl-z-overlay,50)-10)] bg-black/40 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             backdropClassName,
           )}
           style={overlayTransitions.fade}
@@ -231,7 +231,7 @@ export function Command({
           initialFocus={inputRef}
           className={cn(
             // 布局与尺寸（恒定）
-            "fixed left-1/2 top-[15vh] z-50 flex max-h-[70vh] w-[min(92vw,40rem)] -translate-x-1/2 flex-col overflow-hidden rounded-[var(--radius)] text-foreground outline-none",
+            "fixed left-1/2 top-[15vh] z-[var(--hl-z-overlay,50)] flex max-h-[70vh] w-[min(92vw,40rem)] -translate-x-1/2 flex-col overflow-hidden rounded-[var(--radius)] text-foreground outline-none",
             "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
             // 皮肤（可换）
             shellVariants({ surface }),

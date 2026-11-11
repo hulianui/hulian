@@ -73,7 +73,7 @@ export function Viewport({
         data-device={current}
         style={style}
         className={cn(
-          "@container overflow-hidden bg-surface transition-[width] duration-300 ease-out motion-reduce:transition-none",
+          "@container overflow-hidden bg-surface transition-[width] duration-[var(--hl-duration-slow,300ms)] ease-out motion-reduce:transition-none",
           deviceFramed
             ? "rounded-[1.75rem] border-[6px] border-foreground/10 shadow-lg"
             : "rounded-[var(--radius)] border border-border",

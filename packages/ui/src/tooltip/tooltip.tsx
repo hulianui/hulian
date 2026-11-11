@@ -43,10 +43,10 @@ export function TooltipContent({
 }: TooltipContentProps) {
   return (
     <BaseTooltip.Portal>
-      <BaseTooltip.Positioner side={side} align={align} sideOffset={sideOffset} className="z-50">
+      <BaseTooltip.Positioner side={side} align={align} sideOffset={sideOffset} className="z-[var(--hl-z-overlay,50)]">
         <BaseTooltip.Popup
           className={cn(
-            "rounded-[var(--radius)] bg-foreground px-2.5 py-1 text-xs text-bg shadow-md outline-none",
+            "rounded-[var(--hl-radius-control,var(--radius))] bg-foreground px-2.5 py-1 text-xs text-bg shadow-md outline-none",
             "origin-[var(--transform-origin)] data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
             INSTANT_CLASS,
             className,

@@ -168,7 +168,7 @@ export function StaggeredMenu({
             >
               <span
                 className={cn(
-                  "flex flex-col leading-none transition-transform duration-300 ease-out",
+                  "flex flex-col leading-none transition-transform duration-[var(--hl-duration-slow,300ms)] ease-out",
                   "motion-reduce:transition-none",
                 )}
                 style={{ transform: open ? "translateY(-1em)" : "translateY(0)" }}

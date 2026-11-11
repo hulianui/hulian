@@ -264,7 +264,7 @@ export function ProfileCard({
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-0 -z-10 rounded-[1.75rem] opacity-0 blur-2xl transition-opacity duration-200",
+          "pointer-events-none absolute inset-0 -z-10 rounded-[1.75rem] opacity-0 blur-2xl transition-opacity duration-[var(--hl-duration-base,200ms)]",
           active && "group-hover:opacity-80 group-has-data-[active=true]:opacity-80",
         )}
         style={{
@@ -285,7 +285,7 @@ export function ProfileCard({
             "bg-surface text-foreground [backface-visibility:hidden] [transform:translateZ(0)_rotateX(0deg)_rotateY(0deg)]",
             "shadow-xl ring-1 ring-border/60",
             active &&
-              "transition-transform duration-700 ease-out group-data-[active=true]/shell:duration-0 group-data-[entering=true]/shell:duration-200 group-data-[active=true]/shell:[transform:translateZ(0)_rotateX(var(--rotate-y))_rotateY(var(--rotate-x))]",
+              "transition-transform duration-700 ease-out group-data-[active=true]/shell:duration-0 group-data-[entering=true]/shell:duration-[var(--hl-duration-base,200ms)] group-data-[active=true]/shell:[transform:translateZ(0)_rotateX(var(--rotate-y))_rotateY(var(--rotate-x))]",
           )}
         >
           {/* 内层底色渐变 */}

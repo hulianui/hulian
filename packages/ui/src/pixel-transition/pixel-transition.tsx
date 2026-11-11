@@ -90,7 +90,7 @@ export function PixelTransition({
       </div>
       <div
         className={cn(
-          "absolute inset-0 z-[2] transition-opacity duration-150",
+          "absolute inset-0 z-[2] transition-opacity duration-[var(--hl-duration-fast,150ms)]",
           active ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         aria-hidden={!active}

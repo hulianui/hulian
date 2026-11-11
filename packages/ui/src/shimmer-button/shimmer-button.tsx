@@ -18,7 +18,7 @@ export const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       shimmerColor = "var(--hulian-shimmer-fg)",
       shimmerSize = "0.05em",
       shimmerDuration = "3s",
-      borderRadius = "var(--radius)",
+      borderRadius = "var(--hl-radius-control, var(--radius))",
       background = "var(--color-primary)",
       foreground = "var(--color-primary-foreground)",
       size = "md",
@@ -53,7 +53,7 @@ export const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       // 消费方 className 里的 text-* 仍能像以前一样盖过它（Tailwind 把任意属性排在具名工具类之前）。
       "group relative z-0 cursor-pointer overflow-hidden border border-border [color:var(--hulian-shimmer-fg)]",
       "[border-radius:var(--hulian-shimmer-radius)] [background:var(--hulian-shimmer-bg)]",
-      "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
+      "transform-gpu transition-transform duration-[var(--hl-duration-slow,300ms)] ease-in-out active:translate-y-px",
       className,
     );
 
@@ -69,7 +69,7 @@ export const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       <span className="relative z-10 inline-flex items-center justify-center whitespace-nowrap">{children}</span>
       {/* inset 高光 */}
       {/* 只有 box-shadow 在变，指名它而非 transition-all（300ms/ease-in-out 是这枚炫效按钮刻意的"缓慢发光"个性，保留） */}
-      <div className="absolute inset-0 size-full rounded-[inherit] shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-[box-shadow] duration-300 ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
+      <div className="absolute inset-0 size-full rounded-[inherit] shadow-[inset_0_-8px_10px_#ffffff1f] transform-gpu transition-[box-shadow] duration-[var(--hl-duration-slow,300ms)] ease-in-out group-hover:shadow-[inset_0_-6px_10px_#ffffff3f] group-active:shadow-[inset_0_-10px_10px_#ffffff3f]" />
       {/* backdrop 盖回底色只露边缘火花 */}
       <div className="absolute inset-[var(--hulian-shimmer-cut)] -z-20 [border-radius:var(--hulian-shimmer-radius)] [background:var(--hulian-shimmer-bg)]" />
       </>

@@ -80,7 +80,7 @@ export function HeroVideoDialog({
             role="dialog"
             aria-modal="true"
             onClick={() => setOpen(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[var(--hl-z-overlay,50)] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
           >
             <button
               type="button"

@@ -34,7 +34,7 @@ import { useComponentLocale } from "../config/locale-context";
 const SQUARE = "h-9 min-w-9 px-1.5 tabular-nums";
 // press 与颜色统一过渡：transform 走合成层；覆盖 buttonVariants 自带的 transition-colors。
 const PRESS =
-  "transition-[color,background-color,box-shadow,transform] duration-150 active:scale-[0.97]";
+  "transition-[color,background-color,box-shadow,transform] duration-[var(--hl-duration-fast,150ms)] active:scale-[0.97]";
 
 // SSR/jsdom 安全：浏览器用 layout effect 测量（避闪），服务端降级为普通 effect（不执行）。
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -222,7 +222,7 @@ export function Pagination({
       {hasPill && (
         <span
           aria-hidden
-          className="pointer-events-none absolute left-0 top-0 z-20 flex h-9 items-center justify-center rounded-[var(--radius)] bg-primary text-sm font-medium text-primary-foreground shadow-sm"
+          className="pointer-events-none absolute left-0 top-0 z-20 flex h-9 items-center justify-center rounded-[var(--hl-radius-control,var(--radius))] bg-primary text-sm font-medium text-primary-foreground shadow-sm"
           style={pillStyle}
         >
           {current}
@@ -333,7 +333,7 @@ export function Pagination({
               e.preventDefault();
               submitJump();
             }}
-            className="h-9 w-12 rounded-[var(--radius)] border border-border bg-surface px-2 text-center text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+            className="h-9 w-12 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface px-2 text-center text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]"
           />
           {labels.jumpSuffix}
         </span>

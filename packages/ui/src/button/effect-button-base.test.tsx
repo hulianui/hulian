@@ -30,18 +30,18 @@ describe("特效按钮共享 Button 底座", () => {
     }
   });
 
-  it.each(CASES)("%s：默认 md 档与 Button 等高（h-10）", (_name, Comp) => {
+  it.each(CASES)("%s：默认 md 档与 Button 等高（h-[var(--hl-control-h-md,2.5rem)]）", (_name, Comp) => {
     const { container } = render(<Comp>按钮</Comp>);
-    expect(container.querySelector("button")!.className).toContain("h-10");
+    expect(container.querySelector("button")!.className).toContain("h-[var(--hl-control-h-md,2.5rem)]");
     // 与 Button 的同名档取同一个刻度，混排才不会参差
-    expect(buttonVariants({ size: "md" })).toContain("h-10");
+    expect(buttonVariants({ size: "md" })).toContain("h-[var(--hl-control-h-md,2.5rem)]");
   });
 
   it.each(CASES)("%s：size 三档跟随 Button 的刻度", (_name, Comp) => {
     for (const [size, step] of [
-      ["sm", "h-8"],
-      ["md", "h-10"],
-      ["lg", "h-12"],
+      ["sm", "h-[var(--hl-control-h-sm,2rem)]"],
+      ["md", "h-[var(--hl-control-h-md,2.5rem)]"],
+      ["lg", "h-[var(--hl-control-h-lg,3rem)]"],
     ] as const) {
       const { container, unmount } = render(<Comp size={size}>按钮</Comp>);
       expect(container.querySelector("button")!.className).toContain(step);
@@ -60,7 +60,7 @@ describe("特效按钮共享 Button 底座", () => {
     const { container } = render(<Comp disabled>按钮</Comp>);
     const btn = container.querySelector("button")!;
     expect(btn.disabled).toBe(true);
-    expect(btn.className).toContain("disabled:opacity-50");
+    expect(btn.className).toContain("disabled:opacity-[var(--hl-opacity-disabled,0.5)]");
     expect(btn.className).toContain("disabled:pointer-events-none");
   });
 
@@ -91,7 +91,7 @@ describe("特效按钮共享 Button 底座", () => {
     const anchor = container.querySelector("a")!;
     expect(anchor.getAttribute("href")).toBe("#cta");
     expect(anchor.className).toContain("custom");
-    expect(anchor.className).toContain("h-10");
+    expect(anchor.className).toContain("h-[var(--hl-control-h-md,2.5rem)]");
     expect(container.querySelector("button")).toBeNull();
   });
 });

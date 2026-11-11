@@ -183,7 +183,7 @@ export function ChromaGrid({
             tabIndex={clickable ? 0 : undefined}
             className={cn(
               "group/card relative flex flex-col overflow-hidden rounded-2xl border border-border",
-              "transition-colors duration-300 hover:border-[var(--card-border)]",
+              "transition-colors duration-[var(--hl-duration-slow,300ms)] hover:border-[var(--card-border)]",
               clickable ? "cursor-pointer" : "cursor-default",
               !c.children &&
                 i < 6 &&

@@ -146,7 +146,7 @@ export function VideoControls({
                 className="group/cue absolute top-1/2 z-10 h-2.5 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/80 shadow-sm"
                 style={{ left: `${m.percent}%` }}
               >
-                <span className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/85 px-1.5 py-0.5 text-[11px] text-white opacity-0 transition-opacity group-hover/cue:opacity-100">
+                <span className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black/85 px-1.5 py-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] text-white opacity-0 transition-opacity group-hover/cue:opacity-100">
                   {m.title}
                 </span>
               </span>

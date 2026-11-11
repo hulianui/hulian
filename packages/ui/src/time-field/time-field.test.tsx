@@ -299,9 +299,9 @@ describe("TimeField", () => {
 
   // #98：外壳此前硬编码 h-9(36px)，与 Input 的 32/40/48 刻度对不上，并排必错位。
   it.each([
-    ["sm", "h-8"],
-    ["md", "h-10"],
-    ["lg", "h-12"],
+    ["sm", "h-[var(--hl-control-h-sm,2rem)]"],
+    ["md", "h-[var(--hl-control-h-md,2.5rem)]"],
+    ["lg", "h-[var(--hl-control-h-lg,3rem)]"],
   ] as const)("size=%s 外壳高度 %s，与 Input 同刻度", (size, h) => {
     expect(inputShellVariants({ size })).toContain(h);
     const { container } = render(<TimeField size={size} />);
@@ -310,6 +310,6 @@ describe("TimeField", () => {
 
   it("不传 size 时按 md（40px）渲染", () => {
     const { container } = render(<TimeField />);
-    expect((container.firstElementChild as HTMLElement).className).toContain("h-10");
+    expect((container.firstElementChild as HTMLElement).className).toContain("h-[var(--hl-control-h-md,2.5rem)]");
   });
 });

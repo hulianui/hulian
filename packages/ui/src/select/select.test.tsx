@@ -340,7 +340,7 @@ describe("Select", () => {
 
   it("size=lg: Trigger 应用 lg 高度类", () => {
     render(<Basic size="lg" />);
-    expect(getTrigger().className).toContain("h-12");
+    expect(getTrigger().className).toContain("h-[var(--hl-control-h-lg,3rem)]");
   });
 
   it("invalid: Trigger 落 data-invalid + aria-invalid", () => {

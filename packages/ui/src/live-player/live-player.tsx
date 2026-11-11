@@ -65,18 +65,18 @@ function LivePlayerImpl({
               <Avatar size="sm" src={host.avatar} alt={host.name} fallback={host.name[0]} />
               <div className="leading-tight">
                 <div className="text-xs font-semibold">{host.name}</div>
-                {host.meta && <div className="text-[10px] text-white/70">{host.meta}</div>}
+                {host.meta && <div className="text-[length:var(--hl-text-3xs,0.625rem)] text-white/70">{host.meta}</div>}
               </div>
               {host.onFollow &&
                 (host.followed ? (
-                  <span className="ml-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px] text-white/80">
+                  <span className="ml-1 rounded-full bg-white/15 px-2 py-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] text-white/80">
                     {labels.followed}
                   </span>
                 ) : (
                   <button
                     type="button"
                     onClick={host.onFollow}
-                    className="ml-1 rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-medium text-primary-foreground transition hover:bg-primary-hover"
+                    className="ml-1 rounded-full bg-primary px-2.5 py-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] font-medium text-primary-foreground transition hover:bg-primary-hover"
                   >
                     {labels.follow}
                   </button>
@@ -86,7 +86,7 @@ function LivePlayerImpl({
 
           <div className="pointer-events-auto flex items-center gap-1.5">
             {live && (
-              <span className="flex items-center gap-1 rounded-full bg-danger px-2 py-0.5 text-[11px] font-bold leading-none tracking-wide text-danger-foreground">
+              <span className="flex items-center gap-1 rounded-full bg-danger px-2 py-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] font-bold leading-none tracking-wide text-danger-foreground">
                 <span className="relative flex size-1.5">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-white/80" />
                   <span className="relative inline-flex size-1.5 rounded-full bg-white" />
@@ -95,7 +95,7 @@ function LivePlayerImpl({
               </span>
             )}
             {viewers != null && (
-              <span className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[11px] leading-none backdrop-blur-sm">
+              <span className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] leading-none backdrop-blur-sm">
                 <svg
                   viewBox="0 0 24 24"
                   className="size-3 fill-none stroke-current"
@@ -114,12 +114,12 @@ function LivePlayerImpl({
                 <button
                   type="button"
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="inline-flex items-center rounded-full bg-black/40 px-2 py-0.5 text-[11px] leading-none backdrop-blur-sm"
+                  className="inline-flex items-center rounded-full bg-black/40 px-2 py-0.5 text-[length:var(--hl-text-2xs,0.6875rem)] leading-none backdrop-blur-sm"
                 >
                   {quality ?? qualities[0]} ▾
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-7 z-20 min-w-20 overflow-hidden rounded-[var(--radius)] bg-black/80 py-1 text-[11px] backdrop-blur-sm">
+                  <div className="absolute right-0 top-7 z-20 min-w-20 overflow-hidden rounded-[var(--radius)] bg-black/80 py-1 text-[length:var(--hl-text-2xs,0.6875rem)] backdrop-blur-sm">
                     {qualities.map((q) => (
                       <button
                         key={q}

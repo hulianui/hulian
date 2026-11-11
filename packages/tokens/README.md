@@ -27,12 +27,43 @@ pnpm add @hulianui/tokens
 
 | 层 | 文件 | 内容 | 谁消费 |
 |---|---|---|---|
-| 原语 | `primitives.css` | `--gray-50…950` / `--brand-400…700` / `--danger-*` … 具体色值 | 只被语义层引用 |
+| 原语 | `primitives.css` | `--gray-50…950` / `--brand-50…800` / `--danger-*` … 具体色值 | 只被语义层引用 |
 | 语义 | `semantic.css` | `--color-bg` / `--color-surface` / `--color-primary` / `--color-danger` … | 组件与业务代码 |
 
 **组件只消费语义层。** 明暗切换发生在语义层：`[data-theme="dark"]` 只换值、不换结构，所以切主题零布局抖动，也不会出现「暗色下某个组件忘了适配」。
 
 `preset.css` 里的 `@theme inline` 把语义变量映射成 Tailwind 的 token，于是 `bg-surface` / `text-muted-foreground` / `shadow-lg` 这些工具类天生跟随主题。
+
+## 结构令牌：颜色之外的那几个维度
+
+圆角、控件高度、时长、禁用态、微型字号、浮层层级也在语义层（`semantic.css`），与主题无关，只在 `:root` 定义一次。
+
+| 令牌 | 默认值 | 管什么 |
+|---|---|---|
+| `--radius` | `0.625rem` | 容器圆角：Card / Dialog / Popover / 表格外框 |
+| `--hl-radius-control` | `calc(var(--radius) * 0.8)` | 控件圆角：Button / Input / Select / Tabs / 图标按钮 |
+| `--hl-control-h-xs` / `-sm` / `-md` / `-lg` | `1.75rem` / `2rem` / `2.5rem` / `3rem` | 表单控件共用的高度梯子 |
+| `--hl-duration-fast` / `-base` / `-slow` | `150ms` / `200ms` / `300ms` | 工具类驱动的过渡时长 |
+| `--hl-opacity-disabled` | `0.5` | 禁用态透明度 |
+| `--hl-text-2xs` / `--hl-text-3xs` | `0.6875rem` / `0.625rem` | `text-xs` 之下的两档微型字号 |
+| `--hl-z-overlay` | `50` | 浮层层级；遮罩 = 它 − 10，Toast = 它 + 10，全屏 Spin = 它 + 20 |
+
+改一行即可全库同步，例如一套更紧凑、更方的中后台皮肤：
+
+```css
+:root {
+  --radius: 0.5rem;            /* 容器 8px，控件按比例变成 6.4px */
+  --hl-control-h-md: 2.25rem;  /* 默认控件高度 40px → 36px */
+  --hl-text-3xs: 0.6875rem;    /* 中文界面：10px 抬到 11px */
+  --hl-z-overlay: 3000;        /* 嵌进 Element UI 页面：浮层抬到它的弹层之上 */
+}
+```
+
+三件要知道的事：
+
+- **组件写的是带回退的任意值**（`h-[var(--hl-control-h-md,2.5rem)]`），回退值等于上表默认值。所以 `@hulianui/ui` 配旧版 tokens 时渲染不变，自己写组件时也照这个写法即可，不需要 `preset.css` 提供额外工具类。
+- **在子树上改 `--radius` 不会带动 `--hl-radius-control`**：自定义属性是代入后才继承的，派生值在 `:root` 就算完了。局部改圆角时把两个都写上。
+- **`--hl-duration-*` 只管 CSS 过渡**。`motion` 驱动的 JS 动效读的是 `@hulianui/ui` 导出的 `motionDuration`，两处同值，要一起改。
 
 ## 单独引用某一层
 

@@ -137,7 +137,7 @@ function InputOTPImpl({
             onPaste={(e) => onPaste(i, e)}
             onFocus={(e) => e.target.select()}
             className={cn(
-              "size-10 rounded-[var(--radius)] border bg-surface text-center font-mono text-base text-foreground outline-none transition-colors",
+              "size-10 rounded-[var(--hl-radius-control,var(--radius))] border bg-surface text-center font-mono text-base text-foreground outline-none transition-colors",
               "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring",
               invalid ? "border-danger" : "border-border",
               disabled && "cursor-not-allowed opacity-50",

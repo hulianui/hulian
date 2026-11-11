@@ -87,7 +87,7 @@ export function TrueFocus({
               wordRefs.current[i] = el;
             }}
             onMouseEnter={manualMode ? () => setIndex(i) : undefined}
-            className="relative cursor-default transition-[filter,opacity] duration-300"
+            className="relative cursor-default transition-[filter,opacity] duration-[var(--hl-duration-slow,300ms)]"
             style={{
               filter: focused ? "blur(0px)" : `blur(${blurAmount}px)`,
               opacity: focused ? 1 : 0.7,

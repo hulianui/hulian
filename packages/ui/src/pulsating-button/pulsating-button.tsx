@@ -24,9 +24,9 @@ export const PulsatingButton = forwardRef<HTMLButtonElement, PulsatingButtonProp
     const mergedClassName = cn(
       EFFECT_BUTTON_BASE_CLASS,
       BUTTON_SIZE_CLASS[size],
-      "relative cursor-pointer rounded-[var(--radius)] bg-primary text-primary-foreground",
+      "relative cursor-pointer rounded-[var(--hl-radius-control,var(--radius))] bg-primary text-primary-foreground",
       "[animation:hulian-pulse-ring_var(--hulian-pulse-duration,1.5s)_ease-in-out_infinite] motion-reduce:[animation:none]",
-      "transition-transform duration-200 active:translate-y-px",
+      "transition-transform duration-[var(--hl-duration-base,200ms)] active:translate-y-px",
       className,
     );
 

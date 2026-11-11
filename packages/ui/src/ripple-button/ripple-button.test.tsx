@@ -51,8 +51,8 @@ describe("RippleButton", () => {
     const expected = cn(
       EFFECT_BUTTON_BASE_CLASS,
       BUTTON_SIZE_CLASS.md,
-      "relative cursor-pointer overflow-hidden rounded-[var(--radius)] bg-primary text-primary-foreground",
-      "transition-transform duration-200 active:translate-y-px",
+      "relative cursor-pointer overflow-hidden rounded-[var(--hl-radius-control,var(--radius))] bg-primary text-primary-foreground",
+      "transition-transform duration-[var(--hl-duration-base,200ms)] active:translate-y-px",
     );
     expect(container.querySelector("button")!.getAttribute("class")).toBe(expected);
   });

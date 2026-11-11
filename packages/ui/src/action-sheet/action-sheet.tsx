@@ -30,14 +30,14 @@ export function ActionSheetContent({
         className={cn(
           // 有 container 时用 absolute（贴容器）；否则 fixed（贴视口）。
           container ? "absolute" : "fixed",
-          "inset-0 z-40 bg-black/40 backdrop-blur-sm data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
+          "inset-0 z-[calc(var(--hl-z-overlay,50)-10)] bg-black/40 backdrop-blur-sm data-[ending-style]:opacity-0 data-[starting-style]:opacity-0",
         )}
         style={overlayTransitions.backdrop}
       />
       <BaseDialog.Popup
         className={cn(
           container ? "absolute" : "fixed",
-          "inset-x-0 bottom-0 z-50 mx-auto flex max-w-md flex-col gap-2 p-3 outline-none",
+          "inset-x-0 bottom-0 z-[var(--hl-z-overlay,50)] mx-auto flex max-w-md flex-col gap-2 p-3 outline-none",
           "data-[ending-style]:translate-y-full data-[starting-style]:translate-y-full",
           className,
         )}

@@ -107,7 +107,7 @@ export function MonthView({
                         key={ev.id}
                         type="button"
                         className={cn(
-                          "truncate rounded px-1 py-0.5 text-left text-[11px] leading-tight",
+                          "truncate rounded px-1 py-0.5 text-left text-[length:var(--hl-text-2xs,0.6875rem)] leading-tight",
                           CHIP_TONE[ev.tone ?? "primary"],
                         )}
                         onClick={(e) => {
@@ -124,7 +124,7 @@ export function MonthView({
                       </button>
                     ))}
                     {more > 0 && (
-                      <span className="px-1 text-[11px] text-muted-foreground">{moreLabel(more)}</span>
+                      <span className="px-1 text-[length:var(--hl-text-2xs,0.6875rem)] text-muted-foreground">{moreLabel(more)}</span>
                     )}
                   </div>
                 </div>

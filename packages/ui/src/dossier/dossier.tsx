@@ -69,7 +69,7 @@ function DossierImpl({
                 >
                   {s.label}
                   {s.optional && status === "empty" && (
-                    <span className="text-[10px] text-muted-foreground/70">{optionalLabel}</span>
+                    <span className="text-[length:var(--hl-text-3xs,0.625rem)] text-muted-foreground/70">{optionalLabel}</span>
                   )}
                 </span>
                 {s.summary != null && (

@@ -31,7 +31,7 @@ export const tagVariants = cva(
       variant: { soft: "", solid: "", outline: "border" },
       tone: { neutral: "", brand: "", info: "", success: "", warning: "", danger: "" },
       size: {
-        sm: "h-5 px-1.5 text-[11px]",
+        sm: "h-5 px-1.5 text-[length:var(--hl-text-2xs,0.6875rem)]",
         md: "h-6 px-2 text-xs",
       },
     },

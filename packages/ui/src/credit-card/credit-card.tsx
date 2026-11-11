@@ -127,7 +127,7 @@ function CreditCardImpl({
                 {cvc ?? "•••"}
               </div>
             </div>
-            <div className="mt-2 text-right text-[10px] uppercase tracking-wide text-white/70">
+            <div className="mt-2 text-right text-[length:var(--hl-text-3xs,0.625rem)] uppercase tracking-wide text-white/70">
               CVC
             </div>
           </div>
@@ -157,13 +157,13 @@ function CreditCardImpl({
 
           <div className="flex items-end justify-between gap-4">
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-wide text-white/60">
+              <div className="text-[length:var(--hl-text-3xs,0.625rem)] uppercase tracking-wide text-white/60">
                 {copy.cardholder}
               </div>
               <div className="truncate font-medium tracking-wide">{holder || "YOUR NAME"}</div>
             </div>
             <div className="shrink-0 text-right">
-              <div className="text-[10px] uppercase tracking-wide text-white/60">
+              <div className="text-[length:var(--hl-text-3xs,0.625rem)] uppercase tracking-wide text-white/60">
                 {copy.expires}
               </div>
               <div className="font-mono tracking-wide tabular-nums">{expiry || "MM/YY"}</div>

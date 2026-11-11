@@ -41,7 +41,7 @@ function DiffStatImpl({
   return (
     <span className={cn("inline-flex items-center gap-2 text-xs tabular-nums", className)}>
       {status && (
-        <span className={cn("rounded px-1 py-0.5 text-[10px] font-medium", STATUS_TONE[status])}>
+        <span className={cn("rounded px-1 py-0.5 text-[length:var(--hl-text-3xs,0.625rem)] font-medium", STATUS_TONE[status])}>
           {labels[status]}
         </span>
       )}

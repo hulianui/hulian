@@ -76,7 +76,7 @@ function toTreeNodes(nodes: ComponentPickerCategoryNode[]): TreeNode[] {
     label: (
       <span className="flex w-full items-center justify-between gap-2">
         <span className="truncate">{node.label}</span>
-        <span className="shrink-0 font-mono text-[11px] text-muted-foreground">{node.count}</span>
+        <span className="shrink-0 font-mono text-[length:var(--hl-text-2xs,0.6875rem)] text-muted-foreground">{node.count}</span>
       </span>
     ),
     ...(node.children ? { children: toTreeNodes(node.children) } : {}),
@@ -336,7 +336,7 @@ function ComponentPickerImpl({
                         <span className="min-w-0 flex-1 truncate font-medium text-foreground">
                           {item.name}
                         </span>
-                        <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
+                        <span className="shrink-0 font-mono text-[length:var(--hl-text-2xs,0.6875rem)] text-muted-foreground">
                           {item.slug}
                         </span>
                       </div>

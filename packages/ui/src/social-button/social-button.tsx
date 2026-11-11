@@ -82,9 +82,9 @@ const SIZE: Record<
   NonNullable<SocialButtonProps["size"]>,
   { button: string; icon: string; glyph: string }
 > = {
-  sm: { button: "h-8 gap-2 px-3 text-sm", icon: "size-8", glyph: "size-4" },
-  md: { button: "h-10 gap-2 px-4 text-sm", icon: "size-10", glyph: "size-[18px]" },
-  lg: { button: "h-12 gap-2.5 px-6 text-base", icon: "size-12", glyph: "size-5" },
+  sm: { button: "h-[var(--hl-control-h-sm,2rem)] gap-2 px-3 text-sm", icon: "size-[var(--hl-control-h-sm,2rem)]", glyph: "size-4" },
+  md: { button: "h-[var(--hl-control-h-md,2.5rem)] gap-2 px-4 text-sm", icon: "size-[var(--hl-control-h-md,2.5rem)]", glyph: "size-[18px]" },
+  lg: { button: "h-[var(--hl-control-h-lg,3rem)] gap-2.5 px-6 text-base", icon: "size-[var(--hl-control-h-lg,3rem)]", glyph: "size-5" },
 };
 
 function BrandGlyph({
@@ -153,9 +153,9 @@ function SocialButtonImpl({
       aria-label={shape === "icon" ? brandLabel : undefined}
       className={cn(
         // pressableClass 平替原 transition-[background-color,box-shadow,filter]：属性列表已覆盖这三者，另补按下缩放。
-        `inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius)] font-medium ${pressableClass} outline-none`,
+        `inline-flex items-center justify-center whitespace-nowrap rounded-[var(--hl-radius-control,var(--radius))] font-medium ${pressableClass} outline-none`,
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-        "disabled:opacity-50 disabled:pointer-events-none",
+        "disabled:opacity-[var(--hl-opacity-disabled,0.5)] disabled:pointer-events-none",
         shape === "icon" ? sz.icon : sz.button,
         variant === "outline" &&
           "border border-hairline bg-surface text-foreground shadow-sm hover:bg-surface-hover",

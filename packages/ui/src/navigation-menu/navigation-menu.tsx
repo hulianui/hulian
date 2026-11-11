@@ -35,7 +35,7 @@ export function NavigationMenu({ children, className, ...props }: NavigationMenu
     <BaseNav.Root className={cn("relative", className)} {...props}>
       {children}
       <BaseNav.Portal>
-        <BaseNav.Positioner sideOffset={8} className="z-50 outline-none">
+        <BaseNav.Positioner sideOffset={8} className="z-[var(--hl-z-overlay,50)] outline-none">
           <BaseNav.Popup
             className={cn(
               "relative overflow-hidden rounded-[var(--radius)] border border-hairline bg-surface text-foreground shadow-xl outline-none",
@@ -87,7 +87,7 @@ export function NavigationMenuTrigger({ className, children, ...props }: Navigat
       {children}
       <ChevronDown
         aria-hidden
-        className="size-4 text-muted-foreground transition-transform duration-200 group-data-[popup-open]:rotate-180"
+        className="size-4 text-muted-foreground transition-transform duration-[var(--hl-duration-base,200ms)] group-data-[popup-open]:rotate-180"
       />
     </BaseNav.Trigger>
   );

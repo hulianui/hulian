@@ -94,8 +94,8 @@ export function Badge({
       ? "size-1.5"
       : "size-2"
     : size === "sm"
-      ? "h-4 min-w-4 px-1 text-[10px]"
-      : "h-5 min-w-5 px-1.5 text-[11px]";
+      ? "h-4 min-w-4 px-1 text-[length:var(--hl-text-3xs,0.625rem)]"
+      : "h-5 min-w-5 px-1.5 text-[length:var(--hl-text-2xs,0.6875rem)]";
 
   const markInner = isContent ? content : isCount ? formatCount(count!, max) : null;
 

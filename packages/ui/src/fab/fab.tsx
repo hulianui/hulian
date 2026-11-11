@@ -104,14 +104,14 @@ export function Fab({
             className={cn(
               // 指名 translate+opacity（v4 下 translate 是独立属性）而非 transition-all：
               // all 会把 layout 属性一并纳入过渡，触发 layout+paint；这里只需要 GPU 合成的两项。
-              "flex items-center gap-3 transition-[translate,opacity] duration-200 ease-out motion-reduce:transition-none",
+              "flex items-center gap-3 transition-[translate,opacity] duration-[var(--hl-duration-base,200ms)] ease-out motion-reduce:transition-none",
               position === "bottom-left" ? "flex-row-reverse" : "flex-row",
               open ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0",
             )}
             style={{ transitionDelay: open ? `${(actions!.length - 1 - i) * 30}ms` : "0ms" }}
           >
             {a.label && (
-              <span className="rounded-[var(--radius)] bg-surface px-2 py-1 text-xs text-foreground shadow-md">
+              <span className="rounded-[var(--hl-radius-control,var(--radius))] bg-surface px-2 py-1 text-xs text-foreground shadow-md">
                 {a.label}
               </span>
             )}
@@ -144,7 +144,7 @@ export function Fab({
         className={cn(
           // 主钮已有 transition-transform（v4 下 property 列表含 scale），故只补 active 缩放即可，
           // 不套 pressableClass —— 那会接管 transition-property，与拖拽时的 transform 写入打架。
-          "flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl outline-none transition-transform duration-150 ease-out hover:brightness-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:active:scale-100",
+          "flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl outline-none transition-transform duration-[var(--hl-duration-fast,150ms)] ease-out hover:brightness-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:active:scale-100",
           // 拖拽期间不缩放：缩小表达的是「被按进平面」，而拖拽的心智是「拿起来离开平面移动」，
           // 两者语义相反；且按压反馈本是百毫秒级的瞬时状态，拖拽可持续数秒，会变成按钮莫名一直小一圈，
           // 还与同在 :active 下的 cursor-grabbing（已在说「抓着」）互相打架。
@@ -156,7 +156,7 @@ export function Fab({
       >
         <span
           className={cn(
-            "flex transition-transform duration-200 motion-reduce:transition-none",
+            "flex transition-transform duration-[var(--hl-duration-base,200ms)] motion-reduce:transition-none",
             open && "rotate-45",
           )}
         >

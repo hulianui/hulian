@@ -196,7 +196,7 @@ export function GlassSurface({
       className={cn(
         // 公共骨架
         "relative flex items-center justify-center overflow-hidden",
-        "transition-opacity duration-200 ease-out motion-reduce:transition-none",
+        "transition-opacity duration-[var(--hl-duration-base,200ms)] ease-out motion-reduce:transition-none",
         "border border-border shadow-lg",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         // SVG 折射模式：磨砂底吃 bg-surface（经 --hulian-glass-frost 调 alpha），

@@ -202,7 +202,7 @@ export function Mentions({
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-0 overflow-hidden rounded-[var(--radius)] border border-transparent bg-surface",
+          "pointer-events-none absolute inset-0 overflow-hidden rounded-[var(--hl-radius-control,var(--radius))] border border-transparent bg-surface",
           disabled && "opacity-50",
         )}
       >
@@ -260,7 +260,7 @@ export function Mentions({
           aria-label={labels.suggestions}
           style={{ top: coords.top, left: coords.left }}
           className={cn(
-            "absolute z-50 flex max-h-60 w-56 flex-col gap-0.5 overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 shadow-lg",
+            "absolute z-[var(--hl-z-overlay,50)] flex max-h-60 w-56 flex-col gap-0.5 overflow-y-auto rounded-[var(--radius)] border border-hairline bg-surface p-1 shadow-lg",
             popupClassName,
           )}
         >
