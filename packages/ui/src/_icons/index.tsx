@@ -387,10 +387,22 @@ export const RefreshCw = /* @__PURE__ */ createIcon("refresh-cw", [
   ["path", { d: "M8 16H3v5", key: "1cv678" }],
 ]);
 
+export const Rows2 = /* @__PURE__ */ createIcon("rows-2", [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M3 12h18", key: "1i2n21" }],
+]);
+
 export const Rows3 = /* @__PURE__ */ createIcon("rows-3", [
   ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
   ["path", { d: "M21 9H3", key: "1338ky" }],
   ["path", { d: "M21 15H3", key: "9uk58r" }],
+]);
+
+export const Rows4 = /* @__PURE__ */ createIcon("rows-4", [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M21 7.5H3", key: "1hm9pq" }],
+  ["path", { d: "M21 12H3", key: "2avoz0" }],
+  ["path", { d: "M21 16.5H3", key: "n7jzkj" }],
 ]);
 
 export const Search = /* @__PURE__ */ createIcon("search", [

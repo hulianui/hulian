@@ -87,6 +87,19 @@ describe("ProTable", () => {
     expect(container.querySelector("td.py-1\\.5")).toBeTruthy();
   });
 
+  it("密度按钮图标随档位切换（rows-2 → rows-3 → rows-4 → rows-2）", () => {
+    const { getByLabelText } = render(<ProTable columns={columns} data={data} />);
+    const btn = () => getByLabelText(/密度/);
+    const icon = () => btn().querySelector("svg")!.getAttribute("class");
+    expect(icon()).toContain("lucide-rows-2");
+    fireEvent.click(btn());
+    expect(icon()).toContain("lucide-rows-3");
+    fireEvent.click(btn());
+    expect(icon()).toContain("lucide-rows-4");
+    fireEvent.click(btn());
+    expect(icon()).toContain("lucide-rows-2");
+  });
+
   it("全屏切换给根容器加 fixed", () => {
     const { container, getByLabelText } = render(<ProTable columns={columns} data={data} />);
     expect(container.firstElementChild!.className).not.toContain("fixed");

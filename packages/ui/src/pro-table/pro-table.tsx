@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import type { ColumnDef, RowSelectionState, SortingState } from "@tanstack/react-table";
-import { Columns3, Maximize, Minimize, RefreshCw, Rows3 } from "../_icons";
+import { Columns3, Maximize, Minimize, RefreshCw, Rows2, Rows3, Rows4 } from "../_icons";
 import { Button } from "../button/button";
 import { Checkbox } from "../checkbox/checkbox";
 import { useLocaleValue } from "../config/locale-context";
@@ -22,6 +22,9 @@ import type {
 
 const DENSITY_ORDER = ["default", "middle", "compact"] as const;
 type Density = (typeof DENSITY_ORDER)[number];
+// 密度按钮的图标随当前档位变：行越密、格子里的横线越多。此前恒为 Rows3，
+// 点了之后表格行高变了、按钮却纹丝不动，看起来像没点上。
+const DENSITY_ICON = { default: Rows2, middle: Rows3, compact: Rows4 } as const;
 
 const iconBtn =
   "inline-grid size-8 place-items-center rounded-[var(--hl-radius-control,var(--radius))] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
@@ -349,6 +352,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
   const showBatch = batchActions != null && selectedRowKeys.length > 0;
 
   const reloadVisible = features?.reload && (managed || onReload != null);
+  const DensityIcon = DENSITY_ICON[density];
 
   return (
     <div
@@ -407,7 +411,7 @@ export function ProTable<TData>(props: ProTableProps<TData>) {
                 onClick={cycleDensity}
                 className={iconBtn}
               >
-                <Rows3 className="size-4" />
+                <DensityIcon className="size-4" data-density={density} aria-hidden />
               </button>
             )}
             {features?.columnSetting && (
