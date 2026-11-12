@@ -1,5 +1,18 @@
 [
   {
+    "pkg": "@hulianui/ui",
+    "version": "0.73.1",
+    "date": "2026-11-12",
+    "entries": [
+      {
+        "sha": "f599efa",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(pro-table): 密度切换按钮的图标随当前档位变化（宽松 rows-2 / 标准 rows-3 / 紧凑 rows-4）。此前图标恒为 rows-3，点击后行高变了按钮却不变，看起来像没生效。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/tokens",
     "version": "0.15.0",
     "date": "2026-11-11",
