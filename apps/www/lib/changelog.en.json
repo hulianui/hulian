@@ -1,5 +1,18 @@
 [
   {
+    "pkg": "@hulianui/ui",
+    "version": "0.73.1",
+    "date": "2026-11-12",
+    "entries": [
+      {
+        "sha": "f599efa",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(pro-table): the density toggle icon now follows the current density (comfortable `rows-2` / default `rows-3` / compact `rows-4`). It used to stay on `rows-3`, so after a click the row height changed but the button did not, which looked like the click had no effect."
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/tokens",
     "version": "0.15.0",
     "date": "2026-11-11",
