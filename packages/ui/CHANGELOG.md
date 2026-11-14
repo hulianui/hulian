@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.73.2
+
+### Patch Changes
+
+- 839f83e: fix(ime): CodeEditor、ColorPicker 色值输入框、ScopeMatrix 新增输入框在输入法合成中（拼音候选未上屏）按 Enter 不再触发换行 / 提交；PromptInput 原有的 `isComposing` 判断补上 Safari 的 `keyCode === 229` 兜底（WebKit 先派发 compositionend，确认键到达时 `isComposing` 已为 false）。表单示例的密码框补 `autocomplete="new-password"`、邮箱补 `autocomplete="username"`。
+
 ## 0.73.1
 
 ### Patch Changes
