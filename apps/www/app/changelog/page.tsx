@@ -7,6 +7,7 @@ import changelog from "../../lib/changelog.json";
 import changelogEn from "../../lib/changelog.en.json";
 import { ChangelogView, type Release } from "./changelog-view";
 import { DOCS_LOCALE } from "../../lib/docs-locale";
+import { linkifyComponentMentions } from "../../lib/component-links";
 
 const content = getIntlayer("changelog", DOCS_LOCALE);
 
@@ -18,7 +19,18 @@ export const metadata: Metadata = {
 const REPO = "https://github.com/hulianui/hulian";
 
 export default function ChangelogPage() {
-  const releases = (DOCS_LOCALE === "en" ? changelogEn : changelog) as Release[];
+  // 组件名在正文里是裸词，这里统一链到站内文档页：更新日志最常见的用法就是
+  // 「看到某个组件改了 → 去它的文档看现状」，没有链接就得拷贝名字再搜一遍。
+  // 放在 server 侧做，组件名表（manifest 400 条）不必进 client bundle。
+  const releases = ((DOCS_LOCALE === "en" ? changelogEn : changelog) as Release[]).map(
+    (release) => ({
+      ...release,
+      entries: release.entries.map((entry) => ({
+        ...entry,
+        body: linkifyComponentMentions(entry.body, DOCS_LOCALE),
+      })),
+    }),
+  );
 
   return (
     <>

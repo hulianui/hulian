@@ -5,6 +5,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { DOCS_LOCALE, withDocsBasePath, type DocsLocale } from "./docs-locale";
+import { rewriteOutsideCode } from "./markdown-outside-code";
 
 // build cwd is apps/www in this monorepo; fall back to repo-root just in case.
 //
@@ -50,106 +51,6 @@ export function resolveMd(
     throw new Error(`Missing English component documentation for "${slug}": expected ${expected}`);
   }
   return null;
-}
-
-function backtickRun(markdown: string, index: number): number {
-  if (markdown[index] !== "`") return 0;
-  let end = index;
-  while (markdown[end] === "`") end += 1;
-  return end - index;
-}
-
-// Typed runtime mirror of scripts/check-component-doc-translations.mjs. The two
-// Node scripts share that implementation directly; this Next server module
-// keeps the same fence-first semantics without importing a CLI-oriented module.
-function hasClosingBacktickRunBeforeFence(
-  markdown: string,
-  index: number,
-  length: number,
-): boolean {
-  for (let cursor = index; cursor < markdown.length; ) {
-    const lineEnd = markdown.indexOf("\n", cursor);
-    const end = lineEnd < 0 ? markdown.length : lineEnd;
-    if (
-      (cursor === 0 || markdown[cursor - 1] === "\n") &&
-      /^ {0,3}(`{3,}|~{3,})/.test(markdown.slice(cursor, end))
-    ) {
-      return false;
-    }
-    for (let next = markdown.indexOf("`", cursor); next >= 0 && next < end; ) {
-      const run = backtickRun(markdown, next);
-      if (run === length) return true;
-      next = markdown.indexOf("`", next + run);
-    }
-    if (lineEnd < 0) return false;
-    cursor = lineEnd + 1;
-  }
-  return false;
-}
-
-function rewriteOutsideCode(markdown: string, rewrite: (text: string) => string): string {
-  const lines = markdown.match(/.*(?:\n|$)/g)?.filter(Boolean) ?? [];
-  let fence: string | null = null;
-  let inlineTicks = 0;
-  let globalOffset = 0;
-  return lines
-    .map((line) => {
-      const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
-      if (fence) {
-        if (marker?.[0] === fence[0] && marker.length >= fence.length) fence = null;
-        globalOffset += line.length;
-        return line;
-      }
-      if (marker) {
-        inlineTicks = 0;
-        fence = marker;
-        globalOffset += line.length;
-        return line;
-      }
-
-      let output = "";
-      let cursor = 0;
-      while (cursor < line.length) {
-        if (inlineTicks) {
-          let close = line.indexOf("`", cursor);
-          while (close >= 0 && backtickRun(line, close) !== inlineTicks) {
-            close += backtickRun(line, close);
-            close = line.indexOf("`", close);
-          }
-          if (close < 0) {
-            output += line.slice(cursor);
-            cursor = line.length;
-            continue;
-          }
-          const end = close + inlineTicks;
-          output += line.slice(cursor, end);
-          cursor = end;
-          inlineTicks = 0;
-          continue;
-        }
-
-        const opening = line.indexOf("`", cursor);
-        if (opening < 0) {
-          output += rewrite(line.slice(cursor));
-          cursor = line.length;
-          continue;
-        }
-        const length = backtickRun(line, opening);
-        const end = opening + length;
-        if (!hasClosingBacktickRunBeforeFence(markdown, globalOffset + end, length)) {
-          output += rewrite(line.slice(cursor, end));
-          cursor = end;
-          continue;
-        }
-        output += rewrite(line.slice(cursor, opening));
-        output += line.slice(opening, end);
-        cursor = end;
-        inlineTicks = length;
-      }
-      globalOffset += line.length;
-      return output;
-    })
-    .join("");
 }
 
 function localizedTarget(target: string, locale: DocsLocale, absolute: boolean) {
