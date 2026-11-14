@@ -26,4 +26,15 @@ export function createLanguageInitScript(currentLocale: DocsLocale): string {
   return `(function(c){try{var l=window.location,s=null;try{s=window.localStorage.getItem(c.storageKey)}catch(e){}if(s!=="zh-CN"&&s!=="en")return;if(s===c.currentLocale)return;var n=c.nestedBasePath,p=l.pathname;if(p===n||p===n+"/"){p="/"}else if(p.indexOf(n+"/")===0){p=p.slice(n.length)}if(s===c.nestedLocale){p=p==="/"?n+"/":n+p}var u=p+l.search+l.hash;if(u!==l.pathname+l.search+l.hash){l.replace(u)}}catch(e){}})(${config});`;
 }
 
-export const languageInitScript = createLanguageInitScript(DOCS_LOCALE);
+/**
+ * dev 下不注入。
+ *
+ * `next dev` 只构建一种语言（双语是 scripts/build-bilingual-docs.mjs 跑两遍 `next build`
+ * 的产物），而这段脚本会把「偏好语言 ≠ 当前构建语言」的访问者 replace 到另一种语言的 URL。
+ * 在 dev 上那个 URL 根本不存在 —— 于是点任何站内链接都会被弹进 404，且 404 页的站内链接
+ * （本身是当前语言前缀）一加载又触发同样的改写，看起来就像页面在不停刷新。
+ *
+ * 生产构建保持原行为：偏好语言优先，双语站里目标 URL 真实存在。
+ */
+export const languageInitScript =
+  process.env.NODE_ENV === "development" ? "" : createLanguageInitScript(DOCS_LOCALE);

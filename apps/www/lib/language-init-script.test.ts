@@ -36,6 +36,12 @@ function boot({
 }
 
 describe("languageInitScript", () => {
+  it("只在 dev 之外注入 —— dev 只构建一种语言，跳过去的目标 URL 不存在", async () => {
+    // vitest 的 NODE_ENV 是 test（非 development），这里等价于生产分支。
+    const { languageInitScript } = await import("./language-init-script");
+    expect(languageInitScript).toContain("localStorage");
+  });
+
   it("never redirects a visitor who has not chosen a language", () => {
     // 这条是 SEO 底线。搜索引擎渲染 JS 时同样没有 localStorage，一旦这里按域名或浏览器语言
     // 自动跳转，爬虫就会把站内每个 URL 判成「带重定向的网页」，sitemap 提交的地址集体失效。
