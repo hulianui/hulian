@@ -46,16 +46,18 @@ export const metadata: Metadata = {
 };
 
 // 站在巨人肩上 —— 吸取式聚合的底座（dogfood Marquee 滚动呈现）
+// 每个 tag 都挂上游源头。OKLCH 是规格而不是产品，源头是 W3C CSS Color 4 里 okLCH 的定义
+// （规范本身也托管在 GitHub：w3c/csswg-drafts/css-color-4）。
 const STACK_TAGS = [
-  "Base UI",
-  "TanStack Table",
-  "Recharts",
-  "Tailwind v4",
-  "Motion",
-  "MagicUI",
-  content.muiBridge,
-  "OKLCH Token",
-];
+  { label: "Base UI", href: "https://base-ui.com" },
+  { label: "TanStack Table", href: "https://tanstack.com/table/latest" },
+  { label: "Recharts", href: "https://recharts.org" },
+  { label: "Tailwind v4", href: "https://tailwindcss.com" },
+  { label: "Motion", href: "https://motion.dev" },
+  { label: "MagicUI", href: "https://magicui.design" },
+  { label: content.muiBridge, href: "https://mui.com" },
+  { label: "OKLCH Token", href: "https://www.w3.org/TR/css-color-4/#ok-lab" },
+] as const;
 
 const total = manifest.length;
 
@@ -206,11 +208,33 @@ export default function Home() {
           <Heading as="p" size="sm" weight="medium" className="mb-4 text-foreground">
             {content.builtWith}
           </Heading>
-          {/* 只有两行，直接写开：intlayer 取到的是节点，放 JSX children 位置 React 才会解析，
-              先塞进普通数组再 map 出来会渲染成空。同理 aria-label 这类字符串属性要显式 String()。 */}
+          {/* 只有几行，直接写开：intlayer 取到的是节点，放 JSX children 位置 React 才会解析，
+              先塞进普通数组再 map 出来会渲染成空。同理 aria-label 这类字符串属性要显式 String()。
+              官网与个人站是两个站：haloritual.com 是品牌官网，个人站已迁到 zhangzhiwei.com.cn。 */}
           <nav className="border-t border-border" aria-label={String(content.builtWith)}>
             <a
               href="https://haloritual.com"
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
+            >
+              <Text as="span" weight="medium" className="shrink-0 whitespace-nowrap">
+                {content.officialName}
+              </Text>
+              <Text as="span" size="sm" tone="muted" truncate className="hidden min-w-0 flex-1 sm:block">
+                {content.officialBlurb}
+              </Text>
+              <Text
+                as="span"
+                size="sm"
+                tone="muted"
+                className="ml-auto shrink-0 font-mono transition-colors group-hover:text-primary"
+              >
+                haloritual.com
+              </Text>
+            </a>
+            <a
+              href="https://zhangzhiwei.com.cn"
               target="_blank"
               rel="noreferrer"
               className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
@@ -227,7 +251,7 @@ export default function Home() {
                 tone="muted"
                 className="ml-auto shrink-0 font-mono transition-colors group-hover:text-primary"
               >
-                haloritual.com
+                zhangzhiwei.com.cn
               </Text>
             </a>
             <a
@@ -264,9 +288,20 @@ export default function Home() {
             className="w-full"
           >
             {STACK_TAGS.map((tag) => (
-              <Tag key={tag} variant="solid" className="mx-1 whitespace-nowrap">
-                {tag}
-              </Tag>
+              <a
+                key={tag.href}
+                href={tag.href}
+                target="_blank"
+                rel="noreferrer"
+                className="group mx-1 rounded-full"
+              >
+                <Tag
+                  variant="solid"
+                  className="whitespace-nowrap transition-opacity group-hover:opacity-80"
+                >
+                  {tag.label}
+                </Tag>
+              </a>
             ))}
           </Marquee>
         </section>
