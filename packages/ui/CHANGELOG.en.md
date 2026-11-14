@@ -1,5 +1,13 @@
 # @hulianui/ui
 
+## 0.73.3
+
+### Patch Changes
+
+- 9d99cb6: Markdown: inline markup inside bold and italic now renders. `` **bold with `code`** `` and `**[link](url) bold**` used to emit the inner markup as literal text, backticks and asterisks included. They now produce real `<code>` and `<a>` inside `<strong>`, and nesting no longer shifts the parsing position of later markup on the same line.
+
+- 63118ca: Marquee: the duplicated tracks used for the seamless loop now carry `inert` alongside `aria-hidden`. When the content contains links or buttons (the home page's tech-stack marquee, for instance), those copies were hidden from assistive tech but still reachable with Tab, which axe flags as `aria-hidden-focus` (serious). `inert` removes focus and pointer access; nothing changes visually.
+
 ## 0.73.2
 
 ### Patch Changes
