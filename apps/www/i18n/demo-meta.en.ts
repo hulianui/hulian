@@ -154,10 +154,10 @@ export const demoMetaEn: Record<string, LocalizedDemoMeta> = {
     tags: ["NovelReader", "NovelEditor", "Markdown", "reading progress"],
   },
   "org-classroom": {
-    title: "Org classroom",
+    title: "HanSeat workplace console",
     description:
-      "A clickable isometric floor with one department and twelve seats. Select a seat to open the person card and change status, or click empty floor space to focus the zone.",
+      "A complete workplace console: overview KPIs, a clickable isometric seat map across three departments and 33 seats with filtering, search, seat assignment and a person dossier; a ProTable people directory with bulk status updates; a Scheduler-based interview desk with drag-to-reschedule; department zones and settings. Built 100% with @hulianui/ui.",
     category: "Application",
-    tags: ["OrgClassroom", "seats", "status"],
+    tags: ["OrgClassroom", "AdminLayout", "ProTable", "Scheduler", "seats", "interviews"],
   },
 };

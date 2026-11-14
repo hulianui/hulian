@@ -229,13 +229,13 @@ export const demos: DemoMeta[] = [
   },
   {
     slug: "org-classroom",
-    title: "组织工位",
+    title: "瀚位 HanSeat 组织工位管理台",
     description:
-      "一块可点的等距工位平面：一个部门、十二个座位，点座位看人员卡并改状态，点空白处聚焦分区。100% 由 @hulianui/ui 搭建，dogfood OrgClassroom。顶栏 KPI、面试间和档案侧栏不在这个组件里。",
+      "一个完整的工作台：总览 KPI 与部门分布、可点的等距工位图（三部门 33 座、筛选/搜索、空位分配、换座、档案侧栏）、人员名录（ProTable 筛选与批量状态）、面试安排（Scheduler 资源视图 + 拖拽改期）、部门分区与设置。100% 由 @hulianui/ui 搭建，dogfood OrgClassroom / AdminLayout / ProTable / Scheduler。",
     href: "/demos/org-classroom",
     category: "中后台",
     status: "done",
-    tags: ["OrgClassroom", "工位", "状态"],
+    tags: ["OrgClassroom", "AdminLayout", "ProTable", "Scheduler", "工位", "面试"],
   },
 ];
 
