@@ -205,3 +205,10 @@ body {
   --color-primary-subtle: var(--gray-900);
   --color-ring: var(--gray-400);
 }
+
+/* 「返回示例库」Fab 在阅读页的位置。底栏（全书/本章进度 + 目录 / 阅读设置）唤出时铺满
+   视口底部，Fab 用默认 bottom-6 会正压在「目录」上；[data-novel-chrome] 只在顶栏/底栏
+   展开时存在，故用 :has 联动：展开时抬到底栏之上，收起后自动回到底角，与其他 demo 同一位置。 */
+body:has([data-novel-chrome]) .novel-fab-lift {
+  bottom: 10rem;
+}
