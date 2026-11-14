@@ -99,15 +99,15 @@ export function SignupBlock() {
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-5" noValidate>
           <Field label="name" error={errors.name} name="name">
-            <Input placeholder="your name" value={values.name} invalid={Boolean(errors.name)} onChange={(e) => set("name", e.target.value)}/>
+            <Input autoComplete="name" placeholder="your name" value={values.name} invalid={Boolean(errors.name)} onChange={(e) => set("name", e.target.value)}/>
           </Field>
 
           <Field label="Email" error={errors.email} name="email">
-            <Input type="email" placeholder="you@company.com" value={values.email} invalid={Boolean(errors.email)} onChange={(e) => set("email", e.target.value)}/>
+            <Input type="email" autoComplete="username" spellCheck={false} placeholder="you@company.com" value={values.email} invalid={Boolean(errors.email)} onChange={(e) => set("email", e.target.value)}/>
           </Field>
 
           <Field label="Password" error={errors.password} description={!errors.password ? "At least 8 characters, preferably uppercase and lowercase letters, numbers and symbols" : undefined} name="password">
-            <Input type="password" placeholder="Set a secure password" value={values.password} invalid={Boolean(errors.password)} onChange={(e) => set("password", e.target.value)}/>
+            <Input type="password" autoComplete="new-password" placeholder="Set a secure password" value={values.password} invalid={Boolean(errors.password)} onChange={(e) => set("password", e.target.value)}/>
           </Field>
 
 

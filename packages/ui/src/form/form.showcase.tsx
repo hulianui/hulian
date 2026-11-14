@@ -46,13 +46,13 @@ function ValidationDemo() {
       noValidate
     >
       <Field label="邮箱" error={email.error}>
-        <Input value={email.value as string} onChange={email.onChange} onBlur={email.onBlur} placeholder="you@example.com" />
+        <Input type="email" autoComplete="username" value={email.value as string} onChange={email.onChange} onBlur={email.onBlur} placeholder="you@example.com" />
       </Field>
       <Field label="密码" error={pwd.error}>
-        <Input type="password" value={pwd.value as string} onChange={pwd.onChange} onBlur={pwd.onBlur} />
+        <Input type="password" autoComplete="new-password" value={pwd.value as string} onChange={pwd.onChange} onBlur={pwd.onBlur} />
       </Field>
       <Field label="确认密码" error={confirm.error}>
-        <Input type="password" value={confirm.value as string} onChange={confirm.onChange} onBlur={confirm.onBlur} />
+        <Input type="password" autoComplete="new-password" value={confirm.value as string} onChange={confirm.onChange} onBlur={confirm.onBlur} />
       </Field>
       <Button type="submit" size="sm">
         提交

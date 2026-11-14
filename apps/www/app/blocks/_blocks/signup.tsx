@@ -134,6 +134,7 @@ export function SignupBlock() {
         <form onSubmit={handleSubmit} className="mt-6 space-y-5" noValidate>
           <Field label="姓名" error={errors.name} name="name">
             <Input
+              autoComplete="name"
               placeholder="你的名字"
               value={values.name}
               invalid={Boolean(errors.name)}
@@ -144,6 +145,8 @@ export function SignupBlock() {
           <Field label="邮箱" error={errors.email} name="email">
             <Input
               type="email"
+              autoComplete="username"
+              spellCheck={false}
               placeholder="you@company.com"
               value={values.email}
               invalid={Boolean(errors.email)}
@@ -159,6 +162,7 @@ export function SignupBlock() {
           >
             <Input
               type="password"
+              autoComplete="new-password"
               placeholder="设置一个安全的密码"
               value={values.password}
               invalid={Boolean(errors.password)}

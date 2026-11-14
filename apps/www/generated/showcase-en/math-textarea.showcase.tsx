@@ -15,7 +15,7 @@ function Demo({ initial, ...rest }: {
 }
 function FakeMathField({ value, onChange, onSubmit, "aria-label": ariaLabel }: MathFieldLikeProps) {
     return (<Input aria-label={ariaLabel} placeholder={"\\sqrt{2}"} value={value} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => {
-            if (e.key === "Enter")
+            if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229)
                 onSubmit?.(value);
         }}/>);
 }

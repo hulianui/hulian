@@ -26,7 +26,8 @@ function FakeMathField({ value, onChange, onSubmit, "aria-label": ariaLabel }: M
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onKeyDown={(e) => {
-        if (e.key === "Enter") onSubmit?.(value);
+        // 输入法上屏的 Enter 不算提交（keyCode 229 是 Safari 兜底）
+        if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229) onSubmit?.(value);
       }}
     />
   );
