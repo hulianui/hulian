@@ -2,6 +2,7 @@
 import { useState, type KeyboardEvent } from "react";
 import { ArrowUp, Square } from "../_icons";
 import { cn } from "../lib/cn";
+import { isImeComposing } from "../lib/ime";
 import { Button } from "../button";
 import { Textarea } from "../textarea";
 import type { PromptInputProps } from "./prompt-input.types";
@@ -45,8 +46,8 @@ export function PromptInput({
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    // IME（中文/日文）合成确认的 Enter 不应提交
-    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+    // IME（中文/日文）合成确认的 Enter 不应提交（含 Safari keyCode 229 兜底）
+    if (e.key === "Enter" && !e.shiftKey && !isImeComposing(e)) {
       e.preventDefault();
       submit();
     }

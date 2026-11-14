@@ -15,6 +15,7 @@ import {
   type EditorEdit,
   type EditorState,
 } from "./code-editor-edit";
+import { isImeComposing } from "../lib/ime";
 import type { CodeEditorProps } from "./code-editor.types";
 
 // ── 方案说明（为什么是 textarea + 高亮层，而不是 CodeMirror/Monaco）──────────────
@@ -150,6 +151,8 @@ export function CodeEditor({
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const el = e.currentTarget;
     if (readOnly) return;
+    // 输入法合成中（拼音候选未上屏）的按键交给 IME，不做缩进/配对/换行等编辑
+    if (isImeComposing(e)) return;
     const state = readState(el);
     const mod = e.metaKey || e.ctrlKey;
 

@@ -3,6 +3,7 @@ import { useState, memo } from "react";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
+import { isImeComposing } from "../lib/ime";
 import type { ScopeMatrixProps } from "./scope-matrix.types";
 
 // 允许/禁止模式矩阵（"use client"·零依赖·纯 CSS）：
@@ -149,6 +150,7 @@ function Bucket({
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
+                  if (isImeComposing(e)) return;
                   commit();
                 }
               }}

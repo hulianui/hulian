@@ -4,6 +4,7 @@ import { HexColorPicker } from "react-colorful";
 
 import { useComponentLocale } from "../config/locale-context";
 import { cn } from "../lib/cn";
+import { isImeComposing } from "../lib/ime";
 import type { ColorFormat, ColorPickerProps } from "./color-picker.types";
 import { formatColor, parseColor, rgbToHex } from "./color-utils";
 
@@ -137,7 +138,7 @@ export function ColorPicker({
             // 吐的是当前规范值，消费方永远拿得到一个合法颜色。
             onBlur={() => commitValue()}
             onKeyDown={(e) => {
-              if (e.key === "Enter") commitValue();
+              if (e.key === "Enter" && !isImeComposing(e)) commitValue();
             }}
             spellCheck={false}
             aria-label={locale[fmt]}

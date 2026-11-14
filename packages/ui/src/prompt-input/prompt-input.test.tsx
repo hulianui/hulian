@@ -20,6 +20,14 @@ describe("PromptInput", () => {
     fireEvent.keyDown(ta, { key: "Enter", shiftKey: true });
     expect(onSubmit).not.toHaveBeenCalled();
   });
+  it("输入法合成中的 Enter 不提交（isComposing / Safari keyCode 229）", () => {
+    const onSubmit = vi.fn();
+    const { container } = render(<PromptInput defaultValue="ni hao" onSubmit={onSubmit} />);
+    const ta = container.querySelector("textarea")!;
+    fireEvent.keyDown(ta, { key: "Enter", isComposing: true });
+    fireEvent.keyDown(ta, { key: "Enter", keyCode: 229 });
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
   it("空白文本不提交", () => {
     const onSubmit = vi.fn();
     const { container } = render(<PromptInput defaultValue="   " onSubmit={onSubmit} />);
