@@ -65,6 +65,7 @@ describe("localized component Markdown resolution", () => {
           "",
           "## When to use",
           "See [Input](../input/input.md), [Start](/start), and [Docs](https://hulianui.haloritual.com/components/card).",
+          "Also [Brand](../brand/brand.en.md), a relative link written with the real file name.",
           "",
           "## Examples",
           "static example",
@@ -77,6 +78,7 @@ describe("localized component Markdown resolution", () => {
 
     expect(loadComponentDoc("button", "en", [root])).toContain(`[Input](${EN}/components/input)`);
     expect(loadComponentDoc("button", "en", [root])).toContain(`[Start](${EN}/start)`);
+    expect(loadComponentDoc("button", "en", [root])).toContain(`[Brand](${EN}/components/brand)`);
     expect(loadComponentDoc("button", "en", [root])).not.toContain("static example");
 
     const copied = loadComponentMarkdownForCopy("button", "en", [root])!;

@@ -67,7 +67,9 @@ export function rewriteComponentMarkdownLinks(
   return rewriteOutsideCode(markdown, (text) =>
     text.replace(/\]\(([^)\s]+)\)/g, (match, target: string) => {
       if (target.startsWith("//")) return match;
-      const relative = target.match(/^\.\.\/(?:_mui\/)?([\w-]+?)(?:\/[\w-]+)?\.md$/);
+      // `.en.md` 也算：英文文档里按真实文件名写相对链接是很自然的（admin-layout.en.md
+      // 就写过 ../brand/brand.en.md），宽恕它而不是指望每个人都记得去掉 .en。
+      const relative = target.match(/^\.\.\/(?:_mui\/)?([\w-]+)(?:\/[\w-]+)?(?:\.en)?\.md$/);
       if (relative) return `](${localizedTarget(`/components/${relative[1]}`, locale, absolute)})`;
       if (target.startsWith("/") || target.startsWith("https://hulianui.haloritual.com/")) {
         return `](${localizedTarget(target, locale, absolute)})`;
