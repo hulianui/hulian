@@ -8,7 +8,6 @@ import {
   Button,
   DotPattern,
   Heading,
-  Marquee,
   Separator,
   Snippet,
   Stack,
@@ -45,7 +44,7 @@ export const metadata: Metadata = {
   },
 };
 
-// 站在巨人肩上 —— 吸取式聚合的底座（dogfood Marquee 滚动呈现）
+// 站在巨人肩上 —— 吸取式聚合的底座（静态排开，每个都链上游）
 // 每个 tag 都挂上游源头。OKLCH 是规格而不是产品，源头是 W3C CSS Color 4 里 okLCH 的定义
 // （规范本身也托管在 GitHub：w3c/csswg-drafts/css-color-4）。
 const STACK_TAGS = [
@@ -278,23 +277,17 @@ export default function Home() {
           </nav>
         </section>
 
-        {/* 技术底座（新区块）：dogfood Marquee 滚动展示吸取的上游 */}
+        {/* 技术底座：静态排开，不用 Marquee。跑马灯的无缝循环靠复制子项，复制份要
+            aria-hidden，而 aria-hidden 里的 <a> 仍能 Tab 到（axe 判 aria-hidden-focus），
+            补 inert 又会把复制份变成不可点——滚动时视口里多半是复制份。八个短标签静态
+            换行就能排下，全部可点、键盘可达、读屏只读一遍。 */}
         <section className="hl-rise mt-20 sm:mt-24" style={rise(8)}>
           <Heading as="p" size="sm" weight="medium" className="mb-4 text-foreground">
             {content.foundations}
           </Heading>
-          <Marquee
-            pauseOnHover
-            className="w-full"
-          >
+          <div className="flex flex-wrap gap-2">
             {STACK_TAGS.map((tag) => (
-              <a
-                key={tag.href}
-                href={tag.href}
-                target="_blank"
-                rel="noreferrer"
-                className="group mx-1 rounded-full"
-              >
+              <a key={tag.href} href={tag.href} target="_blank" rel="noreferrer" className="group rounded-full">
                 <Tag
                   variant="solid"
                   className="whitespace-nowrap transition-opacity group-hover:opacity-80"
@@ -303,7 +296,7 @@ export default function Home() {
                 </Tag>
               </a>
             ))}
-          </Marquee>
+          </div>
         </section>
 
         {/* 一句品牌宣言，立住调性 */}
