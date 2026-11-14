@@ -47,7 +47,11 @@ export function Marquee({
       {Array.from({ length: repeat }).map((_, i) => (
         <div
           key={i}
+          // 复制份对 AT 隐藏，也必须对键盘隐藏：aria-hidden 里的 <a>/<button> 仍可聚焦，
+          // axe 判 aria-hidden-focus（serious）。内容一旦带链接（首页跑马灯就是），
+          // 用户会 Tab 进一个读屏看不见的副本。inert 一并封掉指针与焦点，视觉不变。
           aria-hidden={i > 0 || undefined}
+          inert={i > 0 || undefined}
           className={cn(
             "flex shrink-0 justify-around [gap:var(--hulian-marquee-gap)]",
             vertical ? "flex-col" : "flex-row",

@@ -33,6 +33,19 @@ describe("Marquee", () => {
     expect(tracks[1].getAttribute("aria-hidden")).toBe("true");
     expect(tracks[2].getAttribute("aria-hidden")).toBe("true");
   });
+  it("复制份同时 inert —— aria-hidden 里的链接仍可聚焦，axe 报 aria-hidden-focus", () => {
+    // 内容带链接时（首页技术底座跑马灯），副本里每个 <a> 都是一个读屏看不见、
+    // 但 Tab 键能进去的焦点站。
+    const { container } = render(
+      <Marquee repeat={3}>
+        <a href="https://example.com/x">x</a>
+      </Marquee>,
+    );
+    const tracks = tracksOf(container);
+    expect(tracks[0].hasAttribute("inert")).toBe(false);
+    expect(tracks[1].hasAttribute("inert")).toBe(true);
+    expect(tracks[2].hasAttribute("inert")).toBe(true);
+  });
   it("外层 overflow-hidden + group", () => {
     const { container } = render(
       <Marquee>
