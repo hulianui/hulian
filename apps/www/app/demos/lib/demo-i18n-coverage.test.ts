@@ -533,8 +533,16 @@ const inventory = {
     fixtures: ["_data/site.ts"],
   },
   "org-classroom": {
-    routes: ["page.tsx"],
-    fixtures: [],
+    routes: [
+      "(app)/departments/page.tsx",
+      "(app)/floor/page.tsx",
+      "(app)/interviews/page.tsx",
+      "(app)/page.tsx",
+      "(app)/people/page.tsx",
+      "(app)/settings/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: ["_data/org.ts"],
   },
 } as const;
 
