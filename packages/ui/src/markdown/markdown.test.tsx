@@ -67,6 +67,27 @@ describe("Markdown", () => {
     expect(container.querySelector("a")?.getAttribute("href")).toBe("https://example.com/a");
   });
 
+  it("粗体与斜体内部仍然解析行内标记", () => {
+    // 站点上 `**带 \`代码\` 的粗体**`、`**[Button](url) 修了两层**` 都出现过：
+    // 不递归解析的话内层标记会连同 `*` 和反引号一起当字面文本吐出来。
+    const { container } = render(
+      <Markdown>{"**带 `代码` 的粗体** 与 *[链接](https://example.com/b)*"}</Markdown>,
+    );
+
+    expect(container.querySelector("strong code")?.textContent).toBe("代码");
+    expect(container.querySelector("em a")?.getAttribute("href")).toBe("https://example.com/b");
+  });
+
+  it("嵌套递归不会打乱同一行后续标记的位置", () => {
+    // 行内扫描器共用一个带 g 的正则时，递归会推进外层的 lastIndex，后面的标记整行错位。
+    const { container } = render(
+      <Markdown>{"**粗 `a`** 之后 `b` 与 [c](https://example.com/c)"}</Markdown>,
+    );
+
+    expect([...container.querySelectorAll("code")].map((el) => el.textContent)).toEqual(["a", "b"]);
+    expect(container.querySelector("a")?.textContent).toBe("c");
+  });
+
   it("inheritTypography 把字号和行距让给父级", () => {
     const { container } = render(<Markdown inheritTypography>{"正文一段"}</Markdown>);
     const prose = container.querySelector("article");

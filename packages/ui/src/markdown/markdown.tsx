@@ -20,8 +20,8 @@ import { useComponentLocale } from "../config/locale-context";
 // 里的 `**粗**` 被解析成了 <strong>、`[文字](链接)` 被解析成了 <a href="链接">，
 // 而它们本该原样躺在行内代码里。「用 Markdown 讲 Markdown 语法」的文档必然踩这条
 // （本库的 markdown.md 就踩了，静态导出后被 bilingual-links 判成悬空链接才暴露）。
-const INLINE =
-  /(```[^\n]*?```|``[^\n]*?``|`[^`\n]+`)|(\*\*[^*]+\*\*)|(\*[^*]+\*)|(\[[^\]]+\]\([^)]+\))/g;
+const INLINE_SOURCE =
+  "(```[^\\n]*?```|``[^\\n]*?``|`[^`\\n]+`)|(\\*\\*[^*]+\\*\\*)|(\\*[^*]+\\*)|(\\[[^\\]]+\\]\\([^)]+\\))";
 
 /**
  * 取行内代码的内容：剥掉两侧的反引号围栏。
@@ -41,15 +41,20 @@ function renderInline(text: string): ReactNode[] {
   const out: ReactNode[] = [];
   let last = 0;
   let key = 0;
+  // 每次递归都拿自己的实例：共享一个带 g 的正则会被内层调用推进 lastIndex，
+  // 外层的循环接着从错误位置扫下去，整行标记全部错位。
+  const INLINE = new RegExp(INLINE_SOURCE, "g");
   for (let m = INLINE.exec(text); m; m = INLINE.exec(text)) {
     if (m.index > last) out.push(<Fragment key={key++}>{text.slice(last, m.index)}</Fragment>);
     const tok = m[0];
     if (tok.startsWith("`")) {
       out.push(<code key={key++}>{codeContent(tok)}</code>);
     } else if (tok.startsWith("**")) {
-      out.push(<strong key={key++}>{tok.slice(2, -2)}</strong>);
+      // 强调内可以再嵌行内标记（`**带 \`代码\` 的粗体**`、`**[Button](url) 修了两层**`）。
+      // 不递归的话内层标记会被当字面文本整段吐出来 —— 粗体里写什么就显示什么 `*` 和反引号。
+      out.push(<strong key={key++}>{renderInline(tok.slice(2, -2))}</strong>);
     } else if (tok.startsWith("*")) {
-      out.push(<em key={key++}>{tok.slice(1, -1)}</em>);
+      out.push(<em key={key++}>{renderInline(tok.slice(1, -1))}</em>);
     } else {
       // [label](url)
       const sep = tok.indexOf("](");
