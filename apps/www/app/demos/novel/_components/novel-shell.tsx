@@ -81,11 +81,6 @@ export function NovelShell({ children }: { children: ReactNode }) {
           ))}
         </NavbarContent>
         <NavbarContent justify="end" className="gap-1">
-          <li className="hidden items-center md:flex">
-            <Button variant="ghost" size="sm" muted render={<Link href="/demos" />}>
-              {copy("gallery")}
-            </Button>
-          </li>
           <li className="flex items-center">
             <AnimatedThemeToggler />
           </li>
@@ -102,7 +97,7 @@ export function NovelShell({ children }: { children: ReactNode }) {
       {open ? (
         <div className="sticky top-16 z-20 border-b border-hairline bg-surface/95 backdrop-blur-md md:hidden">
           <Stack direction="column" gap={1} className="px-4 py-3">
-            {[...primaryNav, { label: copy("gallery"), href: "/demos" }].map((link) => (
+            {primaryNav.map((link) => (
               <Button
                 key={link.href}
                 variant="ghost"
