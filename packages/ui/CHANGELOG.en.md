@@ -1,5 +1,11 @@
 # @hulianui/ui
 
+## 0.73.2
+
+### Patch Changes
+
+- 839f83e: fix(ime): pressing Enter while an IME composition is active (e.g. a Pinyin candidate not yet committed) no longer inserts a newline or submits in CodeEditor, the ColorPicker value input, and the ScopeMatrix add input. PromptInput's existing `isComposing` check now also covers Safari via `keyCode === 229` (WebKit fires compositionend first, so `isComposing` is already false when the confirming keydown arrives). The form showcase password fields now set `autocomplete="new-password"` and the email field `autocomplete="username"`.
+
 ## 0.73.1
 
 ### Patch Changes
