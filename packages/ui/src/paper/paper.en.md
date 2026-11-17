@@ -4,7 +4,7 @@ name: Paper
 category: data-display
 group: collection
 tags: []
-exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, usePaperMode]
+exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography]
 status: enriched
 ---
 
@@ -18,15 +18,21 @@ Use it to turn the figures of a paper, lecture notes, or a thesis defense into f
 
 ## Import
 ```ts
-import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, usePaperMode } from "@hulianui/ui"
-import type { ProcessStep, FigureRenderContext } from "@hulianui/ui"
+import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
+import { PaperEquation } from "@hulianui/ui/math"
+import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
 ```
 
 ## Structure
 
 ```
 Paper                      display mode (read / print) + figure registry + figure numbering
+├─ PaperHeader             title block: title, authors, abstract
 ├─ FigRef                  in-text reference: switch to a preset, scroll to the figure, flash it
+├─ Cite                    citation [1, 2], numbered by Bibliography
+├─ PaperEquation           formula whose terms link to figures (@hulianui/ui/math)
+├─ PaperPresenter          presentation mode: full screen, figure presets as slides
+├─ Bibliography            numbered reference list
 ├─ PaperFigure<S>          general figure: any state value + named presets
 └─ ProcessFigure           step-by-step figure (a PaperFigure whose state is a step key)
    └─ FigureStep           marks which step a part of the figure belongs to
@@ -43,7 +49,7 @@ Extends `HTMLAttributes<HTMLElement>`; `ref` lands on the root element.
 | as | `ElementType` | `"article"` | Root element tag |
 | mode | `"read"` \| `"print"` | - | Controlled mode |
 | defaultMode | `"read"` \| `"print"` | `"read"` | Uncontrolled initial mode |
-| labels | `{ figure?: string; separator?: string }` | follows the UI language | Text of the caption prefix and of automatic references. Set it when the paper language differs from the UI, such as an English paper in a Chinese UI: `{ figure: "Figure", separator: ": " }`. Control text such as step buttons still follows the UI language |
+| labels | `{ figure?; separator?; abstract?; references? }` | follows the UI language | Text of the caption prefix, automatic references, and the abstract and references headings. Set it when the paper language differs from the UI, such as an English paper in a Chinese UI: `{ figure: "Figure", separator: ": " }`. Control text such as step buttons still follows the UI language |
 
 | Event | Type | Description |
 |------|------|------|
@@ -68,6 +74,7 @@ Extends `HTMLAttributes<HTMLElement>`; `ref` lands on the root element.
 | defaultState | string | first key of `states` | Initial preset |
 | printState | string | same as `defaultState` | Preset of the main figure in print mode |
 | printSubfigures | `string[]` | - | Presets expanded as (a)(b)… sub-figures below the main figure in print mode |
+| presentStates | `string[]` | every key of `states` | Presets shown one by one in `PaperPresenter`; `[]` skips this figure when presenting |
 | describe | `(state: S, key: string \| null) => ReactNode` | - | Second caption line describing the current state; screen readers announce changes |
 | subfigureLabel | `(key: string, index: number) => ReactNode` | `(a)` + `describe` | Sub-figure label |
 | controls | `(figure: FigureRenderContext<S>) => ReactNode` | - | Controls below the figure, rendered only in read mode |
@@ -100,6 +107,7 @@ A step-by-step figure. Its state is a step `key`, plus the reserved name `"all"`
 | overviewDescription | ReactNode | - | Description of the "all" state |
 | printState | string | `"all"` (the last step without overview) | Print state |
 | printSubfigures | `string[]` | one per step | Print sub-figures; pass `[]` for none |
+| presentStates | `string[]` | each step + `"all"` | Presets shown one by one when presenting |
 | interval | number | 2200 | Milliseconds per step during autoplay |
 
 ```ts
@@ -152,6 +160,170 @@ An `<a href="#id">`. Extends `AnchorHTMLAttributes` (without `href`); `ref` land
 
 On click it switches the figure to `state`, scrolls the figure into view when it is off screen (without smooth scrolling under reduced motion), and outlines the figure for about 1.2 seconds. Without JS or outside a `Paper` it is a plain anchor. In print mode the link color and underline are removed.
 
+## PaperPresenter
+
+Presentation mode for talks and defenses: a full-screen layer that turns the presets of every figure in the paper into one set of slides. Put it anywhere inside `Paper`, usually in a toolbar.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| trigger | `ReactElement` | - | The button that opens the presenter, such as `<Button>Present</Button>`. Focus returns to it on exit |
+| open | boolean | - | Controlled open state. Without `trigger`, open it with this; focus returns to the element that had focus before opening |
+| defaultOpen | boolean | false | Uncontrolled initial open state |
+| title | ReactNode | - | Title on the left of the header, usually the paper title |
+| slides | `PresenterSlide[]` | see below | The whole slide list, `{ figure: figure id, state: preset name }` |
+| controls | boolean | true | Whether to render the figure's own controls (step buttons, parameter toggles) |
+| className | string | - | Added to the root of the full-screen layer |
+
+| Event | Type | Description |
+|------|------|------|
+| onOpenChange | `(open: boolean) => void` | Opened or closed (including Esc and the exit button) |
+| onSlideChange | `(slide: PresenterSlide, index: number) => void` | Fired on every slide change, including the first slide on open |
+
+- **Where slides come from**: by default, the `presentStates` of each figure in document order. `PaperFigure` defaults to every preset, `ProcessFigure` to each step plus "all". Pass `slides` to reorder them or interleave figures; missing figures or presets warn once in development and are skipped. Figure numbers in the header always follow document order.
+- **No DOM is moved**: the presenter draws each figure again with the same `children(state)` function. The figure in the text stays where it is with its state unchanged, so readers come back to the step they left. When the figure's props change (a language switch, say), the presenter redraws too.
+- **Figure controls still work**: when a control calls `select` with a preset, the presenter jumps to that slide (the step buttons of `ProcessFigure` become slide jumps). Values from `setState` only override the current slide and are dropped when the slide changes.
+- **Keys**: `→` / `Space` / `PageDown` next, `←` / `PageUp` previous, `Esc` exits. Arrow keys are left to the control when focus is in an input, slider, radio group and the like; Space on a focused button presses that button.
+- **Accessibility**: `role="dialog"`, named "Presentation" (follows the UI language). Focus is trapped inside, starts on "Next slide", and returns to the trigger on exit. Content outside the presenter is hidden from screen readers.
+- The presenter renders outside the `Paper` DOM (in a portal) and uses the same serif font stack as `Paper`. If a figure's render function depends on a context placed between `Paper` and the figure, that context is not available while presenting.
+- SVG figures fill the stage height in the presenter (width follows the `viewBox` ratio), so no separate presentation size is needed.
+
+```tsx
+<Paper>
+  <PaperPresenter title="Attention Is All You Need" trigger={<Button>Present ▶</Button>} />
+  <ProcessFigure id="transformer" steps={steps} caption="…">…</ProcessFigure>
+  <PaperFigure id="attention" states={presets} presentStates={["scaled64", "raw512", "scaled512"]} caption="…">
+    {(state) => <AttentionBars state={state} />}
+  </PaperFigure>
+</Paper>
+```
+
+## Per-state SVG export
+
+For submission, insert the vector figure of each state into Word, or convert it to PDF for LaTeX. Use `usePaperExport()` inside `Paper`:
+
+```tsx
+const { exportFigureSvg } = usePaperExport();
+const svg = await exportFigureSvg("transformer", "b", { background: "white" }); // SVG text
+```
+
+`exportFigureSvg(id, stateKey, options?) => Promise<string>`:
+
+| Option | Type | Default | Description |
+|------|------|------|------|
+| theme | `"light"` \| `"current"` | `"light"` | Which theme to take colors from. Light by default, so a reader in dark mode still exports a figure for white paper |
+| background | string | transparent | Background, any CSS color |
+| width | number | `viewBox` width | Output `width` in px; height keeps the ratio |
+
+- **How it works**: `Paper` briefly mounts an off-screen slot, draws the preset with the figure's own `children(state)` (with `mode` set to `"print"`), waits for fonts, then reads each element's computed style and writes it back as SVG presentation attributes (`fill="#…"`, `stroke-width="1.3"`…), dropping `class` / `style` / `data-*`. The figure in the text is not touched.
+- **Colors**: Tailwind classes and CSS variables stop working outside the page, and browsers often report computed colors as `oklab()` / `oklch()`, which Word and Inkscape do not read. Export converts every color to `#rrggbb` and folds transparency into `fill-opacity` / `stroke-opacity`.
+- **Frozen**: animations and transitions are off in the slot, so flowing dashes stop at their start; `FigureStep` phase opacity follows the exported step. Elements with `display: none` are left out, and `aria-label` becomes a `<title>` (Word uses it as alt text).
+- **Text stays as `<text>`** with the `Paper` font stack. On a machine without STIX Two Text it falls back to Times New Roman or SimSun. In LaTeX use `\includesvg` (the svg package, which needs Inkscape) or convert to PDF first, with the fonts installed on the converting machine.
+- **Requirement**: the figure must draw a single `<svg>`. A canvas, HTML, or `<foreignObject>` rejects with the reason, as do a missing figure or preset.
+- CSS `transform`s inside the figure (such as Tailwind `rotate-*`) are not written to the file; use the SVG `transform` attribute to rotate or move parts.
+
+## Linking formulas to figures
+
+A term in a formula can be clicked or hovered, and it highlights together with the figure's state or controls. There are two halves:
+
+- **`PaperEquation`** comes from `@hulianui/ui/math`. It renders with KaTeX, which would land in every consumer's bundle if it were in the main entry.
+- **`usePaperTerm`** comes from `@hulianui/ui`. Figure controls use it, and it does not depend on KaTeX.
+
+```tsx
+import { PaperEquation } from "@hulianui/ui/math";
+import { usePaperTerm } from "@hulianui/ui";
+
+<PaperEquation
+  number={1}
+  terms={{
+    dk: { label: "√dₖ: toggle scaling in Figure 2", figure: "attention", state: (s) => ({ ...s, scaled: !s.scaled }) },
+  }}
+>
+  {String.raw`\mathrm{softmax}\left(\frac{QK^T}{\term{dk}{\sqrt{d_k}}}\right)V`}
+</PaperEquation>
+
+function ScaleToggle({ fig }) {
+  const term = usePaperTerm("dk");
+  return <Button {...term.bind} className="data-[active]:text-primary" onClick={…}>Toggle scaling</Button>;
+}
+```
+
+### PaperEquation
+
+Extends `HTMLAttributes<HTMLDivElement>` (without `children`); `ref` lands on the root element.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| children * | string | - | LaTeX for the whole formula (math mode, no `$`). Mark interactive terms with `\term{name}{…}`; a name may contain only letters, digits, `_` and `-` |
+| terms | `Record<string, EquationTerm>` | - | Settings for each term, keyed by name |
+| number | ReactNode | - | Number on the right; `1` renders as `(1)` |
+| display | boolean | true | Display (block) layout |
+| macros | `Record<string, string>` | - | Custom macros passed to KaTeX; `\term` is reserved |
+
+```ts
+interface EquationTerm {
+  label: string;     // accessible name and hover hint: say what a click does
+  figure?: string;   // figure id driven by a click; without it the term only highlights
+  state?: string | ((current: unknown) => unknown); // a preset name, or the next state from the current one
+}
+```
+
+- **Click**: a preset name switches the figure to that preset; a function computes the new state from the figure's current state (toggling a switch, say). Then, as with `FigRef`, the figure scrolls into view when needed and is outlined.
+- **Highlight**: hovering or focusing a term sets `active` on controls bound with `usePaperTerm` under the same name; hovering or focusing such a control gives the term `data-active`.
+- **Accessibility**: KaTeX's HTML layer is `aria-hidden` as a whole (screen readers read the MathML next to it), so the terms themselves cannot take focus. `PaperEquation` places a transparent real `<button>` (with `label` as its `aria-label`) over each clickable term. It is reachable with Tab and draws its focus ring on the term, and it is repositioned after size changes and font loading.
+- **Safety**: `\term` expands to KaTeX's `\htmlData`. Trust allows only that form, with `paper-term` as the only attribute and a safe name as its value; `\href`, `\htmlClass`, `\includegraphics` and the rest stay rejected.
+- In print mode no buttons are placed and nothing highlights. A term written in the formula but missing from `terms` warns once in development.
+
+### usePaperTerm
+
+`usePaperTerm(name) => { active, bind }`. Spread `bind` onto a control (or part of a figure), and hovering or focusing it lights up the term with the same name in the formula. While highlighted, `bind` carries `data-active`, so you can style with `data-[active]:`. Outside `Paper`, `active` is always false.
+
+## Title block and references
+
+### PaperHeader
+
+The title block: the title sits between a thick rule above and a thin rule below, followed by authors, one line of details, and the abstract. Unlike `Paper`, it ships with its own layout. Extends `HTMLAttributes<HTMLElement>` (without `title`); `ref` lands on the `<header>`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| title * | ReactNode | - | The paper title |
+| titleAs | `ElementType` | `"h1"` | Tag for the title |
+| authors | `PaperAuthor[]` | - | `{ name, affiliation?, email? }`, centered and wrapping |
+| meta | ReactNode | - | One line under the authors, such as venue, date, or arXiv id |
+| abstract | ReactNode | - | The abstract. A string is wrapped in a paragraph; the heading is `labels.abstract` |
+
+### Bibliography and Cite
+
+```tsx
+<p>… machine translation <Cite to={["hochreiter1997", "sutskever2014"]} />.</p>
+<Bibliography
+  entries={[
+    { id: "hochreiter1997", content: <>Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. …</> },
+    { id: "sutskever2014", content: <>Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. …</> },
+  ]}
+/>
+```
+
+`Bibliography` extends `HTMLAttributes<HTMLElement>` (without `title`); `ref` lands on the `<section>`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| entries * | `BibliographyEntry[]` | - | `{ id, content }` in numbering order; the first is [1]. `id` is also the DOM id of the entry's `<li>` |
+| title | ReactNode | `labels.references` | Heading; pass `null` for none |
+| titleAs | `ElementType` | `"h2"` | Tag for the heading |
+
+`Cite` is a `<span>`. Extends `HTMLAttributes<HTMLSpanElement>` (without `children`); `ref` lands on the `<span>`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| to * | `string` \| `string[]` | - | The cited entry id, or several |
+
+- **Numbering** follows the order in `Bibliography`. Several citations at one place are sorted and deduplicated; two neighbors read `[1, 2]`, and three or more in a row collapse to `[1–3]`, each number linking to its entry.
+- **Click**: scrolls to the entry (without smooth scrolling under reduced motion) and outlines it for about 1.2 seconds. Without JS it is a plain anchor. In print mode the link color is removed.
+- Numbers appear once `Bibliography` has mounted and registered (as with the automatic numbers of `FigRef`); server rendering shows `[?]` first. Unknown ids show `?` and warn once in development.
+- Use one `Bibliography` per `Paper`. With two, a warning is shown and `Cite` follows the one registered last.
+- The "Abstract" and "References" headings belong to the paper content, so they follow the `labels` of `Paper` (`abstract`, `references`), not the UI language.
+- Entry ids share the page's DOM id space with figure ids, so do not reuse a name.
+
 ## Examples
 
 ```tsx
@@ -198,4 +370,3 @@ A parameter figure:
 - Sub-figures are `aria-hidden`. Screen readers read the main figure and its caption, not the same figure six times.
 - Preset names are unique within a figure. When `FigRef` points to a missing figure or preset, development builds warn once and the state does not change.
 - When two figures in one `Paper` share an id, references find the one mounted last, with a warning.
-- Not in this version yet: a presentation mode for defenses (full screen, step by step), per-state SVG export, linking formulas to figures, and a title block and bibliography.

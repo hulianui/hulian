@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { cn } from "../lib/cn";
 import { mergeRefs } from "../lib/merge-refs";
 import { warnOnce } from "../lib/warn-once";
-import { usePaperContext } from "./paper-context";
+import { usePaperContext, type FigureView } from "./paper-context";
 import { letterOf, usePaperLabels } from "./paper-labels";
 import type { FigureRenderContext, PaperFigureProps } from "./paper.types";
 
@@ -23,6 +23,7 @@ export function PaperFigure<S>({
   defaultState,
   printState,
   printSubfigures,
+  presentStates,
   caption,
   describe,
   subfigureLabel,
@@ -86,6 +87,23 @@ export function PaperFigure<S>({
   }, []);
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  // 演示层在图外重画这张图：每次渲染把最新的画法放进 ref，提交后通知订阅方。
+  const view = useRef<FigureView>(null as unknown as FigureView);
+  view.current = {
+    states: states as Readonly<Record<string, unknown>>,
+    present: (presentStates ?? keys).filter((k) => k in states),
+    caption,
+    describe: describe as FigureView["describe"],
+    render: children as FigureView["render"],
+    controls: controls as FigureView["controls"],
+  };
+  const touch = paper?.touchFigures;
+  useEffect(() => {
+    touch?.();
+  });
+
+  const liveRef = useRef<S>(current.value);
+
   const node = useRef<HTMLElement | null>(null);
   const register = paper?.register;
   useEffect(() => {
@@ -96,13 +114,17 @@ export function PaperFigure<S>({
       has: (key) => key in statesRef.current,
       select,
       highlight,
+      view: () => view.current,
+      getState: () => liveRef.current,
+      setState: (value) => setState(value as S),
     });
-  }, [register, id, select, highlight]);
+  }, [register, id, select, highlight, setState]);
 
   const print = mode === "print";
   const printKey = printState !== undefined && printState in states ? printState : initialKey;
   // 预设内容可能随 props 更新：当前是某个预设时总取最新的那一份。
   const liveValue = current.key !== null && current.key in states ? states[current.key] : current.value;
+  liveRef.current = liveValue;
   const shownKey = print ? (printKey ?? null) : current.key;
   const shownValue = print ? states[printKey] : liveValue;
 

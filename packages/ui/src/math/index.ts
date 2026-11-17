@@ -12,6 +12,11 @@ export type { BareSegment } from "./math.bare";
 export { splitMathSegments, mathToPlain } from "./math.parse";
 export type { MathSegment } from "./math.parse";
 
+// 论文公式：某几项能和 Paper 里的图联动。内部就是 KaTeX，所以住这条路径而不是主入口（主入口只放
+// 不依赖 KaTeX 的另一半 usePaperTerm）。
+export { PaperEquation } from "../paper/paper-equation";
+export type { PaperEquationProps, EquationTerm } from "../paper/paper.types";
+
 export { QuestionCard } from "../question-card/question-card";
 export type { QuestionCardProps, QuestionKind, LegacyQuestionOption } from "../question-card/question-card.types";
 

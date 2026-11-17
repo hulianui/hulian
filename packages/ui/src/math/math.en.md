@@ -4,7 +4,7 @@ name: Formula
 category: typography
 group: text
 tags: []
-exports: [Formula, QuestionCard, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath, isKnownQuestionType, asQuestionType]
+exports: [Formula, QuestionCard, PaperEquation, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath, isKnownQuestionType, asQuestionType]
 status: enriched
 ---
 
@@ -196,5 +196,6 @@ The position is that **a corrupted formula must be visible**. Quietly rendering 
 - [QuestionEditor](../question-editor/question-editor.md): question editor whose stem, options, and preview are this component; also lives in `@hulianui/ui/math`
 - [QuestionAnswer](../question-answer/question-answer.md): student answer card whose stem, options, and result area are this component; also lives in `@hulianui/ui/math`
 - [QuestionCard](../question-card/question-card.md): question card whose stem and options are this component; shipped on `@hulianui/ui/math` alongside it
+- [Paper](../paper/paper.md): papers with figures that move with the text. Its `PaperEquation` (formula terms linked to figures) is built on KaTeX, so it is exported from `@hulianui/ui/math` too; see the Paper docs for usage
 - [Prose](../prose/prose.md): long-form typographic container
 - [Markdown](../markdown/markdown.md): full rich-text passages

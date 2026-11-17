@@ -1792,7 +1792,7 @@ import { FlipText } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Formula
 
-**导出**：`Formula` · `formulaToPlain` · `splitBareMath` · `hasBareMath` · `splitMathSegments` · `mathToPlain` · `QuestionCard`
+**导出**：`Formula` · `formulaToPlain` · `splitBareMath` · `hasBareMath` · `splitMathSegments` · `mathToPlain` · `PaperEquation` · `QuestionCard`
 
 > KaTeX 驱动的数学排版，本库唯一的数学渲染路径 · 走 `@hulianui/ui/math` 独立 subpath 不压主包体积 · 分段函数/矩阵/大型定界符真二维排版 · 认 `$…$` 分隔符，上游没包 `$` 的题库数据退到裸记号切分 · 填空槽 `____` 渲染成空位 · RSC 安全 · typography/text
 
@@ -1968,6 +1968,7 @@ KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都�
 - [QuestionEditor](https://hulianui.haloritual.com/zh/components/question-editor) —— 出题编辑器，题干 / 选项 / 预览内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionAnswer](https://hulianui.haloritual.com/zh/components/question-answer) —— 学生作答卡，题干 / 选项 / 结果区内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionCard](https://hulianui.haloritual.com/zh/components/question-card) —— 题目卡片，题干/选项内部就是本组件；同住 `@hulianui/ui/math`
+- [Paper](https://hulianui.haloritual.com/zh/components/paper) —— 动态论文。其中的 `PaperEquation`（公式里的项能和图联动）内部是 KaTeX，所以也从 `@hulianui/ui/math` 导出，用法见 Paper 文档
 - [Prose](https://hulianui.haloritual.com/zh/components/prose) —— 长文排版容器
 - [Markdown](https://hulianui.haloritual.com/zh/components/markdown) —— 整段富文本
 
@@ -14802,7 +14803,7 @@ const [zones, setZones] = useState<Zone[]>([
 <!-- ════════════════════════════════════════════════════════ -->
 # Paper
 
-**导出**：`Paper` · `usePaperMode` · `PaperFigure` · `ProcessFigure` · `FigureStep` · `FigRef`
+**导出**：`Paper` · `usePaperMode` · `PaperFigure` · `ProcessFigure` · `FigureStep` · `FigRef` · `PaperPresenter` · `usePaperExport` · `usePaperTerm` · `PaperHeader` · `Cite` · `Bibliography`
 
 > 让论文里的图跟着正文一步步变化，并能切到投稿用的打印形态 · data-display/collection
 
@@ -14812,15 +14813,21 @@ const [zones, setZones] = useState<Zone[]>([
 
 ## 导入
 ```ts
-import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, usePaperMode } from "@hulianui/ui"
-import type { ProcessStep, FigureRenderContext } from "@hulianui/ui"
+import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
+import { PaperEquation } from "@hulianui/ui/math"
+import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
 ```
 
 ## 结构
 
 ```
 Paper                      呈现形态（阅读 / 打印）+ 图的注册表 + 图号计数
+├─ PaperHeader             标题区：题目、作者、摘要
 ├─ FigRef                  正文引用：切到某个预设、滚到图、描边一下
+├─ Cite                    文献引用 [1, 2]，按 Bibliography 编号
+├─ PaperEquation           公式，其中的项能和图联动（@hulianui/ui/math）
+├─ PaperPresenter          答辩演示：全屏，把每张图的预设串成幻灯片
+├─ Bibliography            参考文献列表
 ├─ PaperFigure<S>          通用图：状态是任意值 + 有名字的预设
 └─ ProcessFigure           一步步讲的图（PaperFigure 的特化，状态就是步骤 key）
    └─ FigureStep           标出图里某一部分属于哪一步
@@ -14837,7 +14844,7 @@ Paper                      呈现形态（阅读 / 打印）+ 图的注册表 + 
 | as | `ElementType` | `"article"` | 根元素标签 |
 | mode | `"read"` ｜ `"print"` | - | 受控形态 |
 | defaultMode | `"read"` ｜ `"print"` | `"read"` | 非受控初始形态 |
-| labels | `{ figure?: string; separator?: string }` | 跟随界面语言 | 图注前缀和自动引用的文字。论文语言和界面不同时指定，如中文界面里排英文论文：`{ figure: "Figure", separator: ": " }`。步骤按钮等控件文字仍跟随界面语言 |
+| labels | `{ figure?; separator?; abstract?; references? }` | 跟随界面语言 | 图注前缀、自动引用、摘要与参考文献标题的文字。论文语言和界面不同时指定，如中文界面里排英文论文：`{ figure: "Figure", separator: ": " }`。步骤按钮等控件文字仍跟随界面语言 |
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
@@ -14862,6 +14869,7 @@ Paper                      呈现形态（阅读 / 打印）+ 图的注册表 + 
 | defaultState | string | `states` 第一个键 | 初始预设 |
 | printState | string | 同 `defaultState` | 打印形态下主图用的预设 |
 | printSubfigures | `string[]` | - | 打印形态下在主图下方展开成 (a)(b)… 分图的预设 |
+| presentStates | `string[]` | `states` 全部键 | `PaperPresenter` 演示时依次展示的预设；`[]` 表示演示时跳过这张图 |
 | describe | `(state: S, key: string ｜ null) => ReactNode` | - | 图注第二行，说明当前状态；变化时读屏会念 |
 | subfigureLabel | `(key: string, index: number) => ReactNode` | `(a)` + `describe` | 分图小标题 |
 | controls | `(figure: FigureRenderContext<S>) => ReactNode` | - | 图下方的交互控件，只在阅读形态渲染 |
@@ -14894,6 +14902,7 @@ interface FigureRenderContext<S> {
 | overviewDescription | ReactNode | - | 「全部」状态的说明 |
 | printState | string | `"all"`（无 overview 时为最后一步） | 打印态 |
 | printSubfigures | `string[]` | 每一步各一张 | 打印分图；传 `[]` 不展开 |
+| presentStates | `string[]` | 各步 + `"all"` | 演示时依次展示的预设 |
 | interval | number | 2200 | 自动播放每步停留的毫秒数 |
 
 ```ts
@@ -14946,6 +14955,170 @@ interface ProcessStep {
 
 点击时：把图切到 `state` → 图不在视野里就滚过去（减弱动效时不平滑滚动）→ 图描边约 1.2 秒。没有 JS 或不在 `Paper` 里时退化成普通锚点。打印形态下去掉链接色和下划线。
 
+## PaperPresenter
+
+答辩演示：一个全屏层，把论文里每张图的预设串成一组幻灯片。放在 `Paper` 里任意位置（一般是工具栏）。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| trigger | `ReactElement` | - | 打开演示的按钮，如 `<Button>演示</Button>`。关闭后焦点回到它 |
+| open | boolean | - | 受控：是否打开。不用 `trigger` 时用它打开，关闭后焦点回到打开前聚焦的元素 |
+| defaultOpen | boolean | false | 非受控初始是否打开 |
+| title | ReactNode | - | 页眉左侧的标题，一般是论文题目 |
+| slides | `PresenterSlide[]` | 见下 | 整组幻灯片，`{ figure: 图 id, state: 预设名 }` |
+| controls | boolean | true | 是否渲染图自带的控件（步骤按钮、参数开关） |
+| className | string | - | 加在全屏层根元素上 |
+
+| 事件 | 类型 | 说明 |
+|------|------|------|
+| onOpenChange | `(open: boolean) => void` | 打开 / 关闭（含 Esc、退出按钮） |
+| onSlideChange | `(slide: PresenterSlide, index: number) => void` | 翻到某一页时触发，含打开时的第一页 |
+
+- **幻灯片怎么来**：默认按文档顺序，把每张图的 `presentStates` 依次排开。`PaperFigure` 默认是全部预设，`ProcessFigure` 默认是各步加「全部」。传 `slides` 可以整体改写顺序，或把几张图交错着讲；不存在的图或预设在开发环境告警一次并跳过。页眉里的图号始终按文档顺序。
+- **不搬 DOM**：演示层用图的同一个 `children(state)` 函数再画一遍，正文里的图不动、状态不变，退出后读者还停在原来那一步。图的 props 变了（如切换语言），演示里跟着重画。
+- **图的控件照常可用**：控件 `select` 到某个预设时翻到对应那一页（`ProcessFigure` 的步骤按钮就是跳页）；`setState` 给的值只覆盖当前页，翻页即还原。
+- **按键**：`→` / `空格` / `PageDown` 下一页，`←` / `PageUp` 上一页，`Esc` 退出。焦点在输入框、滑块、单选组等控件上时，方向键留给控件；焦点在按钮上时，空格是按下按钮。
+- **无障碍**：`role="dialog"`，名字是「演示模式」（跟随界面语言）。焦点困在演示层里，打开后落在「下一页」，退出后回到触发按钮。演示层之外的内容对读屏隐藏。
+- 演示层渲染在 `Paper` 的 DOM 之外（Portal），沿用 `Paper` 的衬线字体栈。图的渲染函数若依赖放在 `Paper` 与图之间的 context，演示里取不到。
+- SVG 图在演示里按舞台高度撑满（宽度跟着 `viewBox` 比例），不需要另写演示尺寸。
+
+```tsx
+<Paper>
+  <PaperPresenter title="Attention Is All You Need" trigger={<Button>演示 ▶</Button>} />
+  <ProcessFigure id="transformer" steps={steps} caption="…">…</ProcessFigure>
+  <PaperFigure id="attention" states={presets} presentStates={["scaled64", "raw512", "scaled512"]} caption="…">
+    {(state) => <AttentionBars state={state} />}
+  </PaperFigure>
+</Paper>
+```
+
+## 逐状态导出 SVG
+
+投稿时把每个状态的矢量图插进 Word，或转成 PDF 放进 LaTeX。在 `Paper` 里用 `usePaperExport()`：
+
+```tsx
+const { exportFigureSvg } = usePaperExport();
+const svg = await exportFigureSvg("transformer", "b", { background: "white" }); // SVG 文本
+```
+
+`exportFigureSvg(id, stateKey, options?) => Promise<string>`：
+
+| 选项 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| theme | `"light"` ｜ `"current"` | `"light"` | 按哪套主题出色。默认亮色：读者开着暗色也导出白纸上的图 |
+| background | string | 透明 | 底色，任意 CSS 颜色 |
+| width | number | `viewBox` 的宽 | 输出的 `width`（px），高度按比例 |
+
+- **怎么做的**：在 `Paper` 里临时挂一个屏幕外的槽，用图的同一个 `children(state)` 画出这个预设（画面的 `mode` 是 `"print"`），等字体就绪后逐个元素读计算样式，写成 SVG 表现属性（`fill="#…"`、`stroke-width="1.3"`…），去掉 `class` / `style` / `data-*`。正文里的图不受影响。
+- **颜色**：Tailwind 类和 CSS 变量离开页面就失效，浏览器给的计算值又常是 `oklab()` / `oklch()`，Word、Inkscape 不认。导出时一律换成 `#rrggbb`，透明度并进 `fill-opacity` / `stroke-opacity`。
+- **定格**：动画和过渡在槽里关掉，流动虚线定格在起点；`FigureStep` 的阶段透明度按导出的那一步算。`display: none` 的元素不进文件；`aria-label` 变成 `<title>`（Word 当替代文字用）。
+- **文字保留为 `<text>`**，带上 `Paper` 的字体栈。打开文件的机器上没有 STIX Two Text 时会回退到 Times New Roman / 宋体。LaTeX 里用 `\includesvg`（svg 宏包，需要 Inkscape）或先转成 PDF，转换的机器上要装好字体。
+- **前提**：图的画面必须是单独一个 `<svg>`。画面是 canvas、HTML 或带 `<foreignObject>` 时 reject 并说明原因；图找不到、预设不存在时也 reject。
+- 图里的 CSS `transform`（如 Tailwind 的 `rotate-*`）不会写进文件，要旋转、平移请用 SVG 的 `transform` 属性。
+
+## 公式与图联动
+
+公式里的某一项可以点、可以悬停，和图的状态、控件互相高亮。分两半：
+
+- **`PaperEquation`**：从 `@hulianui/ui/math` 引入。公式走 KaTeX，放在主入口会把 KaTeX 拉进每个消费方的包里。
+- **`usePaperTerm`**：从 `@hulianui/ui` 引入，给图里的控件用，不依赖 KaTeX。
+
+```tsx
+import { PaperEquation } from "@hulianui/ui/math";
+import { usePaperTerm } from "@hulianui/ui";
+
+<PaperEquation
+  number={1}
+  terms={{
+    dk: { label: "√dₖ：切换图 2 的缩放", figure: "attention", state: (s) => ({ ...s, scaled: !s.scaled }) },
+  }}
+>
+  {String.raw`\mathrm{softmax}\left(\frac{QK^T}{\term{dk}{\sqrt{d_k}}}\right)V`}
+</PaperEquation>
+
+function ScaleToggle({ fig }) {
+  const term = usePaperTerm("dk");
+  return <Button {...term.bind} className="data-[active]:text-primary" onClick={…}>切换缩放</Button>;
+}
+```
+
+### PaperEquation
+
+继承 `HTMLAttributes<HTMLDivElement>`（不含 `children`），`ref` 落在根元素上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| children * | string | - | 整条公式的 LaTeX（数学模式，不用包 `$`）。用 `\term{name}{…}` 标出可交互的项，name 只能是字母、数字、`_`、`-` |
+| terms | `Record<string, EquationTerm>` | - | 各项的配置，键是 name |
+| number | ReactNode | - | 右侧的编号，`1` 渲染成 `(1)` |
+| display | boolean | true | 块级排版 |
+| macros | `Record<string, string>` | - | 自定义宏，透传给 KaTeX；`\term` 是保留名 |
+
+```ts
+interface EquationTerm {
+  label: string;     // 读屏名和悬停提示，说清点了会怎样
+  figure?: string;   // 点击驱动的图 id；不传则这一项只做高亮联动，不能点
+  state?: string | ((current: unknown) => unknown); // 预设名，或由当前状态算新状态
+}
+```
+
+- **点击**：`state` 是预设名就切到那个预设，是函数就用图的当前状态算出新状态（如开关取反）。之后和 `FigRef` 一样，图不在视野里就滚过去并描边。
+- **高亮**：悬停或聚焦公式里的项时，用 `usePaperTerm` 绑定了同名的控件 `active` 为 true；悬停或聚焦控件时，公式里的项带 `data-active` 高亮。
+- **可达性**：KaTeX 的 HTML 层整体是 `aria-hidden`，读屏读的是并排的 MathML，项本身不能聚焦。`PaperEquation` 在每个可点的项上叠一个透明的真 `<button>`（`aria-label` 即 `label`），键盘 Tab 得到，焦点环画在项上。尺寸变化和字体加载后会重新定位。
+- **安全**：`\term` 展开成 KaTeX 的 `\htmlData`。trust 只放行「唯一属性是 `paper-term`、值是安全名字」的这一种，`\href`、`\htmlClass`、`\includegraphics` 等照旧拒绝。
+- 打印形态下不叠按钮、不高亮。公式里写了 `terms` 没配的项，开发环境告警一次。
+
+### usePaperTerm
+
+`usePaperTerm(name) => { active, bind }`。把 `bind` 展开到控件（或图的一部分）上，悬停、聚焦时公式里同名的项会亮。高亮时 `bind` 带 `data-active`，可以用 `data-[active]:` 写样式。在 `Paper` 外调用时 `active` 恒为 false。
+
+## 标题区与参考文献
+
+### PaperHeader
+
+论文标题区：题目夹在上粗下细两条线之间，下面是作者、一行说明、摘要。和 `Paper` 不同，它自带排版。继承 `HTMLAttributes<HTMLElement>`（不含 `title`），`ref` 落在 `<header>` 上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| title * | ReactNode | - | 论文题目 |
+| titleAs | `ElementType` | `"h1"` | 题目的标签 |
+| authors | `PaperAuthor[]` | - | `{ name, affiliation?, email? }`，居中换行排列 |
+| meta | ReactNode | - | 作者下方的一行说明，如会议、日期、arXiv 号 |
+| abstract | ReactNode | - | 摘要。字符串会包成一个段落；标题是 `labels.abstract` |
+
+### Bibliography 与 Cite
+
+```tsx
+<p>… machine translation <Cite to={["hochreiter1997", "sutskever2014"]} />.</p>
+<Bibliography
+  entries={[
+    { id: "hochreiter1997", content: <>Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. …</> },
+    { id: "sutskever2014", content: <>Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. …</> },
+  ]}
+/>
+```
+
+`Bibliography` 继承 `HTMLAttributes<HTMLElement>`（不含 `title`），`ref` 落在 `<section>` 上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| entries * | `BibliographyEntry[]` | - | `{ id, content }`，按编号顺序，第一条是 [1]。`id` 同时是条目 `<li>` 的 DOM id |
+| title | ReactNode | `labels.references` | 标题；传 `null` 不渲染 |
+| titleAs | `ElementType` | `"h2"` | 标题的标签 |
+
+`Cite` 是 `<span>`，继承 `HTMLAttributes<HTMLSpanElement>`（不含 `children`），`ref` 落在 `<span>` 上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| to * | `string` ｜ `string[]` | - | 引用的文献 id，可以是几条 |
+
+- **编号**：按 `Bibliography` 里的顺序。一处引几条时排序去重，两个相邻写成 `[1, 2]`，连续三条及以上压成 `[1–3]`，每个号各自链接到条目。
+- **点击**：滚到条目（减弱动效时不平滑），条目描边约 1.2 秒。没有 JS 时是普通锚点。打印形态下去掉链接色。
+- 号要等 `Bibliography` 挂载登记后才有（同 `FigRef` 的自动图号），服务端渲染时先显示 `[?]`。找不到的 id 显示 `?`，开发环境告警一次。
+- 同一个 `Paper` 只放一份 `Bibliography`；有两份时告警，`Cite` 按后登记的那份编号。
+- 「摘要」「参考文献」两个标题属于论文内容，跟随 `Paper` 的 `labels`（`abstract`、`references`），不跟界面语言。
+- 条目 id 和图 id 共用页面的 DOM id 空间，不要取同名。
+
 ## 示例
 
 ```tsx
@@ -14992,7 +15165,6 @@ interface ProcessStep {
 - 分图是 `aria-hidden` 的：读屏读主图和图注就够了，不把同一张图念六遍。
 - 预设名在一张图里唯一；`FigRef` 引用不存在的图或预设，开发环境告警一次，状态不变。
 - 同一个 `Paper` 里图 id 重复时，引用只会找到后挂载的那一张，并告警。
-- 这一版还没有：答辩演示模式（全屏逐步翻）、每个状态单独导出 SVG、公式与图的联动、论文标题区和参考文献。
 
 <!-- ════════════════════════════════════════════════════════ -->
 # PixelCard
