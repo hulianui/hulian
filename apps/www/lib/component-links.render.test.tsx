@@ -26,4 +26,18 @@ describe("更新日志正文渲染", () => {
     const { container } = render(<Markdown size="sm">{md}</Markdown>);
     expect(container.querySelector("a")).toBeNull();
   });
+
+  it("行内代码形式的组件名渲染成 <a><code>，保留代码样式", () => {
+    const md = linkifyComponentMentions("`PaperPresenter` 的演示层沿用 `Paper` 的主题岛。", "zh-CN");
+    const { container } = render(<Markdown size="sm">{md}</Markdown>);
+    const links = [...container.querySelectorAll("a")];
+    expect(links.map((a) => a.getAttribute("href"))).toEqual([
+      `${ZH}/components/paper`,
+      `${ZH}/components/paper`,
+    ]);
+    expect(links.map((a) => a.querySelector("code")?.textContent)).toEqual([
+      "PaperPresenter",
+      "Paper",
+    ]);
+  });
 });

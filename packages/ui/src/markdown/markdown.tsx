@@ -56,13 +56,15 @@ function renderInline(text: string): ReactNode[] {
     } else if (tok.startsWith("*")) {
       out.push(<em key={key++}>{renderInline(tok.slice(1, -1))}</em>);
     } else {
-      // [label](url)
+      // [label](url)。label 同粗体一样递归解析行内标记：CommonMark 允许 [`代码`](url)，
+      // 不递归的话反引号会被原样显示成字面字符（更新日志里的 [`Paper`](…) 就是这样）。
+      // label 的正则是 [^\]]+，不会含 `]`，因此递归里不可能再出现嵌套链接。
       const sep = tok.indexOf("](");
       const label = tok.slice(1, sep);
       const url = tok.slice(sep + 2, -1);
       out.push(
         <a key={key++} href={url} target="_blank" rel="noreferrer noopener">
-          {label}
+          {renderInline(label)}
         </a>,
       );
     }
