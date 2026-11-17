@@ -1,5 +1,23 @@
 # @hulianui/ui
 
+## 0.75.0
+
+### Minor Changes
+
+- 3a72195: feat(stat): 新增 `deltaPlacement`，`"inline"` 时趋势（`delta` + `deltaLabel`）排在数值同一行右侧、图表独占卡底。默认 `"below"` 与此前一致（数值下方、图表之后）。带 `chart` 的 KPI 卡推荐 `"inline"`：读数 → 涨跌 → 走势一路向下，不用隔着一张图去找涨跌修饰的那个数。
+
+### Patch Changes
+
+- 3a72195: fix(animated-list): 入场改为子项露出一点就触发（`viewport.amount: "some"`）。此前要 40% 进入视口，放在被 `overflow` 裁掉一部分的容器里（横向出血的展示墙、溢出裁切的卡片）时可见部分永远凑不够，整列一直空白。
+
+- 3a72195: fix(cascader): 搜索无结果时的「无匹配项」改为 `role="none"`。此前它是不带角色的 `<li>`，在 `role="listbox"` 里带着隐式 listitem 角色，axe 按 critical 级 aria-required-children 报错，屏幕阅读器会把它读成列表框里一个不可选的怪成员。
+
+- 3a72195: style(segmented): 只有选中段用 `font-medium`，未选中段改为常规字重，选中态多一道字重信号。各段等宽（`flex-1`），切换时字重变化不挤动布局；Tabs 的段按内容定宽，未跟着改。
+
+- 3a72195: fix(snippet): 宽度不再超出父容器。不带空格的长串（URL、token）装不下时在任意位置折行（`overflow-wrap: anywhere`），带空格的命令仍按词换行；此前它不折行，会把 Snippet 连同父级一起撑出视口。
+
+- 3a72195: fix(color-swatch-picker): 选中对勾改为纯白描边加一圈很淡的深色描影。此前用 `mix-blend-difference` 取反相，颜色是底色的补色——蓝底出橙勾、绿底出粉勾，选中态看着像出错。
+
 ## 0.74.1
 
 ### Patch Changes
