@@ -1,27 +1,15 @@
 "use client";
 import { useEffect, useState, type MouseEvent } from "react";
 import { cn } from "../lib/cn";
-import { warnOnce } from "../lib/warn-once";
+import { navigatePaper } from "./paper-navigate";
 import { usePaperContext } from "./paper-context";
-import { usePaperLabels } from "./paper-labels";
+import { letterOf, usePaperLabels } from "./paper-labels";
 import type { FigRefProps } from "./paper.types";
 
 // 正文里的图引用。点击：把目标图切到 state 预设 → 图不在视野里就滚过去 → 描边闪一下。
 // 本体是 <a href="#id">：没有 JS 或不在 Paper 里时，退化成普通锚点跳转。
 // 打印形态下去掉链接色和下划线，读起来就是正文里的「图 1(b)」。
-
-/** 图不在视野里就滚过去（减弱动效时不平滑）。公式项点击也用它。 */
-export function revealFigure(el: HTMLElement) {
-  if (typeof el.getBoundingClientRect !== "function" || typeof el.scrollIntoView !== "function") return;
-  const rect = el.getBoundingClientRect();
-  const viewport = window.innerHeight;
-  if (rect.top >= 0 && rect.bottom <= viewport) return;
-  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  el.scrollIntoView({
-    behavior: reduce ? "auto" : "smooth",
-    block: rect.height > viewport * 0.8 ? "start" : "center",
-  });
-}
+// 导航本身在 paper-navigate 里，和 SecRef / EqRef / usePaperNavigate 共用一套。
 
 export function FigRef({ to, state, children, className, onClick, ref, ...rest }: FigRefProps) {
   const paper = usePaperContext();
@@ -29,29 +17,22 @@ export function FigRef({ to, state, children, className, onClick, ref, ...rest }
   const print = paper?.mode === "print";
 
   // 图号要等图挂载登记后才知道；只有不传 children 时才用得上。
+  // state 是这张图的打印分图之一时，号后面跟分图字母「图 1(b)」，与打印版的分图编号一致。
   const [number, setNumber] = useState<number>();
+  const [sub, setSub] = useState(-1);
   const numberOf = paper?.numberOf;
+  const findFigure = paper?.find;
   const revision = paper?.revision;
   useEffect(() => {
-    if (children === undefined && numberOf) setNumber(numberOf(to));
-  }, [children, numberOf, revision, to]);
+    if (children !== undefined || !numberOf || !findFigure) return;
+    setNumber(numberOf(to));
+    setSub(state === undefined ? -1 : (findFigure(to)?.subfigureIndex(state) ?? -1));
+  }, [children, numberOf, findFigure, revision, to, state]);
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
-    if (event.defaultPrevented || !paper) return;
-    const entry = paper.find(to);
-    if (!entry) {
-      warnOnce(`FigRef:missing:${to}`, `[FigRef] 找不到 id 为 "${to}" 的图。`);
-      return;
-    }
-    event.preventDefault();
-    if (state !== undefined) {
-      if (entry.has(state)) entry.select(state);
-      else warnOnce(`FigRef:state:${to}:${state}`, `[FigRef] 图 "${to}" 没有名为 "${state}" 的预设。`);
-    }
-    const el = entry.element();
-    if (el) revealFigure(el);
-    entry.highlight();
+    if (event.defaultPrevented) return;
+    if (navigatePaper(paper, { kind: "figure", id: to, state }, "FigRef")) event.preventDefault();
   };
 
   return (
@@ -71,7 +52,7 @@ export function FigRef({ to, state, children, className, onClick, ref, ...rest }
         className,
       )}
     >
-      {children ?? `${labels.figure} ${number ?? ""}`.trim()}
+      {children ?? `${labels.figure} ${number ?? ""}${number !== undefined && sub >= 0 ? `(${letterOf(sub)})` : ""}`.trim()}
     </a>
   );
 }

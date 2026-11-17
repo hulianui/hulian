@@ -19,6 +19,7 @@ import type {
 //    没讲到的 off（很淡，但不隐藏 —— 读者始终看得到整张图的轮廓，知道这一步在全局的哪里）。
 //  · FigureStep 是 <g class="group/step">，作者用 group-data-[phase=on]/step: 给当前步上强调色、
 //    加流动虚线，组件只管透明度。
+//  · 带 until 的部分到 until 那一步起（以及「全部」）被取代、不画：移动的指针、被替换的旧节点。
 //  · 打印默认：主图 "all"，下方每一步一张分图。
 
 const ALL = "all";
@@ -30,10 +31,16 @@ interface StepContextValue {
 
 const StepContext = createContext<StepContextValue | null>(null);
 
-function phaseOf(at: readonly string[], ctx: StepContextValue | null): FigureStepPhase {
-  if (!ctx || ctx.current === ALL) return "all";
-  if (at.includes(ctx.current)) return "on";
+function phaseOf(at: readonly string[], until: string | undefined, ctx: StepContextValue | null): FigureStepPhase {
+  if (!ctx) return "all";
   const index = ctx.order.indexOf(ctx.current);
+  if (until !== undefined) {
+    const end = ctx.order.indexOf(until);
+    if (end < 0) warnOnce(`FigureStep:until:${until}`, `[FigureStep] until="${until}" 不是这张图的步骤。`);
+    else if (ctx.current === ALL || index >= end) return "gone";
+  }
+  if (ctx.current === ALL) return "all";
+  if (at.includes(ctx.current)) return "on";
   const done = at.some((key) => {
     const j = ctx.order.indexOf(key);
     return j > -1 && j < index;
@@ -42,17 +49,17 @@ function phaseOf(at: readonly string[], ctx: StepContextValue | null): FigureSte
 }
 
 /** 标出图里的一部分属于哪一步。`at` 可以是数组，也可以是空格分隔的字符串（`"b c"`）。 */
-export function FigureStep({ at, className, ...rest }: FigureStepProps) {
+export function FigureStep({ at, until, className, ...rest }: FigureStepProps) {
   const ctx = useContext(StepContext);
   const list = typeof at === "string" ? at.split(/\s+/).filter(Boolean) : at;
   return (
     <g
       {...rest}
       data-figure-step=""
-      data-phase={phaseOf(list, ctx)}
+      data-phase={phaseOf(list, until, ctx)}
       className={cn(
         "group/step transition-opacity duration-300 motion-reduce:transition-none",
-        "data-[phase=off]:opacity-15 data-[phase=done]:opacity-50",
+        "data-[phase=off]:opacity-15 data-[phase=done]:opacity-50 data-[phase=gone]:hidden",
         className,
       )}
     />

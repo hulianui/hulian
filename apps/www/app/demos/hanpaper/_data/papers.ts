@@ -1,0 +1,108 @@
+import { copy } from "./papers.content";
+import type { PaperSummary } from "./types";
+
+// Papers in the workspace. Only "git" has a manuscript body; the others show their pipeline
+// state on the dashboard and an empty-state in the editor. Times are offsets from "now" so the
+// demo always looks fresh.
+
+export const AUTHORS = {
+  lin: copy("authorLin"),
+  zhou: copy("authorZhou"),
+  chen: copy("authorChen"),
+  he: copy("authorHe"),
+};
+
+export const papers: PaperSummary[] = [
+  {
+    id: "git",
+    title: copy("gitTitle"),
+    short: copy("gitShort"),
+    venue: copy("venueHse"),
+    stage: "review",
+    progress: 78,
+    deadlineDays: 12,
+    words: 1840,
+    figures: 5,
+    references: 12,
+    authors: [AUTHORS.lin, AUTHORS.zhou, AUTHORS.chen],
+    updatedMinutesAgo: 18,
+    hasManuscript: true,
+  },
+  {
+    id: "sparse",
+    title: copy("sparseTitle"),
+    short: copy("sparseShort"),
+    venue: copy("venueIcse"),
+    stage: "submission",
+    progress: 94,
+    deadlineDays: 3,
+    words: 9120,
+    figures: 7,
+    references: 31,
+    authors: [AUTHORS.zhou, AUTHORS.he],
+    updatedMinutesAgo: 95,
+    hasManuscript: false,
+  },
+  {
+    id: "flaky",
+    title: copy("flakyTitle"),
+    short: copy("flakyShort"),
+    venue: copy("venueMsr"),
+    stage: "figures",
+    progress: 61,
+    deadlineDays: 26,
+    words: 5410,
+    figures: 4,
+    references: 22,
+    authors: [AUTHORS.chen, AUTHORS.lin],
+    updatedMinutesAgo: 60 * 5,
+    hasManuscript: false,
+  },
+  {
+    id: "merge-survey",
+    title: copy("mergeTitle"),
+    short: copy("mergeShort"),
+    venue: copy("venueMsr"),
+    stage: "drafting",
+    progress: 44,
+    deadlineDays: 26,
+    words: 3980,
+    figures: 2,
+    references: 17,
+    authors: [AUTHORS.lin, AUTHORS.he],
+    updatedMinutesAgo: 60 * 26,
+    hasManuscript: false,
+  },
+  {
+    id: "lfs",
+    title: copy("lfsTitle"),
+    short: copy("lfsShort"),
+    venue: copy("venueJos"),
+    stage: "survey",
+    progress: 18,
+    deadlineDays: null,
+    words: 1200,
+    figures: 0,
+    references: 9,
+    authors: [AUTHORS.zhou],
+    updatedMinutesAgo: 60 * 24 * 4,
+    hasManuscript: false,
+  },
+  {
+    id: "review-latency",
+    title: copy("reviewTitle"),
+    short: copy("reviewShort"),
+    venue: copy("venueJos"),
+    stage: "published",
+    progress: 100,
+    deadlineDays: null,
+    words: 8650,
+    figures: 6,
+    references: 28,
+    authors: [AUTHORS.he, AUTHORS.chen, AUTHORS.lin],
+    updatedMinutesAgo: 60 * 24 * 21,
+    hasManuscript: false,
+  },
+];
+
+export const findPaper = (id: string) => papers.find((p) => p.id === id);

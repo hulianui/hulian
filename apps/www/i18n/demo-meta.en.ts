@@ -160,4 +160,11 @@ export const demoMetaEn: Record<string, LocalizedDemoMeta> = {
     category: "Application",
     tags: ["OrgClassroom", "AdminLayout", "ProTable", "Scheduler", "seats", "interviews"],
   },
+  hanpaper: {
+    title: "HanPaper Production Studio",
+    description:
+      "A paper-production platform built around Paper: the workbench turns topic-to-publication into a playable pipeline; the manuscript page drives five dynamic Git figures from in-text references, with section, figure and equation cross references, an outline, print sub-figures, per-state SVG export and a presentation mode; the figure studio checks the narrative order of every figure, review comments anchor to a section or a figure step, and the submission page covers materials and declarations. Built 100% with @hulianui/ui, dogfooding the new PaperSection / SecRef / PaperOutline / usePaperNavigate.",
+    category: "Academic publishing",
+    tags: ["Paper", "ProcessFigure", "PaperSection", "flow figures", "Git", "figure studio"],
+  },
 };

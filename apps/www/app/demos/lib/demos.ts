@@ -228,6 +228,16 @@ export const demos: DemoMeta[] = [
     tags: ["NovelReader", "NovelEditor", "Markdown", "阅读进度"],
   },
   {
+    slug: "hanpaper",
+    title: "瀚文 HanPaper 论文生产平台",
+    description:
+      "以 Paper 为核心的论文生产平台：工作台把选题到发表画成可逐步播放的生产流水线；稿件页里三棵树、对象模型、分支合并、变基与打包五张动态图随正文引用切换状态，支持章节/图/公式交叉引用、目录、打印分图、逐状态 SVG 导出与答辩演示；图表工坊逐张检查讲解步骤，内审意见可以锚定到某张图的某一步，投稿页完成材料与声明检查。100% 由 @hulianui/ui 搭建，并 dogfood 新增的 PaperSection / SecRef / PaperOutline / usePaperNavigate。",
+    href: "/demos/hanpaper",
+    category: "学术出版",
+    status: "done",
+    tags: ["Paper", "ProcessFigure", "PaperSection", "动态流程图", "Git", "图表工坊"],
+  },
+  {
     slug: "org-classroom",
     title: "瀚位 HanSeat 组织工位管理台",
     description:

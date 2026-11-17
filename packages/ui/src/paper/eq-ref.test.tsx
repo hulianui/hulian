@@ -35,7 +35,7 @@ describe("PaperEquation 自动编号", () => {
     const html = renderToString(<Doc />);
     const doc = new DOMParser().parseFromString(html, "text/html");
     const root = doc.querySelector("[data-paper]")!;
-    expect(root.className).toContain("[counter-reset:paper-figure_paper-equation]");
+    expect(root.className).toMatch(/\[counter-reset:[^\]]*paper-equation/);
     const eqs = [...doc.querySelectorAll("[data-paper-equation]")];
     const counted = eqs.map((el) => el.className.includes("[counter-increment:paper-equation]"));
     expect(counted).toEqual([true, false, true, false, true, true]);

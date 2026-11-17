@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, type ReactNode } from "react";
-import type { FigureRenderContext, FigureSvgExportOptions, PaperContentLabels, PaperMode } from "./paper.types";
+import type { FigureRenderContext, FigureSvgExportOptions, PaperContentLabels, PaperMode, PaperOutlineSection } from "./paper.types";
 
 /**
  * 一张图此刻的「画法」：演示层等图外的消费方拿它在别处重画同一张图。
@@ -29,6 +29,8 @@ export interface FigureEntry {
   getState: () => unknown;
   /** 直接给状态值，等同图内控件的 setState。 */
   setState: (value: unknown) => void;
+  /** 预设在打印分图里排第几（从 0 起，对应 (a)(b)…）；不是分图返回 -1。FigRef 据此写「图 1(b)」。 */
+  subfigureIndex: (key: string) => number;
 }
 
 /** 参考文献编号：Bibliography 登记条目顺序，Cite 按 id 取号。 */
@@ -67,6 +69,29 @@ export interface EquationStore {
   labelOf: (id: string) => ReactNode | undefined;
 }
 
+/** 一个已挂载的章节在注册表里留下的句柄。 */
+export interface SectionEntry {
+  id: string;
+  element: () => HTMLElement | null;
+  /** 读最新的 props，所以注册一次即可。 */
+  title: () => ReactNode;
+  numbered: () => boolean;
+  highlight: () => void;
+}
+
+/** 章节注册表：SecRef 按 id 取号、PaperOutline 列目录。编号与 CSS 计数器 paper-section 的算法一致。 */
+export interface SectionStore {
+  subscribe: (listener: () => void) => () => void;
+  /** 注册、注销、任一章节重新渲染都会加一。 */
+  version: () => number;
+  register: (entry: SectionEntry) => () => void;
+  /** 章节提交后调用：标题或编号方式可能变了。 */
+  touch: () => void;
+  find: (id: string) => SectionEntry | undefined;
+  /** 按文档顺序列出全部章节，带层级编号和深度。 */
+  list: () => PaperOutlineSection[];
+}
+
 /** 公式项与图控件之间「当前高亮哪一项」的共享状态。 */
 export interface TermStore {
   subscribe: (listener: () => void) => () => void;
@@ -100,6 +125,8 @@ export interface PaperContextValue {
   citations: CitationStore;
   /** 公式注册表，见 `EqRef`。 */
   equations: EquationStore;
+  /** 章节注册表，见 `PaperSection` / `SecRef` / `PaperOutline`。 */
+  sections: SectionStore;
   /** 公式项的双向高亮，见 `usePaperTerm`。 */
   terms: TermStore;
   /** 见 `usePaperExport`。 */

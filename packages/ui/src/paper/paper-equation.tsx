@@ -14,7 +14,7 @@ import {
 import { cn } from "../lib/cn";
 import { mergeRefs } from "../lib/merge-refs";
 import { warnOnce } from "../lib/warn-once";
-import { revealFigure } from "./fig-ref";
+import { revealTarget } from "./paper-navigate";
 import { usePaperContext, type EquationNumbering } from "./paper-context";
 import type { EquationTerm, PaperEquationProps } from "./paper.types";
 
@@ -205,7 +205,7 @@ export function PaperEquation({
       entry.setState(term.state(entry.getState()));
     }
     const el = entry.element();
-    if (el) revealFigure(el);
+    if (el) revealTarget(el);
     entry.highlight();
   };
 

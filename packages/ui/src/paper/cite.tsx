@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useId, useSyncExternalStore, type MouseEvent, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { revealFigure } from "./fig-ref";
+import { revealTarget } from "./paper-navigate";
 import { usePaperContext } from "./paper-context";
 import { usePaperLabels } from "./paper-labels";
 import type { BibliographyProps, CiteProps } from "./paper.types";
@@ -114,7 +114,7 @@ export function Cite({ to, className, ref, ...rest }: CiteProps) {
     const el = document.getElementById(id);
     if (!el) return;
     event.preventDefault();
-    revealFigure(el);
+    revealTarget(el);
     paper.citations.highlight(id);
   };
 

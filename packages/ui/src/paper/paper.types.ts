@@ -1,3 +1,4 @@
+import type { AnchorProps } from "../anchor/anchor.types";
 import type { ElementType, HTMLAttributes, ReactElement, ReactNode, Ref, SVGAttributes } from "react";
 
 /**
@@ -21,6 +22,8 @@ export interface PaperContentLabels {
   references?: string;
   /** `EqRef` 自动引用文字里公式号前的词，如 "Eq."、"公式"。 */
   equation?: string;
+  /** `SecRef` 自动引用文字：由章节号生成，如 `(n) => \`Section ${n}\``、`(n) => \`第 ${n} 节\``。 */
+  section?: (number: string) => string;
 }
 
 export interface PaperProps extends HTMLAttributes<HTMLElement> {
@@ -124,11 +127,17 @@ export interface ProcessFigureProps
 }
 
 /** 当前步与某一部分的关系。 */
-export type FigureStepPhase = "on" | "done" | "off" | "all";
+/** `gone`：带 `until` 的部分已被后面的步骤取代（或处于「全部」状态），不渲染。 */
+export type FigureStepPhase = "on" | "done" | "off" | "all" | "gone";
 
 export interface FigureStepProps extends SVGAttributes<SVGGElement> {
   /** 这一部分属于哪一步（可以属于几步）。 */
   at: string | readonly string[];
+  /**
+   * 从哪一步起这一部分被取代、不再画出（如移动走的分支指针、被替换掉的旧节点）。
+   * 讲到 `until` 及之后的步骤、以及「全部」状态下隐藏；之前照常按 on / done / off。
+   */
+  until?: string;
 }
 
 /** `FigureRaster` 解析出的颜色：0–255 的 `[r, g, b, a]`，可以直接写进 `ImageData`。 */
@@ -346,4 +355,54 @@ export interface CiteProps extends Omit<HTMLAttributes<HTMLSpanElement>, "childr
   /** 引用的文献 id，可以是几条：`["he2016", "ba2016"]` 渲染成 `[5, 6]`。 */
   to: string | readonly string[];
   ref?: Ref<HTMLSpanElement>;
+}
+
+export interface PaperSectionProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
+  /** 章节的稳定 id，`SecRef` 和 `PaperOutline` 靠它找章节，同时是根 `<section>` 的 `id`（可作锚点）。 */
+  id: string;
+  /** 章节标题，编号自动加在前面。 */
+  title: ReactNode;
+  /** 标题的标签；默认按嵌套深度取 `h2` / `h3` / `h4`。 */
+  titleAs?: ElementType;
+  /** 加在标题元素上的类名，用来改标题排版。 */
+  titleClassName?: string;
+  /** 是否编号，默认 `true`。致谢、附录这类不编号的章节传 `false`；不要在不编号的章节里再嵌编号的子节。 */
+  numbered?: boolean;
+  ref?: Ref<HTMLElement>;
+}
+
+export interface SecRefProps extends Omit<HTMLAttributes<HTMLAnchorElement>, "href"> {
+  /** 目标章节（`PaperSection`）的 `id`。 */
+  to: string;
+  /** 引用文字；不传时自动生成「第 N 节」/ "Section N"。 */
+  children?: ReactNode;
+  ref?: Ref<HTMLAnchorElement>;
+}
+
+/** `PaperOutline` 读到的一条章节。 */
+export interface PaperOutlineSection {
+  id: string;
+  title: ReactNode;
+  /** 层级编号，如 "2.1"；不编号的章节为 `null`。 */
+  number: string | null;
+  /** 嵌套深度，顶层为 0。 */
+  depth: number;
+}
+
+export interface PaperOutlineProps extends Omit<AnchorProps, "items"> {
+  /** 目录显示到第几层，1 只列顶层章节，2 再列一层子节。默认 2（`Anchor` 最多两层）。 */
+  depth?: 1 | 2;
+}
+
+/**
+ * `usePaperNavigate()` 返回的命令式导航句柄。行为和同名引用组件一致：滚进视野、描边一下，
+ * 但**不改 URL hash** —— 需要可分享的锚点链接时仍用 `FigRef` / `SecRef` / `EqRef`。
+ */
+export interface PaperNavigation {
+  /** 跳到图 `id`；传 `state` 时先切到该预设（只认预设名，不认直接的状态值）。 */
+  figure: (id: string, state?: string) => void;
+  /** 跳到公式 `id`：滚到公式并描边。 */
+  equation: (id: string) => void;
+  /** 跳到章节 `id`：滚到章节标题并描边。 */
+  section: (id: string) => void;
 }

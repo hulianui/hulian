@@ -19,6 +19,8 @@ const DEFAULT_LABELS = {
   abstract: "摘要",
   references: "参考文献",
   equation: "公式",
+  section: (n: string) => `第 ${n} 节`,
+  outline: "目录",
 };
 
 export type PaperLabels = typeof DEFAULT_LABELS;

@@ -60,6 +60,8 @@ export function PaperFigure<S>({
 
   const statesRef = useRef(states);
   statesRef.current = states;
+  const subKeysRef = useRef(subKeys);
+  subKeysRef.current = subKeys;
   const onChangeRef = useRef(onStateChange);
   onChangeRef.current = onStateChange;
 
@@ -117,6 +119,7 @@ export function PaperFigure<S>({
       view: () => view.current,
       getState: () => liveRef.current,
       setState: (value) => setState(value as S),
+      subfigureIndex: (key) => subKeysRef.current.indexOf(key),
     });
   }, [register, id, select, highlight, setState]);
 

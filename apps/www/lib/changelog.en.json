@@ -1,27 +1,27 @@
 [
   {
+    "pkg": "@hulianui/ui",
+    "version": "0.78.0",
+    "date": "2026-11-18",
+    "entries": [
+      {
+        "sha": "afb8c51",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper adds the section trio: `PaperSection` (CSS counters for hierarchical numbering 1 / 2.1, present in server rendering and print), `SecRef` (in-text references such as \"Section 2.1\" that scroll to the heading and flash it), and `PaperOutline` (an outline generated from the section registry, reusing Anchor for scroll-spy). `Paper` labels gain `section`.\n\n`FigureStep` gains `until`: from a given step onward the part is superseded and no longer drawn (also hidden in the All state and in exported SVGs), for moving branch pointers and replaced nodes.\n\n`FigRef` now appends the sub-figure letter when `state` is one of the figure's print sub-figures and no children are given, e.g. \"Figure 1(b)\", matching the printed version.\n\n`usePaperNavigate()`: imperative navigation to a figure, equation or section, sharing the scroll-into-view and flash logic with `FigRef` / `SecRef` / `EqRef`. Controls that are already interactive, such as `Button`, can call it in `onClick` instead of nesting a reference via `render={<FigRef/>}` and inheriting link underlines."
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/tokens",
     "version": "0.19.0",
-    "date": "2026-11-18",
+    "date": "2026-11-17",
     "entries": [
       {
         "sha": "659f0c0",
         "bump": "minor",
         "breaking": false,
         "body": "feat(tokens): adds the accent scope `[data-accent-scope]`. Inside the subtree only the accent **hue** changes (`--hl-accent-hue`, the OKLCH h; the brand color is 258) while lightness and chroma stay on the brand ladder. `primary`, `primary-hover`, `primary-subtle`, `primary-border`, `ring`, `signal-brand`, `code-keyword`, and the chart palette `chart-1..6` all follow, in light mode, dark mode, and theme islands nested inside the scope. `--hl-accent-hue` is registered with `@property` as a `<number>`, so it can transition. Usually paired with `<AccentScope hue>` from `@hulianui/ui`."
-      }
-    ]
-  },
-  {
-    "pkg": "@hulianui/ui",
-    "version": "0.77.0",
-    "date": "2026-11-18",
-    "entries": [
-      {
-        "sha": "659f0c0",
-        "bump": "minor",
-        "breaking": false,
-        "body": "feat: the docs homepage and navbar are now built entirely from components, and the visual patches that lived in the site are now component features. Adds 5 components and 3 sub-component exports and fills in props on 14 components. No new prop default changes existing rendering, except the ColorSwatchPicker selected ring noted below.\n\n- **New components**: `AccentScope` (changes the accent hue of one region, paired with the tokens' `[data-accent-scope]`) · `IconTile` (the icon square left of feature or notification text: three sizes × three variants × six tones, plus category colors) · `SectionHeader` (eyebrow, section title, accented second half, and lead text) · `WindowFrame` (an app window with a traffic-light title bar) · `FadeMask` (fades content to transparency toward one edge or from the center outward).\n- **New sub-components**: `CommandTrigger` (a search-field-style entry to the command palette; `shape=\"pill\"`, and `collapseBelow` turns it into an icon button on narrow screens) · `NavbarMenu` (the collapsed menu for narrow screens, sharing `breakpoint` with `NavbarMenuToggle`) · `SnippetGroup` (several commands stacked in one card; `overlay` holds decorations such as BorderBeam).\n- **Tabs**: `TabsList variant=\"card\"` (card tabs with descriptions, stacked when vertical); `Tabs autoPlay={ms}` advances automatically, switching when the bar under the selected tab fills. It pauses on hover, on focus, and off screen, is disabled under reduced motion, and stops once the visitor picks a tab.\n- **Card**: `variant=\"primary\"` (a primary gradient that sets `data-surface=\"inverse\"`, so components inside switch to inverse colors), `interactive`, and `render` (the whole card as a link).\n- **Navbar**: `size=\"sm\"` and `variant=\"page\"`; `NavbarItem variant=\"soft\"` (the active item gets the accent's subtle background and the link fills the pill); `NavbarMenuToggle breakpoint`.\n- **Brand**: `variant=\"bare\"` (no badge) and `maskSrc` (a single-color logo filled by its shape, following the theme color and AccentScope).\n- **Segmented**: `shape=\"pill\"`; segments can set `render` (such as `<a href>`), turning the group into a set of links (`role=\"group\"` + `aria-current=\"page\"`).\n- **Tag**: `shape=\"pill\"` and `render` (clickable tags). **Link**: `tone=\"muted\"` and `arrow`. **Heading**: `size=\"display\"`.\n- **AnimatedThemeToggler**: `variant=\"ghost\"` and `size=\"sm\"` (the same height as Button `iconSm`).\n- **Progress**: `tone=\"inverse\"` (a white bar on colored cards). **Avatar**: `tone=\"brand\"` and `ring`. **Snippet**: `muted` secondary rows. **Spotlight**: `blend=\"transparent\"`, and two values in `size` give an ellipse.\n- **ColorSwatchPicker**: `shape=\"circle\"`. The selected ring now uses `outline-offset` instead of `ring-offset`, so the gap is transparent rather than painted with the page background, and no longer shows a mismatched band on cards (unchanged on the page background)."
       }
     ]
   },
@@ -61,6 +61,19 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): adds Paper, figures for papers that move with the text (first slice). `Paper` holds the display mode (read / print) and a figure registry, and `labels` sets the paper language for caption prefixes and automatic references independently of the UI language; it switches to print mode before the browser prints and back afterwards. Figure numbers come from a CSS counter, so they exist in server rendering and in print. `PaperFigure` takes any state value plus named presets, and its `children` maps state to picture. In print mode the main figure draws `printState`, `printSubfigures` expand into (a)(b)… sub-figures, and controls are not rendered. `ProcessFigure` explains a figure step by step; `FigureStep` marks which step each part belongs to. The current step is opaque, earlier steps are half transparent, and later steps are faint but not hidden. It comes with previous / next, per-step buttons, \"All\", and autoplay. `FigRef` is an in-text reference: a click switches the figure to its preset, scrolls it into view, and outlines it; without JS it is a plain anchor. Tokens add the `hulian-paper-flow` keyframes for flowing dashes on the current step."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.77.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "659f0c0",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat: the docs homepage and navbar are now built entirely from components, and the visual patches that lived in the site are now component features. Adds 5 components and 3 sub-component exports and fills in props on 14 components. No new prop default changes existing rendering, except the ColorSwatchPicker selected ring noted below.\n\n- **New components**: `AccentScope` (changes the accent hue of one region, paired with the tokens' `[data-accent-scope]`) · `IconTile` (the icon square left of feature or notification text: three sizes × three variants × six tones, plus category colors) · `SectionHeader` (eyebrow, section title, accented second half, and lead text) · `WindowFrame` (an app window with a traffic-light title bar) · `FadeMask` (fades content to transparency toward one edge or from the center outward).\n- **New sub-components**: `CommandTrigger` (a search-field-style entry to the command palette; `shape=\"pill\"`, and `collapseBelow` turns it into an icon button on narrow screens) · `NavbarMenu` (the collapsed menu for narrow screens, sharing `breakpoint` with `NavbarMenuToggle`) · `SnippetGroup` (several commands stacked in one card; `overlay` holds decorations such as BorderBeam).\n- **Tabs**: `TabsList variant=\"card\"` (card tabs with descriptions, stacked when vertical); `Tabs autoPlay={ms}` advances automatically, switching when the bar under the selected tab fills. It pauses on hover, on focus, and off screen, is disabled under reduced motion, and stops once the visitor picks a tab.\n- **Card**: `variant=\"primary\"` (a primary gradient that sets `data-surface=\"inverse\"`, so components inside switch to inverse colors), `interactive`, and `render` (the whole card as a link).\n- **Navbar**: `size=\"sm\"` and `variant=\"page\"`; `NavbarItem variant=\"soft\"` (the active item gets the accent's subtle background and the link fills the pill); `NavbarMenuToggle breakpoint`.\n- **Brand**: `variant=\"bare\"` (no badge) and `maskSrc` (a single-color logo filled by its shape, following the theme color and AccentScope).\n- **Segmented**: `shape=\"pill\"`; segments can set `render` (such as `<a href>`), turning the group into a set of links (`role=\"group\"` + `aria-current=\"page\"`).\n- **Tag**: `shape=\"pill\"` and `render` (clickable tags). **Link**: `tone=\"muted\"` and `arrow`. **Heading**: `size=\"display\"`.\n- **AnimatedThemeToggler**: `variant=\"ghost\"` and `size=\"sm\"` (the same height as Button `iconSm`).\n- **Progress**: `tone=\"inverse\"` (a white bar on colored cards). **Avatar**: `tone=\"brand\"` and `ring`. **Snippet**: `muted` secondary rows. **Spotlight**: `blend=\"transparent\"`, and two values in `size` give an ellipse.\n- **ColorSwatchPicker**: `shape=\"circle\"`. The selected ring now uses `outline-offset` instead of `ring-offset`, so the gap is transparent rather than painted with the page background, and no longer shows a mismatched band on cards (unchanged on the page background)."
       }
     ]
   },
