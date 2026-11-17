@@ -29,7 +29,9 @@ pnpm version-packages
 git add -A && git commit -m "chore(release): bump" && git push
 ```
 
-push 到 `master` 后，`.github/workflows/release.yml` 自动 `pnpm release` 把版本号高于 npmjs 已发布版的包发布出去，并打 git tag。
+push 到 `master` 后，`.github/workflows/release.yml` 自动 `pnpm release:publish` 把版本号高于 npmjs 已发布版的包发布出去，并打 git tag。
+
+> **发布判据是 registry，不是命令退出码**（`scripts/publish-release.mjs`）：npm 的 staged publish 会先把一次 publish 落成「暂存」，几分钟后才真正上线，这期间 `changeset publish` 的退出码照样是 0。所以包装脚本跑完 publish 后会按 `packages/*/package.json` 的版本号去 registry 核验，staged 状态不判失败而是等落库（默认上限 12 分钟），超时才红并列出还差哪几版。只想核验当前状态、不发布：`node scripts/publish-release.mjs --verify-only`。
 
 > **务必本地先 `pnpm version-packages` 再 push**：若只 push 了 `.changeset/*.md` 而没落版本，CI 会去开「Version Packages」PR；而本组织当前关着「允许 Actions 创建 PR」，那条路会卡住。本地先落版本 → CI 看到没有待消费 changeset → 直接 publish，绕开 PR。
 

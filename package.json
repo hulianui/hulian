@@ -62,6 +62,7 @@
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm changelog:sync-locales && pnpm ui-version:sync && pnpm llms-registry && pnpm changelog && pnpm registry:version",
     "release": "changeset publish",
+    "release:publish": "node scripts/publish-release.mjs",
     "scan": "node scripts/hulian-scan.mjs --full --environment workspace",
     "scan:ci": "node scripts/hulian-scan.mjs --ci --environment packed-consumer",
     "scan:update": "node scripts/hulian-scan.mjs --update --full --environment packed-consumer"
