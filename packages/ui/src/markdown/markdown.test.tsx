@@ -109,4 +109,15 @@ describe("Markdown", () => {
     expect(prose?.className.split(/\s+/).includes("text-base")).toBe(false);
     expect(prose?.className.split(/\s+/).includes("leading-7")).toBe(false);
   });
+
+  it("codeBlock 透传给围栏代码块，code / lang 仍取自源文本", () => {
+    const body = Array.from({ length: 20 }, (_, i) => `x${i}`).join("\n");
+    const opts = { maxLines: 5, lineNumbers: true } as const;
+    const { container, getByText } = render(
+      <Markdown codeBlock={opts}>{"```ts\n" + body + "\n```"}</Markdown>,
+    );
+    expect(getByText("ts")).toBeTruthy();
+    expect(container.querySelectorAll('[data-slot="code-block-line-number"]').length).toBe(20);
+    expect(getByText("展开全部 20 行")).toBeTruthy();
+  });
 });

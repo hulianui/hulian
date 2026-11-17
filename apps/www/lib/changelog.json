@@ -1,6 +1,38 @@
 [
   {
     "pkg": "@hulianui/tokens",
+    "version": "0.18.0",
+    "date": "2026-11-18",
+    "entries": [
+      {
+        "sha": "1fa6ab0",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(tokens): 新增主题感知的 `shadow-xs`（亮色短投影 + 发丝边，暗色白色轮缘光），此前 `shadow-xs` 落回 Tailwind 默认的纯黑 0.05、暗色下不可见。preset-opinionated 关闭等宽字体的连字与上下文替换（`--font-mono--font-feature-settings: \"liga\" 0, \"calt\" 0`），作用于 `font-mono` 与 `code / kbd / samp / pre`：Geist Mono 等编程字体会把 `--` `>=` 折成一个向左越界的字形，吃掉行内代码的左内边距、压住前一个字母。想要连字的项目在自己的 `@theme` 里改回 `normal`。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.76.0",
+    "date": "2026-11-18",
+    "entries": [
+      {
+        "sha": "1fa6ab0",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(code-block / markdown / code / kbd / prose / snippet / code-diff / segmented / curved-loop / table): 代码展示美学与长内容体验，外加一批视觉缺陷修复。\n\n- **CodeBlock**：有 `lang` 时渲染标题栏（左侧语言名、右侧操作区），不再靠 `pt-8` 让位浮字；无 `lang` 时操作区悬浮在右上角，悬停 / 键盘聚焦时出现（触屏常显），复制按钮不再压住首行。代码区换成比 surface 沉半档的底色，行号列同色、线条减淡。新增 `defaultWrap`（长行初始换行）；内容真有一行放不下时操作区出现「自动换行」开关。新增 `maxLines`：超出即折叠，底部渐隐 +「展开全部 N 行」，收起时把块顶拉回视口。\n- **Markdown**：新增 `codeBlock`，把 `maxLines` / `defaultWrap` / `lineNumbers` 等透传给每个围栏代码块。\n- **Code / Prose 行内代码**：去掉 `whitespace-nowrap`，超长路径 / URL 不再撑破窄容器；折行时每截各自带圆角内距。加 `shadow-xs` 轻浮起。\n- **Prose 折叠块**：`<summary>` 的原生实心三角换成线性 chevron，展开时旋转朝下。\n- **Kbd / KbdGroup**：新增 `tone=\"primary\"`（品牌浅底 + 品牌边），替代文档站首页的 className 覆盖。\n- **Snippet / CodeBlock**：复制等图标按钮 hover 改为品牌色高亮。\n- **CodeDiff**：文件头从灰带改为 surface 亮底 + 文件图标 + 加粗文件名 + 彩色统计药丸。\n- **Segmented**：段内放 Tag 等富内容时不再贴边 —— 等宽改由 grid 实现，各段宽度取最宽那段。\n- **CurvedLoop**：viewBox 按曲线与字形实测现算，向上弯（`curveAmount` 负值）时顶部不再被裁；组件高度因此等于文字真实占用高度（默认参数下比以前高）。\n- **Table**：外壳自带 `bg-surface`，冻结列与吸顶表头同源，不再借容器背景。"
+      },
+      {
+        "sha": "1fa6ab0",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(tabs / segmented)!: `TabsList` 与 `Segmented` 的 `tone` 默认值由 `neutral` 改为 `brand` —— 选中文字默认吃品牌色（solid 即「白药丸 + 品牌蓝字」），underline 下划线同色。**视觉变更**：不传 `tone` 的存量 tab 条与分段控件选中色会从前景色变成品牌色；要旧观感显式传 `tone=\"neutral\"`（与改动前逐字相同）。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
     "version": "0.17.0",
     "date": "2026-11-17",
     "entries": [
@@ -22,6 +54,25 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): 新增 Paper 动态论文插图（首片）。`Paper` 管呈现形态（阅读 / 打印）和图的注册表，`labels` 让论文内容的语言（图注前缀、自动引用）独立于界面语言；浏览器打印前自动切到打印形态、打印完切回；图号用 CSS 计数器，服务端渲染和打印都有号。`PaperFigure` 的状态是任意值加一组有名字的预设，`children` 是「状态 → 画面」的函数；打印形态下主图画 `printState`，`printSubfigures` 展开成 (a)(b)… 分图，控件不渲染。`ProcessFigure` 是一步步讲的图，图里用 `FigureStep` 标出每一部分属于哪一步：当前步不透明、讲过的半透明、没讲到的很淡但不隐藏；自带上一步 / 下一步、逐步按钮、「全部」和自动播放。`FigRef` 是正文引用，点击把图切到对应预设、滚进视野并描边，没有 JS 时退化成锚点。tokens 新增 `hulian-paper-flow` 关键帧，给当前一步的流动虚线用。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.75.1",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "cea4c5c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(code-block): `lang` 为 `text` / `txt` / `plain` / `plaintext` 时按纯文本输出，不再着色。此前这几种语言落进「其它语言按 JS 家族近似」的兜底，文本里的 URL 从 `//` 起被当成行注释整段斜体，撇号与引号之间的内容也会被当成字符串着色。Markdown 里 ` ```text ` 围栏同样受益。"
+      },
+      {
+        "sha": "235ece4",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(markdown): 链接文字内部解析行内标记。CommonMark 允许 `` [`代码`](url) `` 与 `[**粗**](url)`，此前链接文字按纯文本原样输出，反引号和星号会被当字面字符显示出来；现在与粗体、斜体一样递归解析。"
       }
     ]
   },

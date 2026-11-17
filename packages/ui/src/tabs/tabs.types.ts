@@ -39,9 +39,10 @@ export interface TabsListProps
    * 只描述「选中意味着什么」：选中文字（两种皮肤都吃）与 underline 的下划线跟着这一档走；
    * solid 的药丸底保持 `bg-surface` 不变，未选中态也不受影响（仍是 `text-muted-foreground`）。
    *
-   * 默认 `neutral` = **逐字保持库既有的渲染**（选中文字 `text-foreground`、underline 下划线
-   * `bg-primary`），不是「把品牌色换成灰」—— 这一档存在的意义就是让存量页面零视觉变化。
-   * 想要 #316 截图里「白药丸 + 品牌蓝字」的观感，显式传 `tone="brand"`。
+   * 默认 `brand`：选中文字吃品牌色（solid 即「白药丸 + 品牌蓝字」），underline 下划线同色。
+   * `neutral` = 加 tone 之前的渲染（选中文字 `text-foreground`、underline 下划线 `bg-primary`），
+   * 要旧观感的调用点显式传它。
+   * @default "brand"
    */
   tone?: TabsTone;
   className?: string;

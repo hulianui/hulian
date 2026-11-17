@@ -107,35 +107,35 @@ export const tabsShowcase: ShowcaseSpec = {
             title: "Inline switcher (size=sm)",
             description: "Use sm when the tab bar shares a row with a heading or a search box: 28px track and 24px tab for text only, against 40 / 32 for md. Give the count Tag its own size=\"sm\" as well, or the default md at 24px pushes the tab back up.",
             code: `<div className="flex items-center gap-2">
-  <span className="text-sm font-semibold">Reports by title group</span>
-  <Tabs defaultValue="title">
+  <span className="text-sm font-semibold">Ticket board</span>
+  <Tabs defaultValue="open">
     <TabsList variant="solid" size="sm">
-      <TabsTab value="title">Title orders<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
-      <TabsTab value="paper">Paper orders<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+      <TabsTab value="open">Pending<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="done">Completed<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
     </TabsList>
-    <TabsPanel value="title">Title order list.</TabsPanel>
-    <TabsPanel value="paper">Paper order list.</TabsPanel>
+    <TabsPanel value="open">Pending tickets.</TabsPanel>
+    <TabsPanel value="done">Completed tickets.</TabsPanel>
   </Tabs>
 </div>`,
             render: () => (<div className="flex items-center gap-2">
-          <span className="text-sm font-semibold">Reports by title group</span>
-          <Tabs defaultValue="title">
+          <span className="text-sm font-semibold">Ticket board</span>
+          <Tabs defaultValue="open">
             <TabsList variant="solid" size="sm">
-              <TabsTab value="title">
-                Title orders
+              <TabsTab value="open">
+                Pending
                 <Tag size="sm" className="ml-1.5">
                   2
                 </Tag>
               </TabsTab>
-              <TabsTab value="paper">
-                Paper orders
+              <TabsTab value="done">
+                Completed
                 <Tag size="sm" className="ml-1.5">
                   7
                 </Tag>
               </TabsTab>
             </TabsList>
-            <TabsPanel value="title">Title order list.</TabsPanel>
-            <TabsPanel value="paper">Paper order list.</TabsPanel>
+            <TabsPanel value="open">Pending tickets.</TabsPanel>
+            <TabsPanel value="done">Completed tickets.</TabsPanel>
           </Tabs>
         </div>),
         },

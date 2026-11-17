@@ -28,6 +28,7 @@ import { PricingTable } from "@hulianui/ui"
 | columns* | `PricingColumn[]` | - | 被比项列定义 |
 | rows* | `PricingRow[]` | - | 属性/价目行定义 |
 | stickyHeader | `boolean` | `true` | 表头吸顶 |
+| bordered | `boolean` | `true` | 是否带外框（圆角 + 描边）。放进已有边框的卡片里时传 `false` 避免双框；表格始终自带 surface 底色，不借容器背景 |
 | className | `string` | - | 根节点类名 |
 
 `PricingColumn`：`key*`（与 row.values 的键对应）、`title*`（列标题）、`highlight?`（高亮列：描边 + 角标位）、`badge?`（高亮角标如「推荐」）、`header?`（列头富内容，提供则替换 title 区）。

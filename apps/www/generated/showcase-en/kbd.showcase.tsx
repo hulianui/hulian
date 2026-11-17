@@ -10,6 +10,16 @@ export const kbdShowcase: ShowcaseSpec = {
             render: () => <Kbd>Esc</Kbd>,
         },
         {
+            title: "Primary key cap",
+            description: "Use tone=\"primary\" for a page's main shortcut (the top-bar search, a command palette entry): a brand subtle fill with a brand border that follows the theme color. KbdGroup passes its tone to every key cap.",
+            code: `<Kbd tone="primary">\u2318K</Kbd>
+<KbdGroup keys={["\u2318", "K"]} tone="primary" />`,
+            render: () => (<span className="inline-flex items-center gap-3">
+          <Kbd tone="primary">⌘K</Kbd>
+          <KbdGroup keys={["\u2318", "K"]} tone="primary"/>
+        </span>),
+        },
+        {
             title: "Key combination",
             description: "KbdGroup owns the gap and the separator, joining keys with + by default.",
             code: `<KbdGroup keys={["\u2318", "K"]} />`,

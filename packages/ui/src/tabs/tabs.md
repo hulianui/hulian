@@ -37,7 +37,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
-| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"neutral"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
+| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
 | className | `string` | - | - |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
@@ -76,7 +76,8 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 <TabsList variant="solid" tone="brand">…</TabsList>
 ```
 
-- **默认 `neutral` 是「维持现状」，不是「把品牌色换成灰」**：选中文字仍是 `text-foreground`、`underline` 的下划线仍是 `bg-primary`，与加这个 prop 之前逐字相同。存量页面不传 `tone` 就一个像素都不动；想要「白药丸 + 品牌蓝字」得显式传 `tone="brand"`。
+- **默认 `brand`**：选中文字吃品牌色（solid 即「白药丸 + 品牌蓝字」），`underline` 的下划线同色。中性前景色与未选中的 muted 只差一档灰，在白药丸上尤其难认出当前页。
+- **要旧观感传 `tone="neutral"`**：选中文字 `text-foreground`、下划线 `bg-primary`，与加这个 prop 之前逐字相同。
 - **只染选中态**：未选中态不受 `tone` 影响，仍是 `text-muted-foreground` → hover `text-foreground`。
 - **solid 的药丸底不跟 `tone`**：语义色铺满药丸会盖掉 tab 文字自身的语义。「浅语义底」（对齐 Button 的 `soft`）是留给后续的一档。
 - `Segmented` 有同名同取值的 `tone`：它与 solid tab 条是同一套视觉，选中色必须一致。
@@ -95,11 +96,11 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 ```tsx
 // 跟标题同行的行内切换器
 <div className="flex items-center gap-2">
-  <span className="text-sm font-semibold">职称组报表</span>
+  <span className="text-sm font-semibold">工单看板</span>
   <Tabs defaultValue="a">
     <TabsList variant="solid" size="sm">
-      <TabsTab value="a">职称订单<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
-      <TabsTab value="b">论文订单<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+      <TabsTab value="a">待处理<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="b">已完成<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
     </TabsList>
     <TabsPanel value="a">…</TabsPanel>
   </Tabs>

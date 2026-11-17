@@ -1,6 +1,6 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.75.0 · 404 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.76.0 · 404 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
@@ -1449,7 +1449,7 @@ import { Code, codeVariants } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-暂无已知坑。
+- **超长内容会在 chip 内折行**：只在一整段放不下一行时才从中间断（`overflow-wrap: anywhere`），断开的每一截各自带圆角与内边距（`box-decoration-break: clone`）。不会再把窄容器（手机、侧栏、表格格子）撑破。多行代码请用 [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block)。
 
 ## 相关
 [CodeBlock](https://hulianui.haloritual.com/zh/components/code-block) · [Snippet](https://hulianui.haloritual.com/zh/components/snippet) · [CodeDiff](https://hulianui.haloritual.com/zh/components/code-diff) · [Kbd](https://hulianui.haloritual.com/zh/components/kbd) · [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading)
@@ -1475,10 +1475,12 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | code* | `string` | - | 代码文本，多行用 `\n` |
-| lang | `string` | - | 右上角语言标签（如 `"tsx"`），同时决定着色规则走 JS 家族、Shell 还是 Python |
+| lang | `string` | - | 语言名（如 `"tsx"`）。给了就渲染标题栏（左侧语言名、右侧操作区），同时决定着色规则走 JS 家族、Shell 还是 Python；不给则无标题栏，操作区悬浮在右上角、悬停或键盘聚焦时出现 |
 | copyable | `boolean` | `true` | 是否显示复制按钮 |
 | highlight | `boolean` | `true` | 是否语法着色；关掉则纯文本 |
 | lineNumbers | `boolean \| { start?: number }` | `false` | 是否显示行号。`{ start: 120 }` 让片段从指定行号起算；列宽按最大行号的位数自适应 |
+| defaultWrap | `boolean` | `false` | 长行初始是否自动换行。默认横向滚动保留原排版；内容真有一行放不下时操作区会出现「自动换行」开关，读者可自行切换。日志 / 长 URL / 长报错建议传 `true` |
+| maxLines | `number` | - | 超过这么多行就折叠：只露前 `maxLines` 行 + 底部渐隐 + 「展开全部 N 行」按钮。超出不足 3 行时直接全部展示 |
 | className | `string` | - | 容器类名 |
 
 ## 着色支持的语言
@@ -1506,6 +1508,10 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 // 片段从源文件第 120 行截来
 <CodeBlock code={snippet} lang="python" lineNumbers={{ start: 120 }} />
+
+// 长代码默认折叠到 12 行；日志类内容默认换行
+<CodeBlock code={source} lang="tsx" maxLines={12} />
+<CodeBlock code={log} lang="text" defaultWrap />
 ```
 
 ## 禁忌 / 坑
@@ -1513,6 +1519,8 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 - **`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里列出的语言之外一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。
 - **行号是装饰，不是内容**。它 `aria-hidden` 且不可选中：屏幕阅读器不念，用户框选整段代码复制时也不会混进 `1 2 3`；复制按钮复制的始终是原始 `code`。反过来说，别把「行号」当成可复制的数据来源。
 - **行号列会一直钉在左侧**（`sticky left-0` + 不透明底色）。长行横向滚动时行号不会滑走，代价是滚过去的代码会被行号列遮住一小条——这是刻意的取舍，长行看行号比看那一小条代码重要。
+- **「自动换行」开关只在真溢出时出现**。它量的是 `<pre>` 的 `scrollWidth`，挂载后才知道，所以 SSR 首帧没有这个按钮（标题栏高度固定，出现时不挤动布局）。想让日志类内容一上来就换行，传 `defaultWrap`，别等读者自己点。
+- **折叠只裁显示，不裁内容**：复制按钮复制的始终是完整 `code`；页内查找（⌘F）也搜得到被折叠的行，但命中后不会自动展开。
 - 复制按钮读的是 `navigator.clipboard`，只在安全上下文（HTTPS / localhost）可用；HTTP 局域网页面里点了不会有反应。
 
 ## 相关
@@ -2138,7 +2146,7 @@ import { Heading } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Kbd
 
-**导出**：`Kbd` · `KbdGroup`
+**导出**：`Kbd` · `KbdGroup` · `kbdVariants`
 
 > 按键 · <kbd> 等宽皮肤 + KbdGroup 组合键容器 + RSC · typography/code
 
@@ -2155,6 +2163,7 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| tone | `"default" \| "primary"` | `"default"` | 色调：默认中性灰；`primary` 品牌浅底 + 品牌边，用于页面主快捷键（顶栏搜索的 ⌘K、命令面板入口），随主题色走 |
 | ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | - | 透传 `<kbd>` 原生属性（className、style 等） |
 
 ### KbdGroup Props
@@ -2164,6 +2173,7 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 | keys | `ReactNode[]` | - | 键名数组，逐个包成 Kbd。组合键的常规写法 |
 | separator | `ReactNode` | `"+"` | 键之间的分隔符，装饰性（带 `aria-hidden`，不进无障碍树）。传 `null` 只留间距不画符号 |
 | label | `string` | - | 整组的无障碍名，如「打开命令面板」。给了才会加 `role="group"` |
+| tone | `"default" \| "primary"` | `"default"` | 下发给 `keys` 生成的每个键帽，分隔符跟着变色。自己传 children 时请在每个 Kbd 上写 `tone` |
 | ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | 透传外层 `<span>` 原生属性。rest 展开在最前，组件自己算出的 `role` / `aria-label` 赢（见「禁忌 / 坑」） |
 
 ## Slots
@@ -2283,6 +2293,7 @@ import { Markdown, parseBlocks, extractHeadings, slugifyHeading } from "@hulianu
 | size | `"sm" \| "base"` | `"base"` | 排版尺寸基准，透传给内部 Prose。`inheritTypography` 打开时不生效 |
 | inheritTypography | `boolean` | `false` | 字号和行距跟父级走，内部不再钉 `text-base` / `leading-7`。阅读器把档位写在外层时打开。文档页保持关闭 |
 | headingIds | `boolean \| string` | `false` | 给渲染出的标题挂锚点 id（slug 规则见「标题锚点与目录」），使长文可做目录与 `#片段` 深链。默认关闭：id 是全局命名空间，默认生成会让存量调用点凭空多出一批可能与页面已有 id 撞车的锚点。传字符串则同时开启并把它当 id 前缀（`headingIds="doc-"` → `doc-props`），用于把这批 id 关进自己的命名空间 |
+| codeBlock | `Pick<CodeBlockProps, "lineNumbers" \| "defaultWrap" \| "maxLines" \| "copyable" \| "highlight">` | - | 透传给每个围栏代码块（内部是 CodeBlock）的展示选项，如 `{ maxLines: 20 }` 让 AI 回复里的长代码默认折叠、`{ defaultWrap: true }` 让日志默认换行。Markdown 是 memo 组件，对象要提到组件外常量或用 `useMemo` 固定，否则父级每次渲染都会整篇重解析 |
 | className | `string` | — | 透传容器类名 |
 
 ## Slots
@@ -8797,7 +8808,7 @@ import { Segmented } from "@hulianui/ui"
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整体禁用 |
 | size | `"sm"\|"md"` | `"md"` | - |
-| tone | `"brand"\|"success"\|"warning"\|"danger"\|"neutral"` | `"neutral"` | 选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `neutral` 逐字保持库既有的中性选中态（`text-foreground`），不是「把品牌色换成灰」；与 [Tabs](https://hulianui.haloritual.com/zh/components/tabs) 的 `TabsList` 同名同取值 |
+| tone | `"brand"\|"success"\|"warning"\|"danger"\|"neutral"` | `"brand"` | 选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `brand`，与 [Tabs](https://hulianui.haloritual.com/zh/components/tabs) 的 `TabsList` 同名同取值、同默认；要旧的中性选中态（`text-foreground`）传 `neutral` |
 | className | `string` | - | - |
 | aria-label | `string` | - | 无可见标题时提供 |
 
@@ -15319,6 +15330,7 @@ import { PricingTable } from "@hulianui/ui"
 | columns* | `PricingColumn[]` | - | 被比项列定义 |
 | rows* | `PricingRow[]` | - | 属性/价目行定义 |
 | stickyHeader | `boolean` | `true` | 表头吸顶 |
+| bordered | `boolean` | `true` | 是否带外框（圆角 + 描边）。放进已有边框的卡片里时传 `false` 避免双框；表格始终自带 surface 底色，不借容器背景 |
 | className | `string` | - | 根节点类名 |
 
 `PricingColumn`：`key*`（与 row.values 的键对应）、`title*`（列标题）、`highlight?`（高亮列：描边 + 角标位）、`badge?`（高亮角标如「推荐」）、`header?`（列头富内容，提供则替换 title 区）。
@@ -20991,7 +21003,7 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 |------|------|------|------|
 | variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
-| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"neutral"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
+| tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
 | className | `string` | - | - |
 
 `TabsTab` 接 `value`（必填）、`disabled`、`className`；`TabsPanel` 接 `value`、`className`。
@@ -21030,7 +21042,8 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 <TabsList variant="solid" tone="brand">…</TabsList>
 ```
 
-- **默认 `neutral` 是「维持现状」，不是「把品牌色换成灰」**：选中文字仍是 `text-foreground`、`underline` 的下划线仍是 `bg-primary`，与加这个 prop 之前逐字相同。存量页面不传 `tone` 就一个像素都不动；想要「白药丸 + 品牌蓝字」得显式传 `tone="brand"`。
+- **默认 `brand`**：选中文字吃品牌色（solid 即「白药丸 + 品牌蓝字」），`underline` 的下划线同色。中性前景色与未选中的 muted 只差一档灰，在白药丸上尤其难认出当前页。
+- **要旧观感传 `tone="neutral"`**：选中文字 `text-foreground`、下划线 `bg-primary`，与加这个 prop 之前逐字相同。
 - **只染选中态**：未选中态不受 `tone` 影响，仍是 `text-muted-foreground` → hover `text-foreground`。
 - **solid 的药丸底不跟 `tone`**：语义色铺满药丸会盖掉 tab 文字自身的语义。「浅语义底」（对齐 Button 的 `soft`）是留给后续的一档。
 - `Segmented` 有同名同取值的 `tone`：它与 solid tab 条是同一套视觉，选中色必须一致。
@@ -21049,11 +21062,11 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 ```tsx
 // 跟标题同行的行内切换器
 <div className="flex items-center gap-2">
-  <span className="text-sm font-semibold">职称组报表</span>
+  <span className="text-sm font-semibold">工单看板</span>
   <Tabs defaultValue="a">
     <TabsList variant="solid" size="sm">
-      <TabsTab value="a">职称订单<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
-      <TabsTab value="b">论文订单<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+      <TabsTab value="a">待处理<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="b">已完成<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
     </TabsList>
     <TabsPanel value="a">…</TabsPanel>
   </Tabs>

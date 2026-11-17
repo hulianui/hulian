@@ -104,12 +104,14 @@ describe("CodeBlock lineNumbers", () => {
     }
   });
 
-  it("行号列 sticky left-0 + 不透明底色：横向滚动时不被带走", () => {
+  it("行号列 sticky left-0 + 与代码区同色的不透明底：横向滚动时不被带走", () => {
     const { container } = render(<CodeBlock code={"a\nb"} lineNumbers />);
     const cell = gutterCells(container)[0]!;
     expect(cell.classList.contains("sticky")).toBe(true);
     expect(cell.classList.contains("left-0")).toBe(true);
-    expect(cell.classList.contains("bg-surface")).toBe(true);
+    // 与外壳同一个 --hl-cb-bg：用 surface 会在代码区里多出一条色带
+    expect(cell.classList.contains("bg-(--hl-cb-bg)")).toBe(true);
+    expect(container.firstElementChild!.className).toContain("[--hl-cb-bg:");
   });
 
   it("行号列宽按最大行号的位数算，不写死", () => {
@@ -380,5 +382,90 @@ describe("splitTokensByLine", () => {
     expect(lines.flat().some((t) => t.value.includes("\n"))).toBe(false);
     expect(lines[2]).toEqual([]); // 空行是空数组
     expect(lines.map((l) => l.map((t) => t.value).join("")).join("\n")).toBe(code);
+  });
+});
+
+describe("CodeBlock 长内容", () => {
+  const long = Array.from({ length: 30 }, (_, i) => `line ${i + 1}`).join("\n");
+
+  it("有 lang 时渲染标题栏，复制按钮在标题栏内", () => {
+    const { container, getByLabelText } = render(<CodeBlock code="x" lang="tsx" />);
+    const header = container.querySelector('[data-slot="code-block-header"]')!;
+    expect(header).toBeTruthy();
+    expect(header.contains(getByLabelText("复制"))).toBe(true);
+  });
+
+  it("无 lang 时不渲染标题栏，操作区悬浮", () => {
+    const { container } = render(<CodeBlock code="x" />);
+    expect(container.querySelector('[data-slot="code-block-header"]')).toBeNull();
+    expect(container.querySelector('[data-slot="code-block-actions"]')!.className).toContain("absolute");
+  });
+
+  it("不溢出时不渲染换行开关", () => {
+    const { queryByLabelText } = render(<CodeBlock code="short" lang="ts" />);
+    expect(queryByLabelText("自动换行")).toBeNull();
+  });
+
+  it("横向溢出时出现换行开关，点击切换 pre 的折行", () => {
+    const sw = vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(800);
+    const cw = vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(300);
+    try {
+      const { getByLabelText, container } = render(<CodeBlock code={"x".repeat(200)} lang="ts" />);
+      const toggle = getByLabelText("自动换行");
+      expect(toggle.getAttribute("aria-pressed")).toBe("false");
+      fireEvent.click(toggle);
+      expect(toggle.getAttribute("aria-pressed")).toBe("true");
+      expect(container.querySelector("pre")!.classList.contains("whitespace-pre-wrap")).toBe(true);
+    } finally {
+      sw.mockRestore();
+      cw.mockRestore();
+    }
+  });
+
+  it("defaultWrap 初始即换行，且开关留着可以关回去", () => {
+    const { container, getByLabelText } = render(<CodeBlock code="x" defaultWrap />);
+    expect(container.querySelector("pre")!.classList.contains("whitespace-pre-wrap")).toBe(true);
+    expect(getByLabelText("自动换行").getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("行号 + 换行：行盒收回容器宽，代码段可收缩", () => {
+    const { container } = render(<CodeBlock code={"a\nb"} lineNumbers defaultWrap />);
+    const row = container.querySelector('[data-slot="code-block-line-number"]')!.parentElement!;
+    expect(row.classList.contains("w-full")).toBe(true);
+    expect(row.classList.contains("w-max")).toBe(false);
+  });
+
+  it("maxLines：超出则折叠，按钮展开 / 收起，aria-expanded 跟随", () => {
+    const { container, getByText } = render(<CodeBlock code={long} maxLines={10} />);
+    const pre = container.querySelector("pre")!;
+    expect(pre.style.maxHeight).toContain("10 * 1.625em");
+    const btn = getByText("展开全部 30 行").closest("button")!;
+    expect(btn.getAttribute("aria-expanded")).toBe("false");
+    expect(btn.getAttribute("aria-controls")).toBe(pre.id);
+    fireEvent.click(btn);
+    expect(pre.style.maxHeight).toBe("");
+    expect(btn.getAttribute("aria-expanded")).toBe("true");
+    expect(btn.textContent).toContain("收起");
+  });
+
+  it("maxLines：超出不足 3 行时不折叠", () => {
+    const { container } = render(<CodeBlock code={long} maxLines={28} />);
+    expect(container.querySelector('[data-slot="code-block-toggle"]')).toBeNull();
+    expect(container.querySelector("pre")!.style.maxHeight).toBe("");
+  });
+
+  it("折叠时复制的仍是完整代码", () => {
+    const { getByLabelText } = render(<CodeBlock code={long} maxLines={5} />);
+    fireEvent.click(getByLabelText("复制"));
+    expect(writeText).toHaveBeenCalledWith(long);
+  });
+
+  it("enUS 本地化展开 / 收起 / 换行", () => {
+    const { getByText } = render(
+      <ConfigProvider locale={enUS}>
+        <CodeBlock code={long} maxLines={5} defaultWrap />
+      </ConfigProvider>,
+    );
+    expect(getByText("Show all 30 lines")).toBeTruthy();
   });
 });

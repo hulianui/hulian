@@ -75,6 +75,11 @@ describe("Prose", () => {
     expect(cls).toContain("[&_summary]:select-none");
     expect(cls).toContain("[&_summary]:font-semibold");
     expect(cls).toContain("[&_summary:hover]:text-primary");
+    // 原生实心三角换成线性 chevron：藏 marker + ::before 画、展开时旋转朝下
+    expect(cls).toContain("[&_summary::-webkit-details-marker]:hidden");
+    expect(cls).toContain("[&_summary]:flex");
+    expect(cls).toContain("[&_summary]:before:-rotate-45");
+    expect(cls).toContain("[&_details[open]>summary]:before:rotate-45");
     // 首个内容块与 summary 留一档、末元素外边距收敛
     expect(cls).toContain("[&_details>summary+*]:mt-3");
     expect(cls).toContain("[&_details>:last-child]:mb-0");

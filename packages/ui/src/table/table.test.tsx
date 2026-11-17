@@ -391,7 +391,7 @@ describe("固定列（meta.sticky·position:sticky 几何）", () => {
     expect(headers[1].style.position).toBe(""); // 年龄不固定
     const firstCell = container.querySelector("tbody td") as HTMLElement;
     expect(firstCell.style.position).toBe("sticky");
-    expect(firstCell.className).toContain("bg-bg");
+    expect(firstCell.className).toContain("bg-surface");
   });
 
   it("无 sticky 列时无任何 sticky 定位", () => {

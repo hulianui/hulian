@@ -1,4 +1,5 @@
 import type { ProseSize } from "../prose/prose.types";
+import type { CodeBlockProps } from "../code-block/code-block.types";
 
 export interface MarkdownProps {
   /** Markdown 源文本（只读渲染；编辑用 MarkdownEditor）。 */
@@ -26,5 +27,13 @@ export interface MarkdownProps {
    * @default false
    */
   headingIds?: boolean | string;
+  /**
+   * 透传给每个围栏代码块（内部是 CodeBlock）的展示选项，如 `{ maxLines: 20 }` 让 AI 回复里的
+   * 长代码默认折叠、`{ defaultWrap: true }` 让日志类内容默认换行。`code` / `lang` 由源文本决定，不在此列。
+   *
+   * Markdown 是 memo 组件：在渲染函数里写字面量对象，每次父级渲染都是新引用，会让整篇重新解析。
+   * 把对象提到组件外常量或用 useMemo 固定住。
+   */
+  codeBlock?: Pick<CodeBlockProps, "lineNumbers" | "defaultWrap" | "maxLines" | "copyable" | "highlight">;
   className?: string;
 }

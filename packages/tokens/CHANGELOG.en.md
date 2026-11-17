@@ -1,5 +1,11 @@
 # @hulianui/tokens
 
+## 0.18.0
+
+### Minor Changes
+
+- 1fa6ab0: feat(tokens): adds a theme-aware `shadow-xs` (a short drop and hairline in light mode, a white inset rim in dark mode). Previously `shadow-xs` fell back to Tailwind's default flat black at 0.05, which is invisible in dark mode. preset-opinionated also turns off ligatures and contextual alternates for monospace text (`--font-mono--font-feature-settings: "liga" 0, "calt" 0`), covering `font-mono` and `code / kbd / samp / pre`. Programming fonts such as Geist Mono fold `--` and `>=` into one glyph that overhangs to the left, eating the left padding of inline code and overlapping the previous letter. Projects that want ligatures can set it back to `normal` in their own `@theme`.
+
 ## 0.17.0
 
 ### Minor Changes

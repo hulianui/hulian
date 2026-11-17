@@ -148,7 +148,7 @@ export function DocsSearch() {
           <span className="hidden sm:inline">{content.triggerPlaceholder}</span>
         </span>
         {/* 键帽吃主色：与顶栏导航选中态同一档，首页跟着主题色轮换 */}
-        <Kbd className="hidden border-primary-border bg-primary-subtle text-primary sm:inline-flex">
+        <Kbd tone="primary" className="hidden sm:inline-flex">
           ⌘K
         </Kbd>
       </button>

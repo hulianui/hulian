@@ -279,6 +279,9 @@
      经 preset.css @theme inline 映射给 shadow-sm/md/lg/xl/2xl 工具类 →
      现存所有 shadow-* 零改动随 [data-theme] 自动切明暗。
      备选方案(HeroUI忠实 / 瑚琏品牌微染)见本文件尾，整组替换即可切换。 */
+  /* xs：贴在正文里的小件（行内代码 chip 这类）。只要「浮起半毫米」，不要环境光晕 ——
+     行内小件一段话里成排出现，晕开的光会把整行刷灰。两层：短下沉投影 + 发丝边。 */
+  --hl-shadow-xs: 0 1px 2px -0.5px rgb(0 0 0 / 0.08), 0 0 1px 0 rgb(0 0 0 / 0.18);
   --hl-shadow-sm: 0 0 4px 0 rgb(0 0 0 / 0.02), 0 2px 6px -1px rgb(0 0 0 / 0.08), 0 0 1px 0 rgb(0 0 0 / 0.22);
   --hl-shadow-md: 0 0 8px 0 rgb(0 0 0 / 0.03), 0 6px 14px -2px rgb(0 0 0 / 0.1), 0 0 1px 0 rgb(0 0 0 / 0.22);
   --hl-shadow-lg: 0 0 14px 0 rgb(0 0 0 / 0.04), 0 16px 30px -6px rgb(0 0 0 / 0.13), 0 0 1px 0 rgb(0 0 0 / 0.22);
@@ -374,6 +377,7 @@
 
   /* 阴影 · 折中·结构升级（当前启用 · 暗色）：抬黑度(深底需更重投影) +
      第 3 层换成白色 inset 轮缘光(暗底靠顶边受光勾出元素，纯黑投影在深底几乎不可见)。 */
+  --hl-shadow-xs: 0 1px 2px -0.5px rgb(0 0 0 / 0.36), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
   --hl-shadow-sm: 0 0 4px 0 rgb(0 0 0 / 0.06), 0 2px 6px -1px rgb(0 0 0 / 0.28), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
   --hl-shadow-md: 0 0 8px 0 rgb(0 0 0 / 0.07), 0 6px 14px -2px rgb(0 0 0 / 0.32), inset 0 0 1px 0 rgb(255 255 255 / 0.12);
   --hl-shadow-lg: 0 0 14px 0 rgb(0 0 0 / 0.08), 0 16px 30px -6px rgb(0 0 0 / 0.38), inset 0 0 1px 0 rgb(255 255 255 / 0.12);

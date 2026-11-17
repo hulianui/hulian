@@ -28,6 +28,7 @@ import { PricingTable } from "@hulianui/ui"
 | columns* | `PricingColumn[]` | - | Compared subject columns. |
 | rows* | `PricingRow[]` | - | Attribute and price rows. |
 | stickyHeader | `boolean` | `true` | Keeps the header visible while scrolling. |
+| bordered | `boolean` | `true` | Whether to draw the outer frame (rounded corners and border). Pass `false` inside an already bordered card to avoid a double frame; the table always carries its own surface background instead of borrowing the container's. |
 | className | `string` | - | Root class name. |
 
 `PricingColumn` has `key*`, `title*`, `highlight?`, `badge?`, and `header?`; a custom header replaces the title region. `PricingRow` has `key*`, `label*`, and `values: Record<string, ReactNode>`, keyed by column key.

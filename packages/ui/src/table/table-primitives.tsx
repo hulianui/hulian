@@ -100,7 +100,8 @@ export function TableRoot({
     <div
       className={cn(
         bordered && "rounded-[var(--radius)] border border-border",
-        "overflow-x-auto",
+        // 自带 surface 底，不借容器的背景（与 Table 同口径）。
+        "bg-surface overflow-x-auto",
         className,
       )}
       {...rest}

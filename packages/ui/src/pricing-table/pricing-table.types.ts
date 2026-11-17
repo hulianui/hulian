@@ -27,5 +27,7 @@ export interface PricingTableProps {
   rows: PricingRow[];
   /** 表头吸顶，默认 true。 */
   stickyHeader?: boolean;
+  /** 是否带外框（圆角 + 描边，默认 true）。放进已有边框的卡片里时传 false，避免双框；底色 surface 不受影响。 */
+  bordered?: boolean;
   className?: string;
 }

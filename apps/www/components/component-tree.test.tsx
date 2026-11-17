@@ -27,7 +27,8 @@ describe("ComponentTree English chrome", () => {
 
     const filter = screen.getByRole("textbox", { name: "Filter components in navigation" });
     expect(filter.getAttribute("placeholder")).toBe("Filter components…");
-    expect(screen.getByRole("button", { name: "Animated" })).toBeTruthy();
+    // 动效筛选已移除：导航只按名称 / 关键词筛
+    expect(screen.queryByRole("button", { name: "Animated" })).toBeNull();
 
     fireEvent.change(filter, { target: { value: "no-such-component" } });
 
