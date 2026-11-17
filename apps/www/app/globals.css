@@ -69,6 +69,21 @@ body {
   }
 }
 
+/* 顶栏 logo：mask 取 logo.svg 的形，底色给颜色。默认值与 logo.svg 里写死的两档一致，
+   别的页面视觉不变；首页（[data-hero-accent]）改吃主色，跟着组件墙的主题色走。 */
+.hl-logo {
+  background-color: #2f5be0;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+[data-theme="dark"] .hl-logo {
+  background-color: #5b83ff;
+}
+[data-hero-accent] .hl-logo {
+  background-color: var(--color-primary);
+}
+
 /* Tree showLine：缩进连接线。treeitem 左侧按 padding 画竖线 + 当前项横线。
    精确几何以截图为准；锦上添花视觉，不影响 a11y/键盘。 */
 .tree-line::before {
