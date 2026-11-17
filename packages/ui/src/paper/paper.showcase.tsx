@@ -612,11 +612,12 @@ function EncodingSection({ id }: { id: string }) {
   return (
     <>
       <p>
+        {/* 同注意力那段：单独演示是图 1，整篇里是图 3，图号交给 FigRef。 */}
         Each dimension of the positional encoding corresponds to a sinusoid, and the wavelengths form a geometric
-        progression from 2π to 10000·2π <FigRef to={id} />. Low dimensions oscillate quickly along the sequence{" "}
-        <FigRef to={id} state="c4">Figure 3, i = 2</FigRef>, while higher dimensions change slowly{" "}
-        <FigRef to={id} state="c40">Figure 3, i = 20</FigRef> and barely move within 64 positions{" "}
-        <FigRef to={id} state="c100">Figure 3, i = 50</FigRef>.
+        progression from 2π to 10000·2π (<FigRef to={id} />). Low dimensions oscillate quickly along the sequence (
+        <FigRef to={id} state="c4" />, i = 2), while higher dimensions change slowly (
+        <FigRef to={id} state="c40" />, i = 20) and barely move within 64 positions (
+        <FigRef to={id} state="c100" />, i = 50).
       </p>
       <PaperFigure
         id={id}
