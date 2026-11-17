@@ -1,5 +1,11 @@
 # @hulianui/tokens
 
+## 0.19.0
+
+### Minor Changes
+
+- 659f0c0: feat(tokens): adds the accent scope `[data-accent-scope]`. Inside the subtree only the accent **hue** changes (`--hl-accent-hue`, the OKLCH h; the brand color is 258) while lightness and chroma stay on the brand ladder. `primary`, `primary-hover`, `primary-subtle`, `primary-border`, `ring`, `signal-brand`, `code-keyword`, and the chart palette `chart-1..6` all follow, in light mode, dark mode, and theme islands nested inside the scope. `--hl-accent-hue` is registered with `@property` as a `<number>`, so it can transition. Usually paired with `<AccentScope hue>` from `@hulianui/ui`.
+
 ## 0.18.0
 
 ### Minor Changes
