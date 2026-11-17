@@ -48,6 +48,7 @@ export * from "./json-viewer";
 export * from "./kanban";
 export * from "./flow";
 export * from "./sequence-diagram";
+export * from "./paper";
 export * from "./design-canvas";
 export * from "./component-picker";
 export * from "./watermark";

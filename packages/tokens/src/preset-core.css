@@ -389,6 +389,13 @@
   }
 }
 
+/* data-display/Paper 流程图里当前一步的数据流：配合 stroke-dasharray: 5 4 使用，虚线沿路径前进一格。 */
+@keyframes hulian-paper-flow {
+  to {
+    stroke-dashoffset: -9;
+  }
+}
+
 /* Danmaku 弹幕滚动：从容器右缘(left:100%)向左平移整段距离(--dm-x 为负值=容器宽+自身宽)。 */
 @keyframes hulian-danmaku-scroll {
   from {

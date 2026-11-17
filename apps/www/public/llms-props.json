@@ -583,6 +583,16 @@
       "block",
       "inline"
     ],
+    "PaperMode": [
+      "read",
+      "print"
+    ],
+    "FigureStepPhase": [
+      "on",
+      "done",
+      "off",
+      "all"
+    ],
     "GeneratorMode": [
       "password",
       "passphrase"
@@ -1561,6 +1571,12 @@
     "formatTicker": "number-ticker",
     "OrgClassroom": "org-classroom",
     "updateSeatStatus": "org-classroom",
+    "Paper": "paper",
+    "usePaperMode": "paper",
+    "PaperFigure": "paper",
+    "ProcessFigure": "paper",
+    "FigureStep": "paper",
+    "FigRef": "paper",
     "PixelCard": "pixel-card",
     "PricingTable": "pricing-table",
     "ProfileCard": "profile-card",
@@ -24485,6 +24501,38 @@
           "description": "点指南针旁的旋转按钮时得到新视角。受控时由你写回 `view`"
         }
       ],
+      "slots": []
+    },
+    {
+      "slug": "paper",
+      "name": "Paper",
+      "category": "data-display",
+      "group": "collection",
+      "status": "enriched",
+      "import": "import { Paper, usePaperMode, PaperFigure, ProcessFigure, FigureStep, FigRef } from \"@hulianui/ui\"",
+      "exports": [
+        "Paper",
+        "usePaperMode",
+        "PaperFigure",
+        "ProcessFigure",
+        "FigureStep",
+        "FigRef"
+      ],
+      "types": [
+        "FigRefProps",
+        "FigureRenderContext",
+        "FigureStepPhase",
+        "FigureStepProps",
+        "PaperFigureProps",
+        "PaperContentLabels",
+        "PaperMode",
+        "PaperProps",
+        "ProcessFigureProps",
+        "ProcessStep"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/paper/paper.md",
+      "props": [],
+      "events": [],
       "slots": []
     },
     {

@@ -8917,6 +8917,26 @@
       "显示序号": "Show numbers",
       "逐步讲解": "Step-through",
       "参与者 ": "Participant "
+    },
+    "packages/ui/src/paper/paper.showcase.tsx": {
+      "阅读": "Read",
+      "打印预览": "Print preview",
+      "已缩放 ÷√dₖ": "Scaled ÷√dₖ",
+      "未缩放": "Unscaled",
+      "<FigureStep at=\"a\">{/* 输入嵌入 + 位置编码 */}</FigureStep>": "<FigureStep at=\"a\">{/* input embedding + positional encoding */}</FigureStep>",
+      "<FigureStep at=\"b c\">{/* 编码器外框，属于两步 */}</FigureStep>": "<FigureStep at=\"b c\">{/* encoder frame, part of two steps */}</FigureStep>",
+      "切换缩放": "Toggle scaling",
+      "// 默认：主图画 \"all\"，每一步展开一张分图": "// Default: the main figure draws \"all\", with one sub-figure per step",
+      "// printState=\"e\" printSubfigures={[\"b\", \"e\"]} 可以改": "// Change it with printState=\"e\" printSubfigures={[\"b\", \"e\"]}",
+      "流程图：正文引用驱动讲解": "Process figure driven by in-text references",
+      "素材是《Attention Is All You Need》的架构图。点正文里的 Figure 1(b) 这类引用，图会切到那一步，必要时滚进视野并描边一下。当前步高亮，讲过的半透明，没讲到的很淡但不隐藏，读者始终看得到整张图。图下方可以逐步点、上一步 / 下一步、自动播放。右上角切到「打印预览」看投稿形态。": "The material is the architecture figure of “Attention Is All You Need”. Click a reference such as Figure 1(b) in the text and the figure switches to that step, scrolls into view when needed, and is outlined briefly. The current step is highlighted, earlier steps are half transparent, and later steps are faint but not hidden, so the reader always sees the whole figure. Below the figure you can pick a step, go previous / next, or play. Switch to Print preview at the top right to see the submission form.",
+      "参数图：预设加连续调节": "Parameter figure: presets plus direct values",
+      "状态不只是步骤，也可以是一组参数。正文引用只认有名字的预设，控件用 setState 直接给值。这里演示缩放点积注意力：不除以 √dₖ 时，dₖ 越大，softmax 越集中到一个词上。权重是手设的示意数据。": "A state can be a set of parameters, not only a step. In-text references only use named presets, while controls set values directly with setState. This shows scaled dot-product attention: without dividing by √dₖ, the larger dₖ is, the more the softmax concentrates on one token. The weights are illustrative, hand-set data.",
+      "打印形态": "Print form",
+      "投稿用的 PDF 形态：每张图定格在打印态，控件不渲染，引用变回正文文字，流程图的每一步展开成 (a)(b)(c)… 分图。浏览器真的打印时，Paper 会在打印前自动切到这个形态，打印完再切回。": "The PDF form for submission: every figure freezes in its print state, controls are not rendered, references become plain text, and each step of a process figure expands into (a)(b)(c)… sub-figures. When the browser actually prints, Paper switches to this form before printing and back afterwards.",
+      "形态": "Mode",
+      "打印": "Print",
+      "参数图": "Parameter figure"
     }
   }
 }

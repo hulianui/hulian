@@ -826,6 +826,8 @@ export const scenarioLoaders = {
   pagination: async () =>
     (await import("@hulianui/ui-internal/pagination/pagination.showcase"))
       .paginationShowcase,
+  paper: async () =>
+    (await import("@hulianui/ui-internal/paper/paper.showcase")).paperShowcase,
   particles: async () =>
     (await import("@hulianui/ui-internal/particles/particles.showcase"))
       .particlesShowcase,
@@ -4046,6 +4048,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/pagination/index.ts",
+  },
+  paper: {
+    id: "paper",
+    scenarioId: "paper/basic",
+    component: "Paper",
+    entry: "@hulianui/ui/paper",
+    category: "standard",
+    categories: ["collection", "data-display"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/paper/index.ts",
   },
   particles: {
     id: "particles",
