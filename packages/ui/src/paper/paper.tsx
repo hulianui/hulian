@@ -9,6 +9,8 @@ import {
   usePaperContext,
   type FigureEntry,
   type CitationStore,
+  type EquationEntry,
+  type EquationStore,
   type PaperContextValue,
   type TermStore,
 } from "./paper-context";
@@ -20,8 +22,8 @@ import type { FigureSvgExportOptions, PaperMode, PaperProps } from "./paper.type
 //    图号按 DOM 顺序现算，和图注里 CSS 计数器给出的编号是同一个顺序。
 //  · 持有呈现形态（阅读 / 打印）。浏览器打印前 flushSync 切到 print，保证打出来的是打印态
 //    而不是读者此刻停在的那一步；打印完切回。
-//  · 图注编号用 CSS 计数器（counter-reset 在这里，counter-increment 在每张图上），
-//    服务端渲染和打印时都有号，不等 JS。
+//  · 图注编号和公式编号都用 CSS 计数器（counter-reset 在这里，counter-increment 在每张图 / 每条自动编号的公式上），
+//    服务端渲染和打印时都有号，不等 JS。FigRef / EqRef 按注册表里的 DOM 顺序取号，两边顺序一致。
 //  · 正文衬线：论文是衬线排版的体裁。tokens 刻意没有 --font-serif（#319），这里只在 Paper 内部
 //    给一条默认字体栈，消费方用 --paper-font 覆盖。
 
@@ -136,6 +138,59 @@ export function Paper({
     };
   });
 
+  // 公式注册表：所有公式都登记（自动编号要数全部），EqRef 订阅版本号重新取号。
+  const [equations] = useState<EquationStore>(() => {
+    const entries = new Set<EquationEntry>();
+    const subs = new Set<() => void>();
+    let version = 0;
+    const find = (id: string) => {
+      let hit: EquationEntry | undefined;
+      for (const entry of entries) if (entry.id === id) hit = entry;
+      return hit;
+    };
+    const emit = () => {
+      version += 1;
+      for (const listener of subs) listener();
+    };
+    return {
+      subscribe(listener) {
+        subs.add(listener);
+        return () => {
+          subs.delete(listener);
+        };
+      },
+      version: () => version,
+      register(entry) {
+        if (entry.id !== undefined) {
+          for (const other of entries) {
+            if (other.id === entry.id) {
+              warnOnce(`Paper:equation:${entry.id}`, `[Paper] 公式 id "${entry.id}" 重复，EqRef 只会找到后挂载的那一条。`);
+            }
+          }
+        }
+        entries.add(entry);
+        emit();
+        return () => {
+          entries.delete(entry);
+          emit();
+        };
+      },
+      touch: emit,
+      find,
+      labelOf(id) {
+        const target = find(id);
+        if (!target) return undefined;
+        let n = 0;
+        for (const entry of [...entries].sort((a, b) => documentOrder(a.element(), b.element()))) {
+          const numbering = entry.numbering();
+          if (numbering.auto) n += 1;
+          if (entry === target) return numbering.auto ? n : (numbering.label ?? undefined);
+        }
+        return undefined;
+      },
+    };
+  });
+
   // 参考文献编号：同一篇论文只该有一份 Bibliography，登记第二份时告警，后登记的生效。
   const [citations] = useState<CitationStore>(() => {
     let map: ReadonlyMap<string, number> = new Map();
@@ -206,6 +261,7 @@ export function Paper({
       exportFigureSvg,
       terms,
       citations,
+      equations,
     }),
     [
       current,
@@ -223,6 +279,7 @@ export function Paper({
       exportFigureSvg,
       terms,
       citations,
+      equations,
     ],
   );
 
@@ -233,7 +290,7 @@ export function Paper({
         ref={tagRef}
         data-paper=""
         data-mode={current}
-        className={cn("text-foreground [counter-reset:paper-figure]", className)}
+        className={cn("text-foreground [counter-reset:paper-figure_paper-equation]", className)}
         style={{ fontFamily: PAPER_FONT, ...style } as CSSProperties}
       >
         {children}

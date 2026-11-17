@@ -4,7 +4,7 @@ name: Paper
 category: data-display
 group: collection
 tags: []
-exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography]
+exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography]
 status: enriched
 ---
 
@@ -18,9 +18,9 @@ status: enriched
 
 ## 导入
 ```ts
-import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
+import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
 import { PaperEquation } from "@hulianui/ui/math"
-import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
+import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, FigureRasterContext, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
 ```
 
 ## 结构
@@ -29,6 +29,7 @@ import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportO
 Paper                      呈现形态（阅读 / 打印）+ 图的注册表 + 图号计数
 ├─ PaperHeader             标题区：题目、作者、摘要
 ├─ FigRef                  正文引用：切到某个预设、滚到图、描边一下
+├─ EqRef                   公式引用「公式 (1)」：滚到公式、描边一下
 ├─ Cite                    文献引用 [1, 2]，按 Bibliography 编号
 ├─ PaperEquation           公式，其中的项能和图联动（@hulianui/ui/math）
 ├─ PaperPresenter          答辩演示：全屏，把每张图的预设串成幻灯片
@@ -36,6 +37,8 @@ Paper                      呈现形态（阅读 / 打印）+ 图的注册表 + 
 ├─ PaperFigure<S>          通用图：状态是任意值 + 有名字的预设
 └─ ProcessFigure           一步步讲的图（PaperFigure 的特化，状态就是步骤 key）
    └─ FigureStep           标出图里某一部分属于哪一步
+
+FigureRaster               图的 <svg> 里的一块栅格（热力图），任何图都能用
 ```
 
 核心约定只有一条：**图只由状态决定画成什么样**。`PaperFigure` 的 `children` 是「状态 → 画面」的函数，打印分图就是同一个函数在几个预设上各调一次。函数里藏的内部状态不会出现在分图和打印里。
@@ -49,14 +52,14 @@ Paper                      呈现形态（阅读 / 打印）+ 图的注册表 + 
 | as | `ElementType` | `"article"` | 根元素标签 |
 | mode | `"read"` ｜ `"print"` | - | 受控形态 |
 | defaultMode | `"read"` ｜ `"print"` | `"read"` | 非受控初始形态 |
-| labels | `{ figure?; separator?; abstract?; references? }` | 跟随界面语言 | 图注前缀、自动引用、摘要与参考文献标题的文字。论文语言和界面不同时指定，如中文界面里排英文论文：`{ figure: "Figure", separator: ": " }`。步骤按钮等控件文字仍跟随界面语言 |
+| labels | `{ figure?; separator?; abstract?; references?; equation? }` | 跟随界面语言 | 图注前缀、自动引用（含 `EqRef` 的「公式」/ "Eq."）、摘要与参考文献标题的文字。论文语言和界面不同时指定，如中文界面里排英文论文：`{ figure: "Figure", separator: ": " }`。步骤按钮等控件文字仍跟随界面语言 |
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
 | onModeChange | `(mode: PaperMode) => void` | 通过 `usePaperMode` 切换形态时触发 |
 
 - 浏览器真正打印时（`beforeprint`），`Paper` 临时切到 `print`，打印完（`afterprint`）切回，这一次不触发 `onModeChange`。
-- 图号用 CSS 计数器，服务端渲染和打印时都有号。`PaperFigure` 必须放在 `Paper` 里，否则每张图都是「图 1」。
+- 图号和公式号用 CSS 计数器，服务端渲染和打印时都有号。`PaperFigure` 必须放在 `Paper` 里，否则每张图都是「图 1」。
 - 正文用衬线字体：`var(--paper-font, "STIX Two Text", "Times New Roman", "Songti SC", "SimSun", serif)`。在外层设 `--paper-font` 即可替换。`Paper` 不接管标题、段落的样式，排版由你决定。
 
 `usePaperMode()` 在 `Paper` 内部返回 `[mode, setMode]`，用来做自己的「阅读 / 打印预览」切换。
@@ -148,6 +151,48 @@ interface ProcessStep {
 
 `hulian-paper-flow` 关键帧在 `@hulianui/tokens` 的 preset-core.css 里。
 
+## FigureRaster
+
+图里逐像素的部分：热力图、注意力矩阵、显微照片。`<image>` 元素，**只能放在图的 `<svg>` 里**。`draw` 在离屏 canvas 上画，编码成 PNG 写进 `href`。继承 `SVGAttributes<SVGImageElement>`（不含 `href`），`ref` 落在 `<image>` 上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| width * / height * | number | - | 在图的 SVG 坐标（`viewBox`）里的大小 |
+| x / y | number | 0 | 在图的 SVG 坐标里的位置 |
+| resolution * | `[宽, 高]` | - | 画布像素尺寸。数据栅格一般就是数据的列数和行数 |
+| draw * | `(ctx, { width, height, color }) => void` | - | 在画布上画。只能由数据决定画面。按引用比较，引用不变就不重画，所以提到模块级常量或用 `useCallback` |
+| pixelated | boolean | false | 一个像素就是一个数据格：放大后保持方块，不插值。照片类栅格保持 false |
+| preserveAspectRatio | string | `"none"` | 默认拉伸填满 `width × height`，和数据格的坐标一一对应 |
+
+`color(css)` 把任意 CSS 颜色（含 `var(--color-chart-1)` 这类 token）按栅格所在位置的主题解析成 0–255 的 `[r, g, b, a]`，可以直接写进 `ImageData`。
+
+```tsx
+const drawHeat = (ctx, { width, height, color }) => {
+  const positive = color("var(--color-chart-1)");
+  const negative = color("var(--color-chart-3)");
+  const zero = color("var(--color-bg)");
+  const image = ctx.createImageData(width, height);
+  // … 每个像素按数值在 zero 与 positive / negative 之间插值
+  ctx.putImageData(image, 0, 0);
+};
+
+<PaperFigure id="encoding" states={presets} printSubfigures={["c4", "c40"]} caption="…">
+  {({ dim }) => (
+    <svg viewBox="0 0 520 352">
+      <FigureRaster x={4} y={4} width={512} height={176} resolution={[128, 64]} pixelated draw={drawHeat} />
+      <rect x={4 + dim * 4} y={4} width={4} height={176} className="fill-none stroke-foreground" />
+    </svg>
+  )}
+</PaperFigure>
+```
+
+- **为什么放进 SVG**：画面仍然是单独一个 `<svg>`，所以栅格和矢量部分（坐标轴、标记、曲线）共用 `viewBox` 坐标。打印分图里每份各画各的，演示时按舞台缩放，导出 SVG 时原样内嵌，得到一份混合 SVG。
+- **主题**：颜色在栅格自己的位置解析。页面上任意一处 `data-theme` 改变或系统明暗切换时重画；导出时在亮色槽里画，所以导出的总是亮色。
+- **pixelated**：编码时按整数倍最近邻放大（编码尺寸约为显示尺寸的 3 倍，长边不超过 4096 像素）。Word、PDF 转换器这些不认 `image-rendering` 的地方也是锐利的方块。
+- **时机**：在 layout effect 里画。浏览器打印前 `Paper` 同步切到打印态，分图的栅格在打印快照之前就已画好。服务端渲染时输出没有 `href` 的 `<image>`，位置已经占好，不会跳动。
+- 栅格不响应指针。要在上面选点，就叠一个透明的 `<rect>` 接事件，键盘操作交给图下方的控件（如 `Slider`）。
+- 发散数据（有正有负）用两个色相加中性的中点，例如 `chart-1` / `chart-3` 加底色。不要用 `warning` / `danger` 这类状态色。
+
 ## FigRef
 
 `<a href="#id">`，继承 `AnchorHTMLAttributes`（不含 `href`），`ref` 落在 `<a>` 上。
@@ -218,7 +263,7 @@ const svg = await exportFigureSvg("transformer", "b", { background: "white" }); 
 - **颜色**：Tailwind 类和 CSS 变量离开页面就失效，浏览器给的计算值又常是 `oklab()` / `oklch()`，Word、Inkscape 不认。导出时一律换成 `#rrggbb`，透明度并进 `fill-opacity` / `stroke-opacity`。
 - **定格**：动画和过渡在槽里关掉，流动虚线定格在起点；`FigureStep` 的阶段透明度按导出的那一步算。`display: none` 的元素不进文件；`aria-label` 变成 `<title>`（Word 当替代文字用）。
 - **文字保留为 `<text>`**，带上 `Paper` 的字体栈。打开文件的机器上没有 STIX Two Text 时会回退到 Times New Roman / 宋体。LaTeX 里用 `\includesvg`（svg 宏包，需要 Inkscape）或先转成 PDF，转换的机器上要装好字体。
-- **前提**：图的画面必须是单独一个 `<svg>`。画面是 canvas、HTML 或带 `<foreignObject>` 时 reject 并说明原因；图找不到、预设不存在时也 reject。
+- **前提**：图的画面必须是单独一个 `<svg>`。画面是裸的 canvas、HTML 或带 `<foreignObject>` 时 reject 并说明原因（canvas 栅格改用 `FigureRaster` 画在 `<svg>` 里，导出时以 PNG 内嵌）；图找不到、预设不存在时也 reject。
 - 图里的 CSS `transform`（如 Tailwind 的 `rotate-*`）不会写进文件，要旋转、平移请用 SVG 的 `transform` 属性。
 
 ## 公式与图联动
@@ -255,7 +300,7 @@ function ScaleToggle({ fig }) {
 |------|------|------|------|
 | children * | string | - | 整条公式的 LaTeX（数学模式，不用包 `$`）。用 `\term{name}{…}` 标出可交互的项，name 只能是字母、数字、`_`、`-` |
 | terms | `Record<string, EquationTerm>` | - | 各项的配置，键是 name |
-| number | ReactNode | - | 右侧的编号，`1` 渲染成 `(1)` |
+| number | ReactNode | 自动编号 | 右侧的编号。在 `Paper` 里不传时自动编号，见下方「公式编号与 EqRef」；传值显示成 `(值)`，不占自动编号（同 LaTeX `\tag`）；传 `null` / `false` 不编号。在 `Paper` 外不传时不编号 |
 | display | boolean | true | 块级排版 |
 | macros | `Record<string, string>` | - | 自定义宏，透传给 KaTeX；`\term` 是保留名 |
 
@@ -276,6 +321,29 @@ interface EquationTerm {
 ### usePaperTerm
 
 `usePaperTerm(name) => { active, bind }`。把 `bind` 展开到控件（或图的一部分）上，悬停、聚焦时公式里同名的项会亮。高亮时 `bind` 带 `data-active`，可以用 `data-[active]:` 写样式。在 `Paper` 外调用时 `active` 恒为 false。
+
+### 公式编号与 EqRef
+
+```tsx
+<p>… as shown in <EqRef to="attention" />.</p>   {/* 「公式 (1)」，英文论文 "Eq. (1)" */}
+<PaperEquation id="attention">{String.raw`\mathrm{softmax}(QK^T/\sqrt{d_k})V`}</PaperEquation>  {/* (1) */}
+<PaperEquation number="A.1">{…}</PaperEquation>   {/* (A.1)，不占号 */}
+<PaperEquation number={null}>{…}</PaperEquation>  {/* 不编号 */}
+<PaperEquation>{…}</PaperEquation>                {/* (2) */}
+```
+
+- **自动编号**：在 `Paper` 里不传 `number` 的公式占 CSS 计数器的一个号，和图号一样，服务端渲染和打印时都有号，不等 JS。手写 `number` 覆盖显示、不占号；`null` / `false` 不编号。
+- **`EqRef`** 从 `@hulianui/ui` 引入（不依赖 KaTeX），是 `<a href="#id">`，继承 `AnchorHTMLAttributes`（不含 `href`），`ref` 落在 `<a>` 上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| to * | string | - | 目标公式的 `id`（写在 `PaperEquation` 上） |
+| children | ReactNode | 「公式 (N)」 | 引用文字。不传时按文档顺序自动取号（挂载后才有号），手写覆盖的号原样显示 |
+
+- 点击：公式不在视野里就滚过去（减弱动效时不平滑），公式描边约 1.2 秒。没有 JS 或不在 `Paper` 里时退化成普通锚点；打印形态下去掉链接色。
+- 「公式」/ "Eq." 属于论文内容，跟随 `Paper` 的 `labels.equation`，不传时跟随界面语言。
+- 找不到公式时点击告警一次；引用了 `number={null}` 的公式时只显示「公式」，开发环境告警一次。
+- 公式 id 和图 id、文献 id 共用页面的 DOM id 空间，不要取同名。
 
 ## 标题区与参考文献
 

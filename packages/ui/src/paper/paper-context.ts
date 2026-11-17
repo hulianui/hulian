@@ -42,6 +42,31 @@ export interface CitationStore {
   highlight: (id: string) => void;
 }
 
+/** 公式此刻怎么编号：自动（占 CSS 计数器的一个号）、手写覆盖、或不编号（label 为 null）。 */
+export type EquationNumbering = { auto: true } | { auto: false; label: ReactNode };
+
+/** 一条已挂载的公式在注册表里留下的句柄。没有 id 的公式也登记：自动编号要按文档顺序数全部公式。 */
+export interface EquationEntry {
+  id: string | undefined;
+  element: () => HTMLElement | null;
+  /** 读最新的 props，所以注册一次即可。 */
+  numbering: () => EquationNumbering;
+  highlight: () => void;
+}
+
+/** 公式注册表：EqRef 按 id 找公式、按文档顺序取号（与 CSS 计数器 paper-equation 的顺序一致）。 */
+export interface EquationStore {
+  subscribe: (listener: () => void) => () => void;
+  /** 注册、注销、任一公式重新渲染都会加一。 */
+  version: () => number;
+  register: (entry: EquationEntry) => () => void;
+  /** 公式提交后调用：编号方式可能变了，通知引用重新取号。 */
+  touch: () => void;
+  find: (id: string) => EquationEntry | undefined;
+  /** 公式此刻显示的编号：自动号是数字，手写覆盖原样返回；不编号或找不到时 undefined。 */
+  labelOf: (id: string) => ReactNode | undefined;
+}
+
 /** 公式项与图控件之间「当前高亮哪一项」的共享状态。 */
 export interface TermStore {
   subscribe: (listener: () => void) => () => void;
@@ -73,6 +98,8 @@ export interface PaperContextValue {
   touchFigures: () => void;
   /** 参考文献编号，见 `Cite` / `Bibliography`。 */
   citations: CitationStore;
+  /** 公式注册表，见 `EqRef`。 */
+  equations: EquationStore;
   /** 公式项的双向高亮，见 `usePaperTerm`。 */
   terms: TermStore;
   /** 见 `usePaperExport`。 */

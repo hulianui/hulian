@@ -19,6 +19,8 @@ export interface PaperContentLabels {
   abstract?: string;
   /** `Bibliography` 的标题，如 "References"、"参考文献"。 */
   references?: string;
+  /** `EqRef` 自动引用文字里公式号前的词，如 "Eq."、"公式"。 */
+  equation?: string;
 }
 
 export interface PaperProps extends HTMLAttributes<HTMLElement> {
@@ -129,12 +131,60 @@ export interface FigureStepProps extends SVGAttributes<SVGGElement> {
   at: string | readonly string[];
 }
 
+/** `FigureRaster` 解析出的颜色：0–255 的 `[r, g, b, a]`，可以直接写进 `ImageData`。 */
+export type RasterColor = readonly [number, number, number, number];
+
+/** 交给 `FigureRaster` 的 `draw` 的第二个参数。 */
+export interface FigureRasterContext {
+  /** 画布宽（像素），即 `resolution[0]`。 */
+  width: number;
+  /** 画布高（像素），即 `resolution[1]`。 */
+  height: number;
+  /**
+   * 把任意 CSS 颜色（含 `var(--color-chart-1)` 这类 token）按这块栅格所在位置的主题解析成 RGBA。
+   * 导出时在亮色槽里解析，所以导出的总是亮色版本。
+   */
+  color: (css: string) => RasterColor;
+}
+
+export interface FigureRasterProps
+  extends Omit<SVGAttributes<SVGImageElement>, "x" | "y" | "width" | "height" | "href" | "children"> {
+  /** 在图的 SVG 坐标（viewBox）里的位置与大小。 */
+  x?: number;
+  y?: number;
+  width: number;
+  height: number;
+  /** 画布像素尺寸 `[宽, 高]`。数据栅格一般就是数据的列数和行数。 */
+  resolution: readonly [number, number];
+  /**
+   * 在画布上画。**只能由传进来的数据决定画面**（同 `PaperFigure` 的 `children`）。
+   * 按引用比较：引用不变就不重画，所以提到模块级常量或用 `useCallback`。
+   */
+  draw: (ctx: CanvasRenderingContext2D, raster: FigureRasterContext) => void;
+  /**
+   * 一个像素就是一个数据格，放大后保持方块、不插值。编码时按整数倍最近邻放大，
+   * 导出到 Word / PDF 里同样锐利。照片类栅格保持默认 false。
+   */
+  pixelated?: boolean;
+  /** 默认 `"none"`：拉伸填满 `width × height`，和数据格的坐标一一对应。 */
+  preserveAspectRatio?: string;
+  ref?: Ref<SVGImageElement>;
+}
+
 export interface FigRefProps extends Omit<HTMLAttributes<HTMLAnchorElement>, "href"> {
   /** 目标图的 id。 */
   to: string;
   /** 要切到的预设名；不传只跳到图，不改状态。 */
   state?: string;
   /** 引用文字；不传时自动生成「图 N」。 */
+  children?: ReactNode;
+  ref?: Ref<HTMLAnchorElement>;
+}
+
+export interface EqRefProps extends Omit<HTMLAttributes<HTMLAnchorElement>, "href"> {
+  /** 目标公式（`PaperEquation`）的 `id`。 */
+  to: string;
+  /** 引用文字；不传时自动生成「公式 (N)」/ "Eq. (N)"。 */
   children?: ReactNode;
   ref?: Ref<HTMLAnchorElement>;
 }
@@ -193,7 +243,9 @@ export interface PaperExport {
    * 把图 `id` 的预设 `stateKey` 画成一份独立的 SVG 文本：样式内联成表现属性，颜色换成十六进制，
    * 不依赖页面的 CSS。正文里的图不受影响。
    *
-   * 图找不到、预设不存在、图的画面不是单独一个 `<svg>`（如 canvas、HTML）时 reject。
+   * 图里的 `FigureRaster` 以 PNG（`<image href="data:image/png…">`）内嵌，导出的是一份混合 SVG。
+   *
+   * 图找不到、预设不存在、图的画面不是单独一个 `<svg>`（如裸的 canvas、HTML）时 reject。
    */
   exportFigureSvg: (id: string, stateKey: string, options?: FigureSvgExportOptions) => Promise<string>;
 }
@@ -237,7 +289,11 @@ export interface PaperEquationProps extends Omit<HTMLAttributes<HTMLDivElement>,
   children: string;
   /** `\term` 标出的各项，键是 name。 */
   terms?: Readonly<Record<string, EquationTerm>>;
-  /** 右侧的公式编号，如 `1` 渲染成 `(1)`。 */
+  /**
+   * 右侧的公式编号。在 `Paper` 里不传时自动编号（CSS 计数器，服务端渲染和打印都有号）；
+   * 传值则显示成 `(值)` 且不占自动编号（同 LaTeX 的 `\tag`）；传 `null` / `false` 不编号。
+   * 在 `Paper` 外不传时不编号。
+   */
   number?: ReactNode;
   /** 块级排版，默认 true。 */
   display?: boolean;
