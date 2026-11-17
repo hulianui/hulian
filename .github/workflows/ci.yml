@@ -357,7 +357,11 @@ jobs:
   #   a11y 170–201s · showcase 186–238s 是两道不可再拆的单步，各占一组；
   #   其余 8 步（合计约 290s）分成下面两组，各约 130–165s。
   # 改前最慢一组是「a11y + viewport + 快跳 + 画廊」≈ 335s；改后关键路径由两道单步
-  # 决定（≈ 200s + 环境准备），每轮 CI 约省 1 分多钟。想再快只能给这两道单步分片。
+  # 决定（≈ 200s + 环境准备），每轮 CI 约省 1 分多钟。
+  #
+  # 同日再调（runs/44129334408 实测）：showcase / a11y 各分两片（≈125s / ≈90s），demos 组
+  # 185s 成了最慢的一组，拆成 admin（≈97s）与「task11 + task12 + 快跳 + 画廊」（≈124s），
+  # i18n 组只留三步（≈106s）。各组工作量都压到 ≈125s 以内，与 showcase 分片持平。
 
   gate-showcase:
     name: Gate · English showcases (browser, ${{ matrix.shard }}/2)
@@ -430,8 +434,9 @@ jobs:
       - name: Accessibility gate
         run: pnpm a11y
 
-  gate-demos:
-    name: Gate · English demos (browser)
+  # 中后台 demo 单步约 97s，独占一组。
+  gate-demos-admin:
+    name: Gate · English admin demos (browser)
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -456,14 +461,45 @@ jobs:
       - name: Verify English admin demos in Chromium
         run: pnpm docs:check:admin-demos
 
+  gate-demos:
+    name: Gate · English demos · quick-jump · gallery (browser)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright chromium
+        # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
+        timeout-minutes: 10
+        uses: ./.github/actions/playwright
+
+      - name: Download static export
+        uses: actions/download-artifact@v7
+        with:
+          name: www-out
+          path: apps/www/out
+
       - name: Verify English AI, knowledge, education, and visualization demos in Chromium
         run: pnpm docs:check:task11-demos
 
       - name: Verify English consumer and marketing demos in Chromium
         run: pnpm docs:check:task12-demos
 
+      - name: Component quick-jump browser gate
+        run: node scripts/component-quick-jump-browser.mjs
+
+      # 画廊预算：已挂载预览数 / 顶层 DOM 数 / 控制台 warning。
+      # 拦「把整座画廊当活组件同时挂上」这类回归 —— 它不会让任何测试变红，只会让页面变慢。
+      - name: Gallery mount budget gate
+        run: pnpm gallery
+
   gate-i18n:
-    name: Gate · i18n output · viewport · gallery
+    name: Gate · i18n output · viewport
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -497,14 +533,6 @@ jobs:
       # 在 SSR HTML、sitemap、typecheck、构建甚至 axe 里全是绿的，只有按宽度量面积才拦得住。
       - name: Responsive viewport gate
         run: pnpm viewport
-
-      - name: Component quick-jump browser gate
-        run: node scripts/component-quick-jump-browser.mjs
-
-      # 画廊预算：已挂载预览数 / 顶层 DOM 数 / 控制台 warning。
-      # 拦「把整座画廊当活组件同时挂上」这类回归 —— 它不会让任何测试变红，只会让页面变慢。
-      - name: Gallery mount budget gate
-        run: pnpm gallery
 
   # ══ 独立档：发布产物的可消费性，与文档站构建互不依赖 ══════════════════════════
 
@@ -746,6 +774,7 @@ jobs:
       - build
       - gate-showcase
       - gate-a11y
+      - gate-demos-admin
       - gate-demos
       - gate-i18n
       - consumer-smoke
@@ -802,6 +831,7 @@ jobs:
       - build
       - gate-showcase
       - gate-a11y
+      - gate-demos-admin
       - gate-demos
       - gate-i18n
       - consumer-smoke
