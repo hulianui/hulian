@@ -78,6 +78,19 @@ describe("Markdown", () => {
     expect(container.querySelector("em a")?.getAttribute("href")).toBe("https://example.com/b");
   });
 
+  it("链接文字内部解析行内标记", () => {
+    // CommonMark 允许 [`代码`](url)。更新日志把行内代码形式的组件名链到文档页后，
+    // 链接文字原样输出会把反引号当字面字符显示出来。
+    const { container } = render(
+      <Markdown>{"[`Paper`](https://example.com/p) 与 [**粗**链接](https://example.com/q)"}</Markdown>,
+    );
+
+    const links = container.querySelectorAll("a");
+    expect(links[0]?.querySelector("code")?.textContent).toBe("Paper");
+    expect(links[0]?.textContent).toBe("Paper");
+    expect(links[1]?.querySelector("strong")?.textContent).toBe("粗");
+  });
+
   it("嵌套递归不会打乱同一行后续标记的位置", () => {
     // 行内扫描器共用一个带 g 的正则时，递归会推进外层的 lastIndex，后面的标记整行错位。
     const { container } = render(

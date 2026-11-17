@@ -3,12 +3,18 @@
 // 更新日志是「先看到组件名、再去文档查」的典型场景，而正文来自 changeset 的纯文本，
 // 组件名只是裸词。这里按 manifest 的组件名做词级链接化，省掉「拷贝 → 去组件页搜」。
 //
-// 三条硬约束：
-// 1. 只改代码之外（围栏块 / 行内代码里的是标识符，不是对组件的引用）；
+// 硬约束：
+// 1. 围栏块不动；行内代码只在**整段恰好是一个组件导出名**时链接化（`Paper`、
+//    `<PaperPresenter>`、`<Paper />`），`deltaPlacement` / `font-medium` 这类标识符不动。
+//    此前行内代码一律跳过，而 changeset 的规范写法恰恰是给组件名加反引号 —— 写得越规范
+//    越链不上（0.74.0 / 0.74.1 整版零链接）。子组件经 llms-props.json 的 exportIndex
+//    链到所属组件页（`PaperPresenter` → paper）。
 // 2. 不碰已有的 Markdown 链接（label 里再嵌一个链接会把结构拆坏）；
 // 3. 大小写敏感 + 词边界 —— `Button` 是组件，`button` 是普通词，`ButtonGroup` 不该被
 //    切成 `Button` + `Group`。
 
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { DOCS_LOCALE, withDocsBasePath, type DocsLocale } from "./docs-locale";
 import { manifest } from "./manifest";
 import { rewriteOutsideCode } from "./markdown-outside-code";
@@ -62,6 +68,43 @@ function hrefsFor(locale: DocsLocale): Map<string, string> {
   return hrefs;
 }
 
+/**
+ * 导出名 → 组件 slug（含子组件，如 `PaperPresenter` → `paper`）。真源是 llms-props.json 的
+ * exportIndex（由 barrel 生成、随仓库提交）；只收 PascalCase 且落在 manifest 里有文档页的。
+ * 用 fs 读而不 import：那份 JSON 1.4MB，没必要进模块图。
+ */
+let exportSlugs: Map<string, string> | undefined;
+
+function exportSlugMap(): Map<string, string> {
+  if (exportSlugs) return exportSlugs;
+  const pages = new Set(manifest.map((m) => m.slug));
+  const map = new Map<string, string>(manifest.map((m) => [m.name, m.slug]));
+  const file = [
+    join(process.cwd(), "public", "llms-props.json"),
+    join(process.cwd(), "apps", "www", "public", "llms-props.json"),
+  ].find((p) => existsSync(p));
+  if (file) {
+    const { exportIndex = {} } = JSON.parse(readFileSync(file, "utf8")) as {
+      exportIndex?: Record<string, string>;
+    };
+    for (const [name, slug] of Object.entries(exportIndex)) {
+      if (/^[A-Z][A-Za-z0-9]*$/.test(name) && pages.has(slug) && !map.has(name)) {
+        map.set(name, slug);
+      }
+    }
+  }
+  exportSlugs = map;
+  return map;
+}
+
+/** `Paper` / `<Paper>` / `<Paper />` / `</Paper>` / `<Paper size="sm">` → `Paper`；其余 null。 */
+export function componentNameInCode(span: string): string | null {
+  const inner = span.replace(/^`+|`+$/g, "").trim();
+  const match =
+    inner.match(/^([A-Z][A-Za-z0-9]*)$/) ?? inner.match(/^<\/?([A-Z][A-Za-z0-9]*)(?:\s[^>]*)?\/?>$/);
+  return match ? match[1] : null;
+}
+
 /** 已有 Markdown 链接整段原样保留，只在其外部做替换。 */
 const MD_LINK = /\[[^\]]*\]\([^)]*\)/g;
 
@@ -83,18 +126,41 @@ export function linkifyComponentMentions(
 ): string {
   if (pattern === undefined) pattern = buildNamePattern();
   const compiled = pattern;
-  return compiled ? apply(markdown, compiled, hrefsFor(locale)) : markdown;
+  return compiled ? apply(markdown, compiled, hrefsFor(locale), locale) : markdown;
 }
 
-function apply(markdown: string, pattern: RegExp, hrefs: Map<string, string>): string {
-  return rewriteOutsideCode(markdown, (text) => {
-    let output = "";
-    let last = 0;
-    for (const link of text.matchAll(MD_LINK)) {
-      output += replaceMentions(text.slice(last, link.index), pattern, hrefs);
-      output += link[0];
-      last = link.index + link[0].length;
-    }
-    return output + replaceMentions(text.slice(last), pattern, hrefs);
-  });
+/** 行内代码是否落在本行某个已有 Markdown 链接里（如 `[\`Paper\`](…)`）。 */
+function insideLink(line: string, start: number): boolean {
+  for (const link of line.matchAll(MD_LINK)) {
+    if (start >= link.index && start < link.index + link[0].length) return true;
+  }
+  return false;
+}
+
+function apply(
+  markdown: string,
+  pattern: RegExp,
+  hrefs: Map<string, string>,
+  locale: DocsLocale,
+): string {
+  const slugs = exportSlugMap();
+  return rewriteOutsideCode(
+    markdown,
+    (text) => {
+      let output = "";
+      let last = 0;
+      for (const link of text.matchAll(MD_LINK)) {
+        output += replaceMentions(text.slice(last, link.index), pattern, hrefs);
+        output += link[0];
+        last = link.index + link[0].length;
+      }
+      return output + replaceMentions(text.slice(last), pattern, hrefs);
+    },
+    (span, line, start) => {
+      const name = componentNameInCode(span);
+      const slug = name ? slugs.get(name) : undefined;
+      if (!slug || insideLink(line, start)) return span;
+      return `[${span}](${withDocsBasePath(`/components/${slug}`, locale)})`;
+    },
+  );
 }

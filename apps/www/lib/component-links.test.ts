@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { linkifyComponentMentions } from "./component-links";
+import { componentNameInCode, linkifyComponentMentions } from "./component-links";
 import { basePathForLocale } from "./docs-locale";
 import { manifest } from "./manifest";
 
@@ -22,9 +22,9 @@ describe("linkifyComponentMentions", () => {
     );
   });
 
-  it("leaves inline code and fenced blocks untouched", () => {
+  it("leaves fenced blocks and non-component inline code untouched", () => {
     const md = [
-      "把 `Button` 换成 Button。",
+      "给 `deltaPlacement` 加 `font-medium`，Button 不变。",
       "",
       "```tsx",
       'import { Button } from "@hulianui/ui";',
@@ -32,13 +32,40 @@ describe("linkifyComponentMentions", () => {
     ].join("\n");
     expect(linkifyComponentMentions(md, "zh-CN")).toBe(
       [
-        `把 \`Button\` 换成 [Button](${ZH}/components/${slugOf("Button")})。`,
+        `给 \`deltaPlacement\` 加 \`font-medium\`，[Button](${ZH}/components/${slugOf("Button")}) 不变。`,
         "",
         "```tsx",
         'import { Button } from "@hulianui/ui";',
         "```",
       ].join("\n"),
     );
+  });
+
+  it("links inline code that is exactly a component name, keeping the code formatting", () => {
+    // changeset 的规范写法是给组件名加反引号 —— 0.74.0 / 0.74.1 曾因此整版零链接。
+    const href = `${ZH}/components/${slugOf("Paper")}`;
+    expect(linkifyComponentMentions("`Paper` 与 `<Paper />` 与 `<Paper mode=\"print\">`", "zh-CN")).toBe(
+      `[\`Paper\`](${href}) 与 [\`<Paper />\`](${href}) 与 [\`<Paper mode="print">\`](${href})`,
+    );
+  });
+
+  it("links sub-component exports to their parent component page", () => {
+    expect(linkifyComponentMentions("`PaperPresenter` 的演示层", "zh-CN")).toBe(
+      `[\`PaperPresenter\`](${ZH}/components/paper) 的演示层`,
+    );
+  });
+
+  it("does not re-link inline code already inside a Markdown link", () => {
+    const md = "[`Paper`](https://example.com)";
+    expect(linkifyComponentMentions(md, "zh-CN")).toBe(md);
+  });
+
+  it("componentNameInCode only accepts a whole PascalCase name or a JSX tag", () => {
+    expect(componentNameInCode("`Paper`")).toBe("Paper");
+    expect(componentNameInCode("`</Paper>`")).toBe("Paper");
+    expect(componentNameInCode("`Paper.Header`")).toBeNull();
+    expect(componentNameInCode("`usePaperMode`")).toBeNull();
+    expect(componentNameInCode("`Paper 的 mode`")).toBeNull();
   });
 
   it("does not rewrite text inside an existing Markdown link", () => {
@@ -112,5 +139,36 @@ describe("linkifyComponentMentions", () => {
 
     // 低于这个量说明匹配整体失效（正文里实际有数百处组件名）。
     expect(links).toBeGreaterThan(300);
+  });
+
+  // ── liner：更新日志里「写成行内代码的组件名」必须全部链上 ──────────────────────
+  // 0.74.0 / 0.74.1 整版零链接，原因是组件名都写在反引号里而链接器一律跳过行内代码。
+  // 这条守的是**数据**而不是某个用例：中英两份 changelog 全量跑一遍，任何一处组件导出名
+  // 的行内代码在输出里仍是裸代码，就说明链接器又漏了一种写法。
+  it.each([
+    ["zh-CN", "./changelog.json"],
+    ["en", "./changelog.en.json"],
+  ] as const)("liner: every component inline-code mention in %s changelog is linked", async (locale, file) => {
+    const { default: changelog } = (await import(file)) as {
+      default: { version: string; entries: { body: string }[] }[];
+    };
+    const slugs = new Set(manifest.map((m) => m.slug));
+    const missed: string[] = [];
+    for (const release of changelog) {
+      for (const entry of release.entries) {
+        const out = linkifyComponentMentions(entry.body, locale);
+        // 去掉围栏块与已链接的片段，剩下的行内代码里不该再有组件名。
+        const rest = out
+          .replace(/^ {0,3}(`{3,}|~{3,})[\s\S]*?^ {0,3}\1/gm, "")
+          .replace(/\[[^\]]*\]\([^)]*\)/g, "");
+        for (const [span] of rest.matchAll(/`[^`\n]+`/g)) {
+          const name = componentNameInCode(span);
+          if (name && manifest.some((m) => m.name === name && slugs.has(m.slug))) {
+            missed.push(`${release.version}: ${span}`);
+          }
+        }
+      }
+    }
+    expect(missed, `这些组件名写在行内代码里却没链上：\n${missed.join("\n")}`).toEqual([]);
   });
 });

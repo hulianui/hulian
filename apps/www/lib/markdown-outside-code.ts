@@ -49,6 +49,12 @@ function hasClosingBacktickRunBeforeFence(
 export function rewriteOutsideCode(
   markdown: string,
   rewrite: (text: string) => string,
+  /**
+   * 可选：同一行内闭合的行内代码（含两侧反引号）交给它改写；不传则原样保留。
+   * `line` / `start` 是该代码段在本行里的位置，供调用方判断它是否已在某个链接里。
+   * 跨行的行内代码与围栏块永远原样保留。
+   */
+  rewriteInlineCode?: (span: string, line: string, start: number) => string,
 ): string {
   const lines = markdown.match(/.*(?:\n|$)/g)?.filter(Boolean) ?? [];
   let fence: string | null = null;
@@ -104,6 +110,19 @@ export function rewriteOutsideCode(
           continue;
         }
         output += rewrite(line.slice(cursor, opening));
+        if (rewriteInlineCode) {
+          let close = line.indexOf("`", end);
+          while (close >= 0 && backtickRun(line, close) !== length) {
+            close += backtickRun(line, close);
+            close = line.indexOf("`", close);
+          }
+          if (close >= 0) {
+            const spanEnd = close + length;
+            output += rewriteInlineCode(line.slice(opening, spanEnd), line, opening);
+            cursor = spanEnd;
+            continue;
+          }
+        }
         output += line.slice(opening, end);
         cursor = end;
         inlineTicks = length;
