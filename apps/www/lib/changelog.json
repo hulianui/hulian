@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/tokens",
+    "version": "0.17.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "224952c",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(tokens): 新增衬线字体变量 `--hl-font-serif`，经主张层映射给 `--font-serif`，`font-serif` 工具类改由它驱动。默认值与 Tailwind 的衬线栈逐字一致，不设它的项目渲染不变；汉字经末尾的 `serif` 通用族落到系统宋体。`Paper` 的正文字体栈改为 `var(--paper-font, \"STIX Two Text\", \"Times New Roman\", var(--hl-font-serif, serif))`：西文仍先用 STIX Two Text / Times New Roman，中文与兜底回落到 `--hl-font-serif`，因此设它就能一并换掉论文里的中文衬线；`--paper-font` 照旧整个替换。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
     "version": "0.16.0",
     "date": "2026-11-17",
     "entries": [
@@ -9,6 +22,25 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): 新增 Paper 动态论文插图（首片）。`Paper` 管呈现形态（阅读 / 打印）和图的注册表，`labels` 让论文内容的语言（图注前缀、自动引用）独立于界面语言；浏览器打印前自动切到打印形态、打印完切回；图号用 CSS 计数器，服务端渲染和打印都有号。`PaperFigure` 的状态是任意值加一组有名字的预设，`children` 是「状态 → 画面」的函数；打印形态下主图画 `printState`，`printSubfigures` 展开成 (a)(b)… 分图，控件不渲染。`ProcessFigure` 是一步步讲的图，图里用 `FigureStep` 标出每一部分属于哪一步：当前步不透明、讲过的半透明、没讲到的很淡但不隐藏；自带上一步 / 下一步、逐步按钮、「全部」和自动播放。`FigRef` 是正文引用，点击把图切到对应预设、滚进视野并描边，没有 JS 时退化成锚点。tokens 新增 `hulian-paper-flow` 关键帧，给当前一步的流动虚线用。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.74.1",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "224952c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(paper): `PaperPresenter` 的演示层沿用 `Paper` 所处的主题岛。演示层经 Portal 挂在 `body` 下，原先继承不到外层的 `data-theme`：`Paper` 放在暗色岛里，演示却跟着全局主题走。现在打开时取 `Paper` 最近的带 `data-theme` 的祖先（含 `Paper` 自己）标到演示层上，演示中切换主题也跟着变；主题在 `<html>` 上时不额外标注。"
+      },
+      {
+        "sha": "224952c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "feat(tokens): 新增衬线字体变量 `--hl-font-serif`，经主张层映射给 `--font-serif`，`font-serif` 工具类改由它驱动。默认值与 Tailwind 的衬线栈逐字一致，不设它的项目渲染不变；汉字经末尾的 `serif` 通用族落到系统宋体。`Paper` 的正文字体栈改为 `var(--paper-font, \"STIX Two Text\", \"Times New Roman\", var(--hl-font-serif, serif))`：西文仍先用 STIX Two Text / Times New Roman，中文与兜底回落到 `--hl-font-serif`，因此设它就能一并换掉论文里的中文衬线；`--paper-font` 照旧整个替换。"
       }
     ]
   },

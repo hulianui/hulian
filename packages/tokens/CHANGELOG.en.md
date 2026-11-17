@@ -1,5 +1,11 @@
 # @hulianui/tokens
 
+## 0.17.0
+
+### Minor Changes
+
+- 224952c: feat(tokens): adds the serif font variable `--hl-font-serif`, mapped to `--font-serif` in the opinionated layer so the `font-serif` utility now follows it. The default matches Tailwind's serif stack exactly, so projects that do not set it render the same; Chinese text reaches the system Song face through the trailing `serif` generic family. The `Paper` body font stack becomes `var(--paper-font, "STIX Two Text", "Times New Roman", var(--hl-font-serif, serif))`: Latin text still uses STIX Two Text or Times New Roman first, while Chinese and fallbacks come from `--hl-font-serif`, so setting it also changes the Chinese serif in papers. `--paper-font` still replaces the whole stack.
+
 ## 0.16.0
 
 ### Minor Changes

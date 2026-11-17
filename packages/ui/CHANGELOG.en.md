@@ -1,5 +1,13 @@
 # @hulianui/ui
 
+## 0.74.1
+
+### Patch Changes
+
+- 224952c: fix(paper): the `PaperPresenter` overlay now follows the theme island around `Paper`. The overlay is portaled to `body`, so it used to miss an outer `data-theme`: a `Paper` inside a dark island still presented in the global theme. When it opens, it now copies the theme of the nearest `data-theme` ancestor of `Paper` (including `Paper` itself) and follows changes while presenting; a theme set on `<html>` needs no copy and is left alone.
+
+- 224952c: feat(tokens): adds the serif font variable `--hl-font-serif`, mapped to `--font-serif` in the opinionated layer so the `font-serif` utility now follows it. The default matches Tailwind's serif stack exactly, so projects that do not set it render the same; Chinese text reaches the system Song face through the trailing `serif` generic family. The `Paper` body font stack becomes `var(--paper-font, "STIX Two Text", "Times New Roman", var(--hl-font-serif, serif))`: Latin text still uses STIX Two Text or Times New Roman first, while Chinese and fallbacks come from `--hl-font-serif`, so setting it also changes the Chinese serif in papers. `--paper-font` still replaces the whole stack.
+
 ## 0.74.0
 
 ### Minor Changes
