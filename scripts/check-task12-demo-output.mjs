@@ -115,7 +115,76 @@ export function collectUnexpectedFailureMarkers(text, allowedMarkers = []) {
   return TASK12_FAILURE_MARKERS.filter((marker) => text.includes(marker) && !allowed.has(marker));
 }
 
-async function assertEnglishPage(page, context) {
+/**
+ * 等「一段时间内没有新导航」。
+ *
+ * 演示站的「加载失败 → 恢复」走的是**文档级重载**：点完链接地址先变一次，落地页随后还会再
+ * 整页导航一次。所以 `waitForURL` 和「某个标记可见」都不等于页面稳住了 —— 紧接着读 DOM 会撞上
+ *   page.evaluate: Execution context was destroyed, most likely because of a navigation
+ * 紧接着的 goto 会被打断：
+ *   Navigation to ".../demos/website" is interrupted by another navigation to
+ *   ".../demos/shop/product/p-hs-air"
+ * 两者报出来都像是下一步的错，实际是上一步还没落地。
+ *
+ * 超时不算失败：真要是无限重载，后面的断言会照常报红，这里只负责别把时序当断言。
+ */
+async function waitForNavigationQuiet(page, { quietMs = 800, timeout = 20_000 } = {}) {
+  let lastNavigation = Date.now();
+  const bump = (frame) => {
+    if (frame === page.mainFrame()) lastNavigation = Date.now();
+  };
+  page.on("framenavigated", bump);
+  try {
+    const deadline = Date.now() + timeout;
+    while (Date.now() < deadline) {
+      await page.waitForTimeout(100);
+      if (Date.now() - lastNavigation >= quietMs) return;
+    }
+  } finally {
+    page.off("framenavigated", bump);
+  }
+}
+
+/**
+ * 交互串里的 `page.goto`：被「上一步还没走完的导航」打断时重来一次。
+ *
+ * 这条路径上每个交互都以下一跳 goto 收尾，而上一步可能整页重载（见 waitForNavigationQuiet）。
+ * 不重试的话，报错会挂在**下一跳**上，看着像目标页坏了。只对「被别的导航打断」这一种错误
+ * 重试一次；真正的 404 / 超时照常抛。
+ */
+async function gotoSettled(page, url) {
+  await waitForNavigationQuiet(page, { quietMs: 300 });
+  try {
+    return await page.goto(url, { waitUntil: "networkidle" });
+  } catch (error) {
+    const interrupted =
+      error instanceof Error && /interrupted by another navigation/i.test(error.message);
+    if (!interrupted) throw error;
+    await waitForNavigationQuiet(page);
+    return page.goto(url, { waitUntil: "networkidle" });
+  }
+}
+
+/**
+ * 读页面前提是文档别再跳走。上面已经等过静默，这里兜的是静默之后又开始导航的窗口：
+ * 执行上下文被销毁说明「这一跳还没稳」，不等于页面内容有问题，重来一次即可。
+ * 重试有上限（默认 3 次）—— CJK 残留、语种串链这类断言失败不走这条路，照常直接红。
+ */
+async function assertEnglishPage(page, context, attempts = 3) {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return await assertEnglishPageOnce(page, context);
+    } catch (error) {
+      const stillNavigating =
+        error instanceof Error && /Execution context was destroyed/i.test(error.message);
+      if (!stillNavigating || attempt >= attempts) throw error;
+      await page.waitForLoadState("domcontentloaded").catch(() => {});
+      await page.waitForTimeout(400);
+    }
+  }
+}
+
+async function assertEnglishPageOnce(page, context) {
   // 前缀必须**当参数传进浏览器上下文**：evaluate 的回调是序列化后在页面里执行的，
   // Node 侧的闭包变量（这里是 EN）在那边不存在，直接引用会 ReferenceError。
   const { surfaces, invalidDemoLinks, svgDataUris } = await page.evaluate(
@@ -203,7 +272,7 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     }
     if (routeErrors.length) throw new Error(`Task 12 route scan failed:\n${routeErrors.join("\n\n")}`);
 
-    await page.goto(`${origin}${EN}/demos/personal/guestbook`, { waitUntil: "networkidle" });
+    await gotoSettled(page, `${origin}${EN}/demos/personal/guestbook`);
     await page.getByRole("button", { name: "Retry" }).click();
     await page.getByText("CodeFrame saved my technical posts", { exact: false }).waitFor({
       state: "visible",
@@ -211,7 +280,7 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     await assertEnglishPage(page, "personal guestbook after recovery");
     await assertNoUnexpectedFailure(page, "personal guestbook after recovery");
 
-    await page.goto(`${origin}${EN}/demos/live/room`, { waitUntil: "networkidle" });
+    await gotoSettled(page, `${origin}${EN}/demos/live/room`);
     await page.getByRole("button", { name: "AI support" }).click();
     const supportInput = page.getByPlaceholder("Ask support about sizing, offers, or delivery...");
     await supportInput.fill("When will it ship?");
@@ -219,12 +288,12 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     await page.getByText("Orders placed tonight ship within 48 hours", { exact: false }).waitFor();
     await assertEnglishPage(page, "live audience support response");
 
-    await page.goto(`${origin}${EN}/demos/mobile/services/s1`, { waitUntil: "networkidle" });
+    await gotoSettled(page, `${origin}${EN}/demos/mobile/services/s1`);
     await page.getByRole("button", { name: "Book now" }).click();
     await page.getByText("Booked", { exact: false }).first().waitFor({ state: "visible" });
     await assertEnglishPage(page, "mobile service booking");
 
-    await page.goto(`${origin}${EN}/demos/shop`, { waitUntil: "networkidle" });
+    await gotoSettled(page, `${origin}${EN}/demos/shop`);
     const shopRetry = page.getByRole("button", { name: "Reload" });
     const productLink = page.locator(`a[href^="${EN}/demos/shop/product/"]`).first();
     await shopRetry.or(productLink).first().waitFor({ state: "visible" });
@@ -232,26 +301,22 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     await productLink.waitFor({ state: "visible" });
     await productLink.click();
     await page.waitForURL((url) => url.pathname.startsWith(`${EN}/demos/shop/product/`));
-    // waitForURL 只保证**地址**变了，落地页可能还在加载。紧接着的 page.goto 会被这次
-    // 尚未完成的导航打断，报出来却是下一步的错：
-    //   Navigation to ".../demos/website" is interrupted by another navigation to
-    //   ".../demos/shop/product/p-hs-air"
-    // 所以先等商品页真的画完（与路由扫描里 shop/product/* 用的是同一个标记）再走下一跳。
+    // 商品页落地后会再整页导航一次（设计好的恢复态），等静默后再读、再开下一跳。
+    await waitForNavigationQuiet(page);
     await page
       .getByText("Add to cart", { exact: false })
       .first()
       .waitFor({ state: "visible", timeout: 15_000 });
-    await page.waitForLoadState("networkidle");
     await assertEnglishPage(page, "shop product after same-language navigation");
     await assertNoUnexpectedFailure(page, "shop product after recovery");
 
-    await page.goto(`${origin}${EN}/demos/website`, { waitUntil: "networkidle" });
+    await gotoSettled(page, `${origin}${EN}/demos/website`);
     await page.getByRole("link", { name: "Pricing" }).first().click();
     await assertEnglishLocation(page, `${EN}/demos/website/pricing`);
     await page.getByText("Choose a plan", { exact: false }).first().waitFor();
     await assertEnglishPage(page, "website pricing navigation");
 
-    await page.goto(`${origin}${EN}/demos/website`, { waitUntil: "networkidle" });
+    await gotoSettled(page, `${origin}${EN}/demos/website`);
     await page.getByRole("button", { name: "Open search (⌘K)" }).click();
     await page.getByRole("option", { name: /Pricing/ }).click();
     await assertEnglishLocation(page, `${EN}/demos/website/pricing`);
