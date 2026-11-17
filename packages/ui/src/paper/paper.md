@@ -263,7 +263,7 @@ const svg = await exportFigureSvg("transformer", "b", { background: "white" }); 
 - **颜色**：Tailwind 类和 CSS 变量离开页面就失效，浏览器给的计算值又常是 `oklab()` / `oklch()`，Word、Inkscape 不认。导出时一律换成 `#rrggbb`，透明度并进 `fill-opacity` / `stroke-opacity`。
 - **定格**：动画和过渡在槽里关掉，流动虚线定格在起点；`FigureStep` 的阶段透明度按导出的那一步算。`display: none` 的元素不进文件；`aria-label` 变成 `<title>`（Word 当替代文字用）。
 - **文字保留为 `<text>`**，带上 `Paper` 的字体栈。打开文件的机器上没有 STIX Two Text 时会回退到 Times New Roman / 宋体。LaTeX 里用 `\includesvg`（svg 宏包，需要 Inkscape）或先转成 PDF，转换的机器上要装好字体。
-- **前提**：图的画面必须是单独一个 `<svg>`。画面是裸的 canvas、HTML 或带 `<foreignObject>` 时 reject 并说明原因（canvas 栅格改用 [FigureRaster](#figureraster) 画在 `<svg>` 里，导出时以 PNG 内嵌）；图找不到、预设不存在时也 reject。
+- **前提**：图的画面必须是单独一个 `<svg>`。画面是裸的 canvas、HTML 或带 `<foreignObject>` 时 reject 并说明原因（canvas 栅格改用 `FigureRaster` 画在 `<svg>` 里，导出时以 PNG 内嵌）；图找不到、预设不存在时也 reject。
 - 图里的 CSS `transform`（如 Tailwind 的 `rotate-*`）不会写进文件，要旋转、平移请用 SVG 的 `transform` 属性。
 
 ## 公式与图联动

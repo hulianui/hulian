@@ -263,7 +263,7 @@ const svg = await exportFigureSvg("transformer", "b", { background: "white" }); 
 - **Colors**: Tailwind classes and CSS variables stop working outside the page, and browsers often report computed colors as `oklab()` / `oklch()`, which Word and Inkscape do not read. Export converts every color to `#rrggbb` and folds transparency into `fill-opacity` / `stroke-opacity`.
 - **Frozen**: animations and transitions are off in the slot, so flowing dashes stop at their start; `FigureStep` phase opacity follows the exported step. Elements with `display: none` are left out, and `aria-label` becomes a `<title>` (Word uses it as alt text).
 - **Text stays as `<text>`** with the `Paper` font stack. On a machine without STIX Two Text it falls back to Times New Roman or SimSun. In LaTeX use `\includesvg` (the svg package, which needs Inkscape) or convert to PDF first, with the fonts installed on the converting machine.
-- **Requirement**: the figure must draw a single `<svg>`. A bare canvas, HTML, or `<foreignObject>` rejects with the reason (for a canvas raster use [FigureRaster](#figureraster) inside the `<svg>`; export embeds it as PNG), as do a missing figure or preset.
+- **Requirement**: the figure must draw a single `<svg>`. A bare canvas, HTML, or `<foreignObject>` rejects with the reason (for a canvas raster use `FigureRaster` inside the `<svg>`; export embeds it as PNG), as do a missing figure or preset.
 - CSS `transform`s inside the figure (such as Tailwind `rotate-*`) are not written to the file; use the SVG `transform` attribute to rotate or move parts.
 
 ## Linking formulas to figures
