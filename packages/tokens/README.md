@@ -145,12 +145,13 @@ pnpm add @hulianui/tokens
 
 ## 换字体
 
-字体走 `--hl-font-sans` / `--hl-font-mono` 两个运行时变量，库里没有任何组件写死字族。
+字体走 `--hl-font-sans` / `--hl-font-serif` / `--hl-font-mono` 三个运行时变量，库里没有任何组件写死字族。
 默认值等价于 Tailwind v4 的默认栈 —— 不设它们的项目，渲染与接这层令牌之前逐字一致。
 
 ```css
 :root {
   --hl-font-sans: "Your Sans", ui-sans-serif, system-ui, sans-serif;
+  --hl-font-serif: "Your Serif", "Noto Serif SC", serif;
   --hl-font-mono: "Your Mono", ui-monospace, monospace;
 }
 ```
@@ -160,6 +161,10 @@ pnpm add @hulianui/tokens
 `font-mono` 的组件**（Kbd / CodeEditor / JsonViewer / LogViewer / Snippet …）。后者是靠覆盖
 `body { font-family }` 换字体时**换不掉**的那一批 —— 它们吃的是 Tailwind 的 `--font-mono`，
 不在 body 的继承链上。
+
+`--hl-font-serif` 驱动 `font-serif` 工具类，库内用它的是 `Paper`：论文正文先用 STIX Two Text /
+Times New Roman 排西文，其余（中文、兜底）回落到这个变量。默认值就是 Tailwind 的衬线栈，汉字经末尾
+的 `serif` 通用族落到系统宋体；要自托管中文衬线就写进这个变量。
 
 **只换某一块**时，正文与等宽的写法不对称（实测，容易踩）：
 

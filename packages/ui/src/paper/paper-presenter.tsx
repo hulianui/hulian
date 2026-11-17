@@ -141,14 +141,25 @@ export function PaperPresenter({
     if (isOpen) go(0);
   }, [isOpen, go]);
 
-  // 演示层经 portal 挂在 body 下，继承不到 Paper 外层设的 --paper-font（以及写在 Paper 上的
-  // font 类 / style）。打开时取 Paper 根元素的计算字体抄过来；取不到时用默认栈。
-  // 首帧仍是默认栈，但弹层正处在淡入的起始态（opacity 0），看不到切换。
+  // 演示层经 portal 挂在 body 下，继承不到 Paper 所处位置的两样东西，打开时从 Paper 根元素抄过来：
+  //  · 字体：外层设的 --paper-font / --hl-font-serif、写在 Paper 上的 font 类 / style —— 取计算值；
+  //  · 主题岛：Paper 最近的带 data-theme 的祖先（含 Paper 自己）。<html> 上的全局主题本来就继承得到，不抄。
+  //    演示期间主题岛被切换（页面上任何 data-theme 变化）时跟着重抄。
+  // 首帧仍是全局值，但弹层正处在淡入的起始态（opacity 0），看不到切换。
   const [paperFont, setPaperFont] = useState<string | null>(null);
+  const [paperTheme, setPaperTheme] = useState<string | null>(null);
   useEffect(() => {
     if (!isOpen) return;
-    const el = paper?.root();
-    setPaperFont(el ? getComputedStyle(el).fontFamily || null : null);
+    const read = () => {
+      const el = paper?.root();
+      setPaperFont(el ? getComputedStyle(el).fontFamily || null : null);
+      const island = el?.closest("[data-theme]");
+      setPaperTheme(island && island !== document.documentElement ? island.getAttribute("data-theme") : null);
+    };
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"], subtree: true });
+    return () => observer.disconnect();
   }, [isOpen, paper]);
 
   const slideFigure = slide?.figure;
@@ -212,6 +223,7 @@ export function PaperPresenter({
           aria-label={labels.presenter}
           initialFocus={initialFocus}
           data-paper-presenter=""
+          data-theme={paperTheme ?? undefined}
           onKeyDown={onKeyDown}
           className={cn(
             "fixed inset-0 z-[var(--hl-z-overlay,50)] grid grid-rows-[auto_minmax(0,1fr)_auto] gap-3 bg-bg text-foreground outline-none",

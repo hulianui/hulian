@@ -58,9 +58,10 @@
      只有这样，运行时改 --hl-font-sans（全局或某个容器上）才能立刻生效，
      库内 48 个用 font-mono 的组件也才跟得上。这与阴影那组是同一个理由。
 
-     刻意不给 --font-serif（#319）：衬线目前只有 Paper（paper.tsx 的 --paper-font 自带栈）
-     与文档站 .novel-serif 两处，各管各的；tokens 是否接管、默认值能否带中文衬线，见 #389。 */
+     --font-serif 原先刻意不给（#319：当时没有组件用衬线）。Paper 进来后接管（#389），
+     默认值与 Tailwind 一致，所以 font-serif 工具类观感不变，只是控制权换到 --hl-font-serif。 */
   --font-sans: var(--hl-font-sans);
+  --font-serif: var(--hl-font-serif);
   --font-mono: var(--hl-font-mono);
 }
 
