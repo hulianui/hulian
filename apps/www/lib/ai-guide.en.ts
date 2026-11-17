@@ -20,7 +20,7 @@ pnpm add @hulianui/ui @hulianui/tokens
 
 \`@hulianui/tokens\` provides the required theme CSS. Install it together with \`@hulianui/ui\`.
 
-Peer dependencies: \`react>=18\`, \`react-dom>=18\`, \`tailwindcss>=4\`, \`motion>=11\`, and \`@base-ui/react>=1.0.0\`.
+Peer dependencies: \`react>=18\` \`react-dom>=18\` \`tailwindcss>=4\` \`motion>=11\` \`@base-ui/react>=1.0.0\`
 
 ## Add the CSS with Tailwind CSS v4
 

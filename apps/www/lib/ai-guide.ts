@@ -22,7 +22,7 @@ pnpm add @hulianui/ui @hulianui/tokens
 
 > \`@hulianui/tokens\` 提供主题 CSS（下一步会 \`@import\` 它），是 \`@hulianui/ui\` 的必备同伴包，务必一起装。
 
-peer 依赖：\`react>=18\`、\`react-dom>=18\`、\`tailwindcss>=4\`、\`motion>=11\`、\`@base-ui/react>=1.0.0\`。
+peer 依赖：\`react>=18\` \`react-dom>=18\` \`tailwindcss>=4\` \`motion>=11\` \`@base-ui/react>=1.0.0\`
 
 ## 接入 CSS（Tailwind v4）
 

@@ -49,6 +49,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* 等宽处一律关连字。Geist Mono 的 liga 把 `>=` `->` 这类两字符折成一个字形，但该字形的
+   步进只有一格（600 units）、轮廓又向左越出 340 —— 浏览器里两字符挤进一格，压在前一个
+   字母上（/start 的 `react>=18` 显示成 `reac⩾18`）。另一半理由是语义：文档里的代码是给人
+   照抄的，显示成 ≥ / → 会让读者打错字。font-variant-ligatures 可继承，挂在这几个根上，
+   CodeEditor / JsonViewer 等内部节点一并生效。 */
+code,
+kbd,
+samp,
+pre,
+.font-mono {
+  font-variant-ligatures: none;
+}
+
 /* 首页入场：逐级揭示（ease-out-quint，无回弹）。fill: both 让元素在各自延迟前保持隐藏，形成 stagger 级联 */
 @keyframes hl-rise {
   from {
