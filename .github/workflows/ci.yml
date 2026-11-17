@@ -203,10 +203,14 @@ jobs:
           fetch-depth: 0
 
       # 守卫只用 Node 内置模块，不装依赖；Node 版本仍读 .nvmrc 与全仓一致。
+      # package-manager-cache: false 不能省：setup-node v5 见到根 package.json 的
+      # packageManager 字段会自动开 pnpm 缓存，去找 pnpm 可执行文件 —— 本 job 刻意不装
+      # pnpm，于是直接红在这一步（#400 首次真实跑时踩到）。
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
+          package-manager-cache: false
 
       - name: Verify the PR only carries release bookkeeping
         env:
