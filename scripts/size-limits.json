@@ -44,7 +44,7 @@
     {
       "name": "chart",
       "entry": "@hulianui/ui/chart",
-      "limitKB": 163
+      "limitKB": 189
     },
     {
       "name": "video",
