@@ -218,11 +218,20 @@ jobs:
   #   unit    —— jsdom，props→DOM 契约与纯逻辑，占绝大多数
   #   browser —— 真实 chromium，拖拽/指针捕获/动画/布局定位这些在 jsdom 下结论不可信的部分
   # 后者需要真实浏览器二进制，装了才能跑；只装 chromium（不是全部三个内核）省 CI 时间。
+  #
+  # 2026-11-18 拆成三份并行（runs/44123968010 实测）：整个 job 354s 里 @hulianui/ui 的
+  # vitest 一家占 284s（535 个文件），其余包合计不到 100s 且本来就与它并发。四分组门禁
+  # 落地后 Test 已逼近关键路径，所以 ui 用 vitest --shard 对半分，其余包另起一份。
   test:
-    name: Test (vitest + build scripts)
+    name: Test (${{ matrix.part }})
     if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      # 一片红了另几片照样跑完 —— 失败清单要一次看全，别修一个重跑一轮。
+      fail-fast: false
+      matrix:
+        part: [ui-1/2, ui-2/2, rest]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -241,12 +250,21 @@ jobs:
       - name: Generate AI distribution endpoints
         run: pnpm llms-registry && pnpm conventions
 
-      - name: Test
-        run: pnpm test
+      # ui 的 vitest 按文件对半分片（unit 与 browser 两个 project 一起分）。
+      - name: Test @hulianui/ui (shard)
+        if: startsWith(matrix.part, 'ui-')
+        env:
+          SHARD: ${{ matrix.part }}
+        run: pnpm --filter @hulianui/ui exec vitest run --shard="${SHARD#ui-}"
+
+      - name: Test other workspace packages
+        if: matrix.part == 'rest'
+        run: pnpm exec turbo run test --filter='!@hulianui/ui'
 
       # scripts/ 不是 workspace 包，`turbo run test` 扫不到它 —— 这些 node:test 套件
       # （a11y/registry-smoke/llms-registry/conventions/viewport 的判据）此前写了却从未被执行。
       - name: Test build scripts
+        if: matrix.part == 'rest'
         run: pnpm test:scripts
 
   # 每个页面都在独立临时工程中经真实 shadcn CLI 递归安装并 typecheck，防止前一个页面
@@ -338,10 +356,18 @@ jobs:
   # 决定（≈ 200s + 环境准备），每轮 CI 约省 1 分多钟。想再快只能给这两道单步分片。
 
   gate-showcase:
-    name: Gate · English showcases (browser)
+    name: Gate · English showcases (browser, ${{ matrix.shard }}/2)
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # 路由按下标轮转分到两片（scripts/ci-shard.mjs）。改片数时 matrix 与 CI_SHARD 的分母
+    # 必须一起改 —— ci-workflow.test.mjs 有断言盯着，少一片就是静默漏扫一半路由。
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    env:
+      CI_SHARD: ${{ matrix.shard }}/2
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -360,16 +386,24 @@ jobs:
           name: www-out
           path: apps/www/out
 
-      # 全库最慢的单道门禁（≈3.5 分钟）：逐件在真实 chromium 里水合英文 showcase，
-      # 对 pageerror 零容忍。独占一组。
+      # 全库最慢的单道门禁（未分片时 186–248s）：逐件在真实 chromium 里水合英文 showcase，
+      # 对 pageerror 零容忍。四个交互用例只在第 1 片跑。
       - name: Verify hydrated English component showcases
         run: pnpm docs:check:showcase-browser
 
   gate-a11y:
-    name: Gate · A11y (browser)
+    name: Gate · A11y (browser, ${{ matrix.shard }}/2)
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # 路由按下标轮转分到两片（scripts/ci-shard.mjs）。改片数时 matrix 与 CI_SHARD 的分母
+    # 必须一起改 —— ci-workflow.test.mjs 有断言盯着，少一片就是静默漏扫一半路由。
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    env:
+      CI_SHARD: ${{ matrix.shard }}/2
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -388,7 +422,7 @@ jobs:
           name: www-out
           path: apps/www/out
 
-      # axe 逐路由 × 明暗两主题串行扫（≈3 分钟），与 showcase 并列为两道最长的单步，独占一组。
+      # axe 逐路由 × 明暗两主题串行扫（未分片时 170–201s），与 showcase 并列为两道最长的单步。
       - name: Accessibility gate
         run: pnpm a11y
 

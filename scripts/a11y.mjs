@@ -4,6 +4,7 @@ import { pathToFileURL } from "node:url";
 
 import { startStaticServer } from "./static-server.mjs";
 import { localeRoutePath } from "./docs-locale-layout.mjs";
+import { pickShard, shardLabel } from "./ci-shard.mjs";
 
 const BASE_ROUTES = [
   "/",
@@ -74,7 +75,8 @@ export function shouldFailResponse({ url, status }, baseUrl) {
   return url.startsWith(`${baseUrl}/`) && status >= 400;
 }
 
-export async function runA11y() {
+// CI 按 CI_SHARD 把路由轮转分给多台 runner（见 scripts/ci-shard.mjs），每条路由两种主题仍在同一片里跑。
+export async function runA11y({ routes = pickShard(ROUTES) } = {}) {
   const [{ chromium }, { default: AxeBuilder }] = await Promise.all([
     import("playwright"),
     import("@axe-core/playwright"),
@@ -90,7 +92,7 @@ export async function runA11y() {
         document.documentElement.setAttribute("data-theme", selectedTheme);
       }, theme);
       try {
-        for (const { route, locale } of ROUTES) {
+        for (const { route, locale } of routes) {
           const page = await context.newPage();
           const failed = [];
           page.on("requestfailed", (request) => {
@@ -167,8 +169,8 @@ export async function runA11y() {
       }
     }
   }
-  if (blockingCount > 0) throw new Error(`axe 发现 ${blockingCount} 个 critical/serious 违规`);
-  console.log(`[a11y] PASS ${results.length}/${THEMES.length * ROUTES.length} theme-routes`);
+  if (blockingCount > 0) throw new Error(`axe 发现 ${blockingCount} 个 critical/serious 违规${shardLabel()}`);
+  console.log(`[a11y] PASS ${results.length}/${THEMES.length * routes.length} theme-routes${shardLabel()}`);
   return results;
 }
 
