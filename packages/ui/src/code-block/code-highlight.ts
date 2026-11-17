@@ -101,6 +101,10 @@ const PY_RE = new RegExp(
 
 const SHELL_LANGS = new Set(["bash", "sh", "shell", "zsh", "console"]);
 const PYTHON_LANGS = new Set(["py", "python", "python3"]);
+// 纯文本：不着色。若落进下面「其它语言按 JS 家族近似」的兜底，文本里的 URL 会从 `//`
+// 起被当成行注释整段斜体（/start 页提示词模板里的 https://… 就是这么着错的），
+// 撇号、引号也会被当字符串吞掉。明确声明是纯文本的就原样输出。
+const PLAIN_LANGS = new Set(["text", "txt", "plain", "plaintext"]);
 
 function pick(groups: Record<string, string | undefined> | undefined): CodeTokenType {
   if (!groups) return "plain";
@@ -198,6 +202,7 @@ function tokenizeShell(code: string): CodeToken[] {
 
 export function tokenizeCode(code: string, lang?: string): CodeToken[] {
   const key = lang?.toLowerCase();
+  if (key && PLAIN_LANGS.has(key)) return code ? [{ type: "plain", value: code }] : [];
   if (key && SHELL_LANGS.has(key)) return tokenizeShell(code);
   if (key && PYTHON_LANGS.has(key)) return tokenizeWithRegex(code, PY_RE);
   return tokenizeWithRegex(code, JS_RE);

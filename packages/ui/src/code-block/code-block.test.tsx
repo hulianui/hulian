@@ -159,6 +159,16 @@ describe("tokenizeCode", () => {
         .map((t) => [t.value, t.type]),
     );
 
+  it("text 等纯文本语言不着色：URL 里的 // 不是注释，撇号引号也不是字符串", () => {
+    const code = `先读 https://example.com/start 再说\nit's "quoted" const 42`;
+    for (const lang of ["text", "TXT", "plain", "plaintext"]) {
+      expect(tokenizeCode(code, lang)).toEqual([{ type: "plain", value: code }]);
+    }
+    expect(tokenizeCode("", "text")).toEqual([]);
+    // 对照：同一段文本走 JS 兜底时 URL 确实会被着成注释 —— 证明上面的断言不是空转
+    expect(tokenizeCode(code, "tsx").find((t) => t.value.startsWith("//"))?.type).toBe("comment");
+  });
+
   it("拼接所有 token 还原原文（无丢字）", () => {
     const code = `import { x } from "y"; // 注释\nconst n = 1.8;`;
     expect(
@@ -232,6 +242,16 @@ describe("tokenizeCode · Python", () => {
     for (const lang of ["py", "python", "python3", "Python"]) {
       expect(typesOf("# c\ndef f(): pass", lang)["# c"]).toBe("comment");
     }
+  });
+
+  it("text 等纯文本语言不着色：URL 里的 // 不是注释，撇号引号也不是字符串", () => {
+    const code = `先读 https://example.com/start 再说\nit's "quoted" const 42`;
+    for (const lang of ["text", "TXT", "plain", "plaintext"]) {
+      expect(tokenizeCode(code, lang)).toEqual([{ type: "plain", value: code }]);
+    }
+    expect(tokenizeCode("", "text")).toEqual([]);
+    // 对照：同一段文本走 JS 兜底时 URL 确实会被着成注释 —— 证明上面的断言不是空转
+    expect(tokenizeCode(code, "tsx").find((t) => t.value.startsWith("//"))?.type).toBe("comment");
   });
 
   it("拼接所有 token 还原原文（无丢字）", () => {
