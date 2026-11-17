@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import { cloneElement, type HTMLAttributes, type ReactNode } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import type { CardHeaderProps, CardProps } from "./card.types";
@@ -13,8 +13,18 @@ export const cardVariants = cva("rounded-[var(--radius)] text-foreground transit
       // 推荐/高亮卡片：清晰的 primary 双线描边 + 干净中性投影。
       // border-box 下 border-2 不改变外框尺寸（只内缩 1px），网格里与其余卡片对齐不偏移。
       featured: "border-2 border-primary bg-surface shadow-md",
+      // 主色卡：主色渐变底 + 主色前景。挂 data-surface="inverse"（见 Card 组件），卡里的 Text / Tag /
+      // Chip / Avatar 等只消费语义 token 的组件自动反色；进度条这类用主色填充的件改用 tone="inverse"。
+      // 渐变从「掺 18% 白的主色」走到主色：同一色相上的一道光，换主题色（AccentScope）时整块跟着变。
+      primary:
+        "bg-primary bg-[linear-gradient(160deg,color-mix(in_oklch,var(--color-primary)_82%,white),var(--color-primary)_60%)] text-primary-foreground shadow-lg shadow-primary/20",
       // 不画皮：外皮（边框/底色/阴影）由页面自己的 CSS 提供时用它，只留圆角 + 文字色 + 三段插槽语义。
       plain: "",
+    },
+    // 整卡可点：悬停上浮 + 阴影加深，键盘焦点给环。配 render 把整卡渲染成链接。
+    interactive: {
+      true: "outline-none transition-[translate,box-shadow] hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+      false: "",
     },
     size: {
       md:
@@ -61,13 +71,31 @@ export const cardVariants = cva("rounded-[var(--radius)] text-foreground transit
         "[--card-footer-pt:0.5rem] [--card-footer-pb:0.625rem]",
     },
   ],
-  defaultVariants: { variant: "outline", size: "md", divided: true },
+  defaultVariants: { variant: "outline", size: "md", divided: true, interactive: false },
 });
 
-export function Card({ className, variant, size, divided, ...props }: CardProps) {
-  return (
-    <div className={cn(cardVariants({ variant, size, divided }), className)} {...props} />
-  );
+export function Card({
+  className,
+  variant,
+  size,
+  divided,
+  interactive,
+  render,
+  ...props
+}: CardProps) {
+  const cls = cn(cardVariants({ variant, size, divided, interactive }), className);
+  // 主色卡是反色表面：tokens 的 [data-surface="inverse"] 把中性语义 token 重映射到前景色。
+  const surface = variant === "primary" ? { "data-surface": "inverse" } : null;
+  // render：整卡渲染成链接 / 路由件（作品集、站点卡这类整卡可点）。与 Button / Link 的 render 约定一致。
+  if (render) {
+    const own = render.props as { className?: string };
+    return cloneElement(render, {
+      ...props,
+      ...surface,
+      className: cn("block", cls, own.className),
+    } as Record<string, unknown>);
+  }
+  return <div className={cls} {...surface} {...props} />;
 }
 
 // 标题的结构身份（hulianui/hulian#226）：三个槽一个都不传时逐字维持原样（裸插槽 + font-medium），
@@ -91,9 +119,7 @@ export function CardHeader({
       data-slot="card-header"
       className={cn(
         "border-b border-border px-[var(--card-header-px,1.25rem)] pt-[var(--card-header-pt,0.75rem)] pb-[var(--card-header-pb,0.75rem)]",
-        structured
-          ? "flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
-          : "font-medium",
+        structured ? "flex flex-wrap items-center justify-between gap-x-4 gap-y-2" : "font-medium",
         className,
       )}
       {...props}

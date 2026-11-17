@@ -27,9 +27,10 @@ import { Link, linkVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `tone` | `"primary" \| "foreground" \| "danger"` | `"primary"` | 文字语调色 |
+| `tone` | `"primary" \| "foreground" \| "danger" \| "muted"` | `"primary"` | 文字语调色；`muted` 静息次要灰、悬停回正文色，给页脚 / 一排来源链接这类不该抢主色的场景 |
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | 下划线显示策略 |
 | `external` | `boolean` | `false` | 外链：自动加 `target="_blank"` + `rel="noopener noreferrer"` + 尾随外链图标 |
+| `arrow` | `boolean` | `false` | 尾随「前往」箭头，悬停时前移半格（「查看全部 →」这类导向链接）；与 `external` 同时给时只出外链图标 |
 | `href` | `string` | - | 跳转地址（原生属性） |
 | `render` | `ReactElement` | - | 渲染为自定义元素，用来承载框架路由件（`next/link`、`react-router` 的 `Link`）。皮肤 class 与 Link 自身的 props 合并进该元素，`href` 由它自己带 |
 
@@ -50,6 +51,8 @@ import { Link, linkVariants } from "@hulianui/ui"
 <Link href="/docs">瑚琏文档</Link>
 <Link href="https://base-ui.com" external>Base UI 官网</Link>
 <Link href="#" underline="always" tone="danger">删除说明</Link>
+<Link href="/components" arrow>查看全部</Link>
+<Link href="https://tailwindcss.com" tone="muted" underline="none">Tailwind</Link>
 
 // 客户端路由：把框架的 Link 交给 render，href 写在它身上
 import NextLink from "next/link"

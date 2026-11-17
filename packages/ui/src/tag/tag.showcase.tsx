@@ -129,6 +129,23 @@ export const tagShowcase: ShowcaseSpec = {
         </Tag>
       ),
     },
+    {
+      title: "药丸形 · 可点标签",
+      description: "shape=\"pill\" 全圆；render 渲染成链接，补焦点环与悬停反馈 —— 版本号链到更新日志这类可点标签。",
+      code: `<Tag variant="outline" size="sm" shape="pill" render={<a href="/changelog" />}>
+  v0.44.0
+</Tag>`,
+      render: () => (
+        <div id="tag-link" className="flex items-center gap-3">
+          <Tag variant="outline" size="sm" shape="pill" render={<a href="#tag-link" />}>
+            v0.44.0
+          </Tag>
+          <Tag tone="brand" shape="pill">
+            12
+          </Tag>
+        </div>
+      ),
+    },
   ],
   controls: [
     { prop: "variant", type: "select", options: ["soft", "solid", "outline"], defaultValue: "soft" },

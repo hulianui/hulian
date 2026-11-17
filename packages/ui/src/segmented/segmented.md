@@ -32,6 +32,7 @@ import { Segmented } from "@hulianui/ui"
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整体禁用 |
 | size | `"sm"｜"md"` | `"md"` | - |
+| shape | `"rounded"｜"pill"` | `"rounded"` | `rounded` 与控件同档圆角；`pill` 轨道、滑块、段都全圆（顶栏 / 营销页） |
 | tone | `"brand"｜"success"｜"warning"｜"danger"｜"neutral"` | `"brand"` | 选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `brand`，与 [Tabs](../tabs/tabs.md) 的 `TabsList` 同名同取值、同默认；要旧的中性选中态（`text-foreground`）传 `neutral` |
 | className | `string` | - | - |
 | aria-label | `string` | - | 无可见标题时提供 |
@@ -43,6 +44,7 @@ import { Segmented } from "@hulianui/ui"
 | value * | `string` | - | 该段唯一值（也是选中标识） |
 | ariaLabel | `string` | - | label 为富节点（图标/徽标）时必填，否则降级取 value |
 | disabled | `boolean` | `false` | 单段禁用 |
+| render | `ReactElement` | - | 把这一段渲染成自定义元素（通常 `<a href>` 或框架路由件），段内容由 `label` 给。任一段给了它，整组按「一组链接」处理：`role="group"`、选中段 `aria-current="page"`、不做方向键漫游；元素自己的 `onClick` 照常触发 |
 
 ## Events
 
@@ -82,6 +84,20 @@ import { Segmented } from "@hulianui/ui"
   ]}
   defaultValue="grid"
   aria-label="视图"
+/>
+```
+
+链接段（切语言 / 切版本：选中项 = 当前页面），药丸形：
+```tsx
+<Segmented
+  shape="pill"
+  size="sm"
+  value="zh"
+  aria-label="语言"
+  items={[
+    { value: "zh", label: "中", render: <a href="/zh" hrefLang="zh" /> },
+    { value: "en", label: "EN", render: <a href="/en" hrefLang="en" /> },
+  ]}
 />
 ```
 

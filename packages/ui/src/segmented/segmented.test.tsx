@@ -175,3 +175,38 @@ describe("Segmented tone（#316）", () => {
     }
   });
 });
+
+describe("Segmented · shape / 链接段", () => {
+  it("默认圆角档不变；pill 轨道全圆", () => {
+    const { getByRole, rerender } = render(<Segmented items={items} aria-label="周期" />);
+    expect(getByRole("radiogroup").className).not.toContain("rounded-full");
+    rerender(<Segmented items={items} shape="pill" aria-label="周期" />);
+    expect(getByRole("radiogroup").className).toContain("rounded-full");
+  });
+
+  it("段给 render 时整组变成链接组：group + aria-current，元素 onClick 照常触发", () => {
+    let clicked = "";
+    const { getByRole, getAllByRole } = render(
+      <Segmented
+        value="zh"
+        aria-label="语言"
+        items={[
+          { value: "zh", label: "中", render: <a href="#zh" /> },
+          {
+            value: "en",
+            label: "EN",
+            render: <a href="#en" onClick={() => (clicked = "en")} />,
+          },
+        ]}
+      />,
+    );
+    expect(getByRole("group", { name: "语言" })).toBeTruthy();
+    const links = getAllByRole("link");
+    expect(links).toHaveLength(2);
+    expect(links[0].getAttribute("aria-current")).toBe("page");
+    expect(links[1].getAttribute("aria-current")).toBeNull();
+    expect(links[1].textContent).toBe("EN");
+    fireEvent.click(links[1]);
+    expect(clicked).toBe("en");
+  });
+});

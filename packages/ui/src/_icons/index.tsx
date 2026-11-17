@@ -184,6 +184,11 @@ export const Strikethrough = /* @__PURE__ */ createIcon("strikethrough", [
   ["line", { x1: "4", x2: "20", y1: "12", y2: "12", key: "1e0a9i" }],
 ]);
 
+export const ArrowRight = /* @__PURE__ */ createIcon("arrow-right", [
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }],
+]);
+
 export const ArrowUp = /* @__PURE__ */ createIcon("arrow-up", [
   ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
   ["path", { d: "M12 19V5", key: "x0mq9r" }],

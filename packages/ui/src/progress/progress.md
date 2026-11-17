@@ -28,7 +28,7 @@ import { Progress, progressPercent, dashOffset } from "@hulianui/ui"
 | value | `number` | - | 当前值；省略/undefined → indeterminate 不定态 |
 | max | `number` | `100` | 最大值 |
 | variant | `"linear" \| "circular"` | `"linear"` | 形态 |
-| tone | `"primary" \| "danger" \| "success" \| "warning"` | `"primary"` | 进度色调 |
+| tone | `"primary" \| "danger" \| "success" \| "warning" \| "inverse"` | `"primary"` | 进度色调。`inverse` 填充取前景色：放在彩色卡（`Card variant="primary"` / `data-surface="inverse"`）里是白条，主色填充在那里会和卡面融成一片 |
 | size | `number` | `40` | circular 直径 px（linear 忽略） |
 | thickness | `number` | `4` | circular 描边 px（linear 忽略） |
 | showValue | `boolean` | `false` | 显示百分比标签（circular 居中 / linear 右侧）；indeterminate 不显示 |

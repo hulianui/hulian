@@ -1,13 +1,14 @@
 # 瑚琏 Hulian (`@hulianui/ui`)
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 404 个组件 · v0.76.0
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · 409 个组件 · v0.76.0
 
 AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（自包含）或各组件源码旁 `<slug>.md`。
 安装 `npm i @hulianui/ui`，默认从根 barrel 导入：`import { X } from "@hulianui/ui"`；只用少数几个组件时可改子路径 `@hulianui/ui/<slug>`（见 docs/consuming.md §3）。
 铁律：业务里 100% 用库组件，禁止 style=/局部 CSS 覆盖；缺组件回库加。
 要做受约束生成（只许输出白名单组件与合法 props）请直接读 [llms-props.json](./llms-props.json)，不要去解析下面这些 markdown 表格：那份 JSON 逐 prop 给出 kind / 枚举取值 / 默认值，并带一张 `exportIndex`（导出名 → 组件）。
 
-## 布局 layout（15）
+## 布局 layout（16）
+- [AccentScope](https://github.com/hulianui/hulian/blob/master/packages/ui/src/accent-scope/accent-scope.md): 给一块区域换主色的色相，子树里的组件自动跟着变
 - [AdminLayout](https://github.com/hulianui/hulian/blob/master/packages/ui/src/admin-layout/admin-layout.md): 中后台骨架 · 侧栏(品牌+NavMenu可折叠) + 顶栏(折叠/面包屑/扩展区) + 多页签导航(开/切/关·关闭其他/全部·受控接路由或菜单点击自动维护) + 内容区(复用 NavMenu/ScrollArea/…
 - [AspectRatio](https://github.com/hulianui/hulian/blob/master/packages/ui/src/aspect-ratio/aspect-ratio.md): 把图片、视频或任意内容锁在固定的宽高比里
 - [Container](https://github.com/hulianui/hulian/blob/master/packages/ui/src/container/container.md): 给页面内容限定最大宽度并居中，留出左右安全边距
@@ -24,7 +25,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Stack](https://github.com/hulianui/hulian/blob/master/packages/ui/src/stack/stack.md): 按一个方向排列子元素，统一控制间距、对齐和换行
 - [Viewport](https://github.com/hulianui/hulian/blob/master/packages/ui/src/viewport/viewport.md): 按网页、平板、手机三档宽度预览，内部布局随容器宽度重排
 
-## 排版 typography（37）
+## 排版 typography（38）
 - [AnimatedGradientText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-gradient-text/animated-gradient-text.md): 渐变文字 · 行内 chart 渐变流动 + RSC · typography/text · #animated
 - [AnimatedShinyText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-shiny-text/animated-shiny-text.md): 高光文字 · 横扫高光 + 徽标气质 + RSC · typography/text · #animated
 - [ASCIIText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ascii-text/ascii-text.md): ASCII 字符画 · 把文字渲染成 ASCII 字符画 · canvas2d 逐像素亮度采样映射字符 + 正弦波动位移 + 鼠标驱动 hue-rotate 色相（零依赖去 three.js·token·reduced…
@@ -50,6 +51,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ScrollFloat](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-float/scroll-float.md): 滚动浮现标题 · ：随容器滚过视口逐字符从「下沉 + 纵向拉伸横向压扁 + 透明」拔起到正常 · useScroll 绑进度 + 每字符 useTransform 派生 opacity/y/scaleX/scaleY（…
 - [ScrollReveal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-reveal/scroll-reveal.md): 滚动显影 · 整段随容器滚过视口逐词 opacity+blur 解析(motion useScroll/useTransform · 每词独立进度区间 · reduced-motion 直呈可读) · typograp…
 - [ScrollVelocity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/scroll-velocity/scroll-velocity.md): 滚动跑马灯 · 滚动速度跑马灯文字 · 多行交替方向视差 + 随页面滚动加速/变向、静止匀速漂移(motion 速度值驱动·零额外依赖·reduced-motion 冻结自走帧保留 DOM) · typography/…
+- [SectionHeader](https://github.com/hulianui/hulian/blob/master/packages/ui/src/section-header/section-header.md): 区块开头的一组标题：小字栏目名、大标题、主色强调半句和导语
 - [Shuffle](https://github.com/hulianui/hulian/blob/master/packages/ui/src/shuffle/shuffle.md): 洗牌解密文字 · 逐字「洗牌解密」文本动画 · 字位先滚乱码再按方向顺序锁定真字 + 视口/悬停/循环触发(零依赖 rAF·reduced-motion 直落终态·token 着色) · typography/text…
 - [Snippet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/snippet/snippet.md): 展示一行命令，带提示符和一键复制
 - [SparklesText](https://github.com/hulianui/hulian/blob/master/packages/ui/src/sparkles-text/sparkles-text.md): 星闪文字 · 随机小星脉冲(客户端生成) + token · typography/text · #animated
@@ -136,7 +138,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Upload](https://github.com/hulianui/hulian/blob/master/packages/ui/src/upload/upload.md): 文件上传 · 拖拽落区/按钮形态 + accept/maxSize/limit 校验 + 受控列表(缩略图/进度/拖拽调序)，传输层拆成 useUpload
 - [VoiceRecord](https://github.com/hulianui/hulian/blob/master/packages/ui/src/voice-record/voice-record.md): 语音录制触发器 — 带光环脉动 + 波形动画的圆形录音按钮
 
-## 数据展示 data-display（98）
+## 数据展示 data-display（99）
 - [AnimatedList](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-list/animated-list.md): 动效列表 · 子项逐个淡入上移入场(motion + 进入视口) · data-display/collection · #animated
 - [Annotation](https://github.com/hulianui/hulian/blob/master/packages/ui/src/annotation/annotation.md): 手写风格标注 · 荧光笔底色 + 手绘箭头 + 手写旁注就地讲解行内内容 · 八方位 + 6 语气 + 只圈不注
 - [Avatar](https://github.com/hulianui/hulian/blob/master/packages/ui/src/avatar/avatar.md): 展示用户头像，加载失败时回退到备用内容
@@ -180,6 +182,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Gantt](https://github.com/hulianui/hulian/blob/master/packages/ui/src/gantt/gantt.md): 把任务排到时间轴上，展示分组、进度和今天的位置
 - [GitCommit](https://github.com/hulianui/hulian/blob/master/packages/ui/src/git-commit/git-commit.md): 展示一次提交的分支、短哈希、说明和作者
 - [Heatmap](https://github.com/hulianui/hulian/blob/master/packages/ui/src/heatmap/heatmap.md): 热力图 · 网格色阶映射(value→bucket→primary 透明度档·纯函数 buildMatrix/bucketize 可测) + 小数值域 domain/百分比 valueFormat + 色阶图例 + 无…
+- [IconTile](https://github.com/hulianui/hulian/blob/master/packages/ui/src/icon-tile/icon-tile.md): 把一个图标放进带底色的小方块，排在功能 / 通知文字的左边
 - [Image](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image/image.md): 加载图片并处理淡入、失败回退和悬停放大
 - [ImageViewer](https://github.com/hulianui/hulian/blob/master/packages/ui/src/image-viewer/image-viewer.md): 全屏查看图片，可缩放、平移、翻页和看缩略图
 - [InfiniteMenu](https://github.com/hulianui/hulian/blob/master/packages/ui/src/infinite-menu/infinite-menu.md): 球面菜单 · 可拖拽旋转的菜单球，菜单项围绕球面分布、正对镜头者贴靠为激活项并显覆盖层标题/描述+动作箭头 · 松手惯性衰减 + 自动自旋（零依赖 CSS-3D/RAF·reduced-motion） · data-d…
@@ -316,7 +319,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [ToolCall](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tool-call/tool-call.md): 展示一次工具调用的参数、进度和结果
 - [TypingDots](https://github.com/hulianui/hulian/blob/master/packages/ui/src/typing-dots/typing-dots.md): 打字指示 · 三点交错弹跳(纯CSS·客户端组件) + reduced-motion停 + role=status·配 ChatMessage loading · ai/agent · #animated
 
-## 装饰 decoration（92）
+## 装饰 decoration（93）
 - [AnimatedBeam](https://github.com/hulianui/hulian/blob/master/packages/ui/src/animated-beam/animated-beam.md): 动效光束 · 连接两元素的流光曲线(motion 渐变 + SVG + ResizeObserver) · decoration/overlay-fx · #animated
 - [Antigravity](https://github.com/hulianui/hulian/blob/master/packages/ui/src/antigravity/antigravity.md): 反重力粒子 · 吸附背景 · 光标靠近把漂浮粒子吸入环绕轨道(波动+脉冲+取向)，离开缓回原位 · 磁吸半径/环半径/形状/自动巡游可调(canvas2d 零依赖·token 配色·reduced-motion 静态点…
 - [Aurora](https://github.com/hulianui/hulian/blob/master/packages/ui/src/aurora/aurora.md): 极光渐变背景 · 双层 repeating-linear-gradient 横移干涉 + 径向 mask 聚焦 + chart token(纯 CSS·RSC) · decoration/backdrop · #ani…
@@ -337,6 +340,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [DotPattern](https://github.com/hulianui/hulian/blob/master/packages/ui/src/dot-pattern/dot-pattern.md): 铺一层跟随主题配色的点阵背景，点距可调
 - [ElectricBorder](https://github.com/hulianui/hulian/blob/master/packages/ui/src/electric-border/electric-border.md): 通电边框 · 通电跳动的边框装饰 · SVG 湍流位移描边 + 多层模糊光晕模拟放电辉光(零依赖·token·reduced-motion) · decoration/overlay-fx · #animated
 - [EvilEye](https://github.com/hulianui/hulian/blob/master/packages/ui/src/evil-eye/evil-eye.md): 火焰邪眼 · WebGL 背景 · 极坐标多层程序化噪声画出翻腾火焰瞳孔 + 瞳孔惯性跟随光标 + 外圈弥散辉光（ogl·token 自适应·reduced-motion 静态降级） · decoration/back…
+- [FadeMask](https://github.com/hulianui/hulian/blob/master/packages/ui/src/fade-mask/fade-mask.md): 把内容在某一边或从中心向四周淡出到透明
 - [FaultyTerminal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/faulty-terminal/faulty-terminal.md): 故障终端雨 · 出故障的 CRT 终端字符雨 WebGL 背景 · fbm 噪声点阵 + 横向撕裂/扫描线/闪烁/桶形畸变/色散 + 鼠标涟漪(ogl·token 着色·reduced-motion 兜底) · dec…
 - [Ferrofluid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/ferrofluid/ferrofluid.md): 铁磁流体 · 液态金属铁磁流体 WebGL 背景组件 · value-noise 峰脊 + smin 软融合 + rim 亮带流动 + 鼠标下凹交互(ogl·主题 chart token·reduced-motion …
 - [FlickeringGrid](https://github.com/hulianui/hulian/blob/master/packages/ui/src/flickering-grid/flickering-grid.md): 闪烁网格 · canvas 像素方格随机明灭 + ResizeObserver 自适应 + 颜色吃主题 token(逐帧现取) · decoration/backdrop · #animated
@@ -410,7 +414,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Tilt](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tilt/tilt.md): 视差倾斜包裹器 · 裹住任意 children 做 3D 倾斜(区别 TiltedCard 的固定卡片结构) · 指针/陀螺仪/手动角度三种驱动 + 全窗跟踪 + 单轴限制 + 反向 + 静息角 + 悬停放大 · gl…
 - [WavyBackground](https://github.com/hulianui/hulian/blob/master/packages/ui/src/wavy-background/wavy-background.md): 噪声波浪 · canvas 多彩波浪带叠加 + 内联零依赖 value noise + chart token + reduced-motion 静态 · decoration/backdrop · #animated
 
-## 设备外壳 mockups（7）
+## 设备外壳 mockups（8）
 - [Android](https://github.com/hulianui/hulian/blob/master/packages/ui/src/android/android.md): 用带打孔摄像头的安卓手机外壳包住内容
 - [Chrome](https://github.com/hulianui/hulian/blob/master/packages/ui/src/chrome/chrome.md): 用 Chrome 风格的浏览器窗口包住截图，带标签页
 - [iPhone](https://github.com/hulianui/hulian/blob/master/packages/ui/src/iphone/iphone.md): 用带灵动岛的手机外壳把内容包成展示图
@@ -418,6 +422,7 @@ AI agent 索引。完整逐组件用法见 [llms-full.txt](./llms-full.txt)（�
 - [Tablet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/tablet/tablet.md): 用平板外壳把内容包成设备展示图，可选机型
 - [Terminal](https://github.com/hulianui/hulian/blob/master/packages/ui/src/terminal/terminal.md): 终端框 · mac 窗口外壳 + 命令行逐行揭示(motion + tone) + 语法着色(命令名/flag/URL/数字) · mockups/window · #animated
 - [Watch](https://github.com/hulianui/hulian/blob/master/packages/ui/src/watch/watch.md): 用智能手表外壳包住紧凑内容做展示
+- [WindowFrame](https://github.com/hulianui/hulian/blob/master/packages/ui/src/window-frame/window-frame.md): 用三色点标题栏的应用窗口包住一块界面，做成产品截图
 
 ## 移动端 mobile（7）
 - [ActionSheet](https://github.com/hulianui/hulian/blob/master/packages/ui/src/action-sheet/action-sheet.md): 从屏幕底部滑出一组适合触屏的操作项

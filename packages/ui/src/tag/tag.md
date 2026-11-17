@@ -32,6 +32,8 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
 | isDisabled | `boolean` | `false` | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
+| shape | `"rounded" \| "pill"` | `"rounded"` | `rounded` 小圆角；`pill` 全圆药丸（版本号、计数这类短标签）。 |
+| render | `ReactElement` | - | 渲染成自定义元素（`<a href>` / 框架路由件）：版本号指向更新日志、标签指向筛选页这类可点标签。皮肤合并进该元素并补焦点环与悬停反馈；与 Button / Link 的 `render` 约定一致。不要与 `onClose` 同用（链接里套按钮是无效嵌套）。 |
 | className | `string` | - | - |
 | …HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | 透传 span 原生属性。状态标签常用 `title` 挂完整值做 hover 全文（表格里显示「Word」、title 是完整 MIME），以及 `data-testid` / `aria-*` |
 
@@ -64,6 +66,10 @@ import { Tag, tagVariants } from "@hulianui/ui"
 // 呼吸圆点表达进行态 + 可关闭
 <Tag dot pulse tone="brand">部署中</Tag>
 <Tag onClose={() => remove(id)}>待审核</Tag>
+```
+```tsx
+// 可点的标签：版本号药丸链到更新日志
+<Tag variant="outline" size="sm" shape="pill" render={<Link href="/changelog" />}>v0.44.0</Tag>
 ```
 ```tsx
 // 分类色：语义六档接不住十几二十种分类（渠道 / 业务线 / 文件类型）时用它

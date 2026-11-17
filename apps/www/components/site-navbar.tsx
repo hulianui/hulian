@@ -5,12 +5,16 @@ import { usePathname } from "next/navigation";
 import { useIntlayer } from "next-intlayer";
 import {
   AnimatedThemeToggler,
+  Brand,
   Button,
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenu,
   NavbarMenuToggle,
+  Separator,
+  Tag,
 } from "@hulianui/ui";
 import { UI_VERSION } from "../lib/ui-version";
 import { DocsSearch } from "./docs-search";
@@ -50,60 +54,41 @@ export function SiteNavbar() {
   return (
     <>
       {/* 布局：左「品牌 + 导航」、右「搜索 + 工具」—— 导航紧贴品牌，宽屏上不再隔着半个屏幕。
-          右侧工具统一 36px 高、无边框的轻按钮，只有搜索框是实底，视觉重心落在「品牌」和「搜索」两处。 */}
-      <Navbar
-        sticky
-        bordered={false}
-        className="h-14 gap-2 border-b border-border/60 bg-bg/75 px-3 sm:px-5 xl:gap-3"
-      >
+          右侧工具统一 32px 高、无边框的轻按钮，只有搜索框是实底，视觉重心落在「品牌」和「搜索」两处。 */}
+      <Navbar sticky size="sm" variant="page" className="xl:gap-3">
         <NavbarMenuToggle
           isOpen={open}
           onToggle={() => setOpen((v) => !v)}
           aria-label={open ? content.closeMenu : content.openMenu}
-          className="sm:inline-flex xl:hidden"
+          breakpoint="xl"
         />
         {/* grow={false}：品牌区按内容宽，导航紧跟其后。min-w-0 让品牌名在最窄屏可以 truncate，
             否则会把最右的主题切换钮顶出视口。 */}
         <NavbarBrand grow={false} className="min-w-0">
-          {/* 版本徽标点进更新日志。必须与品牌 Link 并列而非嵌套——<a> 套 <a> 会 hydration 报错。 */}
-          <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold">
-            {/* logo 用 mask 画：图形取自 logo.svg，颜色交给 CSS（.hl-logo，见 globals.css）。
-                用 <img> 时颜色写死在 SVG 里，首页的主题色切换够不着它。 */}
-            <span
-              role="img"
-              aria-label={content.logoAlt}
-              className="hl-logo size-6 shrink-0"
-              style={{
-                maskImage: `url(${withDocsBasePath("/logo.svg")})`,
-                WebkitMaskImage: `url(${withDocsBasePath("/logo.svg")})`,
-              }}
-            />
-            {/* 360px 以下只留 logo：半截品牌名比只留 logo 更糟。 */}
-            <span className="hidden truncate tracking-tight min-[360px]:inline">
-              {content.brand}
-            </span>
-          </Link>
-          <Link
-            href="/changelog"
+          {/* logo 按 logo.svg 的形状着主色（maskSrc），跟着首页的主题色（AccentScope）走。
+              版本徽标点进更新日志。必须与品牌链接并列而非嵌套——<a> 套 <a> 会 hydration 报错。 */}
+          <Brand
+            variant="bare"
+            maskSrc={withDocsBasePath("/logo.svg")}
+            name={content.brand}
+            render={<Link href="/" />}
+          />
+          <Tag
+            variant="outline"
+            size="sm"
+            shape="pill"
             aria-label={content.currentVersion.replace("{version}", UI_VERSION)}
-            className="ml-2 hidden shrink-0 rounded-full border border-border/80 px-2 py-0.5 font-mono text-[11px] leading-4 text-muted-foreground transition-colors hover:border-primary-border hover:text-primary lg:block"
+            render={<Link href="/changelog" />}
+            className="ml-2 hidden lg:inline-flex"
           >
             v{UI_VERSION}
-          </Link>
+          </Tag>
         </NavbarBrand>
 
         <NavbarContent justify="start" className="ml-4 hidden gap-0.5 sm:gap-0.5 xl:flex">
           {tiers.map((t) => (
-            <NavbarItem
-              key={t.href}
-              isActive={isActive(t.match)}
-              className={`p-0 ${
-                isActive(t.match) ? "bg-primary-subtle" : "hover:bg-surface-hover"
-              }`}
-            >
-              <Link href={t.href} className="block px-3 py-1.5">
-                {t.label}
-              </Link>
+            <NavbarItem key={t.href} variant="soft" isActive={isActive(t.match)}>
+              <Link href={t.href}>{t.label}</Link>
             </NavbarItem>
           ))}
         </NavbarContent>
@@ -111,47 +96,53 @@ export function SiteNavbar() {
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5">
           {/* 全站搜索：跨 页面/区块/组件/模版/指南 的统一入口，⌘K 唤起；全断点常驻。 */}
           <DocsSearch />
-          <span aria-hidden className="mx-1 hidden h-5 w-px bg-border sm:block" />
-          <LanguageSwitcher pathname={pathname} />
+          <Separator orientation="vertical" className="mx-1 hidden h-5 sm:block" />
+          {/* 语言切换在 sm 以上常驻，最窄屏让位给品牌 + 搜索 + 主题切换，改由折叠菜单承接。
+              实测 375px：顶栏子项合计 402px，其中语言切换器独占 156px —— 英文站
+              「Chinese」「English」两段各 72px，中文站「中文」「EN」只要 108px。
+              顶栏是 w-full、右侧工具簇 shrink-0，多出来的 27px 只能顶出去，
+              把最右的主题切换钮推到视口外（正是文档横向溢出的那 402）。 */}
+          <LanguageSwitcher pathname={pathname} className="max-sm:hidden" />
           {/* 开源入口在 sm 以上常驻；最窄屏让位给品牌名，改由折叠菜单承接。 */}
           <Button
             variant="ghost"
-            size="icon"
+            muted
+            size="iconSm"
             aria-label={content.github}
-            className="size-9 text-muted-foreground hover:text-foreground max-sm:hidden"
+            className="max-sm:hidden"
             render={<a href={REPO} target="_blank" rel="noreferrer" />}
           >
-            <GithubIcon className="size-[18px]" />
+            <GithubIcon className="size-4" />
           </Button>
-          <AnimatedThemeToggler
-            aria-label={content.toggleTheme}
-            className="size-9 border-0 bg-transparent text-muted-foreground hover:text-foreground [&_svg]:size-[18px]"
-          />
+          <AnimatedThemeToggler variant="ghost" size="sm" aria-label={content.toggleTheme} />
         </div>
       </Navbar>
 
-      {open && (
-        <ul className="flex flex-col gap-1 border-b border-border bg-bg p-2 xl:hidden">
-          {tiers.map((t) => (
-            <NavbarItem key={t.href} isActive={isActive(t.match)} onClick={() => setOpen(false)}>
-              <Link href={t.href} className="block px-2 py-1.5">
-                {t.label}
-              </Link>
-            </NavbarItem>
-          ))}
-          <NavbarItem className="sm:hidden" onClick={() => setOpen(false)}>
-            <a
-              href={REPO}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 px-2 py-1.5"
-            >
-              <GithubIcon className="size-4" />
-              GitHub
-            </a>
+      <NavbarMenu isOpen={open} breakpoint="xl">
+        {tiers.map((t) => (
+          <NavbarItem
+            key={t.href}
+            variant="soft"
+            isActive={isActive(t.match)}
+            onClick={() => setOpen(false)}
+          >
+            <Link href={t.href}>{t.label}</Link>
           </NavbarItem>
-        </ul>
-      )}
+        ))}
+        <NavbarItem variant="soft" className="sm:hidden" onClick={() => setOpen(false)}>
+          <a href={REPO} target="_blank" rel="noreferrer">
+            <GithubIcon className="mr-2 inline size-4 align-[-3px]" />
+            GitHub
+          </a>
+        </NavbarItem>
+        {/* 与顶栏那份 `max-sm:hidden` 正好互补：任一宽度上只出现一份语言切换。
+            直接复用 LanguageSwitcher 而不是另写两个链接 —— 切语言要同时写 localStorage
+            和 hl_locale cookie（中文镜像的 nginx 靠它判断「读者是主动选英文」），
+            这份逻辑只该有一处。 */}
+        <li className="sm:hidden">
+          <LanguageSwitcher pathname={pathname} />
+        </li>
+      </NavbarMenu>
     </>
   );
 }

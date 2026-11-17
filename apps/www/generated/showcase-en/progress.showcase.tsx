@@ -1,5 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { Card, CardBody } from "../../../../packages/ui/src/card";
 import { Progress } from "../../../../packages/ui/src/progress/progress";
 export const progressShowcase: ShowcaseSpec = {
     examples: [
@@ -49,6 +50,20 @@ export const progressShowcase: ShowcaseSpec = {
           <Progress variant="circular"/>
         </div>),
         },
+        {
+            title: "On a colored card (inverse)",
+            description: "tone=\"inverse\" fills with the foreground color: on a primary card it's a white bar, where a primary fill would blend into the card.",
+            code: `<Card variant="primary">
+  <CardBody>
+    <Progress value={68} showValue tone="inverse" />
+  </CardBody>
+</Card>`,
+            render: () => (<Card variant="primary" className="w-64">
+          <CardBody>
+            <Progress value={68} showValue tone="inverse" aria-label="Progress"/>
+          </CardBody>
+        </Card>),
+        },
     ],
     controls: [
         { prop: "value", type: "number", defaultValue: 40, label: "value" },
@@ -63,7 +78,7 @@ export const progressShowcase: ShowcaseSpec = {
         {
             prop: "tone",
             type: "select",
-            options: ["primary", "success", "warning", "danger"],
+            options: ["primary", "success", "warning", "danger", "inverse"],
             defaultValue: "primary",
             label: "Hue",
         },

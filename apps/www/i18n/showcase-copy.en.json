@@ -8976,6 +8976,173 @@
       "公式 (1) 里用 \\term{dk}{…} 标出 √dₖ：点它切换图 2 的缩放，悬停或聚焦时图下方的缩放开关一起亮；反过来悬停开关，公式里的 √dₖ 也会亮。公式走 KaTeX，从 @hulianui/ui/math 引入，不进主入口。项上叠的是真按钮，键盘 Tab 得到、读屏念得出它会做什么。公式编号和图号一样用 CSS 计数器自动编号，服务端渲染、打印都有号；正文里的 EqRef 显示「公式 (N)」（英文论文是 Eq. (N)），点击滚到公式并描边。": "Formula (1) marks √dₖ with \\term{dk}{…}: click it to toggle scaling in Figure 2, and hovering or focusing it lights up the scaling switch below the figure. Hovering the switch lights up √dₖ in the formula in turn. The formula is rendered with KaTeX and imported from @hulianui/ui/math, so it stays out of the main entry. A real button sits on the term, so it is reachable with Tab and screen readers announce what it does. Equation numbers use a CSS counter just like figure numbers, so they appear in server rendering and print; EqRef in the text shows the localized form of “Equation (N)” in Chinese papers and “Eq. (N)” in English ones, and clicking it scrolls to the equation and outlines it.",
       "  <p>… as shown in <EqRef to=\"attention-eq\" /></p> {/* 正文显示「公式 (1)」，点击滚到公式并描边 */}": "  <p>… as shown in <EqRef to=\"attention-eq\" /></p> {/* shows “Eq. (1)” in the text; clicking scrolls to the equation and outlines it */}",
       "    id=\"attention-eq\" // 不传 number：和图号一样自动编号；number=\"A.1\" 手写覆盖，number={null} 不编号": "    id=\"attention-eq\" // no number: numbered automatically like figures; number=\"A.1\" overrides, number={null} leaves it unnumbered"
+    },
+    "packages/ui/src/animated-theme-toggler/animated-theme-toggler.showcase.tsx": {
+      "<Button variant=\"ghost\" muted size=\"iconSm\" aria-label=\"设置\">…</Button>": "<Button variant=\"ghost\" muted size=\"iconSm\" aria-label=\"Settings\">…</Button>",
+      "顶栏工具区（ghost · 紧凑）": "Navbar tools (ghost, compact)",
+      "variant=\"ghost\" 去掉描边与底色，size=\"sm\" 与 Button iconSm 同高，并排时上下沿对齐。": "variant=\"ghost\" drops the border and background, and size=\"sm\" matches the height of Button iconSm, so their edges line up side by side."
+    },
+    "packages/ui/src/avatar/avatar.showcase.tsx": {
+      "主色 · 外圈": "Accent and ring",
+      "<Avatar tone=\"brand\" ring fallback=\"林\" />": "<Avatar tone=\"brand\" ring fallback=\"Lin\" />",
+      "tone=\"brand\" 主色浅底 + 主色字；ring 加 2px 外圈，颜色随 tone，在主色卡里中性圈自动变成半透明白。": "tone=\"brand\" uses the accent's subtle background with accent text; ring adds a 2px outer ring whose color follows tone, and inside a primary card the neutral ring turns translucent white automatically."
+    },
+    "packages/ui/src/brand/brand.showcase.tsx": {
+      "徽章里的 logo": "A logo inside the badge",
+      "裸 logo · 按形状着色": "Bare logo, filled by shape",
+      "<Brand variant=\"bare\" maskSrc=\"/logo.svg\" name=\"瑚琏 UI\" />": "<Brand variant=\"bare\" maskSrc=\"/logo.svg\" name=\"Hulian UI\" />",
+      "<Brand variant=\"bare\" maskSrc=\"/logo.svg\" name=\"瑚琏 UI\" color=\"chart-4\" />": "<Brand variant=\"bare\" maskSrc=\"/logo.svg\" name=\"Hulian UI\" color=\"chart-4\" />",
+      "variant=\"bare\" 去掉徽章底，maskSrc 让单色 logo 图片按形状着品牌色，跟随主题色与 AccentScope。": "variant=\"bare\" drops the badge, and maskSrc fills a single-color logo image with the brand color by its shape, following the theme color and AccentScope."
+    },
+    "packages/ui/src/card/card.showcase.tsx": {
+      "进度": "Progress",
+      "主色卡": "Primary card",
+      "整卡可点": "Fully clickable card",
+      "整站色系跟随主题变化": "The whole palette follows your theme",
+      "组件、区块、页面与模版。": "Components, blocks, pages, and templates.",
+      "负责人 · Abel": "Assigned to Abel",
+      "<CardBody>组件、区块、页面与模版。</CardBody>": "<CardBody>Components, blocks, pages, and templates.</CardBody>",
+      "<CardHeader title=\"瑚琏文档\" description=\"hulian.dev\" />": "<CardHeader title=\"Hulian docs\" description=\"hulian.dev\" />",
+      "<Tag size=\"sm\">进行中</Tag>": "<Tag size=\"sm\">In progress</Tag>",
+      "<Text size=\"sm\" tone=\"muted\">负责人 · Abel</Text>": "<Text size=\"sm\" tone=\"muted\">Assigned to Abel</Text>",
+      "<Text weight=\"semibold\">整站色系跟随主题变化</Text>": "<Text weight=\"semibold\">The whole palette follows your theme</Text>",
+      "interactive 悬停上浮、键盘焦点给环；render 把整卡渲染成链接，卡里不要再放别的链接或按钮。": "interactive lifts the card on hover and shows a ring on keyboard focus; render turns the whole card into a link, so don't put other links or buttons inside.",
+      "variant=\"primary\" 主色渐变底，自动挂 data-surface=\"inverse\"：卡里的文字与标签自动反色，进度条用 tone=\"inverse\"。": "variant=\"primary\" has a primary gradient and sets data-surface=\"inverse\", so text and tags inside switch to inverse colors automatically; the progress bar uses tone=\"inverse\"."
+    },
+    "packages/ui/src/color-swatch-picker/color-swatch-picker.showcase.tsx": {
+      "圆形色块": "Round swatches",
+      "shape=\"circle\" 全圆、无边，只留一圈极淡内阴影；选中外环的间隙透明，放在卡片上透出卡面。": "shape=\"circle\" is fully round with no border, only a very faint inner shadow; the gap in the selected ring is transparent, so on a card it shows the card surface."
+    },
+    "packages/ui/src/command/command.showcase.tsx": {
+      "搜索文档": "Search docs",
+      "<CommandTrigger placeholder=\"搜索文档\" aria-label=\"搜索文档\" onClick={() => setOpen(true)} />": "<CommandTrigger placeholder=\"Search docs\" aria-label=\"Search docs\" onClick={() => setOpen(true)} />",
+      "搜索框样子的入口（CommandTrigger）": "A search-field-style entry (CommandTrigger)",
+      "CommandTrigger 长得像搜索框、本质是按钮：放大镜 + 占位文案 + ⌘K 键帽。shape=\"pill\" 药丸形，collapseBelow 让窄屏收成图标钮。": "CommandTrigger looks like a search field but is a button: a magnifier, placeholder text, and a ⌘K keycap. shape=\"pill\" makes it a pill, and collapseBelow turns it into an icon button on narrow screens."
+    },
+    "packages/ui/src/heading/heading.showcase.tsx": {
+      "展示级字号": "Display size",
+      "<Heading level={1} size=\"display\">瑚琏</Heading>": "<Heading level={1} size=\"display\">Hulian</Heading>",
+      "size=\"display\" 给营销页 hero 的品牌名 / 主口号：窄屏 60px、sm 起 72px。": "size=\"display\" is for the brand name or main slogan in a marketing hero: 60px on narrow screens, 72px from sm up."
+    },
+    "packages/ui/src/link/link.showcase.tsx": {
+      "查看全部": "Browse all",
+      "次要链接 · 前往箭头": "Muted links and the go arrow",
+      "<Link href=\"#\" arrow>查看全部</Link>": "<Link href=\"#\" arrow>Browse all</Link>",
+      "tone=\"muted\" 静息次要灰、悬停回正文色；arrow 给导向链接加尾随箭头，悬停时前移。": "tone=\"muted\" rests in the secondary gray and returns to the body color on hover; arrow adds a trailing arrow to links that lead somewhere, nudging forward on hover."
+    },
+    "packages/ui/src/navbar/navbar.showcase.tsx": {
+      "区块": "Blocks",
+      "紧凑顶栏 · 浅底药丸导航": "Compact navbar with soft pill items",
+      "<NavbarBrand grow={false}>瑚琏</NavbarBrand>": "<NavbarBrand grow={false}>Hulian</NavbarBrand>",
+      "<NavbarItem variant=\"soft\" isActive><a href=\"#\">组件</a></NavbarItem>": "<NavbarItem variant=\"soft\" isActive><a href=\"#\">Components</a></NavbarItem>",
+      "<NavbarItem variant=\"soft\"><a href=\"#\">区块</a></NavbarItem>": "<NavbarItem variant=\"soft\"><a href=\"#\">Blocks</a></NavbarItem>",
+      "size=\"sm\" 收成 56px，variant=\"page\" 用页面底色融进页面；NavbarItem variant=\"soft\" 选中项铺主色浅底，项里的链接整块可点。": "size=\"sm\" shrinks the bar to 56px and variant=\"page\" blends it into the page background; NavbarItem variant=\"soft\" gives the active item the accent's subtle background, and the link inside is clickable across the whole pill.",
+      "<NavbarItem variant=\"soft\"><a href=\"#\">页面</a></NavbarItem>": "<NavbarItem variant=\"soft\"><a href=\"#\">Pages</a></NavbarItem>",
+      "页面": "Pages"
+    },
+    "packages/ui/src/progress/progress.showcase.tsx": {
+      "进度": "Progress",
+      "彩色卡上（inverse）": "On a colored card (inverse)",
+      "tone=\"inverse\" 填充取前景色：放在主色卡里是白条，主色填充在那里会和卡面融成一片。": "tone=\"inverse\" fills with the foreground color: on a primary card it's a white bar, where a primary fill would blend into the card."
+    },
+    "packages/ui/src/segmented/segmented.showcase.tsx": {
+      "药丸形 · 链接段": "Pill shape and link segments",
+      "{ value: \"zh\", label: \"中\", render: <a href=\"/zh\" /> },": "{ value: \"zh\", label: \"ZH\", render: <a href=\"/zh\" /> },",
+      "aria-label=\"语言\"": "aria-label=\"Language\"",
+      "shape=\"pill\" 轨道、滑块、段都全圆；段给 render（如 <a href>）时整组变成一组链接，选中段标 aria-current=\"page\"，适合切语言 / 切版本。": "shape=\"pill\" makes the track, slider, and segments fully round; when segments set render (such as <a href>) the group becomes a set of links and the selected one gets aria-current=\"page\", for switching language or version."
+    },
+    "packages/ui/src/snippet/snippet.showcase.tsx": {
+      "一组上手步骤（SnippetGroup）": "A set of getting-started steps (SnippetGroup)",
+      "SnippetGroup 把几条命令堆叠在同一张卡里，组画外框与分隔线；muted 标出次要行；overlay 放 BorderBeam 这类装饰层。": "SnippetGroup stacks several commands in one card and draws the frame and separators; muted marks a secondary row; overlay holds a decorative layer such as BorderBeam."
+    },
+    "packages/ui/src/spotlight/spotlight.showcase.tsx": {
+      "叠在纹理上（透明渐隐 · 椭圆）": "Over a texture (transparent fade, ellipse)",
+      "<div>…内容…</div>": "<div>…content…</div>",
+      "blend=\"transparent\" 渐隐到透明而不是底色，下层的点阵纹理不会被盖住；size 写两个值得到椭圆辉光。": "blend=\"transparent\" fades into transparency instead of the background, so the dot texture underneath stays visible; two values in size give an elliptical glow."
+    },
+    "packages/ui/src/tabs/tabs.showcase.tsx": {
+      "区块": "Blocks",
+      "产品线": "Product lines",
+      "拿来就能拼页面的段落": "Sections you drop into a page",
+      "可访问、可换肤的基础组件": "Accessible, themeable building blocks",
+      "成型的整页：仪表盘、设置、登录": "Complete pages: dashboards, settings, sign-in",
+      "卡片 · 自动轮播": "Cards with auto-advance",
+      "<TabsList variant=\"card\" aria-label=\"产品线\">": "<TabsList variant=\"card\" aria-label=\"Product lines\">",
+      "<Text size=\"sm\" tone=\"muted\">可访问、可换肤的基础组件</Text>": "<Text size=\"sm\" tone=\"muted\">Accessible, themeable building blocks</Text>",
+      "<Text weight=\"semibold\">组件</Text>": "<Text weight=\"semibold\">Components</Text>",
+      "TabsList variant=\"card\" 每个 tab 是一张带描述的卡；Tabs autoPlay 没人操作时按节奏换档，选中卡底部进度条走满即换，悬停暂停、选过即停。": "With TabsList variant=\"card\" each tab is a card with a description; Tabs autoPlay advances at a steady pace while nobody interacts, switching when the bar under the selected card fills, pausing on hover, and stopping once a tab is picked.",
+      "页面": "Pages"
+    },
+    "packages/ui/src/tag/tag.showcase.tsx": {
+      "药丸形 · 可点标签": "Pill shape and clickable tags",
+      "shape=\"pill\" 全圆；render 渲染成链接，补焦点环与悬停反馈 —— 版本号链到更新日志这类可点标签。": "shape=\"pill\" is fully round; render turns the tag into a link with a focus ring and hover feedback, for clickable tags such as a version linking to the changelog."
+    },
+    "packages/ui/src/window-frame/window-frame.showcase.tsx": {
+      "订单概览": "Orders overview",
+      "节点标题 · 操作槽": "Node title and toolbar",
+      "三色点 + 标题，把一块产品界面包成一张「应用截图」；字符串标题按等宽小字渲染。": "Traffic lights and a title wrap a piece of product UI into an \"app screenshot\"; a string title renders as small monospace text.",
+      "本周新增 128 单，退款率 1.2%。": "128 new orders this week, 1.2% refunded.",
+      "title 也可以放 Tag 等节点；toolbar 放在标题栏右端。": "title can also hold nodes such as a Tag; toolbar sits at the right end of the title bar.",
+      "toolbar={<Button size=\"xs\" variant=\"ghost\">清空</Button>}": "toolbar={<Button size=\"xs\" variant=\"ghost\">Clear</Button>}"
+    },
+    "packages/ui/src/accent-scope/accent-scope.showcase.tsx": {
+      "青玉": "Jade",
+      "瑚琏蓝": "Hulian blue",
+      "过渡换色": "Transitioning hue",
+      "局部换色相": "Local hue change",
+      "<Button>主操作</Button>": "<Button>Primary</Button>",
+      "<Tag tone=\"brand\">标签</Tag>": "<Tag tone=\"brand\">Tag</Tag>",
+      "青玉（165）": "Jade (165)",
+      "珊瑚（25）": "Coral (25)",
+      "品牌原色（258）": "Brand color (258)",
+      "子树里的主色、hover、浅底、浅边、焦点环与图表色板一起换色相，明度彩度沿用品牌梯子。": "Primary, hover, subtle fill, subtle border, focus ring, and the chart palette in the subtree all move to the new hue, while lightness and chroma stay on the brand ladder.",
+      "transition 给色相变量挂过渡，整棵子树同步渐变；色相由状态驱动。": "transition animates the hue variable so the whole subtree changes together; the hue is driven by state.",
+      "紫檀": "Violet",
+      "珊瑚": "Coral",
+      "主操作": "Primary",
+      "次操作": "Secondary",
+      "进度": "Progress",
+      "色相": "Hue"
+    },
+    "packages/ui/src/icon-tile/icon-tile.showcase.tsx": {
+      "变体 × 语义色": "Variants × tones",
+      "功能列表 / 通知流里「图标 + 文字」最左边那一格，默认主色浅底；图标尺寸随档，不必自己写。": "The leftmost cell of \"icon + text\" rows in feature lists and feeds, with a subtle accent background by default; the icon is sized for you.",
+      "一行命令装上，助手查 props 而不是猜 props。": "One command and your assistant looks up props instead of guessing props.",
+      "<Text size=\"sm\" tone=\"muted\">一行命令装上，助手查 props 而不是猜 props。</Text>": "<Text size=\"sm\" tone=\"muted\">One command and your assistant looks up props instead of guessing props.</Text>",
+      "<Text weight=\"semibold\">MCP 服务</Text>": "<Text weight=\"semibold\">MCP server</Text>",
+      "color 接语义色名或任意 CSS 色，覆盖 tone —— 通知流里按事件类别区分颜色。": "color takes a semantic name or any CSS color and overrides tone, for coloring a feed by event type.",
+      "MCP 服务": "MCP server",
+      "sm 32px / md 36px / lg 40px，圆角与图标尺寸跟着走。": "sm 32px / md 36px / lg 40px; the corner radius and icon size follow.",
+      "soft 浅底、solid 实底、outline 中性描边只染图标；六档语义色与 Tag / Button 同一口径。": "soft has a subtle background, solid is filled, and outline is a neutral border that tints only the icon; the six tones match Tag and Button."
+    },
+    "packages/ui/src/section-header/section-header.showcase.tsx": {
+      "随你改": "free to change",
+      "现在开始，": "Start now, ",
+      "从一个按钮，": "From one button,",
+      "精心设计的默认值，": "Carefully designed defaults,",
+      "四层粒度、一套设计语言，按需复制。": "Four layers, one design language. Copy what you need.",
+      "每个组件都带一套能直接上线的默认外观。": "Every component ships with defaults ready for production.",
+      "accent=\"随你改\"": "accent=\"free to change\"",
+      "accent=\"到一整个后台\"": "accent=\"to a whole back office\"",
+      "accentBreak 决定标题与强调半句怎么接：always 换行、mobile 只在窄屏换行、space 空一格（英文）、none 直接相连。": "accentBreak decides how the title joins the accented half: always breaks the line, mobile breaks only on narrow screens, space adds a space (English), and none joins directly.",
+      "align=\"center\" 标题与导语一起居中，收尾 CTA、居中的导语段用。": "align=\"center\" centers the title and lead text together, for a closing CTA or a centered intro.",
+      "description=\"四层粒度、一套设计语言，按需复制。\"": "description=\"Four layers, one design language. Copy what you need.\"",
+      "description=\"每个组件都带一套能直接上线的默认外观。\"": "description=\"Every component ships with defaults ready for production.\"",
+      "eyebrow 小字 + 标题 + 主色强调的后半句 + 一段导语，营销页 / 文档首页每个区块开头那一组。": "An eyebrow, a title, an accented second half, and a lead paragraph: the group that opens each section on a marketing page or docs home.",
+      "eyebrow=\"产品\"": "eyebrow=\"Products\"",
+      "title=\"从一个按钮，\"": "title=\"From one button,\"",
+      "title=\"精心设计的默认值，\"": "title=\"Carefully designed defaults,\"",
+      "到一整个后台": "to a whole back office",
+      "eyebrow=\"设计\"": "eyebrow=\"Design\"",
+      "强调半句换行": "Breaking before the accent",
+      "做好看又好用的软件": "build software that looks good and works well"
+    },
+    "packages/ui/src/fade-mask/fade-mask.showcase.tsx": {
+      "底部淡出": "Fade out the bottom",
+      "纹理中心聚光": "Spotlight a texture center",
+      "右侧淡出": "Fade out the right",
+      "出血裁切的展示墙、截断的长列表：底部渐隐到透明，放在任何底色上都对。": "For a bleeding showcase wall or a truncated long list: the bottom fades to transparency and works on any background.",
+      "direction=\"radial\" 从 at 处向四周渐隐：点阵 / 网格背景「中心亮、四周退」。": "direction=\"radial\" fades outward from at: a dot or grid background that is bright at the center and recedes toward the edges."
     }
   }
 }

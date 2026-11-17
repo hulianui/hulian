@@ -31,11 +31,12 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 | value | `any` | - | 受控当前 tab |
 | defaultValue | `any` | - | 非受控初始 tab |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 方向 |
+| autoPlay | `number` | - | 自动轮播间隔（毫秒）：没人操作时按这个节奏换下一档，选中 tab 底部一条进度条走满即换。悬停 / 焦点在组件内、不在视口时暂停；系统要求减少动态效果时不启用；访客自己选过一次档就永久停下。自动换档同样回调 `onValueChange`（`reason` 为 `"none"`、`trigger` 为空）。只给展示型 tab 用 |
 
 ### TabsList
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
+| variant | `"underline" \| "solid" \| "card"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 / 卡片。`card` 每个 tab 是一张带描述的卡，选中卡铺主色浅底；竖排时纵向堆叠，展示型 tab（产品线、功能介绍）用 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
 | className | `string` | - | - |
@@ -60,6 +61,26 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
   <TabsPanel value="account">管理你的账户资料与偏好设置。</TabsPanel>
   <TabsPanel value="password">在这里修改登录密码。</TabsPanel>
   <TabsPanel value="team">邀请成员、分配角色。</TabsPanel>
+</Tabs>
+```
+
+展示型 tab：竖排卡片 + 自动轮播（每 5 秒换一档，悬停暂停，访客选过即停）：
+```tsx
+const [tab, setTab] = useState("components");
+<Tabs value={tab} onValueChange={setTab} orientation="vertical" autoPlay={5000}>
+  <TabsList variant="card" aria-label="产品线">
+    <TabsTab value="components">
+      <IconTile tone={tab === "components" ? "brand" : "neutral"} variant={tab === "components" ? "solid" : "soft"}>
+        <Component />
+      </IconTile>
+      <span>
+        <Text weight="semibold">组件</Text>
+        <Text size="sm" tone="muted">可访问、可换肤的基础组件</Text>
+      </span>
+    </TabsTab>
+    …
+  </TabsList>
+  <TabsPanel value="components">…</TabsPanel>
 </Tabs>
 ```
 

@@ -47,9 +47,21 @@ export const linkShowcase: ShowcaseSpec = {
           Base UI official website
         </Link>),
         },
+        {
+            title: "Muted links and the go arrow",
+            description: "tone=\"muted\" rests in the secondary gray and returns to the body color on hover; arrow adds a trailing arrow to links that lead somewhere, nudging forward on hover.",
+            code: `<>
+  <Link href="#" arrow>Browse all</Link>
+  <Link href="#" tone="muted" underline="none">Tailwind</Link>
+</>`,
+            render: () => (<div className="flex gap-6">
+          <Link href="#" arrow>Browse all</Link>
+          <Link href="#" tone="muted" underline="none">Tailwind</Link>
+        </div>),
+        },
     ],
     controls: [
-        { prop: "tone", type: "select", options: ["primary", "foreground", "danger"], defaultValue: "primary" },
+        { prop: "tone", type: "select", options: ["primary", "foreground", "danger", "muted"], defaultValue: "primary" },
         { prop: "underline", type: "select", options: ["hover", "always", "none"], defaultValue: "hover" },
     ],
     states: [

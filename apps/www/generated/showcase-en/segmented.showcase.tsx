@@ -133,6 +133,27 @@ export const segmentedShowcase: ShowcaseSpec = {
           <Segmented items={periodItems} defaultValue="week" disabled aria-label="Cycle"/>
         </div>),
         },
+        {
+            title: "Pill shape and link segments",
+            description: "shape=\"pill\" makes the track, slider, and segments fully round; when segments set render (such as <a href>) the group becomes a set of links and the selected one gets aria-current=\"page\", for switching language or version.",
+            code: `<Segmented
+  shape="pill"
+  size="sm"
+  value="zh"
+  aria-label="Language"
+  items={[
+    { value: "zh", label: "ZH", render: <a href="/zh" /> },
+    { value: "en", label: "EN", render: <a href="/en" /> },
+  ]}
+/>`,
+            render: () => (<div id="segmented-links" className="flex flex-wrap items-center gap-4">
+          <Segmented shape="pill" items={periodItems} defaultValue="week" aria-label="Cycle"/>
+          <Segmented shape="pill" size="sm" value="zh" aria-label="Language" items={[
+                    { value: "zh", label: "Medium", render: <a href="#segmented-links"/> },
+                    { value: "en", label: "EN", render: <a href="#segmented-links"/> },
+                ]}/>
+        </div>),
+        },
     ],
     controls: [
         { prop: "size", type: "select", options: ["sm", "md"], defaultValue: "md" },

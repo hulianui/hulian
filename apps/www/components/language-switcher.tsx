@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type MouseEvent } from "react";
+import { Segmented, cn } from "@hulianui/ui";
 import {
   DOCS_LOCALE,
   LOCALE_STORAGE_KEY,
@@ -15,7 +16,14 @@ function getCurrentBrowserUrl() {
   return `${pathname}${search}${hash}`;
 }
 
-export function LanguageSwitcher({ pathname }: { pathname?: string }) {
+export function LanguageSwitcher({
+  pathname,
+  className,
+}: {
+  pathname?: string;
+  /** 给外部分档用：顶栏在 <sm 藏起它、折叠菜单里再挂一份，靠调用方传 `max-sm:hidden` / `sm:hidden`。 */
+  className?: string;
+}) {
   const content = sharedChromeContent[DOCS_LOCALE];
   const localeOptions = [
     { locale: "zh-CN", label: content.chinese, ariaLabel: content.switchChinese },
@@ -63,33 +71,27 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
     rememberLocale(locale);
   };
 
+  // 一组链接（选中项 = 当前语言）：Segmented 的链接段，role="group" + aria-current="page"。
   return (
-    <div
-      role="group"
+    <Segmented
+      shape="pill"
+      size="sm"
+      value={DOCS_LOCALE}
       aria-label={content.languageGroup}
-      className="inline-flex h-8 shrink-0 items-center rounded-full bg-muted p-0.5 text-xs font-medium"
-    >
-      {localeOptions.map(({ locale, label, ariaLabel }) => {
-        const current = locale === DOCS_LOCALE;
-        return (
+      className={cn("shrink-0", className)}
+      items={localeOptions.map(({ locale, label, ariaLabel }) => ({
+        value: locale,
+        label,
+        ariaLabel,
+        render: (
           <a
-            key={locale}
             href={switchLocaleUrl(currentUrl, locale)}
             hrefLang={locale}
             lang={locale}
-            aria-label={ariaLabel}
-            aria-current={current ? "page" : undefined}
             onClick={(event) => activateLocale(event, locale)}
-            className={`inline-flex h-full min-w-9 items-center justify-center rounded-full px-2 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg ${
-              current
-                ? "bg-surface text-primary shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {label}
-          </a>
-        );
-      })}
-    </div>
+          />
+        ),
+      }))}
+    />
   );
 }

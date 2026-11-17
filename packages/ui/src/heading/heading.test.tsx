@@ -85,3 +85,14 @@ describe("Heading · memo", () => {
     await expectMemoSkipsSubtree(() => <Heading level={2}>稳定标题</Heading>);
   });
 });
+
+describe("Heading · display", () => {
+  it("display 是响应式展示级字号，且不改 level 默认映射", () => {
+    const { container, rerender } = render(<Heading level={1} size="display">瑚琏</Heading>);
+    const h = container.querySelector("h1")!;
+    expect(h.className).toContain("text-6xl");
+    expect(h.className).toContain("sm:text-7xl");
+    rerender(<Heading level={1}>瑚琏</Heading>);
+    expect(container.querySelector("h1")!.className).toContain("text-4xl");
+  });
+});

@@ -28,6 +28,8 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 | `theme` | `"light" \| "dark"` | - | Controlled theme. When set, the button's state and target are driven by this value, ignoring `ThemeProvider` / the standalone fallback; clicks only call `onThemeChange`. |
 | `onThemeChange` | `(next: "light" \| "dark") => void` | - | Called with the next theme when a switch is requested. Fires in both modes; in controlled mode it is the only place the value lands. |
 | `duration` | `number` | `500` | Circular reveal duration in milliseconds. |
+| `variant` | `"outline" \| "ghost"` | `"outline"` | `outline` has a border and surface background; `ghost` has neither, rests in the secondary gray, and returns to the body color on hover, for sitting next to ghost icon buttons in a navbar. |
+| `size` | `"md" \| "sm"` | `"md"` | `md` is 40px; `sm` is 32px, the same height as Button `size="iconSm"`. |
 | `className` | `string` | - | Button class name. |
 | `aria-label` | `string` | - | Accessible label. |
 
@@ -36,6 +38,9 @@ Without `aria-label`, the button uses built-in Chinese state-dependent copy: `"\
 ## Example
 ```tsx
 <AnimatedThemeToggler aria-label="Toggle light and dark theme" />
+
+// Navbar tools: next to <Button variant="ghost" muted size="iconSm">
+<AnimatedThemeToggler variant="ghost" size="sm" />
 
 // Controlled: the theme source of truth lives with the consumer (API / own storage);
 // ThemeProvider only mirrors it via forcedTheme

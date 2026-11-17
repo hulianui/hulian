@@ -232,6 +232,16 @@ export async function scanTask12DemoOutput(outputRoot = "apps/www/out") {
     await productLink.waitFor({ state: "visible" });
     await productLink.click();
     await page.waitForURL((url) => url.pathname.startsWith(`${EN}/demos/shop/product/`));
+    // waitForURL 只保证**地址**变了，落地页可能还在加载。紧接着的 page.goto 会被这次
+    // 尚未完成的导航打断，报出来却是下一步的错：
+    //   Navigation to ".../demos/website" is interrupted by another navigation to
+    //   ".../demos/shop/product/p-hs-air"
+    // 所以先等商品页真的画完（与路由扫描里 shop/product/* 用的是同一个标记）再走下一跳。
+    await page
+      .getByText("Add to cart", { exact: false })
+      .first()
+      .waitFor({ state: "visible", timeout: 15_000 });
+    await page.waitForLoadState("networkidle");
     await assertEnglishPage(page, "shop product after same-language navigation");
     await assertNoUnexpectedFailure(page, "shop product after recovery");
 

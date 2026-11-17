@@ -4,7 +4,7 @@ name: Command
 category: navigation
 group: action
 tags: []
-exports: [Command, useCommandShortcut]
+exports: [Command, CommandTrigger, useCommandShortcut]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ Use Command for a global Command/Ctrl+K palette that brings cross-page navigatio
 
 ## Import
 ```ts
-import { Command, useCommandShortcut } from "@hulianui/ui"
+import { Command, CommandTrigger, useCommandShortcut } from "@hulianui/ui"
 ```
 
 ## Props
@@ -87,6 +87,18 @@ The component supplies only the frame: a top separator, padding, and the panel's
 | disabled | `boolean` | Whether the item is unavailable. |
 | onSelect | `(value: string) => void` | Called when Enter or a click executes the item. |
 
+**CommandTrigger** (`<button>`, a search-field-style entry to the palette)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| placeholder | `ReactNode` | `"\u641c\u7d22\u2026"` | Placeholder text. The built-in Chinese copy means “Search…”. |
+| shortcut | `ReactNode` | `"⌘K"` | Shortcut keycap on the right; `null` hides it. With the default ⌘K, `aria-keyshortcuts` is added automatically. |
+| shape | `"rounded" \| "pill"` | `"rounded"` | `rounded` matches the input radius; `pill` is fully rounded (marketing and docs navbars). |
+| size | `"sm" \| "md"` | `"md"` | `md` is 40px (same as Input); `sm` is 32px (same as Button `sm` / `iconSm`). |
+| collapseBelow | `"sm" \| "md" \| false` | `false` | Below this breakpoint it collapses into a square icon button, hiding the placeholder and keycap. |
+
+> Extends native `<button>` attributes (`onClick`, `aria-label`, and so on).
+
 ## Example
 ```tsx
 const groups = [
@@ -101,6 +113,8 @@ const groups = [
 
 const [open, setOpen] = useState(false);
 <Command open={open} onOpenChange={setOpen} groups={groups} shortcut placeholder="Type a command or search…" />
+// Navbar entry: a button shaped like a search field, collapsing to an icon on narrow screens
+<CommandTrigger shape="pill" size="sm" collapseBelow="sm" placeholder="Search docs" aria-label="Search docs" onClick={() => setOpen(true)} />
 ```
 
 ## Usage guidelines

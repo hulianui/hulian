@@ -412,13 +412,22 @@
       "xl",
       "2xl",
       "3xl",
-      "4xl"
+      "4xl",
+      "display"
     ],
     "HeadingWeight": [
       "normal",
       "medium",
       "semibold",
       "bold"
+    ],
+    "IconTileTone": [
+      "brand",
+      "neutral",
+      "info",
+      "success",
+      "warning",
+      "danger"
     ],
     "InspectorFieldKind": [
       "spacing",
@@ -505,6 +514,12 @@
       "success",
       "error",
       "warning"
+    ],
+    "NavbarBreakpoint": [
+      "sm",
+      "md",
+      "lg",
+      "xl"
     ],
     "NotificationPlacement": [
       "topRight",
@@ -1111,6 +1126,7 @@
     ]
   },
   "exportIndex": {
+    "AccentScope": "accent-scope",
     "AdminLayout": "admin-layout",
     "AspectRatio": "aspect-ratio",
     "Container": "container",
@@ -1190,8 +1206,10 @@
     "ScrollFloat": "scroll-float",
     "ScrollReveal": "scroll-reveal",
     "ScrollVelocity": "scroll-velocity",
+    "SectionHeader": "section-header",
     "Shuffle": "shuffle",
     "Snippet": "snippet",
+    "SnippetGroup": "snippet",
     "SparklesText": "sparkles-text",
     "SplitText": "split-text",
     "Text": "text",
@@ -1548,6 +1566,8 @@
     "Heatmap": "heatmap",
     "buildMatrix": "heatmap",
     "bucketize": "heatmap",
+    "IconTile": "icon-tile",
+    "iconTileVariants": "icon-tile",
     "Image": "image",
     "imageVariants": "image",
     "ImageViewer": "image-viewer",
@@ -1713,6 +1733,7 @@
     "CollapsiblePanel": "collapsible",
     "Command": "command",
     "useCommandShortcut": "command",
+    "CommandTrigger": "command",
     "ContextMenu": "context-menu",
     "ContextMenuTrigger": "context-menu",
     "ContextMenuContent": "context-menu",
@@ -1758,6 +1779,7 @@
     "NavbarBrand": "navbar",
     "NavbarContent": "navbar",
     "NavbarItem": "navbar",
+    "NavbarMenu": "navbar",
     "NavbarMenuToggle": "navbar",
     "NavigationMenu": "navigation-menu",
     "NavigationMenuList": "navigation-menu",
@@ -1920,6 +1942,7 @@
     "DotPattern": "dot-pattern",
     "ElectricBorder": "electric-border",
     "EvilEye": "evil-eye",
+    "FadeMask": "fade-mask",
     "FaultyTerminal": "faulty-terminal",
     "Ferrofluid": "ferrofluid",
     "FlickeringGrid": "flickering-grid",
@@ -2011,6 +2034,7 @@
     "Terminal": "terminal",
     "Watch": "watch",
     "WATCH_MODELS": "watch",
+    "WindowFrame": "window-frame",
     "ActionSheet": "action-sheet",
     "ActionSheetTrigger": "action-sheet",
     "ActionSheetClose": "action-sheet",
@@ -2034,6 +2058,54 @@
     "THEME_STORAGE_KEY": "theme"
   },
   "components": [
+    {
+      "slug": "accent-scope",
+      "name": "AccentScope",
+      "category": "layout",
+      "group": "container",
+      "status": "enriched",
+      "import": "import { AccentScope } from \"@hulianui/ui\"",
+      "exports": [
+        "AccentScope"
+      ],
+      "types": [
+        "AccentScopeProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/accent-scope/accent-scope.md",
+      "props": [
+        {
+          "name": "hue",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "子树主色的 OKLCH 色相（0–360），只换色相。省略时取 tokens 注册的初值 258（品牌原色）"
+        },
+        {
+          "name": "transition",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": "0",
+          "description": "换色相时的过渡时长（毫秒），`0` 为瞬时换色。过渡的是 `--hl-accent-hue` 一个变量，子树派生色同步渐变"
+        },
+        {
+          "name": "theme",
+          "required": false,
+          "kind": "enum",
+          "type": "\"light\" | \"dark\"",
+          "values": [
+            "light",
+            "dark"
+          ],
+          "valueType": "string",
+          "default": null,
+          "description": "把主题写在作用域同一个元素上，只在「暗页 > 亮色岛 > 作用域」这类嵌套里需要"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
     {
       "slug": "admin-layout",
       "name": "AdminLayout",
@@ -4699,7 +4771,7 @@
           "name": "size",
           "required": false,
           "kind": "enum",
-          "type": "\"xs\" | \"sm\" | \"base\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\"",
+          "type": "\"xs\" | \"sm\" | \"base\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"display\"",
           "values": [
             "xs",
             "sm",
@@ -4708,11 +4780,12 @@
             "xl",
             "2xl",
             "3xl",
-            "4xl"
+            "4xl",
+            "display"
           ],
           "valueType": "string",
           "default": "按 level 派生",
-          "description": "覆盖视觉尺寸（独立于 level）"
+          "description": "覆盖视觉尺寸（独立于 level）。`display` 是营销页 hero 的展示级字号，响应式两档（窄屏 60px、sm 起 72px），不进 level 默认映射"
         },
         {
           "name": "weight",
@@ -5381,6 +5454,99 @@
       "slots": []
     },
     {
+      "slug": "section-header",
+      "name": "SectionHeader",
+      "category": "typography",
+      "group": "text",
+      "status": "enriched",
+      "import": "import { SectionHeader } from \"@hulianui/ui\"",
+      "exports": [
+        "SectionHeader"
+      ],
+      "types": [
+        "SectionHeaderProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/section-header/section-header.md",
+      "props": [
+        {
+          "name": "title",
+          "required": true,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标题"
+        },
+        {
+          "name": "eyebrow",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标题上方的一行小字（栏目名），主色"
+        },
+        {
+          "name": "accent",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标题后半句，主色强调"
+        },
+        {
+          "name": "accentBreak",
+          "required": false,
+          "kind": "enum",
+          "type": "\"always\" | \"mobile\" | \"space\" | \"none\"",
+          "values": [
+            "always",
+            "mobile",
+            "space",
+            "none"
+          ],
+          "valueType": "string",
+          "default": "\"always\"",
+          "description": "标题与 `accent` 怎么接：`always` 总是换行；`mobile` 只在窄屏换行；`space` 同一行空一格（英文）；`none` 直接相连（中文）"
+        },
+        {
+          "name": "description",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标题下方的导语，次要灰，最宽约 42rem"
+        },
+        {
+          "name": "align",
+          "required": false,
+          "kind": "enum",
+          "type": "\"start\" | \"center\"",
+          "values": [
+            "start",
+            "center"
+          ],
+          "valueType": "string",
+          "default": "\"start\"",
+          "description": "对齐；`center` 时导语也水平居中"
+        },
+        {
+          "name": "level",
+          "required": false,
+          "kind": "enum",
+          "type": "2 | 3 | 4",
+          "values": [
+            "2",
+            "3",
+            "4"
+          ],
+          "valueType": "number",
+          "default": "2",
+          "description": "标题语义层级；视觉尺寸固定为分节标题一档（窄屏 30px、sm 起 36px）"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    {
       "slug": "shuffle",
       "name": "Shuffle",
       "category": "typography",
@@ -5533,12 +5699,14 @@
       "category": "typography",
       "group": "code",
       "status": "enriched",
-      "import": "import { Snippet } from \"@hulianui/ui\"",
+      "import": "import { Snippet, SnippetGroup } from \"@hulianui/ui\"",
       "exports": [
-        "Snippet"
+        "Snippet",
+        "SnippetGroup"
       ],
       "types": [
-        "SnippetProps"
+        "SnippetProps",
+        "SnippetGroupProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/snippet/snippet.md",
       "props": [
@@ -5591,12 +5759,28 @@
           "description": "复制成功后的无障碍标签；显式传值优先"
         },
         {
+          "name": "muted",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "次要行：沉一档底色、文字转次要灰（「也可以这样」的补充命令、给 AI 读的链接）"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
           "description": "容器类名"
+        },
+        {
+          "name": "overlay",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "绝对定位的装饰层（BorderBeam 等），画在分隔线列表之外，不会被当成一行"
         }
       ],
       "events": [],
@@ -8180,6 +8364,19 @@
           "valueType": "string",
           "default": "\"md\"",
           "description": "色块尺寸"
+        },
+        {
+          "name": "shape",
+          "required": false,
+          "kind": "enum",
+          "type": "\"square\" | \"circle\"",
+          "values": [
+            "square",
+            "circle"
+          ],
+          "valueType": "string",
+          "default": "\"square\"",
+          "description": "`square` token 圆角 + 细边；`circle` 全圆、无边，只留一圈极淡内阴影（主题色 / 配色选择）。选中外环的间隙是透明的，放在卡片上透出卡面本身"
         },
         {
           "name": "disabled",
@@ -14469,6 +14666,19 @@
           "description": "-"
         },
         {
+          "name": "shape",
+          "required": false,
+          "kind": "enum",
+          "type": "\"rounded\" | \"pill\"",
+          "values": [
+            "rounded",
+            "pill"
+          ],
+          "valueType": "string",
+          "default": "\"rounded\"",
+          "description": "`rounded` 与控件同档圆角；`pill` 轨道、滑块、段都全圆（顶栏 / 营销页）"
+        },
+        {
           "name": "tone",
           "required": false,
           "kind": "enum",
@@ -14523,6 +14733,14 @@
           "type": "boolean",
           "default": "false",
           "description": "单段禁用"
+        },
+        {
+          "name": "render",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "把这一段渲染成自定义元素（通常 `<a href>` 或框架路由件），段内容由 `label` 给。任一段给了它，整组按「一组链接」处理：`role=\"group\"`、选中段 `aria-current=\"page\"`、不做方向键漫游；元素自己的 `onClick` 照常触发"
         }
       ],
       "events": [
@@ -16899,6 +17117,27 @@
           "description": "图片替代文本。"
         },
         {
+          "name": "tone",
+          "required": false,
+          "kind": "enum",
+          "type": "\"neutral\" | \"brand\"",
+          "values": [
+            "neutral",
+            "brand"
+          ],
+          "valueType": "string",
+          "default": "\"neutral\"",
+          "description": "占位底色：`neutral` 中性灰底；`brand` 主色浅底 + 主色字，给品牌 / 系统 / AI 自己的头像，或想让首字头像带主题色。图片加载出来后底色被盖住。"
+        },
+        {
+          "name": "ring",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "外圈 2px 描边，颜色随 tone（中性取 border，品牌取主色浅边）；压在彩色底 / 照片上或成组堆叠时用。主色卡里中性圈自动变成半透明白。"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
@@ -17613,16 +17852,33 @@
           "name": "variant",
           "required": false,
           "kind": "enum",
-          "type": "\"outline\" | \"elevated\" | \"featured\" | \"plain\"",
+          "type": "\"outline\" | \"elevated\" | \"featured\" | \"primary\" | \"plain\"",
           "values": [
             "outline",
             "elevated",
             "featured",
+            "primary",
             "plain"
           ],
           "valueType": "string",
           "default": "\"outline\"",
-          "description": "外观：描边 / 投影抬升 / 强调 / 不画皮"
+          "description": "外观：描边 / 投影抬升 / 强调 / 主色卡 / 不画皮。`primary` 是主色渐变底，自动挂 `data-surface=\"inverse\"`，卡里的 Text / Tag / Chip / Avatar 自动反色；用主色填充的件（Progress）改用 `tone=\"inverse\"`"
+        },
+        {
+          "name": "interactive",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "整卡可点：悬停上浮 + 阴影加深，键盘焦点给环。通常配 `render`"
+        },
+        {
+          "name": "render",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "把整卡渲染成自定义元素（`<a href>` / 框架路由件），皮肤与 props 合并进去、子内容照常；卡里不要再放别的链接或按钮"
         },
         {
           "name": "size",
@@ -22215,6 +22471,86 @@
         }
       ],
       "slots": []
+    },
+    {
+      "slug": "icon-tile",
+      "name": "IconTile",
+      "category": "data-display",
+      "group": "info",
+      "status": "enriched",
+      "import": "import { IconTile, iconTileVariants } from \"@hulianui/ui\"",
+      "exports": [
+        "IconTile",
+        "iconTileVariants"
+      ],
+      "types": [
+        "IconTileProps",
+        "IconTileTone"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/icon-tile/icon-tile.md",
+      "props": [
+        {
+          "name": "tone",
+          "required": false,
+          "kind": "enum",
+          "type": "\"brand\" | \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\"",
+          "values": [
+            "brand",
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "valueType": "string",
+          "default": "\"brand\"",
+          "description": "语义色档，与 Tag / Button 同一口径"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"soft\" | \"solid\" | \"outline\"",
+          "values": [
+            "soft",
+            "solid",
+            "outline"
+          ],
+          "valueType": "string",
+          "default": "\"soft\"",
+          "description": "`soft` 浅语义底 + 语义色图标；`solid` 实心语义底 + 前景色图标；`outline` 中性描边卡面底，只有图标带语义色"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "values": [
+            "sm",
+            "md",
+            "lg"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "32 / 36 / 40px，圆角与图标尺寸随档"
+        },
+        {
+          "name": "color",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "分类色：语义色名（`chart-3` …）、任意 CSS 色或 `var(--color-*)`，覆盖 `tone`，三档变体都从它派生"
+        }
+      ],
+      "events": [],
+      "slots": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "图标（lucide 等 SVG），尺寸由组件按档给"
+        }
+      ]
     },
     {
       "slug": "image",
@@ -28115,6 +28451,27 @@
           "description": "禁用：降透明度、屏蔽指针事件、关闭按钮不可点。"
         },
         {
+          "name": "shape",
+          "required": false,
+          "kind": "enum",
+          "type": "\"rounded\" | \"pill\"",
+          "values": [
+            "rounded",
+            "pill"
+          ],
+          "valueType": "string",
+          "default": "\"rounded\"",
+          "description": "`rounded` 小圆角；`pill` 全圆药丸（版本号、计数这类短标签）。"
+        },
+        {
+          "name": "render",
+          "required": false,
+          "kind": "other",
+          "type": "ReactElement",
+          "default": null,
+          "description": "渲染成自定义元素（`<a href>` / 框架路由件）：版本号指向更新日志、标签指向筛选页这类可点标签。皮肤合并进该元素并补焦点环与悬停反馈；与 Button / Link 的 `render` 约定一致。不要与 `onClose` 同用（链接里套按钮是无效嵌套）。"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
@@ -29540,6 +29897,32 @@
           "description": "圆形揭示动画时长(ms)"
         },
         {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"outline\" | \"ghost\"",
+          "values": [
+            "outline",
+            "ghost"
+          ],
+          "valueType": "string",
+          "default": "\"outline\"",
+          "description": "`outline` 描边 + 卡面底；`ghost` 无边无底、静息次要灰、悬停回正文色，与顶栏里的 ghost 图标按钮并排时用"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"md\" | \"sm\"",
+          "values": [
+            "md",
+            "sm"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "`md` 40px；`sm` 32px，与 Button `size=\"iconSm\"` 同高"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
@@ -29985,7 +30368,28 @@
           "kind": "string",
           "type": "string",
           "default": "\"primary\"",
-          "description": "徽章底色：语义色名（`chart-3` 等）或任意 CSS 色"
+          "description": "徽章底色：语义色名（`chart-3` 等）或任意 CSS 色；`variant=\"bare\"` 时是 mark 本身的颜色"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"badge\" | \"bare\"",
+          "values": [
+            "badge",
+            "bare"
+          ],
+          "valueType": "string",
+          "default": "\"badge\"",
+          "description": "`badge` 方角实底徽章、mark 画在里面；`bare` 没有徽章底，mark 就是 logo 本身、直接用 `color` 着色"
+        },
+        {
+          "name": "maskSrc",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": null,
+          "description": "单色 logo 图片地址：按图片形状着色（CSS mask），颜色跟 `color` 走，logo 因此能随主题色 / `AccentScope` 变色；传了就忽略 `mark`"
         },
         {
           "name": "href",
@@ -30442,15 +30846,17 @@
       "category": "navigation",
       "group": "action",
       "status": "enriched",
-      "import": "import { Command, useCommandShortcut } from \"@hulianui/ui\"",
+      "import": "import { Command, useCommandShortcut, CommandTrigger } from \"@hulianui/ui\"",
       "exports": [
         "Command",
-        "useCommandShortcut"
+        "useCommandShortcut",
+        "CommandTrigger"
       ],
       "types": [
         "CommandProps",
         "CommandGroupData",
-        "CommandItemData"
+        "CommandItemData",
+        "CommandTriggerProps"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/command/command.md",
       "props": [
@@ -30633,6 +31039,36 @@
           "owner": "footer：面板底部那条常驻控件",
           "type": "(value: string) => void",
           "description": "该项被执行（Enter / 点击）时回调。"
+        },
+        {
+          "name": "placeholder",
+          "owner": "footer：面板底部那条常驻控件",
+          "type": "ReactNode",
+          "description": "`\"搜索…\"`"
+        },
+        {
+          "name": "shortcut",
+          "owner": "footer：面板底部那条常驻控件",
+          "type": "ReactNode",
+          "description": "`\"⌘K\"`"
+        },
+        {
+          "name": "shape",
+          "owner": "footer：面板底部那条常驻控件",
+          "type": "\"rounded\" | \"pill\"",
+          "description": "`\"rounded\"`"
+        },
+        {
+          "name": "size",
+          "owner": "footer：面板底部那条常驻控件",
+          "type": "\"sm\" | \"md\"",
+          "description": "`\"md\"`"
+        },
+        {
+          "name": "collapseBelow",
+          "owner": "footer：面板底部那条常驻控件",
+          "type": "\"sm\" | \"md\" | false",
+          "description": "`false`"
         }
       ]
     },
@@ -31231,15 +31667,16 @@
           "name": "tone",
           "required": false,
           "kind": "enum",
-          "type": "\"primary\" | \"foreground\" | \"danger\"",
+          "type": "\"primary\" | \"foreground\" | \"danger\" | \"muted\"",
           "values": [
             "primary",
             "foreground",
-            "danger"
+            "danger",
+            "muted"
           ],
           "valueType": "string",
           "default": "\"primary\"",
-          "description": "文字语调色"
+          "description": "文字语调色；`muted` 静息次要灰、悬停回正文色，给页脚 / 一排来源链接这类不该抢主色的场景"
         },
         {
           "name": "underline",
@@ -31262,6 +31699,14 @@
           "type": "boolean",
           "default": "false",
           "description": "外链：自动加 `target=\"_blank\"` + `rel=\"noopener noreferrer\"` + 尾随外链图标"
+        },
+        {
+          "name": "arrow",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "尾随「前往」箭头，悬停时前移半格（「查看全部 →」这类导向链接）；与 `external` 同时给时只出外链图标"
         },
         {
           "name": "href",
@@ -31829,12 +32274,13 @@
       "category": "navigation",
       "group": "global",
       "status": "enriched",
-      "import": "import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from \"@hulianui/ui\"",
+      "import": "import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle } from \"@hulianui/ui\"",
       "exports": [
         "Navbar",
         "NavbarBrand",
         "NavbarContent",
         "NavbarItem",
+        "NavbarMenu",
         "NavbarMenuToggle"
       ],
       "types": [
@@ -31842,7 +32288,9 @@
         "NavbarBrandProps",
         "NavbarContentProps",
         "NavbarItemProps",
-        "NavbarMenuToggleProps"
+        "NavbarMenuProps",
+        "NavbarMenuToggleProps",
+        "NavbarBreakpoint"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/navbar/navbar.md",
       "props": [
@@ -31861,6 +32309,32 @@
           "type": "boolean",
           "default": null,
           "description": "是否显示底部分隔边框"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "enum",
+          "type": "\"md\" | \"sm\"",
+          "values": [
+            "md",
+            "sm"
+          ],
+          "valueType": "string",
+          "default": "\"md\"",
+          "description": "高度档：`md` 64px（中后台）；`sm` 56px，文档 / 营销站的紧凑顶栏，左右内距同步收一档"
+        },
+        {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"surface\" | \"page\"",
+          "values": [
+            "surface",
+            "page"
+          ],
+          "valueType": "string",
+          "default": "\"surface\"",
+          "description": "底色：`surface` 卡面色半透明（浮在内容上的面板）；`page` 页面底色半透明 + 更淡的分隔线（融进页面）。两档都带背景模糊"
         },
         {
           "name": "grow",
@@ -31893,6 +32367,19 @@
           "description": "当前激活项（aria-current + 高亮）"
         },
         {
+          "name": "variant",
+          "required": false,
+          "kind": "enum",
+          "type": "\"text\" | \"soft\"",
+          "values": [
+            "text",
+            "soft"
+          ],
+          "valueType": "string",
+          "default": "\"text\"",
+          "description": "`text` 只变文字色；`soft` 选中项铺主色浅底、悬停铺中性浅底，项里直接放链接时内距挪到链接上、整块都是点击区"
+        },
+        {
           "name": "isOpen",
           "required": false,
           "kind": "boolean",
@@ -31909,12 +32396,50 @@
           "description": "无障碍标签；显式传值优先"
         },
         {
+          "name": "breakpoint",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "valueType": "string",
+          "default": "\"sm\"",
+          "description": "从这一档断点起隐藏（宽屏横排导航接手）"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
           "type": "string",
           "default": null,
           "description": "类名"
+        },
+        {
+          "name": "isOpen",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "是否展开；收起时不渲染，菜单里的链接不会在收起态被 Tab 到"
+        },
+        {
+          "name": "breakpoint",
+          "required": false,
+          "kind": "enum",
+          "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"",
+          "values": [
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "valueType": "string",
+          "default": "\"sm\"",
+          "description": "从这一档断点起隐藏，与 `NavbarMenuToggle` 取同一档"
         }
       ],
       "events": [
@@ -33577,18 +34102,28 @@
           "description": "方向"
         },
         {
+          "name": "autoPlay",
+          "owner": "Tabs（根）",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "自动轮播间隔（毫秒）：没人操作时按这个节奏换下一档，选中 tab 底部一条进度条走满即换。悬停 / 焦点在组件内、不在视口时暂停；系统要求减少动态效果时不启用；访客自己选过一次档就永久停下。自动换档同样回调 `onValueChange`（`reason` 为 `\"none\"`、`trigger` 为空）。只给展示型 tab 用"
+        },
+        {
           "name": "variant",
           "owner": "TabsList",
           "required": false,
           "kind": "enum",
-          "type": "\"underline\" | \"solid\"",
+          "type": "\"underline\" | \"solid\" | \"card\"",
           "values": [
             "underline",
-            "solid"
+            "solid",
+            "card"
           ],
           "valueType": "string",
           "default": "\"underline\"",
-          "description": "皮肤：下划滑块 / 实心药丸"
+          "description": "皮肤：下划滑块 / 实心药丸 / 卡片。`card` 每个 tab 是一张带描述的卡，选中卡铺主色浅底；竖排时纵向堆叠，展示型 tab（产品线、功能介绍）用"
         },
         {
           "name": "size",
@@ -35674,16 +36209,17 @@
           "name": "tone",
           "required": false,
           "kind": "enum",
-          "type": "\"primary\" | \"danger\" | \"success\" | \"warning\"",
+          "type": "\"primary\" | \"danger\" | \"success\" | \"warning\" | \"inverse\"",
           "values": [
             "primary",
             "danger",
             "success",
-            "warning"
+            "warning",
+            "inverse"
           ],
           "valueType": "string",
           "default": "\"primary\"",
-          "description": "进度色调"
+          "description": "进度色调。`inverse` 填充取前景色：放在彩色卡（`Card variant=\"primary\"` / `data-surface=\"inverse\"`）里是白条，主色填充在那里会和卡面融成一片"
         },
         {
           "name": "size",
@@ -39590,6 +40126,71 @@
           "name": "fallback",
           "type": "ReactNode",
           "description": "reduced-motion / 无 WebGL 降级时叠在静态兜底层里的内容"
+        }
+      ]
+    },
+    {
+      "slug": "fade-mask",
+      "name": "FadeMask",
+      "category": "decoration",
+      "group": "backdrop",
+      "status": "enriched",
+      "import": "import { FadeMask } from \"@hulianui/ui\"",
+      "exports": [
+        "FadeMask"
+      ],
+      "types": [
+        "FadeMaskProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/fade-mask/fade-mask.md",
+      "props": [
+        {
+          "name": "direction",
+          "required": false,
+          "kind": "enum",
+          "type": "\"top\" | \"bottom\" | \"left\" | \"right\" | \"radial\"",
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "radial"
+          ],
+          "valueType": "string",
+          "default": "\"bottom\"",
+          "description": "往哪边淡出；`radial` 从 `at` 处向四周渐隐"
+        },
+        {
+          "name": "start",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "`\"60%\"`（径向 `\"0%\"`）",
+          "description": "线性：从哪里开始淡出（之前全实色）；径向：实色核心占渐变半径的比例"
+        },
+        {
+          "name": "at",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"50% 50%\"",
+          "description": "径向：渐隐中心"
+        },
+        {
+          "name": "size",
+          "required": false,
+          "kind": "string",
+          "type": "string",
+          "default": "\"50% 50%\"",
+          "description": "径向：渐隐范围（宽 高）"
+        }
+      ],
+      "events": [],
+      "slots": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "被淡出的内容"
         }
       ]
     },
@@ -46593,7 +47194,7 @@
           "kind": "string",
           "type": "string",
           "default": "\"125%\"",
-          "description": "辉光椭圆尺寸（径向渐变范围）"
+          "description": "辉光尺寸（径向渐变范围）：单值为正圆，两值（`\"60% 70%\"`，宽 高）为椭圆"
         },
         {
           "name": "fade",
@@ -46602,6 +47203,19 @@
           "type": "number",
           "default": "55",
           "description": "渐隐到底色的位置百分比，越小辉光越聚拢"
+        },
+        {
+          "name": "blend",
+          "required": false,
+          "kind": "enum",
+          "type": "\"bg\" | \"transparent\"",
+          "values": [
+            "bg",
+            "transparent"
+          ],
+          "valueType": "string",
+          "default": "\"bg\"",
+          "description": "渐隐到什么：`bg` 渐隐到页面底色（自身不透明）；`transparent` 渐隐到透明，叠在 DotPattern / 图片等纹理上时用，不遮挡下层"
         }
       ],
       "events": [],
@@ -47691,6 +48305,47 @@
           "name": "children",
           "type": "ReactNode",
           "description": "表盘内容（imageSrc 未传时渲染）"
+        }
+      ]
+    },
+    {
+      "slug": "window-frame",
+      "name": "WindowFrame",
+      "category": "mockups",
+      "group": "window",
+      "status": "enriched",
+      "import": "import { WindowFrame } from \"@hulianui/ui\"",
+      "exports": [
+        "WindowFrame"
+      ],
+      "types": [
+        "WindowFrameProps"
+      ],
+      "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/window-frame/window-frame.md",
+      "props": [
+        {
+          "name": "title",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "三色点右侧的标题槽：字符串按等宽小字渲染（像文件名 / 路由），也可放 Tag 等节点"
+        },
+        {
+          "name": "toolbar",
+          "required": false,
+          "kind": "node",
+          "type": "ReactNode",
+          "default": null,
+          "description": "标题栏右端的操作槽"
+        }
+      ],
+      "events": [],
+      "slots": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "description": "窗口内容；内容区不带内边距"
         }
       ]
     },

@@ -48,7 +48,10 @@ export function DocsShell({
         <Layout hasSider className="md:h-full">
           {/* `hidden md:flex` 经 cn(tailwind-merge) 覆盖 Sider 自带的 `flex`：display 同组、后者胜。
               Sider 的宽度是内联样式，display:none 时不参与布局，无需再压宽度。 */}
-          <Layout.Sider width={240} className="hidden md:flex">
+          {/* 320：组件树每行是「中文名 + 英文名」，240 时 InteractiveHoverButton 这类英文名被截成
+              省略号、长中文名与英文名挤在一起；最长一行「元素选择叠加层 ElementSelectionOverlay」
+              实测要 320 才放得下（288 仍截断）。 */}
+          <Layout.Sider width={320} className="hidden md:flex">
             <div className="space-y-4 p-3">
               <SectionTabs />
               {nav}

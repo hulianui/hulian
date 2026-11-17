@@ -67,6 +67,16 @@ export const headingShowcase: ShowcaseSpec = {
         </Heading>
       ),
     },
+    {
+      title: "展示级字号",
+      description: "size=\"display\" 给营销页 hero 的品牌名 / 主口号：窄屏 60px、sm 起 72px。",
+      code: `<Heading level={1} size="display">瑚琏</Heading>`,
+      render: () => (
+        <Heading level={1} size="display">
+          瑚琏
+        </Heading>
+      ),
+    },
   ],
   controls: [
     {

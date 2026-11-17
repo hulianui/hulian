@@ -100,4 +100,26 @@ describe("Link", () => {
       expect(getByRole("link").textContent).toContain("内建文案");
     });
   });
+
+  describe("tone=muted / arrow", () => {
+    it("muted 静息次要灰、悬停回正文色", () => {
+      const { getByRole } = render(<Link href="#" tone="muted">来源</Link>);
+      expect(getByRole("link").className).toContain("text-muted-foreground");
+      expect(getByRole("link").className).toContain("hover:text-foreground");
+    });
+
+    it("arrow 渲染尾随箭头并带命名 group", () => {
+      const { getByRole } = render(<Link href="#" arrow>查看全部</Link>);
+      const a = getByRole("link");
+      expect(a.className).toContain("group/link");
+      expect(a.querySelector("svg.lucide-arrow-right")).toBeTruthy();
+    });
+
+    it("arrow 与 external 同时给时只出外链图标", () => {
+      const { getByRole } = render(<Link href="https://x.dev" external arrow>外链</Link>);
+      const a = getByRole("link");
+      expect(a.querySelector("svg.lucide-arrow-right")).toBeNull();
+      expect(a.querySelectorAll("svg")).toHaveLength(1);
+    });
+  });
 });

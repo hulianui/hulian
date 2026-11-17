@@ -1,5 +1,15 @@
 "use client";
-import { createContext, useContext, type CSSProperties } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
@@ -13,8 +23,184 @@ import type {
   TabsTone,
 } from "./tabs.types";
 
-// 根：纯透传 Base UI Tabs.Root（value/defaultValue/onValueChange/orientation）。默认非受控。
-export function Tabs(props: TabsProps) {
+// ── 自动轮播 ───────────────────────────────────────────────────────────────
+// 首页「产品线」这类展示型 tab：没人操作时按固定节奏换档，选中 tab 底部一条进度条走满即换。
+// 计时交给进度条自己的动画（WAAPI）：暂停 = 动画暂停，于是「条停了、档照换」的两套时钟不会对不上。
+// 以下情况暂停：指针悬停 / 焦点在组件内、组件不在视口（< 30% 可见）。系统要求减少动态效果时整个不启用。
+// 访客一旦自己选档（点击 / 键盘）就永久停下，把控制权交还给人。
+type TabValue = TabsProps["value"];
+interface AutoPlayContextValue {
+  current: TabValue;
+  running: boolean;
+  duration: number;
+  advance: () => void;
+  register: (value: TabValue, el: HTMLElement) => () => void;
+}
+const TabsAutoPlayContext = createContext<AutoPlayContextValue | null>(null);
+
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+// 自动换档也要走 onValueChange（受控用法得跟上），Base UI 的签名要求带 eventDetails。
+// reason 取 "none"；trigger 为空即可区分「不是人点的」。
+function autoPlayDetails(direction: "right" | "down") {
+  return {
+    reason: "none",
+    event: typeof Event === "function" ? new Event("autoplay") : undefined,
+    cancel() {},
+    allowPropagation() {},
+    isCanceled: false,
+    isPropagationAllowed: false,
+    trigger: undefined,
+    activationDirection: direction,
+  } as unknown as Parameters<NonNullable<TabsProps["onValueChange"]>>[1];
+}
+
+function AutoPlayTabs({
+  autoPlay,
+  value: valueProp,
+  defaultValue,
+  onValueChange,
+  onPointerEnter,
+  onPointerLeave,
+  onFocus,
+  onBlur,
+  ...props
+}: TabsProps & { autoPlay: number }) {
+  const controlled = valueProp !== undefined;
+  const [inner, setInner] = useState<TabValue>(defaultValue);
+  const current = controlled ? valueProp : inner;
+  const [stopped, setStopped] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [visible, setVisible] = useState(false);
+  // 挂载前按「减少动态效果」处理：SSR 首屏不出进度条，避免水合前后不一致。
+  const [reduced, setReduced] = useState(true);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const tabs = useRef(new Map<TabValue, HTMLElement>());
+  const running = !stopped && !reduced && !hovered && visible;
+
+  useEffect(() => {
+    // 缺 matchMedia 的环境（jsdom、部分 WebView）按「不减少动效」处理，不抛错。
+    setReduced(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false);
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      threshold: 0.3,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const currentRef = useRef(current);
+  currentRef.current = current;
+
+  const advance = useCallback(() => {
+    // 按 DOM 顺序取未禁用的 tab：注册顺序不一定等于视觉顺序（条件渲染、重排）。
+    const entries = [...tabs.current.entries()]
+      .filter(([, el]) => el.isConnected && !el.hasAttribute("data-disabled"))
+      .sort((a, b) =>
+        a[1].compareDocumentPosition(b[1]) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
+      );
+    if (entries.length < 2) return;
+    const i = entries.findIndex(([v]) => Object.is(v, currentRef.current));
+    const next = entries[(i + 1) % entries.length][0];
+    if (!controlled) setInner(next);
+    onValueChange?.(next, autoPlayDetails(props.orientation === "vertical" ? "down" : "right"));
+  }, [controlled, onValueChange, props.orientation]);
+
+  const register = useCallback((value: TabValue, el: HTMLElement) => {
+    tabs.current.set(value, el);
+    return () => {
+      if (tabs.current.get(value) === el) tabs.current.delete(value);
+    };
+  }, []);
+
+  const ctx = useMemo(
+    () => ({ current, running, duration: autoPlay, advance, register }),
+    [current, running, autoPlay, advance, register],
+  );
+
+  return (
+    <TabsAutoPlayContext.Provider value={stopped || reduced ? null : ctx}>
+      <BaseTabs.Root
+        {...props}
+        ref={rootRef}
+        value={current}
+        onValueChange={(v, details) => {
+          // Base UI 自己修正选中值（initial / missing / disabled）不算人为操作；只有 none 是用户选的。
+          if (details?.reason === "none") setStopped(true);
+          if (!controlled) setInner(v);
+          onValueChange?.(v, details);
+        }}
+        onPointerEnter={(e) => {
+          setHovered(true);
+          onPointerEnter?.(e);
+        }}
+        onPointerLeave={(e) => {
+          setHovered(false);
+          onPointerLeave?.(e);
+        }}
+        onFocus={(e) => {
+          setHovered(true);
+          onFocus?.(e);
+        }}
+        onBlur={(e) => {
+          setHovered(false);
+          onBlur?.(e);
+        }}
+      />
+    </TabsAutoPlayContext.Provider>
+  );
+}
+
+/** 选中 tab 底部的轮播进度条：WAAPI 从 0 走到满，走满即换下一档；暂停时动画一起停。 */
+function AutoPlayProgress({ ctx }: { ctx: AutoPlayContextValue }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const anim = useRef<Animation | null>(null);
+  const { advance, duration, running } = ctx;
+  const advanceRef = useRef(advance);
+  advanceRef.current = advance;
+
+  useIsoLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || typeof el.animate !== "function") return;
+    const a = el.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], {
+      duration,
+      easing: "linear",
+      fill: "both",
+    });
+    a.pause();
+    a.onfinish = () => advanceRef.current();
+    anim.current = a;
+    return () => {
+      a.onfinish = null;
+      a.cancel();
+    };
+  }, [duration]);
+
+  useEffect(() => {
+    const a = anim.current;
+    if (!a) return;
+    if (running) a.play();
+    else a.pause();
+  }, [running]);
+
+  return (
+    <span
+      ref={ref}
+      aria-hidden
+      data-slot="tabs-autoplay-progress"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-primary"
+    />
+  );
+}
+
+// 根：透传 Base UI Tabs.Root（value/defaultValue/onValueChange/orientation）。默认非受控。
+// 传了 autoPlay（毫秒）才走自动轮播那一层；不传时与之前逐字相同。
+export function Tabs({ autoPlay, ...props }: TabsProps) {
+  if (autoPlay && autoPlay > 0) return <AutoPlayTabs autoPlay={autoPlay} {...props} />;
   return <BaseTabs.Root {...props} />;
 }
 
@@ -30,6 +216,9 @@ export const tabsListVariants = cva("relative inline-flex items-center", {
       underline: "border-b border-border",
       // bg-track 而非 bg-surface-hover：后者与药丸的 bg-surface 亮色下只差 3.3%、暗色下方向还是反的（#152）。
       solid: "rounded-[var(--hl-radius-control,var(--radius))] bg-track",
+      // 卡片档：每个 tab 是一张带描述的卡（图标 + 标题 + 一行说明），竖排时纵向堆叠。
+      // 展示型 tab（营销页的产品线、功能介绍）用；选中卡自己铺主色浅底，不另画滑块。
+      card: "gap-2 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch",
     },
     size: { sm: "gap-0.5", md: "gap-1" },
   },
@@ -37,6 +226,7 @@ export const tabsListVariants = cva("relative inline-flex items-center", {
   compoundVariants: [
     { variant: "solid", size: "sm", class: "p-0.5" },
     { variant: "solid", size: "md", class: "p-1" },
+    { variant: "card", class: "gap-2" },
   ],
   defaultVariants: { variant: "underline", size: "md" },
 });
@@ -54,6 +244,9 @@ const TabsSizeContext = createContext<TabsSize>("md");
  * 要旧观感的调用点显式传 tone="neutral"。TabsTab 不套本库 List 单独用时也走这一档。
  */
 const TabsToneContext = createContext<TabsTone>("brand");
+
+/** 皮肤也下发：card 档的 tab 自己画卡皮，不吃 underline / solid 那套选中文字色。 */
+const TabsVariantContext = createContext<"underline" | "solid" | "card">("underline");
 
 /**
  * 选中文字色（皮肤无关，solid 与 underline 吃同一档 —— #316 要抹平的正是这两个皮肤对色的态度不一致）。
@@ -99,7 +292,10 @@ const indicatorTransition: CSSProperties = {
 
 // Indicator 绑 Base UI 测好的 6 个几何变量 → 纯 CSS 平滑滑动。
 // underline 只动 width + translateX；solid 动 width/height + translate(x,y)。
-const indicatorByVariant: Record<"underline" | "solid", { className: string; style: CSSProperties }> = {
+const indicatorByVariant: Record<
+  "underline" | "solid",
+  { className: string; style: CSSProperties }
+> = {
   underline: {
     className: "pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-primary",
     style: {
@@ -126,18 +322,24 @@ export function TabsList({ className, variant, size, tone, children, ...props }:
   const v = variant ?? "underline";
   const s = size ?? "md";
   const t = tone ?? "brand";
-  const ind = indicatorByVariant[v];
   return (
     <BaseTabs.List {...props} className={cn(tabsListVariants({ variant: v, size: s }), className)}>
-      <BaseTabs.Indicator
-        className={
-          v === "underline" ? cn(ind.className, underlineIndicatorByTone[t]) : ind.className
-        }
-        style={ind.style}
-      />
-      <TabsSizeContext.Provider value={s}>
-        <TabsToneContext.Provider value={t}>{children}</TabsToneContext.Provider>
-      </TabsSizeContext.Provider>
+      {/* card 档没有滑块：选中卡自己铺底。 */}
+      {v !== "card" && (
+        <BaseTabs.Indicator
+          className={
+            v === "underline"
+              ? cn(indicatorByVariant[v].className, underlineIndicatorByTone[t])
+              : indicatorByVariant[v].className
+          }
+          style={indicatorByVariant[v].style}
+        />
+      )}
+      <TabsVariantContext.Provider value={v}>
+        <TabsSizeContext.Provider value={s}>
+          <TabsToneContext.Provider value={t}>{children}</TabsToneContext.Provider>
+        </TabsSizeContext.Provider>
+      </TabsVariantContext.Provider>
     </BaseTabs.List>
   );
 }
@@ -161,15 +363,41 @@ const tabsTabVariants = cva(
   },
 );
 
-export function TabsTab({ className, ...props }: TabsTabProps) {
+// card 档的 tab 皮：整张卡可点，选中铺主色浅底 + 浅边 + 轻投影，未选中透明边、悬停铺中性浅底。
+// 文字色交给卡里的内容自己定（标题正文色、说明次要灰），tab 本身不染选中文字色。
+const CARD_TAB =
+  "relative flex w-full items-start gap-3.5 overflow-hidden rounded-xl border border-transparent p-4 text-left font-normal text-foreground hover:bg-surface-hover data-[active]:border-primary-border data-[active]:bg-primary-subtle data-[active]:text-foreground data-[active]:shadow-sm data-[active]:hover:bg-primary-subtle";
+
+export function TabsTab({ className, children, value, ...props }: TabsTabProps) {
   const size = useContext(TabsSizeContext);
   const tone = useContext(TabsToneContext);
+  const variant = useContext(TabsVariantContext);
+  const autoPlay = useContext(TabsAutoPlayContext);
+  const elRef = useRef<HTMLElement | null>(null);
+  const register = autoPlay?.register;
+
+  useEffect(() => {
+    if (!register || !elRef.current) return;
+    return register(value, elRef.current);
+  }, [register, value]);
+
+  const selected = autoPlay != null && Object.is(autoPlay.current, value);
   // tone 类排在 className 之前：消费方的 className 仍然是最后一道，能继续盖住库给的选中色。
   return (
     <BaseTabs.Tab
       {...props}
-      className={cn(tabsTabVariants({ size }), activeTextByTone[tone], className)}
-    />
+      value={value}
+      ref={elRef}
+      className={cn(
+        tabsTabVariants({ size }),
+        variant === "card" ? CARD_TAB : activeTextByTone[tone],
+        className,
+      )}
+    >
+      {children}
+      {/* key 换档时重挂载：新选中的那一档从 0 重新走。 */}
+      {selected && <AutoPlayProgress key={String(value)} ctx={autoPlay} />}
+    </BaseTabs.Tab>
   );
 }
 

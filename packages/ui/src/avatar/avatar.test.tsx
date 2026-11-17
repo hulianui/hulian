@@ -16,3 +16,23 @@ describe("Avatar", () => {
     expect(container.textContent).toContain("ZS");
   });
 });
+
+describe("Avatar · tone / ring", () => {
+  it("默认中性灰底、无外圈（存量渲染不变）", () => {
+    const cls = avatarVariants({});
+    expect(cls).toContain("bg-surface-hover");
+    expect(cls).not.toContain("ring-2");
+  });
+
+  it("brand + ring：主色浅底主色字，外圈取主色浅边", () => {
+    const cls = avatarVariants({ tone: "brand", ring: true });
+    expect(cls).toContain("bg-primary-subtle");
+    expect(cls).toContain("text-primary");
+    expect(cls).toContain("ring-2");
+    expect(cls).toContain("ring-primary-border");
+  });
+
+  it("中性 + ring 取 border 色", () => {
+    expect(avatarVariants({ ring: true })).toContain("ring-border");
+  });
+});

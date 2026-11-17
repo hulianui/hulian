@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 import { cloneElement, memo, type ReactNode } from "react";
-import { ExternalLink } from "../_icons";
+import { ArrowRight, ExternalLink } from "../_icons";
 import { cn } from "../lib/cn";
 import type { LinkProps } from "./link.types";
 
@@ -13,6 +13,8 @@ export const linkVariants = cva(
         primary: "text-primary hover:text-primary-hover",
         foreground: "text-foreground hover:text-muted-foreground",
         danger: "text-danger hover:opacity-80",
+        // 次要链接：静息次要灰、悬停回正文色。页脚 / 致谢 / 一排上游来源这类不该抢主色的链接。
+        muted: "text-muted-foreground hover:text-foreground",
       },
       underline: {
         always: "underline underline-offset-4",
@@ -24,9 +26,28 @@ export const linkVariants = cva(
   },
 );
 
-function LinkImpl({ tone, underline, external, className, children, render, ...props }: LinkProps) {
+function LinkImpl({
+  tone,
+  underline,
+  external,
+  arrow,
+  className,
+  children,
+  render,
+  ...props
+}: LinkProps) {
   const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
-  const trailing = external ? <ExternalLink className="size-3.5" aria-hidden /> : null;
+  // 外链图标与「前往」箭头二选一：外链语义更具体，两个都给时只出外链图标。
+  const trailing = external ? (
+    <ExternalLink className="size-3.5" aria-hidden />
+  ) : arrow ? (
+    // 箭头悬停时前移半格：「点这里继续往下走」。命名 group 避免与外层 group 串台。
+    <ArrowRight
+      className="size-3.5 shrink-0 transition-transform group-hover/link:translate-x-0.5 motion-reduce:transition-none"
+      aria-hidden
+    />
+  ) : null;
+  const arrowClass = arrow && !external ? "group/link" : undefined;
 
   // render：渲染为自定义元素（next/link、react-router Link…）。href 由该元素自带，
   // 这里只合并皮肤与 Link 自身的 props —— 曾因缺这个口子，`<Link render={…}>` 的 render
@@ -38,7 +59,12 @@ function LinkImpl({ tone, underline, external, className, children, render, ...p
       {
         ...externalAttrs,
         ...props,
-        className: cn(linkVariants({ tone, underline }), className, renderProps.className),
+        className: cn(
+          linkVariants({ tone, underline }),
+          arrowClass,
+          className,
+          renderProps.className,
+        ),
       } as Record<string, unknown>,
       <>
         {children ?? renderProps.children}
@@ -48,7 +74,11 @@ function LinkImpl({ tone, underline, external, className, children, render, ...p
   }
 
   return (
-    <a className={cn(linkVariants({ tone, underline }), className)} {...externalAttrs} {...props}>
+    <a
+      className={cn(linkVariants({ tone, underline }), arrowClass, className)}
+      {...externalAttrs}
+      {...props}
+    >
       {children}
       {trailing}
     </a>

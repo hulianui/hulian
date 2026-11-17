@@ -55,9 +55,23 @@ export const linkShowcase: ShowcaseSpec = {
         </Link>
       ),
     },
+    {
+      title: "次要链接 · 前往箭头",
+      description: "tone=\"muted\" 静息次要灰、悬停回正文色；arrow 给导向链接加尾随箭头，悬停时前移。",
+      code: `<>
+  <Link href="#" arrow>查看全部</Link>
+  <Link href="#" tone="muted" underline="none">Tailwind</Link>
+</>`,
+      render: () => (
+        <div className="flex gap-6">
+          <Link href="#" arrow>查看全部</Link>
+          <Link href="#" tone="muted" underline="none">Tailwind</Link>
+        </div>
+      ),
+    },
   ],
   controls: [
-    { prop: "tone", type: "select", options: ["primary", "foreground", "danger"], defaultValue: "primary" },
+    { prop: "tone", type: "select", options: ["primary", "foreground", "danger", "muted"], defaultValue: "primary" },
     { prop: "underline", type: "select", options: ["hover", "always", "none"], defaultValue: "hover" },
   ],
   states: [

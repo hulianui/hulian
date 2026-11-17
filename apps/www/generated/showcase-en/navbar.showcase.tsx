@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, } from "../../../../packages/ui/src/navbar/navbar";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle, } from "../../../../packages/ui/src/navbar/navbar";
 function NavbarDemo({ justify = "end" }: {
     justify?: "start" | "center" | "end";
 }) {
@@ -16,11 +16,11 @@ function NavbarDemo({ justify = "end" }: {
           <NavbarItem>Theme</NavbarItem>
         </NavbarContent>
       </Navbar>
-      {open && (<ul className="flex flex-col gap-1 border-t border-border p-2 sm:hidden">
-          <NavbarItem isActive>Components</NavbarItem>
-          <NavbarItem>Documentation</NavbarItem>
-          <NavbarItem>Theme</NavbarItem>
-        </ul>)}
+      <NavbarMenu isOpen={open}>
+        <NavbarItem isActive>Components</NavbarItem>
+        <NavbarItem>Documentation</NavbarItem>
+        <NavbarItem>Theme</NavbarItem>
+      </NavbarMenu>
     </div>);
 }
 export const navbarShowcase: ShowcaseSpec = {
@@ -86,6 +86,34 @@ export const navbarShowcase: ShowcaseSpec = {
   );
 }`,
             render: () => <NavbarDemo justify="end"/>,
+        },
+        {
+            title: "Compact navbar with soft pill items",
+            description: "size=\"sm\" shrinks the bar to 56px and variant=\"page\" blends it into the page background; NavbarItem variant=\"soft\" gives the active item the accent's subtle background, and the link inside is clickable across the whole pill.",
+            code: `<Navbar size="sm" variant="page">
+  <NavbarBrand grow={false}>Hulian</NavbarBrand>
+  <NavbarContent>
+    <NavbarItem variant="soft" isActive><a href="#">Components</a></NavbarItem>
+    <NavbarItem variant="soft"><a href="#">Blocks</a></NavbarItem>
+    <NavbarItem variant="soft"><a href="#">Pages</a></NavbarItem>
+  </NavbarContent>
+</Navbar>`,
+            render: () => (<div className="w-full overflow-hidden rounded-[var(--radius)] border border-border">
+          <Navbar size="sm" variant="page" bordered={false}>
+            <NavbarBrand grow={false}>Hulian</NavbarBrand>
+            <NavbarContent>
+              <NavbarItem variant="soft" isActive>
+                <a href="#">Components</a>
+              </NavbarItem>
+              <NavbarItem variant="soft">
+                <a href="#">Blocks</a>
+              </NavbarItem>
+              <NavbarItem variant="soft">
+                <a href="#">Pages</a>
+              </NavbarItem>
+            </NavbarContent>
+          </Navbar>
+        </div>),
         },
     ],
     controls: [

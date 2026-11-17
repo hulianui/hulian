@@ -31,6 +31,20 @@ describe("Spotlight", () => {
     expect(bg).toContain("var(--color-bg) 40%");
   });
 
+  it("size 两值为椭圆，原样进渐变", () => {
+    const { container } = render(<Spotlight size="60% 70%" />);
+    const bg = (container.firstElementChild as HTMLElement).style.background;
+    expect(bg).toContain("60% 70% at");
+    expect(bg).not.toContain("60% 70% 60% 70%");
+  });
+
+  it("blend=transparent 渐隐到透明、不吃底色；默认仍渐隐到 bg", () => {
+    const { container } = render(<Spotlight blend="transparent" />);
+    const bg = (container.firstElementChild as HTMLElement).style.background;
+    expect(bg).toContain("transparent");
+    expect(bg).not.toContain("var(--color-bg)");
+  });
+
   it("className 与 props 透传，style 可叠加", () => {
     const { container } = render(<Spotlight className="opacity-80" data-testid="sp" style={{ zIndex: 1 }} />);
     const el = container.firstElementChild as HTMLElement;

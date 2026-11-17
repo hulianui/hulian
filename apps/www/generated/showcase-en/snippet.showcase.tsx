@@ -1,6 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
-import { Snippet } from "../../../../packages/ui/src/snippet/snippet";
+import { BorderBeam } from "../../../../packages/ui/src/border-beam";
+import { Snippet, SnippetGroup } from "../../../../packages/ui/src/snippet/snippet";
 export const snippetShowcase: ShowcaseSpec = {
     examples: [
         {
@@ -22,6 +23,22 @@ export const snippetShowcase: ShowcaseSpec = {
   pnpm --filter ... build
 </Snippet>`,
             render: () => (<Snippet text="pnpm --filter @hulianui/ui build">pnpm --filter ... build</Snippet>),
+        },
+        {
+            title: "A set of getting-started steps (SnippetGroup)",
+            description: "SnippetGroup stacks several commands in one card and draws the frame and separators; muted marks a secondary row; overlay holds a decorative layer such as BorderBeam.",
+            code: `<SnippetGroup overlay={<BorderBeam size={120} duration={9} />}>
+  <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
+  <Snippet>npx @hulianui/mcp init-agent</Snippet>
+  <Snippet symbol={null} highlight={false} muted>https://hulian.dev/start</Snippet>
+</SnippetGroup>`,
+            render: () => (<SnippetGroup overlay={<BorderBeam size={120} duration={9}/>} className="w-full max-w-md">
+          <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
+          <Snippet>npx @hulianui/mcp init-agent</Snippet>
+          <Snippet symbol={null} highlight={false} muted>
+            https://hulian.dev/start
+          </Snippet>
+        </SnippetGroup>),
         },
     ],
     controls: [],

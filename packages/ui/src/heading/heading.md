@@ -27,7 +27,7 @@ import { Heading } from "@hulianui/ui"
 |------|------|------|------|
 | level | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | 标题级别，决定语义标签 `h{level}` 与默认视觉尺寸 |
 | as | `ElementType` | `h{level}` | 覆盖渲染标签（视觉/语义解耦，如 level=1 样式渲染为 div） |
-| size | `"xs" \| "sm" \| "base" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl"` | 按 level 派生 | 覆盖视觉尺寸（独立于 level） |
+| size | `"xs" \| "sm" \| "base" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl" \| "display"` | 按 level 派生 | 覆盖视觉尺寸（独立于 level）。`display` 是营销页 hero 的展示级字号，响应式两档（窄屏 60px、sm 起 72px），不进 level 默认映射 |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"semibold"` | 字重 |
 | balance | `boolean` | `false` | 启用 text-balance 平衡换行（多行标题更匀称） |
 

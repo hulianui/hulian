@@ -27,7 +27,9 @@ import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
+| variant | `"outline" \| "elevated" \| "featured" \| "primary" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 主色卡 / 不画皮。`primary` 是主色渐变底，自动挂 `data-surface="inverse"`，卡里的 Text / Tag / Chip / Avatar 自动反色；用主色填充的件（Progress）改用 `tone="inverse"` |
+| interactive | `boolean` | `false` | 整卡可点：悬停上浮 + 阴影加深，键盘焦点给环。通常配 `render` |
+| render | `ReactElement` | - | 把整卡渲染成自定义元素（`<a href>` / 框架路由件），皮肤与 props 合并进去、子内容照常；卡里不要再放别的链接或按钮 |
 | size | `"sm" \| "md"` | `"md"` | 整卡密度：`sm` 同时收紧 Header / Body / Footer 的内边距 |
 | divided | `boolean` | `true` | 是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档 |
 
@@ -75,6 +77,24 @@ import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
     description="按角色批量指派，指派后立即生效"
     extra={<Button variant="ghost" size="sm">展开</Button>}
   />
+  <CardBody>…</CardBody>
+</Card>
+```
+
+主色卡（营销页的强调卡）：卡里的文字、标签、头像自动反色，进度条用 `tone="inverse"`：
+```tsx
+<Card variant="primary">
+  <CardBody>
+    <Text weight="semibold">整站色系跟随主题变化</Text>
+    <Text size="sm" tone="muted">负责人 · Abel</Text>
+    <Progress value={68} showValue tone="inverse" />
+  </CardBody>
+</Card>
+```
+
+整卡可点（站点卡 / 作品集）：
+```tsx
+<Card variant="elevated" interactive render={<a href="https://hulian.dev" target="_blank" rel="noreferrer" />}>
   <CardBody>…</CardBody>
 </Card>
 ```

@@ -15,6 +15,8 @@ const MARK: Record<BrandSize, string> = {
   md: "size-9 text-sm",
   lg: "size-11 text-base",
 };
+// bare：没有徽章底，mark 就是 logo 本身，按字形尺寸给（与同档品牌名的视觉重量对齐）。
+const BARE_MARK: Record<BrandSize, string> = { sm: "size-5", md: "size-6", lg: "size-8" };
 const NAME: Record<BrandSize, string> = { sm: "text-sm", md: "text-base", lg: "text-lg" };
 const GAP: Record<BrandSize, string> = { sm: "gap-2", md: "gap-2.5", lg: "gap-3" };
 
@@ -31,36 +33,77 @@ function BrandImpl({
   description,
   size = "md",
   color = "primary",
+  variant = "badge",
+  maskSrc,
   render,
   href,
   className,
   ...rest
 }: BrandProps) {
   const accent = resolveTone(color) ?? "var(--color-primary)";
+  const bare = variant === "bare";
+
+  // maskSrc：单色 logo 图片当遮罩，形状取自图片、颜色取 currentColor —— 徽章里是前景色，
+  // bare 里是品牌色，于是 logo 跟着主题色 / AccentScope 走，<img> 做不到（颜色写死在文件里）。
+  const glyph =
+    maskSrc != null ? (
+      <span
+        className="size-full bg-current"
+        style={{
+          maskImage: `url(${maskSrc})`,
+          WebkitMaskImage: `url(${maskSrc})`,
+          maskSize: "contain",
+          WebkitMaskSize: "contain",
+          maskRepeat: "no-repeat",
+          WebkitMaskRepeat: "no-repeat",
+          maskPosition: "center",
+          WebkitMaskPosition: "center",
+        }}
+      />
+    ) : (
+      mark ?? initial(name)
+    );
 
   const content = (
     <>
-      <span
-        className={cn(
-          // 方角 + token 圆角（对齐库内其它方形容器），不是圆——这正是它区别于 Avatar 的地方。
-          "relative grid shrink-0 place-items-center overflow-hidden rounded-[calc(var(--radius)-0.125rem)] font-semibold [&>svg]:size-1/2",
-          // 媒体类 mark 一律铺满徽章：img（含 GIF / APNG / 动图 WebP）、<picture>（给「减弱动效」
-          // 用户一张静态回退的标准写法，img 在它里面一层，所以尺寸用后代选择器）、<video>（静音
-          // 循环的动态 logo）、<canvas>（自绘动画）。
-          //
-          // 为什么是 absolute inset-0 而不是 size-full：这个徽章是 grid 容器，替换元素（img /
-          // video / canvas）作为 grid 项时 height:100% 在 Chrome 里解析不出来（实测 2:1 的图得到
-          // 36×0，flex 同样 0×36），旧的 `[&>img]:size-full` 只是被 1:1 素材掩盖了、object-cover
-          // 从没真正裁过图。绝对定位子元素的百分比按徽章的 padding box 解析，永远是定值。
-          "[&>img]:absolute [&>picture]:absolute [&>video]:absolute [&>canvas]:absolute [&>img]:inset-0 [&>picture]:inset-0 [&>video]:inset-0 [&>canvas]:inset-0",
-          "[&_img]:size-full [&_img]:object-cover [&>picture]:block [&>picture]:size-full [&>video]:size-full [&>video]:object-cover [&>canvas]:size-full",
-          MARK[size],
-        )}
-        style={{ backgroundColor: accent, color: "var(--color-primary-foreground)" }}
-        aria-hidden={name != null || undefined}
-      >
-        {mark ?? initial(name)}
-      </span>
+      {bare ? (
+        <span
+          className={cn(
+            "relative grid shrink-0 place-items-center font-semibold [&>svg]:size-full",
+            BARE_MARK[size],
+          )}
+          style={{ color: accent }}
+          aria-hidden={name != null || undefined}
+        >
+          {glyph}
+        </span>
+      ) : (
+        <span
+          className={cn(
+            // 方角 + token 圆角（对齐库内其它方形容器），不是圆——这正是它区别于 Avatar 的地方。
+            "relative grid shrink-0 place-items-center overflow-hidden rounded-[calc(var(--radius)-0.125rem)] font-semibold [&>svg]:size-1/2",
+            // 媒体类 mark 一律铺满徽章：img（含 GIF / APNG / 动图 WebP）、<picture>（给「减弱动效」
+            // 用户一张静态回退的标准写法，img 在它里面一层，所以尺寸用后代选择器）、<video>（静音
+            // 循环的动态 logo）、<canvas>（自绘动画）。
+            //
+            // 为什么是 absolute inset-0 而不是 size-full：这个徽章是 grid 容器，替换元素（img /
+            // video / canvas）作为 grid 项时 height:100% 在 Chrome 里解析不出来（实测 2:1 的图得到
+            // 36×0，flex 同样 0×36），旧的 `[&>img]:size-full` 只是被 1:1 素材掩盖了、object-cover
+            // 从没真正裁过图。绝对定位子元素的百分比按徽章的 padding box 解析，永远是定值。
+            "[&>img]:absolute [&>picture]:absolute [&>video]:absolute [&>canvas]:absolute [&>img]:inset-0 [&>picture]:inset-0 [&>video]:inset-0 [&>canvas]:inset-0",
+            "[&_img]:size-full [&_img]:object-cover [&>picture]:block [&>picture]:size-full [&>video]:size-full [&>video]:object-cover [&>canvas]:size-full",
+            MARK[size],
+          )}
+          style={{ backgroundColor: accent, color: "var(--color-primary-foreground)" }}
+          aria-hidden={name != null || undefined}
+        >
+          {maskSrc != null ? (
+            <span className="grid size-3/5 place-items-center">{glyph}</span>
+          ) : (
+            glyph
+          )}
+        </span>
+      )}
       {name != null && (
         <span className="flex min-w-0 flex-col leading-tight">
           <span className={cn("truncate font-semibold text-foreground", NAME[size])}>{name}</span>

@@ -6,9 +6,18 @@ import { cn } from "../lib/cn";
 import type { AvatarProps } from "./avatar.types";
 
 export const avatarVariants = cva(
-  "inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-surface-hover align-middle text-muted-foreground",
+  "inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full align-middle",
   {
     variants: {
+      // 占位底色档（图片加载出来就盖住了，只影响 fallback 与透明 PNG）。
+      // brand：主色浅底 + 主色字，给「这是品牌 / 系统 / AI 自己」的头像，或想让首字头像带主题色。
+      tone: {
+        neutral: "bg-surface-hover text-muted-foreground",
+        brand: "bg-primary-subtle font-semibold text-primary",
+      },
+      // 外圈描边：头像压在彩色底 / 照片上、或成组堆叠时把轮廓勾出来。颜色按 tone 取，
+      // 中性档取 border —— 在主色卡（反色表面）里它会自动变成半透明白圈。
+      ring: { true: "ring-2", false: "" },
       size: {
         sm: "size-8 text-xs",
         md: "size-10 text-sm",
@@ -17,13 +26,17 @@ export const avatarVariants = cva(
         "2xl": "size-24 text-2xl",
       },
     },
-    defaultVariants: { size: "md" },
+    compoundVariants: [
+      { tone: "neutral", ring: true, class: "ring-border" },
+      { tone: "brand", ring: true, class: "ring-primary-border" },
+    ],
+    defaultVariants: { size: "md", tone: "neutral", ring: false },
   },
 );
 
-function AvatarImpl({ className, size, src, alt, fallback }: AvatarProps) {
+function AvatarImpl({ className, size, tone, ring, src, alt, fallback }: AvatarProps) {
   return (
-    <BaseAvatar.Root className={cn(avatarVariants({ size }), className)}>
+    <BaseAvatar.Root className={cn(avatarVariants({ size, tone, ring }), className)}>
       {src && <BaseAvatar.Image src={src} alt={alt} className="size-full object-cover" />}
       <BaseAvatar.Fallback className="font-medium">{fallback}</BaseAvatar.Fallback>
     </BaseAvatar.Root>

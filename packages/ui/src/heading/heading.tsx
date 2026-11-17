@@ -14,6 +14,9 @@ const SIZE: Record<HeadingSize, string> = {
   "2xl": "text-2xl",
   "3xl": "text-3xl",
   "4xl": "text-4xl",
+  // 展示级：营销页 hero 的品牌名 / 主口号。响应式两档（窄屏 60px、sm 起 72px）——
+  // 这一档的意义就是「整屏最大的那几个字」，固定一个字号在手机上会顶出屏。
+  display: "text-6xl leading-none sm:text-7xl",
 };
 
 const WEIGHT: Record<HeadingWeight, string> = {

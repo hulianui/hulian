@@ -178,6 +178,7 @@ export const manifest: ComponentMeta[] = [
   // ── 排版 typography ──────────────────────────────────────────
   { slug: "text", name: "Text", shortName: "文本", description: "统一正文的字号、字重、语义色和截断方式", category: "typography", group: "text", status: "new" },
   { slug: "heading", name: "Heading", shortName: "标题", description: "输出各级标题，视觉大小与标题层级可以分开设定", category: "typography", group: "text", status: "new" },
+  { slug: "section-header", name: "SectionHeader", shortName: "分节标题", description: "区块开头的一组标题：小字栏目名、大标题、主色强调半句和导语", category: "typography", group: "text", status: "new" },
   { slug: "prose", name: "Prose", shortName: "排版容器", description: "给富文本或 Markdown 内容套上统一的排版样式", category: "typography", group: "text", status: "new" },
   { slug: "markdown", name: "Markdown", shortName: "Markdown 渲染", description: "把 Markdown 字符串渲染成只读的富文本内容", category: "typography", group: "text", status: "new" },
   { slug: "question-card", name: "QuestionCard", shortName: "题目卡片", description: "完整展示一道题：题干、选项、小问、配图和出处", category: "data-display", group: "collection", status: "new" },
@@ -363,6 +364,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "navbar", name: "Navbar", shortName: "导航栏", description: "搭出响应式顶部导航，含品牌、链接和移动端菜单", category: "navigation", group: "global", status: "new" },
   { slug: "beian-footer", name: "BeianFooter", shortName: "备案页脚", description: "在页脚展示 ICP 备案与公安备案信息并链到官网", category: "navigation", group: "global", status: "new" },
   { slug: "brand", name: "Brand", shortName: "品牌标识", description: "展示品牌徽章、站名和副标题，可收起成纯徽章", category: "navigation", group: "global", status: "new" },
+  { slug: "icon-tile", name: "IconTile", shortName: "图标方块", description: "把一个图标放进带底色的小方块，排在功能或通知文字的左边", category: "data-display", group: "info", status: "new" },
   { slug: "app-launcher", name: "AppLauncher", shortName: "应用启动台", description: "打开可搜索的应用图标网格，按分类归组", category: "navigation", group: "global", status: "new" },
   { slug: "sidebar", name: "Sidebar", shortName: "应用侧栏", description: "提供可折叠的应用侧栏外壳，移动端自动变抽屉", category: "navigation", group: "global", status: "new" },
   { slug: "nav-menu", name: "NavMenu", shortName: "侧边导航菜单", description: "渲染多级侧边导航，可内联展开也可收成图标", category: "navigation", group: "global", status: "new" },
@@ -437,6 +439,8 @@ export const manifest: ComponentMeta[] = [
   { slug: "grid-pattern", name: "GridPattern", shortName: "网格背景", description: "铺一层线条网格作为区块背景，可换成虚线", category: "decoration", group: "backdrop", status: "new" },
   { slug: "striped-pattern", name: "StripedPattern", shortName: "斜条纹背景", description: "用轻量的斜条纹给区块打底，颜色跟随文字色", category: "decoration", group: "backdrop", status: "new" },
   { slug: "spotlight", name: "Spotlight", shortName: "径向辉光背景", description: "在内容后面打一片跟随主题的径向辉光", category: "decoration", group: "backdrop", status: "new" },
+  { slug: "fade-mask", name: "FadeMask", shortName: "渐隐遮罩", description: "把内容在某一边或从中心向四周淡出到透明", category: "decoration", group: "backdrop", status: "new" },
+  { slug: "accent-scope", name: "AccentScope", shortName: "局部换色", description: "给一块区域换主色的色相，子树里的组件自动跟着变", category: "layout", group: "container", status: "new" },
   { slug: "retro-grid", name: "RetroGrid", shortName: "复古透视网格", description: "让透视网格向观众持续推进，营造复古氛围", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
   { slug: "ripple", name: "Ripple", shortName: "同心脉冲圆环", description: "从一个原点向外扩散一圈圈同心光环", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
   { slug: "meteors", name: "Meteors", shortName: "流星雨", description: "让一阵流星带着拖尾斜斜划过内容背景", category: "decoration", group: "backdrop", tags: ["animated"], status: "new" },
@@ -461,6 +465,7 @@ export const manifest: ComponentMeta[] = [
 
   // ── 设备外壳 mockups ─────────────────────────────────────────
   { slug: "safari", name: "Safari", shortName: "浏览器外壳", description: "用 Safari 风格的浏览器窗口包住截图", category: "mockups", group: "window", status: "new" },
+  { slug: "window-frame", name: "WindowFrame", shortName: "窗口外框", description: "用三色点标题栏的应用窗口包住一块界面，做成产品截图", category: "mockups", group: "window", status: "new" },
   { slug: "chrome", name: "Chrome", shortName: "浏览器外壳", description: "用 Chrome 风格的浏览器窗口包住截图，带标签页", category: "mockups", group: "window", status: "new" },
   { slug: "terminal", name: "Terminal", shortName: "终端框", description: "在终端窗口里逐行揭示命令和输出", category: "mockups", group: "window", tags: ["animated"], status: "new" },
   { slug: "iphone", name: "iPhone", shortName: "手机外壳", description: "用带灵动岛的手机外壳把内容包成展示图", category: "mockups", group: "device", status: "new" },

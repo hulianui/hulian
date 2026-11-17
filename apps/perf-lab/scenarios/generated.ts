@@ -2,6 +2,9 @@
 import type { ShowcaseSpec } from "@hulianui/ui";
 
 export const scenarioLoaders = {
+  "accent-scope": async () =>
+    (await import("@hulianui/ui-internal/accent-scope/accent-scope.showcase"))
+      .accentScopeShowcase,
   accordion: async () =>
     (await import("@hulianui/ui-internal/accordion/accordion.showcase"))
       .accordionShowcase,
@@ -417,6 +420,9 @@ export const scenarioLoaders = {
       .evilEyeShowcase,
   fab: async () =>
     (await import("@hulianui/ui-internal/fab/fab.showcase")).fabShowcase,
+  "fade-mask": async () =>
+    (await import("@hulianui/ui-internal/fade-mask/fade-mask.showcase"))
+      .fadeMaskShowcase,
   "falling-text": async () =>
     (await import("@hulianui/ui-internal/falling-text/falling-text.showcase"))
       .fallingTextShowcase,
@@ -571,6 +577,9 @@ export const scenarioLoaders = {
   "icon-picker": async () =>
     (await import("@hulianui/ui-internal/icon-picker/icon-picker.showcase"))
       .iconPickerShowcase,
+  "icon-tile": async () =>
+    (await import("@hulianui/ui-internal/icon-tile/icon-tile.showcase"))
+      .iconTileShowcase,
   image: async () =>
     (await import("@hulianui/ui-internal/image/image.showcase")).imageShowcase,
   "image-cropper": async () =>
@@ -1073,6 +1082,12 @@ export const scenarioLoaders = {
   "secret-field": async () =>
     (await import("@hulianui/ui-internal/secret-field/secret-field.showcase"))
       .secretFieldShowcase,
+  "section-header": async () =>
+    (
+      await import(
+        "@hulianui/ui-internal/section-header/section-header.showcase"
+      )
+    ).sectionHeaderShowcase,
   segmented: async () =>
     (await import("@hulianui/ui-internal/segmented/segmented.showcase"))
       .segmentedShowcase,
@@ -1345,6 +1360,9 @@ export const scenarioLoaders = {
         "@hulianui/ui-internal/wavy-background/wavy-background.showcase"
       )
     ).wavyBackgroundShowcase,
+  "window-frame": async () =>
+    (await import("@hulianui/ui-internal/window-frame/window-frame.showcase"))
+      .windowFrameShowcase,
   "word-rotate": async () =>
     (await import("@hulianui/ui-internal/word-rotate/word-rotate.showcase"))
       .wordRotateShowcase,
@@ -1354,6 +1372,17 @@ export const scenarioLoaders = {
 } satisfies Record<string, () => Promise<ShowcaseSpec>>;
 
 export const scenarioMetadata = {
+  "accent-scope": {
+    id: "accent-scope",
+    scenarioId: "accent-scope/basic",
+    component: "AccentScope",
+    entry: "@hulianui/ui/accent-scope",
+    category: "standard",
+    categories: ["container", "layout"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/accent-scope/index.ts",
+  },
   accordion: {
     id: "accordion",
     scenarioId: "accordion/basic",
@@ -2707,6 +2736,17 @@ export const scenarioMetadata = {
     webgl: false,
     source: "packages/ui/src/fab/index.ts",
   },
+  "fade-mask": {
+    id: "fade-mask",
+    scenarioId: "fade-mask/basic",
+    component: "FadeMask",
+    entry: "@hulianui/ui/fade-mask",
+    category: "standard",
+    categories: ["backdrop", "decoration"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/fade-mask/index.ts",
+  },
   "falling-text": {
     id: "falling-text",
     scenarioId: "falling-text/frame-budget",
@@ -3201,6 +3241,17 @@ export const scenarioMetadata = {
     animated: false,
     webgl: false,
     source: "packages/ui/src/icon-picker/index.ts",
+  },
+  "icon-tile": {
+    id: "icon-tile",
+    scenarioId: "icon-tile/basic",
+    component: "IconTile",
+    entry: "@hulianui/ui/icon-tile",
+    category: "standard",
+    categories: ["data-display", "info"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/icon-tile/index.ts",
   },
   image: {
     id: "image",
@@ -4797,6 +4848,17 @@ export const scenarioMetadata = {
     webgl: false,
     source: "packages/ui/src/secret-field/index.ts",
   },
+  "section-header": {
+    id: "section-header",
+    scenarioId: "section-header/basic",
+    component: "SectionHeader",
+    entry: "@hulianui/ui/section-header",
+    category: "standard",
+    categories: ["text", "typography"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/section-header/index.ts",
+  },
   segmented: {
     id: "segmented",
     scenarioId: "segmented/basic",
@@ -5742,6 +5804,17 @@ export const scenarioMetadata = {
     animated: true,
     webgl: false,
     source: "packages/ui/src/wavy-background/index.ts",
+  },
+  "window-frame": {
+    id: "window-frame",
+    scenarioId: "window-frame/basic",
+    component: "WindowFrame",
+    entry: "@hulianui/ui/window-frame",
+    category: "standard",
+    categories: ["mockups", "window"],
+    animated: false,
+    webgl: false,
+    source: "packages/ui/src/window-frame/index.ts",
   },
   "word-rotate": {
     id: "word-rotate",

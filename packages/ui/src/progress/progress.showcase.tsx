@@ -1,5 +1,6 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
+import { Card, CardBody } from "../card";
 import { Progress } from "./progress";
 
 export const progressShowcase: ShowcaseSpec = {
@@ -54,6 +55,22 @@ export const progressShowcase: ShowcaseSpec = {
         </div>
       ),
     },
+    {
+      title: "彩色卡上（inverse）",
+      description: "tone=\"inverse\" 填充取前景色：放在主色卡里是白条，主色填充在那里会和卡面融成一片。",
+      code: `<Card variant="primary">
+  <CardBody>
+    <Progress value={68} showValue tone="inverse" />
+  </CardBody>
+</Card>`,
+      render: () => (
+        <Card variant="primary" className="w-64">
+          <CardBody>
+            <Progress value={68} showValue tone="inverse" aria-label="进度" />
+          </CardBody>
+        </Card>
+      ),
+    },
   ],
   controls: [
     { prop: "value", type: "number", defaultValue: 40, label: "value" },
@@ -68,7 +85,7 @@ export const progressShowcase: ShowcaseSpec = {
     {
       prop: "tone",
       type: "select",
-      options: ["primary", "success", "warning", "danger"],
+      options: ["primary", "success", "warning", "danger", "inverse"],
       defaultValue: "primary",
       label: "色调",
     },

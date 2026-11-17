@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { Snippet } from "./snippet";
+import { Snippet, SnippetGroup } from "./snippet";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
 import { expectMemoSkipsSubtree } from "../../test/memo-guard";
@@ -90,5 +90,33 @@ describe("Snippet", () => {
   it("透传 className 到外壳", () => {
     const { container } = render(<Snippet className="my-snip">x</Snippet>);
     expect(container.firstElementChild!.classList.contains("my-snip")).toBe(true);
+  });
+});
+
+describe("SnippetGroup / muted", () => {
+  it("组里的 Snippet 去掉自己的边框与圆角并铺满一行；组画外框与分隔", () => {
+    const { container } = render(
+      <SnippetGroup overlay={<span data-testid="beam" />}>
+        <Snippet>pnpm add a</Snippet>
+        <Snippet>pnpm add b</Snippet>
+      </SnippetGroup>,
+    );
+    const group = container.firstElementChild as HTMLElement;
+    expect(group.className).toContain("border");
+    const list = group.querySelector(".divide-y") as HTMLElement;
+    expect(list.children).toHaveLength(2);
+    const row = list.children[0] as HTMLElement;
+    expect(row.className).toContain("w-full");
+    expect(row.className).not.toContain("border-border");
+    // overlay 不在分隔列表里
+    expect(list.querySelector("[data-testid=beam]")).toBeNull();
+    expect(group.querySelector("[data-testid=beam]")).toBeTruthy();
+  });
+
+  it("muted 沉底色、转次要灰；单独使用时仍有自己的边框", () => {
+    const { container } = render(<Snippet muted>x</Snippet>);
+    const el = container.firstElementChild as HTMLElement;
+    expect(el.className).toContain("bg-muted/50");
+    expect(el.className).toContain("border-border");
   });
 });

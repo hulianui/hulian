@@ -1,11 +1,63 @@
 # 瑚琏 Hulian (`@hulianui/ui`) — 全量组件使用文档
 
-> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.76.0 · 404 个组件文档（自包含，供 AI 一次性消费）
+> 颜值 + 好用的 React 设计系统（Base UI + Tailwind v4 + Motion） · v0.76.0 · 409 个组件文档（自包含，供 AI 一次性消费）
 
 安装 `npm i @hulianui/ui @hulianui/tokens`（tokens 提供主题 CSS，必装）；默认从根 barrel 导入 `import { X } from "@hulianui/ui"`，每个组件也有同名子路径入口 `@hulianui/ui/<slug>`，只用少数几个组件时用它可少拉几百个文件。
 
 
 # ━━━━━━━━ 布局 ━━━━━━━━
+
+<!-- ════════════════════════════════════════════════════════ -->
+# AccentScope
+
+**导出**：`AccentScope`
+
+> 给一块区域换主色的色相，子树里的组件自动跟着变 · layout/container
+
+## 何时用
+
+页面某一块要换主题色（营销页的主题色轮换、按业务线区分色调的分区、预览换色效果），且只换这一块、不动全站。子树里主色、hover、浅底（`-subtle`）、浅边（`-border`）、焦点环与图表色板 `chart-1..6` 一起换色相；**明度与彩度沿用品牌梯子**，任何色相下对比度与层级都和品牌原色一致。
+
+全站明暗切换用 `ThemeProvider`；整站换品牌色改 tokens 的 `--brand-*`，不用本组件。
+
+## 导入
+```ts
+import { AccentScope } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| hue | `number` | — | 子树主色的 OKLCH 色相（0–360），只换色相。省略时取 tokens 注册的初值 258（品牌原色） |
+| transition | `number` | `0` | 换色相时的过渡时长（毫秒），`0` 为瞬时换色。过渡的是 `--hl-accent-hue` 一个变量，子树派生色同步渐变 |
+| theme | `"light" \| "dark"` | — | 把主题写在作用域同一个元素上，只在「暗页 > 亮色岛 > 作用域」这类嵌套里需要 |
+
+> 继承 `ComponentPropsWithoutRef<"div">`。
+
+## 示例
+```tsx
+<AccentScope hue={165}>
+  <Button>主操作</Button>
+  <Tag tone="brand">标签</Tag>
+</AccentScope>
+
+// 色相由状态驱动，整块同步渐变
+const [hue, setHue] = useState(258);
+<AccentScope hue={hue} transition={900}>…</AccentScope>
+
+// 自己算衍生色时读同一个变量
+<span style={{ color: "oklch(0.62 0.17 calc(var(--hl-accent-hue) + 45))" }} />
+```
+
+## 禁忌 / 坑
+
+- 派生规则在 `@hulianui/tokens` 的 `semantic.css` 里（`[data-accent-scope]` 块），项目必须引了 tokens 的样式才生效；只渲染本组件、没有 tokens 时只是一个普通 div。
+- 子元素不要再给 `--hl-accent-hue` 挂 transition：继承值每帧变化会让子元素重起一段过渡，变色拖尾。过渡只挂在作用域上（`transition` prop）。
+- 「暗页 > 亮色岛 > 作用域」的嵌套里，祖先的两条主题选择器特异性相同、按源码顺序落到暗色；此时给本组件传 `theme="light"`。
+
+## 相关
+`ThemeProvider` · [Spotlight](https://hulianui.haloritual.com/zh/components/spotlight)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AdminLayout
@@ -2112,7 +2164,7 @@ import { Heading } from "@hulianui/ui"
 |------|------|------|------|
 | level | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | 标题级别，决定语义标签 `h{level}` 与默认视觉尺寸 |
 | as | `ElementType` | `h{level}` | 覆盖渲染标签（视觉/语义解耦，如 level=1 样式渲染为 div） |
-| size | `"xs" \| "sm" \| "base" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl"` | 按 level 派生 | 覆盖视觉尺寸（独立于 level） |
+| size | `"xs" \| "sm" \| "base" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl" \| "display"` | 按 level 派生 | 覆盖视觉尺寸（独立于 level）。`display` 是营销页 hero 的展示级字号，响应式两档（窄屏 60px、sm 起 72px），不进 level 默认映射 |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"semibold"` | 字重 |
 | balance | `boolean` | `false` | 启用 text-balance 平衡换行（多行标题更匀称） |
 
@@ -2641,6 +2693,61 @@ import { ScrollVelocity } from "@hulianui/ui"
 [Text](https://hulianui.haloritual.com/zh/components/text) · [Heading](https://hulianui.haloritual.com/zh/components/heading) · [Prose](https://hulianui.haloritual.com/zh/components/prose) · [Markdown](https://hulianui.haloritual.com/zh/components/markdown) · [AuroraText](https://hulianui.haloritual.com/zh/components/aurora-text) · [AnimatedShinyText](https://hulianui.haloritual.com/zh/components/animated-shiny-text)
 
 <!-- ════════════════════════════════════════════════════════ -->
+# SectionHeader
+
+**导出**：`SectionHeader`
+
+> 区块开头的一组标题：小字栏目名、大标题、主色强调半句和导语 · typography/text
+
+## 何时用
+
+营销页、文档首页每个区块开头那一组：eyebrow 小字（栏目名）+ 分节大标题（后半句主色强调）+ 一段导语。中后台页面顶部的标题栏（返回、面包屑、操作按钮）用 [PageHeader](https://hulianui.haloritual.com/zh/components/page-header)；只要一个标题用 [Heading](https://hulianui.haloritual.com/zh/components/heading)。
+
+## 导入
+```ts
+import { SectionHeader } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| title* | `ReactNode` | - | 标题 |
+| eyebrow | `ReactNode` | - | 标题上方的一行小字（栏目名），主色 |
+| accent | `ReactNode` | - | 标题后半句，主色强调 |
+| accentBreak | `"always" \| "mobile" \| "space" \| "none"` | `"always"` | 标题与 `accent` 怎么接：`always` 总是换行；`mobile` 只在窄屏换行；`space` 同一行空一格（英文）；`none` 直接相连（中文） |
+| description | `ReactNode` | - | 标题下方的导语，次要灰，最宽约 42rem |
+| align | `"start" \| "center"` | `"start"` | 对齐；`center` 时导语也水平居中 |
+| level | `2 \| 3 \| 4` | `2` | 标题语义层级；视觉尺寸固定为分节标题一档（窄屏 30px、sm 起 36px） |
+
+> 继承 `<div>` 原生属性（`className` 落在外层容器上，给宽度 / 外边距用）。
+
+## 示例
+```tsx
+<SectionHeader
+  eyebrow="产品"
+  title="从一个按钮，"
+  accent="到一整个后台"
+  accentBreak="mobile"
+  description="四层粒度、一套设计语言，按需复制。"
+/>
+
+// 居中的收尾段
+<SectionHeader align="center" title="现在开始，" accent="做好看又好用的软件" accentBreak="none" />
+
+// 英文：同一行空一格
+<SectionHeader eyebrow="In production" title="Built natively" accent="on Hulian UI" accentBreak="space" />
+```
+
+## 禁忌 / 坑
+
+- 中文标题要连着读时用 `accentBreak="none"`，英文用 `"space"`；默认 `"always"` 会在两半之间换行。
+- 标点归前半句（`title="从一个按钮，"`）：`mobile` 换行发生在 `accent` 之前，标点放进 `accent` 会在窄屏落到行首。
+
+## 相关
+[Heading](https://hulianui.haloritual.com/zh/components/heading) · [PageHeader](https://hulianui.haloritual.com/zh/components/page-header) · [Text](https://hulianui.haloritual.com/zh/components/text)
+
+<!-- ════════════════════════════════════════════════════════ -->
 # Shuffle
 
 **导出**：`Shuffle`
@@ -2713,7 +2820,7 @@ import { Shuffle } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Snippet
 
-**导出**：`Snippet`
+**导出**：`Snippet` · `SnippetGroup`
 
 > 展示一行命令，带提示符和一键复制 · typography/code
 
@@ -2723,7 +2830,7 @@ import { Shuffle } from "@hulianui/ui"
 
 ## 导入
 ```ts
-import { Snippet } from "@hulianui/ui"
+import { Snippet, SnippetGroup } from "@hulianui/ui"
 ```
 
 ## Props
@@ -2736,7 +2843,14 @@ import { Snippet } from "@hulianui/ui"
 | highlight | `boolean` | `true` | 是否语法着色，仅 children 为字符串时生效 |
 | copyLabel | `string` | 跟随 locale | 复制按钮无障碍标签；显式传值优先 |
 | copiedLabel | `string` | 跟随 locale | 复制成功后的无障碍标签；显式传值优先 |
+| muted | `boolean` | `false` | 次要行：沉一档底色、文字转次要灰（「也可以这样」的补充命令、给 AI 读的链接） |
 | className | `string` | - | 容器类名 |
+
+**SnippetGroup**（多条命令堆叠在同一张卡里，组画外框与行间分隔线，里面的 Snippet 自动去掉各自的边框 / 底色并铺满一行）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| overlay | `ReactNode` | - | 绝对定位的装饰层（BorderBeam 等），画在分隔线列表之外，不会被当成一行 |
 
 ## Slots
 
@@ -2750,6 +2864,13 @@ import { Snippet } from "@hulianui/ui"
 
 // 非命令片段，去掉提示符
 <Snippet symbol={null}>const theme = useTheme()</Snippet>
+
+// 一组上手步骤：堆叠在同一张卡里，最后一行是次要行
+<SnippetGroup overlay={<BorderBeam size={120} />}>
+  <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
+  <Snippet>npx @hulianui/mcp init-agent</Snippet>
+  <Snippet symbol={null} highlight={false} muted>https://hulian.dev/start</Snippet>
+</SnippetGroup>
 ```
 
 ## 禁忌 / 坑
@@ -4663,6 +4784,7 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 | value | `string` | - | 受控选中值（须与某个色块的 `color` 严格相等） |
 | defaultValue | `string` | - | 非受控初始选中值 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 色块尺寸 |
+| shape | `"square" \| "circle"` | `"square"` | `square` token 圆角 + 细边；`circle` 全圆、无边，只留一圈极淡内阴影（主题色 / 配色选择）。选中外环的间隙是透明的，放在卡片上透出卡面本身 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | className | `string` | - | 透传到容器 |
 | aria-label | `string` | - | 无障碍标签 |
@@ -4694,6 +4816,9 @@ const [v, setV] = useState("#3b82f6");
 
 // 非受控
 <ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" size="lg" />
+
+// 圆形色块（主题色选择）
+<ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" shape="circle" size="sm" />
 
 // 主题 token 色板：给 label，读屏才不会念 "var(--color-primary)"
 <ColorSwatchPicker
@@ -8808,6 +8933,7 @@ import { Segmented } from "@hulianui/ui"
 | defaultValue | `string` | 首个未禁用段 | 非受控初始选中值 |
 | disabled | `boolean` | `false` | 整体禁用 |
 | size | `"sm"\|"md"` | `"md"` | - |
+| shape | `"rounded"\|"pill"` | `"rounded"` | `rounded` 与控件同档圆角；`pill` 轨道、滑块、段都全圆（顶栏 / 营销页） |
 | tone | `"brand"\|"success"\|"warning"\|"danger"\|"neutral"` | `"brand"` | 选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `brand`，与 [Tabs](https://hulianui.haloritual.com/zh/components/tabs) 的 `TabsList` 同名同取值、同默认；要旧的中性选中态（`text-foreground`）传 `neutral` |
 | className | `string` | - | - |
 | aria-label | `string` | - | 无可见标题时提供 |
@@ -8819,6 +8945,7 @@ import { Segmented } from "@hulianui/ui"
 | value * | `string` | - | 该段唯一值（也是选中标识） |
 | ariaLabel | `string` | - | label 为富节点（图标/徽标）时必填，否则降级取 value |
 | disabled | `boolean` | `false` | 单段禁用 |
+| render | `ReactElement` | - | 把这一段渲染成自定义元素（通常 `<a href>` 或框架路由件），段内容由 `label` 给。任一段给了它，整组按「一组链接」处理：`role="group"`、选中段 `aria-current="page"`、不做方向键漫游；元素自己的 `onClick` 照常触发 |
 
 ## Events
 
@@ -8858,6 +8985,20 @@ import { Segmented } from "@hulianui/ui"
   ]}
   defaultValue="grid"
   aria-label="视图"
+/>
+```
+
+链接段（切语言 / 切版本：选中项 = 当前页面），药丸形：
+```tsx
+<Segmented
+  shape="pill"
+  size="sm"
+  value="zh"
+  aria-label="语言"
+  items={[
+    { value: "zh", label: "中", render: <a href="/zh" hrefLang="zh" /> },
+    { value: "en", label: "EN", render: <a href="/en" hrefLang="en" /> },
+  ]}
 />
 ```
 
@@ -10278,6 +10419,8 @@ import { Avatar } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg" \| "xl" \| "2xl"` | `"md"` | 圆直径档位（CVA 变体）：32 / 40 / 48 / 64 / 96px。 |
 | src | `string` | - | 头像图片 URL；加载失败回退到 fallback。 |
 | alt | `string` | - | 图片替代文本。 |
+| tone | `"neutral" \| "brand"` | `"neutral"` | 占位底色：`neutral` 中性灰底；`brand` 主色浅底 + 主色字，给品牌 / 系统 / AI 自己的头像，或想让首字头像带主题色。图片加载出来后底色被盖住。 |
+| ring | `boolean` | `false` | 外圈 2px 描边，颜色随 tone（中性取 border，品牌取主色浅边）；压在彩色底 / 照片上或成组堆叠时用。主色卡里中性圈自动变成半透明白。 |
 | className | `string` | - | - |
 
 ## Slots
@@ -10293,6 +10436,11 @@ import { Avatar } from "@hulianui/ui"
 ```tsx
 // 无图回退
 <Avatar size="lg" fallback="瑚" />
+```
+```tsx
+// 主色首字头像 + 外圈；彩色卡上的照片头像加白圈
+<Avatar tone="brand" ring fallback="林" />
+<Card variant="primary"><Avatar ring src="/demo/avatar-12.jpg" alt="Abel" fallback="A" /></Card>
 ```
 
 ## 禁忌 / 坑
@@ -10719,7 +10867,9 @@ import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 不画皮 |
+| variant | `"outline" \| "elevated" \| "featured" \| "primary" \| "plain"` | `"outline"` | 外观：描边 / 投影抬升 / 强调 / 主色卡 / 不画皮。`primary` 是主色渐变底，自动挂 `data-surface="inverse"`，卡里的 Text / Tag / Chip / Avatar 自动反色；用主色填充的件（Progress）改用 `tone="inverse"` |
+| interactive | `boolean` | `false` | 整卡可点：悬停上浮 + 阴影加深，键盘焦点给环。通常配 `render` |
+| render | `ReactElement` | - | 把整卡渲染成自定义元素（`<a href>` / 框架路由件），皮肤与 props 合并进去、子内容照常；卡里不要再放别的链接或按钮 |
 | size | `"sm" \| "md"` | `"md"` | 整卡密度：`sm` 同时收紧 Header / Body / Footer 的内边距 |
 | divided | `boolean` | `true` | 是否用分隔线把 `CardHeader` / `CardFooter` 与正文切开。设 `false` 时两条线一起去掉，并把它们原本撑着的那段内边距收一档 |
 
@@ -10767,6 +10917,24 @@ import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
     description="按角色批量指派，指派后立即生效"
     extra={<Button variant="ghost" size="sm">展开</Button>}
   />
+  <CardBody>…</CardBody>
+</Card>
+```
+
+主色卡（营销页的强调卡）：卡里的文字、标签、头像自动反色，进度条用 `tone="inverse"`：
+```tsx
+<Card variant="primary">
+  <CardBody>
+    <Text weight="semibold">整站色系跟随主题变化</Text>
+    <Text size="sm" tone="muted">负责人 · Abel</Text>
+    <Progress value={68} showValue tone="inverse" />
+  </CardBody>
+</Card>
+```
+
+整卡可点（站点卡 / 作品集）：
+```tsx
+<Card variant="elevated" interactive render={<a href="https://hulian.dev" target="_blank" rel="noreferrer" />}>
   <CardBody>…</CardBody>
 </Card>
 ```
@@ -13435,6 +13603,64 @@ const data = MODULES.flatMap((m, mi) =>
 
 ## 相关
 [Table](https://hulianui.haloritual.com/zh/components/table) · [Book3D](https://hulianui.haloritual.com/zh/components/book-3d) · [ProTable](https://hulianui.haloritual.com/zh/components/pro-table) · [PricingTable](https://hulianui.haloritual.com/zh/components/pricing-table) · [JsonViewer](https://hulianui.haloritual.com/zh/components/json-viewer) · [EditableTable](https://hulianui.haloritual.com/zh/components/editable-table)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# IconTile
+
+**导出**：`IconTile` · `iconTileVariants`
+
+> 把一个图标放进带底色的小方块，排在功能 / 通知文字的左边 · data-display/info
+
+## 何时用
+
+功能列表、通知流、产品线卡片、设置项里「图标 + 一段文字」最左边那一格。三档尺寸、三档变体、六档语义色与任意分类色。只要一个裸图标就直接放图标；要头像（人 / 账号）用 [Avatar](https://hulianui.haloritual.com/zh/components/avatar)；要品牌徽章用 [Brand](https://hulianui.haloritual.com/zh/components/brand)。
+
+## 导入
+```ts
+import { IconTile } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| tone | `"brand" \| "neutral" \| "info" \| "success" \| "warning" \| "danger"` | `"brand"` | 语义色档，与 Tag / Button 同一口径 |
+| variant | `"soft" \| "solid" \| "outline"` | `"soft"` | `soft` 浅语义底 + 语义色图标；`solid` 实心语义底 + 前景色图标；`outline` 中性描边卡面底，只有图标带语义色 |
+| size | `"sm" \| "md" \| "lg"` | `"md"` | 32 / 36 / 40px，圆角与图标尺寸随档 |
+| color | `string` | - | 分类色：语义色名（`chart-3` …）、任意 CSS 色或 `var(--color-*)`，覆盖 `tone`，三档变体都从它派生 |
+
+> 继承 `<span>` 原生属性。默认 `aria-hidden`（旁边总有文字说明）；要单独表意时传 `role="img"` + `aria-label`。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 图标（lucide 等 SVG），尺寸由组件按档给 |
+
+## 示例
+```tsx
+<div className="flex gap-4">
+  <IconTile size="lg"><Plug /></IconTile>
+  <div>
+    <Text weight="semibold">MCP 服务</Text>
+    <Text size="sm" tone="muted">一行命令装上，助手查 props 而不是猜 props。</Text>
+  </div>
+</div>
+
+// 选中 / 未选中两态：主色实底 vs 中性浅底
+<IconTile tone={active ? "brand" : "neutral"} variant={active ? "solid" : "soft"}><Component /></IconTile>
+
+// 分类色（通知流按事件类别区分）
+<IconTile variant="solid" color="chart-4"><MessageCircle /></IconTile>
+```
+
+## 禁忌 / 坑
+
+- 图标尺寸由组件按档给（`[&>svg]`），图标上不要再写 `size-*` 类，否则各档尺寸对不齐。
+- 默认 `aria-hidden`：它是装饰，语义由旁边的文字承担；单独出现、需要读屏念出来时才传 `role="img"` + `aria-label`。
+
+## 相关
+[Avatar](https://hulianui.haloritual.com/zh/components/avatar) · [Brand](https://hulianui.haloritual.com/zh/components/brand) · [Tag](https://hulianui.haloritual.com/zh/components/tag) · [StatusDot](https://hulianui.haloritual.com/zh/components/status-dot)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # Image
@@ -17477,6 +17703,8 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | dot | `boolean` | `false` | 前导状态圆点（颜色随 tone）。与 icon 互斥：icon 优先于 dot。 |
 | pulse | `boolean` | `false` | 圆点呼吸动画（进行态语义）。仅在 dot 为真时生效。 |
 | isDisabled | `boolean` | `false` | 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 |
+| shape | `"rounded" \| "pill"` | `"rounded"` | `rounded` 小圆角；`pill` 全圆药丸（版本号、计数这类短标签）。 |
+| render | `ReactElement` | - | 渲染成自定义元素（`<a href>` / 框架路由件）：版本号指向更新日志、标签指向筛选页这类可点标签。皮肤合并进该元素并补焦点环与悬停反馈；与 Button / Link 的 `render` 约定一致。不要与 `onClose` 同用（链接里套按钮是无效嵌套）。 |
 | className | `string` | - | - |
 | …HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | 透传 span 原生属性。状态标签常用 `title` 挂完整值做 hover 全文（表格里显示「Word」、title 是完整 MIME），以及 `data-testid` / `aria-*` |
 
@@ -17509,6 +17737,10 @@ import { Tag, tagVariants } from "@hulianui/ui"
 // 呼吸圆点表达进行态 + 可关闭
 <Tag dot pulse tone="brand">部署中</Tag>
 <Tag onClose={() => remove(id)}>待审核</Tag>
+```
+```tsx
+// 可点的标签：版本号药丸链到更新日志
+<Tag variant="outline" size="sm" shape="pill" render={<Link href="/changelog" />}>v0.44.0</Tag>
 ```
 ```tsx
 // 分类色：语义六档接不住十几二十种分类（渠道 / 业务线 / 文件类型）时用它
@@ -18414,12 +18646,17 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 | `theme` | `"light" \| "dark"` | - | 受控主题：传了即受控，显示与切换目标都由它决定，忽略 `ThemeProvider` / 自持态的值；点击只回调 `onThemeChange` |
 | `onThemeChange` | `(next: "light" \| "dark") => void` | - | 主题即将切换时回调下一个值；受控与非受控都触发，受控时是唯一的落值出口 |
 | `duration` | `number` | `500` | 圆形揭示动画时长(ms) |
+| `variant` | `"outline" \| "ghost"` | `"outline"` | `outline` 描边 + 卡面底；`ghost` 无边无底、静息次要灰、悬停回正文色，与顶栏里的 ghost 图标按钮并排时用 |
+| `size` | `"md" \| "sm"` | `"md"` | `md` 40px；`sm` 32px，与 Button `size="iconSm"` 同高 |
 | `className` | `string` | - | 按钮类名 |
 | `aria-label` | `string` | - | 无障碍标签 |
 
 ## 示例
 ```tsx
 <AnimatedThemeToggler aria-label="切换明暗主题" />
+
+// 顶栏工具区：与 <Button variant="ghost" muted size="iconSm"> 并排
+<AnimatedThemeToggler variant="ghost" size="sm" />
 
 // 受控：主题真源在消费方（接口 / 自己的存储），ThemeProvider 只是 forcedTheme 镜像
 <AnimatedThemeToggler theme={theme} onThemeChange={(next) => savePreference(next)} />
@@ -18661,7 +18898,9 @@ import { Brand } from "@hulianui/ui"
 | name | `ReactNode` | - | 品牌名；省略则只出徽章（侧栏收起态） |
 | description | `ReactNode` | - | 品牌名下方一行副标题（版本号 / 一句话定位） |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | sm 导航栏 28px / md 侧栏 36px / lg 登录页品牌区 |
-| color | `string` | `"primary"` | 徽章底色：语义色名（`chart-3` 等）或任意 CSS 色 |
+| color | `string` | `"primary"` | 徽章底色：语义色名（`chart-3` 等）或任意 CSS 色；`variant="bare"` 时是 mark 本身的颜色 |
+| variant | `"badge" \| "bare"` | `"badge"` | `badge` 方角实底徽章、mark 画在里面；`bare` 没有徽章底，mark 就是 logo 本身、直接用 `color` 着色 |
+| maskSrc | `string` | - | 单色 logo 图片地址：按图片形状着色（CSS mask），颜色跟 `color` 走，logo 因此能随主题色 / `AccentScope` 变色；传了就忽略 `mark` |
 | href | `string` | - | 普通链接（链回首页） |
 | render | `ReactElement` | - | 渲染成框架路由件（`<Link to="/" />`），避免 SPA 整页刷新；与 Button/Link/NavMenuItem 的 `render` 约定一致 |
 | className | `string` | - | 透传类名；其余原生属性一并透传 |
@@ -18696,6 +18935,9 @@ const reduced = usePrefersReducedMotion();
   name="瑚琏后台"
   mark={<video src="/brand.webm" poster="/brand-static.png" autoPlay={!reduced} muted loop playsInline />}
 />
+
+// 自带形状的单色 logo：不要徽章底，按图片形状着品牌色，跟随主题色 / AccentScope
+<Brand variant="bare" maskSrc="/logo.svg" name="瑚琏 UI" render={<Link href="/" />} />
 ```
 
 ## 禁忌 / 坑
@@ -19016,7 +19258,7 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 <!-- ════════════════════════════════════════════════════════ -->
 # Command
 
-**导出**：`Command` · `useCommandShortcut`
+**导出**：`Command` · `useCommandShortcut` · `CommandTrigger`
 
 > 用快捷键唤起面板，搜索并执行分好组的命令 · navigation/action
 
@@ -19026,7 +19268,7 @@ import { Collapsible, CollapsibleTrigger, CollapsiblePanel } from "@hulianui/ui"
 
 ## 导入
 ```ts
-import { Command, useCommandShortcut } from "@hulianui/ui"
+import { Command, CommandTrigger, useCommandShortcut } from "@hulianui/ui"
 ```
 
 ## Props
@@ -19095,6 +19337,18 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | disabled | `boolean` | - |
 | onSelect | `(value: string) => void` | 该项被执行（Enter / 点击）时回调。 |
 
+**CommandTrigger**（`<button>`，搜索框样子的面板入口）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| placeholder | `ReactNode` | `"搜索…"` | 占位文案 |
+| shortcut | `ReactNode` | `"⌘K"` | 右侧快捷键键帽；`null` 不显示。默认 ⌘K 时自动补 `aria-keyshortcuts` |
+| shape | `"rounded" \| "pill"` | `"rounded"` | `rounded` 与输入框同档圆角；`pill` 全圆药丸（营销 / 文档站顶栏） |
+| size | `"sm" \| "md"` | `"md"` | `md` 40px（与 Input 同高）；`sm` 32px（与 Button `sm` / `iconSm` 同高） |
+| collapseBelow | `"sm" \| "md" \| false` | `false` | 低于这一档断点时收成正方形图标钮，藏起占位文案与键帽 |
+
+> 继承 `<button>` 原生属性（`onClick`、`aria-label` 等）。
+
 ## 示例
 ```tsx
 const groups = [
@@ -19109,6 +19363,9 @@ const groups = [
 
 const [open, setOpen] = useState(false);
 <Command open={open} onOpenChange={setOpen} groups={groups} shortcut placeholder="输入命令或搜索…" />
+
+// 顶栏入口：搜索框样子的按钮，窄屏收成图标钮
+<CommandTrigger shape="pill" size="sm" collapseBelow="sm" placeholder="搜索文档" aria-label="搜索文档" onClick={() => setOpen(true)} />
 ```
 
 ## 禁忌 / 坑
@@ -19472,9 +19729,10 @@ import { Link, linkVariants } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| `tone` | `"primary" \| "foreground" \| "danger"` | `"primary"` | 文字语调色 |
+| `tone` | `"primary" \| "foreground" \| "danger" \| "muted"` | `"primary"` | 文字语调色；`muted` 静息次要灰、悬停回正文色，给页脚 / 一排来源链接这类不该抢主色的场景 |
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | 下划线显示策略 |
 | `external` | `boolean` | `false` | 外链：自动加 `target="_blank"` + `rel="noopener noreferrer"` + 尾随外链图标 |
+| `arrow` | `boolean` | `false` | 尾随「前往」箭头，悬停时前移半格（「查看全部 →」这类导向链接）；与 `external` 同时给时只出外链图标 |
 | `href` | `string` | - | 跳转地址（原生属性） |
 | `render` | `ReactElement` | - | 渲染为自定义元素，用来承载框架路由件（`next/link`、`react-router` 的 `Link`）。皮肤 class 与 Link 自身的 props 合并进该元素，`href` 由它自己带 |
 
@@ -19495,6 +19753,8 @@ import { Link, linkVariants } from "@hulianui/ui"
 <Link href="/docs">瑚琏文档</Link>
 <Link href="https://base-ui.com" external>Base UI 官网</Link>
 <Link href="#" underline="always" tone="danger">删除说明</Link>
+<Link href="/components" arrow>查看全部</Link>
+<Link href="https://tailwindcss.com" tone="muted" underline="none">Tailwind</Link>
 
 // 客户端路由：把框架的 Link 交给 render，href 写在它身上
 import NextLink from "next/link"
@@ -19807,7 +20067,7 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
 <!-- ════════════════════════════════════════════════════════ -->
 # Navbar
 
-**导出**：`Navbar` · `NavbarBrand` · `NavbarContent` · `NavbarItem` · `NavbarMenuToggle`
+**导出**：`Navbar` · `NavbarBrand` · `NavbarContent` · `NavbarItem` · `NavbarMenu` · `NavbarMenuToggle`
 
 > 搭出响应式顶部导航，含品牌、链接和移动端菜单 · navigation/global
 
@@ -19817,7 +20077,7 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
 
 ## 导入
 ```ts
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from "@hulianui/ui"
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle } from "@hulianui/ui"
 ```
 
 ## Props
@@ -19830,6 +20090,8 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 |------|------|------|------|
 | sticky | `boolean` | - | 是否 sticky 吸顶 |
 | bordered | `boolean` | - | 是否显示底部分隔边框 |
+| size | `"md" \| "sm"` | `"md"` | 高度档：`md` 64px（中后台）；`sm` 56px，文档 / 营销站的紧凑顶栏，左右内距同步收一档 |
+| variant | `"surface" \| "page"` | `"surface"` | 底色：`surface` 卡面色半透明（浮在内容上的面板）；`page` 页面底色半透明 + 更淡的分隔线（融进页面）。两档都带背景模糊 |
 
 **NavbarBrand**（`<div>`）
 
@@ -19848,6 +20110,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | isActive | `boolean` | - | 当前激活项（aria-current + 高亮） |
+| variant | `"text" \| "soft"` | `"text"` | `text` 只变文字色；`soft` 选中项铺主色浅底、悬停铺中性浅底，项里直接放链接时内距挪到链接上、整块都是点击区 |
 
 **NavbarMenuToggle**
 
@@ -19855,7 +20118,15 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 |------|------|------|------|
 | isOpen | `boolean` | - | 受控展开态 |
 | aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl"` | `"sm"` | 从这一档断点起隐藏（宽屏横排导航接手） |
 | className | `string` | - | 类名 |
+
+**NavbarMenu**（`<ul>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| isOpen | `boolean` | `false` | 是否展开；收起时不渲染，菜单里的链接不会在收起态被 Tab 到 |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl"` | `"sm"` | 从这一档断点起隐藏，与 `NavbarMenuToggle` 取同一档 |
 
 ## Events
 
@@ -19889,11 +20160,27 @@ function Header() {
     </Navbar>
   );
 }
+
+// 文档站紧凑顶栏：融进页面的底色 + 浅底药丸导航项 + xl 以下折叠
+<>
+  <Navbar sticky size="sm" variant="page">
+    <NavbarMenuToggle isOpen={open} onToggle={toggle} breakpoint="xl" />
+    <NavbarBrand grow={false}>瑚琏</NavbarBrand>
+    <NavbarContent className="hidden xl:flex">
+      <NavbarItem variant="soft" isActive><a href="/components">组件</a></NavbarItem>
+      <NavbarItem variant="soft"><a href="/blocks">区块</a></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+  <NavbarMenu isOpen={open} breakpoint="xl">
+    <NavbarItem variant="soft" isActive><a href="/components">组件</a></NavbarItem>
+    <NavbarItem variant="soft"><a href="/blocks">区块</a></NavbarItem>
+  </NavbarMenu>
+</>
 ```
 
 ## 禁忌 / 坑
 
-- `NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。
+- `NavbarMenuToggle` 与 `NavbarMenu` 都是受控件，`isOpen`/`onToggle` 由你自己维护 state；两者的 `breakpoint` 要取同一档，且与横排 `NavbarContent` 出现的断点一致，否则拉宽窗口时横排与竖排会同时在屏上。
 - 默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。
 - 三段版式（品牌 + 居中主菜单 + 右侧操作区）是本件的默认形状：`NavbarBrand` 默认 `grow`，三段等分，居中段才真的在导航栏中心。**两段式版式（品牌 + 紧贴品牌的 `justify="start"` 内容）要显式传 `grow={false}`**，否则那段内容会被推到 1/3 处。
 - 品牌区要能截断（窄屏让位）时，除了 `truncate` 还得给 `NavbarBrand` 加 `min-w-0`——flex 项默认 `min-width:auto`，不解开就不会收缩。
@@ -20997,11 +21284,12 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 | value | `any` | - | 受控当前 tab |
 | defaultValue | `any` | - | 非受控初始 tab |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | 方向 |
+| autoPlay | `number` | - | 自动轮播间隔（毫秒）：没人操作时按这个节奏换下一档，选中 tab 底部一条进度条走满即换。悬停 / 焦点在组件内、不在视口时暂停；系统要求减少动态效果时不启用；访客自己选过一次档就永久停下。自动换档同样回调 `onValueChange`（`reason` 为 `"none"`、`trigger` 为空）。只给展示型 tab 用 |
 
 ### TabsList
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
-| variant | `"underline" \| "solid"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 |
+| variant | `"underline" \| "solid" \| "card"` | `"underline"` | 皮肤：下划滑块 / 实心药丸 / 卡片。`card` 每个 tab 是一张带描述的卡，选中卡铺主色浅底；竖排时纵向堆叠，展示型 tab（产品线、功能介绍）用 |
 | size | `"sm" \| "md"` | `"md"` | 尺寸档，下发给 `TabsTab`（不必逐个传）。`md` 是页面级 tab 导航；`sm` 给「跟标题 / 搜索框同行」的行内切换器。见「尺寸」 |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | 选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」 |
 | className | `string` | - | - |
@@ -21026,6 +21314,26 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
   <TabsPanel value="account">管理你的账户资料与偏好设置。</TabsPanel>
   <TabsPanel value="password">在这里修改登录密码。</TabsPanel>
   <TabsPanel value="team">邀请成员、分配角色。</TabsPanel>
+</Tabs>
+```
+
+展示型 tab：竖排卡片 + 自动轮播（每 5 秒换一档，悬停暂停，访客选过即停）：
+```tsx
+const [tab, setTab] = useState("components");
+<Tabs value={tab} onValueChange={setTab} orientation="vertical" autoPlay={5000}>
+  <TabsList variant="card" aria-label="产品线">
+    <TabsTab value="components">
+      <IconTile tone={tab === "components" ? "brand" : "neutral"} variant={tab === "components" ? "solid" : "soft"}>
+        <Component />
+      </IconTile>
+      <span>
+        <Text weight="semibold">组件</Text>
+        <Text size="sm" tone="muted">可访问、可换肤的基础组件</Text>
+      </span>
+    </TabsTab>
+    …
+  </TabsList>
+  <TabsPanel value="components">…</TabsPanel>
 </Tabs>
 ```
 
@@ -22579,7 +22887,7 @@ import { Progress, progressPercent, dashOffset } from "@hulianui/ui"
 | value | `number` | - | 当前值；省略/undefined → indeterminate 不定态 |
 | max | `number` | `100` | 最大值 |
 | variant | `"linear" \| "circular"` | `"linear"` | 形态 |
-| tone | `"primary" \| "danger" \| "success" \| "warning"` | `"primary"` | 进度色调 |
+| tone | `"primary" \| "danger" \| "success" \| "warning" \| "inverse"` | `"primary"` | 进度色调。`inverse` 填充取前景色：放在彩色卡（`Card variant="primary"` / `data-surface="inverse"`）里是白条，主色填充在那里会和卡面融成一片 |
 | size | `number` | `40` | circular 直径 px（linear 忽略） |
 | thickness | `number` | `4` | circular 描边 px（linear 忽略） |
 | showValue | `boolean` | `false` | 显示百分比标签（circular 居中 / linear 右侧）；indeterminate 不显示 |
@@ -25293,6 +25601,60 @@ import { EvilEye } from "@hulianui/ui"
 
 ## 相关
 [DotPattern](https://hulianui.haloritual.com/zh/components/dot-pattern) · [GridPattern](https://hulianui.haloritual.com/zh/components/grid-pattern) · [StripedPattern](https://hulianui.haloritual.com/zh/components/striped-pattern) · [Spotlight](https://hulianui.haloritual.com/zh/components/spotlight) · [RetroGrid](https://hulianui.haloritual.com/zh/components/retro-grid) · [Ripple](https://hulianui.haloritual.com/zh/components/ripple)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# FadeMask
+
+**导出**：`FadeMask`
+
+> 把内容在某一边或从中心向四周淡出到透明 · decoration/backdrop
+
+## 何时用
+
+出血裁切的展示墙底部淡出、点阵 / 网格纹理的中心聚光、横向滚动区两端的淡出。用 CSS mask 实现，不关心下面是什么底色，放在卡片、暗色段落里都对。要模糊渐变用 [ProgressiveBlur](https://hulianui.haloritual.com/zh/components/progressive-blur)；要一片辉光用 [Spotlight](https://hulianui.haloritual.com/zh/components/spotlight)。
+
+## 导入
+```ts
+import { FadeMask } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| direction | `"top" \| "bottom" \| "left" \| "right" \| "radial"` | `"bottom"` | 往哪边淡出；`radial` 从 `at` 处向四周渐隐 |
+| start | `string` | `"60%"`（径向 `"0%"`） | 线性：从哪里开始淡出（之前全实色）；径向：实色核心占渐变半径的比例 |
+| at | `string` | `"50% 50%"` | 径向：渐隐中心 |
+| size | `string` | `"50% 50%"` | 径向：渐隐范围（宽 高） |
+
+> 继承 `<div>` 原生属性（定位、尺寸用 `className`）。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 被淡出的内容 |
+
+## 示例
+```tsx
+// 展示墙底部淡出
+<FadeMask direction="bottom" start="72%" className="absolute inset-y-0 left-0 w-screen">
+  <Card>…</Card>
+</FadeMask>
+
+// 点阵纹理中心聚光
+<FadeMask direction="radial" at="30% 10%" size="40% 50%" className="absolute inset-0 -z-10">
+  <DotPattern />
+</FadeMask>
+```
+
+## 禁忌 / 坑
+
+- 遮罩作用于整棵子树：里面的可点元素淡出到透明后仍然可点，别把交互控件放进完全透明的那一段。
+- 包 DotPattern 等 `absolute inset-0` 的背景层时，FadeMask 自己要有定位与尺寸（如 `absolute inset-0`），否则背景层会对齐到更外层的定位祖先。
+
+## 相关
+[Spotlight](https://hulianui.haloritual.com/zh/components/spotlight) · [DotPattern](https://hulianui.haloritual.com/zh/components/dot-pattern) · [ProgressiveBlur](https://hulianui.haloritual.com/zh/components/progressive-blur)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # FaultyTerminal
@@ -29210,8 +29572,9 @@ import { Spotlight } from "@hulianui/ui"
 | intensity | `number` | `14` | 辉光强度：辉光中心与底色 color-mix 的百分比，越大越亮 |
 | x | `string` | `"50%"` | 辉光中心 X 位置 |
 | y | `string` | `"0%"` | 辉光中心 Y 位置（顶部） |
-| size | `string` | `"125%"` | 辉光椭圆尺寸（径向渐变范围） |
+| size | `string` | `"125%"` | 辉光尺寸（径向渐变范围）：单值为正圆，两值（`"60% 70%"`，宽 高）为椭圆 |
 | fade | `number` | `55` | 渐隐到底色的位置百分比，越小辉光越聚拢 |
+| blend | `"bg" \| "transparent"` | `"bg"` | 渐隐到什么：`bg` 渐隐到页面底色（自身不透明）；`transparent` 渐隐到透明，叠在 DotPattern / 图片等纹理上时用，不遮挡下层 |
 
 > 继承 `ComponentPropsWithoutRef<"div">`。
 
@@ -29223,6 +29586,13 @@ import { Spotlight } from "@hulianui/ui"
 </div>
 
 <Spotlight color="var(--color-success)" y="50%" size="100%" intensity={16} />
+
+{/* 叠在点阵纹理上：渐隐到透明，椭圆辉光 */}
+<div className="relative isolate overflow-hidden">
+  <DotPattern className="-z-10" />
+  <Spotlight blend="transparent" size="50% 60%" x="30%" intensity={18} fade={70} className="-z-10" />
+  …内容…
+</div>
 ```
 
 ## 禁忌 / 坑
@@ -30003,6 +30373,56 @@ import { Watch, WATCH_MODELS } from "@hulianui/ui"
 
 ## 相关
 [iPhone](https://hulianui.haloritual.com/zh/components/iphone) · [Android](https://hulianui.haloritual.com/zh/components/android) · [Tablet](https://hulianui.haloritual.com/zh/components/tablet) · [Safari](https://hulianui.haloritual.com/zh/components/safari) · [Chrome](https://hulianui.haloritual.com/zh/components/chrome) · [Terminal](https://hulianui.haloritual.com/zh/components/terminal)
+
+<!-- ════════════════════════════════════════════════════════ -->
+# WindowFrame
+
+**导出**：`WindowFrame`
+
+> 用三色点标题栏的应用窗口包住一块界面，做成产品截图 · mockups/window
+
+## 何时用
+
+产品预览、AI 对话窗、代码演示这类「一个应用窗口」的展示：三色点 + 标题 + 右侧操作槽，没有地址栏。要浏览器外壳（地址栏 / 标签页）用 [Safari](https://hulianui.haloritual.com/zh/components/safari) / [Chrome](https://hulianui.haloritual.com/zh/components/chrome)；要逐行播放命令用 [Terminal](https://hulianui.haloritual.com/zh/components/terminal)。
+
+## 导入
+```ts
+import { WindowFrame } from "@hulianui/ui"
+```
+
+## Props
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| title | `ReactNode` | - | 三色点右侧的标题槽：字符串按等宽小字渲染（像文件名 / 路由），也可放 Tag 等节点 |
+| toolbar | `ReactNode` | - | 标题栏右端的操作槽 |
+
+> 继承 `<div>` 原生属性（`className` 落在外框上，给宽高用）。
+
+## Slots
+
+| 插槽 | 类型 | 说明 |
+|------|------|------|
+| children | `ReactNode` | 窗口内容；内容区不带内边距 |
+
+## 示例
+```tsx
+<WindowFrame title="dashboard">
+  <div className="h-[30rem] bg-bg">…</div>
+</WindowFrame>
+
+<WindowFrame title={<Tag tone="brand" size="sm">MCP</Tag>}>
+  <div className="space-y-4 p-5">…对话…</div>
+</WindowFrame>
+```
+
+## 禁忌 / 坑
+
+- 内容区不带内边距：截图类内容要铺满，对话 / 表单类内容自己包一层 padding。
+- 三色点是 macOS 固定色，不跟主题色走（设备拟物的约定，与 Safari 相同）。
+
+## 相关
+[Safari](https://hulianui.haloritual.com/zh/components/safari) · [Chrome](https://hulianui.haloritual.com/zh/components/chrome) · [Terminal](https://hulianui.haloritual.com/zh/components/terminal)
 
 
 # ━━━━━━━━ 移动端 ━━━━━━━━

@@ -4,7 +4,7 @@ name: Command
 category: navigation
 group: action
 tags: []
-exports: [Command, useCommandShortcut]
+exports: [Command, CommandTrigger, useCommandShortcut]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ status: enriched
 
 ## 导入
 ```ts
-import { Command, useCommandShortcut } from "@hulianui/ui"
+import { Command, CommandTrigger, useCommandShortcut } from "@hulianui/ui"
 ```
 
 ## Props
@@ -87,6 +87,18 @@ import { Command, useCommandShortcut } from "@hulianui/ui"
 | disabled | `boolean` | - |
 | onSelect | `(value: string) => void` | 该项被执行（Enter / 点击）时回调。 |
 
+**CommandTrigger**（`<button>`，搜索框样子的面板入口）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| placeholder | `ReactNode` | `"搜索…"` | 占位文案 |
+| shortcut | `ReactNode` | `"⌘K"` | 右侧快捷键键帽；`null` 不显示。默认 ⌘K 时自动补 `aria-keyshortcuts` |
+| shape | `"rounded" \| "pill"` | `"rounded"` | `rounded` 与输入框同档圆角；`pill` 全圆药丸（营销 / 文档站顶栏） |
+| size | `"sm" \| "md"` | `"md"` | `md` 40px（与 Input 同高）；`sm` 32px（与 Button `sm` / `iconSm` 同高） |
+| collapseBelow | `"sm" \| "md" \| false` | `false` | 低于这一档断点时收成正方形图标钮，藏起占位文案与键帽 |
+
+> 继承 `<button>` 原生属性（`onClick`、`aria-label` 等）。
+
 ## 示例
 ```tsx
 const groups = [
@@ -101,6 +113,9 @@ const groups = [
 
 const [open, setOpen] = useState(false);
 <Command open={open} onOpenChange={setOpen} groups={groups} shortcut placeholder="输入命令或搜索…" />
+
+// 顶栏入口：搜索框样子的按钮，窄屏收成图标钮
+<CommandTrigger shape="pill" size="sm" collapseBelow="sm" placeholder="搜索文档" aria-label="搜索文档" onClick={() => setOpen(true)} />
 ```
 
 ## 禁忌 / 坑

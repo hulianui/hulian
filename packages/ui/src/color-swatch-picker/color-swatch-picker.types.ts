@@ -44,6 +44,8 @@ export interface ColorSwatchPickerProps
   onValueChange?: (color: string) => void;
   /** 色块尺寸，默认 md。 */
   size?: SwatchSize;
+  /** `square` token 圆角 + 细边（默认）；`circle` 全圆、无边，只留一圈极淡内阴影（主题色 / 配色选择）。@default "square" */
+  shape?: "square" | "circle";
   /** 整组禁用。 */
   disabled?: boolean;
   className?: string;

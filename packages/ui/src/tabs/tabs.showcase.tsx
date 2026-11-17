@@ -2,7 +2,11 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "./tabs";
 import type { TabsTone } from "./tabs.types";
+import { useState } from "react";
+import { Blocks, Component, PanelsTopLeft } from "lucide-react";
+import { IconTile } from "../icon-tile";
 import { Tag } from "../tag";
+import { Text } from "../text";
 
 function Demo({
   variant,
@@ -25,6 +29,49 @@ function Demo({
       <TabsPanel value="account">管理你的账户资料与偏好设置。</TabsPanel>
       <TabsPanel value="password">在这里修改登录密码。</TabsPanel>
       <TabsPanel value="team">邀请成员、分配角色。</TabsPanel>
+    </Tabs>
+  );
+}
+
+const CARDS = [
+  { value: "components", title: "组件", desc: "可访问、可换肤的基础组件", Icon: Component },
+  { value: "blocks", title: "区块", desc: "拿来就能拼页面的段落", Icon: Blocks },
+  { value: "pages", title: "页面", desc: "成型的整页：仪表盘、设置、登录", Icon: PanelsTopLeft },
+];
+
+function CardTabsDemo({ autoPlay }: { autoPlay?: number }) {
+  const [tab, setTab] = useState<unknown>("components");
+  return (
+    <Tabs
+      value={tab}
+      onValueChange={setTab}
+      orientation="vertical"
+      autoPlay={autoPlay}
+      className="grid w-full gap-6 sm:grid-cols-[18rem_1fr]"
+    >
+      <TabsList variant="card" aria-label="产品线">
+        {CARDS.map(({ value, title, desc, Icon }) => (
+          <TabsTab key={value} value={value}>
+            <IconTile
+              tone={tab === value ? "brand" : "neutral"}
+              variant={tab === value ? "solid" : "soft"}
+            >
+              <Icon />
+            </IconTile>
+            <span className="min-w-0">
+              <Text weight="semibold">{title}</Text>
+              <Text size="sm" tone="muted">
+                {desc}
+              </Text>
+            </span>
+          </TabsTab>
+        ))}
+      </TabsList>
+      {CARDS.map(({ value, title }) => (
+        <TabsPanel key={value} value={value} className="mt-0 grid place-items-center rounded-xl border border-border p-8">
+          {title}预览
+        </TabsPanel>
+      ))}
     </Tabs>
   );
 }
@@ -214,6 +261,27 @@ export const tabsShowcase: ShowcaseSpec = {
           </div>
         </Tabs>
       ),
+    },
+    {
+      title: "卡片 · 自动轮播",
+      description:
+        "TabsList variant=\"card\" 每个 tab 是一张带描述的卡；Tabs autoPlay 没人操作时按节奏换档，选中卡底部进度条走满即换，悬停暂停、选过即停。",
+      code: `<Tabs value={tab} onValueChange={setTab} orientation="vertical" autoPlay={5000}>
+  <TabsList variant="card" aria-label="产品线">
+    <TabsTab value="components">
+      <IconTile tone={tab === "components" ? "brand" : "neutral"} variant={tab === "components" ? "solid" : "soft"}>
+        <Component />
+      </IconTile>
+      <span>
+        <Text weight="semibold">组件</Text>
+        <Text size="sm" tone="muted">可访问、可换肤的基础组件</Text>
+      </span>
+    </TabsTab>
+    …
+  </TabsList>
+  <TabsPanel value="components">…</TabsPanel>
+</Tabs>`,
+      render: () => <CardTabsDemo autoPlay={5000} />,
     },
   ],
   controls: [

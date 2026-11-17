@@ -21,6 +21,7 @@ function ColorSwatchPickerImpl({
   defaultValue,
   onValueChange,
   size = "md",
+  shape = "square",
   disabled = false,
   className,
   "aria-label": ariaLabel,
@@ -48,9 +49,16 @@ function ColorSwatchPickerImpl({
           style={{ backgroundColor: color }}
           className={cn(
             SIZE[size],
-            "grid place-items-center rounded-[min(var(--radius),0.5rem)] border border-border transition-[box-shadow,transform] outline-none",
-            // 选中：token 主色 ring 描边 + 轻微放大
-            "data-[checked]:scale-105 data-[checked]:ring-2 data-[checked]:ring-primary data-[checked]:ring-offset-2 data-[checked]:ring-offset-bg",
+            "grid place-items-center transition-[box-shadow,transform,outline-color] outline-none",
+            // square：token 圆角 + 实线细边。circle：全圆、不画边，只留一圈极淡的内阴影把浅色块
+            // 从白底上勾出来 —— 圆色块加实线边会显得像按钮，配色器里要的是「一滴颜料」。
+            shape === "circle"
+              ? "rounded-full shadow-[inset_0_0_0_1px_oklch(0_0_0/0.08)]"
+              : "rounded-[min(var(--radius),0.5rem)] border border-border",
+            // 选中：主色外环 + 轻微放大。外环用 outline + outline-offset 而不是 ring + ring-offset：
+            // ring-offset 的间隙是**画出来的**（固定取 bg 色），放在卡片里会露出一圈与卡面不同的底色；
+            // outline-offset 的间隙是透明的，放在哪个面上都透出那个面本身。
+            "data-[checked]:scale-105 data-[checked]:outline-2 data-[checked]:outline-solid data-[checked]:outline-offset-2 data-[checked]:outline-primary",
             "hover:scale-105",
             "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
             "data-[disabled]:cursor-not-allowed data-[disabled]:hover:scale-100",

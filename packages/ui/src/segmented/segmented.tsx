@@ -1,5 +1,6 @@
 "use client";
 import {
+  cloneElement,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -7,6 +8,7 @@ import {
   useState,
   type CSSProperties,
   type KeyboardEvent,
+  type MouseEvent,
 } from "react";
 import { cn } from "../lib/cn";
 import { motionDurationCss, motionEaseCss, pressableClass } from "../motion";
@@ -47,10 +49,21 @@ export function Segmented({
   disabled,
   size = "md",
   tone = "brand",
+  shape = "rounded",
   className,
   "aria-label": ariaLabel,
   ...rest
 }: SegmentedProps) {
+  // 链接模式：任一段给了 render（通常是 <a href>）就整组按「一组链接」处理 —— 切语言、切版本这类
+  // 选中项 = 当前页面的导航。语义从 radiogroup 换成 group + aria-current="page"：方向键漫游与
+  // roving tabindex 是单选控件的约定，放在链接上反而让 Tab 跳不到其余几项。
+  const linkMode = items.some((i) => i.render != null);
+  const pill = shape === "pill";
+  // 药丸形：轨道、滑块、段三层都全圆；圆角档里滑块比轨道小一圈（内缩 4px），全圆时同样全圆即可。
+  const trackRadius = pill ? "rounded-full" : "rounded-[var(--hl-radius-control,var(--radius))]";
+  const innerRadius = pill
+    ? "rounded-full"
+    : "rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)]";
   const firstEnabled = items.find((i) => !i.disabled)?.value;
   const [internal, setInternal] = useState<string | undefined>(defaultValue ?? firstEnabled);
   const selected = value ?? internal;
@@ -62,7 +75,7 @@ export function Segmented({
   const itemCount = items.length;
 
   const rootRef = useRef<HTMLDivElement>(null);
-  const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const btnRefs = useRef<(HTMLElement | null)[]>([]);
   const [indicator, setIndicator] = useState<{ left: number; width: number } | null>(null);
 
   // 测量选中段几何 → 驱动滑块。jsdom 下 offsetWidth=0 → indicator.width 守卫使其不渲染。
@@ -154,7 +167,7 @@ export function Segmented({
     <div
       {...rest}
       ref={rootRef}
-      role="radiogroup"
+      role={linkMode ? "group" : "radiogroup"}
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}
       className={cn(
@@ -163,7 +176,8 @@ export function Segmented({
         // 分给每段 —— 短段分多了、长段（文字 + 段内 Tag）分少了，内容居中溢出把两侧内边距都吃掉，
         // 徽标贴着段边。minmax(0,1fr) 在内容定宽时每列取「最宽那段」的内容宽，所有段等宽且都装得下；
         // 容器被压窄（w-full / 窄屏）时下限 0 又允许各段等分收缩出省略号（#114 的修复不退化）。
-        "relative inline-grid grid-flow-col auto-cols-[minmax(0,1fr)] items-center gap-1 rounded-[var(--hl-radius-control,var(--radius))] bg-track p-1 text-foreground",
+        "relative inline-grid grid-flow-col auto-cols-[minmax(0,1fr)] items-center gap-1 bg-track p-1 text-foreground",
+        trackRadius,
         sizeClasses[size].root,
         disabled && "pointer-events-none opacity-50",
         className,
@@ -174,12 +188,65 @@ export function Segmented({
       {indicator && indicator.width > 0 && (
         <span
           aria-hidden
-          className="pointer-events-none absolute bottom-1 left-0 top-1 rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)] bg-surface shadow-sm"
+          className={cn(
+            "pointer-events-none absolute bottom-1 left-0 top-1 bg-surface shadow-sm",
+            innerRadius,
+          )}
           style={indicatorStyle}
         />
       )}
       {items.map((item, idx) => {
         const isSelected = item.value === selected;
+        const itemClass = cn(
+          // pressableClass 平替 transition-colors 并补按下缩放：滑块（下方 absolute 层）不受影响，
+          // 只有当前项的文字/图标轻微内缩，形成"按到了"的即时反馈。
+          // min-w-0 + truncate 缺一不可：flex item 默认 min-width:auto，配上 whitespace-nowrap
+          // 后完全不可压缩，于是 root 的实际宽度被撑到「所有段文字之和」，flex-1 形同虚设，
+          // 装不下的部分被上游容器裁掉——**选项存在但不可见也不可点**（#114）。
+          // 补上之后段会等分压缩、文字变省略号，任何宽度下每一段都仍然可达。
+          `relative z-10 inline-flex h-full min-w-0 items-center justify-center gap-1.5 truncate whitespace-nowrap outline-none ${pressableClass}`,
+          innerRadius,
+          sizeClasses[size].item,
+          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+          // 字重只给选中段：未选中段常规字重，选中态多一道「字重」信号、更好认。各段 flex-1 等宽，
+          // 选中切换时字重变化不会挤动布局（Tabs 的段按内容定宽，故没有跟着改）。
+          isSelected
+            ? cn("font-medium", selectedTextByTone[tone])
+            : "font-normal hover:text-foreground",
+          "disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
+        );
+        const setRef = (el: HTMLElement | null) => {
+          btnRefs.current[idx] = el;
+        };
+
+        if (item.render) {
+          const own = item.render.props as {
+            className?: string;
+            onClick?: (e: MouseEvent<HTMLElement>) => void;
+          };
+          return cloneElement(
+            item.render,
+            {
+              key: item.value,
+              ref: setRef,
+              "aria-current": isSelected ? "page" : undefined,
+              "aria-label": item.ariaLabel,
+              "aria-disabled": disabled || item.disabled || undefined,
+              className: cn(
+                itemClass,
+                (disabled || item.disabled) &&
+                  "pointer-events-none opacity-[var(--hl-opacity-disabled,0.5)]",
+                own.className,
+              ),
+              onClick: (e: MouseEvent<HTMLElement>) => {
+                own.onClick?.(e);
+                select(item.value);
+              },
+            } as Record<string, unknown>,
+            item.label,
+          );
+        }
+
         return (
           <button
             key={item.value}
@@ -187,28 +254,12 @@ export function Segmented({
             role="radio"
             aria-checked={isSelected}
             aria-label={item.ariaLabel ?? (typeof item.label === "string" ? undefined : item.value)}
-            ref={(el) => {
-              btnRefs.current[idx] = el;
-            }}
+            ref={setRef}
             disabled={disabled || item.disabled}
             tabIndex={isSelected ? 0 : -1}
             onClick={() => select(item.value)}
             onKeyDown={(e) => onKeyDown(e, idx)}
-            className={cn(
-              // pressableClass 平替 transition-colors 并补按下缩放：滑块（下方 absolute 层）不受影响，
-              // 只有当前项的文字/图标轻微内缩，形成"按到了"的即时反馈。
-              // min-w-0 + truncate 缺一不可：flex item 默认 min-width:auto，配上 whitespace-nowrap
-              // 后完全不可压缩，于是 root 的实际宽度被撑到「所有段文字之和」，flex-1 形同虚设，
-              // 装不下的部分被上游容器裁掉——**选项存在但不可见也不可点**（#114）。
-              // 补上之后段会等分压缩、文字变省略号，任何宽度下每一段都仍然可达。
-              `relative z-10 inline-flex h-full min-w-0 items-center justify-center gap-1.5 truncate whitespace-nowrap rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)] outline-none ${pressableClass}`,
-              sizeClasses[size].item,
-              "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-              // 字重只给选中段：未选中段常规字重，选中态多一道「字重」信号、更好认。各段 flex-1 等宽，
-              // 选中切换时字重变化不会挤动布局（Tabs 的段按内容定宽，故没有跟着改）。
-              isSelected ? cn("font-medium", selectedTextByTone[tone]) : "font-normal hover:text-foreground",
-              "disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
-            )}
+            className={itemClass}
           >
             {item.label}
           </button>

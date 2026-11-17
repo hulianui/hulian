@@ -31,11 +31,12 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
 | value | `any` | - | Controlled active tab value. |
 | defaultValue | `any` | - | Initially active tab when uncontrolled. |
 | orientation | `"horizontal" \| "vertical"` | `"horizontal"` | Tab-list orientation. |
+| autoPlay | `number` | - | Auto-advance interval in milliseconds. While nobody interacts, it moves to the next tab at this pace, and a progress bar along the bottom of the selected tab switches tabs when it fills. Pauses while hovered, while focus is inside, or when off screen; disabled when the system asks for reduced motion; stops for good once the visitor picks a tab. Auto-advance also calls `onValueChange` (`reason` is `"none"`, `trigger` is empty). Only for showcase tabs. |
 
 ### TabsList
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variant | `"underline" \| "solid"` | `"underline"` | Underline slider or solid pill styling. |
+| variant | `"underline" \| "solid" \| "card"` | `"underline"` | Underline slider, solid pill, or card styling. With `card`, each tab is a card with a description and the selected card gets the accent's subtle background; it stacks when vertical. For showcase tabs (product lines, feature tours). |
 | size | `"sm" \| "md"` | `"md"` | Size step, passed down to `TabsTab` so it never has to be repeated. `md` is page-level tab navigation; `sm` is for an inline switcher sitting on the same row as a heading or a search box. See Size. |
 | tone | `"brand" \| "success" \| "warning" \| "danger" \| "neutral"` | `"brand"` | Semantic colour of the selected state, passed down to `TabsTab` so it never has to be repeated. See Semantic tone. |
 | className | `string` | - | Additional class name. |
@@ -60,6 +61,26 @@ import { Tabs, TabsList, TabsTab, TabsPanel, tabsListVariants } from "@hulianui/
   <TabsPanel value="account">Manage your profile and preferences.</TabsPanel>
   <TabsPanel value="password">Change your sign-in password.</TabsPanel>
   <TabsPanel value="team">Invite members and assign roles.</TabsPanel>
+</Tabs>
+```
+
+Showcase tabs: vertical cards with auto-advance (every 5 seconds, paused on hover, stops once the visitor picks one):
+```tsx
+const [tab, setTab] = useState("components");
+<Tabs value={tab} onValueChange={setTab} orientation="vertical" autoPlay={5000}>
+  <TabsList variant="card" aria-label="Product lines">
+    <TabsTab value="components">
+      <IconTile tone={tab === "components" ? "brand" : "neutral"} variant={tab === "components" ? "solid" : "soft"}>
+        <Component />
+      </IconTile>
+      <span>
+        <Text weight="semibold">Components</Text>
+        <Text size="sm" tone="muted">Accessible, themeable building blocks</Text>
+      </span>
+    </TabsTab>
+    …
+  </TabsList>
+  <TabsPanel value="components">…</TabsPanel>
 </Tabs>
 ```
 

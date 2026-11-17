@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button";
 import { Tag } from "../tag";
+import { Progress } from "../progress";
 import { Text } from "../text";
 import { ChevronRight } from "../_icons";
 import { Card, CardHeader, CardBody, CardFooter } from "./card";
@@ -165,12 +166,51 @@ export const cardShowcase: ShowcaseSpec = {
         </Card>
       ),
     },
+    {
+      title: "主色卡",
+      description:
+        "variant=\"primary\" 主色渐变底，自动挂 data-surface=\"inverse\"：卡里的文字与标签自动反色，进度条用 tone=\"inverse\"。",
+      code: `<Card variant="primary" className="w-72">
+  <CardBody className="space-y-4">
+    <Tag size="sm">进行中</Tag>
+    <Text weight="semibold">整站色系跟随主题变化</Text>
+    <Text size="sm" tone="muted">负责人 · Abel</Text>
+    <Progress value={68} showValue tone="inverse" />
+  </CardBody>
+</Card>`,
+      render: () => (
+        <Card variant="primary" className="w-72">
+          <CardBody className="space-y-4">
+            <Tag size="sm">进行中</Tag>
+            <Text weight="semibold">整站色系跟随主题变化</Text>
+            <Text size="sm" tone="muted">
+              负责人 · Abel
+            </Text>
+            <Progress value={68} showValue tone="inverse" aria-label="进度" />
+          </CardBody>
+        </Card>
+      ),
+    },
+    {
+      title: "整卡可点",
+      description: "interactive 悬停上浮、键盘焦点给环；render 把整卡渲染成链接，卡里不要再放别的链接或按钮。",
+      code: `<Card variant="elevated" interactive render={<a href="/docs" />}>
+  <CardHeader title="瑚琏文档" description="hulian.dev" />
+  <CardBody>组件、区块、页面与模版。</CardBody>
+</Card>`,
+      render: () => (
+        <Card id="card" variant="elevated" interactive render={<a href="#card" />} className="w-64">
+          <CardHeader title="瑚琏文档" description="hulian.dev" />
+          <CardBody>组件、区块、页面与模版。</CardBody>
+        </Card>
+      ),
+    },
   ],
   controls: [
     {
       prop: "variant",
       type: "select",
-      options: ["outline", "elevated", "featured", "plain"],
+      options: ["outline", "elevated", "featured", "primary", "plain"],
       defaultValue: "outline",
     },
     { prop: "withFooter", type: "boolean", defaultValue: true, label: "显示 footer" },

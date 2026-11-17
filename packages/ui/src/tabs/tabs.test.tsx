@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, act } from "@testing-library/react";
 import { tabsListVariants, Tabs, TabsList, TabsTab, TabsPanel } from "./tabs";
 import type { TabsTone } from "./tabs.types";
 
@@ -259,5 +259,50 @@ describe("Tabs tone（#316）", () => {
     const tab = container.querySelector('[role="tab"]')!;
     expect(tab.className).toContain("data-[active]:text-success");
     expect(tab.className).not.toContain("data-[active]:text-primary");
+  });
+});
+
+describe("Tabs · card / autoPlay", () => {
+  it("card 皮肤：无滑块，tab 是卡", () => {
+    const { container, getAllByRole } = render(
+      <Tabs defaultValue="a">
+        <TabsList variant="card">
+          <TabsTab value="a">甲</TabsTab>
+          <TabsTab value="b">乙</TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    expect(getAllByRole("tab")[0].className).toContain("rounded-xl");
+    expect(getAllByRole("tab")[0].className).toContain("data-[active]:bg-primary-subtle");
+    expect(container.querySelector("[data-slot=tabs-autoplay-progress]")).toBeNull();
+  });
+
+  it("不传 autoPlay 时不出进度条（存量渲染不变）", () => {
+    const { container } = render(
+      <Tabs defaultValue="a">
+        <TabsList>
+          <TabsTab value="a">甲</TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    expect(container.querySelector("[data-slot=tabs-autoplay-progress]")).toBeNull();
+  });
+
+  it("autoPlay：选中 tab 出进度条；用户选档后永久停下", async () => {
+    const { container, getAllByRole } = render(
+      <Tabs defaultValue="a" autoPlay={5000}>
+        <TabsList variant="card">
+          <TabsTab value="a">甲</TabsTab>
+          <TabsTab value="b">乙</TabsTab>
+        </TabsList>
+      </Tabs>,
+    );
+    await act(async () => {});
+    const bar = container.querySelector("[data-slot=tabs-autoplay-progress]");
+    expect(bar).toBeTruthy();
+    expect(getAllByRole("tab")[0].contains(bar)).toBe(true);
+    fireEvent.click(getAllByRole("tab")[1]);
+    await act(async () => {});
+    expect(container.querySelector("[data-slot=tabs-autoplay-progress]")).toBeNull();
   });
 });
