@@ -1,5 +1,11 @@
 # @hulianui/tokens
 
+## 0.19.0
+
+### Minor Changes
+
+- 659f0c0: feat(tokens): 新增 accent 作用域 `[data-accent-scope]`：子树里只换主色的**色相**（`--hl-accent-hue`，OKLCH h，品牌原色 258），明度 / 彩度沿用品牌梯子，`primary` / `primary-hover` / `primary-subtle` / `primary-border` / `ring` / `signal-brand` / `code-keyword` 与图表色板 `chart-1..6` 一起换，亮色、暗色、作用域里嵌套的主题岛都覆盖。`--hl-accent-hue` 用 `@property` 注册成 `<number>`，可以过渡。通常配 `@hulianui/ui` 的 `<AccentScope hue>` 使用。
+
 ## 0.18.0
 
 ### Minor Changes

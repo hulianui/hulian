@@ -1,5 +1,23 @@
 # @hulianui/ui
 
+## 0.77.0
+
+### Minor Changes
+
+- 659f0c0: feat: the docs homepage and navbar are now built entirely from components, and the visual patches that lived in the site are now component features. Adds 5 components and 3 sub-component exports and fills in props on 14 components. No new prop default changes existing rendering, except the ColorSwatchPicker selected ring noted below.
+
+  - **New components**: `AccentScope` (changes the accent hue of one region, paired with the tokens' `[data-accent-scope]`) · `IconTile` (the icon square left of feature or notification text: three sizes × three variants × six tones, plus category colors) · `SectionHeader` (eyebrow, section title, accented second half, and lead text) · `WindowFrame` (an app window with a traffic-light title bar) · `FadeMask` (fades content to transparency toward one edge or from the center outward).
+  - **New sub-components**: `CommandTrigger` (a search-field-style entry to the command palette; `shape="pill"`, and `collapseBelow` turns it into an icon button on narrow screens) · `NavbarMenu` (the collapsed menu for narrow screens, sharing `breakpoint` with `NavbarMenuToggle`) · `SnippetGroup` (several commands stacked in one card; `overlay` holds decorations such as BorderBeam).
+  - **Tabs**: `TabsList variant="card"` (card tabs with descriptions, stacked when vertical); `Tabs autoPlay={ms}` advances automatically, switching when the bar under the selected tab fills. It pauses on hover, on focus, and off screen, is disabled under reduced motion, and stops once the visitor picks a tab.
+  - **Card**: `variant="primary"` (a primary gradient that sets `data-surface="inverse"`, so components inside switch to inverse colors), `interactive`, and `render` (the whole card as a link).
+  - **Navbar**: `size="sm"` and `variant="page"`; `NavbarItem variant="soft"` (the active item gets the accent's subtle background and the link fills the pill); `NavbarMenuToggle breakpoint`.
+  - **Brand**: `variant="bare"` (no badge) and `maskSrc` (a single-color logo filled by its shape, following the theme color and AccentScope).
+  - **Segmented**: `shape="pill"`; segments can set `render` (such as `<a href>`), turning the group into a set of links (`role="group"` + `aria-current="page"`).
+  - **Tag**: `shape="pill"` and `render` (clickable tags). **Link**: `tone="muted"` and `arrow`. **Heading**: `size="display"`.
+  - **AnimatedThemeToggler**: `variant="ghost"` and `size="sm"` (the same height as Button `iconSm`).
+  - **Progress**: `tone="inverse"` (a white bar on colored cards). **Avatar**: `tone="brand"` and `ring`. **Snippet**: `muted` secondary rows. **Spotlight**: `blend="transparent"`, and two values in `size` give an ellipse.
+  - **ColorSwatchPicker**: `shape="circle"`. The selected ring now uses `outline-offset` instead of `ring-offset`, so the gap is transparent rather than painted with the page background, and no longer shows a mismatched band on cards (unchanged on the page background).
+
 ## 0.76.0
 
 ### Minor Changes
