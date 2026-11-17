@@ -27,6 +27,49 @@
   },
   {
     "pkg": "@hulianui/ui",
+    "version": "0.75.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "3a72195",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(stat): adds `deltaPlacement`. `\"inline\"` places the trend (`delta` + `deltaLabel`) on the same row as the value, on the right, and the chart occupies the bottom of the card by itself. The default `\"below\"` matches the previous layout (under the value, after the chart). A KPI card with a `chart` should use `\"inline\"`: the reading, then the change, then the trend, top to bottom, without looking past a chart for the number the change describes."
+      },
+      {
+        "sha": "3a72195",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(animated-list): entrance now fires as soon as a child is slightly in view (`viewport.amount: \"some\"`). It used to require 40% of the item inside the viewport, so a list inside a container that clips part of it with `overflow` (a showcase wall that bleeds sideways, a card clipped by overflow) never showed enough of each item and the whole column stayed blank."
+      },
+      {
+        "sha": "3a72195",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(cascader): the \"no matches\" row shown when a search finds nothing now carries `role=\"none\"`. It used to be a plain `<li>` inside `role=\"listbox\"`, so it kept the implicit listitem role; axe reported a critical aria-required-children violation and screen readers announced it as an odd, unselectable member of the listbox."
+      },
+      {
+        "sha": "3a72195",
+        "bump": "patch",
+        "breaking": false,
+        "body": "style(segmented): only the selected segment uses `font-medium`; unselected segments use the regular weight, so selection has a weight cue as well. Segments stay equal width (`flex-1`), and the weight change does not shift the layout. Tabs size each segment to its content and are unchanged."
+      },
+      {
+        "sha": "3a72195",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(snippet): the width no longer overflows its parent. A long string with no spaces (a URL or a token) wraps anywhere it does not fit (`overflow-wrap: anywhere`); a command with spaces still breaks on words. It used to refuse to wrap and pushed the Snippet and its parent out of the viewport."
+      },
+      {
+        "sha": "3a72195",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(color-swatch-picker): the selected check is now a solid white stroke plus a very faint dark outline. It used to use `mix-blend-difference`, so the color was the complement of the swatch: an orange check on blue, a pink check on green, and the selected state looked like a mistake."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
     "version": "0.74.1",
     "date": "2026-11-17",
     "entries": [
