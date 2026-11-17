@@ -103,15 +103,17 @@ export function HomePlayground() {
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-24 sm:py-28">
-      <div className="mx-auto max-w-2xl text-center">
+      {/* 标题容器比导语宽：英文标题「Carefully designed defaults, free to change」在 36px 下约
+          810px，放进 max-w-2xl（672px）会在半句处折行。窄屏放不下时 text-balance 让两行等长。 */}
+      <div className="mx-auto max-w-4xl text-center">
         <Text size="sm" weight="semibold" className="text-primary">
           {copy.eyebrow}
         </Text>
-        <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+        <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
           {copy.title[0]}
           <span className="text-primary">{copy.title[1]}</span>
         </h2>
-        <Text tone="muted" className="mt-4 leading-relaxed">
+        <Text tone="muted" className="mx-auto mt-4 max-w-2xl leading-relaxed">
           {copy.lead}
         </Text>
       </div>
