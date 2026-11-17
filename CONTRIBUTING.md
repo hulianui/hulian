@@ -68,8 +68,62 @@ pnpm --filter www build   # 文档站静态导出（CI 第三道门）
    ```bash
    pnpm changeset   # 选包 + patch/minor/major + 写说明
    ```
-3. 开 PR,填 PR 模板,关联相关 issue
-4. CI 通过 + Review 通过后合并
+3. 推送前跑一遍下面的「推 PR 前的本地门禁」
+4. 开 PR,填 PR 模板,关联相关 issue
+5. CI 通过 + Review 通过后合并
+
+### 推 PR 前的本地门禁
+
+`ci.yml` 里有几项检查要读 `apps/www/out`(静态导出产物),只跑 typecheck + test + build 发现不了;
+下面这份清单与 CI 对齐,本地全绿再推。
+
+**1. 生成物先重新生成**(改了组件文档、showcase、changeset 都要):
+
+```bash
+pnpm docs:all
+pnpm readme:sync
+packages/hulian-scan/node_modules/.bin/tsx packages/hulian-scan/src/inventory/generate.ts
+git status   # 应只剩你本来就要提交的改动
+```
+
+**2. 先 build,再跑依赖产物的检查**:
+
+```bash
+pnpm --filter www build      # 产出 apps/www/out,也会刷新 .next/types
+pnpm typecheck               # 放在 build 之后:.next/types 是旧构建的残留时会报找不到已删页面
+cd packages/ui && npx vitest run --project unit && npx vitest run --project browser; cd ../..
+pnpm test:scripts            # scripts/*.test.mjs,含 showcase 英文译文的受保护 token 检查
+pnpm conventions:check && pnpm showcase:check && pnpm candidates:check
+pnpm docs:i18n:check && pnpm check:rsc-claims && pnpm size
+pnpm docs:i18n:output        # 英文站产物里不许有中文字符(含全角「｜」)
+pnpm docs:i18n:links         # 中英文站的链接与页内锚点都要存在
+pnpm docs:check:showcase-browser && pnpm docs:check:admin-demos
+```
+
+browser 测试的输出很长,重定向到文件再 grep,别直接接管道。
+
+**3. 还原与本次无关的改动**:`pnpm --filter www build` 会改写
+`apps/www/app/blocks/block-fixture-sources.en.json`;本地时区与 CI 不同时,`pnpm changelog`
+会改写 `apps/www/lib/changelog*.json` 里已发版本的日期。这些都用 `git checkout --` 还原,不要提交。
+
+**容易踩的文档规则**(都会挂 CI):
+
+- 英文组件文档(`*.en.md`)的表格里,联合类型的竖线写 `\|`,不要写全角 `｜`(中文文档可以用)。
+- 组件文档的小标题不生成锚点 id,不要写 `[X](#x)` 这种页内链接,写成 `` `X` `` 即可。
+- `apps/www/i18n/showcase-copy.en.json` 的译文要保留原文里的受保护 token:代码标识符、`(N)` 这类占位,
+  原文出现几次译文就要出现几次;单复数不同也算丢(原文 `token`,译文只写 `tokens` 会挂)。
+
+### 叠放 PR(stacked PR)
+
+一个功能分几片提交时,后一片以前一片的分支为 base。仓库用 squash 合并,而且没有开「合并后自动删分支」,
+所以合并顺序要这样走,否则下游 PR 会被关掉或带上重复提交:
+
+1. squash 合并最底下那个 PR(base 是 `master`)。
+2. **先**把下一个 PR 的 base 改成 `master`(`gh pr edit <N> --base master`),**再**删掉刚合并的分支。
+   顺序反了 GitHub 会直接关闭下游 PR(base 分支不存在),只能把分支按原 SHA 推回去再重开。
+3. 把下一片 rebase 到新的 master 上,只保留它自己的提交:
+   `git rebase --onto origin/master <刚合并分支的旧 tip> <下一片分支>`,跑门禁后 `--force-with-lease` 推送。
+4. 下游 PR 的完整 CI 只在 base 是 `master` 时才跑,改指之前只有 Cloudflare 预览。
 
 ## 发版(维护者)
 
