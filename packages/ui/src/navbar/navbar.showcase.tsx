@@ -6,6 +6,7 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenu,
   NavbarMenuToggle,
 } from "./navbar";
 
@@ -22,13 +23,11 @@ function NavbarDemo({ justify = "end" }: { justify?: "start" | "center" | "end" 
           <NavbarItem>主题</NavbarItem>
         </NavbarContent>
       </Navbar>
-      {open && (
-        <ul className="flex flex-col gap-1 border-t border-border p-2 sm:hidden">
-          <NavbarItem isActive>组件</NavbarItem>
-          <NavbarItem>文档</NavbarItem>
-          <NavbarItem>主题</NavbarItem>
-        </ul>
-      )}
+      <NavbarMenu isOpen={open}>
+        <NavbarItem isActive>组件</NavbarItem>
+        <NavbarItem>文档</NavbarItem>
+        <NavbarItem>主题</NavbarItem>
+      </NavbarMenu>
     </div>
   );
 }
@@ -100,6 +99,37 @@ export const navbarShowcase: ShowcaseSpec = {
   );
 }`,
       render: () => <NavbarDemo justify="end" />,
+    },
+    {
+      title: "紧凑顶栏 · 浅底药丸导航",
+      description:
+        "size=\"sm\" 收成 56px，variant=\"page\" 用页面底色融进页面；NavbarItem variant=\"soft\" 选中项铺主色浅底，项里的链接整块可点。",
+      code: `<Navbar size="sm" variant="page">
+  <NavbarBrand grow={false}>瑚琏</NavbarBrand>
+  <NavbarContent>
+    <NavbarItem variant="soft" isActive><a href="#">组件</a></NavbarItem>
+    <NavbarItem variant="soft"><a href="#">区块</a></NavbarItem>
+    <NavbarItem variant="soft"><a href="#">页面</a></NavbarItem>
+  </NavbarContent>
+</Navbar>`,
+      render: () => (
+        <div className="w-full overflow-hidden rounded-[var(--radius)] border border-border">
+          <Navbar size="sm" variant="page" bordered={false}>
+            <NavbarBrand grow={false}>瑚琏</NavbarBrand>
+            <NavbarContent>
+              <NavbarItem variant="soft" isActive>
+                <a href="#">组件</a>
+              </NavbarItem>
+              <NavbarItem variant="soft">
+                <a href="#">区块</a>
+              </NavbarItem>
+              <NavbarItem variant="soft">
+                <a href="#">页面</a>
+              </NavbarItem>
+            </NavbarContent>
+          </Navbar>
+        </div>
+      ),
     },
   ],
   controls: [

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from "./navbar";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle } from "./navbar";
 import { ConfigProvider } from "../config/config-provider";
 import { enUS } from "../config/locale";
 
@@ -98,5 +98,56 @@ describe("Navbar", () => {
       </ConfigProvider>,
     );
     expect(getByRole("button", { name: "Toggle navigation" })).toBeTruthy();
+  });
+});
+
+describe("Navbar · size / variant / soft 项 / NavbarMenu", () => {
+  it("默认渲染不变：h-16 + 卡面色 + 实线分隔", () => {
+    const { container } = render(<Navbar />);
+    const nav = container.querySelector("nav")!;
+    expect(nav.className).toContain("h-16");
+    expect(nav.className).toContain("bg-surface/80");
+    expect(nav.className).toContain("border-border");
+  });
+
+  it("size=sm + variant=page：56px、页面底色、淡分隔线", () => {
+    const { container } = render(<Navbar size="sm" variant="page" />);
+    const nav = container.querySelector("nav")!;
+    expect(nav.className).toContain("h-14");
+    expect(nav.className).toContain("bg-bg/75");
+    expect(nav.className).toContain("border-border/60");
+    expect(nav.className).not.toContain("bg-surface/80");
+  });
+
+  it("NavbarItem variant=soft：选中铺主色浅底，链接整块可点", () => {
+    const { getByRole } = render(
+      <ul>
+        <NavbarItem variant="soft" isActive>
+          <a href="#">组件</a>
+        </NavbarItem>
+      </ul>,
+    );
+    const li = getByRole("listitem");
+    expect(li.className).toContain("bg-primary-subtle");
+    expect(li.className).toContain("has-[>a]:p-0");
+    expect(li.getAttribute("aria-current")).toBe("page");
+  });
+
+  it("NavbarMenu 收起不渲染、展开按断点隐藏；Toggle 跟同一档", () => {
+    const { container, rerender } = render(
+      <NavbarMenu isOpen={false} breakpoint="xl">
+        <NavbarItem>组件</NavbarItem>
+      </NavbarMenu>,
+    );
+    expect(container.querySelector("ul")).toBeNull();
+    rerender(
+      <NavbarMenu isOpen breakpoint="xl">
+        <NavbarItem>组件</NavbarItem>
+      </NavbarMenu>,
+    );
+    expect(container.querySelector("ul")!.className).toContain("xl:hidden");
+    const { getByRole } = render(<NavbarMenuToggle breakpoint="xl" />);
+    expect(getByRole("button").className).toContain("xl:hidden");
+    expect(getByRole("button").className).not.toContain("sm:hidden");
   });
 });

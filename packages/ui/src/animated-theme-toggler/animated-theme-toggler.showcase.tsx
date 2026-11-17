@@ -1,5 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../showcase/types";
+import { Wrench } from "../_icons";
+import { Button } from "../button";
 import { AnimatedThemeToggler } from "./animated-theme-toggler";
 
 export const animatedThemeTogglerShowcase: ShowcaseSpec = {
@@ -27,6 +29,22 @@ export const animatedThemeTogglerShowcase: ShowcaseSpec = {
         <div className="flex items-center gap-3">
           <AnimatedThemeToggler />
           <span className="text-sm text-muted-foreground">点击：圆形揭示切换明暗</span>
+        </div>
+      ),
+    },
+    {
+      title: "顶栏工具区（ghost · 紧凑）",
+      description: "variant=\"ghost\" 去掉描边与底色，size=\"sm\" 与 Button iconSm 同高，并排时上下沿对齐。",
+      code: `<div className="flex items-center gap-1">
+  <Button variant="ghost" muted size="iconSm" aria-label="设置">…</Button>
+  <AnimatedThemeToggler variant="ghost" size="sm" />
+</div>`,
+      render: () => (
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" muted size="iconSm" aria-label="设置">
+            <Wrench className="size-4" />
+          </Button>
+          <AnimatedThemeToggler variant="ghost" size="sm" />
         </div>
       ),
     },

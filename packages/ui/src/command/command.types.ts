@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export interface CommandItemData {
   /** 唯一值（执行回调入参 + React key + 默认过滤兜底文本）。 */
@@ -78,4 +78,17 @@ export interface CommandProps {
    */
   backdropClassName?: string;
   "aria-label"?: string;
+}
+
+export interface CommandTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** 占位文案。@default "搜索…" */
+  placeholder?: ReactNode;
+  /** 右侧快捷键键帽；`null` 不显示。默认 ⌘K 时自动补 `aria-keyshortcuts`。@default "⌘K" */
+  shortcut?: ReactNode;
+  /** `rounded` 与输入框同一档圆角；`pill` 全圆药丸（营销 / 文档站顶栏）。@default "rounded" */
+  shape?: "rounded" | "pill";
+  /** `md` 40px（与 Input 同高）；`sm` 32px（与 Button `sm` / `iconSm` 同高，顶栏用）。@default "md" */
+  size?: "sm" | "md";
+  /** 低于这一档断点时收成正方形图标钮（藏起占位文案与键帽）。@default false */
+  collapseBelow?: "sm" | "md" | false;
 }

@@ -12,17 +12,22 @@ export function Spotlight({
   y = "0%",
   size = "125%",
   fade = 55,
+  blend = "bg",
   className,
   style,
   ...props
 }: SpotlightProps) {
+  // 单值 = 正圆（宽高同值），两值（"60% 70%"）= 椭圆，原样交给 radial-gradient。
+  const extent = size.trim().includes(" ") ? size.trim() : `${size} ${size}`;
+  // bg：渐隐到页面底色，自身就是一块不透明背景；transparent：渐隐到透明，叠在纹理/图片上不遮挡。
+  const base = blend === "transparent" ? "transparent" : "var(--color-bg)";
   return (
     <div
       aria-hidden
       {...props}
       className={cn("pointer-events-none absolute inset-0", className)}
       style={{
-        background: `radial-gradient(${size} ${size} at ${x} ${y}, color-mix(in oklab, ${color} ${intensity}%, var(--color-bg)) 0%, var(--color-bg) ${fade}%)`,
+        background: `radial-gradient(${extent} at ${x} ${y}, color-mix(in oklab, ${color} ${intensity}%, ${base}) 0%, ${base} ${fade}%)`,
         ...style,
       }}
     />

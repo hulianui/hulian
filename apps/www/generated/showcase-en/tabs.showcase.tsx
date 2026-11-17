@@ -2,7 +2,11 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "../../../../packages/ui/src/tabs/tabs";
 import type { TabsTone } from "../../../../packages/ui/src/tabs/tabs.types";
+import { useState } from "react";
+import { Blocks, Component, PanelsTopLeft } from "lucide-react";
+import { IconTile } from "../../../../packages/ui/src/icon-tile";
 import { Tag } from "../../../../packages/ui/src/tag";
+import { Text } from "../../../../packages/ui/src/text";
 function Demo({ variant, size, tone, }: {
     variant: "underline" | "solid";
     size?: "sm" | "md";
@@ -19,6 +23,34 @@ function Demo({ variant, size, tone, }: {
       <TabsPanel value="account">Manage your account information and preferences.</TabsPanel>
       <TabsPanel value="password">Change the login password here.</TabsPanel>
       <TabsPanel value="team">Invite members and assign roles.</TabsPanel>
+    </Tabs>);
+}
+const CARDS = [
+    { value: "components", title: "Components", desc: "Accessible, themeable building blocks", Icon: Component },
+    { value: "blocks", title: "Blocks", desc: "Sections you drop into a page", Icon: Blocks },
+    { value: "pages", title: "Pages", desc: "Complete pages: dashboards, settings, sign-in", Icon: PanelsTopLeft },
+];
+function CardTabsDemo({ autoPlay }: {
+    autoPlay?: number;
+}) {
+    const [tab, setTab] = useState<unknown>("components");
+    return (<Tabs value={tab} onValueChange={setTab} orientation="vertical" autoPlay={autoPlay} className="grid w-full gap-6 sm:grid-cols-[18rem_1fr]">
+      <TabsList variant="card" aria-label="Product lines">
+        {CARDS.map(({ value, title, desc, Icon }) => (<TabsTab key={value} value={value}>
+            <IconTile tone={tab === value ? "brand" : "neutral"} variant={tab === value ? "solid" : "soft"}>
+              <Icon />
+            </IconTile>
+            <span className="min-w-0">
+              <Text weight="semibold">{title}</Text>
+              <Text size="sm" tone="muted">
+                {desc}
+              </Text>
+            </span>
+          </TabsTab>))}
+      </TabsList>
+      {CARDS.map(({ value, title }) => (<TabsPanel key={value} value={value} className="mt-0 grid place-items-center rounded-xl border border-border p-8">
+          {title}Preview
+        </TabsPanel>))}
     </Tabs>);
 }
 export const tabsShowcase: ShowcaseSpec = {
@@ -192,6 +224,26 @@ export const tabsShowcase: ShowcaseSpec = {
             <TabsPanel value="billing">Billing settings.</TabsPanel>
           </div>
         </Tabs>),
+        },
+        {
+            title: "Cards with auto-advance",
+            description: "With TabsList variant=\"card\" each tab is a card with a description; Tabs autoPlay advances at a steady pace while nobody interacts, switching when the bar under the selected card fills, pausing on hover, and stopping once a tab is picked.",
+            code: `<Tabs value={tab} onValueChange={setTab} orientation="vertical" autoPlay={5000}>
+  <TabsList variant="card" aria-label="Product lines">
+    <TabsTab value="components">
+      <IconTile tone={tab === "components" ? "brand" : "neutral"} variant={tab === "components" ? "solid" : "soft"}>
+        <Component />
+      </IconTile>
+      <span>
+        <Text weight="semibold">Components</Text>
+        <Text size="sm" tone="muted">Accessible, themeable building blocks</Text>
+      </span>
+    </TabsTab>
+    \u2026
+  </TabsList>
+  <TabsPanel value="components">\u2026</TabsPanel>
+</Tabs>`,
+            render: () => <CardTabsDemo autoPlay={5000}/>,
         },
     ],
     controls: [

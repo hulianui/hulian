@@ -32,6 +32,8 @@ import { Tag, tagVariants } from "@hulianui/ui"
 | dot | `boolean` | `false` | Leading tone-colored dot. |
 | pulse | `boolean` | `false` | Dot breathing animation, effective only with dot. |
 | isDisabled | `boolean` | `false` | Lowers opacity and disables pointer actions. |
+| shape | `"rounded" \| "pill"` | `"rounded"` | `rounded` has small corners; `pill` is fully rounded (short labels such as versions or counts). |
+| render | `ReactElement` | - | Renders as a custom element (`<a href>` or a framework router link) for clickable tags, such as a version linking to the changelog or a tag linking to a filtered page. Styling merges into the element and adds a focus ring and hover feedback, following the Button / Link `render` contract. Don't combine it with `onClose`: a button inside a link is an invalid nesting. |
 | className | `string` | - | Root class. |
 | …HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | Native span attributes are forwarded. Status tags commonly need `title` to reveal the full value on hover (a cell showing "Word" whose title is the complete MIME type), plus `data-testid` and `aria-*`. |
 
@@ -57,6 +59,10 @@ import { Tag, tagVariants } from "@hulianui/ui"
 ```tsx
 <Tag dot pulse tone="brand">Deploying</Tag>
 <Tag onClose={() => remove(id)}>Pending review</Tag>
+```
+```tsx
+// A clickable tag: a version pill linking to the changelog
+<Tag variant="outline" size="sm" shape="pill" render={<Link href="/changelog" />}>v0.44.0</Tag>
 ```
 ```tsx
 <Tag tone="info">External browser mode</Tag>

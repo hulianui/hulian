@@ -28,12 +28,17 @@ import { AnimatedThemeToggler } from "@hulianui/ui"
 | `theme` | `"light" ｜ "dark"` | - | 受控主题：传了即受控，显示与切换目标都由它决定，忽略 `ThemeProvider` / 自持态的值；点击只回调 `onThemeChange` |
 | `onThemeChange` | `(next: "light" ｜ "dark") => void` | - | 主题即将切换时回调下一个值；受控与非受控都触发，受控时是唯一的落值出口 |
 | `duration` | `number` | `500` | 圆形揭示动画时长(ms) |
+| `variant` | `"outline" ｜ "ghost"` | `"outline"` | `outline` 描边 + 卡面底；`ghost` 无边无底、静息次要灰、悬停回正文色，与顶栏里的 ghost 图标按钮并排时用 |
+| `size` | `"md" ｜ "sm"` | `"md"` | `md` 40px；`sm` 32px，与 Button `size="iconSm"` 同高 |
 | `className` | `string` | - | 按钮类名 |
 | `aria-label` | `string` | - | 无障碍标签 |
 
 ## 示例
 ```tsx
 <AnimatedThemeToggler aria-label="切换明暗主题" />
+
+// 顶栏工具区：与 <Button variant="ghost" muted size="iconSm"> 并排
+<AnimatedThemeToggler variant="ghost" size="sm" />
 
 // 受控：主题真源在消费方（接口 / 自己的存储），ThemeProvider 只是 forcedTheme 镜像
 <AnimatedThemeToggler theme={theme} onThemeChange={(next) => savePreference(next)} />

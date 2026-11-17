@@ -27,7 +27,9 @@ import { Card, CardHeader, CardBody, CardFooter, Text } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| variant | `"outline" \| "elevated" \| "featured" \| "plain"` | `"outline"` | Border, raised shadow, emphasized, or no chrome at all. |
+| variant | `"outline" \| "elevated" \| "featured" \| "primary" \| "plain"` | `"outline"` | Border, raised shadow, emphasized, primary, or no chrome at all. `primary` has a primary-color gradient and sets `data-surface="inverse"`, so Text, Tag, Chip, and Avatar inside switch to inverse colors automatically; components filled with the primary color (Progress) use `tone="inverse"`. |
+| interactive | `boolean` | `false` | Makes the whole card clickable: it lifts and deepens its shadow on hover and shows a focus ring. Usually paired with `render`. |
+| render | `ReactElement` | - | Renders the whole card as a custom element (`<a href>` or a framework router link). Styling and props merge into it and children render as usual. Don't put other links or buttons inside. |
 | size | `"sm" \| "md"` | `"md"` | Whole-card density. `sm` tightens the Header, Body, and Footer padding together. |
 | divided | `boolean` | `true` | Whether a rule separates `CardHeader` / `CardFooter` from the body. Setting `false` removes both rules and tightens the padding they used to hold open. |
 
@@ -75,6 +77,24 @@ The "icon + heading + status tag + trailing action" row, the most common admin c
     description="Assign in bulk by role; changes take effect immediately."
     extra={<Button variant="ghost" size="sm">Expand</Button>}
   />
+  <CardBody>…</CardBody>
+</Card>
+```
+
+A primary card (an emphasis card on a marketing page): text, tags, and avatars inside switch to inverse colors automatically; the progress bar uses `tone="inverse"`:
+```tsx
+<Card variant="primary">
+  <CardBody>
+    <Text weight="semibold">The whole palette follows your theme</Text>
+    <Text size="sm" tone="muted">Assigned to Abel</Text>
+    <Progress value={68} showValue tone="inverse" />
+  </CardBody>
+</Card>
+```
+
+A fully clickable card (site cards, portfolios):
+```tsx
+<Card variant="elevated" interactive render={<a href="https://hulian.dev" target="_blank" rel="noreferrer" />}>
   <CardBody>…</CardBody>
 </Card>
 ```

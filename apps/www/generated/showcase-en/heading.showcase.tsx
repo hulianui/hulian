@@ -58,6 +58,14 @@ export const headingShowcase: ShowcaseSpec = {
           Large visual title rendered with div, balance balanced line wrapping enabled
         </Heading>),
         },
+        {
+            title: "Display size",
+            description: "size=\"display\" is for the brand name or main slogan in a marketing hero: 60px on narrow screens, 72px from sm up.",
+            code: `<Heading level={1} size="display">Hulian</Heading>`,
+            render: () => (<Heading level={1} size="display">
+          Hulian
+        </Heading>),
+        },
     ],
     controls: [
         {

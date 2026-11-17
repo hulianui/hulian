@@ -29,8 +29,9 @@ import { Spotlight } from "@hulianui/ui"
 | intensity | `number` | `14` | Center-color percentage used by `color-mix`; higher values make the glow brighter |
 | x | `string` | `"50%"` | Glow Center X Position |
 | y | `string` | `"0%"` | Glow center Y position (top) |
-| size | `string` | `"125%"` | Glow ellipse size (radial gradient range) |
+| size | `string` | `"125%"` | Glow size (radial gradient range): one value is a circle, two values (`"60% 70%"`, width height) are an ellipse |
 | fade | `number` | `55` | The percentage of the position where the background fades out. The smaller the glow, the more concentrated it is |
+| blend | `"bg" \| "transparent"` | `"bg"` | What the glow fades into: `bg` fades into the page background (the layer itself is opaque); `transparent` fades into transparency, for layering over DotPattern, images, or other textures without hiding them |
 
 > Inherited from `ComponentPropsWithoutRef<"div">`.
 
@@ -42,6 +43,13 @@ import { Spotlight } from "@hulianui/ui"
 </div>
 
 <Spotlight color="var(--color-success)" y="50%" size="100%" intensity={16} />
+
+{/* Over a dot texture: fades into transparency, elliptical glow */}
+<div className="relative isolate overflow-hidden">
+  <DotPattern className="-z-10" />
+  <Spotlight blend="transparent" size="50% 60%" x="30%" intensity={18} fade={70} className="-z-10" />
+  …content…
+</div>
 ```
 
 ## Usage Guidelines

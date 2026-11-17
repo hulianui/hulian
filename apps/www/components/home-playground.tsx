@@ -2,8 +2,22 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, ShoppingCart } from "lucide-react";
-import { Alert, Button, Input, Progress, Segmented, Switch, Tag, Text } from "@hulianui/ui";
+import { ShoppingCart } from "lucide-react";
+import {
+  Alert,
+  Button,
+  Card,
+  CardBody,
+  Field,
+  Input,
+  Link as HLink,
+  Progress,
+  SectionHeader,
+  Segmented,
+  Switch,
+  Tag,
+  Text,
+} from "@hulianui/ui";
 import { DOCS_LOCALE } from "../lib/docs-locale";
 
 // 首页「组件试玩格」：六格，每格顶上一排变体开关，中间是那件组件本身。
@@ -72,8 +86,8 @@ function Cell({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col bg-surface">
-      <div className="flex items-center justify-between gap-3 px-4 pt-4">
+    <Card variant="elevated" className="flex flex-col">
+      <CardBody className="flex items-center justify-between gap-3 px-4 pb-0 pt-4">
         <Text as="span" size="sm" weight="semibold">
           {name}
         </Text>
@@ -85,9 +99,9 @@ function Cell({
           onValueChange={onChange}
           aria-label={name}
         />
-      </div>
-      <div className="grid min-h-44 flex-1 place-items-center px-6 py-8">{children}</div>
-    </div>
+      </CardBody>
+      <CardBody className="grid min-h-44 flex-1 place-items-center px-6 py-8">{children}</CardBody>
+    </Card>
   );
 }
 
@@ -105,21 +119,18 @@ export function HomePlayground() {
     <section className="mx-auto max-w-6xl px-6 py-24 sm:py-28">
       {/* 标题容器比导语宽：英文标题「Carefully designed defaults, free to change」在 36px 下约
           810px，放进 max-w-2xl（672px）会在半句处折行。窄屏放不下时 text-balance 让两行等长。 */}
-      <div className="mx-auto max-w-4xl text-center">
-        <Text size="sm" weight="semibold" className="text-primary">
-          {copy.eyebrow}
-        </Text>
-        <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight sm:text-4xl">
-          {copy.title[0]}
-          <span className="text-primary">{copy.title[1]}</span>
-        </h2>
-        <Text tone="muted" className="mx-auto mt-4 max-w-2xl leading-relaxed">
-          {copy.lead}
-        </Text>
-      </div>
+      <SectionHeader
+        align="center"
+        eyebrow={copy.eyebrow}
+        title={copy.title[0]}
+        accent={copy.title[1]}
+        accentBreak="none"
+        description={copy.lead}
+        className="mx-auto max-w-4xl"
+      />
 
-      {/* gap-px + 底色 = 格子之间一像素的分隔线，外圈一条圆角边框 */}
-      <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border/80 bg-border/70 shadow-sm sm:grid-cols-2 lg:grid-cols-3">
+      {/* 六张卡，每张顶上一排变体开关、中间是组件本身 */}
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Cell
           name={copy.names[0]}
           options={["solid", "outline", "soft", "ghost"].map((v) => ({ value: v, label: v }))}
@@ -151,22 +162,14 @@ export function HomePlayground() {
           value={inputState}
           onChange={setInputState}
         >
-          <label className="block w-full max-w-60 space-y-1.5">
-            <Text as="span" size="sm" weight="medium">
-              {copy.inputLabel}
-            </Text>
-            <Input
-              defaultValue="hulian"
-              disabled={inputState === "disabled"}
-              invalid={inputState === "invalid"}
-              aria-describedby={inputState === "invalid" ? "hl-pg-input-err" : undefined}
-            />
-            {inputState === "invalid" && (
-              <Text id="hl-pg-input-err" as="span" size="xs" className="block text-danger">
-                {copy.inputError}
-              </Text>
-            )}
-          </label>
+          <Field
+            label={copy.inputLabel}
+            error={inputState === "invalid" ? copy.inputError : undefined}
+            disabled={inputState === "disabled"}
+            className="w-full max-w-60"
+          >
+            <Input defaultValue="hulian" />
+          </Field>
         </Cell>
 
         <Cell
@@ -215,18 +218,11 @@ export function HomePlayground() {
         </Cell>
       </div>
 
-      <div className="mt-8 text-center">
-        <Link
-          href="/components"
-          className="group inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-hover"
-        >
+      <Text as="div" size="sm" weight="medium" className="mt-8 text-center">
+        <HLink arrow render={<Link href="/components" />}>
           {copy.more}
-          <ArrowRight
-            className="size-3.5 transition-transform group-hover:translate-x-0.5"
-            aria-hidden
-          />
-        </Link>
-      </div>
+        </HLink>
+      </Text>
     </section>
   );
 }

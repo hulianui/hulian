@@ -31,7 +31,9 @@ import { Brand } from "@hulianui/ui"
 | name | `ReactNode` | - | 品牌名；省略则只出徽章（侧栏收起态） |
 | description | `ReactNode` | - | 品牌名下方一行副标题（版本号 / 一句话定位） |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | sm 导航栏 28px / md 侧栏 36px / lg 登录页品牌区 |
-| color | `string` | `"primary"` | 徽章底色：语义色名（`chart-3` 等）或任意 CSS 色 |
+| color | `string` | `"primary"` | 徽章底色：语义色名（`chart-3` 等）或任意 CSS 色；`variant="bare"` 时是 mark 本身的颜色 |
+| variant | `"badge" \| "bare"` | `"badge"` | `badge` 方角实底徽章、mark 画在里面；`bare` 没有徽章底，mark 就是 logo 本身、直接用 `color` 着色 |
+| maskSrc | `string` | - | 单色 logo 图片地址：按图片形状着色（CSS mask），颜色跟 `color` 走，logo 因此能随主题色 / `AccentScope` 变色；传了就忽略 `mark` |
 | href | `string` | - | 普通链接（链回首页） |
 | render | `ReactElement` | - | 渲染成框架路由件（`<Link to="/" />`），避免 SPA 整页刷新；与 Button/Link/NavMenuItem 的 `render` 约定一致 |
 | className | `string` | - | 透传类名；其余原生属性一并透传 |
@@ -66,6 +68,9 @@ const reduced = usePrefersReducedMotion();
   name="瑚琏后台"
   mark={<video src="/brand.webm" poster="/brand-static.png" autoPlay={!reduced} muted loop playsInline />}
 />
+
+// 自带形状的单色 logo：不要徽章底，按图片形状着品牌色，跟随主题色 / AccentScope
+<Brand variant="bare" maskSrc="/logo.svg" name="瑚琏 UI" render={<Link href="/" />} />
 ```
 
 ## 禁忌 / 坑

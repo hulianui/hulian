@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 
 // 取值顺序与 [Alert](../alert/alert.tsx) 一致（neutral/brand/info/success/warning/danger）。
 // `info` 是后补的（#232）：`brand` 是主色，表达「这条和产品/主操作有关」；`info` 走独立的
@@ -40,6 +40,14 @@ export interface TagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "color">
   onClose?: () => void;
   /** 禁用：降透明度、屏蔽指针事件、关闭按钮不可点。 */
   isDisabled?: boolean;
+  /** `rounded` 小圆角（默认）；`pill` 全圆药丸（版本号、计数这类短标签）。@default "rounded" */
+  shape?: "rounded" | "pill";
+  /**
+   * 渲染成自定义元素（`<a href>` / 框架路由件）—— 版本号指向更新日志、标签指向筛选页这类可点的标签。
+   * 皮肤合并进该元素并补焦点环与悬停反馈；与 Button / Link 的 `render` 约定一致。
+   * 不要与 `onClose` 同用：链接里再套一个按钮是无效的交互嵌套。
+   */
+  render?: ReactElement;
   className?: string;
   children?: ReactNode;
 }

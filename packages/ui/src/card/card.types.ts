@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 import type { VariantProps } from "class-variance-authority";
 import type { cardVariants } from "./card";
 
@@ -17,6 +17,16 @@ export interface CardProps
    * 的半吊子状态。@default true
    */
   divided?: boolean;
+  /**
+   * 整卡可点：悬停上浮 + 阴影加深，键盘焦点给环。通常配 `render` 把整卡渲染成链接。
+   * @default false
+   */
+  interactive?: boolean;
+  /**
+   * 把整卡渲染成自定义元素（`<a href>` / 框架路由件），卡的皮肤与 props 合并进去、子内容照常。
+   * 与 Button / Link 的 `render` 约定一致。卡里不要再放别的链接或按钮（交互元素不能嵌套）。
+   */
+  render?: ReactElement;
 }
 
 // title 为 ReactNode → 与 HTMLAttributes 的 title?:string 冲突，必须 Omit "title"

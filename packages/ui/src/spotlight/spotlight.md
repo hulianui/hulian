@@ -29,8 +29,9 @@ import { Spotlight } from "@hulianui/ui"
 | intensity | `number` | `14` | 辉光强度：辉光中心与底色 color-mix 的百分比，越大越亮 |
 | x | `string` | `"50%"` | 辉光中心 X 位置 |
 | y | `string` | `"0%"` | 辉光中心 Y 位置（顶部） |
-| size | `string` | `"125%"` | 辉光椭圆尺寸（径向渐变范围） |
+| size | `string` | `"125%"` | 辉光尺寸（径向渐变范围）：单值为正圆，两值（`"60% 70%"`，宽 高）为椭圆 |
 | fade | `number` | `55` | 渐隐到底色的位置百分比，越小辉光越聚拢 |
+| blend | `"bg" \| "transparent"` | `"bg"` | 渐隐到什么：`bg` 渐隐到页面底色（自身不透明）；`transparent` 渐隐到透明，叠在 DotPattern / 图片等纹理上时用，不遮挡下层 |
 
 > 继承 `ComponentPropsWithoutRef<"div">`。
 
@@ -42,6 +43,13 @@ import { Spotlight } from "@hulianui/ui"
 </div>
 
 <Spotlight color="var(--color-success)" y="50%" size="100%" intensity={16} />
+
+{/* 叠在点阵纹理上：渐隐到透明，椭圆辉光 */}
+<div className="relative isolate overflow-hidden">
+  <DotPattern className="-z-10" />
+  <Spotlight blend="transparent" size="50% 60%" x="30%" intensity={18} fade={70} className="-z-10" />
+  …内容…
+</div>
 ```
 
 ## 禁忌 / 坑

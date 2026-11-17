@@ -1,10 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowRight, Blocks, Component, LayoutTemplate, PanelsTopLeft } from "lucide-react";
-import { Alert, Avatar, Button, Input, Progress, Segmented, Switch, Tag, Text } from "@hulianui/ui";
+import { Blocks, Component, LayoutTemplate, PanelsTopLeft } from "lucide-react";
+import {
+  Alert,
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  Field,
+  IconTile,
+  Input,
+  Link as HLink,
+  Progress,
+  Reveal,
+  SectionHeader,
+  Segmented,
+  Switch,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab,
+  Tag,
+  Text,
+  WindowFrame,
+} from "@hulianui/ui";
 import { PreviewThumbnail } from "./preview-thumbnail";
 import { DOCS_LOCALE, withDocsBasePath } from "../lib/docs-locale";
 
@@ -34,8 +56,7 @@ const DashboardPage = dynamic(
 const copy = en
   ? {
       eyebrow: "Products",
-      title: ["From one button", "to a whole back office"],
-      titleSep: ", ",
+      title: ["From one button, ", "to a whole back office"],
       lead: "Four layers, one design language. Copy what you need.",
       tabs: [
         { title: "Components", desc: "Accessible building blocks with OKLCH tokens" },
@@ -56,8 +77,7 @@ const copy = en
     }
   : {
       eyebrow: "产品",
-      title: ["从一个按钮", "到一整个后台"],
-      titleSep: "，",
+      title: ["从一个按钮，", "到一整个后台"],
       lead: "四层粒度、一套设计语言，按需复制。",
       tabs: [
         { title: "组件", desc: "可访问、可换肤的基础组件，OKLCH 色彩令牌" },
@@ -79,6 +99,7 @@ const copy = en
 
 const ICONS = [Component, Blocks, PanelsTopLeft, LayoutTemplate];
 const HREFS = ["/components", "/blocks", "/pages", "/demos"];
+const VALUES = ["components", "blocks", "pages", "demos"] as const;
 
 // 预览区固定 30rem 高：各档内容高度不一，不定高的话切档时整段上下跳。
 // 「组件」档的预览：一张用基础组件拼的小设置卡，不另起一个 1280 宽的缩略图
@@ -86,7 +107,8 @@ function Sampler() {
   const s = copy.sampler;
   return (
     <div className="grid h-full place-items-center p-4 sm:p-6">
-      <div className="w-full max-w-sm space-y-4 rounded-xl border border-border/80 bg-surface p-5 shadow-sm">
+      <Card variant="elevated" className="w-full max-w-sm">
+        <CardBody className="space-y-4 p-5">
         <div className="flex items-center gap-3">
           <Avatar size="md" src={withDocsBasePath("/demo/avatar-12.jpg")} fallback="A" alt="Abel" />
           <div className="min-w-0">
@@ -99,17 +121,14 @@ function Sampler() {
             Pro
           </Tag>
         </div>
-        <label className="block space-y-1.5">
-          <Text as="span" size="sm" weight="medium">
-            {s.name}
-          </Text>
+        <Field label={s.name}>
           <Input defaultValue={s.placeholder} />
-        </label>
+        </Field>
         <Segmented
           tone="brand"
           items={["Light", "Dark", "Auto"].map((v) => ({ value: v, label: v }))}
           defaultValue="Light"
-          className="w-full [&>*]:flex-1"
+          className="w-full"
           aria-label="Theme"
         />
         <Switch label={s.notify} defaultChecked />
@@ -121,7 +140,8 @@ function Sampler() {
           </Button>
           <Button size="sm">{s.save}</Button>
         </div>
-      </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }
@@ -161,178 +181,75 @@ function Preview({ index }: { index: number }): ReactNode {
 }
 
 export function HomeProductLines({ counts }: { counts: [number, number, number, number] }) {
-  const [active, setActive] = useState(0);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const sectionRef = useRef<HTMLElement>(null);
-  // 自动轮播：访客一旦手动选档（点 / 键盘）就永久停下，把控制权交还给人
-  const [auto, setAuto] = useState(true);
-  // 悬停 / 焦点在本段、或本段不在视口时暂停。用 state 而不是 ref：进度条的动画要跟着停
-  const [hovered, setHovered] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [reduced, setReduced] = useState(false);
-  const running = auto && !hovered && visible && !reduced;
-
-  useEffect(() => {
-    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    const el = sectionRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
-      threshold: 0.3,
-    });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // 计时交给进度条的 animationend：条走满即换下一档。暂停时 CSS 停住动画，计时自然一起停，
-  // 不会出现「条停了、档照换」的两套时钟对不上。
-  const advance = () => {
-    // 不判 document.hidden：后台标签页里动画照样会结束，这里若不换档，条停在满格就再也不会重启
-    if (running) setActive((i) => (i + 1) % 4);
-  };
-
-  const choose = (i: number) => {
-    setAuto(false);
-    setActive(i);
-  };
-
-  // 竖排 tablist 的键盘：上下键换档、Home/End 跳首尾（WAI-ARIA Tabs 模式，自动激活）
-  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    // 从「当前焦点」那一档算起，而不是从选中档：两者可能不同（例如点了别处再 Tab 回来）
-    const focused = tabRefs.current.findIndex((el) => el === e.target);
-    const from = focused === -1 ? active : focused;
-    const keys: Record<string, number> = {
-      ArrowDown: (from + 1) % 4,
-      ArrowUp: (from + 3) % 4,
-      Home: 0,
-      End: 3,
-    };
-    if (!(e.key in keys)) return;
-    e.preventDefault();
-    const next = keys[e.key];
-    choose(next);
-    tabRefs.current[next]?.focus();
-  };
+  const [active, setActive] = useState<string>(VALUES[0]);
+  const activeIndex = Math.max(0, VALUES.indexOf(active as (typeof VALUES)[number]));
 
   return (
-    <section
-      ref={sectionRef}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      className="mx-auto max-w-6xl px-6 py-24 sm:py-28"
-    >
-      <div className="max-w-2xl">
-        <Text size="sm" weight="semibold" className="text-primary">
-          {copy.eyebrow}
-        </Text>
-        <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-          {copy.title[0]}
-          <span className="text-primary">{copy.titleSep}</span>
-          <br className="sm:hidden" />
-          <span className="text-primary">{copy.title[1]}</span>
-        </h2>
-        <Text tone="muted" className="mt-4 leading-relaxed">
-          {copy.lead}
-        </Text>
-      </div>
+    <section className="mx-auto max-w-6xl px-6 py-24 sm:py-28">
+      <SectionHeader
+        eyebrow={copy.eyebrow}
+        title={copy.title[0]}
+        accent={copy.title[1]}
+        accentBreak="mobile"
+        description={copy.lead}
+        className="max-w-2xl"
+      />
 
-      <div className="mt-12 grid gap-8 lg:grid-cols-[22rem_minmax(0,1fr)] lg:gap-10">
+      {/* 自动轮播（Tabs autoPlay）：5 秒一档，悬停 / 焦点在本段、不在视口时暂停，访客选过一次就停。 */}
+      <Tabs
+        value={active}
+        onValueChange={(v) => setActive(v as string)}
+        orientation="vertical"
+        autoPlay={5000}
+        className="mt-12 grid gap-8 lg:grid-cols-[22rem_minmax(0,1fr)] lg:gap-10"
+      >
         {/* tablist 里只许放 tab：「打开」链接放在 tablist 外面做兄弟，不能塞进去（axe aria-required-children） */}
         <div className="flex flex-col gap-2">
-          <div
-            role="tablist"
-            aria-orientation="vertical"
-            aria-label={copy.eyebrow}
-            onKeyDown={onKeyDown}
-            className="flex flex-col gap-2"
-          >
+          <TabsList variant="card" aria-label={copy.eyebrow}>
             {copy.tabs.map((tab, i) => {
               const Icon = ICONS[i];
-              const selected = i === active;
+              const selected = i === activeIndex;
               return (
-                <button
-                  key={tab.title}
-                  ref={(el) => {
-                    tabRefs.current[i] = el;
-                  }}
-                  type="button"
-                  role="tab"
-                  id={`hl-pl-tab-${i}`}
-                  aria-selected={selected}
-                  aria-controls="hl-pl-panel"
-                  tabIndex={selected ? 0 : -1}
-                  onClick={() => choose(i)}
-                  className={`relative flex items-start gap-3.5 overflow-hidden rounded-xl border p-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
-                    selected
-                      ? "border-primary-border bg-primary-subtle shadow-sm"
-                      : "border-transparent hover:bg-surface-hover"
-                  }`}
-                >
-                  <span
-                    className={`grid size-9 shrink-0 place-items-center rounded-lg ${
-                      selected
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    <Icon className="size-[18px]" aria-hidden />
-                  </span>
+                <TabsTab key={VALUES[i]} value={VALUES[i]}>
+                  <IconTile tone={selected ? "brand" : "neutral"} variant={selected ? "solid" : "soft"}>
+                    <Icon />
+                  </IconTile>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-2">
-                      <span className="font-semibold">{tab.title}</span>
-                      <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                      <Text as="span" weight="semibold">
+                        {tab.title}
+                      </Text>
+                      <Text as="span" size="xs" family="mono" tone="muted" numeric>
                         {counts[i]}
-                      </span>
+                      </Text>
                     </span>
-                    <span className="mt-0.5 block text-sm text-muted-foreground">{tab.desc}</span>
+                    <Text size="sm" tone="muted" className="mt-0.5">
+                      {tab.desc}
+                    </Text>
                   </span>
-                  {/* 自动轮播的进度条：走满一次 = 换下一档。key 换档时重挂载，从 0 重新走 */}
-                  {selected && auto && !reduced && (
-                    <span
-                      key={active}
-                      aria-hidden
-                      onAnimationEnd={advance}
-                      className="hl-pl-progress absolute inset-x-0 bottom-0 h-0.5 origin-left bg-primary"
-                      style={{ animationPlayState: running ? "running" : "paused" }}
-                    />
-                  )}
-                </button>
+                </TabsTab>
               );
             })}
-          </div>
-          <Link
-            href={HREFS[active]}
-            className="group mt-2 inline-flex items-center gap-1.5 self-start px-4 text-sm font-medium text-primary hover:text-primary-hover"
-          >
-            {copy.open} · {copy.tabs[active].title}
-            <ArrowRight
-              className="size-3.5 transition-transform group-hover:translate-x-0.5"
-              aria-hidden
-            />
-          </Link>
+          </TabsList>
+          <Text as="div" size="sm" weight="medium" className="mt-2 px-4">
+            <HLink arrow render={<Link href={HREFS[activeIndex]} />}>
+              {copy.open} · {copy.tabs[activeIndex].title}
+            </HLink>
+          </Text>
         </div>
 
-        <div
-          id="hl-pl-panel"
-          role="tabpanel"
-          aria-labelledby={`hl-pl-tab-${active}`}
-          className="min-w-0 overflow-hidden rounded-2xl border border-border/80 bg-surface shadow-lg shadow-black/[0.04]"
-        >
-          {/* 窗口栏：三个圆点 + 当前档名，像一张产品截图 */}
-          <div className="flex items-center gap-1.5 border-b border-border/70 bg-muted/40 px-4 py-2.5">
-            <span className="size-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="size-2.5 rounded-full bg-[#febc2e]" />
-            <span className="size-2.5 rounded-full bg-[#28c840]" />
-            <span className="ml-3 font-mono text-xs text-muted-foreground">
-              {copy.tabs[active].title.toLowerCase()}
-            </span>
-          </div>
-          <div key={active} className="hl-rise h-[30rem] overflow-hidden bg-bg">
-            <Preview index={active} />
-          </div>
-        </div>
-      </div>
+        {VALUES.map((value, i) => (
+          <TabsPanel key={value} value={value} className="mt-0 min-w-0">
+            {/* 窗口栏：三个圆点 + 当前档名，像一张产品截图 */}
+            <WindowFrame title={copy.tabs[i].title.toLowerCase()}>
+              {/* 切档时整块上浮淡入：面板随档重挂载，Reveal 挂载即播 */}
+              <Reveal trigger="mount" y={10} blur={0} className="h-[30rem] overflow-hidden bg-bg">
+                <Preview index={i} />
+              </Reveal>
+            </WindowFrame>
+          </TabsPanel>
+        ))}
+      </Tabs>
     </section>
   );
 }

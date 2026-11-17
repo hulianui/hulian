@@ -1,5 +1,6 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Brand } from "../../../../packages/ui/src/brand/brand";
+const LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 21 7v10l-9 5-9-5V7z'/></svg>";
 function Mark() {
     return (<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 3.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0Z"/>
@@ -80,6 +81,17 @@ export const brandShowcase: ShowcaseSpec = {
             render: () => (<div id="home" className="flex flex-wrap items-center gap-8">
           <Brand name="Hulian" href="#home"/>
           <Brand mark={<Mark />} name="Hulian" description="Click me to return to the home page" href="#home"/>
+        </div>),
+        },
+        {
+            title: "Bare logo, filled by shape",
+            description: "variant=\"bare\" drops the badge, and maskSrc fills a single-color logo image with the brand color by its shape, following the theme color and AccentScope.",
+            code: `<Brand variant="bare" maskSrc="/logo.svg" name="Hulian UI" />
+<Brand variant="bare" maskSrc="/logo.svg" name="Hulian UI" color="chart-4" />`,
+            render: () => (<div className="flex items-center gap-6">
+          <Brand variant="bare" maskSrc={LOGO} name="Hulian UI"/>
+          <Brand variant="bare" maskSrc={LOGO} name="Hulian UI" color="chart-4"/>
+          <Brand maskSrc={LOGO} name="A logo inside the badge"/>
         </div>),
         },
     ],

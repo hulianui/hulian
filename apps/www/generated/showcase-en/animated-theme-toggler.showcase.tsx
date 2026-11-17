@@ -1,5 +1,7 @@
 "use client";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { Wrench } from "../../../../packages/ui/src/_icons";
+import { Button } from "../../../../packages/ui/src/button";
 import { AnimatedThemeToggler } from "../../../../packages/ui/src/animated-theme-toggler/animated-theme-toggler";
 export const animatedThemeTogglerShowcase: ShowcaseSpec = {
     examples: [
@@ -25,6 +27,20 @@ export const animatedThemeTogglerShowcase: ShowcaseSpec = {
             render: () => (<div className="flex items-center gap-3">
           <AnimatedThemeToggler />
           <span className="text-sm text-muted-foreground">Click: Circle reveal switches light and dark</span>
+        </div>),
+        },
+        {
+            title: "Navbar tools (ghost, compact)",
+            description: "variant=\"ghost\" drops the border and background, and size=\"sm\" matches the height of Button iconSm, so their edges line up side by side.",
+            code: `<div className="flex items-center gap-1">
+  <Button variant="ghost" muted size="iconSm" aria-label="Settings">\u2026</Button>
+  <AnimatedThemeToggler variant="ghost" size="sm" />
+</div>`,
+            render: () => (<div className="flex items-center gap-1">
+          <Button variant="ghost" muted size="iconSm" aria-label="Settings">
+            <Wrench className="size-4"/>
+          </Button>
+          <AnimatedThemeToggler variant="ghost" size="sm"/>
         </div>),
         },
     ],

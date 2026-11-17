@@ -9,6 +9,53 @@
   "itemUrl": "https://hulianui.haloritual.com/zh/r/{name}.json",
   "items": [
     {
+      "name": "accent-scope",
+      "type": "registry:ui",
+      "title": "AccentScope",
+      "description": "给一块区域换主色的色相，子树里的组件自动跟着变",
+      "categories": [
+        "layout"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { AccentScope } from \"@hulianui/ui\"",
+        "exports": [
+          "AccentScope"
+        ],
+        "types": [
+          "AccentScopeProps"
+        ],
+        "group": "container",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/accent-scope/accent-scope.md",
+        "docLocal": "packages/ui/src/accent-scope/accent-scope.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/accent-scope/accent-scope.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/accent-scope/accent-scope.tsx"
+        },
+        {
+          "path": "components/hulianui/accent-scope/accent-scope.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/accent-scope/accent-scope.types.ts"
+        },
+        {
+          "path": "components/hulianui/accent-scope/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/accent-scope/index.ts"
+        }
+      ]
+    },
+    {
       "name": "admin-layout",
       "type": "registry:ui",
       "title": "AdminLayout",
@@ -2144,6 +2191,55 @@
       ]
     },
     {
+      "name": "section-header",
+      "type": "registry:ui",
+      "title": "SectionHeader",
+      "description": "区块开头的一组标题：小字栏目名、大标题、主色强调半句和导语",
+      "categories": [
+        "typography"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/heading.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/text.json"
+      ],
+      "meta": {
+        "import": "import { SectionHeader } from \"@hulianui/ui\"",
+        "exports": [
+          "SectionHeader"
+        ],
+        "types": [
+          "SectionHeaderProps"
+        ],
+        "group": "text",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/section-header/section-header.md",
+        "docLocal": "packages/ui/src/section-header/section-header.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/section-header/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/section-header/index.ts"
+        },
+        {
+          "path": "components/hulianui/section-header/section-header.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/section-header/section-header.tsx"
+        },
+        {
+          "path": "components/hulianui/section-header/section-header.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/section-header/section-header.types.ts"
+        }
+      ]
+    },
+    {
       "name": "shuffle",
       "type": "registry:ui",
       "title": "Shuffle",
@@ -2210,12 +2306,14 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { Snippet } from \"@hulianui/ui\"",
+        "import": "import { Snippet, SnippetGroup } from \"@hulianui/ui\"",
         "exports": [
-          "Snippet"
+          "Snippet",
+          "SnippetGroup"
         ],
         "types": [
-          "SnippetProps"
+          "SnippetProps",
+          "SnippetGroupProps"
         ],
         "group": "code",
         "tags": [],
@@ -9394,6 +9492,57 @@
       ]
     },
     {
+      "name": "icon-tile",
+      "type": "registry:ui",
+      "title": "IconTile",
+      "description": "把一个图标放进带底色的小方块，排在功能 / 通知文字的左边",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { IconTile, iconTileVariants } from \"@hulianui/ui\"",
+        "exports": [
+          "IconTile",
+          "iconTileVariants"
+        ],
+        "types": [
+          "IconTileProps",
+          "IconTileTone"
+        ],
+        "group": "info",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/icon-tile/icon-tile.md",
+        "docLocal": "packages/ui/src/icon-tile/icon-tile.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/icon-tile/icon-tile.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/icon-tile/icon-tile.tsx"
+        },
+        {
+          "path": "components/hulianui/icon-tile/icon-tile.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/icon-tile/icon-tile.types.ts"
+        },
+        {
+          "path": "components/hulianui/icon-tile/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/icon-tile/index.ts"
+        }
+      ]
+    },
+    {
       "name": "image",
       "type": "registry:ui",
       "title": "Image",
@@ -13279,19 +13428,22 @@
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/_icons.json",
         "https://hulianui.haloritual.com/zh/r/empty.json",
+        "https://hulianui.haloritual.com/zh/r/kbd.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/motion.json"
       ],
       "meta": {
-        "import": "import { Command, useCommandShortcut } from \"@hulianui/ui\"",
+        "import": "import { Command, useCommandShortcut, CommandTrigger } from \"@hulianui/ui\"",
         "exports": [
           "Command",
-          "useCommandShortcut"
+          "useCommandShortcut",
+          "CommandTrigger"
         ],
         "types": [
           "CommandProps",
           "CommandGroupData",
-          "CommandItemData"
+          "CommandItemData",
+          "CommandTriggerProps"
         ],
         "group": "action",
         "tags": [],
@@ -13303,6 +13455,11 @@
         "preferred": "npm"
       },
       "files": [
+        {
+          "path": "components/hulianui/command/command-trigger.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/command/command-trigger.tsx"
+        },
         {
           "path": "components/hulianui/command/command.tsx",
           "type": "registry:ui",
@@ -13740,12 +13897,13 @@
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from \"@hulianui/ui\"",
+        "import": "import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle } from \"@hulianui/ui\"",
         "exports": [
           "Navbar",
           "NavbarBrand",
           "NavbarContent",
           "NavbarItem",
+          "NavbarMenu",
           "NavbarMenuToggle"
         ],
         "types": [
@@ -13753,7 +13911,9 @@
           "NavbarBrandProps",
           "NavbarContentProps",
           "NavbarItemProps",
-          "NavbarMenuToggleProps"
+          "NavbarMenuProps",
+          "NavbarMenuToggleProps",
+          "NavbarBreakpoint"
         ],
         "group": "global",
         "tags": [],
@@ -17663,6 +17823,53 @@
           "path": "components/hulianui/evil-eye/index.ts",
           "type": "registry:ui",
           "target": "components/hulianui/evil-eye/index.ts"
+        }
+      ]
+    },
+    {
+      "name": "fade-mask",
+      "type": "registry:ui",
+      "title": "FadeMask",
+      "description": "把内容在某一边或从中心向四周淡出到透明",
+      "categories": [
+        "decoration"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { FadeMask } from \"@hulianui/ui\"",
+        "exports": [
+          "FadeMask"
+        ],
+        "types": [
+          "FadeMaskProps"
+        ],
+        "group": "backdrop",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/fade-mask/fade-mask.md",
+        "docLocal": "packages/ui/src/fade-mask/fade-mask.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/fade-mask/fade-mask.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/fade-mask/fade-mask.tsx"
+        },
+        {
+          "path": "components/hulianui/fade-mask/fade-mask.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/fade-mask/fade-mask.types.ts"
+        },
+        {
+          "path": "components/hulianui/fade-mask/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/fade-mask/index.ts"
         }
       ]
     },
@@ -21617,6 +21824,53 @@
           "path": "components/hulianui/watch/watch.types.ts",
           "type": "registry:ui",
           "target": "components/hulianui/watch/watch.types.ts"
+        }
+      ]
+    },
+    {
+      "name": "window-frame",
+      "type": "registry:ui",
+      "title": "WindowFrame",
+      "description": "用三色点标题栏的应用窗口包住一块界面，做成产品截图",
+      "categories": [
+        "mockups"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { WindowFrame } from \"@hulianui/ui\"",
+        "exports": [
+          "WindowFrame"
+        ],
+        "types": [
+          "WindowFrameProps"
+        ],
+        "group": "window",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/window-frame/window-frame.md",
+        "docLocal": "packages/ui/src/window-frame/window-frame.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/window-frame/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/window-frame/index.ts"
+        },
+        {
+          "path": "components/hulianui/window-frame/window-frame.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/window-frame/window-frame.tsx"
+        },
+        {
+          "path": "components/hulianui/window-frame/window-frame.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/window-frame/window-frame.types.ts"
         }
       ]
     },

@@ -2,13 +2,23 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, FileText, Plug, ShieldCheck } from "lucide-react";
 import {
   Avatar,
+  Brand,
   Button,
+  Card,
+  CardBody,
   ChatMessage,
-  NumberTicker,
+  IconTile,
+  Image,
+  Link as HLink,
+  SectionHeader,
+  Separator,
   Snippet,
+  Spotlight,
+  Statistic,
   Tag,
   Text,
   ToolCall,
+  WindowFrame,
 } from "@hulianui/ui";
 import { DOCS_LOCALE, withDocsBasePath } from "../lib/docs-locale";
 
@@ -41,6 +51,7 @@ const copy = en
       built: {
         eyebrow: "In production",
         title: ["Built natively", "on Hulian UI"],
+        titleBreak: "space",
         sites: [
           {
             name: "haloritual",
@@ -63,7 +74,8 @@ const copy = en
         ],
       },
       closing: {
-        title: ["Start building software ", "that looks as good as it works"],
+        title: ["Start building software", "that looks as good as it works"],
+        titleBreak: "space",
         start: "Read the getting-started guide",
         browse: "Browse components",
         foundations: "Built on",
@@ -90,6 +102,7 @@ const copy = en
       built: {
         eyebrow: "已在生产",
         title: ["基于瑚琏 UI", "原生实现"],
+        titleBreak: "space",
         sites: [
           {
             name: "haloritual",
@@ -113,6 +126,7 @@ const copy = en
       },
       closing: {
         title: ["现在开始，", "做好看又好用的软件"],
+        titleBreak: "none",
         start: "阅读上手指南",
         browse: "浏览组件",
         foundations: "站在巨人肩上",
@@ -137,51 +151,28 @@ const STACK = [
   { label: "OKLCH Token", href: "https://www.w3.org/TR/css-color-4/#ok-lab" },
 ];
 
-function SectionTitle({
-  eyebrow,
-  title,
-  center,
-  oneLine,
-}: {
-  eyebrow: string;
-  title: [string, string] | string[];
-  center?: boolean;
-  /** 两半标题排在同一行（窄屏放不下时自然折行），不强制换行 */
-  oneLine?: boolean;
-}) {
-  return (
-    <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
-      <Text size="sm" weight="semibold" className="text-primary">
-        {eyebrow}
-      </Text>
-      <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-        {title[0]}
-        {oneLine ? " " : <br />}
-        <span className="text-primary">{title[1]}</span>
-      </h2>
-    </div>
-  );
-}
-
 /** 深色 AI 带：data-theme="dark" 把这一段子树切到暗色 token，全站明暗都是一条深色断点。 */
 export function HomeAiBand({ counts }: { counts: [number, number, number, number] }) {
   const c = copy.ai;
   return (
-    <section data-theme="dark" className="bg-[oklch(0.16_0.012_262)] text-foreground">
+    <section data-theme="dark" className="bg-bg text-foreground">
       <div className="mx-auto grid max-w-6xl gap-14 px-6 py-24 sm:py-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-center">
         <div>
-          <SectionTitle eyebrow={c.eyebrow} title={c.title} />
-          <Text tone="muted" className="mt-4 max-w-xl leading-relaxed">
-            {c.lead}
-          </Text>
+          <SectionHeader
+            eyebrow={c.eyebrow}
+            title={c.title[0]}
+            accent={c.title[1]}
+            description={c.lead}
+            className="max-w-2xl"
+          />
           <ul className="mt-10 space-y-6">
             {c.points.map((p, i) => {
               const Icon = POINT_ICONS[i];
               return (
                 <li key={p.title} className="flex gap-4">
-                  <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-surface text-primary">
-                    <Icon className="size-[18px]" aria-hidden />
-                  </span>
+                  <IconTile size="lg" variant="outline">
+                    <Icon />
+                  </IconTile>
                   <div>
                     <Text weight="semibold">{p.title}</Text>
                     <Text size="sm" tone="muted" className="mt-0.5 leading-relaxed">
@@ -192,28 +183,22 @@ export function HomeAiBand({ counts }: { counts: [number, number, number, number
               );
             })}
           </ul>
-          <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-border pt-8 sm:grid-cols-4">
+          <Separator className="mt-12" />
+          <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
             {counts.map((n, i) => (
-              <div key={c.stats[i]}>
-                <dd className="text-3xl font-bold tabular-nums tracking-tight text-foreground">
-                  <NumberTicker value={n} />
-                </dd>
-                <dt className="mt-1 text-sm text-muted-foreground">{c.stats[i]}</dt>
-              </div>
+              <Statistic key={c.stats[i]} value={n} suffix={c.stats[i]} animate groupSeparator={false} />
             ))}
-          </dl>
+          </div>
         </div>
 
-        {/* 一段对话：提问 → 两次工具调用 → 带代码的回答。窗口外皮与「产品线」那段的预览窗一致 */}
-        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl shadow-black/40">
-          <div className="flex items-center gap-1.5 border-b border-border px-4 py-2.5">
-            <span className="size-2.5 rounded-full bg-[#ff5f57]" />
-            <span className="size-2.5 rounded-full bg-[#febc2e]" />
-            <span className="size-2.5 rounded-full bg-[#28c840]" />
-            <Tag tone="brand" size="sm" className="ml-3">
+        {/* 一段对话：提问 → 两次工具调用 → 带代码的回答。窗口外框与「产品线」那段的预览窗一致 */}
+        <WindowFrame
+          title={
+            <Tag tone="brand" size="sm">
               MCP
             </Tag>
-          </div>
+          }
+        >
           <div className="space-y-4 p-5">
             <ChatMessage
               role="user"
@@ -231,36 +216,46 @@ export function HomeAiBand({ counts }: { counts: [number, number, number, number
             <ToolCall
               name="hulian.get_component"
               status="success"
-              input={<code className="font-mono text-xs">{'{ "name": "ProTable" }'}</code>}
+              input={
+                <Text as="code" size="xs" family="mono">
+                  {'{ "name": "ProTable" }'}
+                </Text>
+              }
               output="ProTable · 38 props · 4 pitfalls"
             />
             <ToolCall
               name="hulian.get_pitfalls"
               status="success"
-              input={<code className="font-mono text-xs">{'{ "name": "Tag" }'}</code>}
+              input={
+                <Text as="code" size="xs" family="mono">
+                  {'{ "name": "Tag" }'}
+                </Text>
+              }
               output="tone ≠ color · 2 pitfalls"
             />
             <ChatMessage
               role="assistant"
               avatar={
-                // AI 头像用瑚琏 logo（mask 着色，见 globals.css .hl-logo），跟着首页主题色走
-                <span className="grid size-10 place-items-center rounded-full border border-primary-border bg-primary-subtle">
-                  <span
-                    role="img"
-                    aria-label="Hulian AI"
-                    className="hl-logo size-6"
-                    style={{
-                      maskImage: `url(${withDocsBasePath("/logo.svg")})`,
-                      WebkitMaskImage: `url(${withDocsBasePath("/logo.svg")})`,
-                    }}
-                  />
-                </span>
+                // AI 头像：瑚琏 logo 按形状着主色（Brand maskSrc），跟着首页主题色走
+                <Avatar
+                  size="md"
+                  tone="brand"
+                  ring
+                  fallback={
+                    <Brand
+                      variant="bare"
+                      maskSrc={withDocsBasePath("/logo.svg")}
+                      role="img"
+                      aria-label="Hulian AI"
+                    />
+                  }
+                />
               }
             >
               <p>{c.reply}</p>
             </ChatMessage>
           </div>
-        </div>
+        </WindowFrame>
       </div>
     </section>
   );
@@ -271,43 +266,42 @@ export function HomeBuiltWith() {
   const c = copy.built;
   return (
     <section className="mx-auto max-w-6xl px-6 py-24 sm:py-28">
-      <SectionTitle eyebrow={c.eyebrow} title={c.title} oneLine />
+      <SectionHeader
+        eyebrow={c.eyebrow}
+        title={c.title[0]}
+        accent={c.title[1]}
+        accentBreak={c.titleBreak as "space" | "none"}
+      />
       <div className="mt-12 grid gap-6 md:grid-cols-3">
         {c.sites.map((site) => (
-          <a
+          <Card
             key={site.url}
-            href={`https://${site.url}`}
-            target="_blank"
-            rel="noreferrer"
-            className="group overflow-hidden rounded-2xl border border-border/80 bg-surface shadow-sm outline-none transition-all hover:-translate-y-0.5 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
+            variant="elevated"
+            interactive
+            className="overflow-hidden"
+            render={<a href={`https://${site.url}`} target="_blank" rel="noreferrer" />}
           >
-            <div className="border-b border-border/70 bg-muted/40 p-3">
-              {/* eslint-disable-next-line @next/next/no-img-element -- 静态导出，next/image 优化不可用 */}
-              <img
+            <CardBody className="p-3 pb-0">
+              <Image
                 src={withDocsBasePath(`/home/${site.img}.jpg`)}
                 alt=""
-                width={960}
-                height={600}
+                width="100%"
+                radius="md"
                 loading="lazy"
-                className="aspect-[16/10] w-full rounded-lg border border-border/70 object-cover object-top"
+                className="aspect-[16/10]"
+                imgClassName="object-cover object-top"
               />
-            </div>
-            <div className="p-5">
+            </CardBody>
+            <CardBody className="p-5">
               <div className="flex items-center justify-between gap-2">
                 <Text weight="semibold">{site.name}</Text>
-                <ArrowUpRight
-                  className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
-                  aria-hidden
-                />
+                <ArrowUpRight className="size-4 text-muted-foreground" aria-hidden />
               </div>
               <Text size="sm" tone="muted" className="mt-1">
                 {site.blurb}
               </Text>
-              <Text size="xs" className="mt-3 font-mono text-muted-foreground">
-                {site.url}
-              </Text>
-            </div>
-          </a>
+            </CardBody>
+          </Card>
         ))}
       </div>
     </section>
@@ -319,56 +313,50 @@ export function HomeClosing() {
   const c = copy.closing;
   return (
     <section className="relative isolate overflow-hidden border-t border-border/60">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(60% 70% at 50% 0%, color-mix(in oklch, var(--color-primary) 10%, transparent), transparent 70%)",
-        }}
-      />
+      <Spotlight blend="transparent" size="60% 70%" intensity={10} fade={70} className="-z-10" />
       <div className="mx-auto max-w-6xl px-6 py-24 text-center sm:py-28">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          {c.title[0]}
-          <span className="text-primary">{c.title[1]}</span>
-        </h2>
+        <SectionHeader
+          align="center"
+          title={c.title[0]}
+          accent={c.title[1]}
+          accentBreak={c.titleBreak as "space" | "none"}
+        />
         <div className="mx-auto mt-8 w-fit max-w-full">
           <Snippet copyLabel={copy.copy} copiedLabel={copy.copied}>
             pnpm add @hulianui/ui @hulianui/tokens
           </Snippet>
         </div>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Button render={<Link href="/start" />} className="group">
+          <Button render={<Link href="/start" />}>
             {c.start}
-            <ArrowRight
-              className="size-4 transition-transform group-hover:translate-x-0.5"
-              aria-hidden
-            />
+            <ArrowRight className="size-4" aria-hidden />
           </Button>
           <Button variant="outline" render={<Link href="/components" />}>
             {c.browse}
           </Button>
         </div>
 
-        <div className="mx-auto mt-20 max-w-3xl border-t border-border/70 pt-8">
+        <div className="mx-auto mt-20 max-w-3xl">
+          <Separator className="mb-8" />
           <Text size="xs" weight="medium" tone="muted">
             {c.foundations}
           </Text>
           {/* 静态排开，不用 Marquee：跑马灯的复制份 aria-hidden 里的 <a> 仍可 Tab 到（axe 判错），
               八个短标签静态换行就排得下，全部可点、键盘可达、读屏只读一遍。 */}
-          <div className="mt-3 flex flex-wrap justify-center gap-x-6 gap-y-2">
+          <Text as="div" size="sm" weight="medium" className="mt-3 flex flex-wrap justify-center gap-x-6 gap-y-2">
             {STACK.map((tag) => (
-              <a
+              <HLink
                 key={tag.href}
                 href={tag.href}
+                tone="muted"
+                underline="none"
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 {tag.label}
-              </a>
+              </HLink>
             ))}
-          </div>
+          </Text>
           <Text size="sm" tone="muted" className="mt-10">
             {c.declaration}
           </Text>

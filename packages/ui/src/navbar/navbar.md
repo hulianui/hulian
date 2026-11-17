@@ -4,7 +4,7 @@ name: Navbar
 category: navigation
 group: global
 tags: []
-exports: [Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle]
+exports: [Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ status: enriched
 
 ## 导入
 ```ts
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from "@hulianui/ui"
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle } from "@hulianui/ui"
 ```
 
 ## Props
@@ -31,6 +31,8 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 |------|------|------|------|
 | sticky | `boolean` | - | 是否 sticky 吸顶 |
 | bordered | `boolean` | - | 是否显示底部分隔边框 |
+| size | `"md" \| "sm"` | `"md"` | 高度档：`md` 64px（中后台）；`sm` 56px，文档 / 营销站的紧凑顶栏，左右内距同步收一档 |
+| variant | `"surface" \| "page"` | `"surface"` | 底色：`surface` 卡面色半透明（浮在内容上的面板）；`page` 页面底色半透明 + 更淡的分隔线（融进页面）。两档都带背景模糊 |
 
 **NavbarBrand**（`<div>`）
 
@@ -49,6 +51,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | isActive | `boolean` | - | 当前激活项（aria-current + 高亮） |
+| variant | `"text" \| "soft"` | `"text"` | `text` 只变文字色；`soft` 选中项铺主色浅底、悬停铺中性浅底，项里直接放链接时内距挪到链接上、整块都是点击区 |
 
 **NavbarMenuToggle**
 
@@ -56,7 +59,15 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from
 |------|------|------|------|
 | isOpen | `boolean` | - | 受控展开态 |
 | aria-label | `string` | 跟随 locale，按 isOpen 切换 | 无障碍标签；显式传值优先 |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl"` | `"sm"` | 从这一档断点起隐藏（宽屏横排导航接手） |
 | className | `string` | - | 类名 |
+
+**NavbarMenu**（`<ul>`）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| isOpen | `boolean` | `false` | 是否展开；收起时不渲染，菜单里的链接不会在收起态被 Tab 到 |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl"` | `"sm"` | 从这一档断点起隐藏，与 `NavbarMenuToggle` 取同一档 |
 
 ## Events
 
@@ -90,11 +101,27 @@ function Header() {
     </Navbar>
   );
 }
+
+// 文档站紧凑顶栏：融进页面的底色 + 浅底药丸导航项 + xl 以下折叠
+<>
+  <Navbar sticky size="sm" variant="page">
+    <NavbarMenuToggle isOpen={open} onToggle={toggle} breakpoint="xl" />
+    <NavbarBrand grow={false}>瑚琏</NavbarBrand>
+    <NavbarContent className="hidden xl:flex">
+      <NavbarItem variant="soft" isActive><a href="/components">组件</a></NavbarItem>
+      <NavbarItem variant="soft"><a href="/blocks">区块</a></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+  <NavbarMenu isOpen={open} breakpoint="xl">
+    <NavbarItem variant="soft" isActive><a href="/components">组件</a></NavbarItem>
+    <NavbarItem variant="soft"><a href="/blocks">区块</a></NavbarItem>
+  </NavbarMenu>
+</>
 ```
 
 ## 禁忌 / 坑
 
-- `NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。
+- `NavbarMenuToggle` 与 `NavbarMenu` 都是受控件，`isOpen`/`onToggle` 由你自己维护 state；两者的 `breakpoint` 要取同一档，且与横排 `NavbarContent` 出现的断点一致，否则拉宽窗口时横排与竖排会同时在屏上。
 - 默认菜单标签跟随 `ConfigProvider locale`：`zhCN` 为“打开/关闭菜单”，`enUS` 为 “Open/Close menu”；显式 `aria-label` 优先。
 - 三段版式（品牌 + 居中主菜单 + 右侧操作区）是本件的默认形状：`NavbarBrand` 默认 `grow`，三段等分，居中段才真的在导航栏中心。**两段式版式（品牌 + 紧贴品牌的 `justify="start"` 内容）要显式传 `grow={false}`**，否则那段内容会被推到 1/3 处。
 - 品牌区要能截断（窄屏让位）时，除了 `truncate` 还得给 `NavbarBrand` 加 `min-w-0`——flex 项默认 `min-width:auto`，不解开就不会收缩。

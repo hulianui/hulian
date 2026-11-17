@@ -1,9 +1,8 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
 import { useIntlayer } from "next-intlayer";
-import { Command, Kbd, Tag, type CommandGroupData } from "@hulianui/ui";
+import { Command, CommandTrigger, Tag, type CommandGroupData } from "@hulianui/ui";
 import {
   TYPE_LABEL,
   relaxQuery,
@@ -135,23 +134,17 @@ export function DocsSearch() {
     <>
       {/* 组件直达（ComponentQuickJump）不再挂顶栏：顶栏两个搜索框功能重叠、读起来像重复。
           ⌘K 搜索本就覆盖组件；高频直达留在组件目录页（placement="catalog"）。 */}
-      {/* 顶栏入口：全断点常驻。窄屏收成图标钮（不折进汉堡菜单——搜索和主题切换一样是站点级动作）。 */}
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
+      {/* 顶栏入口：全断点常驻。窄屏收成图标钮（不折进汉堡菜单——搜索和主题切换一样是站点级动作）。
+          键帽吃主色：与顶栏导航选中态同一档，首页跟着主题色轮换。 */}
+      <CommandTrigger
+        shape="pill"
+        size="sm"
+        collapseBelow="sm"
+        placeholder={content.triggerPlaceholder}
         aria-label={content.trigger}
-        aria-keyshortcuts="Meta+K Control+K"
-        className="flex h-9 items-center gap-2 rounded-full border border-border/70 bg-muted/60 px-2.5 text-sm text-muted-foreground outline-none transition-colors hover:border-border hover:bg-surface hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:w-60 sm:justify-between sm:pl-3.5 sm:pr-1.5"
-      >
-        <span className="flex items-center gap-2">
-          <Search className="size-4 shrink-0" aria-hidden />
-          <span className="hidden sm:inline">{content.triggerPlaceholder}</span>
-        </span>
-        {/* 键帽吃主色：与顶栏导航选中态同一档，首页跟着主题色轮换 */}
-        <Kbd tone="primary" className="hidden sm:inline-flex">
-          ⌘K
-        </Kbd>
-      </button>
+        onClick={() => setOpen(true)}
+        className="sm:w-60"
+      />
 
       <Command
         open={open}

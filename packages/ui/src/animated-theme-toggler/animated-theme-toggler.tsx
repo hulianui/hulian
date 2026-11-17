@@ -58,6 +58,8 @@ export function AnimatedThemeToggler({
   theme: themeProp,
   onThemeChange,
   duration = 500,
+  variant = "outline",
+  size = "md",
   className,
   "aria-label": ariaLabel,
 }: AnimatedThemeTogglerProps) {
@@ -114,11 +116,21 @@ export function AnimatedThemeToggler({
       className={cn(
         // 边长跟随 Button 的 icon 档（40px）：它总是与图标按钮/搜索框并排在导航栏里，
         // 独自停在 36px 会让整排上下缘错位（#97 同源）。
-        "inline-flex size-10 items-center justify-center rounded-[min(var(--radius),0.5rem)] border border-border bg-surface text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring",
+        "inline-flex shrink-0 items-center justify-center rounded-[min(var(--radius),0.5rem)] outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-ring",
+        // 尺寸与 Button 的 icon / iconSm 两档同源（同一组控件高度变量），工具栏里并排时上下沿对齐。
+        size === "sm" ? "size-[var(--hl-control-h-sm,2rem)]" : "size-10",
+        // ghost：无边无底、静息次要灰、悬停回正文色 —— 顶栏工具区里与 ghost 图标按钮并排用。
+        variant === "ghost"
+          ? "text-muted-foreground hover:text-foreground"
+          : "border border-border bg-surface text-foreground",
         className,
       )}
     >
-      {theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
+      {theme === "dark" ? (
+        <Sun className={size === "sm" ? "size-4" : "size-5"} />
+      ) : (
+        <Moon className={size === "sm" ? "size-4" : "size-5"} />
+      )}
     </button>
   );
 }

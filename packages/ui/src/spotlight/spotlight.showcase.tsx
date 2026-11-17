@@ -1,4 +1,5 @@
 import type { ShowcaseSpec } from "../showcase/types";
+import { DotPattern } from "../dot-pattern";
 import { Spotlight } from "./spotlight";
 
 // 背景层需放在 relative 定位容器内（absolute inset-0 铺满父）。Frame 提供舞台。
@@ -63,6 +64,22 @@ export const spotlightShowcase: ShowcaseSpec = {
         <Frame>
           <Spotlight y="50%" size="80%" intensity={20} fade={40} />
         </Frame>
+      ),
+    },
+    {
+      title: "叠在纹理上（透明渐隐 · 椭圆）",
+      description: "blend=\"transparent\" 渐隐到透明而不是底色，下层的点阵纹理不会被盖住；size 写两个值得到椭圆辉光。",
+      code: `<div className="relative isolate ...">
+  <DotPattern className="-z-10" />
+  <Spotlight blend="transparent" size="50% 60%" x="30%" intensity={18} fade={70} className="-z-10" />
+  <div>…内容…</div>
+</div>`,
+      render: () => (
+        <div className="relative isolate grid h-48 w-full place-items-center overflow-hidden rounded-xl border border-border bg-bg">
+          <DotPattern className="-z-10 text-border" />
+          <Spotlight blend="transparent" size="50% 60%" x="30%" intensity={18} fade={70} className="-z-10" />
+          <span className="text-sm font-medium text-foreground">内容叠加其上</span>
+        </div>
       ),
     },
   ],

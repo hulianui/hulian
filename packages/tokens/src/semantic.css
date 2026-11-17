@@ -412,6 +412,69 @@
   --color-border: color-mix(in oklab, var(--color-primary-foreground) 38%, transparent);
 }
 
+/* ===== 局部换主色 · accent 作用域 =====
+   [data-accent-scope] 子树里只换**色相**：明度 / 彩度沿用品牌梯子各档的原值
+   （亮：brand-700 / 800 / 50 / 200 / ring 400；暗：brand-400 / 500），所以任何色相下
+   对比度与层级关系都和品牌原色一致，不会出现「换了个黄色主题按钮字看不清」。
+   色相由 --hl-accent-hue 给（OKLCH 的 h，品牌原色 258），通常由 <AccentScope hue> 写在宿主上。
+
+   图表色板整组跟着转：按「当前色相 − 258」旋转，chart-1 永远等于主色，其余各色与它的
+   色相间隔不变，多系列图表照样分得开。
+
+   注册成 <number> 才能过渡（AccentScope 的 transition 就是过渡这个变量）。 */
+@property --hl-accent-hue {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 258;
+}
+
+/* 亮色：作用域本身、以及作用域里嵌套的亮色岛（岛自己会按 [data-theme="light"] 重声明
+   一套品牌 token，不在它身上再声明一次就会把覆盖挡掉）。 */
+[data-accent-scope],
+[data-accent-scope] [data-theme="light"] {
+  --color-primary: oklch(0.47 0.18 var(--hl-accent-hue));
+  --color-primary-hover: oklch(0.4 0.142 var(--hl-accent-hue));
+  --color-ring: oklch(0.72 0.16 var(--hl-accent-hue));
+  --color-primary-subtle: oklch(0.97 0.02 var(--hl-accent-hue));
+  --color-primary-border: oklch(0.895 0.075 var(--hl-accent-hue));
+  --color-signal-brand: oklch(0.54 0.2 var(--hl-accent-hue));
+  --code-keyword: var(--color-primary);
+  --color-chart-1: oklch(0.62 0.19 calc(255 + var(--hl-accent-hue) - 258));
+  --color-chart-2: oklch(0.7 0.16 calc(155 + var(--hl-accent-hue) - 258));
+  --color-chart-3: oklch(0.75 0.15 calc(70 + var(--hl-accent-hue) - 258));
+  --color-chart-4: oklch(0.62 0.19 calc(300 + var(--hl-accent-hue) - 258));
+  --color-chart-5: oklch(0.64 0.2 calc(25 + var(--hl-accent-hue) - 258));
+  --color-chart-6: oklch(0.68 0.12 calc(200 + var(--hl-accent-hue) - 258));
+}
+
+/* 暗色三种来路：整站暗色（祖先是 dark）、作用域里强制暗色的段落（子树是 dark）、
+   以及 data-theme 与 data-accent-scope 写在同一个元素上。特异性都高于上面的亮色块。
+   已知限制：「暗页 > 亮色岛 > 作用域」这种嵌套里，两个祖先选择器特异性相同、按源码顺序
+   暗色胜 —— 此时把 data-theme="light" 写到作用域同一个元素上即可（见 AccentScope 文档）。 */
+[data-theme="dark"] [data-accent-scope],
+[data-accent-scope] [data-theme="dark"],
+[data-theme="dark"][data-accent-scope] {
+  --color-primary: oklch(0.72 0.16 var(--hl-accent-hue));
+  --color-primary-hover: oklch(0.62 0.19 var(--hl-accent-hue));
+  --color-ring: oklch(0.72 0.16 var(--hl-accent-hue));
+  --color-primary-subtle: color-mix(in oklab, oklch(0.72 0.16 var(--hl-accent-hue)) 16%, var(--color-surface));
+  --color-primary-border: color-mix(in oklab, oklch(0.72 0.16 var(--hl-accent-hue)) 34%, var(--color-surface));
+  --color-chart-1: oklch(0.7 0.17 calc(255 + var(--hl-accent-hue) - 258));
+  --color-chart-2: oklch(0.76 0.16 calc(155 + var(--hl-accent-hue) - 258));
+  --color-chart-3: oklch(0.8 0.15 calc(70 + var(--hl-accent-hue) - 258));
+  --color-chart-4: oklch(0.72 0.18 calc(300 + var(--hl-accent-hue) - 258));
+  --color-chart-5: oklch(0.72 0.19 calc(25 + var(--hl-accent-hue) - 258));
+  --color-chart-6: oklch(0.74 0.12 calc(200 + var(--hl-accent-hue) - 258));
+}
+/* 同一元素上显式亮色：压过「暗页 > 亮色岛 > 作用域」里祖先暗色那条。 */
+[data-theme="light"][data-accent-scope] {
+  --color-primary: oklch(0.47 0.18 var(--hl-accent-hue));
+  --color-primary-hover: oklch(0.4 0.142 var(--hl-accent-hue));
+  --color-ring: oklch(0.72 0.16 var(--hl-accent-hue));
+  --color-primary-subtle: oklch(0.97 0.02 var(--hl-accent-hue));
+  --color-primary-border: oklch(0.895 0.075 var(--hl-accent-hue));
+}
+
 /* ============================================================================
    阴影备选方案（未启用 · 留作日后切换）
    切换方式：把对应方案的 :root 组替换上面 :root 里的 --hl-shadow-*，

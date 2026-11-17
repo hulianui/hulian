@@ -4,7 +4,7 @@ name: Navbar
 category: navigation
 group: global
 tags: []
-exports: [Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle]
+exports: [Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ Use Navbar for a page-level top bar with branding, primary navigation, and a mob
 
 ## Import
 ```ts
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle } from "@hulianui/ui"
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuToggle } from "@hulianui/ui"
 ```
 
 ## Props
@@ -31,6 +31,8 @@ Each subcomponent inherits the attributes of its underlying native element.
 |------|------|------|------|
 | sticky | `boolean` | `false` | Whether to keep the bar pinned to the top while scrolling. |
 | bordered | `boolean` | `true` | Whether to show a separator border along the bottom. |
+| size | `"md" \| "sm"` | `"md"` | Height: `md` is 64px (admin apps); `sm` is 56px, a compact bar for docs and marketing sites with tighter side padding. |
+| variant | `"surface" \| "page"` | `"surface"` | Background: `surface` is a translucent surface color (a panel floating over content); `page` is a translucent page background with a lighter separator (blends into the page). Both blur what's behind. |
 
 **NavbarBrand** (`<div>`)
 
@@ -49,6 +51,7 @@ Each subcomponent inherits the attributes of its underlying native element.
 | Name | Type | Default | Description |
 |------|------|------|------|
 | isActive | `boolean` | - | Marks the current item with `aria-current` and active styling. |
+| variant | `"text" \| "soft"` | `"text"` | `text` changes only the text color; `soft` fills the active item with the accent's subtle background and hovered items with a neutral one. When the item holds a link directly, the padding moves onto the link so the whole pill is clickable. |
 
 **NavbarMenuToggle**
 
@@ -56,7 +59,15 @@ Each subcomponent inherits the attributes of its underlying native element.
 |------|------|------|------|
 | isOpen | `boolean` | `false` | Controlled open state. |
 | aria-label | `string` | Locale value based on `isOpen` | Accessible label. An explicit value takes precedence over `ConfigProvider`. |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl"` | `"sm"` | Hidden from this breakpoint up, where the horizontal navigation takes over. |
 | className | `string` | - | Additional class name. |
+
+**NavbarMenu** (`<ul>`)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| isOpen | `boolean` | `false` | Whether the menu is open. When closed it doesn't render, so its links can't be reached with Tab. |
+| breakpoint | `"sm" \| "md" \| "lg" \| "xl"` | `"sm"` | Hidden from this breakpoint up; use the same value as `NavbarMenuToggle`. |
 
 ## Events
 
@@ -90,11 +101,27 @@ function Header() {
     </Navbar>
   );
 }
+
+// Compact docs-site bar: page-colored background, soft pill items, collapsed below xl
+<>
+  <Navbar sticky size="sm" variant="page">
+    <NavbarMenuToggle isOpen={open} onToggle={toggle} breakpoint="xl" />
+    <NavbarBrand grow={false}>Hulian</NavbarBrand>
+    <NavbarContent className="hidden xl:flex">
+      <NavbarItem variant="soft" isActive><a href="/components">Components</a></NavbarItem>
+      <NavbarItem variant="soft"><a href="/blocks">Blocks</a></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+  <NavbarMenu isOpen={open} breakpoint="xl">
+    <NavbarItem variant="soft" isActive><a href="/components">Components</a></NavbarItem>
+    <NavbarItem variant="soft"><a href="/blocks">Blocks</a></NavbarItem>
+  </NavbarMenu>
+</>
 ```
 
 ## Usage guidelines
 
-- `NavbarMenuToggle` is controlled: maintain `isOpen` and `onToggle` in application state. The component does not render or manage a mobile menu panel, so conditionally render that panel from `open` yourself.
+- `NavbarMenuToggle` and `NavbarMenu` are controlled: keep `isOpen` and `onToggle` in application state. Give both the same `breakpoint`, matching the breakpoint where the horizontal `NavbarContent` appears; otherwise widening the window shows the horizontal and vertical menus at once.
 - Without an explicit `aria-label`, the mobile toggle follows `ConfigProvider locale`: `enUS` provides “Open menu” and “Close menu”, while the no-provider fallback remains Chinese. An explicit `aria-label` always wins.
 - The three-section layout (brand + centered menu + trailing actions) is the default shape: `NavbarBrand` grows by default so all three sections are equal and the centered one truly sits at the navbar center. **A two-section layout (brand plus a `justify="start"` section next to it) must pass `grow={false}`**, otherwise that section is pushed to the one-third mark.
 - To let the brand truncate on narrow screens, add `min-w-0` to `NavbarBrand` alongside `truncate`: flex items default to `min-width: auto` and will not shrink without it.

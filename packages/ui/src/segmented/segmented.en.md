@@ -32,6 +32,7 @@ import { Segmented } from "@hulianui/ui"
 | defaultValue | `string` | First non-disabled segment | Initial selected value in uncontrolled mode. |
 | disabled | `boolean` | `false` | Whether to disable the entire control. |
 | size | `"sm"\|"md"` | `"md"` | Visual size. |
+| shape | `"rounded"\|"pill"` | `"rounded"` | `rounded` matches the control radius; `pill` makes the track, slider, and segments fully rounded (navbars, marketing pages). |
 | tone | `"brand"\|"success"\|"warning"\|"danger"\|"neutral"` | `"brand"` | Semantic colour of the selected segment. Only the label is coloured; the slider stays a white pill. The default is `brand`, matching both the values and the default of `tone` on `TabsList` in [Tabs](../tabs/tabs.md). Pass `neutral` for the earlier neutral selected state (`text-foreground`). |
 | className | `string` | - | Additional class name for the root element. |
 | aria-label | `string` | - | Accessible label for the control when no visible title is present. |
@@ -43,6 +44,7 @@ import { Segmented } from "@hulianui/ui"
 | value * | `string` | - | Unique value that identifies the segment and its selected state. |
 | ariaLabel | `string` | - | Accessible label for non-text content such as an icon or logo; otherwise screen readers fall back to `value`. |
 | disabled | `boolean` | `false` | Whether to disable this segment. |
+| render | `ReactElement` | - | Renders this segment as a custom element (usually `<a href>` or a framework router link), with `label` as its content. If any segment sets it, the group is treated as a set of links: `role="group"`, the selected segment gets `aria-current="page"`, and arrow-key roving is off. The element's own `onClick` still fires. |
 
 ## Events
 
@@ -82,6 +84,20 @@ Icon-only segments, each with its own `ariaLabel`:
   ]}
   defaultValue="grid"
   aria-label="View"
+/>
+```
+
+Link segments (switching language or version, where the selected item is the current page), pill-shaped:
+```tsx
+<Segmented
+  shape="pill"
+  size="sm"
+  value="en"
+  aria-label="Language"
+  items={[
+    { value: "zh", label: "ZH", render: <a href="/zh" hrefLang="zh" /> },
+    { value: "en", label: "EN", render: <a href="/en" hrefLang="en" /> },
+  ]}
 />
 ```
 

@@ -159,3 +159,27 @@ describe("ColorSwatchPicker 可读标签", () => {
     expect(getByLabelText("#3b82f6")).toBeTruthy();
   });
 });
+
+describe("ColorSwatchPicker · shape", () => {
+  it("默认方形带细边；circle 全圆无边", () => {
+    const { getAllByRole, rerender } = render(
+      <ColorSwatchPicker colors={["#ef4444", "#3b82f6"]} aria-label="色板" />,
+    );
+    expect(getAllByRole("radio")[0].className).toContain("border-border");
+    rerender(<ColorSwatchPicker colors={["#ef4444", "#3b82f6"]} shape="circle" aria-label="色板" />);
+    const cls = getAllByRole("radio")[0].className;
+    expect(cls).toContain("rounded-full");
+    expect(cls).not.toContain("border-border");
+  });
+
+  it("选中外环走 outline-offset（透明间隙），不再画 bg 色的 ring-offset", () => {
+    const { getAllByRole } = render(
+      <ColorSwatchPicker colors={["#ef4444"]} defaultValue="#ef4444" aria-label="色板" />,
+    );
+    const cls = getAllByRole("radio")[0].className;
+    expect(cls).toContain("data-[checked]:outline-offset-2");
+    // v4 的 outline-none 把 --tw-outline-style 置 none，outline-2 会读到它，必须显式 solid
+    expect(cls).toContain("data-[checked]:outline-solid");
+    expect(cls).not.toContain("data-[checked]:ring-offset-bg");
+  });
+});

@@ -5,6 +5,7 @@ import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button/button";
 import { Segmented } from "../../../../packages/ui/src/segmented/segmented";
 import { Command } from "../../../../packages/ui/src/command/command";
+import { CommandTrigger } from "../../../../packages/ui/src/command/command-trigger";
 import type { CommandGroupData } from "../../../../packages/ui/src/command/command.types";
 const groups: CommandGroupData[] = [
     {
@@ -49,6 +50,15 @@ function Demo({ placeholder, shortcut, closeOnSelect, surface, }: {
         Open the command panel{shortcut ? "(or \u2318K)" : ""}
       </Button>
       <Command open={open} onOpenChange={setOpen} groups={groups} placeholder={placeholder} shortcut={shortcut} closeOnSelect={closeOnSelect} surface={surface}/>
+    </>);
+}
+function TriggerDemo({ shape }: {
+    shape: "rounded" | "pill";
+}) {
+    const [open, setOpen] = useState(false);
+    return (<>
+      <CommandTrigger shape={shape} placeholder="Search docs" aria-label="Search docs" onClick={() => setOpen(true)} className="w-60"/>
+      <Command open={open} onOpenChange={setOpen} groups={groups}/>
     </>);
 }
 function FooterDemo() {
@@ -115,6 +125,17 @@ const groups = [
 </Button>
 <Command open={open} onOpenChange={setOpen} groups={groups} shortcut />`,
             render: () => <Demo shortcut/>,
+        },
+        {
+            title: "A search-field-style entry (CommandTrigger)",
+            description: "CommandTrigger looks like a search field but is a button: a magnifier, placeholder text, and a \u2318K keycap. shape=\"pill\" makes it a pill, and collapseBelow turns it into an icon button on narrow screens.",
+            code: `<CommandTrigger placeholder="Search docs" aria-label="Search docs" onClick={() => setOpen(true)} />
+<CommandTrigger shape="pill" size="sm" collapseBelow="sm" \u2026 />
+<Command open={open} onOpenChange={setOpen} groups={groups} shortcut />`,
+            render: () => (<div className="flex flex-wrap items-center gap-4">
+          <TriggerDemo shape="rounded"/>
+          <TriggerDemo shape="pill"/>
+        </div>),
         },
         {
             title: "Keep open after selection",

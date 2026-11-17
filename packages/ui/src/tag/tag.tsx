@@ -1,5 +1,5 @@
 "use client";
-import { memo } from "react";
+import { cloneElement, memo } from "react";
 import { cva } from "class-variance-authority";
 import { X } from "../_icons";
 import { useComponentLocale } from "../config/locale-context";
@@ -78,6 +78,8 @@ function TagImpl({
   icon,
   onClose,
   isDisabled,
+  shape = "rounded",
+  render,
   className,
   style,
   children,
@@ -94,21 +96,28 @@ function TagImpl({
         // 传入的色若本身极浅（如 chart-3 的琥珀），白字会偏弱 —— 分类色请优先软底或描边。
         { backgroundColor: accent, color: "var(--color-primary-foreground)" }
       : variant === "outline"
-        ? { borderColor: accent, color: accent }
-        : { backgroundColor: `color-mix(in oklab, ${accent} 12%, transparent)`, color: accent }
+      ? { borderColor: accent, color: accent }
+      : { backgroundColor: `color-mix(in oklab, ${accent} 12%, transparent)`, color: accent }
     : undefined;
-  return (
-    <span
-      className={cn(
-        tagVariants({ variant, tone, size }),
-        isDisabled && "pointer-events-none opacity-50",
-        className,
-      )}
-      // 消费方显式 style 仍能覆盖（逃生口），故放在自家分类色之后。
-      style={accentStyle ? { ...accentStyle, ...style } : style}
-      aria-disabled={isDisabled || undefined}
-      {...rest}
-    >
+  const rootClass = cn(
+    tagVariants({ variant, tone, size }),
+    shape === "pill" && "rounded-full",
+    // 可点（render 成链接）：补焦点环与悬停反馈。中性色悬停转主色（「这是个能去的地方」），
+    // 描边档的边一起转；其余语义色本身已是强调色，只降一点透明度。
+    render &&
+      cn(
+        "outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg",
+        tone === "neutral" && !accent
+          ? cn("hover:text-primary", variant === "outline" && "hover:border-primary-border")
+          : "transition-opacity hover:opacity-80",
+      ),
+    isDisabled && "pointer-events-none opacity-50",
+    className,
+  );
+  // 消费方显式 style 仍能覆盖（逃生口），故放在自家分类色之后。
+  const rootStyle = accentStyle ? { ...accentStyle, ...style } : style;
+  const content = (
+    <>
       {icon ? (
         <span className="flex shrink-0 items-center [&>svg]:size-3">{icon}</span>
       ) : (
@@ -147,6 +156,28 @@ function TagImpl({
           <X className="size-2.5" />
         </button>
       )}
+    </>
+  );
+
+  // render：渲染成链接 / 路由件（版本号指向更新日志、标签指向筛选页）。与 Button / Link / Brand 的
+  // render 约定一致：皮肤合并进该元素，href 由它自己带。
+  if (render) {
+    const own = render.props as { className?: string };
+    return cloneElement(
+      render,
+      {
+        ...rest,
+        className: cn(rootClass, own.className),
+        style: rootStyle,
+        "aria-disabled": isDisabled || undefined,
+      } as Record<string, unknown>,
+      content,
+    );
+  }
+
+  return (
+    <span className={rootClass} style={rootStyle} aria-disabled={isDisabled || undefined} {...rest}>
+      {content}
     </span>
   );
 }

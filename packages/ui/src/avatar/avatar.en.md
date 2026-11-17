@@ -28,6 +28,8 @@ import { Avatar } from "@hulianui/ui"
 | size | `"sm" \| "md" \| "lg" \| "xl" \| "2xl"` | `"md"` | Preset circular diameter: 32 / 40 / 48 / 64 / 96px. |
 | src | `string` | - | Image URL; failures reveal `fallback`. |
 | alt | `string` | - | Alternative image text. |
+| tone | `"neutral" \| "brand"` | `"neutral"` | Placeholder background: `neutral` is a neutral gray; `brand` uses the accent's subtle background with accent text, for the brand's, system's, or AI's own avatar, or initials that should carry the theme color. A loaded image covers it. |
+| ring | `boolean` | `false` | A 2px outer ring whose color follows tone (border for neutral, the accent's subtle border for brand). Use it over colored backgrounds or photos, or when stacking avatars. Inside a primary card the neutral ring becomes translucent white automatically. |
 | className | `string` | - | Custom class name. |
 
 ## Slots
@@ -43,6 +45,11 @@ import { Avatar } from "@hulianui/ui"
 ```tsx
 // Fallback without an image
 <Avatar size="lg" fallback="H" />
+```
+```tsx
+// Accent-colored initials with a ring; a white ring for a photo on a colored card
+<Avatar tone="brand" ring fallback="L" />
+<Card variant="primary"><Avatar ring src="/demo/avatar-12.jpg" alt="Abel" fallback="A" /></Card>
 ```
 
 ## Pitfalls

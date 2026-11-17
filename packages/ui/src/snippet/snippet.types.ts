@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 export interface SnippetProps {
   /** 显示内容（字符串或节点）。 */
@@ -15,5 +15,14 @@ export interface SnippetProps {
   copyLabel?: string;
   /** Accessible label shown after copying. */
   copiedLabel?: string;
+  /** 次要行：沉一档底色、文字转次要灰（「也可以这样」的补充命令、给 AI 读的链接）。@default false */
+  muted?: boolean;
   className?: string;
+}
+
+export interface SnippetGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** 绝对定位的装饰层（BorderBeam 等），画在分隔线列表之外，不会被当成一行。 */
+  overlay?: ReactNode;
+  /** 若干个 `<Snippet>`。 */
+  children?: ReactNode;
 }

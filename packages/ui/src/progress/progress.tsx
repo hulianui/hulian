@@ -22,12 +22,16 @@ const barByTone = {
   danger: "bg-danger",
   success: "bg-success",
   warning: "bg-warning",
+  // 反色：填充取前景色。放在彩色卡（Card variant="primary" / data-surface="inverse"）里时前景是白，
+  // 主色填充会和卡面融成一片看不见；放在普通底上就是一条深色进度条。
+  inverse: "bg-foreground",
 } as const;
 const strokeByTone = {
   primary: "stroke-[var(--color-primary)]",
   danger: "stroke-[var(--color-danger)]",
   success: "stroke-[var(--color-success)]",
   warning: "stroke-[var(--color-warning)]",
+  inverse: "stroke-[var(--color-foreground)]",
 } as const;
 
 // 确定态填充过渡：复用 motion-token CSS 镜像（零散写 transition）
@@ -72,34 +76,34 @@ export function Progress({
         {...rest}
       >
         <LazyMotionProvider>
-        <m.svg
-          width={size}
-          height={size}
-          animate={spin ? { rotate: 360 } : undefined}
-          transition={spin ? { repeat: Infinity, duration: LOOP, ease: "linear" } : undefined}
-        >
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r}
-            fill="none"
-            strokeWidth={thickness}
-            className="stroke-[var(--color-surface-hover)]"
-          />
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={r}
-            fill="none"
-            strokeWidth={thickness}
-            strokeLinecap="round"
-            strokeDasharray={circ}
-            strokeDashoffset={offset}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
-            className={strokeByTone[tone]}
-            style={{ transitionProperty: "stroke-dashoffset", ...fillTransition }}
-          />
-        </m.svg>
+          <m.svg
+            width={size}
+            height={size}
+            animate={spin ? { rotate: 360 } : undefined}
+            transition={spin ? { repeat: Infinity, duration: LOOP, ease: "linear" } : undefined}
+          >
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={r}
+              fill="none"
+              strokeWidth={thickness}
+              className="stroke-[var(--color-surface-hover)]"
+            />
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={r}
+              fill="none"
+              strokeWidth={thickness}
+              strokeLinecap="round"
+              strokeDasharray={circ}
+              strokeDashoffset={offset}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+              className={strokeByTone[tone]}
+              style={{ transitionProperty: "stroke-dashoffset", ...fillTransition }}
+            />
+          </m.svg>
         </LazyMotionProvider>
         {showValue && !indeterminate && (
           <span className="absolute text-xs font-medium tabular-nums text-foreground">
@@ -133,7 +137,13 @@ export function Progress({
         )}
       </div>
       {showValue && !indeterminate && (
-        <span className="shrink-0 text-xs font-medium tabular-nums text-muted-foreground">
+        <span
+          className={cn(
+            "shrink-0 text-xs font-medium tabular-nums",
+            // 反色档的百分比与填充同色：彩色卡上次要灰对比不够
+            tone === "inverse" ? "font-semibold text-foreground" : "text-muted-foreground",
+          )}
+        >
           {`${Math.round(pct as number)}%`}
         </span>
       )}

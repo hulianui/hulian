@@ -2,6 +2,7 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button";
 import { Tag } from "../../../../packages/ui/src/tag";
+import { Progress } from "../../../../packages/ui/src/progress";
 import { Text } from "../../../../packages/ui/src/text";
 import { ChevronRight } from "../../../../packages/ui/src/_icons";
 import { Card, CardHeader, CardBody, CardFooter } from "../../../../packages/ui/src/card/card";
@@ -144,12 +145,46 @@ export const cardShowcase: ShowcaseSpec = {
           <CardBody>Three items awaiting action.</CardBody>
         </Card>),
         },
+        {
+            title: "Primary card",
+            description: "variant=\"primary\" has a primary gradient and sets data-surface=\"inverse\", so text and tags inside switch to inverse colors automatically; the progress bar uses tone=\"inverse\".",
+            code: `<Card variant="primary" className="w-72">
+  <CardBody className="space-y-4">
+    <Tag size="sm">In progress</Tag>
+    <Text weight="semibold">The whole palette follows your theme</Text>
+    <Text size="sm" tone="muted">Assigned to Abel</Text>
+    <Progress value={68} showValue tone="inverse" />
+  </CardBody>
+</Card>`,
+            render: () => (<Card variant="primary" className="w-72">
+          <CardBody className="space-y-4">
+            <Tag size="sm">Ongoing</Tag>
+            <Text weight="semibold">The whole palette follows your theme</Text>
+            <Text size="sm" tone="muted">
+              Assigned to Abel
+            </Text>
+            <Progress value={68} showValue tone="inverse" aria-label="Progress"/>
+          </CardBody>
+        </Card>),
+        },
+        {
+            title: "Fully clickable card",
+            description: "interactive lifts the card on hover and shows a ring on keyboard focus; render turns the whole card into a link, so don't put other links or buttons inside.",
+            code: `<Card variant="elevated" interactive render={<a href="/docs" />}>
+  <CardHeader title="Hulian docs" description="hulian.dev" />
+  <CardBody>Components, blocks, pages, and templates.</CardBody>
+</Card>`,
+            render: () => (<Card variant="elevated" interactive render={<a href="#card"/>} className="w-64">
+          <CardHeader title="Hulian Documentation" description="hulian.dev"/>
+          <CardBody>Components, blocks, pages, and templates.</CardBody>
+        </Card>),
+        },
     ],
     controls: [
         {
             prop: "variant",
             type: "select",
-            options: ["outline", "elevated", "featured", "plain"],
+            options: ["outline", "elevated", "featured", "primary", "plain"],
             defaultValue: "outline",
         },
         { prop: "withFooter", type: "boolean", defaultValue: true, label: "Show footer" },

@@ -27,9 +27,10 @@ Inherits native `<a>` attributes such as `href`, `target`, and `onClick`, except
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| `tone` | `"primary" \| "foreground" \| "danger"` | `"primary"` | Text tone. |
+| `tone` | `"primary" \| "foreground" \| "danger" \| "muted"` | `"primary"` | Text tone. `muted` rests in the secondary gray and returns to the body color on hover, for footer links or a row of source links that shouldn't compete with the accent. |
 | `underline` | `"always" \| "hover" \| "none"` | `"hover"` | Underline visibility policy. |
 | `external` | `boolean` | `false` | Adds `target="_blank"`, `rel="noopener noreferrer"`, and a trailing external-link icon. |
+| `arrow` | `boolean` | `false` | Adds a trailing "go" arrow that nudges forward on hover, for links such as "Browse all →". When `external` is also set, only the external-link icon renders. |
 | `href` | `string` | - | Native navigation destination. |
 | `render` | `ReactElement` | - | Custom element for framework routers such as `next/link` or React Router Link. Styling and Link props merge into this element; the custom element owns `href`. |
 
@@ -54,6 +55,9 @@ Inherits native `<a>` attributes such as `href`, `target`, and `onClick`, except
 // Client-side routing: pass the framework Link through render and put href on it
 import NextLink from "next/link"
 <Link render={<NextLink href="/posts/1" />}>View details</Link>
+
+<Link href="/components" arrow>Browse all</Link>
+<Link href="https://tailwindcss.com" tone="muted" underline="none">Tailwind</Link>
 ```
 
 ## Usage guidelines

@@ -1,6 +1,10 @@
 import type { ShowcaseSpec } from "../showcase/types";
 import { Brand } from "./brand";
 
+// 演示用单色 logo（六边形）：真实项目里换成自己的 /logo.svg
+const LOGO =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 21 7v10l-9 5-9-5V7z'/></svg>";
+
 function Mark() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -107,6 +111,20 @@ export const brandShowcase: ShowcaseSpec = {
         <div id="home" className="flex flex-wrap items-center gap-8">
           <Brand name="瑚琏" href="#home" />
           <Brand mark={<Mark />} name="瑚琏" description="点我回首页" href="#home" />
+        </div>
+      ),
+    },
+    {
+      title: "裸 logo · 按形状着色",
+      description:
+        "variant=\"bare\" 去掉徽章底，maskSrc 让单色 logo 图片按形状着品牌色，跟随主题色与 AccentScope。",
+      code: `<Brand variant="bare" maskSrc="/logo.svg" name="瑚琏 UI" />
+<Brand variant="bare" maskSrc="/logo.svg" name="瑚琏 UI" color="chart-4" />`,
+      render: () => (
+        <div className="flex items-center gap-6">
+          <Brand variant="bare" maskSrc={LOGO} name="瑚琏 UI" />
+          <Brand variant="bare" maskSrc={LOGO} name="瑚琏 UI" color="chart-4" />
+          <Brand maskSrc={LOGO} name="徽章里的 logo" />
         </div>
       ),
     },

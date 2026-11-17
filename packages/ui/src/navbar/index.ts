@@ -3,6 +3,7 @@ export {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenu,
   NavbarMenuToggle,
 } from "./navbar";
 export type {
@@ -10,5 +11,7 @@ export type {
   NavbarBrandProps,
   NavbarContentProps,
   NavbarItemProps,
+  NavbarMenuProps,
   NavbarMenuToggleProps,
+  NavbarBreakpoint,
 } from "./navbar.types";

@@ -28,7 +28,7 @@ import { Progress, progressPercent, dashOffset } from "@hulianui/ui"
 | value | `number` | - | Current value. Omit or pass undefined for indeterminate mode. |
 | max | `number` | `100` | Maximum value. |
 | variant | `"linear" \| "circular"` | `"linear"` | Geometry. |
-| tone | `"primary" \| "danger" \| "success" \| "warning"` | `"primary"` | Progress tone. |
+| tone | `"primary" \| "danger" \| "success" \| "warning" \| "inverse"` | `"primary"` | Progress tone. `inverse` fills with the foreground color: on a colored card (`Card variant="primary"` / `data-surface="inverse"`) it's a white bar, where a primary fill would blend into the card. |
 | size | `number` | `40` | Circular diameter in pixels; ignored by linear. |
 | thickness | `number` | `4` | Circular stroke width in pixels; ignored by linear. |
 | showValue | `boolean` | `false` | Shows the percentage at the circular center or linear right edge; ignored when indeterminate. |

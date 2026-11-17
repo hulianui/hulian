@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeAll, afterEach } from "vitest";
 import { useState } from "react";
 import { render, fireEvent, screen, cleanup } from "@testing-library/react";
 import { Command } from "./command";
+import { CommandTrigger } from "./command-trigger";
 import type { CommandGroupData } from "./command.types";
 
 // jsdom 未实现 scrollIntoView（高亮项滚动进视口会调用）→ 桩成 noop 防抛。
@@ -343,5 +344,36 @@ describe("Command", () => {
       expect(backdrop.className).toContain("bg-black/10");
       expect(backdrop.className).not.toContain("bg-black/40");
     });
+  });
+});
+
+describe("CommandTrigger", () => {
+  it("是按钮、带占位文案与 ⌘K 键帽，默认补 aria-keyshortcuts", () => {
+    const onClick = vi.fn();
+    const { getByRole } = render(
+      <CommandTrigger placeholder="搜索文档" aria-label="搜索文档" onClick={onClick} />,
+    );
+    const btn = getByRole("button", { name: "搜索文档" });
+    expect(btn.textContent).toContain("搜索文档");
+    expect(btn.textContent).toContain("⌘K");
+    expect(btn.getAttribute("aria-keyshortcuts")).toBe("Meta+K Control+K");
+    fireEvent.click(btn);
+    expect(onClick).toHaveBeenCalled();
+  });
+
+  it("shape=pill 全圆；shortcut=null 不出键帽也不补 aria-keyshortcuts", () => {
+    const { getByRole } = render(<CommandTrigger shape="pill" shortcut={null} aria-label="搜" />);
+    const btn = getByRole("button");
+    expect(btn.className).toContain("rounded-full");
+    expect(btn.querySelector("kbd")).toBeNull();
+    expect(btn.getAttribute("aria-keyshortcuts")).toBeNull();
+  });
+
+  it("collapseBelow=sm 时窄屏收成方钮、藏起文案", () => {
+    const { getByRole, getByText } = render(
+      <CommandTrigger collapseBelow="sm" placeholder="搜索" aria-label="搜索" />,
+    );
+    expect(getByRole("button").className).toContain("max-sm:justify-center");
+    expect(getByText("搜索").className).toContain("max-sm:hidden");
   });
 });

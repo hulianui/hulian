@@ -21,7 +21,7 @@
       "severity": "error",
       "matcher": {
         "kind": "forbidden-import",
-        "sourcePattern": "^@hulianui/ui/(?!(?:access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|math-field|math-textarea|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|novel-editor|novel-reader|number-field|number-ticker|orb|orbit-images|orbiting-circles|org-classroom|page-header|pagination|paper|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question|question-answer|question-card|question-editor|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|score-scale|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|segmented|select|separator|sequence-diagram|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|treemap|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|word-rotate|world-map)$)"
+        "sourcePattern": "^@hulianui/ui/(?!(?:accent-scope|access|accordion|action-sheet|admin-layout|affix|agent-plan|alert|alert-dialog|anchor|android|animated-beam|animated-gradient-text|animated-list|animated-shiny-text|animated-theme-toggler|annotation|antigravity|app-launcher|artifact|ascii-text|aspect-ratio|aurora|aurora-text|auth-panel|avatar|avatar-circles|award-badge|back-top|badge|balatro|ballpit|banner|beams|beian-footer|bento-grid|blob-cursor|blur-text|book-3d|border-beam|border-glow|bounce-cards|brand|breadcrumb|bubble-menu|button|button-group|calendar|callout|card|card-nav|card-spotlight|card-swap|carousel|cascader|cell-editor|chart|chat-message|checkbox|checkbox-group|chip|choicebox|chroma-grid|chrome|circular-gallery|circular-text|citation|click-captcha|click-spark|code|code-block|code-diff|code-editor|code-review-thread|collapsible|color-bends|color-field|color-swatch-picker|colorpicker|combobox|command|comment|component-picker|config|confirm-card|container|context-menu|contribution-graph|conversation|country-select|coupon|credit-card|crosshair|cubes|curved-loop|danmaku|dark-veil|date-picker|date-range-picker|date-time-picker|decay-card|decrypted-text|deploy-status|descriptions|design-canvas|dialog|diff-stat|dither|divider|dock|document-sheet|dome-gallery|dossier|dot|dot-field|dot-pattern|drawer|editable-table|elastic-slider|electric-border|element-selection-overlay|emoji-picker|empty|event-stream|evil-eye|fab|fade-mask|falling-text|faulty-terminal|ferrofluid|field|file-tree|filter-chip|fit-screen|flickering-grid|flip-text|floating-lines|floating-reactions|flow|flowing-menu|fluid-glass|flying-posters|folder|form|form-dialog|funnel|fuzzy-text|galaxy|gantt|ghost-cursor|gift-feed|git-commit|glare-hover|glass-icons|glass-surface|glimpse|glitch-text|gooey-nav|gradient-blinds|gradual-blur|grainient|grid|grid-distortion|grid-motion|grid-pattern|grid-scan|heading|heatmap|hero-video-dialog|hover-card|hyperspeed|icon-picker|icon-tile|image|image-cropper|image-trail|image-viewer|infinite-menu|infinite-scroll|input|input-otp|inspector-panel|interactive-hover-button|intercept-card|iphone|iridescence|issue-reporter|json-viewer|kanban|kbd|label|lanyard|laser-flow|layout|legend|lens|letter-glitch|lib|light-pillar|light-rays|lightfall|lightning|line-shadow-text|line-waves|link|liquid-chrome|liquid-ether|list|listbox|live-chat|live-player|live-product-card|log-viewer|login-form|logo-loop|magic-bento|magic-card|magic-rings|magnet|magnet-lines|markdown|markdown-editor|marquee|masonry|math|math-field|math-textarea|mentions|menu|menubar|message-actions|meta-balls|metallic-paint|meteors|meter|modal|model-viewer|motion|nav-menu|navbar|navigation-menu|notification|novel-editor|novel-reader|number-field|number-ticker|orb|orbit-images|orbiting-circles|org-classroom|page-header|pagination|paper|particles|password-generator|picker|pill-nav|pixel-blast|pixel-card|pixel-snow|pixel-trail|pixel-transition|plasma|plasma-wave|popconfirm|popover|preview-sandbox|pricing-table|prism|prismatic-burst|pro-form|pro-table|profile-card|progress|progressive-blur|prompt-input|prompt-suggestions|prose|pull-to-refresh|pulsating-button|qrcode|question|question-answer|question-card|question-editor|queue-lane|radar|radio|rainbow-button|rating|reflective-card|region-cascader|region-select|relative-time|remote-select|resizable|result|retro-grid|reveal|ribbons|rich-text-editor|ripple|ripple-button|ripple-grid|route-tabs|row-actions|safari|safe-area|sankey|scheduler|scope-matrix|score-ring|score-scale|scrambled-text|scroll-area|scroll-float|scroll-reveal|scroll-stack|scroll-velocity|search-form|secret-field|section-header|segmented|select|separator|sequence-diagram|service-message|shape-blur|shape-grid|shield-badge|shimmer-button|shine-border|showcase|shuffle|side-rays|sidebar|silk|skeleton|slider|snippet|social-button|soft-aurora|sortable|spacer|sparkles-text|sparkline|spin|spinner|splash-cursor|split-text|spotlight|stack|staggered-menu|star-border|stat|statistic|status-dot|stepper|steps|steps-form|sticker-peel|streaming-text|striped-pattern|swipe-action|switch|tab-bar|table|tablet|tabs|tag|target-cursor|task-runner|terminal|text|text-cursor|text-pressure|text-reveal|textarea|theme|thinking-block|thread-list|threads|tilt|tilted-card|time-field|time-picker|timeline|toast|toggle|tool-call|toolbar|tooltip|tour|transfer|tree|tree-select|treemap|true-focus|typing-animation|typing-dots|upload|user|variable-proximity|video|viewport|virtual-list|vite|vitest-preset|voice-record|watch|watermark|wavy-background|window-frame|word-rotate|world-map)$)"
       },
       "message": "这个子路径不在 @hulianui/ui 的 package.json exports 里，导入会解析失败。",
       "instead": "改用根入口 @hulianui/ui，或改成 exports 里真实存在的子路径（如 @hulianui/ui/button）。"
@@ -233,6 +233,27 @@
       "instead": "把「此刻」挪到挂载后：`useState(undefined)` + `useEffect(() => setNow(...), [])`，首帧不画与时间相关的部分；或由外部把基准时间当 prop 传进来（截图回归也因此可复现）。`useMemo(fn, [])` **救不了** —— 它只保证一次渲染树内稳定，服务端与客户端本就是两次独立求值。事件回调里读时钟不受此限（那只发生在客户端）",
       "scope": "global",
       "source": "scripts/gen-conventions.mjs"
+    },
+    {
+      "id": "component/accent-scope/pitfall/1",
+      "scope": "accent-scope",
+      "title": "AccentScope",
+      "rule": "派生规则在 `@hulianui/tokens` 的 `semantic.css` 里（`[data-accent-scope]` 块），项目必须引了 tokens 的样式才生效；只渲染本组件、没有 tokens 时只是一个普通 div。",
+      "source": "packages/ui/src/accent-scope/accent-scope.md"
+    },
+    {
+      "id": "component/accent-scope/pitfall/2",
+      "scope": "accent-scope",
+      "title": "AccentScope",
+      "rule": "子元素不要再给 `--hl-accent-hue` 挂 transition：继承值每帧变化会让子元素重起一段过渡，变色拖尾。过渡只挂在作用域上（`transition` prop）。",
+      "source": "packages/ui/src/accent-scope/accent-scope.md"
+    },
+    {
+      "id": "component/accent-scope/pitfall/3",
+      "scope": "accent-scope",
+      "title": "AccentScope",
+      "rule": "「暗页 > 亮色岛 > 作用域」的嵌套里，祖先的两条主题选择器特异性相同、按源码顺序落到暗色；此时给本组件传 `theme=\"light\"`。",
+      "source": "packages/ui/src/accent-scope/accent-scope.md"
     },
     {
       "id": "component/access/pitfall/1",
@@ -3588,6 +3609,20 @@
       "source": "packages/ui/src/fab/fab.md"
     },
     {
+      "id": "component/fade-mask/pitfall/1",
+      "scope": "fade-mask",
+      "title": "FadeMask",
+      "rule": "遮罩作用于整棵子树：里面的可点元素淡出到透明后仍然可点，别把交互控件放进完全透明的那一段。",
+      "source": "packages/ui/src/fade-mask/fade-mask.md"
+    },
+    {
+      "id": "component/fade-mask/pitfall/2",
+      "scope": "fade-mask",
+      "title": "FadeMask",
+      "rule": "包 DotPattern 等 `absolute inset-0` 的背景层时，FadeMask 自己要有定位与尺寸（如 `absolute inset-0`），否则背景层会对齐到更外层的定位祖先。",
+      "source": "packages/ui/src/fade-mask/fade-mask.md"
+    },
+    {
       "id": "component/falling-text/pitfall/1",
       "scope": "falling-text",
       "title": "FallingText",
@@ -4671,6 +4706,20 @@
       "title": "IconPicker",
       "rule": "对外值是**图标名字符串**，不是节点。渲染选中图标请用你自己的 `renderIcon`， 组件不对外暴露节点。",
       "source": "packages/ui/src/icon-picker/icon-picker.md"
+    },
+    {
+      "id": "component/icon-tile/pitfall/1",
+      "scope": "icon-tile",
+      "title": "IconTile",
+      "rule": "图标尺寸由组件按档给（`[&>svg]`），图标上不要再写 `size-*` 类，否则各档尺寸对不齐。",
+      "source": "packages/ui/src/icon-tile/icon-tile.md"
+    },
+    {
+      "id": "component/icon-tile/pitfall/2",
+      "scope": "icon-tile",
+      "title": "IconTile",
+      "rule": "默认 `aria-hidden`：它是装饰，语义由旁边的文字承担；单独出现、需要读屏念出来时才传 `role=\"img\"` + `aria-label`。",
+      "source": "packages/ui/src/icon-tile/icon-tile.md"
     },
     {
       "id": "component/image/pitfall/1",
@@ -6433,7 +6482,7 @@
       "id": "component/navbar/pitfall/1",
       "scope": "navbar",
       "title": "Navbar",
-      "rule": "`NavbarMenuToggle` 是受控件，`isOpen`/`onToggle` 由你自己维护 state，移动端展开菜单也需你按 `open` 自行条件渲染（组件不替你管面板开合）。",
+      "rule": "`NavbarMenuToggle` 与 `NavbarMenu` 都是受控件，`isOpen`/`onToggle` 由你自己维护 state；两者的 `breakpoint` 要取同一档，且与横排 `NavbarContent` 出现的断点一致，否则拉宽窗口时横排与竖排会同时在屏上。",
       "source": "packages/ui/src/navbar/navbar.md"
     },
     {
@@ -8929,6 +8978,20 @@
       "source": "packages/ui/src/secret-field/secret-field.md"
     },
     {
+      "id": "component/section-header/pitfall/1",
+      "scope": "section-header",
+      "title": "SectionHeader",
+      "rule": "中文标题要连着读时用 `accentBreak=\"none\"`，英文用 `\"space\"`；默认 `\"always\"` 会在两半之间换行。",
+      "source": "packages/ui/src/section-header/section-header.md"
+    },
+    {
+      "id": "component/section-header/pitfall/2",
+      "scope": "section-header",
+      "title": "SectionHeader",
+      "rule": "标点归前半句（`title=\"从一个按钮，\"`）：`mobile` 换行发生在 `accent` 之前，标点放进 `accent` 会在窄屏落到行首。",
+      "source": "packages/ui/src/section-header/section-header.md"
+    },
+    {
       "id": "component/segmented/pitfall/1",
       "scope": "segmented",
       "title": "Segmented",
@@ -11421,6 +11484,20 @@
       "source": "packages/ui/src/wavy-background/wavy-background.md"
     },
     {
+      "id": "component/window-frame/pitfall/1",
+      "scope": "window-frame",
+      "title": "WindowFrame",
+      "rule": "内容区不带内边距：截图类内容要铺满，对话 / 表单类内容自己包一层 padding。",
+      "source": "packages/ui/src/window-frame/window-frame.md"
+    },
+    {
+      "id": "component/window-frame/pitfall/2",
+      "scope": "window-frame",
+      "title": "WindowFrame",
+      "rule": "三色点是 macOS 固定色，不跟主题色走（设备拟物的约定，与 Safari 相同）。",
+      "source": "packages/ui/src/window-frame/window-frame.md"
+    },
+    {
       "id": "component/word-rotate/pitfall/1",
       "scope": "word-rotate",
       "title": "WordRotate",
@@ -11501,8 +11578,8 @@
     }
   ],
   "stats": {
-    "componentDocs": 404,
-    "componentAdvisories": 1604,
-    "totalAdvisories": 1614
+    "componentDocs": 409,
+    "componentAdvisories": 1615,
+    "totalAdvisories": 1625
   }
 }

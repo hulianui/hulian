@@ -29,6 +29,7 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 | value | `string` | - | Controlled selection value (must be strictly equal to a swatch `color`) |
 | defaultValue | `string` | - | Uncontrolled initial selection value |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | Color block size |
+| shape | `"square" \| "circle"` | `"square"` | `square` has token corners and a thin border; `circle` is fully round with no border, only a very faint inner shadow (theme or palette pickers). The gap in the selected ring is transparent, so on a card it shows the card surface itself. |
 | disabled | `boolean` | `false` | Disable entire group |
 | className | `string` | - | Additional class name for the container. |
 | aria-label | `string` | Locale default | Accessible name; `enUS` provides “Color swatches”, and an explicit value takes precedence. |
@@ -70,6 +71,9 @@ const [v, setV] = useState("#3b82f6");
   ]}
   defaultValue="var(--color-primary)"
 />
+
+// Round swatches (theme color picker)
+<ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" shape="circle" size="sm" />
 ```
 
 ## Usage guidelines

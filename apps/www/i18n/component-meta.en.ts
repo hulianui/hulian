@@ -1510,6 +1510,31 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
     description: "Creates diagonal stripes as a lightweight CSS decorative surface.",
     keywords: ["striped", "pattern", "decoration", "backdrop"],
   },
+  "accent-scope": {
+    shortName: "AccentScope",
+    description: "Changes the accent hue of one region; the components inside follow automatically.",
+    keywords: ["accent", "hue", "theme", "scope", "layout", "container"],
+  },
+  "fade-mask": {
+    shortName: "FadeMask",
+    description: "Fades content out to transparency toward one edge or from the center outward.",
+    keywords: ["fade", "mask", "vignette", "decoration", "backdrop"],
+  },
+  "icon-tile": {
+    shortName: "IconTile",
+    description: "Puts an icon in a small tinted square, placed to the left of feature or notification text.",
+    keywords: ["icon", "tile", "feature icon", "data display", "info"],
+  },
+  "section-header": {
+    shortName: "SectionHeader",
+    description: "The heading group at the start of a section: eyebrow, large title, accented half, and lead text.",
+    keywords: ["section", "header", "eyebrow", "title", "typography", "text"],
+  },
+  "window-frame": {
+    shortName: "WindowFrame",
+    description: "Wraps a piece of UI in an app window with a traffic-light title bar, like a product screenshot.",
+    keywords: ["window", "frame", "mockup", "app window", "mockups"],
+  },
   spotlight: {
     shortName: "Spotlight",
     description: "Adds a theme-aware radial glow behind foreground content.",

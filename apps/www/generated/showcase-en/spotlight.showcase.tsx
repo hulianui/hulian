@@ -1,4 +1,5 @@
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
+import { DotPattern } from "../../../../packages/ui/src/dot-pattern";
 import { Spotlight } from "../../../../packages/ui/src/spotlight/spotlight";
 function Frame({ children }: {
     children: React.ReactNode;
@@ -53,6 +54,20 @@ export const spotlightShowcase: ShowcaseSpec = {
             render: () => (<Frame>
           <Spotlight y="50%" size="80%" intensity={20} fade={40}/>
         </Frame>),
+        },
+        {
+            title: "Over a texture (transparent fade, ellipse)",
+            description: "blend=\"transparent\" fades into transparency instead of the background, so the dot texture underneath stays visible; two values in size give an elliptical glow.",
+            code: `<div className="relative isolate ...">
+  <DotPattern className="-z-10" />
+  <Spotlight blend="transparent" size="50% 60%" x="30%" intensity={18} fade={70} className="-z-10" />
+  <div>\u2026content\u2026</div>
+</div>`,
+            render: () => (<div className="relative isolate grid h-48 w-full place-items-center overflow-hidden rounded-xl border border-border bg-bg">
+          <DotPattern className="-z-10 text-border"/>
+          <Spotlight blend="transparent" size="50% 60%" x="30%" intensity={18} fade={70} className="-z-10"/>
+          <span className="text-sm font-medium text-foreground">The content is superimposed on it</span>
+        </div>),
         },
     ],
     controls: [

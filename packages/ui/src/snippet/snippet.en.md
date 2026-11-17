@@ -4,7 +4,7 @@ name: Snippet
 category: typography
 group: code
 tags: []
-exports: [Snippet]
+exports: [Snippet, SnippetGroup]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ Use Snippet for a single-line command or code fragment with an optional prompt a
 
 ## Import
 ```ts
-import { Snippet } from "@hulianui/ui"
+import { Snippet, SnippetGroup } from "@hulianui/ui"
 ```
 
 ## Props
@@ -31,7 +31,14 @@ import { Snippet } from "@hulianui/ui"
 | highlight | `boolean` | `true` | Whether to use syntax coloring, only takes effect when children is a string |
 | copyLabel | `string` | Locale value | Copy-button accessible label; an explicit value takes precedence. |
 | copiedLabel | `string` | Locale value | Post-copy accessible label; an explicit value takes precedence. |
+| muted | `boolean` | `false` | A secondary row: a slightly sunken background and secondary-gray text (an alternative command, a link meant for an AI assistant). |
 | className | `string` | - | Container class name |
+
+**SnippetGroup** (several copyable commands stacked in one card; the group draws the frame and row separators, and each Snippet inside drops its own border and background and spans the row)
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| overlay | `ReactNode` | - | An absolutely positioned decorative layer (BorderBeam and similar), drawn outside the separated list so it doesn't count as a row. |
 
 ## Slots
 
@@ -45,6 +52,13 @@ import { Snippet } from "@hulianui/ui"
 
 // Non-command fragment without a prompt
 <Snippet symbol={null}>const theme = useTheme()</Snippet>
+
+// A set of getting-started steps stacked in one card; the last row is secondary
+<SnippetGroup overlay={<BorderBeam size={120} />}>
+  <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
+  <Snippet>npx @hulianui/mcp init-agent</Snippet>
+  <Snippet symbol={null} highlight={false} muted>https://hulian.dev/start</Snippet>
+</SnippetGroup>
 ```
 
 ## Usage guidelines

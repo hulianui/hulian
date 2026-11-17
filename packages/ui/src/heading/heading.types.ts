@@ -2,7 +2,8 @@ import type { ElementType, ReactNode } from "react";
 import type { PolymorphicProps } from "../lib/polymorphic";
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
-export type HeadingSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+/** `display` 是营销页 hero 用的展示级字号（响应式：窄屏 60px、sm 起 72px），不进 level 默认映射。 */
+export type HeadingSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "display";
 export type HeadingWeight = "normal" | "medium" | "semibold" | "bold";
 
 export interface HeadingOwnProps {

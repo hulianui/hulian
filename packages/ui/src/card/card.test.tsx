@@ -240,3 +240,33 @@ describe("CardHeader 的标题词汇（#226）", () => {
     expect(root.className).toContain("[--card-header-px:1.25rem]");
   });
 });
+
+describe("Card · primary / interactive / render", () => {
+  it("primary：主色底 + 主色前景，并挂反色表面", () => {
+    const { container } = render(<Card variant="primary">x</Card>);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.className).toContain("bg-primary");
+    expect(root.className).toContain("text-primary-foreground");
+    expect(root.getAttribute("data-surface")).toBe("inverse");
+  });
+
+  it("非 primary 不挂反色表面；interactive 默认关闭", () => {
+    const { container } = render(<Card>x</Card>);
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.hasAttribute("data-surface")).toBe(false);
+    expect(root.className).not.toContain("hover:-translate-y-0.5");
+  });
+
+  it("render 成链接：整卡可点，保留 href 与子内容", () => {
+    const { getByRole } = render(
+      <Card interactive render={<a href="https://hulian.dev" />}>
+        <CardBody>瑚琏</CardBody>
+      </Card>,
+    );
+    const a = getByRole("link");
+    expect(a.getAttribute("href")).toBe("https://hulian.dev");
+    expect(a.className).toContain("hover:-translate-y-0.5");
+    expect(a.className).toContain("focus-visible:ring-2");
+    expect(a.textContent).toBe("瑚琏");
+  });
+});

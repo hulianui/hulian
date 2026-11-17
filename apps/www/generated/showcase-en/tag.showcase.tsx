@@ -108,6 +108,21 @@ export const tagShowcase: ShowcaseSpec = {
           Removable
         </Tag>),
         },
+        {
+            title: "Pill shape and clickable tags",
+            description: "shape=\"pill\" is fully round; render turns the tag into a link with a focus ring and hover feedback, for clickable tags such as a version linking to the changelog.",
+            code: `<Tag variant="outline" size="sm" shape="pill" render={<a href="/changelog" />}>
+  v0.44.0
+</Tag>`,
+            render: () => (<div className="flex items-center gap-3">
+          <Tag variant="outline" size="sm" shape="pill" render={<a href="#changelog"/>}>
+            v0.44.0
+          </Tag>
+          <Tag tone="brand" shape="pill">
+            12
+          </Tag>
+        </div>),
+        },
     ],
     controls: [
         { prop: "variant", type: "select", options: ["soft", "solid", "outline"], defaultValue: "soft" },

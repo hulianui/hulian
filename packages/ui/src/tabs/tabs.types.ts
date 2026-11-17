@@ -8,7 +8,15 @@ import type {
 import type { tabsListVariants } from "./tabs";
 
 /** 根：透传 Base UI Tabs.Root（value/defaultValue/onValueChange/orientation）。默认非受控。 */
-export type TabsProps = TabsRootProps;
+export type TabsProps = TabsRootProps & {
+  /**
+   * 自动轮播间隔（毫秒）。传了就在没人操作时按这个节奏换到下一档，选中 tab 底部一条进度条走满即换。
+   * 指针悬停 / 焦点在组件内、组件不在视口时暂停；系统要求减少动态效果时不启用；
+   * 访客自己选过一次档就永久停下。自动换档同样回调 `onValueChange`（`reason` 为 `"none"`、`trigger` 为空）。
+   * 展示型 tab（营销页的产品线、功能介绍）用，别用在表单 / 设置页这类用户要专注操作的地方。
+   */
+  autoPlay?: number;
+};
 
 /** 尺寸档。`md` 是页面级 tab 导航；`sm` 给「跟标题/搜索框同行」的行内切换器。 */
 export type TabsSize = "sm" | "md";
@@ -21,7 +29,11 @@ export type TabsSize = "sm" | "md";
  */
 export type TabsTone = "brand" | "success" | "warning" | "danger" | "neutral";
 
-/** tab 条：皮肤变体在此（underline/solid），自动内嵌 Indicator。className 收窄成 string 便于 cn()。 */
+/**
+ * tab 条：皮肤变体在此（underline / solid / card），underline 与 solid 自动内嵌 Indicator。
+ * `card`：每个 tab 是一张带描述的卡，选中卡铺主色浅底；竖排（`Tabs orientation="vertical"`）时纵向堆叠。
+ * className 收窄成 string 便于 cn()。
+ */
 export interface TabsListProps
   extends Omit<BaseTabsListProps, "className">,
     VariantProps<typeof tabsListVariants> {

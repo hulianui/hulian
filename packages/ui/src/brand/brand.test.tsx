@@ -115,6 +115,30 @@ describe("Brand", () => {
   });
 });
 
+describe("Brand · bare / maskSrc", () => {
+  it("bare 没有徽章底色，mark 用 color 着色", () => {
+    const { container } = render(<Brand variant="bare" name="瑚琏" color="chart-4" />);
+    const mark = container.querySelector("span > span") as HTMLElement;
+    expect(mark.style.backgroundColor).toBe("");
+    expect(mark.style.color).toContain("chart-4");
+  });
+
+  it("maskSrc 用图片当遮罩、颜色取 currentColor，并忽略 mark", () => {
+    const { container } = render(
+      <Brand variant="bare" maskSrc="/logo.svg" mark={<i data-testid="m" />} name="瑚琏" />,
+    );
+    const glyph = container.querySelector(".bg-current") as HTMLElement;
+    expect(glyph.style.maskImage || glyph.style.webkitMaskImage).toContain("/logo.svg");
+    expect(container.querySelector("[data-testid=m]")).toBeNull();
+  });
+
+  it("默认仍是徽章（存量渲染不变）", () => {
+    const { container } = render(<Brand name="瑚琏" />);
+    const mark = container.querySelector("span > span") as HTMLElement;
+    expect(mark.style.backgroundColor).not.toBe("");
+  });
+});
+
 // 见 hulianui/hulian#89：稳定父更新时整棵子树必须 bail out。
 describe("Brand · memo", () => {
   it("稳定父更新时跳过品牌标识子树", async () => {

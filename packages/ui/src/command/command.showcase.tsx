@@ -20,6 +20,7 @@ import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button/button";
 import { Segmented } from "../segmented/segmented";
 import { Command } from "./command";
+import { CommandTrigger } from "./command-trigger";
 import type { CommandGroupData } from "./command.types";
 
 // 真实中后台命令面板：跳转 / 操作 / 主题 三组、十余条命令，带描述/快捷键/图标/关键词。
@@ -82,6 +83,22 @@ function Demo({
         closeOnSelect={closeOnSelect}
         surface={surface}
       />
+    </>
+  );
+}
+
+function TriggerDemo({ shape }: { shape: "rounded" | "pill" }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <CommandTrigger
+        shape={shape}
+        placeholder="搜索文档"
+        aria-label="搜索文档"
+        onClick={() => setOpen(true)}
+        className="w-60"
+      />
+      <Command open={open} onOpenChange={setOpen} groups={groups} />
     </>
   );
 }
@@ -182,6 +199,20 @@ const groups = [
 </Button>
 <Command open={open} onOpenChange={setOpen} groups={groups} shortcut />`,
       render: () => <Demo shortcut />,
+    },
+    {
+      title: "搜索框样子的入口（CommandTrigger）",
+      description:
+        "CommandTrigger 长得像搜索框、本质是按钮：放大镜 + 占位文案 + ⌘K 键帽。shape=\"pill\" 药丸形，collapseBelow 让窄屏收成图标钮。",
+      code: `<CommandTrigger placeholder="搜索文档" aria-label="搜索文档" onClick={() => setOpen(true)} />
+<CommandTrigger shape="pill" size="sm" collapseBelow="sm" … />
+<Command open={open} onOpenChange={setOpen} groups={groups} shortcut />`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-4">
+          <TriggerDemo shape="rounded" />
+          <TriggerDemo shape="pill" />
+        </div>
+      ),
     },
     {
       title: "选中后保持打开",

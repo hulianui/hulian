@@ -27,7 +27,7 @@ import { Heading } from "@hulianui/ui"
 |------|------|------|------|
 | level | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | Title level, determines semantic label `h{level}` and default visual size |
 | as | `ElementType` | `h{level}` | Override rendering tags (visual/semantic decoupling, such as level=1 style rendering as div) |
-| size | `"xs" \| "sm" \| "base" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl"` | derived by level | Override visual size (independent of level) |
+| size | `"xs" \| "sm" \| "base" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl" \| "display"` | derived by level | Override visual size (independent of level). `display` is the showcase size for marketing heroes, responsive in two steps (60px on narrow screens, 72px from sm up), and isn't part of the level mapping |
 | weight | `"normal" \| "medium" \| "semibold" \| "bold"` | `"semibold"` | Font weight |
 | balance | `boolean` | `false` | Enable text-balance to balance line wrapping (multi-line titles are more balanced) |
 

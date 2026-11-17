@@ -124,4 +124,21 @@ describe("AnimatedThemeToggler", () => {
       expect(getByRole("button").getAttribute("aria-label")).toBe("切换到亮色");
     });
   });
+
+  describe("variant / size", () => {
+    it("默认 outline + md（存量渲染不变）", () => {
+      const { getByRole } = render(<AnimatedThemeToggler theme="light" />);
+      const cls = getByRole("button").className;
+      expect(cls).toContain("border-border");
+      expect(cls).toContain("size-10");
+    });
+
+    it("ghost + sm：无边无底、次要灰、与 iconSm 同高", () => {
+      const { getByRole } = render(<AnimatedThemeToggler theme="light" variant="ghost" size="sm" />);
+      const cls = getByRole("button").className;
+      expect(cls).not.toContain("border-border");
+      expect(cls).toContain("text-muted-foreground");
+      expect(cls).toContain("--hl-control-h-sm");
+    });
+  });
 });

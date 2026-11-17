@@ -4,7 +4,7 @@ name: Snippet
 category: typography
 group: code
 tags: []
-exports: [Snippet]
+exports: [Snippet, SnippetGroup]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ status: enriched
 
 ## 导入
 ```ts
-import { Snippet } from "@hulianui/ui"
+import { Snippet, SnippetGroup } from "@hulianui/ui"
 ```
 
 ## Props
@@ -31,7 +31,14 @@ import { Snippet } from "@hulianui/ui"
 | highlight | `boolean` | `true` | 是否语法着色，仅 children 为字符串时生效 |
 | copyLabel | `string` | 跟随 locale | 复制按钮无障碍标签；显式传值优先 |
 | copiedLabel | `string` | 跟随 locale | 复制成功后的无障碍标签；显式传值优先 |
+| muted | `boolean` | `false` | 次要行：沉一档底色、文字转次要灰（「也可以这样」的补充命令、给 AI 读的链接） |
 | className | `string` | - | 容器类名 |
+
+**SnippetGroup**（多条命令堆叠在同一张卡里，组画外框与行间分隔线，里面的 Snippet 自动去掉各自的边框 / 底色并铺满一行）
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| overlay | `ReactNode` | - | 绝对定位的装饰层（BorderBeam 等），画在分隔线列表之外，不会被当成一行 |
 
 ## Slots
 
@@ -45,6 +52,13 @@ import { Snippet } from "@hulianui/ui"
 
 // 非命令片段，去掉提示符
 <Snippet symbol={null}>const theme = useTheme()</Snippet>
+
+// 一组上手步骤：堆叠在同一张卡里，最后一行是次要行
+<SnippetGroup overlay={<BorderBeam size={120} />}>
+  <Snippet>pnpm add @hulianui/ui @hulianui/tokens</Snippet>
+  <Snippet>npx @hulianui/mcp init-agent</Snippet>
+  <Snippet symbol={null} highlight={false} muted>https://hulian.dev/start</Snippet>
+</SnippetGroup>
 ```
 
 ## 禁忌 / 坑

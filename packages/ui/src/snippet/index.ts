@@ -1,2 +1,2 @@
-export { Snippet } from "./snippet";
-export type { SnippetProps } from "./snippet.types";
+export { Snippet, SnippetGroup } from "./snippet";
+export type { SnippetProps, SnippetGroupProps } from "./snippet.types";

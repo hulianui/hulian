@@ -240,3 +240,25 @@ describe("Tag color（分类色）", () => {
     expect(el.style.color).toBe("red");
   });
 });
+
+describe("Tag · shape / render", () => {
+  it("pill 全圆；默认小圆角不变", () => {
+    const { container, rerender } = render(<Tag>默认</Tag>);
+    expect((container.firstElementChild as HTMLElement).className).not.toContain("rounded-full");
+    rerender(<Tag shape="pill">药丸</Tag>);
+    expect((container.firstElementChild as HTMLElement).className).toContain("rounded-full");
+  });
+
+  it("render 成链接：保留 href、合并皮肤并补焦点环与中性悬停转主色", () => {
+    const { getByRole } = render(
+      <Tag variant="outline" render={<a href="/changelog" className="ml-2" />}>
+        v1.0.0
+      </Tag>,
+    );
+    const a = getByRole("link", { name: "v1.0.0" });
+    expect(a.getAttribute("href")).toBe("/changelog");
+    expect(a.className).toContain("ml-2");
+    expect(a.className).toContain("focus-visible:ring-2");
+    expect(a.className).toContain("hover:border-primary-border");
+  });
+});

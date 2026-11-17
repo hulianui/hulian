@@ -88,6 +88,16 @@ export const colorSwatchPickerShowcase: ShowcaseSpec = {
       code: `<ColorSwatchPicker colors={PALETTE} defaultValue="#8b5cf6" disabled />`,
       render: () => <ColorSwatchPicker colors={PALETTE} defaultValue="#8b5cf6" disabled />,
     },
+    {
+      title: "圆形色块",
+      description: "shape=\"circle\" 全圆、无边，只留一圈极淡内阴影；选中外环的间隙透明，放在卡片上透出卡面。",
+      code: `<ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" shape="circle" size="sm" />`,
+      render: () => (
+        <div className="rounded-xl border border-border bg-surface px-4 py-3">
+          <ColorSwatchPicker colors={PALETTE} defaultValue="#22c55e" shape="circle" size="sm" />
+        </div>
+      ),
+    },
   ],
   controls: [
     { prop: "size", type: "select", options: ["sm", "md", "lg"], defaultValue: "md", label: "尺寸" },

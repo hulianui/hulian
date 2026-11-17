@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 
 export interface SegmentedItem {
   /** 该段的唯一值（也是选中态的标识）。 */
@@ -9,6 +9,12 @@ export interface SegmentedItem {
   ariaLabel?: string;
   /** 单段禁用（整体 disabled 之外的细粒度控制）。 */
   disabled?: boolean;
+  /**
+   * 把这一段渲染成自定义元素（通常是 `<a href>` 或框架路由件），段内容由 `label` 给。
+   * 任一段给了它，整组就按「一组链接」处理：`role="group"`、选中段 `aria-current="page"`、
+   * 不做方向键漫游（切语言 / 切版本这类导航用）。元素自己的 `onClick` 照常触发。
+   */
+  render?: ReactElement;
 }
 
 /**
@@ -43,6 +49,8 @@ export interface SegmentedProps extends HTMLAttributes<HTMLDivElement> {
    * `neutral` = 加 tone 之前的渲染（选中段 `text-foreground`），要旧观感的调用点显式传它。
    */
   tone?: SegmentedTone;
+  /** `rounded` 与控件同档圆角；`pill` 轨道、滑块、段都全圆（顶栏 / 营销页）。@default "rounded" */
+  shape?: "rounded" | "pill";
   className?: string;
   "aria-label"?: string;
 }

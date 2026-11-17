@@ -171,6 +171,36 @@ export const segmentedShowcase: ShowcaseSpec = {
         </div>
       ),
     },
+    {
+      title: "药丸形 · 链接段",
+      description:
+        "shape=\"pill\" 轨道、滑块、段都全圆；段给 render（如 <a href>）时整组变成一组链接，选中段标 aria-current=\"page\"，适合切语言 / 切版本。",
+      code: `<Segmented
+  shape="pill"
+  size="sm"
+  value="zh"
+  aria-label="语言"
+  items={[
+    { value: "zh", label: "中", render: <a href="/zh" /> },
+    { value: "en", label: "EN", render: <a href="/en" /> },
+  ]}
+/>`,
+      render: () => (
+        <div className="flex flex-wrap items-center gap-4">
+          <Segmented shape="pill" items={periodItems} defaultValue="week" aria-label="周期" />
+          <Segmented
+            shape="pill"
+            size="sm"
+            value="zh"
+            aria-label="语言"
+            items={[
+              { value: "zh", label: "中", render: <a href="#zh" /> },
+              { value: "en", label: "EN", render: <a href="#en" /> },
+            ]}
+          />
+        </div>
+      ),
+    },
   ],
   controls: [
     { prop: "size", type: "select", options: ["sm", "md"], defaultValue: "md" },

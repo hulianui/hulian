@@ -29,6 +29,7 @@ import { ColorSwatchPicker, normalizeSwatches } from "@hulianui/ui"
 | value | `string` | - | 受控选中值（须与某个色块的 `color` 严格相等） |
 | defaultValue | `string` | - | 非受控初始选中值 |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | 色块尺寸 |
+| shape | `"square" \| "circle"` | `"square"` | `square` token 圆角 + 细边；`circle` 全圆、无边，只留一圈极淡内阴影（主题色 / 配色选择）。选中外环的间隙是透明的，放在卡片上透出卡面本身 |
 | disabled | `boolean` | `false` | 整组禁用 |
 | className | `string` | - | 透传到容器 |
 | aria-label | `string` | - | 无障碍标签 |
@@ -60,6 +61,9 @@ const [v, setV] = useState("#3b82f6");
 
 // 非受控
 <ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" size="lg" />
+
+// 圆形色块（主题色选择）
+<ColorSwatchPicker colors={PALETTE} defaultValue="#3b82f6" shape="circle" size="sm" />
 
 // 主题 token 色板：给 label，读屏才不会念 "var(--color-primary)"
 <ColorSwatchPicker

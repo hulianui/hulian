@@ -31,7 +31,9 @@ import { Brand } from "@hulianui/ui"
 | name | `ReactNode` | - | Brand name. Omit it to render only the badge in a collapsed sidebar. |
 | description | `ReactNode` | - | One-line subtitle below the brand name, such as a version or positioning statement. |
 | size | `"sm" \| "md" \| "lg"` | `"md"` | `sm` is a 28px navigation badge, `md` is a 36px sidebar badge, and `lg` is for authentication-page branding. |
-| color | `string` | `"primary"` | Badge background. Accepts a semantic tone such as `chart-3` or any CSS color. |
+| color | `string` | `"primary"` | Badge background. Accepts a semantic tone such as `chart-3` or any CSS color. With `variant="bare"` it colors the mark itself. |
+| variant | `"badge" \| "bare"` | `"badge"` | `badge` is a square filled badge with the mark inside; `bare` drops the badge so the mark is the logo itself, colored with `color`. |
+| maskSrc | `string` | - | URL of a single-color logo image. The image's shape is filled with `color` (CSS mask), so the logo follows the theme color and `AccentScope`. Overrides `mark` when set. |
 | href | `string` | - | Native link target, normally the home page. |
 | render | `ReactElement` | - | Renders through a framework router element such as `<Link to="/" />`, following the Button, Link, and NavMenuItem render contract. |
 | className | `string` | - | Class name for the root; remaining native attributes are forwarded. |
@@ -66,6 +68,9 @@ const reduced = usePrefersReducedMotion();
   name="Hulian Admin"
   mark={<video src="/brand.webm" poster="/brand-static.png" autoPlay={!reduced} muted loop playsInline />}
 />
+
+// A single-color logo with its own shape: no badge, filled with the brand color, follows the theme color / AccentScope
+<Brand variant="bare" maskSrc="/logo.svg" name="Hulian UI" render={<Link href="/" />} />
 ```
 
 ## Usage guidelines
