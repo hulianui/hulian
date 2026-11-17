@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { flushSync } from "react-dom";
 import { cn } from "../lib/cn";
+import { mergeRefs } from "../lib/merge-refs";
 import { warnOnce } from "../lib/warn-once";
 import {
   PaperContext,
@@ -174,6 +175,9 @@ export function Paper({
   });
 
   const exportHandle = useRef<ExportHandle | null>(null);
+  const rootRef = useRef<HTMLElement | null>(null);
+  const root = useCallback(() => rootRef.current, []);
+  const tagRef = useMemo(() => mergeRefs<HTMLElement>(rootRef, ref), [ref]);
   const exportFigureSvg = useCallback((id: string, stateKey: string, options: FigureSvgExportOptions = {}) => {
     const entry = entries.current.get(id);
     if (!entry) return Promise.reject(new Error(`[Paper] 找不到 id 为 "${id}" 的图，无法导出。`));
@@ -188,6 +192,7 @@ export function Paper({
   const value = useMemo<PaperContextValue>(
     () => ({
       mode: current,
+      root,
       setMode,
       register,
       find,
@@ -204,6 +209,7 @@ export function Paper({
     }),
     [
       current,
+      root,
       setMode,
       register,
       find,
@@ -224,7 +230,7 @@ export function Paper({
     <PaperContext.Provider value={value}>
       <Tag
         {...rest}
-        ref={ref}
+        ref={tagRef}
         data-paper=""
         data-mode={current}
         className={cn("text-foreground [counter-reset:paper-figure]", className)}

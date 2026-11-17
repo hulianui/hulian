@@ -51,6 +51,8 @@ export interface TermStore {
 
 export interface PaperContextValue {
   mode: PaperMode;
+  /** Paper 的根元素。挂在 body 下的演示层靠它取 Paper 的计算字体（`--paper-font` 等覆盖传不过 portal）。 */
+  root: () => HTMLElement | null;
   setMode: (mode: PaperMode) => void;
   register: (entry: FigureEntry) => () => void;
   find: (id: string) => FigureEntry | undefined;

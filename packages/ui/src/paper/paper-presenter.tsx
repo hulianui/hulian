@@ -141,6 +141,16 @@ export function PaperPresenter({
     if (isOpen) go(0);
   }, [isOpen, go]);
 
+  // 演示层经 portal 挂在 body 下，继承不到 Paper 外层设的 --paper-font（以及写在 Paper 上的
+  // font 类 / style）。打开时取 Paper 根元素的计算字体抄过来；取不到时用默认栈。
+  // 首帧仍是默认栈，但弹层正处在淡入的起始态（opacity 0），看不到切换。
+  const [paperFont, setPaperFont] = useState<string | null>(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = paper?.root();
+    setPaperFont(el ? getComputedStyle(el).fontFamily || null : null);
+  }, [isOpen, paper]);
+
   const slideFigure = slide?.figure;
   const slideState = slide?.state;
   const onSlideChangeRef = useLatest(onSlideChange);
@@ -209,7 +219,7 @@ export function PaperPresenter({
             "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 print:hidden",
             className,
           )}
-          style={{ ...overlayTransitions.popup, fontFamily: PAPER_FONT } as CSSProperties}
+          style={{ ...overlayTransitions.popup, fontFamily: paperFont ?? PAPER_FONT } as CSSProperties}
         >
           <header className="flex min-w-0 items-center gap-3 font-sans text-sm">
             <div className="min-w-0 flex-1 truncate">
