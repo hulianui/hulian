@@ -174,7 +174,7 @@ export const cardShowcase: ShowcaseSpec = {
   <CardHeader title="Hulian docs" description="hulian.dev" />
   <CardBody>Components, blocks, pages, and templates.</CardBody>
 </Card>`,
-            render: () => (<Card variant="elevated" interactive render={<a href="#card"/>} className="w-64">
+            render: () => (<Card id="card" variant="elevated" interactive render={<a href="#card"/>} className="w-64">
           <CardHeader title="Hulian Documentation" description="hulian.dev"/>
           <CardBody>Components, blocks, pages, and templates.</CardBody>
         </Card>),

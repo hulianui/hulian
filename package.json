@@ -38,6 +38,7 @@
     "check:remote-assets": "node scripts/check-remote-assets.mjs",
     "check:container-padding": "node scripts/check-container-padding.mjs",
     "check:aria-owned-children": "node scripts/check-aria-owned-children.mjs",
+    "check:doc-link-targets": "node scripts/check-doc-link-targets.mjs",
     "check:rsc-claims": "node scripts/check-rsc-claims.mjs",
     "docs:check:props": "node scripts/check-component-doc-props.mjs",
     "guard": "node packages/guard/src/cli.mjs",

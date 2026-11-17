@@ -199,7 +199,7 @@ export const cardShowcase: ShowcaseSpec = {
   <CardBody>组件、区块、页面与模版。</CardBody>
 </Card>`,
       render: () => (
-        <Card variant="elevated" interactive render={<a href="#card" />} className="w-64">
+        <Card id="card" variant="elevated" interactive render={<a href="#card" />} className="w-64">
           <CardHeader title="瑚琏文档" description="hulian.dev" />
           <CardBody>组件、区块、页面与模版。</CardBody>
         </Card>

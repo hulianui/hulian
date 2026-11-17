@@ -18,7 +18,7 @@
 
 页面某一块要换主题色（营销页的主题色轮换、按业务线区分色调的分区、预览换色效果），且只换这一块、不动全站。子树里主色、hover、浅底（`-subtle`）、浅边（`-border`）、焦点环与图表色板 `chart-1..6` 一起换色相；**明度与彩度沿用品牌梯子**，任何色相下对比度与层级都和品牌原色一致。
 
-全站明暗切换用 [ThemeProvider](https://hulianui.haloritual.com/zh/components/theme)；整站换品牌色改 tokens 的 `--brand-*`，不用本组件。
+全站明暗切换用 `ThemeProvider`；整站换品牌色改 tokens 的 `--brand-*`，不用本组件。
 
 ## 导入
 ```ts
@@ -57,7 +57,7 @@ const [hue, setHue] = useState(258);
 - 「暗页 > 亮色岛 > 作用域」的嵌套里，祖先的两条主题选择器特异性相同、按源码顺序落到暗色；此时给本组件传 `theme="light"`。
 
 ## 相关
-[ThemeProvider](https://hulianui.haloritual.com/zh/components/theme) · [Spotlight](https://hulianui.haloritual.com/zh/components/spotlight)
+`ThemeProvider` · [Spotlight](https://hulianui.haloritual.com/zh/components/spotlight)
 
 <!-- ════════════════════════════════════════════════════════ -->
 # AdminLayout

@@ -114,8 +114,8 @@ export const tagShowcase: ShowcaseSpec = {
             code: `<Tag variant="outline" size="sm" shape="pill" render={<a href="/changelog" />}>
   v0.44.0
 </Tag>`,
-            render: () => (<div className="flex items-center gap-3">
-          <Tag variant="outline" size="sm" shape="pill" render={<a href="#changelog"/>}>
+            render: () => (<div id="tag-link" className="flex items-center gap-3">
+          <Tag variant="outline" size="sm" shape="pill" render={<a href="#tag-link"/>}>
             v0.44.0
           </Tag>
           <Tag tone="brand" shape="pill">

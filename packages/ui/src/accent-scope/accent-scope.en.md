@@ -16,7 +16,7 @@ status: enriched
 
 Use it when one part of a page needs a different accent color (a rotating theme color on a marketing page, sections tinted by product line, a color preview) and the rest of the site stays as is. Inside the subtree, primary, hover, subtle fill (`-subtle`), subtle border (`-border`), focus ring, and the chart palette `chart-1..6` all move to the new hue. **Lightness and chroma stay on the brand ladder**, so contrast and hierarchy match the brand color at any hue.
 
-For site-wide light/dark switching use [ThemeProvider](../theme/theme.md); to change the brand color everywhere, edit the tokens' `--brand-*` values instead of using this component.
+For site-wide light/dark switching use `ThemeProvider`; to change the brand color everywhere, edit the tokens' `--brand-*` values instead of using this component.
 
 ## Import
 ```ts
@@ -55,4 +55,4 @@ const [hue, setHue] = useState(258);
 - With nesting such as "dark page > light island > scope", the two ancestor theme selectors have equal specificity and source order picks dark; pass `theme="light"` to this component in that case.
 
 ## Related
-[ThemeProvider](../theme/theme.md) · [Spotlight](../spotlight/spotlight.md)
+`ThemeProvider` · [Spotlight](../spotlight/spotlight.md)

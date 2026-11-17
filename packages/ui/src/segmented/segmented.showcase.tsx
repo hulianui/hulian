@@ -186,7 +186,7 @@ export const segmentedShowcase: ShowcaseSpec = {
   ]}
 />`,
       render: () => (
-        <div className="flex flex-wrap items-center gap-4">
+        <div id="segmented-links" className="flex flex-wrap items-center gap-4">
           <Segmented shape="pill" items={periodItems} defaultValue="week" aria-label="周期" />
           <Segmented
             shape="pill"
@@ -194,8 +194,8 @@ export const segmentedShowcase: ShowcaseSpec = {
             value="zh"
             aria-label="语言"
             items={[
-              { value: "zh", label: "中", render: <a href="#zh" /> },
-              { value: "en", label: "EN", render: <a href="#en" /> },
+              { value: "zh", label: "中", render: <a href="#segmented-links" /> },
+              { value: "en", label: "EN", render: <a href="#segmented-links" /> },
             ]}
           />
         </div>
