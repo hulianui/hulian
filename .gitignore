@@ -24,6 +24,11 @@ out/
 .playwright-mcp/
 .worktrees/
 
+# 本地 pnpm 内容寻址缓存：有人用 `pnpm install --store-dir .pnpm-store` 跑过一次留下的，
+# 与 ~/Library/pnpm/store 同源（1G 级 tarball 缓存，不是源码）；.npmrc 里没配 store-dir，
+# 属临时参数产物。注意 `git add -A` 曾经能把它整个带进提交。
+.pnpm-store/
+
 # vitest browser mode 失败时自动留的截图（诊断用，不入库）
 **/__screenshots__/
 
