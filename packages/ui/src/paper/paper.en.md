@@ -4,7 +4,7 @@ name: Paper
 category: data-display
 group: collection
 tags: []
-exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography]
+exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography]
 status: enriched
 ---
 
@@ -18,9 +18,9 @@ Use it to turn the figures of a paper, lecture notes, or a thesis defense into f
 
 ## Import
 ```ts
-import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
+import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
 import { PaperEquation } from "@hulianui/ui/math"
-import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
+import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, FigureRasterContext, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
 ```
 
 ## Structure
@@ -29,6 +29,7 @@ import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportO
 Paper                      display mode (read / print) + figure registry + figure numbering
 ├─ PaperHeader             title block: title, authors, abstract
 ├─ FigRef                  in-text reference: switch to a preset, scroll to the figure, flash it
+├─ EqRef                   equation reference "Eq. (1)": scroll to the equation, flash it
 ├─ Cite                    citation [1, 2], numbered by Bibliography
 ├─ PaperEquation           formula whose terms link to figures (@hulianui/ui/math)
 ├─ PaperPresenter          presentation mode: full screen, figure presets as slides
@@ -36,6 +37,8 @@ Paper                      display mode (read / print) + figure registry + figur
 ├─ PaperFigure<S>          general figure: any state value + named presets
 └─ ProcessFigure           step-by-step figure (a PaperFigure whose state is a step key)
    └─ FigureStep           marks which step a part of the figure belongs to
+
+FigureRaster               a raster (heatmap) inside a figure's <svg>, usable in any figure
 ```
 
 There is one core rule: **the state alone decides what the figure draws**. The `children` of `PaperFigure` is a function from state to picture, and print sub-figures call that same function once per preset. Internal state hidden inside the function does not appear in sub-figures or in print.
@@ -49,14 +52,14 @@ Extends `HTMLAttributes<HTMLElement>`; `ref` lands on the root element.
 | as | `ElementType` | `"article"` | Root element tag |
 | mode | `"read"` \| `"print"` | - | Controlled mode |
 | defaultMode | `"read"` \| `"print"` | `"read"` | Uncontrolled initial mode |
-| labels | `{ figure?; separator?; abstract?; references? }` | follows the UI language | Text of the caption prefix, automatic references, and the abstract and references headings. Set it when the paper language differs from the UI, such as an English paper in a Chinese UI: `{ figure: "Figure", separator: ": " }`. Control text such as step buttons still follows the UI language |
+| labels | `{ figure?; separator?; abstract?; references?; equation? }` | follows the UI language | Text of the caption prefix, automatic references (including "Eq." in `EqRef`), and the abstract and references headings. Set it when the paper language differs from the UI, such as an English paper in a Chinese UI: `{ figure: "Figure", separator: ": " }`. Control text such as step buttons still follows the UI language |
 
 | Event | Type | Description |
 |------|------|------|
 | onModeChange | `(mode: PaperMode) => void` | Fires when the mode is switched through `usePaperMode` |
 
 - When the browser actually prints (`beforeprint`), `Paper` switches to `print` for the print and back after it (`afterprint`). That switch does not fire `onModeChange`.
-- Figure numbers come from a CSS counter, so they exist in server rendering and in print. Put every `PaperFigure` inside a `Paper`, otherwise each one is "Figure 1".
+- Figure and equation numbers come from CSS counters, so they exist in server rendering and in print. Put every `PaperFigure` inside a `Paper`, otherwise each one is "Figure 1".
 - Body text uses a serif stack: `var(--paper-font, "STIX Two Text", "Times New Roman", "Songti SC", "SimSun", serif)`. Set `--paper-font` on an ancestor to replace it. `Paper` does not style headings or paragraphs; typesetting is up to you.
 
 `usePaperMode()` returns `[mode, setMode]` inside a `Paper`, for your own read / print preview switch.
@@ -148,6 +151,48 @@ The component only sets opacity. Write the accent color and flowing dashes in th
 
 The `hulian-paper-flow` keyframes live in preset-core.css of `@hulianui/tokens`.
 
+## FigureRaster
+
+The per-pixel part of a figure: heatmaps, attention matrices, micrographs. An `<image>` element that **must sit inside the figure's `<svg>`**. `draw` paints on an offscreen canvas, which is encoded as PNG into `href`. Extends `SVGAttributes<SVGImageElement>` (without `href`); `ref` lands on the `<image>`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| width * / height * | number | - | Size in the figure's SVG coordinates (`viewBox`) |
+| x / y | number | 0 | Position in the figure's SVG coordinates |
+| resolution * | `[width, height]` | - | Canvas size in pixels. For a data raster, usually the number of data columns and rows |
+| draw * | `(ctx, { width, height, color }) => void` | - | Paints the canvas. Must depend only on data. Compared by reference: an unchanged reference does not redraw, so hoist it to module scope or wrap it in `useCallback` |
+| pixelated | boolean | false | One pixel is one data cell: keep hard square edges when scaled up instead of interpolating. Leave false for photographic rasters |
+| preserveAspectRatio | string | `"none"` | Stretches to fill `width × height` by default, so data cells map one-to-one onto coordinates |
+
+`color(css)` resolves any CSS color (including tokens such as `var(--color-chart-1)`) to a 0–255 `[r, g, b, a]` in the theme where the raster sits, ready to write into `ImageData`.
+
+```tsx
+const drawHeat = (ctx, { width, height, color }) => {
+  const positive = color("var(--color-chart-1)");
+  const negative = color("var(--color-chart-3)");
+  const zero = color("var(--color-bg)");
+  const image = ctx.createImageData(width, height);
+  // … interpolate each pixel between zero and positive / negative by its value
+  ctx.putImageData(image, 0, 0);
+};
+
+<PaperFigure id="encoding" states={presets} printSubfigures={["c4", "c40"]} caption="…">
+  {({ dim }) => (
+    <svg viewBox="0 0 520 352">
+      <FigureRaster x={4} y={4} width={512} height={176} resolution={[128, 64]} pixelated draw={drawHeat} />
+      <rect x={4 + dim * 4} y={4} width={4} height={176} className="fill-none stroke-foreground" />
+    </svg>
+  )}
+</PaperFigure>
+```
+
+- **Why inside the SVG**: the picture is still a single `<svg>`, so the raster shares `viewBox` coordinates with the vector parts (axes, markers, curves). Each print sub-figure paints its own copy, the presenter scales it with the stage, and SVG export embeds it as is: the result is a mixed SVG.
+- **Theme**: colors are resolved where the raster sits. It redraws whenever any `data-theme` on the page changes or the system color scheme flips. Export paints it inside the light slot, so exports are always light.
+- **pixelated**: encoding scales up by an integer factor with nearest-neighbour sampling (about 3× the displayed size, long edge capped at 4096 px). The cells stay sharp even in Word and PDF converters that ignore `image-rendering`.
+- **Timing**: drawing happens in a layout effect. Before the browser prints, `Paper` switches to print synchronously, so sub-figure rasters are painted before the print snapshot. Server rendering outputs an `<image>` without `href`; its box is already reserved, so nothing jumps.
+- The raster does not handle pointer events. To pick a point on it, lay a transparent `<rect>` over it for the events, and leave keyboard input to a control below the figure (such as `Slider`).
+- Data with both signs needs two hues and a neutral midpoint, for example `chart-1` / `chart-3` with the background. Do not use status colors such as `warning` / `danger`.
+
 ## FigRef
 
 An `<a href="#id">`. Extends `AnchorHTMLAttributes` (without `href`); `ref` lands on the `<a>`.
@@ -218,7 +263,7 @@ const svg = await exportFigureSvg("transformer", "b", { background: "white" }); 
 - **Colors**: Tailwind classes and CSS variables stop working outside the page, and browsers often report computed colors as `oklab()` / `oklch()`, which Word and Inkscape do not read. Export converts every color to `#rrggbb` and folds transparency into `fill-opacity` / `stroke-opacity`.
 - **Frozen**: animations and transitions are off in the slot, so flowing dashes stop at their start; `FigureStep` phase opacity follows the exported step. Elements with `display: none` are left out, and `aria-label` becomes a `<title>` (Word uses it as alt text).
 - **Text stays as `<text>`** with the `Paper` font stack. On a machine without STIX Two Text it falls back to Times New Roman or SimSun. In LaTeX use `\includesvg` (the svg package, which needs Inkscape) or convert to PDF first, with the fonts installed on the converting machine.
-- **Requirement**: the figure must draw a single `<svg>`. A canvas, HTML, or `<foreignObject>` rejects with the reason, as do a missing figure or preset.
+- **Requirement**: the figure must draw a single `<svg>`. A bare canvas, HTML, or `<foreignObject>` rejects with the reason (for a canvas raster use [FigureRaster](#figureraster) inside the `<svg>`; export embeds it as PNG), as do a missing figure or preset.
 - CSS `transform`s inside the figure (such as Tailwind `rotate-*`) are not written to the file; use the SVG `transform` attribute to rotate or move parts.
 
 ## Linking formulas to figures
@@ -255,7 +300,7 @@ Extends `HTMLAttributes<HTMLDivElement>` (without `children`); `ref` lands on th
 |------|------|------|------|
 | children * | string | - | LaTeX for the whole formula (math mode, no `$`). Mark interactive terms with `\term{name}{…}`; a name may contain only letters, digits, `_` and `-` |
 | terms | `Record<string, EquationTerm>` | - | Settings for each term, keyed by name |
-| number | ReactNode | - | Number on the right; `1` renders as `(1)` |
+| number | ReactNode | automatic | Number on the right. Inside `Paper`, leaving it out numbers the equation automatically, see "Equation numbers and EqRef" below; a value renders as `(value)` and takes no automatic number (like LaTeX `\tag`); `null` / `false` leaves it unnumbered. Outside `Paper`, leaving it out means no number |
 | display | boolean | true | Display (block) layout |
 | macros | `Record<string, string>` | - | Custom macros passed to KaTeX; `\term` is reserved |
 
@@ -276,6 +321,29 @@ interface EquationTerm {
 ### usePaperTerm
 
 `usePaperTerm(name) => { active, bind }`. Spread `bind` onto a control (or part of a figure), and hovering or focusing it lights up the term with the same name in the formula. While highlighted, `bind` carries `data-active`, so you can style with `data-[active]:`. Outside `Paper`, `active` is always false.
+
+### Equation numbers and EqRef
+
+```tsx
+<p>… as shown in <EqRef to="attention" />.</p>   {/* "Eq. (1)" */}
+<PaperEquation id="attention">{String.raw`\mathrm{softmax}(QK^T/\sqrt{d_k})V`}</PaperEquation>  {/* (1) */}
+<PaperEquation number="A.1">{…}</PaperEquation>   {/* (A.1), takes no number */}
+<PaperEquation number={null}>{…}</PaperEquation>  {/* unnumbered */}
+<PaperEquation>{…}</PaperEquation>                {/* (2) */}
+```
+
+- **Automatic numbering**: inside `Paper`, an equation without `number` takes the next value of a CSS counter, like figure numbers, so numbers exist in server rendering and in print without waiting for JS. A hand-written `number` is shown instead and takes no number; `null` / `false` leaves it unnumbered.
+- **`EqRef`** is imported from `@hulianui/ui` (no KaTeX). It is an `<a href="#id">` that extends `AnchorHTMLAttributes` (without `href`); `ref` lands on the `<a>`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| to * | string | - | `id` of the target equation (set on `PaperEquation`) |
+| children | ReactNode | "Eq. (N)" | Reference text. When omitted, the number is taken in document order (available after mount); a hand-written number is shown as is |
+
+- Click: scrolls to the equation if it is out of view (without smooth scrolling under reduced motion) and outlines it for about 1.2 seconds. Without JS or outside `Paper` it falls back to a plain anchor; in print mode the link color is removed.
+- "Eq." belongs to the paper content: it follows `labels.equation` on `Paper`, and the UI language when not set.
+- Clicking a reference to a missing equation warns once; a reference to an equation with `number={null}` shows only "Eq." and warns once in development.
+- Equation ids share the page's DOM id space with figure and reference ids, so do not reuse names.
 
 ## Title block and references
 

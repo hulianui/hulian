@@ -12,9 +12,10 @@ import {
   useSyncExternalStore,
 } from "react";
 import { cn } from "../lib/cn";
+import { mergeRefs } from "../lib/merge-refs";
 import { warnOnce } from "../lib/warn-once";
 import { revealFigure } from "./fig-ref";
-import { usePaperContext } from "./paper-context";
+import { usePaperContext, type EquationNumbering } from "./paper-context";
 import type { EquationTerm, PaperEquationProps } from "./paper.types";
 
 // 论文里的公式，某几项能和图联动（只从 @hulianui/ui/math 导出：KaTeX 不进主入口）。
@@ -29,6 +30,9 @@ import type { EquationTerm, PaperEquationProps } from "./paper.types";
 //  · 高亮：悬停 / 聚焦项时写 Paper 的 term store，图里用 usePaperTerm 绑定的控件跟着亮；
 //    反过来，控件被悬停 / 聚焦时，公式里同名的项加 data-active。
 //  · 打印形态下叠层不渲染，项也不带可点的样式。
+//  · 编号：在 Paper 里不传 number 时占 CSS 计数器 paper-equation 的一个号（服务端渲染、打印都有号）；
+//    传值是手写覆盖，不占号（同 LaTeX \tag）；null / false 不编号。所有公式都登记进 Paper 的公式注册表，
+//    EqRef 按文档顺序数自动编号的公式取号，和计数器的顺序一致。
 
 const NAME = /^[\w-]+$/;
 const TERM_MACRO = "\\htmlData{paper-term=#1}{#2}";
@@ -60,6 +64,8 @@ interface Spot {
   height: number;
 }
 
+const HIGHLIGHT_MS = 1200;
+
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 const noopSubscribe = () => () => {};
 
@@ -70,10 +76,13 @@ export function PaperEquation({
   display = true,
   macros,
   className,
+  id,
   ref,
   ...rest
 }: PaperEquationProps) {
   const paper = usePaperContext();
+  const auto = number === undefined && paper !== null;
+  const manual = number !== undefined && number !== null && number !== false;
   const store = paper?.terms;
   const print = paper?.mode === "print";
   const html = useMemo(() => render(children, display, macros), [children, display, macros]);
@@ -150,6 +159,33 @@ export function PaperEquation({
     }
   }, [active, html, print]);
 
+  // 公式注册表：注册一次，编号方式从 ref 里读最新的；每次提交 touch 一下，让 EqRef 重新取号。
+  const root = useRef<HTMLDivElement>(null);
+  const numberingRef = useRef<EquationNumbering>({ auto: true });
+  numberingRef.current = auto ? { auto: true } : { auto: false, label: manual ? number : null };
+  const [highlighted, setHighlighted] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const highlight = useCallback(() => {
+    clearTimeout(timer.current);
+    setHighlighted(true);
+    timer.current = setTimeout(() => setHighlighted(false), HIGHLIGHT_MS);
+  }, []);
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  const equations = paper?.equations;
+  useEffect(() => {
+    if (!equations) return;
+    return equations.register({
+      id,
+      element: () => root.current,
+      numbering: () => numberingRef.current,
+      highlight,
+    });
+  }, [equations, id, highlight]);
+  useEffect(() => {
+    equations?.touch();
+  });
+
   const enter = (name: string) => store?.set(name);
   const leave = (name: string) => {
     if (store?.get() === name) store.set(null);
@@ -176,10 +212,17 @@ export function PaperEquation({
   return (
     <div
       {...rest}
-      ref={ref}
+      id={id}
+      ref={mergeRefs<HTMLDivElement>(ref, root)}
       data-paper-equation=""
       data-mode={print ? "print" : "read"}
-      className={cn("my-4 flex min-w-0 items-center gap-4 break-inside-avoid", className)}
+      data-highlight={highlighted ? "" : undefined}
+      className={cn(
+        "my-4 flex min-w-0 items-center gap-4 break-inside-avoid rounded-[var(--radius)]",
+        "ring-offset-4 ring-offset-bg transition-shadow duration-300 data-[highlight]:ring-2 data-[highlight]:ring-primary/40 motion-reduce:transition-none",
+        auto && "[counter-increment:paper-equation]",
+        className,
+      )}
     >
       <div className="min-w-0 flex-1 overflow-x-auto">
         <div ref={box} className="relative mx-auto w-fit max-w-none">
@@ -230,7 +273,11 @@ export function PaperEquation({
             : null}
         </div>
       </div>
-      {number !== undefined && number !== null ? (
+      {auto ? (
+        <span data-paper-equation-number="auto" className="shrink-0 tabular-nums">
+          (<span className="before:content-[counter(paper-equation)]" />)
+        </span>
+      ) : manual ? (
         <span data-paper-equation-number="" className="shrink-0 tabular-nums">
           ({number})
         </span>

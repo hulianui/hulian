@@ -893,6 +893,8 @@ export interface ComponentLocale {
     abstract?: string;
     /** Heading of Bibliography, e.g. "References". */
     references?: string;
+    /** Word before an equation number in EqRef, e.g. "Eq." in "Eq. (1)". */
+    equation?: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   sequenceDiagram?: {
@@ -1741,6 +1743,7 @@ const zhComponents: ComponentLocale = {
     noSlides: "这篇论文里还没有可演示的图。",
     abstract: "摘要",
     references: "参考文献",
+    equation: "公式",
   },
   sequenceDiagram: {
     diagram: "时序图",
@@ -2714,6 +2717,7 @@ const enComponents: ComponentLocale = {
     noSlides: "This paper has no figures to present yet.",
     abstract: "Abstract",
     references: "References",
+    equation: "Eq.",
   },
   sequenceDiagram: {
     diagram: "Sequence diagram",

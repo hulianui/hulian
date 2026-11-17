@@ -53,7 +53,7 @@ function Slot({ job, onDone }: { job: Job; onDone: (uid: number) => void }) {
         const svg = children[0];
         if (children.length !== 1 || !(svg instanceof SVGSVGElement)) {
           throw new Error(
-            `[Paper] 图 "${job.id}" 的画面不是单独一个 <svg>（实际是 ${children.map((c) => `<${c.tagName.toLowerCase()}>`).join("") || "空"}），无法导出 SVG。`,
+            `[Paper] 图 "${job.id}" 的画面不是单独一个 <svg>（实际是 ${children.map((c) => `<${c.tagName.toLowerCase()}>`).join("") || "空"}），无法导出 SVG。canvas 栅格请改用 FigureRaster 画在图的 <svg> 里。`,
           );
         }
         job.resolve(serializeSvg(svg, { width: job.options.width, background: job.options.background }));

@@ -7,9 +7,12 @@
 //  · 只写「和父元素不一样」的继承属性：输出里属性照样继承，文件小一个数量级。
 //    根元素写全，元素自带的同名表现属性先清掉，避免类覆盖过的旧属性在输出里复活。
 //  · display:none 的元素直接删掉；opacity 不继承，逐个照写。
+//  · <image>（FigureRaster 的栅格）的 href 是 data URL，原样保留，另补一份 xlink:href 给只认 SVG 1.1 的阅读器；
+//    image-rendering 不是 auto 时写成表现属性。
 // 只能在浏览器里运行（要 getComputedStyle 和布局）。
 
 const SVG_NS = "http://www.w3.org/2000/svg";
+const XLINK_NS = "http://www.w3.org/1999/xlink";
 
 /** 会继承的表现属性：子元素与父元素相同时不写。 */
 const INHERITED = [
@@ -230,6 +233,16 @@ export function serializeSvg(svg: SVGSVGElement, options: SerializeSvgOptions = 
       }
       const opacity = num(cs.opacity || "1");
       if (opacity !== 1) target.setAttribute("opacity", fmt(opacity));
+
+      if (target.localName === "image") {
+        const href = target.getAttribute("href") ?? target.getAttributeNS(XLINK_NS, "href");
+        if (href) {
+          target.setAttribute("href", href);
+          target.setAttributeNS(XLINK_NS, "xlink:href", href);
+        }
+        const rendering = cs.getPropertyValue("image-rendering").trim();
+        if (rendering && rendering !== "auto") target.setAttribute("image-rendering", rendering);
+      }
     });
     for (const el of dropped) el.remove();
 

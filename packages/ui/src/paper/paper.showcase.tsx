@@ -1,22 +1,26 @@
 "use client";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type PointerEvent, type ReactNode } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button";
 import { Segmented } from "../segmented";
+import { Slider } from "../slider";
 import { Paper, usePaperMode } from "./paper";
 import { PaperFigure } from "./paper-figure";
 import { FigureStep, ProcessFigure } from "./process-figure";
 import { FigRef } from "./fig-ref";
+import { EqRef } from "./eq-ref";
+import { FigureRaster } from "./figure-raster";
 import { PaperPresenter } from "./paper-presenter";
 import { usePaperExport } from "./paper-export";
 import { PaperHeader } from "./paper-header";
 import { Bibliography, Cite } from "./cite";
 import { usePaperTerm } from "./paper-term";
 import { PaperEquation } from "./paper-equation";
-import type { PaperMode, ProcessStep } from "./paper.types";
+import type { FigureRasterProps, PaperMode, ProcessStep } from "./paper.types";
 
 // 素材：Vaswani et al., "Attention Is All You Need"（arXiv:1706.03762）。
-// 图 1 按原文架构图重绘；图 2 的注意力权重是手设的示意数据，不是训练好的模型输出。
+// 图 1 按原文架构图重绘；图 2 的注意力权重是手设的示意数据，不是训练好的模型输出；
+// 图 3 的位置编码按原文公式 (2) 现算。
 // 论文正文保留英文，与原文版式一致。
 
 // ── 图 1：Transformer 架构 ──
@@ -257,7 +261,7 @@ function TransformerArchitecture() {
 }
 
 /** 论文是英文：图注前缀和自动引用用英文，步骤按钮等控件仍跟随界面语言。 */
-const EN_LABELS = { figure: "Figure", separator: ": ", abstract: "Abstract", references: "References" };
+const EN_LABELS = { figure: "Figure", separator: ": ", abstract: "Abstract", references: "References", equation: "Eq." };
 
 /** 论文正文的排版（示例自带，P0 的 Paper 只管状态与形态，不接管正文样式）。 */
 function Body({ children }: { children: ReactNode }) {
@@ -411,7 +415,7 @@ function AttentionSection({ id, equation = false }: { id: string; equation?: boo
             to obtain the weights on the values:
           </p>
           <PaperEquation
-            number={1}
+            id={`${id}-eq`}
             terms={{
               dk: {
                 label: "√dₖ：切换图 2 的缩放",
@@ -468,6 +472,204 @@ function AttentionDemo() {
       <Body>
         <AttentionSection id="attention" />
       </Body>
+    </Paper>
+  );
+}
+
+// ── 图 3：正弦位置编码（栅格图） ──
+
+const PE_DIMS = 128;
+const PE_POSITIONS = 64;
+
+/** 原文公式 (2)：偶数维 sin、奇数维 cos，第 i 对的频率是 1 / 10000^(2i/d_model)。 */
+function encoding(pos: number, dim: number) {
+  const even = dim - (dim % 2);
+  const angle = pos / 10000 ** (even / PE_DIMS);
+  return dim % 2 === 0 ? Math.sin(angle) : Math.cos(angle);
+}
+
+function wavelength(dim: number) {
+  return 2 * Math.PI * 10000 ** ((dim - (dim % 2)) / PE_DIMS);
+}
+
+type Rgba = readonly [number, number, number, number];
+
+/** 发散色：0 是底色，|v| 越大越接近端点色。 */
+function diverging(v: number, positive: Rgba, negative: Rgba, zero: Rgba): [number, number, number] {
+  const end = v >= 0 ? positive : negative;
+  const t = Math.min(1, Math.abs(v));
+  return [0, 1, 2].map((j) => Math.round(zero[j] + (end[j] - zero[j]) * t)) as [number, number, number];
+}
+
+function palette(color: (css: string) => Rgba) {
+  return [color("var(--color-chart-1)"), color("var(--color-chart-3)"), color("var(--color-bg)")] as const;
+}
+
+/** 热力图：行是位置，列是维度，一个像素一个数据格。模块级常量：引用不变就不重画。 */
+const drawEncoding: FigureRasterProps["draw"] = (ctx, { width, height, color }) => {
+  const [positive, negative, zero] = palette(color);
+  const image = ctx.createImageData(width, height);
+  for (let pos = 0; pos < height; pos++) {
+    for (let dim = 0; dim < width; dim++) {
+      const o = (pos * width + dim) * 4;
+      image.data.set([...diverging(encoding(pos, dim), positive, negative, zero), 255], o);
+    }
+  }
+  ctx.putImageData(image, 0, 0);
+};
+
+/** 色标：从 −1 到 +1。 */
+const drawScale: FigureRasterProps["draw"] = (ctx, { width, height, color }) => {
+  const [positive, negative, zero] = palette(color);
+  const image = ctx.createImageData(width, height);
+  for (let x = 0; x < width; x++) {
+    const rgb = diverging((x / (width - 1)) * 2 - 1, positive, negative, zero);
+    for (let y = 0; y < height; y++) image.data.set([...rgb, 255], (y * width + x) * 4);
+  }
+  ctx.putImageData(image, 0, 0);
+};
+
+interface EncodingState {
+  dim: number;
+}
+
+const ENCODING_STATES: Record<string, EncodingState> = {
+  c4: { dim: 4 },
+  c40: { dim: 40 },
+  c100: { dim: 100 },
+};
+
+const HEAT = { x: 4, y: 4, width: 512, height: 176 };
+const CELL = HEAT.width / PE_DIMS;
+const CURVE = { zero: 282, amplitude: 42 };
+
+function PositionalEncodingPlot({ state, interactive, onPick }: { state: EncodingState; interactive: boolean; onPick: (dim: number) => void }) {
+  const { dim } = state;
+  const curve = Array.from({ length: PE_POSITIONS }, (_, pos) => {
+    const x = 8 + pos * 8;
+    const y = CURVE.zero - encoding(pos, dim) * CURVE.amplitude;
+    return `${pos ? "L" : "M"}${x} ${y.toFixed(2)}`;
+  }).join("");
+  // 在热力图上移动 / 点按选列（只在阅读形态）。键盘走图下方的滑块。
+  const pick = (event: PointerEvent<SVGRectElement>) => {
+    if (event.pointerType !== "mouse" && event.buttons === 0 && event.type === "pointermove") return;
+    const r = event.currentTarget.getBoundingClientRect();
+    const next = Math.floor(((event.clientX - r.left) / r.width) * PE_DIMS);
+    onPick(Math.max(0, Math.min(PE_DIMS - 1, next)));
+  };
+  return (
+    <svg
+      viewBox="0 0 520 352"
+      role="img"
+      aria-label={`Heatmap of positional encodings, 64 positions by 128 dimensions; dimension ${dim} is selected and traced below`}
+      className="block h-auto w-full"
+    >
+      <FigureRaster {...HEAT} resolution={[PE_DIMS, PE_POSITIONS]} pixelated draw={drawEncoding} />
+      <rect {...HEAT} className="fill-none stroke-border" />
+      <rect
+        x={HEAT.x + dim * CELL}
+        y={HEAT.y}
+        width={CELL}
+        height={HEAT.height}
+        className="fill-none stroke-foreground [stroke-width:1.5] transition-[x] duration-200 motion-reduce:transition-none"
+      />
+      {interactive ? (
+        <rect
+          {...HEAT}
+          aria-hidden
+          onPointerDown={pick}
+          onPointerMove={pick}
+          className="cursor-crosshair touch-none fill-transparent"
+        />
+      ) : null}
+      <g className="fill-muted-foreground font-sans text-[11px]">
+        <text x={4} y={196}>dimension 0</text>
+        <text x={260} y={196} textAnchor="middle">rows: position 0 → 63</text>
+        <text x={516} y={196} textAnchor="end">dimension 127</text>
+        <text x={20} y={222} textAnchor="end">−1</text>
+        <text x={152} y={222}>+1</text>
+        <text x={516} y={222} textAnchor="end">
+          dimension {dim} across positions
+        </text>
+        <text x={4} y={346}>pos 0</text>
+        <text x={516} y={346} textAnchor="end">pos 63</text>
+      </g>
+      <FigureRaster x={24} y={214} width={124} height={10} resolution={[128, 1]} draw={drawScale} />
+      <line x1={8} x2={512} y1={CURVE.zero} y2={CURVE.zero} className="stroke-border" />
+      <path d={curve} className="fill-none stroke-primary [stroke-width:2] [stroke-linejoin:round]" />
+    </svg>
+  );
+}
+
+function describeEncoding({ dim }: EncodingState) {
+  const lambda = wavelength(dim);
+  const shown = lambda < 1000 ? lambda.toFixed(1) : Math.round(lambda).toLocaleString("en");
+  const periods = lambda > PE_POSITIONS ? "less than one period over the 64 positions shown" : `about ${(PE_POSITIONS / lambda).toFixed(1)} periods over 64 positions`;
+  return `Dimension ${dim} (${dim % 2 ? "cos" : "sin"}, i = ${(dim - (dim % 2)) / 2}): wavelength ≈ ${shown} positions, ${periods}.`;
+}
+
+function EncodingSection({ id }: { id: string }) {
+  return (
+    <>
+      <p>
+        Each dimension of the positional encoding corresponds to a sinusoid, and the wavelengths form a geometric
+        progression from 2π to 10000·2π <FigRef to={id} />. Low dimensions oscillate quickly along the sequence{" "}
+        <FigRef to={id} state="c4">Figure 3, i = 2</FigRef>, while higher dimensions change slowly{" "}
+        <FigRef to={id} state="c40">Figure 3, i = 20</FigRef> and barely move within 64 positions{" "}
+        <FigRef to={id} state="c100">Figure 3, i = 50</FigRef>.
+      </p>
+      <PaperFigure
+        id={id}
+        states={ENCODING_STATES}
+        printSubfigures={["c4", "c40", "c100"]}
+        subfigureLabel={(key, i) => `(${"abc"[i]}) dimension ${ENCODING_STATES[key].dim}`}
+        caption={
+          <>
+            Sinusoidal positional encodings for 64 positions with <i>d</i>
+            <sub>model</sub> = 128, blue positive and orange negative. The outlined column is the selected dimension; the
+            curve traces it across positions.
+          </>
+        }
+        describe={describeEncoding}
+        controls={(fig) => (
+          <>
+            <span aria-hidden className="tabular-nums">维度 {fig.state.dim}</span>
+            <Slider
+              aria-label="维度"
+              min={0}
+              max={PE_DIMS - 1}
+              value={fig.state.dim}
+              onValueChange={(v) => fig.setState({ dim: typeof v === "number" ? v : v[0] })}
+              className="min-w-40 flex-1"
+            />
+            <span className="w-full sm:w-auto">也可以在热力图上移动或点按</span>
+          </>
+        )}
+      >
+        {(state, fig) => (
+          <PositionalEncodingPlot
+            state={state}
+            interactive={fig.mode === "read"}
+            onPick={(dim) => fig.setState({ dim })}
+          />
+        )}
+      </PaperFigure>
+    </>
+  );
+}
+
+function EncodingDemo() {
+  return (
+    <Paper labels={EN_LABELS} className="w-full">
+      <ModeSwitch />
+      <Body>
+        <EncodingSection id="encoding" />
+      </Body>
+      <ExportToolbar
+        figure="encoding"
+        keys={Object.keys(ENCODING_STATES)}
+        label={(key) => `维度 ${ENCODING_STATES[key].dim}`}
+      />
     </Paper>
   );
 }
@@ -548,11 +750,20 @@ function HeaderDemo() {
 
 // ── 公式与图联动 ──
 
+const PE_LATEX = String.raw`\begin{aligned}PE_{(pos,2i)}&=\sin\left(pos/10000^{2i/d_{\mathrm{model}}}\right)\\PE_{(pos,2i+1)}&=\cos\left(pos/10000^{2i/d_{\mathrm{model}}}\right)\end{aligned}`;
+
 function EquationDemo() {
   return (
     <Paper labels={EN_LABELS} className="w-full">
+      <ModeSwitch />
       <Body>
         <AttentionSection id="attention-equation" equation />
+        <p>
+          Since the model contains no recurrence, we add sinusoidal positional encodings to the input embeddings{" "}
+          <EqRef to="pe-eq" />. Unlike the scaling in <EqRef to="attention-equation-eq" />, they carry no learned
+          parameters.
+        </p>
+        <PaperEquation id="pe-eq">{PE_LATEX}</PaperEquation>
       </Body>
     </Paper>
   );
@@ -562,7 +773,15 @@ function EquationDemo() {
 
 const EXPORT_KEYS = [...ARCH_STEPS.map((s) => s.key), "all"];
 
-function ExportToolbar({ figure }: { figure: string }) {
+function ExportToolbar({
+  figure,
+  keys = EXPORT_KEYS,
+  label = (key) => (key === "all" ? "全部" : `(${key})`),
+}: {
+  figure: string;
+  keys?: readonly string[];
+  label?: (key: string) => string;
+}) {
   const { exportFigureSvg } = usePaperExport();
   const [preview, setPreview] = useState<{ key: string; url: string; size: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -590,9 +809,9 @@ function ExportToolbar({ figure }: { figure: string }) {
     <div className="mt-2 font-sans text-sm text-muted-foreground print:hidden">
       <div className="flex flex-wrap items-center gap-1">
         <span className="mr-1">导出 SVG</span>
-        {EXPORT_KEYS.map((key) => (
+        {keys.map((key) => (
           <Button key={key} size="xs" variant="outline" onClick={() => run(key)}>
-            {key === "all" ? "全部" : `(${key})`}
+            {label(key)}
           </Button>
         ))}
       </div>
@@ -605,7 +824,7 @@ function ExportToolbar({ figure }: { figure: string }) {
             className="mx-auto block h-auto w-full max-w-[360px] rounded-[var(--radius)] border border-border"
           />
           <figcaption className="mt-1 text-center text-xs">
-            导出结果 {preview.key === "all" ? "全部" : `(${preview.key})`} · {(preview.size / 1024).toFixed(1)} KB · 以 &lt;img&gt;
+            导出结果 {label(preview.key)} · {(preview.size / 1024).toFixed(1)} KB · 以 &lt;img&gt;
             加载，已不依赖页面的 CSS
           </figcaption>
         </figure>
@@ -646,6 +865,7 @@ function PresenterDemo() {
       <Body>
         <ArchitectureSection id="transformer-present" />
         <AttentionSection id="attention-present" />
+        <EncodingSection id="encoding-present" />
       </Body>
     </Paper>
   );
@@ -715,8 +935,9 @@ const presenterCode = `<Paper>
 
 const equationCode = `// PaperEquation 从 @hulianui/ui/math 引入（KaTeX 不进主入口）
 <Paper>
+  <p>… as shown in <EqRef to="attention-eq" /></p> {/* 正文显示「公式 (1)」，点击滚到公式并描边 */}
   <PaperEquation
-    number={1}
+    id="attention-eq" // 不传 number：和图号一样自动编号；number="A.1" 手写覆盖，number={null} 不编号
     terms={{
       dk: {
         label: "√dₖ：切换图 2 的缩放",
@@ -782,6 +1003,36 @@ const exportCode = `function ExportButton({ figure, state }) {
   <ExportButton figure="transformer" state="b" />
 </Paper>`;
 
+const rasterCode = `// 热力图画在图的 <svg> 里：坐标走 viewBox，打印分图、演示、导出 SVG 都照常工作
+const drawEncoding = (ctx, { width, height, color }) => {
+  const positive = color("var(--color-chart-1)"); // 按所在位置的主题解析成 RGBA
+  const negative = color("var(--color-chart-3)");
+  const zero = color("var(--color-bg)");
+  const image = ctx.createImageData(width, height);
+  // … 每个像素按 PE(pos, dim) 在 zero 与 positive / negative 之间插值
+  ctx.putImageData(image, 0, 0);
+}; // 模块级常量：引用不变就不重画
+
+<PaperFigure
+  id="encoding"
+  states={{ c4: { dim: 4 }, c40: { dim: 40 }, c100: { dim: 100 } }}
+  printSubfigures={["c4", "c40", "c100"]}
+  caption="Sinusoidal positional encodings …"
+  controls={(fig) => (
+    <Slider aria-label="维度" min={0} max={127} value={fig.state.dim}
+      onValueChange={(v) => fig.setState({ dim: v })} />
+  )}
+>
+  {({ dim }) => (
+    <svg viewBox="0 0 520 352">
+      <FigureRaster x={4} y={4} width={512} height={176}
+        resolution={[128, 64]} pixelated draw={drawEncoding} />
+      <rect x={4 + dim * 4} y={4} width={4} height={176} className="fill-none stroke-foreground" />
+      <path d={curveOf(dim)} className="fill-none stroke-primary" />
+    </svg>
+  )}
+</PaperFigure>`;
+
 const printCode = `<Paper mode="print">
   <ProcessFigure
     id="transformer"
@@ -811,6 +1062,13 @@ export const paperShowcase: ShowcaseSpec = {
       render: () => <AttentionDemo />,
     },
     {
+      title: "栅格图：热力图",
+      description:
+        "热力图、注意力矩阵这类逐像素的图用 FigureRaster：在离屏 canvas 上画，以 PNG 嵌进图的 <svg>。所以它跟矢量部分共用一套坐标，打印分图各画各的，演示时按舞台缩放，导出 SVG 时原样带走（一份混合 SVG）。颜色用 token 取，切换明暗会重画，导出总是亮色。这里是原文公式 (2) 的正弦位置编码：拖滑块或在热力图上移动选一个维度，下方曲线是它沿位置的取值。",
+      code: rasterCode,
+      render: () => <EncodingDemo />,
+    },
+    {
       title: "答辩演示",
       description:
         "点「演示 ▶」进入全屏演示：按文档顺序把每张图的预设串成一组幻灯片，←/→、空格、PageUp/PageDown 翻页，Esc 退出，焦点回到按钮。演示层用同一个「状态 → 画面」函数重画图，不搬动正文里的图，退出后正文停在原来那一步。演示里图的控件照常可用：点步骤按钮直接翻到那一页，调参数只影响当前页。",
@@ -820,7 +1078,7 @@ export const paperShowcase: ShowcaseSpec = {
     {
       title: "公式与图联动",
       description:
-        "公式 (1) 里用 \\term{dk}{…} 标出 √dₖ：点它切换图 2 的缩放，悬停或聚焦时图下方的缩放开关一起亮；反过来悬停开关，公式里的 √dₖ 也会亮。公式走 KaTeX，从 @hulianui/ui/math 引入，不进主入口。项上叠的是真按钮，键盘 Tab 得到、读屏念得出它会做什么。",
+        "公式 (1) 里用 \\term{dk}{…} 标出 √dₖ：点它切换图 2 的缩放，悬停或聚焦时图下方的缩放开关一起亮；反过来悬停开关，公式里的 √dₖ 也会亮。公式走 KaTeX，从 @hulianui/ui/math 引入，不进主入口。项上叠的是真按钮，键盘 Tab 得到、读屏念得出它会做什么。公式编号和图号一样用 CSS 计数器自动编号，服务端渲染、打印都有号；正文里的 EqRef 显示「公式 (N)」（英文论文是 Eq. (N)），点击滚到公式并描边。",
       code: equationCode,
       render: () => <EquationDemo />,
     },
@@ -853,6 +1111,7 @@ export const paperShowcase: ShowcaseSpec = {
     { name: "阅读", render: () => <ArchitectureDemo /> },
     { name: "打印", render: () => <ArchitectureDemo id="transformer-print" defaultMode="print" /> },
     { name: "参数图", render: () => <AttentionDemo /> },
+    { name: "栅格图", render: () => <EncodingDemo /> },
     { name: "演示", render: () => <PresenterDemo /> },
   ],
   renderWithProps: (p) => (

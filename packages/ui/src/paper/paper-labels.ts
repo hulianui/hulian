@@ -18,6 +18,7 @@ const DEFAULT_LABELS = {
   noSlides: "这篇论文里还没有可演示的图。",
   abstract: "摘要",
   references: "参考文献",
+  equation: "公式",
 };
 
 export type PaperLabels = typeof DEFAULT_LABELS;

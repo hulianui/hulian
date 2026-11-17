@@ -1,19 +1,22 @@
 "use client";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type PointerEvent, type ReactNode } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button";
 import { Segmented } from "../../../../packages/ui/src/segmented";
+import { Slider } from "../../../../packages/ui/src/slider";
 import { Paper, usePaperMode } from "../../../../packages/ui/src/paper/paper";
 import { PaperFigure } from "../../../../packages/ui/src/paper/paper-figure";
 import { FigureStep, ProcessFigure } from "../../../../packages/ui/src/paper/process-figure";
 import { FigRef } from "../../../../packages/ui/src/paper/fig-ref";
+import { EqRef } from "../../../../packages/ui/src/paper/eq-ref";
+import { FigureRaster } from "../../../../packages/ui/src/paper/figure-raster";
 import { PaperPresenter } from "../../../../packages/ui/src/paper/paper-presenter";
 import { usePaperExport } from "../../../../packages/ui/src/paper/paper-export";
 import { PaperHeader } from "../../../../packages/ui/src/paper/paper-header";
 import { Bibliography, Cite } from "../../../../packages/ui/src/paper/cite";
 import { usePaperTerm } from "../../../../packages/ui/src/paper/paper-term";
 import { PaperEquation } from "../../../../packages/ui/src/paper/paper-equation";
-import type { PaperMode, ProcessStep } from "../../../../packages/ui/src/paper/paper.types";
+import type { FigureRasterProps, PaperMode, ProcessStep } from "../../../../packages/ui/src/paper/paper.types";
 const ARCH_STEPS: ProcessStep[] = [
     {
         key: "a",
@@ -222,7 +225,7 @@ function TransformerArchitecture() {
       </FigureStep>
     </svg>);
 }
-const EN_LABELS = { figure: "Figure", separator: ": ", abstract: "Abstract", references: "References" };
+const EN_LABELS = { figure: "Figure", separator: ": ", abstract: "Abstract", references: "References", equation: "Eq." };
 function Body({ children }: {
     children: ReactNode;
 }) {
@@ -333,7 +336,7 @@ function AttentionSection({ id, equation = false }: {
             We compute the dot products of the query with all keys, divide each by √d<sub>k</sub>, and apply a softmax
             to obtain the weights on the values:
           </p>
-          <PaperEquation number={1} terms={{
+          <PaperEquation id={`${id}-eq`} terms={{
                 dk: {
                     label: "\u221Ad\u2096: toggle scaling in Figure 2",
                     figure: id,
@@ -367,6 +370,149 @@ function AttentionDemo() {
       <Body>
         <AttentionSection id="attention"/>
       </Body>
+    </Paper>);
+}
+const PE_DIMS = 128;
+const PE_POSITIONS = 64;
+function encoding(pos: number, dim: number) {
+    const even = dim - (dim % 2);
+    const angle = pos / 10000 ** (even / PE_DIMS);
+    return dim % 2 === 0 ? Math.sin(angle) : Math.cos(angle);
+}
+function wavelength(dim: number) {
+    return 2 * Math.PI * 10000 ** ((dim - (dim % 2)) / PE_DIMS);
+}
+type Rgba = readonly [
+    number,
+    number,
+    number,
+    number
+];
+function diverging(v: number, positive: Rgba, negative: Rgba, zero: Rgba): [
+    number,
+    number,
+    number
+] {
+    const end = v >= 0 ? positive : negative;
+    const t = Math.min(1, Math.abs(v));
+    return [0, 1, 2].map((j) => Math.round(zero[j] + (end[j] - zero[j]) * t)) as [
+        number,
+        number,
+        number
+    ];
+}
+function palette(color: (css: string) => Rgba) {
+    return [color("var(--color-chart-1)"), color("var(--color-chart-3)"), color("var(--color-bg)")] as const;
+}
+const drawEncoding: FigureRasterProps["draw"] = (ctx, { width, height, color }) => {
+    const [positive, negative, zero] = palette(color);
+    const image = ctx.createImageData(width, height);
+    for (let pos = 0; pos < height; pos++) {
+        for (let dim = 0; dim < width; dim++) {
+            const o = (pos * width + dim) * 4;
+            image.data.set([...diverging(encoding(pos, dim), positive, negative, zero), 255], o);
+        }
+    }
+    ctx.putImageData(image, 0, 0);
+};
+const drawScale: FigureRasterProps["draw"] = (ctx, { width, height, color }) => {
+    const [positive, negative, zero] = palette(color);
+    const image = ctx.createImageData(width, height);
+    for (let x = 0; x < width; x++) {
+        const rgb = diverging((x / (width - 1)) * 2 - 1, positive, negative, zero);
+        for (let y = 0; y < height; y++)
+            image.data.set([...rgb, 255], (y * width + x) * 4);
+    }
+    ctx.putImageData(image, 0, 0);
+};
+interface EncodingState {
+    dim: number;
+}
+const ENCODING_STATES: Record<string, EncodingState> = {
+    c4: { dim: 4 },
+    c40: { dim: 40 },
+    c100: { dim: 100 },
+};
+const HEAT = { x: 4, y: 4, width: 512, height: 176 };
+const CELL = HEAT.width / PE_DIMS;
+const CURVE = { zero: 282, amplitude: 42 };
+function PositionalEncodingPlot({ state, interactive, onPick }: {
+    state: EncodingState;
+    interactive: boolean;
+    onPick: (dim: number) => void;
+}) {
+    const { dim } = state;
+    const curve = Array.from({ length: PE_POSITIONS }, (_, pos) => {
+        const x = 8 + pos * 8;
+        const y = CURVE.zero - encoding(pos, dim) * CURVE.amplitude;
+        return `${pos ? "L" : "M"}${x} ${y.toFixed(2)}`;
+    }).join("");
+    const pick = (event: PointerEvent<SVGRectElement>) => {
+        if (event.pointerType !== "mouse" && event.buttons === 0 && event.type === "pointermove")
+            return;
+        const r = event.currentTarget.getBoundingClientRect();
+        const next = Math.floor(((event.clientX - r.left) / r.width) * PE_DIMS);
+        onPick(Math.max(0, Math.min(PE_DIMS - 1, next)));
+    };
+    return (<svg viewBox="0 0 520 352" role="img" aria-label={`Heatmap of positional encodings, 64 positions by 128 dimensions; dimension ${dim} is selected and traced below`} className="block h-auto w-full">
+      <FigureRaster {...HEAT} resolution={[PE_DIMS, PE_POSITIONS]} pixelated draw={drawEncoding}/>
+      <rect {...HEAT} className="fill-none stroke-border"/>
+      <rect x={HEAT.x + dim * CELL} y={HEAT.y} width={CELL} height={HEAT.height} className="fill-none stroke-foreground [stroke-width:1.5] transition-[x] duration-200 motion-reduce:transition-none"/>
+      {interactive ? (<rect {...HEAT} aria-hidden onPointerDown={pick} onPointerMove={pick} className="cursor-crosshair touch-none fill-transparent"/>) : null}
+      <g className="fill-muted-foreground font-sans text-[11px]">
+        <text x={4} y={196}>dimension 0</text>
+        <text x={260} y={196} textAnchor="middle">rows: position 0 → 63</text>
+        <text x={516} y={196} textAnchor="end">dimension 127</text>
+        <text x={20} y={222} textAnchor="end">−1</text>
+        <text x={152} y={222}>+1</text>
+        <text x={516} y={222} textAnchor="end">
+          dimension {dim} across positions
+        </text>
+        <text x={4} y={346}>pos 0</text>
+        <text x={516} y={346} textAnchor="end">pos 63</text>
+      </g>
+      <FigureRaster x={24} y={214} width={124} height={10} resolution={[128, 1]} draw={drawScale}/>
+      <line x1={8} x2={512} y1={CURVE.zero} y2={CURVE.zero} className="stroke-border"/>
+      <path d={curve} className="fill-none stroke-primary [stroke-width:2] [stroke-linejoin:round]"/>
+    </svg>);
+}
+function describeEncoding({ dim }: EncodingState) {
+    const lambda = wavelength(dim);
+    const shown = lambda < 1000 ? lambda.toFixed(1) : Math.round(lambda).toLocaleString("en");
+    const periods = lambda > PE_POSITIONS ? "less than one period over the 64 positions shown" : `about ${(PE_POSITIONS / lambda).toFixed(1)} periods over 64 positions`;
+    return `Dimension ${dim} (${dim % 2 ? "cos" : "sin"}, i = ${(dim - (dim % 2)) / 2}): wavelength \u2248 ${shown} positions, ${periods}.`;
+}
+function EncodingSection({ id }: {
+    id: string;
+}) {
+    return (<>
+      <p>
+        Each dimension of the positional encoding corresponds to a sinusoid, and the wavelengths form a geometric
+        progression from 2π to 10000·2π <FigRef to={id}/>. Low dimensions oscillate quickly along the sequence{" "}
+        <FigRef to={id} state="c4">Figure 3, i = 2</FigRef>, while higher dimensions change slowly{" "}
+        <FigRef to={id} state="c40">Figure 3, i = 20</FigRef> and barely move within 64 positions{" "}
+        <FigRef to={id} state="c100">Figure 3, i = 50</FigRef>.
+      </p>
+      <PaperFigure id={id} states={ENCODING_STATES} printSubfigures={["c4", "c40", "c100"]} subfigureLabel={(key, i) => `(${"abc"[i]}) dimension ${ENCODING_STATES[key].dim}`} caption={<>
+            Sinusoidal positional encodings for 64 positions with <i>d</i>
+            <sub>model</sub> = 128, blue positive and orange negative. The outlined column is the selected dimension; the
+            curve traces it across positions.
+          </>} describe={describeEncoding} controls={(fig) => (<>
+            <span aria-hidden className="tabular-nums">Dimension {fig.state.dim}</span>
+            <Slider aria-label="Dimension" min={0} max={PE_DIMS - 1} value={fig.state.dim} onValueChange={(v) => fig.setState({ dim: typeof v === "number" ? v : v[0] })} className="min-w-40 flex-1"/>
+            <span className="w-full sm:w-auto">You can also hover over or tap the heatmap</span>
+          </>)}>
+        {(state, fig) => (<PositionalEncodingPlot state={state} interactive={fig.mode === "read"} onPick={(dim) => fig.setState({ dim })}/>)}
+      </PaperFigure>
+    </>);
+}
+function EncodingDemo() {
+    return (<Paper labels={EN_LABELS} className="w-full">
+      <ModeSwitch />
+      <Body>
+        <EncodingSection id="encoding"/>
+      </Body>
+      <ExportToolbar figure="encoding" keys={Object.keys(ENCODING_STATES)} label={(key) => `Dimension ${ENCODING_STATES[key].dim}`}/>
     </Paper>);
 }
 const AUTHORS = [
@@ -423,16 +569,26 @@ function HeaderDemo() {
       </Body>
     </Paper>);
 }
+const PE_LATEX = String.raw `\begin{aligned}PE_{(pos,2i)}&=sinleft(pos/10000^{2i/d_{mathrm{model}}}\right)\\PE_{(pos,2i+1)}&=cosleft(pos/10000^{2i/d_{mathrm{model}}}\right)end{aligned}`;
 function EquationDemo() {
     return (<Paper labels={EN_LABELS} className="w-full">
+      <ModeSwitch />
       <Body>
         <AttentionSection id="attention-equation" equation/>
+        <p>
+          Since the model contains no recurrence, we add sinusoidal positional encodings to the input embeddings{" "}
+          <EqRef to="pe-eq"/>. Unlike the scaling in <EqRef to="attention-equation-eq"/>, they carry no learned
+          parameters.
+        </p>
+        <PaperEquation id="pe-eq">{PE_LATEX}</PaperEquation>
       </Body>
     </Paper>);
 }
 const EXPORT_KEYS = [...ARCH_STEPS.map((s) => s.key), "all"];
-function ExportToolbar({ figure }: {
+function ExportToolbar({ figure, keys = EXPORT_KEYS, label = (key) => (key === "all" ? "All" : `(${key})`), }: {
     figure: string;
+    keys?: readonly string[];
+    label?: (key: string) => string;
 }) {
     const { exportFigureSvg } = usePaperExport();
     const [preview, setPreview] = useState<{
@@ -464,15 +620,15 @@ function ExportToolbar({ figure }: {
     return (<div className="mt-2 font-sans text-sm text-muted-foreground print:hidden">
       <div className="flex flex-wrap items-center gap-1">
         <span className="mr-1">Export SVG</span>
-        {EXPORT_KEYS.map((key) => (<Button key={key} size="xs" variant="outline" onClick={() => run(key)}>
-            {key === "all" ? "All" : `(${key})`}
+        {keys.map((key) => (<Button key={key} size="xs" variant="outline" onClick={() => run(key)}>
+            {label(key)}
           </Button>))}
       </div>
       {error ? <p className="mt-2 text-danger">{error}</p> : null}
       {preview ? (<figure className="mx-0 mt-3">
           <img src={preview.url} alt={`Exported (${preview.key})`} className="mx-auto block h-auto w-full max-w-[360px] rounded-[var(--radius)] border border-border"/>
           <figcaption className="mt-1 text-center text-xs">
-            Exported {preview.key === "all" ? "All" : `(${preview.key})`} · {(preview.size / 1024).toFixed(1)} KB · loaded as &lt;img&gt;,
+            Exported {label(preview.key)} · {(preview.size / 1024).toFixed(1)} KB · loaded as &lt;img&gt;,
             no longer depends on the page CSS
           </figcaption>
         </figure>) : null}
@@ -496,6 +652,7 @@ function PresenterDemo() {
       <Body>
         <ArchitectureSection id="transformer-present"/>
         <AttentionSection id="attention-present"/>
+        <EncodingSection id="encoding-present"/>
       </Body>
     </Paper>);
 }
@@ -560,8 +717,9 @@ const presenterCode = `<Paper>
 </Paper>`;
 const equationCode = `// PaperEquation comes from @hulianui/ui/math (KaTeX stays out of the main entry)
 <Paper>
+  <p>\u2026 as shown in <EqRef to="attention-eq" /></p> {/* shows \u201CEq. (1)\u201D in the text; clicking scrolls to the equation and outlines it */}
   <PaperEquation
-    number={1}
+    id="attention-eq" // no number: numbered automatically like figures; number="A.1" overrides, number={null} leaves it unnumbered
     terms={{
       dk: {
         label: "\u221Ad\u2096: toggle scaling in Figure 2",
@@ -624,6 +782,35 @@ const exportCode = `function ExportButton({ figure, state }) {
   <ProcessFigure id="transformer" steps={steps} caption="\u2026">\u2026</ProcessFigure>
   <ExportButton figure="transformer" state="b" />
 </Paper>`;
+const rasterCode = `// The heatmap is drawn inside the figure's <svg>: it uses viewBox coordinates, and print sub-figures, the presenter and SVG export all keep working
+const drawEncoding = (ctx, { width, height, color }) => {
+  const positive = color("var(--color-chart-1)"); // resolved to RGBA in the theme where the raster sits
+  const negative = color("var(--color-chart-3)");
+  const zero = color("var(--color-bg)");
+  const image = ctx.createImageData(width, height);
+  // \u2026 interpolate each pixel between zero and positive / negative by PE(pos, dim)
+  ctx.putImageData(image, 0, 0);
+}; // module-level constant: an unchanged reference does not redraw
+
+<PaperFigure
+  id="encoding"
+  states={{ c4: { dim: 4 }, c40: { dim: 40 }, c100: { dim: 100 } }}
+  printSubfigures={["c4", "c40", "c100"]}
+  caption="Sinusoidal positional encodings \u2026"
+  controls={(fig) => (
+    <Slider aria-label="Dimension" min={0} max={127} value={fig.state.dim}
+      onValueChange={(v) => fig.setState({ dim: v })} />
+  )}
+>
+  {({ dim }) => (
+    <svg viewBox="0 0 520 352">
+      <FigureRaster x={4} y={4} width={512} height={176}
+        resolution={[128, 64]} pixelated draw={drawEncoding} />
+      <rect x={4 + dim * 4} y={4} width={4} height={176} className="fill-none stroke-foreground" />
+      <path d={curveOf(dim)} className="fill-none stroke-primary" />
+    </svg>
+  )}
+</PaperFigure>`;
 const printCode = `<Paper mode="print">
   <ProcessFigure
     id="transformer"
@@ -650,6 +837,12 @@ export const paperShowcase: ShowcaseSpec = {
             render: () => <AttentionDemo />,
         },
         {
+            title: "Raster figure: heatmap",
+            description: "Per-pixel figures such as heatmaps and attention matrices use FigureRaster: it paints an offscreen canvas and embeds it as PNG in the figure's <svg>. So it shares coordinates with the vector parts, each print sub-figure paints its own copy, the presenter scales it with the stage, and SVG export carries it along as is (a mixed SVG). Colors come from tokens, it redraws when switching between light and dark, and exports are always light. This is the sinusoidal positional encoding from equation (2) of the paper: drag the slider or move over the heatmap to pick a dimension, and the curve below traces its value across positions.",
+            code: rasterCode,
+            render: () => <EncodingDemo />,
+        },
+        {
             title: "Presentation mode",
             description: "Click Present \u25B6 for a full-screen presentation: the presets of every figure, in document order, become one set of slides. Use \u2190/\u2192, Space or PageUp/PageDown to move, and Esc to leave; focus returns to the button. The presenter redraws each figure with the same state-to-picture function instead of moving the figure out of the text, so the text stays on the step the reader left it at. Figure controls still work while presenting: a step button jumps to that slide, and parameter changes only affect the current slide.",
             code: presenterCode,
@@ -657,7 +850,7 @@ export const paperShowcase: ShowcaseSpec = {
         },
         {
             title: "Linking formulas to figures",
-            description: "Formula (1) marks \u221Ad\u2096 with \\term{dk}{\u2026}: click it to toggle scaling in Figure 2, and hovering or focusing it lights up the scaling switch below the figure. Hovering the switch lights up \u221Ad\u2096 in the formula in turn. The formula is rendered with KaTeX and imported from @hulianui/ui/math, so it stays out of the main entry. A real button sits on the term, so it is reachable with Tab and screen readers announce what it does.",
+            description: "Formula (1) marks \u221Ad\u2096 with \\term{dk}{\u2026}: click it to toggle scaling in Figure 2, and hovering or focusing it lights up the scaling switch below the figure. Hovering the switch lights up \u221Ad\u2096 in the formula in turn. The formula is rendered with KaTeX and imported from @hulianui/ui/math, so it stays out of the main entry. A real button sits on the term, so it is reachable with Tab and screen readers announce what it does. Equation numbers use a CSS counter just like figure numbers, so they appear in server rendering and print; EqRef in the text shows \u201CEq. (N)\u201D in the paper's language, and clicking it scrolls to the equation and outlines it.",
             code: equationCode,
             render: () => <EquationDemo />,
         },
@@ -687,6 +880,7 @@ export const paperShowcase: ShowcaseSpec = {
         { name: "Read", render: () => <ArchitectureDemo /> },
         { name: "Print", render: () => <ArchitectureDemo id="transformer-print" defaultMode="print"/> },
         { name: "Parameter figure", render: () => <AttentionDemo /> },
+        { name: "Raster figure", render: () => <EncodingDemo /> },
         { name: "Present", render: () => <PresenterDemo /> },
     ],
     renderWithProps: (p) => (<ArchitectureDemo key={String(p.mode)} id="transformer-playground" defaultMode={p.mode as PaperMode}/>),
