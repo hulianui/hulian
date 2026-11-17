@@ -61,11 +61,11 @@ describe("Tabs 结构与 a11y（Base UI 兜底）", () => {
 });
 
 describe("Tab 皮肤钩子（防 data-active 漂移）", () => {
-  it("tab className 含 data-[active]:text-foreground + text-muted-foreground + relative z-10 + 焦点环", () => {
+  it("tab className 含 data-[active] 选中色（默认 brand）+ text-muted-foreground + relative z-10 + 焦点环", () => {
     const { getAllByRole } = render(<Tree />);
     const cls = getAllByRole("tab")[0].className;
     expect(cls).toContain("text-muted-foreground");
-    expect(cls).toContain("data-[active]:text-foreground");
+    expect(cls).toContain("data-[active]:text-primary");
     expect(cls).toContain("relative");
     expect(cls).toContain("z-10");
     expect(cls).toContain("focus-visible:ring-ring");
@@ -105,13 +105,13 @@ describe("Tabs 尺寸档（#269）", () => {
     const { container, getByText } = render(
       <Tabs defaultValue="a">
         <TabsList variant="solid" size={size}>
-          <TabsTab value="a">职称订单</TabsTab>
-          <TabsTab value="b">论文订单</TabsTab>
+          <TabsTab value="a">待处理</TabsTab>
+          <TabsTab value="b">已完成</TabsTab>
         </TabsList>
         <TabsPanel value="a" />
       </Tabs>,
     );
-    return { list: container.querySelector('[role="tablist"]')!, tab: getByText("职称订单"), container };
+    return { list: container.querySelector('[role="tablist"]')!, tab: getByText("待处理"), container };
   };
 
   it("不传 size：逐字保持改动前的 md（px-3 py-1.5 text-sm + 轨道 p-1）", () => {
@@ -165,9 +165,8 @@ describe("Tabs 尺寸档（#269）", () => {
   });
 });
 
-// #316 语义档 tone。第一条是这次改动的"零破坏"证据：默认档 neutral 必须逐字保持改动前的
-// class 串（下面两个字面量是从改动前的 DOM 里原样抄出来的），因为 tone 是纯增量 ——
-// 存量页面不传 tone，就一个像素都不该动。
+// #316 语义档 tone。默认档已改为 brand；neutral 是旧观感的退路，必须逐字保持加 tone 之前的
+// class 串（下面两个字面量是从那时的 DOM 里原样抄出来的）。
 describe("Tabs tone（#316）", () => {
   const TAB_CLASS_BEFORE_TONE =
     "relative z-10 cursor-pointer select-none rounded-[var(--hl-radius-control,var(--radius))] font-medium " +
@@ -194,15 +193,16 @@ describe("Tabs tone（#316）", () => {
     };
   }
 
-  it("不传 tone：tab 与 underline 滑块的 class 逐字等于改动前", () => {
-    const { indicator, active } = listOf({});
+  it("tone=\"neutral\"：tab 与 underline 滑块的 class 逐字等于加 tone 之前（旧观感退路）", () => {
+    const { indicator, active } = listOf({ tone: "neutral" });
     expect(active.className).toBe(TAB_CLASS_BEFORE_TONE);
     expect(indicator.className).toBe(UNDERLINE_INDICATOR_BEFORE_TONE);
   });
 
-  it("显式 tone=\"neutral\" 与不传 tone 渲染完全一致（neutral 是维持现状，不是换成灰）", () => {
-    expect(listOf({ tone: "neutral" }).active.className).toBe(listOf({}).active.className);
-    expect(listOf({ tone: "neutral" }).indicator.className).toBe(listOf({}).indicator.className);
+  it("不传 tone 默认 brand：与显式 tone=\"brand\" 渲染完全一致", () => {
+    expect(listOf({}).active.className).toBe(listOf({ tone: "brand" }).active.className);
+    expect(listOf({}).indicator.className).toBe(listOf({ tone: "brand" }).indicator.className);
+    expect(listOf({}).active.className).toContain("data-[active]:text-primary");
   });
 
   it("tone 换掉选中文字色，且顶掉基类那条中性色（tailwind-merge 后者胜）", () => {
@@ -242,7 +242,8 @@ describe("Tabs tone（#316）", () => {
     const tabs = Array.from(container.querySelectorAll('[role="tab"]'));
     expect(tabs[0].className).toContain("data-[active]:text-warning");
     expect(tabs[1].className).toContain("data-[active]:text-warning");
-    expect(tabs[2].className).toContain("data-[active]:text-foreground");
+    // 第二条没传 tone → 走默认 brand，不被第一条的 warning 串染
+    expect(tabs[2].className).toContain("data-[active]:text-primary");
   });
 
   it("消费方 className 仍是最后一道，能盖住库给的选中色", () => {

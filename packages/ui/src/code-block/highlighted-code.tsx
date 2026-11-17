@@ -51,7 +51,7 @@ HighlightedCode.displayName = "HighlightedCode";
  *
  * 1. 行号不能进复制内容 —— 行号槽 aria-hidden + select-none：屏幕阅读器不念，
  *    用户框选整段代码时浏览器也不会把 "1 2 3" 混进剪贴板（复制按钮走的是原始 code prop）。
- * 2. 行号不能被横向滚动带走 —— 行号槽 sticky left-0 + 不透明 bg-surface 遮住滑到底下的代码。
+ * 2. 行号不能被横向滚动带走 —— 行号槽 sticky left-0 + 与代码区同色的不透明底（--hl-cb-bg）遮住滑到底下的代码。
  *    选 sticky 而不是「<pre> 外面单开一列」：<pre> 自己就是滚动容器，消费方一旦用 className
  *    限高，纵向滚动发生在 <pre> 内部，外置的列跟不动就会整列错位。
  * 3. 行号列宽按最大行号的位数算（--hl-cb-gutter，单位 ch），不写死，4 位数不会顶到代码上。
@@ -64,11 +64,14 @@ function NumberedCodeImpl({
   lang,
   highlight,
   start,
+  wrap = false,
 }: {
   code: string;
   lang?: string;
   highlight: boolean;
   start: number;
+  /** 自动换行档：行盒收回容器宽、代码段可折行，行号列随折出的多行一起拉高（flex stretch）。 */
+  wrap?: boolean;
 }) {
   const lines = highlight
     ? splitTokensByLine(tokenizeCode(code, lang))
@@ -82,18 +85,19 @@ function NumberedCodeImpl({
       data-slot="code-block-lines"
     >
       {lines.map((tokens, i) => (
-        <span key={i} className="flex w-max min-w-full">
+        <span key={i} className={cn("flex", wrap ? "w-full" : "w-max min-w-full")}>
           <span
             aria-hidden
             data-slot="code-block-line-number"
             className={cn(
-              "sticky left-0 shrink-0 select-none border-r border-border bg-surface",
-              "w-[calc(var(--hl-cb-gutter)+1.75rem)] pl-4 pr-3 text-right tabular-nums text-muted-foreground",
+              // 底色吃外壳的 --hl-cb-bg 而不是 surface：代码区不是 surface 色，用 surface 会多出一条色带。
+              "sticky left-0 shrink-0 select-none border-r border-border/70 bg-(--hl-cb-bg)",
+              "w-[calc(var(--hl-cb-gutter)+1.75rem)] pl-4 pr-3 text-right tabular-nums text-muted-foreground/70",
             )}
           >
             {start + i}
           </span>
-          <span className="pl-3">{renderTokens(tokens)}</span>
+          <span className={cn("pl-3", wrap && "min-w-0 flex-1")}>{renderTokens(tokens)}</span>
         </span>
       ))}
     </span>

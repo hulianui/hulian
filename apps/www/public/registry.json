@@ -1220,6 +1220,7 @@
       ],
       "dependencies": [],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
@@ -1730,19 +1731,23 @@
       "categories": [
         "typography"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "class-variance-authority"
+      ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/lib.json"
       ],
       "meta": {
-        "import": "import { Kbd, KbdGroup } from \"@hulianui/ui\"",
+        "import": "import { Kbd, KbdGroup, kbdVariants } from \"@hulianui/ui\"",
         "exports": [
           "Kbd",
-          "KbdGroup"
+          "KbdGroup",
+          "kbdVariants"
         ],
         "types": [
           "KbdProps",
-          "KbdGroupProps"
+          "KbdGroupProps",
+          "KbdTone"
         ],
         "group": "code",
         "tags": [],

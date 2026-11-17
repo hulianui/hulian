@@ -187,6 +187,12 @@ export interface ComponentLocale {
     copy: string;
     copied: string;
     region: (language?: string) => string;
+    /** Optional so existing custom component dictionaries remain source-compatible. */
+    wrap?: string;
+    /** Optional so existing custom component dictionaries remain source-compatible. */
+    expand?: (lines: number) => string;
+    /** Optional so existing custom component dictionaries remain source-compatible. */
+    collapse?: string;
   };
   markdown: { dataTable: string };
   anchor: { navigation: string };
@@ -1075,6 +1081,9 @@ const zhComponents: ComponentLocale = {
     copy: "复制",
     copied: "已复制",
     region: (language) => (language ? `${language} 代码` : "代码"),
+    wrap: "自动换行",
+    expand: (lines) => `展开全部 ${lines} 行`,
+    collapse: "收起",
   },
   markdown: { dataTable: "数据表格" },
   anchor: { navigation: "锚点导航" },
@@ -1910,6 +1919,9 @@ const enComponents: ComponentLocale = {
     copy: "Copy",
     copied: "Copied",
     region: (language) => (language ? `${language} code` : "Code"),
+    wrap: "Wrap lines",
+    expand: (lines) => `Show all ${lines} lines`,
+    collapse: "Collapse",
   },
   markdown: { dataTable: "Data table" },
   anchor: { navigation: "On this page" },

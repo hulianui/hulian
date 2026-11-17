@@ -126,7 +126,7 @@ describe("Segmented", () => {
 });
 
 // #316 语义档 tone：与 TabsList 的 tone 同名同取值（两件组件同一套视觉，选中色不能分叉）。
-// 第一条是"零破坏"证据 —— 默认 neutral 必须逐字保持改动前的 class 串。
+// 默认档 brand（与 TabsList 一致）；neutral 是旧观感退路。
 describe("Segmented tone（#316）", () => {
   // 查询必须限定在自己的 container 里：同一个 it 内多次 render 不会自动清理，
   // getAllByRole 会把先前那棵树的段也捞回来（第一次写成全局查询时，success 档拿到的是 brand 的节点）。
@@ -138,12 +138,16 @@ describe("Segmented tone（#316）", () => {
     return { selected: radios[0], unselected: radios[1] };
   }
 
-  it("不传 tone：选中段仍是 text-foreground（与改动前逐字相同）", () => {
+  it("不传 tone 默认 brand，与显式 brand 逐字一致", () => {
     const { selected } = radiosOf();
+    expect(selected.className).toContain("text-primary");
+    expect(radiosOf("brand").selected.className).toBe(selected.className);
+  });
+
+  it("tone=\"neutral\"：选中段是 text-foreground（旧观感退路）", () => {
+    const { selected } = radiosOf("neutral");
     expect(selected.className).toContain("text-foreground");
     expect(selected.className).not.toContain("text-primary");
-    // 显式 neutral 与不传完全一致：neutral 是维持现状，不是把品牌色换成灰
-    expect(radiosOf("neutral").selected.className).toBe(selected.className);
   });
 
   it("tone 换掉选中段文字色", () => {

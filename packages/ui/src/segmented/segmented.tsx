@@ -19,8 +19,8 @@ const sizeClasses: Record<"sm" | "md", { root: string; item: string }> = {
 };
 
 /**
- * 选中段的文字色。`neutral` 那格就是改动前写死的那一个类，位置也没挪 —— 不传 tone 时
- * class 字符串逐字不变（这也是默认取 neutral 而非 brand 的原因：tone 是纯增量）。
+ * 选中段的文字色。默认 brand，与 TabsList 的默认档一致（两件组件同一套视觉，选中色不能分叉）。
+ * `neutral` 那格就是加 tone 之前写死的那一个类，位置也没挪 —— 要旧观感传 tone="neutral"，class 逐字不变。
  * 滑块不参与：白药丸 + 语义字是 Tabs solid 定下的形态，两件组件必须一致（#316）。
  * 未选中段不受 tone 影响（tone 只回答"选中意味着什么"）。
  */
@@ -46,7 +46,7 @@ export function Segmented({
   onValueChange,
   disabled,
   size = "md",
-  tone = "neutral",
+  tone = "brand",
   className,
   "aria-label": ariaLabel,
   ...rest
@@ -159,7 +159,11 @@ export function Segmented({
       aria-disabled={disabled || undefined}
       className={cn(
         // bg-track：与 Tabs solid 同一个凹槽轨道语义，滑块用 bg-surface 浮在其上（#152）。
-        "relative inline-flex items-center gap-1 rounded-[var(--hl-radius-control,var(--radius))] bg-track p-1 text-foreground",
+        // 等宽靠 grid 而不是 flex-1：flex-1(basis 0) 下 inline-flex 的宽度 = 各段内容宽之和，再被**平均**
+        // 分给每段 —— 短段分多了、长段（文字 + 段内 Tag）分少了，内容居中溢出把两侧内边距都吃掉，
+        // 徽标贴着段边。minmax(0,1fr) 在内容定宽时每列取「最宽那段」的内容宽，所有段等宽且都装得下；
+        // 容器被压窄（w-full / 窄屏）时下限 0 又允许各段等分收缩出省略号（#114 的修复不退化）。
+        "relative inline-grid grid-flow-col auto-cols-[minmax(0,1fr)] items-center gap-1 rounded-[var(--hl-radius-control,var(--radius))] bg-track p-1 text-foreground",
         sizeClasses[size].root,
         disabled && "pointer-events-none opacity-50",
         className,
@@ -197,7 +201,7 @@ export function Segmented({
               // 后完全不可压缩，于是 root 的实际宽度被撑到「所有段文字之和」，flex-1 形同虚设，
               // 装不下的部分被上游容器裁掉——**选项存在但不可见也不可点**（#114）。
               // 补上之后段会等分压缩、文字变省略号，任何宽度下每一段都仍然可达。
-              `relative z-10 inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 truncate whitespace-nowrap rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)] outline-none ${pressableClass}`,
+              `relative z-10 inline-flex h-full min-w-0 items-center justify-center gap-1.5 truncate whitespace-nowrap rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)] outline-none ${pressableClass}`,
               sizeClasses[size].item,
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
               // 字重只给选中段：未选中段常规字重，选中态多一道「字重」信号、更好认。各段 flex-1 等宽，

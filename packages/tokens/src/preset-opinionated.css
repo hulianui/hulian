@@ -1,6 +1,6 @@
 /* 瑚琏 Tailwind v4 preset · 主张层 —— 这四样都是「接管」既有行为，不是加法：
      ① @custom-variant dark  重绑 dark variant（会覆盖消费方自己的定义）
-     ② @theme inline 阴影    重绑 --shadow-sm..2xl（所有 shadow-* 外观随之改变）
+     ② @theme inline 阴影    重绑 --shadow-xs..2xl（所有 shadow-* 外观随之改变）
      ③ @theme 缓动           重绑 ease-out / ease-in-out / 默认过渡曲线（所有裸 transition 重新计时）
      ④ @theme inline 字型    重绑 --font-sans / --font-mono（font-* 工具类与 preflight 的 html 字体改由变量驱动）
    这份不 @import "tailwindcss"，因为它总是跟在 preset-core.css（或消费方自己那份 Tailwind 引入）之后。
@@ -35,8 +35,9 @@
 
 @theme inline {
   /* 阴影：映射到 semantic.css 的运行时 --hl-shadow-*（明暗在 [data-theme] 切值）。
-     inline 让 shadow-sm/md/lg/xl/2xl 工具类直接吐 var(--hl-shadow-*) →
+     inline 让 shadow-xs/sm/md/lg/xl/2xl 工具类直接吐 var(--hl-shadow-*) →
      现存所有 shadow-* 零改动随主题自动切。覆盖 Tailwind 默认同名 token。 */
+  --shadow-xs: var(--hl-shadow-xs);
   --shadow-sm: var(--hl-shadow-sm);
   --shadow-md: var(--hl-shadow-md);
   --shadow-lg: var(--hl-shadow-lg);
@@ -63,6 +64,15 @@
   --font-sans: var(--hl-font-sans);
   --font-serif: var(--hl-font-serif);
   --font-mono: var(--hl-font-mono);
+  /* 等宽处关连字与上下文替换。Tailwind v4 把这个子键同时喂给 font-mono 工具类和 preflight 里的
+     code / kbd / samp / pre，范围正好是「所有等宽文字」。
+     理由一（排版）：Geist Mono 这类编程字体的 liga 把 `--` `>=` `->` 两字符折成一个字形，
+     该字形步进只有一格、轮廓却向左越出 —— 吃掉 Code chip 的左内边距（`--filter=www` 贴边），
+     或压在前一个字母上（`react>=18` 显示成 `reac⩾18`）。
+     理由二（语义）：库里的代码是给人照抄的，显示成 ≥ / → 会让读者打错字。
+     此前这条只写在文档站 globals.css 里，消费方换上同款字体就原样复现，故下沉到预设。
+     想要连字的消费方在自己的 @theme 里把它改回 normal 即可。 */
+  --font-mono--font-feature-settings: "liga" 0, "calt" 0;
 }
 
 /* 缓动曲线 SSOT —— 覆盖 Tailwind 内置的弱曲线，让 ease-out / ease-in-out 工具类与

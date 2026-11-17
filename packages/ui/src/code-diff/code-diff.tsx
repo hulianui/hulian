@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { cn } from "../lib/cn";
+import { File } from "../_icons";
 import { diffLines, diffStat, type DiffRow } from "./code-diff.diff";
 import type { CodeDiffAnnotation, CodeDiffProps } from "./code-diff.types";
 
@@ -51,11 +52,22 @@ function CodeDiffImpl({
       )}
     >
       {(filename != null || added > 0 || removed > 0) && (
-        <div className="flex items-center justify-between gap-3 border-b border-border bg-subtle px-3 py-2">
-          {filename != null && <span className="truncate text-foreground">{filename}</span>}
-          <span className="shrink-0 space-x-2 tabular-nums">
-            <span className="text-success">+{added}</span>
-            <span className="text-danger">−{removed}</span>
+        // 文件头：surface 亮底 + 文件图标 + 加粗文件名 + 彩色药丸统计。
+        // 此前是 bg-subtle 灰带（亮 gray-100 / 暗 gray-800），压在整块顶上反而比代码区更暗，
+        // 文件名只是一行等宽小字，读者扫一页 diff 时找不到「这是哪个文件」。
+        <div
+          data-slot="code-diff-header"
+          className="flex items-center justify-between gap-3 border-b border-border bg-surface px-3 py-2"
+        >
+          {filename != null && (
+            <span className="flex min-w-0 items-center gap-2 text-foreground">
+              <File aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
+              <span className="truncate font-medium">{filename}</span>
+            </span>
+          )}
+          <span className="ml-auto flex shrink-0 items-center gap-1.5 tabular-nums">
+            <span className="rounded-full bg-success-subtle px-1.5 py-px font-medium text-success">+{added}</span>
+            <span className="rounded-full bg-danger-subtle px-1.5 py-px font-medium text-danger">−{removed}</span>
           </span>
         </div>
       )}

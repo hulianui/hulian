@@ -129,8 +129,9 @@ function stickyClass<TData>(column: Column<TData, unknown>, overflowAware: boole
   // 外壳不是滚动容器时（stickyHeader="scrollParent"）量不到溢出，退回常驻阴影。
   const edgeLeft = pinned === "left" && column.getIsLastColumn("left");
   const edgeRight = pinned === "right" && column.getIsFirstColumn("right");
+  // 底色与外壳同为 surface：此前是 bg-bg（页面底），表格放在白卡片里时冻结列成了一条灰带。
   return cn(
-    "bg-bg",
+    "bg-surface",
     edgeLeft && (overflowAware ? "group-data-[overflow-left]/table-shell:shadow-pin-left" : "shadow-pin-left"),
     edgeRight && (overflowAware ? "group-data-[overflow-right]/table-shell:shadow-pin-right" : "shadow-pin-right"),
   );
@@ -1268,7 +1269,7 @@ export function Table<TData>({
               cellPad,
               "font-normal",
               stickyClass(column, shellMeasuresOverflow),
-              headerSticks && column.getIsPinned() && "bg-bg",
+              headerSticks && column.getIsPinned() && "bg-surface",
             )}
           >
             {canColumnFilter(column) ? renderColumnFilter(column) : null}
@@ -1293,6 +1294,9 @@ export function Table<TData>({
       className={cn(
         // bordered=false：去掉自身描边框（如被 ProTable 卡片包裹时，由卡片提供外框，避免双框）。
         bordered && "rounded-[var(--radius)] border border-border",
+        // 表格自带 surface 底，不借容器的：此前外壳透明，放在页面底（bg）上时正文透出灰底，
+        // 而吸顶表头 / 冻结列又各自刷了实心色 —— 同一张表三种底色。现在三处同源，放哪都一致。
+        "bg-surface",
         !shellScrolls && !stickyToScrollParent && "overflow-x-auto",
         SHELL_GROUP_CLASS,
         // 常显横向滚动条：与代理条同一份皮肤。scrollParent 档下外壳不横向滚动，无对象可作用。

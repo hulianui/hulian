@@ -158,6 +158,7 @@ function MarkdownImpl({
   size = "base",
   headingIds = false,
   inheritTypography = false,
+  codeBlock,
   className,
 }: MarkdownProps) {
   const labels = useComponentLocale().markdown ?? { dataTable: "数据表格" };
@@ -188,7 +189,7 @@ function MarkdownImpl({
   for (const b of blocks) {
     if (b.type === "code") {
       flush();
-      out.push(<CodeBlock key={`c${key++}`} code={b.code} lang={b.lang} />);
+      out.push(<CodeBlock key={`c${key++}`} {...codeBlock} code={b.code} lang={b.lang} />);
     } else {
       run.push(b);
     }

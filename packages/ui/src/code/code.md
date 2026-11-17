@@ -44,7 +44,7 @@ import { Code, codeVariants } from "@hulianui/ui"
 
 ## 禁忌 / 坑
 
-暂无已知坑。
+- **超长内容会在 chip 内折行**：只在一整段放不下一行时才从中间断（`overflow-wrap: anywhere`），断开的每一截各自带圆角与内边距（`box-decoration-break: clone`）。不会再把窄容器（手机、侧栏、表格格子）撑破。多行代码请用 [CodeBlock](../code-block/code-block.md)。
 
 ## 相关
 [CodeBlock](../code-block/code-block.md) · [Snippet](../snippet/snippet.md) · [CodeDiff](../code-diff/code-diff.md) · [Kbd](../kbd/kbd.md) · [Text](../text/text.md) · [Heading](../heading/heading.md)
