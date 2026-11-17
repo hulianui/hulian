@@ -24,10 +24,11 @@ import type { FigureSvgExportOptions, PaperMode, PaperProps } from "./paper.type
 //    而不是读者此刻停在的那一步；打印完切回。
 //  · 图注编号和公式编号都用 CSS 计数器（counter-reset 在这里，counter-increment 在每张图 / 每条自动编号的公式上），
 //    服务端渲染和打印时都有号，不等 JS。FigRef / EqRef 按注册表里的 DOM 顺序取号，两边顺序一致。
-//  · 正文衬线：论文是衬线排版的体裁。tokens 刻意没有 --font-serif（#319），这里只在 Paper 内部
-//    给一条默认字体栈，消费方用 --paper-font 覆盖。
+//  · 正文衬线：论文是衬线排版的体裁。西文先用学术排版常见的 STIX Two Text / Times New Roman，
+//    其余（中文、兜底）回落到 tokens 的 --hl-font-serif（#389）；没接 tokens 时落到 serif 通用族，
+//    汉字由浏览器交给系统宋体。消费方用 --paper-font 整个替换。
 
-export const PAPER_FONT = 'var(--paper-font, "STIX Two Text", "Times New Roman", "Songti SC", "SimSun", serif)';
+export const PAPER_FONT = 'var(--paper-font, "STIX Two Text", "Times New Roman", var(--hl-font-serif, serif))';
 
 function documentOrder(a: HTMLElement | null, b: HTMLElement | null) {
   if (!a || !b || a === b) return 0;

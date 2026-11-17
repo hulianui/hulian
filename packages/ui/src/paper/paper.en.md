@@ -60,7 +60,7 @@ Extends `HTMLAttributes<HTMLElement>`; `ref` lands on the root element.
 
 - When the browser actually prints (`beforeprint`), `Paper` switches to `print` for the print and back after it (`afterprint`). That switch does not fire `onModeChange`.
 - Figure and equation numbers come from CSS counters, so they exist in server rendering and in print. Put every `PaperFigure` inside a `Paper`, otherwise each one is "Figure 1".
-- Body text uses a serif stack: `var(--paper-font, "STIX Two Text", "Times New Roman", "Songti SC", "SimSun", serif)`. Set `--paper-font` on an ancestor to replace it. `Paper` does not style headings or paragraphs; typesetting is up to you.
+- Body text uses a serif stack: `var(--paper-font, "STIX Two Text", "Times New Roman", var(--hl-font-serif, serif))`. Latin text uses STIX Two Text or Times New Roman first; Chinese and fallbacks come from the tokens' `--hl-font-serif` (by default Chinese lands on the system Song face). Set `--hl-font-serif` to change only the CJK serif, or set `--paper-font` on an ancestor to replace the whole stack. `Paper` does not style headings or paragraphs; typesetting is up to you.
 
 `usePaperMode()` returns `[mode, setMode]` inside a `Paper`, for your own read / print preview switch.
 
@@ -229,7 +229,7 @@ Presentation mode for talks and defenses: a full-screen layer that turns the pre
 - **Figure controls still work**: when a control calls `select` with a preset, the presenter jumps to that slide (the step buttons of `ProcessFigure` become slide jumps). Values from `setState` only override the current slide and are dropped when the slide changes.
 - **Keys**: `→` / `Space` / `PageDown` next, `←` / `PageUp` previous, `Esc` exits. Arrow keys are left to the control when focus is in an input, slider, radio group and the like; Space on a focused button presses that button.
 - **Accessibility**: `role="dialog"`, named "Presentation" (follows the UI language). Focus is trapped inside, starts on "Next slide", and returns to the trigger on exit. Content outside the presenter is hidden from screen readers.
-- The presenter renders outside the `Paper` DOM (in a portal) and uses the same serif font stack as `Paper`. If a figure's render function depends on a context placed between `Paper` and the figure, that context is not available while presenting.
+- The presenter renders outside the `Paper` DOM (in a portal). When it opens it takes the font where `Paper` sits (including overrides such as `--paper-font`) and its theme island (the nearest `data-theme` ancestor of `Paper`, followed if it changes while presenting). A container that only recolors through custom properties, without `data-theme`, does not reach the presenter. If a figure's render function depends on a context placed between `Paper` and the figure, that context is not available while presenting.
 - SVG figures fill the stage height in the presenter (width follows the `viewBox` ratio), so no separate presentation size is needed.
 
 ```tsx
@@ -262,7 +262,7 @@ const svg = await exportFigureSvg("transformer", "b", { background: "white" }); 
 - **How it works**: `Paper` briefly mounts an off-screen slot, draws the preset with the figure's own `children(state)` (with `mode` set to `"print"`), waits for fonts, then reads each element's computed style and writes it back as SVG presentation attributes (`fill="#…"`, `stroke-width="1.3"`…), dropping `class` / `style` / `data-*`. The figure in the text is not touched.
 - **Colors**: Tailwind classes and CSS variables stop working outside the page, and browsers often report computed colors as `oklab()` / `oklch()`, which Word and Inkscape do not read. Export converts every color to `#rrggbb` and folds transparency into `fill-opacity` / `stroke-opacity`.
 - **Frozen**: animations and transitions are off in the slot, so flowing dashes stop at their start; `FigureStep` phase opacity follows the exported step. Elements with `display: none` are left out, and `aria-label` becomes a `<title>` (Word uses it as alt text).
-- **Text stays as `<text>`** with the `Paper` font stack. On a machine without STIX Two Text it falls back to Times New Roman or SimSun. In LaTeX use `\includesvg` (the svg package, which needs Inkscape) or convert to PDF first, with the fonts installed on the converting machine.
+- **Text stays as `<text>`** with the `Paper` font stack. The whole computed stack is written: on a machine without STIX Two Text it falls back to Times New Roman, and Chinese lands on the fonts in `--hl-font-serif` or the system serif (Song). In LaTeX use `\includesvg` (the svg package, which needs Inkscape) or convert to PDF first, with the fonts installed on the converting machine.
 - **Requirement**: the figure must draw a single `<svg>`. A bare canvas, HTML, or `<foreignObject>` rejects with the reason (for a canvas raster use `FigureRaster` inside the `<svg>`; export embeds it as PNG), as do a missing figure or preset.
 - CSS `transform`s inside the figure (such as Tailwind `rotate-*`) are not written to the file; use the SVG `transform` attribute to rotate or move parts.
 

@@ -60,7 +60,7 @@ FigureRaster               图的 <svg> 里的一块栅格（热力图），任�
 
 - 浏览器真正打印时（`beforeprint`），`Paper` 临时切到 `print`，打印完（`afterprint`）切回，这一次不触发 `onModeChange`。
 - 图号和公式号用 CSS 计数器，服务端渲染和打印时都有号。`PaperFigure` 必须放在 `Paper` 里，否则每张图都是「图 1」。
-- 正文用衬线字体：`var(--paper-font, "STIX Two Text", "Times New Roman", "Songti SC", "SimSun", serif)`。在外层设 `--paper-font` 即可替换。`Paper` 不接管标题、段落的样式，排版由你决定。
+- 正文用衬线字体：`var(--paper-font, "STIX Two Text", "Times New Roman", var(--hl-font-serif, serif))`。西文先用 STIX Two Text / Times New Roman，中文和兜底回落到 tokens 的 `--hl-font-serif`（默认汉字落到系统宋体）。只想换中文衬线就设 `--hl-font-serif`，整个替换就在外层设 `--paper-font`。`Paper` 不接管标题、段落的样式，排版由你决定。
 
 `usePaperMode()` 在 `Paper` 内部返回 `[mode, setMode]`，用来做自己的「阅读 / 打印预览」切换。
 
@@ -229,7 +229,7 @@ const drawHeat = (ctx, { width, height, color }) => {
 - **图的控件照常可用**：控件 `select` 到某个预设时翻到对应那一页（`ProcessFigure` 的步骤按钮就是跳页）；`setState` 给的值只覆盖当前页，翻页即还原。
 - **按键**：`→` / `空格` / `PageDown` 下一页，`←` / `PageUp` 上一页，`Esc` 退出。焦点在输入框、滑块、单选组等控件上时，方向键留给控件；焦点在按钮上时，空格是按下按钮。
 - **无障碍**：`role="dialog"`，名字是「演示模式」（跟随界面语言）。焦点困在演示层里，打开后落在「下一页」，退出后回到触发按钮。演示层之外的内容对读屏隐藏。
-- 演示层渲染在 `Paper` 的 DOM 之外（Portal），沿用 `Paper` 的衬线字体栈。图的渲染函数若依赖放在 `Paper` 与图之间的 context，演示里取不到。
+- 演示层渲染在 `Paper` 的 DOM 之外（Portal），打开时沿用 `Paper` 所处位置的字体（含 `--paper-font` 等覆盖）和主题岛（`Paper` 最近的 `data-theme` 祖先，演示中切换也跟着变）。只靠自定义属性局部改色、不带 `data-theme` 的容器传不进演示层。图的渲染函数若依赖放在 `Paper` 与图之间的 context，演示里取不到。
 - SVG 图在演示里按舞台高度撑满（宽度跟着 `viewBox` 比例），不需要另写演示尺寸。
 
 ```tsx
@@ -262,7 +262,7 @@ const svg = await exportFigureSvg("transformer", "b", { background: "white" }); 
 - **怎么做的**：在 `Paper` 里临时挂一个屏幕外的槽，用图的同一个 `children(state)` 画出这个预设（画面的 `mode` 是 `"print"`），等字体就绪后逐个元素读计算样式，写成 SVG 表现属性（`fill="#…"`、`stroke-width="1.3"`…），去掉 `class` / `style` / `data-*`。正文里的图不受影响。
 - **颜色**：Tailwind 类和 CSS 变量离开页面就失效，浏览器给的计算值又常是 `oklab()` / `oklch()`，Word、Inkscape 不认。导出时一律换成 `#rrggbb`，透明度并进 `fill-opacity` / `stroke-opacity`。
 - **定格**：动画和过渡在槽里关掉，流动虚线定格在起点；`FigureStep` 的阶段透明度按导出的那一步算。`display: none` 的元素不进文件；`aria-label` 变成 `<title>`（Word 当替代文字用）。
-- **文字保留为 `<text>`**，带上 `Paper` 的字体栈。打开文件的机器上没有 STIX Two Text 时会回退到 Times New Roman / 宋体。LaTeX 里用 `\includesvg`（svg 宏包，需要 Inkscape）或先转成 PDF，转换的机器上要装好字体。
+- **文字保留为 `<text>`**，带上 `Paper` 的字体栈。写入的是计算后的整条字体栈：打开文件的机器上没有 STIX Two Text 时回退到 Times New Roman，中文落到 `--hl-font-serif` 里的字体或系统衬线（宋体）。LaTeX 里用 `\includesvg`（svg 宏包，需要 Inkscape）或先转成 PDF，转换的机器上要装好字体。
 - **前提**：图的画面必须是单独一个 `<svg>`。画面是裸的 canvas、HTML 或带 `<foreignObject>` 时 reject 并说明原因（canvas 栅格改用 `FigureRaster` 画在 `<svg>` 里，导出时以 PNG 内嵌）；图找不到、预设不存在时也 reject。
 - 图里的 CSS `transform`（如 Tailwind 的 `rotate-*`）不会写进文件，要旋转、平移请用 SVG 的 `transform` 属性。
 

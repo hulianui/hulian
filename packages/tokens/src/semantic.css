@@ -20,7 +20,13 @@
    经 preset-opinionated.css 的 @theme inline 映射给 --font-sans / --font-mono，
    于是 font-sans / font-mono 工具类
    与 preflight 给 html 的默认字体（v4 的 --default-font-family 就是 --theme(--font-sans)）
-   一起跟着走。库里 48 个组件写的是 font-mono，改 --hl-font-mono 一处就全部换掉。 */
+   一起跟着走。库里 48 个组件写的是 font-mono，改 --hl-font-mono 一处就全部换掉。
+
+   衬线 --hl-font-serif（#389）同理：默认就是 Tailwind 的 --font-serif，font-serif 工具类
+   的渲染不变。中文不用写进默认栈 —— 实测 Chromium 里这条栈的汉字会经末尾的 serif 通用族
+   落到系统宋体（macOS Songti SC），不是黑体。库内的消费方是 Paper：论文正文在它自己偏好的
+   西文学术字体（STIX Two Text / Times New Roman）之后回落到本变量，所以改它能一并换掉
+   Paper 的中文与兜底字体；要整个换掉 Paper 的字体用 --paper-font。 */
 :root {
   --hl-font-sans:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial,
@@ -28,6 +34,7 @@
   --hl-font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
     monospace;
+  --hl-font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 /* ===== 动效 · 与主题无关（hulianui/hulian#341）=====
