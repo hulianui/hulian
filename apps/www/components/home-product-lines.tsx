@@ -109,7 +109,7 @@ function Sampler() {
           tone="brand"
           items={["Light", "Dark", "Auto"].map((v) => ({ value: v, label: v }))}
           defaultValue="Light"
-          className="hl-seg-quiet w-full [&>*]:flex-1"
+          className="w-full [&>*]:flex-1"
           aria-label="Theme"
         />
         <Switch label={s.notify} defaultChecked />

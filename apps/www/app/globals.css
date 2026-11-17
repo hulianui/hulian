@@ -108,15 +108,6 @@ body {
   );
 }
 
-/* 首页里的 Segmented：未选中段用常规字重，只有选中段加粗，选中态更好认。
-   库里 Segmented 所有段统一 font-medium；这里只在首页覆盖，库默认不动。 */
-.hl-seg-quiet > button {
-  font-weight: 400;
-}
-.hl-seg-quiet > button[aria-checked="true"] {
-  font-weight: 500;
-}
-
 /* 图表色板跟着转：整组按「当前色相 - 品牌色相 258」旋转，chart-1 永远等于主题色，
    其余各色与它的色相间隔不变，多系列图表照样分得开。明度/彩度沿用 tokens 两档原值。 */
 [data-hero-accent] {

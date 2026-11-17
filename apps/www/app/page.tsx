@@ -186,7 +186,7 @@ export default function Home() {
                     highlight={false}
                     copyLabel={content.copy}
                     copiedLabel={content.copied}
-                    className="flex w-full rounded-none border-0 border-t border-border/70 bg-muted/50 px-4 py-3 text-muted-foreground [&_code]:break-all"
+                    className="flex w-full rounded-none border-0 border-t border-border/70 bg-muted/50 px-4 py-3 text-muted-foreground"
                   >
                     {AI_GUIDE_URL}
                   </Snippet>

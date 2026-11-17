@@ -12,7 +12,6 @@ import {
   ShoppingBag,
   SkipBack,
   SkipForward,
-  TrendingUp,
 } from "lucide-react";
 import {
   AnimatedList,
@@ -313,9 +312,9 @@ export function HomeHeroWall({ className, style }: { className?: string; style?:
               }}
               size="sm"
               aria-label={copy.theme}
-              // 圆形色块、对勾改纯白（库内对勾是 mix-blend-difference，压在蓝上会反相成橙），
+              // 圆形色块、去掉描边，只留一圈极淡的内阴影；
               // 选中态只靠外环；外环间隙按卡面色画，默认的页面底色在白卡上会露出一圈灰。
-              className="gap-2.5 [&>*]:rounded-full [&>*]:border-0 [&>*]:shadow-[inset_0_0_0_1px_oklch(0_0_0/0.08)] [&_svg]:mix-blend-normal [&>[data-checked]]:ring-offset-surface"
+              className="gap-2.5 [&>*]:rounded-full [&>*]:border-0 [&>*]:shadow-[inset_0_0_0_1px_oklch(0_0_0/0.08)] [&>[data-checked]]:ring-offset-surface"
             />
           </div>
 
@@ -324,7 +323,7 @@ export function HomeHeroWall({ className, style }: { className?: string; style?:
             defaultValue={copy.sections[0]}
             tone="brand"
             aria-label={copy.sections.join(" / ")}
-            className="hl-seg-quiet w-full [&>*]:flex-1"
+            className="w-full [&>*]:flex-1"
           />
 
           {/* 通知流：AnimatedList 进视口时逐条滑入；放在第二列：AnimatedList 要 40% 进视口才入场，
@@ -435,21 +434,13 @@ export function HomeHeroWall({ className, style }: { className?: string; style?:
               </div>
             ))}
           </div>
-
-          {/* 涨跌幅紧贴它修饰的那个数（同一行右侧），图表独占卡底：读数 → 趋势 → 走势，
-              视线一路向下不回头。Stat 自带的趋势行排在数值下方、图表之后，这里不用它的 delta。 */}
+          {/* 带图表的 KPI 卡：趋势排在数值右侧（deltaPlacement="inline"），图表独占卡底 */}
           <Stat
             label={copy.statLabel}
-            value={
-              <span className="flex items-center gap-2">
-                <NumberTicker value={12480} />
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-success-subtle px-1.5 py-0.5 text-xs font-semibold text-success">
-                  <TrendingUp className="size-3" aria-hidden />
-                  +8.2%
-                </span>
-                <span className="text-xs font-normal text-muted-foreground">{copy.statDelta}</span>
-              </span>
-            }
+            value={<NumberTicker value={12480} />}
+            delta={8.2}
+            deltaLabel={copy.statDelta}
+            deltaPlacement="inline"
             chart={<Sparkline data={SPARK} variant="area" width={246} height={48} highlightLast />}
           />
 

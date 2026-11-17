@@ -79,7 +79,6 @@ function Cell({
         </Text>
         <Segmented
           tone="brand"
-          className="hl-seg-quiet"
           size="sm"
           items={options}
           value={value}
