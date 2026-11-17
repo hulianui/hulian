@@ -298,6 +298,7 @@ export const manifest: ComponentMeta[] = [
   { slug: "sortable", name: "Sortable", shortName: "拖拽排序", description: "用鼠标或键盘拖动条目改变顺序，可整项拖也可用手柄", category: "data-display", group: "collection", status: "new" },
   { slug: "kanban", name: "Kanban", shortName: "看板", description: "把卡片在多个状态列之间拖动流转", category: "data-display", group: "collection", status: "new" },
   { slug: "flow", name: "Flow", shortName: "节点画布编排器", description: "编排节点和连线，可拖节点、连桩、平移和缩放", category: "data-display", group: "collection", status: "new" },
+  { slug: "paper", name: "Paper", shortName: "动态论文插图", description: "让论文里的图跟着正文一步步变化，并能切到投稿用的打印形态", category: "data-display", group: "collection", status: "new" },
   { slug: "sequence-diagram", name: "SequenceDiagram", shortName: "时序图", description: "按时间顺序画出参与者之间的调用、异步消息和返回", category: "data-display", group: "collection", status: "new" },
   { slug: "design-canvas", name: "DesignCanvas", shortName: "视觉设计画布", description: "在无限画布上自由摆放元素，可框选、拖动和缩放", category: "data-display", group: "collection", status: "new" },
   { slug: "component-picker", name: "ComponentPicker", shortName: "组件库浏览器", description: "浏览组件库，带分类树、模糊搜索和详情预览", category: "data-display", group: "collection", status: "new" },

@@ -10469,6 +10469,94 @@
       ]
     },
     {
+      "name": "paper",
+      "type": "registry:ui",
+      "title": "Paper",
+      "description": "让论文里的图跟着正文一步步变化，并能切到投稿用的打印形态",
+      "categories": [
+        "data-display"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/button.json",
+        "https://hulianui.haloritual.com/zh/r/config.json",
+        "https://hulianui.haloritual.com/zh/r/lib.json"
+      ],
+      "meta": {
+        "import": "import { Paper, usePaperMode, PaperFigure, ProcessFigure, FigureStep, FigRef } from \"@hulianui/ui\"",
+        "exports": [
+          "Paper",
+          "usePaperMode",
+          "PaperFigure",
+          "ProcessFigure",
+          "FigureStep",
+          "FigRef"
+        ],
+        "types": [
+          "FigRefProps",
+          "FigureRenderContext",
+          "FigureStepPhase",
+          "FigureStepProps",
+          "PaperFigureProps",
+          "PaperContentLabels",
+          "PaperMode",
+          "PaperProps",
+          "ProcessFigureProps",
+          "ProcessStep"
+        ],
+        "group": "collection",
+        "tags": [],
+        "animated": false,
+        "webgl": false,
+        "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/paper/paper.md",
+        "docLocal": "packages/ui/src/paper/paper.md",
+        "status": "enriched",
+        "preferred": "npm"
+      },
+      "files": [
+        {
+          "path": "components/hulianui/paper/fig-ref.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/fig-ref.tsx"
+        },
+        {
+          "path": "components/hulianui/paper/index.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/index.ts"
+        },
+        {
+          "path": "components/hulianui/paper/paper-context.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-context.ts"
+        },
+        {
+          "path": "components/hulianui/paper/paper-figure.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-figure.tsx"
+        },
+        {
+          "path": "components/hulianui/paper/paper-labels.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-labels.ts"
+        },
+        {
+          "path": "components/hulianui/paper/paper.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper.tsx"
+        },
+        {
+          "path": "components/hulianui/paper/paper.types.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper.types.ts"
+        },
+        {
+          "path": "components/hulianui/paper/process-figure.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/process-figure.tsx"
+        }
+      ]
+    },
+    {
       "name": "pixel-card",
       "type": "registry:ui",
       "title": "PixelCard",

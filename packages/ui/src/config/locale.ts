@@ -868,6 +868,21 @@ export interface ComponentLocale {
     };
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
+  paper?: {
+    /** Word before a figure number, e.g. "Figure" in "Figure 1: ". */
+    figure: string;
+    /** Text between the number and the caption, e.g. ": ". */
+    separator: string;
+    prev: string;
+    next: string;
+    play: string;
+    pause: string;
+    /** Button that shows every step of a process figure at once. */
+    overview: string;
+    /** Accessible name of the step controls. */
+    steps: string;
+  };
+  /** Optional so existing custom component dictionaries remain source-compatible. */
   sequenceDiagram?: {
     /** Accessible name of the figure when `title` is not passed. */
     diagram: string;
@@ -1697,6 +1712,16 @@ const zhComponents: ComponentLocale = {
       overflowAuto: "滚动",
       hiddenElement: "隐藏元素",
     },
+  },
+  paper: {
+    figure: "图",
+    separator: "：",
+    prev: "上一步",
+    next: "下一步",
+    play: "播放",
+    pause: "暂停",
+    overview: "全部",
+    steps: "步骤",
   },
   sequenceDiagram: {
     diagram: "时序图",
@@ -2653,6 +2678,16 @@ const enComponents: ComponentLocale = {
       overflowAuto: "Scroll",
       hiddenElement: "Hide element",
     },
+  },
+  paper: {
+    figure: "Figure",
+    separator: ": ",
+    prev: "Previous step",
+    next: "Next step",
+    play: "Play",
+    pause: "Pause",
+    overview: "All",
+    steps: "Steps",
   },
   sequenceDiagram: {
     diagram: "Sequence diagram",

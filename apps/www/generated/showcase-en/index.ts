@@ -243,6 +243,7 @@ export * from "./orbiting-circles.showcase";
 export * from "./org-classroom.showcase";
 export * from "./page-header.showcase";
 export * from "./pagination.showcase";
+export * from "./paper.showcase";
 export * from "./particles.showcase";
 export * from "./password-generator.showcase";
 export * from "./picker.showcase";

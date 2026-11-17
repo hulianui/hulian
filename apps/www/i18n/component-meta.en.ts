@@ -804,6 +804,12 @@ export const componentMetaEn: Record<string, LocalizedComponentMeta> = {
       "Edits controlled node-and-edge canvases with node dragging, edge connection, panning, zooming, and fit view.",
     keywords: ["flow", "data-display", "collection"],
   },
+  paper: {
+    shortName: "Paper",
+    description:
+      "Lets the figures of a paper change step by step with the text, and switch to a print form for submission.",
+    keywords: ["paper", "figure", "data-display", "collection"],
+  },
   "sequence-diagram": {
     shortName: "SequenceDiagram",
     description:
