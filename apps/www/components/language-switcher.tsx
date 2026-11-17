@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type MouseEvent } from "react";
-import { Segmented } from "@hulianui/ui";
+import { Segmented, cn } from "@hulianui/ui";
 import {
   DOCS_LOCALE,
   LOCALE_STORAGE_KEY,
@@ -16,7 +16,14 @@ function getCurrentBrowserUrl() {
   return `${pathname}${search}${hash}`;
 }
 
-export function LanguageSwitcher({ pathname }: { pathname?: string }) {
+export function LanguageSwitcher({
+  pathname,
+  className,
+}: {
+  pathname?: string;
+  /** 给外部分档用：顶栏在 <sm 藏起它、折叠菜单里再挂一份，靠调用方传 `max-sm:hidden` / `sm:hidden`。 */
+  className?: string;
+}) {
   const content = sharedChromeContent[DOCS_LOCALE];
   const localeOptions = [
     { locale: "zh-CN", label: content.chinese, ariaLabel: content.switchChinese },
@@ -71,7 +78,7 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
       size="sm"
       value={DOCS_LOCALE}
       aria-label={content.languageGroup}
-      className="shrink-0"
+      className={cn("shrink-0", className)}
       items={localeOptions.map(({ locale, label, ariaLabel }) => ({
         value: locale,
         label,

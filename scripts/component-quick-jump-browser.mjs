@@ -128,12 +128,30 @@ async function runQuickJumpCase(page, baseUrl, testCase, reportPhase) {
   };
 }
 
+/**
+ * 取「当前视口下真正可点的那一份」语言切换链接。
+ *
+ * 顶栏在 <sm 不再常驻语言切换（英文站「Chinese」「English」两个完整词各要 72px，
+ * 375px 顶栏子项合计 402px，把最右的主题切换钮顶出视口），改由折叠菜单承接，
+ * 所以窄屏要先展开菜单。
+ *
+ * 用 `:visible` 而不是 `.first()`：两份里点错那份 = 点到 display:none 的元素，Playwright
+ * 会一直等到超时，而报出来的错跟「语言入口丢了」长得一样。这里也不兜底 —— 一份可见的
+ * 都找不到就直接交给 click 超时失败，保住「语言切换必须可达」这条断言。
+ */
+async function reachLanguageSwitcher(page, targetLocale) {
+  const switcher = page.locator(`a[hreflang="${targetLocale}"]:visible`).first();
+  if ((await switcher.count()) > 0) return switcher;
+  await page.getByRole("button", { name: /menu|菜单/i }).click();
+  return switcher;
+}
+
 async function runLanguageSwitchCase(page, baseUrl, viewport, sourceLocale) {
   const targetLocale = sourceLocale === "en" ? "zh-CN" : "en";
   const sourceRoute = localeRoutePath("/components/button", sourceLocale);
   const beforeUrl = `${sourceRoute}?from=quick-jump#api`;
   await gotoAndSettle(page, `${baseUrl}${beforeUrl}`);
-  const switcher = page.locator(`a[hreflang="${targetLocale}"]`).first();
+  const switcher = await reachLanguageSwitcher(page, targetLocale);
   await switcher.click();
   const expectedRoute = localeRoutePath("/components/button", targetLocale);
   await page.waitForURL(

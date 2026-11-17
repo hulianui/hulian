@@ -97,7 +97,12 @@ export function SiteNavbar() {
           {/* 全站搜索：跨 页面/区块/组件/模版/指南 的统一入口，⌘K 唤起；全断点常驻。 */}
           <DocsSearch />
           <Separator orientation="vertical" className="mx-1 hidden h-5 sm:block" />
-          <LanguageSwitcher pathname={pathname} />
+          {/* 语言切换在 sm 以上常驻，最窄屏让位给品牌 + 搜索 + 主题切换，改由折叠菜单承接。
+              实测 375px：顶栏子项合计 402px，其中语言切换器独占 156px —— 英文站
+              「Chinese」「English」两段各 72px，中文站「中文」「EN」只要 108px。
+              顶栏是 w-full、右侧工具簇 shrink-0，多出来的 27px 只能顶出去，
+              把最右的主题切换钮推到视口外（正是文档横向溢出的那 402）。 */}
+          <LanguageSwitcher pathname={pathname} className="max-sm:hidden" />
           {/* 开源入口在 sm 以上常驻；最窄屏让位给品牌名，改由折叠菜单承接。 */}
           <Button
             variant="ghost"
@@ -130,6 +135,13 @@ export function SiteNavbar() {
             GitHub
           </a>
         </NavbarItem>
+        {/* 与顶栏那份 `max-sm:hidden` 正好互补：任一宽度上只出现一份语言切换。
+            直接复用 LanguageSwitcher 而不是另写两个链接 —— 切语言要同时写 localStorage
+            和 hl_locale cookie（中文镜像的 nginx 靠它判断「读者是主动选英文」），
+            这份逻辑只该有一处。 */}
+        <li className="sm:hidden">
+          <LanguageSwitcher pathname={pathname} />
+        </li>
       </NavbarMenu>
     </>
   );
