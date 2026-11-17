@@ -532,6 +532,19 @@ const inventory = {
     routes: ["(site)/contact/page.tsx", "(site)/page.tsx", "(site)/pricing/page.tsx"],
     fixtures: ["_data/site.ts"],
   },
+  hanpaper: {
+    routes: [
+      "(app)/figures/page.tsx",
+      "(app)/library/page.tsx",
+      "(app)/page.tsx",
+      "(app)/papers/[id]/page.tsx",
+      "(app)/review/page.tsx",
+      "(app)/settings/page.tsx",
+      "(app)/submit/page.tsx",
+      "login/page.tsx",
+    ],
+    fixtures: ["_data/papers.ts", "_data/references.ts", "_data/reviews.ts"],
+  },
   "org-classroom": {
     routes: [
       "(app)/departments/page.tsx",
@@ -582,7 +595,7 @@ describe("admin and developer demo localization inventory", () => {
     expect(chrome).toContain('copy("backToGallery")');
     expect(shared.copy("backToGallery")).toBe(shared.content[DOCS_LOCALE].backToGallery);
     expect(HAN_OR_CJK_PUNCTUATION.test(shared.content.en.backToGallery)).toBe(false);
-    expect(Object.keys(inventory)).toHaveLength(21);
+    expect(Object.keys(inventory)).toHaveLength(22);
   });
 
   for (const [demo, expected] of Object.entries(inventory)) {
