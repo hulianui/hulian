@@ -839,7 +839,7 @@ export const paperShowcase: ShowcaseSpec = {
         },
         {
             title: "Raster figure: heatmap",
-            description: "Per-pixel figures such as heatmaps and attention matrices use FigureRaster: it paints an offscreen canvas and embeds it as PNG in the figure's <svg>. So it shares coordinates with the vector parts, each print sub-figure paints its own copy, the presenter scales it with the stage, and SVG export carries it along as is (a mixed SVG). Colors come from tokens, it redraws when switching between light and dark, and exports are always light. This is the sinusoidal positional encoding from equation (2) of the paper: drag the slider or move over the heatmap to pick a dimension, and the curve below traces its value across positions.",
+            description: "Per-pixel figures such as heatmaps and attention matrices use FigureRaster: it paints an offscreen canvas and embeds it as PNG in the figure's <svg>. So it shares coordinates with the vector parts, each print sub-figure paints its own copy, the presenter scales it with the stage, and SVG export carries it along as is (a mixed SVG). Colors are resolved from token values, it redraws when switching between light and dark, and exports are always light. This is the sinusoidal positional encoding from equation (2) of the paper: drag the slider or move over the heatmap to pick a dimension, and the curve below traces its value across positions.",
             code: rasterCode,
             render: () => <EncodingDemo />,
         },
@@ -851,7 +851,7 @@ export const paperShowcase: ShowcaseSpec = {
         },
         {
             title: "Linking formulas to figures",
-            description: "Formula (1) marks \u221Ad\u2096 with \\term{dk}{\u2026}: click it to toggle scaling in Figure 2, and hovering or focusing it lights up the scaling switch below the figure. Hovering the switch lights up \u221Ad\u2096 in the formula in turn. The formula is rendered with KaTeX and imported from @hulianui/ui/math, so it stays out of the main entry. A real button sits on the term, so it is reachable with Tab and screen readers announce what it does. Equation numbers use a CSS counter just like figure numbers, so they appear in server rendering and print; EqRef in the text shows \u201CEq. (N)\u201D in the paper's language, and clicking it scrolls to the equation and outlines it.",
+            description: "Formula (1) marks \u221Ad\u2096 with \\term{dk}{\u2026}: click it to toggle scaling in Figure 2, and hovering or focusing it lights up the scaling switch below the figure. Hovering the switch lights up \u221Ad\u2096 in the formula in turn. The formula is rendered with KaTeX and imported from @hulianui/ui/math, so it stays out of the main entry. A real button sits on the term, so it is reachable with Tab and screen readers announce what it does. Equation numbers use a CSS counter just like figure numbers, so they appear in server rendering and print; EqRef in the text shows the localized form of \u201CEquation (N)\u201D in Chinese papers and \u201CEq. (N)\u201D in English ones, and clicking it scrolls to the equation and outlines it.",
             code: equationCode,
             render: () => <EquationDemo />,
         },
