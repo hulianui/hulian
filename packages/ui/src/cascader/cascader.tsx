@@ -180,7 +180,9 @@ function CascaderImpl({
               // 搜索结果：扁平叶子路径列表，命中即提交全路径。
               <ul role="listbox" aria-label="搜索结果" className="min-w-[16rem] overflow-y-auto p-1">
                 {results.length === 0 ? (
-                  <li className="px-2 py-6 text-center text-sm text-muted-foreground">无匹配项</li>
+                  <li role="none" className="px-2 py-6 text-center text-sm text-muted-foreground">
+                    无匹配项
+                  </li>
                 ) : (
                   results.map((p) => {
                     const selected = current[current.length - 1] === p.keys[p.keys.length - 1];

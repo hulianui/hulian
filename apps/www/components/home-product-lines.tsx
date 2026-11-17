@@ -238,66 +238,69 @@ export function HomeProductLines({ counts }: { counts: [number, number, number, 
       </div>
 
       <div className="mt-12 grid gap-8 lg:grid-cols-[22rem_minmax(0,1fr)] lg:gap-10">
-        <div
-          role="tablist"
-          aria-orientation="vertical"
-          aria-label={copy.eyebrow}
-          onKeyDown={onKeyDown}
-          className="flex flex-col gap-2"
-        >
-          {copy.tabs.map((tab, i) => {
-            const Icon = ICONS[i];
-            const selected = i === active;
-            return (
-              <button
-                key={tab.title}
-                ref={(el) => {
-                  tabRefs.current[i] = el;
-                }}
-                type="button"
-                role="tab"
-                id={`hl-pl-tab-${i}`}
-                aria-selected={selected}
-                aria-controls="hl-pl-panel"
-                tabIndex={selected ? 0 : -1}
-                onClick={() => choose(i)}
-                className={`relative flex items-start gap-3.5 overflow-hidden rounded-xl border p-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
-                  selected
-                    ? "border-primary-border bg-primary-subtle shadow-sm"
-                    : "border-transparent hover:bg-surface-hover"
-                }`}
-              >
-                <span
-                  className={`grid size-9 shrink-0 place-items-center rounded-lg ${
+        {/* tablist 里只许放 tab：「打开」链接放在 tablist 外面做兄弟，不能塞进去（axe aria-required-children） */}
+        <div className="flex flex-col gap-2">
+          <div
+            role="tablist"
+            aria-orientation="vertical"
+            aria-label={copy.eyebrow}
+            onKeyDown={onKeyDown}
+            className="flex flex-col gap-2"
+          >
+            {copy.tabs.map((tab, i) => {
+              const Icon = ICONS[i];
+              const selected = i === active;
+              return (
+                <button
+                  key={tab.title}
+                  ref={(el) => {
+                    tabRefs.current[i] = el;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={`hl-pl-tab-${i}`}
+                  aria-selected={selected}
+                  aria-controls="hl-pl-panel"
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => choose(i)}
+                  className={`relative flex items-start gap-3.5 overflow-hidden rounded-xl border p-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
                     selected
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                      ? "border-primary-border bg-primary-subtle shadow-sm"
+                      : "border-transparent hover:bg-surface-hover"
                   }`}
                 >
-                  <Icon className="size-[18px]" aria-hidden />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center justify-between gap-2">
-                    <span className="font-semibold">{tab.title}</span>
-                    <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                      {counts[i]}
-                    </span>
-                  </span>
-                  <span className="mt-0.5 block text-sm text-muted-foreground">{tab.desc}</span>
-                </span>
-                {/* 自动轮播的进度条：走满一次 = 换下一档。key 换档时重挂载，从 0 重新走 */}
-                {selected && auto && !reduced && (
                   <span
-                    key={active}
-                    aria-hidden
-                    onAnimationEnd={advance}
-                    className="hl-pl-progress absolute inset-x-0 bottom-0 h-0.5 origin-left bg-primary"
-                    style={{ animationPlayState: running ? "running" : "paused" }}
-                  />
-                )}
-              </button>
-            );
-          })}
+                    className={`grid size-9 shrink-0 place-items-center rounded-lg ${
+                      selected
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    <Icon className="size-[18px]" aria-hidden />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center justify-between gap-2">
+                      <span className="font-semibold">{tab.title}</span>
+                      <span className="font-mono text-xs tabular-nums text-muted-foreground">
+                        {counts[i]}
+                      </span>
+                    </span>
+                    <span className="mt-0.5 block text-sm text-muted-foreground">{tab.desc}</span>
+                  </span>
+                  {/* 自动轮播的进度条：走满一次 = 换下一档。key 换档时重挂载，从 0 重新走 */}
+                  {selected && auto && !reduced && (
+                    <span
+                      key={active}
+                      aria-hidden
+                      onAnimationEnd={advance}
+                      className="hl-pl-progress absolute inset-x-0 bottom-0 h-0.5 origin-left bg-primary"
+                      style={{ animationPlayState: running ? "running" : "paused" }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
           <Link
             href={HREFS[active]}
             className="group mt-2 inline-flex items-center gap-1.5 self-start px-4 text-sm font-medium text-primary hover:text-primary-hover"
