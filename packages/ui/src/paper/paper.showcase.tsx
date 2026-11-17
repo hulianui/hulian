@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { ShowcaseSpec } from "../showcase/types";
 import { Button } from "../button";
 import { Segmented } from "../segmented";
@@ -7,6 +7,12 @@ import { Paper, usePaperMode } from "./paper";
 import { PaperFigure } from "./paper-figure";
 import { FigureStep, ProcessFigure } from "./process-figure";
 import { FigRef } from "./fig-ref";
+import { PaperPresenter } from "./paper-presenter";
+import { usePaperExport } from "./paper-export";
+import { PaperHeader } from "./paper-header";
+import { Bibliography, Cite } from "./cite";
+import { usePaperTerm } from "./paper-term";
+import { PaperEquation } from "./paper-equation";
 import type { PaperMode, ProcessStep } from "./paper.types";
 
 // 素材：Vaswani et al., "Attention Is All You Need"（arXiv:1706.03762）。
@@ -251,7 +257,7 @@ function TransformerArchitecture() {
 }
 
 /** 论文是英文：图注前缀和自动引用用英文，步骤按钮等控件仍跟随界面语言。 */
-const EN_LABELS = { figure: "Figure", separator: ": " };
+const EN_LABELS = { figure: "Figure", separator: ": ", abstract: "Abstract", references: "References" };
 
 /** 论文正文的排版（示例自带，P0 的 Paper 只管状态与形态，不接管正文样式）。 */
 function Body({ children }: { children: ReactNode }) {
@@ -279,32 +285,40 @@ function ModeSwitch() {
   );
 }
 
+function ArchitectureSection({ id }: { id: string }) {
+  return (
+    <>
+      <p>
+        <b>Encoder.</b> Input tokens are first embedded and summed with positional encodings{" "}
+        <FigRef to={id} state="a">Figure 1(a)</FigRef>. Each of the N = 6 encoder layers has a multi-head
+        self-attention sub-layer <FigRef to={id} state="b">Figure 1(b)</FigRef> and a position-wise
+        feed-forward network <FigRef to={id} state="c">Figure 1(c)</FigRef>.
+      </p>
+      <p>
+        <b>Decoder.</b> Its self-attention is masked <FigRef to={id} state="d">Figure 1(d)</FigRef>, a
+        further sub-layer attends over the encoder output <FigRef to={id} state="e">Figure 1(e)</FigRef>,
+        and a linear layer with softmax yields next-token probabilities{" "}
+        <FigRef to={id} state="f">Figure 1(f)</FigRef>. The whole model is shown in{" "}
+        <FigRef to={id} state="all" />.
+      </p>
+      <ProcessFigure
+        id={id}
+        steps={ARCH_STEPS}
+        caption="The Transformer – model architecture."
+        overviewDescription="All stages shown. In print, stages (a)–(f) appear as sub-figures."
+      >
+        <TransformerArchitecture />
+      </ProcessFigure>
+    </>
+  );
+}
+
 function ArchitectureDemo({ id = "transformer", defaultMode = "read" }: { id?: string; defaultMode?: PaperMode }) {
   return (
     <Paper defaultMode={defaultMode} labels={EN_LABELS} className="w-full">
       <ModeSwitch />
       <Body>
-        <p>
-          <b>Encoder.</b> Input tokens are first embedded and summed with positional encodings{" "}
-          <FigRef to={id} state="a">Figure 1(a)</FigRef>. Each of the N = 6 encoder layers has a multi-head
-          self-attention sub-layer <FigRef to={id} state="b">Figure 1(b)</FigRef> and a position-wise
-          feed-forward network <FigRef to={id} state="c">Figure 1(c)</FigRef>.
-        </p>
-        <p>
-          <b>Decoder.</b> Its self-attention is masked <FigRef to={id} state="d">Figure 1(d)</FigRef>, a
-          further sub-layer attends over the encoder output <FigRef to={id} state="e">Figure 1(e)</FigRef>,
-          and a linear layer with softmax yields next-token probabilities{" "}
-          <FigRef to={id} state="f">Figure 1(f)</FigRef>. The whole model is shown in{" "}
-          <FigRef to={id} state="all" />.
-        </p>
-        <ProcessFigure
-          id={id}
-          steps={ARCH_STEPS}
-          caption="The Transformer – model architecture."
-          overviewDescription="All stages shown. In print, stages (a)–(f) appear as sub-figures."
-        >
-          <TransformerArchitecture />
-        </ProcessFigure>
+        <ArchitectureSection id={id} />
       </Body>
     </Paper>
   );
@@ -368,51 +382,270 @@ function AttentionBars({ state }: { state: AttentionState }) {
   );
 }
 
+/** 缩放开关绑到公式 (1) 的 √dₖ 项上：悬停 / 聚焦任一边，另一边一起亮。 */
+function ScaleToggle({ scaled, onToggle }: { scaled: boolean; onToggle: () => void }) {
+  const term = usePaperTerm("dk");
+  return (
+    <Button
+      size="xs"
+      variant="outline"
+      aria-pressed={scaled}
+      onClick={onToggle}
+      {...term.bind}
+      className="data-[active]:border-primary data-[active]:text-primary"
+    >
+      {scaled ? "已缩放 ÷√dₖ" : "未缩放"}
+    </Button>
+  );
+}
+
+const ATTENTION_LATEX = String.raw`\mathrm{Attention}(Q,K,V)=\mathrm{softmax}\left(\frac{QK^{T}}{\term{dk}{\sqrt{d_k}}}\right)V`;
+
+function AttentionSection({ id, equation = false }: { id: string; equation?: boolean }) {
+  return (
+    <>
+      {equation ? (
+        <>
+          <p>
+            We compute the dot products of the query with all keys, divide each by √d<sub>k</sub>, and apply a softmax
+            to obtain the weights on the values:
+          </p>
+          <PaperEquation
+            number={1}
+            terms={{
+              dk: {
+                label: "√dₖ：切换图 2 的缩放",
+                figure: id,
+                state: (s) => ({ ...(s as AttentionState), scaled: !(s as AttentionState).scaled }),
+              },
+            }}
+          >
+            {ATTENTION_LATEX}
+          </PaperEquation>
+        </>
+      ) : null}
+      <p>
+        {/* 引用不写死图号：单独演示时这是图 1，放进整篇论文里是图 2，交给 FigRef 自动取号。 */}
+        For small d<sub>k</sub> scaling makes little difference (<FigRef to={id} state="raw4" />, d<sub>k</sub> = 4).
+        For large d<sub>k</sub> the dot products grow large in magnitude and push the softmax into regions with
+        extremely small gradients: unscaled, nearly all weight collapses onto one key (
+        <FigRef to={id} state="raw512" />, unscaled). Dividing by √d<sub>k</sub> restores a usable distribution (
+        <FigRef to={id} state="scaled512" />, scaled).
+      </p>
+      <PaperFigure
+        id={id}
+        states={ATTENTION_STATES}
+        caption="Scaled dot-product attention for the query “it”. Weights are illustrative, computed from hand-set similarity scores."
+        describe={(s) => `d_k = ${s.dk}, ${s.scaled ? "scaled by 1/√d_k" : "unscaled"}; largest weight ${Math.max(...softmax(s)).toFixed(2)}.`}
+        controls={(fig) => (
+          <>
+            <span>d<sub>k</sub></span>
+            {[1, 4, 16, 64, 512].map((dk) => (
+              <Button
+                key={dk}
+                size="xs"
+                variant={fig.state.dk === dk ? "solid" : "ghost"}
+                aria-pressed={fig.state.dk === dk}
+                onClick={() => fig.setState({ ...fig.state, dk })}
+                className="tabular-nums"
+              >
+                {dk}
+              </Button>
+            ))}
+            <ScaleToggle scaled={fig.state.scaled} onToggle={() => fig.setState({ ...fig.state, scaled: !fig.state.scaled })} />
+          </>
+        )}
+      >
+        {(state) => <AttentionBars state={state} />}
+      </PaperFigure>
+    </>
+  );
+}
+
 function AttentionDemo() {
   return (
     <Paper labels={EN_LABELS} className="w-full">
       <Body>
+        <AttentionSection id="attention" />
+      </Body>
+    </Paper>
+  );
+}
+
+// ── 标题区与参考文献 ──
+
+const AUTHORS = [
+  { name: "Ashish Vaswani", affiliation: "Google Brain" },
+  { name: "Noam Shazeer", affiliation: "Google Brain" },
+  { name: "Niki Parmar", affiliation: "Google Research" },
+  { name: "Jakob Uszkoreit", affiliation: "Google Research" },
+  { name: "Llion Jones", affiliation: "Google Research" },
+  { name: "Aidan N. Gomez", affiliation: "University of Toronto" },
+  { name: "Łukasz Kaiser", affiliation: "Google Brain" },
+  { name: "Illia Polosukhin" },
+];
+
+const REFERENCES = [
+  {
+    id: "hochreiter1997",
+    content: (
+      <>
+        Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. <i>Neural Computation</i>, 9(8):1735–1780,
+        1997.
+      </>
+    ),
+  },
+  {
+    id: "sutskever2014",
+    content: (
+      <>
+        Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. Sequence to sequence learning with neural networks. In{" "}
+        <i>Advances in Neural Information Processing Systems</i>, 2014.
+      </>
+    ),
+  },
+  {
+    id: "bahdanau2014",
+    content: (
+      <>
+        Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly learning to align
+        and translate. <i>CoRR</i>, abs/1409.0473, 2014.
+      </>
+    ),
+  },
+  {
+    id: "gehring2017",
+    content: (
+      <>
+        Jonas Gehring, Michael Auli, David Grangier, Denis Yarats, and Yann N. Dauphin. Convolutional sequence to
+        sequence learning. <i>arXiv preprint</i> arXiv:1705.03122, 2017.
+      </>
+    ),
+  },
+];
+
+function HeaderDemo() {
+  return (
+    <Paper labels={EN_LABELS} className="w-full">
+      <Body>
+        <PaperHeader
+          title="Attention Is All You Need"
+          authors={AUTHORS}
+          meta="31st Conference on Neural Information Processing Systems (NIPS 2017)"
+          abstract="The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely."
+        />
         <p>
-          {/* 引用不写死图号：单独演示时这是图 1，放进整篇论文里是图 2，交给 FigRef 自动取号。 */}
-          For small d<sub>k</sub> scaling makes little difference (<FigRef to="attention" state="raw4" />, d
-          <sub>k</sub> = 4). For large d<sub>k</sub> the dot products grow large in magnitude and push the softmax into
-          regions with extremely small gradients: unscaled, nearly all weight collapses onto one key (
-          <FigRef to="attention" state="raw512" />, unscaled). Dividing by √d<sub>k</sub> restores a usable
-          distribution (<FigRef to="attention" state="scaled512" />, scaled).
+          Recurrent models have been the standard approach to sequence modeling and transduction problems such as
+          machine translation <Cite to={["hochreiter1997", "sutskever2014"]} />. Attention mechanisms let a model
+          relate positions regardless of their distance <Cite to="bahdanau2014" />, and most competitive models have
+          an encoder–decoder structure <Cite to={["bahdanau2014", "gehring2017", "sutskever2014"]} />.
         </p>
-        <PaperFigure
-          id="attention"
-          states={ATTENTION_STATES}
-          caption="Scaled dot-product attention for the query “it”. Weights are illustrative, computed from hand-set similarity scores."
-          describe={(s) => `d_k = ${s.dk}, ${s.scaled ? "scaled by 1/√d_k" : "unscaled"}; largest weight ${Math.max(...softmax(s)).toFixed(2)}.`}
-          controls={(fig) => (
-            <>
-              <span>d<sub>k</sub></span>
-              {[1, 4, 16, 64, 512].map((dk) => (
-                <Button
-                  key={dk}
-                  size="xs"
-                  variant={fig.state.dk === dk ? "solid" : "ghost"}
-                  aria-pressed={fig.state.dk === dk}
-                  onClick={() => fig.setState({ ...fig.state, dk })}
-                  className="tabular-nums"
-                >
-                  {dk}
-                </Button>
-              ))}
-              <Button
-                size="xs"
-                variant="outline"
-                aria-pressed={fig.state.scaled}
-                onClick={() => fig.setState({ ...fig.state, scaled: !fig.state.scaled })}
-              >
-                {fig.state.scaled ? "已缩放 ÷√dₖ" : "未缩放"}
-              </Button>
-            </>
-          )}
+        <Bibliography entries={REFERENCES} />
+      </Body>
+    </Paper>
+  );
+}
+
+// ── 公式与图联动 ──
+
+function EquationDemo() {
+  return (
+    <Paper labels={EN_LABELS} className="w-full">
+      <Body>
+        <AttentionSection id="attention-equation" equation />
+      </Body>
+    </Paper>
+  );
+}
+
+// ── 逐状态导出 SVG ──
+
+const EXPORT_KEYS = [...ARCH_STEPS.map((s) => s.key), "all"];
+
+function ExportToolbar({ figure }: { figure: string }) {
+  const { exportFigureSvg } = usePaperExport();
+  const [preview, setPreview] = useState<{ key: string; url: string; size: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => () => {
+    if (preview) URL.revokeObjectURL(preview.url);
+  }, [preview]);
+
+  const run = async (key: string) => {
+    setError(null);
+    try {
+      const svg = await exportFigureSvg(figure, key, { background: "white" });
+      const blob = new Blob([svg], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${figure}-${key}.svg`;
+      a.click();
+      setPreview({ key, url, size: blob.size });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  return (
+    <div className="mt-2 font-sans text-sm text-muted-foreground print:hidden">
+      <div className="flex flex-wrap items-center gap-1">
+        <span className="mr-1">导出 SVG</span>
+        {EXPORT_KEYS.map((key) => (
+          <Button key={key} size="xs" variant="outline" onClick={() => run(key)}>
+            {key === "all" ? "全部" : `(${key})`}
+          </Button>
+        ))}
+      </div>
+      {error ? <p className="mt-2 text-danger">{error}</p> : null}
+      {preview ? (
+        <figure className="mx-0 mt-3">
+          <img
+            src={preview.url}
+            alt={`导出的 (${preview.key})`}
+            className="mx-auto block h-auto w-full max-w-[360px] rounded-[var(--radius)] border border-border"
+          />
+          <figcaption className="mt-1 text-center text-xs">
+            导出结果 {preview.key === "all" ? "全部" : `(${preview.key})`} · {(preview.size / 1024).toFixed(1)} KB · 以 &lt;img&gt;
+            加载，已不依赖页面的 CSS
+          </figcaption>
+        </figure>
+      ) : null}
+    </div>
+  );
+}
+
+function ExportDemo() {
+  return (
+    <Paper labels={EN_LABELS} className="w-full">
+      <Body>
+        <ProcessFigure
+          id="transformer-export"
+          steps={ARCH_STEPS}
+          caption="The Transformer – model architecture."
+          overviewDescription="All stages shown."
         >
-          {(state) => <AttentionBars state={state} />}
-        </PaperFigure>
+          <TransformerArchitecture />
+        </ProcessFigure>
+      </Body>
+      <ExportToolbar figure="transformer-export" />
+    </Paper>
+  );
+}
+
+// ── 答辩演示：同一篇论文里的两张图串成一组幻灯片 ──
+
+function PresenterDemo() {
+  return (
+    <Paper labels={EN_LABELS} className="w-full">
+      <div className="mb-4 flex justify-end font-sans print:hidden">
+        <PaperPresenter
+          title="Attention Is All You Need"
+          trigger={<Button size="sm">演示 ▶</Button>}
+        />
+      </div>
+      <Body>
+        <ArchitectureSection id="transformer-present" />
+        <AttentionSection id="attention-present" />
       </Body>
     </Paper>
   );
@@ -462,6 +695,93 @@ const attentionCode = `<PaperFigure
 
 <FigRef to="attention" state="raw512">Figure 2, unscaled</FigRef>`;
 
+const presenterCode = `<Paper>
+  <PaperPresenter
+    title="Attention Is All You Need"
+    trigger={<Button>演示 ▶</Button>}
+    // 默认：按文档顺序串起每张图的预设（流程图各步 + 全部）
+    // slides={[{ figure: "attention", state: "raw512" }, …]} 可以改写顺序
+  />
+  <ProcessFigure id="transformer" steps={steps} caption="…">…</ProcessFigure>
+  <PaperFigure
+    id="attention"
+    states={presets}
+    presentStates={["scaled64", "raw512", "scaled512"]}
+    caption="…"
+  >
+    {(state) => <AttentionBars state={state} />}
+  </PaperFigure>
+</Paper>`;
+
+const equationCode = `// PaperEquation 从 @hulianui/ui/math 引入（KaTeX 不进主入口）
+<Paper>
+  <PaperEquation
+    number={1}
+    terms={{
+      dk: {
+        label: "√dₖ：切换图 2 的缩放",
+        figure: "attention",
+        state: (s) => ({ ...s, scaled: !s.scaled }), // 或预设名 "scaled512"
+      },
+    }}
+  >
+    {String.raw\`\\mathrm{softmax}\\left(\\frac{QK^T}{\\term{dk}{\\sqrt{d_k}}}\\right)V\`}
+  </PaperEquation>
+
+  <PaperFigure id="attention" states={presets} controls={(fig) => <ScaleToggle fig={fig} />} …>
+    {(state) => <AttentionBars state={state} />}
+  </PaperFigure>
+</Paper>
+
+function ScaleToggle({ fig }) {
+  const term = usePaperTerm("dk"); // 悬停 / 聚焦时公式里的 √dₖ 一起亮
+  return (
+    <Button {...term.bind} onClick={() => fig.setState({ ...fig.state, scaled: !fig.state.scaled })}>
+      切换缩放
+    </Button>
+  );
+}`;
+
+const headerCode = `<Paper labels={{ figure: "Figure", separator: ": ", abstract: "Abstract", references: "References" }}>
+  <PaperHeader
+    title="Attention Is All You Need"
+    authors={[{ name: "Ashish Vaswani", affiliation: "Google Brain" }, …]}
+    meta="NIPS 2017"
+    abstract="The dominant sequence transduction models …"
+  />
+  <p>
+    … such as machine translation <Cite to={["hochreiter1997", "sutskever2014"]} />.
+  </p>
+  <Bibliography
+    entries={[
+      { id: "hochreiter1997", content: <>Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. …</> },
+      { id: "sutskever2014", content: <>Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. …</> },
+    ]}
+  />
+</Paper>`;
+
+const exportCode = `function ExportButton({ figure, state }) {
+  const { exportFigureSvg } = usePaperExport(); // 必须在 Paper 里
+  return (
+    <Button
+      onClick={async () => {
+        const svg = await exportFigureSvg(figure, state, { background: "white" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+        a.download = \`\${figure}-\${state}.svg\`;
+        a.click();
+      }}
+    >
+      导出 SVG
+    </Button>
+  );
+}
+
+<Paper>
+  <ProcessFigure id="transformer" steps={steps} caption="…">…</ProcessFigure>
+  <ExportButton figure="transformer" state="b" />
+</Paper>`;
+
 const printCode = `<Paper mode="print">
   <ProcessFigure
     id="transformer"
@@ -491,6 +811,34 @@ export const paperShowcase: ShowcaseSpec = {
       render: () => <AttentionDemo />,
     },
     {
+      title: "答辩演示",
+      description:
+        "点「演示 ▶」进入全屏演示：按文档顺序把每张图的预设串成一组幻灯片，←/→、空格、PageUp/PageDown 翻页，Esc 退出，焦点回到按钮。演示层用同一个「状态 → 画面」函数重画图，不搬动正文里的图，退出后正文停在原来那一步。演示里图的控件照常可用：点步骤按钮直接翻到那一页，调参数只影响当前页。",
+      code: presenterCode,
+      render: () => <PresenterDemo />,
+    },
+    {
+      title: "公式与图联动",
+      description:
+        "公式 (1) 里用 \\term{dk}{…} 标出 √dₖ：点它切换图 2 的缩放，悬停或聚焦时图下方的缩放开关一起亮；反过来悬停开关，公式里的 √dₖ 也会亮。公式走 KaTeX，从 @hulianui/ui/math 引入，不进主入口。项上叠的是真按钮，键盘 Tab 得到、读屏念得出它会做什么。",
+      code: equationCode,
+      render: () => <EquationDemo />,
+    },
+    {
+      title: "逐状态导出 SVG",
+      description:
+        "投稿时把每个状态的矢量图插进 Word，或转成 PDF 放进 LaTeX。导出时在屏幕外用同一个「状态 → 画面」函数画一遍，逐个元素读计算样式写成 SVG 属性，颜色换成十六进制，不再依赖页面的 CSS；默认按亮色主题导出，动画不进文件，正文里的图不受影响。下方预览是把导出的文件当 <img> 加载的样子。",
+      code: exportCode,
+      render: () => <ExportDemo />,
+    },
+    {
+      title: "标题区与参考文献",
+      description:
+        "PaperHeader 排题目、作者、说明行和摘要，题目夹在上粗下细两条线之间。Bibliography 按条目顺序编号，正文里的 Cite 按 id 取号：引几条时排序去重，连续三条及以上压成 1–3。点编号滚到那条文献并描边一下。「摘要」「参考文献」两个标题跟随 Paper 的论文语言。",
+      code: headerCode,
+      render: () => <HeaderDemo />,
+    },
+    {
       title: "打印形态",
       description:
         "投稿用的 PDF 形态：每张图定格在打印态，控件不渲染，引用变回正文文字，流程图的每一步展开成 (a)(b)(c)… 分图。浏览器真的打印时，Paper 会在打印前自动切到这个形态，打印完再切回。",
@@ -505,6 +853,7 @@ export const paperShowcase: ShowcaseSpec = {
     { name: "阅读", render: () => <ArchitectureDemo /> },
     { name: "打印", render: () => <ArchitectureDemo id="transformer-print" defaultMode="print" /> },
     { name: "参数图", render: () => <AttentionDemo /> },
+    { name: "演示", render: () => <PresenterDemo /> },
   ],
   renderWithProps: (p) => (
     <ArchitectureDemo key={String(p.mode)} id="transformer-playground" defaultMode={p.mode as PaperMode} />

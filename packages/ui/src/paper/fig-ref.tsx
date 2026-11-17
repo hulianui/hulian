@@ -10,7 +10,8 @@ import type { FigRefProps } from "./paper.types";
 // 本体是 <a href="#id">：没有 JS 或不在 Paper 里时，退化成普通锚点跳转。
 // 打印形态下去掉链接色和下划线，读起来就是正文里的「图 1(b)」。
 
-function reveal(el: HTMLElement) {
+/** 图不在视野里就滚过去（减弱动效时不平滑）。公式项点击也用它。 */
+export function revealFigure(el: HTMLElement) {
   if (typeof el.getBoundingClientRect !== "function" || typeof el.scrollIntoView !== "function") return;
   const rect = el.getBoundingClientRect();
   const viewport = window.innerHeight;
@@ -49,7 +50,7 @@ export function FigRef({ to, state, children, className, onClick, ref, ...rest }
       else warnOnce(`FigRef:state:${to}:${state}`, `[FigRef] 图 "${to}" 没有名为 "${state}" 的预设。`);
     }
     const el = entry.element();
-    if (el) reveal(el);
+    if (el) revealFigure(el);
     entry.highlight();
   };
 

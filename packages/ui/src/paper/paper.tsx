@@ -3,8 +3,16 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties }
 import { flushSync } from "react-dom";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { PaperContext, usePaperContext, type FigureEntry, type PaperContextValue } from "./paper-context";
-import type { PaperMode, PaperProps } from "./paper.types";
+import {
+  PaperContext,
+  usePaperContext,
+  type FigureEntry,
+  type CitationStore,
+  type PaperContextValue,
+  type TermStore,
+} from "./paper-context";
+import { PaperExportHost, type ExportHandle } from "./paper-export";
+import type { FigureSvgExportOptions, PaperMode, PaperProps } from "./paper.types";
 
 // 论文容器：
 //  · 持有图的注册表。图在挂载时登记 id 和「切到某个预设」的句柄，FigRef 按 id 找图；
@@ -16,7 +24,7 @@ import type { PaperMode, PaperProps } from "./paper.types";
 //  · 正文衬线：论文是衬线排版的体裁。tokens 刻意没有 --font-serif（#319），这里只在 Paper 内部
 //    给一条默认字体栈，消费方用 --paper-font 覆盖。
 
-const FONT = 'var(--paper-font, "STIX Two Text", "Times New Roman", "Songti SC", "SimSun", serif)';
+export const PAPER_FONT = 'var(--paper-font, "STIX Two Text", "Times New Roman", "Songti SC", "SimSun", serif)';
 
 function documentOrder(a: HTMLElement | null, b: HTMLElement | null) {
   if (!a || !b || a === b) return 0;
@@ -61,6 +69,22 @@ export function Paper({
   const entries = useRef(new Map<string, FigureEntry>());
   const [revision, setRevision] = useState(0);
 
+  // 图内容的小 store：图外重画图的地方（演示层）用 useSyncExternalStore 订阅。
+  // 版本号只增不减；没有订阅者时 touch 只是加一个数，不触发任何渲染。
+  const version = useRef(0);
+  const listeners = useRef(new Set<() => void>());
+  const touchFigures = useCallback(() => {
+    version.current += 1;
+    for (const listener of listeners.current) listener();
+  }, []);
+  const subscribeFigures = useCallback((listener: () => void) => {
+    listeners.current.add(listener);
+    return () => {
+      listeners.current.delete(listener);
+    };
+  }, []);
+  const figuresVersion = useCallback(() => version.current, []);
+
   const register = useCallback((entry: FigureEntry) => {
     const map = entries.current;
     if (map.has(entry.id) && map.get(entry.id) !== entry) {
@@ -68,23 +92,132 @@ export function Paper({
     }
     map.set(entry.id, entry);
     setRevision((r) => r + 1);
+    touchFigures();
     return () => {
       if (map.get(entry.id) === entry) map.delete(entry.id);
       setRevision((r) => r + 1);
+      touchFigures();
     };
-  }, []);
+  }, [touchFigures]);
 
   const find = useCallback((id: string) => entries.current.get(id), []);
 
-  const numberOf = useCallback((id: string) => {
-    const list = [...entries.current.values()].sort((a, b) => documentOrder(a.element(), b.element()));
-    const index = list.findIndex((e) => e.id === id);
-    return index < 0 ? undefined : index + 1;
+  const figures = useCallback(
+    () => [...entries.current.values()].sort((a, b) => documentOrder(a.element(), b.element())),
+    [],
+  );
+
+  const numberOf = useCallback(
+    (id: string) => {
+      const index = figures().findIndex((e) => e.id === id);
+      return index < 0 ? undefined : index + 1;
+    },
+    [figures],
+  );
+
+  // 公式项高亮：悬停 / 聚焦公式里的项或图的控件时写入，两边各自订阅，不让整篇论文重渲染。
+  const [terms] = useState<TermStore>(() => {
+    let active: string | null = null;
+    const subs = new Set<() => void>();
+    return {
+      subscribe(listener) {
+        subs.add(listener);
+        return () => {
+          subs.delete(listener);
+        };
+      },
+      get: () => active,
+      set(name) {
+        if (name === active) return;
+        active = name;
+        for (const listener of subs) listener();
+      },
+    };
+  });
+
+  // 参考文献编号：同一篇论文只该有一份 Bibliography，登记第二份时告警，后登记的生效。
+  const [citations] = useState<CitationStore>(() => {
+    let map: ReadonlyMap<string, number> = new Map();
+    let owner: symbol | null = null;
+    const subs = new Set<() => void>();
+    const emit = () => {
+      for (const listener of subs) listener();
+    };
+    return {
+      subscribe(listener) {
+        subs.add(listener);
+        return () => {
+          subs.delete(listener);
+        };
+      },
+      get: () => map,
+      register(ids) {
+        const me = Symbol("bibliography");
+        if (owner) warnOnce("Paper:bibliography", "[Paper] 同一个 Paper 里有不止一份 Bibliography，Cite 只按最后登记的那份编号。");
+        owner = me;
+        map = new Map(ids.map((id, i) => [id, i + 1]));
+        emit();
+        return () => {
+          if (owner !== me) return;
+          owner = null;
+          map = new Map();
+          emit();
+        };
+      },
+      highlight(id) {
+        const el = typeof document === "undefined" ? null : document.getElementById(id);
+        if (!el?.hasAttribute("data-paper-reference")) return;
+        el.setAttribute("data-highlight", "");
+        setTimeout(() => el.removeAttribute("data-highlight"), 1200);
+      },
+    };
+  });
+
+  const exportHandle = useRef<ExportHandle | null>(null);
+  const exportFigureSvg = useCallback((id: string, stateKey: string, options: FigureSvgExportOptions = {}) => {
+    const entry = entries.current.get(id);
+    if (!entry) return Promise.reject(new Error(`[Paper] 找不到 id 为 "${id}" 的图，无法导出。`));
+    if (!entry.has(stateKey)) {
+      return Promise.reject(new Error(`[Paper] 图 "${id}" 没有名为 "${stateKey}" 的预设，无法导出。`));
+    }
+    const host = exportHandle.current;
+    if (!host) return Promise.reject(new Error("[Paper] Paper 还没挂载，无法导出。"));
+    return host.run(entry, stateKey, options);
   }, []);
 
   const value = useMemo<PaperContextValue>(
-    () => ({ mode: current, setMode, register, find, numberOf, revision, labels }),
-    [current, setMode, register, find, numberOf, revision, labels],
+    () => ({
+      mode: current,
+      setMode,
+      register,
+      find,
+      numberOf,
+      revision,
+      labels,
+      figures,
+      subscribeFigures,
+      figuresVersion,
+      touchFigures,
+      exportFigureSvg,
+      terms,
+      citations,
+    }),
+    [
+      current,
+      setMode,
+      register,
+      find,
+      numberOf,
+      revision,
+      labels,
+      figures,
+      subscribeFigures,
+      figuresVersion,
+      touchFigures,
+      exportFigureSvg,
+      terms,
+      citations,
+    ],
   );
 
   return (
@@ -95,9 +228,10 @@ export function Paper({
         data-paper=""
         data-mode={current}
         className={cn("text-foreground [counter-reset:paper-figure]", className)}
-        style={{ fontFamily: FONT, ...style } as CSSProperties}
+        style={{ fontFamily: PAPER_FONT, ...style } as CSSProperties}
       >
         {children}
+        <PaperExportHost handle={exportHandle} />
       </Tag>
     </PaperContext.Provider>
   );

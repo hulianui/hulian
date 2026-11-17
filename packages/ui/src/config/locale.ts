@@ -881,6 +881,18 @@ export interface ComponentLocale {
     overview: string;
     /** Accessible name of the step controls. */
     steps: string;
+    /** Accessible name of the full-screen presenter. */
+    presenter?: string;
+    /** Button that leaves the presenter. */
+    exit?: string;
+    prevSlide?: string;
+    nextSlide?: string;
+    /** Shown in the presenter when there is nothing to present. */
+    noSlides?: string;
+    /** Heading of the abstract in PaperHeader, e.g. "Abstract". */
+    abstract?: string;
+    /** Heading of Bibliography, e.g. "References". */
+    references?: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   sequenceDiagram?: {
@@ -1722,6 +1734,13 @@ const zhComponents: ComponentLocale = {
     pause: "暂停",
     overview: "全部",
     steps: "步骤",
+    presenter: "演示模式",
+    exit: "退出",
+    prevSlide: "上一页",
+    nextSlide: "下一页",
+    noSlides: "这篇论文里还没有可演示的图。",
+    abstract: "摘要",
+    references: "参考文献",
   },
   sequenceDiagram: {
     diagram: "时序图",
@@ -2688,6 +2707,13 @@ const enComponents: ComponentLocale = {
     pause: "Pause",
     overview: "All",
     steps: "Steps",
+    presenter: "Presentation",
+    exit: "Exit",
+    prevSlide: "Previous slide",
+    nextSlide: "Next slide",
+    noSlides: "This paper has no figures to present yet.",
+    abstract: "Abstract",
+    references: "References",
   },
   sequenceDiagram: {
     diagram: "Sequence diagram",

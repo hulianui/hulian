@@ -1487,13 +1487,14 @@
         "https://hulianui.haloritual.com/zh/r/config.json",
         "https://hulianui.haloritual.com/zh/r/lib.json",
         "https://hulianui.haloritual.com/zh/r/math-textarea.json",
+        "https://hulianui.haloritual.com/zh/r/paper.json",
         "https://hulianui.haloritual.com/zh/r/question.json",
         "https://hulianui.haloritual.com/zh/r/question-answer.json",
         "https://hulianui.haloritual.com/zh/r/question-card.json",
         "https://hulianui.haloritual.com/zh/r/question-editor.json"
       ],
       "meta": {
-        "import": "import { Formula, formulaToPlain, splitBareMath, hasBareMath, splitMathSegments, mathToPlain, QuestionCard } from \"@hulianui/ui\"",
+        "import": "import { Formula, formulaToPlain, splitBareMath, hasBareMath, splitMathSegments, mathToPlain, PaperEquation, QuestionCard } from \"@hulianui/ui\"",
         "exports": [
           "Formula",
           "formulaToPlain",
@@ -1501,12 +1502,15 @@
           "hasBareMath",
           "splitMathSegments",
           "mathToPlain",
+          "PaperEquation",
           "QuestionCard"
         ],
         "types": [
           "FormulaProps",
           "BareSegment",
           "MathSegment",
+          "PaperEquationProps",
+          "EquationTerm",
           "QuestionCardProps",
           "QuestionKind",
           "LegacyQuestionOption"
@@ -10476,31 +10480,53 @@
       "categories": [
         "data-display"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "@base-ui/react",
+        "katex"
+      ],
       "registryDependencies": [
         "https://hulianui.haloritual.com/zh/r/button.json",
         "https://hulianui.haloritual.com/zh/r/config.json",
-        "https://hulianui.haloritual.com/zh/r/lib.json"
+        "https://hulianui.haloritual.com/zh/r/lib.json",
+        "https://hulianui.haloritual.com/zh/r/motion.json"
       ],
       "meta": {
-        "import": "import { Paper, usePaperMode, PaperFigure, ProcessFigure, FigureStep, FigRef } from \"@hulianui/ui\"",
+        "import": "import { Paper, usePaperMode, PaperFigure, ProcessFigure, FigureStep, FigRef, PaperPresenter, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from \"@hulianui/ui\"",
         "exports": [
           "Paper",
           "usePaperMode",
           "PaperFigure",
           "ProcessFigure",
           "FigureStep",
-          "FigRef"
+          "FigRef",
+          "PaperPresenter",
+          "usePaperExport",
+          "usePaperTerm",
+          "PaperHeader",
+          "Cite",
+          "Bibliography"
         ],
         "types": [
           "FigRefProps",
           "FigureRenderContext",
           "FigureStepPhase",
           "FigureStepProps",
+          "FigureSvgExportOptions",
+          "PaperExport",
+          "PaperTermBinding",
+          "PaperAuthor",
+          "PaperHeaderProps",
+          "BibliographyEntry",
+          "BibliographyProps",
+          "CiteProps",
+          "EquationTerm",
+          "PaperEquationProps",
           "PaperFigureProps",
           "PaperContentLabels",
           "PaperMode",
+          "PaperPresenterProps",
           "PaperProps",
+          "PresenterSlide",
           "ProcessFigureProps",
           "ProcessStep"
         ],
@@ -10514,6 +10540,11 @@
         "preferred": "npm"
       },
       "files": [
+        {
+          "path": "components/hulianui/paper/cite.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/cite.tsx"
+        },
         {
           "path": "components/hulianui/paper/fig-ref.tsx",
           "type": "registry:ui",
@@ -10530,14 +10561,39 @@
           "target": "components/hulianui/paper/paper-context.ts"
         },
         {
+          "path": "components/hulianui/paper/paper-equation.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-equation.tsx"
+        },
+        {
+          "path": "components/hulianui/paper/paper-export.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-export.tsx"
+        },
+        {
           "path": "components/hulianui/paper/paper-figure.tsx",
           "type": "registry:ui",
           "target": "components/hulianui/paper/paper-figure.tsx"
         },
         {
+          "path": "components/hulianui/paper/paper-header.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-header.tsx"
+        },
+        {
           "path": "components/hulianui/paper/paper-labels.ts",
           "type": "registry:ui",
           "target": "components/hulianui/paper/paper-labels.ts"
+        },
+        {
+          "path": "components/hulianui/paper/paper-presenter.tsx",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-presenter.tsx"
+        },
+        {
+          "path": "components/hulianui/paper/paper-term.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/paper-term.ts"
         },
         {
           "path": "components/hulianui/paper/paper.tsx",
@@ -10553,6 +10609,11 @@
           "path": "components/hulianui/paper/process-figure.tsx",
           "type": "registry:ui",
           "target": "components/hulianui/paper/process-figure.tsx"
+        },
+        {
+          "path": "components/hulianui/paper/svg-export.ts",
+          "type": "registry:ui",
+          "target": "components/hulianui/paper/svg-export.ts"
         }
       ]
     },

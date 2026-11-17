@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { ShowcaseSpec } from "../../../../packages/ui/src/showcase/types";
 import { Button } from "../../../../packages/ui/src/button";
 import { Segmented } from "../../../../packages/ui/src/segmented";
@@ -7,6 +7,12 @@ import { Paper, usePaperMode } from "../../../../packages/ui/src/paper/paper";
 import { PaperFigure } from "../../../../packages/ui/src/paper/paper-figure";
 import { FigureStep, ProcessFigure } from "../../../../packages/ui/src/paper/process-figure";
 import { FigRef } from "../../../../packages/ui/src/paper/fig-ref";
+import { PaperPresenter } from "../../../../packages/ui/src/paper/paper-presenter";
+import { usePaperExport } from "../../../../packages/ui/src/paper/paper-export";
+import { PaperHeader } from "../../../../packages/ui/src/paper/paper-header";
+import { Bibliography, Cite } from "../../../../packages/ui/src/paper/cite";
+import { usePaperTerm } from "../../../../packages/ui/src/paper/paper-term";
+import { PaperEquation } from "../../../../packages/ui/src/paper/paper-equation";
 import type { PaperMode, ProcessStep } from "../../../../packages/ui/src/paper/paper.types";
 const ARCH_STEPS: ProcessStep[] = [
     {
@@ -216,7 +222,7 @@ function TransformerArchitecture() {
       </FigureStep>
     </svg>);
 }
-const EN_LABELS = { figure: "Figure", separator: ": " };
+const EN_LABELS = { figure: "Figure", separator: ": ", abstract: "Abstract", references: "References" };
 function Body({ children }: {
     children: ReactNode;
 }) {
@@ -233,6 +239,28 @@ function ModeSwitch() {
         ]}/>
     </div>);
 }
+function ArchitectureSection({ id }: {
+    id: string;
+}) {
+    return (<>
+      <p>
+        <b>Encoder.</b> Input tokens are first embedded and summed with positional encodings{" "}
+        <FigRef to={id} state="a">Figure 1(a)</FigRef>. Each of the N = 6 encoder layers has a multi-head
+        self-attention sub-layer <FigRef to={id} state="b">Figure 1(b)</FigRef> and a position-wise
+        feed-forward network <FigRef to={id} state="c">Figure 1(c)</FigRef>.
+      </p>
+      <p>
+        <b>Decoder.</b> Its self-attention is masked <FigRef to={id} state="d">Figure 1(d)</FigRef>, a
+        further sub-layer attends over the encoder output <FigRef to={id} state="e">Figure 1(e)</FigRef>,
+        and a linear layer with softmax yields next-token probabilities{" "}
+        <FigRef to={id} state="f">Figure 1(f)</FigRef>. The whole model is shown in{" "}
+        <FigRef to={id} state="all"/>.
+      </p>
+      <ProcessFigure id={id} steps={ARCH_STEPS} caption="The Transformer – model architecture." overviewDescription="All stages shown. In print, stages (a)–(f) appear as sub-figures.">
+        <TransformerArchitecture />
+      </ProcessFigure>
+    </>);
+}
 function ArchitectureDemo({ id = "transformer", defaultMode = "read" }: {
     id?: string;
     defaultMode?: PaperMode;
@@ -240,22 +268,7 @@ function ArchitectureDemo({ id = "transformer", defaultMode = "read" }: {
     return (<Paper defaultMode={defaultMode} labels={EN_LABELS} className="w-full">
       <ModeSwitch />
       <Body>
-        <p>
-          <b>Encoder.</b> Input tokens are first embedded and summed with positional encodings{" "}
-          <FigRef to={id} state="a">Figure 1(a)</FigRef>. Each of the N = 6 encoder layers has a multi-head
-          self-attention sub-layer <FigRef to={id} state="b">Figure 1(b)</FigRef> and a position-wise
-          feed-forward network <FigRef to={id} state="c">Figure 1(c)</FigRef>.
-        </p>
-        <p>
-          <b>Decoder.</b> Its self-attention is masked <FigRef to={id} state="d">Figure 1(d)</FigRef>, a
-          further sub-layer attends over the encoder output <FigRef to={id} state="e">Figure 1(e)</FigRef>,
-          and a linear layer with softmax yields next-token probabilities{" "}
-          <FigRef to={id} state="f">Figure 1(f)</FigRef>. The whole model is shown in{" "}
-          <FigRef to={id} state="all"/>.
-        </p>
-        <ProcessFigure id={id} steps={ARCH_STEPS} caption="The Transformer – model architecture." overviewDescription="All stages shown. In print, stages (a)–(f) appear as sub-figures.">
-          <TransformerArchitecture />
-        </ProcessFigure>
+        <ArchitectureSection id={id}/>
       </Body>
     </Paper>);
 }
@@ -300,28 +313,189 @@ function AttentionBars({ state }: {
         })}
     </svg>);
 }
+function ScaleToggle({ scaled, onToggle }: {
+    scaled: boolean;
+    onToggle: () => void;
+}) {
+    const term = usePaperTerm("dk");
+    return (<Button size="xs" variant="outline" aria-pressed={scaled} onClick={onToggle} {...term.bind} className="data-[active]:border-primary data-[active]:text-primary">
+      {scaled ? "Scaled \u00F7\u221Ad\u2096" : "Unscaled"}
+    </Button>);
+}
+const ATTENTION_LATEX = String.raw `mathrm{Attention}(Q,K,V)=mathrm{softmax}left(\frac{QK^{T}}{\term{dk}{sqrt{d_k}}}\right)V`;
+function AttentionSection({ id, equation = false }: {
+    id: string;
+    equation?: boolean;
+}) {
+    return (<>
+      {equation ? (<>
+          <p>
+            We compute the dot products of the query with all keys, divide each by √d<sub>k</sub>, and apply a softmax
+            to obtain the weights on the values:
+          </p>
+          <PaperEquation number={1} terms={{
+                dk: {
+                    label: "\u221Ad\u2096: toggle scaling in Figure 2",
+                    figure: id,
+                    state: (s) => ({ ...(s as AttentionState), scaled: !(s as AttentionState).scaled }),
+                },
+            }}>
+            {ATTENTION_LATEX}
+          </PaperEquation>
+        </>) : null}
+      <p>
+
+        For small d<sub>k</sub> scaling makes little difference (<FigRef to={id} state="raw4"/>, d<sub>k</sub> = 4).
+        For large d<sub>k</sub> the dot products grow large in magnitude and push the softmax into regions with
+        extremely small gradients: unscaled, nearly all weight collapses onto one key (
+        <FigRef to={id} state="raw512"/>, unscaled). Dividing by √d<sub>k</sub> restores a usable distribution (
+        <FigRef to={id} state="scaled512"/>, scaled).
+      </p>
+      <PaperFigure id={id} states={ATTENTION_STATES} caption="Scaled dot-product attention for the query “it”. Weights are illustrative, computed from hand-set similarity scores." describe={(s) => `d_k = ${s.dk}, ${s.scaled ? "scaled by 1/\u221Ad_k" : "unscaled"}; largest weight ${Math.max(...softmax(s)).toFixed(2)}.`} controls={(fig) => (<>
+            <span>d<sub>k</sub></span>
+            {[1, 4, 16, 64, 512].map((dk) => (<Button key={dk} size="xs" variant={fig.state.dk === dk ? "solid" : "ghost"} aria-pressed={fig.state.dk === dk} onClick={() => fig.setState({ ...fig.state, dk })} className="tabular-nums">
+                {dk}
+              </Button>))}
+            <ScaleToggle scaled={fig.state.scaled} onToggle={() => fig.setState({ ...fig.state, scaled: !fig.state.scaled })}/>
+          </>)}>
+        {(state) => <AttentionBars state={state}/>}
+      </PaperFigure>
+    </>);
+}
 function AttentionDemo() {
     return (<Paper labels={EN_LABELS} className="w-full">
       <Body>
+        <AttentionSection id="attention"/>
+      </Body>
+    </Paper>);
+}
+const AUTHORS = [
+    { name: "Ashish Vaswani", affiliation: "Google Brain" },
+    { name: "Noam Shazeer", affiliation: "Google Brain" },
+    { name: "Niki Parmar", affiliation: "Google Research" },
+    { name: "Jakob Uszkoreit", affiliation: "Google Research" },
+    { name: "Llion Jones", affiliation: "Google Research" },
+    { name: "Aidan N. Gomez", affiliation: "University of Toronto" },
+    { name: "\u0141ukasz Kaiser", affiliation: "Google Brain" },
+    { name: "Illia Polosukhin" },
+];
+const REFERENCES = [
+    {
+        id: "hochreiter1997",
+        content: (<>
+        Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. <i>Neural Computation</i>, 9(8):1735–1780,
+        1997.
+      </>),
+    },
+    {
+        id: "sutskever2014",
+        content: (<>
+        Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. Sequence to sequence learning with neural networks. In{" "}
+        <i>Advances in Neural Information Processing Systems</i>, 2014.
+      </>),
+    },
+    {
+        id: "bahdanau2014",
+        content: (<>
+        Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly learning to align
+        and translate. <i>CoRR</i>, abs/1409.0473, 2014.
+      </>),
+    },
+    {
+        id: "gehring2017",
+        content: (<>
+        Jonas Gehring, Michael Auli, David Grangier, Denis Yarats, and Yann N. Dauphin. Convolutional sequence to
+        sequence learning. <i>arXiv preprint</i> arXiv:1705.03122, 2017.
+      </>),
+    },
+];
+function HeaderDemo() {
+    return (<Paper labels={EN_LABELS} className="w-full">
+      <Body>
+        <PaperHeader title="Attention Is All You Need" authors={AUTHORS} meta="31st Conference on Neural Information Processing Systems (NIPS 2017)" abstract="The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely."/>
         <p>
-
-          For small d<sub>k</sub> scaling makes little difference (<FigRef to="attention" state="raw4"/>, d
-          <sub>k</sub> = 4). For large d<sub>k</sub> the dot products grow large in magnitude and push the softmax into
-          regions with extremely small gradients: unscaled, nearly all weight collapses onto one key (
-          <FigRef to="attention" state="raw512"/>, unscaled). Dividing by √d<sub>k</sub> restores a usable
-          distribution (<FigRef to="attention" state="scaled512"/>, scaled).
+          Recurrent models have been the standard approach to sequence modeling and transduction problems such as
+          machine translation <Cite to={["hochreiter1997", "sutskever2014"]}/>. Attention mechanisms let a model
+          relate positions regardless of their distance <Cite to="bahdanau2014"/>, and most competitive models have
+          an encoder–decoder structure <Cite to={["bahdanau2014", "gehring2017", "sutskever2014"]}/>.
         </p>
-        <PaperFigure id="attention" states={ATTENTION_STATES} caption="Scaled dot-product attention for the query “it”. Weights are illustrative, computed from hand-set similarity scores." describe={(s) => `d_k = ${s.dk}, ${s.scaled ? "scaled by 1/\u221Ad_k" : "unscaled"}; largest weight ${Math.max(...softmax(s)).toFixed(2)}.`} controls={(fig) => (<>
-              <span>d<sub>k</sub></span>
-              {[1, 4, 16, 64, 512].map((dk) => (<Button key={dk} size="xs" variant={fig.state.dk === dk ? "solid" : "ghost"} aria-pressed={fig.state.dk === dk} onClick={() => fig.setState({ ...fig.state, dk })} className="tabular-nums">
-                  {dk}
-                </Button>))}
-              <Button size="xs" variant="outline" aria-pressed={fig.state.scaled} onClick={() => fig.setState({ ...fig.state, scaled: !fig.state.scaled })}>
-                {fig.state.scaled ? "Scaled \u00F7\u221Ad\u2096" : "Unscaled"}
-              </Button>
-            </>)}>
-          {(state) => <AttentionBars state={state}/>}
-        </PaperFigure>
+        <Bibliography entries={REFERENCES}/>
+      </Body>
+    </Paper>);
+}
+function EquationDemo() {
+    return (<Paper labels={EN_LABELS} className="w-full">
+      <Body>
+        <AttentionSection id="attention-equation" equation/>
+      </Body>
+    </Paper>);
+}
+const EXPORT_KEYS = [...ARCH_STEPS.map((s) => s.key), "all"];
+function ExportToolbar({ figure }: {
+    figure: string;
+}) {
+    const { exportFigureSvg } = usePaperExport();
+    const [preview, setPreview] = useState<{
+        key: string;
+        url: string;
+        size: number;
+    } | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    useEffect(() => () => {
+        if (preview)
+            URL.revokeObjectURL(preview.url);
+    }, [preview]);
+    const run = async (key: string) => {
+        setError(null);
+        try {
+            const svg = await exportFigureSvg(figure, key, { background: "white" });
+            const blob = new Blob([svg], { type: "image/svg+xml" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${figure}-${key}.svg`;
+            a.click();
+            setPreview({ key, url, size: blob.size });
+        }
+        catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        }
+    };
+    return (<div className="mt-2 font-sans text-sm text-muted-foreground print:hidden">
+      <div className="flex flex-wrap items-center gap-1">
+        <span className="mr-1">Export SVG</span>
+        {EXPORT_KEYS.map((key) => (<Button key={key} size="xs" variant="outline" onClick={() => run(key)}>
+            {key === "all" ? "All" : `(${key})`}
+          </Button>))}
+      </div>
+      {error ? <p className="mt-2 text-danger">{error}</p> : null}
+      {preview ? (<figure className="mx-0 mt-3">
+          <img src={preview.url} alt={`Exported (${preview.key})`} className="mx-auto block h-auto w-full max-w-[360px] rounded-[var(--radius)] border border-border"/>
+          <figcaption className="mt-1 text-center text-xs">
+            Exported {preview.key === "all" ? "All" : `(${preview.key})`} · {(preview.size / 1024).toFixed(1)} KB · loaded as &lt;img&gt;,
+            no longer depends on the page CSS
+          </figcaption>
+        </figure>) : null}
+    </div>);
+}
+function ExportDemo() {
+    return (<Paper labels={EN_LABELS} className="w-full">
+      <Body>
+        <ProcessFigure id="transformer-export" steps={ARCH_STEPS} caption="The Transformer – model architecture." overviewDescription="All stages shown.">
+          <TransformerArchitecture />
+        </ProcessFigure>
+      </Body>
+      <ExportToolbar figure="transformer-export"/>
+    </Paper>);
+}
+function PresenterDemo() {
+    return (<Paper labels={EN_LABELS} className="w-full">
+      <div className="mb-4 flex justify-end font-sans print:hidden">
+        <PaperPresenter title="Attention Is All You Need" trigger={<Button size="sm">Present ▶</Button>}/>
+      </div>
+      <Body>
+        <ArchitectureSection id="transformer-present"/>
+        <AttentionSection id="attention-present"/>
       </Body>
     </Paper>);
 }
@@ -367,6 +541,89 @@ const attentionCode = `<PaperFigure
 </PaperFigure>
 
 <FigRef to="attention" state="raw512">Figure 2, unscaled</FigRef>`;
+const presenterCode = `<Paper>
+  <PaperPresenter
+    title="Attention Is All You Need"
+    trigger={<Button>Present \u25B6</Button>}
+    // Default: the presets of every figure in document order (each step + all for process figures)
+    // Reorder with slides={[{ figure: "attention", state: "raw512" }, \u2026]}
+  />
+  <ProcessFigure id="transformer" steps={steps} caption="\u2026">\u2026</ProcessFigure>
+  <PaperFigure
+    id="attention"
+    states={presets}
+    presentStates={["scaled64", "raw512", "scaled512"]}
+    caption="\u2026"
+  >
+    {(state) => <AttentionBars state={state} />}
+  </PaperFigure>
+</Paper>`;
+const equationCode = `// PaperEquation comes from @hulianui/ui/math (KaTeX stays out of the main entry)
+<Paper>
+  <PaperEquation
+    number={1}
+    terms={{
+      dk: {
+        label: "\u221Ad\u2096: toggle scaling in Figure 2",
+        figure: "attention",
+        state: (s) => ({ ...s, scaled: !s.scaled }), // or a preset name such as "scaled512"
+      },
+    }}
+  >
+    {String.raw\`\\mathrm{softmax}\\left(\\frac{QK^T}{\\term{dk}{\\sqrt{d_k}}}\\right)V\`}
+  </PaperEquation>
+
+  <PaperFigure id="attention" states={presets} controls={(fig) => <ScaleToggle fig={fig} />} \u2026>
+    {(state) => <AttentionBars state={state} />}
+  </PaperFigure>
+</Paper>
+
+function ScaleToggle({ fig }) {
+  const term = usePaperTerm("dk"); // hover / focus also lights up \u221Ad\u2096 in the formula
+  return (
+    <Button {...term.bind} onClick={() => fig.setState({ ...fig.state, scaled: !fig.state.scaled })}>
+      Toggle scaling
+    </Button>
+  );
+}`;
+const headerCode = `<Paper labels={{ figure: "Figure", separator: ": ", abstract: "Abstract", references: "References" }}>
+  <PaperHeader
+    title="Attention Is All You Need"
+    authors={[{ name: "Ashish Vaswani", affiliation: "Google Brain" }, \u2026]}
+    meta="NIPS 2017"
+    abstract="The dominant sequence transduction models \u2026"
+  />
+  <p>
+    \u2026 such as machine translation <Cite to={["hochreiter1997", "sutskever2014"]} />.
+  </p>
+  <Bibliography
+    entries={[
+      { id: "hochreiter1997", content: <>Sepp Hochreiter and J\u00FCrgen Schmidhuber. Long short-term memory. \u2026</> },
+      { id: "sutskever2014", content: <>Ilya Sutskever, Oriol Vinyals, and Quoc V. Le. \u2026</> },
+    ]}
+  />
+</Paper>`;
+const exportCode = `function ExportButton({ figure, state }) {
+  const { exportFigureSvg } = usePaperExport(); // must be inside Paper
+  return (
+    <Button
+      onClick={async () => {
+        const svg = await exportFigureSvg(figure, state, { background: "white" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+        a.download = \`\${figure}-\${state}.svg\`;
+        a.click();
+      }}
+    >
+      Export SVG
+    </Button>
+  );
+}
+
+<Paper>
+  <ProcessFigure id="transformer" steps={steps} caption="\u2026">\u2026</ProcessFigure>
+  <ExportButton figure="transformer" state="b" />
+</Paper>`;
 const printCode = `<Paper mode="print">
   <ProcessFigure
     id="transformer"
@@ -393,6 +650,30 @@ export const paperShowcase: ShowcaseSpec = {
             render: () => <AttentionDemo />,
         },
         {
+            title: "Presentation mode",
+            description: "Click Present \u25B6 for a full-screen presentation: the presets of every figure, in document order, become one set of slides. Use \u2190/\u2192, Space or PageUp/PageDown to move, and Esc to leave; focus returns to the button. The presenter redraws each figure with the same state-to-picture function instead of moving the figure out of the text, so the text stays on the step the reader left it at. Figure controls still work while presenting: a step button jumps to that slide, and parameter changes only affect the current slide.",
+            code: presenterCode,
+            render: () => <PresenterDemo />,
+        },
+        {
+            title: "Linking formulas to figures",
+            description: "Formula (1) marks \u221Ad\u2096 with \\term{dk}{\u2026}: click it to toggle scaling in Figure 2, and hovering or focusing it lights up the scaling switch below the figure. Hovering the switch lights up \u221Ad\u2096 in the formula in turn. The formula is rendered with KaTeX and imported from @hulianui/ui/math, so it stays out of the main entry. A real button sits on the term, so it is reachable with Tab and screen readers announce what it does.",
+            code: equationCode,
+            render: () => <EquationDemo />,
+        },
+        {
+            title: "Per-state SVG export",
+            description: "For submission, insert the vector figure of each state into Word, or convert it to PDF for LaTeX. Export draws the figure off screen with the same state-to-picture function, reads each element's computed style into SVG attributes and turns colors into hex, so the file no longer depends on the page CSS. It uses the light theme by default, leaves animations out, and does not touch the figure in the text. The preview below is the exported file loaded as an <img>.",
+            code: exportCode,
+            render: () => <ExportDemo />,
+        },
+        {
+            title: "Title block and references",
+            description: "PaperHeader lays out the title, authors, a line of details and the abstract, with the title between a thick rule above and a thin rule below. Bibliography numbers its entries in order, and Cite in the text takes numbers by id: several citations are sorted and deduplicated, and three or more in a row collapse to 1\u20133. Clicking a number scrolls to that entry and outlines it. The Abstract and References headings follow the paper language set on Paper.",
+            code: headerCode,
+            render: () => <HeaderDemo />,
+        },
+        {
             title: "Print form",
             description: "The PDF form for submission: every figure freezes in its print state, controls are not rendered, references become plain text, and each step of a process figure expands into (a)(b)(c)\u2026 sub-figures. When the browser actually prints, Paper switches to this form before printing and back afterwards.",
             code: printCode,
@@ -406,6 +687,7 @@ export const paperShowcase: ShowcaseSpec = {
         { name: "Read", render: () => <ArchitectureDemo /> },
         { name: "Print", render: () => <ArchitectureDemo id="transformer-print" defaultMode="print"/> },
         { name: "Parameter figure", render: () => <AttentionDemo /> },
+        { name: "Present", render: () => <PresenterDemo /> },
     ],
     renderWithProps: (p) => (<ArchitectureDemo key={String(p.mode)} id="transformer-playground" defaultMode={p.mode as PaperMode}/>),
     toCode: (p) => `<Paper${p.mode === "print" ? " mode=\"print\"" : ""}>

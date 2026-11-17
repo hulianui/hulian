@@ -11,6 +11,13 @@ const DEFAULT_LABELS = {
   pause: "暂停",
   overview: "全部",
   steps: "步骤",
+  presenter: "演示模式",
+  exit: "退出",
+  prevSlide: "上一页",
+  nextSlide: "下一页",
+  noSlides: "这篇论文里还没有可演示的图。",
+  abstract: "摘要",
+  references: "参考文献",
 };
 
 export type PaperLabels = typeof DEFAULT_LABELS;

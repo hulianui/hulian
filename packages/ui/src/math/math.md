@@ -4,7 +4,7 @@ name: Formula
 category: typography
 group: text
 tags: []
-exports: [Formula, QuestionCard, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath, isKnownQuestionType, asQuestionType]
+exports: [Formula, QuestionCard, PaperEquation, formulaToPlain, mathToPlain, splitMathSegments, splitBareMath, hasBareMath, isKnownQuestionType, asQuestionType]
 status: enriched
 ---
 
@@ -184,5 +184,6 @@ KaTeX 配了 `throwOnError: false`，出错分两档，**都不静默吞、都�
 - [QuestionEditor](../question-editor/question-editor.md) —— 出题编辑器，题干 / 选项 / 预览内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionAnswer](../question-answer/question-answer.md) —— 学生作答卡，题干 / 选项 / 结果区内部就是本组件；同住 `@hulianui/ui/math`
 - [QuestionCard](../question-card/question-card.md) —— 题目卡片，题干/选项内部就是本组件；同住 `@hulianui/ui/math`
+- [Paper](../paper/paper.md) —— 动态论文。其中的 `PaperEquation`（公式里的项能和图联动）内部是 KaTeX，所以也从 `@hulianui/ui/math` 导出，用法见 Paper 文档
 - [Prose](../prose/prose.md) —— 长文排版容器
 - [Markdown](../markdown/markdown.md) —— 整段富文本
