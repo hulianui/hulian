@@ -6,6 +6,7 @@ import { pathToFileURL } from "node:url";
 
 import { gotoAndSettle, OUT_DIR, startStaticServer } from "./static-server.mjs";
 import { basePathForLocale } from "./docs-locale-layout.mjs";
+import { isFirstShard, pickShard, shardLabel } from "./ci-shard.mjs";
 
 // 英文站在产物树里的前缀由 SSOT 决定：作根语言时是空串，产物就直接落在 out 根。
 const EN = basePathForLocale("en");
@@ -257,7 +258,9 @@ async function scanInteraction(context, staticServer, slug) {
 }
 
 export async function runShowcaseEnglishBrowser({
-  routes = discoverEnglishComponentRoutes(),
+  // CI 按 CI_SHARD 把路由轮转分给多台 runner（见 scripts/ci-shard.mjs）；本地不设即全量。
+  routes = pickShard(discoverEnglishComponentRoutes()),
+  interactions = isFirstShard() ? INTERACTION_ROUTES : [],
 } = {}) {
   const { chromium } = await import("playwright");
   const staticServer = await startStaticServer();
@@ -288,7 +291,7 @@ export async function runShowcaseEnglishBrowser({
         }
       }),
     );
-    for (const slug of INTERACTION_ROUTES) {
+    for (const slug of interactions) {
       try {
         results.push(await scanInteraction(context, staticServer, slug));
       } catch (error) {
@@ -324,13 +327,13 @@ export async function runShowcaseEnglishBrowser({
   if (failures.length > 0) {
     const preview = failures.slice(0, 20).join("\n\n");
     throw new Error(
-      `${failures.length}/${results.length} English showcase browser phases failed\n\n${preview}${
+      `${failures.length}/${results.length} English showcase browser phases failed${shardLabel()}\n\n${preview}${
         failures.length > 20 ? `\n\n… ${failures.length - 20} more failures` : ""
       }`,
     );
   }
   console.log(
-    `[showcase-en] PASS ${routes.length}/${routes.length} hydrated component routes + ${INTERACTION_ROUTES.length} dynamic interactions`,
+    `[showcase-en] PASS ${routes.length}/${routes.length} hydrated component routes + ${interactions.length} dynamic interactions${shardLabel()}`,
   );
   return results;
 }

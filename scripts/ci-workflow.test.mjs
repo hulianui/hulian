@@ -184,3 +184,30 @@ test("build 关掉构建期类型检查时，typecheck 之前必须先 next type
   assert.notEqual(typegen, -1, `${typecheck.name} 没有在 typecheck 前跑 next typegen`);
   assert.ok(typegen < typecheck.text.indexOf("run: pnpm typecheck"), "next typegen 必须排在 pnpm typecheck 之前");
 });
+
+test("分片 job 的 matrix 必须恰好覆盖 1..N，与分母一致", () => {
+  // 片数改了一边忘了另一边：分母大于 matrix 条数 = 静默漏扫若干片的路由 / 测试文件，
+  // 而每一片自己都是绿的。分母小于条数会在 parseShard 里当场报错，但那也该在这里先红。
+  const checked = [];
+  for (const job of workflowJobs()) {
+    const env = job.text.match(/CI_SHARD: \$\{\{ matrix\.shard \}\}\/(\d+)/);
+    if (env) {
+      const list = job.text.match(/\n {8}shard: \[([^\]]*)\]/);
+      assert.ok(list, `${job.name} 用了 CI_SHARD 却没有 matrix.shard 列表`);
+      const shards = list[1].split(",").map((value) => Number(value.trim()));
+      const total = Number(env[1]);
+      assert.deepEqual(shards, Array.from({ length: total }, (_, i) => i + 1), `${job.name} 的 matrix.shard 与分母 /${total} 不一致`);
+      checked.push(job.name);
+    }
+    const parts = job.text.match(/\n {8}part: \[([^\]]*)\]/);
+    if (parts) {
+      const ui = parts[1].split(",").map((value) => value.trim()).filter((value) => value.startsWith("ui-"));
+      const totals = new Set(ui.map((value) => value.split("/")[1]));
+      assert.equal(totals.size, 1, `${job.name} 的 ui 分片分母不一致：${ui.join(", ")}`);
+      const total = Number([...totals][0]);
+      assert.deepEqual(ui, Array.from({ length: total }, (_, i) => `ui-${i + 1}/${total}`), `${job.name} 的 ui 分片没有覆盖 1..${total}`);
+      checked.push(job.name);
+    }
+  }
+  assert.ok(checked.length > 0, "没有找到任何分片 job —— 本断言的解析可能已经失效");
+});
