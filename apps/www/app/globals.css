@@ -137,6 +137,19 @@ body {
   --color-chart-6: oklch(0.74 0.12 calc(200 + var(--hw-hue) - 258));
 }
 
+/* 首页产品线自动轮播的进度条：5 秒走满，走满时由 animationend 换档 */
+@keyframes hl-pl-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.hl-pl-progress {
+  animation: hl-pl-progress 5s linear both;
+}
+
 /* 顶栏 logo：mask 取 logo.svg 的形，底色给颜色。默认值与 logo.svg 里写死的两档一致，
    别的页面视觉不变；首页（[data-hero-accent]）改吃主色，跟着组件墙的主题色走。 */
 .hl-logo {

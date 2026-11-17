@@ -13,6 +13,13 @@ import {
 } from "@hulianui/ui";
 import { SiteNavbar } from "../components/site-navbar";
 import { HomeHeroWall } from "../components/home-hero-wall";
+import { HomeProductLines } from "../components/home-product-lines";
+import { HomePlayground } from "../components/home-playground";
+import { HomeAiBand, HomeBuiltWith, HomeClosing } from "../components/home-sections";
+import { manifest } from "../lib/manifest";
+import { blocks } from "./blocks/_meta";
+import { pages } from "./pages/_meta";
+import { demos } from "./demos/lib/demos";
 import {
   DOCS_LOCALE,
   ROOT_LOCALE,
@@ -52,6 +59,10 @@ const AURORA_COLORS = [auroraStop(0), auroraStop(40), auroraStop(-40)];
 
 // AI 接入指南的完整地址（带语言前缀），上手卡里给复制
 const AI_GUIDE_URL = `${SITE_URL}${withDocsBasePath("/start")}`;
+
+// 首页各段用到的计数：直接从各自的数据源数，增删条目自动跟上
+const total = manifest.length;
+const animatedCount = manifest.filter((m) => m.tags?.includes("animated")).length;
 
 const rise = (i: number): CSSProperties => ({ animationDelay: `${i * 70}ms` });
 
@@ -192,6 +203,14 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          <HomeProductLines counts={[total, blocks.length, pages.length, demos.length]} />
+          <div className="border-y border-border/60 bg-muted/30">
+            <HomePlayground />
+          </div>
+          <HomeAiBand counts={[total, animatedCount, blocks.length, pages.length]} />
+          <HomeBuiltWith />
+          <HomeClosing />
         </main>
       </div>
     </>
