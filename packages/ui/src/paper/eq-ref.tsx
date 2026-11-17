@@ -2,7 +2,7 @@
 import { useEffect, useState, useSyncExternalStore, type MouseEvent, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
-import { revealFigure } from "./fig-ref";
+import { navigatePaper } from "./paper-navigate";
 import { usePaperContext } from "./paper-context";
 import { usePaperLabels } from "./paper-labels";
 import type { EqRefProps } from "./paper.types";
@@ -34,16 +34,8 @@ export function EqRef({ to, children, className, onClick, ref, ...rest }: EqRefP
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
-    if (event.defaultPrevented || !paper) return;
-    const entry = paper.equations.find(to);
-    if (!entry) {
-      warnOnce(`EqRef:missing:${to}`, `[EqRef] 找不到 id 为 "${to}" 的公式。`);
-      return;
-    }
-    event.preventDefault();
-    const el = entry.element();
-    if (el) revealFigure(el);
-    entry.highlight();
+    if (event.defaultPrevented) return;
+    if (navigatePaper(paper, { kind: "equation", id: to }, "EqRef")) event.preventDefault();
   };
 
   return (

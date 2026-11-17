@@ -901,6 +901,10 @@ export interface ComponentLocale {
     references?: string;
     /** Word before an equation number in EqRef, e.g. "Eq." in "Eq. (1)". */
     equation?: string;
+    /** Automatic SecRef text built from a section number, e.g. "Section 2.1". */
+    section?: (number: string) => string;
+    /** Accessible name of PaperOutline. */
+    outline?: string;
   };
   /** Optional so existing custom component dictionaries remain source-compatible. */
   sequenceDiagram?: {
@@ -1753,6 +1757,8 @@ const zhComponents: ComponentLocale = {
     abstract: "摘要",
     references: "参考文献",
     equation: "公式",
+    section: (n) => `第 ${n} 节`,
+    outline: "目录",
   },
   sequenceDiagram: {
     diagram: "时序图",
@@ -2730,6 +2736,8 @@ const enComponents: ComponentLocale = {
     abstract: "Abstract",
     references: "References",
     equation: "Eq.",
+    section: (n) => `Section ${n}`,
+    outline: "Contents",
   },
   sequenceDiagram: {
     diagram: "Sequence diagram",

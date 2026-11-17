@@ -4,7 +4,7 @@ name: Paper
 category: data-display
 group: collection
 tags: []
-exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography]
+exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, usePaperNavigate, PaperHeader, Cite, Bibliography, PaperSection, SecRef, PaperOutline]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ status: enriched
 
 ## 导入
 ```ts
-import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
+import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, usePaperNavigate, PaperHeader, Cite, Bibliography, PaperSection, SecRef, PaperOutline } from "@hulianui/ui"
 import { PaperEquation } from "@hulianui/ui/math"
 import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, FigureRasterContext, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
 ```
@@ -31,6 +31,10 @@ Paper                      呈现形态（阅读 / 打印）+ 图的注册表 + 
 ├─ FigRef                  正文引用：切到某个预设、滚到图、描边一下
 ├─ EqRef                   公式引用「公式 (1)」：滚到公式、描边一下
 ├─ Cite                    文献引用 [1, 2]，按 Bibliography 编号
+├─ PaperSection            自动编号的章节（1、2.1…）
+├─ SecRef                  章节引用「第 2.1 节」
+├─ PaperOutline            目录（内部是 Anchor）
+├─ usePaperNavigate        命令式导航：按钮里跳到图 / 公式 / 章节
 ├─ PaperEquation           公式，其中的项能和图联动（@hulianui/ui/math）
 ├─ PaperPresenter          答辩演示：全屏，把每张图的预设串成幻灯片
 ├─ Bibliography            参考文献列表
@@ -52,7 +56,7 @@ FigureRaster               图的 <svg> 里的一块栅格（热力图），任�
 | as | `ElementType` | `"article"` | 根元素标签 |
 | mode | `"read"` ｜ `"print"` | - | 受控形态 |
 | defaultMode | `"read"` ｜ `"print"` | `"read"` | 非受控初始形态 |
-| labels | `{ figure?; separator?; abstract?; references?; equation? }` | 跟随界面语言 | 图注前缀、自动引用（含 `EqRef` 的「公式」/ "Eq."）、摘要与参考文献标题的文字。论文语言和界面不同时指定，如中文界面里排英文论文：`{ figure: "Figure", separator: ": " }`。步骤按钮等控件文字仍跟随界面语言 |
+| labels | `{ figure?; separator?; abstract?; references?; equation?; section? }` | 跟随界面语言 | 图注前缀、自动引用（含 `EqRef` 的「公式」/ "Eq."、`SecRef` 的「第 N 节」）、摘要与参考文献标题的文字。论文语言和界面不同时指定，如中文界面里排英文论文：`{ figure: "Figure", separator: ": " }`。步骤按钮等控件文字仍跟随界面语言 |
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
@@ -130,6 +134,7 @@ interface ProcessStep {
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | at * | `string` ｜ `string[]` | - | 属于哪一步。可以属于几步：`["b", "c"]` 或 `"b c"` |
+| until | string | - | 从哪一步起被取代、不再画出。讲到 `until` 及之后、以及「全部」状态下隐藏（导出 SVG 时也不进文件）。用于会移动的东西：分支指针、被替换的旧节点 |
 
 它带 `data-phase`：
 
@@ -139,6 +144,7 @@ interface ProcessStep {
 | `done` | 已经讲过 | 半透明 |
 | `off` | 还没讲到 | 很淡，但不隐藏，读者始终看得到整张图 |
 | `all` | 「全部」状态 | 不透明，不强调 |
+| `gone` | 带 `until`，已被取代或处于「全部」 | 不渲染（`display: none`） |
 
 组件只管透明度。强调色和流动虚线由你在图里写，`FigureStep` 带 `group/step`：
 
@@ -147,6 +153,13 @@ interface ProcessStep {
   <rect className="stroke-muted-foreground group-data-[phase=on]/step:stroke-primary" />
   <path className="stroke-muted-foreground group-data-[phase=on]/step:[stroke-dasharray:5_4] group-data-[phase=on]/step:motion-safe:animate-[hulian-paper-flow_0.9s_linear_infinite]" />
 </FigureStep>
+```
+
+会移动的部分画两份，旧的一份写 `until`。下例里 `main` 指针在 (a)(b) 指向 C2，(c) 起移到 C3；「全部」和打印主图里只剩 C3 上那一个：
+
+```tsx
+<FigureStep at="a" until="c"><RefLabel x={150} label="main" /></FigureStep>
+<FigureStep at="c"><RefLabel x={240} label="main" /></FigureStep>
 ```
 
 `hulian-paper-flow` 关键帧在 `@hulianui/tokens` 的 preset-core.css 里。
@@ -201,9 +214,11 @@ const drawHeat = (ctx, { width, height, color }) => {
 |------|------|------|------|
 | to * | string | - | 目标图的 `id` |
 | state | string | - | 要切到的预设；不传只跳到图，不改状态 |
-| children | ReactNode | 「图 N」 | 引用文字。不传时按文档顺序自动取号（挂载后才有号） |
+| children | ReactNode | 「图 N」 | 引用文字。不传时按文档顺序自动取号（挂载后才有号）；`state` 是这张图的打印分图之一时带上分图字母，如「图 1(b)」，与打印版一致（`ProcessFigure` 默认每一步都是分图） |
 
 点击时：把图切到 `state` → 图不在视野里就滚过去（减弱动效时不平滑滚动）→ 图描边约 1.2 秒。没有 JS 或不在 `Paper` 里时退化成普通锚点。打印形态下去掉链接色和下划线。
+
+`Button` 这类本身就是交互元素的触发器不要写 `render={<FigRef/>}`：引用本体是 `<a>`，会继承链接色和下划线，也破坏按钮语义。改用下方的 `usePaperNavigate`。
 
 ## PaperPresenter
 
@@ -391,6 +406,82 @@ interface EquationTerm {
 - 同一个 `Paper` 只放一份 `Bibliography`；有两份时告警，`Cite` 按后登记的那份编号。
 - 「摘要」「参考文献」两个标题属于论文内容，跟随 `Paper` 的 `labels`（`abstract`、`references`），不跟界面语言。
 - 条目 id 和图 id 共用页面的 DOM id 空间，不要取同名。
+
+## 章节编号、SecRef 与目录
+
+```tsx
+<Paper>
+  <PaperOutline className="sticky top-6" />             {/* 目录，编号与正文一致 */}
+  <p>细节见 <SecRef to="objects" />。</p>               {/* 「第 2.2 节」 */}
+  <PaperSection id="intro" title="引言">…</PaperSection>          {/* 1 引言 */}
+  <PaperSection id="model" title="模型">
+    <PaperSection id="trees" title="三棵树">…</PaperSection>      {/* 2.1 */}
+    <PaperSection id="objects" title="对象">…</PaperSection>      {/* 2.2 */}
+  </PaperSection>
+  <PaperSection id="ack" title="致谢" numbered={false}>…</PaperSection>
+</Paper>
+```
+
+### PaperSection
+
+`<section>`，继承 `HTMLAttributes<HTMLElement>`（不含 `title`），`ref` 落在 `<section>` 上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| id * | string | - | 章节 id，`SecRef` / `PaperOutline` 靠它找章节，同时是 `<section>` 的 `id` |
+| title * | ReactNode | - | 标题，层级编号自动加在前面 |
+| titleAs | `ElementType` | 按深度 `h2` / `h3` / `h4` | 标题标签 |
+| titleClassName | string | - | 加在标题上，改标题排版 |
+| numbered | boolean | true | 是否编号。致谢、附录传 `false`；不要在不编号的章节里再嵌编号的子节 |
+
+- **编号**：CSS 计数器 `paper-section`，嵌套的子节自动成为「2.1」「2.1.3」，服务端渲染和打印时都有号。`PaperSection` 必须放在 `Paper` 里。
+- **标题样式**：和 `Paper` 不接管正文不同，章节标题自带一套克制的默认排版（字号随深度递减），用 `titleClassName` 改。
+
+### SecRef
+
+`<a href="#id">`，继承 `AnchorHTMLAttributes`（不含 `href`），`ref` 落在 `<a>` 上。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| to * | string | - | 目标章节的 `id` |
+| children | ReactNode | 「第 N 节」 | 引用文字。不传时按文档顺序和嵌套取号（挂载后才有号，服务端先显示「第 ? 节」）；引用不编号的章节时显示其标题 |
+
+- 点击：标题不在视野里就滚过去（减弱动效时不平滑），标题描边约 1.2 秒。没有 JS 或不在 `Paper` 里时是普通锚点；打印形态下去掉链接色。
+- 「第 N 节」/ "Section N" 属于论文内容，跟随 `Paper` 的 `labels.section`（函数，`(n) => string`），不传时跟随界面语言。
+
+### PaperOutline
+
+论文目录。从章节注册表生成，编号与正文标题一致；内部就是 [Anchor](../anchor/anchor.md)（滚动高亮 + 平滑跳转），继承 `Anchor` 除 `items` 外的全部 props（`offsetTop`、`getContainer`、`onChange`）。
+
+| 名称 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| depth | `1` ｜ `2` | 2 | 列到第几层。`Anchor` 最多两层，第三层子节不进目录 |
+
+- 放在 `Paper` 里任意位置，一般是侧栏：`<Paper as="div">` 包住「目录 + `<article>` 正文」两栏。
+- 挂载后才有条目（服务端渲染为空）；打印形态下不渲染。页面滚动体不是 window 时照 `Anchor` 的要求传 `getContainer`。
+- 章节 id 和图、公式、文献 id 共用页面的 DOM id 空间，不要取同名。
+
+## 命令式导航
+
+`Button`、`Menu.Item` 这类本身就是交互元素的触发器，不要用 `render={<FigRef/>}` 把引用嵌进去：引用本体是 `<a>`，会继承链接色和下划线，也破坏按钮语义。改用 `usePaperNavigate()`，在事件里跳转：
+
+```tsx
+const navigate = usePaperNavigate();
+
+<Button onClick={() => navigate.figure("attention", "b")}>看图 2(b)</Button>
+<Button onClick={() => navigate.equation("attention-eq")}>看公式 (1)</Button>
+<Button onClick={() => navigate.section("method")}>看第 2 节</Button>
+```
+
+| 方法 | 说明 |
+|------|------|
+| figure(id, state?) | 跳到图。`state` 是预设名，传了就切到那一步；之后和 `FigRef` 一样滚进视野、描边约 1.2 秒 |
+| equation(id) | 跳到公式，滚过去并描边；同 `EqRef` |
+| section(id) | 跳到章节，滚到标题并描边；同 `SecRef` |
+
+- 只做跳转，**不改 URL hash**。要可分享、能在新标签页打开的锚点链接，仍用 `FigRef` / `SecRef` / `EqRef`。
+- 目标不存在时开发环境告警一次，不做任何跳转；在 `Paper` 外调用不跳转，开发环境同样告警一次。
+- `usePaperNavigate()` 本身要在 `Paper` 里调用，返回的方法可以传进任意事件回调。
 
 ## 示例
 

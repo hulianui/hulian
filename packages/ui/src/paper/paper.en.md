@@ -4,7 +4,7 @@ name: Paper
 category: data-display
 group: collection
 tags: []
-exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography]
+exports: [Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, usePaperNavigate, PaperHeader, Cite, Bibliography, PaperSection, SecRef, PaperOutline]
 status: enriched
 ---
 
@@ -18,7 +18,7 @@ Use it to turn the figures of a paper, lecture notes, or a thesis defense into f
 
 ## Import
 ```ts
-import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from "@hulianui/ui"
+import { Paper, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperMode, usePaperExport, usePaperTerm, usePaperNavigate, PaperHeader, Cite, Bibliography, PaperSection, SecRef, PaperOutline } from "@hulianui/ui"
 import { PaperEquation } from "@hulianui/ui/math"
 import type { ProcessStep, FigureRenderContext, PresenterSlide, FigureSvgExportOptions, FigureRasterContext, EquationTerm, PaperAuthor, BibliographyEntry } from "@hulianui/ui"
 ```
@@ -31,6 +31,10 @@ Paper                      display mode (read / print) + figure registry + figur
 ├─ FigRef                  in-text reference: switch to a preset, scroll to the figure, flash it
 ├─ EqRef                   equation reference "Eq. (1)": scroll to the equation, flash it
 ├─ Cite                    citation [1, 2], numbered by Bibliography
+├─ PaperSection            numbered section (1, 2.1, ...)
+├─ SecRef                  section reference "Section 2.1"
+├─ PaperOutline            table of contents (an Anchor inside)
+├─ usePaperNavigate        imperative navigation: jump to a figure / equation / section from a button
 ├─ PaperEquation           formula whose terms link to figures (@hulianui/ui/math)
 ├─ PaperPresenter          presentation mode: full screen, figure presets as slides
 ├─ Bibliography            numbered reference list
@@ -52,7 +56,7 @@ Extends `HTMLAttributes<HTMLElement>`; `ref` lands on the root element.
 | as | `ElementType` | `"article"` | Root element tag |
 | mode | `"read"` \| `"print"` | - | Controlled mode |
 | defaultMode | `"read"` \| `"print"` | `"read"` | Uncontrolled initial mode |
-| labels | `{ figure?; separator?; abstract?; references?; equation? }` | follows the UI language | Text of the caption prefix, automatic references (including "Eq." in `EqRef`), and the abstract and references headings. Set it when the paper language differs from the UI, such as an English paper in a Chinese UI: `{ figure: "Figure", separator: ": " }`. Control text such as step buttons still follows the UI language |
+| labels | `{ figure?; separator?; abstract?; references?; equation?; section? }` | follows the UI language | Text of the caption prefix, automatic references (including "Eq." in `EqRef` and "Section N" in `SecRef`), and the abstract and references headings. Set it when the paper language differs from the UI, such as an English paper in a Chinese UI: `{ figure: "Figure", separator: ": " }`. Control text such as step buttons still follows the UI language |
 
 | Event | Type | Description |
 |------|------|------|
@@ -130,6 +134,7 @@ A `<g>` element that marks which step a part of the figure belongs to; use it in
 | Name | Type | Default | Description |
 |------|------|------|------|
 | at * | `string` \| `string[]` | - | Step or steps it belongs to: `["b", "c"]` or `"b c"` |
+| until | string | - | Step from which this part is superseded and no longer drawn. Hidden from `until` onward and in the "all" state (and left out of SVG exports). For things that move: branch pointers, replaced nodes |
 
 It carries `data-phase`:
 
@@ -139,6 +144,7 @@ It carries `data-phase`:
 | `done` | Already explained | Half transparent |
 | `off` | Not reached yet | Faint but not hidden, so the reader always sees the whole figure |
 | `all` | The "all" state | Opaque, no emphasis |
+| `gone` | Has `until` and is superseded, or the state is "all" | Not rendered (`display: none`) |
 
 The component only sets opacity. Write the accent color and flowing dashes in the figure yourself; `FigureStep` carries `group/step`:
 
@@ -147,6 +153,13 @@ The component only sets opacity. Write the accent color and flowing dashes in th
   <rect className="stroke-muted-foreground group-data-[phase=on]/step:stroke-primary" />
   <path className="stroke-muted-foreground group-data-[phase=on]/step:[stroke-dasharray:5_4] group-data-[phase=on]/step:motion-safe:animate-[hulian-paper-flow_0.9s_linear_infinite]" />
 </FigureStep>
+```
+
+Draw a moving part twice and give the old copy `until`. Below, the `main` pointer sits on C2 in (a)(b) and moves to C3 from (c); the "all" state and the printed main figure keep only the one on C3:
+
+```tsx
+<FigureStep at="a" until="c"><RefLabel x={150} label="main" /></FigureStep>
+<FigureStep at="c"><RefLabel x={240} label="main" /></FigureStep>
 ```
 
 The `hulian-paper-flow` keyframes live in preset-core.css of `@hulianui/tokens`.
@@ -201,9 +214,11 @@ An `<a href="#id">`. Extends `AnchorHTMLAttributes` (without `href`); `ref` land
 |------|------|------|------|
 | to * | string | - | `id` of the target figure |
 | state | string | - | Preset to switch to; without it the link only jumps to the figure |
-| children | ReactNode | "Figure N" | Reference text. Without it the number is taken in document order (after mount) |
+| children | ReactNode | "Figure N" | Reference text. Without it the number is taken in document order (after mount); when `state` is one of the figure's print sub-figures the sub-figure letter is appended, e.g. "Figure 1(b)", matching the printed version (every step of a `ProcessFigure` is a sub-figure by default) |
 
 On click it switches the figure to `state`, scrolls the figure into view when it is off screen (without smooth scrolling under reduced motion), and outlines the figure for about 1.2 seconds. Without JS or outside a `Paper` it is a plain anchor. In print mode the link color and underline are removed.
+
+Do not put a reference inside a control that is already interactive, such as `render={<FigRef/>}` on a `Button`: the reference is an `<a>`, so it brings the link color and underline along and breaks the button semantics. Use `usePaperNavigate` instead.
 
 ## PaperPresenter
 
@@ -391,6 +406,82 @@ The title block: the title sits between a thick rule above and a thin rule below
 - Use one `Bibliography` per `Paper`. With two, a warning is shown and `Cite` follows the one registered last.
 - The "Abstract" and "References" headings belong to the paper content, so they follow the `labels` of `Paper` (`abstract`, `references`), not the UI language.
 - Entry ids share the page's DOM id space with figure ids, so do not reuse a name.
+
+## Section numbers, SecRef and outline
+
+```tsx
+<Paper>
+  <PaperOutline className="sticky top-6" />               {/* table of contents, same numbers as the body */}
+  <p>Details in <SecRef to="objects" />.</p>              {/* "Section 2.2" */}
+  <PaperSection id="intro" title="Introduction">...</PaperSection>    {/* 1 Introduction */}
+  <PaperSection id="model" title="Model">
+    <PaperSection id="trees" title="Three trees">...</PaperSection>   {/* 2.1 */}
+    <PaperSection id="objects" title="Objects">...</PaperSection>     {/* 2.2 */}
+  </PaperSection>
+  <PaperSection id="ack" title="Acknowledgements" numbered={false}>...</PaperSection>
+</Paper>
+```
+
+### PaperSection
+
+A `<section>`. Extends `HTMLAttributes<HTMLElement>` (without `title`); `ref` lands on the `<section>`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| id * | string | - | Section id. `SecRef` / `PaperOutline` find the section by it; also the `<section>` `id` |
+| title * | ReactNode | - | Heading; the hierarchical number is prepended automatically |
+| titleAs | `ElementType` | `h2` / `h3` / `h4` by depth | Heading tag |
+| titleClassName | string | - | Added to the heading to change its typography |
+| numbered | boolean | true | Whether the section is numbered. Pass `false` for acknowledgements or appendices; do not nest numbered subsections inside an unnumbered section |
+
+- **Numbering**: CSS counter `paper-section`. Nested subsections become "2.1", "2.1.3" automatically, with numbers present in server rendering and print. `PaperSection` must be inside `Paper`.
+- **Heading style**: unlike the body text, which `Paper` leaves alone, section headings ship a restrained default (size shrinks with depth). Override with `titleClassName`.
+
+### SecRef
+
+An `<a href="#id">`. Extends `AnchorHTMLAttributes` (without `href`); `ref` lands on the `<a>`.
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| to * | string | - | `id` of the target section |
+| children | ReactNode | "Section N" | Reference text. When omitted, the number follows document order and nesting (available after mount; server rendering shows "Section ?"). An unnumbered target shows its title |
+
+- Click: scrolls to the heading if it is out of view (no smooth scrolling with reduced motion) and outlines it for about 1.2 s. Without JS, or outside `Paper`, it is a plain anchor; print mode drops the link color.
+- "Section N" is paper content: it follows `labels.section` on `Paper` (a function, `(n) => string`), and falls back to the interface language.
+
+### PaperOutline
+
+The table of contents. Generated from the section registry, with the same numbers as the headings. Internally it is an [Anchor](../anchor/anchor.en.md) (scroll spy + smooth jump) and accepts every `Anchor` prop except `items` (`offsetTop`, `getContainer`, `onChange`).
+
+| Name | Type | Default | Description |
+|------|------|------|------|
+| depth | `1` \| `2` | 2 | How many levels to list. `Anchor` holds at most two, so third-level subsections are left out |
+
+- Place it anywhere inside `Paper`, usually a sidebar: `<Paper as="div">` wrapping a two-column "outline + `<article>` body" layout.
+- Items appear after mount (empty in server rendering); nothing renders in print mode. When the scroll container is not the window, pass `getContainer` as `Anchor` requires.
+- Section ids share the page DOM id space with figures, equations and references; keep them distinct.
+
+## Imperative navigation
+
+Do not nest a reference inside a control that is already interactive, such as `Button` or `Menu.Item` (`render={<FigRef/>}`): the reference is an `<a>`, so it inherits the link color and underline and breaks the button semantics. Use `usePaperNavigate()` and navigate from the event instead:
+
+```tsx
+const navigate = usePaperNavigate();
+
+<Button onClick={() => navigate.figure("attention", "b")}>See Figure 2(b)</Button>
+<Button onClick={() => navigate.equation("attention-eq")}>See Eq. (1)</Button>
+<Button onClick={() => navigate.section("method")}>See Section 2</Button>
+```
+
+| Method | Description |
+|--------|-------------|
+| figure(id, state?) | Jump to a figure. `state` is a preset name; when given, switch to it first. Then scroll it into view and outline it for about 1.2 seconds, exactly like `FigRef` |
+| equation(id) | Jump to an equation, scroll it into view and outline it; like `EqRef` |
+| section(id) | Jump to a section, scroll to its heading and outline it; like `SecRef` |
+
+- It only navigates; the **URL hash is left alone**. For a shareable anchor link that can open in a new tab, keep using `FigRef` / `SecRef` / `EqRef`.
+- A missing target warns once in development and does nothing. Calling it outside `Paper` does not navigate and warns once in development too.
+- Call `usePaperNavigate()` itself inside `Paper`; pass the returned methods to any event handler.
 
 ## Examples
 

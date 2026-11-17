@@ -610,7 +610,8 @@
       "on",
       "done",
       "off",
-      "all"
+      "all",
+      "gone"
     ],
     "GeneratorMode": [
       "password",
@@ -1608,9 +1609,13 @@
     "PaperPresenter": "paper",
     "usePaperExport": "paper",
     "usePaperTerm": "paper",
+    "usePaperNavigate": "paper",
     "PaperHeader": "paper",
     "Cite": "paper",
     "Bibliography": "paper",
+    "PaperSection": "paper",
+    "SecRef": "paper",
+    "PaperOutline": "paper",
     "PixelCard": "pixel-card",
     "PricingTable": "pricing-table",
     "ProfileCard": "profile-card",
@@ -24915,7 +24920,7 @@
       "category": "data-display",
       "group": "collection",
       "status": "enriched",
-      "import": "import { Paper, usePaperMode, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperExport, usePaperTerm, PaperHeader, Cite, Bibliography } from \"@hulianui/ui\"",
+      "import": "import { Paper, usePaperMode, PaperFigure, ProcessFigure, FigureStep, FigRef, EqRef, FigureRaster, PaperPresenter, usePaperExport, usePaperTerm, usePaperNavigate, PaperHeader, Cite, Bibliography, PaperSection, SecRef, PaperOutline } from \"@hulianui/ui\"",
       "exports": [
         "Paper",
         "usePaperMode",
@@ -24928,9 +24933,13 @@
         "PaperPresenter",
         "usePaperExport",
         "usePaperTerm",
+        "usePaperNavigate",
         "PaperHeader",
         "Cite",
-        "Bibliography"
+        "Bibliography",
+        "PaperSection",
+        "SecRef",
+        "PaperOutline"
       ],
       "types": [
         "FigRefProps",
@@ -24954,8 +24963,13 @@
         "PaperFigureProps",
         "PaperContentLabels",
         "PaperMode",
+        "PaperNavigation",
         "PaperPresenterProps",
         "PaperProps",
+        "PaperSectionProps",
+        "SecRefProps",
+        "PaperOutlineProps",
+        "PaperOutlineSection",
         "PresenterSlide",
         "ProcessFigureProps",
         "ProcessStep"

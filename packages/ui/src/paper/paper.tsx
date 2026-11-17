@@ -11,6 +11,8 @@ import {
   type CitationStore,
   type EquationEntry,
   type EquationStore,
+  type SectionEntry,
+  type SectionStore,
   type PaperContextValue,
   type TermStore,
 } from "./paper-context";
@@ -192,6 +194,69 @@ export function Paper({
     };
   });
 
+  // 章节注册表：编号算法与 CSS 计数器一致 —— 每个章节的正文容器重置下一层计数器，
+  // 编号的章节给本层加一，号是从顶层到本层的各层计数用「.」连起来。不编号的章节不加一。
+  const [sections] = useState<SectionStore>(() => {
+    const entries = new Set<SectionEntry>();
+    const subs = new Set<() => void>();
+    let version = 0;
+    const emit = () => {
+      version += 1;
+      for (const listener of subs) listener();
+    };
+    const find = (id: string) => {
+      let hit: SectionEntry | undefined;
+      for (const entry of entries) if (entry.id === id) hit = entry;
+      return hit;
+    };
+    const depthOf = (el: HTMLElement | null) => {
+      let depth = 0;
+      let node = el?.parentElement?.closest("[data-paper-section]") ?? null;
+      while (node) {
+        depth += 1;
+        node = node.parentElement?.closest("[data-paper-section]") ?? null;
+      }
+      return depth;
+    };
+    return {
+      subscribe(listener) {
+        subs.add(listener);
+        return () => {
+          subs.delete(listener);
+        };
+      },
+      version: () => version,
+      register(entry) {
+        for (const other of entries) {
+          if (other.id === entry.id) {
+            warnOnce(`Paper:section:${entry.id}`, `[Paper] 章节 id "${entry.id}" 重复，SecRef 只会找到后挂载的那一节。`);
+          }
+        }
+        entries.add(entry);
+        emit();
+        return () => {
+          entries.delete(entry);
+          emit();
+        };
+      },
+      touch: emit,
+      find,
+      list() {
+        const counters: number[] = [];
+        return [...entries]
+          .sort((a, b) => documentOrder(a.element(), b.element()))
+          .map((entry) => {
+            const depth = depthOf(entry.element());
+            counters.length = depth + 1;
+            for (let i = 0; i <= depth; i += 1) counters[i] ??= 0;
+            const numbered = entry.numbered();
+            if (numbered) counters[depth] += 1;
+            return { id: entry.id, title: entry.title(), number: numbered ? counters.join(".") : null, depth };
+          });
+      },
+    };
+  });
+
   // 参考文献编号：同一篇论文只该有一份 Bibliography，登记第二份时告警，后登记的生效。
   const [citations] = useState<CitationStore>(() => {
     let map: ReadonlyMap<string, number> = new Map();
@@ -263,6 +328,7 @@ export function Paper({
       terms,
       citations,
       equations,
+      sections,
     }),
     [
       current,
@@ -281,6 +347,7 @@ export function Paper({
       terms,
       citations,
       equations,
+      sections,
     ],
   );
 
@@ -291,7 +358,7 @@ export function Paper({
         ref={tagRef}
         data-paper=""
         data-mode={current}
-        className={cn("text-foreground [counter-reset:paper-figure_paper-equation]", className)}
+        className={cn("text-foreground [counter-reset:paper-figure_paper-equation_paper-section]", className)}
         style={{ fontFamily: PAPER_FONT, ...style } as CSSProperties}
       >
         {children}

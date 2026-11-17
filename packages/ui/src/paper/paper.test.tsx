@@ -149,6 +149,59 @@ describe("ProcessFigure", () => {
     expect([phase("part-a"), phase("part-bc"), phase("part-c")]).toEqual(["all", "all", "all"]);
   });
 
+  it("FigRef 不写文字且 state 是打印分图时，自动写成「图 N(字母)」；all 不带字母", () => {
+    zh(
+      <Paper>
+        <FigRef to="arch" state="b" data-testid="sub-b" />
+        <FigRef to="arch" state="all" data-testid="sub-all" />
+        <ProcessFigure id="arch" steps={steps} caption="架构">
+          <Arch />
+        </ProcessFigure>
+      </Paper>,
+    );
+    expect(screen.getByTestId("sub-b").textContent).toBe("图 1(b)");
+    expect(screen.getByTestId("sub-all").textContent).toBe("图 1");
+  });
+
+  it("until：讲到被取代的那一步起、以及「全部」和打印主图里隐藏；分图里按各自的步骤算", () => {
+    const { container } = zh(
+      <Paper>
+        <ProcessFigure id="moving" steps={steps} caption="移动的指针">
+          <svg>
+            <FigureStep at="a" until="b" data-testid="ptr-old" />
+            <FigureStep at="b" data-testid="ptr-new" />
+          </svg>
+        </ProcessFigure>
+      </Paper>,
+    );
+    const main = container.querySelector("[data-paper-figure-body]") as HTMLElement;
+    const phase = (id: string) => within(main).getByTestId(id).getAttribute("data-phase");
+    expect([phase("ptr-old"), phase("ptr-new")]).toEqual(["on", "off"]);
+    fireEvent.click(screen.getByRole("button", { name: "(b) 自注意力" }));
+    expect([phase("ptr-old"), phase("ptr-new")]).toEqual(["gone", "on"]);
+    expect(within(main).getByTestId("ptr-old").getAttribute("class")).toContain("data-[phase=gone]:hidden");
+    fireEvent.click(screen.getByRole("button", { name: "(c) 前馈" }));
+    expect([phase("ptr-old"), phase("ptr-new")]).toEqual(["gone", "done"]);
+    fireEvent.click(screen.getByRole("button", { name: "全部" }));
+    expect([phase("ptr-old"), phase("ptr-new")]).toEqual(["gone", "all"]);
+  });
+
+  it("until 不是这张图的步骤时告警，照常按 at 算", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    zh(
+      <Paper>
+        <ProcessFigure id="bad-until" steps={steps} caption="c">
+          <svg>
+            <FigureStep at="a" until="zzz" data-testid="p" />
+          </svg>
+        </ProcessFigure>
+      </Paper>,
+    );
+    expect(screen.getAllByTestId("p")[0].getAttribute("data-phase")).toBe("on");
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("zzz"));
+    warn.mockRestore();
+  });
+
   it("上一步 / 下一步在首尾禁用", () => {
     renderProcess();
     expect(screen.getByRole("button", { name: "上一步" })).toHaveProperty("disabled", true);
