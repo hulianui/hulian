@@ -1,21 +1,18 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { getIntlayer } from "next-intlayer";
 import { JsonLd } from "../components/json-ld";
 import {
-  Button,
+  AuroraText,
+  BorderBeam,
   DotPattern,
   Heading,
-  Separator,
   Snippet,
-  Stack,
-  Tag,
+  SparklesText,
   Text,
 } from "@hulianui/ui";
-import { manifest } from "../lib/manifest";
 import { SiteNavbar } from "../components/site-navbar";
+import { HomeHeroWall } from "../components/home-hero-wall";
 import {
   DOCS_LOCALE,
   ROOT_LOCALE,
@@ -44,23 +41,18 @@ export const metadata: Metadata = {
   },
 };
 
-// 站在巨人肩上 —— 吸取式聚合的底座（静态排开，每个都链上游）
-// 每个 tag 都挂上游源头。OKLCH 是规格而不是产品，源头是 W3C CSS Color 4 里 okLCH 的定义
-// （规范本身也托管在 GitHub：w3c/csswg-drafts/css-color-4）。
-const STACK_TAGS = [
-  { label: "Base UI", href: "https://base-ui.com" },
-  { label: "TanStack Table", href: "https://tanstack.com/table/latest" },
-  { label: "Recharts", href: "https://recharts.org" },
-  { label: "Tailwind v4", href: "https://tailwindcss.com" },
-  { label: "Motion", href: "https://motion.dev" },
-  { label: "MagicUI", href: "https://magicui.design" },
-  { label: content.muiBridge, href: "https://mui.com" },
-  { label: "OKLCH Token", href: "https://www.w3.org/TR/css-color-4/#ok-lab" },
-] as const;
-
-const total = manifest.length;
-
 // 入场逐级揭示的延迟（prefers-reduced-motion 下由 globals.css 整体禁用）
+// 品牌名的星点、slogan 关键词的流光共用这组色（模块级常量：SparklesText 把 colors 放进
+// effect 依赖，每次渲染新建数组会让星点不停重生）。
+// 色相：围绕右侧组件墙当前色相（--hw-hue，由墙写到 hero 区块上）
+// 左右各偏 40° 取三个色，于是墙一换色，这里跟着换。light-dark() 让暗色下抬高明度。
+const auroraStop = (offset: number) =>
+  `light-dark(oklch(0.55 0.19 calc(var(--hw-hue) + ${offset})), oklch(0.78 0.15 calc(var(--hw-hue) + ${offset})))`;
+const AURORA_COLORS = [auroraStop(0), auroraStop(40), auroraStop(-40)];
+
+// AI 接入指南的完整地址（带语言前缀），上手卡里给复制
+const AI_GUIDE_URL = `${SITE_URL}${withDocsBasePath("/start")}`;
+
 const rise = (i: number): CSSProperties => ({ animationDelay: `${i * 70}ms` });
 
 // 品牌级结构化数据：把首页标记为「一个软件产品 + 网站」，帮搜索引擎/AI 在
@@ -97,216 +89,111 @@ export default function Home() {
   return (
     <>
       <JsonLd data={homeJsonLd} />
-      <SiteNavbar />
-      <main className="mx-auto max-w-4xl px-6 pb-12 pt-8 sm:pb-16">
-        {/* Hero —— 左对齐、非对称，靠层级与留白说话；isolate 让背景层锁在本段内 */}
-        <section className="relative isolate pt-16 sm:pt-24">
-          {/* 纹理层：dogfood 自家 DotPattern，径向遮罩向四周淡出（库无「辉光」件，渐变仍走 CSS） */}
-          <DotPattern className="-z-10 text-border/70 [mask-image:radial-gradient(40%_50%_at_30%_10%,black,transparent)]" />
-          {/* 品牌辉光：径向渐变叠在纹理上做层次（纯 CSS，无库对应件） */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 -top-10 -z-10 h-64 blur-2xl"
-            style={{
-              background:
-                "radial-gradient(50% 60% at 30% 0%, color-mix(in oklch, var(--color-primary) 18%, transparent), transparent 70%)",
-            }}
-          />
+      {/* 主题色宿主：组件墙把当前色相写到这里，顶栏与整页的主色都从它派生（见 globals.css）。 */}
+      <div data-hero-accent>
+        <SiteNavbar />
+        <main>
+          {/* Hero —— 左文案、右组件墙。墙向右（宽屏）/ 向下（窄屏）出血被裁掉，用「放不下」
+            说明「有很多」。overflow-clip 而不是 hidden：墙里有可聚焦控件，hidden 的容器
+            会被 Tab 聚焦带着滚动、把整面墙挪位，clip 不可滚。isolate 让背景层锁在本段内。 */}
+          <section className="relative isolate overflow-clip">
+            {/* 纹理层：dogfood 自家 DotPattern，径向遮罩向四周淡出（库无「辉光」件，渐变仍走 CSS） */}
+            <DotPattern className="-z-10 text-border/70 [mask-image:radial-gradient(40%_50%_at_30%_10%,black,transparent)]" />
+            {/* 品牌辉光：径向渐变叠在纹理上做层次（纯 CSS，无库对应件） */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 blur-2xl"
+              style={{
+                background:
+                  "radial-gradient(50% 60% at 30% 0%, color-mix(in oklch, var(--color-primary) 18%, transparent), transparent 70%)",
+              }}
+            />
 
-          <Heading
-            level={1}
-            size="4xl"
-            className="hl-rise mt-3 text-6xl tracking-tight sm:text-7xl"
-            style={rise(2)}
-          >
-            {content.brand}
-          </Heading>
-
-          <Heading
-            as="p"
-            level={2}
-            size="2xl"
-            weight="semibold"
-            balance
-            className="hl-rise mt-8 max-w-xl"
-            style={rise(3)}
-          >
-            {content.tagline}
-          </Heading>
-          <Text tone="muted" className="hl-rise mt-3 max-w-xl leading-relaxed" style={rise(4)}>
-            {content.origin}
-          </Text>
-
-          {/* 主动作只留两个：先看有什么（唯一实心按钮），再装上就能用（Snippet 一键复制）。
-              「区块 / 页面 / 模版」刻意不在这里再开三个按钮 —— 顶栏已经有一处，
-              同一意图在首屏出现第二遍，只会让「先做什么」失去唯一答案。 */}
-          <Stack
-            direction="row"
-            wrap
-            align="center"
-            gap={3}
-            className="hl-rise mt-9"
-            style={rise(5)}
-          >
-            <Button render={<Link href="/components" />} className="group h-11 px-5">
-              {content.browseComponents.replace("{count}", String(total))}
-              <ArrowRight
-                className="size-4 transition-transform group-hover:translate-x-0.5"
-                aria-hidden
-              />
-            </Button>
-            <Snippet copyLabel={content.copy} copiedLabel={content.copied}>
-              pnpm add @hulianui/ui @hulianui/tokens
-            </Snippet>
-          </Stack>
-
-          {/* AI 接入紧跟在装库命令下面，而不是另开一节放到页面底部。
-              它是本库的差异点，可访客多半只看首屏 —— 挪下去等于没有。而且这两条都是
-              「复制即用」的命令，形态一致，并排成一组读起来是「装库 + 装 MCP」两步，
-              比拆成两个相隔一屏的区块更省事。
-              代价是 hero 的元素数超出 taste-skill 的 4 个上限，这里是有意破例：
-              那条规则防的是「hero 变成功能清单」，而这里多出来的是主动作的第二步。 */}
-          <div className="hl-rise mt-8 max-w-xl" style={rise(6)}>
-            <Text size="sm" tone="muted" className="mb-2 leading-relaxed">
-              {content.aiLead}
-            </Text>
-            <div className="w-fit max-w-full">
-              <Snippet copyLabel={content.copy} copiedLabel={content.copied}>
-                npx @hulianui/mcp init-agent
-              </Snippet>
-            </div>
-            <Stack direction="row" wrap align="center" gap={4} className="mt-3">
-              <Link
-                href="/start"
-                className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {content.aiStart}
-                <ArrowRight
-                  className="size-3.5 transition-transform group-hover:translate-x-0.5"
-                  aria-hidden
-                />
-              </Link>
-              {/* 裸 <a>：llms.txt 是 public 下的静态文件不是路由，Next Link 不该接管它。
-                  但也正因为不走 Link，basePath 得自己拼 —— 中文站挂 /zh，写死 "/llms.txt"
-                  会落到英文站的命名空间去。 */}
-              <a
-                href={withDocsBasePath("/llms.txt")}
-                className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-              >
-                llms.txt
-              </a>
-            </Stack>
-          </div>
-        </section>
-
-        {/* 用瑚琏搭的 —— 换掉原先那块站内目录（Segmented 四档 + 搜索 + 分类列表）。
-            那块列的入口顶栏有一份、hero 的「浏览组件」按钮有一份，它是第三份重复：
-            人扫不动，AI 也不会从这里取信息。挂两个真在跑的站更能说明问题。
-            与下方「站在巨人肩上」正好成一对：上面是我们吸取谁，这里是谁在用我们。 */}
-        <section className="hl-rise mt-20 sm:mt-24" style={rise(7)}>
-          <Heading as="p" size="sm" weight="medium" className="mb-4 text-foreground">
-            {content.builtWith}
-          </Heading>
-          {/* 只有几行，直接写开：intlayer 取到的是节点，放 JSX children 位置 React 才会解析，
-              先塞进普通数组再 map 出来会渲染成空。同理 aria-label 这类字符串属性要显式 String()。
-              官网与个人站是两个站：haloritual.com 是品牌官网，个人站已迁到 zhangzhiwei.com.cn。 */}
-          <nav className="border-t border-border" aria-label={String(content.builtWith)}>
-            <a
-              href="https://haloritual.com"
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
-            >
-              <Text as="span" weight="medium" className="shrink-0 whitespace-nowrap">
-                {content.officialName}
-              </Text>
-              <Text as="span" size="sm" tone="muted" truncate className="hidden min-w-0 flex-1 sm:block">
-                {content.officialBlurb}
-              </Text>
-              <Text
-                as="span"
-                size="sm"
-                tone="muted"
-                className="ml-auto shrink-0 font-mono transition-colors group-hover:text-primary"
-              >
-                haloritual.com
-              </Text>
-            </a>
-            <a
-              href="https://zhangzhiwei.com.cn"
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
-            >
-              <Text as="span" weight="medium" className="shrink-0 whitespace-nowrap">
-                {content.abelName}
-              </Text>
-              <Text as="span" size="sm" tone="muted" truncate className="hidden min-w-0 flex-1 sm:block">
-                {content.abelBlurb}
-              </Text>
-              <Text
-                as="span"
-                size="sm"
-                tone="muted"
-                className="ml-auto shrink-0 font-mono transition-colors group-hover:text-primary"
-              >
-                zhangzhiwei.com.cn
-              </Text>
-            </a>
-            <a
-              href="https://mock.haloritual.com"
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover"
-            >
-              <Text as="span" weight="medium" className="shrink-0 whitespace-nowrap">
-                Mock Pilot
-              </Text>
-              <Text as="span" size="sm" tone="muted" truncate className="hidden min-w-0 flex-1 sm:block">
-                {content.mockBlurb}
-              </Text>
-              <Text
-                as="span"
-                size="sm"
-                tone="muted"
-                className="ml-auto shrink-0 font-mono transition-colors group-hover:text-primary"
-              >
-                mock.haloritual.com
-              </Text>
-            </a>
-          </nav>
-        </section>
-
-        {/* 技术底座：静态排开，不用 Marquee。跑马灯的无缝循环靠复制子项，复制份要
-            aria-hidden，而 aria-hidden 里的 <a> 仍能 Tab 到（axe 判 aria-hidden-focus），
-            补 inert 又会把复制份变成不可点——滚动时视口里多半是复制份。八个短标签静态
-            换行就能排下，全部可点、键盘可达、读屏只读一遍。 */}
-        <section className="hl-rise mt-20 sm:mt-24" style={rise(8)}>
-          <Heading as="p" size="sm" weight="medium" className="mb-4 text-foreground">
-            {content.foundations}
-          </Heading>
-          <div className="flex flex-wrap gap-2">
-            {STACK_TAGS.map((tag) => (
-              <a key={tag.href} href={tag.href} target="_blank" rel="noreferrer" className="group rounded-full">
-                <Tag
-                  variant="solid"
-                  className="whitespace-nowrap transition-opacity group-hover:opacity-80"
+            <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] gap-12 px-6 pt-16 sm:pt-24 lg:min-h-[44rem] lg:grid-cols-[30rem_minmax(0,1fr)] lg:gap-14">
+              <div className="lg:pt-8">
+                {/* 动效只放在四个焦点上、各管一件事：品牌名的星点（点睛）、slogan 关键词的流光
+                  （强调）、上手卡的边框光束（引导视线到安装命令）、组件墙里的数字滚动与主题名轮换。
+                  每一处都尊重 prefers-reduced-motion。同屏再多就互相抢注意力，等于没有重点。 */}
+                <Heading
+                  level={1}
+                  size="4xl"
+                  className="hl-rise mt-3 text-6xl tracking-tight sm:text-7xl"
+                  style={rise(2)}
                 >
-                  {tag.label}
-                </Tag>
-              </a>
-            ))}
-          </div>
-        </section>
+                  <SparklesText colors={AURORA_COLORS} sparklesCount={8}>
+                    {content.brand}
+                  </SparklesText>
+                </Heading>
 
-        {/* 一句品牌宣言，立住调性 */}
-        <footer className="hl-rise mt-16" style={rise(9)}>
-          <Separator className="mb-6" />
-          <Text size="sm" tone="muted">
-            {content.declaration}
-          </Text>
-        </footer>
-      </main>
+                <Heading
+                  as="p"
+                  level={2}
+                  size="2xl"
+                  weight="semibold"
+                  balance
+                  className="hl-rise mt-8 max-w-xl"
+                  style={rise(3)}
+                >
+                  {content.taglineLead}
+                  <AuroraText colors={AURORA_COLORS}>{content.taglineAccent}</AuroraText>
+                  {content.taglineTail}
+                </Heading>
+                <Text
+                  tone="muted"
+                  className="hl-rise mt-3 max-w-xl leading-relaxed"
+                  style={rise(4)}
+                >
+                  {content.origin}
+                </Text>
+
+                {/* 上手卡：装库、接 AI、AI 接入指南链接，三行都是一键复制，不加说明文字。
+              「浏览组件」按钮已撤：右侧组件墙就是浏览入口的预览，顶栏也有「组件」。 */}
+                <div
+                  className="hl-rise relative mt-10 w-full max-w-[30rem] overflow-hidden rounded-xl border border-border/80 bg-surface shadow-sm"
+                  style={rise(5)}
+                >
+                  <BorderBeam size={120} duration={9} />
+                  <Snippet
+                    copyLabel={content.copy}
+                    copiedLabel={content.copied}
+                    className="flex w-full rounded-none border-0 bg-transparent px-4 py-3"
+                  >
+                    pnpm add @hulianui/ui @hulianui/tokens
+                  </Snippet>
+                  <div className="border-t border-border/70" />
+                  <Snippet
+                    copyLabel={content.copy}
+                    copiedLabel={content.copied}
+                    className="flex w-full rounded-none border-0 bg-transparent px-4 py-3"
+                  >
+                    npx @hulianui/mcp init-agent
+                  </Snippet>
+                  {/* AI 接入指南给完整链接、一键复制：它的用法就是贴给 AI 编程助手读，
+                    不是让人点进去看，所以复制比跳转更顺手。 */}
+                  <Snippet
+                    symbol={null}
+                    highlight={false}
+                    copyLabel={content.copy}
+                    copiedLabel={content.copied}
+                    className="flex w-full rounded-none border-0 border-t border-border/70 bg-muted/50 px-4 py-3 text-muted-foreground [&_code]:break-all"
+                  >
+                    {AI_GUIDE_URL}
+                  </Snippet>
+                </div>
+              </div>
+
+              {/* 墙本身就是带底色的面板，主题色切换会把面板一起染上 —— 覆盖写在墙的根节点上，
+              所以面板底色必须由墙自己画，放在外层就吃不到覆盖。 */}
+              <div className="relative -mr-6 h-[30rem] lg:mr-0 lg:h-auto">
+                <HomeHeroWall
+                  className="hl-rise absolute inset-y-0 left-0 w-screen overflow-clip rounded-l-[2rem] border-y border-l border-border/70 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--color-primary)_7%,var(--color-bg)),var(--color-bg)_70%)] p-7 [mask-image:linear-gradient(to_bottom,black_72%,transparent)]"
+                  style={rise(4)}
+                />
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
     </>
   );
 }
