@@ -1,5 +1,13 @@
 # @hulianui/ui
 
+## 0.74.1
+
+### Patch Changes
+
+- 224952c: fix(paper): `PaperPresenter` 的演示层沿用 `Paper` 所处的主题岛。演示层经 Portal 挂在 `body` 下，原先继承不到外层的 `data-theme`：`Paper` 放在暗色岛里，演示却跟着全局主题走。现在打开时取 `Paper` 最近的带 `data-theme` 的祖先（含 `Paper` 自己）标到演示层上，演示中切换主题也跟着变；主题在 `<html>` 上时不额外标注。
+
+- 224952c: feat(tokens): 新增衬线字体变量 `--hl-font-serif`，经主张层映射给 `--font-serif`，`font-serif` 工具类改由它驱动。默认值与 Tailwind 的衬线栈逐字一致，不设它的项目渲染不变；汉字经末尾的 `serif` 通用族落到系统宋体。`Paper` 的正文字体栈改为 `var(--paper-font, "STIX Two Text", "Times New Roman", var(--hl-font-serif, serif))`：西文仍先用 STIX Two Text / Times New Roman，中文与兜底回落到 `--hl-font-serif`，因此设它就能一并换掉论文里的中文衬线；`--paper-font` 照旧整个替换。
+
 ## 0.74.0
 
 ### Minor Changes

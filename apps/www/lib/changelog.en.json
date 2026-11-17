@@ -1,6 +1,19 @@
 [
   {
     "pkg": "@hulianui/tokens",
+    "version": "0.17.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "224952c",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(tokens): adds the serif font variable `--hl-font-serif`, mapped to `--font-serif` in the opinionated layer so the `font-serif` utility now follows it. The default matches Tailwind's serif stack exactly, so projects that do not set it render the same; Chinese text reaches the system Song face through the trailing `serif` generic family. The `Paper` body font stack becomes `var(--paper-font, \"STIX Two Text\", \"Times New Roman\", var(--hl-font-serif, serif))`: Latin text still uses STIX Two Text or Times New Roman first, while Chinese and fallbacks come from `--hl-font-serif`, so setting it also changes the Chinese serif in papers. `--paper-font` still replaces the whole stack."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/tokens",
     "version": "0.16.0",
     "date": "2026-11-17",
     "entries": [
@@ -9,6 +22,25 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): adds Paper, figures for papers that move with the text (first slice). `Paper` holds the display mode (read / print) and a figure registry, and `labels` sets the paper language for caption prefixes and automatic references independently of the UI language; it switches to print mode before the browser prints and back afterwards. Figure numbers come from a CSS counter, so they exist in server rendering and in print. `PaperFigure` takes any state value plus named presets, and its `children` maps state to picture. In print mode the main figure draws `printState`, `printSubfigures` expand into (a)(b)… sub-figures, and controls are not rendered. `ProcessFigure` explains a figure step by step; `FigureStep` marks which step each part belongs to. The current step is opaque, earlier steps are half transparent, and later steps are faint but not hidden. It comes with previous / next, per-step buttons, \"All\", and autoplay. `FigRef` is an in-text reference: a click switches the figure to its preset, scrolls it into view, and outlines it; without JS it is a plain anchor. Tokens add the `hulian-paper-flow` keyframes for flowing dashes on the current step."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.74.1",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "224952c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(paper): the `PaperPresenter` overlay now follows the theme island around `Paper`. The overlay is portaled to `body`, so it used to miss an outer `data-theme`: a `Paper` inside a dark island still presented in the global theme. When it opens, it now copies the theme of the nearest `data-theme` ancestor of `Paper` (including `Paper` itself) and follows changes while presenting; a theme set on `<html>` needs no copy and is left alone."
+      },
+      {
+        "sha": "224952c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "feat(tokens): adds the serif font variable `--hl-font-serif`, mapped to `--font-serif` in the opinionated layer so the `font-serif` utility now follows it. The default matches Tailwind's serif stack exactly, so projects that do not set it render the same; Chinese text reaches the system Song face through the trailing `serif` generic family. The `Paper` body font stack becomes `var(--paper-font, \"STIX Two Text\", \"Times New Roman\", var(--hl-font-serif, serif))`: Latin text still uses STIX Two Text or Times New Roman first, while Chinese and fallbacks come from `--hl-font-serif`, so setting it also changes the Chinese serif in papers. `--paper-font` still replaces the whole stack."
       }
     ]
   },
