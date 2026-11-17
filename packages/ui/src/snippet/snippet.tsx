@@ -36,12 +36,15 @@ function SnippetImpl({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-3 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface px-3 py-2 font-mono text-sm",
+        // max-w-full + code 的 min-w-0 / overflow-wrap:anywhere：一整串不带空格的内容（URL、长 token）
+        // 在窄容器里折行，而不是把 Snippet 连同父级一起撑出视口。anywhere 只在装不下时才断，
+        // 带空格的命令仍然按词换行。
+        "inline-flex max-w-full items-center gap-3 rounded-[var(--hl-radius-control,var(--radius))] border border-border bg-surface px-3 py-2 font-mono text-sm",
         className,
       )}
     >
-      {symbol != null && <span className="select-none text-muted-foreground">{symbol}</span>}
-      <code className="text-foreground">
+      {symbol != null && <span className="shrink-0 select-none text-muted-foreground">{symbol}</span>}
+      <code className="min-w-0 text-foreground [overflow-wrap:anywhere]">
         {colorable ? <HighlightedCode code={children as string} lang={effLang} /> : children}
       </code>
       <button

@@ -36,6 +36,7 @@ import { Stat } from "@hulianui/ui"
 | label* | `ReactNode` | 指标标签 |
 | value* | `ReactNode` | 指标数值（自行格式化好的字符串/节点） |
 | deltaLabel | `ReactNode` | 趋势旁说明文案（如「较上月」）。**依附于 delta**，不传 delta 则不渲染 |
+| deltaPlacement | `"below" \| "inline"` | 趋势放在哪：`"below"` 数值下方（默认），`"inline"` 数值同一行右侧、图表独占卡底；带 `chart` 时推荐 `"inline"` |
 | hint | `ReactNode` | 与趋势无关的一行注脚（如「上限 200 题」），独立于 delta 渲染，位于趋势行下方 |
 | icon | `ReactNode` | 角标图标 |
 | chart | `ReactNode` | 图表插槽（如 KPI 趋势 sparkline），渲染在数值行下方、delta 上方 |
@@ -57,6 +58,9 @@ import { Stat } from "@hulianui/ui"
 // 一排同构卡按 tone 给 icon 底座上色，便于按颜色定位类别（数值与趋势的颜色不受影响）
 <Stat label="在线设备" value="1,284" tone="success" icon={<Activity className="size-4" />} className="w-64" />
 <Stat label="故障节点" value="2" tone="danger" icon={<AlertTriangle className="size-4" />} className="w-64" />
+
+// 带图表时趋势排到数值右侧：读数 → 涨跌 → 走势，不用隔着一张图找它修饰的数字
+<Stat label="本周活跃" value="12,480" delta={8.2} deltaLabel="较上周" deltaPlacement="inline" chart={<Sparkline data={[32, 38, 35, 44, 52, 58, 72]} variant="area" width={220} height={40} />} className="w-72" />
 ```
 
 ## 禁忌 / 坑

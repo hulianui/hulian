@@ -108,6 +108,12 @@ jobs:
       - name: Check container padding safelist
         run: pnpm check:container-padding
 
+      # tablist / listbox / menu 这类复合角色的直接子元素只能是它要求的角色。混进 <Link> /
+      # 裸 <li> 时 typecheck / 单测 / guard 全绿，直到 a11y 门禁（先 build 整站再跑 axe）才以
+      # critical 级 aria-required-children 拦下（PR #395 首页产品线）。源码里静态可判，前移到这里。
+      - name: Check ARIA owned children
+        run: pnpm check:aria-owned-children
+
       # 组件 md 随 npm 包一起发布（files 里有 src），MCP 的 get_component_doc 本地模式直读
       # node_modules 里那一份 —— 文档里一句「纯 RSC」，到 agent 消费方那里就是运行时判断
       # 依据。#307 抓到 9 个组件 14 处这种断言，而它们的 `"use client"` 全是必要的。

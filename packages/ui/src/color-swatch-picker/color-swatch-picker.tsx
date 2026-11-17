@@ -56,7 +56,9 @@ function ColorSwatchPickerImpl({
             "data-[disabled]:cursor-not-allowed data-[disabled]:hover:scale-100",
           )}
         >
-          {/* 勾：mix-blend-difference 白勾 → 永远与底色反相，深浅色块都可见 */}
+          {/* 勾：纯白描边 + 一圈很淡的深色描影。白勾压在饱和色、深色上清楚，压在浅色上靠描影立住。
+              之前用 mix-blend-difference 取反相：可读是可读，但颜色是底色的补色 —— 蓝底出橙勾、
+              绿底出粉勾，选中态看着像出错了。 */}
           <BaseRadio.Indicator>
             <svg
               viewBox="0 0 24 24"
@@ -65,7 +67,7 @@ function ColorSwatchPickerImpl({
               strokeWidth={3}
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="size-3.5 mix-blend-difference"
+              className="size-3.5 [filter:drop-shadow(0_0_1.5px_rgb(0_0_0/0.55))]"
               aria-hidden
             >
               <path d="M20 6 9 17l-5-5" />

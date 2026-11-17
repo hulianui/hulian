@@ -11,7 +11,6 @@ import {
   NavbarContent,
   NavbarItem,
   NavbarMenuToggle,
-  Tag,
 } from "@hulianui/ui";
 import { UI_VERSION } from "../lib/ui-version";
 import { DocsSearch } from "./docs-search";
@@ -50,71 +49,85 @@ export function SiteNavbar() {
 
   return (
     <>
-      <Navbar sticky className="gap-1 bg-bg/80 px-2 sm:gap-2 sm:px-4 xl:gap-4 xl:px-6">
+      {/* 布局：左「品牌 + 导航」、右「搜索 + 工具」—— 导航紧贴品牌，宽屏上不再隔着半个屏幕。
+          右侧工具统一 36px 高、无边框的轻按钮，只有搜索框是实底，视觉重心落在「品牌」和「搜索」两处。 */}
+      <Navbar
+        sticky
+        bordered={false}
+        className="h-14 gap-2 border-b border-border/60 bg-bg/75 px-3 sm:px-5 xl:gap-3"
+      >
         <NavbarMenuToggle
           isOpen={open}
           onToggle={() => setOpen((v) => !v)}
           aria-label={open ? content.closeMenu : content.openMenu}
           className="sm:inline-flex xl:hidden"
         />
-        {/* min-w-0 让品牌区可收缩：最窄屏顶栏要塞下 汉堡+品牌+搜索+语言+主题切换，
-            品牌区不让步就会把最右的主题切换钮顶出视口（横向溢出 6px）。 */}
-        {/* NavbarBrand 自 0.21.0 起默认 flex-1 basis-0（可收缩），只需再给 min-w-0 解开
-            flex 项的 min-width:auto，truncate 才生效。 */}
-        <NavbarBrand className="min-w-0">
+        {/* grow={false}：品牌区按内容宽，导航紧跟其后。min-w-0 让品牌名在最窄屏可以 truncate，
+            否则会把最右的主题切换钮顶出视口。 */}
+        <NavbarBrand grow={false} className="min-w-0">
           {/* 版本徽标点进更新日志。必须与品牌 Link 并列而非嵌套——<a> 套 <a> 会 hydration 报错。 */}
-          <Link href="/" className="flex min-w-0 items-center gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element -- 静态 logo,免 next/image 优化开销 */}
-            <img
-              src={withDocsBasePath("/logo.svg")}
-              alt={content.logoAlt}
-              width={26}
-              height={26}
-              className="shrink-0 rounded-[6px]"
+          <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold">
+            {/* logo 用 mask 画：图形取自 logo.svg，颜色交给 CSS（.hl-logo，见 globals.css）。
+                用 <img> 时颜色写死在 SVG 里，首页的主题色切换够不着它。 */}
+            <span
+              role="img"
+              aria-label={content.logoAlt}
+              className="hl-logo size-6 shrink-0"
+              style={{
+                maskImage: `url(${withDocsBasePath("/logo.svg")})`,
+                WebkitMaskImage: `url(${withDocsBasePath("/logo.svg")})`,
+              }}
             />
-            {/* 实测 360px 起「瑚琏 Hulian」完整放得下且零溢出；再窄只够一个字加省略号，
-                半截品牌名比只留 logo 更糟，故在 360 以下整段收起。断点原先是 480px ——
-                那把 390/393/430 这些主流手机宽度全划进了「不显示品牌名」的一侧，
-                而同屏还留着语言切换 / 开源 / 主题三个次要控件，主次颠倒。 */}
+            {/* 360px 以下只留 logo：半截品牌名比只留 logo 更糟。 */}
             <span className="hidden truncate tracking-tight min-[360px]:inline">
               {content.brand}
             </span>
           </Link>
-          {/* 版本号在最窄屏让位：它是「锦上添花」，主题切换钮是功能。 */}
           <Link
             href="/changelog"
             aria-label={content.currentVersion.replace("{version}", UI_VERSION)}
-            className="ml-2 hidden shrink-0 2xl:block"
+            className="ml-2 hidden shrink-0 rounded-full border border-border/80 px-2 py-0.5 font-mono text-[11px] leading-4 text-muted-foreground transition-colors hover:border-primary-border hover:text-primary lg:block"
           >
-            <Tag variant="soft" tone="brand" size="sm">
-              v{UI_VERSION}
-            </Tag>
+            v{UI_VERSION}
           </Link>
         </NavbarBrand>
-        <NavbarContent justify="end" className="hidden xl:flex">
+
+        <NavbarContent justify="start" className="ml-4 hidden gap-0.5 sm:gap-0.5 xl:flex">
           {tiers.map((t) => (
-            <NavbarItem key={t.href} isActive={isActive(t.match)}>
-              <Link href={t.href}>{t.label}</Link>
+            <NavbarItem
+              key={t.href}
+              isActive={isActive(t.match)}
+              className={`p-0 ${
+                isActive(t.match) ? "bg-primary-subtle" : "hover:bg-surface-hover"
+              }`}
+            >
+              <Link href={t.href} className="block px-3 py-1.5">
+                {t.label}
+              </Link>
             </NavbarItem>
           ))}
         </NavbarContent>
-        {/* 全站搜索：跨 页面/区块/组件/模版/指南 的统一入口，⌘K 可唤起。
-            与开源、主题切换同属「站点级」动作，全断点常驻、不折进汉堡菜单。 */}
-        <DocsSearch />
-        <LanguageSwitcher pathname={pathname} />
-        {/* 开源入口在 sm 以上常驻顶栏；最窄屏（<640px）让位给品牌名，改由折叠菜单承接。
-            顶栏在 390px 要塞下 汉堡+品牌+搜索+语言+开源+主题，总得有人退一格 ——
-            退的应该是「跳去仓库」这种低频动作，不是「这是谁家的站」。 */}
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={content.github}
-          className="max-sm:hidden"
-          render={<a href={REPO} target="_blank" rel="noreferrer" />}
-        >
-          <GithubIcon className="size-[18px]" />
-        </Button>
-        <AnimatedThemeToggler aria-label={content.toggleTheme} />
+
+        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5">
+          {/* 全站搜索：跨 页面/区块/组件/模版/指南 的统一入口，⌘K 唤起；全断点常驻。 */}
+          <DocsSearch />
+          <span aria-hidden className="mx-1 hidden h-5 w-px bg-border sm:block" />
+          <LanguageSwitcher pathname={pathname} />
+          {/* 开源入口在 sm 以上常驻；最窄屏让位给品牌名，改由折叠菜单承接。 */}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={content.github}
+            className="size-9 text-muted-foreground hover:text-foreground max-sm:hidden"
+            render={<a href={REPO} target="_blank" rel="noreferrer" />}
+          >
+            <GithubIcon className="size-[18px]" />
+          </Button>
+          <AnimatedThemeToggler
+            aria-label={content.toggleTheme}
+            className="size-9 border-0 bg-transparent text-muted-foreground hover:text-foreground [&_svg]:size-[18px]"
+          />
+        </div>
       </Navbar>
 
       {open && (

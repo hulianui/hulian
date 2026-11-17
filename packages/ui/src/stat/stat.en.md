@@ -36,6 +36,7 @@ import { Stat } from "@hulianui/ui"
 | label* | `ReactNode` | Metric label. |
 | value* | `ReactNode` | Consumer-formatted metric value. |
 | deltaLabel | `ReactNode` | Comparison label rendered only with `delta`. |
+| deltaPlacement | `"below" \| "inline"` | Where the trend goes: `"below"` under the value (default), or `"inline"` beside the value with the chart taking the card bottom. Prefer `"inline"` when `chart` is set. |
 | hint | `ReactNode` | Independent footnote below the trend. |
 | icon | `ReactNode` | Corner icon. |
 | chart | `ReactNode` | Graphic such as a KPI sparkline between value and delta. |
@@ -57,6 +58,9 @@ import { Stat } from "@hulianui/ui"
 // Color the icon base per category so a row of identical cards stays scannable
 <Stat label="Devices online" value="1,284" tone="success" icon={<Activity className="size-4" />} className="w-64" />
 <Stat label="Failed nodes" value="2" tone="danger" icon={<AlertTriangle className="size-4" />} className="w-64" />
+
+// With a chart, keep the trend beside the value it qualifies instead of below the chart
+<Stat label="Weekly active" value="12,480" delta={8.2} deltaLabel="vs last week" deltaPlacement="inline" chart={<Sparkline data={[32, 38, 35, 44, 52, 58, 72]} variant="area" width={220} height={40} />} className="w-72" />
 ```
 
 ## Pitfalls

@@ -27131,6 +27131,11 @@
           "description": "趋势旁说明文案（如「较上月」）。**依附于 delta**，不传 delta 则不渲染"
         },
         {
+          "name": "deltaPlacement",
+          "type": "\"below\" | \"inline\"",
+          "description": "趋势放在哪：`\"below\"` 数值下方（默认），`\"inline\"` 数值同一行右侧、图表独占卡底；带 `chart` 时推荐 `\"inline\"`"
+        },
+        {
           "name": "hint",
           "type": "ReactNode",
           "description": "与趋势无关的一行注脚（如「上限 200 题」），独立于 delta 渲染，位于趋势行下方"

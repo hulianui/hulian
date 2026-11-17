@@ -553,6 +553,13 @@
       "id": "component/animated-list/pitfall/2",
       "scope": "animated-list",
       "title": "AnimatedList",
+      "rule": "子项只要露出一点就会入场（`amount: \"some\"`），放在被 `overflow` 裁掉一部分的容器里也能正常出现；0.74.1 及以前要露出 40% 才入场，被裁切时会一直空白。",
+      "source": "packages/ui/src/animated-list/animated-list.md"
+    },
+    {
+      "id": "component/animated-list/pitfall/3",
+      "scope": "animated-list",
+      "title": "AnimatedList",
       "rule": "子项依赖渲染顺序逐个 stagger，动态增删子项会重新编排顺序——稳定 key 必给。",
       "source": "packages/ui/src/animated-list/animated-list.md"
     },
@@ -8936,6 +8943,13 @@
       "source": "packages/ui/src/segmented/segmented.md"
     },
     {
+      "id": "component/segmented/pitfall/6",
+      "scope": "segmented",
+      "title": "Segmented",
+      "rule": "只有选中段用 `font-medium`，未选中段是常规字重（0.74.1 及以前所有段都是 `font-medium`）。",
+      "source": "packages/ui/src/segmented/segmented.md"
+    },
+    {
       "id": "component/select/pitfall/1",
       "scope": "select",
       "title": "Select",
@@ -9388,6 +9402,13 @@
       "scope": "snippet",
       "title": "Snippet",
       "rule": "默认复制标签跟随 `ConfigProvider locale`；无 Provider 时保持“复制 / 已复制”，`enUS` 为 “Copy / Copied”。",
+      "source": "packages/ui/src/snippet/snippet.md"
+    },
+    {
+      "id": "component/snippet/pitfall/3",
+      "scope": "snippet",
+      "title": "Snippet",
+      "rule": "宽度不会超过父容器：不带空格的长串（URL、token）装不下时会在任意位置折行。0.74.1 及以前它不折行，会把 Snippet 连同父级一起撑出视口。",
       "source": "packages/ui/src/snippet/snippet.md"
     },
     {
@@ -11460,7 +11481,7 @@
   ],
   "stats": {
     "componentDocs": 404,
-    "componentAdvisories": 1598,
-    "totalAdvisories": 1608
+    "componentAdvisories": 1601,
+    "totalAdvisories": 1611
   }
 }

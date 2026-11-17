@@ -67,7 +67,7 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
     <div
       role="group"
       aria-label={content.languageGroup}
-      className="inline-flex h-11 shrink-0 items-center rounded-[min(var(--radius),0.5rem)] border border-border bg-surface text-xs font-medium"
+      className="inline-flex h-8 shrink-0 items-center rounded-full bg-muted p-0.5 text-xs font-medium"
     >
       {localeOptions.map(({ locale, label, ariaLabel }) => {
         const current = locale === DOCS_LOCALE;
@@ -80,10 +80,10 @@ export function LanguageSwitcher({ pathname }: { pathname?: string }) {
             aria-label={ariaLabel}
             aria-current={current ? "page" : undefined}
             onClick={(event) => activateLocale(event, locale)}
-            className={`inline-flex h-full min-w-11 items-center justify-center rounded-[min(var(--radius),0.375rem)] px-1.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg ${
+            className={`inline-flex h-full min-w-9 items-center justify-center rounded-full px-2 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-bg ${
               current
-                ? "bg-surface-hover text-foreground"
-                : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                ? "bg-surface text-primary shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {label}

@@ -22,6 +22,34 @@ describe("Stat", () => {
     expect(container.querySelector("svg")).toBeTruthy();
   });
 
+  it('deltaPlacement="inline" → 趋势与数值同一行，排在图表之前', () => {
+    const { getByText, getByTestId } = render(
+      <Stat
+        label="本周活跃"
+        value="12,480"
+        delta={8.2}
+        deltaLabel="较上周"
+        deltaPlacement="inline"
+        chart={<span data-testid="chart" />}
+      />,
+    );
+    const trend = getByText(/\+8\.2%/).closest("div") as HTMLElement;
+    const valueRow = getByText("12,480").parentElement as HTMLElement;
+    expect(valueRow.contains(trend)).toBe(true);
+    // 文档顺序：趋势在图表前面（默认 below 时图表在前、趋势在后）
+    const chart = getByTestId("chart");
+    expect(trend.compareDocumentPosition(chart) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("默认 deltaPlacement 为 below：趋势排在图表之后", () => {
+    const { getByText, getByTestId } = render(
+      <Stat label="GMV" value="¥88k" delta={12} chart={<span data-testid="chart" />} />,
+    );
+    const trend = getByText(/\+12%/).closest("div") as HTMLElement;
+    const chart = getByTestId("chart");
+    expect(chart.compareDocumentPosition(trend) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("delta<0 → text-danger + 负号", () => {
     const { getByText } = render(<Stat label="退款" value="3" delta={-5} />);
     const trend = getByText(/-5%/).closest("div") as HTMLElement;

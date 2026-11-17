@@ -24,7 +24,3 @@
 - [ ] 若改动影响 `@hulianui/ui` / `@hulianui/tokens` 对外行为，已 `pnpm changeset` 附变更说明
 - [ ] 新增/修改组件已在 4 处注册（barrel / showcase / manifest / registry）并配套测试、showcase、文档
 - [ ] 没有在 demo 里打 CSS/行为补丁绕过组件缺口（有缺口则修组件本身）
-
-## 截图 / 录屏（UI 改动必填）
-
-<!-- 明暗两态尽量都给 -->

@@ -93,6 +93,7 @@ import { Segmented } from "@hulianui/ui"
 - 段 `label` 是图标/徽标等富节点时必须给该段 `ariaLabel`，否则读屏会读英文 `value`（念读不友好）。
 - 用 `value`/`onValueChange` 即受控，须自管 state；非受控只给 `defaultValue`。
 - 选中是单值互斥，没有多选——多选共存改用 [ToggleGroup](../toggle/toggle.md)。
+- 只有选中段用 `font-medium`，未选中段是常规字重（0.74.1 及以前所有段都是 `font-medium`）。
 
 ## 相关
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md)
