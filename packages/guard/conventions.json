@@ -2002,7 +2002,7 @@
       "id": "component/code-block/pitfall/1",
       "scope": "code-block",
       "title": "CodeBlock",
-      "rule": "**`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里三类之外的语言一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。",
+      "rule": "**`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里列出的语言之外一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。",
       "source": "packages/ui/src/code-block/code-block.md"
     },
     {

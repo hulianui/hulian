@@ -39,6 +39,7 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 | `js` `jsx` `ts` `tsx` `json` | JS 家族 |
 | `bash` `sh` `shell` `zsh` `console` | Shell（命令名与 flag 分色） |
 | `py` `python` `python3` | Python（`#` 注释、三引号文档串、`f`/`r`/`b` 前缀串、装饰器、内置名、`0b`/`0o`/`0x`/下划线/虚数字面量） |
+| `text` `txt` `plain` `plaintext` | 纯文本，不着色 |
 | 其它 | 按 JS 家族**近似**处理 |
 
 ## 示例
@@ -60,7 +61,7 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 ## 禁忌 / 坑
 
-- **`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里三类之外的语言一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。
+- **`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里列出的语言之外一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。
 - **行号是装饰，不是内容**。它 `aria-hidden` 且不可选中：屏幕阅读器不念，用户框选整段代码复制时也不会混进 `1 2 3`；复制按钮复制的始终是原始 `code`。反过来说，别把「行号」当成可复制的数据来源。
 - **行号列会一直钉在左侧**（`sticky left-0` + 不透明底色）。长行横向滚动时行号不会滑走，代价是滚过去的代码会被行号列遮住一小条——这是刻意的取舍，长行看行号比看那一小条代码重要。
 - 复制按钮读的是 `navigator.clipboard`，只在安全上下文（HTTPS / localhost）可用；HTTP 局域网页面里点了不会有反应。

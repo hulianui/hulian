@@ -6,7 +6,7 @@ const total = manifest.length;
 // 英文文档站的根地址：英文作根语言时就是站点根，将来若改作嵌套语言会自动带上前缀。
 const EN_BASE = `${SITE_URL}${basePathForLocale("en")}`;
 
-export const AI_GUIDE_EN_MD = `# Hulian UI (@hulianui/ui) · AI Integration Guide
+export const AI_GUIDE_EN_MD = `# Hulian UI (@hulianui/ui) AI Integration Guide
 
 > Give this complete guide to your AI coding assistant, such as Claude Code, Cursor, or Copilot, so it can build interfaces correctly with Hulian UI.
 
@@ -63,23 +63,20 @@ export default function App({ children }: { children: React.ReactNode }) {
 ## Non-negotiable rules
 
 1. **Use components from \`@hulianui/ui\`**. Search the library before writing an equivalent component yourself.
-2. **Import from the root package**: \`import { Button, Card, Table } from "@hulianui/ui"\`.
+2. **Import from the root package**: \`import { Button, DatePicker, Table } from "@hulianui/ui"\`. There are no subpath entry points, including for the date family.
 3. **Use theme tokens instead of fixed colors**. For SVG attributes and inline styles, use values such as \`var(--color-primary)\` and \`var(--color-foreground)\`. Color variables must include the \`--color-\` prefix so Tailwind CSS v4 can resolve them.
 4. **Do not reach into a component's internal markup with local styles**. Use the component's public props to change appearance or behavior.
-
-## Every component is in the root barrel
-
-Since version 0.15.0, the date family is implemented in-house with no extra runtime dependencies. Import \`Calendar\`, \`DatePicker\`, \`DateTimePicker\`, \`TimeField\`, \`TimePicker\`, and \`DateRangePicker\` from the root package:
-
-\`\`\`tsx
-import { DatePicker, DateTimePicker, TimeField, Calendar } from "@hulianui/ui";
-\`\`\`
-
-The old \`@hulianui/ui/date-pickers\` subpath, MUI packages, Emotion packages, and \`MuiBridgeProvider\` are no longer used. Any guide that still requires them predates version 0.15.0.
+5. **Read the documentation before coding instead of guessing props**. With MCP installed, call \`get_component_doc\`. Otherwise fetch ${EN_BASE}/d/<component-slug>.md.
 
 ## Recommended: install the MCP server
 
-\`@hulianui/mcp\` lets an AI assistant query available components, usage rules, install metadata, and executable conventions on demand instead of guessing prop signatures.
+\`@hulianui/mcp\` lets an AI assistant query components, usage, and rules on demand instead of loading the whole library or guessing prop signatures.
+
+\`\`\`bash
+npx @hulianui/mcp init-agent
+\`\`\`
+
+It writes the usage contract into the files each client reads (\`CLAUDE.md\`, \`AGENTS.md\`, \`.cursor/rules/hulianui.mdc\`, and others) **without touching your existing content**.
 
 Claude Code and Cursor configuration:
 
@@ -91,24 +88,9 @@ Claude Code and Cursor configuration:
 }
 \`\`\`
 
-Available tools:
+Once connected, the server tells the assistant when and in what order to call each tool. See the [@hulianui/mcp documentation](https://www.npmjs.com/package/@hulianui/mcp) for the full tool list and the audit workflow for existing projects.
 
-| Tool | When the assistant should call it |
-| --- | --- |
-| \`list_components\` | Before writing UI. \`kind\` accepts component, block, page, or lib. |
-| \`get_component_doc\` | Before the first use of a component, to inspect props, events, slots, examples, and pitfalls. |
-| \`install_block\` | When installing a block or page, to obtain recursive dependencies, providers, required replacements, slots, and the guard command. |
-| \`get_conventions\` | Before a new page or feature, to load executable rules and recommendations that still need contextual judgment. |
-
-## Look up a component without MCP
-
-- Each component page has a **Copy MD** button with its import, props, and examples. Component URLs use \`${EN_BASE}/components/<slug>\`, such as \`button\` or \`pro-table\`.
-- Machine-readable resources:
-  - ${EN_BASE}/d/<slug>.md — complete documentation for one component
-  - ${EN_BASE}/llms.txt — component index and summaries
-  - ${EN_BASE}/llms-full.txt — complete library documentation; prefer the single-component endpoint to save context
-  - ${EN_BASE}/registry.json — structured component, block, and page registry
-  - ${EN_BASE}/conventions.json — machine-readable usage constraints
+Without MCP, point the assistant at the machine-readable docs: ${EN_BASE}/d/<component-slug>.md for one component and ${EN_BASE}/llms.txt for the component index. Every component page also has a **Copy MD** button.
 
 ## Install blocks and pages
 
@@ -130,11 +112,10 @@ Components normally do not need source installation; import them directly unless
 ## Prompt template
 
 \`\`\`text
-I am using the @hulianui/ui React design system. Follow these rules:
-1) Build UI with components exported from "@hulianui/ui"; do not recreate equivalent components.
-2) Do not override component internals. Use public component props.
-3) Use theme color tokens such as var(--color-primary), always with the --color- prefix.
-4) Read the documentation before coding. With MCP installed, call get_component_doc. Otherwise fetch ${EN_BASE}/d/<component-slug>.md.
-For complete interfaces such as login pages, pricing tables, and dashboards, inspect registry blocks and pages before starting from scratch. After installation, run the hulian-check command returned by MCP and resolve every error-level violation.
+I am using the @hulianui/ui React design system.
+Read this integration guide first and follow its non-negotiable rules:
+${EN_BASE}/start
+For complete interfaces such as login pages, pricing tables, and dashboards,
+inspect registry blocks and pages before starting from scratch.
 \`\`\`
 `;
