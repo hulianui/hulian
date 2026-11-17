@@ -1,5 +1,17 @@
 # @hulianui/ui
 
+## 0.78.0
+
+### Minor Changes
+
+- afb8c51: Paper adds the section trio: `PaperSection` (CSS counters for hierarchical numbering 1 / 2.1, present in server rendering and print), `SecRef` (in-text references such as "Section 2.1" that scroll to the heading and flash it), and `PaperOutline` (an outline generated from the section registry, reusing Anchor for scroll-spy). `Paper` labels gain `section`.
+
+  `FigureStep` gains `until`: from a given step onward the part is superseded and no longer drawn (also hidden in the All state and in exported SVGs), for moving branch pointers and replaced nodes.
+
+  `FigRef` now appends the sub-figure letter when `state` is one of the figure's print sub-figures and no children are given, e.g. "Figure 1(b)", matching the printed version.
+
+  `usePaperNavigate()`: imperative navigation to a figure, equation or section, sharing the scroll-into-view and flash logic with `FigRef` / `SecRef` / `EqRef`. Controls that are already interactive, such as `Button`, can call it in `onClick` instead of nesting a reference via `render={<FigRef/>}` and inheriting link underlines.
+
 ## 0.77.0
 
 ### Minor Changes

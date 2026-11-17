@@ -1,27 +1,27 @@
 [
   {
+    "pkg": "@hulianui/ui",
+    "version": "0.78.0",
+    "date": "2026-11-18",
+    "entries": [
+      {
+        "sha": "afb8c51",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 新增章节三件套：`PaperSection`（CSS 计数器自动层级编号 1 / 2.1，服务端渲染与打印都有号）、`SecRef`（正文引用「第 2.1 节」/ \"Section 2.1\"，点击滚动并描边）、`PaperOutline`（从章节注册表生成目录，内部复用 Anchor 滚动高亮）。`Paper` 的 `labels` 新增 `section`。\n\n`FigureStep` 新增 `until`：从某一步起被取代、不再画出（「全部」状态与导出 SVG 里也隐藏），用来画会移动的分支指针、被替换的旧节点。\n\n`FigRef` 不写文字时，若 `state` 是该图的打印分图之一，自动写成「图 1(b)」/ \"Figure 1(b)\"，分图字母与打印版一致。\n\n`usePaperNavigate()`：命令式跳到图 / 公式 / 章节，与 `FigRef` / `SecRef` / `EqRef` 共用同一套「滚进视野 + 描边」逻辑。`Button` 这类本身就是交互元素的触发器用它在 `onClick` 里跳转，不必再 `render={<FigRef/>}` 嵌套引用、继承链接下划线。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/tokens",
     "version": "0.19.0",
-    "date": "2026-11-18",
+    "date": "2026-11-17",
     "entries": [
       {
         "sha": "659f0c0",
         "bump": "minor",
         "breaking": false,
         "body": "feat(tokens): 新增 accent 作用域 `[data-accent-scope]`：子树里只换主色的**色相**（`--hl-accent-hue`，OKLCH h，品牌原色 258），明度 / 彩度沿用品牌梯子，`primary` / `primary-hover` / `primary-subtle` / `primary-border` / `ring` / `signal-brand` / `code-keyword` 与图表色板 `chart-1..6` 一起换，亮色、暗色、作用域里嵌套的主题岛都覆盖。`--hl-accent-hue` 用 `@property` 注册成 `<number>`，可以过渡。通常配 `@hulianui/ui` 的 `<AccentScope hue>` 使用。"
-      }
-    ]
-  },
-  {
-    "pkg": "@hulianui/ui",
-    "version": "0.77.0",
-    "date": "2026-11-18",
-    "entries": [
-      {
-        "sha": "659f0c0",
-        "bump": "minor",
-        "breaking": false,
-        "body": "feat: 文档站首页与顶栏改为全部由组件构成，此前写在站点本地的视觉补丁回流成组件能力。新增 5 个组件、3 个子件导出，补齐 14 个组件的 prop；所有新 prop 的默认值都不改变存量渲染（ColorSwatchPicker 选中外环一处除外，见下）。\n\n- **新组件**：`AccentScope`（局部换主色色相，配 tokens 的 `[data-accent-scope]`）· `IconTile`（功能 / 通知文字左边的图标方块，三尺寸 × 三变体 × 六语义色 + 分类色）· `SectionHeader`（eyebrow + 分节大标题 + 主色强调半句 + 导语）· `WindowFrame`（三色点标题栏的应用窗口外框）· `FadeMask`（把内容向一边或从中心向四周淡出到透明）。\n- **新子件**：`CommandTrigger`（搜索框样子的命令面板入口，`shape=\"pill\"`、`collapseBelow` 窄屏收成图标钮）· `NavbarMenu`（窄屏折叠菜单，与 `NavbarMenuToggle` 同一个 `breakpoint`）· `SnippetGroup`（多条命令堆叠在同一张卡里，`overlay` 放 BorderBeam 等装饰层）。\n- **Tabs**：`TabsList variant=\"card\"`（带描述的卡片 tab，竖排纵向堆叠）；`Tabs autoPlay={ms}` 自动轮播，选中 tab 底部进度条走满即换，悬停 / 聚焦 / 不在视口时暂停，减弱动效时不启用，访客选过一次即停。\n- **Card**：`variant=\"primary\"`（主色渐变底，自动挂 `data-surface=\"inverse\"`，卡内组件自动反色）、`interactive`、`render`（整卡渲染成链接）。\n- **Navbar**：`size=\"sm\"`、`variant=\"page\"`；`NavbarItem variant=\"soft\"`（选中铺主色浅底，链接整块可点）；`NavbarMenuToggle breakpoint`。\n- **Brand**：`variant=\"bare\"`（无徽章底）、`maskSrc`（单色 logo 按形状着色，跟随主题色 / AccentScope）。\n- **Segmented**：`shape=\"pill\"`；段可给 `render`（如 `<a href>`），整组按链接组处理（`role=\"group\"` + `aria-current=\"page\"`）。\n- **Tag**：`shape=\"pill\"`、`render`（可点标签）。**Link**：`tone=\"muted\"`、`arrow`。**Heading**：`size=\"display\"`。\n- **AnimatedThemeToggler**：`variant=\"ghost\"`、`size=\"sm\"`（与 Button `iconSm` 同高）。\n- **Progress**：`tone=\"inverse\"`（彩色卡上的白条）。**Avatar**：`tone=\"brand\"`、`ring`。**Snippet**：`muted` 次要行。**Spotlight**：`blend=\"transparent\"`、`size` 两值为椭圆。\n- **ColorSwatchPicker**：`shape=\"circle\"`。选中外环由 `ring-offset` 改为 `outline-offset`：间隙从「画出来的页面底色」变成透明，放在卡片上不再露出一圈与卡面不同的底色（页面底上视觉不变）。"
       }
     ]
   },
@@ -61,6 +61,19 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): 新增 Paper 动态论文插图（首片）。`Paper` 管呈现形态（阅读 / 打印）和图的注册表，`labels` 让论文内容的语言（图注前缀、自动引用）独立于界面语言；浏览器打印前自动切到打印形态、打印完切回；图号用 CSS 计数器，服务端渲染和打印都有号。`PaperFigure` 的状态是任意值加一组有名字的预设，`children` 是「状态 → 画面」的函数；打印形态下主图画 `printState`，`printSubfigures` 展开成 (a)(b)… 分图，控件不渲染。`ProcessFigure` 是一步步讲的图，图里用 `FigureStep` 标出每一部分属于哪一步：当前步不透明、讲过的半透明、没讲到的很淡但不隐藏；自带上一步 / 下一步、逐步按钮、「全部」和自动播放。`FigRef` 是正文引用，点击把图切到对应预设、滚进视野并描边，没有 JS 时退化成锚点。tokens 新增 `hulian-paper-flow` 关键帧，给当前一步的流动虚线用。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.77.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "659f0c0",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat: 文档站首页与顶栏改为全部由组件构成，此前写在站点本地的视觉补丁回流成组件能力。新增 5 个组件、3 个子件导出，补齐 14 个组件的 prop；所有新 prop 的默认值都不改变存量渲染（ColorSwatchPicker 选中外环一处除外，见下）。\n\n- **新组件**：`AccentScope`（局部换主色色相，配 tokens 的 `[data-accent-scope]`）· `IconTile`（功能 / 通知文字左边的图标方块，三尺寸 × 三变体 × 六语义色 + 分类色）· `SectionHeader`（eyebrow + 分节大标题 + 主色强调半句 + 导语）· `WindowFrame`（三色点标题栏的应用窗口外框）· `FadeMask`（把内容向一边或从中心向四周淡出到透明）。\n- **新子件**：`CommandTrigger`（搜索框样子的命令面板入口，`shape=\"pill\"`、`collapseBelow` 窄屏收成图标钮）· `NavbarMenu`（窄屏折叠菜单，与 `NavbarMenuToggle` 同一个 `breakpoint`）· `SnippetGroup`（多条命令堆叠在同一张卡里，`overlay` 放 BorderBeam 等装饰层）。\n- **Tabs**：`TabsList variant=\"card\"`（带描述的卡片 tab，竖排纵向堆叠）；`Tabs autoPlay={ms}` 自动轮播，选中 tab 底部进度条走满即换，悬停 / 聚焦 / 不在视口时暂停，减弱动效时不启用，访客选过一次即停。\n- **Card**：`variant=\"primary\"`（主色渐变底，自动挂 `data-surface=\"inverse\"`，卡内组件自动反色）、`interactive`、`render`（整卡渲染成链接）。\n- **Navbar**：`size=\"sm\"`、`variant=\"page\"`；`NavbarItem variant=\"soft\"`（选中铺主色浅底，链接整块可点）；`NavbarMenuToggle breakpoint`。\n- **Brand**：`variant=\"bare\"`（无徽章底）、`maskSrc`（单色 logo 按形状着色，跟随主题色 / AccentScope）。\n- **Segmented**：`shape=\"pill\"`；段可给 `render`（如 `<a href>`），整组按链接组处理（`role=\"group\"` + `aria-current=\"page\"`）。\n- **Tag**：`shape=\"pill\"`、`render`（可点标签）。**Link**：`tone=\"muted\"`、`arrow`。**Heading**：`size=\"display\"`。\n- **AnimatedThemeToggler**：`variant=\"ghost\"`、`size=\"sm\"`（与 Button `iconSm` 同高）。\n- **Progress**：`tone=\"inverse\"`（彩色卡上的白条）。**Avatar**：`tone=\"brand\"`、`ring`。**Snippet**：`muted` 次要行。**Spotlight**：`blend=\"transparent\"`、`size` 两值为椭圆。\n- **ColorSwatchPicker**：`shape=\"circle\"`。选中外环由 `ring-offset` 改为 `outline-offset`：间隙从「画出来的页面底色」变成透明，放在卡片上不再露出一圈与卡面不同的底色（页面底上视觉不变）。"
       }
     ]
   },
