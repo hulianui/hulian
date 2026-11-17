@@ -1,5 +1,24 @@
 # @hulianui/ui
 
+## 0.76.0
+
+### Minor Changes
+
+- 1fa6ab0: feat(code-block / markdown / code / kbd / prose / snippet / code-diff / segmented / curved-loop / table): code display polish and long-content handling, plus a batch of visual fixes.
+
+  - **CodeBlock**: with `lang`, a header bar renders (language on the left, actions on the right) instead of a floating label pushed in by `pt-8`. Without `lang`, the actions float in the upper-right corner and appear on hover or keyboard focus (always visible on touch), so the copy button no longer covers the first line. The code area gets a background half a step below surface, and the line-number gutter matches it with a lighter rule. New `defaultWrap` starts long lines wrapped; when a line really overflows, a "Wrap lines" toggle appears. New `maxLines` collapses longer blocks with a bottom fade and a "Show all N lines" button, and collapsing scrolls the block's top back into view.
+  - **Markdown**: new `codeBlock` passes `maxLines` / `defaultWrap` / `lineNumbers` and similar options to every fenced code block.
+  - **Code / Prose inline code**: `whitespace-nowrap` is gone, so long paths and URLs no longer push narrow containers wider; wrapped fragments each keep their rounded corners and padding. Adds a light `shadow-xs` lift.
+  - **Prose details**: the native filled triangle on `<summary>` is replaced by a line chevron that rotates down when open.
+  - **Kbd / KbdGroup**: new `tone="primary"` (brand subtle fill and border), replacing the className override on the docs homepage.
+  - **Snippet / CodeBlock**: icon buttons such as copy now highlight in the brand color on hover.
+  - **CodeDiff**: the file header changes from a gray band to a bright surface with a file icon, a medium-weight file name, and colored stat pills.
+  - **Segmented**: segments holding rich content such as a Tag no longer touch the edges; equal widths now come from a grid, sized to the widest segment.
+  - **CurvedLoop**: the viewBox is computed from the curve and measured glyph extents, so upward curves (negative `curveAmount`) are no longer clipped at the top. The component's height now matches the space the text really occupies, which is taller than before with default props.
+  - **Table**: the shell carries its own `bg-surface`, matching pinned columns and the sticky header instead of borrowing the container background.
+
+- 1fa6ab0: feat(tabs / segmented)!: the default `tone` on `TabsList` and `Segmented` changes from `neutral` to `brand`. The selected label now takes the brand colour by default (a white pill with a brand-blue label on `solid`), and the underline indicator matches it. **Visual change**: existing tab bars and segmented controls that pass no `tone` switch their selected colour from the foreground colour to the brand colour; pass `tone="neutral"` for the previous look, which renders byte for byte as before.
+
 ## 0.75.1
 
 ### Patch Changes

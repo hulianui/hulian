@@ -1,20 +1,33 @@
 [
   {
-    "pkg": "@hulianui/ui",
-    "version": "0.75.1",
+    "pkg": "@hulianui/tokens",
+    "version": "0.18.0",
     "date": "2026-11-18",
     "entries": [
       {
-        "sha": "cea4c5c",
-        "bump": "patch",
+        "sha": "1fa6ab0",
+        "bump": "minor",
         "breaking": false,
-        "body": "fix(code-block): `lang` values `text` / `txt` / `plain` / `plaintext` now render as plain text with no coloring. These languages used to fall through to the JavaScript-family approximation, so a URL in the text turned into an italic line comment from `//` onward, and anything between apostrophes or quotes was colored as a string. ` ```text ` fences in Markdown benefit as well."
+        "body": "feat(tokens): adds a theme-aware `shadow-xs` (a short drop and hairline in light mode, a white inset rim in dark mode). Previously `shadow-xs` fell back to Tailwind's default flat black at 0.05, which is invisible in dark mode. preset-opinionated also turns off ligatures and contextual alternates for monospace text (`--font-mono--font-feature-settings: \"liga\" 0, \"calt\" 0`), covering `font-mono` and `code / kbd / samp / pre`. Programming fonts such as Geist Mono fold `--` and `>=` into one glyph that overhangs to the left, eating the left padding of inline code and overlapping the previous letter. Projects that want ligatures can set it back to `normal` in their own `@theme`."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.76.0",
+    "date": "2026-11-18",
+    "entries": [
+      {
+        "sha": "1fa6ab0",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(code-block / markdown / code / kbd / prose / snippet / code-diff / segmented / curved-loop / table): code display polish and long-content handling, plus a batch of visual fixes.\n\n- **CodeBlock**: with `lang`, a header bar renders (language on the left, actions on the right) instead of a floating label pushed in by `pt-8`. Without `lang`, the actions float in the upper-right corner and appear on hover or keyboard focus (always visible on touch), so the copy button no longer covers the first line. The code area gets a background half a step below surface, and the line-number gutter matches it with a lighter rule. New `defaultWrap` starts long lines wrapped; when a line really overflows, a \"Wrap lines\" toggle appears. New `maxLines` collapses longer blocks with a bottom fade and a \"Show all N lines\" button, and collapsing scrolls the block's top back into view.\n- **Markdown**: new `codeBlock` passes `maxLines` / `defaultWrap` / `lineNumbers` and similar options to every fenced code block.\n- **Code / Prose inline code**: `whitespace-nowrap` is gone, so long paths and URLs no longer push narrow containers wider; wrapped fragments each keep their rounded corners and padding. Adds a light `shadow-xs` lift.\n- **Prose details**: the native filled triangle on `<summary>` is replaced by a line chevron that rotates down when open.\n- **Kbd / KbdGroup**: new `tone=\"primary\"` (brand subtle fill and border), replacing the className override on the docs homepage.\n- **Snippet / CodeBlock**: icon buttons such as copy now highlight in the brand color on hover.\n- **CodeDiff**: the file header changes from a gray band to a bright surface with a file icon, a medium-weight file name, and colored stat pills.\n- **Segmented**: segments holding rich content such as a Tag no longer touch the edges; equal widths now come from a grid, sized to the widest segment.\n- **CurvedLoop**: the viewBox is computed from the curve and measured glyph extents, so upward curves (negative `curveAmount`) are no longer clipped at the top. The component's height now matches the space the text really occupies, which is taller than before with default props.\n- **Table**: the shell carries its own `bg-surface`, matching pinned columns and the sticky header instead of borrowing the container background."
       },
       {
-        "sha": "235ece4",
-        "bump": "patch",
+        "sha": "1fa6ab0",
+        "bump": "minor",
         "breaking": false,
-        "body": "fix(markdown): inline markup inside link text is now parsed. CommonMark allows `` [`code`](url) `` and `[**bold**](url)`; link text used to be emitted as plain text, so the backticks and asterisks showed up as literal characters. It is now parsed recursively, the same way bold and italic already were."
+        "body": "feat(tabs / segmented)!: the default `tone` on `TabsList` and `Segmented` changes from `neutral` to `brand`. The selected label now takes the brand colour by default (a white pill with a brand-blue label on `solid`), and the underline indicator matches it. **Visual change**: existing tab bars and segmented controls that pass no `tone` switch their selected colour from the foreground colour to the brand colour; pass `tone=\"neutral\"` for the previous look, which renders byte for byte as before."
       }
     ]
   },
@@ -41,6 +54,25 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): adds Paper, figures for papers that move with the text (first slice). `Paper` holds the display mode (read / print) and a figure registry, and `labels` sets the paper language for caption prefixes and automatic references independently of the UI language; it switches to print mode before the browser prints and back afterwards. Figure numbers come from a CSS counter, so they exist in server rendering and in print. `PaperFigure` takes any state value plus named presets, and its `children` maps state to picture. In print mode the main figure draws `printState`, `printSubfigures` expand into (a)(b)… sub-figures, and controls are not rendered. `ProcessFigure` explains a figure step by step; `FigureStep` marks which step each part belongs to. The current step is opaque, earlier steps are half transparent, and later steps are faint but not hidden. It comes with previous / next, per-step buttons, \"All\", and autoplay. `FigRef` is an in-text reference: a click switches the figure to its preset, scrolls it into view, and outlines it; without JS it is a plain anchor. Tokens add the `hulian-paper-flow` keyframes for flowing dashes on the current step."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.75.1",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "cea4c5c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(code-block): `lang` values `text` / `txt` / `plain` / `plaintext` now render as plain text with no coloring. These languages used to fall through to the JavaScript-family approximation, so a URL in the text turned into an italic line comment from `//` onward, and anything between apostrophes or quotes was colored as a string. ` ```text ` fences in Markdown benefit as well."
+      },
+      {
+        "sha": "235ece4",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(markdown): inline markup inside link text is now parsed. CommonMark allows `` [`code`](url) `` and `[**bold**](url)`; link text used to be emitted as plain text, so the backticks and asterisks showed up as literal characters. It is now parsed recursively, the same way bold and italic already were."
       }
     ]
   },
