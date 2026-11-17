@@ -48,7 +48,11 @@ test("CI rejects stale committed English showcase modules before build can regen
 //
 // scheduled-notice 不是门禁而是**报信的**：它只在定时链路上跑（push 时压根不触发），
 // 让 deploy 等它没有任何意义。
-const NON_BLOCKING_JOBS = new Set(["runtime-performance", "scheduled-notice"]);
+//
+// version-pr-guard 只在版本 PR 上跑，push 到 master 时恒为 skipped —— deploy-zh 若 needs 它，
+// skipped 会沿 needs 传染，镜像站就再也不发了。它守的是「版本 PR 没夹带代码」，那件事在
+// 合入前就已裁决完，与「这次 push 能不能发」无关。
+const NON_BLOCKING_JOBS = new Set(["runtime-performance", "scheduled-notice", "version-pr-guard"]);
 
 test("deploy 必须 needs 上每一道门禁 job", () => {
   const jobs = workflowJobs();
@@ -140,4 +144,43 @@ test("每个 job 都要有 timeout-minutes", () => {
     .map((job) => job.name);
 
   assert.deepEqual(missing, [], `这些 job 没有 timeout-minutes：${missing.join(", ")}`);
+});
+
+test("版本 PR 跳过重门禁时，必须有守卫证明它没夹带代码，且 static-checks 不许跳过", () => {
+  // 跳过成立的唯一前提是「版本 PR 只改版本号与生成物」。谁给重 job 加了跳过条件、却删掉
+  // 或改坏了守卫，前提就从「被验证」退化成「被假设」—— 往 changeset-release/master 推一个
+  // 修复就能绕开 build 与全部浏览器门禁，而且没有任何东西会红。
+  const jobs = workflowJobs();
+  const skipping = jobs.filter((job) => job.text.includes("github.head_ref != 'changeset-release/master'"));
+  if (skipping.length === 0) return;
+
+  const guard = jobs.find((job) => job.text.includes("node scripts/version-pr-guard.mjs"));
+  assert.ok(guard, "有 job 在版本 PR 上被跳过，却没有任何 job 跑 version-pr-guard.mjs");
+  assert.match(
+    guard.text,
+    /\n {4}if: github\.head_ref == 'changeset-release\/master'\n/,
+    `${guard.name} 必须恰好在版本 PR 上跑 —— 条件与跳过条件要互为补集`,
+  );
+
+  const typecheck = jobs.find((job) => job.text.includes("run: pnpm typecheck"));
+  assert.ok(typecheck, "没有 job 跑 pnpm typecheck");
+  assert.ok(
+    !/\n {4}if:/.test(typecheck.text),
+    `${typecheck.name} 不许带 job 级 if：版本 PR 上它是除守卫外唯一在跑的门禁（查发版产物版本一致）`,
+  );
+});
+
+test("build 关掉构建期类型检查时，typecheck 之前必须先 next typegen", () => {
+  // next build 的类型检查会先生成 .next/types/validator.ts（校验每个 page/layout 的导出），
+  // 干净 checkout 上直接跑 tsc 是看不到这份文件的。build 关了类型检查而 typecheck 前不
+  // typegen，这一层校验就悄悄没了 —— 两边都还是绿的。
+  const jobs = workflowJobs();
+  const skipsBuildTypecheck = jobs.some((job) => job.text.includes('HULIAN_SKIP_BUILD_TYPECHECK: "1"'));
+  if (!skipsBuildTypecheck) return;
+
+  const typecheck = jobs.find((job) => job.text.includes("run: pnpm typecheck"));
+  assert.ok(typecheck, "没有 job 跑 pnpm typecheck");
+  const typegen = typecheck.text.indexOf("next typegen");
+  assert.notEqual(typegen, -1, `${typecheck.name} 没有在 typecheck 前跑 next typegen`);
+  assert.ok(typegen < typecheck.text.indexOf("run: pnpm typecheck"), "next typegen 必须排在 pnpm typecheck 之前");
 });

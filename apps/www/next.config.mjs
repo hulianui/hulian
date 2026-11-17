@@ -36,6 +36,11 @@ const nextConfig = {
   // Showcase specs are executable modules, not inert copy. Each locale build
   // resolves the same private docs-only import to its own source barrel.
   turbopack: { resolveAlias: { "@hulian-docs/showcase": showcaseSource } },
+  // CI 的 build job 设 HULIAN_SKIP_BUILD_TYPECHECK=1 跳过构建期类型检查：双语构建会把同一份
+  // 类型检查跑两遍（每遍约 10s，压在关键路径上），而 static-checks 已经先 `next typegen`
+  // 再 tsc 全量检查过 —— 含 .next/types/validator.ts 那层页面导出校验，覆盖面与这里相同。
+  // 本地 `pnpm --filter www build` 不设这个变量，照常查。
+  typescript: { ignoreBuildErrors: process.env.HULIAN_SKIP_BUILD_TYPECHECK === "1" },
   experimental: {
     // TypeScript 7 的 npm 包**不再导出编译器 API**（exports 的 "." 只指向 lib/version.cjs，
     // 其余全在 unstable/* 下）。Next 默认走 programmatic API 做构建期类型检查与 tsconfig

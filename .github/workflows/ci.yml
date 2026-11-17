@@ -160,6 +160,12 @@ jobs:
       - name: Guard distributable UI usage
         run: pnpm guard -- apps/www/app/blocks/_blocks apps/www/app/pages/_pages packages/ui/src
 
+      # 先生成 Next 的路由/页面类型（.next/types/validator.ts 校验每个 page/layout 的导出），
+      # 再全量 tsc。不先生成的话 apps/www 的 tsc 看不到 validator —— 而 build job 已关掉
+      # 构建期类型检查（见那里的 HULIAN_SKIP_BUILD_TYPECHECK），这一层校验就只剩这里。
+      - name: Generate Next route types
+        run: pnpm --filter www exec next typegen
+
       # 全量类型检查（@hulianui/ui + apps/www）
       - name: Typecheck
         run: pnpm typecheck
@@ -171,12 +177,50 @@ jobs:
       - name: Emit declarations
         run: pnpm --filter @hulianui/ui build:types && rm -rf packages/ui/dist
 
+  # ══ 版本 PR（changeset-release/master）只跑轻量子集 ══════════════════════════
+  #
+  # 版本 PR 由 Release 工作流的 changesets/action 自动开出，只改版本号、CHANGELOG 与
+  # AI 分发产物 —— 它要合入的代码在功能 PR 上刚跑完全量门禁。对它再跑一遍 build 与
+  # 浏览器门禁（≈9 分钟）纯属重复，而且发版总时长里这 9 分钟是白等的。
+  #
+  # 所以对版本 PR：static-checks 照跑（registry:version 等判据恰好就是查发版产物的），
+  # 下面这个守卫证明「确实没夹带代码」，其余重 job 用
+  #   if: github.head_ref != 'changeset-release/master'
+  # 跳过（产物门禁 needs build，build 跳过它们随之跳过）。合入后 master 的 push 仍跑
+  # 全量，deploy-zh 仍等全部门禁 —— 被跳过的只是「同一份代码的第二次检查」。
+  #
+  # 守卫红了 = 有人往版本 PR 上推了代码，那些改动绕开了全部重门禁，必须挪去普通 PR。
+  version-pr-guard:
+    name: Version PR guard (release bookkeeping only)
+    if: github.head_ref == 'changeset-release/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # 全量历史：要拿 base 与 head 的 merge-base 做三点 diff。
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # 守卫只用 Node 内置模块，不装依赖；Node 版本仍读 .nvmrc 与全仓一致。
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      - name: Verify the PR only carries release bookkeeping
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/version-pr-guard.mjs "$BASE_SHA" "$HEAD_SHA"
+
   # vitest 分两个 project 跑（见 packages/ui/vitest.config.ts）：
   #   unit    —— jsdom，props→DOM 契约与纯逻辑，占绝大多数
   #   browser —— 真实 chromium，拖拽/指针捕获/动画/布局定位这些在 jsdom 下结论不可信的部分
   # 后者需要真实浏览器二进制，装了才能跑；只装 chromium（不是全部三个内核）省 CI 时间。
   test:
     name: Test (vitest + build scripts)
+    if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -189,7 +233,7 @@ jobs:
       - name: Install Playwright chromium
         # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
         timeout-minutes: 10
-        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+        uses: ./.github/actions/playwright
 
       # MCP 的 install_block 端到端测试读取 apps/www/public/r/*.json 中的完整源码，
       # get_conventions 读 conventions.json —— 两者都被 Git 忽略，干净 checkout 必须先
@@ -210,6 +254,7 @@ jobs:
   # 读的是 public/r 下的分发端点（自建静态 server），与 apps/www 的构建产物无关，因此不等 build。
   registry-smoke:
     name: Registry Pages Smoke
+    if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -229,6 +274,7 @@ jobs:
 
   build:
     name: Build (static export)
+    if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -263,7 +309,11 @@ jobs:
 
       # 生产构建：仅 apps/www 静态导出（含其依赖的 workspace 包）。
       # 排除 desktop#build —— 那是 Tauri 构建，需 Rust + 系统库，且会与 www build 抢 next 锁，不适合本 CI。
+      # 双语构建会把 next build 的类型检查跑两遍（各约 10s，压在关键路径上），而
+      # static-checks 已经 typegen + tsc 过同一份源码，这里关掉（next.config.mjs 读这个变量）。
       - name: Build
+        env:
+          HULIAN_SKIP_BUILD_TYPECHECK: "1"
         run: pnpm --filter www build
 
       # 静态导出产物传给下游三组门禁与 deploy-zh —— 全流水线只构建这一次。
@@ -275,11 +325,17 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  # ══ 第三档：产物门禁，三组并行，各自 download 同一份 out ══════════════════════
+  # ══ 第三档：产物门禁，四组并行，各自 download 同一份 out ══════════════════════
   #
-  # 分组只按耗时均衡（各约 4 分钟），不按主题 —— 它们之间没有任何依赖，唯一的约束是
-  # 「别让某一组显著长于其它组」，否则关键路径就被那一组顶住。改动导致某组变长时，
-  # 把步骤挪到别组即可，不需要改依赖关系。
+  # 分组只按耗时均衡，不按主题 —— 它们之间没有任何依赖，唯一的约束是「别让某一组显著
+  # 长于其它组」，否则关键路径就被那一组顶住。改动导致某组变长时，把步骤挪到别组即可，
+  # 不需要改依赖关系。
+  #
+  # 2026-11-18 由三组改四组。实测（runs/44118284259 等 4 次）各步耗时：
+  #   a11y 170–201s · showcase 186–238s 是两道不可再拆的单步，各占一组；
+  #   其余 8 步（合计约 290s）分成下面两组，各约 130–165s。
+  # 改前最慢一组是「a11y + viewport + 快跳 + 画廊」≈ 335s；改后关键路径由两道单步
+  # 决定（≈ 200s + 环境准备），每轮 CI 约省 1 分多钟。想再快只能给这两道单步分片。
 
   gate-showcase:
     name: Gate · English showcases (browser)
@@ -296,7 +352,7 @@ jobs:
       - name: Install Playwright chromium
         # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
         timeout-minutes: 10
-        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+        uses: ./.github/actions/playwright
 
       - name: Download static export
         uses: actions/download-artifact@v7
@@ -304,13 +360,13 @@ jobs:
           name: www-out
           path: apps/www/out
 
-      # 全库最慢的单道门禁（≈4 分钟）：逐件在真实 chromium 里水合英文 showcase，
+      # 全库最慢的单道门禁（≈3.5 分钟）：逐件在真实 chromium 里水合英文 showcase，
       # 对 pageerror 零容忍。独占一组。
       - name: Verify hydrated English component showcases
         run: pnpm docs:check:showcase-browser
 
   gate-a11y:
-    name: Gate · A11y · viewport · gallery
+    name: Gate · A11y (browser)
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -324,7 +380,7 @@ jobs:
       - name: Install Playwright chromium
         # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
         timeout-minutes: 10
-        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+        uses: ./.github/actions/playwright
 
       - name: Download static export
         uses: actions/download-artifact@v7
@@ -332,24 +388,12 @@ jobs:
           name: www-out
           path: apps/www/out
 
+      # axe 逐路由 × 明暗两主题串行扫（≈3 分钟），与 showcase 并列为两道最长的单步，独占一组。
       - name: Accessibility gate
         run: pnpm a11y
 
-      # 响应式门禁：按视口量正文的**几何**。#39 那类 bug（正文被生成、但祖先 display:none）
-      # 在 SSR HTML、sitemap、typecheck、构建甚至 axe 里全是绿的，只有按宽度量面积才拦得住。
-      - name: Responsive viewport gate
-        run: pnpm viewport
-
-      - name: Component quick-jump browser gate
-        run: node scripts/component-quick-jump-browser.mjs
-
-      # 画廊预算：已挂载预览数 / 顶层 DOM 数 / 控制台 warning。
-      # 拦「把整座画廊当活组件同时挂上」这类回归 —— 它不会让任何测试变红，只会让页面变慢。
-      - name: Gallery mount budget gate
-        run: pnpm gallery
-
   gate-demos:
-    name: Gate · i18n output · demos (browser)
+    name: Gate · English demos (browser)
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -363,7 +407,39 @@ jobs:
       - name: Install Playwright chromium
         # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
         timeout-minutes: 10
-        run: pnpm --filter @hulianui/ui exec playwright install --with-deps chromium
+        uses: ./.github/actions/playwright
+
+      - name: Download static export
+        uses: actions/download-artifact@v7
+        with:
+          name: www-out
+          path: apps/www/out
+
+      - name: Verify English admin demos in Chromium
+        run: pnpm docs:check:admin-demos
+
+      - name: Verify English AI, knowledge, education, and visualization demos in Chromium
+        run: pnpm docs:check:task11-demos
+
+      - name: Verify English consumer and marketing demos in Chromium
+        run: pnpm docs:check:task12-demos
+
+  gate-i18n:
+    name: Gate · i18n output · viewport · gallery
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright chromium
+        # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
+        timeout-minutes: 10
+        uses: ./.github/actions/playwright
 
       - name: Download static export
         uses: actions/download-artifact@v7
@@ -379,14 +455,18 @@ jobs:
       - name: Verify bilingual route parity and links
         run: pnpm docs:i18n:links
 
-      - name: Verify English admin demos in Chromium
-        run: pnpm docs:check:admin-demos
+      # 响应式门禁：按视口量正文的**几何**。#39 那类 bug（正文被生成、但祖先 display:none）
+      # 在 SSR HTML、sitemap、typecheck、构建甚至 axe 里全是绿的，只有按宽度量面积才拦得住。
+      - name: Responsive viewport gate
+        run: pnpm viewport
 
-      - name: Verify English AI, knowledge, education, and visualization demos in Chromium
-        run: pnpm docs:check:task11-demos
+      - name: Component quick-jump browser gate
+        run: node scripts/component-quick-jump-browser.mjs
 
-      - name: Verify English consumer and marketing demos in Chromium
-        run: pnpm docs:check:task12-demos
+      # 画廊预算：已挂载预览数 / 顶层 DOM 数 / 控制台 warning。
+      # 拦「把整座画廊当活组件同时挂上」这类回归 —— 它不会让任何测试变红，只会让页面变慢。
+      - name: Gallery mount budget gate
+        run: pnpm gallery
 
   # ══ 独立档：发布产物的可消费性，与文档站构建互不依赖 ══════════════════════════
 
@@ -410,6 +490,7 @@ jobs:
   # checkout、顺序跑，增量约 30 秒，换的是两条真实消费路径的覆盖。
   consumer-smoke:
     name: Consumer Typecheck (packed tarball)
+    if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -458,6 +539,7 @@ jobs:
   # 换来的是「类型先红」这个快得多的信号，不值得为省它加一层 if 条件。
   react18-typecheck:
     name: React 18 Typecheck (packed consumer)
+    if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -483,6 +565,7 @@ jobs:
   # 基线在 scripts/size-limits.json，量法与判据见 scripts/bundle-size.mjs 顶部注释。
   bundle-size:
     name: Bundle Size (packed tarball)
+    if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -511,6 +594,7 @@ jobs:
   # ⚠️ 绝不能改成「同一 job 内用 & 并行两个环境」：性能读数会被彼此的 CPU 占用污染。
   runtime-performance:
     name: Runtime Performance (${{ matrix.environment }})
+    if: github.head_ref != 'changeset-release/master'
     runs-on: ubuntu-latest
     timeout-minutes: 150
     strategy:
@@ -531,7 +615,9 @@ jobs:
       - name: Install Playwright chromium
         # 挂死 6 小时的就是这一步（见 static-checks 上那段）；钉小于 job 上限的值，报错才有指向。
         timeout-minutes: 10
-        run: pnpm --filter @hulianui/hulian-scan exec playwright install --with-deps chromium
+        uses: ./.github/actions/playwright
+        with:
+          filter: "@hulianui/hulian-scan"
 
       - name: Generate distribution metadata and check performance inventory
         run: |
@@ -616,12 +702,14 @@ jobs:
     name: Notice · 定时链路结果
     needs:
       - static-checks
+      - version-pr-guard
       - test
       - registry-smoke
       - build
       - gate-showcase
       - gate-a11y
       - gate-demos
+      - gate-i18n
       - consumer-smoke
       - react18-typecheck
       - bundle-size
@@ -677,6 +765,7 @@ jobs:
       - gate-showcase
       - gate-a11y
       - gate-demos
+      - gate-i18n
       - consumer-smoke
       - react18-typecheck
       - bundle-size
