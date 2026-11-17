@@ -1,5 +1,13 @@
 # @hulianui/ui
 
+## 0.75.1
+
+### Patch Changes
+
+- cea4c5c: fix(code-block): `lang` values `text` / `txt` / `plain` / `plaintext` now render as plain text with no coloring. These languages used to fall through to the JavaScript-family approximation, so a URL in the text turned into an italic line comment from `//` onward, and anything between apostrophes or quotes was colored as a string. ` ```text ` fences in Markdown benefit as well.
+
+- 235ece4: fix(markdown): inline markup inside link text is now parsed. CommonMark allows `` [`code`](url) `` and `[**bold**](url)`; link text used to be emitted as plain text, so the backticks and asterisks showed up as literal characters. It is now parsed recursively, the same way bold and italic already were.
+
 ## 0.75.0
 
 ### Minor Changes

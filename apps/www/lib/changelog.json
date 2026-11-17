@@ -1,5 +1,24 @@
 [
   {
+    "pkg": "@hulianui/ui",
+    "version": "0.75.1",
+    "date": "2026-11-18",
+    "entries": [
+      {
+        "sha": "cea4c5c",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(code-block): `lang` 为 `text` / `txt` / `plain` / `plaintext` 时按纯文本输出，不再着色。此前这几种语言落进「其它语言按 JS 家族近似」的兜底，文本里的 URL 从 `//` 起被当成行注释整段斜体，撇号与引号之间的内容也会被当成字符串着色。Markdown 里 ` ```text ` 围栏同样受益。"
+      },
+      {
+        "sha": "235ece4",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(markdown): 链接文字内部解析行内标记。CommonMark 允许 `` [`代码`](url) `` 与 `[**粗**](url)`，此前链接文字按纯文本原样输出，反引号和星号会被当字面字符显示出来；现在与粗体、斜体一样递归解析。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/tokens",
     "version": "0.17.0",
     "date": "2026-11-17",
