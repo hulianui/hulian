@@ -304,12 +304,12 @@ function AttentionDemo() {
     return (<Paper labels={EN_LABELS} className="w-full">
       <Body>
         <p>
-          For small d<sub>k</sub> scaling makes little difference{" "}
-          <FigRef to="attention" state="raw4">Figure 2, d<sub>k</sub> = 4</FigRef>. For large d<sub>k</sub> the dot
-          products grow large in magnitude and push the softmax into regions with extremely small gradients: unscaled,
-          nearly all weight collapses onto one key <FigRef to="attention" state="raw512">Figure 2, unscaled</FigRef>.
-          Dividing by √d<sub>k</sub> restores a usable distribution{" "}
-          <FigRef to="attention" state="scaled512">Figure 2, scaled</FigRef>.
+
+          For small d<sub>k</sub> scaling makes little difference (<FigRef to="attention" state="raw4"/>, d
+          <sub>k</sub> = 4). For large d<sub>k</sub> the dot products grow large in magnitude and push the softmax into
+          regions with extremely small gradients: unscaled, nearly all weight collapses onto one key (
+          <FigRef to="attention" state="raw512"/>, unscaled). Dividing by √d<sub>k</sub> restores a usable
+          distribution (<FigRef to="attention" state="scaled512"/>, scaled).
         </p>
         <PaperFigure id="attention" states={ATTENTION_STATES} caption="Scaled dot-product attention for the query “it”. Weights are illustrative, computed from hand-set similarity scores." describe={(s) => `d_k = ${s.dk}, ${s.scaled ? "scaled by 1/\u221Ad_k" : "unscaled"}; largest weight ${Math.max(...softmax(s)).toFixed(2)}.`} controls={(fig) => (<>
               <span>d<sub>k</sub></span>

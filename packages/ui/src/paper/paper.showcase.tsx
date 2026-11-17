@@ -373,12 +373,12 @@ function AttentionDemo() {
     <Paper labels={EN_LABELS} className="w-full">
       <Body>
         <p>
-          For small d<sub>k</sub> scaling makes little difference{" "}
-          <FigRef to="attention" state="raw4">Figure 2, d<sub>k</sub> = 4</FigRef>. For large d<sub>k</sub> the dot
-          products grow large in magnitude and push the softmax into regions with extremely small gradients: unscaled,
-          nearly all weight collapses onto one key <FigRef to="attention" state="raw512">Figure 2, unscaled</FigRef>.
-          Dividing by √d<sub>k</sub> restores a usable distribution{" "}
-          <FigRef to="attention" state="scaled512">Figure 2, scaled</FigRef>.
+          {/* 引用不写死图号：单独演示时这是图 1，放进整篇论文里是图 2，交给 FigRef 自动取号。 */}
+          For small d<sub>k</sub> scaling makes little difference (<FigRef to="attention" state="raw4" />, d
+          <sub>k</sub> = 4). For large d<sub>k</sub> the dot products grow large in magnitude and push the softmax into
+          regions with extremely small gradients: unscaled, nearly all weight collapses onto one key (
+          <FigRef to="attention" state="raw512" />, unscaled). Dividing by √d<sub>k</sub> restores a usable
+          distribution (<FigRef to="attention" state="scaled512" />, scaled).
         </p>
         <PaperFigure
           id="attention"
