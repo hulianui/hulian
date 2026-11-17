@@ -1,0 +1,52 @@
+# Playwright chromium 的单一来源：浏览器二进制走 actions/cache，系统依赖每次照装。
+#
+# 为什么缓存：最近 40 次失败的 CI 里有 6 次是「装浏览器」这一步自己挂了（下载 CDN 抖动），
+# 与代码无关；7 个 job 各自从 CDN 拉一遍 chromium 也纯属重复。浏览器目录按 Playwright
+# 版本做键 —— 升级 Playwright 自动换键，不会拿旧浏览器配新驱动。
+#
+# 为什么系统依赖不缓存：apt 装进的是 /usr/lib 下零散的系统库，没法当一个目录缓存；
+# 命中缓存时只跑 install-deps（apt），未命中才走完整的 install --with-deps。
+#
+# 超时请写在调用方的 `uses:` 步骤上（composite 内部步骤不支持 timeout-minutes）。
+name: Setup Playwright chromium
+description: 按 Playwright 版本缓存 chromium，命中时只装系统依赖
+
+inputs:
+  filter:
+    description: 哪个 workspace 包的 playwright（pnpm --filter 的值）
+    default: "@hulianui/ui"
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve Playwright version
+      id: version
+      shell: bash
+      env:
+        FILTER: ${{ inputs.filter }}
+      # 取不到版本号时必须当场红：空版本会让缓存键退化成一个所有版本共用的固定值。
+      run: |
+        version="$(pnpm --filter "$FILTER" exec playwright --version | awk '{print $2}')"
+        if [ -z "$version" ]; then echo "无法解析 $FILTER 的 Playwright 版本" >&2; exit 1; fi
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Playwright browsers
+      id: cache
+      uses: actions/cache@v6
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-chromium-${{ runner.os }}-${{ steps.version.outputs.version }}
+
+    - name: Install chromium with system dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        FILTER: ${{ inputs.filter }}
+      run: pnpm --filter "$FILTER" exec playwright install --with-deps chromium
+
+    - name: Install system dependencies only (browser restored from cache)
+      if: steps.cache.outputs.cache-hit == 'true'
+      shell: bash
+      env:
+        FILTER: ${{ inputs.filter }}
+      run: pnpm --filter "$FILTER" exec playwright install-deps chromium
