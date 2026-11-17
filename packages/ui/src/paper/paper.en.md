@@ -210,7 +210,7 @@ const svg = await exportFigureSvg("transformer", "b", { background: "white" }); 
 
 | Option | Type | Default | Description |
 |------|------|------|------|
-| theme | `"light"` ｜ `"current"` | `"light"` | Which theme to take colors from. Light by default, so a reader in dark mode still exports a figure for white paper |
+| theme | `"light"` \| `"current"` | `"light"` | Which theme to take colors from. Light by default, so a reader in dark mode still exports a figure for white paper |
 | background | string | transparent | Background, any CSS color |
 | width | number | `viewBox` width | Output `width` in px; height keeps the ratio |
 
@@ -315,7 +315,7 @@ The title block: the title sits between a thick rule above and a thin rule below
 
 | Name | Type | Default | Description |
 |------|------|------|------|
-| to * | `string` ｜ `string[]` | - | The cited entry id, or several |
+| to * | `string` \| `string[]` | - | The cited entry id, or several |
 
 - **Numbering** follows the order in `Bibliography`. Several citations at one place are sorted and deduplicated; two neighbors read `[1, 2]`, and three or more in a row collapse to `[1–3]`, each number linking to its entry.
 - **Click**: scrolls to the entry (without smooth scrolling under reduced motion) and outlines it for about 1.2 seconds. Without JS it is a plain anchor. In print mode the link color is removed.
