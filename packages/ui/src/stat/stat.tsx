@@ -27,7 +27,19 @@ const TONE_ICON_BASE: Record<StatTone, string> = {
 //   —— 这是可读性缺陷，不是审美偏好。
 // · **字号梯度拉到 2.1×**：label 14px → value 30px。KPI 卡里数字就是内容本身，
 //   此前 24px 与标签只差 1.7 倍，主次不够。
-function StatImpl({ label, value, delta, deltaLabel, hint, icon, tone = "neutral", chart, className, ...props }: StatProps) {
+function StatImpl({
+  label,
+  value,
+  delta,
+  deltaLabel,
+  deltaPlacement = "below",
+  hint,
+  icon,
+  tone = "neutral",
+  chart,
+  className,
+  ...props
+}: StatProps) {
   const hasDelta = typeof delta === "number";
   const up = hasDelta && (delta as number) >= 0;
   // deltaLabel 是趋势行的附属文案，无 delta 时整块趋势不渲染 → 它会被静默吞掉。
@@ -47,6 +59,32 @@ function StatImpl({ label, value, delta, deltaLabel, hint, icon, tone = "neutral
       "[hulian] Stat 的 tone 只作用于 icon 底座，没有传 icon 时不会有任何视觉变化。",
     );
   }
+  const inline = deltaPlacement === "inline";
+  const trend = hasDelta ? (
+    // flex-wrap + 子项 whitespace-nowrap：窄容器下「+x% / 标签」整块换行，
+    // 不再把数字或 CJK 标签逐字裂行（健壮自适应）。
+    <div
+      className={cn(
+        inline
+          ? "flex flex-wrap items-center gap-x-1 text-sm font-medium tabular-nums"
+          : "mt-2.5 flex flex-wrap items-center gap-x-1 text-sm font-medium tabular-nums",
+        up ? "text-primary" : "text-danger",
+      )}
+    >
+      <span className="inline-flex items-center gap-1 whitespace-nowrap">
+        {up ? (
+          <TrendingUp className="size-4 shrink-0" />
+        ) : (
+          <TrendingDown className="size-4 shrink-0" />
+        )}
+        {up ? "+" : ""}
+        {delta}%
+      </span>
+      {deltaLabel ? (
+        <span className="whitespace-nowrap text-muted-foreground">{deltaLabel}</span>
+      ) : null}
+    </div>
+  ) : null;
   return (
     <div
       className={cn(
@@ -86,27 +124,22 @@ function StatImpl({ label, value, delta, deltaLabel, hint, icon, tone = "neutral
           </span>
         ) : null}
       </div>
-      <div className="mt-3 truncate text-3xl font-semibold tracking-tight text-foreground tabular-nums">
-        {value}
-      </div>
-      {chart ? <div className="mt-3">{chart}</div> : null}
-      {hasDelta ? (
-        // flex-wrap + 子项 whitespace-nowrap：窄容器下「+x% / 标签」整块换行，
-        // 不再把数字或 CJK 标签逐字裂行（健壮自适应）。
-        <div
-          className={cn(
-            "mt-2.5 flex flex-wrap items-center gap-x-1 text-sm font-medium tabular-nums",
-            up ? "text-primary" : "text-danger",
-          )}
-        >
-          <span className="inline-flex items-center gap-1 whitespace-nowrap">
-            {up ? <TrendingUp className="size-4 shrink-0" /> : <TrendingDown className="size-4 shrink-0" />}
-            {up ? "+" : ""}
-            {delta}%
-          </span>
-          {deltaLabel ? <span className="whitespace-nowrap text-muted-foreground">{deltaLabel}</span> : null}
+      {inline && hasDelta ? (
+        // deltaPlacement="inline"：趋势紧贴它修饰的那个数，排在数值行右侧（基线对齐）；
+        // 图表独占卡底。读数 → 涨跌 → 走势，视线一路向下不回头。放不下时趋势整块换到下一行。
+        <div className="mt-3 flex min-w-0 flex-wrap items-baseline gap-x-2.5 gap-y-1">
+          <div className="min-w-0 truncate text-3xl font-semibold tracking-tight text-foreground tabular-nums">
+            {value}
+          </div>
+          {trend}
         </div>
-      ) : null}
+      ) : (
+        <div className="mt-3 truncate text-3xl font-semibold tracking-tight text-foreground tabular-nums">
+          {value}
+        </div>
+      )}
+      {chart ? <div className="mt-3">{chart}</div> : null}
+      {hasDelta && !inline ? trend : null}
       {hint != null ? (
         // 排在趋势行之下：趋势是对数值本身的解读，hint 是整张卡的注脚，语义层级更外。
         // 用 text-xs（比趋势行的 text-sm 小一档）拉开视觉层次，避免两行 muted 文字糊成一片。

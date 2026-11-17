@@ -93,6 +93,7 @@ Icon-only segments, each with its own `ariaLabel`:
 - When `label` is an icon, logo, or other non-text node, provide `ariaLabel`; otherwise screen readers fall back to the raw `value`.
 - Controlled usage requires `value` and `onValueChange`. For uncontrolled state, provide only `defaultValue`.
 - Segmented is single-select only. Use [ToggleGroup](../toggle/toggle.md) when several items may remain active.
+- Only the selected segment uses `font-medium`; the others use the regular weight (up to 0.74.1 every segment was `font-medium`).
 
 ## Related
 [Input](../input/input.md) · [Textarea](../textarea/textarea.md) · [Select](../select/select.md) · [Checkbox](../checkbox/checkbox.md) · [CheckboxGroup](../checkbox-group/checkbox-group.md) · [Radio](../radio/radio.md)

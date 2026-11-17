@@ -197,10 +197,12 @@ export function Segmented({
               // 后完全不可压缩，于是 root 的实际宽度被撑到「所有段文字之和」，flex-1 形同虚设，
               // 装不下的部分被上游容器裁掉——**选项存在但不可见也不可点**（#114）。
               // 补上之后段会等分压缩、文字变省略号，任何宽度下每一段都仍然可达。
-              `relative z-10 inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 truncate whitespace-nowrap rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)] font-medium outline-none ${pressableClass}`,
+              `relative z-10 inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 truncate whitespace-nowrap rounded-[calc(var(--hl-radius-control,var(--radius))-0.25rem)] outline-none ${pressableClass}`,
               sizeClasses[size].item,
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-              isSelected ? selectedTextByTone[tone] : "hover:text-foreground",
+              // 字重只给选中段：未选中段常规字重，选中态多一道「字重」信号、更好认。各段 flex-1 等宽，
+              // 选中切换时字重变化不会挤动布局（Tabs 的段按内容定宽，故没有跟着改）。
+              isSelected ? cn("font-medium", selectedTextByTone[tone]) : "font-normal hover:text-foreground",
               "disabled:pointer-events-none disabled:opacity-[var(--hl-opacity-disabled,0.5)]",
             )}
           >

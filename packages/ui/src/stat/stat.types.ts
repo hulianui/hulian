@@ -12,6 +12,12 @@ export interface StatProps extends HTMLAttributes<HTMLDivElement> {
   /** 趋势旁的说明文案（如「较上月」）。**依附于 delta**：不传 delta 时整块趋势不渲染，它也不会出现——要与趋势无关的注脚请用 `hint` */
   deltaLabel?: ReactNode;
   /**
+   * 趋势（delta + deltaLabel）放在哪。`"below"`：数值行下方、图表之后（默认，与 0.74.1 及以前一致）；
+   * `"inline"`：数值同一行的右侧，图表独占卡底 —— 带 `chart` 的卡更推荐这一档，
+   * 否则涨跌要隔着一张图去找它修饰的数字。@default "below"
+   */
+  deltaPlacement?: "below" | "inline";
+  /**
    * 与趋势无关的一行注脚（如「上限 200 题」「2 人未交卷」），独立于 `delta` 渲染，
    * 位于趋势行下方、样式为更小一档的 muted 文字。默认不传则不渲染。
    * 适用于「数值 + 一句补充口径」而标签不该被撑长的 KPI 卡。

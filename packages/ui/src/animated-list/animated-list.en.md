@@ -46,6 +46,7 @@ import { AnimatedList } from "@hulianui/ui"
 ## Usage notes
 
 - Viewport entry is client-side. Offscreen children remain initially hidden, so use care for SSR-critical first-screen content.
+- Children enter as soon as any part is visible (`amount: "some"`), so lists inside containers that clip them with `overflow` still appear. Up to 0.74.1 they needed 40% in view and stayed blank when clipped.
 - Dynamic insertion changes stagger order; every child needs a stable key.
 
 ## Related

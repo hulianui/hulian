@@ -51,6 +51,7 @@ import { Snippet } from "@hulianui/ui"
 
 - `text`/`lang`/`highlight` 的着色与复制兜底仅在 `children` 为**字符串**时生效；传入节点时只能手动给 `text` 指定复制内容。
 - 默认复制标签跟随 `ConfigProvider locale`；无 Provider 时保持“复制 / 已复制”，`enUS` 为 “Copy / Copied”。
+- 宽度不会超过父容器：不带空格的长串（URL、token）装不下时会在任意位置折行。0.74.1 及以前它不折行，会把 Snippet 连同父级一起撑出视口。
 
 ## 相关
 [Code](../code/code.md) · [CodeBlock](../code-block/code-block.md) · [CodeDiff](../code-diff/code-diff.md) · [Kbd](../kbd/kbd.md) · [Text](../text/text.md) · [Heading](../heading/heading.md)

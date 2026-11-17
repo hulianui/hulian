@@ -20,7 +20,9 @@ export function AnimatedList({ children, stagger = 0.15, className }: AnimatedLi
             key={i}
             initial={reduce ? false : { opacity: 0, y: 16, scale: 0.98 }}
             whileInView={reduce ? undefined : { opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            // amount "some"：露出一个像素就入场。之前是 0.4（40% 进视口），放在被裁切的容器里
+            // （横向出血的展示墙、overflow 卡片）时可见部分永远凑不够 40%，整列一直是空白。
+            viewport={{ once: true, amount: "some" }}
             transition={{ delay: i * stagger, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
             {child}

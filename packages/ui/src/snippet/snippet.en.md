@@ -51,6 +51,7 @@ import { Snippet } from "@hulianui/ui"
 
 - Syntax highlighting through `lang`/`highlight` and automatic clipboard text apply only when `children` is a **string**. For a React node, provide `text` explicitly for copying.
 - Default copy labels follow `ConfigProvider locale`; `enUS` provides “Copy / Copied”, and the no-provider fallback remains Chinese.
+- The snippet never grows wider than its parent: a long run without spaces (a URL, a token) wraps at any point when it does not fit. Up to 0.74.1 it did not wrap and pushed the snippet and its parent past the viewport.
 
 ## Related
 [Code](../code/code.md) · [CodeBlock](../code-block/code-block.md) · [CodeDiff](../code-diff/code-diff.md) · [Kbd](../kbd/kbd.md) · [Text](../text/text.md) · [Heading](../heading/heading.md)
