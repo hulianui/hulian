@@ -11,6 +11,18 @@ export const kbdShowcase: ShowcaseSpec = {
       render: () => <Kbd>Esc</Kbd>,
     },
     {
+      title: "主色键帽",
+      description: "tone=\"primary\" 用于页面的主快捷键（顶栏搜索、命令面板入口），品牌浅底 + 品牌边，随主题色走。KbdGroup 的 tone 会下发给每个键帽。",
+      code: `<Kbd tone="primary">⌘K</Kbd>
+<KbdGroup keys={["⌘", "K"]} tone="primary" />`,
+      render: () => (
+        <span className="inline-flex items-center gap-3">
+          <Kbd tone="primary">⌘K</Kbd>
+          <KbdGroup keys={["⌘", "K"]} tone="primary" />
+        </span>
+      ),
+    },
+    {
       title: "组合键",
       description: "KbdGroup 收口 gap 与分隔符，默认用 + 连接。",
       code: `<KbdGroup keys={["⌘", "K"]} />`,

@@ -44,7 +44,7 @@ All remaining native `<code>` (`HTMLElement`) attributes are supported. `codeVar
 
 ## Usage guidelines
 
-No component-specific caveats are currently documented.
+- **Very long content wraps inside the chip.** It breaks mid-token only when the whole token cannot fit on one line (`overflow-wrap: anywhere`), and each fragment keeps its own rounded corners and padding (`box-decoration-break: clone`), so narrow containers (phones, sidebars, table cells) are no longer pushed wider. Use [CodeBlock](../code-block/code-block.md) for multi-line code.
 
 ## Related
 [CodeBlock](../code-block/code-block.md) · [Snippet](../snippet/snippet.md) · [CodeDiff](../code-diff/code-diff.md) · [Kbd](../kbd/kbd.md) · [Text](../text/text.md) · [Heading](../heading/heading.md)

@@ -451,6 +451,10 @@
       "boolean",
       "null"
     ],
+    "KbdTone": [
+      "default",
+      "primary"
+    ],
     "LayoutCollapseType": [
       "clickTrigger",
       "responsive"
@@ -1175,6 +1179,7 @@
     "Heading": "heading",
     "Kbd": "kbd",
     "KbdGroup": "kbd",
+    "kbdVariants": "kbd",
     "LineShadowText": "line-shadow-text",
     "Markdown": "markdown",
     "parseBlocks": "markdown",
@@ -3947,7 +3952,7 @@
           "kind": "string",
           "type": "string",
           "default": null,
-          "description": "右上角语言标签（如 `\"tsx\"`），同时决定着色规则走 JS 家族、Shell 还是 Python"
+          "description": "语言名（如 `\"tsx\"`）。给了就渲染标题栏（左侧语言名、右侧操作区），同时决定着色规则走 JS 家族、Shell 还是 Python；不给则无标题栏，操作区悬浮在右上角、悬停或键盘聚焦时出现"
         },
         {
           "name": "copyable",
@@ -3972,6 +3977,22 @@
           "type": "boolean | { start?: number }",
           "default": "false",
           "description": "是否显示行号。`{ start: 120 }` 让片段从指定行号起算；列宽按最大行号的位数自适应"
+        },
+        {
+          "name": "defaultWrap",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "false",
+          "description": "长行初始是否自动换行。默认横向滚动保留原排版；内容真有一行放不下时操作区会出现「自动换行」开关，读者可自行切换。日志 / 长 URL / 长报错建议传 `true`"
+        },
+        {
+          "name": "maxLines",
+          "required": false,
+          "kind": "number",
+          "type": "number",
+          "default": null,
+          "description": "超过这么多行就折叠：只露前 `maxLines` 行 + 底部渐隐 + 「展开全部 N 行」按钮。超出不足 3 行时直接全部展示"
         },
         {
           "name": "className",
@@ -4732,17 +4753,32 @@
       "category": "typography",
       "group": "code",
       "status": "enriched",
-      "import": "import { Kbd, KbdGroup } from \"@hulianui/ui\"",
+      "import": "import { Kbd, KbdGroup, kbdVariants } from \"@hulianui/ui\"",
       "exports": [
         "Kbd",
-        "KbdGroup"
+        "KbdGroup",
+        "kbdVariants"
       ],
       "types": [
         "KbdProps",
-        "KbdGroupProps"
+        "KbdGroupProps",
+        "KbdTone"
       ],
       "doc": "https://github.com/hulianui/hulian/blob/master/packages/ui/src/kbd/kbd.md",
       "props": [
+        {
+          "name": "tone",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"primary\"",
+          "values": [
+            "default",
+            "primary"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "色调：默认中性灰；`primary` 品牌浅底 + 品牌边，用于页面主快捷键（顶栏搜索的 ⌘K、命令面板入口），随主题色走"
+        },
         {
           "name": "HTMLAttributes",
           "owner": "..",
@@ -4778,6 +4814,20 @@
           "type": "string",
           "default": null,
           "description": "整组的无障碍名，如「打开命令面板」。给了才会加 `role=\"group\"`"
+        },
+        {
+          "name": "tone",
+          "owner": "KbdGroup Props",
+          "required": false,
+          "kind": "enum",
+          "type": "\"default\" | \"primary\"",
+          "values": [
+            "default",
+            "primary"
+          ],
+          "valueType": "string",
+          "default": "\"default\"",
+          "description": "下发给 `keys` 生成的每个键帽，分隔符跟着变色。自己传 children 时请在每个 Kbd 上写 `tone`"
         },
         {
           "name": "HTMLAttributes",
@@ -4913,6 +4963,14 @@
           "type": "boolean | string",
           "default": "false",
           "description": "给渲染出的标题挂锚点 id（slug 规则见「标题锚点与目录」），使长文可做目录与 `#片段` 深链。默认关闭：id 是全局命名空间，默认生成会让存量调用点凭空多出一批可能与页面已有 id 撞车的锚点。传字符串则同时开启并把它当 id 前缀（`headingIds=\"doc-\"` → `doc-props`），用于把这批 id 关进自己的命名空间"
+        },
+        {
+          "name": "codeBlock",
+          "required": false,
+          "kind": "other",
+          "type": "Pick<CodeBlockProps, \"lineNumbers\" | \"defaultWrap\" | \"maxLines\" | \"copyable\" | \"highlight\">",
+          "default": null,
+          "description": "透传给每个围栏代码块（内部是 CodeBlock）的展示选项，如 `{ maxLines: 20 }` 让 AI 回复里的长代码默认折叠、`{ defaultWrap: true }` 让日志默认换行。Markdown 是 memo 组件，对象要提到组件外常量或用 `useMemo` 固定，否则父级每次渲染都会整篇重解析"
         },
         {
           "name": "className",
@@ -14423,8 +14481,8 @@
             "neutral"
           ],
           "valueType": "string",
-          "default": "\"neutral\"",
-          "description": "选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `neutral` 逐字保持库既有的中性选中态（`text-foreground`），不是「把品牌色换成灰」；与 [Tabs](../tabs/tabs.md) 的 `TabsList` 同名同取值"
+          "default": "\"brand\"",
+          "description": "选中段的语义色档：只染选中段文字，滑块仍是白药丸。默认 `brand`，与 [Tabs](../tabs/tabs.md) 的 `TabsList` 同名同取值、同默认；要旧的中性选中态（`text-foreground`）传 `neutral`"
         },
         {
           "name": "className",
@@ -24701,6 +24759,14 @@
           "description": "表头吸顶"
         },
         {
+          "name": "bordered",
+          "required": false,
+          "kind": "boolean",
+          "type": "boolean",
+          "default": "true",
+          "description": "是否带外框（圆角 + 描边）。放进已有边框的卡片里时传 `false` 避免双框；表格始终自带 surface 底色，不借容器背景"
+        },
+        {
           "name": "className",
           "required": false,
           "kind": "string",
@@ -33552,7 +33618,7 @@
             "neutral"
           ],
           "valueType": "string",
-          "default": "\"neutral\"",
+          "default": "\"brand\"",
           "description": "选中态的语义色档，下发给 `TabsTab`（不必逐个传）。见「语义色档」"
         },
         {

@@ -49,16 +49,18 @@ const TabsSizeContext = createContext<TabsSize>("md");
 
 /**
  * 语义档同样由 TabsList 下发（走 TabsSizeContext 那条既有的路，不新造下发机制）。
- * 默认 neutral —— 见下方两张 tone 表：那一格是空串，等于什么都不追加。
+ * 默认 brand：选中态带品牌色才读得出「这一页是当前页」，中性前景色与未选中的 muted 只差一档灰，
+ * 在 solid 白药丸上尤其难认。最初为了「存量零像素变化」默认 neutral，后按产品口径改为 brand；
+ * 要旧观感的调用点显式传 tone="neutral"。TabsTab 不套本库 List 单独用时也走这一档。
  */
-const TabsToneContext = createContext<TabsTone>("neutral");
+const TabsToneContext = createContext<TabsTone>("brand");
 
 /**
  * 选中文字色（皮肤无关，solid 与 underline 吃同一档 —— #316 要抹平的正是这两个皮肤对色的态度不一致）。
  *
  * `neutral` 那格刻意是**空串**：不追加任何类，让基类里原有的 `data-[active]:text-foreground`
- * 原样生效。于是不传 tone 时 class 字符串逐字不变（不是"看起来一样"，是同一串），这也是默认
- * 取 neutral 而不是 brand 的原因 —— tone 是纯增量，存量页面一个像素都不动。
+ * 原样生效。于是 tone="neutral" 时 class 字符串与加 tone 之前逐字相同（不是"看起来一样"，是同一串），
+ * 这是要旧观感的调用点的退路。
  *
  * 非 neutral 档靠 tailwind-merge 顶掉基类那条：`data-[active]:text-foreground` 与
  * `data-[active]:text-primary` 同组同变体，后者胜（#316 里实测过的行为）。
@@ -123,7 +125,7 @@ const indicatorByVariant: Record<"underline" | "solid", { className: string; sty
 export function TabsList({ className, variant, size, tone, children, ...props }: TabsListProps) {
   const v = variant ?? "underline";
   const s = size ?? "md";
-  const t = tone ?? "neutral";
+  const t = tone ?? "brand";
   const ind = indicatorByVariant[v];
   return (
     <BaseTabs.List {...props} className={cn(tabsListVariants({ variant: v, size: s }), className)}>

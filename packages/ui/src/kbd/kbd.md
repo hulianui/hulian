@@ -25,6 +25,7 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
+| tone | `"default" \| "primary"` | `"default"` | 色调：默认中性灰；`primary` 品牌浅底 + 品牌边，用于页面主快捷键（顶栏搜索的 ⌘K、命令面板入口），随主题色走 |
 | ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | - | 透传 `<kbd>` 原生属性（className、style 等） |
 
 ### KbdGroup Props
@@ -34,6 +35,7 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 | keys | `ReactNode[]` | - | 键名数组，逐个包成 Kbd。组合键的常规写法 |
 | separator | `ReactNode` | `"+"` | 键之间的分隔符，装饰性（带 `aria-hidden`，不进无障碍树）。传 `null` 只留间距不画符号 |
 | label | `string` | - | 整组的无障碍名，如「打开命令面板」。给了才会加 `role="group"` |
+| tone | `"default" \| "primary"` | `"default"` | 下发给 `keys` 生成的每个键帽，分隔符跟着变色。自己传 children 时请在每个 Kbd 上写 `tone` |
 | ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | 透传外层 `<span>` 原生属性。rest 展开在最前，组件自己算出的 `role` / `aria-label` 赢（见「禁忌 / 坑」） |
 
 ## Slots

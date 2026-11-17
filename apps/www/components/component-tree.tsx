@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ChevronRight, Sparkles } from "lucide-react";
+import { Search, ChevronRight } from "lucide-react";
 import { Input } from "@hulianui/ui";
 import { manifest, CATEGORIES, componentMeta, type CategoryKey } from "../lib/manifest";
 import { DOCS_LOCALE, stripDocsBasePath } from "../lib/docs-locale";
@@ -13,7 +13,6 @@ const copy =
         navLabel: "Component navigation",
         filterLabel: "Filter components in navigation",
         filterPlaceholder: "Filter components…",
-        animated: "Animated",
         noResults: "No matching components in this navigation.",
         searchAll: "Search the whole site (pages, blocks, and templates)",
       }
@@ -21,7 +20,6 @@ const copy =
         navLabel: "组件导航",
         filterLabel: "在导航中筛组件",
         filterPlaceholder: "在导航中筛组件…",
-        animated: "动效",
         noResults: "导航里没有匹配的组件。",
         searchAll: "去全站搜索（含页面 / 区块 / 模版）",
       };
@@ -38,7 +36,6 @@ export function ComponentTree() {
   );
 
   const [query, setQuery] = useState("");
-  const [animatedOnly, setAnimatedOnly] = useState(false);
   // 折叠态：默认只展开「当前所在大类」，其余收起 → 落地页滚动从 142 行降到个位数。
   const [openCats, setOpenCats] = useState<Set<CategoryKey>>(() =>
     activeCat ? new Set([activeCat]) : new Set(),
@@ -51,17 +48,16 @@ export function ComponentTree() {
   }, [activeCat]);
 
   const q = query.trim().toLowerCase();
-  const filtering = q !== "" || animatedOnly;
+  const filtering = q !== "";
   const matches = (m: (typeof manifest)[number]) => {
     const localized = componentMeta(m);
     return (
-      (!animatedOnly || m.tags?.includes("animated")) &&
-      (!q ||
-        m.name.toLowerCase().includes(q) ||
-        localized.shortName.toLowerCase().includes(q) ||
-        localized.description.toLowerCase().includes(q) ||
-        localized.keywords.some((keyword) => keyword.toLowerCase().includes(q)) ||
-        m.slug.includes(q))
+      !q ||
+      m.name.toLowerCase().includes(q) ||
+      localized.shortName.toLowerCase().includes(q) ||
+      localized.description.toLowerCase().includes(q) ||
+      localized.keywords.some((keyword) => keyword.toLowerCase().includes(q)) ||
+      m.slug.includes(q)
     );
   };
 
@@ -86,8 +82,8 @@ export function ComponentTree() {
 
   return (
     <nav aria-label={copy.navLabel} className="space-y-3">
-      {/* 搜索 + 过滤：解决「我知道要哪个」的滚动 —— 输名直达，跨分组筛动效 */}
-      <div className="space-y-2">
+      {/* 搜索：解决「我知道要哪个」的滚动 —— 输名直达 */}
+      <div>
         <Input
           size="sm"
           value={query}
@@ -96,19 +92,6 @@ export function ComponentTree() {
           aria-label={copy.filterLabel}
           prefix={<Search className="size-3.5" aria-hidden />}
         />
-        <button
-          type="button"
-          onClick={() => setAnimatedOnly((v) => !v)}
-          aria-pressed={animatedOnly}
-          className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs transition-colors ${
-            animatedOnly
-              ? "border-primary bg-primary/10 text-primary"
-              : "border-border text-muted-foreground hover:bg-surface-hover hover:text-foreground"
-          }`}
-        >
-          <Sparkles className="size-3" aria-hidden />
-          {copy.animated}
-        </button>
       </div>
 
       {/* 这个框只筛**导航树**，筛不到正文的组件总览卡片 —— 旧文案「无匹配组件」会让人
@@ -152,7 +135,9 @@ export function ComponentTree() {
               />
               <span>{categoryLabel}</span>
               {/* 计数是次级信息，随分类标题一起变重会喧宾夺主 —— 保持常规字重 + 弱色阶。 */}
-              <span className="ml-auto text-xs font-normal tabular-nums text-muted-foreground">{count}</span>
+              <span className="ml-auto text-xs font-normal tabular-nums text-muted-foreground">
+                {count}
+              </span>
             </button>
 
             {open && (
@@ -183,12 +168,6 @@ export function ComponentTree() {
                                   这里只是防复发的兜底——再长也只是省略号，不会把英文名挤出行外。 */}
                               <span className="flex min-w-0 items-center gap-1.5 truncate whitespace-nowrap">
                                 {localized.shortName}
-                                {m.tags?.includes("animated") && (
-                                  <Sparkles
-                                    className="size-3 shrink-0 text-primary/60"
-                                    aria-label={copy.animated}
-                                  />
-                                )}
                               </span>
                               {m.name !== localized.shortName && (
                                 <span className="ml-auto min-w-0 truncate text-xs text-muted-foreground">

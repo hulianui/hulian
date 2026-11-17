@@ -36,11 +36,11 @@ export interface SegmentedProps extends HTMLAttributes<HTMLDivElement> {
   disabled?: boolean;
   size?: "sm" | "md";
   /**
-   * 选中段的语义色档。@default "neutral"
+   * 选中段的语义色档。@default "brand"
    *
    * 只染选中段的文字，滑块保持 `bg-surface` 白药丸（同 Tabs solid：白药丸 + 语义字）。
-   * 默认 `neutral` = **逐字保持库既有的渲染**（选中段 `text-foreground`），不是"换成灰"——
-   * 这一档存在的意义是让存量页面零视觉变化；要品牌色显式传 `tone="brand"`。
+   * 默认 `brand`（选中段吃品牌色），与 `TabsList` 的默认档一致。
+   * `neutral` = 加 tone 之前的渲染（选中段 `text-foreground`），要旧观感的调用点显式传它。
    */
   tone?: SegmentedTone;
   className?: string;

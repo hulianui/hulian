@@ -51,7 +51,8 @@ function SnippetImpl({
         type="button"
         onClick={onCopy}
         aria-label={copied ? resolvedCopiedLabel : resolvedCopyLabel}
-        className="ml-auto inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        // hover 走品牌色高亮：Snippet 自身是 surface 底，surface-hover 只沉一档，在白底上几乎看不出「这是个能点的东西」。
+        className="ml-auto inline-flex size-7 shrink-0 items-center justify-center rounded-[min(var(--radius),0.375rem)] text-muted-foreground outline-none transition-colors hover:bg-primary-subtle hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
       >
         {copied ? <Check className="size-4 text-primary" /> : <Copy className="size-4" />}
       </button>

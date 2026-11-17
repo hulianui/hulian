@@ -55,11 +55,21 @@ export function CurvedLoop({
   const measureRef = useRef<SVGTextElement | null>(null);
   const textPathRef = useRef<SVGTextPathElement | null>(null);
   const [spacing, setSpacing] = useState(0);
+  // 字形相对基线的上伸 / 下探（用户单位）。默认按 6rem=96 的常见字面比例估算，挂载后换成实测值 ——
+  // className 改字号时估算会偏，所以不能只靠常量。
+  const [glyph, setGlyph] = useState({ ascent: 96 * 0.9, descent: 96 * 0.25 });
   const [offset, setOffset] = useState(0);
 
   const uid = useId().replace(/[:]/g, "");
   const pathId = `hl-curve-${uid}`;
   const pathD = `M-100,40 Q720,${40 + curveAmount} 1540,40`;
+  // viewBox 按「曲线纵向范围 + 字形上下伸」现算。此前写死 0 0 1440 120：基线在 y=40，96 号字的字顶
+  // 直线时就到 y≈-46；向上弯（curveAmount<0）时顶点 40+c/2 再往上，字顶整段越出 viewBox。
+  // overflow-visible 让它画得出来，但布局盒没给这部分留位置 —— 被祖先 overflow 裁掉，或压在上方内容上。
+  // 向下弯同理越出底部。二次贝塞尔的极值在 t=.5：y = 40 + c/2；端点 y=40。
+  const apexY = 40 + curveAmount / 2;
+  const vbTop = Math.floor(Math.min(40, apexY) - glyph.ascent);
+  const vbHeight = Math.ceil(Math.max(40, apexY) + glyph.descent) - vbTop;
 
   const dragRef = useRef(false);
   const lastXRef = useRef(0);
@@ -85,6 +95,9 @@ export function CurvedLoop({
     if (node && typeof node.getComputedTextLength === "function") {
       const len = node.getComputedTextLength();
       if (len > 0) setSpacing(len);
+      // 测量节点没给 y，基线在 0：bbox.y 即 -上伸，bbox.y+height 即下探。
+      const box = typeof node.getBBox === "function" ? node.getBBox() : null;
+      if (box && box.height > 0) setGlyph({ ascent: -box.y, descent: box.y + box.height });
     }
   }, [marquee, className]);
 
@@ -159,13 +172,15 @@ export function CurvedLoop({
       onPointerLeave={endDrag}
     >
       <svg
-        viewBox="0 0 1440 120"
+        viewBox={`0 ${vbTop} 1440 ${vbHeight}`}
         className={cn(
           "block w-full overflow-visible fill-current text-foreground",
-          "text-[6rem] font-bold leading-none [aspect-ratio:100/12]",
+          "text-[6rem] font-bold leading-none",
           className,
         )}
         {...props}
+        // 宽高比跟着 viewBox 走，布局盒才等于文字真正占的高度。放在 props 之后但合并消费方 style。
+        style={{ aspectRatio: `1440 / ${vbHeight}`, ...props.style }}
       >
         {/* 隐藏测量节点：取单词宽度用于无缝拼接 */}
         <text

@@ -36,6 +36,22 @@ describe("CurvedLoop", () => {
     expect(d).toContain("540"); // 40 + 500
   });
 
+  it("viewBox 装得下向上弯的曲线：顶边高于曲线顶点 + 字形上伸", () => {
+    const { container } = render(<CurvedLoop curveAmount={-220} />);
+    const [, top, , h] = container.querySelector("svg")!.getAttribute("viewBox")!.split(" ").map(Number);
+    // 顶点 y = 40 - 110 = -70，字顶还要再往上
+    expect(top).toBeLessThan(-70 - 50);
+    // 底边仍覆盖端点基线 + 下探
+    expect(top + h).toBeGreaterThan(40);
+    expect((container.querySelector("svg") as SVGElement).style.aspectRatio).toBe(`1440 / ${h}`);
+  });
+
+  it("viewBox 装得下向下弯的曲线底部", () => {
+    const { container } = render(<CurvedLoop curveAmount={320} />);
+    const [, top, , h] = container.querySelector("svg")!.getAttribute("viewBox")!.split(" ").map(Number);
+    expect(top + h).toBeGreaterThan(40 + 160);
+  });
+
   it("interactive=false → 容器为 cursor-auto", () => {
     const { container } = render(<CurvedLoop interactive={false} />);
     const root = container.firstElementChild!;

@@ -26,10 +26,12 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 | 名称 | 类型 | 默认 | 说明 |
 |------|------|------|------|
 | code* | `string` | - | 代码文本，多行用 `\n` |
-| lang | `string` | - | 右上角语言标签（如 `"tsx"`），同时决定着色规则走 JS 家族、Shell 还是 Python |
+| lang | `string` | - | 语言名（如 `"tsx"`）。给了就渲染标题栏（左侧语言名、右侧操作区），同时决定着色规则走 JS 家族、Shell 还是 Python；不给则无标题栏，操作区悬浮在右上角、悬停或键盘聚焦时出现 |
 | copyable | `boolean` | `true` | 是否显示复制按钮 |
 | highlight | `boolean` | `true` | 是否语法着色；关掉则纯文本 |
 | lineNumbers | `boolean \| { start?: number }` | `false` | 是否显示行号。`{ start: 120 }` 让片段从指定行号起算；列宽按最大行号的位数自适应 |
+| defaultWrap | `boolean` | `false` | 长行初始是否自动换行。默认横向滚动保留原排版；内容真有一行放不下时操作区会出现「自动换行」开关，读者可自行切换。日志 / 长 URL / 长报错建议传 `true` |
+| maxLines | `number` | - | 超过这么多行就折叠：只露前 `maxLines` 行 + 底部渐隐 + 「展开全部 N 行」按钮。超出不足 3 行时直接全部展示 |
 | className | `string` | - | 容器类名 |
 
 ## 着色支持的语言
@@ -57,6 +59,10 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 // 片段从源文件第 120 行截来
 <CodeBlock code={snippet} lang="python" lineNumbers={{ start: 120 }} />
+
+// 长代码默认折叠到 12 行；日志类内容默认换行
+<CodeBlock code={source} lang="tsx" maxLines={12} />
+<CodeBlock code={log} lang="text" defaultWrap />
 ```
 
 ## 禁忌 / 坑
@@ -64,6 +70,8 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 - **`lang` 传到没有专门分支的语言，是「近似」不是「支持」**。表里列出的语言之外一律按 JS 家族扫描：`yaml` / `toml` / `ini` / `dockerfile` 的 `#` 注释、SQL 的 `--` 注释都不会被当注释，注释正文会被当代码再扫一遍，里面的词还可能被着成 JS 关键字。这类语言要么接受它、要么先传 `highlight={false}` 保证不着错色，需要真正的着色档请来提 issue。
 - **行号是装饰，不是内容**。它 `aria-hidden` 且不可选中：屏幕阅读器不念，用户框选整段代码复制时也不会混进 `1 2 3`；复制按钮复制的始终是原始 `code`。反过来说，别把「行号」当成可复制的数据来源。
 - **行号列会一直钉在左侧**（`sticky left-0` + 不透明底色）。长行横向滚动时行号不会滑走，代价是滚过去的代码会被行号列遮住一小条——这是刻意的取舍，长行看行号比看那一小条代码重要。
+- **「自动换行」开关只在真溢出时出现**。它量的是 `<pre>` 的 `scrollWidth`，挂载后才知道，所以 SSR 首帧没有这个按钮（标题栏高度固定，出现时不挤动布局）。想让日志类内容一上来就换行，传 `defaultWrap`，别等读者自己点。
+- **折叠只裁显示，不裁内容**：复制按钮复制的始终是完整 `code`；页内查找（⌘F）也搜得到被折叠的行，但命中后不会自动展开。
 - 复制按钮读的是 `navigator.clipboard`，只在安全上下文（HTTPS / localhost）可用；HTTP 局域网页面里点了不会有反应。
 
 ## 相关

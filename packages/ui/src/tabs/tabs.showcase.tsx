@@ -123,36 +123,36 @@ export const tabsShowcase: ShowcaseSpec = {
       description:
         "跟标题、搜索框同行时用 sm：纯文字轨道 28px、tab 24px，md 是 40 / 32。计数 Tag 要自己给 size=\"sm\"，否则默认 md 的 24px 会把 tab 顶回去。",
       code: `<div className="flex items-center gap-2">
-  <span className="text-sm font-semibold">职称组报表</span>
-  <Tabs defaultValue="title">
+  <span className="text-sm font-semibold">工单看板</span>
+  <Tabs defaultValue="open">
     <TabsList variant="solid" size="sm">
-      <TabsTab value="title">职称订单<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
-      <TabsTab value="paper">论文订单<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
+      <TabsTab value="open">待处理<Tag size="sm" className="ml-1.5">2</Tag></TabsTab>
+      <TabsTab value="done">已完成<Tag size="sm" className="ml-1.5">7</Tag></TabsTab>
     </TabsList>
-    <TabsPanel value="title">职称订单列表。</TabsPanel>
-    <TabsPanel value="paper">论文订单列表。</TabsPanel>
+    <TabsPanel value="open">待处理的工单。</TabsPanel>
+    <TabsPanel value="done">已完成的工单。</TabsPanel>
   </Tabs>
 </div>`,
       render: () => (
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold">职称组报表</span>
-          <Tabs defaultValue="title">
+          <span className="text-sm font-semibold">工单看板</span>
+          <Tabs defaultValue="open">
             <TabsList variant="solid" size="sm">
-              <TabsTab value="title">
-                职称订单
+              <TabsTab value="open">
+                待处理
                 <Tag size="sm" className="ml-1.5">
                   2
                 </Tag>
               </TabsTab>
-              <TabsTab value="paper">
-                论文订单
+              <TabsTab value="done">
+                已完成
                 <Tag size="sm" className="ml-1.5">
                   7
                 </Tag>
               </TabsTab>
             </TabsList>
-            <TabsPanel value="title">职称订单列表。</TabsPanel>
-            <TabsPanel value="paper">论文订单列表。</TabsPanel>
+            <TabsPanel value="open">待处理的工单。</TabsPanel>
+            <TabsPanel value="done">已完成的工单。</TabsPanel>
           </Tabs>
         </div>
       ),

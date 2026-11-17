@@ -1,15 +1,29 @@
 import { Children, Fragment, memo } from "react";
+import { cva } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import type { KbdGroupProps, KbdProps } from "./kbd.types";
 
+// 键帽皮肤。tone=primary 用于「这是本页的主快捷键」的场合（顶栏搜索的 ⌘K、命令面板入口）：
+// 与导航选中态同一档的品牌浅底 + 品牌边，随主题色走。此前文档站首页靠 className 三连覆盖实现，
+// 消费方想要同款只能照抄那三个类名，主题切换时还得自己保证 border/bg/text 三者同步。
+export const kbdVariants = cva(
+  "inline-flex h-5 min-w-5 items-center justify-center rounded-[min(var(--radius),0.375rem)] border px-1.5 font-mono text-xs font-medium shadow-sm",
+  {
+    variants: {
+      tone: {
+        default: "border-border bg-surface-hover text-muted-foreground",
+        primary: "border-primary-border bg-primary-subtle text-primary",
+      },
+    },
+    defaultVariants: { tone: "default" },
+  },
+);
+
 // 纯皮肤 <kbd>（可 RSC）。组合键(⌘+K)交给 KbdGroup；keys 符号自动映射仍是 YAGNI。
-function KbdImpl({ className, children, ...props }: KbdProps) {
+function KbdImpl({ tone, className, children, ...props }: KbdProps) {
   return (
     <kbd
-      className={cn(
-        "inline-flex h-5 min-w-5 items-center justify-center rounded-[min(var(--radius),0.375rem)] border border-border bg-surface-hover px-1.5 font-mono text-xs font-medium text-muted-foreground shadow-sm",
-        className,
-      )}
+      className={cn(kbdVariants({ tone }), className)}
       {...props}
     >
       {children}
@@ -37,6 +51,7 @@ Kbd.displayName = "Kbd";
 export function KbdGroup({
   keys,
   children,
+  tone,
   separator = "+",
   label,
   className,
@@ -47,7 +62,11 @@ export function KbdGroup({
   // 于是 `{cond && <Kbd/>}` 这类条件渲染求值成空时能落回 keys，而不是渲染出一个空容器。
   const provided = Children.toArray(children);
   const items =
-    provided.length > 0 ? provided : (keys ?? []).map((key, index) => <Kbd key={index}>{key}</Kbd>);
+    provided.length > 0 ? provided : (keys ?? []).map((key, index) => (
+          <Kbd key={index} tone={tone}>
+            {key}
+          </Kbd>
+        ));
   // 分隔符默认 "+"，传 null / "" 表示只要间距不要符号。
   const hasSeparator = separator !== null && separator !== undefined && separator !== "";
 
@@ -66,7 +85,10 @@ export function KbdGroup({
         <Fragment key={index}>
           {index > 0 && hasSeparator ? (
             // 分隔符是画给眼睛看的：读屏把它念成「加号」只会把键名切碎，整组的语义由 label 承担。
-            <span aria-hidden="true" className="select-none text-xs text-muted-foreground">
+            <span
+              aria-hidden="true"
+              className={cn("select-none text-xs", tone === "primary" ? "text-primary/70" : "text-muted-foreground")}
+            >
               {separator}
             </span>
           ) : null}

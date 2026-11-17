@@ -26,9 +26,11 @@ const proseBase = cn(
   "[&_ul]:my-4 [&_ul]:ml-6 [&_ul]:list-disc [&_ol]:my-4 [&_ol]:ml-6 [&_ol]:list-decimal",
   "[&_li]:my-1 [&_li]:marker:text-muted-foreground",
   // 行内代码（排除 pre 内的 code）
-  "[&_:not(pre)>code]:rounded-[min(var(--radius),0.375rem)] [&_:not(pre)>code]:bg-surface-hover [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:font-mono [&_:not(pre)>code]:text-[0.85em]",
+  // 与 Code 组件同一套折行策略：超长才从中间断 + 断开的每截各自带圆角内距（理由见 code.tsx）。
+  "[&_:not(pre)>code]:rounded-[min(var(--radius),0.375rem)] [&_:not(pre)>code]:bg-surface-hover [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:font-mono [&_:not(pre)>code]:text-[0.85em] [&_:not(pre)>code]:box-decoration-clone [&_:not(pre)>code]:[overflow-wrap:anywhere] [&_:not(pre)>code]:shadow-xs",
   // 代码块
-  "[&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-[var(--radius)] [&_pre]:border [&_pre]:border-border [&_pre]:bg-surface [&_pre]:p-4 [&_pre]:text-sm",
+  // 裸 <pre>（HTML 直出的正文）与 CodeBlock 同一底色：比 surface 沉半档，正文里读作「一块代码」。
+  "[&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-[var(--radius)] [&_pre]:border [&_pre]:border-border [&_pre]:bg-[color-mix(in_oklab,var(--color-muted)_45%,var(--color-surface))] [&_pre]:px-4 [&_pre]:py-3.5 [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:[tab-size:2]",
   "[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:font-mono",
   // 引用：不加 italic —— 中文字体没有真意大利体字形，浏览器会合成伪斜体把笔画拉变形。
   // 引用语义由左边线 + 弱化文字色承担，倾斜不表达任何东西。
@@ -38,6 +40,13 @@ const proseBase = cn(
   "[&_details]:my-4 [&_details]:rounded-[var(--radius)] [&_details]:border [&_details]:border-border [&_details]:bg-surface [&_details]:px-4 [&_details]:py-3",
   // summary 是连点目标（反复展开/收起），文本一律 select-none，否则双击会把标题刷成选区。
   "[&_summary]:cursor-pointer [&_summary]:select-none [&_summary]:font-semibold [&_summary]:text-foreground [&_summary:hover]:text-primary",
+  // 展开指示：去掉浏览器原生的实心三角（display:flex 让 Chrome/Firefox 不再画 list-item marker，
+  // Safari 还得单独藏 ::-webkit-details-marker），换成与库里其它折叠件一致的线性 chevron。
+  // Prose 套的是任意 HTML，塞不进真实 SVG 节点，所以用 ::before 两条边框旋转画出来 ——
+  // 吃 currentColor、无 data URI；收起朝右（-45°）、展开转成朝下（45°），过渡跟随全库默认曲线。
+  "[&_summary]:flex [&_summary]:items-center [&_summary]:gap-2.5 [&_summary]:list-none [&_summary::-webkit-details-marker]:hidden",
+  "[&_summary]:before:size-[0.4em] [&_summary]:before:shrink-0 [&_summary]:before:content-[''] [&_summary]:before:border-r-[1.5px] [&_summary]:before:border-b-[1.5px] [&_summary]:before:border-muted-foreground [&_summary]:before:-rotate-45 [&_summary]:before:transition-transform motion-reduce:[&_summary]:before:transition-none",
+  "[&_summary:hover]:before:border-primary [&_details[open]>summary]:before:rotate-45",
   // 展开后 summary 与首个内容块留一档（对齐容器 py-3），末元素外边距收敛进内距。
   "[&_details>summary+*]:mt-3 [&_details>:last-child]:mb-0",
   // 嵌套折叠块（教程长文里常见：外层「展开看答案」内套「展开看报错怎么读」）改用弱背景，

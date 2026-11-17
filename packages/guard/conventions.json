@@ -1999,6 +1999,13 @@
       "source": "packages/ui/src/click-spark/click-spark.md"
     },
     {
+      "id": "component/code/pitfall/1",
+      "scope": "code",
+      "title": "Code",
+      "rule": "**超长内容会在 chip 内折行**：只在一整段放不下一行时才从中间断（`overflow-wrap: anywhere`），断开的每一截各自带圆角与内边距（`box-decoration-break: clone`）。不会再把窄容器（手机、侧栏、表格格子）撑破。多行代码请用 [CodeBlock](../code-block/code-block.md)。",
+      "source": "packages/ui/src/code/code.md"
+    },
+    {
       "id": "component/code-block/pitfall/1",
       "scope": "code-block",
       "title": "CodeBlock",
@@ -2021,6 +2028,20 @@
     },
     {
       "id": "component/code-block/pitfall/4",
+      "scope": "code-block",
+      "title": "CodeBlock",
+      "rule": "**「自动换行」开关只在真溢出时出现**。它量的是 `<pre>` 的 `scrollWidth`，挂载后才知道，所以 SSR 首帧没有这个按钮（标题栏高度固定，出现时不挤动布局）。想让日志类内容一上来就换行，传 `defaultWrap`，别等读者自己点。",
+      "source": "packages/ui/src/code-block/code-block.md"
+    },
+    {
+      "id": "component/code-block/pitfall/5",
+      "scope": "code-block",
+      "title": "CodeBlock",
+      "rule": "**折叠只裁显示，不裁内容**：复制按钮复制的始终是完整 `code`；页内查找（⌘F）也搜得到被折叠的行，但命中后不会自动展开。",
+      "source": "packages/ui/src/code-block/code-block.md"
+    },
+    {
+      "id": "component/code-block/pitfall/6",
       "scope": "code-block",
       "title": "CodeBlock",
       "rule": "复制按钮读的是 `navigator.clipboard`，只在安全上下文（HTTPS / localhost）可用；HTTP 局域网页面里点了不会有反应。",
@@ -11481,7 +11502,7 @@
   ],
   "stats": {
     "componentDocs": 404,
-    "componentAdvisories": 1601,
-    "totalAdvisories": 1611
+    "componentAdvisories": 1604,
+    "totalAdvisories": 1614
   }
 }

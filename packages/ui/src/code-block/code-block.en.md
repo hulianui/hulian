@@ -26,10 +26,12 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 | Name | Type | Default | Description |
 |------|------|------|------|
 | code* | `string` | - | Code text; use `\n` for multiple lines. |
-| lang | `string` | - | Language label shown in the upper-right corner, such as `"tsx"`. It also selects JavaScript-family, shell, or Python highlighting rules. |
+| lang | `string` | - | Language name, such as `"tsx"`. When set, a header bar renders with the language on the left and the actions on the right; it also selects JavaScript-family, shell, or Python highlighting rules. Without it there is no header, and the actions float in the upper-right corner, appearing on hover or keyboard focus. |
 | copyable | `boolean` | `true` | Whether to show the copy button. |
 | highlight | `boolean` | `true` | Whether to apply syntax coloring; disable it for plain text. |
 | lineNumbers | `boolean \| { start?: number }` | `false` | Whether to show a line-number gutter. Pass `{ start: 120 }` so a snippet is numbered from a given line; the gutter width follows the digits of the largest line number. |
+| defaultWrap | `boolean` | `false` | Whether long lines start wrapped. By default they scroll horizontally to keep the original layout; when a line actually overflows, a "Wrap lines" toggle appears in the actions so readers can switch. Pass `true` for logs, long URLs, and long error messages. |
+| maxLines | `number` | - | Collapse beyond this many lines: only the first `maxLines` lines show, with a bottom fade and a "Show all N lines" button. Blocks that exceed it by fewer than 3 lines are shown in full. |
 | className | `string` | - | Additional class name for the container. |
 
 ## Highlighted languages
@@ -57,6 +59,10 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 
 // The snippet was cut from line 120 of the source file
 <CodeBlock code={snippet} lang="python" lineNumbers={{ start: 120 }} />
+
+// Collapse long code to 12 lines; wrap log-like content from the start
+<CodeBlock code={source} lang="tsx" maxLines={12} />
+<CodeBlock code={log} lang="text" defaultWrap />
 ```
 
 ## Usage guidelines
@@ -64,6 +70,8 @@ import { CodeBlock, HighlightedCode, tokenizeCode, type CodeToken, type CodeToke
 - **A `lang` without a dedicated branch is approximated, not supported.** Every language not listed in the table above is scanned with the JavaScript-family rules: the `#` comments of `yaml` / `toml` / `ini` / `dockerfile` and the `--` comments of SQL are not recognized, so comment bodies are scanned as code and words inside them may even be colored as JavaScript keywords. Either accept that, or pass `highlight={false}` so nothing is colored wrongly; open an issue if you need a real branch for your language.
 - **Line numbers are decoration, not content.** The gutter is `aria-hidden` and cannot be selected: screen readers skip it, and selecting the whole block never drags `1 2 3` into the clipboard. The copy button always copies the original `code`. Conversely, do not treat the gutter as a source of copyable data.
 - **The gutter stays pinned to the left** (`sticky left-0` plus an opaque background). Line numbers survive horizontal scrolling of long lines; the cost is that the scrolled code is hidden under a narrow strip. That trade is deliberate: on a long line, seeing the line number matters more than that strip of code.
+- **The "Wrap lines" toggle only appears when a line really overflows.** It measures the `<pre>` `scrollWidth`, which is only known after mount, so the first server-rendered frame has no toggle (the header has a fixed height, so it appears without shifting layout). If log-like content should wrap right away, pass `defaultWrap` instead of waiting for readers to click.
+- **Collapsing trims the display, not the content.** The copy button always copies the full `code`, and in-page find (⌘F) still matches collapsed lines, but a match does not expand the block.
 - The copy button uses `navigator.clipboard`, which only exists in a secure context (HTTPS or localhost); on a plain HTTP page in a local network, clicking it copies nothing.
 
 ## Related

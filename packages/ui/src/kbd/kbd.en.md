@@ -25,6 +25,7 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 
 | Name | Type | Default | Description |
 |------|------|------|------|
+| tone | `"default" \| "primary"` | `"default"` | Color tone: neutral gray by default; `primary` uses the brand subtle fill and border for a page's main shortcut (the ⌘K search trigger, a command palette entry) and follows the theme color |
 | ...HTMLAttributes | `HTMLAttributes<HTMLElement>` | - | supports `<kbd>` native attributes (className, style, etc.) |
 
 ### KbdGroup Props
@@ -34,6 +35,7 @@ import { Kbd, KbdGroup } from "@hulianui/ui"
 | keys | `ReactNode[]` | - | Key names, each wrapped in a Kbd. The usual way to write a combination |
 | separator | `ReactNode` | `"+"` | Separator between keys. Decorative only (`aria-hidden`, never announced). Pass `null` to keep the spacing without drawing a symbol |
 | label | `string` | - | Accessible name for the whole combination, such as "Open command palette". `role="group"` is added only when it is present |
+| tone | `"default" \| "primary"` | `"default"` | Passed to every key cap generated from `keys`; the separator follows the color. When you pass children, set `tone` on each Kbd yourself |
 | ...HTMLAttributes | `HTMLAttributes<HTMLSpanElement>` | - | supports native attributes of the wrapping `<span>`. The rest spread comes first, so the `role` and `aria-label` the component computes win (see Usage guidelines) |
 
 ## Slots
