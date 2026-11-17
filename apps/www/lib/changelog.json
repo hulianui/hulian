@@ -1,8 +1,70 @@
 [
   {
+    "pkg": "@hulianui/tokens",
+    "version": "0.16.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "c03b065",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(paper): 新增 Paper 动态论文插图（首片）。`Paper` 管呈现形态（阅读 / 打印）和图的注册表，`labels` 让论文内容的语言（图注前缀、自动引用）独立于界面语言；浏览器打印前自动切到打印形态、打印完切回；图号用 CSS 计数器，服务端渲染和打印都有号。`PaperFigure` 的状态是任意值加一组有名字的预设，`children` 是「状态 → 画面」的函数；打印形态下主图画 `printState`，`printSubfigures` 展开成 (a)(b)… 分图，控件不渲染。`ProcessFigure` 是一步步讲的图，图里用 `FigureStep` 标出每一部分属于哪一步：当前步不透明、讲过的半透明、没讲到的很淡但不隐藏；自带上一步 / 下一步、逐步按钮、「全部」和自动播放。`FigRef` 是正文引用，点击把图切到对应预设、滚进视野并描边，没有 JS 时退化成锚点。tokens 新增 `hulian-paper-flow` 关键帧，给当前一步的流动虚线用。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.74.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "5e58089",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 的公式自动编号：`PaperEquation` 在 `Paper` 里不传 `number` 时和图号一样用 CSS 计数器自动编号，服务端渲染与打印都有号；传值是手写覆盖、不占号（同 LaTeX `\\tag`），`null` / `false` 不编号；在 `Paper` 外不传仍不编号。新增 `EqRef`（主入口，不依赖 KaTeX）：正文显示「公式 (1)」/ \"Eq. (1)\"，按文档顺序取号并与计数器一致，手写覆盖的号原样显示；点击滚到公式并描边，没有 JS 时是普通锚点，打印形态下去掉链接色。`PaperContentLabels` 与 locale 新增可选 `equation`。"
+      },
+      {
+        "sha": "bbebd58",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 新增公式与图联动。`@hulianui/ui/math` 导出 `PaperEquation`：LaTeX 里用 `\\term{name}{…}` 标出可交互的项，`terms` 配置点击后驱动哪张图（切到预设，或由当前状态算新状态）；悬停 / 聚焦项时，图里用主入口新增的 `usePaperTerm(name)` 绑定的控件一起高亮，反之亦然。项上叠透明的真按钮，键盘与读屏可达；`\\term` 展开成 KaTeX 的 `\\htmlData`，trust 只放行这一种，`\\href` 等照旧拒绝。KaTeX 不进主入口。"
+      },
+      {
+        "sha": "bbebd58",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 新增 `usePaperExport()`：`exportFigureSvg(id, stateKey, options?)` 把某张图的某个预设导出成独立的 SVG 文本，供投稿插进 Word 或转 PDF 进 LaTeX。导出在屏幕外用图的同一个「状态 → 画面」函数重画，逐个元素把计算样式写成 SVG 表现属性，`oklch()` / `oklab()` 等颜色换成十六进制，透明度并进 `fill-opacity` / `stroke-opacity`，去掉 class 与 data 属性，不再依赖页面 CSS；默认按亮色主题导出（`theme: \"current\"` 按当前主题），动画与过渡不进文件，正文里的图不受影响。可选 `background` 底色与 `width` 输出宽度。画面不是单独一个 `<svg>` 时 reject 并说明原因。"
+      },
+      {
+        "sha": "bbebd58",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 新增标题区与参考文献。`PaperHeader` 排题目（上粗下细两条线）、作者与单位、说明行和摘要；`Bibliography` 按 `entries` 顺序编号，`Cite` 按 id 取号，多条引用排序去重、连续三条及以上压成 `[1–3]`，点击滚到条目并描边，打印形态下去掉链接色。「摘要」「参考文献」标题跟随 `Paper` 的 `labels`（新增可选的 `abstract`、`references`）。"
+      },
+      {
+        "sha": "bbebd58",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 新增 `PaperPresenter` 答辩演示：全屏把论文里每张图的预设按文档顺序串成幻灯片，←/→、空格、PageUp/PageDown 翻页，Esc 退出且焦点回到触发按钮。演示层复用图的「状态 → 画面」函数重画，不搬动正文里的图，也不改它的状态；图的控件在演示里照常可用。`PaperFigure` / `ProcessFigure` 新增 `presentStates` 选定演示哪些预设。"
+      },
+      {
+        "sha": "5e58089",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 新增 `FigureRaster`：图里的热力图、注意力矩阵等栅格放在图的 `<svg>` 里，`draw(ctx, { width, height, color })` 在离屏 canvas 上画、编码成 PNG 写进 `<image href>`。栅格与矢量部分共用 `viewBox` 坐标，打印分图各画一份，演示层按舞台缩放，`exportFigureSvg` 原样内嵌（补 `xlink:href`，得到一份混合 SVG）。`color()` 按栅格所在位置的主题解析 token 颜色，页面明暗切换时重画，导出总是亮色；`pixelated` 按整数倍最近邻放大编码，Word / PDF 里也保持锐利方块。服务端渲染输出无 `href` 的占位 `<image>`。画面是裸 canvas 时导出的报错信息改为指向 `FigureRaster`。"
+      },
+      {
+        "sha": "c03b065",
+        "bump": "minor",
+        "breaking": false,
+        "body": "feat(paper): 新增 Paper 动态论文插图（首片）。`Paper` 管呈现形态（阅读 / 打印）和图的注册表，`labels` 让论文内容的语言（图注前缀、自动引用）独立于界面语言；浏览器打印前自动切到打印形态、打印完切回；图号用 CSS 计数器，服务端渲染和打印都有号。`PaperFigure` 的状态是任意值加一组有名字的预设，`children` 是「状态 → 画面」的函数；打印形态下主图画 `printState`，`printSubfigures` 展开成 (a)(b)… 分图，控件不渲染。`ProcessFigure` 是一步步讲的图，图里用 `FigureStep` 标出每一部分属于哪一步：当前步不透明、讲过的半透明、没讲到的很淡但不隐藏；自带上一步 / 下一步、逐步按钮、「全部」和自动播放。`FigRef` 是正文引用，点击把图切到对应预设、滚进视野并描边，没有 JS 时退化成锚点。tokens 新增 `hulian-paper-flow` 关键帧，给当前一步的流动虚线用。"
+      }
+    ]
+  },
+  {
     "pkg": "@hulianui/ui",
     "version": "0.73.3",
-    "date": "2026-11-15",
+    "date": "2026-11-14",
     "entries": [
       {
         "sha": "9d99cb6",
