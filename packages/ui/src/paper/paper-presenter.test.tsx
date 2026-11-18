@@ -224,6 +224,57 @@ describe("PaperPresenter", () => {
     expect(onSlideChange).toHaveBeenLastCalledWith({ figure: "one", state: "x" }, 0);
   });
 
+  it("放映里不做自动开播：节奏由讲者掌握（播放按钮仍可用）", () => {
+    vi.useFakeTimers();
+    const restore = stubObserver();
+    try {
+      render(
+        <ConfigProvider locale={zhCN}>
+          <Paper>
+            <PaperPresenter trigger={<button type="button">演示</button>} />
+            <ProcessFigure id="arch" steps={steps} caption="架构" autoPlay>
+              <svg>
+                <FigureStep at="a" />
+                <FigureStep at="b" />
+              </svg>
+            </ProcessFigure>
+          </Paper>
+        </ConfigProvider>,
+      );
+      const dialog = open();
+      act(() => vi.advanceTimersByTime(6000));
+      expect(counter(dialog)).toBe("1 / 3");
+      expect(within(dialog).getByRole("button", { name: "播放" })).toBeTruthy();
+    } finally {
+      restore();
+    }
+  });
+
+  it("hideChrome：只留画面，点「显示界面」能唤回来", () => {
+    render(<Demo hideChrome />);
+    const dialog = open();
+    expect(dialog.querySelector("header")).toBeNull();
+    expect(dialog.querySelector("footer")).toBeNull();
+    expect(within(dialog).queryByRole("button", { name: /退出/ })).toBeNull();
+    // 画面还在：幻灯片照常是第 1 页
+    expect(counter(dialog)).toBeUndefined();
+    expect(shown(dialog)?.getAttribute("data-state")).toBe("a");
+    fireEvent.click(within(dialog).getByRole("button", { name: "显示界面" }));
+    expect(dialog.querySelector("header")?.textContent).toContain("图 1");
+    expect(counter(dialog)).toBe("1 / 5");
+    expect(within(dialog).getByRole("button", { name: /退出/ })).toBeTruthy();
+  });
+
+  it("界面上的「隐藏界面」收起顶栏与翻页条", () => {
+    render(<Demo />);
+    const dialog = open();
+    fireEvent.click(within(dialog).getByRole("button", { name: "隐藏界面" }));
+    expect(dialog.querySelector("header")).toBeNull();
+    expect(dialog.querySelector("footer")).toBeNull();
+    fireEvent.click(within(dialog).getByRole("button", { name: "显示界面" }));
+    expect(dialog.querySelector("footer")).toBeTruthy();
+  });
+
   it("退出后焦点回到触发按钮，演示层关闭", async () => {
     render(<Demo />);
     const trigger = screen.getByRole("button", { name: "演示" });
@@ -237,3 +288,23 @@ describe("PaperPresenter", () => {
     expect(document.activeElement).toBe(trigger);
   });
 });
+
+/** 让 IntersectionObserver 在 observe 时立刻回调一次「已进入视口」。 */
+function stubObserver() {
+  const original = globalThis.IntersectionObserver;
+  class FakeObserver {
+    constructor(private readonly callback: IntersectionObserverCallback) {}
+    observe(target: Element) {
+      this.callback([{ isIntersecting: true, target } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+    }
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  }
+  globalThis.IntersectionObserver = FakeObserver as unknown as typeof IntersectionObserver;
+  return () => {
+    globalThis.IntersectionObserver = original;
+  };
+}

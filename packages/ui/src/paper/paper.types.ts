@@ -54,6 +54,11 @@ export interface FigureRenderContext<S> {
   /** 直接给一个状态值（如滑块拖到的参数）。 */
   setState: (state: S) => void;
   mode: PaperMode;
+  /**
+   * 这段画面是在 `PaperPresenter` 的放映层里画的。放映由讲者自己掌握节奏，
+   * 所以 `ProcessFigure` 的 `autoPlay` 在这里不生效（播放按钮照常可用）。
+   */
+  presenting?: boolean;
 }
 
 export interface PaperFigureProps<S>
@@ -78,6 +83,20 @@ export interface PaperFigureProps<S>
   presentStates?: readonly string[];
   /** 图注正文（不含「图 1：」前缀，编号自动）。 */
   caption: ReactNode;
+  /**
+   * 不渲染图注（「图 1：…」整条，含下方的状态说明）。编号照常递增，
+   * 后面的图不会因为这个跳号。适合封面 / 首页这种只要画面的地方。
+   */
+  hideCaption?: boolean;
+  /** 不渲染图注第二行的状态说明（`describe` 的结果）。`hideCaption` 时自然也没有。 */
+  hideDescription?: boolean;
+  /**
+   * 控件行可收起：控件末尾多一个图标按钮，收起后整行只剩它自己（「显示控件」）。
+   * 适合首页那种「先看图，要细看时再展开控件」的场景。打印形态本来就不渲染控件。
+   */
+  collapsibleControls?: boolean;
+  /** 初始就收起控件行（仅 `collapsibleControls` 时有效）。 */
+  defaultControlsCollapsed?: boolean;
   /** 图注第二行：说明当前状态。返回空则不占行。 */
   describe?: (state: S, key: string | null) => ReactNode;
   /** 分图的小标题，默认 `(a)`、`(b)`… 加 `describe` 的结果。 */
@@ -120,8 +139,22 @@ export interface ProcessFigureProps
   printState?: string;
   /** 打印分图，默认每一步各一张；传 `[]` 不展开。 */
   printSubfigures?: readonly string[];
-  /** 自动播放每步停留的毫秒数，默认 2200。 */
+  /** 自动播放每步停留的毫秒数，默认 2200。倍速按钮在它的基础上乘。 */
   interval?: number;
+  /**
+   * 进入视口后自己开播（不停在「全部」上等人点）。滚出视口暂停、滚回来接着播；
+   * 读者手动按过暂停就不再自动恢复。`prefers-reduced-motion: reduce` 下不自动播。
+   */
+  autoPlay?: boolean;
+  /** 播到最后一步后回到第一步继续（默认播完停下）。 */
+  loop?: boolean;
+  /**
+   * 倍速档位（1 = `interval` 原速）。默认 `[0.5, 1, 1.5, 2]`；
+   * 传 `[]` 不渲染倍速按钮，也就是固定 `interval`。
+   */
+  speeds?: readonly number[];
+  /** 初始倍速，默认 1。不在 `speeds` 里时用第一个档位。 */
+  defaultSpeed?: number;
   /** 图本身，一般是一张用 `FigureStep` 标好各部分属于哪一步的 SVG。 */
   children: ReactNode;
 }
@@ -228,6 +261,11 @@ export interface PaperPresenterProps {
   slides?: readonly PresenterSlide[];
   /** 是否在演示里渲染图自带的控件（步骤按钮、参数开关）。默认 true。 */
   controls?: boolean;
+  /**
+   * 初始就隐藏演示界面（标题、页码、退出、翻页条），只留幻灯片画面。
+   * 运行时可以再切回来：界面上的「隐藏界面」按钮收起，画面右上角的「显示界面」按钮唤回。
+   */
+  hideChrome?: boolean;
   /** 翻到某一页时触发（含打开时的第一页）。 */
   onSlideChange?: (slide: PresenterSlide, index: number) => void;
   /** 加在全屏层根元素上。 */

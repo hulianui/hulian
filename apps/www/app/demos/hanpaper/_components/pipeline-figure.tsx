@@ -123,6 +123,12 @@ export function PipelineFigure({ papers, defaultStage }: { papers: PaperSummary[
       overviewDescription={copy("overview")}
       defaultState={defaultStage ?? "all"}
       interval={1800}
+      // 首页这块是「活的看板」：进视口自己走一遍各阶段并循环，读者要细看时再展开控件，
+      // 手动点步骤 / 卡片上的「定位阶段」都会立刻接管、停止自播。
+      autoPlay
+      loop
+      collapsibleControls
+      defaultControlsCollapsed
       printSubfigures={[]}
     >
       <PipelineDiagram papers={papers} />

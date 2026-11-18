@@ -128,10 +128,13 @@ describe("FigRef", () => {
 });
 
 describe("ProcessFigure", () => {
-  const renderProcess = (mode?: PaperMode) =>
+  const renderProcess = (
+    mode?: PaperMode,
+    extra?: Partial<React.ComponentProps<typeof ProcessFigure>>,
+  ) =>
     zh(
       <Paper mode={mode}>
-        <ProcessFigure id="arch" steps={steps} caption="架构" overviewDescription="全部阶段">
+        <ProcessFigure id="arch" steps={steps} caption="架构" overviewDescription="全部阶段" {...extra}>
           <Arch />
         </ProcessFigure>
       </Paper>,
@@ -222,6 +225,45 @@ describe("ProcessFigure", () => {
     expect(screen.getByRole("button", { name: "播放" })).toBeTruthy();
   });
 
+  it("播放中外部切步骤（正文引用 / 定位阶段）→ 播放让位，别把读者选的那步刷走", () => {
+    vi.useFakeTimers();
+    zh(
+      <Paper>
+        <FigRef to="arch" state="c" data-testid="jump" />
+        <ProcessFigure id="arch" steps={steps} caption="架构" overviewDescription="全部阶段">
+          <Arch />
+        </ProcessFigure>
+      </Paper>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "播放" }));
+    fireEvent.click(screen.getByTestId("jump"));
+    expect(screen.getByRole("button", { name: "播放" })).toBeTruthy();
+    act(() => vi.advanceTimersByTime(2200));
+    expect(screen.getByRole("button", { name: "(c) 前馈" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("外部先切了步骤：之后才进视口也不自动开播", () => {
+    vi.useFakeTimers();
+    const io = stubObserverDeferred();
+    try {
+      zh(
+        <Paper>
+          <FigRef to="arch" state="c" data-testid="jump" />
+          <ProcessFigure id="arch" steps={steps} caption="架构" autoPlay>
+            <Arch />
+          </ProcessFigure>
+        </Paper>,
+      );
+      fireEvent.click(screen.getByTestId("jump"));
+      act(() => io.enter());
+      act(() => vi.advanceTimersByTime(2200));
+      expect(screen.getByRole("button", { name: "(c) 前馈" }).getAttribute("aria-pressed")).toBe("true");
+      expect(screen.getByRole("button", { name: "播放" })).toBeTruthy();
+    } finally {
+      io.restore();
+    }
+  });
+
   it("打印形态：主图全部亮着，每一步展开一张分图，没有控件", () => {
     const { container } = renderProcess("print");
     expect(screen.queryByRole("group", { name: "步骤" })).toBeNull();
@@ -231,7 +273,250 @@ describe("ProcessFigure", () => {
     expect([...subs].map((s) => s.textContent)).toEqual(["(a) 嵌入", "(b) 自注意力", "(c) 前馈"]);
     expect(subs[1].querySelector('[data-testid="part-bc"]')?.getAttribute("data-phase")).toBe("on");
   });
+
+  it("loop：播到最后一步回到第一步继续", () => {
+    vi.useFakeTimers();
+    renderProcess(undefined, { loop: true });
+    fireEvent.click(screen.getByRole("button", { name: "播放" }));
+    const pressed = (name: string) =>
+      screen.getByRole("button", { name }).getAttribute("aria-pressed");
+    act(() => vi.advanceTimersByTime(2200));
+    act(() => vi.advanceTimersByTime(2200));
+    expect(pressed("(c) 前馈")).toBe("true");
+    act(() => vi.advanceTimersByTime(2200));
+    expect(pressed("(a) 嵌入")).toBe("true");
+    // 还在播，不是停在第一步
+    expect(screen.getByRole("button", { name: "暂停" })).toBeTruthy();
+  });
+
+  it("循环开关：默认关，点一下开着，再点关掉", () => {
+    renderProcess();
+    const loop = screen.getByRole("button", { name: "循环播放" });
+    expect(loop.getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(loop);
+    expect(loop.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(loop);
+    expect(loop.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("倍速：按钮在档位间轮转，显示当前档", () => {
+    renderProcess();
+    expect(screen.getByRole("button", { name: "播放速度 1×" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /播放速度/ }));
+    expect(screen.getByRole("button", { name: "播放速度 1.5×" })).toBeTruthy();
+  });
+
+  it("倍速：每步停留按档位缩放", () => {
+    vi.useFakeTimers();
+    renderProcess(undefined, { interval: 2000, defaultSpeed: 2 });
+    fireEvent.click(screen.getByRole("button", { name: "播放" }));
+    act(() => vi.advanceTimersByTime(1000));
+    expect(screen.getByRole("button", { name: "(b) 自注意力" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("speeds=[] 不渲染倍速按钮，按 interval 原速播", () => {
+    renderProcess(undefined, { speeds: [] });
+    expect(screen.queryByRole("button", { name: /播放速度/ })).toBeNull();
+  });
+
+  it("autoPlay：图进视口后自己开播，不用点按钮", () => {
+    vi.useFakeTimers();
+    const restore = stubObserver(true);
+    try {
+      renderProcess(undefined, { autoPlay: true });
+      act(() => vi.advanceTimersByTime(2200));
+      expect(screen.getByRole("button", { name: "(b) 自注意力" }).getAttribute("aria-pressed")).toBe("true");
+    } finally {
+      restore();
+    }
+  });
+
+  it("autoPlay：读者手动暂停后滚回视口不抢回来", () => {
+    vi.useFakeTimers();
+    const restore = stubObserver(true);
+    try {
+      renderProcess(undefined, { autoPlay: true });
+      fireEvent.click(screen.getByRole("button", { name: "暂停" }));
+      act(() => vi.advanceTimersByTime(2200));
+      expect(screen.getByRole("button", { name: "(a) 嵌入" }).getAttribute("aria-pressed")).toBe("true");
+    } finally {
+      restore();
+    }
+  });
+
+  it("autoPlay：prefers-reduced-motion 下不自动播（按钮照常能播）", () => {
+    vi.useFakeTimers();
+    const restoreMotion = stubReducedMotion(true);
+    const restore = stubObserver(true);
+    try {
+      renderProcess(undefined, { autoPlay: true });
+      act(() => vi.advanceTimersByTime(2200));
+      expect(screen.getByRole("button", { name: "(a) 嵌入" }).getAttribute("aria-pressed")).toBe("true");
+      fireEvent.click(screen.getByRole("button", { name: "播放" }));
+      act(() => vi.advanceTimersByTime(2200));
+      expect(screen.getByRole("button", { name: "(b) 自注意力" }).getAttribute("aria-pressed")).toBe("true");
+    } finally {
+      restore();
+      restoreMotion();
+    }
+  });
 });
+
+describe("PaperFigure 外壳", () => {
+  it("hideCaption：整条图注都不渲染", () => {
+    const { container } = zh(
+      <Paper>
+        <PaperFigure id="bare" states={{ one: 1 }} caption="一条曲线" hideCaption>
+          {(v) => <span data-testid="value">{v}</span>}
+        </PaperFigure>
+      </Paper>,
+    );
+    expect(container.querySelector("figcaption")).toBeNull();
+    expect(screen.getByTestId("value")).toBeTruthy();
+  });
+
+  it("hideDescription：留图注，去掉状态说明那一行", () => {
+    zh(
+      <Paper>
+        <PaperFigure
+          id="quiet"
+          states={{ small: 1 }}
+          caption="一条曲线"
+          hideDescription
+          describe={() => "k = 1"}
+        >
+          {(v) => <span data-testid="value">{v}</span>}
+        </PaperFigure>
+      </Paper>,
+    );
+    expect(screen.getByRole("figure").textContent).toContain("一条曲线");
+    expect(screen.queryByText("k = 1")).toBeNull();
+  });
+
+  it("collapsibleControls：收起控件后只剩「显示控件」，展开能回来", () => {
+    zh(
+      <Paper>
+        <PaperFigure
+          id="foldable"
+          states={{ small: 1 }}
+          caption="一条曲线"
+          collapsibleControls
+          controls={() => <button type="button">加一</button>}
+        >
+          {(v) => <span data-testid="value">{v}</span>}
+        </PaperFigure>
+      </Paper>,
+    );
+    expect(screen.getByRole("button", { name: "加一" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "隐藏控件" }));
+    // 收起后控件行不占位（display: none），但不卸载：播放器要接着走
+    const row = document.querySelector("[data-paper-figure-controls]") as HTMLElement;
+    expect(row.classList.contains("hidden")).toBe(true);
+    expect(screen.queryByRole("button", { name: "加一" })).toBeNull();
+    const show = screen.getByRole("button", { name: "显示控件" });
+    expect(show.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(show);
+    expect(screen.getByRole("button", { name: "加一" })).toBeTruthy();
+    expect(row.classList.contains("hidden")).toBe(false);
+  });
+
+  it("collapsibleControls + defaultControlsCollapsed：初始就是收起的", () => {
+    zh(
+      <Paper>
+        <PaperFigure
+          id="collapsed"
+          states={{ small: 1 }}
+          caption="一条曲线"
+          collapsibleControls
+          defaultControlsCollapsed
+          controls={() => <button type="button">加一</button>}
+        >
+          {(v) => <span data-testid="value">{v}</span>}
+        </PaperFigure>
+      </Paper>,
+    );
+    expect(screen.queryByRole("button", { name: "加一" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "显示控件" }));
+    expect(screen.getByRole("button", { name: "加一" })).toBeTruthy();
+  });
+});
+
+/** 让 IntersectionObserver 在 observe 时立刻回调一次，模拟「图已经在视口里」。 */
+function stubObserver(intersecting: boolean) {
+  const original = globalThis.IntersectionObserver;
+  class FakeObserver {
+    constructor(private readonly callback: IntersectionObserverCallback) {}
+    observe(target: Element) {
+      this.callback(
+        [{ isIntersecting: intersecting, target } as IntersectionObserverEntry],
+        this as unknown as IntersectionObserver,
+      );
+    }
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  }
+  globalThis.IntersectionObserver = FakeObserver as unknown as typeof IntersectionObserver;
+  return () => {
+    globalThis.IntersectionObserver = original;
+  };
+}
+
+/** 同上的桩，但把回调攒着，由测试决定「什么时候进视口」（要验外部先接管的情形）。 */
+function stubObserverDeferred(intersecting = true) {
+  const original = globalThis.IntersectionObserver;
+  const pending: Array<() => void> = [];
+  class FakeObserver {
+    constructor(private readonly callback: IntersectionObserverCallback) {}
+    observe(target: Element) {
+      pending.push(() =>
+        this.callback(
+          [{ isIntersecting: intersecting, target } as IntersectionObserverEntry],
+          this as unknown as IntersectionObserver,
+        ),
+      );
+    }
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  }
+  globalThis.IntersectionObserver = FakeObserver as unknown as typeof IntersectionObserver;
+  return {
+    enter: () => {
+      for (const fire of pending.splice(0)) fire();
+    },
+    restore: () => {
+      globalThis.IntersectionObserver = original;
+    },
+  };
+}
+
+/** jsdom 没有 matchMedia，这里只补「减弱动效」这一问的答案。 */
+function stubReducedMotion(reduce: boolean) {
+  const own = Object.getOwnPropertyDescriptor(window, "matchMedia");
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    writable: true,
+    value: (query: string) => ({
+      matches: reduce && query.includes("prefers-reduced-motion"),
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+  return () => {
+    if (own) Object.defineProperty(window, "matchMedia", own);
+    else delete (window as { matchMedia?: unknown }).matchMedia;
+  };
+}
 
 describe("usePaperMode", () => {
   it("非受控 Paper 里可以切换形态", () => {

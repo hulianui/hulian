@@ -1,5 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Button } from "../button";
+import { ChevronDown, ChevronUp } from "../_icons";
 import { cn } from "../lib/cn";
 import { mergeRefs } from "../lib/merge-refs";
 import { warnOnce } from "../lib/warn-once";
@@ -25,6 +27,10 @@ export function PaperFigure<S>({
   printSubfigures,
   presentStates,
   caption,
+  hideCaption,
+  hideDescription,
+  collapsibleControls,
+  defaultControlsCollapsed,
   describe,
   subfigureLabel,
   children,
@@ -88,6 +94,11 @@ export function PaperFigure<S>({
     timer.current = setTimeout(() => setHighlighted(false), HIGHLIGHT_MS);
   }, []);
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  // 控件行可收起：首页那种「先看图」的场合，读者不必每次都被一排按钮挡着。
+  // 收起后控件行里只剩「显示控件」按钮，位置和展开时一样贴右，手不会跑。
+  const collapsible = Boolean(collapsibleControls) && controls !== undefined;
+  const [controlsCollapsed, setControlsCollapsed] = useState(Boolean(defaultControlsCollapsed));
 
   // 演示层在图外重画这张图：每次渲染把最新的画法放进 ref，提交后通知订阅方。
   const view = useRef<FigureView>(null as unknown as FigureView);
@@ -161,7 +172,7 @@ export function PaperFigure<S>({
       data-state={shownKey ?? undefined}
       data-highlight={highlighted ? "" : undefined}
       className={cn(
-        "relative mx-0 my-8 min-w-0 rounded-[var(--radius)] [counter-increment:paper-figure]",
+        "group/figure relative mx-0 my-8 min-w-0 rounded-[var(--radius)] [counter-increment:paper-figure]",
         "ring-offset-4 ring-offset-bg transition-shadow duration-300 data-[highlight]:ring-2 data-[highlight]:ring-primary/40",
         "motion-reduce:transition-none break-inside-avoid",
         className,
@@ -187,26 +198,67 @@ export function PaperFigure<S>({
         </div>
       ) : null}
 
-      <figcaption className="mt-3 text-sm leading-relaxed">
-        <span data-paper-figure-label="">
-          {labels.figure} <span className="before:content-[counter(paper-figure)]" />
-          {labels.separator}
-        </span>
-        {caption}
-        {hasDescription ? (
-          <span data-paper-figure-state="" aria-live="polite" className="mt-1 block text-muted-foreground">
-            {description}
+      {!hideCaption ? (
+        <figcaption className="mt-3 text-sm leading-relaxed">
+          <span data-paper-figure-label="">
+            {labels.figure} <span className="before:content-[counter(paper-figure)]" />
+            {labels.separator}
           </span>
-        ) : null}
-      </figcaption>
+          {caption}
+          {hasDescription && !hideDescription ? (
+            <span data-paper-figure-state="" aria-live="polite" className="mt-1 block text-muted-foreground">
+              {description}
+            </span>
+          ) : null}
+        </figcaption>
+      ) : null}
 
       {!print && controls ? (
         <div
           data-paper-figure-controls=""
-          className="mt-3 flex flex-wrap items-center gap-2 font-sans text-sm text-muted-foreground print:hidden"
+          data-collapsed={collapsible && controlsCollapsed ? "" : undefined}
+          // 收起时只是藏起来、不卸载：播放器（Stepper）的计时与状态活在控件里，
+          // 卸载掉会把「收起来只看画面」变成「画面也停了」。
+          // hidden 属性给读屏 / 角色查询用，hidden 类给没装 preflight 的消费方兜底。
+          hidden={collapsible && controlsCollapsed}
+          className={cn(
+            "mt-3 flex flex-wrap items-center gap-2 font-sans text-sm text-muted-foreground print:hidden",
+            collapsible && controlsCollapsed && "hidden",
+          )}
         >
           {controls(shown)}
+          {collapsible ? (
+            <Button
+              type="button"
+              size="xs"
+              variant="ghost"
+              aria-expanded
+              aria-label={labels.hideControls}
+              title={labels.hideControls}
+              onClick={() => setControlsCollapsed(true)}
+              className="ms-auto size-6 shrink-0 px-0"
+            >
+              <ChevronUp className="size-3.5" />
+            </Button>
+          ) : null}
         </div>
+      ) : null}
+
+      {/* 收起后不留一行占位：图是干净的，控件靠悬停 / 键盘聚焦唤回（触屏常显）。
+          收起态在自动播放时仍然能看画面，只是不再有按钮压在图下。 */}
+      {!print && collapsible && controlsCollapsed ? (
+        <Button
+          type="button"
+          size="xs"
+          variant="outline"
+          aria-expanded={false}
+          aria-label={labels.showControls}
+          title={labels.showControls}
+          onClick={() => setControlsCollapsed(false)}
+          className="absolute right-2 top-2 z-10 size-7 shrink-0 px-0 opacity-0 shadow-sm transition-opacity duration-200 hover:opacity-100 focus-visible:opacity-100 group-hover/figure:opacity-100 group-focus-within/figure:opacity-100 motion-reduce:transition-none [@media(hover:none)]:opacity-100 print:hidden"
+        >
+          <ChevronDown className="size-3.5" />
+        </Button>
       ) : null}
     </figure>
   );

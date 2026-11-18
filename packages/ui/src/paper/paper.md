@@ -85,6 +85,10 @@ FigureRaster               图的 <svg> 里的一块栅格（热力图），任�
 | describe | `(state: S, key: string ｜ null) => ReactNode` | - | 图注第二行，说明当前状态；变化时读屏会念 |
 | subfigureLabel | `(key: string, index: number) => ReactNode` | `(a)` + `describe` | 分图小标题 |
 | controls | `(figure: FigureRenderContext<S>) => ReactNode` | - | 图下方的交互控件，只在阅读形态渲染 |
+| hideCaption | boolean | false | 不渲染图注（「图 N：…」整条，含状态说明）。图号照常递增，后面的图不跳号 |
+| hideDescription | boolean | false | 不渲染图注第二行的状态说明。`hideCaption` 时自然也没有 |
+| collapsibleControls | boolean | false | 控件行可收起：末尾多一个图标按钮；收起后整行不占位，只剩图角上一个悬停 / 键盘聚焦才出现的「显示控件」（触屏常显） |
+| defaultControlsCollapsed | boolean | false | 初始就收起控件行（仅 `collapsibleControls` 时有效）。首页那种「先看动画、要细看再展开」的图用它 |
 
 | 事件 | 类型 | 说明 |
 |------|------|------|
@@ -99,6 +103,7 @@ interface FigureRenderContext<S> {
   select: (key: string) => void;    // 切到预设
   setState: (state: S) => void;     // 直接给值（滑块、开关）
   mode: "read" | "print";
+  presenting?: boolean;         // 在演示层里画（放映时 autoPlay 不生效）
 }
 ```
 
@@ -115,7 +120,11 @@ interface FigureRenderContext<S> {
 | printState | string | `"all"`（无 overview 时为最后一步） | 打印态 |
 | printSubfigures | `string[]` | 每一步各一张 | 打印分图；传 `[]` 不展开 |
 | presentStates | `string[]` | 各步 + `"all"` | 演示时依次展示的预设 |
-| interval | number | 2200 | 自动播放每步停留的毫秒数 |
+| interval | number | 2200 | 自动播放每步停留的毫秒数。倍速在它的基础上乘除 |
+| autoPlay | boolean | false | 进视口后自己开播，不用等人点。滚出视口暂停、滚回来接着播；读者按过暂停，或从正文引用 / 卡片上的定位按钮改了状态，就由读者接管、不再自动恢复；`prefers-reduced-motion: reduce` 下不自动播 |
+| loop | boolean | false | 播到最后一步后回到第一步继续（默认播完停下）。控件上的循环按钮也能直接开关 |
+| speeds | `number[]` | `[0.5, 1, 1.5, 2]` | 倍速档位，1 = `interval` 原速。传 `[]` 不渲染倍速按钮 |
+| defaultSpeed | number | 1 | 初始倍速，不在 `speeds` 里时用第一个档位 |
 
 ```ts
 interface ProcessStep {
@@ -125,7 +134,7 @@ interface ProcessStep {
 }
 ```
 
-图下方自带步骤控件：上一步 / 下一步（首尾禁用）、每一步一个字母按钮（a、b、c…）、「全部」、播放 / 暂停。播放到最后一步自动停。
+图下方自带步骤控件：上一步 / 下一步（首尾禁用）、每一步一个字母按钮（a、b、c…）、「全部」、播放 / 暂停、循环开关、倍速按钮（`1×` 这种，点一下换下一档）。播放到最后一步默认停下，`loop` 或控件上的循环按钮打开后回到第一步继续。配合 `collapsibleControls` 可以整排收起，图角上留一个悬停才现的「显示控件」，不给图下加一行。
 
 ## FigureStep
 
@@ -232,6 +241,7 @@ const drawHeat = (ctx, { width, height, color }) => {
 | title | ReactNode | - | 页眉左侧的标题，一般是论文题目 |
 | slides | `PresenterSlide[]` | 见下 | 整组幻灯片，`{ figure: 图 id, state: 预设名 }` |
 | controls | boolean | true | 是否渲染图自带的控件（步骤按钮、参数开关） |
+| hideChrome | boolean | false | 初始就隐藏演示界面（标题、页码、退出、翻页条），只留画面。顶栏的「隐藏界面」收起、画面右上角的「显示界面」唤回 |
 | className | string | - | 加在全屏层根元素上 |
 
 | 事件 | 类型 | 说明 |
@@ -242,6 +252,7 @@ const drawHeat = (ctx, { width, height, color }) => {
 - **幻灯片怎么来**：默认按文档顺序，把每张图的 `presentStates` 依次排开。`PaperFigure` 默认是全部预设，`ProcessFigure` 默认是各步加「全部」。传 `slides` 可以整体改写顺序，或把几张图交错着讲；不存在的图或预设在开发环境告警一次并跳过。页眉里的图号始终按文档顺序。
 - **不搬 DOM**：演示层用图的同一个 `children(state)` 函数再画一遍，正文里的图不动、状态不变，退出后读者还停在原来那一步。图的 props 变了（如切换语言），演示里跟着重画。
 - **图的控件照常可用**：控件 `select` 到某个预设时翻到对应那一页（`ProcessFigure` 的步骤按钮就是跳页）；`setState` 给的值只覆盖当前页，翻页即还原。
+- **界面可以收掉**：顶栏的「隐藏界面」把标题、页码、退出和翻页条一起收走，只剩幻灯片；画面右上角的「显示界面」把它们叫回来。放映前只想让观众看画面时用 `hideChrome` 直接以收起态打开。
 - **按键**：`→` / `空格` / `PageDown` 下一页，`←` / `PageUp` 上一页，`Esc` 退出。焦点在输入框、滑块、单选组等控件上时，方向键留给控件；焦点在按钮上时，空格是按下按钮。
 - **无障碍**：`role="dialog"`，名字是「演示模式」（跟随界面语言）。焦点困在演示层里，打开后落在「下一页」，退出后回到触发按钮。演示层之外的内容对读屏隐藏。
 - 演示层渲染在 `Paper` 的 DOM 之外（Portal），打开时沿用 `Paper` 所处位置的字体（含 `--paper-font` 等覆盖）和主题岛（`Paper` 最近的 `data-theme` 祖先，演示中切换也跟着变）。只靠自定义属性局部改色、不带 `data-theme` 的容器传不进演示层。图的渲染函数若依赖放在 `Paper` 与图之间的 context，演示里取不到。

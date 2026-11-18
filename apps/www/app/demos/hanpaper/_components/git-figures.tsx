@@ -553,7 +553,7 @@ export function PackControls({ state, setState }: { state: PackState; setState: 
 
 export function ThreeTreesProcess({ id = "fig-trees", defaultState }: { id?: string; defaultState?: string }) {
   return (
-    <ProcessFigure id={id} steps={TREES_STEPS} caption={copy("treesCaption")} overviewDescription={copy("treesOverview")} defaultState={defaultState}>
+    <ProcessFigure id={id} steps={TREES_STEPS} collapsibleControls caption={copy("treesCaption")} overviewDescription={copy("treesOverview")} defaultState={defaultState}>
       <ThreeTreesFigure />
     </ProcessFigure>
   );
@@ -561,7 +561,7 @@ export function ThreeTreesProcess({ id = "fig-trees", defaultState }: { id?: str
 
 export function ObjectModelProcess({ id = "fig-objects", defaultState }: { id?: string; defaultState?: string }) {
   return (
-    <ProcessFigure id={id} steps={OBJECTS_STEPS} caption={copy("objectsCaption")} overviewDescription={copy("objectsOverview")} defaultState={defaultState}>
+    <ProcessFigure id={id} steps={OBJECTS_STEPS} collapsibleControls caption={copy("objectsCaption")} overviewDescription={copy("objectsOverview")} defaultState={defaultState}>
       <ObjectModelFigure />
     </ProcessFigure>
   );
@@ -569,7 +569,7 @@ export function ObjectModelProcess({ id = "fig-objects", defaultState }: { id?: 
 
 export function BranchMergeProcess({ id = "fig-branch", defaultState }: { id?: string; defaultState?: string }) {
   return (
-    <ProcessFigure id={id} steps={BRANCH_STEPS} caption={copy("branchCaption")} overviewDescription={copy("branchOverview")} defaultState={defaultState}>
+    <ProcessFigure id={id} steps={BRANCH_STEPS} collapsibleControls caption={copy("branchCaption")} overviewDescription={copy("branchOverview")} defaultState={defaultState}>
       <BranchMergeFigure />
     </ProcessFigure>
   );
@@ -577,7 +577,7 @@ export function BranchMergeProcess({ id = "fig-branch", defaultState }: { id?: s
 
 export function RebaseProcess({ id = "fig-rebase", defaultState }: { id?: string; defaultState?: string }) {
   return (
-    <ProcessFigure id={id} steps={REBASE_STEPS} caption={copy("rebaseCaption")} overviewDescription={copy("rebaseOverview")} defaultState={defaultState}>
+    <ProcessFigure id={id} steps={REBASE_STEPS} collapsibleControls caption={copy("rebaseCaption")} overviewDescription={copy("rebaseOverview")} defaultState={defaultState}>
       <RebaseFigure />
     </ProcessFigure>
   );

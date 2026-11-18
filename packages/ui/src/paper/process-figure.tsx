@@ -1,6 +1,15 @@
 "use client";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "../button";
+import { RefreshCw } from "../_icons";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { PaperFigure } from "./paper-figure";
@@ -23,6 +32,27 @@ import type {
 //  · 打印默认：主图 "all"，下方每一步一张分图。
 
 const ALL = "all";
+
+/** 倍速档位默认值。1× 就是 `interval` 原速，0.5× 慢一半，2× 快一倍。 */
+const DEFAULT_SPEEDS: readonly number[] = [0.5, 1, 1.5, 2];
+
+/** 倍速再快也留一口气：太快时读者只看见画面在闪，反而不知道发生了什么。 */
+const MIN_STEP_MS = 120;
+
+const loopingPress = "aria-pressed:bg-primary-subtle aria-pressed:text-primary";
+
+/** 读者在系统里要求减弱动效时，自动开播也一并让路（播放按钮照常可用）。 */
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+function formatSpeed(speed: number): string {
+  return `${speed}×`;
+}
 
 interface StepContextValue {
   current: string;
@@ -71,46 +101,141 @@ function Stepper({
   steps,
   overview,
   interval,
+  autoPlay,
+  loop,
+  speeds,
+  defaultSpeed,
 }: {
   figure: FigureRenderContext<string>;
   steps: readonly ProcessStep[];
   overview: boolean;
   interval: number;
+  autoPlay: boolean;
+  loop: boolean;
+  speeds: readonly number[];
+  defaultSpeed: number | undefined;
 }) {
   const labels = usePaperLabels();
+  const speedList = speeds.length > 0 ? speeds : [1];
+  const [speed, setSpeed] = useState(() => {
+    if (defaultSpeed !== undefined && speedList.includes(defaultSpeed)) return defaultSpeed;
+    return speedList.includes(1) ? 1 : speedList[0];
+  });
+  // 循环是「播放方式」，不是受控值：初值来自 props，之后读者自己开关。
+  const [looping, setLooping] = useState(loop);
   const [playing, setPlaying] = useState(false);
+  // 读者一碰控件就接管播放：之后的自动开播不再抢回来（滚回视口也不恢复）。
+  const userPaused = useRef(false);
+  // 上一次是播放器自己切的哪一步。用于分辨「外面切过来的」—— 正文里的 FigRef、
+  // usePaperNavigate、演示里翻页都算读者接管，自动播放该让位，不能把人家选的那步刷走。
+  const selfSelected = useRef<string | null>(null);
+  const hostRef = useRef<HTMLDivElement>(null);
+
   const index = steps.findIndex((s) => s.key === figure.state);
   const last = steps.length - 1;
   const { select } = figure;
+  const stepMs = Math.max(MIN_STEP_MS, Math.round(interval / speed));
 
+  // 一帧一步：到最后一步时按 loop 决定回卷还是收工。
+  // index < 0 = 停在「全部」上开播，先走进第一步，别让读者对着不动的图等一个 interval。
   useEffect(() => {
     if (!playing) return;
-    if (index === last) {
+    if (steps.length === 0) {
       setPlaying(false);
       return;
     }
-    const t = setTimeout(() => select(steps[index + 1].key), interval);
-    return () => clearTimeout(t);
-  }, [playing, index, last, interval, select, steps]);
+    if (index < 0) {
+      selfSelected.current = steps[0].key;
+      select(steps[0].key);
+      return;
+    }
+    const atEnd = index >= last;
+    if (atEnd && !looping) {
+      setPlaying(false);
+      return;
+    }
+    const nextKey = steps[atEnd ? 0 : index + 1].key;
+    const timer = setTimeout(() => {
+      selfSelected.current = nextKey;
+      select(nextKey);
+    }, stepMs);
+    return () => clearTimeout(timer);
+  }, [playing, index, last, looping, select, steps, stepMs]);
 
-  const go = (key: string) => {
+  // 状态被播放器之外的东西改变（正文引用、卡片上的「定位阶段」、演示翻页）→ 读者接管：
+  // 正在播就停下，还没开播（autoPlay 的图刚滚到一半）也不再自动开始 —— 人家已经选好要看哪一步了。
+  // 只认「跳变」：开播那一刻不算，否则一开播就自己把自己停了；播放器自己切的那步也不算。
+  const previousIndex = useRef(index);
+  useEffect(() => {
+    const changed = previousIndex.current !== index;
+    previousIndex.current = index;
+    if (!changed || index < 0) return;
+    if (steps[index]?.key === selfSelected.current) return;
+    userPaused.current = true;
     setPlaying(false);
-    select(key);
-  };
+  }, [index, steps]);
+
+  // 自动开播：图进视口才开始（首页那种一进页面就播、读者还没滚到的图不会白播一遍），
+  // 滚出视口先停下省计时器，滚回来接着播。没有 IntersectionObserver 的环境里直接就播。
+  useEffect(() => {
+    if (!autoPlay || figure.presenting || prefersReducedMotion()) return;
+    const host = hostRef.current;
+    const target = host?.closest("figure") ?? host;
+    if (!target) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setPlaying(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        if (!entry || userPaused.current) return;
+        setPlaying(entry.isIntersecting);
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, [autoPlay]);
+
+  const go = useCallback(
+    (key: string) => {
+      userPaused.current = true;
+      setPlaying(false);
+      select(key);
+    },
+    [select],
+  );
   const prev = () => go(steps[index < 0 ? last : Math.max(0, index - 1)].key);
   const next = () => go(steps[index < 0 ? 0 : Math.min(last, index + 1)].key);
   const togglePlay = () => {
     if (playing) {
+      userPaused.current = true;
       setPlaying(false);
       return;
     }
-    if (index < 0 || index === last) select(steps[0].key);
+    userPaused.current = false;
+    // 停在「全部」或最后一步时按播放：从第一步重新讲一遍。
+    if (index < 0 || index >= last) {
+      selfSelected.current = steps[0].key;
+      select(steps[0].key);
+    }
     setPlaying(true);
+  };
+  const cycleSpeed = () => {
+    if (speedList.length < 2) return;
+    const at = speedList.indexOf(speed);
+    setSpeed(speedList[(at + 1) % speedList.length]);
   };
 
   if (steps.length === 0) return null;
   return (
-    <div role="group" aria-label={labels.steps} className="flex flex-wrap items-center gap-1">
+    <div
+      ref={hostRef}
+      role="group"
+      aria-label={labels.steps}
+      className="flex flex-wrap items-center gap-1"
+    >
       <Button size="xs" variant="outline" onClick={prev} disabled={index === 0} aria-label={labels.prev}>
         ‹
       </Button>
@@ -147,6 +272,29 @@ function Stepper({
       <Button size="xs" variant="ghost" onClick={togglePlay} aria-pressed={playing}>
         {playing ? labels.pause : labels.play}
       </Button>
+      <Button
+        size="xs"
+        variant="ghost"
+        aria-pressed={looping}
+        aria-label={labels.loop}
+        title={labels.loop}
+        onClick={() => setLooping((on) => !on)}
+        className={cn("size-6 shrink-0 px-0", loopingPress)}
+      >
+        <RefreshCw className="size-3.5" />
+      </Button>
+      {speedList.length > 1 ? (
+        <Button
+          size="xs"
+          variant="ghost"
+          onClick={cycleSpeed}
+          aria-label={`${labels.speed} ${formatSpeed(speed)}`}
+          title={`${labels.speed} ${formatSpeed(speed)}`}
+          className="min-w-9 shrink-0 px-1.5 tabular-nums"
+        >
+          {formatSpeed(speed)}
+        </Button>
+      ) : null}
     </div>
   );
 }
@@ -159,6 +307,10 @@ export function ProcessFigure({
   printState,
   printSubfigures,
   interval = 2200,
+  autoPlay = false,
+  loop = false,
+  speeds = DEFAULT_SPEEDS,
+  defaultSpeed,
   children,
   ...rest
 }: ProcessFigureProps) {
@@ -184,7 +336,16 @@ export function ProcessFigure({
       describe={(key) => (key === ALL ? overviewDescription : byKey.get(key)?.description)}
       subfigureLabel={(key, i) => `(${letterOf(i)}) ${byKey.get(key)?.label ?? key}`}
       controls={(figure) => (
-        <Stepper figure={figure} steps={steps} overview={overview} interval={interval} />
+        <Stepper
+          figure={figure}
+          steps={steps}
+          overview={overview}
+          interval={interval}
+          autoPlay={autoPlay}
+          loop={loop}
+          speeds={speeds}
+          defaultSpeed={defaultSpeed}
+        />
       )}
     >
       {(step) => <StepContext.Provider value={{ current: step, order }}>{children}</StepContext.Provider>}

@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import { Button } from "../button";
+import { Maximize, Minimize } from "../_icons";
 import { cn } from "../lib/cn";
 import { warnOnce } from "../lib/warn-once";
 import { overlayTransitions } from "../motion";
@@ -96,6 +97,7 @@ export function PaperPresenter({
   title,
   slides,
   controls = true,
+  hideChrome = false,
   onSlideChange,
   className,
 }: PaperPresenterProps) {
@@ -105,6 +107,8 @@ export function PaperPresenter({
   if (!paper) warnOnce("PaperPresenter:outside", "[PaperPresenter] 必须放在 Paper 里，否则找不到要演示的图。");
 
   const [innerOpen, setInnerOpen] = useState(defaultOpen);
+  // 界面（标题栏、页码、翻页条）可以收掉只看画面；放映中随时能切回来。
+  const [chromeShown, setChromeShown] = useState(!hideChrome);
   const isOpen = open ?? innerOpen;
   const setOpen = (next: boolean) => {
     if (open === undefined) setInnerOpen(next);
@@ -180,6 +184,7 @@ export function PaperPresenter({
           state: value,
           stateKey,
           mode: "read",
+          presenting: true,
           select: (key) => {
             const j = list.findIndex((s) => s.figure === slide.figure && s.state === key);
             if (j > -1) go(j);
@@ -226,28 +231,41 @@ export function PaperPresenter({
           data-theme={paperTheme ?? undefined}
           onKeyDown={onKeyDown}
           className={cn(
-            "fixed inset-0 z-[var(--hl-z-overlay,50)] grid grid-rows-[auto_minmax(0,1fr)_auto] gap-3 bg-bg text-foreground outline-none",
+            "fixed inset-0 z-[var(--hl-z-overlay,50)] grid gap-3 bg-bg text-foreground outline-none",
+            chromeShown ? "grid-rows-[auto_minmax(0,1fr)_auto]" : "grid-rows-[minmax(0,1fr)]",
             "px-[max(1rem,env(safe-area-inset-left))] pb-[max(0.875rem,env(safe-area-inset-bottom))] pt-[max(0.875rem,env(safe-area-inset-top))] sm:gap-4",
             "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 print:hidden",
             className,
           )}
           style={{ ...overlayTransitions.popup, fontFamily: paperFont ?? PAPER_FONT } as CSSProperties}
         >
-          <header className="flex min-w-0 items-center gap-3 font-sans text-sm">
-            <div className="min-w-0 flex-1 truncate">
-              {title ? <span className="font-semibold text-foreground">{title}</span> : null}
-              {figureLabel ? (
-                <span className={cn("text-muted-foreground", title ? "ml-2" : undefined)}>{figureLabel}</span>
-              ) : null}
-            </div>
-            <span data-paper-presenter-counter="" className="shrink-0 tabular-nums text-muted-foreground">
-              {list.length > 0 ? `${at + 1} / ${list.length}` : null}
-            </span>
-            <BaseDialog.Close render={<Button size="sm" variant="outline" />}>
-              {labels.exit}
-              <kbd aria-hidden className="ml-1.5 font-sans text-xs text-muted-foreground">Esc</kbd>
-            </BaseDialog.Close>
-          </header>
+          {chromeShown ? (
+            <header className="flex min-w-0 items-center gap-3 font-sans text-sm">
+              <div className="min-w-0 flex-1 truncate">
+                {title ? <span className="font-semibold text-foreground">{title}</span> : null}
+                {figureLabel ? (
+                  <span className={cn("text-muted-foreground", title ? "ml-2" : undefined)}>{figureLabel}</span>
+                ) : null}
+              </div>
+              <span data-paper-presenter-counter="" className="shrink-0 tabular-nums text-muted-foreground">
+                {list.length > 0 ? `${at + 1} / ${list.length}` : null}
+              </span>
+              <Button
+                size="sm"
+                variant="ghost"
+                aria-label={labels.hideChrome}
+                title={labels.hideChrome}
+                onClick={() => setChromeShown(false)}
+                className="shrink-0"
+              >
+                <Minimize className="size-4" />
+              </Button>
+              <BaseDialog.Close render={<Button size="sm" variant="outline" />}>
+                {labels.exit}
+                <kbd aria-hidden className="ml-1.5 font-sans text-xs text-muted-foreground">Esc</kbd>
+              </BaseDialog.Close>
+            </header>
+          ) : null}
 
           <div data-paper-presenter-stage="" className="flex min-h-0 flex-col items-center gap-3 overflow-auto">
             {slide && view && figure ? (
@@ -286,20 +304,34 @@ export function PaperPresenter({
             )}
           </div>
 
-          <footer className="flex items-center gap-3 font-sans text-sm">
-            <Button size="sm" variant="outline" onClick={() => go(at - 1)} disabled={at <= 0}>
-              ← {labels.prevSlide}
+          {chromeShown ? (
+            <footer className="flex items-center gap-3 font-sans text-sm">
+              <Button size="sm" variant="outline" onClick={() => go(at - 1)} disabled={at <= 0}>
+                ← {labels.prevSlide}
+              </Button>
+              <div aria-hidden className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-[width] duration-300 motion-reduce:transition-none"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <Button ref={nextButton} size="sm" onClick={() => go(at + 1)} disabled={at >= last}>
+                {labels.nextSlide} →
+              </Button>
+            </footer>
+          ) : null}
+          {chromeShown ? null : (
+            <Button
+              size="sm"
+              variant="outline"
+              aria-label={labels.showChrome}
+              title={labels.showChrome}
+              onClick={() => setChromeShown(true)}
+              className="absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-10 size-9 px-0 text-muted-foreground"
+            >
+              <Maximize className="size-4" />
             </Button>
-            <div aria-hidden className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary transition-[width] duration-300 motion-reduce:transition-none"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <Button ref={nextButton} size="sm" onClick={() => go(at + 1)} disabled={at >= last}>
-              {labels.nextSlide} →
-            </Button>
-          </footer>
+          )}
         </BaseDialog.Popup>
       </BaseDialog.Portal>
     </BaseDialog.Root>
