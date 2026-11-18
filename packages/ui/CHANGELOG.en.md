@@ -1,5 +1,21 @@
 # @hulianui/ui
 
+## 0.79.0
+
+### Minor Changes
+
+- c73f49f: feat(paper): the figure player gains the playback capabilities, and both the controls and the presenter interface can be folded away.
+
+  - **ProcessFigure**: new `autoPlay` starts playback once the figure scrolls into view, pauses off-screen and resumes on return. A reader who pressed pause, or who changed the state from a `FigRef` or a locate-stage button, takes over and autoplay stops for good; it never starts under `prefers-reduced-motion: reduce`. New `loop` starts over after the last step (stopping at the end is still the default). New `speeds` / `defaultSpeed` add speed steps, shown as a `1×` button in the controls that cycles through them, with `interval` still the base speed. The step controls therefore gain a loop toggle and a speed button.
+  - **PaperFigure**: new `hideCaption` / `hideDescription` drop the caption or just its second line (figure numbers keep advancing, so later figures are not renumbered); new `collapsibleControls` / `defaultControlsCollapsed` fold the control row away entirely — no leftover strip under the figure, just a "Show controls" button in the figure corner revealed on hover or keyboard focus (always visible on touch). The player stays mounted, so autoplay keeps running while the controls are hidden.
+  - **PaperPresenter**: new `hideChrome` leaves only the slide on screen. "Hide interface" in the top bar folds away the title, counter, exit and pager; "Show interface" in the top-right corner brings them back at any time.
+
+### Patch Changes
+
+- c73f49f: fix(code-block): the header bar gets its own background so it reads apart from the code.
+
+  With `lang`, the header (language name on the left, copy and other actions on the right) used to share the code area's background (`--hl-cb-bg`), so on short blocks there was no telling which strip was chrome and which was content — the whole block was one shade of gray. The header now uses `--hl-cb-head-bg`: one step darker than the code area in light, one step lighter in dark (each theme sinks in its own direction), so the bar is obvious in both. The code area keeps its existing fill. When the block sits on a locally recolored surface, such as a dark hero, `--hl-cb-bg` and `--hl-cb-head-bg` can be overridden independently instead of only half the block changing.
+
 ## 0.78.0
 
 ### Minor Changes
