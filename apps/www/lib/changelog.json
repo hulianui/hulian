@@ -1,14 +1,20 @@
 [
   {
     "pkg": "@hulianui/ui",
-    "version": "0.78.0",
+    "version": "0.79.0",
     "date": "2026-11-18",
     "entries": [
       {
-        "sha": "afb8c51",
+        "sha": "c73f49f",
         "bump": "minor",
         "breaking": false,
-        "body": "Paper 新增章节三件套：`PaperSection`（CSS 计数器自动层级编号 1 / 2.1，服务端渲染与打印都有号）、`SecRef`（正文引用「第 2.1 节」/ \"Section 2.1\"，点击滚动并描边）、`PaperOutline`（从章节注册表生成目录，内部复用 Anchor 滚动高亮）。`Paper` 的 `labels` 新增 `section`。\n\n`FigureStep` 新增 `until`：从某一步起被取代、不再画出（「全部」状态与导出 SVG 里也隐藏），用来画会移动的分支指针、被替换的旧节点。\n\n`FigRef` 不写文字时，若 `state` 是该图的打印分图之一，自动写成「图 1(b)」/ \"Figure 1(b)\"，分图字母与打印版一致。\n\n`usePaperNavigate()`：命令式跳到图 / 公式 / 章节，与 `FigRef` / `SecRef` / `EqRef` 共用同一套「滚进视野 + 描边」逻辑。`Button` 这类本身就是交互元素的触发器用它在 `onClick` 里跳转，不必再 `render={<FigRef/>}` 嵌套引用、继承链接下划线。"
+        "body": "feat(paper): 图播放器补齐播放能力，控件与演示界面都能收起来。\n\n- **ProcessFigure**：新增 `autoPlay` —— 图进视口自己开播，滚出视口暂停、滚回来续播；读者按过暂停，或从正文引用 / 卡片上的定位按钮改了状态，就由读者接管，不再自动恢复；`prefers-reduced-motion: reduce` 下不自动播。新增 `loop`：播到最后一步回到第一步继续（默认仍是播完停下）。新增 `speeds` / `defaultSpeed`：倍速档位，控件上显示为 `1×` 这种按钮，点一下换下一档，`interval` 仍是原速基准。步骤控件因此多了循环开关与倍速按钮。\n- **PaperFigure**：新增 `hideCaption` / `hideDescription`，不渲染图注或图注第二行的状态说明（图号照常递增，后面的图不跳号）；新增 `collapsibleControls` / `defaultControlsCollapsed`，控件行可收起 —— 收起后不占一行（图下不再有按钮带），只剩图角上一个悬停 / 键盘聚焦才现的「显示控件」（触屏常显）；播放器不卸载，收起状态下自动播放照常走。\n- **PaperPresenter**：新增 `hideChrome`，放映时可以只留幻灯片画面；顶栏的「隐藏界面」把标题、页码、退出与翻页条一并收走，画面右上角的「显示界面」随时唤回。"
+      },
+      {
+        "sha": "c73f49f",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(code-block): 标题栏有自己的底色，与代码区分开。\n\n有 `lang` 时标题栏（左侧语言名、右侧复制等操作）此前与代码区同色（`--hl-cb-bg`），短块上几乎看不出哪一条是外壳、哪一条是内容 —— 整块只剩一片灰。现在标题栏吃 `--hl-cb-head-bg`：亮色下比代码区再深一档，暗色下比代码区更亮一档（亮暗的「沉」本来方向相反），两态都能一眼分出标题栏。代码区底色不变。需要在局部换底（如在深色 hero 上放代码块）时，`--hl-cb-bg` 与 `--hl-cb-head-bg` 可以分别覆盖，不会只改一半。"
       }
     ]
   },
@@ -61,6 +67,19 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): 新增 Paper 动态论文插图（首片）。`Paper` 管呈现形态（阅读 / 打印）和图的注册表，`labels` 让论文内容的语言（图注前缀、自动引用）独立于界面语言；浏览器打印前自动切到打印形态、打印完切回；图号用 CSS 计数器，服务端渲染和打印都有号。`PaperFigure` 的状态是任意值加一组有名字的预设，`children` 是「状态 → 画面」的函数；打印形态下主图画 `printState`，`printSubfigures` 展开成 (a)(b)… 分图，控件不渲染。`ProcessFigure` 是一步步讲的图，图里用 `FigureStep` 标出每一部分属于哪一步：当前步不透明、讲过的半透明、没讲到的很淡但不隐藏；自带上一步 / 下一步、逐步按钮、「全部」和自动播放。`FigRef` 是正文引用，点击把图切到对应预设、滚进视野并描边，没有 JS 时退化成锚点。tokens 新增 `hulian-paper-flow` 关键帧，给当前一步的流动虚线用。"
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.78.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "afb8c51",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper 新增章节三件套：`PaperSection`（CSS 计数器自动层级编号 1 / 2.1，服务端渲染与打印都有号）、`SecRef`（正文引用「第 2.1 节」/ \"Section 2.1\"，点击滚动并描边）、`PaperOutline`（从章节注册表生成目录，内部复用 Anchor 滚动高亮）。`Paper` 的 `labels` 新增 `section`。\n\n`FigureStep` 新增 `until`：从某一步起被取代、不再画出（「全部」状态与导出 SVG 里也隐藏），用来画会移动的分支指针、被替换的旧节点。\n\n`FigRef` 不写文字时，若 `state` 是该图的打印分图之一，自动写成「图 1(b)」/ \"Figure 1(b)\"，分图字母与打印版一致。\n\n`usePaperNavigate()`：命令式跳到图 / 公式 / 章节，与 `FigRef` / `SecRef` / `EqRef` 共用同一套「滚进视野 + 描边」逻辑。`Button` 这类本身就是交互元素的触发器用它在 `onClick` 里跳转，不必再 `render={<FigRef/>}` 嵌套引用、继承链接下划线。"
       }
     ]
   },

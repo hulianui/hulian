@@ -1,5 +1,21 @@
 # @hulianui/ui
 
+## 0.79.0
+
+### Minor Changes
+
+- c73f49f: feat(paper): 图播放器补齐播放能力，控件与演示界面都能收起来。
+
+  - **ProcessFigure**：新增 `autoPlay` —— 图进视口自己开播，滚出视口暂停、滚回来续播；读者按过暂停，或从正文引用 / 卡片上的定位按钮改了状态，就由读者接管，不再自动恢复；`prefers-reduced-motion: reduce` 下不自动播。新增 `loop`：播到最后一步回到第一步继续（默认仍是播完停下）。新增 `speeds` / `defaultSpeed`：倍速档位，控件上显示为 `1×` 这种按钮，点一下换下一档，`interval` 仍是原速基准。步骤控件因此多了循环开关与倍速按钮。
+  - **PaperFigure**：新增 `hideCaption` / `hideDescription`，不渲染图注或图注第二行的状态说明（图号照常递增，后面的图不跳号）；新增 `collapsibleControls` / `defaultControlsCollapsed`，控件行可收起 —— 收起后不占一行（图下不再有按钮带），只剩图角上一个悬停 / 键盘聚焦才现的「显示控件」（触屏常显）；播放器不卸载，收起状态下自动播放照常走。
+  - **PaperPresenter**：新增 `hideChrome`，放映时可以只留幻灯片画面；顶栏的「隐藏界面」把标题、页码、退出与翻页条一并收走，画面右上角的「显示界面」随时唤回。
+
+### Patch Changes
+
+- c73f49f: fix(code-block): 标题栏有自己的底色，与代码区分开。
+
+  有 `lang` 时标题栏（左侧语言名、右侧复制等操作）此前与代码区同色（`--hl-cb-bg`），短块上几乎看不出哪一条是外壳、哪一条是内容 —— 整块只剩一片灰。现在标题栏吃 `--hl-cb-head-bg`：亮色下比代码区再深一档，暗色下比代码区更亮一档（亮暗的「沉」本来方向相反），两态都能一眼分出标题栏。代码区底色不变。需要在局部换底（如在深色 hero 上放代码块）时，`--hl-cb-bg` 与 `--hl-cb-head-bg` 可以分别覆盖，不会只改一半。
+
 ## 0.78.0
 
 ### Minor Changes

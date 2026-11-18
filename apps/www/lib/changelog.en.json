@@ -1,14 +1,20 @@
 [
   {
     "pkg": "@hulianui/ui",
-    "version": "0.78.0",
+    "version": "0.79.0",
     "date": "2026-11-18",
     "entries": [
       {
-        "sha": "afb8c51",
+        "sha": "c73f49f",
         "bump": "minor",
         "breaking": false,
-        "body": "Paper adds the section trio: `PaperSection` (CSS counters for hierarchical numbering 1 / 2.1, present in server rendering and print), `SecRef` (in-text references such as \"Section 2.1\" that scroll to the heading and flash it), and `PaperOutline` (an outline generated from the section registry, reusing Anchor for scroll-spy). `Paper` labels gain `section`.\n\n`FigureStep` gains `until`: from a given step onward the part is superseded and no longer drawn (also hidden in the All state and in exported SVGs), for moving branch pointers and replaced nodes.\n\n`FigRef` now appends the sub-figure letter when `state` is one of the figure's print sub-figures and no children are given, e.g. \"Figure 1(b)\", matching the printed version.\n\n`usePaperNavigate()`: imperative navigation to a figure, equation or section, sharing the scroll-into-view and flash logic with `FigRef` / `SecRef` / `EqRef`. Controls that are already interactive, such as `Button`, can call it in `onClick` instead of nesting a reference via `render={<FigRef/>}` and inheriting link underlines."
+        "body": "feat(paper): the figure player gains the playback capabilities, and both the controls and the presenter interface can be folded away.\n\n- **ProcessFigure**: new `autoPlay` starts playback once the figure scrolls into view, pauses off-screen and resumes on return. A reader who pressed pause, or who changed the state from a `FigRef` or a locate-stage button, takes over and autoplay stops for good; it never starts under `prefers-reduced-motion: reduce`. New `loop` starts over after the last step (stopping at the end is still the default). New `speeds` / `defaultSpeed` add speed steps, shown as a `1×` button in the controls that cycles through them, with `interval` still the base speed. The step controls therefore gain a loop toggle and a speed button.\n- **PaperFigure**: new `hideCaption` / `hideDescription` drop the caption or just its second line (figure numbers keep advancing, so later figures are not renumbered); new `collapsibleControls` / `defaultControlsCollapsed` fold the control row away entirely — no leftover strip under the figure, just a \"Show controls\" button in the figure corner revealed on hover or keyboard focus (always visible on touch). The player stays mounted, so autoplay keeps running while the controls are hidden.\n- **PaperPresenter**: new `hideChrome` leaves only the slide on screen. \"Hide interface\" in the top bar folds away the title, counter, exit and pager; \"Show interface\" in the top-right corner brings them back at any time."
+      },
+      {
+        "sha": "c73f49f",
+        "bump": "patch",
+        "breaking": false,
+        "body": "fix(code-block): the header bar gets its own background so it reads apart from the code.\n\nWith `lang`, the header (language name on the left, copy and other actions on the right) used to share the code area's background (`--hl-cb-bg`), so on short blocks there was no telling which strip was chrome and which was content — the whole block was one shade of gray. The header now uses `--hl-cb-head-bg`: one step darker than the code area in light, one step lighter in dark (each theme sinks in its own direction), so the bar is obvious in both. The code area keeps its existing fill. When the block sits on a locally recolored surface, such as a dark hero, `--hl-cb-bg` and `--hl-cb-head-bg` can be overridden independently instead of only half the block changing."
       }
     ]
   },
@@ -61,6 +67,19 @@
         "bump": "minor",
         "breaking": false,
         "body": "feat(paper): adds Paper, figures for papers that move with the text (first slice). `Paper` holds the display mode (read / print) and a figure registry, and `labels` sets the paper language for caption prefixes and automatic references independently of the UI language; it switches to print mode before the browser prints and back afterwards. Figure numbers come from a CSS counter, so they exist in server rendering and in print. `PaperFigure` takes any state value plus named presets, and its `children` maps state to picture. In print mode the main figure draws `printState`, `printSubfigures` expand into (a)(b)… sub-figures, and controls are not rendered. `ProcessFigure` explains a figure step by step; `FigureStep` marks which step each part belongs to. The current step is opaque, earlier steps are half transparent, and later steps are faint but not hidden. It comes with previous / next, per-step buttons, \"All\", and autoplay. `FigRef` is an in-text reference: a click switches the figure to its preset, scrolls it into view, and outlines it; without JS it is a plain anchor. Tokens add the `hulian-paper-flow` keyframes for flowing dashes on the current step."
+      }
+    ]
+  },
+  {
+    "pkg": "@hulianui/ui",
+    "version": "0.78.0",
+    "date": "2026-11-17",
+    "entries": [
+      {
+        "sha": "afb8c51",
+        "bump": "minor",
+        "breaking": false,
+        "body": "Paper adds the section trio: `PaperSection` (CSS counters for hierarchical numbering 1 / 2.1, present in server rendering and print), `SecRef` (in-text references such as \"Section 2.1\" that scroll to the heading and flash it), and `PaperOutline` (an outline generated from the section registry, reusing Anchor for scroll-spy). `Paper` labels gain `section`.\n\n`FigureStep` gains `until`: from a given step onward the part is superseded and no longer drawn (also hidden in the All state and in exported SVGs), for moving branch pointers and replaced nodes.\n\n`FigRef` now appends the sub-figure letter when `state` is one of the figure's print sub-figures and no children are given, e.g. \"Figure 1(b)\", matching the printed version.\n\n`usePaperNavigate()`: imperative navigation to a figure, equation or section, sharing the scroll-into-view and flash logic with `FigRef` / `SecRef` / `EqRef`. Controls that are already interactive, such as `Button`, can call it in `onClick` instead of nesting a reference via `render={<FigRef/>}` and inheriting link underlines."
       }
     ]
   },
