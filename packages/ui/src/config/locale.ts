@@ -883,10 +883,22 @@ export interface ComponentLocale {
     next: string;
     play: string;
     pause: string;
+    /** Loop-playback toggle: after the last step it starts over. */
+    loop?: string;
+    /** Accessible name of the playback-speed button (the button itself shows "1×"). */
+    speed?: string;
     /** Button that shows every step of a process figure at once. */
     overview: string;
     /** Accessible name of the step controls. */
     steps: string;
+    /** Button that collapses the figure's control row. */
+    hideControls?: string;
+    /** Button that brings the collapsed control row back. */
+    showControls?: string;
+    /** Button that hides the presenter's top bar, counter and pager. */
+    hideChrome?: string;
+    /** Button that brings the presenter's interface back. */
+    showChrome?: string;
     /** Accessible name of the full-screen presenter. */
     presenter?: string;
     /** Button that leaves the presenter. */
@@ -1747,8 +1759,14 @@ const zhComponents: ComponentLocale = {
     next: "下一步",
     play: "播放",
     pause: "暂停",
+    loop: "循环播放",
+    speed: "播放速度",
     overview: "全部",
     steps: "步骤",
+    hideControls: "隐藏控件",
+    showControls: "显示控件",
+    hideChrome: "隐藏界面",
+    showChrome: "显示界面",
     presenter: "演示模式",
     exit: "退出",
     prevSlide: "上一页",
@@ -2726,8 +2744,14 @@ const enComponents: ComponentLocale = {
     next: "Next step",
     play: "Play",
     pause: "Pause",
+    loop: "Loop playback",
+    speed: "Playback speed",
     overview: "All",
     steps: "Steps",
+    hideControls: "Hide controls",
+    showControls: "Show controls",
+    hideChrome: "Hide interface",
+    showChrome: "Show interface",
     presenter: "Presentation",
     exit: "Exit",
     prevSlide: "Previous slide",

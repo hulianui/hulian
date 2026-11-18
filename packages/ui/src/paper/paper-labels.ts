@@ -9,8 +9,20 @@ const DEFAULT_LABELS = {
   next: "下一步",
   play: "播放",
   pause: "暂停",
+  /** 循环播放开关（播完最后一步回到第一步继续）。 */
+  loop: "循环播放",
+  /** 倍速按钮的无障碍名，按钮上显示的是 `1×` 这种值。 */
+  speed: "播放速度",
   overview: "全部",
   steps: "步骤",
+  /** 收起图下方的控件行。 */
+  hideControls: "隐藏控件",
+  /** 控件行收起后，重新展开的那个按钮。 */
+  showControls: "显示控件",
+  /** 隐藏演示界面的顶栏、页码与翻页条。 */
+  hideChrome: "隐藏界面",
+  /** 界面已隐藏时，把它唤回来的那个按钮。 */
+  showChrome: "显示界面",
   presenter: "演示模式",
   exit: "退出",
   prevSlide: "上一页",

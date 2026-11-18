@@ -134,14 +134,21 @@ function CodeBlockImpl({
       className={cn(
         // --hl-cb-bg：代码区底色。比 surface 沉半档，放在卡片(surface)里读作「嵌进去的一块」，
         // 放在页面底上靠边框成形。行号列的 sticky 遮挡与折叠渐隐都吃同一个变量，三处永远同色。
-        "group/code-block relative overflow-hidden rounded-[var(--radius)] border border-border bg-(--hl-cb-bg) [--hl-cb-bg:color-mix(in_oklab,var(--color-muted)_45%,var(--color-surface))]",
+        // --hl-cb-head-bg：标题栏底色。有 lang 时标题栏是「外壳」，不是代码本身 —— 与代码区同色时
+        // 整块只剩一片灰，读者分不清哪一条是 chrome、哪一条是内容。它要比代码区（surface 与 muted 的
+        // 中间档）再拉开一档：亮色里 --color-muted 离 surface 只有十来阶，单用它压成 36px 的一条
+        // 仍然糊成一片，所以再往 --color-border 掺 40%；暗色下 subtle 与 border 同值，此处自然退化回
+        // subtle —— 暗色本来就够反差（subtle 比代码区亮）。方向两态相反，但「不同色」两态都成立。
+        // 两个变量分开而不是让标题栏直接写 bg-subtle：消费方在深色 hero 等局部换底时只需覆盖一个，
+        // 不至于让盖了代码区的块在顶上留一条主题色的带。
+        "group/code-block relative overflow-hidden rounded-[var(--radius)] border border-border bg-(--hl-cb-bg) [--hl-cb-bg:color-mix(in_oklab,var(--color-muted)_45%,var(--color-surface))] [--hl-cb-head-bg:color-mix(in_oklab,var(--color-subtle)_60%,var(--color-border))]",
         className,
       )}
     >
       {hasHeader && (
         <div
           data-slot="code-block-header"
-          className="flex h-9 items-center justify-between gap-2 border-b border-border pl-4 pr-1"
+          className="flex h-9 items-center justify-between gap-2 border-b border-border bg-(--hl-cb-head-bg) pl-4 pr-1"
         >
           <span className="min-w-0 select-none truncate font-mono text-xs text-muted-foreground">
             {lang}

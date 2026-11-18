@@ -85,6 +85,10 @@ Extends `HTMLAttributes<HTMLElement>`; `ref` lands on the root element.
 | describe | `(state: S, key: string \| null) => ReactNode` | - | Second caption line describing the current state; screen readers announce changes |
 | subfigureLabel | `(key: string, index: number) => ReactNode` | `(a)` + `describe` | Sub-figure label |
 | controls | `(figure: FigureRenderContext<S>) => ReactNode` | - | Controls below the figure, rendered only in read mode |
+| hideCaption | boolean | false | Render no caption at all (the whole "Figure N: …" line, description included). Figure numbers still advance, so later figures keep their numbers |
+| hideDescription | boolean | false | Render no state description (the caption's second line). Implied by `hideCaption` |
+| collapsibleControls | boolean | false | Let the control row collapse: an icon button at its end hides it. Collapsed, the row takes no space — only a "Show controls" button in the figure corner, revealed on hover or keyboard focus (always visible on touch) |
+| defaultControlsCollapsed | boolean | false | Start with the control row collapsed (only with `collapsibleControls`). Use it for figures that should play clean first and be inspected on demand |
 
 | Event | Type | Description |
 |------|------|------|
@@ -99,6 +103,7 @@ interface FigureRenderContext<S> {
   select: (key: string) => void;    // switch to a preset
   setState: (state: S) => void;     // set a value directly (sliders, toggles)
   mode: "read" | "print";
+  presenting?: boolean;         // drawn inside the presenter (autoPlay is off there)
 }
 ```
 
@@ -115,7 +120,11 @@ A step-by-step figure. Its state is a step `key`, plus the reserved name `"all"`
 | printState | string | `"all"` (the last step without overview) | Print state |
 | printSubfigures | `string[]` | one per step | Print sub-figures; pass `[]` for none |
 | presentStates | `string[]` | each step + `"all"` | Presets shown one by one when presenting |
-| interval | number | 2200 | Milliseconds per step during autoplay |
+| interval | number | 2200 | Milliseconds per step during autoplay. The speed button divides it |
+| autoPlay | boolean | false | Start playing by itself once the figure scrolls into view. Pauses off-screen and resumes on return; a reader who pressed pause or changed the state from a `FigRef` or a locate button takes over and autoplay stops for good; never starts under `prefers-reduced-motion: reduce` |
+| loop | boolean | false | After the last step, start over (off by default: playback stops). The loop button in the controls toggles the same thing |
+| speeds | `number[]` | `[0.5, 1, 1.5, 2]` | Speed steps, where 1 = `interval` as given. Pass `[]` to render no speed button |
+| defaultSpeed | number | 1 | Initial speed; falls back to the first entry of `speeds` |
 
 ```ts
 interface ProcessStep {
@@ -125,7 +134,7 @@ interface ProcessStep {
 }
 ```
 
-Step controls come built in below the figure: previous / next (disabled at the ends), one letter button per step (a, b, c…), "All", and play / pause. Playback stops at the last step.
+Step controls come built in below the figure: previous / next (disabled at the ends), one letter button per step (a, b, c…), "All", play / pause, a loop toggle, and a speed button (shown as `1×`, click to step through the speeds). Playback stops at the last step unless `loop` or the loop toggle is on, in which case it starts over. With `collapsibleControls` the whole row can be folded away; a "Show controls" button then appears in the figure corner on hover, without adding a line under the figure.
 
 ## FigureStep
 
@@ -232,6 +241,7 @@ Presentation mode for talks and defenses: a full-screen layer that turns the pre
 | title | ReactNode | - | Title on the left of the header, usually the paper title |
 | slides | `PresenterSlide[]` | see below | The whole slide list, `{ figure: figure id, state: preset name }` |
 | controls | boolean | true | Whether to render the figure's own controls (step buttons, parameter toggles) |
+| hideChrome | boolean | false | Open with the presentation interface hidden (title, counter, exit, pager), leaving only the slide. "Hide interface" in the top bar folds it away; "Show interface" in the top-right corner brings it back |
 | className | string | - | Added to the root of the full-screen layer |
 
 | Event | Type | Description |
@@ -242,6 +252,7 @@ Presentation mode for talks and defenses: a full-screen layer that turns the pre
 - **Where slides come from**: by default, the `presentStates` of each figure in document order. `PaperFigure` defaults to every preset, `ProcessFigure` to each step plus "all". Pass `slides` to reorder them or interleave figures; missing figures or presets warn once in development and are skipped. Figure numbers in the header always follow document order.
 - **No DOM is moved**: the presenter draws each figure again with the same `children(state)` function. The figure in the text stays where it is with its state unchanged, so readers come back to the step they left. When the figure's props change (a language switch, say), the presenter redraws too.
 - **Figure controls still work**: when a control calls `select` with a preset, the presenter jumps to that slide (the step buttons of `ProcessFigure` become slide jumps). Values from `setState` only override the current slide and are dropped when the slide changes.
+- **The interface can be folded away**: "Hide interface" in the top bar takes the title, counter, exit and pager away, leaving only the slide; "Show interface" in the top-right corner brings them back. Use `hideChrome` to open that way when the audience should only see the picture.
 - **Keys**: `→` / `Space` / `PageDown` next, `←` / `PageUp` previous, `Esc` exits. Arrow keys are left to the control when focus is in an input, slider, radio group and the like; Space on a focused button presses that button.
 - **Accessibility**: `role="dialog"`, named "Presentation" (follows the UI language). Focus is trapped inside, starts on "Next slide", and returns to the trigger on exit. Content outside the presenter is hidden from screen readers.
 - The presenter renders outside the `Paper` DOM (in a portal). When it opens it takes the font where `Paper` sits (including overrides such as `--paper-font`) and its theme island (the nearest `data-theme` ancestor of `Paper`, followed if it changes while presenting). A container that only recolors through custom properties, without `data-theme`, does not reach the presenter. If a figure's render function depends on a context placed between `Paper` and the figure, that context is not available while presenting.

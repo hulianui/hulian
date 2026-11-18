@@ -395,6 +395,15 @@ describe("CodeBlock 长内容", () => {
     expect(header.contains(getByLabelText("复制"))).toBe(true);
   });
 
+  it("标题栏自带一层底色，与代码区区分开", () => {
+    const { container } = render(<CodeBlock code="x" lang="tsx" />);
+    const header = container.querySelector('[data-slot="code-block-header"]')!;
+    expect(header.classList.contains("bg-(--hl-cb-head-bg)")).toBe(true);
+    expect(container.firstElementChild!.className).toContain("--hl-cb-head-bg:");
+    // 代码区仍是 --hl-cb-bg：两层底色各用各的变量，覆盖其一不会连带另一层
+    expect(header.classList.contains("bg-(--hl-cb-bg)")).toBe(false);
+  });
+
   it("无 lang 时不渲染标题栏，操作区悬浮", () => {
     const { container } = render(<CodeBlock code="x" />);
     expect(container.querySelector('[data-slot="code-block-header"]')).toBeNull();

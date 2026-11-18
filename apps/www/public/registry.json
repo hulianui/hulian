@@ -10639,6 +10639,7 @@
         "katex"
       ],
       "registryDependencies": [
+        "https://hulianui.haloritual.com/zh/r/_icons.json",
         "https://hulianui.haloritual.com/zh/r/anchor.json",
         "https://hulianui.haloritual.com/zh/r/button.json",
         "https://hulianui.haloritual.com/zh/r/config.json",
